@@ -24,7 +24,7 @@
 #ifndef quantlib_multicurve_sensitivity_hpp
 #define quantlib_multicurve_sensitivity_hpp
 
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <iostream>
@@ -74,8 +74,8 @@ public:
       for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
           registerWith((*it).second);
       for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-          ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
-              ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
+          std::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
+              std::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
                   it->second.currentLink());
           QL_REQUIRE(curve != nullptr, "Couldn't cast curvename: " << it->first);
           for (auto& instrument : curve->instruments_) {
@@ -113,8 +113,8 @@ inline void MultiCurveSensitivities::performCalculations() const {
   for (const auto& allQuote : allQuotes_) {
       Rate bps = +1e-4;
       Rate origQuote = allQuote->value();
-      ext::shared_ptr<SimpleQuote> q =
-          ext::dynamic_pointer_cast<SimpleQuote>(allQuote.currentLink());
+      std::shared_ptr<SimpleQuote> q =
+          std::dynamic_pointer_cast<SimpleQuote>(allQuote.currentLink());
       q->setValue(origQuote + bps);
       try {
           std::vector<Rate> tmp(allZeros());
@@ -144,8 +144,8 @@ inline Matrix MultiCurveSensitivities::inverseSensitivities() const {
 inline std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const {
   std::vector< std::pair< Date, Real > > result;
   for (const auto& it : curves_) {
-      ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
-          ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
+      std::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
+          std::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
               it.second.currentLink());
       result.reserve(result.size() + curve->nodes().size() - 1);
       for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1;

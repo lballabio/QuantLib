@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    JumpDiffusionEngine::JumpDiffusionEngine(ext::shared_ptr<Merton76Process> process,
+    JumpDiffusionEngine::JumpDiffusionEngine(std::shared_ptr<Merton76Process> process,
                                              Real relativeAccuracy,
                                              Size maxIterations)
     : process_(std::move(process)), relativeAccuracy_(relativeAccuracy),
@@ -48,8 +48,8 @@ namespace QuantLib {
         Real k = std::exp(muPlusHalfSquareVol) - 1.0;
         Real lambda = (k+1.0) * process_->jumpIntensity()->value();
 
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =
@@ -75,7 +75,7 @@ namespace QuantLib {
         RelinkableHandle<BlackVolTermStructure> volTS(
                                                 *process_->blackVolatility());
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
                  new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
 
@@ -111,9 +111,9 @@ namespace QuantLib {
             v = std::sqrt((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - process_->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            riskFreeTS.linkTo(ext::shared_ptr<YieldTermStructure>(new
+            riskFreeTS.linkTo(std::shared_ptr<YieldTermStructure>(new
                 FlatForward(rateRefDate, r, voldc)));
-            volTS.linkTo(ext::shared_ptr<BlackVolTermStructure>(new
+            volTS.linkTo(std::shared_ptr<BlackVolTermStructure>(new
                 BlackConstantVol(rateRefDate, volcal, v, voldc)));
 
             baseArguments->validate();

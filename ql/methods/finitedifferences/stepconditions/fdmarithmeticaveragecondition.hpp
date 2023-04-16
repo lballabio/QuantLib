@@ -34,7 +34,7 @@ namespace QuantLib {
         FdmArithmeticAverageCondition(std::vector<Time> averageTimes,
                                       Real,
                                       Size pastFixings,
-                                      const ext::shared_ptr<FdmMesher>& mesher,
+                                      const std::shared_ptr<FdmMesher>& mesher,
                                       Size equityDirection);
 
         void applyTo(Array& a, Time t) const override;
@@ -45,7 +45,7 @@ namespace QuantLib {
 
         const std::vector<Time> averageTimes_;
         const Size pastFixings_;
-        const ext::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<FdmMesher> mesher_;
         const Size equityDirection_;
     };
 }

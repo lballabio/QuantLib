@@ -40,8 +40,8 @@ namespace QuantLib {
         Real totalDiscounted = 0;
         Real totalUndiscounted = 0;
         for (const auto& i : cashFlows) {
-            //const ext::shared_ptr<CommodityCashFlow> cashFlow = *i;
-            const ext::shared_ptr<CommodityCashFlow> cashFlow = i.second;
+            //const std::shared_ptr<CommodityCashFlow> cashFlow = *i;
+            const std::shared_ptr<CommodityCashFlow> cashFlow = i.second;
             totalDiscounted += cashFlow->discountedAmount().value();
             totalUndiscounted += cashFlow->undiscountedAmount().value();
             //out << io::iso_date(cashFlow->date()) << " " <<

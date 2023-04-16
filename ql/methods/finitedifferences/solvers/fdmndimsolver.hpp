@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         FdmNdimSolver(const FdmSolverDesc& solverDesc,
                       const FdmSchemeDesc& schemeDesc,
-                      ext::shared_ptr<FdmLinearOpComposite> op);
+                      std::shared_ptr<FdmLinearOpComposite> op);
 
         void performCalculations() const override;
 
@@ -58,24 +58,24 @@ namespace QuantLib {
       private:
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
-        const ext::shared_ptr<FdmLinearOpComposite> op_;
+        const std::shared_ptr<FdmLinearOpComposite> op_;
 
-        const ext::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const ext::shared_ptr<FdmStepConditionComposite> conditions_;
+        const std::shared_ptr<FdmSnapshotCondition> thetaCondition_;
+        const std::shared_ptr<FdmStepConditionComposite> conditions_;
 
         std::vector<std::vector<Real> > x_;
         std::vector<Real> initialValues_;
         const std::vector<bool> extrapolation_;
 
-        mutable ext::shared_ptr<data_table> f_;
-        mutable ext::shared_ptr<MultiCubicSpline<N> > interp_;
+        mutable std::shared_ptr<data_table> f_;
+        mutable std::shared_ptr<MultiCubicSpline<N> > interp_;
     };
 
 
     template <Size N>
     inline FdmNdimSolver<N>::FdmNdimSolver(const FdmSolverDesc& solverDesc,
                                            const FdmSchemeDesc& schemeDesc,
-                                           ext::shared_ptr<FdmLinearOpComposite> op)
+                                           std::shared_ptr<FdmLinearOpComposite> op)
     : solverDesc_(solverDesc), schemeDesc_(schemeDesc), op_(std::move(op)),
       thetaCondition_(new FdmSnapshotCondition(
           0.99 * std::min(1.0 / 365.0,
@@ -87,8 +87,8 @@ namespace QuantLib {
       initialValues_(solverDesc.mesher->layout()->size()),
       extrapolation_(std::vector<bool>(N, false)) {
 
-        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         QL_REQUIRE(layout->dim().size() == N, "solver dim " << N
                     << "does not fit to layout dim " << layout->size());
@@ -112,7 +112,7 @@ namespace QuantLib {
             }
         }
 
-        f_ = ext::shared_ptr<data_table>(new data_table(x_));
+        f_ = std::shared_ptr<data_table>(new data_table(x_));
     }
 
 
@@ -125,7 +125,7 @@ namespace QuantLib {
                  .rollback(rhs, solverDesc_.maturity, 0.0,
                            solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout
+        const std::shared_ptr<FdmLinearOpLayout> layout
                                                = solverDesc_.mesher->layout();
 
         const FdmLinearOpIterator endIter = layout->end();
@@ -134,7 +134,7 @@ namespace QuantLib {
             setValue(*f_, iter.coordinates(), rhs[iter.index()]);
         }
 
-        interp_ = ext::shared_ptr<MultiCubicSpline<N> >(
+        interp_ = std::shared_ptr<MultiCubicSpline<N> >(
             new MultiCubicSpline<N>(x_, *f_, extrapolation_));
     }
 
@@ -146,7 +146,7 @@ namespace QuantLib {
 
         calculate();
         const Array& rhs = thetaCondition_->getValues();
-        const ext::shared_ptr<FdmLinearOpLayout> layout
+        const std::shared_ptr<FdmLinearOpLayout> layout
                                             = solverDesc_.mesher->layout();
 
         data_table f(x_);

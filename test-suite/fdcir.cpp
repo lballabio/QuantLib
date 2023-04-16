@@ -60,21 +60,21 @@ void FdCIRTest::testFdmCIRConvergence() {
     Date maturity = today + 365;
     DayCounter dayCounter = Actual365Fixed();
 
-    ext::shared_ptr<Exercise> europeanExercise(
+    std::shared_ptr<Exercise> europeanExercise(
         new EuropeanExercise(maturity));
 
     Handle<Quote> underlyingH(
-        ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+        std::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
     Handle<YieldTermStructure> flatTermStructure(
-        ext::shared_ptr<YieldTermStructure>(flatRate(today, riskFreeRate, dayCounter)));
+        std::shared_ptr<YieldTermStructure>(flatRate(today, riskFreeRate, dayCounter)));
     Handle<YieldTermStructure> flatDividendTS(
-        ext::shared_ptr<YieldTermStructure>(flatRate(today, dividendYield, dayCounter)));
+        std::shared_ptr<YieldTermStructure>(flatRate(today, dividendYield, dayCounter)));
     Handle<BlackVolTermStructure> flatVolTS(
-        ext::shared_ptr<BlackVolTermStructure>(flatVol(today, volatility, dayCounter)));
-    ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<BlackVolTermStructure>(flatVol(today, volatility, dayCounter)));
+    std::shared_ptr<StrikedTypePayoff> payoff(
         new PlainVanillaPayoff(type, strike));
-    ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+    std::shared_ptr<BlackScholesMertonProcess> bsmProcess(
         new BlackScholesMertonProcess(underlyingH, flatDividendTS,
                                       flatTermStructure, flatVolTS));
 
@@ -89,13 +89,13 @@ void FdCIRTest::testFdmCIRConvergence() {
     Real newSpeed = speed + (cirSigma*lambda); //1.0792
     Real newLevel = (level * speed)/(speed + (cirSigma*lambda));//// 0.0240
 
-    ext::shared_ptr<CoxIngersollRossProcess> cirProcess(new CoxIngersollRossProcess(newSpeed, cirSigma, initialRate, newLevel));
+    std::shared_ptr<CoxIngersollRossProcess> cirProcess(new CoxIngersollRossProcess(newSpeed, cirSigma, initialRate, newLevel));
 
     Real expected = 4.275;
     Real tolerance = 0.0003;
 
     for (const auto& scheme : schemes) {
-        ext::shared_ptr<PricingEngine> fdcirengine =
+        std::shared_ptr<PricingEngine> fdcirengine =
             MakeFdCIRVanillaEngine(cirProcess, bsmProcess, rho).withFdmSchemeDesc(scheme);
         europeanOption.setPricingEngine(fdcirengine);
         Real calculated = europeanOption.NPV();

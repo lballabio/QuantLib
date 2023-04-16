@@ -86,33 +86,33 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new CashOrNothingPayoff(value.type, value.strike, 10.0));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                                     new AnalyticEuropeanEngine(stochProcess));
 
         VanillaOption opt(payoff, exercise);
@@ -140,33 +140,33 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new AssetOrNothingPayoff(value.type, value.strike));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                                     new AnalyticEuropeanEngine(stochProcess));
 
         VanillaOption opt(payoff, exercise);
@@ -194,32 +194,32 @@ void DigitalOptionTest::testGapEuropeanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new GapPayoff(value.type, value.strike, 57.00));
+        std::shared_ptr<StrikedTypePayoff> payoff(new GapPayoff(value.type, value.strike, 57.00));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                                     new AnalyticEuropeanEngine(stochProcess));
 
         VanillaOption opt(payoff, exercise);
@@ -259,21 +259,21 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new CashOrNothingPayoff(value.type, value.strike, 15.00));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+        std::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
         spot->setValue(value.s);
@@ -281,12 +281,12 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                              new AnalyticDigitalAmericanEngine(stochProcess));
 
         VanillaOption opt(payoff, amExercise);
@@ -324,21 +324,21 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new AssetOrNothingPayoff(value.type, value.strike));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+        std::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
         spot->setValue(value.s);
@@ -346,12 +346,12 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                              new AnalyticDigitalAmericanEngine(stochProcess));
 
         VanillaOption opt(payoff, amExercise);
@@ -388,21 +388,21 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new CashOrNothingPayoff(value.type, value.strike, 15.0));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+        std::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
 
@@ -411,12 +411,12 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine;
+        std::shared_ptr<PricingEngine> engine;
         if (value.knockin)
             engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
         else
@@ -460,21 +460,21 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new AssetOrNothingPayoff(value.type, value.strike));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+        std::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
 
@@ -483,12 +483,12 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
-        ext::shared_ptr<PricingEngine> engine;
+        std::shared_ptr<PricingEngine> engine;
         if (value.knockin)
             engine.reset(new AnalyticDigitalAmericanEngine(stochProcess));
         else
@@ -533,39 +533,39 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     // there is no cycling on different residual times
     Date exDate = today + 360;
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-    ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+    std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    std::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                 exDate,
                                                                 false));
-    ext::shared_ptr<Exercise> exercises[] = { exercise, amExercise };
+    std::shared_ptr<Exercise> exercises[] = { exercise, amExercise };
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-    ext::shared_ptr<PricingEngine> euroEngine(
+    std::shared_ptr<PricingEngine> euroEngine(
                                     new AnalyticEuropeanEngine(stochProcess));
 
-    ext::shared_ptr<PricingEngine> amEngine(
+    std::shared_ptr<PricingEngine> amEngine(
                              new AnalyticDigitalAmericanEngine(stochProcess));
 
-    ext::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
+    std::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
     bool knockin=true;
     for (Size j=0; j<LENGTH(engines); j++) {
         for (auto& type : types) {
             for (Real strike : strikes) {
-                ext::shared_ptr<StrikedTypePayoff> payoff(
+                std::shared_ptr<StrikedTypePayoff> payoff(
                     new CashOrNothingPayoff(type, strike, cashPayoff));
 
                 VanillaOption opt(payoff, exercises[j]);
@@ -680,13 +680,13 @@ void DigitalOptionTest::testMCCashAtHit() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Size timeStepsPerYear = 90;
     Size maxSamples = 1000000;
@@ -694,10 +694,10 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new CashOrNothingPayoff(value.type, value.strike, 15.0));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> amExercise(
+        std::shared_ptr<Exercise> amExercise(
                                          new AmericanExercise(today, exDate));
 
         spot->setValue(value.s);
@@ -705,14 +705,14 @@ void DigitalOptionTest::testMCCashAtHit() {
         rRate->setValue(value.r);
         vol->setValue(value.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
         Size requiredSamples = Size(std::pow(2.0, 14)-1);
-        ext::shared_ptr<PricingEngine> mcldEngine =
+        std::shared_ptr<PricingEngine> mcldEngine =
             MakeMCDigitalEngine<LowDiscrepancy>(stochProcess)
             .withStepsPerYear(timeStepsPerYear)
             .withBrownianBridge()

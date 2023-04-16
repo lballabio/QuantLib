@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     FdmExtOUJumpSolver::FdmExtOUJumpSolver(Handle<ExtOUWithJumpsProcess> process,
-                                           ext::shared_ptr<YieldTermStructure> rTS,
+                                           std::shared_ptr<YieldTermStructure> rTS,
                                            FdmSolverDesc solverDesc,
                                            const FdmSchemeDesc& schemeDesc)
     : process_(std::move(process)), rTS_(std::move(rTS)), solverDesc_(std::move(solverDesc)),
@@ -39,11 +39,11 @@ namespace QuantLib {
     }
 
     void FdmExtOUJumpSolver::performCalculations() const {
-        ext::shared_ptr<FdmLinearOpComposite>op(
+        std::shared_ptr<FdmLinearOpComposite>op(
             new FdmExtOUJumpOp(solverDesc_.mesher, process_.currentLink(),
                                rTS_, solverDesc_.bcSet, 32));
         
-        solver_ = ext::make_shared<Fdm2DimSolver>(
+        solver_ = std::make_shared<Fdm2DimSolver>(
                               solverDesc_, schemeDesc_, op);
     }
     

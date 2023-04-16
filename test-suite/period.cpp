@@ -158,7 +158,7 @@ void PeriodTest::testNormalization() {
 
         for (Period p2 : test_values) {
             auto n2 = p2.normalized();
-            ext::optional<bool> comparison;
+            std::optional<bool> comparison;
             try {
                 comparison = (p1 == p2);
             } catch (Error&) {

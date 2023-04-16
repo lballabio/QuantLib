@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     EuropeanPathMultiPathPricer::EuropeanPathMultiPathPricer(
-        ext::shared_ptr<PathPayoff>& payoff,
+        std::shared_ptr<PathPayoff>& payoff,
         std::vector<Size> timePositions,
         std::vector<Handle<YieldTermStructure> > forwardTermStructures,
         Array discounts)

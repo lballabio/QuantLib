@@ -128,7 +128,7 @@ namespace QuantLib {
             std::string name() const override { return std::string("30/360 (NASD)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
-        static ext::shared_ptr<DayCounter::Impl>
+        static std::shared_ptr<DayCounter::Impl>
         implementation(Convention c, const Date& terminationDate);
       public:
         explicit Thirty360(Convention c, const Date& terminationDate = Date())

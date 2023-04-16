@@ -36,7 +36,7 @@ namespace QuantLib {
     /*! Provides sequences of random default times for each name in the pool. */
     class RandomDefaultModel : public Observer, public Observable {
     public:
-      RandomDefaultModel(const ext::shared_ptr<Pool>& pool,
+      RandomDefaultModel(const std::shared_ptr<Pool>& pool,
                          const std::vector<DefaultProbKey>& defaultKeys)
       : pool_(pool), defaultKeys_(defaultKeys) {
           // assuming none defaulted this is true.
@@ -53,7 +53,7 @@ namespace QuantLib {
         virtual void nextSequence(Real tmax = QL_MAX_REAL) = 0;
         virtual void reset() = 0;
     protected:
-        ext::shared_ptr<Pool> pool_;
+        std::shared_ptr<Pool> pool_;
         std::vector<DefaultProbKey> defaultKeys_;
     };
 
@@ -62,7 +62,7 @@ namespace QuantLib {
     */
     class GaussianRandomDefaultModel : public RandomDefaultModel {
     public:
-      GaussianRandomDefaultModel(const ext::shared_ptr<Pool>& pool,
+      GaussianRandomDefaultModel(const std::shared_ptr<Pool>& pool,
                                  const std::vector<DefaultProbKey>& defaultKeys,
                                  const Handle<OneFactorCopula>& copula,
                                  Real accuracy,

@@ -33,8 +33,8 @@ namespace QuantLib {
         Calendar calendar,
         BusinessDayConvention convention,
         bool endOfMonth,
-        const ext::shared_ptr<IborIndex>& baseIndex,
-        const ext::shared_ptr<IborIndex>& otherIndex,
+        const std::shared_ptr<IborIndex>& baseIndex,
+        const std::shared_ptr<IborIndex>& otherIndex,
         Handle<YieldTermStructure> discountHandle,
         bool bootstrapBaseCurve)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
@@ -73,7 +73,7 @@ namespace QuantLib {
             .endOfMonth(endOfMonth_)
             .forwards();
         Leg baseLeg = IborLeg(baseSchedule, baseIndex_).withNotionals(100.0);
-        auto lastBaseCoupon = ext::dynamic_pointer_cast<IborCoupon>(baseLeg.back());
+        auto lastBaseCoupon = std::dynamic_pointer_cast<IborCoupon>(baseLeg.back());
 
         Schedule otherSchedule =
             MakeSchedule().from(earliestDate_).to(maturityDate_)
@@ -83,15 +83,15 @@ namespace QuantLib {
             .endOfMonth(endOfMonth_)
             .forwards();
         Leg otherLeg = IborLeg(otherSchedule, otherIndex_).withNotionals(100.0);
-        auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
+        auto lastOtherCoupon = std::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         latestRelevantDate_ = std::max(maturityDate_,
                                        std::max(lastBaseCoupon->fixingEndDate(),
                                                 lastOtherCoupon->fixingEndDate()));
         pillarDate_ = latestRelevantDate_;
 
-        swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
-        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountHandle_));
+        swap_ = std::make_shared<Swap>(baseLeg, otherLeg);
+        swap_->setPricingEngine(std::make_shared<DiscountingSwapEngine>(discountHandle_));
     }
 
     void IborIborBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -99,7 +99,7 @@ namespace QuantLib {
         // force recalculation when needed---the index is not lazy
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -127,8 +127,8 @@ namespace QuantLib {
         Calendar calendar,
         BusinessDayConvention convention,
         bool endOfMonth,
-        const ext::shared_ptr<OvernightIndex>& baseIndex,
-        const ext::shared_ptr<IborIndex>& otherIndex,
+        const std::shared_ptr<OvernightIndex>& baseIndex,
+        const std::shared_ptr<IborIndex>& otherIndex,
         Handle<YieldTermStructure> discountHandle)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
@@ -163,13 +163,13 @@ namespace QuantLib {
         Leg baseLeg = OvernightLeg(schedule, baseIndex_).withNotionals(100.0);
 
         Leg otherLeg = IborLeg(schedule, otherIndex_).withNotionals(100.0);
-        auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
+        auto lastOtherCoupon = std::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
 
         latestRelevantDate_ = std::max(maturityDate_, lastOtherCoupon->fixingEndDate());
         pillarDate_ = latestRelevantDate_;
 
-        swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
-        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
+        swap_ = std::make_shared<Swap>(baseLeg, otherLeg);
+        swap_->setPricingEngine(std::make_shared<DiscountingSwapEngine>(
             discountHandle_.empty() ? termStructureHandle_ : discountHandle_));
     }
 
@@ -178,7 +178,7 @@ namespace QuantLib {
         // force recalculation when needed---the index is not lazy
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);

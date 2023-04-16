@@ -46,11 +46,11 @@ namespace QuantLib {
         : public DiscreteAveragingAsianOption::engine{
       public:
         AnalyticDiscreteGeometricAverageStrikeAsianEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+            std::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

@@ -41,7 +41,7 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
         // constructor
-        MCDoubleBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        MCDoubleBarrierEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process,
                               Size timeSteps,
                               Size timeStepsPerYear,
                               bool brownianBridge,
@@ -66,17 +66,17 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -89,7 +89,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDoubleBarrierEngine {
       public:
-        explicit MakeMCDoubleBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit MakeMCDoubleBarrierEngine(std::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCDoubleBarrierEngine& withSteps(Size steps);
         MakeMCDoubleBarrierEngine& withStepsPerYear(Size steps);
@@ -100,9 +100,9 @@ namespace QuantLib {
         MakeMCDoubleBarrierEngine& withMaxSamples(Size samples);
         MakeMCDoubleBarrierEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool brownianBridge_ = false, antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -133,7 +133,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MCDoubleBarrierEngine<RNG, S>::MCDoubleBarrierEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool brownianBridge,
@@ -177,10 +177,10 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    ext::shared_ptr<typename MCDoubleBarrierEngine<RNG,S>::path_pricer_type>
+    std::shared_ptr<typename MCDoubleBarrierEngine<RNG,S>::path_pricer_type>
     MCDoubleBarrierEngine<RNG,S>::pathPricer() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         TimeGrid grid = timeGrid();
@@ -188,7 +188,7 @@ namespace QuantLib {
         for (Size i=0; i<grid.size(); i++)
             discounts[i] = process_->riskFreeRate()->discount(grid[i]);
 
-        return ext::shared_ptr<
+        return std::shared_ptr<
                     typename MCDoubleBarrierEngine<RNG,S>::path_pricer_type>(
             new DoubleBarrierPathPricer(
                 arguments_.barrierType,
@@ -202,7 +202,7 @@ namespace QuantLib {
 
         template <class RNG, class S>
         inline MakeMCDoubleBarrierEngine<RNG, S>::MakeMCDoubleBarrierEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            std::shared_ptr<GeneralizedBlackScholesProcess> process)
         : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
           samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
@@ -271,13 +271,13 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCDoubleBarrierEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
+    MakeMCDoubleBarrierEngine<RNG,S>::operator std::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return ext::shared_ptr<PricingEngine>(new
+        return std::shared_ptr<PricingEngine>(new
             MCDoubleBarrierEngine<RNG,S>(process_,
                                    steps_,
                                    stepsPerYear_,

@@ -28,7 +28,7 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
-#include <ql/functional.hpp>
+
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
 #include <boost/utility.hpp>
@@ -173,9 +173,9 @@ namespace QuantLib {
 
       private:
         typedef typename Container::value_type container_value_type;
-        typedef ext::function<Date(const container_value_type&)>
+        typedef std::function<Date(const container_value_type&)>
                                                               projection_time;
-        typedef ext::function<T(const container_value_type&)>
+        typedef std::function<T(const container_value_type&)>
                                                              projection_value;
 
       public:

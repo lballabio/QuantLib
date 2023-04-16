@@ -45,7 +45,7 @@ namespace QuantLib {
         template <class I1, class I2>
         LinearInterpolation(const I1& xBegin, const I1& xEnd,
                             const I2& yBegin) {
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
+            impl_ = std::shared_ptr<Interpolation::Impl>(new
                 detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                        yBegin));
             impl_->update();

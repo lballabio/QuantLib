@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    Commodity::Commodity(ext::shared_ptr<SecondaryCosts> secondaryCosts)
+    Commodity::Commodity(std::shared_ptr<SecondaryCosts> secondaryCosts)
     : secondaryCosts_(std::move(secondaryCosts)) {}
 
     const SecondaryCostAmounts& Commodity::secondaryCostAmounts() const {

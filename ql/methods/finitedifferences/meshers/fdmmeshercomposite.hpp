@@ -35,23 +35,23 @@ namespace QuantLib {
     class FdmMesherComposite : public FdmMesher {
       public:
         FdmMesherComposite(
-            const ext::shared_ptr<FdmLinearOpLayout>& layout,
-            const std::vector<ext::shared_ptr<Fdm1dMesher> > & mesher);
+            const std::shared_ptr<FdmLinearOpLayout>& layout,
+            const std::vector<std::shared_ptr<Fdm1dMesher> > & mesher);
 
         // convenient constructors
         explicit FdmMesherComposite(
-            const std::vector<ext::shared_ptr<Fdm1dMesher> > & mesher);
+            const std::vector<std::shared_ptr<Fdm1dMesher> > & mesher);
         explicit FdmMesherComposite(
-            const ext::shared_ptr<Fdm1dMesher>& mesher);
-        FdmMesherComposite(const ext::shared_ptr<Fdm1dMesher>& m1,
-                           const ext::shared_ptr<Fdm1dMesher>& m2);
-        FdmMesherComposite(const ext::shared_ptr<Fdm1dMesher>& m1,
-                           const ext::shared_ptr<Fdm1dMesher>& m2,
-                           const ext::shared_ptr<Fdm1dMesher>& m3);
-        FdmMesherComposite(const ext::shared_ptr<Fdm1dMesher>& m1,
-                           const ext::shared_ptr<Fdm1dMesher>& m2,
-                           const ext::shared_ptr<Fdm1dMesher>& m3,
-                           const ext::shared_ptr<Fdm1dMesher>& m4);
+            const std::shared_ptr<Fdm1dMesher>& mesher);
+        FdmMesherComposite(const std::shared_ptr<Fdm1dMesher>& m1,
+                           const std::shared_ptr<Fdm1dMesher>& m2);
+        FdmMesherComposite(const std::shared_ptr<Fdm1dMesher>& m1,
+                           const std::shared_ptr<Fdm1dMesher>& m2,
+                           const std::shared_ptr<Fdm1dMesher>& m3);
+        FdmMesherComposite(const std::shared_ptr<Fdm1dMesher>& m1,
+                           const std::shared_ptr<Fdm1dMesher>& m2,
+                           const std::shared_ptr<Fdm1dMesher>& m3,
+                           const std::shared_ptr<Fdm1dMesher>& m4);
 
 
         Real dplus(const FdmLinearOpIterator& iter, Size direction) const override;
@@ -59,11 +59,11 @@ namespace QuantLib {
         Real location(const FdmLinearOpIterator& iter, Size direction) const override;
         Array locations(Size direction) const override;
 
-        const std::vector<ext::shared_ptr<Fdm1dMesher> >&
+        const std::vector<std::shared_ptr<Fdm1dMesher> >&
             getFdm1dMeshers() const;
 
       private:
-        const std::vector<ext::shared_ptr<Fdm1dMesher> > mesher_;
+        const std::vector<std::shared_ptr<Fdm1dMesher> > mesher_;
     };
 }
 

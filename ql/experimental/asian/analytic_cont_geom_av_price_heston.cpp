@@ -74,7 +74,7 @@ namespace QuantLib {
 
     AnalyticContinuousGeometricAveragePriceAsianHestonEngine::
         AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
-            ext::shared_ptr<HestonProcess> process, Size summationCutoff, Real xiRightLimit)
+            std::shared_ptr<HestonProcess> process, Size summationCutoff, Real xiRightLimit)
     : process_(std::move(process)), summationCutoff_(summationCutoff), xiRightLimit_(xiRightLimit),
       integrator_(128) {
         registerWith(process_);
@@ -211,8 +211,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real strike = payoff->strike();

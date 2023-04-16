@@ -26,7 +26,7 @@
 #define quantlib_errors_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <boost/assert.hpp>
 #include <boost/current_function.hpp>
 #include <exception>
@@ -49,7 +49,7 @@ namespace QuantLib {
         const char* what() const noexcept override;
 
       private:
-        ext::shared_ptr<std::string> message_;
+        std::shared_ptr<std::string> message_;
     };
 
 }

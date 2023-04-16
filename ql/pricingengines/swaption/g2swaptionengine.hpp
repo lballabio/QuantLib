@@ -42,7 +42,7 @@ namespace QuantLib {
         // range is the number of standard deviations to use in the
         // exponential term of the integral for the european swaption.
         // intervals is the number of intervals to use in the integration.
-        G2SwaptionEngine(const ext::shared_ptr<G2>& model,
+        G2SwaptionEngine(const std::shared_ptr<G2>& model,
                          Real range,
                          Size intervals)
         : GenericModelEngine<G2, Swaption::arguments, Swaption::results>(model),
@@ -56,7 +56,7 @@ namespace QuantLib {
             // floating leg (which is not taken into account by the
             // model)
             VanillaSwap swap = *arguments_.swap;
-            swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(model_->termStructure(), false));
+            swap.setPricingEngine(std::make_shared<DiscountingSwapEngine>(model_->termStructure(), false));
             Spread correction = swap.spread() *
                 std::fabs(swap.floatingLegBPS() / swap.fixedLegBPS());
             Rate fixedRate = swap.fixedRate() - correction;

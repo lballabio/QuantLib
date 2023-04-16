@@ -50,8 +50,8 @@ namespace term_structures_test {
         // common data
         Calendar calendar;
         Natural settlementDays;
-        ext::shared_ptr<YieldTermStructure> termStructure;
-        ext::shared_ptr<YieldTermStructure> dummyTermStructure;
+        std::shared_ptr<YieldTermStructure> termStructure;
+        std::shared_ptr<YieldTermStructure> dummyTermStructure;
 
         // cleanup
         SavedSettings backup;
@@ -80,17 +80,17 @@ namespace term_structures_test {
             Size deposits = LENGTH(depositData),
                 swaps = LENGTH(swapData);
 
-            std::vector<ext::shared_ptr<RateHelper> > instruments(
+            std::vector<std::shared_ptr<RateHelper> > instruments(
                                                               deposits+swaps);
             for (Size i=0; i<deposits; i++) {
-                instruments[i] = ext::shared_ptr<RateHelper>(new
+                instruments[i] = std::shared_ptr<RateHelper>(new
                     DepositRateHelper(depositData[i].rate/100,
                                       depositData[i].n*depositData[i].units,
                                       settlementDays, calendar,
                                       ModifiedFollowing, true,
                                       Actual360()));
             }
-            ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
+            std::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                                              6*Months,
                                                              settlementDays,
                                                              Currency(),
@@ -99,17 +99,17 @@ namespace term_structures_test {
                                                              false,
                                                              Actual360()));
             for (Size i=0; i<swaps; ++i) {
-                instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
+                instruments[i+deposits] = std::shared_ptr<RateHelper>(new
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
                                    Annual, Unadjusted, Thirty360(Thirty360::BondBasis),
                                    index));
             }
-            termStructure = ext::shared_ptr<YieldTermStructure>(new
+            termStructure = std::shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                         instruments, Actual360()));
-            dummyTermStructure = ext::shared_ptr<YieldTermStructure>(new
+            dummyTermStructure = std::shared_ptr<YieldTermStructure>(new
                 PiecewiseYieldCurve<Discount,LogLinear>(settlement,
                                                         instruments, Actual360()));
         }
@@ -126,9 +126,9 @@ void TermStructureTest::testReferenceChange() {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
+    std::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
     Handle<Quote> flatRateHandle(flatRate);
-    vars.termStructure = ext::shared_ptr<YieldTermStructure>(
+    vars.termStructure = std::shared_ptr<YieldTermStructure>(
                           new FlatForward(vars.settlementDays, NullCalendar(),
                                           flatRateHandle, Actual360()));
     Date today = Settings::instance().evaluationDate();
@@ -169,7 +169,7 @@ void TermStructureTest::testImplied() {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     Date testDate = newSettlement + 5*Years;
-    ext::shared_ptr<YieldTermStructure> implied(
+    std::shared_ptr<YieldTermStructure> implied(
         new ImpliedTermStructure(Handle<YieldTermStructure>(vars.termStructure),
                                  newSettlement));
     DiscountFactor baseDiscount = vars.termStructure->discount(newSettlement);
@@ -196,7 +196,7 @@ void TermStructureTest::testImpliedObs() {
     Date newSettlement = vars.calendar.advance(newToday,
                                                vars.settlementDays,Days);
     RelinkableHandle<YieldTermStructure> h;
-    ext::shared_ptr<YieldTermStructure> implied(
+    std::shared_ptr<YieldTermStructure> implied(
                                   new ImpliedTermStructure(h, newSettlement));
     Flag flag;
     flag.registerWith(implied);
@@ -214,9 +214,9 @@ void TermStructureTest::testFSpreaded() {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    ext::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    std::shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    ext::shared_ptr<YieldTermStructure> spreaded(
+    std::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(
             Handle<YieldTermStructure>(vars.termStructure),mh));
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
@@ -244,10 +244,10 @@ void TermStructureTest::testFSpreadedObs() {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    std::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h; //(vars.dummyTermStructure);
-    ext::shared_ptr<YieldTermStructure> spreaded(
+    std::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -269,9 +269,9 @@ void TermStructureTest::testZSpreaded() {
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
-    ext::shared_ptr<Quote> me(new SimpleQuote(0.01));
+    std::shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    ext::shared_ptr<YieldTermStructure> spreaded(
+    std::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(
             Handle<YieldTermStructure>(vars.termStructure),mh));
     Date testDate = vars.termStructure->referenceDate() + 5*Years;
@@ -296,11 +296,11 @@ void TermStructureTest::testZSpreadedObs() {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
+    std::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     RelinkableHandle<YieldTermStructure> h(vars.dummyTermStructure);
 
-    ext::shared_ptr<YieldTermStructure> spreaded(
+    std::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -322,10 +322,10 @@ void TermStructureTest::testCreateWithNullUnderlying() {
 
     CommonVars vars;
 
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(std::shared_ptr<Quote>(new SimpleQuote(0.01)));
     RelinkableHandle<YieldTermStructure> underlying;
     // this shouldn't throw
-    ext::shared_ptr<YieldTermStructure> spreaded(
+    std::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // if we do this, the curve can work.
     underlying.linkTo(vars.termStructure);
@@ -342,15 +342,15 @@ void TermStructureTest::testLinkToNullUnderlying() {
 
     CommonVars vars;
 
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    Handle<Quote> spread(std::shared_ptr<Quote>(new SimpleQuote(0.01)));
     RelinkableHandle<YieldTermStructure> underlying(vars.termStructure);
-    ext::shared_ptr<YieldTermStructure> spreaded(
+    std::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(underlying,spread));
     // check that we can use it
     spreaded->referenceDate();
     // if we do this, the curve can't work anymore. But it shouldn't
     // throw as long as we don't try to use it.
-    underlying.linkTo(ext::shared_ptr<YieldTermStructure>());
+    underlying.linkTo(std::shared_ptr<YieldTermStructure>());
 }
 
 void TermStructureTest::testCompositeZeroYieldStructures() {
@@ -377,7 +377,7 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
                                0.109824660896137,  0.109231572878364,  0.119218123236241,
                                0.128647300167664,  0.0506086995288751};
 
-    ext::shared_ptr<YieldTermStructure> termStructure1 = ext::shared_ptr<YieldTermStructure>(
+    std::shared_ptr<YieldTermStructure> termStructure1 = std::shared_ptr<YieldTermStructure>(
         new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
 
     // Second curve
@@ -391,12 +391,12 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
              0.0263943927922053, 0.0291924526539802, 0.0270049276163556, 0.028775807327614,
              0.0293567711641792, 0.010518655099659};
 
-    ext::shared_ptr<YieldTermStructure> termStructure2 = ext::shared_ptr<YieldTermStructure>(
+    std::shared_ptr<YieldTermStructure> termStructure2 = std::shared_ptr<YieldTermStructure>(
         new ForwardCurve(dates, rates, Actual365Fixed(), NullCalendar()));
 
     typedef Real(*binary_f)(Real, Real);
 
-    ext::shared_ptr<YieldTermStructure> compoundCurve = ext::shared_ptr<YieldTermStructure>(
+    std::shared_ptr<YieldTermStructure> compoundCurve = std::shared_ptr<YieldTermStructure>(
         new CompositeZeroYieldStructure<binary_f>(Handle<YieldTermStructure>(termStructure1), Handle<YieldTermStructure>(termStructure2), sub));
 
     // Expected values

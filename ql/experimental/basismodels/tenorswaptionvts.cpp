@@ -60,33 +60,33 @@ namespace QuantLib {
                                    volTS.baseIndex_->fixingCalendar(), ModifiedFollowing,
                                    Unadjusted, DateGeneration::Backward, false);
         // and swaps
-        ext::shared_ptr<VanillaSwap> baseSwap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> baseSwap(new VanillaSwap(
             Swap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, baseFloatSchedule,
             volTS.baseIndex_, 0.0, volTS.baseIndex_->dayCounter()));
-        ext::shared_ptr<VanillaSwap> targSwap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> targSwap(new VanillaSwap(
             Swap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, targFloatSchedule,
             volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter()));
-        ext::shared_ptr<VanillaSwap> finlSwap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> finlSwap(new VanillaSwap(
             Swap::Payer, 1.0, finlFixedSchedule, 1.0, volTS.targFixedDC_, targFloatSchedule,
             volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter()));
         // adding engines
         baseSwap->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
+            std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
         targSwap->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
+            std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
         finlSwap->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
+            std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));
         // swap rates
         swapRateBase_ = baseSwap->fairRate();
         swapRateTarg_ = targSwap->fairRate();
         swapRateFinl_ = finlSwap->fairRate();
         SwaptionCashFlows cfs(
-            ext::shared_ptr<Swaption>(new Swaption(
-                baseSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
+            std::shared_ptr<Swaption>(new Swaption(
+                baseSwap, std::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
             volTS.discountCurve_);
         SwaptionCashFlows cf2(
-            ext::shared_ptr<Swaption>(new Swaption(
-                targSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
+            std::shared_ptr<Swaption>(new Swaption(
+                targSwap, std::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
             volTS.discountCurve_);
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)

@@ -78,14 +78,14 @@ namespace QuantLib {
     FdmSchemeDesc FdmSchemeDesc::TrBDF2() { return {FdmSchemeDesc::TrBDF2Type, 2 - M_SQRT2, 1e-8}; }
 
     FdmBackwardSolver::FdmBackwardSolver(
-        ext::shared_ptr<FdmLinearOpComposite> map,
+        std::shared_ptr<FdmLinearOpComposite> map,
         FdmBoundaryConditionSet bcSet,
-        const ext::shared_ptr<FdmStepConditionComposite>& condition,
+        const std::shared_ptr<FdmStepConditionComposite>& condition,
         const FdmSchemeDesc& schemeDesc)
     : map_(std::move(map)), bcSet_(std::move(bcSet)),
       condition_((condition) != nullptr ?
                      condition :
-                     ext::make_shared<FdmStepConditionComposite>(
+                     std::make_shared<FdmStepConditionComposite>(
                          std::list<std::vector<Time> >(), FdmStepConditionComposite::Conditions())),
       schemeDesc_(schemeDesc) {}
 
@@ -181,8 +181,8 @@ namespace QuantLib {
                 const FdmSchemeDesc trDesc
                     = FdmSchemeDesc::CraigSneyd();
 
-                const ext::shared_ptr<CraigSneydScheme> hsEvolver(
-                    ext::make_shared<CraigSneydScheme>(
+                const std::shared_ptr<CraigSneydScheme> hsEvolver(
+                    std::make_shared<CraigSneydScheme>(
                         trDesc.theta, trDesc.mu, map_, bcSet_));
 
                 TrBDF2Scheme<CraigSneydScheme> trBDF2(

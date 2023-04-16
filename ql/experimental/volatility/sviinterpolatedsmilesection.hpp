@@ -56,8 +56,8 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         bool rhoIsFixed,
         bool mIsFixed,
         bool vegaWeighted = true,
-        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+        std::shared_ptr<OptimizationMethod> method = std::shared_ptr<OptimizationMethod>(),
         const DayCounter& dc = Actual365Fixed());
     //! no quotes
     SviInterpolatedSmileSection(
@@ -78,8 +78,8 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         bool isRhoFixed,
         bool isMFixed,
         bool vegaWeighted = true,
-        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+        std::shared_ptr<OptimizationMethod> method = std::shared_ptr<OptimizationMethod>(),
         const DayCounter& dc = Actual365Fixed());
     //@}
     //! \name LazyObject interface
@@ -110,7 +110,7 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
   protected:
     //! Creates the mutable SviInterpolation
     void createInterpolation() const;
-    mutable ext::shared_ptr<SviInterpolation> sviInterpolation_;
+    mutable std::shared_ptr<SviInterpolation> sviInterpolation_;
 
     //! Market data
     const Handle<Quote> forward_;
@@ -128,8 +128,8 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
     //! Svi interpolation settings
     bool isAFixed_, isBFixed_, isSigmaFixed_, isRhoFixed_, isMFixed_;
     bool vegaWeighted_;
-    const ext::shared_ptr<EndCriteria> endCriteria_;
-    const ext::shared_ptr<OptimizationMethod> method_;
+    const std::shared_ptr<EndCriteria> endCriteria_;
+    const std::shared_ptr<OptimizationMethod> method_;
 };
 
 inline void SviInterpolatedSmileSection::update() {

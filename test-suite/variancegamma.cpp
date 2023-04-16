@@ -131,13 +131,13 @@ void VarianceGammaTest::testVarianceGamma() {
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(processes); i++) {
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+        std::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
+        std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
+        std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+        std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
+        std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-        ext::shared_ptr<VarianceGammaProcess> stochProcess(
+        std::shared_ptr<VarianceGammaProcess> stochProcess(
             new VarianceGammaProcess(Handle<Quote>(spot),
             Handle<YieldTermStructure>(qTS),
             Handle<YieldTermStructure>(rTS),
@@ -146,28 +146,28 @@ void VarianceGammaTest::testVarianceGamma() {
             processes[i].theta));
 
         // Analytic engine
-        ext::shared_ptr<PricingEngine> analyticEngine(
+        std::shared_ptr<PricingEngine> analyticEngine(
             new VarianceGammaEngine(stochProcess));
 
         // FFT engine
-        ext::shared_ptr<FFTVarianceGammaEngine> fftEngine(
+        std::shared_ptr<FFTVarianceGammaEngine> fftEngine(
             new FFTVarianceGammaEngine(stochProcess));
 
         // which requires a list of options
-        std::vector<ext::shared_ptr<Instrument> > optionList;
+        std::vector<std::shared_ptr<Instrument> > optionList;
 
-        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs;
+        std::vector<std::shared_ptr<StrikedTypePayoff> > payoffs;
         for (Size j=0; j<LENGTH(options); j++)
         {
             Date exDate = today + timeToDays(options[j].t);
-            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+            std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(new
+            std::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(options[j].type, options[j].strike));
             payoffs.push_back(payoff);
 
             // Test analytic engine
-            ext::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
+            std::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
             option->setPricingEngine(analyticEngine);
 
             Real calculated = option->NPV();
@@ -189,15 +189,15 @@ void VarianceGammaTest::testVarianceGamma() {
         fftEngine->precalculate(optionList);
         for (Size j=0; j<LENGTH(options); j++)
         {
-            ext::shared_ptr<VanillaOption> option = ext::static_pointer_cast<VanillaOption>(optionList[j]);
+            std::shared_ptr<VanillaOption> option = std::static_pointer_cast<VanillaOption>(optionList[j]);
             option->setPricingEngine(fftEngine);
 
             Real calculated = option->NPV();
             Real expected = results[i][j];
             Real error = std::fabs(calculated-expected);
             if (error>tol) {
-                ext::shared_ptr<StrikedTypePayoff> payoff = 
-                    ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+                std::shared_ptr<StrikedTypePayoff> payoff = 
+                    std::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
                 REPORT_FAILURE("fft value", payoff, option->exercise(),
                     processes[i].s, processes[i].q, processes[i].r,
                     today, processes[i].sigma, processes[i].nu,
@@ -227,22 +227,22 @@ void VarianceGammaTest::testSingularityAtZero() {
 
     Settings::instance().evaluationDate() = valuation;
 
-    ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(maturity);
-    ext::shared_ptr<StrikedTypePayoff> payoff =
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(maturity);
+    std::shared_ptr<StrikedTypePayoff> payoff =
+        std::make_shared<PlainVanillaPayoff>(Option::Call, strike);
     VanillaOption option(payoff, exercise);
 
     Handle<YieldTermStructure> dividend(
-             ext::make_shared<FlatForward>(valuation,0.0,discountCounter));
+             std::make_shared<FlatForward>(valuation,0.0,discountCounter));
     Handle<YieldTermStructure> disc(
-             ext::make_shared<FlatForward>(valuation,0.05,discountCounter));
-    Handle<Quote> S0(ext::make_shared<SimpleQuote>(stock));
-    ext::shared_ptr<QuantLib::VarianceGammaProcess> process =
-        ext::make_shared<VarianceGammaProcess>(S0, dividend, disc,
+             std::make_shared<FlatForward>(valuation,0.05,discountCounter));
+    Handle<Quote> S0(std::make_shared<SimpleQuote>(stock));
+    std::shared_ptr<QuantLib::VarianceGammaProcess> process =
+        std::make_shared<VarianceGammaProcess>(S0, dividend, disc,
                                                  sigma, kappa, mu);
 
-    option.setPricingEngine(ext::make_shared<VarianceGammaEngine>(process));
+    option.setPricingEngine(std::make_shared<VarianceGammaEngine>(process));
     // without the fix, the call below goes into an infinite loop,
     // which is hard to test for.  We're just happy to see the test
     // case finish, hence the lack of an assertion.

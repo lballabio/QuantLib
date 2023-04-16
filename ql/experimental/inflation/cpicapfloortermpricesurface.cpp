@@ -31,7 +31,7 @@ namespace QuantLib {
         const Calendar& cal, // calendar in index may not be useful
         const BusinessDayConvention& bdc,
         const DayCounter& dc,
-        const ext::shared_ptr<ZeroInflationIndex>& zii,
+        const std::shared_ptr<ZeroInflationIndex>& zii,
         CPI::InterpolationType interpolationType,
         Handle<YieldTermStructure> yts,
         const std::vector<Rate>& cStrikes,

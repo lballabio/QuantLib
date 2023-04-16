@@ -197,7 +197,7 @@ namespace QuantLib {
     : YoYOptionletVolatilitySurface(settlementDays, cal, bdc, dc,
                                     observationLag, frequency, indexIsInterpolated,
                                     volType, displacement),
-      volatility_(ext::make_shared<SimpleQuote>(v)), minStrike_(minStrike), maxStrike_(maxStrike) {}
+      volatility_(std::make_shared<SimpleQuote>(v)), minStrike_(minStrike), maxStrike_(maxStrike) {}
 
     ConstantYoYOptionletVolatility::ConstantYoYOptionletVolatility(Handle<Quote> v,
                                                                    Natural settlementDays,

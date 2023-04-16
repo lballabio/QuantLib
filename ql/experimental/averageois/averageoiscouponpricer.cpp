@@ -35,8 +35,8 @@ namespace QuantLib {
 
     Rate ArithmeticAveragedOvernightIndexedCouponPricer::swapletRate() const {
 
-        ext::shared_ptr<OvernightIndex> index =
-            ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+        std::shared_ptr<OvernightIndex> index =
+            std::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
 
         const vector<Date>& fixingDates = coupon_->fixingDates();
         const vector<Time>& dt = coupon_->dt();

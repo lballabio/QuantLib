@@ -42,19 +42,19 @@ namespace QuantLib {
       protected:
         class Link : public Observable, public Observer {
           public:
-            explicit Link(const ext::shared_ptr<T>& h,
+            explicit Link(const std::shared_ptr<T>& h,
                           bool registerAsObserver);
-            void linkTo(const ext::shared_ptr<T>&,
+            void linkTo(const std::shared_ptr<T>&,
                         bool registerAsObserver);
             bool empty() const { return !h_; }
-            const ext::shared_ptr<T>& currentLink() const { return h_; }
+            const std::shared_ptr<T>& currentLink() const { return h_; }
             void update() override { notifyObservers(); }
 
           private:
-            ext::shared_ptr<T> h_;
+            std::shared_ptr<T> h_;
             bool isObserver_ = false;
         };
-        ext::shared_ptr<Link> link_;
+        std::shared_ptr<Link> link_;
       public:
         /*! \name Constructors
 
@@ -74,19 +74,19 @@ namespace QuantLib {
         */
         //@{
         Handle()
-        : Handle(ext::shared_ptr<T>()) {}
-        explicit Handle(const ext::shared_ptr<T>& p,
+        : Handle(std::shared_ptr<T>()) {}
+        explicit Handle(const std::shared_ptr<T>& p,
                         bool registerAsObserver = true)
         : link_(new Link(p,registerAsObserver)) {}
         //@}
         //! dereferencing
-        const ext::shared_ptr<T>& currentLink() const;
-        const ext::shared_ptr<T>& operator->() const;
-        const ext::shared_ptr<T>& operator*() const;
+        const std::shared_ptr<T>& currentLink() const;
+        const std::shared_ptr<T>& operator->() const;
+        const std::shared_ptr<T>& operator*() const;
         //! checks if the contained shared pointer points to anything
         bool empty() const;
         //! allows registration as observable
-        operator ext::shared_ptr<Observable>() const;
+        operator std::shared_ptr<Observable>() const;
         //! equality test
         template <class U>
         bool operator==(const Handle<U>& other) const { return link_==other.link_; }
@@ -112,12 +112,12 @@ namespace QuantLib {
     class RelinkableHandle : public Handle<T> {
       public:
         explicit RelinkableHandle(
-                       const ext::shared_ptr<T>& p = ext::shared_ptr<T>(),
+                       const std::shared_ptr<T>& p = std::shared_ptr<T>(),
                        bool registerAsObserver = true);
         explicit RelinkableHandle(
                        T* p,
                        bool registerAsObserver = true);
-        void linkTo(const ext::shared_ptr<T>&,
+        void linkTo(const std::shared_ptr<T>&,
                     bool registerAsObserver = true);
     };
 
@@ -125,12 +125,12 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline Handle<T>::Link::Link(const ext::shared_ptr<T>& h, bool registerAsObserver) {
+    inline Handle<T>::Link::Link(const std::shared_ptr<T>& h, bool registerAsObserver) {
         linkTo(h,registerAsObserver);
     }
 
     template <class T>
-    inline void Handle<T>::Link::linkTo(const ext::shared_ptr<T>& h,
+    inline void Handle<T>::Link::linkTo(const std::shared_ptr<T>& h,
                                         bool registerAsObserver) {
         if ((h != h_) || (isObserver_ != registerAsObserver)) {
             if (h_ && isObserver_)
@@ -145,19 +145,19 @@ namespace QuantLib {
 
 
     template <class T>
-    inline const ext::shared_ptr<T>& Handle<T>::currentLink() const {
+    inline const std::shared_ptr<T>& Handle<T>::currentLink() const {
         QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
     }
 
     template <class T>
-    inline const ext::shared_ptr<T>& Handle<T>::operator->() const {
+    inline const std::shared_ptr<T>& Handle<T>::operator->() const {
         QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
     }
 
     template <class T>
-    inline const ext::shared_ptr<T>& Handle<T>::operator*() const {
+    inline const std::shared_ptr<T>& Handle<T>::operator*() const {
         QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
     }
@@ -168,13 +168,13 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline Handle<T>::operator ext::shared_ptr<Observable>() const {
+    inline Handle<T>::operator std::shared_ptr<Observable>() const {
         return link_;
     }
 
 
     template <class T>
-    inline RelinkableHandle<T>::RelinkableHandle(const ext::shared_ptr<T>& p,
+    inline RelinkableHandle<T>::RelinkableHandle(const std::shared_ptr<T>& p,
                                                  bool registerAsObserver)
     : Handle<T>(p,registerAsObserver) {}
 
@@ -184,7 +184,7 @@ namespace QuantLib {
     : Handle<T>(p,registerAsObserver) {}
 
     template <class T>
-    inline void RelinkableHandle<T>::linkTo(const ext::shared_ptr<T>& h,
+    inline void RelinkableHandle<T>::linkTo(const std::shared_ptr<T>& h,
                                             bool registerAsObserver) {
         this->link_->linkTo(h,registerAsObserver);
     }

@@ -42,7 +42,7 @@ namespace QuantLib {
     class FdmKlugeExtOUSolver : public LazyObject {
       public:
         FdmKlugeExtOUSolver(Handle<KlugeExtOUProcess> klugeOUProcess,
-                            ext::shared_ptr<YieldTermStructure> rTS,
+                            std::shared_ptr<YieldTermStructure> rTS,
                             FdmSolverDesc solverDesc,
                             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
         : klugeOUProcess_(std::move(klugeOUProcess)), rTS_(std::move(rTS)),
@@ -57,23 +57,23 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const override {
-            ext::shared_ptr<FdmLinearOpComposite>op(
+            std::shared_ptr<FdmLinearOpComposite>op(
                 new FdmKlugeExtOUOp(solverDesc_.mesher,
                                     klugeOUProcess_.currentLink(),
                                     rTS_, solverDesc_.bcSet, 16));
 
-            solver_ = ext::shared_ptr<FdmNdimSolver<N> >(
+            solver_ = std::shared_ptr<FdmNdimSolver<N> >(
                           new FdmNdimSolver<N>(solverDesc_, schemeDesc_, op));
         }
 
       private:
         const Handle<KlugeExtOUProcess> klugeOUProcess_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
 
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable ext::shared_ptr<FdmNdimSolver<N> > solver_;
+        mutable std::shared_ptr<FdmNdimSolver<N> > solver_;
         BOOST_STATIC_ASSERT(N >= 3); // NOLINT(readability-simplify-boolean-expr)
                                      // KlugeExtOU solver can't be applied on meshes
                                      // with less than three dimensions

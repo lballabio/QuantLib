@@ -56,7 +56,7 @@ namespace QuantLib {
         : Integrator(accuracy, maxIterations){}
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override {
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b) const override {
 
             // start from the coarsest trapezoid...
             Size N = 1;
@@ -80,7 +80,7 @@ namespace QuantLib {
 
     // Integration policies
     struct Default {
-        inline static Real integrate(const ext::function<Real (Real)>& f, 
+        inline static Real integrate(const std::function<Real (Real)>& f, 
                                      Real a, 
                                      Real b, 
                                      Real I, 
@@ -97,7 +97,7 @@ namespace QuantLib {
     };
 
     struct MidPoint {
-        inline static Real integrate(const ext::function<Real (Real)>& f,
+        inline static Real integrate(const std::function<Real (Real)>& f,
                                      Real a, 
                                      Real b, 
                                      Real I, 

@@ -34,7 +34,7 @@
 namespace QuantLib {
 
     OptionletStripper2::OptionletStripper2(
-        const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
+        const std::shared_ptr<OptionletStripper1>& optionletStripper1,
         const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve)
     : OptionletStripper(optionletStripper1->termVolSurface(),
                         optionletStripper1->iborIndex(),
@@ -75,7 +75,7 @@ namespace QuantLib {
         for (Size j=0; j<nOptionExpiries_; ++j) {
             Volatility atmOptionVol = atmCapFloorTermVolCurve_->volatility(
                 optionExpiriesTimes[j], 33.3333); // dummy strike
-            ext::shared_ptr<BlackCapFloorEngine> engine(new
+            std::shared_ptr<BlackCapFloorEngine> engine(new
                     BlackCapFloorEngine(iborIndex_->forwardingTermStructure(),
                                         atmOptionVol, dc_));
             caps_[j] = MakeCapFloor(CapFloor::Cap,
@@ -154,23 +154,23 @@ namespace QuantLib {
 //==========================================================================//
 
     OptionletStripper2::ObjectiveFunction::ObjectiveFunction(
-        const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
-        ext::shared_ptr<CapFloor> cap,
+        const std::shared_ptr<OptionletStripper1>& optionletStripper1,
+        std::shared_ptr<CapFloor> cap,
         Real targetValue)
     : cap_(std::move(cap)), targetValue_(targetValue) {
-        ext::shared_ptr<OptionletVolatilityStructure> adapter(new
+        std::shared_ptr<OptionletVolatilityStructure> adapter(new
             StrippedOptionletAdapter(optionletStripper1));
         adapter->enableExtrapolation();
 
         // set an implausible value, so that calculation is forced
         // at first operator()(Volatility x) call
-        spreadQuote_ = ext::make_shared<SimpleQuote>(-1.0);
+        spreadQuote_ = std::make_shared<SimpleQuote>(-1.0);
 
-        ext::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new
+        std::shared_ptr<OptionletVolatilityStructure> spreadedAdapter(new
             SpreadedOptionletVolatility(Handle<OptionletVolatilityStructure>(
                 adapter), Handle<Quote>(spreadQuote_)));
 
-        ext::shared_ptr<BlackCapFloorEngine> engine(new
+        std::shared_ptr<BlackCapFloorEngine> engine(new
             BlackCapFloorEngine(
                 optionletStripper1->iborIndex()->forwardingTermStructure(),
                 Handle<OptionletVolatilityStructure>(spreadedAdapter)));

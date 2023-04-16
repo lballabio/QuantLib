@@ -29,7 +29,7 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/date.hpp>
-#include <ql/functional.hpp>
+
 
 namespace QuantLib {
     /*! References:
@@ -47,8 +47,8 @@ namespace QuantLib {
 
     class NormalCLVModel : public LazyObject {
       public:
-        NormalCLVModel(const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-                       ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess,
+        NormalCLVModel(const std::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                       std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess,
                        const std::vector<Date>& maturityDates,
                        Size lagrangeOrder,
                        Real pMax = Null<Real>(),
@@ -67,7 +67,7 @@ namespace QuantLib {
         Array collocationPointsY(const Date& d) const;
 
         // CLV mapping function
-        ext::function<Real(Time, Real)> g() const;
+        std::function<Real(Time, Real)> g() const;
 
       protected:
         void performCalculations() const override;
@@ -82,7 +82,7 @@ namespace QuantLib {
           private:
             mutable Array y_;
             const Volatility sigma_;
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+            const std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
 
             struct InterpolationData {
                 explicit InterpolationData(const NormalCLVModel& model)
@@ -99,19 +99,19 @@ namespace QuantLib {
                 const LagrangeInterpolation lagrangeInterpl_;
             };
 
-            const ext::shared_ptr<InterpolationData> data_;
+            const std::shared_ptr<InterpolationData> data_;
         };
 
 
         const Array x_;
         const Volatility sigma_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
+        const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        const std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess_;
         const std::vector<Date> maturityDates_;
-        const ext::shared_ptr<GBSMRNDCalculator> rndCalculator_;
+        const std::shared_ptr<GBSMRNDCalculator> rndCalculator_;
 
         std::vector<Time> maturityTimes_;
-        mutable ext::function<Real(Time, Real)> g_;
+        mutable std::function<Real(Time, Real)> g_;
     };
 }
 

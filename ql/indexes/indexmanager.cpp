@@ -33,7 +33,7 @@ namespace QuantLib {
         data_[name] = std::move(history);
     }
 
-    ext::shared_ptr<Observable> IndexManager::notifier(const std::string& name) const {
+    std::shared_ptr<Observable> IndexManager::notifier(const std::string& name) const {
         return data_[name];
     }
 

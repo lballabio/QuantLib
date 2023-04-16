@@ -26,9 +26,9 @@
 
 namespace QuantLib {
 
-    SVDDFwdRatePc::SVDDFwdRatePc(const ext::shared_ptr<MarketModel>& marketModel,
+    SVDDFwdRatePc::SVDDFwdRatePc(const std::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
-                           const ext::shared_ptr<MarketModelVolProcess>& volProcess,
+                           const std::shared_ptr<MarketModelVolProcess>& volProcess,
                            Size firstVolatilityFactor, 
                            Size volatilityFactorStep,
                            const std::vector<Size>& numeraires,

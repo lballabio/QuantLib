@@ -32,8 +32,8 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class EuropeanOption : public VanillaOption {
       public:
-        EuropeanOption(const ext::shared_ptr<StrikedTypePayoff>&,
-                       const ext::shared_ptr<Exercise>&);
+        EuropeanOption(const std::shared_ptr<StrikedTypePayoff>&,
+                       const std::shared_ptr<Exercise>&);
     };
 
 }

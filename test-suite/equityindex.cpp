@@ -53,10 +53,10 @@ namespace equityindex_test {
         Calendar calendar;
         DayCounter dayCount;
 
-        ext::shared_ptr<EquityIndex> equityIndex;
+        std::shared_ptr<EquityIndex> equityIndex;
         RelinkableHandle<YieldTermStructure> interestHandle;
         RelinkableHandle<YieldTermStructure> dividendHandle;
-        ext::shared_ptr<Quote> spot;
+        std::shared_ptr<Quote> spot;
         RelinkableHandle<Quote> spotHandle;
 
         // cleanup
@@ -67,7 +67,7 @@ namespace equityindex_test {
             calendar = TARGET();
             dayCount = Actual365Fixed();
 
-            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+            equityIndex = std::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
                                                         dividendHandle, spotHandle);
             IndexManager::instance().clearHistory(equityIndex->name());
 
@@ -81,7 +81,7 @@ namespace equityindex_test {
             interestHandle.linkTo(flatRate(0.03, dayCount));
             dividendHandle.linkTo(flatRate(0.01, dayCount));
             
-            spot = ext::make_shared<SimpleQuote>(8700.0);
+            spot = std::make_shared<SimpleQuote>(8700.0);
             spotHandle.linkTo(spot);
         }
     };
@@ -223,7 +223,7 @@ void EquityIndexTest::testSpotChange() {
     CommonVars vars;
     const Real tolerance = 1.0e-8;
 
-    ext::shared_ptr<Quote> newSpot = ext::make_shared<SimpleQuote>(9000.0);
+    std::shared_ptr<Quote> newSpot = std::make_shared<SimpleQuote>(9000.0);
     vars.spotHandle.linkTo(newSpot);
 
     if ((std::fabs(newSpot->value() - vars.equityIndex->spot()->value()) > tolerance))
@@ -288,15 +288,15 @@ void EquityIndexTest::testFixingObservability() {
 
     CommonVars vars;
 
-    ext::shared_ptr<EquityIndex> i1 =
-        ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar);
+    std::shared_ptr<EquityIndex> i1 =
+        std::make_shared<EquityIndex>("observableEquityIndex", vars.calendar);
 
     Flag flag;
     flag.registerWith(i1);
     flag.lower();
 
-    ext::shared_ptr<Index> i2 =
-        ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar);
+    std::shared_ptr<Index> i2 =
+        std::make_shared<EquityIndex>("observableEquityIndex", vars.calendar);
 
     i2->addFixing(vars.today, 100.0);
     if (!flag.isUp())

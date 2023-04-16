@@ -50,7 +50,7 @@ namespace QuantLib {
       public:
         enum HestonExpansionFormula { LPP2, LPP3, Forde };
 
-        HestonExpansionEngine(const ext::shared_ptr<HestonModel>& model,
+        HestonExpansionEngine(const std::shared_ptr<HestonModel>& model,
                               HestonExpansionFormula formula);
 
         void calculate() const override;

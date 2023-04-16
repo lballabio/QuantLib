@@ -40,34 +40,34 @@ void TwoAssetCorrelationOptionTest::testAnalyticEngine() {
     Real strike2 = 70.0;
     Date exDate = today + 180;
 
-    ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(exDate);
+    std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(exDate);
 
     TwoAssetCorrelationOption option(type, strike1, strike2, exercise);
 
-    Handle<Quote> underlying1(ext::make_shared<SimpleQuote>(52.0));
-    Handle<Quote> underlying2(ext::make_shared<SimpleQuote>(65.0));
+    Handle<Quote> underlying1(std::make_shared<SimpleQuote>(52.0));
+    Handle<Quote> underlying2(std::make_shared<SimpleQuote>(65.0));
     Handle<YieldTermStructure> dividendTS1(flatRate(today, 0.0, dc));
     Handle<YieldTermStructure> dividendTS2(flatRate(today, 0.0, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.1, dc));
     Handle<BlackVolTermStructure> blackVolTS1(flatVol(today, 0.2, dc));
     Handle<BlackVolTermStructure> blackVolTS2(flatVol(today, 0.3, dc));
-    Handle<Quote> correlation(ext::make_shared<SimpleQuote>(0.75));
+    Handle<Quote> correlation(std::make_shared<SimpleQuote>(0.75));
 
-    ext::shared_ptr<BlackScholesMertonProcess> process1 =
-        ext::make_shared<BlackScholesMertonProcess>(underlying1,
+    std::shared_ptr<BlackScholesMertonProcess> process1 =
+        std::make_shared<BlackScholesMertonProcess>(underlying1,
                                                       dividendTS1,
                                                       riskFreeTS,
                                                       blackVolTS1);
 
-    ext::shared_ptr<BlackScholesMertonProcess> process2 =
-        ext::make_shared<BlackScholesMertonProcess>(underlying2,
+    std::shared_ptr<BlackScholesMertonProcess> process2 =
+        std::make_shared<BlackScholesMertonProcess>(underlying2,
                                                       dividendTS2,
                                                       riskFreeTS,
                                                       blackVolTS2);
 
     option.setPricingEngine(
-          ext::make_shared<AnalyticTwoAssetCorrelationEngine>(process1,
+          std::make_shared<AnalyticTwoAssetCorrelationEngine>(process1,
                                                                 process2,
                                                                 correlation));
 

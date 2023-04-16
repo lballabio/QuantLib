@@ -32,14 +32,14 @@
 namespace QuantLib {
 
     FdmOrnsteinUhlenbeckOp::FdmOrnsteinUhlenbeckOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        ext::shared_ptr<OrnsteinUhlenbeckProcess> process,
-        ext::shared_ptr<YieldTermStructure> rTS,
+        const std::shared_ptr<FdmMesher>& mesher,
+        std::shared_ptr<OrnsteinUhlenbeckProcess> process,
+        std::shared_ptr<YieldTermStructure> rTS,
         Size direction)
     : mesher_(mesher), process_(std::move(process)), rTS_(std::move(rTS)), direction_(direction),
       m_(direction, mesher), mapX_(direction, mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
 
         Array drift(layout->size());
         const Array x(mesher_->locations(direction));

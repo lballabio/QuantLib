@@ -41,7 +41,7 @@ namespace QuantLib {
     class DefaultProbKey {
       protected:
         //! aggregation of event types for which the contract is sensitive.
-        std::vector<ext::shared_ptr<DefaultType> > eventTypes_;
+        std::vector<std::shared_ptr<DefaultType> > eventTypes_;
         //! Currency of the bond and protection leg payment.
         Currency obligationCurrency_;
         //! Reference bonds seniority.
@@ -50,13 +50,13 @@ namespace QuantLib {
       public:
         DefaultProbKey();
 
-        DefaultProbKey(std::vector<ext::shared_ptr<DefaultType> > eventTypes,
+        DefaultProbKey(std::vector<std::shared_ptr<DefaultType> > eventTypes,
                        Currency cur,
                        Seniority sen);
 
         const Currency& currency() const {return obligationCurrency_;}
         Seniority seniority() const {return seniority_;}
-        const std::vector<ext::shared_ptr<DefaultType> >&
+        const std::vector<std::shared_ptr<DefaultType> >&
             eventTypes() const {
                 return eventTypes_;
         }

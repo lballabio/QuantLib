@@ -40,7 +40,7 @@ namespace QuantLib {
     class FdmSimple3dExtOUJumpSolver : public LazyObject {
       public:
         FdmSimple3dExtOUJumpSolver(const Handle<ExtOUWithJumpsProcess>& process,
-                                   ext::shared_ptr<YieldTermStructure> rTS,
+                                   std::shared_ptr<YieldTermStructure> rTS,
                                    FdmSolverDesc solverDesc,
                                    const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
         : process_(process), rTS_(std::move(rTS)), solverDesc_(std::move(solverDesc)),
@@ -55,22 +55,22 @@ namespace QuantLib {
 
       protected:
         void performCalculations() const override {
-            ext::shared_ptr<FdmLinearOpComposite>op(
+            std::shared_ptr<FdmLinearOpComposite>op(
                 new FdmExtOUJumpOp(solverDesc_.mesher,
                                    process_.currentLink(),
                                    rTS_, solverDesc_.bcSet, 32));
 
-            solver_ = ext::make_shared<Fdm3DimSolver>(
+            solver_ = std::make_shared<Fdm3DimSolver>(
                           solverDesc_, schemeDesc_, op);
         }
 
       private:
         const Handle<ExtOUWithJumpsProcess> process_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable ext::shared_ptr<Fdm3DimSolver> solver_;
+        mutable std::shared_ptr<Fdm3DimSolver> solver_;
     };
 }
 

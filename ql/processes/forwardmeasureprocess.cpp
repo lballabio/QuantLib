@@ -24,7 +24,7 @@ namespace QuantLib {
     // base class
 
     ForwardMeasureProcess::ForwardMeasureProcess(
-                                const ext::shared_ptr<discretization>& disc)
+                                const std::shared_ptr<discretization>& disc)
     : StochasticProcess(disc) {}
 
     void ForwardMeasureProcess::setForwardMeasureTime(Time T) {
@@ -39,7 +39,7 @@ namespace QuantLib {
     // 1-D specialization
 
     ForwardMeasureProcess1D::ForwardMeasureProcess1D(
-                                const ext::shared_ptr<discretization>& disc)
+                                const std::shared_ptr<discretization>& disc)
     : StochasticProcess1D(disc) {}
 
     void ForwardMeasureProcess1D::setForwardMeasureTime(Time T) {

@@ -31,7 +31,7 @@ namespace QuantLib {
             CashFlow::accept(v);
     }
 
-    std::vector<ext::shared_ptr<Dividend> >
+    std::vector<std::shared_ptr<Dividend> >
     DividendVector(const std::vector<Date>& dividendDates,
                    const std::vector<Real>& dividends) {
 
@@ -40,11 +40,11 @@ namespace QuantLib {
 
         std::vector<Date>::const_iterator dd;
         std::vector<Real>::const_iterator d;
-        std::vector<ext::shared_ptr<Dividend> > items;
+        std::vector<std::shared_ptr<Dividend> > items;
         items.reserve(dividendDates.size());
         for (dd = dividendDates.begin(), d = dividends.begin();
              dd != dividendDates.end(); ++dd, ++d) {
-            items.push_back(ext::shared_ptr<Dividend>(new
+            items.push_back(std::shared_ptr<Dividend>(new
                 FixedDividend(*d, *dd)));
         }
         return items;

@@ -36,8 +36,8 @@ namespace QuantLib {
         virtual Size getNumberOfNaiveFixedPointSteps() const = 0;
         virtual Size getNumberOfJacobiNewtonFixedPointSteps() const = 0;
 
-        virtual ext::shared_ptr<Integrator> getFixedPointIntegrator() const = 0;
-        virtual ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const = 0;
+        virtual std::shared_ptr<Integrator> getFixedPointIntegrator() const = 0;
+        virtual std::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const = 0;
 
         virtual ~QdFpIterationScheme() = default;
     };
@@ -58,13 +58,13 @@ namespace QuantLib {
         Size getNumberOfNaiveFixedPointSteps() const override;
         Size getNumberOfJacobiNewtonFixedPointSteps() const override;
 
-        ext::shared_ptr<Integrator> getFixedPointIntegrator() const override;
-        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
+        std::shared_ptr<Integrator> getFixedPointIntegrator() const override;
+        std::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
 
       private:
         const Size m_, n_;
-        const ext::shared_ptr<Integrator> fpIntegrator_;
-        const ext::shared_ptr<Integrator> exerciseBoundaryIntegrator_;
+        const std::shared_ptr<Integrator> fpIntegrator_;
+        const std::shared_ptr<Integrator> exerciseBoundaryIntegrator_;
     };
 
     //! Legendre-Tanh-Sinh (l,m,n)-eps Scheme
@@ -79,7 +79,7 @@ namespace QuantLib {
       public:
         QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
 
-        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
+        std::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
 
       private:
         const Real eps_;
@@ -99,11 +99,11 @@ namespace QuantLib {
         Size getNumberOfNaiveFixedPointSteps() const override;
         Size getNumberOfJacobiNewtonFixedPointSteps() const override;
 
-        ext::shared_ptr<Integrator> getFixedPointIntegrator() const override;
-        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
+        std::shared_ptr<Integrator> getFixedPointIntegrator() const override;
+        std::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
       private:
         const Size m_, n_;
-        const ext::shared_ptr<Integrator> integrator_;
+        const std::shared_ptr<Integrator> integrator_;
     };
 
 
@@ -123,20 +123,20 @@ namespace QuantLib {
         enum FixedPointEquation { FP_A, FP_B, Auto };
 
         explicit QdFpAmericanEngine(
-          ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
-          ext::shared_ptr<QdFpIterationScheme> iterationScheme = accurateScheme(),
+          std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+          std::shared_ptr<QdFpIterationScheme> iterationScheme = accurateScheme(),
           FixedPointEquation fpEquation = Auto);
 
-        static ext::shared_ptr<QdFpIterationScheme> fastScheme();
-        static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
-        static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
+        static std::shared_ptr<QdFpIterationScheme> fastScheme();
+        static std::shared_ptr<QdFpIterationScheme> accurateScheme();
+        static std::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
 
       protected:
         Real calculatePut(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
 
       private:
-        const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
+        const std::shared_ptr<QdFpIterationScheme> iterationScheme_;
         const FixedPointEquation fpEquation_;
     };
 

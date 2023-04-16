@@ -39,13 +39,13 @@ namespace QuantLib {
     }
 
     void FdmHestonHullWhiteSolver::performCalculations() const {
-        const ext::shared_ptr<FdmLinearOpComposite> op(
-			ext::make_shared<FdmHestonHullWhiteOp>(solverDesc_.mesher,
+        const std::shared_ptr<FdmLinearOpComposite> op(
+			std::make_shared<FdmHestonHullWhiteOp>(solverDesc_.mesher,
                                      hestonProcess_.currentLink(),
                                      hwProcess_.currentLink(), 
                                      corrEquityShortRate_));
 
-        solver_ = ext::make_shared<Fdm3DimSolver>(solverDesc_, schemeDesc_, op);
+        solver_ = std::make_shared<Fdm3DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHestonHullWhiteSolver::valueAt(Real s, Real v, Rate r) const {

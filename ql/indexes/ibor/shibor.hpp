@@ -34,7 +34,7 @@ namespace QuantLib {
             const Period& tenor,
             const Handle<YieldTermStructure>& h = {});
 
-        ext::shared_ptr<IborIndex>
+        std::shared_ptr<IborIndex>
         clone(const Handle<YieldTermStructure>& forwarding) const override;
     };
 

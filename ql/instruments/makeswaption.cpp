@@ -24,13 +24,13 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <ql/settings.hpp>
 #include <utility>
 
 namespace QuantLib {
 
-    MakeSwaption::MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+    MakeSwaption::MakeSwaption(std::shared_ptr<SwapIndex> swapIndex,
                                const Period& optionTenor,
                                Rate strike)
     : swapIndex_(std::move(swapIndex)), delivery_(Settlement::Physical),
@@ -38,7 +38,7 @@ namespace QuantLib {
       optionConvention_(ModifiedFollowing), fixingDate_(Null<Date>()), strike_(strike),
       underlyingType_(Swap::Payer), nominal_(1.0) {}
 
-    MakeSwaption::MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+    MakeSwaption::MakeSwaption(std::shared_ptr<SwapIndex> swapIndex,
                                const Date& fixingDate,
                                Rate strike)
     : swapIndex_(std::move(swapIndex)), delivery_(Settlement::Physical),
@@ -46,11 +46,11 @@ namespace QuantLib {
       fixingDate_(fixingDate), strike_(strike), underlyingType_(Swap::Payer) {}
 
     MakeSwaption::operator Swaption() const {
-        ext::shared_ptr<Swaption> swaption = *this;
+        std::shared_ptr<Swaption> swaption = *this;
         return *swaption;
     }
 
-    MakeSwaption::operator ext::shared_ptr<Swaption>() const {
+    MakeSwaption::operator std::shared_ptr<Swaption>() const {
 
         const Calendar& fixingCalendar = swapIndex_->fixingCalendar();
         Date refDate = Settings::instance().evaluationDate();
@@ -61,13 +61,13 @@ namespace QuantLib {
             fixingDate_ = fixingCalendar.advance(refDate, optionTenor_,
                                                  optionConvention_);
         if (exerciseDate_ == Null<Date>()) {
-            exercise_ = ext::shared_ptr<Exercise>(new
+            exercise_ = std::shared_ptr<Exercise>(new
                 EuropeanExercise(fixingDate_));
         } else {
             QL_REQUIRE(exerciseDate_ <= fixingDate_,
                        "exercise date (" << exerciseDate_ << ") must be less "
                        "than or equal to fixing date (" << fixingDate_ << ")");
-            exercise_ = ext::shared_ptr<Exercise>(new
+            exercise_ = std::shared_ptr<Exercise>(new
                 EuropeanExercise(exerciseDate_));
         }
 
@@ -77,10 +77,10 @@ namespace QuantLib {
             QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
                        "null term structure set to this instance of " <<
                        swapIndex_->name());
-            ext::shared_ptr<VanillaSwap> temp =
+            std::shared_ptr<VanillaSwap> temp =
                 swapIndex_->underlyingSwap(fixingDate_);
             temp->setPricingEngine(
-                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(
+                std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(
                     swapIndex_->exogenousDiscount()
                         ? swapIndex_->discountingTermStructure()
                         : swapIndex_->forwardingTermStructure(),
@@ -102,7 +102,7 @@ namespace QuantLib {
             .withNominal(nominal_)
             .withIndexedCoupons(useIndexedCoupons_);
 
-        ext::shared_ptr<Swaption> swaption(new Swaption(
+        std::shared_ptr<Swaption> swaption(new Swaption(
             underlyingSwap_, exercise_, delivery_, settlementMethod_));
         swaption->setPricingEngine(engine_);
         return swaption;
@@ -136,7 +136,7 @@ namespace QuantLib {
     }
 
     MakeSwaption& MakeSwaption::withPricingEngine(
-                             const ext::shared_ptr<PricingEngine>& engine) {
+                             const std::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
@@ -146,7 +146,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeSwaption& MakeSwaption::withIndexedCoupons(const ext::optional<bool>& b) {
+    MakeSwaption& MakeSwaption::withIndexedCoupons(const std::optional<bool>& b) {
         useIndexedCoupons_ = b;
         return *this;
     }

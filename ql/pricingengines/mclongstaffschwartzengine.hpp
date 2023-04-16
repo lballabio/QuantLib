@@ -30,7 +30,7 @@
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/methods/montecarlo/longstaffschwartzpathpricer.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -69,7 +69,7 @@ namespace QuantLib {
           for low discrepancy RNGs usually, it is therefore recommended
           to use pseudo random generators for the calibration phase always
           (and possibly quasi monte carlo in the subsequent pricing). */
-        MCLongstaffSchwartzEngine(ext::shared_ptr<StochasticProcess> process,
+        MCLongstaffSchwartzEngine(std::shared_ptr<StochasticProcess> process,
                                   Size timeSteps,
                                   Size timeStepsPerYear,
                                   bool brownianBridge,
@@ -80,21 +80,21 @@ namespace QuantLib {
                                   Size maxSamples,
                                   BigNatural seed,
                                   Size nCalibrationSamples = Null<Size>(),
-                                  ext::optional<bool> brownianBridgeCalibration = ext::nullopt,
-                                  ext::optional<bool> antitheticVariateCalibration = ext::nullopt,
+                                  std::optional<bool> brownianBridgeCalibration = std::nullopt,
+                                  std::optional<bool> antitheticVariateCalibration = std::nullopt,
                                   BigNatural seedCalibration = Null<Size>());
 
         void calculate() const override;
 
       protected:
-        virtual ext::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
+        virtual std::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
                                                    lsmPathPricer() const = 0;
 
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_generator_type> pathGenerator() const override;
 
-        ext::shared_ptr<StochasticProcess> process_;
+        std::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;
         const Size timeStepsPerYear_;
         const bool brownianBridge_;
@@ -107,9 +107,9 @@ namespace QuantLib {
         const bool antitheticVariateCalibration_;
         const BigNatural seedCalibration_;
 
-        mutable ext::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
+        mutable std::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
             pathPricer_;
-        mutable ext::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >
+        mutable std::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >
             mcModelCalibration_;
     };
 
@@ -120,7 +120,7 @@ namespace QuantLib {
               class S,
               class RNG_Calibration>
     inline MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S, RNG_Calibration>::
-        MCLongstaffSchwartzEngine(ext::shared_ptr<StochasticProcess> process,
+        MCLongstaffSchwartzEngine(std::shared_ptr<StochasticProcess> process,
                                   Size timeSteps,
                                   Size timeStepsPerYear,
                                   bool brownianBridge,
@@ -131,8 +131,8 @@ namespace QuantLib {
                                   Size maxSamples,
                                   BigNatural seed,
                                   Size nCalibrationSamples,
-                                  ext::optional<bool> brownianBridgeCalibration,
-                                  ext::optional<bool> antitheticVariateCalibration,
+                                  std::optional<bool> brownianBridgeCalibration,
+                                  std::optional<bool> antitheticVariateCalibration,
                                   BigNatural seedCalibration)
     : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), brownianBridge_(brownianBridge),
@@ -164,7 +164,7 @@ namespace QuantLib {
 
     template <class GenericEngine, template <class> class MC, class RNG,
               class S, class RNG_Calibration>
-    inline ext::shared_ptr<typename MCLongstaffSchwartzEngine<
+    inline std::shared_ptr<typename MCLongstaffSchwartzEngine<
         GenericEngine, MC, RNG, S, RNG_Calibration>::path_pricer_type>
     MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S,
                               RNG_Calibration>::pathPricer() const {
@@ -184,12 +184,12 @@ namespace QuantLib {
         typename RNG_Calibration::rsg_type generator =
             RNG_Calibration::make_sequence_generator(
                 dimensions * (grid.size() - 1), seedCalibration_);
-        ext::shared_ptr<path_generator_type_calibration>
+        std::shared_ptr<path_generator_type_calibration>
             pathGeneratorCalibration =
-                ext::make_shared<path_generator_type_calibration>(
+                std::make_shared<path_generator_type_calibration>(
                     process_, grid, generator, brownianBridgeCalibration_);
         mcModelCalibration_ =
-            ext::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >(
+            std::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >(
                 new MonteCarloModel<MC, RNG_Calibration, S>(
                     pathGeneratorCalibration, pathPricer_, stats_type(),
                     this->antitheticVariateCalibration_));
@@ -241,7 +241,7 @@ namespace QuantLib {
 
     template <class GenericEngine, template <class> class MC, class RNG,
               class S, class RNG_Calibration>
-    inline ext::shared_ptr<typename MCLongstaffSchwartzEngine<
+    inline std::shared_ptr<typename MCLongstaffSchwartzEngine<
         GenericEngine, MC, RNG, S, RNG_Calibration>::path_generator_type>
     MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S,
                               RNG_Calibration>::pathGenerator() const {
@@ -250,7 +250,7 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
             RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-        return ext::shared_ptr<path_generator_type>(
+        return std::shared_ptr<path_generator_type>(
                    new path_generator_type(process_,
                                            grid, generator, brownianBridge_));
     }

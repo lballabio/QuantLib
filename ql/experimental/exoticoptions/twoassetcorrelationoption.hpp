@@ -36,7 +36,7 @@ namespace QuantLib {
         TwoAssetCorrelationOption(Option::Type type,
                                   Real strike1,
                                   Real strike2,
-                                  const ext::shared_ptr<Exercise>&);
+                                  const std::shared_ptr<Exercise>&);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:

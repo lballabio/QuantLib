@@ -70,19 +70,19 @@ namespace QuantLib {
                      bool controlVariate)
         : antitheticVariate_(antitheticVariate),
           controlVariate_(controlVariate) {}
-        virtual ext::shared_ptr<path_pricer_type> pathPricer() const = 0;
-        virtual ext::shared_ptr<path_generator_type> pathGenerator()
+        virtual std::shared_ptr<path_pricer_type> pathPricer() const = 0;
+        virtual std::shared_ptr<path_generator_type> pathGenerator()
                                                                    const = 0;
         virtual TimeGrid timeGrid() const = 0;
-        virtual ext::shared_ptr<path_pricer_type> controlPathPricer() const {
-            return ext::shared_ptr<path_pricer_type>();
+        virtual std::shared_ptr<path_pricer_type> controlPathPricer() const {
+            return std::shared_ptr<path_pricer_type>();
         }
-        virtual ext::shared_ptr<path_generator_type> 
+        virtual std::shared_ptr<path_generator_type> 
         controlPathGenerator() const {
-            return ext::shared_ptr<path_generator_type>();
+            return std::shared_ptr<path_generator_type>();
         }
-        virtual ext::shared_ptr<PricingEngine> controlPricingEngine() const {
-            return ext::shared_ptr<PricingEngine>();
+        virtual std::shared_ptr<PricingEngine> controlPricingEngine() const {
+            return std::shared_ptr<PricingEngine>();
         }
         virtual result_type controlVariateValue() const {
             return Null<result_type>();
@@ -95,7 +95,7 @@ namespace QuantLib {
             return error;
         }
         
-        mutable ext::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
+        mutable std::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
         bool antitheticVariate_, controlVariate_;
     };
 
@@ -172,24 +172,24 @@ namespace QuantLib {
                        "engine does not provide "
                        "control-variation price");
 
-            ext::shared_ptr<path_pricer_type> controlPP =
+            std::shared_ptr<path_pricer_type> controlPP =
                 this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control-variation path pricer");
 
-            ext::shared_ptr<path_generator_type> controlPG = 
+            std::shared_ptr<path_generator_type> controlPG = 
                 this->controlPathGenerator();
 
             this->mcModel_ =
-                ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                std::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                     new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), stats_type(),
                            this->antitheticVariate_, controlPP,
                            controlVariateValue, controlPG));
         } else {
             this->mcModel_ =
-                ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                std::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                     new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), S(),
                            this->antitheticVariate_));

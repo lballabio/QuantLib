@@ -38,7 +38,7 @@ namespace QuantLib {
     class FFTVanillaEngine : public FFTEngine {
     public:
         explicit FFTVanillaEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>&process,
+            const std::shared_ptr<GeneralizedBlackScholesProcess>&process,
             Real logStrikeSpacing = 0.001);
         std::unique_ptr<FFTEngine> clone() const override;
     protected:

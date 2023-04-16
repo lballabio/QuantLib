@@ -44,8 +44,8 @@ namespace QuantLib {
     class OptionletStripper1 : public OptionletStripper {
       public:
         OptionletStripper1(
-            const ext::shared_ptr<CapFloorTermVolSurface>&,
-            const ext::shared_ptr<IborIndex>& index,
+            const std::shared_ptr<CapFloorTermVolSurface>&,
+            const std::shared_ptr<IborIndex>& index,
             Rate switchStrikes = Null<Rate>(),
             Real accuracy = 1.0e-6,
             Natural maxIter = 100,

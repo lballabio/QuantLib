@@ -29,7 +29,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -73,11 +73,11 @@ namespace QuantLib {
                     Rate fixedRate,
                     DayCounter fixedDayCount,
                     Schedule floatSchedule,
-                    ext::shared_ptr<IborIndex> iborIndex,
+                    std::shared_ptr<IborIndex> iborIndex,
                     Spread spread,
                     DayCounter floatingDayCount,
-                    ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
-                    ext::optional<bool> useIndexedCoupons = ext::nullopt);
+                    std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
+                    std::optional<bool> useIndexedCoupons = std::nullopt);
         //! \name Inspectors
         //@{
         Type type() const;
@@ -88,7 +88,7 @@ namespace QuantLib {
         const DayCounter& fixedDayCount() const;
 
         const Schedule& floatingSchedule() const;
-        const ext::shared_ptr<IborIndex>& iborIndex() const;
+        const std::shared_ptr<IborIndex>& iborIndex() const;
         Spread spread() const;
         const DayCounter& floatingDayCount() const;
 
@@ -120,7 +120,7 @@ namespace QuantLib {
         Rate fixedRate_;
         DayCounter fixedDayCount_;
         Schedule floatingSchedule_;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<IborIndex> iborIndex_;
         Spread spread_;
         DayCounter floatingDayCount_;
         BusinessDayConvention paymentConvention_;
@@ -188,7 +188,7 @@ namespace QuantLib {
         return floatingSchedule_;
     }
 
-    inline const ext::shared_ptr<IborIndex>& VanillaSwap::iborIndex() const {
+    inline const std::shared_ptr<IborIndex>& VanillaSwap::iborIndex() const {
         return iborIndex_;
     }
 

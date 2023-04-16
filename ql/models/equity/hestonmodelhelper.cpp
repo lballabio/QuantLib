@@ -39,7 +39,7 @@ namespace QuantLib {
                                          const Handle<YieldTermStructure>& dividendYield,
                                          BlackCalibrationHelper::CalibrationErrorType errorType)
     : BlackCalibrationHelper(volatility, errorType), maturity_(maturity),
-      calendar_(std::move(calendar)), s0_(Handle<Quote>(ext::make_shared<SimpleQuote>(s0))),
+      calendar_(std::move(calendar)), s0_(Handle<Quote>(std::make_shared<SimpleQuote>(s0))),
       strikePrice_(strikePrice), riskFreeRate_(riskFreeRate), dividendYield_(dividendYield) {
         registerWith(riskFreeRate);
         registerWith(dividendYield);
@@ -69,11 +69,11 @@ namespace QuantLib {
                         s0_->value() * dividendYield_->discount(tau_)
                     ? Option::Call
                     : Option::Put;
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             new PlainVanillaPayoff(type_, strikePrice_));
-        ext::shared_ptr<Exercise> exercise =
-            ext::make_shared<EuropeanExercise>(exerciseDate_);
-        option_ = ext::make_shared<VanillaOption>(payoff, exercise);
+        std::shared_ptr<Exercise> exercise =
+            std::make_shared<EuropeanExercise>(exerciseDate_);
+        option_ = std::make_shared<VanillaOption>(payoff, exercise);
         BlackCalibrationHelper::performCalculations();
     }
 

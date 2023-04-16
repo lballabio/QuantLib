@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     MultidimIntegral::MultidimIntegral(
-            const std::vector<ext::shared_ptr<Integrator> >& integrators)
+            const std::vector<std::shared_ptr<Integrator> >& integrators)
     : integrators_(integrators), 
       integrationLevelEntries_(maxDimensions_),
       varBuffer_(integrators.size(), 0.) {

@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    ConvertibleBond::ConvertibleBond(ext::shared_ptr<Exercise> exercise,
+    ConvertibleBond::ConvertibleBond(std::shared_ptr<Exercise> exercise,
                                      Real conversionRatio,
                                      const CallabilitySchedule& callability,
                                      const Date& issueDate,
@@ -50,7 +50,7 @@ namespace QuantLib {
     }
 
 
-    ConvertibleZeroCouponBond::ConvertibleZeroCouponBond(const ext::shared_ptr<Exercise>& exercise,
+    ConvertibleZeroCouponBond::ConvertibleZeroCouponBond(const std::shared_ptr<Exercise>& exercise,
                                                          Real conversionRatio,
                                                          const CallabilitySchedule& callability,
                                                          const Date& issueDate,
@@ -74,7 +74,7 @@ namespace QuantLib {
 
 
     ConvertibleFixedCouponBond::ConvertibleFixedCouponBond(
-        const ext::shared_ptr<Exercise>& exercise,
+        const std::shared_ptr<Exercise>& exercise,
         Real conversionRatio,
         const CallabilitySchedule& callability,
         const Date& issueDate,
@@ -110,12 +110,12 @@ namespace QuantLib {
 
 
     ConvertibleFloatingRateBond::ConvertibleFloatingRateBond(
-        const ext::shared_ptr<Exercise>& exercise,
+        const std::shared_ptr<Exercise>& exercise,
         Real conversionRatio,
         const CallabilitySchedule& callability,
         const Date& issueDate,
         Natural settlementDays,
-        const ext::shared_ptr<IborIndex>& index,
+        const std::shared_ptr<IborIndex>& index,
         Natural fixingDays,
         const std::vector<Spread>& spreads,
         const DayCounter& dayCounter,
@@ -176,8 +176,8 @@ namespace QuantLib {
                 if (callability_[i]->price().type() == Bond::Price::Clean)
                     args->callabilityPrices.back() +=
                         accruedAmount(callability_[i]->date());
-                ext::shared_ptr<SoftCallability> softCall =
-                    ext::dynamic_pointer_cast<SoftCallability>(callability_[i]);
+                std::shared_ptr<SoftCallability> softCall =
+                    std::dynamic_pointer_cast<SoftCallability>(callability_[i]);
                 if (softCall != nullptr)
                     args->callabilityTriggers.push_back(softCall->trigger());
                 else

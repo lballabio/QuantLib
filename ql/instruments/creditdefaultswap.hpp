@@ -31,7 +31,7 @@
 #include <ql/default.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -105,7 +105,7 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
+                          std::shared_ptr<Claim> = std::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -159,7 +159,7 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
+                          std::shared_ptr<Claim> = std::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -176,7 +176,7 @@ namespace QuantLib {
         Protection::Side side() const;
         Real notional() const;
         Rate runningSpread() const;
-        ext::optional<Rate> upfront() const;
+        std::optional<Rate> upfront() const;
         bool settlesAccrual() const;
         bool paysAtDefaultTime() const;
         const Leg& coupons() const;
@@ -185,8 +185,8 @@ namespace QuantLib {
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
         bool rebatesAccrual() const { return accrualRebate_ != nullptr; }
-        const ext::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
-        const ext::shared_ptr<SimpleCashFlow>& accrualRebate() const;
+        const std::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
+        const std::shared_ptr<SimpleCashFlow>& accrualRebate() const;
         const Date& tradeDate() const;
         Natural cashSettlementDays() const;
         //@}
@@ -282,13 +282,13 @@ namespace QuantLib {
         // data members
         Protection::Side side_;
         Real notional_;
-        ext::optional<Rate> upfront_;
+        std::optional<Rate> upfront_;
         Rate runningSpread_;
         bool settlesAccrual_, paysAtDefaultTime_;
-        ext::shared_ptr<Claim> claim_;
+        std::shared_ptr<Claim> claim_;
         Leg leg_;
-        ext::shared_ptr<SimpleCashFlow> upfrontPayment_;
-        ext::shared_ptr<SimpleCashFlow> accrualRebate_;
+        std::shared_ptr<SimpleCashFlow> upfrontPayment_;
+        std::shared_ptr<SimpleCashFlow> accrualRebate_;
         Date protectionStart_;
         Date tradeDate_;
         Natural cashSettlementDays_;
@@ -314,15 +314,15 @@ namespace QuantLib {
         arguments();
         Protection::Side side;
         Real notional;
-        ext::optional<Rate> upfront;
+        std::optional<Rate> upfront;
         Rate spread;
         Leg leg;
         // if not initialized by constructors means theres no flows.
-        ext::shared_ptr<SimpleCashFlow> upfrontPayment;
-        ext::shared_ptr<SimpleCashFlow> accrualRebate;
+        std::shared_ptr<SimpleCashFlow> upfrontPayment;
+        std::shared_ptr<SimpleCashFlow> accrualRebate;
         bool settlesAccrual;
         bool paysAtDefaultTime;
-        ext::shared_ptr<Claim> claim;
+        std::shared_ptr<Claim> claim;
         Date protectionStart;
         Date maturity;
         void validate() const override;

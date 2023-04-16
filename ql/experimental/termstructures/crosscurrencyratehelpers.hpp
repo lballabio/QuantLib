@@ -42,8 +42,8 @@ namespace QuantLib {
                                              Calendar calendar,
                                              BusinessDayConvention convention,
                                              bool endOfMonth,
-                                             ext::shared_ptr<IborIndex> baseCurrencyIndex,
-                                             ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                             std::shared_ptr<IborIndex> baseCurrencyIndex,
+                                             std::shared_ptr<IborIndex> quoteCurrencyIndex,
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg);
@@ -57,8 +57,8 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         bool endOfMonth_;
-        ext::shared_ptr<IborIndex> baseCcyIdx_;
-        ext::shared_ptr<IborIndex> quoteCcyIdx_;
+        std::shared_ptr<IborIndex> baseCcyIdx_;
+        std::shared_ptr<IborIndex> quoteCcyIdx_;
         Handle<YieldTermStructure> collateralHandle_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
@@ -101,8 +101,8 @@ namespace QuantLib {
             const Calendar& calendar,
             BusinessDayConvention convention,
             bool endOfMonth,
-            const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
-            const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
+            const std::shared_ptr<IborIndex>& baseCurrencyIndex,
+            const std::shared_ptr<IborIndex>& quoteCurrencyIndex,
             const Handle<YieldTermStructure>& collateralCurve,
             bool isFxBaseCurrencyCollateralCurrency,
             bool isBasisOnFxBaseCurrencyLeg);
@@ -137,8 +137,8 @@ namespace QuantLib {
                                             const Calendar& calendar,
                                             BusinessDayConvention convention,
                                             bool endOfMonth,
-                                            const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
-                                            const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
+                                            const std::shared_ptr<IborIndex>& baseCurrencyIndex,
+                                            const std::shared_ptr<IborIndex>& quoteCurrencyIndex,
                                             const Handle<YieldTermStructure>& collateralCurve,
                                             bool isFxBaseCurrencyCollateralCurrency,
                                             bool isBasisOnFxBaseCurrencyLeg,

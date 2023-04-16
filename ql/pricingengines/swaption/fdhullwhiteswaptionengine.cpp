@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     FdHullWhiteSwaptionEngine::FdHullWhiteSwaptionEngine(
-        const ext::shared_ptr<HullWhite>& model,
+        const std::shared_ptr<HullWhite>& model,
         Size tGrid, Size xGrid, 
         Size dampingSteps, Real invEps,
         const FdmSchemeDesc& schemeDesc)
@@ -57,9 +57,9 @@ namespace QuantLib {
         const Time maturity = dc.yearFraction(referenceDate,
                                               arguments_.exercise->lastDate());
 
-        auto process = ext::make_shared<OrnsteinUhlenbeckProcess>(model_->a(), model_->sigma());
-        auto shortRateMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_, process, maturity, 1, invEps_);
-        auto mesher = ext::make_shared<FdmMesherComposite>(shortRateMesher);
+        auto process = std::make_shared<OrnsteinUhlenbeckProcess>(model_->a(), model_->sigma());
+        auto shortRateMesher = std::make_shared<FdmSimpleProcess1dMesher>(xGrid_, process, maturity, 1, invEps_);
+        auto mesher = std::make_shared<FdmMesherComposite>(shortRateMesher);
 
         // 3. Inner Value Calculator
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();
@@ -81,8 +81,8 @@ namespace QuantLib {
         QL_REQUIRE(fwdTs->referenceDate() == disTs->referenceDate(),
                    "reference date of forward and discount curve must match");
 
-        auto fwdModel = ext::make_shared<HullWhite>(fwdTs, model_->a(), model_->sigma());
-        auto calculator = ext::make_shared<FdmAffineModelSwapInnerValue<HullWhite>>(
+        auto fwdModel = std::make_shared<HullWhite>(fwdTs, model_->a(), model_->sigma());
+        auto calculator = std::make_shared<FdmAffineModelSwapInnerValue<HullWhite>>(
                  model_.currentLink(), fwdModel,
                  arguments_.swap, t2d, mesher, 0);
 

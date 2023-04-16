@@ -60,19 +60,19 @@ namespace QuantLib {
         const std::vector<Period>& optionletFixingTenors() const;
         const std::vector<Date>& optionletPaymentDates() const;
         const std::vector<Time>& optionletAccrualPeriods() const;
-        ext::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
-        ext::shared_ptr<IborIndex> iborIndex() const;
+        std::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
+        std::shared_ptr<IborIndex> iborIndex() const;
         Real displacement() const override;
         VolatilityType volatilityType() const override;
 
       protected:
-        OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
-                          ext::shared_ptr<IborIndex> iborIndex_,
+        OptionletStripper(const std::shared_ptr<CapFloorTermVolSurface>&,
+                          std::shared_ptr<IborIndex> iborIndex_,
                           Handle<YieldTermStructure> discount = {},
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
-        ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
+        std::shared_ptr<IborIndex> iborIndex_;
         Handle<YieldTermStructure> discount_;
         Size nStrikes_;
         Size nOptionletTenors_;

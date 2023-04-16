@@ -84,7 +84,7 @@ namespace QuantLib {
                                        Real variance1, Real variance2,
                                        Real rho) {
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(new
+            std::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
             Real black1 = blackFormula(payoff->optionType(), payoff->strike(),
@@ -100,8 +100,8 @@ namespace QuantLib {
         }
     }
 
-    StulzEngine::StulzEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
-                             ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+    StulzEngine::StulzEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                             std::shared_ptr<GeneralizedBlackScholesProcess> process2,
                              Real correlation)
     : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
@@ -113,22 +113,22 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        ext::shared_ptr<BasketPayoff> basket_payoff =
-            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        std::shared_ptr<BasketPayoff> basket_payoff =
+            std::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
 
-        ext::shared_ptr<MinBasketPayoff> min_basket =
-            ext::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
+        std::shared_ptr<MinBasketPayoff> min_basket =
+            std::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
 
-        ext::shared_ptr<MaxBasketPayoff> max_basket =
-            ext::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
+        std::shared_ptr<MaxBasketPayoff> max_basket =
+            std::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(min_basket || max_basket, "unknown basket type");
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real strike = payoff->strike();

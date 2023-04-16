@@ -55,8 +55,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+            std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+            std::shared_ptr<OptimizationMethod> method = std::shared_ptr<OptimizationMethod>(),
             const DayCounter& dc = Actual365Fixed());
         //! no quotes
         NoArbSabrInterpolatedSmileSection(
@@ -75,8 +75,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+            std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+            std::shared_ptr<OptimizationMethod> method = std::shared_ptr<OptimizationMethod>(),
             const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name LazyObject interface
@@ -107,7 +107,7 @@ namespace QuantLib {
 
         //! Creates the mutable SABRInterpolation
         void createInterpolation() const;
-        mutable ext::shared_ptr<NoArbSabrInterpolation> noArbSabrInterpolation_;
+        mutable std::shared_ptr<NoArbSabrInterpolation> noArbSabrInterpolation_;
 
         //! Market data
         const Handle<Quote> forward_;
@@ -125,8 +125,8 @@ namespace QuantLib {
         //! Sabr interpolation settings
         bool isAlphaFixed_, isBetaFixed_, isNuFixed_, isRhoFixed_;
         bool vegaWeighted_;
-        const ext::shared_ptr<EndCriteria> endCriteria_;
-        const ext::shared_ptr<OptimizationMethod> method_;
+        const std::shared_ptr<EndCriteria> endCriteria_;
+        const std::shared_ptr<OptimizationMethod> method_;
     };
 
     inline void NoArbSabrInterpolatedSmileSection::update() {

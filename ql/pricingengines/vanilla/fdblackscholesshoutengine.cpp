@@ -33,7 +33,7 @@
 namespace QuantLib {
 
     FdBlackScholesShoutEngine::FdBlackScholesShoutEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size tGrid,
         Size xGrid,
         Size dampingSteps,
@@ -45,7 +45,7 @@ namespace QuantLib {
     }
 
     FdBlackScholesShoutEngine::FdBlackScholesShoutEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         DividendSchedule dividends,
         Size tGrid,
         Size xGrid,
@@ -69,7 +69,7 @@ namespace QuantLib {
         const Date settlementDate = process_->riskFreeRate()->referenceDate();
 
         const auto escrowedDividendAdj =
-            ext::make_shared<EscrowedDividendAdjustment>(
+            std::make_shared<EscrowedDividendAdjustment>(
                 passedDividends,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
@@ -83,30 +83,30 @@ namespace QuantLib {
                             "spot minus dividends becomes negative");
 
         const auto payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
 
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
         const DividendSchedule emptyDividendSchedule;
 
-        const auto mesher = ext::make_shared<FdmMesherComposite>(
-            ext::make_shared<FdmBlackScholesMesher>(
+        const auto mesher = std::make_shared<FdmMesherComposite>(
+            std::make_shared<FdmBlackScholesMesher>(
                 xGrid_, process_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.1),
                 emptyDividendSchedule,
-                ext::shared_ptr<FdmQuantoHelper>(),
+                std::shared_ptr<FdmQuantoHelper>(),
                 divAdj));
 
         const auto innerValuecalculator =
-            ext::make_shared<FdmShoutLogInnerValueCalculator>(
+            std::make_shared<FdmShoutLogInnerValueCalculator>(
                 process_->blackVolatility(),
                 escrowedDividendAdj, maturity, payoff, mesher, 0);
 
         DividendSchedule zeroDividendSchedule = DividendSchedule();
         for (const auto& cf: passedDividends)
             zeroDividendSchedule.push_back(
-                ext::make_shared<FixedDividend>(0.0, cf->date()));
+                std::make_shared<FixedDividend>(0.0, cf->date()));
 
         const auto conditions =
             FdmStepConditionComposite::vanillaComposite(
@@ -122,7 +122,7 @@ namespace QuantLib {
             maturity, tGrid_, dampingSteps_ };
 
         const auto solver =
-            ext::make_shared<FdmBlackScholesSolver>(
+            std::make_shared<FdmBlackScholesSolver>(
                 Handle<GeneralizedBlackScholesProcess>(process_),
                 payoff->strike(), solverDesc, schemeDesc_);
 

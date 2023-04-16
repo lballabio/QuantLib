@@ -46,7 +46,7 @@ namespace QuantLib {
             };
           public:
             Garch11Constraint(Real gammaLower, Real gammaUpper)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
+            : Constraint(std::shared_ptr<Constraint::Impl>(
                       new Garch11Constraint::Impl(gammaLower, gammaUpper))) {}
         };
 
@@ -219,7 +219,7 @@ namespace QuantLib {
             };
           public:
             FitAcfConstraint(Real gammaLower, Real gammaUpper)
-            : Constraint(ext::shared_ptr<Constraint::Impl>(
+            : Constraint(std::shared_ptr<Constraint::Impl>(
                        new FitAcfConstraint::Impl(gammaLower, gammaUpper))) {}
         };
 
@@ -390,7 +390,7 @@ namespace QuantLib {
     }
 
 
-    ext::shared_ptr<Problem> Garch11::calibrate_r2(
+    std::shared_ptr<Problem> Garch11::calibrate_r2(
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    Real &alpha, Real &beta, Real &omega) {
         EndCriteria endCriteria(10000, 500, tol_level, tol_level, tol_level);
@@ -399,7 +399,7 @@ namespace QuantLib {
                             alpha, beta, omega);
     }
 
-    ext::shared_ptr<Problem> Garch11::calibrate_r2(
+    std::shared_ptr<Problem> Garch11::calibrate_r2(
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    OptimizationMethod &method, const EndCriteria &endCriteria,
                    Real &alpha, Real &beta, Real &omega) {
@@ -441,7 +441,7 @@ namespace QuantLib {
 
         Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
-        ext::shared_ptr<Problem> ret;
+        std::shared_ptr<Problem> ret;
         if (mode != DoubleOptimization) {
             try {
                 ret = calibrate_r2(r2, method, constraints, endCriteria,
@@ -459,7 +459,7 @@ namespace QuantLib {
                 }
             }
         } else {
-            ext::shared_ptr<Problem> ret1, ret2;
+            std::shared_ptr<Problem> ret1, ret2;
             try {
                 ret1 = calibrate_r2(r2, method, constraints, endCriteria,
                                     opt1, alpha, beta, omega);
@@ -499,7 +499,7 @@ namespace QuantLib {
         return ret;
     }
 
-    ext::shared_ptr<Problem> Garch11::calibrate_r2(
+    std::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                OptimizationMethod &method,
                const EndCriteria &endCriteria,
@@ -509,7 +509,7 @@ namespace QuantLib {
                             initGuess, alpha, beta, omega);
     }
 
-    ext::shared_ptr<Problem> Garch11::calibrate_r2(
+    std::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                Real mean_r2,
                OptimizationMethod &method,
@@ -522,14 +522,14 @@ namespace QuantLib {
                             alpha, beta, omega);
     }
 
-    ext::shared_ptr<Problem> Garch11::calibrate_r2(
+    std::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                OptimizationMethod &method,
                Constraint &constraints,
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         Garch11CostFunction cost(r2);
-        ext::shared_ptr<Problem> problem(
+        std::shared_ptr<Problem> problem(
                                new Problem(cost, constraints, initGuess));
         // TODO: check return value from minimize()
         /* EndCriteria::Type ret = */
@@ -541,7 +541,7 @@ namespace QuantLib {
         return problem;
     }
 
-    ext::shared_ptr<Problem> Garch11::calibrate_r2(
+    std::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                Real mean_r2,
                OptimizationMethod &method,

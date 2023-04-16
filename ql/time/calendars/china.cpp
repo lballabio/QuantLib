@@ -26,8 +26,8 @@ namespace QuantLib {
 
     China::China(Market m) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> sseImpl(new China::SseImpl);
-        static ext::shared_ptr<Calendar::Impl> IBImpl(new China::IbImpl);
+        static std::shared_ptr<Calendar::Impl> sseImpl(new China::SseImpl);
+        static std::shared_ptr<Calendar::Impl> IBImpl(new China::IbImpl);
         switch (m) {
           case SSE:
             impl_ = sseImpl;

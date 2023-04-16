@@ -47,7 +47,7 @@ namespace QuantLib {
     class RecursiveLossModel : public DefaultLossModel {
     public:
       explicit RecursiveLossModel(
-          const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
+          const std::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
           // nope! use max common divisor. See O'Kane. Or give both options at least.
           Size nbuckets = 1)
       : copula_(m), nBuckets_(nbuckets) {}
@@ -103,7 +103,7 @@ namespace QuantLib {
       Real expectedShortfall(const Date& d, Real perctl) const override;
 
     protected:
-        const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
+        const std::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
     private:
         // loss model descriptor members
         const Size nBuckets_;

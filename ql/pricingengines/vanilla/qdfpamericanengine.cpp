@@ -37,9 +37,9 @@ namespace QuantLib {
     QdFpLegendreScheme::QdFpLegendreScheme(
         Size l, Size m, Size n, Size p):
         m_(m), n_(n),
-        fpIntegrator_(ext::make_shared<GaussLegendreIntegrator>(l)),
+        fpIntegrator_(std::make_shared<GaussLegendreIntegrator>(l)),
         exerciseBoundaryIntegrator_(
-            ext::make_shared<GaussLegendreIntegrator>(p)) {
+            std::make_shared<GaussLegendreIntegrator>(p)) {
 
         QL_REQUIRE(m_ > 0, "at least one fixed point iteration step is needed");
         QL_REQUIRE(n_ > 0, "at least one interpolation point is needed");
@@ -57,11 +57,11 @@ namespace QuantLib {
         return Size(1);
     }
 
-    ext::shared_ptr<Integrator>
+    std::shared_ptr<Integrator>
         QdFpLegendreScheme::getFixedPointIntegrator() const {
         return fpIntegrator_;
     }
-    ext::shared_ptr<Integrator>
+    std::shared_ptr<Integrator>
         QdFpLegendreScheme::getExerciseBoundaryToPriceIntegrator()
         const {
         return exerciseBoundaryIntegrator_;
@@ -71,9 +71,9 @@ namespace QuantLib {
         Size m, Size n, Real eps)
     : m_(m), n_(n),
 #ifdef QL_BOOST_HAS_TANH_SINH
-      integrator_(ext::make_shared<TanhSinhIntegral>(eps))
+      integrator_(std::make_shared<TanhSinhIntegral>(eps))
 #else
-      integrator_(ext::make_shared<GaussLobattoIntegral>(
+      integrator_(std::make_shared<GaussLobattoIntegral>(
           100000, QL_MAX_REAL, 0.1*eps))
 #endif
     {}
@@ -90,11 +90,11 @@ namespace QuantLib {
         return Size(1);
     }
 
-    ext::shared_ptr<Integrator>
+    std::shared_ptr<Integrator>
     QdFpTanhSinhIterationScheme::getFixedPointIntegrator() const {
         return integrator_;
     }
-    ext::shared_ptr<Integrator>
+    std::shared_ptr<Integrator>
     QdFpTanhSinhIterationScheme::getExerciseBoundaryToPriceIntegrator()
         const {
         return integrator_;
@@ -105,12 +105,12 @@ namespace QuantLib {
     : QdFpLegendreScheme(l, m, n, 1),
       eps_(eps) {}
 
-    ext::shared_ptr<Integrator>
+    std::shared_ptr<Integrator>
     QdFpLegendreTanhSinhScheme::getExerciseBoundaryToPriceIntegrator() const {
 #ifdef QL_BOOST_HAS_TANH_SINH
-            return ext::make_shared<TanhSinhIntegral>(eps_);
+            return std::make_shared<TanhSinhIntegral>(eps_);
 #else
-            return ext::make_shared<GaussLobattoIntegral>(
+            return std::make_shared<GaussLobattoIntegral>(
                 100000, QL_MAX_REAL, 0.1*eps_);
 #endif
     }
@@ -122,10 +122,10 @@ namespace QuantLib {
                      Rate _q,
                      Volatility _vol,
                      std::function<Real(Real)> B,
-                     ext::shared_ptr<Integrator> _integrator)
+                     std::shared_ptr<Integrator> _integrator)
         : r(_r), q(_q), vol(_vol), B(std::move(B)), integrator(std::move(_integrator)) {
             const auto legendreIntegrator =
-                ext::dynamic_pointer_cast<GaussLegendreIntegrator>(integrator);
+                std::dynamic_pointer_cast<GaussLegendreIntegrator>(integrator);
 
             if (legendreIntegrator != nullptr) {
                 x_i = legendreIntegrator->getIntegration()->x();
@@ -151,7 +151,7 @@ namespace QuantLib {
         const Volatility vol;
 
         const std::function<Real(Real)> B;
-        const ext::shared_ptr<Integrator> integrator;
+        const std::shared_ptr<Integrator> integrator;
 
         const NormalDistribution phi;
         const CumulativeNormalDistribution Phi;
@@ -164,7 +164,7 @@ namespace QuantLib {
                        Rate _q,
                        Volatility _vol,
                        std::function<Real(Real)> B,
-                       ext::shared_ptr<Integrator> _integrator);
+                       std::shared_ptr<Integrator> _integrator);
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
@@ -180,7 +180,7 @@ namespace QuantLib {
                        Rate _q,
                        Volatility _vol,
                        std::function<Real(Real)> B,
-                       ext::shared_ptr<Integrator> _integrator);
+                       std::shared_ptr<Integrator> _integrator);
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
@@ -194,7 +194,7 @@ namespace QuantLib {
                                    Rate _q,
                                    Volatility _vol,
                                    std::function<Real(Real)> B,
-                                   ext::shared_ptr<Integrator> _integrator)
+                                   std::shared_ptr<Integrator> _integrator)
     : DqFpEquation(_r, _q, _vol, std::move(B), std::move(_integrator)), K(K) {}
 
     std::tuple<Real, Real, Real> DqFpEquation_A::f(Real tau, Real b) const {
@@ -314,7 +314,7 @@ namespace QuantLib {
                                    Rate _q,
                                    Volatility _vol,
                                    std::function<Real(Real)> B,
-                                   ext::shared_ptr<Integrator> _integrator)
+                                   std::shared_ptr<Integrator> _integrator)
     : DqFpEquation(_r, _q, _vol, std::move(B), std::move(_integrator)), K(K) {}
 
 
@@ -400,29 +400,29 @@ namespace QuantLib {
     }
 
     QdFpAmericanEngine::QdFpAmericanEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
-        ext::shared_ptr<QdFpIterationScheme> iterationScheme,
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        std::shared_ptr<QdFpIterationScheme> iterationScheme,
         FixedPointEquation fpEquation)
     : detail::QdPutCallParityEngine(std::move(bsProcess)),
       iterationScheme_(std::move(iterationScheme)),
       fpEquation_(fpEquation) {
     }
 
-    ext::shared_ptr<QdFpIterationScheme>
+    std::shared_ptr<QdFpIterationScheme>
     QdFpAmericanEngine::fastScheme() {
-        static auto scheme = ext::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
+        static auto scheme = std::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
         return scheme;
     }
 
-    ext::shared_ptr<QdFpIterationScheme>
+    std::shared_ptr<QdFpIterationScheme>
     QdFpAmericanEngine::accurateScheme() {
-        static auto scheme = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
+        static auto scheme = std::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
         return scheme;
     }
 
-    ext::shared_ptr<QdFpIterationScheme>
+    std::shared_ptr<QdFpIterationScheme>
     QdFpAmericanEngine::highPrecisionScheme() {
-        static auto scheme = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
+        static auto scheme = std::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
         return scheme;
     }
 
@@ -435,7 +435,7 @@ namespace QuantLib {
         const Real xmax =  QdPlusAmericanEngine::xMax(K, r, q);
         const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
 
-        const ext::shared_ptr<ChebyshevInterpolation> interp =
+        const std::shared_ptr<ChebyshevInterpolation> interp =
             QdPlusAmericanEngine(
                     process_, n+1, QdPlusAmericanEngine::Halley, 1e-8)
                 .getPutExerciseBoundary(S, K, r, q, vol, T);
@@ -452,13 +452,13 @@ namespace QuantLib {
             return squared(std::log(fv/xmax));
         };
 
-        const ext::shared_ptr<DqFpEquation> eqn
+        const std::shared_ptr<DqFpEquation> eqn
             = (fpEquation_ == FP_A
                || (fpEquation_ == Auto && std::abs(r-q) < 0.001))?
-              ext::shared_ptr<DqFpEquation>(new DqFpEquation_A(
+              std::shared_ptr<DqFpEquation>(new DqFpEquation_A(
                   K, r, q, vol, B,
                   iterationScheme_->getFixedPointIntegrator()))
-            : ext::shared_ptr<DqFpEquation>(new DqFpEquation_B(
+            : std::shared_ptr<DqFpEquation>(new DqFpEquation_B(
                     K, r, q, vol, B,
                     iterationScheme_->getFixedPointIntegrator()));
 

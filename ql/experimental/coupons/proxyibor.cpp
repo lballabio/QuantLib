@@ -31,7 +31,7 @@ namespace QuantLib {
                          bool endOfMonth,
                          const DayCounter& dayCounter,
                          Handle<Quote> gearing,
-                         ext::shared_ptr<IborIndex> iborIndex,
+                         std::shared_ptr<IborIndex> iborIndex,
                          Handle<Quote> spread)
     : IborIndex(familyName,
                 tenor,

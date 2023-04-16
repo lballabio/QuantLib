@@ -36,12 +36,12 @@ namespace QuantLib {
     class FuturesConvAdjustmentQuote : public Quote,
                                        public Observer {
       public:
-        FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+        FuturesConvAdjustmentQuote(const std::shared_ptr<IborIndex>& index,
                                    const Date& futuresDate,
                                    Handle<Quote> futuresQuote,
                                    Handle<Quote> volatility,
                                    Handle<Quote> meanReversion);
-        FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+        FuturesConvAdjustmentQuote(const std::shared_ptr<IborIndex>& index,
                                    const std::string& immCode,
                                    Handle<Quote> futuresQuote,
                                    Handle<Quote> volatility,

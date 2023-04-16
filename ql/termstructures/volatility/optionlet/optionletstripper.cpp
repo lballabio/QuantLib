@@ -28,8 +28,8 @@ using std::vector;
 namespace QuantLib {
 
     OptionletStripper::OptionletStripper(
-        const ext::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-        ext::shared_ptr<IborIndex> iborIndex,
+        const std::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+        std::shared_ptr<IborIndex> iborIndex,
         Handle<YieldTermStructure> discount,
         const VolatilityType type,
         const Real displacement)
@@ -145,12 +145,12 @@ namespace QuantLib {
         return termVolSurface_->businessDayConvention();
     }
 
-    ext::shared_ptr<CapFloorTermVolSurface>
+    std::shared_ptr<CapFloorTermVolSurface>
     OptionletStripper::termVolSurface() const {
         return termVolSurface_;
     }
 
-    ext::shared_ptr<IborIndex> OptionletStripper::iborIndex() const {
+    std::shared_ptr<IborIndex> OptionletStripper::iborIndex() const {
         return iborIndex_;
     }
 

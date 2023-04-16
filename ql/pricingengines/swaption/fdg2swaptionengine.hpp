@@ -35,7 +35,7 @@ namespace QuantLib {
         : public GenericModelEngine<G2,Swaption::arguments,Swaption::results> {
       public:
         explicit FdG2SwaptionEngine(
-            const ext::shared_ptr<G2>& model,
+            const std::shared_ptr<G2>& model,
             Size tGrid = 100, Size xGrid = 50, Size yGrid = 50,
             Size dampingSteps = 0, Real invEps = 1e-5,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());

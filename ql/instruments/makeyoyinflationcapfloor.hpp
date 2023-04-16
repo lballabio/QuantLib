@@ -38,7 +38,7 @@ namespace QuantLib {
     class MakeYoYInflationCapFloor {
       public:
         MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
-                                 ext::shared_ptr<YoYInflationIndex> index,
+                                 std::shared_ptr<YoYInflationIndex> index,
                                  const Size& length,
                                  Calendar cal,
                                  const Period& observationLag);
@@ -49,7 +49,7 @@ namespace QuantLib {
         MakeYoYInflationCapFloor& withPaymentAdjustment(BusinessDayConvention);
         MakeYoYInflationCapFloor& withFixingDays(Natural fixingDays);
         MakeYoYInflationCapFloor& withPricingEngine(
-                const ext::shared_ptr<PricingEngine>& engine);
+                const std::shared_ptr<PricingEngine>& engine);
         //! only get last coupon
         MakeYoYInflationCapFloor& asOptionlet(bool b = true);
         MakeYoYInflationCapFloor& withStrike(Rate strike);
@@ -58,13 +58,13 @@ namespace QuantLib {
         MakeYoYInflationCapFloor& withForwardStart(Period forwardStart);
 
         operator YoYInflationCapFloor() const;
-        operator ext::shared_ptr<YoYInflationCapFloor>() const ;
+        operator std::shared_ptr<YoYInflationCapFloor>() const ;
 
       private:
         YoYInflationCapFloor::Type capFloorType_;
         Size length_;
         Calendar calendar_;
-        ext::shared_ptr<YoYInflationIndex> index_;
+        std::shared_ptr<YoYInflationIndex> index_;
         Period observationLag_;
         Rate strike_;
         bool firstCapletExcluded_ = false, asOptionlet_ = false;
@@ -76,7 +76,7 @@ namespace QuantLib {
         Real nominal_ = 1000000.0;
         Handle<YieldTermStructure> nominalTermStructure_;
 
-        ext::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<PricingEngine> engine_;
     };
 
 }

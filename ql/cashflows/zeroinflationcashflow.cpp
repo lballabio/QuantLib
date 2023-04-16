@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
-                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
+                                                 const std::shared_ptr<ZeroInflationIndex>& index,
                                                  CPI::InterpolationType observationInterpolation,
                                                  const Date& startDate,
                                                  const Date& endDate,
@@ -39,7 +39,7 @@ namespace QuantLib {
       startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
 
     ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
-                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
+                                                 const std::shared_ptr<ZeroInflationIndex>& index,
                                                  CPI::InterpolationType observationInterpolation,
                                                  const Date& startDate,
                                                  const Date& endDate,

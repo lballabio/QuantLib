@@ -29,7 +29,7 @@ namespace QuantLib {
     OISRateHelper::OISRateHelper(Natural settlementDays,
                                  const Period& tenor, // swap maturity
                                  const Handle<Quote>& fixedRate,
-                                 ext::shared_ptr<OvernightIndex> overnightIndex,
+                                 std::shared_ptr<OvernightIndex> overnightIndex,
                                  Handle<YieldTermStructure> discount,
                                  bool telescopicValueDates,
                                  Natural paymentLag,
@@ -41,7 +41,7 @@ namespace QuantLib {
                                  Pillar::Choice pillar,
                                  Date customPillarDate,
                                  RateAveraging::Type averagingMethod,
-                                 ext::optional<bool> endOfMonth)
+                                 std::optional<bool> endOfMonth)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays),
       tenor_(tenor), overnightIndex_(std::move(overnightIndex)),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
@@ -60,10 +60,10 @@ namespace QuantLib {
 
         // dummy OvernightIndex with curve/swap arguments
         // review here
-        ext::shared_ptr<IborIndex> clonedIborIndex =
+        std::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
-        ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+        std::shared_ptr<OvernightIndex> clonedOvernightIndex =
+            std::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
         MakeOIS tmp = MakeOIS(tenor_, clonedOvernightIndex, 0.0, forwardStart_)
@@ -119,7 +119,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())
@@ -148,7 +148,7 @@ namespace QuantLib {
     DatedOISRateHelper::DatedOISRateHelper(const Date& startDate,
                                            const Date& endDate,
                                            const Handle<Quote>& fixedRate,
-                                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                                           const std::shared_ptr<OvernightIndex>& overnightIndex,
                                            Handle<YieldTermStructure> discount,
                                            bool telescopicValueDates,
                                            RateAveraging::Type averagingMethod)
@@ -161,10 +161,10 @@ namespace QuantLib {
 
         // dummy OvernightIndex with curve/swap arguments
         // review here
-        ext::shared_ptr<IborIndex> clonedIborIndex =
+        std::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex->clone(termStructureHandle_);
-        ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+        std::shared_ptr<OvernightIndex> clonedOvernightIndex =
+            std::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
@@ -186,7 +186,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())

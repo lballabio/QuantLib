@@ -28,7 +28,7 @@
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -98,7 +98,7 @@ namespace QuantLib {
         IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                       Real recoveryRate,
                       Handle<YieldTermStructure> discountCurve,
-                      const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
+                      const std::optional<bool>& includeSettlementDateFlows = std::nullopt,
                       NumericalFix numericalFix = Taylor,
                       AccrualBias accrualBias = HalfDayBias,
                       ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
@@ -112,7 +112,7 @@ namespace QuantLib {
         Handle<DefaultProbabilityTermStructure> probability_;
         const Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;
-        const ext::optional<bool> includeSettlementDateFlows_;
+        const std::optional<bool> includeSettlementDateFlows_;
         const NumericalFix numericalFix_;
         const AccrualBias accrualBias_;
         const ForwardsInCouponPeriod forwardsInCouponPeriod_;

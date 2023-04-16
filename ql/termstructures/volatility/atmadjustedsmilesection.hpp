@@ -32,7 +32,7 @@ namespace QuantLib {
     class AtmAdjustedSmileSection : public SmileSection {
 
       public:
-        explicit AtmAdjustedSmileSection(const ext::shared_ptr<SmileSection>& source,
+        explicit AtmAdjustedSmileSection(const std::shared_ptr<SmileSection>& source,
                                          Real atm = Null<Real>(),
                                          bool recenterSmile = false);
 
@@ -75,7 +75,7 @@ namespace QuantLib {
       private:
 
         Real adjustedStrike(Real strike) const;
-        ext::shared_ptr<SmileSection> source_;
+        std::shared_ptr<SmileSection> source_;
         Real adjustment_;
         Real f_;
     };

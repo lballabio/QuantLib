@@ -35,7 +35,7 @@ namespace QuantLib {
         class results;
         EverestOption(Real notional,
                       Rate guarantee,
-                      const ext::shared_ptr<Exercise>&);
+                      const std::shared_ptr<Exercise>&);
         Rate yield() const;
 
         void setupArguments(PricingEngine::arguments*) const override;

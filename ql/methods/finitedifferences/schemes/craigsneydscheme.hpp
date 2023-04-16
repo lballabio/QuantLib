@@ -44,7 +44,7 @@ namespace QuantLib {
         // constructors
         CraigSneydScheme(Real theta,
                          Real mu,
-                         ext::shared_ptr<FdmLinearOpComposite> map,
+                         std::shared_ptr<FdmLinearOpComposite> map,
                          const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
@@ -54,7 +54,7 @@ namespace QuantLib {
         Time dt_;
         const Real theta_;
         const Real mu_;
-        const ext::shared_ptr<FdmLinearOpComposite> map_;
+        const std::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }

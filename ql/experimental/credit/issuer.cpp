@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     namespace {
-        bool between(const ext::shared_ptr<DefaultEvent>& e,
+        bool between(const std::shared_ptr<DefaultEvent>& e,
                      const Date& start,
                      const Date& end,
                      bool includeRefDate = false) {
@@ -38,7 +38,7 @@ namespace QuantLib {
                    DefaultEventSet events)
     : probabilities_(std::move(probabilities)), events_(std::move(events)) {}
 
-    Issuer::Issuer(const std::vector<std::vector<ext::shared_ptr<DefaultType> > >& eventTypes,
+    Issuer::Issuer(const std::vector<std::vector<std::shared_ptr<DefaultType> > >& eventTypes,
                    const std::vector<Currency>& currencies,
                    const std::vector<Seniority>& seniorities,
                    const std::vector<Handle<DefaultProbabilityTermStructure> >& curves,
@@ -64,7 +64,7 @@ namespace QuantLib {
         QL_FAIL("Probability curve not available.");
     }
 
-    ext::shared_ptr<DefaultEvent>
+    std::shared_ptr<DefaultEvent>
     Issuer::defaultedBetween(const Date& start,
                              const Date& end,
                              const DefaultProbKey& contractKey,
@@ -76,18 +76,18 @@ namespace QuantLib {
             if (event->matchesDefaultKey(contractKey) && between(event, start, end, includeRefDate))
                 return event;
         }
-        return ext::shared_ptr<DefaultEvent>();
+        return std::shared_ptr<DefaultEvent>();
     }
 
 
-    std::vector<ext::shared_ptr<DefaultEvent> >
+    std::vector<std::shared_ptr<DefaultEvent> >
     Issuer::defaultsBetween(const Date& start,
                             const Date& end,
                             const DefaultProbKey& contractKey,
                             bool includeRefDate
                             ) const
     {
-        std::vector<ext::shared_ptr<DefaultEvent> > defaults;
+        std::vector<std::shared_ptr<DefaultEvent> > defaults;
         // to do: the set is ordered, see how to use it to speed this up
         for (const auto& event : events_) {
             if (event->matchesDefaultKey(contractKey) && between(event, start, end, includeRefDate))

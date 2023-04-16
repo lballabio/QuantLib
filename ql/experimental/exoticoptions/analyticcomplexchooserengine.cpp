@@ -30,7 +30,7 @@ using std::sqrt;
 namespace QuantLib {
 
     AnalyticComplexChooserEngine::AnalyticComplexChooserEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -84,11 +84,11 @@ namespace QuantLib {
         DiscountFactor discount;
 
         //payoff
-        ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
+        std::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
         if (optionType == Option::Call){
             //TC-T
             Time t=callMaturity()-choosingTime()-choosingTime();
-            vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
+            vanillaPayoff = std::make_shared<PlainVanillaPayoff>(
                                           Option::Call, strike(Option::Call));
             //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
             vol = volatility(t) * std::sqrt(t);
@@ -96,7 +96,7 @@ namespace QuantLib {
             discount = riskFreeDiscount(t);
         } else{
             Time t=putMaturity()-choosingTime()-choosingTime();
-            vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
+            vanillaPayoff = std::make_shared<PlainVanillaPayoff>(
                                             Option::Put, strike(Option::Put));
             vol = volatility(t) * std::sqrt(t);
             growth = dividendDiscount(t);

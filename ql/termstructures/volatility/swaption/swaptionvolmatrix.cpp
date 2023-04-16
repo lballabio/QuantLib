@@ -52,11 +52,11 @@ namespace QuantLib {
         registerWithMarketData();
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -90,11 +90,11 @@ namespace QuantLib {
         registerWithMarketData();
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -131,18 +131,18 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(std::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -180,18 +180,18 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(std::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -229,18 +229,18 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(std::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(std::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -305,23 +305,23 @@ namespace QuantLib {
         }
     }
 
-    //ext::shared_ptr<SmileSection>
+    //std::shared_ptr<SmileSection>
     //SwaptionVolatilityMatrix::smileSectionImpl(const Date& d,
     //                                           const Period& swapTenor) const {
     //    Time optionTime = timeFromReference(d);
     //    Time swapLength = convertSwapTenor(swapTenor);
     //    // dummy strike
     //    Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-    //    return ext::shared_ptr<SmileSection>(new
+    //    return std::shared_ptr<SmileSection>(new
     //        FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     //}
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     SwaptionVolatilityMatrix::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
         // dummy strike
         Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-        return ext::shared_ptr<SmileSection>(new FlatSmileSection(
+        return std::shared_ptr<SmileSection>(new FlatSmileSection(
             optionTime, atmVol, dayCounter(), Null<Real>(), volatilityType(),
             shift(optionTime, swapLength, true)));
     }

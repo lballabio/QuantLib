@@ -476,7 +476,7 @@ namespace QuantLib {
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
-                                   const ext::shared_ptr<YieldTermStructure>& d,
+                                   const std::shared_ptr<YieldTermStructure>& d,
                                    Spread zSpread,
                                    const DayCounter& dc,
                                    Compounding comp,
@@ -498,7 +498,7 @@ namespace QuantLib {
 
     Spread BondFunctions::zSpread(const Bond& bond,
                                   Real cleanPrice,
-                                  const ext::shared_ptr<YieldTermStructure>& d,
+                                  const std::shared_ptr<YieldTermStructure>& d,
                                   const DayCounter& dayCounter,
                                   Compounding compounding,
                                   Frequency frequency,

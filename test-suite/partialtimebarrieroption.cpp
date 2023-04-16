@@ -51,28 +51,28 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
     Option::Type type = Option::Call;
     DayCounter dc = Actual360();
     Date maturity = today + 360;
-    ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(maturity);
+    std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(maturity);
     Real barrier = 100.0;
     Real rebate = 0.0;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.1);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    std::shared_ptr<SimpleQuote> spot = std::make_shared<SimpleQuote>();
+    std::shared_ptr<SimpleQuote> qRate = std::make_shared<SimpleQuote>(0.0);
+    std::shared_ptr<SimpleQuote> rRate = std::make_shared<SimpleQuote>(0.1);
+    std::shared_ptr<SimpleQuote> vol = std::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> process =
-        ext::make_shared<BlackScholesMertonProcess>(underlying,
+    const std::shared_ptr<BlackScholesMertonProcess> process =
+        std::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
                                                       blackVolTS);
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  0.0393 },
@@ -103,8 +103,8 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
 
     for (auto& i : cases) {
         Date coverEventDate = today + i.days;
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::make_shared<PlainVanillaPayoff>(type, i.strike);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::make_shared<PlainVanillaPayoff>(type, i.strike);
         PartialTimeBarrierOption option(PartialBarrier::DownOut,
                                         PartialBarrier::EndB1,
                                         barrier, rebate,

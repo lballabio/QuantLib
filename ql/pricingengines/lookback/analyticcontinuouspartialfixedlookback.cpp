@@ -25,15 +25,15 @@
 namespace QuantLib {
 
     AnalyticContinuousPartialFixedLookbackEngine::AnalyticContinuousPartialFixedLookbackEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticContinuousPartialFixedLookbackEngine::calculate() const {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-plain payoff given");
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying");
@@ -60,8 +60,8 @@ namespace QuantLib {
     }
 
     Real AnalyticContinuousPartialFixedLookbackEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-plain payoff given");
         return payoff->strike();
     }

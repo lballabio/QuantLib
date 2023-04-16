@@ -44,8 +44,8 @@ namespace QuantLib {
         enum Discretization { Euler, BSMHullWhite };
 
         HybridHestonHullWhiteProcess(
-          const ext::shared_ptr<HestonProcess> & hestonProcess,
-          const ext::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
+          const std::shared_ptr<HestonProcess> & hestonProcess,
+          const std::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
           Real corrEquityShortRate,
           Discretization discretization = BSMHullWhite);
 
@@ -59,8 +59,8 @@ namespace QuantLib {
 
         DiscountFactor numeraire(Time t, const Array& x) const;
 
-        const ext::shared_ptr<HestonProcess>& hestonProcess() const;
-        const ext::shared_ptr<HullWhiteForwardProcess>& hullWhiteProcess() const;
+        const std::shared_ptr<HestonProcess>& hestonProcess() const;
+        const std::shared_ptr<HullWhiteForwardProcess>& hullWhiteProcess() const;
 
         Real eta() const;
         Time time(const Date& date) const override;
@@ -68,11 +68,11 @@ namespace QuantLib {
         void update() override;
 
       protected:
-        const ext::shared_ptr<HestonProcess> hestonProcess_;
-        const ext::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess_;
+        const std::shared_ptr<HestonProcess> hestonProcess_;
+        const std::shared_ptr<HullWhiteForwardProcess> hullWhiteProcess_;
         
         //model is used to calculate P(t,T)
-        const ext::shared_ptr<HullWhite> hullWhiteModel_;
+        const std::shared_ptr<HullWhite> hullWhiteModel_;
 
         const Real corrEquityShortRate_;
         const Discretization discretization_;

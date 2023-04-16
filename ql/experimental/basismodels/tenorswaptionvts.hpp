@@ -38,7 +38,7 @@ namespace QuantLib {
       protected:
         class TenorSwaptionSmileSection : public SmileSection {
           protected:
-            ext::shared_ptr<SmileSection> baseSmileSection_;
+            std::shared_ptr<SmileSection> baseSmileSection_;
             Real swapRateBase_;
             Real swapRateTarg_;
             Real swapRateFinl_;
@@ -66,8 +66,8 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> baseVTS_;
         Handle<YieldTermStructure> discountCurve_;
 
-        ext::shared_ptr<IborIndex> baseIndex_;
-        ext::shared_ptr<IborIndex> targIndex_;
+        std::shared_ptr<IborIndex> baseIndex_;
+        std::shared_ptr<IborIndex> targIndex_;
         Period baseFixedFreq_;
         Period targFixedFreq_;
         DayCounter baseFixedDC_;
@@ -77,8 +77,8 @@ namespace QuantLib {
         // constructor
         TenorSwaptionVTS(const Handle<SwaptionVolatilityStructure>& baseVTS,
                          Handle<YieldTermStructure> discountCurve,
-                         ext::shared_ptr<IborIndex> baseIndex,
-                         ext::shared_ptr<IborIndex> targIndex,
+                         std::shared_ptr<IborIndex> baseIndex,
+                         std::shared_ptr<IborIndex> targIndex,
                          const Period& baseFixedFreq,
                          const Period& targFixedFreq,
                          DayCounter baseFixedDC,
@@ -110,9 +110,9 @@ namespace QuantLib {
         //! the largest length for which the term structure can return vols
         const Period& maxSwapTenor() const override { return baseVTS_->maxSwapTenor(); }
 
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+        std::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
                                                        Time swapLength) const override {
-            return ext::shared_ptr<SmileSection>(
+            return std::shared_ptr<SmileSection>(
                 new TenorSwaptionSmileSection(*this, optionTime, swapLength));
         }
 

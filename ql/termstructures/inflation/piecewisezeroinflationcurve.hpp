@@ -57,7 +57,7 @@ namespace QuantLib {
             const Period& lag,
             Frequency frequency,
             Rate baseZeroRate,
-            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            std::vector<std::shared_ptr<typename Traits::helper> > instruments,
             Real accuracy = 1.0e-12,
             const Interpolator& i = Interpolator())
         : base_curve(referenceDate,
@@ -92,7 +92,7 @@ namespace QuantLib {
         // methods
         void performCalculations() const override;
         // data members
-        std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
+        std::vector<std::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
         friend class Bootstrap<this_curve>;

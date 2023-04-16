@@ -42,7 +42,7 @@ namespace QuantLib {
             Calendar calendar, // index may have null calendar as valid on every day
             BusinessDayConvention paymentConvention,
             DayCounter dayCounter,
-            ext::shared_ptr<ZeroInflationIndex> zii,
+            std::shared_ptr<ZeroInflationIndex> zii,
             CPI::InterpolationType observationInterpolation,
             Handle<YieldTermStructure> nominalTermStructure);
 
@@ -55,9 +55,9 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;
-        ext::shared_ptr<ZeroInflationIndex> zii_;
+        std::shared_ptr<ZeroInflationIndex> zii_;
         CPI::InterpolationType observationInterpolation_;
-        ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
+        std::shared_ptr<ZeroCouponInflationSwap> zciis_;
         Handle<YieldTermStructure> nominalTermStructure_;
     };
 
@@ -71,7 +71,7 @@ namespace QuantLib {
                                       Calendar calendar,
                                       BusinessDayConvention paymentConvention,
                                       DayCounter dayCounter,
-                                      ext::shared_ptr<YoYInflationIndex> yii,
+                                      std::shared_ptr<YoYInflationIndex> yii,
                                       Handle<YieldTermStructure> nominalTermStructure);
 
         void setTermStructure(YoYInflationTermStructure*) override;
@@ -83,8 +83,8 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         DayCounter dayCounter_;
-        ext::shared_ptr<YoYInflationIndex> yii_;
-        ext::shared_ptr<YearOnYearInflationSwap> yyiis_;
+        std::shared_ptr<YoYInflationIndex> yii_;
+        std::shared_ptr<YearOnYearInflationSwap> yyiis_;
         Handle<YieldTermStructure> nominalTermStructure_;
     };
 

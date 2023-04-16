@@ -39,7 +39,7 @@ namespace QuantLib {
     class BjerksundStenslandApproximationEngine
         : public VanillaOption::engine {
       public:
-        BjerksundStenslandApproximationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        BjerksundStenslandApproximationEngine(std::shared_ptr<GeneralizedBlackScholesProcess>);
         void calculate() const override;
 
       private:
@@ -50,7 +50,7 @@ namespace QuantLib {
         OneAssetOption::results immediateExercise(Real S, Real X) const;
 
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

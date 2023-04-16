@@ -98,7 +98,7 @@ namespace QuantLib {
 
 
     //! helper function building a sequence of fixed dividends
-    std::vector<ext::shared_ptr<Dividend> >
+    std::vector<std::shared_ptr<Dividend> >
     DividendVector(const std::vector<Date>& dividendDates,
                    const std::vector<Real>& dividends);
 

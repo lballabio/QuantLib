@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class FdmIndicesOnBoundary {
       public:
-        FdmIndicesOnBoundary(const ext::shared_ptr<FdmLinearOpLayout>& l,
+        FdmIndicesOnBoundary(const std::shared_ptr<FdmLinearOpLayout>& l,
                               Size direction, FdmDirichletBoundary::Side side);
 
         const std::vector<Size>& getIndices() const;

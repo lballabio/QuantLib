@@ -33,7 +33,7 @@
 namespace QuantLib {
 
     ContinuousArithmeticAsianVecerEngine::ContinuousArithmeticAsianVecerEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Handle<Quote> currentAverage,
         Date startDate,
         Size timeSteps,
@@ -61,8 +61,8 @@ namespace QuantLib {
         Real S_0 = process_->stateVariable()->value();
 
         // payoff
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         // original time to maturity
@@ -96,7 +96,7 @@ namespace QuantLib {
             // its a vanilla option. Use vanilla engine
             VanillaOption europeanOption(payoff, arguments_.exercise);
             europeanOption.setPricingEngine(
-                        ext::make_shared<AnalyticEuropeanEngine>(process_));
+                        std::make_shared<AnalyticEuropeanEngine>(process_));
             results_.value = europeanOption.NPV();
 
         } else {

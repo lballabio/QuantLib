@@ -30,8 +30,8 @@
 namespace QuantLib {
 
     FdmCEVOp::FdmCEVOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<YieldTermStructure>& rTS,
         Real f0, Real alpha, Real beta,
         Size direction)
     : rTS_(rTS),

@@ -38,7 +38,7 @@ namespace QuantLib {
         GridModelLocalVolSurface(
             const Date& referenceDate,
             const std::vector<Date>& dates,
-            const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
+            const std::vector<std::shared_ptr<std::vector<Real> > >& strikes,
             const DayCounter& dayCounter,
             Extrapolation lowerExtrapolation
                 = FixedLocalVolSurface::ConstantExtrapolation,
@@ -58,11 +58,11 @@ namespace QuantLib {
 
         const Date referenceDate_;
         std::vector<Time> times_;
-        const std::vector<ext::shared_ptr<std::vector<Real> > > strikes_;
+        const std::vector<std::shared_ptr<std::vector<Real> > > strikes_;
         const DayCounter dayCounter_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;
 
-        ext::shared_ptr<LocalVolTermStructure> localVol_;
+        std::shared_ptr<LocalVolTermStructure> localVol_;
     };
 }
 

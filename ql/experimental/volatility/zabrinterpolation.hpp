@@ -107,10 +107,10 @@ template <typename Evaluation> struct ZabrSpecs {
         return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
     }
     typedef ZabrSmileSection<Evaluation> type;
-    ext::shared_ptr<type> instance(const Time t, const Real &forward,
+    std::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &addParams) {
-        return ext::make_shared<type>(t, forward, params);
+        return std::make_shared<type>(t, forward, params);
     }
 };
 } // end namespace detail
@@ -128,13 +128,13 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
         const Real &forward, Real alpha, Real beta, Real nu, Real rho,
         Real gamma, bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed,
         bool rhoIsFixed, bool gammaIsFixed, bool vegaWeighted = true,
-        const ext::shared_ptr<EndCriteria> &endCriteria =
-            ext::shared_ptr<EndCriteria>(),
-        const ext::shared_ptr<OptimizationMethod> &optMethod =
-            ext::shared_ptr<OptimizationMethod>(),
+        const std::shared_ptr<EndCriteria> &endCriteria =
+            std::shared_ptr<EndCriteria>(),
+        const std::shared_ptr<OptimizationMethod> &optMethod =
+            std::shared_ptr<OptimizationMethod>(),
         const Real errorAccept = 0.0020, const bool useMaxError = false,
         const Size maxGuesses = 50) {
-            impl_ = ext::shared_ptr<
+            impl_ = std::shared_ptr<
                 Interpolation::Impl>(new detail::XABRInterpolationImpl<
                 I1, I2,
                 detail::ZabrSpecs<Evaluation> >(
@@ -180,8 +180,8 @@ template<class Evaluation> class Zabr {
          bool rhoIsFixed,
          bool gammaIsFixed,
          bool vegaWeighted = false,
-         ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-         ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
+         std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+         std::shared_ptr<OptimizationMethod> optMethod = std::shared_ptr<OptimizationMethod>(),
          const Real errorAccept = 0.0020,
          const bool useMaxError = false,
          const Size maxGuesses = 50)
@@ -207,8 +207,8 @@ template<class Evaluation> class Zabr {
     Real alpha_, beta_, nu_, rho_, gamma_;
     bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_, gammaIsFixed_;
     bool vegaWeighted_;
-    const ext::shared_ptr<EndCriteria> endCriteria_;
-    const ext::shared_ptr<OptimizationMethod> optMethod_;
+    const std::shared_ptr<EndCriteria> endCriteria_;
+    const std::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

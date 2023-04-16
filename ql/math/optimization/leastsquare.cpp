@@ -80,14 +80,14 @@ namespace QuantLib {
                                                Real accuracy,
                                                Size maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (ext::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
+      om_ (std::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
       c_(c)
     {}
 
     NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c,
                                                Real accuracy,
                                                Size maxiter,
-                                               ext::shared_ptr<OptimizationMethod> om)
+                                               std::shared_ptr<OptimizationMethod> om)
     : exitFlag_(-1), accuracy_(accuracy), maxIterations_(maxiter), om_(std::move(om)), c_(c) {}
 
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {

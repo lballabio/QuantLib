@@ -30,7 +30,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 
 namespace QuantLib
@@ -40,11 +40,11 @@ namespace QuantLib
 
     Integer capletSwaptionPeriodicCalibration(
         const EvolutionDescription& evolution,
-        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const std::shared_ptr<PiecewiseConstantCorrelation>& corr,
         VolatilityInterpolationSpecifier&
         displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
-        const ext::shared_ptr<CurveState>& cs,
+        const std::shared_ptr<CurveState>& cs,
         const Spread displacement,
         Real caplet0Swaption1Priority,
         Size numberOfFactors,
@@ -128,21 +128,21 @@ namespace QuantLib
 
             swapCovariancePseudoRoots = unperiodicCalibrator.swapPseudoRoots();
 
-            ext::shared_ptr<MarketModel> smm(new
+            std::shared_ptr<MarketModel> smm(new
                 PseudoRootFacade(swapCovariancePseudoRoots,
                 evolution.rateTimes(),
                 cs->coterminalSwapRates(),
                 std::vector<Spread>(evolution.numberOfRates(), displacement)));
 
-            ext::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
+            std::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
 
             Matrix capletTotCovariance = flmm->totalCovariance(numberSmallRates-1);
 
-            ext::shared_ptr<MarketModel> periodflmm( new FwdPeriodAdapter(flmm, period,
+            std::shared_ptr<MarketModel> periodflmm( new FwdPeriodAdapter(flmm, period,
                 offset,
                 newDisplacements));
 
-            ext::shared_ptr<MarketModel> periodsmm(new FwdToCotSwapAdapter(periodflmm));
+            std::shared_ptr<MarketModel> periodsmm(new FwdToCotSwapAdapter(periodflmm));
 
 
             Matrix swaptionTotCovariance(periodsmm->totalCovariance(periodsmm->numberOfSteps()-1));

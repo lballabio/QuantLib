@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    Constraint::Constraint(ext::shared_ptr<Constraint::Impl> impl) : impl_(std::move(impl)) {}
+    Constraint::Constraint(std::shared_ptr<Constraint::Impl> impl) : impl_(std::move(impl)) {}
 
     Real Constraint::update(Array& params, const Array& direction, Real beta) const {
 

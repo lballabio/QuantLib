@@ -39,12 +39,12 @@ namespace QuantLib {
     : BlackAtmVolCurve(settlDays, cal, bdc, dc) {}
 
     Real BlackVolSurface::atmVarianceImpl(Time t) const {
-        const ext::shared_ptr<SmileSection>& s = smileSectionImpl(t);
+        const std::shared_ptr<SmileSection>& s = smileSectionImpl(t);
         return s->variance(s->atmLevel());
     }
 
     Volatility BlackVolSurface::atmVolImpl(Time t) const {
-        const ext::shared_ptr<SmileSection>& s = smileSectionImpl(t);
+        const std::shared_ptr<SmileSection>& s = smileSectionImpl(t);
         return s->volatility(s->atmLevel());
     }
 

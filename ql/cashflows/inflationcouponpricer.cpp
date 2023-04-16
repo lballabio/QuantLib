@@ -25,9 +25,9 @@
 namespace QuantLib {
 
     void setCouponPricer(const Leg& leg,
-                         const ext::shared_ptr<InflationCouponPricer>& p) {
+                         const std::shared_ptr<InflationCouponPricer>& p) {
         for (const auto& i : leg) {
-            ext::shared_ptr<InflationCoupon> c = ext::dynamic_pointer_cast<InflationCoupon>(i);
+            std::shared_ptr<InflationCoupon> c = std::dynamic_pointer_cast<InflationCoupon>(i);
             if (c != nullptr)
                 c->setPricer(p);
         }

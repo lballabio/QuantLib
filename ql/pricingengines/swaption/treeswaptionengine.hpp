@@ -50,10 +50,10 @@ namespace QuantLib {
                   model cannot provide one itself.
         */
         //@{
-        TreeSwaptionEngine(const ext::shared_ptr<ShortRateModel>&,
+        TreeSwaptionEngine(const std::shared_ptr<ShortRateModel>&,
                            Size timeSteps,
                            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
-        TreeSwaptionEngine(const ext::shared_ptr<ShortRateModel>&,
+        TreeSwaptionEngine(const std::shared_ptr<ShortRateModel>&,
                            const TimeGrid& timeGrid,
                            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         TreeSwaptionEngine(const Handle<ShortRateModel>&,

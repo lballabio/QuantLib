@@ -35,7 +35,7 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/null_deleter.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -81,7 +81,7 @@ namespace QuantLib {
                                          Rate convAdj,
                                          Futures::Type type)
     : RateHelper(price),
-      convAdj_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(convAdj))))
+      convAdj_(Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         switch (type) {
           case Futures::IMM:
@@ -161,7 +161,7 @@ namespace QuantLib {
                                          Rate convAdj,
                                          Futures::Type type)
     : RateHelper(price),
-      convAdj_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(convAdj))))
+      convAdj_(Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         switch (type) {
           case Futures::IMM:
@@ -208,7 +208,7 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& iborStartDate,
-                                         const ext::shared_ptr<IborIndex>& i,
+                                         const std::shared_ptr<IborIndex>& i,
                                          const Handle<Quote>& convAdj,
                                          Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
@@ -237,11 +237,11 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(Real price,
                                          const Date& iborStartDate,
-                                         const ext::shared_ptr<IborIndex>& i,
+                                         const std::shared_ptr<IborIndex>& i,
                                          Rate convAdj,
                                          Futures::Type type)
     : RateHelper(price),
-      convAdj_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(convAdj))))
+      convAdj_(Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(convAdj))))
     {
         switch (type) {
           case Futures::IMM:
@@ -296,7 +296,7 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate) {
-        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // never take fixing into account
+        iborIndex_ = std::make_shared<IborIndex>("no-fix", // never take fixing into account
                       tenor, fixingDays,
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
@@ -311,7 +311,7 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate) {
-        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // never take fixing into account
+        iborIndex_ = std::make_shared<IborIndex>("no-fix", // never take fixing into account
                       tenor, fixingDays,
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
@@ -319,14 +319,14 @@ namespace QuantLib {
     }
 
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
-                                         const ext::shared_ptr<IborIndex>& i)
+                                         const std::shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
         iborIndex_ = i->clone(termStructureHandle_);
         DepositRateHelper::initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(Rate rate,
-                                         const ext::shared_ptr<IborIndex>& i)
+                                         const std::shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
         iborIndex_ = i->clone(termStructureHandle_);
         DepositRateHelper::initializeDates();
@@ -344,7 +344,7 @@ namespace QuantLib {
         // force recalculation when needed---the index is not lazy
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -389,7 +389,7 @@ namespace QuantLib {
                    ")");
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
+        iborIndex_ = std::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -417,7 +417,7 @@ namespace QuantLib {
                    ")");
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
+        iborIndex_ = std::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       (monthsToEnd-monthsToStart)*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -428,7 +428,7 @@ namespace QuantLib {
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Natural monthsToStart,
-                                 const ext::shared_ptr<IborIndex>& i,
+                                 const std::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
                                  bool useIndexedCoupon)
@@ -447,7 +447,7 @@ namespace QuantLib {
 
     FraRateHelper::FraRateHelper(Rate rate,
                                  Natural monthsToStart,
-                                 const ext::shared_ptr<IborIndex>& i,
+                                 const std::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
                                  bool useIndexedCoupon)
@@ -477,7 +477,7 @@ namespace QuantLib {
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
+        iborIndex_ = std::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       lengthInMonths*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -501,7 +501,7 @@ namespace QuantLib {
       pillarChoice_(pillarChoice), useIndexedCoupon_(useIndexedCoupon) {
         // no way to take fixing into account,
         // even if we would like to for FRA over today
-        iborIndex_ = ext::make_shared<IborIndex>("no-fix", // correct family name would be needed
+        iborIndex_ = std::make_shared<IborIndex>("no-fix", // correct family name would be needed
                       lengthInMonths*Months,
                       fixingDays,
                       Currency(), calendar, convention,
@@ -512,7 +512,7 @@ namespace QuantLib {
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Period periodToStart,
-                                 const ext::shared_ptr<IborIndex>& i,
+                                 const std::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
                                  bool useIndexedCoupon)
@@ -529,7 +529,7 @@ namespace QuantLib {
 
     FraRateHelper::FraRateHelper(Rate rate,
                                  Period periodToStart,
-                                 const ext::shared_ptr<IborIndex>& i,
+                                 const std::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
                                  bool useIndexedCoupon)
@@ -547,7 +547,7 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Natural immOffsetStart,
                                  Natural immOffsetEnd,
-                                 const ext::shared_ptr<IborIndex>& i,
+                                 const std::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
                                  bool useIndexedCoupon)
@@ -565,7 +565,7 @@ namespace QuantLib {
     FraRateHelper::FraRateHelper(Rate rate,
                                  Natural immOffsetStart,
                                  Natural immOffsetEnd,
-                                 const ext::shared_ptr<IborIndex>& i,
+                                 const std::shared_ptr<IborIndex>& i,
                                  Pillar::Choice pillarChoice,
                                  Date customPillarDate,
                                  bool useIndexedCoupon)
@@ -596,7 +596,7 @@ namespace QuantLib {
         // force recalculation when needed---the index is not lazy
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -679,14 +679,14 @@ namespace QuantLib {
 
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
-                                   const ext::shared_ptr<SwapIndex>& swapIndex,
+                                   const std::shared_ptr<SwapIndex>& swapIndex,
                                    Handle<Quote> spread,
                                    const Period& fwdStart,
                                    Handle<YieldTermStructure> discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const std::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
       pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
@@ -714,7 +714,7 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    DayCounter fixedDayCount,
-                                   const ext::shared_ptr<IborIndex>& iborIndex,
+                                   const std::shared_ptr<IborIndex>& iborIndex,
                                    Handle<Quote> spread,
                                    const Period& fwdStart,
                                    Handle<YieldTermStructure> discount,
@@ -722,7 +722,7 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const std::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
@@ -746,14 +746,14 @@ namespace QuantLib {
     }
 
     SwapRateHelper::SwapRateHelper(Rate rate,
-                                   const ext::shared_ptr<SwapIndex>& swapIndex,
+                                   const std::shared_ptr<SwapIndex>& swapIndex,
                                    Handle<Quote> spread,
                                    const Period& fwdStart,
                                    Handle<YieldTermStructure> discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const std::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
       pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
@@ -782,7 +782,7 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    DayCounter fixedDayCount,
-                                   const ext::shared_ptr<IborIndex>& iborIndex,
+                                   const std::shared_ptr<IborIndex>& iborIndex,
                                    Handle<Quote> spread,
                                    const Period& fwdStart,
                                    Handle<YieldTermStructure> discount,
@@ -790,7 +790,7 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const std::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
@@ -835,8 +835,8 @@ namespace QuantLib {
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
 
-        ext::shared_ptr<IborCoupon> lastCoupon =
-            ext::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg().back());
+        std::shared_ptr<IborCoupon> lastCoupon =
+            std::dynamic_pointer_cast<IborCoupon>(swap_->floatingLeg().back());
         latestRelevantDate_ = std::max(maturityDate_, lastCoupon->fixingEndDate());
 
         switch (pillarChoice_) {
@@ -870,7 +870,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())
@@ -911,9 +911,9 @@ namespace QuantLib {
                                          const Period& bmaPeriod,
                                          BusinessDayConvention bmaConvention,
                                          DayCounter bmaDayCount,
-                                         ext::shared_ptr<BMAIndex> bmaIndex,
+                                         std::shared_ptr<BMAIndex> bmaIndex,
                                          // libor leg
-                                         ext::shared_ptr<IborIndex> iborIndex)
+                                         std::shared_ptr<IborIndex> iborIndex)
     : RelativeDateRateHelper(liborFraction), tenor_(tenor), settlementDays_(settlementDays),
       calendar_(std::move(calendar)), bmaPeriod_(bmaPeriod), bmaConvention_(bmaConvention),
       bmaDayCount_(std::move(bmaDayCount)), bmaIndex_(std::move(bmaIndex)),
@@ -935,7 +935,7 @@ namespace QuantLib {
         Date maturity = earliestDate_ + tenor_;
 
         // dummy BMA index with curve/swap arguments
-        ext::shared_ptr<BMAIndex> clonedIndex(new BMAIndex(termStructureHandle_));
+        std::shared_ptr<BMAIndex> clonedIndex(new BMAIndex(termStructureHandle_));
 
         Schedule bmaSchedule =
             MakeSchedule().from(earliestDate_).to(maturity)
@@ -952,7 +952,7 @@ namespace QuantLib {
                           .endOfMonth(iborIndex_->endOfMonth())
                           .backwards();
 
-        swap_ = ext::make_shared<BMASwap>(Swap::Payer, 100.0,
+        swap_ = std::make_shared<BMASwap>(Swap::Payer, 100.0,
                                           liborSchedule,
                                           0.75, // arbitrary
                                           0.0,
@@ -961,7 +961,7 @@ namespace QuantLib {
                                           bmaSchedule,
                                           clonedIndex,
                                           bmaDayCount_);
-        swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
+        swap_->setPricingEngine(std::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 
         Date d = calendar_.adjust(swap_->maturityDate(), Following);
@@ -978,7 +978,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RelativeDateRateHelper::setTermStructure(t);
@@ -1064,7 +1064,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         collRelinkableHandle_.linkTo(*collHandle_, observer);

@@ -61,10 +61,10 @@ Volatility swaptionVols[] = {
   0.1000, 0.0950, 0.0900, 0.1230, 0.1160};
 
 void calibrateModel(
-          const ext::shared_ptr<ShortRateModel>& model,
-          const std::vector<ext::shared_ptr<BlackCalibrationHelper> >& swaptions) {
+          const std::shared_ptr<ShortRateModel>& model,
+          const std::vector<std::shared_ptr<BlackCalibrationHelper> >& swaptions) {
 
-    std::vector<ext::shared_ptr<CalibrationHelper> > helpers(swaptions.begin(), swaptions.end());
+    std::vector<std::shared_ptr<CalibrationHelper> > helpers(swaptions.begin(), swaptions.end());
     LevenbergMarquardt om;
     model->calibrate(helpers, om,
                      EndCriteria(400, 100, 1.0e-8, 1.0e-8, 1.0e-8));
@@ -100,9 +100,9 @@ int main(int, char* []) {
         Settings::instance().evaluationDate() = todaysDate;
 
         // flat yield term structure impling 1x5 swap at 5%
-        ext::shared_ptr<Quote> flatRate(new SimpleQuote(0.04875825));
+        std::shared_ptr<Quote> flatRate(new SimpleQuote(0.04875825));
         Handle<YieldTermStructure> rhTermStructure(
-            ext::make_shared<FlatForward>(
+            std::make_shared<FlatForward>(
                       settlementDate, Handle<Quote>(flatRate),
                                       Actual365Fixed()));
 
@@ -114,7 +114,7 @@ int main(int, char* []) {
         Frequency floatingLegFrequency = Semiannual;
         Swap::Type type = Swap::Payer;
         Rate dummyFixedRate = 0.03;
-        ext::shared_ptr<IborIndex> indexSixMonths(new
+        std::shared_ptr<IborIndex> indexSixMonths(new
             Euribor6M(rhTermStructure));
 
         Date startDate = calendar.advance(settlementDate,1,Years,
@@ -128,28 +128,28 @@ int main(int, char* []) {
                                calendar,floatingLegConvention,floatingLegConvention,
                                DateGeneration::Forward,false);
 
-        ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             type, 1000.0,
             fixedSchedule, dummyFixedRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter()));
-        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap->setPricingEngine(std::shared_ptr<PricingEngine>(
                                  new DiscountingSwapEngine(rhTermStructure)));
         Rate fixedATMRate = swap->fairRate();
         Rate fixedOTMRate = fixedATMRate * 1.2;
         Rate fixedITMRate = fixedATMRate * 0.8;
 
-        ext::shared_ptr<VanillaSwap> atmSwap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> atmSwap(new VanillaSwap(
             type, 1000.0,
             fixedSchedule, fixedATMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter()));
-        ext::shared_ptr<VanillaSwap> otmSwap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> otmSwap(new VanillaSwap(
             type, 1000.0,
             fixedSchedule, fixedOTMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter()));
-        ext::shared_ptr<VanillaSwap> itmSwap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> itmSwap(new VanillaSwap(
             type, 1000.0,
             fixedSchedule, fixedITMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
@@ -163,7 +163,7 @@ int main(int, char* []) {
         swaptionMaturities.emplace_back(4, Years);
         swaptionMaturities.emplace_back(5, Years);
 
-        std::vector<ext::shared_ptr<BlackCalibrationHelper> > swaptions;
+        std::vector<std::shared_ptr<BlackCalibrationHelper> > swaptions;
 
         // List of times that have to be included in the timegrid
         std::list<Time> times;
@@ -172,8 +172,8 @@ int main(int, char* []) {
         for (i=0; i<numRows; i++) {
             Size j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
             Size k = i*numCols + j;
-            ext::shared_ptr<Quote> vol(new SimpleQuote(swaptionVols[k]));
-            swaptions.push_back(ext::shared_ptr<BlackCalibrationHelper>(new
+            std::shared_ptr<Quote> vol(new SimpleQuote(swaptionVols[k]));
+            swaptions.push_back(std::shared_ptr<BlackCalibrationHelper>(new
                 SwaptionHelper(swaptionMaturities[i],
                                Period(swapLengths[j], Years),
                                Handle<Quote>(vol),
@@ -190,10 +190,10 @@ int main(int, char* []) {
 
 
         // defining the models
-        ext::shared_ptr<G2> modelG2(new G2(rhTermStructure));
-        ext::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
-        ext::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
-        ext::shared_ptr<BlackKarasinski> modelBK(
+        std::shared_ptr<G2> modelG2(new G2(rhTermStructure));
+        std::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
+        std::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
+        std::shared_ptr<BlackKarasinski> modelBK(
                                         new BlackKarasinski(rhTermStructure));
 
 
@@ -201,7 +201,7 @@ int main(int, char* []) {
 
         std::cout << "G2 (analytic formulae) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
+            swaptions[i]->setPricingEngine(std::shared_ptr<PricingEngine>(
                 new G2SwaptionEngine(modelG2, 6.0, 16)));
 
         calibrateModel(modelG2, swaptions);
@@ -217,7 +217,7 @@ int main(int, char* []) {
 
         std::cout << "Hull-White (analytic formulae) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
+            swaptions[i]->setPricingEngine(std::shared_ptr<PricingEngine>(
                 new JamshidianSwaptionEngine(modelHW)));
 
         calibrateModel(modelHW, swaptions);
@@ -228,7 +228,7 @@ int main(int, char* []) {
 
         std::cout << "Hull-White (numerical) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
+            swaptions[i]->setPricingEngine(std::shared_ptr<PricingEngine>(
                                      new TreeSwaptionEngine(modelHW2, grid)));
 
         calibrateModel(modelHW2, swaptions);
@@ -239,7 +239,7 @@ int main(int, char* []) {
 
         std::cout << "Black-Karasinski (numerical) calibration" << std::endl;
         for (i=0; i<swaptions.size(); i++)
-            swaptions[i]->setPricingEngine(ext::shared_ptr<PricingEngine>(
+            swaptions[i]->setPricingEngine(std::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelBK, grid)));
 
         calibrateModel(modelBK, swaptions);
@@ -256,15 +256,15 @@ int main(int, char* []) {
                   << " (ATM)" << std::endl;
 
         std::vector<Date> bermudanDates;
-        const std::vector<ext::shared_ptr<CashFlow> >& leg =
+        const std::vector<std::shared_ptr<CashFlow> >& leg =
             swap->fixedLeg();
         for (i=0; i<leg.size(); i++) {
-            ext::shared_ptr<Coupon> coupon =
-                ext::dynamic_pointer_cast<Coupon>(leg[i]);
+            std::shared_ptr<Coupon> coupon =
+                std::dynamic_pointer_cast<Coupon>(leg[i]);
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
-        ext::shared_ptr<Exercise> bermudanExercise(
+        std::shared_ptr<Exercise> bermudanExercise(
                                          new BermudanExercise(bermudanDates));
 
         Swaption bermudanSwaption(atmSwap, bermudanExercise);
@@ -272,28 +272,28 @@ int main(int, char* []) {
         // Do the pricing for each model
 
         // G2 price the European swaption here, it should switch to bermudan
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelG2, 50)));
         std::cout << "G2 (tree):      " << bermudanSwaption.NPV() << std::endl;
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdG2SwaptionEngine(modelG2)));
         std::cout << "G2 (fdm) :      " << bermudanSwaption.NPV() << std::endl;
 
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW (tree):      " << bermudanSwaption.NPV() << std::endl;
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdHullWhiteSwaptionEngine(modelHW)));
         std::cout << "HW (fdm) :      " << bermudanSwaption.NPV() << std::endl;
 
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num, tree): " << bermudanSwaption.NPV() << std::endl;
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdHullWhiteSwaptionEngine(modelHW2)));
         std::cout << "HW (num, fdm) : " << bermudanSwaption.NPV() << std::endl;
 
-        bermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        bermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:             " << bermudanSwaption.NPV() << std::endl;
 
@@ -307,34 +307,34 @@ int main(int, char* []) {
         Swaption otmBermudanSwaption(otmSwap,bermudanExercise);
 
         // Do the pricing for each model
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelG2, 300)));
         std::cout << "G2 (tree):       " << otmBermudanSwaption.NPV()
                   << std::endl;
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdG2SwaptionEngine(modelG2)));
         std::cout << "G2 (fdm) :       " << otmBermudanSwaption.NPV()
                   << std::endl;
 
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW (tree):       " << otmBermudanSwaption.NPV()
                   << std::endl;
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdHullWhiteSwaptionEngine(modelHW)));
         std::cout << "HW (fdm) :       " << otmBermudanSwaption.NPV()
                   << std::endl;
 
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num, tree):  " << otmBermudanSwaption.NPV()
                   << std::endl;
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdHullWhiteSwaptionEngine(modelHW2)));
         std::cout << "HW (num, fdm):   " << otmBermudanSwaption.NPV()
                   << std::endl;
 
-        otmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        otmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:              " << otmBermudanSwaption.NPV()
                   << std::endl;
@@ -349,34 +349,34 @@ int main(int, char* []) {
         Swaption itmBermudanSwaption(itmSwap,bermudanExercise);
 
         // Do the pricing for each model
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelG2, 50)));
         std::cout << "G2 (tree):       " << itmBermudanSwaption.NPV()
                   << std::endl;
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdG2SwaptionEngine(modelG2)));
         std::cout << "G2 (fdm) :       " << itmBermudanSwaption.NPV()
                   << std::endl;
 
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW, 50)));
         std::cout << "HW (tree):       " << itmBermudanSwaption.NPV()
                   << std::endl;
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdHullWhiteSwaptionEngine(modelHW)));
         std::cout << "HW (fdm) :       " << itmBermudanSwaption.NPV()
                   << std::endl;
 
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelHW2, 50)));
         std::cout << "HW (num, tree):  " << itmBermudanSwaption.NPV()
                   << std::endl;
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new FdHullWhiteSwaptionEngine(modelHW2)));
         std::cout << "HW (num, fdm) :  " << itmBermudanSwaption.NPV()
                   << std::endl;
 
-        itmBermudanSwaption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        itmBermudanSwaption.setPricingEngine(std::shared_ptr<PricingEngine>(
             new TreeSwaptionEngine(modelBK, 50)));
         std::cout << "BK:              " << itmBermudanSwaption.NPV()
                   << std::endl;

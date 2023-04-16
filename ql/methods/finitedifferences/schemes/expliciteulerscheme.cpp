@@ -23,7 +23,7 @@
 #include <utility>
 
 namespace QuantLib {
-    ExplicitEulerScheme::ExplicitEulerScheme(ext::shared_ptr<FdmLinearOpComposite> map,
+    ExplicitEulerScheme::ExplicitEulerScheme(std::shared_ptr<FdmLinearOpComposite> map,
                                              const bc_set& bcSet)
     : dt_(Null<Real>()), map_(std::move(map)), bcSet_(bcSet) {}
 

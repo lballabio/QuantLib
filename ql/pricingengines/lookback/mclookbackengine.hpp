@@ -42,7 +42,7 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::path_pricer_type
             path_pricer_type;
         // constructor
-        MCLookbackEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        MCLookbackEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process,
                          Size timeSteps,
                          Size timeStepsPerYear,
                          bool brownianBridge,
@@ -66,17 +66,17 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -90,7 +90,7 @@ namespace QuantLib {
     template <class I, class RNG = PseudoRandom, class S = Statistics>
     class MakeMCLookbackEngine {
       public:
-        explicit MakeMCLookbackEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        explicit MakeMCLookbackEngine(std::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCLookbackEngine& withSteps(Size steps);
         MakeMCLookbackEngine& withStepsPerYear(Size steps);
@@ -101,9 +101,9 @@ namespace QuantLib {
         MakeMCLookbackEngine& withMaxSamples(Size samples);
         MakeMCLookbackEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool brownianBridge_ = false, antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -115,7 +115,7 @@ namespace QuantLib {
 
     template <class I, class RNG, class S>
     inline MCLookbackEngine<I, RNG, S>::MCLookbackEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool brownianBridge,
@@ -163,25 +163,25 @@ namespace QuantLib {
 
         // these functions are specialized for each of the instruments.
 
-        ext::shared_ptr<PathPricer<Path> >
+        std::shared_ptr<PathPricer<Path> >
         mc_lookback_path_pricer(
                const ContinuousFixedLookbackOption::arguments& args,
                const GeneralizedBlackScholesProcess& process,
                DiscountFactor discount);
 
-        ext::shared_ptr<PathPricer<Path> >
+        std::shared_ptr<PathPricer<Path> >
         mc_lookback_path_pricer(
                const ContinuousPartialFixedLookbackOption::arguments& args,
                const GeneralizedBlackScholesProcess& process,
                DiscountFactor discount);
 
-        ext::shared_ptr<PathPricer<Path> >
+        std::shared_ptr<PathPricer<Path> >
         mc_lookback_path_pricer(
                const ContinuousFloatingLookbackOption::arguments& args,
                const GeneralizedBlackScholesProcess& process,
                DiscountFactor discount);
 
-        ext::shared_ptr<PathPricer<Path> >
+        std::shared_ptr<PathPricer<Path> >
         mc_lookback_path_pricer(
                const ContinuousPartialFloatingLookbackOption::arguments& args,
                const GeneralizedBlackScholesProcess& process,
@@ -191,7 +191,7 @@ namespace QuantLib {
 
 
     template <class I, class RNG, class S>
-    inline ext::shared_ptr<typename MCLookbackEngine<I,RNG,S>::path_pricer_type>
+    inline std::shared_ptr<typename MCLookbackEngine<I,RNG,S>::path_pricer_type>
     MCLookbackEngine<I,RNG,S>::pathPricer() const {
         TimeGrid grid = this->timeGrid();
         DiscountFactor discount = this->process_->riskFreeRate()->discount(grid.back());
@@ -204,7 +204,7 @@ namespace QuantLib {
 
     template <class I, class RNG, class S>
     inline MakeMCLookbackEngine<I, RNG, S>::MakeMCLookbackEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
@@ -272,13 +272,13 @@ namespace QuantLib {
     }
 
     template <class I, class RNG, class S>
-    inline MakeMCLookbackEngine<I,RNG,S>::operator ext::shared_ptr<PricingEngine>() const {
+    inline MakeMCLookbackEngine<I,RNG,S>::operator std::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
 
-        return ext::shared_ptr<PricingEngine>(
+        return std::shared_ptr<PricingEngine>(
             new MCLookbackEngine<I,RNG,S>(process_,
                                           steps_,
                                           stepsPerYear_,

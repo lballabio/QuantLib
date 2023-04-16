@@ -25,12 +25,12 @@ namespace QuantLib {
 
     class P12Integrand {
       private:
-        ext::shared_ptr<AnalyticHestonEngine>& engine_;
+        std::shared_ptr<AnalyticHestonEngine>& engine_;
         Real logK_, phiRightLimit_;
         Time tenor_;
         std::complex<Real> i_, adj_;
       public:
-        P12Integrand(ext::shared_ptr<AnalyticHestonEngine>& engine,
+        P12Integrand(std::shared_ptr<AnalyticHestonEngine>& engine,
                      Real logK,
                      Time tenor,
                      bool P1, // true for P1, false for P2
@@ -78,7 +78,7 @@ namespace QuantLib {
             Real nuDash = nuRightLimit_ * (0.5 * nu + 0.5 + 1e-8);
 
             // Calculate the chF from var(t) to expiry
-            ext::shared_ptr<AnalyticHestonEngine> engine = parent_->forwardChF(s0_, nuDash);
+            std::shared_ptr<AnalyticHestonEngine> engine = parent_->forwardChF(s0_, nuDash);
             P12Integrand pIntegrand(engine, logK_, tenor_, P1_, phiRightLimit_);
             Real p1Integral = innerIntegrator_(pIntegrand);
 
@@ -92,7 +92,7 @@ namespace QuantLib {
 
 
     AnalyticHestonForwardEuropeanEngine::AnalyticHestonForwardEuropeanEngine(
-        ext::shared_ptr<HestonProcess> process, Size integrationOrder)
+        std::shared_ptr<HestonProcess> process, Size integrationOrder)
     : process_(std::move(process)), integrationOrder_(integrationOrder), outerIntegrator_(128) {
 
         v0_ = process_->v0();
@@ -123,8 +123,8 @@ namespace QuantLib {
                    "not an European option");
 
         // We only price plain vanillas
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(this->arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(this->arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
         Time resetTime = this->process_->time(this->arguments_.resetDate);
@@ -151,7 +151,7 @@ namespace QuantLib {
         // calculation, both for accuracy and because tStar==0 causes some numerical issues...
         std::pair<Real, Real> P1HatP2Hat;
         if (resetTime <= 1e-3) {
-            Handle<Quote> tempQuote(ext::shared_ptr<Quote>(new SimpleQuote(s0_->value())));
+            Handle<Quote> tempQuote(std::shared_ptr<Quote>(new SimpleQuote(s0_->value())));
             P1HatP2Hat = calculateP1P2(tenor, tempQuote, moneyness * s0_->value(), expiryRatio, phiRightLimit);
         } else {
             P1HatP2Hat = calculateP1P2Hat(tenor, resetTime, moneyness, expiryRatio/resetRatio, phiRightLimit, nuRightLimit);
@@ -196,7 +196,7 @@ namespace QuantLib {
                                                                                 Real phiRightLimit,
                                                                                 Real nuRightLimit) const {
 
-        Handle<Quote> unitQuote(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));
+        Handle<Quote> unitQuote(std::shared_ptr<Quote>(new SimpleQuote(1.0)));
 
         // Re-expressing moneyness in terms of the forward here (strike fixes to spot, but in
         // our pricing calculation we need to compare it to the future at expiry)
@@ -229,19 +229,19 @@ namespace QuantLib {
         return term1 * term2 * term3;
     }
 
-    ext::shared_ptr<AnalyticHestonEngine> AnalyticHestonForwardEuropeanEngine::forwardChF(
+    std::shared_ptr<AnalyticHestonEngine> AnalyticHestonForwardEuropeanEngine::forwardChF(
                                       Handle<Quote>& spotReset,
                                       Real varReset) const {
 
         // Probably a wasteful implementation here, could be improved by importing
         // only the CF-generating parts of the AnalyticHestonEngine (currently private)
-        ext::shared_ptr<HestonProcess> hestonProcess(new
+        std::shared_ptr<HestonProcess> hestonProcess(new
             HestonProcess(riskFreeRate_, dividendYield_, spotReset,
                 varReset, kappa_, theta_, sigma_, rho_));
 
-        ext::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
+        std::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
 
-        ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine(
+        std::shared_ptr<AnalyticHestonEngine> analyticHestonEngine(
             new AnalyticHestonEngine(hestonModel, integrationOrder_));
 
         // Not sure how to pass only the chF, so just pass the whole thing for now!
@@ -255,7 +255,7 @@ namespace QuantLib {
                                                                              Real ratio,
                                                                              Real phiRightLimit) const {
 
-        ext::shared_ptr<AnalyticHestonEngine> engine = forwardChF(St, v0_);
+        std::shared_ptr<AnalyticHestonEngine> engine = forwardChF(St, v0_);
         Real logK = std::log(K*ratio/St->value());
 
         // Integrate the CF and the complex integrand over positive phi

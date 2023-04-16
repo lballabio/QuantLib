@@ -42,8 +42,8 @@ namespace QuantLib {
         bool isRhoFixed,
         bool isMFixed,
         bool vegaWeighted,
-        ext::shared_ptr<EndCriteria> endCriteria,
-        ext::shared_ptr<OptimizationMethod> method,
+        std::shared_ptr<EndCriteria> endCriteria,
+        std::shared_ptr<OptimizationMethod> method,
         const DayCounter& dc)
     : SmileSection(optionDate, dc), forward_(std::move(forward)),
       atmVolatility_(std::move(atmVolatility)), volHandles_(volHandles), strikes_(strikes),
@@ -77,12 +77,12 @@ namespace QuantLib {
         bool isRhoFixed,
         bool isMFixed,
         bool vegaWeighted,
-        ext::shared_ptr<EndCriteria> endCriteria,
-        ext::shared_ptr<OptimizationMethod> method,
+        std::shared_ptr<EndCriteria> endCriteria,
+        std::shared_ptr<OptimizationMethod> method,
         const DayCounter& dc)
     : SmileSection(optionDate, dc),
-      forward_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(forward)))),
-      atmVolatility_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
+      forward_(Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(forward)))),
+      atmVolatility_(Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
       volHandles_(volHandles.size()), strikes_(strikes), actualStrikes_(strikes),
       hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()), a_(a), b_(b),
       sigma_(sigma), rho_(rho), m_(m), isAFixed_(isAFixed), isBFixed_(isBFixed),
@@ -91,11 +91,11 @@ namespace QuantLib {
       method_(std::move(method)) {
 
         for (Size i = 0; i < volHandles_.size(); ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+            volHandles_[i] = Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
     }
 
 void SviInterpolatedSmileSection::createInterpolation() const {
-    ext::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
+    std::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
         actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
         exerciseTime(), forwardValue_, a_, b_, sigma_, rho_, m_, isAFixed_,
         isBFixed_, isSigmaFixed_, isRhoFixed_, isMFixed_, vegaWeighted_,

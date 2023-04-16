@@ -34,7 +34,7 @@ namespace QuantLib {
     SwaptionHelper::SwaptionHelper(const Period& maturity,
                                    const Period& length,
                                    const Handle<Quote>& volatility,
-                                   ext::shared_ptr<IborIndex> index,
+                                   std::shared_ptr<IborIndex> index,
                                    const Period& fixedLegTenor,
                                    DayCounter fixedLegDayCounter,
                                    DayCounter floatingLegDayCounter,
@@ -56,7 +56,7 @@ namespace QuantLib {
     SwaptionHelper::SwaptionHelper(const Date& exerciseDate,
                                    const Period& length,
                                    const Handle<Quote>& volatility,
-                                   ext::shared_ptr<IborIndex> index,
+                                   std::shared_ptr<IborIndex> index,
                                    const Period& fixedLegTenor,
                                    DayCounter fixedLegDayCounter,
                                    DayCounter floatingLegDayCounter,
@@ -78,7 +78,7 @@ namespace QuantLib {
     SwaptionHelper::SwaptionHelper(const Date& exerciseDate,
                                    const Date& endDate,
                                    const Handle<Quote>& volatility,
-                                   ext::shared_ptr<IborIndex> index,
+                                   std::shared_ptr<IborIndex> index,
                                    const Period& fixedLegTenor,
                                    DayCounter fixedLegDayCounter,
                                    DayCounter floatingLegDayCounter,
@@ -118,15 +118,15 @@ namespace QuantLib {
 
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         calculate();
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
-        ext::shared_ptr<PricingEngine> engine;
+        Handle<Quote> vol(std::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        std::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
         case ShiftedLognormal:
-            engine = ext::make_shared<BlackSwaptionEngine>(
+            engine = std::make_shared<BlackSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed(), shift_);
             break;
         case Normal:
-            engine = ext::make_shared<BachelierSwaptionEngine>(
+            engine = std::make_shared<BachelierSwaptionEngine>(
                 termStructure_, vol, Actual365Fixed());
             break;
         default:
@@ -165,7 +165,7 @@ namespace QuantLib {
                                index_->businessDayConvention(),
                                DateGeneration::Forward, false);
 
-        ext::shared_ptr<PricingEngine> swapEngine(
+        std::shared_ptr<PricingEngine> swapEngine(
                              new DiscountingSwapEngine(termStructure_, false));
 
         Swap::Type type = Swap::Receiver;
@@ -183,15 +183,15 @@ namespace QuantLib {
             type = strike_ <= forward ? Swap::Receiver : Swap::Payer;
             // ensure that calibration instrument is out of the money
         }
-        swap_ = ext::make_shared<VanillaSwap>(
+        swap_ = std::make_shared<VanillaSwap>(
             type, nominal_,
                             fixedSchedule, exerciseRate_, fixedLegDayCounter_,
                             floatSchedule, index_, 0.0, floatingLegDayCounter_);
         swap_->setPricingEngine(swapEngine);
 
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-        swaption_ = ext::make_shared<Swaption>(swap_, exercise);
+        swaption_ = std::make_shared<Swaption>(swap_, exercise);
 
         BlackCalibrationHelper::performCalculations();
 

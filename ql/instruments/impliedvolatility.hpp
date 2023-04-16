@@ -56,9 +56,9 @@ namespace QuantLib {
                 for the volatility which is flat and whose value is driven
                 by the passed quote.
             */
-            static ext::shared_ptr<GeneralizedBlackScholesProcess> clone(
-                     const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-                     const ext::shared_ptr<SimpleQuote>&);
+            static std::shared_ptr<GeneralizedBlackScholesProcess> clone(
+                     const std::shared_ptr<GeneralizedBlackScholesProcess>&,
+                     const std::shared_ptr<SimpleQuote>&);
         };
 
     }

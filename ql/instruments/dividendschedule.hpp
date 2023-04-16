@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    typedef std::vector<ext::shared_ptr<Dividend> > DividendSchedule;
+    typedef std::vector<std::shared_ptr<Dividend> > DividendSchedule;
 
 }
 

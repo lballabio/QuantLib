@@ -33,8 +33,8 @@ namespace QuantLib {
     class SpreadOption : public MultiAssetOption {
       public:
         class engine;
-        SpreadOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-                     const ext::shared_ptr<Exercise>& exercise)
+        SpreadOption(const std::shared_ptr<PlainVanillaPayoff>& payoff,
+                     const std::shared_ptr<Exercise>& exercise)
         : MultiAssetOption(payoff, exercise) {}
     };
 

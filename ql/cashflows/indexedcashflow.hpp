@@ -46,7 +46,7 @@ namespace QuantLib {
                             public Observer {
       public:
         IndexedCashFlow(Real notional,
-                        ext::shared_ptr<Index> index,
+                        std::shared_ptr<Index> index,
                         const Date& baseDate,
                         const Date& fixingDate,
                         const Date& paymentDate,
@@ -58,7 +58,7 @@ namespace QuantLib {
         virtual Real notional() const { return notional_; }
         virtual Date baseDate() const { return baseDate_; }
         virtual Date fixingDate() const { return fixingDate_; }
-        virtual ext::shared_ptr<Index> index() const { return index_; }
+        virtual std::shared_ptr<Index> index() const { return index_; }
         virtual bool growthOnly() const { return growthOnly_; }
         virtual Real baseFixing() const { return index_->fixing(baseDate()); }
         virtual Real indexFixing() const { return index_->fixing(fixingDate_); }
@@ -76,7 +76,7 @@ namespace QuantLib {
         //@}
       private:
         Real notional_;
-        ext::shared_ptr<Index> index_;
+        std::shared_ptr<Index> index_;
         Date baseDate_, fixingDate_, paymentDate_;
         bool growthOnly_;
     };

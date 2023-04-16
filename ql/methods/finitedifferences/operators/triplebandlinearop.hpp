@@ -37,7 +37,7 @@ namespace QuantLib {
     class TripleBandLinearOp : public FdmLinearOp {
       public:
         TripleBandLinearOp(Size direction,
-                           const ext::shared_ptr<FdmMesher>& mesher);
+                           const std::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
         TripleBandLinearOp(TripleBandLinearOp&& m) noexcept;
@@ -70,7 +70,7 @@ namespace QuantLib {
         std::unique_ptr<Size[]> reverseIndex_;
         std::unique_ptr<Real[]> lower_, diag_, upper_;
 
-        ext::shared_ptr<FdmMesher> mesher_;
+        std::shared_ptr<FdmMesher> mesher_;
     };
 
 

@@ -26,8 +26,8 @@
 namespace QuantLib {
 
     AnalyticEuropeanMargrabeEngine::AnalyticEuropeanMargrabeEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation)
     : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
@@ -39,12 +39,12 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        ext::shared_ptr<NullPayoff> payoff =
-            ext::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
+        std::shared_ptr<NullPayoff> payoff =
+            std::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non a Null Payoff type");
 
         Integer quantity1 = arguments_.Q1;

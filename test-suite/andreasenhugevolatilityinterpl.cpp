@@ -65,7 +65,7 @@ namespace andreasen_huge_volatility_interpl_test {
         // Andreasen J., Huge B., 2010. Volatility Interpolation
         // https://ssrn.com/abstract=1694972
 
-        const Handle<Quote> spot(ext::make_shared<SimpleQuote>(2772.7));
+        const Handle<Quote> spot(std::make_shared<SimpleQuote>(2772.7));
 
         const Time maturityTimes[] = {
                   0.025, 0.101, 0.197, 0.274, 0.523, 0.772,
@@ -132,13 +132,13 @@ namespace andreasen_huge_volatility_interpl_test {
                     const Volatility impliedVol = i[j];
 
                     calibrationSet.push_back(std::make_pair(
-                        ext::make_shared<VanillaOption>(
-                            ext::make_shared<PlainVanillaPayoff>(
+                        std::make_shared<VanillaOption>(
+                            std::make_shared<PlainVanillaPayoff>(
                                 (strike < spot->value())? Option::Put
                                                         : Option::Call,
                                 strike),
-                            ext::make_shared<EuropeanExercise>(maturity)),
-                        ext::make_shared<SimpleQuote>(impliedVol))
+                            std::make_shared<EuropeanExercise>(maturity)),
+                        std::make_shared<SimpleQuote>(impliedVol))
                     );
                 }
             }
@@ -164,18 +164,18 @@ namespace andreasen_huge_volatility_interpl_test {
         AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet =
             data.calibrationSet;
 
-        const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
+        const std::shared_ptr<AndreasenHugeVolatilityInterpl>
             andreasenHugeVolInterplation(
-                ext::make_shared<AndreasenHugeVolatilityInterpl>(
+                std::make_shared<AndreasenHugeVolatilityInterpl>(
                     calibrationSet, spot, rTS, qTS,
                     expected.interpolationType,
                     expected.calibrationType));
 
-        const ext::tuple<Real, Real, Real> error =
+        const std::tuple<Real, Real, Real> error =
             andreasenHugeVolInterplation->calibrationError();
 
-        const Real maxError = ext::get<1>(error);
-        const Real avgError = ext::get<2>(error);
+        const Real maxError = std::get<1>(error);
+        const Real avgError = std::get<2>(error);
 
         if (maxError > expected.maxError || avgError > expected.avgError) {
             BOOST_FAIL("Failed to reproduce calibration error"
@@ -185,16 +185,16 @@ namespace andreasen_huge_volatility_interpl_test {
                        << "\n    expected average error:    " << expected.avgError);
         }
 
-        const ext::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
-            ext::make_shared<AndreasenHugeVolatilityAdapter>(
+        const std::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
+            std::make_shared<AndreasenHugeVolatilityAdapter>(
                 andreasenHugeVolInterplation, 1e-12));
 
-        const ext::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
-            ext::make_shared<AndreasenHugeLocalVolAdapter>(
+        const std::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
+            std::make_shared<AndreasenHugeLocalVolAdapter>(
                 andreasenHugeVolInterplation));
 
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess(
-            ext::make_shared<GeneralizedBlackScholesProcess>(
+        const std::shared_ptr<GeneralizedBlackScholesProcess> localVolProcess(
+            std::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
                 Handle<BlackVolTermStructure>(volatilityAdapter),
                 Handle<LocalVolTermStructure>(localVolAdapter)));
@@ -202,11 +202,11 @@ namespace andreasen_huge_volatility_interpl_test {
         Real lvAvgError = 0.0, lvMaxError = 0.0;
         for (Size i=0, n=0; i < calibrationSet.size(); ++i) {
 
-            const ext::shared_ptr<VanillaOption> option =
+            const std::shared_ptr<VanillaOption> option =
                 calibrationSet[i].first;
 
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+            const std::shared_ptr<PlainVanillaPayoff> payoff =
+                std::dynamic_pointer_cast<PlainVanillaPayoff>(
                     option->payoff());
             const Real strike = payoff->strike();
             const Option::Type optionType = payoff->optionType();
@@ -228,8 +228,8 @@ namespace andreasen_huge_volatility_interpl_test {
                            << "\n    tolerance:  " << tol);
             }
 
-            const ext::shared_ptr<PricingEngine> fdEngine(
-                ext::make_shared<FdBlackScholesVanillaEngine>(
+            const std::shared_ptr<PricingEngine> fdEngine(
+                std::make_shared<FdBlackScholesVanillaEngine>(
                     localVolProcess, std::max<Size>(30, Size(100*t)),
                     200, 0, FdmSchemeDesc::Douglas(), true));
 
@@ -272,7 +272,7 @@ namespace andreasen_huge_volatility_interpl_test {
         const Handle<YieldTermStructure> rTS(flatRate(today, 0.025, dc));
         const Handle<YieldTermStructure> qTS(flatRate(today, 0.085, dc));
 
-        Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
+        Handle<Quote> spot(std::make_shared<SimpleQuote>(100));
 
         const Real b1 = 0.35;
         const Real b2 = 0.03;
@@ -298,11 +298,11 @@ namespace andreasen_huge_volatility_interpl_test {
                 if (std::fabs(mn) < 3.71*vol) {
 
                     calibrationSet.push_back(std::make_pair(
-                        ext::make_shared<VanillaOption>(
-                            ext::make_shared<PlainVanillaPayoff>(
+                        std::make_shared<VanillaOption>(
+                            std::make_shared<PlainVanillaPayoff>(
                                 Option::Call, strike),
-                            ext::make_shared<EuropeanExercise>(maturityDate)),
-                        ext::make_shared<SimpleQuote>(vol)));
+                            std::make_shared<EuropeanExercise>(maturityDate)),
+                        std::make_shared<SimpleQuote>(vol)));
                 }
             }
         }
@@ -321,7 +321,7 @@ namespace andreasen_huge_volatility_interpl_test {
         const Handle<YieldTermStructure> rTS(flatRate(today, 0.13, dc));
         const Handle<YieldTermStructure> qTS(flatRate(today, 0.03, dc));
 
-        Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
+        Handle<Quote> spot(std::make_shared<SimpleQuote>(100));
 
         const Real strikes[] = { 100, 100, 100, 150 };
         const Size maturities[] = { 1, 3, 6, 6 };
@@ -334,11 +334,11 @@ namespace andreasen_huge_volatility_interpl_test {
             const Volatility vol = vols[i];
 
             calibrationSet.push_back(std::make_pair(
-                ext::make_shared<VanillaOption>(
-                    ext::make_shared<PlainVanillaPayoff>(
+                std::make_shared<VanillaOption>(
+                    std::make_shared<PlainVanillaPayoff>(
                         Option::Call, strike),
-                    ext::make_shared<EuropeanExercise>(maturityDate)),
-                ext::make_shared<SimpleQuote>(vol)));
+                    std::make_shared<EuropeanExercise>(maturityDate)),
+                std::make_shared<SimpleQuote>(vol)));
         }
 
         return { spot, rTS, qTS, calibrationSet };
@@ -471,9 +471,9 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
     };
 
     const Handle<YieldTermStructure> rTS(
-        ext::make_shared<ZeroCurve>(dates, r, dc));
+        std::make_shared<ZeroCurve>(dates, r, dc));
     const Handle<YieldTermStructure> qTS(
-        ext::make_shared<ZeroCurve>(dates, q, dc));
+        std::make_shared<ZeroCurve>(dates, q, dc));
 
     const CalibrationData origData = AndreasenHugeExampleData();
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet =
@@ -481,22 +481,22 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
 
     const Handle<Quote> spot = origData.spot;
 
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
-            ext::make_shared<HestonProcess>(
+    const std::shared_ptr<HestonModel> hestonModel(
+        std::make_shared<HestonModel>(
+            std::make_shared<HestonProcess>(
                 rTS, qTS, spot, 0.09, 2.0, 0.09, 0.4, -0.75)));
 
-    const ext::shared_ptr<PricingEngine> hestonEngine(
-        ext::make_shared<AnalyticHestonEngine>(
+    const std::shared_ptr<PricingEngine> hestonEngine(
+        std::make_shared<AnalyticHestonEngine>(
             hestonModel,
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::discreteTrapezoid(128)));
 
     for (auto& i : calibrationSet) {
-        const ext::shared_ptr<VanillaOption> option = i.first;
+        const std::shared_ptr<VanillaOption> option = i.first;
 
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(option->payoff());
+        const std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(option->payoff());
 
         const Real strike = payoff->strike();
         const Option::Type optionType = payoff->optionType();
@@ -513,7 +513,7 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
             optionType, strike, fwd, npv,
             discount, 0.0, Null<Real>(), 1.0, 1e-12)/std::sqrt(t);
 
-        i.second = ext::make_shared<SimpleQuote>(impliedVol);
+        i.second = std::make_shared<SimpleQuote>(impliedVol);
     }
 
     CalibrationData irData = { spot, rTS, qTS, calibrationSet };
@@ -546,13 +546,13 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
     const Real strike = 10.0;
     const Volatility vol = 0.3;
     const Date maturity = today + Period(1, Years);
-    Handle<Quote> spot(ext::make_shared<SimpleQuote>(strike));
+    Handle<Quote> spot(std::make_shared<SimpleQuote>(strike));
 
     calibrationSet.push_back(std::make_pair(
-        ext::make_shared<VanillaOption>(
-            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-            ext::make_shared<EuropeanExercise>(maturity)),
-        ext::make_shared<SimpleQuote>(vol)));
+        std::make_shared<VanillaOption>(
+            std::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+            std::make_shared<EuropeanExercise>(maturity)),
+        std::make_shared<SimpleQuote>(vol)));
 
     const AndreasenHugeVolatilityInterpl::InterpolationType interpl[] = {
         AndreasenHugeVolatilityInterpl::Linear,
@@ -568,13 +568,13 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
 
     for (auto i : interpl)
         for (auto j : calibrationType) {
-            const ext::shared_ptr<AndreasenHugeVolatilityInterpl> andreasenHugeVolInterplation(
-                ext::make_shared<AndreasenHugeVolatilityInterpl>(calibrationSet, spot, rTS, qTS, i,
+            const std::shared_ptr<AndreasenHugeVolatilityInterpl> andreasenHugeVolInterplation(
+                std::make_shared<AndreasenHugeVolatilityInterpl>(calibrationSet, spot, rTS, qTS, i,
                                                                  j, 50));
 
-            const ext::shared_ptr<AndreasenHugeVolatilityAdapter>
+            const std::shared_ptr<AndreasenHugeVolatilityAdapter>
                 volatilityAdapter =
-                    ext::make_shared<AndreasenHugeVolatilityAdapter>(
+                    std::make_shared<AndreasenHugeVolatilityAdapter>(
                         andreasenHugeVolInterplation);
 
             const Volatility calculated =
@@ -610,15 +610,15 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
         const DayCounter dc = rTS->dayCounter();
         const Date today = rTS->referenceDate();
 
-        const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
+        const std::shared_ptr<AndreasenHugeVolatilityInterpl>
             andreasenHugeVolInterplation(
-                ext::make_shared<AndreasenHugeVolatilityInterpl>(
+                std::make_shared<AndreasenHugeVolatilityInterpl>(
                     calibrationSet, spot, rTS, qTS,
                     AndreasenHugeVolatilityInterpl::CubicSpline,
                     AndreasenHugeVolatilityInterpl::CallPut, 5000));
 
-        const ext::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
-            ext::make_shared<AndreasenHugeVolatilityAdapter>(
+        const std::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
+            std::make_shared<AndreasenHugeVolatilityAdapter>(
                 andreasenHugeVolInterplation));
 
         for (Real m = -0.7; m < 0.7; m+=0.05) {
@@ -693,19 +693,19 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.01, dc));
     const Handle<YieldTermStructure> qTS(flatRate(today, 0.03, dc));
 
-    Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
-            ext::make_shared<HestonProcess>(
+    Handle<Quote> spot(std::make_shared<SimpleQuote>(100));
+    const std::shared_ptr<HestonModel> hestonModel(
+        std::make_shared<HestonModel>(
+            std::make_shared<HestonProcess>(
                 rTS, qTS, spot, 0.04, 2.0, 0.04, 0.4, -0.75)));
 
-    const ext::shared_ptr<BlackVolTermStructure> hestonVol =
-        ext::make_shared<HestonBlackVolSurface>(
+    const std::shared_ptr<BlackVolTermStructure> hestonVol =
+        std::make_shared<HestonBlackVolSurface>(
             Handle<HestonModel>(hestonModel));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess>
+    const std::shared_ptr<GeneralizedBlackScholesProcess>
         dupireLocalVolProcess =
-            ext::make_shared<GeneralizedBlackScholesProcess>(
+            std::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS, Handle<BlackVolTermStructure>(hestonVol));
 
     const Real strikes[] = { 25, 50, 75, 90, 100, 110, 125, 150, 200, 400};
@@ -724,27 +724,27 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
 
             if (std::fabs(mn) < 3.07*vol) {
                 calibrationSet.push_back(std::make_pair(
-                    ext::make_shared<VanillaOption>(
-                        ext::make_shared<PlainVanillaPayoff>(
+                    std::make_shared<VanillaOption>(
+                        std::make_shared<PlainVanillaPayoff>(
                             Option::Call, strike),
-                        ext::make_shared<EuropeanExercise>(maturityDate)),
-                    ext::make_shared<SimpleQuote>(vol)));
+                        std::make_shared<EuropeanExercise>(maturityDate)),
+                    std::make_shared<SimpleQuote>(vol)));
             }
         }
     }
 
-    const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
+    const std::shared_ptr<AndreasenHugeVolatilityInterpl>
         andreasenHugeVolInterplation(
-            ext::make_shared<AndreasenHugeVolatilityInterpl>(
+            std::make_shared<AndreasenHugeVolatilityInterpl>(
                 calibrationSet, spot, rTS, qTS));
 
-    const ext::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
-        ext::make_shared<AndreasenHugeLocalVolAdapter>(
+    const std::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
+        std::make_shared<AndreasenHugeLocalVolAdapter>(
             andreasenHugeVolInterplation));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess>
+    const std::shared_ptr<GeneralizedBlackScholesProcess>
         andreasenHugeLocalVolProcess =
-            ext::make_shared<GeneralizedBlackScholesProcess>(
+            std::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
                 Handle<BlackVolTermStructure>(hestonVol),
                 Handle<LocalVolTermStructure>(localVolAdapter));
@@ -756,18 +756,18 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
     const Barrier::Type barrierType = Barrier::DownOut;
 
     BarrierOption barrierOption(barrierType, barrier, rebate,
-        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
-        ext::make_shared<EuropeanExercise>(maturity));
+        std::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+        std::make_shared<EuropeanExercise>(maturity));
 
     barrierOption.setPricingEngine(
-        ext::make_shared<FdBlackScholesBarrierEngine>(
+        std::make_shared<FdBlackScholesBarrierEngine>(
             dupireLocalVolProcess, 50, 100, 0,
             FdmSchemeDesc::Douglas(), true, 0.2));
 
     const Real dupireNPV = barrierOption.NPV();
 
     barrierOption.setPricingEngine(
-        ext::make_shared<FdBlackScholesBarrierEngine>(
+        std::make_shared<FdBlackScholesBarrierEngine>(
             andreasenHugeLocalVolProcess, 200, 400, 0,
             FdmSchemeDesc::Douglas(), true, 0.25));
 
@@ -810,17 +810,17 @@ namespace andreasen_huge_volatility_interpl_test {
             const Volatility vol = sabrVolatility(strike, forward, maturity, alpha, beta, nu, rho);
 
             calibrationSet.push_back(std::make_pair(
-                ext::make_shared<VanillaOption>(
-                    ext::make_shared<PlainVanillaPayoff>(
+                std::make_shared<VanillaOption>(
+                    std::make_shared<PlainVanillaPayoff>(
                         Option::Call, strike),
-                    ext::make_shared<EuropeanExercise>(maturityDate)),
-                ext::make_shared<SimpleQuote>(vol)));
+                    std::make_shared<EuropeanExercise>(maturityDate)),
+                std::make_shared<SimpleQuote>(vol)));
         }
 
         const Handle<YieldTermStructure> rTS(flatRate(today, forward, dc));
         const Handle<YieldTermStructure> qTS(flatRate(today, forward, dc));
 
-        Handle<Quote> spot(ext::make_shared<SimpleQuote>(forward));
+        Handle<Quote> spot(std::make_shared<SimpleQuote>(forward));
 
         const CalibrationData data = { spot, rTS, qTS, calibrationSet};
 
@@ -844,13 +844,13 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
     const CalibrationData& data = sd.first;
     const std::vector<Real>& parameter = sd.second;
 
-    const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
+    const std::shared_ptr<AndreasenHugeVolatilityInterpl>
         andreasenHugeVolInterplation(
-            ext::make_shared<AndreasenHugeVolatilityInterpl>(
+            std::make_shared<AndreasenHugeVolatilityInterpl>(
                 data.calibrationSet, data.spot, data.rTS, data.qTS));
 
-    const ext::shared_ptr<AndreasenHugeVolatilityAdapter> volAdapter(
-        ext::make_shared<AndreasenHugeVolatilityAdapter>(
+    const std::shared_ptr<AndreasenHugeVolatilityAdapter> volAdapter(
+        std::make_shared<AndreasenHugeVolatilityAdapter>(
             andreasenHugeVolInterplation));
 
     const Real alpha    = parameter[0];
@@ -889,14 +889,14 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
 
     const CalibrationData& data = sabrData().first;
 
-    const ext::shared_ptr<OptimizationMethod> optimizationMethods[] = {
-        ext::make_shared<LevenbergMarquardt>(),
-        ext::make_shared<BFGS>(),
-        ext::make_shared<Simplex>(0.2)
+    const std::shared_ptr<OptimizationMethod> optimizationMethods[] = {
+        std::make_shared<LevenbergMarquardt>(),
+        std::make_shared<BFGS>(),
+        std::make_shared<Simplex>(0.2)
     };
 
     for (const auto& optimizationMethod : optimizationMethods) {
-        const Real avgError = ext::get<2>(
+        const Real avgError = std::get<2>(
             AndreasenHugeVolatilityInterpl(data.calibrationSet, data.spot, data.rTS, data.qTS,
                                            AndreasenHugeVolatilityInterpl::CubicSpline,
                                            AndreasenHugeVolatilityInterpl::Call, 400, Null<Real>(),
@@ -928,30 +928,30 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
 
     const Real s0 = 100.0;
     const Volatility impliedVol = 0.2;
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(s0));
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet(
         1,
         std::make_pair(
-            ext::make_shared<VanillaOption>(
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, s0),
-                ext::make_shared<EuropeanExercise>(maturity)),
-            ext::make_shared<SimpleQuote>(impliedVol))
+            std::make_shared<VanillaOption>(
+                std::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+                std::make_shared<EuropeanExercise>(maturity)),
+            std::make_shared<SimpleQuote>(impliedVol))
     );
 
-    const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
+    const std::shared_ptr<AndreasenHugeVolatilityInterpl>
         andreasenHugeVolInterplation(
-            ext::make_shared<AndreasenHugeVolatilityInterpl>(
+            std::make_shared<AndreasenHugeVolatilityInterpl>(
                 calibrationSet, spot, ts, ts));
 
 
     const Real tol = 1e-8;
-    const ext::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
-        ext::make_shared<AndreasenHugeVolatilityAdapter>(
+    const std::shared_ptr<AndreasenHugeVolatilityAdapter> volatilityAdapter(
+        std::make_shared<AndreasenHugeVolatilityAdapter>(
             andreasenHugeVolInterplation, tol));
 
-    const ext::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
-        ext::make_shared<AndreasenHugeLocalVolAdapter>(
+    const std::shared_ptr<AndreasenHugeLocalVolAdapter> localVolAdapter(
+        std::make_shared<AndreasenHugeLocalVolAdapter>(
             andreasenHugeVolInterplation));
 
     const Date volRefDate = volatilityAdapter->referenceDate();
@@ -1011,15 +1011,15 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
         0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5
     };
 
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(100.0));
     const Handle<YieldTermStructure> rTS(flatRate(ref, 0.02, dc));
     const Handle<YieldTermStructure> qTS(flatRate(ref, 0.0, dc));
-    const ext::shared_ptr<Quote> vol = ext::make_shared<SimpleQuote>(0.18);
+    const std::shared_ptr<Quote> vol = std::make_shared<SimpleQuote>(0.18);
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
     for (auto expiry : expiries) {
 
-        const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(expiry);
+        const std::shared_ptr<Exercise> exercise = std::make_shared<EuropeanExercise>(expiry);
 
         const Time t = rTS->timeFromReference(expiry);
         const Real fwd = spot->value() / rTS->discount(t) * qTS->discount(t);
@@ -1029,9 +1029,9 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
             const Real mn = std::log(fwd/strike)/std::sqrt(t);
 
             if (std::fabs(mn) < 3.72*vol->value()) {
-                const ext::shared_ptr<VanillaOption> option
-                    = ext::make_shared<VanillaOption>(
-                          ext::make_shared<PlainVanillaPayoff>(
+                const std::shared_ptr<VanillaOption> option
+                    = std::make_shared<VanillaOption>(
+                          std::make_shared<PlainVanillaPayoff>(
                               (strike>fwd)? Option::Call : Option::Put, strike),
                           exercise);
 

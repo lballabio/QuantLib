@@ -23,7 +23,7 @@
 
 #include <ql/errors.hpp>
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
-#include <ql/functional.hpp>
+
 #include <complex>
 #include <utility>
 #include <memory>
@@ -200,7 +200,7 @@ namespace QuantLib {
 
     Real IvopTwoDim(Real eps, Real chi, Real theta, Real /*rho*/,
                     Real v0, Time tau, Real rtax,
-                    const ext::function<Real(Real)>& payoff) {
+                    const std::function<Real(Real)>& payoff) {
 
         Real ss=0.0;
         std::unique_ptr<double[]> xiv(new double[2048*2048+1]);
@@ -347,8 +347,8 @@ namespace QuantLib {
     }
 
     struct payoff_adapter {
-        ext::shared_ptr<QuantLib::Payoff> payoff;
-        explicit payoff_adapter(ext::shared_ptr<QuantLib::Payoff> payoff)
+        std::shared_ptr<QuantLib::Payoff> payoff;
+        explicit payoff_adapter(std::shared_ptr<QuantLib::Payoff> payoff)
         : payoff(std::move(payoff)) {}
         Real operator()(Real S) const {
             return (*payoff)(S);
@@ -358,7 +358,7 @@ namespace QuantLib {
     }
 
     IntegralHestonVarianceOptionEngine::IntegralHestonVarianceOptionEngine(
-        ext::shared_ptr<HestonProcess> process)
+        std::shared_ptr<HestonProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -383,8 +383,8 @@ namespace QuantLib {
                                         riskFreeRate->dayCounter(),
                                         Continuous);
 
-        ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> plainPayoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         if ((plainPayoff != nullptr) && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
             Real strike = plainPayoff->strike();

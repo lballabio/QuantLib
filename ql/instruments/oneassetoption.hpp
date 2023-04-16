@@ -35,8 +35,8 @@ namespace QuantLib {
       public:
         class engine;
         class results;
-        OneAssetOption(const ext::shared_ptr<Payoff>&,
-                       const ext::shared_ptr<Exercise>&);
+        OneAssetOption(const std::shared_ptr<Payoff>&,
+                       const std::shared_ptr<Exercise>&);
         //! \name Instrument interface
         //@{
         bool isExpired() const override;

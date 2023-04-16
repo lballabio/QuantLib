@@ -44,8 +44,8 @@ namespace QuantLib {
         class engine;
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
-                const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                const ext::shared_ptr<Exercise>& exercise);
+                const std::shared_ptr<StrikedTypePayoff>& payoff,
+                const std::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
@@ -66,8 +66,8 @@ namespace QuantLib {
                                      Real runningAccumulator,
                                      Size pastFixings,
                                      std::vector<Date> fixingDates,
-                                     const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                                     const ext::shared_ptr<Exercise>& exercise);
+                                     const std::shared_ptr<StrikedTypePayoff>& payoff,
+                                     const std::shared_ptr<Exercise>& exercise);
 
         /*! This constructor takes past fixings as a vector, defaulting to an empty
             vector representing an unseasoned option.  This constructor expects *all* fixing dates
@@ -78,8 +78,8 @@ namespace QuantLib {
         */
         DiscreteAveragingAsianOption(Average::Type averageType,
                                      std::vector<Date> fixingDates,
-                                     const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                                     const ext::shared_ptr<Exercise>& exercise,
+                                     const std::shared_ptr<StrikedTypePayoff>& payoff,
+                                     const std::shared_ptr<Exercise>& exercise,
                                      std::vector<Real> allPastFixings = std::vector<Real>());
 
         void setupArguments(PricingEngine::arguments*) const override;

@@ -94,14 +94,14 @@ namespace QuantLib {
         class Inertia;
         class Topology;
         ParticleSwarmOptimization(Size M,
-                                  ext::shared_ptr<Topology> topology,
-                                  ext::shared_ptr<Inertia> inertia,
+                                  std::shared_ptr<Topology> topology,
+                                  std::shared_ptr<Inertia> inertia,
                                   Real c1 = 2.05,
                                   Real c2 = 2.05,
                                   unsigned long seed = SeedGenerator::instance().get());
         explicit ParticleSwarmOptimization(Size M,
-                                           ext::shared_ptr<Topology> topology,
-                                           ext::shared_ptr<Inertia> inertia,
+                                           std::shared_ptr<Topology> topology,
+                                           std::shared_ptr<Inertia> inertia,
                                            Real omega,
                                            Real c1,
                                            Real c2,
@@ -116,8 +116,8 @@ namespace QuantLib {
         Size M_, N_;
         Real c0_, c1_, c2_;
         MersenneTwisterUniformRng rng_;
-        ext::shared_ptr<Topology> topology_;
-        ext::shared_ptr<Inertia> inertia_;
+        std::shared_ptr<Topology> topology_;
+        std::shared_ptr<Inertia> inertia_;
     };
 
     //! Base inertia class used to alter the PSO state

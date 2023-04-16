@@ -28,7 +28,7 @@ namespace QuantLib {
 
     template <>
     Array FdmAffineModelSwapInnerValue<HullWhite>::getState(
-        const ext::shared_ptr<HullWhite>& model, Time t,
+        const std::shared_ptr<HullWhite>& model, Time t,
         const FdmLinearOpIterator& iter) const {
 
         return { model->dynamics()->shortRate(t, mesher_->location(iter, direction_)) };
@@ -36,7 +36,7 @@ namespace QuantLib {
 
     template <>
     Array FdmAffineModelSwapInnerValue<G2>::getState(
-        const ext::shared_ptr<G2>&, Time,
+        const std::shared_ptr<G2>&, Time,
         const FdmLinearOpIterator& iter) const {
 
         return {

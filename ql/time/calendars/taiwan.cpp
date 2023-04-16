@@ -24,7 +24,7 @@ namespace QuantLib {
 
     Taiwan::Taiwan(Market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(new Taiwan::TsecImpl);
+        static std::shared_ptr<Calendar::Impl> impl(new Taiwan::TsecImpl);
         impl_ = impl;
     }
 

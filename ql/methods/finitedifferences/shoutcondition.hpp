@@ -61,7 +61,7 @@ namespace QuantLib {
 
         class Impl;
 
-        ext::shared_ptr<Impl> impl_;
+        std::shared_ptr<Impl> impl_;
 
         class Impl {
           public:

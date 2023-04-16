@@ -64,7 +64,7 @@ namespace QuantLib {
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
 
-        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
+        mutable std::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

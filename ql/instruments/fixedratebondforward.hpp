@@ -43,7 +43,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Calendar& calendar,
             BusinessDayConvention businessDayConvention,
-            const ext::shared_ptr<FixedRateBond>& fixedRateBond,
+            const std::shared_ptr<FixedRateBond>& fixedRateBond,
             const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
             const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>())
         : BondForward(valueDate,

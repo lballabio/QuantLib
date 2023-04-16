@@ -33,20 +33,20 @@ namespace QuantLib {
         ExtendedCoxIngersollRoss::generateArguments();
     }
 
-    ext::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
+    std::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
                                                  const TimeGrid& grid) const {
         TermStructureFittingParameter phi(termStructure());
-        ext::shared_ptr<Dynamics> numericDynamics(
+        std::shared_ptr<Dynamics> numericDynamics(
                               new Dynamics(phi, theta(), k(), sigma(), x0()));
 
-        ext::shared_ptr<TrinomialTree> trinomial(
+        std::shared_ptr<TrinomialTree> trinomial(
                    new TrinomialTree(numericDynamics->process(), grid, true));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        ext::shared_ptr<NumericalImpl> impl =
-            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        std::shared_ptr<NumericalImpl> impl =
+            std::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
-        return ext::shared_ptr<Lattice>(
+        return std::shared_ptr<Lattice>(
                    new ShortRateTree(trinomial, numericDynamics, impl, grid));
     }
 

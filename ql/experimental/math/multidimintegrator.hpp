@@ -23,7 +23,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
-#include <ql/functional.hpp>
+
 #include <vector>
 
 namespace QuantLib {
@@ -39,14 +39,14 @@ namespace QuantLib {
     class MultidimIntegral {
     public:
         explicit MultidimIntegral(
-            const std::vector<ext::shared_ptr<Integrator> >& integrators);
+            const std::vector<std::shared_ptr<Integrator> >& integrators);
 
         // scalar variant
         /*! f is the integrand function; a and b are the lower and
             upper integration limit domain for each dimension.
         */
         Real operator()(
-            const ext::function<Real (const std::vector<Real>&)>& f,
+            const std::function<Real (const std::vector<Real>&)>& f,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const 
         {
@@ -71,20 +71,20 @@ namespace QuantLib {
         // Splits the integration in cross-sections per dimension.
         template<int T_N> 
         Real vectorBinder (
-            const ext::function<Real (const std::vector<Real>&)>& f,
+            const std::function<Real (const std::vector<Real>&)>& f,
             Real z,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const ;
         // actual integration of dimension nT
         template<int nT>
         Real integrate(
-            const ext::function<Real (const std::vector<Real>&)>& f,
+            const std::function<Real (const std::vector<Real>&)>& f,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const;
 
-        const std::vector<ext::shared_ptr<Integrator> > integrators_;
+        const std::vector<std::shared_ptr<Integrator> > integrators_;
 
-        /* typedef (const ext::function<Real 
+        /* typedef (const std::function<Real 
             (const std::vector<Real>&arg1)>&arg2) integrableFunctType;
         */
 
@@ -96,9 +96,9 @@ namespace QuantLib {
          dimension at run time, this can not be done before because of the 
          template argument restriction to be constant known at compilation.
         */
-        mutable std::vector<ext::function<Real (//<- members: integrate<N>
+        mutable std::vector<std::function<Real (//<- members: integrate<N>
             // integrable function:
-            const ext::function<Real (const std::vector<Real>&)>&, 
+            const std::function<Real (const std::vector<Real>&)>&, 
             const std::vector<Real>&, //<- a
             const std::vector<Real>&) //<- b
             > > 
@@ -114,7 +114,7 @@ namespace QuantLib {
     // spez last call/dimension
     template<>
     Real inline MultidimIntegral::vectorBinder<0> (
-        const ext::function<Real (const std::vector<Real>&)>& f, 
+        const std::function<Real (const std::vector<Real>&)>& f, 
         Real z,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const
@@ -132,7 +132,7 @@ namespace QuantLib {
 
     template<int nT>
     inline Real MultidimIntegral::integrate(
-        const ext::function<Real (const std::vector<Real>&)>& f,
+        const std::function<Real (const std::vector<Real>&)>& f,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 
     {
@@ -144,7 +144,7 @@ namespace QuantLib {
 
     template<int T_N> 
     inline Real MultidimIntegral::vectorBinder (
-        const ext::function<Real (const std::vector<Real>&)>& f,
+        const std::function<Real (const std::vector<Real>&)>& f,
         Real z,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 

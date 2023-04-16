@@ -45,9 +45,9 @@ namespace QuantLib {
         BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
+        std::shared_ptr<ShortRateDynamics> dynamics() const override;
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
+        std::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
       private:
         class Dynamics;
@@ -76,7 +76,7 @@ namespace QuantLib {
       public:
         Dynamics(Parameter fitting, Real alpha, Real sigma)
         : ShortRateDynamics(
-              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(alpha, sigma))),
+              std::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(alpha, sigma))),
           fitting_(std::move(fitting)) {}
 
         Real variable(Time t, Rate r) const override { return std::log(r) - fitting_(t); }

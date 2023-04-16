@@ -24,7 +24,7 @@
 
 #include <ql/time/daycounter.hpp>
 #include <ql/time/frequency.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 
 namespace QuantLib {

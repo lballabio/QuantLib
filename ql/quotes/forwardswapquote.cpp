@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    ForwardSwapQuote::ForwardSwapQuote(ext::shared_ptr<SwapIndex> swapIndex,
+    ForwardSwapQuote::ForwardSwapQuote(std::shared_ptr<SwapIndex> swapIndex,
                                        Handle<Quote> spread,
                                        const Period& fwdStart)
     : swapIndex_(std::move(swapIndex)), spread_(std::move(spread)), fwdStart_(fwdStart) {

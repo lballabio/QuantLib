@@ -40,8 +40,8 @@ namespace QuantLib {
         class engine;
         ContinuousFloatingLookbackOption(
                           Real currentMinmax,
-                          const ext::shared_ptr<TypePayoff>& payoff,
-                          const ext::shared_ptr<Exercise>& exercise);
+                          const std::shared_ptr<TypePayoff>& payoff,
+                          const std::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
@@ -57,8 +57,8 @@ namespace QuantLib {
         class engine;
         ContinuousFixedLookbackOption(
                           Real currentMinmax,
-                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                          const ext::shared_ptr<Exercise>& exercise);
+                          const std::shared_ptr<StrikedTypePayoff>& payoff,
+                          const std::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
@@ -89,8 +89,8 @@ namespace QuantLib {
                           Real currentMinmax,
                           Real lambda,
                           Date lookbackPeriodEnd,
-                          const ext::shared_ptr<TypePayoff>& payoff,
-                          const ext::shared_ptr<Exercise>& exercise);
+                          const std::shared_ptr<TypePayoff>& payoff,
+                          const std::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
@@ -125,8 +125,8 @@ namespace QuantLib {
         class engine;
         ContinuousPartialFixedLookbackOption(
                           Date lookbackPeriodStart,
-                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                          const ext::shared_ptr<Exercise>& exercise);
+                          const std::shared_ptr<StrikedTypePayoff>& payoff,
+                          const std::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:

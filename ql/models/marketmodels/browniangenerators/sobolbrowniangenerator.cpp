@@ -213,9 +213,9 @@ namespace QuantLib {
                                     SobolRsg::DirectionIntegers integers)
     : ordering_(ordering), seed_(seed), integers_(integers) {}
 
-    ext::shared_ptr<BrownianGenerator>
+    std::shared_ptr<BrownianGenerator>
     SobolBrownianGeneratorFactory::create(Size factors, Size steps) const {
-        return ext::shared_ptr<BrownianGenerator>(
+        return std::shared_ptr<BrownianGenerator>(
                          new SobolBrownianGenerator(factors, steps, ordering_,
                                                     seed_, integers_));
     }

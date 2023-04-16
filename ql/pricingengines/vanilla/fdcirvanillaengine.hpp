@@ -46,18 +46,18 @@ namespace QuantLib {
     class FdCIRVanillaEngine : public DividendVanillaOption::engine {
         QL_DEPRECATED_ENABLE_WARNING
       public:
-        FdCIRVanillaEngine(ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-                           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        FdCIRVanillaEngine(std::shared_ptr<CoxIngersollRossProcess> cirProcess,
+                           std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
                            Size tGrid,
                            Size xGrid,
                            Size vGrid,
                            Size dampingSteps,
                            Real rho,
                            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::ModifiedHundsdorfer(),
-                           ext::shared_ptr<FdmQuantoHelper> quantoHelper = {});
+                           std::shared_ptr<FdmQuantoHelper> quantoHelper = {});
 
-        FdCIRVanillaEngine(ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-                           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        FdCIRVanillaEngine(std::shared_ptr<CoxIngersollRossProcess> cirProcess,
+                           std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
                            DividendSchedule dividends,
                            Size tGrid,
                            Size xGrid,
@@ -65,16 +65,16 @@ namespace QuantLib {
                            Size dampingSteps,
                            Real rho,
                            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::ModifiedHundsdorfer(),
-                           ext::shared_ptr<FdmQuantoHelper> quantoHelper = {});
+                           std::shared_ptr<FdmQuantoHelper> quantoHelper = {});
 
         void calculate() const override;
 
         FdmSolverDesc getSolverDesc(Real equityScaleFactor) const;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
-        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        std::shared_ptr<CoxIngersollRossProcess> cirProcess_;
+        std::shared_ptr<FdmQuantoHelper> quantoHelper_;
         DividendSchedule dividends_;
         bool explicitDividends_;
         const Size tGrid_, xGrid_, rGrid_, dampingSteps_;
@@ -84,12 +84,12 @@ namespace QuantLib {
 
     class MakeFdCIRVanillaEngine {
       public:
-        explicit MakeFdCIRVanillaEngine(ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-                                        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        explicit MakeFdCIRVanillaEngine(std::shared_ptr<CoxIngersollRossProcess> cirProcess,
+                                        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
                                         Real rho);
 
         MakeFdCIRVanillaEngine& withQuantoHelper(
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
+            const std::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
         MakeFdCIRVanillaEngine& withTGrid(Size tGrid);
         MakeFdCIRVanillaEngine& withXGrid(Size xGrid);
@@ -104,17 +104,17 @@ namespace QuantLib {
             const std::vector<Date>& dividendDates,
             const std::vector<Real>& dividendAmounts);
 
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
 
       private:
-        ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        std::shared_ptr<CoxIngersollRossProcess> cirProcess_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
         DividendSchedule dividends_;
         bool explicitDividends_ = false;
         const Real rho_;
         Size tGrid_ = 10, xGrid_ = 100, rGrid_ = 100, dampingSteps_ = 0;
-        ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
-        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        std::shared_ptr<FdmSchemeDesc> schemeDesc_;
+        std::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 }
 

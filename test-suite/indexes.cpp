@@ -30,8 +30,8 @@ using namespace boost::unit_test_framework;
 void IndexTest::testFixingObservability() {
     BOOST_TEST_MESSAGE("Testing observability of index fixings...");
 
-    ext::shared_ptr<InterestRateIndex> i1 = ext::make_shared<Euribor6M>();
-    ext::shared_ptr<InterestRateIndex> i2 = ext::make_shared<BMAIndex>();
+    std::shared_ptr<InterestRateIndex> i1 = std::make_shared<Euribor6M>();
+    std::shared_ptr<InterestRateIndex> i2 = std::make_shared<BMAIndex>();
 
     Flag f1;
     f1.registerWith(i1);
@@ -43,7 +43,7 @@ void IndexTest::testFixingObservability() {
 
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<Index> euribor = ext::make_shared<Euribor6M>();
+    std::shared_ptr<Index> euribor = std::make_shared<Euribor6M>();
 
     Date d1 = today;
     while (!euribor->isValidFixingDate(d1))
@@ -53,7 +53,7 @@ void IndexTest::testFixingObservability() {
     if (!f1.isUp())
         BOOST_FAIL("Observer was not notified of added Euribor fixing");
 
-    ext::shared_ptr<Index> bma = ext::make_shared<BMAIndex>();
+    std::shared_ptr<Index> bma = std::make_shared<BMAIndex>();
 
     Date d2 = today;
     while (!bma->isValidFixingDate(d2))
@@ -78,9 +78,9 @@ void IndexTest::testFixingHasHistoricalFixing() {
     auto fixingFound = true;
     auto fixingNotFound = false;
 
-    auto euribor3M = ext::make_shared<Euribor3M>();
-    auto euribor6M = ext::make_shared<Euribor6M>();
-    auto euribor6M_a = ext::make_shared<Euribor6M>();
+    auto euribor3M = std::make_shared<Euribor3M>();
+    auto euribor6M = std::make_shared<Euribor6M>();
+    auto euribor6M_a = std::make_shared<Euribor6M>();
 
     Date today = Settings::instance().evaluationDate();
     while (!euribor6M->isValidFixingDate(today))

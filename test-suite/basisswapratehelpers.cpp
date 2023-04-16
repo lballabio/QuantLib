@@ -60,37 +60,37 @@ namespace basisswapratehelpers_test {
         Handle<YieldTermStructure> knownForecastCurve(flatRate(0.01, Actual365Fixed()));
         Handle<YieldTermStructure> discountCurve(flatRate(0.005, Actual365Fixed()));
 
-        ext::shared_ptr<IborIndex> baseIndex, otherIndex;
+        std::shared_ptr<IborIndex> baseIndex, otherIndex;
 
         if (bootstrapBaseCurve) {
-            baseIndex = ext::make_shared<USDLibor>(3 * Months);
-            otherIndex = ext::make_shared<USDLibor>(6 * Months, knownForecastCurve);
+            baseIndex = std::make_shared<USDLibor>(3 * Months);
+            otherIndex = std::make_shared<USDLibor>(6 * Months, knownForecastCurve);
         } else {
-            baseIndex = ext::make_shared<USDLibor>(3 * Months, knownForecastCurve);
-            otherIndex = ext::make_shared<USDLibor>(6 * Months);
+            baseIndex = std::make_shared<USDLibor>(3 * Months, knownForecastCurve);
+            otherIndex = std::make_shared<USDLibor>(6 * Months);
         }
 
-        std::vector<ext::shared_ptr<RateHelper>> helpers;
+        std::vector<std::shared_ptr<RateHelper>> helpers;
         for (auto q : quotes) {
-            auto h = ext::make_shared<IborIborBasisSwapRateHelper>(
-                Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis)),
+            auto h = std::make_shared<IborIborBasisSwapRateHelper>(
+                Handle<Quote>(std::make_shared<SimpleQuote>(q.basis)),
                 Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
                 baseIndex, otherIndex, discountCurve, bootstrapBaseCurve);
             helpers.push_back(h);
         }
 
-        auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
+        auto bootstrappedCurve = std::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
             (0, calendar, helpers, Actual365Fixed());
 
         Date today = Settings::instance().evaluationDate();
         Date spot = calendar.advance(today, settlementDays, Days);
 
         if (bootstrapBaseCurve) {
-            baseIndex = ext::make_shared<USDLibor>(3 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
-            otherIndex = ext::make_shared<USDLibor>(6 * Months, knownForecastCurve);
+            baseIndex = std::make_shared<USDLibor>(3 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
+            otherIndex = std::make_shared<USDLibor>(6 * Months, knownForecastCurve);
         } else {
-            baseIndex = ext::make_shared<USDLibor>(3 * Months, knownForecastCurve);
-            otherIndex = ext::make_shared<USDLibor>(6 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
+            baseIndex = std::make_shared<USDLibor>(3 * Months, knownForecastCurve);
+            otherIndex = std::make_shared<USDLibor>(6 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
         }
 
         for (auto q : quotes) {
@@ -119,7 +119,7 @@ namespace basisswapratehelpers_test {
                 .withNotionals(100.0);
 
             Swap swap(leg1, leg2);
-            swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+            swap.setPricingEngine(std::make_shared<DiscountingSwapEngine>(discountCurve));
 
             Real NPV = swap.NPV();
             Real tolerance = 1e-8;
@@ -153,25 +153,25 @@ namespace basisswapratehelpers_test {
         if (externalDiscountCurve)
             discountCurve.linkTo(flatRate(0.005, Actual365Fixed()));
 
-        auto baseIndex = ext::make_shared<Sofr>(knownForecastCurve);
-        auto otherIndex = ext::make_shared<USDLibor>(6 * Months);
+        auto baseIndex = std::make_shared<Sofr>(knownForecastCurve);
+        auto otherIndex = std::make_shared<USDLibor>(6 * Months);
 
-        std::vector<ext::shared_ptr<RateHelper>> helpers;
+        std::vector<std::shared_ptr<RateHelper>> helpers;
         for (auto q : quotes) {
-            auto h = ext::make_shared<OvernightIborBasisSwapRateHelper>(
-                Handle<Quote>(ext::make_shared<SimpleQuote>(q.basis)),
+            auto h = std::make_shared<OvernightIborBasisSwapRateHelper>(
+                Handle<Quote>(std::make_shared<SimpleQuote>(q.basis)),
                 Period(q.n, q.units), settlementDays, calendar, convention, endOfMonth,
                 baseIndex, otherIndex, discountCurve);
             helpers.push_back(h);
         }
 
-        auto bootstrappedCurve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
+        auto bootstrappedCurve = std::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>
             (0, calendar, helpers, Actual365Fixed());
 
         Date today = Settings::instance().evaluationDate();
         Date spot = calendar.advance(today, settlementDays, Days);
 
-        otherIndex = ext::make_shared<USDLibor>(6 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
+        otherIndex = std::make_shared<USDLibor>(6 * Months, Handle<YieldTermStructure>(bootstrappedCurve));
 
         for (auto q : quotes) {
             // create swaps and check they're fair
@@ -193,9 +193,9 @@ namespace basisswapratehelpers_test {
 
             Swap swap(leg1, leg2);
             if (externalDiscountCurve) {
-                swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+                swap.setPricingEngine(std::make_shared<DiscountingSwapEngine>(discountCurve));
             } else {
-                swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
+                swap.setPricingEngine(std::make_shared<DiscountingSwapEngine>(
                                               Handle<YieldTermStructure>(bootstrappedCurve)));
             }
 

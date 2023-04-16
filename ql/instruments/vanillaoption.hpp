@@ -37,8 +37,8 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class VanillaOption : public OneAssetOption {
       public:
-        VanillaOption(const ext::shared_ptr<StrikedTypePayoff>&,
-                      const ext::shared_ptr<Exercise>&);
+        VanillaOption(const std::shared_ptr<StrikedTypePayoff>&,
+                      const std::shared_ptr<Exercise>&);
 
         /*! \warning currently, this method returns the Black-Scholes
                      implied volatility using analytic formulas for
@@ -61,7 +61,7 @@ namespace QuantLib {
         //@{
         Volatility impliedVolatility(
              Real price,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy = 1.0e-4,
              Size maxEvaluations = 100,
              Volatility minVol = 1.0e-7,
@@ -69,7 +69,7 @@ namespace QuantLib {
 
         Volatility impliedVolatility(
              Real price,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
              const DividendSchedule& dividends,
              Real accuracy = 1.0e-4,
              Size maxEvaluations = 100,

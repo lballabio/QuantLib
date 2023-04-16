@@ -56,8 +56,8 @@ namespace QuantLib {
     class KlugeExtOUProcess : public StochasticProcess {
       public:
         KlugeExtOUProcess(Real rho,
-                          ext::shared_ptr<ExtOUWithJumpsProcess> kluge,
-                          ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOU);
+                          std::shared_ptr<ExtOUWithJumpsProcess> kluge,
+                          std::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOU);
 
         Size size() const override;
         Size factors() const override;
@@ -67,15 +67,15 @@ namespace QuantLib {
         Matrix diffusion(Time t, const Array& x) const override;
         Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
-        ext::shared_ptr<ExtOUWithJumpsProcess> getKlugeProcess() const;
-        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> getExtOUProcess() const;
+        std::shared_ptr<ExtOUWithJumpsProcess> getKlugeProcess() const;
+        std::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> getExtOUProcess() const;
 
         Real rho() const;
 
       private:
         const Real rho_, sqrtMRho_;
-        const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess_;
-        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
+        const std::shared_ptr<ExtOUWithJumpsProcess> klugeProcess_;
+        const std::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
     };
 }
 #endif

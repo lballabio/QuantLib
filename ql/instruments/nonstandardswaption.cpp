@@ -24,9 +24,9 @@
 namespace QuantLib {
 
     NonstandardSwaption::NonstandardSwaption(const Swaption &fromSwaption)
-        : Option(ext::shared_ptr<Payoff>(),
+        : Option(std::shared_ptr<Payoff>(),
                  const_cast<Swaption &>(fromSwaption).exercise()),
-          swap_(ext::make_shared<NonstandardSwap>(
+          swap_(std::make_shared<NonstandardSwap>(
               *fromSwaption.underlyingSwap())),
           settlementType_(fromSwaption.settlementType()),
           settlementMethod_(fromSwaption.settlementMethod()) {
@@ -34,11 +34,11 @@ namespace QuantLib {
         registerWith(swap_);
     }
 
-    NonstandardSwaption::NonstandardSwaption(ext::shared_ptr<NonstandardSwap> swap,
-                                             const ext::shared_ptr<Exercise>& exercise,
+    NonstandardSwaption::NonstandardSwaption(std::shared_ptr<NonstandardSwap> swap,
+                                             const std::shared_ptr<Exercise>& exercise,
                                              Settlement::Type delivery,
                                              Settlement::Method settlementMethod)
-    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
+    : Option(std::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
       settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
         registerWithObservables(swap_);
@@ -73,14 +73,14 @@ namespace QuantLib {
                                                   settlementMethod);
     }
 
-    std::vector<ext::shared_ptr<BlackCalibrationHelper>>
+    std::vector<std::shared_ptr<BlackCalibrationHelper>>
     NonstandardSwaption::calibrationBasket(
-        const ext::shared_ptr<SwapIndex>& standardSwapBase,
-        const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+        const std::shared_ptr<SwapIndex>& standardSwapBase,
+        const std::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
         const BasketGeneratingEngine::CalibrationBasketType basketType) const {
 
-        ext::shared_ptr<BasketGeneratingEngine> engine =
-            ext::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
+        std::shared_ptr<BasketGeneratingEngine> engine =
+            std::dynamic_pointer_cast<BasketGeneratingEngine>(engine_);
         QL_REQUIRE(engine, "engine is not a basket generating engine");
         engine_->reset();
         setupArguments(engine_->getArguments());

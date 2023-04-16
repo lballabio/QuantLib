@@ -22,7 +22,7 @@
 
 namespace QuantLib {
     namespace chebyshev_interpolation_detail {
-        Array apply(const Array& x, const ext::function<Real(Real)>& f) {
+        Array apply(const Array& x, const std::function<Real(Real)>& f) {
             Array t(x.size());
             std::transform(std::begin(x), std::end(x), std::begin(t), f);
 
@@ -34,7 +34,7 @@ namespace QuantLib {
         const Array& y, PointsType pointsType)
     : x_(ChebyshevInterpolation::nodes(y.size(), pointsType)), y_(y) {
 
-        impl_ = ext::make_shared<detail::LagrangeInterpolationImpl<
+        impl_ = std::make_shared<detail::LagrangeInterpolationImpl<
             Array::const_iterator, Array::const_iterator> >(
             std::begin(x_), std::end(x_), std::begin(y_)
         );
@@ -43,7 +43,7 @@ namespace QuantLib {
     }
 
     ChebyshevInterpolation::ChebyshevInterpolation(
-        Size n, const ext::function<Real(Real)>& f, PointsType pointsType)
+        Size n, const std::function<Real(Real)>& f, PointsType pointsType)
     : ChebyshevInterpolation(
           chebyshev_interpolation_detail::apply(
               ChebyshevInterpolation::nodes(n, pointsType), f),

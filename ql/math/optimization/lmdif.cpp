@@ -1375,7 +1375,7 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-if (jacFcn == QL_NULL_FUNCTION) // use user supplied jacobian calculation
+if (jacFcn == nullptr) // use user supplied jacobian calculation
     fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
 else
     jacFcn(m,n,x,fjac,&iflag);

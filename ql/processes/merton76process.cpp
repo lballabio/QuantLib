@@ -31,7 +31,7 @@ namespace QuantLib {
                                      Handle<Quote> jumpInt,
                                      Handle<Quote> logJMean,
                                      Handle<Quote> logJVol,
-                                     const ext::shared_ptr<discretization>& disc)
+                                     const std::shared_ptr<discretization>& disc)
     : StochasticProcess1D(disc), blackProcess_(
           new BlackScholesMertonProcess(stateVariable, dividendTS, riskFreeTS, blackVolTS, disc)),
       jumpIntensity_(std::move(jumpInt)), logMeanJump_(std::move(logJMean)),

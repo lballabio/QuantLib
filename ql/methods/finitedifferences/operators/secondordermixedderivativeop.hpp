@@ -33,7 +33,7 @@ namespace QuantLib {
     class SecondOrderMixedDerivativeOp : public NinePointLinearOp {
     public:
         SecondOrderMixedDerivativeOp(
-            Size d0, Size d1, const ext::shared_ptr<FdmMesher>& mesher);
+            Size d0, Size d1, const std::shared_ptr<FdmMesher>& mesher);
     };
 }
 

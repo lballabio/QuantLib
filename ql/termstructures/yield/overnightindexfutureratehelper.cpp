@@ -52,14 +52,14 @@ namespace QuantLib {
         const Date& valueDate,
         // delivery date
         const Date& maturityDate,
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+        const std::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
         RateAveraging::Type averagingMethod)
     : RateHelper(price) {
-        ext::shared_ptr<Payoff> payoff;
-        ext::shared_ptr<OvernightIndex> index =
-            ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
-        future_ = ext::make_shared<OvernightIndexFuture>(
+        std::shared_ptr<Payoff> payoff;
+        std::shared_ptr<OvernightIndex> index =
+            std::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
+        future_ = std::make_shared<OvernightIndexFuture>(
             index, valueDate, maturityDate, convexityAdjustment, averagingMethod);
         earliestDate_ = valueDate;
         latestDate_ = maturityDate;
@@ -75,7 +75,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        std::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         RateHelper::setTermStructure(t);
@@ -103,7 +103,7 @@ namespace QuantLib {
     : OvernightIndexFutureRateHelper(price,
             getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
             getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
-            ext::make_shared<Sofr>(),
+            std::make_shared<Sofr>(),
             convexityAdjustment,
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
@@ -122,11 +122,11 @@ namespace QuantLib {
         Frequency referenceFreq,
         Real convexityAdjustment)
     : OvernightIndexFutureRateHelper(
-            Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
+            Handle<Quote>(std::make_shared<SimpleQuote>(price)),
             getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
             getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
-            ext::make_shared<Sofr>(),
-            Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
+            std::make_shared<Sofr>(),
+            Handle<Quote>(std::make_shared<SimpleQuote>(convexityAdjustment)),
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
             "only monthly and quarterly SOFR futures accepted");

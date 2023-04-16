@@ -27,10 +27,10 @@ namespace QuantLib {
 
     SecondDerivativeOp::SecondDerivativeOp(
         Size direction,
-        const ext::shared_ptr<FdmMesher>& mesher)
+        const std::shared_ptr<FdmMesher>& mesher)
     : TripleBandLinearOp(direction, mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {

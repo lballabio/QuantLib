@@ -42,8 +42,8 @@ namespace QuantLib {
         class arguments;
         class engine;
         DividendVanillaOption(
-                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                      const ext::shared_ptr<Exercise>& exercise,
+                      const std::shared_ptr<StrikedTypePayoff>& payoff,
+                      const std::shared_ptr<Exercise>& exercise,
                       const std::vector<Date>& dividendDates,
                       const std::vector<Real>& dividends);
         /*! \warning see VanillaOption for notes on implied-volatility
@@ -51,7 +51,7 @@ namespace QuantLib {
         */
         Volatility impliedVolatility(
              Real price,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy = 1.0e-4,
              Size maxEvaluations = 100,
              Volatility minVol = 1.0e-7,

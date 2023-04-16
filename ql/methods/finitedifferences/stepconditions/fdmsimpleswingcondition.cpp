@@ -25,8 +25,8 @@ namespace QuantLib {
 
     FdmSimpleSwingCondition::FdmSimpleSwingCondition(
         std::vector<Time> exerciseTimes,
-        ext::shared_ptr<FdmMesher> mesher,
-        ext::shared_ptr<FdmInnerValueCalculator> calculator,
+        std::shared_ptr<FdmMesher> mesher,
+        std::shared_ptr<FdmInnerValueCalculator> calculator,
         Size swingDirection,
         Size minExercises)
     : exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)),
@@ -44,7 +44,7 @@ namespace QuantLib {
 
             const Size d = std::distance(iter, exerciseTimes_.end());
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const std::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
 
             QL_REQUIRE(layout->size() == a.size(),
                        "inconsistent array dimensions");

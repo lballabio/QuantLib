@@ -179,16 +179,16 @@ void BrownianBridgeTest::testPathGeneration() {
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> gsg(sobol);
 
     Date today = Settings::instance().evaluationDate();
-    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
-    Handle<YieldTermStructure> r(ext::shared_ptr<YieldTermStructure>(
+    Handle<Quote> x0(std::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<YieldTermStructure> r(std::shared_ptr<YieldTermStructure>(
                                new FlatForward(today,0.06,Actual365Fixed())));
-    Handle<YieldTermStructure> q(ext::shared_ptr<YieldTermStructure>(
+    Handle<YieldTermStructure> q(std::shared_ptr<YieldTermStructure>(
                                new FlatForward(today,0.03,Actual365Fixed())));
     Handle<BlackVolTermStructure> sigma(
-                   ext::shared_ptr<BlackVolTermStructure>(
+                   std::shared_ptr<BlackVolTermStructure>(
                           new BlackConstantVol(today, NullCalendar(), 0.20,Actual365Fixed())));
 
-    ext::shared_ptr<StochasticProcess1D> process(
+    std::shared_ptr<StochasticProcess1D> process(
                               new BlackScholesMertonProcess(x0, q, r, sigma));
 
 

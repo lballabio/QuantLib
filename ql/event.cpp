@@ -20,13 +20,13 @@
 
 #include <ql/event.hpp>
 #include <ql/patterns/visitor.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <ql/settings.hpp>
 
 namespace QuantLib {
 
     bool Event::hasOccurred(const Date& d, // refDate
-                            ext::optional<bool> includeRefDate) const {
+                            std::optional<bool> includeRefDate) const {
         Date refDate =
             d != Date() ? d : Settings::instance().evaluationDate();
         bool includeRefDateEvent = includeRefDate ? // NOLINT(readability-implicit-bool-conversion)

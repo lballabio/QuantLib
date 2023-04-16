@@ -78,7 +78,7 @@ namespace QuantLib {
                                 BusinessDayConvention fixConvention,
                                 DayCounter dayCounter,
                                 Rate fixedRate,
-                                const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+                                const std::shared_ptr<ZeroInflationIndex>& infIndex,
                                 const Period& observationLag,
                                 CPI::InterpolationType observationInterpolation,
                                 bool adjustInfObsDates = false,
@@ -99,7 +99,7 @@ namespace QuantLib {
         DayCounter dayCounter() const { return dayCounter_; }
         //! \f$ K \f$ in the above formula.
         Rate fixedRate() const { return fixedRate_; }
-        ext::shared_ptr<ZeroInflationIndex> inflationIndex() const {
+        std::shared_ptr<ZeroInflationIndex> inflationIndex() const {
             return infIndex_;
         }
         Period observationLag() const { return observationLag_; }
@@ -131,7 +131,7 @@ namespace QuantLib {
         Calendar fixCalendar_;
         BusinessDayConvention fixConvention_;
         Rate fixedRate_;
-        ext::shared_ptr<ZeroInflationIndex> infIndex_;
+        std::shared_ptr<ZeroInflationIndex> infIndex_;
         Period observationLag_;
         CPI::InterpolationType observationInterpolation_;
         bool adjustInfObsDates_;

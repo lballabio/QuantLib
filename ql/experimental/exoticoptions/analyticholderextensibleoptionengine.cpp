@@ -30,7 +30,7 @@ using std::sqrt;
 namespace QuantLib {
 
     AnalyticHolderExtensibleOptionEngine::AnalyticHolderExtensibleOptionEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -54,8 +54,8 @@ namespace QuantLib {
         Real rho = sqrt(t1 / T2);
 
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
 
         //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
         Real vol = volatility();
@@ -71,8 +71,8 @@ namespace QuantLib {
              y2 = this->y2(payoff->optionType());
         if (payoff->optionType() == Option::Call) {
             //instantiate payoff function for a call
-            ext::shared_ptr<PlainVanillaPayoff> vanillaCallPayoff =
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, X1);
+            std::shared_ptr<PlainVanillaPayoff> vanillaCallPayoff =
+                std::make_shared<PlainVanillaPayoff>(Option::Call, X1);
             Real BSM = BlackScholesCalculator(vanillaCallPayoff, S, growth, vol*sqrt(t1), discount).value();
             result = BSM
                 + S*exp((b - r)*T2)*M2(y1, y2, minusInf, z1, rho)
@@ -81,8 +81,8 @@ namespace QuantLib {
                 - A*exp(-r*t1)*N2(y1 - vol*sqrt(t1), y2 - vol*sqrt(t1));
         } else {
             //instantiate payoff function for a call
-            ext::shared_ptr<PlainVanillaPayoff> vanillaPutPayoff =
-                ext::make_shared<PlainVanillaPayoff>(Option::Put, X1);
+            std::shared_ptr<PlainVanillaPayoff> vanillaPutPayoff =
+                std::make_shared<PlainVanillaPayoff>(Option::Put, X1);
             result = BlackScholesCalculator(vanillaPutPayoff, S, growth, vol*sqrt(t1), discount).value()
                 - S*exp((b - r)*T2)*M2(y1, y2, minusInf, -z1, rho)
                 + X2*exp(-r*T2)*M2(y1 - vol*sqrt(t1), y2 - vol*sqrt(t1), minusInf, -z1 + vol*sqrt(T2), rho)
@@ -237,8 +237,8 @@ namespace QuantLib {
         Time t = T2 - t1;
 
         //payoff
-        ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff =
-            ext::make_shared<PlainVanillaPayoff>(optionType, X2);
+        std::shared_ptr<PlainVanillaPayoff > vanillaPayoff =
+            std::make_shared<PlainVanillaPayoff>(optionType, X2);
 
         //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
         vol = volatility() * std::sqrt(t);
@@ -262,8 +262,8 @@ namespace QuantLib {
     }
 
     Real AnalyticHolderExtensibleOptionEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }

@@ -36,9 +36,9 @@ namespace QuantLib {
     class Fdm2dBlackScholesOp : public FdmLinearOpComposite {
       public:
         Fdm2dBlackScholesOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+            const std::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+            const std::shared_ptr<GeneralizedBlackScholesProcess>& p2,
             Real correlation,
             Time maturity,
             bool localVol = false,
@@ -57,9 +57,9 @@ namespace QuantLib {
         std::vector<SparseMatrix> toMatrixDecomp() const override;
 
       private:
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;
-        const ext::shared_ptr<LocalVolTermStructure> localVol1_, localVol2_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;
+        const std::shared_ptr<LocalVolTermStructure> localVol1_, localVol2_;
         const Array x_, y_;
         
         Real currentForwardRate_;

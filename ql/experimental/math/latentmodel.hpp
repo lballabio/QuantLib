@@ -71,19 +71,19 @@ namespace QuantLib {
     public:
         // Interface with actual integrators:
         // integral of a scalar function
-        virtual Real integrate(const ext::function<Real (
+        virtual Real integrate(const std::function<Real (
             const std::vector<Real>& arg)>& f) const = 0;
         // integral of a vector function
         /* I had to use a different name, since the compiler does not
         recognise the overload; MSVC sees the argument as 
-        ext::function<Signature> in both cases....   
+        std::function<Signature> in both cases....   
         I could do the as with the quadratures and have this as a template 
         function and spez for the vector case but I prefer to understand
         why the overload fails....
                     FIX ME
         */
         virtual std::vector<Real> integrateV(
-            const ext::function<std::vector<Real>  (
+            const std::function<std::vector<Real>  (
             const std::vector<Real>& arg)>& f) const {
             QL_FAIL("No vector integration provided");
         }
@@ -122,11 +122,11 @@ namespace QuantLib {
     public:
         IntegrationBase(Size dimension, Size order) 
         : GaussianQuadMultidimIntegrator(dimension, order) {}
-        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+        Real integrate(const std::function<Real(const std::vector<Real>& arg)>& f) const override {
             return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
         std::vector<Real> integrateV(
-            const ext::function<std::vector<Real>(const std::vector<Real>& arg)>& f)
+            const std::function<std::vector<Real>(const std::vector<Real>& arg)>& f)
             const override {
             return GaussianQuadMultidimIntegrator::integrate<std::vector<Real>>(f);
         }
@@ -139,11 +139,11 @@ namespace QuantLib {
         public MultidimIntegral, public LMIntegration {
     public:
         IntegrationBase(
-            const std::vector<ext::shared_ptr<Integrator> >& integrators, 
+            const std::vector<std::shared_ptr<Integrator> >& integrators, 
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
-        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+        Real integrate(const std::function<Real(const std::vector<Real>& arg)>& f) const override {
             return MultidimIntegral::operator()(f, a_, b_);
         }
         // vector version here....
@@ -451,7 +451,7 @@ namespace QuantLib {
         */
         class IntegrationFactory {
         public:
-            static ext::shared_ptr<LMIntegration> createLMIntegration(
+            static std::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
                 LatentModelIntegrationType::LatentModelIntegrationType type = 
                     #ifndef QL_PATCH_SOLARIS
@@ -464,16 +464,16 @@ namespace QuantLib {
                     #ifndef QL_PATCH_SOLARIS
                     case LatentModelIntegrationType::GaussianQuadrature:
                         return 
-                            ext::make_shared<
+                            std::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                     #endif
                     case LatentModelIntegrationType::Trapezoid:
                         {
-                        std::vector<ext::shared_ptr<Integrator> > integrals;
+                        std::vector<std::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
-                            ext::make_shared<TrapezoidIntegral<Default> >(
+                            std::make_shared<TrapezoidIntegral<Default> >(
                                 1.e-4, 20));
                         /* This integration domain is tailored for the T 
                         distribution; it is too wide for normals or Ts of high
@@ -486,7 +486,7 @@ namespace QuantLib {
                         here in some cases.
                         */
                         return 
-                          ext::make_shared<IntegrationBase<MultidimIntegral> >
+                          std::make_shared<IntegrationBase<MultidimIntegral> >
                                (integrals, -35., 35.);
                         }
                     default:
@@ -584,7 +584,7 @@ namespace QuantLib {
          computes its expected value).
         */
         Real integratedExpectedValue(
-            const ext::function<Real(const std::vector<Real>& v1)>& f) const {
+            const std::function<Real(const std::vector<Real>& v1)>& f) const {
             // function composition: composes the integrand with the density 
             //   through a product.
             return integration()->integrate(
@@ -594,8 +594,8 @@ namespace QuantLib {
          computes its expected value).
         */
         std::vector<Real> integratedExpectedValueV(
-            // const ext::function<std::vector<Real>(
-            const ext::function<std::vector<Real>(
+            // const std::function<std::vector<Real>(
+            const std::function<std::vector<Real>(
                 const std::vector<Real>& v1)>& f ) const {
             detail::multiplyV M;
             return integration()->integrateV(//see note in LMIntegrators base class
@@ -605,7 +605,7 @@ namespace QuantLib {
         // Integrable models must provide their integrator.
         // Arguable, not having the integration in the LM class saves that 
         //   memory but have an entry in the VT... 
-        virtual const ext::shared_ptr<LMIntegration>& integration() const {
+        virtual const std::shared_ptr<LMIntegration>& integration() const {
             QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}

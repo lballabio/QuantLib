@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     LogNormalFwdRateBalland::LogNormalFwdRateBalland(
-                           const ext::shared_ptr<MarketModel>& marketModel,
+                           const std::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
                            const std::vector<Size>& numeraires,
                            Size initialStep)

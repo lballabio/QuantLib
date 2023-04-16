@@ -87,7 +87,7 @@ namespace QuantLib {
     }
 
     void CommodityCurve::setBasisOfCurve(
-                      const ext::shared_ptr<CommodityCurve>& basisOfCurve) {
+                      const std::shared_ptr<CommodityCurve>& basisOfCurve) {
         basisOfCurve_ = basisOfCurve;
         basisOfCurveUomConversionFactor_ =
             CommodityPricingHelper::calculateUomConversionFactor(

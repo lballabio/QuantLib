@@ -24,10 +24,10 @@
 
 namespace QuantLib {
 
-    DigitalPathPricer::DigitalPathPricer(ext::shared_ptr<CashOrNothingPayoff> payoff,
-                                         ext::shared_ptr<AmericanExercise> exercise,
+    DigitalPathPricer::DigitalPathPricer(std::shared_ptr<CashOrNothingPayoff> payoff,
+                                         std::shared_ptr<AmericanExercise> exercise,
                                          Handle<YieldTermStructure> discountTS,
-                                         ext::shared_ptr<StochasticProcess1D> diffProcess,
+                                         std::shared_ptr<StochasticProcess1D> diffProcess,
                                          PseudoRandom::ursg_type sequenceGen)
     : payoff_(std::move(payoff)), exercise_(std::move(exercise)),
       diffProcess_(std::move(diffProcess)), sequenceGen_(std::move(sequenceGen)),

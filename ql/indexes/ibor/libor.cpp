@@ -116,9 +116,9 @@ namespace QuantLib {
         return jointCalendar_;
     }
 
-    ext::shared_ptr<IborIndex> Libor::clone(
+    std::shared_ptr<IborIndex> Libor::clone(
                                   const Handle<YieldTermStructure>& h) const {
-        return ext::shared_ptr<IborIndex>(new Libor(familyName(),
+        return std::shared_ptr<IborIndex>(new Libor(familyName(),
                                                       tenor(),
                                                       fixingDays(),
                                                       currency(),

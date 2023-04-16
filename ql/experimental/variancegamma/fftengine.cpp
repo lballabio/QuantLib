@@ -26,7 +26,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    FFTEngine::FFTEngine(ext::shared_ptr<StochasticProcess1D> process, Real logStrikeSpacing)
+    FFTEngine::FFTEngine(std::shared_ptr<StochasticProcess1D> process, Real logStrikeSpacing)
     : process_(std::move(process)), lambda_(logStrikeSpacing) {
         registerWith(process_);
     }
@@ -36,8 +36,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
             "not an European Option");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         auto r1 = resultMap_.find(arguments_.exercise->lastDate());
@@ -64,35 +64,35 @@ namespace QuantLib {
         VanillaOption::engine::update();
     }
 
-    void FFTEngine::calculateUncached(const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                                      const ext::shared_ptr<Exercise>& exercise) const {
-        ext::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
-        std::vector<ext::shared_ptr<Instrument> > optionList;
+    void FFTEngine::calculateUncached(const std::shared_ptr<StrikedTypePayoff>& payoff,
+                                      const std::shared_ptr<Exercise>& exercise) const {
+        std::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
+        std::vector<std::shared_ptr<Instrument> > optionList;
         optionList.push_back(option);
 
-        ext::shared_ptr<FFTEngine> tempEngine(clone().release());
+        std::shared_ptr<FFTEngine> tempEngine(clone().release());
         tempEngine->precalculate(optionList);
         option->setPricingEngine(tempEngine);
         results_.value = option->NPV();
     }
 
-    void FFTEngine::precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList) {
+    void FFTEngine::precalculate(const std::vector<std::shared_ptr<Instrument> >& optionList) {
         // Group payoffs by expiry date
         // as with FFT we can compute a bunch of these at once
         resultMap_.clear();
 
-        typedef std::vector<ext::shared_ptr<StrikedTypePayoff> > PayoffList;
+        typedef std::vector<std::shared_ptr<StrikedTypePayoff> > PayoffList;
         typedef std::map<Date, PayoffList> PayoffMap;
         PayoffMap payoffMap;
 
         for (const auto& optIt : optionList) {
-            ext::shared_ptr<VanillaOption> option = ext::dynamic_pointer_cast<VanillaOption>(optIt);
+            std::shared_ptr<VanillaOption> option = std::dynamic_pointer_cast<VanillaOption>(optIt);
             QL_REQUIRE(option, "instrument must be option");
             QL_REQUIRE(option->exercise()->type() == Exercise::European,
                 "not an European Option");
 
-            ext::shared_ptr<StrikedTypePayoff> payoff =
-                ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+            std::shared_ptr<StrikedTypePayoff> payoff =
+                std::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
             QL_REQUIRE(payoff, "non-striked payoff given");
 
             payoffMap[option->exercise()->lastDate()].push_back(payoff);

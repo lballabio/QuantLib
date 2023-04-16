@@ -37,7 +37,7 @@ namespace QuantLib {
     class NinePointLinearOp : public FdmLinearOp {
       public:
         NinePointLinearOp(Size d0, Size d1,
-                const ext::shared_ptr<FdmMesher>& mesher);
+                const std::shared_ptr<FdmMesher>& mesher);
         NinePointLinearOp(const NinePointLinearOp& m);
         NinePointLinearOp(NinePointLinearOp&& m) noexcept;
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
@@ -61,7 +61,7 @@ namespace QuantLib {
         std::unique_ptr<Real[]> a01_, a11_, a21_;
         std::unique_ptr<Real[]> a02_, a12_, a22_;
 
-        ext::shared_ptr<FdmMesher> mesher_;
+        std::shared_ptr<FdmMesher> mesher_;
     };
 
 

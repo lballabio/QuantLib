@@ -87,7 +87,7 @@ namespace QuantLib {
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
         };
-        static ext::shared_ptr<DayCounter::Impl> implementation(Convention c, 
+        static std::shared_ptr<DayCounter::Impl> implementation(Convention c, 
                                                                 const Schedule& schedule);
       public:
         explicit ActualActual(Convention c,

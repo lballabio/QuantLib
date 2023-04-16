@@ -34,7 +34,7 @@ namespace QuantLib {
 
 class FdmDupire1dOp : public FdmLinearOpComposite {
   public:
-    FdmDupire1dOp(const ext::shared_ptr<FdmMesher> &mesher,
+    FdmDupire1dOp(const std::shared_ptr<FdmMesher> &mesher,
                   const Array &localVolatility);
 
     Size size() const override;
@@ -50,7 +50,7 @@ class FdmDupire1dOp : public FdmLinearOpComposite {
     std::vector<SparseMatrix> toMatrixDecomp() const override;
 
   private:
-    const ext::shared_ptr<FdmMesher> mesher_;
+    const std::shared_ptr<FdmMesher> mesher_;
     const Array localVolatility_;
     TripleBandLinearOp mapT_;
 };

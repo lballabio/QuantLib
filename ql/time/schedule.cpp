@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/optional.hpp>
+#include <optional>
 #include <ql/settings.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/schedule.hpp>
@@ -57,10 +57,10 @@ namespace QuantLib {
     Schedule::Schedule(const std::vector<Date>& dates,
                        Calendar calendar,
                        BusinessDayConvention convention,
-                       const ext::optional<BusinessDayConvention>& terminationDateConvention,
-                       const ext::optional<Period>& tenor,
-                       const ext::optional<DateGeneration::Rule>& rule,
-                       const ext::optional<bool>& endOfMonth,
+                       const std::optional<BusinessDayConvention>& terminationDateConvention,
+                       const std::optional<Period>& tenor,
+                       const std::optional<DateGeneration::Rule>& rule,
+                       const std::optional<bool>& endOfMonth,
                        std::vector<bool> isRegular)
     : tenor_(tenor), calendar_(std::move(calendar)), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule), dates_(dates),

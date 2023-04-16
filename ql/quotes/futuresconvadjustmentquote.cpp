@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const std::shared_ptr<IborIndex>& index,
                                                            const Date& futuresDate,
                                                            Handle<Quote> futuresQuote,
                                                            Handle<Quote> volatility,
@@ -38,7 +38,7 @@ namespace QuantLib {
         registerWith(meanReversion_);
     }
 
-    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const std::shared_ptr<IborIndex>& index,
                                                            const std::string& immCode,
                                                            Handle<Quote> futuresQuote,
                                                            Handle<Quote> volatility,

@@ -24,7 +24,7 @@ namespace QuantLib {
 
     Indonesia::Indonesia(Market market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> bejImpl(
+        static std::shared_ptr<Calendar::Impl> bejImpl(
                                                       new Indonesia::BejImpl);
         switch (market) {
           case BEJ:

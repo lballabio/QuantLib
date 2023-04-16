@@ -45,8 +45,8 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-        CdsOption(const ext::shared_ptr<CreditDefaultSwap>& swap,
-                  const ext::shared_ptr<Exercise>& exercise,
+        CdsOption(const std::shared_ptr<CreditDefaultSwap>& swap,
+                  const std::shared_ptr<Exercise>& exercise,
                   bool knocksOut = true);
 
         //! \name Instrument interface
@@ -56,7 +56,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const ext::shared_ptr<CreditDefaultSwap>& underlyingSwap() const {
+        const std::shared_ptr<CreditDefaultSwap>& underlyingSwap() const {
             return swap_;
         }
         //@}
@@ -76,7 +76,7 @@ namespace QuantLib {
         //@}
 
     private:
-        ext::shared_ptr<CreditDefaultSwap> swap_;
+        std::shared_ptr<CreditDefaultSwap> swap_;
         bool knocksOut_;
 
         mutable Real riskyAnnuity_;
@@ -91,7 +91,7 @@ namespace QuantLib {
       public:
         arguments() = default;
 
-        ext::shared_ptr<CreditDefaultSwap> swap;
+        std::shared_ptr<CreditDefaultSwap> swap;
         bool knocksOut;
         void validate() const override;
     };

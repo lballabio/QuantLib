@@ -35,8 +35,8 @@ namespace QuantLib {
     class PathMultiAssetOption : public Instrument {
       public:
         explicit PathMultiAssetOption(
-                        const ext::shared_ptr<PricingEngine>& engine
-                                        = ext::shared_ptr<PricingEngine>());
+                        const std::shared_ptr<PricingEngine>& engine
+                                        = std::shared_ptr<PricingEngine>());
 
         //! \name Instrument interface
         //@{
@@ -48,7 +48,7 @@ namespace QuantLib {
 
         void setupArguments(PricingEngine::arguments*) const override;
 
-        virtual ext::shared_ptr<PathPayoff> pathPayoff()  const = 0;
+        virtual std::shared_ptr<PathPayoff> pathPayoff()  const = 0;
         virtual std::vector<Date>             fixingDates() const = 0;
 
       protected:
@@ -62,7 +62,7 @@ namespace QuantLib {
         arguments() = default;
         void validate() const override;
 
-        ext::shared_ptr<PathPayoff>        payoff;
+        std::shared_ptr<PathPayoff>        payoff;
         std::vector<Date>                    fixingDates;
     };
 

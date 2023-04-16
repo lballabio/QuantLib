@@ -26,7 +26,7 @@ namespace QuantLib {
 
 
     AndreasenHugeLocalVolAdapter::AndreasenHugeLocalVolAdapter(
-        ext::shared_ptr<AndreasenHugeVolatilityInterpl> localVol)
+        std::shared_ptr<AndreasenHugeVolatilityInterpl> localVol)
     : localVol_(std::move(localVol)) {}
 
     Date AndreasenHugeLocalVolAdapter::maxDate() const {

@@ -60,10 +60,10 @@ namespace QuantLib {
         }
     }
     
-    ext::shared_ptr<FdmStepConditionComposite> 
+    std::shared_ptr<FdmStepConditionComposite> 
     FdmStepConditionComposite::joinConditions(
-                const ext::shared_ptr<FdmSnapshotCondition>& c1,
-                const ext::shared_ptr<FdmStepConditionComposite>& c2) {
+                const std::shared_ptr<FdmSnapshotCondition>& c1,
+                const std::shared_ptr<FdmStepConditionComposite>& c2) {
 
         std::list<std::vector<Time> > stoppingTimes;
         stoppingTimes.push_back(c2->stoppingTimes());
@@ -73,25 +73,25 @@ namespace QuantLib {
         conditions.push_back(c2);
         conditions.push_back(c1);
 
-        return ext::make_shared<FdmStepConditionComposite>(
+        return std::make_shared<FdmStepConditionComposite>(
             stoppingTimes, conditions);
     }
 
-    ext::shared_ptr<FdmStepConditionComposite> 
+    std::shared_ptr<FdmStepConditionComposite> 
     FdmStepConditionComposite::vanillaComposite(
                  const DividendSchedule& cashFlow,
-                 const ext::shared_ptr<Exercise>& exercise,
-                 const ext::shared_ptr<FdmMesher>& mesher,
-                 const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
+                 const std::shared_ptr<Exercise>& exercise,
+                 const std::shared_ptr<FdmMesher>& mesher,
+                 const std::shared_ptr<FdmInnerValueCalculator>& calculator,
                  const Date& refDate,
                  const DayCounter& dayCounter) {
         
         std::list<std::vector<Time> > stoppingTimes;
-        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<std::shared_ptr<StepCondition<Array> > > stepConditions;
 
         if (!cashFlow.empty()) {
             auto dividendCondition =
-                ext::make_shared<FdmDividendHandler>(cashFlow, mesher,
+                std::make_shared<FdmDividendHandler>(cashFlow, mesher,
                                                      refDate, dayCounter, 0);
             stepConditions.push_back(dividendCondition);
 
@@ -114,11 +114,11 @@ namespace QuantLib {
                    || exercise->type() == Exercise::Bermudan,
                    "exercise type is not supported");
         if (exercise->type() == Exercise::American) {
-            stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
+            stepConditions.push_back(std::shared_ptr<StepCondition<Array> >(
                           new FdmAmericanStepCondition(mesher,calculator)));
         }
         else if (exercise->type() == Exercise::Bermudan) {
-            ext::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
+            std::shared_ptr<FdmBermudanStepCondition> bermudanCondition(
                 new FdmBermudanStepCondition(exercise->dates(),
                                              refDate, dayCounter,
                                              mesher, calculator));
@@ -126,7 +126,7 @@ namespace QuantLib {
             stoppingTimes.push_back(bermudanCondition->exerciseTimes());
         }
         
-        return ext::make_shared<FdmStepConditionComposite>(
+        return std::make_shared<FdmStepConditionComposite>(
             stoppingTimes, stepConditions);
 
     }

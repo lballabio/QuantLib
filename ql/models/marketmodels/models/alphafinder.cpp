@@ -176,7 +176,7 @@ namespace
     }
 }
 
-AlphaFinder::AlphaFinder(ext::shared_ptr<AlphaForm> parametricform)
+AlphaFinder::AlphaFinder(std::shared_ptr<AlphaForm> parametricform)
 : parametricform_(std::move(parametricform)) {}
 
 

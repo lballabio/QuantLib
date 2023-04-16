@@ -34,9 +34,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
     TenorOptionletVTS::TenorOptionletVTS(const Handle<OptionletVolatilityStructure>& baseVTS,
-                                         ext::shared_ptr<IborIndex> baseIndex,
-                                         ext::shared_ptr<IborIndex> targIndex,
-                                         ext::shared_ptr<CorrelationStructure> correlation)
+                                         std::shared_ptr<IborIndex> baseIndex,
+                                         std::shared_ptr<IborIndex> targIndex,
+                                         std::shared_ptr<CorrelationStructure> correlation)
     : OptionletVolatilityStructure(baseVTS->referenceDate(),
                                    baseVTS->calendar(),
                                    baseVTS->businessDayConvention(),

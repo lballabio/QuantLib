@@ -43,8 +43,8 @@ namespace QuantLib {
         class arguments;
         class engine;
         NonstandardSwaption(const Swaption &fromSwaption);
-        NonstandardSwaption(ext::shared_ptr<NonstandardSwap> swap,
-                            const ext::shared_ptr<Exercise>& exercise,
+        NonstandardSwaption(std::shared_ptr<NonstandardSwap> swap,
+                            const std::shared_ptr<Exercise>& exercise,
                             Settlement::Type delivery = Settlement::Physical,
                             Settlement::Method settlementMethod = Settlement::PhysicalOTC);
 
@@ -61,19 +61,19 @@ namespace QuantLib {
         }
         Swap::Type type() const { return swap_->type(); }
 
-        const ext::shared_ptr<NonstandardSwap> &underlyingSwap() const {
+        const std::shared_ptr<NonstandardSwap> &underlyingSwap() const {
             return swap_;
         }
         //@}
-        std::vector<ext::shared_ptr<BlackCalibrationHelper>>
-        calibrationBasket(const ext::shared_ptr<SwapIndex>& standardSwapBase,
-                          const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+        std::vector<std::shared_ptr<BlackCalibrationHelper>>
+        calibrationBasket(const std::shared_ptr<SwapIndex>& standardSwapBase,
+                          const std::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
                           BasketGeneratingEngine::CalibrationBasketType basketType =
                               BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
 
       private:
         // arguments
-        ext::shared_ptr<NonstandardSwap> swap_;
+        std::shared_ptr<NonstandardSwap> swap_;
         Settlement::Type settlementType_;
         Settlement::Method settlementMethod_;
     };
@@ -83,7 +83,7 @@ namespace QuantLib {
                                            public Option::arguments {
       public:
         arguments() = default;
-        ext::shared_ptr<NonstandardSwap> swap;
+        std::shared_ptr<NonstandardSwap> swap;
         Settlement::Type settlementType;
         Settlement::Method settlementMethod;
         void validate() const override;

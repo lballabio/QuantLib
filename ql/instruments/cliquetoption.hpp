@@ -49,8 +49,8 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        CliquetOption(const ext::shared_ptr<PercentageStrikePayoff>&,
-                      const ext::shared_ptr<EuropeanExercise>& maturity,
+        CliquetOption(const std::shared_ptr<PercentageStrikePayoff>&,
+                      const std::shared_ptr<EuropeanExercise>& maturity,
                       std::vector<Date> resetDates);
         void setupArguments(PricingEngine::arguments*) const override;
 

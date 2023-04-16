@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     AndreasenHugeVolatilityAdapter::AndreasenHugeVolatilityAdapter(
-        ext::shared_ptr<AndreasenHugeVolatilityInterpl> volInterpl, Real eps)
+        std::shared_ptr<AndreasenHugeVolatilityInterpl> volInterpl, Real eps)
     : eps_(eps), volInterpl_(std::move(volInterpl)) {}
 
     Real AndreasenHugeVolatilityAdapter::blackVarianceImpl(Time t, Real strike)

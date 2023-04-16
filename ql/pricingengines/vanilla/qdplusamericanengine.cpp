@@ -123,7 +123,7 @@ namespace QuantLib {
 
     detail::QdPlusAddOnValue::QdPlusAddOnValue(
         Time T, Real S, Real K, Rate r, Rate q, Volatility vol,
-        const Real xmax, ext::shared_ptr<Interpolation> q_z)
+        const Real xmax, std::shared_ptr<Interpolation> q_z)
     : T_(T), S_(S), K_(K), xmax_(xmax),
       r_(r), q_(q), vol_(vol), q_z_(std::move(q_z)) {}
 
@@ -158,7 +158,7 @@ namespace QuantLib {
 
 
     detail::QdPutCallParityEngine::QdPutCallParityEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -168,7 +168,7 @@ namespace QuantLib {
                    "not an American option");
 
         const auto payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         const Real spot = process_->x0();
@@ -250,7 +250,7 @@ namespace QuantLib {
     }
 
     QdPlusAmericanEngine::QdPlusAmericanEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size interpolationPoints,
         QdPlusAmericanEngine::SolverType solverType,
         Real eps, Size maxIter)
@@ -342,13 +342,13 @@ namespace QuantLib {
         return std::pair<Size, Real>(eval.evaluations(), x);
     }
 
-    ext::shared_ptr<ChebyshevInterpolation>
+    std::shared_ptr<ChebyshevInterpolation>
         QdPlusAmericanEngine::getPutExerciseBoundary(
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
         const Real xmax = xMax(K, r, q);
 
-        return ext::make_shared<ChebyshevInterpolation>(
+        return std::make_shared<ChebyshevInterpolation>(
             interpolationPoints_,
             [&, this](Real z) {
                 const Real x_sq = 0.25*T*squared(1+z);
@@ -366,7 +366,7 @@ namespace QuantLib {
         if (r < 0.0 && q < r)
             QL_FAIL("double-boundary case q<r<0 for a put option is given");
 
-        const ext::shared_ptr<Interpolation> q_z
+        const std::shared_ptr<Interpolation> q_z
             = getPutExerciseBoundary(S, K, r, q, vol, T);
 
         const Real xmax = xMax(K, r, q);

@@ -54,10 +54,10 @@ namespace ultimate_forward_term_structure_test {
         Frequency fixedFrequency;
         Period floatingTenor;
 
-        ext::shared_ptr<IborIndex> index;
+        std::shared_ptr<IborIndex> index;
         RelinkableHandle<YieldTermStructure> ftkCurveHandle;
 
-        ext::shared_ptr<Quote> ufrRate;
+        std::shared_ptr<Quote> ufrRate;
         Period fsp;
         Real alpha;
 
@@ -74,7 +74,7 @@ namespace ultimate_forward_term_structure_test {
             fixedFrequency = Annual;
             floatingTenor = 6 * Months;
 
-            index = ext::shared_ptr<IborIndex>(
+            index = std::shared_ptr<IborIndex>(
                 new IborIndex("FTK_IDX", floatingTenor, settlementDays, ccy, calendar,
                               businessConvention, false, dayCount, ftkCurveHandle));
 
@@ -92,7 +92,7 @@ namespace ultimate_forward_term_structure_test {
                                 {40, Years, 0.0103},  {50, Years, 0.0103}};
 
             InterestRate ufr(0.023, dayCount, Compounded, Annual);
-            ufrRate = ext::shared_ptr<Quote>(
+            ufrRate = std::shared_ptr<Quote>(
                 new SimpleQuote(ufr.equivalentRate(Continuous, Annual, 1.0)));
             fsp = 20 * Years;
             alpha = 0.1;
@@ -102,21 +102,21 @@ namespace ultimate_forward_term_structure_test {
             settlement = calendar.advance(today, settlementDays, Days);
 
             Size nInstruments = LENGTH(swapData);
-            std::vector<ext::shared_ptr<RateHelper> > instruments(nInstruments);
+            std::vector<std::shared_ptr<RateHelper> > instruments(nInstruments);
             for (Size i = 0; i < nInstruments; i++) {
-                instruments[i] = ext::shared_ptr<RateHelper>(new SwapRateHelper(
+                instruments[i] = std::shared_ptr<RateHelper>(new SwapRateHelper(
                     swapData[i].rate, Period(swapData[i].n, swapData[i].units), calendar,
                     fixedFrequency, businessConvention, dayCount, index));
             }
 
-            ext::shared_ptr<YieldTermStructure> ftkCurve(
+            std::shared_ptr<YieldTermStructure> ftkCurve(
                 new PiecewiseYieldCurve<Discount, LogLinear>(settlement, instruments, dayCount));
             ftkCurve->enableExtrapolation();
             ftkCurveHandle.linkTo(ftkCurve);
         }
     };
 
-    ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const Period& fsp) {
+    std::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const Period& fsp) {
         DayCounter dc = ts->dayCounter();
         Real omega = 8.0 / 15.0;
         Time cutOff = ts->timeFromReference(ts->referenceDate() + fsp);
@@ -128,7 +128,7 @@ namespace ultimate_forward_term_structure_test {
             LLFRWeight w = llfrWeights[j];
             llfr += w.weight * ts->forwardRate(cutOff, w.ttm, Continuous, NoFrequency, true);
         }
-        return ext::shared_ptr<Quote>(new SimpleQuote(omega * llfr));
+        return std::shared_ptr<Quote>(new SimpleQuote(omega * llfr));
     }
 
     Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real alpha) {
@@ -145,9 +145,9 @@ void UltimateForwardTermStructureTest::testDutchCentralBankRates() {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkCurveHandle, vars.fsp);
+    std::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkCurveHandle, vars.fsp);
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
+    std::shared_ptr<YieldTermStructure> ufrTs(
         new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
                                          Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
@@ -184,9 +184,9 @@ void UltimateForwardTermStructureTest::testExtrapolatedForward() {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    std::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
+    std::shared_ptr<YieldTermStructure> ufrTs(
         new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
                                          Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
     Time cutOff = ufrTs->timeFromReference(ufrTs->referenceDate() + vars.fsp);
@@ -223,9 +223,9 @@ void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    std::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
+    std::shared_ptr<YieldTermStructure> ufrTs(
         new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
                                          Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
     Time cutOff = ufrTs->timeFromReference(ufrTs->referenceDate() + vars.fsp);
@@ -249,9 +249,9 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    std::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
-    ext::shared_ptr<YieldTermStructure> ufrTs(
+    std::shared_ptr<YieldTermStructure> ufrTs(
         new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
                                          Handle<Quote>(vars.ufrRate), vars.fsp, vars.alpha));
 
@@ -283,16 +283,16 @@ void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
 
     CommonVars vars;
 
-    ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
+    std::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
 
     BOOST_CHECK_THROW(
-        ext::shared_ptr<YieldTermStructure> ufrTsZeroPeriod(
+        std::shared_ptr<YieldTermStructure> ufrTsZeroPeriod(
             new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
                                              Handle<Quote>(vars.ufrRate), 0 * Years, vars.alpha)),
         Error);
 
     BOOST_CHECK_THROW(
-        ext::shared_ptr<YieldTermStructure> ufrTsNegativePeriod(
+        std::shared_ptr<YieldTermStructure> ufrTsNegativePeriod(
             new UltimateForwardTermStructure(vars.ftkCurveHandle, Handle<Quote>(llfr),
                                              Handle<Quote>(vars.ufrRate), -1 * Years, vars.alpha)),
         Error);
@@ -305,11 +305,11 @@ void UltimateForwardTermStructureTest::testObservability() {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> llfr(new SimpleQuote(0.0125));
+    std::shared_ptr<SimpleQuote> llfr(new SimpleQuote(0.0125));
     Handle<Quote> llfr_quote(llfr);
-    ext::shared_ptr<SimpleQuote> ufr(new SimpleQuote(0.02));
+    std::shared_ptr<SimpleQuote> ufr(new SimpleQuote(0.02));
     Handle<Quote> ufr_handle(ufr);
-    ext::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
+    std::shared_ptr<YieldTermStructure> ufrTs(new UltimateForwardTermStructure(
         vars.ftkCurveHandle, llfr_quote, ufr_handle, vars.fsp, vars.alpha));
 
     Flag flag;

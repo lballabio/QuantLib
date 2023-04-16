@@ -61,8 +61,8 @@ namespace QuantLib {
         // All virtual methods of base classes must be forwarded
         //! \name OptionletVolatilityStructure interface
         //@{
-        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const override;
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const override;
+        std::shared_ptr<SmileSection> smileSectionImpl(const Date& d) const override;
+        std::shared_ptr<SmileSection> smileSectionImpl(Time optionT) const override;
         Volatility volatilityImpl(Time optionTime, Rate strike) const override;
         //@}
       private:

@@ -37,7 +37,7 @@ namespace QuantLib {
                          Real pMin, Real pMax,
                          Size tMinUp, Size tMinDown,
                          Real startUpFuel, Real startUpFixCost,
-                         const ext::shared_ptr<SwingExercise>& exercise,
+                         const std::shared_ptr<SwingExercise>& exercise,
                          Size nStarts = Null<Size>(),
                          Size nRunningHours = Null<Size>());
 

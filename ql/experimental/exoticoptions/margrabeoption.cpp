@@ -24,8 +24,8 @@ namespace QuantLib {
 
     MargrabeOption::MargrabeOption(Integer Q1,
                                    Integer Q2,
-                                   const ext::shared_ptr<Exercise>& exercise)
-    : MultiAssetOption(ext::shared_ptr<Payoff>(new NullPayoff), exercise),
+                                   const std::shared_ptr<Exercise>& exercise)
+    : MultiAssetOption(std::shared_ptr<Payoff>(new NullPayoff), exercise),
       Q1_(Q1),
       Q2_(Q2) {}
 

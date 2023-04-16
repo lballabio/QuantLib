@@ -46,7 +46,7 @@ namespace QuantLib {
                             DiscountFactor dDiscount,
                             DiscountFactor fDiscount,
                             Time T) {
-            impl_ = ext::make_shared<
+            impl_ = std::make_shared<
                 detail::VannaVolgaInterpolationImpl<I1,I2> >(
                     xBegin, xEnd, yBegin,
                     spot, dDiscount, fDiscount, T);

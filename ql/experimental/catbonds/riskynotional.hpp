@@ -25,7 +25,7 @@
 #define quantlib_risky_notional_hpp
 
 #include <ql/errors.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <ql/time/date.hpp>
 #include <algorithm>
 #include <utility>
@@ -62,7 +62,7 @@ namespace QuantLib {
 
     class NotionalRisk {
     public:
-      explicit NotionalRisk(ext::shared_ptr<EventPaymentOffset> paymentOffset)
+      explicit NotionalRisk(std::shared_ptr<EventPaymentOffset> paymentOffset)
       : paymentOffset_(std::move(paymentOffset)) {}
       virtual ~NotionalRisk() = default;
 
@@ -70,12 +70,12 @@ namespace QuantLib {
                               NotionalPath& path) const = 0;
 
     protected:
-      ext::shared_ptr<EventPaymentOffset> paymentOffset_;       
+      std::shared_ptr<EventPaymentOffset> paymentOffset_;       
     };
 
     class DigitalNotionalRisk : public NotionalRisk {
       public:
-        DigitalNotionalRisk(const ext::shared_ptr<EventPaymentOffset>& paymentOffset,
+        DigitalNotionalRisk(const std::shared_ptr<EventPaymentOffset>& paymentOffset,
                             Real threshold)
         : NotionalRisk(paymentOffset), threshold_(threshold) {}
 
@@ -90,7 +90,7 @@ namespace QuantLib {
     class ProportionalNotionalRisk : public NotionalRisk
     {
     public:
-      ProportionalNotionalRisk(const ext::shared_ptr<EventPaymentOffset>& paymentOffset,
+      ProportionalNotionalRisk(const std::shared_ptr<EventPaymentOffset>& paymentOffset,
                                Real attachement,
                                Real exhaustion)
       : NotionalRisk(paymentOffset), attachement_(attachement), exhaustion_(exhaustion) {

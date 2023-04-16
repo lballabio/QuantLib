@@ -40,19 +40,19 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    ext::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
+    std::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+        std::shared_ptr<ShortRateDynamics> numericDynamics(
                                              new Dynamics(phi, a(), sigma()));
-        ext::shared_ptr<TrinomialTree> trinomial(
+        std::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        ext::shared_ptr<ShortRateTree> numericTree(
+        std::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        ext::shared_ptr<NumericalImpl> impl =
-            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        std::shared_ptr<NumericalImpl> impl =
+            std::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         for (Size i=0; i<(grid.size() - 1); i++) {
             Real discountBond = termStructure()->discount(grid[i+1]);

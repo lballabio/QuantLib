@@ -26,7 +26,7 @@ namespace QuantLib {
     namespace detail {
 
         HullWhiteCapFloorPricer::HullWhiteCapFloorPricer(const CapFloor::arguments& args,
-                                                         ext::shared_ptr<HullWhite> model,
+                                                         std::shared_ptr<HullWhite> model,
                                                          Time forwardMeasureTime)
         : args_(args), model_(std::move(model)), forwardMeasureTime_(forwardMeasureTime) {
             endDiscount_ =

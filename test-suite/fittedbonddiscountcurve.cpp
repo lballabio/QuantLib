@@ -38,12 +38,12 @@ void FittedBondDiscountCurveTest::testEvaluation() {
     BOOST_TEST_MESSAGE("Testing that fitted bond curves work as evaluators...");
 
     Date today = Settings::instance().evaluationDate();
-    ext::shared_ptr<Bond> bond = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0,
+    std::shared_ptr<Bond> bond = std::make_shared<ZeroCouponBond>(3, TARGET(), 100.0,
                                                                   today + Period(10, Years));
-    Handle<Quote> q(ext::make_shared<SimpleQuote>(100.0));
+    Handle<Quote> q(std::make_shared<SimpleQuote>(100.0));
 
-    std::vector<ext::shared_ptr<BondHelper> > helpers(1);
-    helpers[0] = ext::make_shared<BondHelper>(q, bond);
+    std::vector<std::shared_ptr<BondHelper> > helpers(1);
+    helpers[0] = std::make_shared<BondHelper>(q, bond);
 
     ExponentialSplinesFitting fittingMethod;
 
@@ -77,41 +77,41 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     // market quotes for bonds below
     Real quotes[] = {101.2100, 100.6270, 99.9210, 101.6700};
 
-    std::vector<ext::shared_ptr<Bond> > bonds;
+    std::vector<std::shared_ptr<Bond> > bonds;
 
     // EJ5346956
-    bonds.push_back(ext::make_shared<FixedRateBond>(
+    bonds.push_back(std::make_shared<FixedRateBond>(
         2, 100.0,
         Schedule(Date(1, Feb, 2013), Date(3, Feb, 2020), 6 * Months, Canada(), Following, Following,
                  DateGeneration::Forward, false, Date(3, Aug, 2013)),
         std::vector<Real>(1, 0.046), ActualActual(ActualActual::ISDA)));
 
     // EK9689119
-    bonds.push_back(ext::make_shared<FixedRateBond>(
+    bonds.push_back(std::make_shared<FixedRateBond>(
         2, 100.0,
         Schedule(Date(12, Jun, 2015), Date(12, Jun, 2020), 6 * Months, Canada(), Following,
                  Following, DateGeneration::Forward, false, Date(12, Dec, 2015)),
         std::vector<Real>(1, 0.0295), ActualActual(ActualActual::ISDA)));
 
     // AQ1410069
-    bonds.push_back(ext::make_shared<FixedRateBond>(
+    bonds.push_back(std::make_shared<FixedRateBond>(
         2, 100.0,
         Schedule(Date(24, Nov, 2017), Date(24, Nov, 2020), 6 * Months, Canada(), Following,
                  Following, DateGeneration::Forward, false, Date(24, May, 2018)),
         std::vector<Real>(1, 0.02689), ActualActual(ActualActual::ISDA)));
 
     // AM5387676
-    bonds.push_back(ext::make_shared<FixedRateBond>(
+    bonds.push_back(std::make_shared<FixedRateBond>(
         2, 100.0,
         Schedule(Date(21, Feb, 2017), Date(21, Feb, 2022), 6 * Months, Canada(), Following,
                  Following, DateGeneration::Forward, false, Date(21, Aug, 2017)),
         std::vector<Real>(1, 0.0338), ActualActual(ActualActual::ISDA)));
 
-    std::vector<ext::shared_ptr<BondHelper> > helpers;
+    std::vector<std::shared_ptr<BondHelper> > helpers;
 
     for (Size i = 0; i < bonds.size(); ++i) {
-        helpers.push_back(ext::make_shared<BondHelper>(
-            Handle<Quote>(ext::make_shared<SimpleQuote>(quotes[i])), bonds[i]));
+        helpers.push_back(std::make_shared<BondHelper>(
+            Handle<Quote>(std::make_shared<SimpleQuote>(quotes[i])), bonds[i]));
     }
 
     // method1 with the usual extrapolation
@@ -119,7 +119,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
     // method2 extrapoates flat before the first and after the last bond maturity
     NelsonSiegelFitting method2(
-        Array(), ext::shared_ptr<OptimizationMethod>(), Array(),
+        Array(), std::shared_ptr<OptimizationMethod>(), Array(),
         Actual365Fixed().yearFraction(asof, helpers.front()->bond()->maturityDate()),
         Actual365Fixed().yearFraction(asof, helpers.back()->bond()->maturityDate()));
 
@@ -131,10 +131,10 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
     // build the fitted bond curves
 
-    ext::shared_ptr<FittedBondDiscountCurve> curve1 = ext::make_shared<FittedBondDiscountCurve>(
+    std::shared_ptr<FittedBondDiscountCurve> curve1 = std::make_shared<FittedBondDiscountCurve>(
         asof, helpers, Actual365Fixed(), method1, 1E-10, 10000, guess);
 
-    ext::shared_ptr<FittedBondDiscountCurve> curve2 = ext::make_shared<FittedBondDiscountCurve>(
+    std::shared_ptr<FittedBondDiscountCurve> curve2 = std::make_shared<FittedBondDiscountCurve>(
         asof, helpers, Actual365Fixed(), method2, 1E-10, 10000, guess);
 
     curve1->enableExtrapolation();
@@ -144,10 +144,10 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
     std::vector<Real> modelPrices1, modelPrices2;
 
-    ext::shared_ptr<PricingEngine> engine1 =
-        ext::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(curve1));
-    ext::shared_ptr<PricingEngine> engine2 =
-        ext::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(curve2));
+    std::shared_ptr<PricingEngine> engine1 =
+        std::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(curve1));
+    std::shared_ptr<PricingEngine> engine2 =
+        std::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(curve2));
 
     for (auto& bond : bonds) {
         bond->setPricingEngine(engine1);

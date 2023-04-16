@@ -43,10 +43,10 @@ namespace QuantLib {
                            DayCounter yoyDayCounter,
                            Calendar paymentCalendar,
                            Natural fixingDays,
-                           ext::shared_ptr<YoYInflationIndex> index,
+                           std::shared_ptr<YoYInflationIndex> index,
                            Rate strike,
                            Size n,
-                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer);
+                           std::shared_ptr<YoYInflationCapFloorEngine> pricer);
         void setTermStructure(YoYOptionletVolatilitySurface*) override;
         Real impliedQuote() const override;
 
@@ -55,15 +55,15 @@ namespace QuantLib {
         YoYInflationCapFloor::Type capFloorType_;
         Period lag_;
         Natural fixingDays_;
-        ext::shared_ptr<YoYInflationIndex> index_;  // VERY important - has
+        std::shared_ptr<YoYInflationIndex> index_;  // VERY important - has
                                                       // nominal & yoy curves
         Rate strike_;
         Size n_;  // how many payments
         DayCounter yoyDayCounter_;
         Calendar calendar_;
-        ext::shared_ptr<YoYInflationCapFloorEngine> pricer_;
+        std::shared_ptr<YoYInflationCapFloorEngine> pricer_;
         // what you make
-        ext::shared_ptr<YoYInflationCapFloor> yoyCapFloor_;
+        std::shared_ptr<YoYInflationCapFloor> yoyCapFloor_;
     };
 
 }

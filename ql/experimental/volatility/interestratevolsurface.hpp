@@ -48,17 +48,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        explicit InterestRateVolSurface(ext::shared_ptr<InterestRateIndex>,
+        explicit InterestRateVolSurface(std::shared_ptr<InterestRateIndex>,
                                         BusinessDayConvention bdc = Following,
                                         const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        InterestRateVolSurface(ext::shared_ptr<InterestRateIndex>,
+        InterestRateVolSurface(std::shared_ptr<InterestRateIndex>,
                                const Date& referenceDate,
                                const Calendar& cal = Calendar(),
                                BusinessDayConvention bdc = Following,
                                const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        InterestRateVolSurface(ext::shared_ptr<InterestRateIndex>,
+        InterestRateVolSurface(std::shared_ptr<InterestRateIndex>,
                                Natural settlementDays,
                                const Calendar&,
                                BusinessDayConvention bdc = Following,
@@ -69,19 +69,19 @@ namespace QuantLib {
         //! period/date conversion
         Date optionDateFromTenor(const Period&) const;
         //@}
-        const ext::shared_ptr<InterestRateIndex>& index() const;
+        const std::shared_ptr<InterestRateIndex>& index() const;
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        ext::shared_ptr<InterestRateIndex> index_;
+        std::shared_ptr<InterestRateIndex> index_;
     };
 
 
     // inline
 
-    inline const ext::shared_ptr<InterestRateIndex>&
+    inline const std::shared_ptr<InterestRateIndex>&
     InterestRateVolSurface::index() const {
         return index_;
     }

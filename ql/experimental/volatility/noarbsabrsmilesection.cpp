@@ -52,7 +52,7 @@ void NoArbSabrSmileSection::init() {
         "shift (" << shift_
                   << ") must be zero, other shifts are not implemented yet");
     model_ =
-        ext::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
+        std::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
                                            params_[1], params_[2], params_[3]);
 }
 

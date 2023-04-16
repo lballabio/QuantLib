@@ -65,7 +65,7 @@ template <typename Evaluation> class ZabrSmileSection : public SmileSection {
         return optionPrice(strike, type, discount, Evaluation());
     }
 
-    ext::shared_ptr<ZabrModel> model() { return model_; }
+    std::shared_ptr<ZabrModel> model() { return model_; }
 
   protected:
     Volatility volatilityImpl(Rate strike) const override {
@@ -102,13 +102,13 @@ template <typename Evaluation> class ZabrSmileSection : public SmileSection {
     Volatility volatilityImpl(Rate strike, ZabrShortMaturityNormal) const;
     Volatility volatilityImpl(Rate strike, ZabrLocalVolatility) const;
     Volatility volatilityImpl(Rate strike, ZabrFullFd) const;
-    ext::shared_ptr<ZabrModel> model_;
+    std::shared_ptr<ZabrModel> model_;
     Evaluation evaluation_;
     Rate forward_;
     std::vector<Real> params_;
     const Size fdRefinement_;
     std::vector<Real> strikes_, callPrices_;
-    ext::shared_ptr<Interpolation> callPriceFct_;
+    std::shared_ptr<Interpolation> callPriceFct_;
     Real a_, b_;
 };
 
@@ -139,7 +139,7 @@ template <typename Evaluation>
 void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &,
                                         ZabrShortMaturityLognormal) {
 
-    model_ = ext::make_shared<ZabrModel>(
+    model_ = std::make_shared<ZabrModel>(
         exerciseTime(), forward_, params_[0], params_[1],
                       params_[2], params_[3], params_[4]);
 }
@@ -158,7 +158,7 @@ void ZabrSmileSection<Evaluation>::init(const std::vector<Real> &moneyness,
                "zabr expects 5 parameters (alpha,beta,nu,rho,gamma) but ("
                    << params_.size() << ") given");
 
-    model_ = ext::make_shared<ZabrModel>(
+    model_ = std::make_shared<ZabrModel>(
         exerciseTime(), forward_, params_[0], params_[1],
                       params_[2], params_[3], params_[4]);
 
@@ -230,12 +230,12 @@ void ZabrSmileSection<Evaluation>::init3(ZabrLocalVolatility) {
     strikes_.insert(strikes_.begin(), 0.0);
     callPrices_.insert(callPrices_.begin(), forward_);
 
-    callPriceFct_ = ext::shared_ptr<Interpolation>(new CubicInterpolation(
+    callPriceFct_ = std::shared_ptr<Interpolation>(new CubicInterpolation(
         strikes_.begin(), strikes_.end(), callPrices_.begin(),
         CubicInterpolation::Spline, true, CubicInterpolation::SecondDerivative,
         0.0, CubicInterpolation::SecondDerivative, 0.0));
     // callPriceFct_ =
-    //     ext::shared_ptr<Interpolation>(new LinearInterpolation(
+    //     std::shared_ptr<Interpolation>(new LinearInterpolation(
     //         strikes_.begin(), strikes_.end(), callPrices_.begin()));
 
     callPriceFct_->enableExtrapolation();

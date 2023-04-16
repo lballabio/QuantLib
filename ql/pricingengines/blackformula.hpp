@@ -54,7 +54,7 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackFormula(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormula(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real stdDev,
                       Real discount = 1.0,
@@ -75,7 +75,7 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackFormulaForwardDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaForwardDerivative(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                        Real forward,
                                        Real stdDev,
                                        Real discount = 1.0,
@@ -102,7 +102,7 @@ namespace QuantLib {
         (1988) approximation for at-the-money forward option, with the
         extended moneyness approximation by Corrado and Miller (1996)
     */
-    Real blackFormulaImpliedStdDevApproximation(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaImpliedStdDevApproximation(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                                 Real forward,
                                                 Real blackPrice,
                                                 Real discount = 1.0,
@@ -132,7 +132,7 @@ namespace QuantLib {
         2001, 89-100. The atm option price must be known to use this
         method.
     */
-    Real blackFormulaImpliedStdDevChambers(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaImpliedStdDevChambers(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                            Real forward,
                                            Real blackPrice,
                                            Real blackAtmPrice,
@@ -159,7 +159,7 @@ namespace QuantLib {
                                                   Real discount = 1.0,
                                                   Real displacement = 0.0);
 
-    Real blackFormulaImpliedStdDevApproximationRS(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaImpliedStdDevApproximationRS(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                                   Real forward,
                                                   Real blackPrice,
                                                   Real discount = 1.0,
@@ -182,7 +182,7 @@ namespace QuantLib {
     /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackFormulaImpliedStdDev(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaImpliedStdDev(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                    Real forward,
                                    Real blackPrice,
                                    Real discount = 1.0,
@@ -216,7 +216,7 @@ namespace QuantLib {
                                        Real accuracy = 1.0e-6,
                                        Natural maxIterations = 100);
 
-    Real blackFormulaImpliedStdDevLiRS(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaImpliedStdDevLiRS(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                        Real forward,
                                        Real blackPrice,
                                        Real discount = 1.0,
@@ -241,7 +241,7 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackFormulaCashItmProbability(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaCashItmProbability(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                         Real forward,
                                         Real stdDev,
                                         Real displacement = 0.0);
@@ -257,7 +257,7 @@ namespace QuantLib {
         measure, i.e. N(d1).
         It is a risk-neutral probability, not the real world one.
     */
-    Real blackFormulaAssetItmProbability(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaAssetItmProbability(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                          Real forward,
                                          Real stdDev,
                                          Real displacement = 0.0);
@@ -290,7 +290,7 @@ namespace QuantLib {
                  If T is the time to maturity Black vega would be
                  blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
     */
-    Real blackFormulaStdDevDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaStdDevDerivative(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                       Real forward,
                                       Real stdDev,
                                       Real discount = 1.0,
@@ -309,7 +309,7 @@ namespace QuantLib {
                  volatility*sqrt(timeToMaturity), and it returns the
                  derivative with respect to the standard deviation.
     */
-    Real blackFormulaStdDevSecondDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real blackFormulaStdDevSecondDerivative(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                             Real forward,
                                             Real stdDev,
                                             Real discount = 1.0,
@@ -332,7 +332,7 @@ namespace QuantLib {
                  percentage volatility. Standard deviation is
                  absoluteVolatility*sqrt(timeToMaturity)
     */
-    Real bachelierBlackFormula(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real bachelierBlackFormula(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                Real forward,
                                Real stdDev,
                                Real discount = 1.0);
@@ -353,7 +353,7 @@ namespace QuantLib {
                  absoluteVolatility*sqrt(timeToMaturity)
     */
     Real bachelierBlackFormulaForwardDerivative(
-        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+        const std::shared_ptr<PlainVanillaPayoff>& payoff,
         Real forward,
         Real stdDev,
         Real discount = 1.0);
@@ -385,7 +385,7 @@ namespace QuantLib {
                                                Real stdDev,
                                                Real discount = 1.0);
 
-    Real bachelierBlackFormulaStdDevDerivative(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real bachelierBlackFormulaStdDevDerivative(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                                Real forward,
                                                Real stdDev,
                                                Real discount = 1.0);
@@ -403,7 +403,7 @@ namespace QuantLib {
         measure, i.e. N(d).
         It is a risk-neutral probability, not the real world one.
     */
-    Real bachelierBlackFormulaAssetItmProbability(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+    Real bachelierBlackFormulaAssetItmProbability(const std::shared_ptr<PlainVanillaPayoff>& payoff,
                                                   Real forward,
                                                   Real stdDev);
 

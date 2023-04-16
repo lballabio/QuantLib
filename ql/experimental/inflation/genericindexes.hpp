@@ -33,7 +33,7 @@ namespace QuantLib {
     class GenericRegion : public Region {
       public:
         GenericRegion() {
-            static ext::shared_ptr<Data> GENERICdata(
+            static std::shared_ptr<Data> GENERICdata(
                                                new Data("Generic","GENERIC"));
             data_ = GENERICdata;
         }

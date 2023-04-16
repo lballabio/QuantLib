@@ -39,12 +39,12 @@ namespace QuantLib {
     class MakeOIS {
       public:
         MakeOIS(const Period& swapTenor,
-                const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                const std::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
         operator OvernightIndexedSwap() const;
-        operator ext::shared_ptr<OvernightIndexedSwap>() const ;
+        operator std::shared_ptr<OvernightIndexedSwap>() const ;
 
         MakeOIS& receiveFixed(bool flag = true);
         MakeOIS& withType(Swap::Type type);
@@ -74,10 +74,10 @@ namespace QuantLib {
         MakeOIS& withAveragingMethod(RateAveraging::Type averagingMethod);
 
         MakeOIS& withPricingEngine(
-                              const ext::shared_ptr<PricingEngine>& engine);
+                              const std::shared_ptr<PricingEngine>& engine);
       private:
         Period swapTenor_;
-        ext::shared_ptr<OvernightIndex> overnightIndex_;
+        std::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
         Period forwardStart_;
 
@@ -99,7 +99,7 @@ namespace QuantLib {
         Spread overnightSpread_ = 0.0;
         DayCounter fixedDayCount_;
 
-        ext::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<PricingEngine> engine_;
 
         bool telescopicValueDates_ = false;
         RateAveraging::Type averagingMethod_ = RateAveraging::Compound;

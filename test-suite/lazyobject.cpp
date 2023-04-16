@@ -24,15 +24,15 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using ext::shared_ptr;
+using std::shared_ptr;
 
 void LazyObjectTest::testDiscardingNotifications() {
 
     BOOST_TEST_MESSAGE(
         "Testing that lazy objects discard notifications after the first...");
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    std::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    std::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
     f.registerWith(s);
@@ -60,8 +60,8 @@ void LazyObjectTest::testForwardingNotifications() {
     BOOST_TEST_MESSAGE(
         "Testing that lazy objects forward all notifications when told...");
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    std::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    std::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     s->alwaysForwardNotifications();
 

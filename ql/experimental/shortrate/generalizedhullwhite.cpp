@@ -53,8 +53,8 @@ namespace QuantLib {
                const Real xMin,
                const Real dx,
                const Real discountBondPrice,
-               const ext::shared_ptr<ShortRateTree>& tree,
-               ext::function<Real(Real)> fInv)
+               const std::shared_ptr<ShortRateTree>& tree,
+               std::function<Real(Real)> fInv)
         : size_(tree->size(i)), dt_(tree->timeGrid().dt(i)), xMin_(xMin), dx_(dx),
           statePrices_(tree->statePrices(i)), discountBondPrice_(discountBondPrice),
           fInverse_(std::move(fInv)) {}
@@ -76,7 +76,7 @@ namespace QuantLib {
         Real xMin_, dx_;
         const Array& statePrices_;
         Real discountBondPrice_;
-        ext::function<Real(Real)> fInverse_;
+        std::function<Real(Real)> fInverse_;
     };
 
     GeneralizedHullWhite::GeneralizedHullWhite(
@@ -85,8 +85,8 @@ namespace QuantLib {
         const std::vector<Date>& volstructure,
         const std::vector<Real>& speed,
         const std::vector<Real>& vol,
-        const ext::function<Real(Real)>& f,
-        const ext::function<Real(Real)>& fInverse)
+        const std::function<Real(Real)>& f,
+        const std::function<Real(Real)>& fInverse)
     : OneFactorAffineModel(2), TermStructureConsistentModel(yieldtermStructure),
       speedstructure_(speedstructure),
       volstructure_(volstructure),
@@ -208,19 +208,19 @@ namespace QuantLib {
     }
 
 
-    ext::shared_ptr<Lattice> GeneralizedHullWhite::tree(
+    std::shared_ptr<Lattice> GeneralizedHullWhite::tree(
                                                   const TimeGrid& grid) const{
 
         TermStructureFittingParameter phi(termStructure());
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+        std::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi, speed(), vol(), f_, fInverse_));
-        ext::shared_ptr<TrinomialTree> trinomial(
+        std::shared_ptr<TrinomialTree> trinomial(
             new TrinomialTree(numericDynamics->process(), grid));
-        ext::shared_ptr<ShortRateTree> numericTree(
+        std::shared_ptr<ShortRateTree> numericTree(
             new ShortRateTree(trinomial, numericDynamics, grid));
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        ext::shared_ptr<NumericalImpl> impl =
-            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        std::shared_ptr<NumericalImpl> impl =
+            std::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
         impl->reset();
         Real value = 1.0;
@@ -241,11 +241,11 @@ namespace QuantLib {
         return numericTree;
     }
 
-    ext::function<Real (Time)> GeneralizedHullWhite::speed() const {
+    std::function<Real (Time)> GeneralizedHullWhite::speed() const {
         return speed_;
     }
 
-    ext::function<Real (Time)> GeneralizedHullWhite::vol() const {
+    std::function<Real (Time)> GeneralizedHullWhite::vol() const {
         return vol_;
     }
 

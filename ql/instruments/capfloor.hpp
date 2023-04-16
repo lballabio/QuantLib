@@ -80,9 +80,9 @@ namespace QuantLib {
 
         Date startDate() const;
         Date maturityDate() const;
-        ext::shared_ptr<FloatingRateCoupon> lastFloatingRateCoupon() const;
+        std::shared_ptr<FloatingRateCoupon> lastFloatingRateCoupon() const;
         //! Returns the n-th optionlet as a new CapFloor with only one cash flow.
-        ext::shared_ptr<CapFloor> optionlet(Size n) const;
+        std::shared_ptr<CapFloor> optionlet(Size n) const;
         //@}
         Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility
@@ -149,7 +149,7 @@ namespace QuantLib {
         std::vector<Real> gearings;
         std::vector<Real> spreads;
         std::vector<Real> nominals;
-        std::vector<ext::shared_ptr<InterestRateIndex> > indexes;
+        std::vector<std::shared_ptr<InterestRateIndex> > indexes;
         void validate() const override;
     };
 

@@ -37,15 +37,15 @@ namespace QuantLib {
 
     class AnalyticBlackVasicekEngine : public VanillaOption::engine {
       public:
-        AnalyticBlackVasicekEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>,
-                                   ext::shared_ptr<Vasicek>,
+        AnalyticBlackVasicekEngine(std::shared_ptr<GeneralizedBlackScholesProcess>,
+                                   std::shared_ptr<Vasicek>,
                                    Real correlation);
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> blackProcess_;
-        ext::shared_ptr<Vasicek> vasicekProcess_;
-        ext::shared_ptr<Integrator> simpsonIntegral_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> blackProcess_;
+        std::shared_ptr<Vasicek> vasicekProcess_;
+        std::shared_ptr<Integrator> simpsonIntegral_;
         Real correlation_;
     };
 

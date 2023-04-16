@@ -27,9 +27,9 @@ Copyright (C) 2023 Marcin Rybacki
 namespace QuantLib {
 
     namespace {
-        ext::shared_ptr<CashFlow>
+        std::shared_ptr<CashFlow>
         createEquityCashFlow(const Schedule& schedule,
-                             const ext::shared_ptr<EquityIndex>& equityIndex,
+                             const std::shared_ptr<EquityIndex>& equityIndex,
                              Real nominal,
                              const Calendar& paymentCalendar,
                              BusinessDayConvention paymentConvention,
@@ -44,13 +44,13 @@ namespace QuantLib {
             }
             Date paymentDate =
                 cal.advance(endDate, paymentDelay, Days, paymentConvention, schedule.endOfMonth());
-            return ext::make_shared<EquityCashFlow>(nominal, equityIndex, startDate, endDate,
+            return std::make_shared<EquityCashFlow>(nominal, equityIndex, startDate, endDate,
                                                     paymentDate);
         }
 
         template <typename IndexType, typename LegType>
         Leg createInterestLeg(const Schedule& schedule,
-                              const ext::shared_ptr<IndexType>& interestRateIndex,
+                              const std::shared_ptr<IndexType>& interestRateIndex,
                               Real nominal,
                               const DayCounter& dayCounter,
                               Rate margin,
@@ -70,8 +70,8 @@ namespace QuantLib {
     }
 
     EquityTotalReturnSwap::EquityTotalReturnSwap(
-        ext::shared_ptr<EquityIndex> equityIndex,
-        ext::shared_ptr<InterestRateIndex> interestRateIndex,
+        std::shared_ptr<EquityIndex> equityIndex,
+        std::shared_ptr<InterestRateIndex> interestRateIndex,
         Type type,
         Real nominal,
         Schedule schedule,
@@ -111,8 +111,8 @@ namespace QuantLib {
     EquityTotalReturnSwap::EquityTotalReturnSwap(Type type,
                                                  Real nominal,
                                                  Schedule schedule,
-                                                 ext::shared_ptr<EquityIndex> equityIndex,
-                                                 const ext::shared_ptr<IborIndex>& interestRateIndex,
+                                                 std::shared_ptr<EquityIndex> equityIndex,
+                                                 const std::shared_ptr<IborIndex>& interestRateIndex,
                                                  DayCounter dayCounter,
                                                  Rate margin,
                                                  Real gearing,
@@ -140,8 +140,8 @@ namespace QuantLib {
     EquityTotalReturnSwap::EquityTotalReturnSwap(Type type,
                                                  Real nominal,
                                                  Schedule schedule,
-                                                 ext::shared_ptr<EquityIndex> equityIndex,
-                                                 const ext::shared_ptr<OvernightIndex>& interestRateIndex,
+                                                 std::shared_ptr<EquityIndex> equityIndex,
+                                                 const std::shared_ptr<OvernightIndex>& interestRateIndex,
                                                  DayCounter dayCounter,
                                                  Rate margin,
                                                  Real gearing,

@@ -97,8 +97,8 @@ namespace QuantLib {
       BaseCorrelationLossModel(const Handle<BaseCorrelationTermStructure<Corr2DInt_T> >& correlTS,
                                std::vector<Real> recoveries,
                                const initTraits& traits = initTraits())
-      : localCorrelationAttach_(ext::make_shared<SimpleQuote>(0.)),
-        localCorrelationDetach_(ext::make_shared<SimpleQuote>(0.)),
+      : localCorrelationAttach_(std::make_shared<SimpleQuote>(0.)),
+        localCorrelationDetach_(std::make_shared<SimpleQuote>(0.)),
         recoveries_(std::move(recoveries)), correlTS_(correlTS), copulaTraits_(traits) {
           registerWith(correlTS);
           registerWith(Settings::instance().evaluationDate());
@@ -119,10 +119,10 @@ namespace QuantLib {
           attachRatio_ = basket_->remainingAttachmentAmount() / remainingNotional_;
           detachRatio_ = basket_->remainingDetachmentAmount() / remainingNotional_;
 
-          basketAttach_ = ext::make_shared<Basket>(basket_->refDate(), basket_->remainingNames(),
+          basketAttach_ = std::make_shared<Basket>(basket_->refDate(), basket_->remainingNames(),
                                                    basket_->remainingNotionals(), basket_->pool(),
                                                    0.0, attachRatio_, basket_->claim());
-          basketDetach_ = ext::make_shared<Basket>(basket_->refDate(), basket_->remainingNames(),
+          basketDetach_ = std::make_shared<Basket>(basket_->refDate(), basket_->remainingNames(),
                                                    basket_->remainingNotionals(), basket_->pool(),
                                                    0.0, detachRatio_, basket_->claim());
           setupModels();
@@ -143,9 +143,9 @@ namespace QuantLib {
 
         //! Correlation buffer to pick up values from the surface and 
         //  trigger calculation.
-        ext::shared_ptr<SimpleQuote> localCorrelationAttach_, 
+        std::shared_ptr<SimpleQuote> localCorrelationAttach_, 
             localCorrelationDetach_;
-        mutable ext::shared_ptr<Basket> basketAttach_,
+        mutable std::shared_ptr<Basket> basketAttach_,
             basketDetach_;
         // just cached for the update method
         mutable std::vector<Real> recoveries_;
@@ -153,8 +153,8 @@ namespace QuantLib {
         // Initialization parameters for models copula
         mutable typename BaseModel_T::copulaType::initTraits copulaTraits_;
         // Models of equity baskets.
-        mutable ext::shared_ptr<BaseModel_T> scalarCorrelModelAttach_;
-        mutable ext::shared_ptr<BaseModel_T> scalarCorrelModelDetach_;
+        mutable std::shared_ptr<BaseModel_T> scalarCorrelModelAttach_;
+        mutable std::shared_ptr<BaseModel_T> scalarCorrelModelDetach_;
     };
 
 
@@ -194,9 +194,9 @@ namespace QuantLib {
     {
         // on this assignment any previous registration with the attach and 
         //   detach baskets should be removed
-        scalarCorrelModelAttach_ = ext::make_shared<GaussianLHPLossModel>(
+        scalarCorrelModelAttach_ = std::make_shared<GaussianLHPLossModel>(
             Handle<Quote>(localCorrelationAttach_), recoveries_);
-        scalarCorrelModelDetach_ = ext::make_shared<GaussianLHPLossModel>(
+        scalarCorrelModelDetach_ = std::make_shared<GaussianLHPLossModel>(
             Handle<Quote>(localCorrelationDetach_), recoveries_);
 
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
@@ -207,20 +207,20 @@ namespace QuantLib {
     inline void BaseCorrelationLossModel<GaussianBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
-        ext::shared_ptr<GaussianConstantLossLM> lmA = 
-            ext::make_shared<GaussianConstantLossLM>(
+        std::shared_ptr<GaussianConstantLossLM> lmA = 
+            std::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
-        ext::shared_ptr<GaussianConstantLossLM> lmD = 
-            ext::make_shared<GaussianConstantLossLM>(
+        std::shared_ptr<GaussianConstantLossLM> lmD = 
+            std::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
         scalarCorrelModelAttach_ = 
-            ext::make_shared<GaussianBinomialLossModel>(lmA);
+            std::make_shared<GaussianBinomialLossModel>(lmA);
         scalarCorrelModelDetach_ = 
-            ext::make_shared<GaussianBinomialLossModel>(lmD);
+            std::make_shared<GaussianBinomialLossModel>(lmD);
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
@@ -231,21 +231,21 @@ namespace QuantLib {
     inline void BaseCorrelationLossModel<TBinomialLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
-        ext::shared_ptr<TConstantLossLM> lmA = 
-            ext::make_shared<TConstantLossLM>(
+        std::shared_ptr<TConstantLossLM> lmA = 
+            std::make_shared<TConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
-        ext::shared_ptr<TConstantLossLM> lmD = 
-            ext::make_shared<TConstantLossLM>(
+        std::shared_ptr<TConstantLossLM> lmD = 
+            std::make_shared<TConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
 
         scalarCorrelModelAttach_ = 
-            ext::make_shared<TBinomialLossModel>(lmA);
+            std::make_shared<TBinomialLossModel>(lmA);
         scalarCorrelModelDetach_ = 
-            ext::make_shared<TBinomialLossModel>(lmD);
+            std::make_shared<TBinomialLossModel>(lmD);
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);
@@ -258,13 +258,13 @@ namespace QuantLib {
     inline void BaseCorrelationLossModel<IHGaussPoolLossModel, 
         BilinearInterpolation>::setupModels() const 
     {
-        ext::shared_ptr<GaussianConstantLossLM> lmA = 
-            ext::make_shared<GaussianConstantLossLM>(
+        std::shared_ptr<GaussianConstantLossLM> lmA = 
+            std::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationAttach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
-        ext::shared_ptr<GaussianConstantLossLM> lmD = 
-            ext::make_shared<GaussianConstantLossLM>(
+        std::shared_ptr<GaussianConstantLossLM> lmD = 
+            std::make_shared<GaussianConstantLossLM>(
                 Handle<Quote>(localCorrelationDetach_), recoveries_, 
                 LatentModelIntegrationType::GaussianQuadrature, 
                 recoveries_.size(), copulaTraits_);
@@ -272,9 +272,9 @@ namespace QuantLib {
         // \todo Allow the sending specific model params, as the number of 
         //   buckets here.
         scalarCorrelModelAttach_ = 
-            ext::make_shared<IHGaussPoolLossModel>(lmA, 500);
+            std::make_shared<IHGaussPoolLossModel>(lmA, 500);
         scalarCorrelModelDetach_ = 
-            ext::make_shared<IHGaussPoolLossModel>(lmD, 500);
+            std::make_shared<IHGaussPoolLossModel>(lmD, 500);
             
         basketAttach_->setLossModel(scalarCorrelModelAttach_);
         basketDetach_->setLossModel(scalarCorrelModelDetach_);

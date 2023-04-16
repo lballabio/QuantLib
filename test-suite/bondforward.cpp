@@ -46,22 +46,22 @@ namespace bond_forward_test {
         }
     };
 
-    ext::shared_ptr<Bond> buildBond(const Date &issue, 
+    std::shared_ptr<Bond> buildBond(const Date &issue, 
                                     const Date &maturity, 
                                     Rate cpn) {
         Schedule sch(issue, maturity, Period(Annual), TARGET(), Following, Following,
                      DateGeneration::Backward, false);
 
-        return ext::make_shared<FixedRateBond>(2, 1.e5, sch, std::vector<Rate>(1, cpn),
+        return std::make_shared<FixedRateBond>(2, 1.e5, sch, std::vector<Rate>(1, cpn),
                                                ActualActual(ActualActual::ISDA));
     }
 
-    ext::shared_ptr<BondForward> buildBondForward(const ext::shared_ptr<Bond>& underlying,
+    std::shared_ptr<BondForward> buildBondForward(const std::shared_ptr<Bond>& underlying,
                                                   const Handle<YieldTermStructure> &handle,
                                                   const Date& delivery, 
                                                   Position::Type type) {
         auto valueDt = handle->referenceDate();
-        return ext::make_shared<BondForward>(valueDt, delivery, type, 0.0, 2,
+        return std::make_shared<BondForward>(valueDt, delivery, type, 0.0, 2,
                                              ActualActual(ActualActual::ISDA), 
                                              TARGET(), Following, underlying, handle, handle);
     }
@@ -81,7 +81,7 @@ void BondForwardTest::testFuturesPriceReplication() {
     Rate cpn = 0.025;
 
     auto bnd = buildBond(issue, maturity, cpn);
-    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.curveHandle);
+    auto pricer = std::make_shared<DiscountingBondEngine>(vars.curveHandle);
     bnd->setPricingEngine(pricer);
 
     Date delivery(10, March, 2022);
@@ -111,7 +111,7 @@ void BondForwardTest::testCleanForwardPriceReplication() {
     Rate cpn = 0.025;
 
     auto bnd = buildBond(issue, maturity, cpn);
-    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.curveHandle);
+    auto pricer = std::make_shared<DiscountingBondEngine>(vars.curveHandle);
     bnd->setPricingEngine(pricer);
 
     Date delivery(10, March, 2022);
@@ -141,7 +141,7 @@ void BondForwardTest::testThatForwardValueIsEqualToSpotValueIfNoIncome() {
     Rate cpn = 0.025;
 
     auto bnd = buildBond(issue, maturity, cpn);
-    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.curveHandle);
+    auto pricer = std::make_shared<DiscountingBondEngine>(vars.curveHandle);
     bnd->setPricingEngine(pricer);
 
     Date delivery(10, March, 2022);

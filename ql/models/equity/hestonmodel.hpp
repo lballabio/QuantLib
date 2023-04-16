@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class HestonModel : public CalibratedModel {
       public:
-        explicit HestonModel(const ext::shared_ptr<HestonProcess>& process);
+        explicit HestonModel(const std::shared_ptr<HestonProcess>& process);
 
         // variance mean version level
         Real theta() const { return arguments_[0](0.0); }
@@ -55,12 +55,12 @@ namespace QuantLib {
         Real v0()    const { return arguments_[4](0.0); }
 
         // underlying process
-        ext::shared_ptr<HestonProcess> process() const { return process_; }
+        std::shared_ptr<HestonProcess> process() const { return process_; }
 
         class FellerConstraint;
       protected:
         void generateArguments() override;
-        ext::shared_ptr<HestonProcess> process_;
+        std::shared_ptr<HestonProcess> process_;
     };
 
     class HestonModel::FellerConstraint : public Constraint {
@@ -77,7 +77,7 @@ namespace QuantLib {
         };
       public:
         FellerConstraint()
-        : Constraint(ext::shared_ptr<Constraint::Impl>(
+        : Constraint(std::shared_ptr<Constraint::Impl>(
                                            new FellerConstraint::Impl)) {}
     };
 }

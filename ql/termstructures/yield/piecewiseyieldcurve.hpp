@@ -74,7 +74,7 @@ namespace QuantLib {
         //@{
         PiecewiseYieldCurve(
             const Date& referenceDate,
-            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            std::vector<std::shared_ptr<typename Traits::helper> > instruments,
             const DayCounter& dayCounter,
             const std::vector<Handle<Quote> >& jumps = {},
             const std::vector<Date>& jumpDates = {},
@@ -87,7 +87,7 @@ namespace QuantLib {
         }
 
         PiecewiseYieldCurve(const Date& referenceDate,
-                            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                            std::vector<std::shared_ptr<typename Traits::helper> > instruments,
                             const DayCounter& dayCounter,
                             const Interpolator& i,
                             bootstrap_type bootstrap = bootstrap_type())
@@ -99,7 +99,7 @@ namespace QuantLib {
         }
 
         PiecewiseYieldCurve(const Date& referenceDate,
-                            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                            std::vector<std::shared_ptr<typename Traits::helper> > instruments,
                             const DayCounter& dayCounter,
                             bootstrap_type bootstrap)
         : base_curve(referenceDate,
@@ -112,7 +112,7 @@ namespace QuantLib {
         PiecewiseYieldCurve(
             Natural settlementDays,
             const Calendar& calendar,
-            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            std::vector<std::shared_ptr<typename Traits::helper> > instruments,
             const DayCounter& dayCounter,
             const std::vector<Handle<Quote> >& jumps = {},
             const std::vector<Date>& jumpDates = {},
@@ -126,7 +126,7 @@ namespace QuantLib {
 
         PiecewiseYieldCurve(Natural settlementDays,
                             const Calendar& calendar,
-                            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                            std::vector<std::shared_ptr<typename Traits::helper> > instruments,
                             const DayCounter& dayCounter,
                             const Interpolator& i,
                             bootstrap_type bootstrap = bootstrap_type())
@@ -144,7 +144,7 @@ namespace QuantLib {
         PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
+               const std::vector<std::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
                const bootstrap_type& bootstrap)
@@ -177,7 +177,7 @@ namespace QuantLib {
         // methods
         DiscountFactor discountImpl(Time) const override;
         // data members
-        std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
+        std::vector<std::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
         // bootstrapper classes are declared as friend to manipulate

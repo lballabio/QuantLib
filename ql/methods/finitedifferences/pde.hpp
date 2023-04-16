@@ -95,7 +95,7 @@ namespace QuantLib {
                     Time residualTime = 0.0) :
             TridiagonalOperator(grid.size()) {
             timeSetter_ =
-                ext::shared_ptr<GenericTimeSetter<PdeClass> >(
+                std::shared_ptr<GenericTimeSetter<PdeClass> >(
                      new GenericTimeSetter<PdeClass>(grid, process));
             setTime(residualTime);
         }

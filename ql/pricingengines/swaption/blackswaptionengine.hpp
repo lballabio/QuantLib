@@ -186,7 +186,7 @@ namespace QuantLib {
             Real displacement,
             CashAnnuityModel model)
         : discountCurve_(std::move(discountCurve)),
-          vol_(ext::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
+          vol_(std::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
               0, NullCalendar(), Following, vol, dc, Spec().type, displacement))),
           model_(model) {
             registerWith(discountCurve_);
@@ -200,7 +200,7 @@ namespace QuantLib {
             Real displacement,
             CashAnnuityModel model)
         : discountCurve_(std::move(discountCurve)),
-          vol_(ext::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
+          vol_(std::shared_ptr<SwaptionVolatilityStructure>(new ConstantSwaptionVolatility(
               0, NullCalendar(), Following, vol, dc, Spec().type, displacement))),
           model_(model) {
             registerWith(discountCurve_);
@@ -228,8 +228,8 @@ namespace QuantLib {
         // for the moment we add a check avoiding this situation
         VanillaSwap swap = *arguments_.swap;
         const Leg& fixedLeg = swap.fixedLeg();
-        ext::shared_ptr<FixedRateCoupon> firstCoupon =
-            ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
+        std::shared_ptr<FixedRateCoupon> firstCoupon =
+            std::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[0]);
         QL_REQUIRE(firstCoupon->accrualStartDate() >= exerciseDate,
                    "swap start (" << firstCoupon->accrualStartDate() << ") before exercise date ("
                                   << exerciseDate << ") not supported in Black swaption engine");
@@ -238,7 +238,7 @@ namespace QuantLib {
 
         // using the discounting curve
         // swap.iborIndex() might be using a different forwarding curve
-        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(new
+        swap.setPricingEngine(std::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(discountCurve_, false)));
         Rate atmForward = swap.fairRate();
 
@@ -258,7 +258,7 @@ namespace QuantLib {
         results_.additionalResults["atmForward"] = atmForward;
 
         // using the discounting curve
-        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap.setPricingEngine(std::shared_ptr<PricingEngine>(
                            new DiscountingSwapEngine(discountCurve_, false)));
         Real annuity;
         if (arguments_.settlementType == Settlement::Physical ||

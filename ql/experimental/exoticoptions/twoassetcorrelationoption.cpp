@@ -26,8 +26,8 @@ namespace QuantLib {
                            Option::Type type,
                            Real strike1,
                            Real strike2,
-                           const ext::shared_ptr<Exercise>& exercise)
-    : MultiAssetOption(ext::make_shared<PlainVanillaPayoff>(type, strike1),
+                           const std::shared_ptr<Exercise>& exercise)
+    : MultiAssetOption(std::make_shared<PlainVanillaPayoff>(type, strike1),
                        exercise), X2_(strike2) {}
 
     void TwoAssetCorrelationOption::setupArguments(

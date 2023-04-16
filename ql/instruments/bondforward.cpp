@@ -33,11 +33,11 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const ext::shared_ptr<Bond>& bond,
+                    const std::shared_ptr<Bond>& bond,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Handle<YieldTermStructure>& incomeDiscountCurve)
     : Forward(dayCounter, calendar, businessDayConvention, settlementDays,
-              ext::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
+              std::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
               valueDate, maturityDate, discountCurve), bond_(bond) {
 
         incomeDiscountCurve_ = incomeDiscountCurve;

@@ -80,24 +80,24 @@ namespace QuantLib {
         std::vector<Real> fuelPrices,
         std::vector<Real> powerPrices,
         Real fuelCostAddon,
-        ext::shared_ptr<YieldTermStructure> rTS)
+        std::shared_ptr<YieldTermStructure> rTS)
     : fuelPrices_(std::move(fuelPrices)), powerPrices_(std::move(powerPrices)),
       fuelCostAddon_(fuelCostAddon), rTS_(std::move(rTS)) {}
 
     void DynProgVPPIntrinsicValueEngine::calculate() const {
-        const ext::shared_ptr<FdmInnerValueCalculator> fuelPrice(
+        const std::shared_ptr<FdmInnerValueCalculator> fuelPrice(
             new FuelPrice(fuelPrices_));
-        const ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice(
+        const std::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice(
             new SparkSpreadPrice(arguments_.heatRate,fuelPrices_,powerPrices_));
 
         const FdmVPPStepConditionFactory stepConditionFactory(arguments_);
 
-        const ext::shared_ptr<FdmMesher> mesher(
+        const std::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(stepConditionFactory.stateMesher()));
 
         const FdmVPPStepConditionMesher mesh = { 0, mesher };
 
-        const ext::shared_ptr<FdmVPPStepCondition> stepCondition(
+        const std::shared_ptr<FdmVPPStepCondition> stepCondition(
             stepConditionFactory.build(mesh, fuelCostAddon_,
                                        fuelPrice, sparkSpreadPrice));
 

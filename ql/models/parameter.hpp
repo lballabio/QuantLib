@@ -43,7 +43,7 @@ namespace QuantLib {
             virtual ~Impl() = default;
             virtual Real value(const Array& params, Time t) const = 0;
         };
-        ext::shared_ptr<Impl> impl_;
+        std::shared_ptr<Impl> impl_;
       public:
         Parameter()
         : constraint_(NoConstraint()) {}
@@ -56,12 +56,12 @@ namespace QuantLib {
         Real operator()(Time t) const {
             return impl_->value(params_, t);
         }
-        const ext::shared_ptr<Impl>& implementation() const {
+        const std::shared_ptr<Impl>& implementation() const {
             return impl_;
         }
         const Constraint& constraint() const { return constraint_; }
       protected:
-        Parameter(Size size, ext::shared_ptr<Impl> impl, Constraint constraint)
+        Parameter(Size size, std::shared_ptr<Impl> impl, Constraint constraint)
         : impl_(std::move(impl)), params_(size), constraint_(std::move(constraint)) {}
         Array params_;
         Constraint constraint_;
@@ -78,7 +78,7 @@ namespace QuantLib {
         ConstantParameter(const Constraint& constraint)
         : Parameter(
               1,
-              ext::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
+              std::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint)
         {}
 
@@ -86,7 +86,7 @@ namespace QuantLib {
                           const Constraint& constraint)
         : Parameter(
               1,
-              ext::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
+              std::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint) {
             params_[0] = value;
             QL_REQUIRE(testParams(params_),
@@ -106,7 +106,7 @@ namespace QuantLib {
         NullParameter()
         : Parameter(
                   0,
-                  ext::shared_ptr<Parameter::Impl>(new NullParameter::Impl),
+                  std::shared_ptr<Parameter::Impl>(new NullParameter::Impl),
                   NoConstraint())
         {}
     };
@@ -139,7 +139,7 @@ namespace QuantLib {
                                    const Constraint& constraint =
                                                              NoConstraint())
         : Parameter(times.size()+1,
-                    ext::shared_ptr<Parameter::Impl>(
+                    std::shared_ptr<Parameter::Impl>(
                                  new PiecewiseConstantParameter::Impl(times)),
                     constraint)
         {}
@@ -180,13 +180,13 @@ namespace QuantLib {
         };
 
         TermStructureFittingParameter(
-                               const ext::shared_ptr<Parameter::Impl>& impl)
+                               const std::shared_ptr<Parameter::Impl>& impl)
         : Parameter(0, impl, NoConstraint()) {}
 
         TermStructureFittingParameter(const Handle<YieldTermStructure>& term)
         : Parameter(
                   0,
-                  ext::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),
+                  std::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),
                   NoConstraint())
         {}
     };

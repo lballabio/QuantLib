@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    AmericanPathPricer::AmericanPathPricer(ext::shared_ptr<Payoff> payoff,
+    AmericanPathPricer::AmericanPathPricer(std::shared_ptr<Payoff> payoff,
                                            Size polynomialOrder,
                                            LsmBasisSystem::PolynomialType polynomialType)
     : payoff_(std::move(payoff)),
@@ -44,8 +44,8 @@ namespace QuantLib {
         // the payoff gives an additional value
         v_.emplace_back([&](Real state){ return this->payoff(state); });
 
-        const ext::shared_ptr<StrikedTypePayoff> strikePayoff
-            = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        const std::shared_ptr<StrikedTypePayoff> strikePayoff
+            = std::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
         if (strikePayoff != nullptr) {
             scalingValue_/=strikePayoff->strike();
@@ -66,7 +66,7 @@ namespace QuantLib {
         return path[t]*scalingValue_;
     }
 
-    std::vector<ext::function<Real(Real)> >
+    std::vector<std::function<Real(Real)> >
     AmericanPathPricer::basisSystem() const {
         return v_;
     }

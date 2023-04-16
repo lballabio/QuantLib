@@ -29,7 +29,7 @@ namespace QuantLib {
     MultiStepOptionlets::MultiStepOptionlets(const std::vector<Time>& rateTimes,
                                              std::vector<Real> accruals,
                                              const std::vector<Time>& paymentTimes,
-                                             std::vector<ext::shared_ptr<Payoff> > payoffs)
+                                             std::vector<std::shared_ptr<Payoff> > payoffs)
     : MultiProductMultiStep(rateTimes), accruals_(std::move(accruals)), paymentTimes_(paymentTimes),
       payoffs_(std::move(payoffs)) {
         checkIncreasingTimes(paymentTimes);

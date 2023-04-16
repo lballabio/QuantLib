@@ -54,20 +54,20 @@ namespace QuantLib {
         class results;
 
         AssetSwap(bool payBondCoupon,
-                  ext::shared_ptr<Bond> bond,
+                  std::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
-                  const ext::shared_ptr<IborIndex>& iborIndex,
+                  const std::shared_ptr<IborIndex>& iborIndex,
                   Spread spread,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
 
         AssetSwap(bool parAssetSwap,
-                  ext::shared_ptr<Bond> bond,
+                  std::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
                   Real nonParRepayment,
                   Real gearing,
-                  const ext::shared_ptr<IborIndex>& iborIndex,
+                  const std::shared_ptr<IborIndex>& iborIndex,
                   Spread spread = 0.0,
                   const DayCounter& floatingDayCount = DayCounter(),
                   Date dealMaturity = Date(),
@@ -83,7 +83,7 @@ namespace QuantLib {
         Spread spread() const { return spread_; }
         Real cleanPrice() const { return bondCleanPrice_; }
         Real nonParRepayment() const { return nonParRepayment_; }
-        const ext::shared_ptr<Bond>& bond() const { return bond_; }
+        const std::shared_ptr<Bond>& bond() const { return bond_; }
         bool payBondCoupon() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
         const Leg& floatingLeg() const { return legs_[1]; }
@@ -93,7 +93,7 @@ namespace QuantLib {
 
       private:
         void setupExpired() const override;
-        ext::shared_ptr<Bond> bond_;
+        std::shared_ptr<Bond> bond_;
         Real bondCleanPrice_, nonParRepayment_;
         Spread spread_;
         bool parSwap_;

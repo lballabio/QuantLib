@@ -216,7 +216,7 @@ namespace QuantLib {
         DefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
+            std::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         initializeDates();
@@ -248,7 +248,7 @@ namespace QuantLib {
                                floatConvention_, floatConvention_,
                                DateGeneration::Forward, false);
 
-        asw_ = ext::shared_ptr<RiskyAssetSwap>(
+        asw_ = std::shared_ptr<RiskyAssetSwap>(
                                       new RiskyAssetSwap(true,
                                                          100.0,
                                                          fixedSchedule,

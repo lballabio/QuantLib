@@ -26,7 +26,7 @@ namespace QuantLib {
 
     AmericanBasketPathPricer::AmericanBasketPathPricer(
         Size assetNumber,
-        ext::shared_ptr<Payoff> payoff,
+        std::shared_ptr<Payoff> payoff,
         Size polynomialOrder,
         LsmBasisSystem::PolynomialType polynomialType)
     : assetNumber_(assetNumber), payoff_(std::move(payoff)),
@@ -38,12 +38,12 @@ namespace QuantLib {
                    || polynomialType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynomial type");
 
-        const ext::shared_ptr<BasketPayoff> basketPayoff
-            = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        const std::shared_ptr<BasketPayoff> basketPayoff
+            = std::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
-        const ext::shared_ptr<StrikedTypePayoff> strikePayoff
-            = ext::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
+        const std::shared_ptr<StrikedTypePayoff> strikePayoff
+            = std::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
 
         if (strikePayoff != nullptr) {
             scalingValue_/=strikePayoff->strike();
@@ -65,8 +65,8 @@ namespace QuantLib {
     }
 
     Real AmericanBasketPathPricer::payoff(const Array& state) const {
-        const ext::shared_ptr<BasketPayoff> basketPayoff
-            = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        const std::shared_ptr<BasketPayoff> basketPayoff
+            = std::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
         Real value = basketPayoff->accumulate(state);
@@ -78,7 +78,7 @@ namespace QuantLib {
         return this->payoff(this->state(path, t));
     }
 
-    std::vector<ext::function<Real(Array)> >
+    std::vector<std::function<Real(Array)> >
     AmericanBasketPathPricer::basisSystem() const {
         return v_;
     }

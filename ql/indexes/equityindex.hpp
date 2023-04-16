@@ -98,7 +98,7 @@ namespace QuantLib {
         //@{
         //! returns a copy of itself linked to different interest, dividend curves
         //! or spot quote
-        virtual ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
+        virtual std::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
                                                    const Handle<YieldTermStructure>& dividend,
                                                    const Handle<Quote>& spot) const;
         // @}

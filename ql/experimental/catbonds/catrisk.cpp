@@ -26,7 +26,7 @@ namespace QuantLib {
 
 
     EventSetSimulation::EventSetSimulation(
-        ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
+        std::shared_ptr<std::vector<std::pair<Date, Real> > > events,
         Date eventsStart,
         Date eventsEnd,
         Date start,
@@ -68,13 +68,13 @@ namespace QuantLib {
         return true;
     }
 
-    EventSet::EventSet(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
+    EventSet::EventSet(std::shared_ptr<std::vector<std::pair<Date, Real> > > events,
                        Date eventsStart,
                        Date eventsEnd)
     : events_(std::move(events)), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
 
-    ext::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
-        return ext::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
+    std::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
+        return std::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
     }
 
     BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
@@ -129,7 +129,7 @@ namespace QuantLib {
         beta_=(1.0-normalizedMean)*nu;
     }
 
-    ext::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
-        return ext::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
+    std::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
+        return std::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
     }
 }

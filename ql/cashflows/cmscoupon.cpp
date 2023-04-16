@@ -31,7 +31,7 @@ namespace QuantLib {
                          const Date& startDate,
                          const Date& endDate,
                          Natural fixingDays,
-                         const ext::shared_ptr<SwapIndex>& swapIndex,
+                         const std::shared_ptr<SwapIndex>& swapIndex,
                          Real gearing,
                          Spread spread,
                          const Date& refPeriodStart,
@@ -54,7 +54,7 @@ namespace QuantLib {
     }
 
 
-    CmsLeg::CmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> swapIndex)
+    CmsLeg::CmsLeg(Schedule schedule, std::shared_ptr<SwapIndex> swapIndex)
     : schedule_(std::move(schedule)), swapIndex_(std::move(swapIndex)) {
         QL_REQUIRE(swapIndex_, "no index provided");
     }

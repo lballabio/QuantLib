@@ -36,7 +36,7 @@ namespace QuantLib {
                                     Swaption::arguments, Swaption::results> {
       public:
         explicit FdHullWhiteSwaptionEngine(
-            const ext::shared_ptr<HullWhite>& model,
+            const std::shared_ptr<HullWhite>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size dampingSteps = 0, Real invEps = 1e-5,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());

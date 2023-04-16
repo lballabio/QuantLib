@@ -144,14 +144,14 @@ namespace QuantLib {
         template <class I1, class I2>
         LagrangeInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin) {
-            impl_ = ext::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
+            impl_ = std::make_shared<detail::LagrangeInterpolationImpl<I1,I2> >(
                 xBegin, xEnd, yBegin);
             impl_->update();
         }
 
         // interpolate with new set of y values for a new x value
         Real value(const Array& y, Real x) const {
-            return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
+            return std::dynamic_pointer_cast<detail::UpdatedYInterpolation>
                 (impl_)->value(y, x);
         }
     };

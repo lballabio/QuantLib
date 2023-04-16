@@ -87,9 +87,9 @@ int main(int, char* []) {
         *********************/
 
         DayCounter termStructureDayCounter = Actual365Fixed();
-        std::vector<ext::shared_ptr<RateHelper> > eoniaInstruments;
+        std::vector<std::shared_ptr<RateHelper> > eoniaInstruments;
 
-        ext::shared_ptr<Eonia> eonia(new Eonia);
+        std::shared_ptr<Eonia> eonia(new Eonia);
 
         // a SimpleQuote instance stores a value which can be manually changed;
         // other Quote subclasses could read the value from a database
@@ -102,11 +102,11 @@ int main(int, char* []) {
 
         // deposits
 
-        std::map<Natural, ext::shared_ptr<Quote>> depoQuotes = {
+        std::map<Natural, std::shared_ptr<Quote>> depoQuotes = {
             // settlement days, quote
-            {0, ext::make_shared<SimpleQuote>(0.0004)},
-            {1, ext::make_shared<SimpleQuote>(0.0004)},
-            {2, ext::make_shared<SimpleQuote>(0.0004)}
+            {0, std::make_shared<SimpleQuote>(0.0004)},
+            {1, std::make_shared<SimpleQuote>(0.0004)},
+            {2, std::make_shared<SimpleQuote>(0.0004)}
         };
 
         DayCounter depositDayCounter = Actual360();
@@ -114,7 +114,7 @@ int main(int, char* []) {
         for (const auto& q : depoQuotes) {
             auto settlementDays = q.first;
             auto quote = q.second;
-            auto helper = ext::make_shared<DepositRateHelper>(
+            auto helper = std::make_shared<DepositRateHelper>(
                 Handle<Quote>(quote),
                 1 * Days, settlementDays,
                 calendar, Following,
@@ -124,74 +124,74 @@ int main(int, char* []) {
 
         // short-term OIS
 
-        std::map<Period, ext::shared_ptr<Quote>> shortOisQuotes = {
-            {1 * Weeks, ext::make_shared<SimpleQuote>(0.00070)},
-            {2 * Weeks, ext::make_shared<SimpleQuote>(0.00069)},
-            {3 * Weeks, ext::make_shared<SimpleQuote>(0.00078)},
-            {1 * Months, ext::make_shared<SimpleQuote>(0.00074)}
+        std::map<Period, std::shared_ptr<Quote>> shortOisQuotes = {
+            {1 * Weeks, std::make_shared<SimpleQuote>(0.00070)},
+            {2 * Weeks, std::make_shared<SimpleQuote>(0.00069)},
+            {3 * Weeks, std::make_shared<SimpleQuote>(0.00078)},
+            {1 * Months, std::make_shared<SimpleQuote>(0.00074)}
         };
 
         for (const auto& q : shortOisQuotes) {
             auto tenor = q.first;
             auto quote = q.second;
-            auto helper = ext::make_shared<OISRateHelper>(
+            auto helper = std::make_shared<OISRateHelper>(
                 2, tenor, Handle<Quote>(quote), eonia);
             eoniaInstruments.push_back(helper);
         }
 
         // Dated OIS
 
-        std::map<std::pair<Date, Date>, ext::shared_ptr<Quote>> datedOisQuotes = {
-            {{Date(16, January, 2013), Date(13, February, 2013)}, ext::make_shared<SimpleQuote>( 0.000460)},
-            {{Date(13, February, 2013), Date(13, March, 2013)}, ext::make_shared<SimpleQuote>( 0.000160)},
-            {{Date(13, March, 2013), Date(10, April, 2013)}, ext::make_shared<SimpleQuote>(-0.000070)},
-            {{Date(10, April, 2013), Date(8, May, 2013)}, ext::make_shared<SimpleQuote>(-0.000130)},
-            {{Date(8, May, 2013), Date(12, June, 2013)}, ext::make_shared<SimpleQuote>(-0.000140)},
+        std::map<std::pair<Date, Date>, std::shared_ptr<Quote>> datedOisQuotes = {
+            {{Date(16, January, 2013), Date(13, February, 2013)}, std::make_shared<SimpleQuote>( 0.000460)},
+            {{Date(13, February, 2013), Date(13, March, 2013)}, std::make_shared<SimpleQuote>( 0.000160)},
+            {{Date(13, March, 2013), Date(10, April, 2013)}, std::make_shared<SimpleQuote>(-0.000070)},
+            {{Date(10, April, 2013), Date(8, May, 2013)}, std::make_shared<SimpleQuote>(-0.000130)},
+            {{Date(8, May, 2013), Date(12, June, 2013)}, std::make_shared<SimpleQuote>(-0.000140)},
         };
 
         for (const auto& q : datedOisQuotes) {
             auto startDate = q.first.first;
             auto endDate = q.first.second;
             auto quote = q.second;
-            auto helper = ext::make_shared<DatedOISRateHelper>(
+            auto helper = std::make_shared<DatedOISRateHelper>(
                 startDate, endDate, Handle<Quote>(quote), eonia);
             eoniaInstruments.push_back(helper);
         }
 
         // long-term OIS
 
-        std::map<Period, ext::shared_ptr<Quote>> longOisQuotes = {
-            {15 * Months, ext::make_shared<SimpleQuote>(0.00002)},
-            {18 * Months, ext::make_shared<SimpleQuote>(0.00008)},
-            {21 * Months, ext::make_shared<SimpleQuote>(0.00021)},
-            {2 * Years, ext::make_shared<SimpleQuote>(0.00036)},
-            {3 * Years, ext::make_shared<SimpleQuote>(0.00127)},
-            {4 * Years, ext::make_shared<SimpleQuote>(0.00274)},
-            {5 * Years, ext::make_shared<SimpleQuote>(0.00456)},
-            {6 * Years, ext::make_shared<SimpleQuote>(0.00647)},
-            {7 * Years, ext::make_shared<SimpleQuote>(0.00827)},
-            {8 * Years, ext::make_shared<SimpleQuote>(0.00996)},
-            {9 * Years, ext::make_shared<SimpleQuote>(0.01147)},
-            {10 * Years, ext::make_shared<SimpleQuote>(0.0128)},
-            {11 * Years, ext::make_shared<SimpleQuote>(0.01404)},
-            {12 * Years, ext::make_shared<SimpleQuote>(0.01516)},
-            {15 * Years, ext::make_shared<SimpleQuote>(0.01764)},
-            {20 * Years, ext::make_shared<SimpleQuote>(0.01939)},
-            {25 * Years, ext::make_shared<SimpleQuote>(0.02003)},
-            {30 * Years, ext::make_shared<SimpleQuote>(0.02038)}
+        std::map<Period, std::shared_ptr<Quote>> longOisQuotes = {
+            {15 * Months, std::make_shared<SimpleQuote>(0.00002)},
+            {18 * Months, std::make_shared<SimpleQuote>(0.00008)},
+            {21 * Months, std::make_shared<SimpleQuote>(0.00021)},
+            {2 * Years, std::make_shared<SimpleQuote>(0.00036)},
+            {3 * Years, std::make_shared<SimpleQuote>(0.00127)},
+            {4 * Years, std::make_shared<SimpleQuote>(0.00274)},
+            {5 * Years, std::make_shared<SimpleQuote>(0.00456)},
+            {6 * Years, std::make_shared<SimpleQuote>(0.00647)},
+            {7 * Years, std::make_shared<SimpleQuote>(0.00827)},
+            {8 * Years, std::make_shared<SimpleQuote>(0.00996)},
+            {9 * Years, std::make_shared<SimpleQuote>(0.01147)},
+            {10 * Years, std::make_shared<SimpleQuote>(0.0128)},
+            {11 * Years, std::make_shared<SimpleQuote>(0.01404)},
+            {12 * Years, std::make_shared<SimpleQuote>(0.01516)},
+            {15 * Years, std::make_shared<SimpleQuote>(0.01764)},
+            {20 * Years, std::make_shared<SimpleQuote>(0.01939)},
+            {25 * Years, std::make_shared<SimpleQuote>(0.02003)},
+            {30 * Years, std::make_shared<SimpleQuote>(0.02038)}
         };
 
         for (const auto& q : longOisQuotes) {
             auto tenor = q.first;
             auto quote = q.second;
-            auto helper = ext::make_shared<OISRateHelper>(
+            auto helper = std::make_shared<OISRateHelper>(
                 2, tenor, Handle<Quote>(quote), eonia);
             eoniaInstruments.push_back(helper);
         }
 
         // curve
 
-        ext::shared_ptr<YieldTermStructure> eoniaTermStructure(
+        std::shared_ptr<YieldTermStructure> eoniaTermStructure(
             new PiecewiseYieldCurve<Discount, Cubic>(
                 todaysDate, eoniaInstruments,
                 termStructureDayCounter) );
@@ -207,15 +207,15 @@ int main(int, char* []) {
         **    EURIBOR 6M CURVE   **
         ***************************/
 
-        std::vector<ext::shared_ptr<RateHelper> > euribor6MInstruments;
+        std::vector<std::shared_ptr<RateHelper> > euribor6MInstruments;
 
-        ext::shared_ptr<IborIndex> euribor6M(new Euribor6M);
+        std::shared_ptr<IborIndex> euribor6M(new Euribor6M);
 
         // deposits
 
-        auto d6MRate = ext::make_shared<SimpleQuote>(0.00312);
+        auto d6MRate = std::make_shared<SimpleQuote>(0.00312);
 
-        auto d6M = ext::make_shared<DepositRateHelper>(
+        auto d6M = std::make_shared<DepositRateHelper>(
             Handle<Quote>(d6MRate),
             6 * Months, 3,
             calendar, Following,
@@ -225,31 +225,31 @@ int main(int, char* []) {
 
         // FRAs
 
-        std::map<Natural, ext::shared_ptr<Quote>> fraQuotes = {
-            {1, ext::make_shared<SimpleQuote>(0.002930)},
-            {2, ext::make_shared<SimpleQuote>(0.002720)},
-            {3, ext::make_shared<SimpleQuote>(0.002600)},
-            {4, ext::make_shared<SimpleQuote>(0.002560)},
-            {5, ext::make_shared<SimpleQuote>(0.002520)},
-            {6, ext::make_shared<SimpleQuote>(0.002480)},
-            {7, ext::make_shared<SimpleQuote>(0.002540)},
-            {8, ext::make_shared<SimpleQuote>(0.002610)},
-            {9, ext::make_shared<SimpleQuote>(0.002670)},
-            {10, ext::make_shared<SimpleQuote>(0.002790)},
-            {11, ext::make_shared<SimpleQuote>(0.002910)},
-            {12, ext::make_shared<SimpleQuote>(0.003030)},
-            {13, ext::make_shared<SimpleQuote>(0.003180)},
-            {14, ext::make_shared<SimpleQuote>(0.003350)},
-            {15, ext::make_shared<SimpleQuote>(0.003520)},
-            {16, ext::make_shared<SimpleQuote>(0.003710)},
-            {17, ext::make_shared<SimpleQuote>(0.003890)},
-            {18, ext::make_shared<SimpleQuote>(0.004090)}
+        std::map<Natural, std::shared_ptr<Quote>> fraQuotes = {
+            {1, std::make_shared<SimpleQuote>(0.002930)},
+            {2, std::make_shared<SimpleQuote>(0.002720)},
+            {3, std::make_shared<SimpleQuote>(0.002600)},
+            {4, std::make_shared<SimpleQuote>(0.002560)},
+            {5, std::make_shared<SimpleQuote>(0.002520)},
+            {6, std::make_shared<SimpleQuote>(0.002480)},
+            {7, std::make_shared<SimpleQuote>(0.002540)},
+            {8, std::make_shared<SimpleQuote>(0.002610)},
+            {9, std::make_shared<SimpleQuote>(0.002670)},
+            {10, std::make_shared<SimpleQuote>(0.002790)},
+            {11, std::make_shared<SimpleQuote>(0.002910)},
+            {12, std::make_shared<SimpleQuote>(0.003030)},
+            {13, std::make_shared<SimpleQuote>(0.003180)},
+            {14, std::make_shared<SimpleQuote>(0.003350)},
+            {15, std::make_shared<SimpleQuote>(0.003520)},
+            {16, std::make_shared<SimpleQuote>(0.003710)},
+            {17, std::make_shared<SimpleQuote>(0.003890)},
+            {18, std::make_shared<SimpleQuote>(0.004090)}
         };
 
         for (const auto& q : fraQuotes) {
             auto monthsToStart = q.first;
             auto quote = q.second;
-            auto helper = ext::make_shared<FraRateHelper>(
+            auto helper = std::make_shared<FraRateHelper>(
                 Handle<Quote>(quote),
                 monthsToStart, euribor6M);
             euribor6MInstruments.push_back(helper);
@@ -257,24 +257,24 @@ int main(int, char* []) {
 
         // swaps
 
-        std::map<Period, ext::shared_ptr<Quote>> swapQuotes = {
-            {3 * Years, ext::make_shared<SimpleQuote>(0.004240)},
-            {4 * Years, ext::make_shared<SimpleQuote>(0.005760)},
-            {5 * Years, ext::make_shared<SimpleQuote>(0.007620)},
-            {6 * Years, ext::make_shared<SimpleQuote>(0.009540)},
-            {7 * Years, ext::make_shared<SimpleQuote>(0.011350)},
-            {8 * Years, ext::make_shared<SimpleQuote>(0.013030)},
-            {9 * Years, ext::make_shared<SimpleQuote>(0.014520)},
-            {10 * Years, ext::make_shared<SimpleQuote>(0.015840)},
-            {12 * Years, ext::make_shared<SimpleQuote>(0.018090)},
-            {15 * Years, ext::make_shared<SimpleQuote>(0.020370)},
-            {20 * Years, ext::make_shared<SimpleQuote>(0.021870)},
-            {25 * Years, ext::make_shared<SimpleQuote>(0.022340)},
-            {30 * Years, ext::make_shared<SimpleQuote>(0.022560)},
-            {35 * Years, ext::make_shared<SimpleQuote>(0.022950)},
-            {40 * Years, ext::make_shared<SimpleQuote>(0.023480)},
-            {50 * Years, ext::make_shared<SimpleQuote>(0.024210)},
-            {60 * Years, ext::make_shared<SimpleQuote>(0.024630)}
+        std::map<Period, std::shared_ptr<Quote>> swapQuotes = {
+            {3 * Years, std::make_shared<SimpleQuote>(0.004240)},
+            {4 * Years, std::make_shared<SimpleQuote>(0.005760)},
+            {5 * Years, std::make_shared<SimpleQuote>(0.007620)},
+            {6 * Years, std::make_shared<SimpleQuote>(0.009540)},
+            {7 * Years, std::make_shared<SimpleQuote>(0.011350)},
+            {8 * Years, std::make_shared<SimpleQuote>(0.013030)},
+            {9 * Years, std::make_shared<SimpleQuote>(0.014520)},
+            {10 * Years, std::make_shared<SimpleQuote>(0.015840)},
+            {12 * Years, std::make_shared<SimpleQuote>(0.018090)},
+            {15 * Years, std::make_shared<SimpleQuote>(0.020370)},
+            {20 * Years, std::make_shared<SimpleQuote>(0.021870)},
+            {25 * Years, std::make_shared<SimpleQuote>(0.022340)},
+            {30 * Years, std::make_shared<SimpleQuote>(0.022560)},
+            {35 * Years, std::make_shared<SimpleQuote>(0.022950)},
+            {40 * Years, std::make_shared<SimpleQuote>(0.023480)},
+            {50 * Years, std::make_shared<SimpleQuote>(0.024210)},
+            {60 * Years, std::make_shared<SimpleQuote>(0.024630)}
         };
 
         Frequency swFixedLegFrequency = Annual;
@@ -284,7 +284,7 @@ int main(int, char* []) {
         for (const auto& q : swapQuotes) {
             auto tenor = q.first;
             auto quote = q.second;
-            auto helper = ext::make_shared<SwapRateHelper>(
+            auto helper = std::make_shared<SwapRateHelper>(
                 Handle<Quote>(quote), tenor,
                 calendar, swFixedLegFrequency,
                 swFixedLegConvention, swFixedLegDayCounter,
@@ -298,7 +298,7 @@ int main(int, char* []) {
         // The tolerance is passed in an explicit bootstrap object. Depending on
         // the bootstrap algorithm, it's possible to pass other parameters.
         double tolerance = 1.0e-15;
-        ext::shared_ptr<YieldTermStructure> euribor6MTermStructure(
+        std::shared_ptr<YieldTermStructure> euribor6MTermStructure(
             new PiecewiseYieldCurve<Discount, Cubic>(
                 settlementDate, euribor6MInstruments,
                 termStructureDayCounter,
@@ -325,7 +325,7 @@ int main(int, char* []) {
 
         // floating leg
         Frequency floatingLegFrequency = Semiannual;
-        ext::shared_ptr<IborIndex> euriborIndex(
+        std::shared_ptr<IborIndex> euriborIndex(
                                      new Euribor6M(forecastingTermStructure));
         Spread spread = 0.0;
 
@@ -407,7 +407,7 @@ int main(int, char* []) {
         Rate fairRate;
         Spread fairSpread;
 
-        ext::shared_ptr<PricingEngine> swapEngine(
+        std::shared_ptr<PricingEngine> swapEngine(
                          new DiscountingSwapEngine(discountingTermStructure));
 
         spot5YearSwap.setPricingEngine(swapEngine);
@@ -459,8 +459,8 @@ int main(int, char* []) {
         // value contained in the Quote triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
-        ext::shared_ptr<SimpleQuote> fiveYearsRate =
-            ext::dynamic_pointer_cast<SimpleQuote>(s5yRate);
+        std::shared_ptr<SimpleQuote> fiveYearsRate =
+            std::dynamic_pointer_cast<SimpleQuote>(s5yRate);
         fiveYearsRate->setValue(0.0090);
 
         std::cout << dblrule << std::endl;

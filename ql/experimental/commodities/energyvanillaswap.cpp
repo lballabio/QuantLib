@@ -27,12 +27,12 @@ namespace QuantLib {
                                          const Calendar& calendar,
                                          Money fixedPrice,
                                          UnitOfMeasure fixedPriceUnitOfMeasure,
-                                         ext::shared_ptr<CommodityIndex> index,
+                                         std::shared_ptr<CommodityIndex> index,
                                          const Currency& payCurrency,
                                          const Currency& receiveCurrency,
                                          const PricingPeriods& pricingPeriods,
                                          const CommodityType& commodityType,
-                                         const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
+                                         const std::shared_ptr<SecondaryCosts>& secondaryCosts,
                                          Handle<YieldTermStructure> payLegTermStructure,
                                          Handle<YieldTermStructure> receiveLegTermStructure,
                                          Handle<YieldTermStructure> discountTermStructure)
@@ -228,7 +228,7 @@ namespace QuantLib {
                                     payLegDiscountFactor;
 
                 paymentCashFlows_[pricingPeriod->paymentDate()] =
-                    ext::make_shared<CommodityCashFlow>(
+                    std::make_shared<CommodityCashFlow>(
                            pricingPeriod->paymentDate(),
                                                  Money(baseCurrency,
                                                        uDelta * discountFactor),

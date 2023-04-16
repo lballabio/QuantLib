@@ -24,8 +24,8 @@
 namespace QuantLib {
 
     AnalyticHestonHullWhiteEngine::AnalyticHestonHullWhiteEngine(
-        const ext::shared_ptr<HestonModel>& hestonModel,
-        ext::shared_ptr<HullWhite> hullWhiteModel,
+        const std::shared_ptr<HestonModel>& hestonModel,
+        std::shared_ptr<HullWhite> hullWhiteModel,
         Size integrationOrder)
     : AnalyticHestonEngine(hestonModel, integrationOrder),
       hullWhiteModel_(std::move(hullWhiteModel)) {
@@ -34,8 +34,8 @@ namespace QuantLib {
     }
 
     AnalyticHestonHullWhiteEngine::AnalyticHestonHullWhiteEngine(
-        const ext::shared_ptr<HestonModel>& hestonModel,
-        ext::shared_ptr<HullWhite> hullWhiteModel,
+        const std::shared_ptr<HestonModel>& hestonModel,
+        std::shared_ptr<HullWhite> hullWhiteModel,
         Real relTolerance,
         Size maxEvaluations)
     : AnalyticHestonEngine(hestonModel, relTolerance, maxEvaluations),

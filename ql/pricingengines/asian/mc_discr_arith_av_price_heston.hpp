@@ -56,7 +56,7 @@ namespace QuantLib {
         typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::stats_type stats_type;
         // constructor
         MCDiscreteArithmeticAPHestonEngine(
-             const ext::shared_ptr<P>& process,
+             const std::shared_ptr<P>& process,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -66,15 +66,15 @@ namespace QuantLib {
              Size timeStepsPerYear = Null<Size>(),
              bool controlVariate = false);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // Use the experimental analytic geometric asian option as a control variate.
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
-            ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        std::shared_ptr<PricingEngine> controlPricingEngine() const override {
+            std::shared_ptr<P> process = std::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
-            return ext::shared_ptr<PricingEngine>(new
+            return std::shared_ptr<PricingEngine>(new
                 AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(process));
         }
     };
@@ -84,7 +84,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCDiscreteArithmeticAPHestonEngine {
       public:
-        explicit MakeMCDiscreteArithmeticAPHestonEngine(ext::shared_ptr<P> process);
+        explicit MakeMCDiscreteArithmeticAPHestonEngine(std::shared_ptr<P> process);
         // named parameters
         MakeMCDiscreteArithmeticAPHestonEngine& withSamples(Size samples);
         MakeMCDiscreteArithmeticAPHestonEngine& withAbsoluteTolerance(Real tolerance);
@@ -95,9 +95,9 @@ namespace QuantLib {
         MakeMCDiscreteArithmeticAPHestonEngine& withStepsPerYear(Size steps);
         MakeMCDiscreteArithmeticAPHestonEngine& withControlVariate(bool b = false);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<P> process_;
+        std::shared_ptr<P> process_;
         bool antithetic_ = false, controlVariate_ = false;
         Size samples_, maxSamples_, steps_, stepsPerYear_;
         Real tolerance_;
@@ -129,7 +129,7 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline
     MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MCDiscreteArithmeticAPHestonEngine(
-             const ext::shared_ptr<P>& process,
+             const std::shared_ptr<P>& process,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -153,7 +153,7 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline ext::shared_ptr<
+    inline std::shared_ptr<
             typename MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>
         MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::pathPricer() const {
 
@@ -166,21 +166,21 @@ namespace QuantLib {
             fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        ext::shared_ptr<P> process =
-            ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<P> process =
+            std::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
+        return std::shared_ptr<typename
             MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>(
                 new ArithmeticAPOHestonPathPricer(
                     payoff->optionType(),
@@ -192,7 +192,7 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline ext::shared_ptr<
+    inline std::shared_ptr<
             typename MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>
         MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::controlPathPricer() const {
 
@@ -205,18 +205,18 @@ namespace QuantLib {
             fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        ext::shared_ptr<P> process =
-            ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<P> process =
+            std::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
         // TODO: Currently the analytic pricer does not support seasoned asian
@@ -224,7 +224,7 @@ namespace QuantLib {
         // pass seasoning details to the path pricer (NB. NEED to pass them to
         // the analytic pricer as well in that case).
 
-        return ext::shared_ptr<typename
+        return std::shared_ptr<typename
             MCDiscreteArithmeticAPHestonEngine<RNG,S,P>::path_pricer_type>(
                 new GeometricAPOHestonPathPricer(
                     payoff->optionType(),
@@ -235,7 +235,7 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG, S, P>::
-        MakeMCDiscreteArithmeticAPHestonEngine(ext::shared_ptr<P> process)
+        MakeMCDiscreteArithmeticAPHestonEngine(std::shared_ptr<P> process)
     : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()) {}
 
@@ -308,8 +308,8 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>() const {
-        return ext::shared_ptr<PricingEngine>(new
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::operator std::shared_ptr<PricingEngine>() const {
+        return std::shared_ptr<PricingEngine>(new
             MCDiscreteArithmeticAPHestonEngine<RNG,S,P>(process_,
                                                         antithetic_,
                                                         samples_,

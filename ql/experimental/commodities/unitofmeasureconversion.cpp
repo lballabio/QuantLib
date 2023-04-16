@@ -30,7 +30,7 @@ namespace QuantLib {
                                            const UnitOfMeasure& source,
                                            const UnitOfMeasure& target,
                                            Real conversionFactor) {
-        data_ = ext::make_shared<UnitOfMeasureConversion::Data>(
+        data_ = std::make_shared<UnitOfMeasureConversion::Data>(
               commodityType, source, target,
                                                 conversionFactor, Direct);
     }
@@ -38,7 +38,7 @@ namespace QuantLib {
     UnitOfMeasureConversion::UnitOfMeasureConversion(
                                             const UnitOfMeasureConversion& r1,
                                             const UnitOfMeasureConversion& r2) {
-        data_ = ext::make_shared<UnitOfMeasureConversion::Data>(
+        data_ = std::make_shared<UnitOfMeasureConversion::Data>(
                                    r1, r2);
     }
 
@@ -54,8 +54,8 @@ namespace QuantLib {
     UnitOfMeasureConversion::Data::Data(const UnitOfMeasureConversion& r1,
                                         const UnitOfMeasureConversion& r2) {
         conversionFactorChain = std::make_pair(
-            ext::make_shared<UnitOfMeasureConversion>(r1),
-            ext::make_shared<UnitOfMeasureConversion>(r2));
+            std::make_shared<UnitOfMeasureConversion>(r1),
+            std::make_shared<UnitOfMeasureConversion>(r2));
     }
 
     Quantity UnitOfMeasureConversion::convert(const Quantity& quantity) const {

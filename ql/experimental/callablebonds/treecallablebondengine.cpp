@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-        const ext::shared_ptr<ShortRateModel>& model,
+        const std::shared_ptr<ShortRateModel>& model,
         const Size timeSteps,
         Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<CallableBond::arguments, CallableBond::results>(model, timeSteps),
@@ -35,7 +35,7 @@ namespace QuantLib {
     }
 
     TreeCallableFixedRateBondEngine::TreeCallableFixedRateBondEngine(
-        const ext::shared_ptr<ShortRateModel>& model,
+        const std::shared_ptr<ShortRateModel>& model,
         const TimeGrid& timeGrid,
         Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<CallableBond::arguments, CallableBond::results>(model, timeGrid),
@@ -50,13 +50,13 @@ namespace QuantLib {
     void TreeCallableFixedRateBondEngine::calculateWithSpread(Spread s) const {
         QL_REQUIRE(!model_.empty(), "no model specified");
 
-        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
-            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        std::shared_ptr<TermStructureConsistentModel> tsmodel =
+            std::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         Handle<YieldTermStructure> discountCurve =
             tsmodel != nullptr ? tsmodel->termStructure() : termStructure_;
 
         DiscretizedCallableFixedRateBond callableBond(arguments_, discountCurve);
-        ext::shared_ptr<Lattice> lattice;
+        std::shared_ptr<Lattice> lattice;
 
         if (lattice_ != nullptr) {
             lattice = lattice_;

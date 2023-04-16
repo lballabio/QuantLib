@@ -245,12 +245,12 @@ namespace QuantLib {
 
     CTSMMCapletMaxHomogeneityCalibration::CTSMMCapletMaxHomogeneityCalibration(
         const EvolutionDescription& evolution,
-        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
-        const std::vector<ext::shared_ptr<
+        const std::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const std::vector<std::shared_ptr<
         PiecewiseConstantVariance> >&
         displacedSwapVariances,
         const std::vector<Volatility>& mktCapletVols,
-        const ext::shared_ptr<CurveState>& cs,
+        const std::shared_ptr<CurveState>& cs,
         Spread displacement,
         Real caplet0Swaption1Priority)
         : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
@@ -267,7 +267,7 @@ namespace QuantLib {
     Natural CTSMMCapletMaxHomogeneityCalibration::capletMaxHomogeneityCalibration(
         const EvolutionDescription& evolution,
         const PiecewiseConstantCorrelation& corr,
-        const std::vector<ext::shared_ptr<
+        const std::vector<std::shared_ptr<
         PiecewiseConstantVariance> >& displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
         const CurveState& cs,

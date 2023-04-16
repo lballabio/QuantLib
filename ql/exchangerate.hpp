@@ -74,8 +74,8 @@ namespace QuantLib {
         Currency source_, target_;
         Decimal rate_;
         Type type_;
-        std::pair<ext::shared_ptr<ExchangeRate>,
-                  ext::shared_ptr<ExchangeRate> > rateChain_;
+        std::pair<std::shared_ptr<ExchangeRate>,
+                  std::shared_ptr<ExchangeRate> > rateChain_;
     };
 
 

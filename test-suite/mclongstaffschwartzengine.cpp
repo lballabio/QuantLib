@@ -39,7 +39,7 @@ namespace {
 
     class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
       public:
-        explicit AmericanMaxPathPricer(ext::shared_ptr<Payoff> payoff)
+        explicit AmericanMaxPathPricer(std::shared_ptr<Payoff> payoff)
         : payoff_(std::move(payoff)) {}
 
         StateType state(const MultiPath& path, Size t) const override {
@@ -56,13 +56,13 @@ namespace {
             return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
         }
 
-        std::vector<ext::function<Real(StateType)> > basisSystem() const override {
+        std::vector<std::function<Real(StateType)> > basisSystem() const override {
             return LsmBasisSystem::multiPathBasisSystem(2, 2,
                                                         LsmBasisSystem::Monomial);
         }
 
       protected:
-        const ext::shared_ptr<Payoff> payoff_;
+        const std::shared_ptr<Payoff> payoff_;
     };
 
     template <class RNG>
@@ -71,7 +71,7 @@ namespace {
                                            MultiVariate,RNG>{
       public:
         MCAmericanMaxEngine(
-                            const ext::shared_ptr<StochasticProcessArray>& processes,
+                            const std::shared_ptr<StochasticProcessArray>& processes,
                             Size timeSteps,
                             Size timeStepsPerYear,
                             bool brownianbridge,
@@ -96,21 +96,21 @@ namespace {
         { }
 
       protected:
-        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override {
-            ext::shared_ptr<StochasticProcessArray> processArray =
-            ext::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
+        std::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override {
+            std::shared_ptr<StochasticProcessArray> processArray =
+            std::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
             QL_REQUIRE(processArray && processArray->size() > 0,
                        "Stochastic process array required");
 
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-                ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            std::shared_ptr<GeneralizedBlackScholesProcess> process =
+                std::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                     processArray->process(0));
             QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-            ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
+            std::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
                           new AmericanMaxPathPricer(this->arguments_.payoff));
 
-            return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
+            return std::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
                 
                     this->timeGrid(),
                     earlyExercisePathPricer,
@@ -140,15 +140,15 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     const Date maturity(17, May, 1999);
     const DayCounter dayCounter = Actual365Fixed();
 
-    ext::shared_ptr<Exercise> americanExercise(
+    std::shared_ptr<Exercise> americanExercise(
         new AmericanExercise(settlementDate, maturity));
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-            ext::shared_ptr<YieldTermStructure>(
+            std::shared_ptr<YieldTermStructure>(
                 new FlatForward(settlementDate, riskFreeRate, dayCounter)));
     Handle<YieldTermStructure> flatDividendTS(
-            ext::shared_ptr<YieldTermStructure>(
+            std::shared_ptr<YieldTermStructure>(
                 new FlatForward(settlementDate, dividendYield, dayCounter)));
 
     // expected results for exercise probability, evaluated with third-party
@@ -169,24 +169,24 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     for (Integer i=0; i<2; ++i) {
         for (Integer j=0; j<3; ++j) {
             Handle<BlackVolTermStructure> flatVolTS(
-                ext::shared_ptr<BlackVolTermStructure>(
+                std::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(settlementDate, NullCalendar(),
                                          volatility+0.1*j, dayCounter)));
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(
+            std::shared_ptr<StrikedTypePayoff> payoff(
                 new PlainVanillaPayoff(type, underlying+4*i));
 
             Handle<Quote> underlyingH(
-                ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+                std::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
-            ext::shared_ptr<GeneralizedBlackScholesProcess>
+            std::shared_ptr<GeneralizedBlackScholesProcess>
                 stochasticProcess(new GeneralizedBlackScholesProcess(
                                       underlyingH, flatDividendTS,
                                       flatTermStructure, flatVolTS));
 
             VanillaOption americanOption(payoff, americanExercise);
 
-            ext::shared_ptr<PricingEngine> mcengine =
+            std::shared_ptr<PricingEngine> mcengine =
                 MakeMCAmericanEngine<PseudoRandom>(stochasticProcess)
                   .withSteps(75)
                   .withAntitheticVariate()
@@ -201,7 +201,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             const Real exerciseProbability =
                 americanOption.result<QuantLib::Real>("exerciseProbability");
 
-            americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            americanOption.setPricingEngine(std::shared_ptr<PricingEngine>(
                         new FdBlackScholesVanillaEngine(stochasticProcess, 401, 200)));
             const Real expected = americanOption.NPV();
 
@@ -248,45 +248,45 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     const Date maturity(16, May, 2001);
     const DayCounter dayCounter = Actual365Fixed();
 
-    ext::shared_ptr<Exercise> americanExercise(
+    std::shared_ptr<Exercise> americanExercise(
         new AmericanExercise(settlementDate, maturity));
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-        ext::shared_ptr<YieldTermStructure>(
+        std::shared_ptr<YieldTermStructure>(
             new FlatForward(settlementDate, riskFreeRate, dayCounter)));
     Handle<YieldTermStructure> flatDividendTS(
-        ext::shared_ptr<YieldTermStructure>(
+        std::shared_ptr<YieldTermStructure>(
             new FlatForward(settlementDate, dividendYield, dayCounter)));
 
     Handle<BlackVolTermStructure> flatVolTS(
-        ext::shared_ptr<BlackVolTermStructure>(new
+        std::shared_ptr<BlackVolTermStructure>(new
             BlackConstantVol(settlementDate, NullCalendar(),
                              volatility, dayCounter)));
 
-    ext::shared_ptr<StrikedTypePayoff> payoff(
+    std::shared_ptr<StrikedTypePayoff> payoff(
         new PlainVanillaPayoff(type, strike));
 
     RelinkableHandle<Quote> underlyingH;
 
-    ext::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(new
+    std::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(new
         GeneralizedBlackScholesProcess(
             underlyingH, flatDividendTS, flatTermStructure, flatVolTS));
 
     const Size numberAssets = 2;
     Matrix corr(numberAssets, numberAssets, 0.0);
-    std::vector<ext::shared_ptr<StochasticProcess1D> > v;
+    std::vector<std::shared_ptr<StochasticProcess1D> > v;
 
     for (Size i=0; i<numberAssets; ++i) {
         v.push_back(stochasticProcess);
         corr[i][i] = 1.0;
     }
 
-    ext::shared_ptr<StochasticProcessArray> process(
+    std::shared_ptr<StochasticProcessArray> process(
         new StochasticProcessArray(v, corr));
     VanillaOption americanMaxOption(payoff, americanExercise);
 
-    ext::shared_ptr<PricingEngine> mcengine(
+    std::shared_ptr<PricingEngine> mcengine(
         new MCAmericanMaxEngine<PseudoRandom>(process, 25, Null<Size>(), false,
                                               true, false, 4096,
                                               Null<Real>(), Null<Size>(),
@@ -298,7 +298,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
 
         const Real underlying = 90.0 + i*10.0;
         underlyingH.linkTo(
-            ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+            std::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
         const Real calculated  = americanMaxOption.NPV();
         const Real errorEstimate = americanMaxOption.errorEstimate();

@@ -84,7 +84,7 @@ namespace QuantLib {
                            const Period& bondTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        virtual ext::shared_ptr<SmileSection> smileSection(
+        virtual std::shared_ptr<SmileSection> smileSection(
                                               const Date& optionDate,
                                               const Period& bondTenor) const {
             const std::pair<Time, Time> p = convertDates(optionDate, bondTenor);
@@ -101,7 +101,7 @@ namespace QuantLib {
                            const Period& bondTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        ext::shared_ptr<SmileSection> smileSection(
+        std::shared_ptr<SmileSection> smileSection(
                                                const Period& optionTenor,
                                                const Period& bondTenor) const;
         //@}
@@ -127,7 +127,7 @@ namespace QuantLib {
     protected:
 
         //! return smile section
-        virtual ext::shared_ptr<SmileSection> smileSectionImpl(
+        virtual std::shared_ptr<SmileSection> smileSectionImpl(
                                                    Time optionTime,
                                                    Time bondLength) const = 0;
 
@@ -227,7 +227,7 @@ namespace QuantLib {
     }
 
 
-    inline ext::shared_ptr<SmileSection>
+    inline std::shared_ptr<SmileSection>
     CallableBondVolatilityStructure::smileSection(
                                               const Period& optionTenor,
                                               const Period& bondTenor) const {

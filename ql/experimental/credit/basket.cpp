@@ -32,10 +32,10 @@ namespace QuantLib {
     Basket::Basket(const Date& refDate,
                    const vector<string>& names,
                    vector<Real> notionals,
-                   ext::shared_ptr<Pool> pool,
+                   std::shared_ptr<Pool> pool,
                    Real attachment,
                    Real detachment,
-                   ext::shared_ptr<Claim> claim)
+                   std::shared_ptr<Claim> claim)
     : notionals_(std::move(notionals)), pool_(std::move(pool)), claim_(std::move(claim)),
       attachmentRatio_(attachment), detachmentRatio_(detachment), basketNotional_(0.0),
       attachmentAmount_(0.0), detachmentAmount_(0.0), trancheNotional_(0.0), refDate_(refDate) {
@@ -71,7 +71,7 @@ namespace QuantLib {
     the outside. In that case reconsider the observability chain.
     */
     void Basket::setLossModel(
-        const ext::shared_ptr<DefaultLossModel>& lossModel) {
+        const std::shared_ptr<DefaultLossModel>& lossModel) {
 
         if (lossModel_ != nullptr)
             unregisterWith(lossModel_);
@@ -120,7 +120,7 @@ namespace QuantLib {
             "Target date lies before basket inception");
         Real loss = 0.0;
         for (Size i = 0; i < size(); i++) {
-            ext::shared_ptr<DefaultEvent> credEvent =
+            std::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
             if (credEvent != nullptr) {
@@ -145,7 +145,7 @@ namespace QuantLib {
         
         Real loss = 0.0;
         for (Size i = 0; i < size(); i++) {
-            ext::shared_ptr<DefaultEvent> credEvent =
+            std::shared_ptr<DefaultEvent> credEvent =
                 pool_->get(pool_->names()[i]).defaultedBetween(refDate_,
                     endDate, pool_->defaultKeys()[i]);
             if (credEvent != nullptr) {

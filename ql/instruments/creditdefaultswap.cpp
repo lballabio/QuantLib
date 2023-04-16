@@ -31,7 +31,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -45,12 +45,12 @@ namespace QuantLib {
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
-                                         ext::shared_ptr<Claim> claim,
+                                         std::shared_ptr<Claim> claim,
                                          const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual,
                                          const Date& tradeDate,
                                          Natural cashSettlementDays)
-    : side_(side), notional_(notional), upfront_(ext::nullopt), runningSpread_(spread),
+    : side_(side), notional_(notional), upfront_(std::nullopt), runningSpread_(spread),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
       claim_(std::move(claim)),
       protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
@@ -70,7 +70,7 @@ namespace QuantLib {
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
                                          const Date& upfrontDate,
-                                         ext::shared_ptr<Claim> claim,
+                                         std::shared_ptr<Claim> claim,
                                          const DayCounter& lastPeriodDayCounter,
                                          const bool rebatesAccrual,
                                          const Date& tradeDate,
@@ -128,7 +128,7 @@ namespace QuantLib {
         Real upfrontAmount = 0.0;
         if (upfront_) // NOLINT(readability-implicit-bool-conversion)
             upfrontAmount = *upfront_ * notional_;
-        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(upfrontAmount, effectiveUpfrontDate);
+        upfrontPayment_ = std::make_shared<SimpleCashFlow>(upfrontAmount, effectiveUpfrontDate);
 
         // Set the maturity date.
         maturity_ = schedule.dates().back();
@@ -142,7 +142,7 @@ namespace QuantLib {
 
             if (tradeDate_ >= schedule.dates().front()) {
                 for (Size i = 0; i < leg_.size(); ++i) {
-                    const ext::shared_ptr<CashFlow>& cf = leg_[i];
+                    const std::shared_ptr<CashFlow>& cf = leg_[i];
                     if (refDate > cf->date()) {
                         // This coupon is in the past; check the next one
                         continue;
@@ -153,25 +153,25 @@ namespace QuantLib {
                             rebateAmount = 0.0;
                         else {
                             // On last coupon
-                            ext::shared_ptr<FixedRateCoupon> frc = ext::dynamic_pointer_cast<FixedRateCoupon>(cf);
+                            std::shared_ptr<FixedRateCoupon> frc = std::dynamic_pointer_cast<FixedRateCoupon>(cf);
                             rebateAmount = frc->amount();
                         }
                         break;
                     } else {
                         // This coupon pays in the future, and is the first coupon to do so (since they're sorted).
                         // Calculate the accrual and skip further coupons
-                        ext::shared_ptr<FixedRateCoupon> frc = ext::dynamic_pointer_cast<FixedRateCoupon>(cf);
+                        std::shared_ptr<FixedRateCoupon> frc = std::dynamic_pointer_cast<FixedRateCoupon>(cf);
                         rebateAmount = frc->accruedAmount(refDate);
                         break;
                     }
                 }
             }
 
-            accrualRebate_ = ext::make_shared<SimpleCashFlow>(rebateAmount, effectiveUpfrontDate);
+            accrualRebate_ = std::make_shared<SimpleCashFlow>(rebateAmount, effectiveUpfrontDate);
         }
 
         if (!claim_)
-            claim_ = ext::make_shared<FaceValueClaim>();
+            claim_ = std::make_shared<FaceValueClaim>();
         registerWith(claim_);
     }
 
@@ -187,7 +187,7 @@ namespace QuantLib {
         return runningSpread_;
     }
 
-    ext::optional<Rate> CreditDefaultSwap::upfront() const {
+    std::optional<Rate> CreditDefaultSwap::upfront() const {
         return upfront_;
     }
 
@@ -345,23 +345,23 @@ namespace QuantLib {
                                Real accuracy,
                                PricingModel model) const {
 
-        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
+        std::shared_ptr<SimpleQuote> flatRate = std::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
-                ext::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                std::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
-        ext::shared_ptr<PricingEngine> engine;
+        std::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
-            engine = ext::make_shared<MidPointCdsEngine>(
+            engine = std::make_shared<MidPointCdsEngine>(
                 probability, recoveryRate, discountCurve);
             break;
           case ISDA:
-            engine = ext::make_shared<IsdaCdsEngine>(
+            engine = std::make_shared<IsdaCdsEngine>(
                 probability, recoveryRate, discountCurve,
-                ext::nullopt,
+                std::nullopt,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
@@ -386,23 +386,23 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               PricingModel model) const {
 
-        ext::shared_ptr<SimpleQuote> flatRate = ext::make_shared<SimpleQuote>(0.0);
+        std::shared_ptr<SimpleQuote> flatRate = std::make_shared<SimpleQuote>(0.0);
 
         Handle<DefaultProbabilityTermStructure> probability =
             Handle<DefaultProbabilityTermStructure>(
-                ext::make_shared<FlatHazardRate>(0, WeekendsOnly(),
+                std::make_shared<FlatHazardRate>(0, WeekendsOnly(),
                                                    Handle<Quote>(flatRate), dayCounter));
 
-        ext::shared_ptr<PricingEngine> engine;
+        std::shared_ptr<PricingEngine> engine;
         switch (model) {
           case Midpoint:
-            engine = ext::make_shared<MidPointCdsEngine>(
+            engine = std::make_shared<MidPointCdsEngine>(
                 probability, conventionalRecovery, discountCurve);
             break;
           case ISDA:
-            engine = ext::make_shared<IsdaCdsEngine>(
+            engine = std::make_shared<IsdaCdsEngine>(
                 probability, conventionalRecovery, discountCurve,
-                ext::nullopt,
+                std::nullopt,
                 IsdaCdsEngine::Taylor,
                 IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise);
@@ -428,15 +428,15 @@ namespace QuantLib {
     }
 
     const Date& CreditDefaultSwap::protectionEndDate() const {
-        return ext::dynamic_pointer_cast<Coupon>(leg_.back())
+        return std::dynamic_pointer_cast<Coupon>(leg_.back())
             ->accrualEndDate();
     }
 
-    const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::upfrontPayment() const {
+    const std::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::upfrontPayment() const {
         return upfrontPayment_;
     }
 
-    const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::accrualRebate() const {
+    const std::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::accrualRebate() const {
         return accrualRebate_;
     }
 

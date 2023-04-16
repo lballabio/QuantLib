@@ -240,35 +240,35 @@ void QuantoOptionTest::testValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<VanillaOption, AnalyticEuropeanEngine>(
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -324,23 +324,23 @@ void QuantoOptionTest::testGreeks() {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<VanillaOption,AnalyticEuropeanEngine>(
                                                   stochProcess,fxrTS, fxVolTS,
                                                   Handle<Quote>(correlation)));
@@ -350,9 +350,9 @@ void QuantoOptionTest::testGreeks() {
             for (int length : lengths) {
 
                 Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 
                 QuantoVanillaOption option(payoff, exercise);
                 option.setPricingEngine(engine);
@@ -512,27 +512,27 @@ void QuantoOptionTest::testForwardValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<ForwardVanillaOption,
                          ForwardVanillaEngine<AnalyticEuropeanEngine> >(
                                                  stochProcess, fxrTS, fxVolTS,
@@ -540,9 +540,9 @@ void QuantoOptionTest::testForwardValues() {
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
+        std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         Date reset = today + timeToDays(value.start);
 
         spot->setValue(value.s);
@@ -601,23 +601,23 @@ void QuantoOptionTest::testForwardGreeks() {
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<ForwardVanillaOption,
                          ForwardVanillaEngine<AnalyticEuropeanEngine> >(
                                                  stochProcess, fxrTS, fxVolTS,
@@ -629,11 +629,11 @@ void QuantoOptionTest::testForwardGreeks() {
                 for (int startMonth : startMonths) {
 
                     Date exDate = today + length * Years;
-                    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                    std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
                     Date reset = today + startMonth * Months;
 
-                    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, 0.0));
+                    std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, 0.0));
 
                     QuantoForwardVanillaOption option(moneynes, reset, payoff, exercise);
                     option.setPricingEngine(engine);
@@ -802,27 +802,27 @@ void QuantoOptionTest::testForwardPerformanceValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<ForwardVanillaOption,
                          ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine> >(
                                                  stochProcess, fxrTS, fxVolTS,
@@ -830,12 +830,12 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
             //                               new PercentageStrikePayoff(values[i].type,
             //                               values[i].moneyness));
             new PlainVanillaPayoff(value.type, 0.0));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         Date reset = today + timeToDays(value.start);
 
         spot->setValue(value.s);
@@ -883,37 +883,37 @@ void QuantoOptionTest::testBarrierValues()  {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<BarrierOption, AnalyticBarrierEngine>(
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -960,37 +960,37 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
-    ext::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new QuantoEngine<DoubleBarrierOption, AnalyticDoubleBarrierEngine>(
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -1048,20 +1048,20 @@ void QuantoOptionTest::testFDMQuantoHelper()  {
         flatVol(today, vol, dc));
 
     const Handle<Quote> spot(
-        ext::make_shared<SimpleQuote>(s));
+        std::make_shared<SimpleQuote>(s));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
-        = ext::make_shared<BlackScholesMertonProcess>(
+    const std::shared_ptr<BlackScholesMertonProcess> bsmProcess
+        = std::make_shared<BlackScholesMertonProcess>(
             spot, divTS, domesticTS, volTS);
 
-    const ext::shared_ptr<YieldTermStructure> foreignTS
+    const std::shared_ptr<YieldTermStructure> foreignTS
         = flatRate(today, foreignR, dc);
 
-    const ext::shared_ptr<BlackVolTermStructure> fxVolTS
+    const std::shared_ptr<BlackVolTermStructure> fxVolTS
         = flatVol(today, fxVol, dc);
 
-    const ext::shared_ptr<FdmQuantoHelper> fdmQuantoHelper
-        = ext::make_shared<FdmQuantoHelper>(
+    const std::shared_ptr<FdmQuantoHelper> fdmQuantoHelper
+        = std::make_shared<FdmQuantoHelper>(
               domesticTS.currentLink(),
               foreignTS, fxVolTS,
               equityFxCorrelation, exchRateATMlevel);
@@ -1086,7 +1086,7 @@ void QuantoOptionTest::testFDMQuantoHelper()  {
     const Real eps = 0.0002;
     const Real scalingFactor = 1.25;
 
-    const ext::shared_ptr<FdmBlackScholesMesher> mesher(
+    const std::shared_ptr<FdmBlackScholesMesher> mesher(
         new FdmBlackScholesMesher(
             3, bsmProcess, maturityTime, s,
             Null<Real>(), Null<Real>(), eps, scalingFactor,
@@ -1140,7 +1140,7 @@ void QuantoOptionTest::testPDEOptionValues()  {
         tolerance["gamma"] = 1e-4;
         tolerance["theta"] = 1e-4;
 
-        const Handle<Quote> spot(ext::make_shared<SimpleQuote>(value.s));
+        const Handle<Quote> spot(std::make_shared<SimpleQuote>(value.s));
 
         const Real strike = value.strike;
 
@@ -1150,8 +1150,8 @@ void QuantoOptionTest::testPDEOptionValues()  {
 
         const Handle<BlackVolTermStructure> volTS(flatVol(today, value.v, dc));
 
-        const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
-            = ext::make_shared<BlackScholesMertonProcess>(
+        const std::shared_ptr<BlackScholesMertonProcess> bsmProcess
+            = std::make_shared<BlackScholesMertonProcess>(
                 spot, divTS, domesticTS, volTS);
 
         const Handle<YieldTermStructure> foreignTS(flatRate(today, value.fxr, dc));
@@ -1161,22 +1161,22 @@ void QuantoOptionTest::testPDEOptionValues()  {
         const Real exchRateATMlevel = 1.0;
         const Real equityFxCorrelation = value.corr;
 
-        const ext::shared_ptr<FdmQuantoHelper> quantoHelper
-            = ext::make_shared<FdmQuantoHelper>(
+        const std::shared_ptr<FdmQuantoHelper> quantoHelper
+            = std::make_shared<FdmQuantoHelper>(
                   domesticTS.currentLink(),
                   foreignTS.currentLink(),
                   fxVolTS.currentLink(),
                   equityFxCorrelation, exchRateATMlevel);
 
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::make_shared<PlainVanillaPayoff>(value.type, strike);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::make_shared<PlainVanillaPayoff>(value.type, strike);
         const Date exDate = today + timeToDays(value.t);
-        const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        const std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         VanillaOption option(payoff, exercise);
 
-        const ext::shared_ptr<PricingEngine> pdeEngine =
-            ext::make_shared<FdBlackScholesVanillaEngine>(bsmProcess, quantoHelper,
+        const std::shared_ptr<PricingEngine> pdeEngine =
+            std::make_shared<FdBlackScholesVanillaEngine>(bsmProcess, quantoHelper,
                                                           Size(value.t * 200), 500, 1);
 
         option.setPricingEngine(pdeEngine);
@@ -1186,12 +1186,12 @@ void QuantoOptionTest::testPDEOptionValues()  {
         calculated["gamma"] = option.delta();
         calculated["theta"] = option.delta();
 
-        const ext::shared_ptr<PricingEngine> analyticEngine
-            = ext::make_shared<QuantoEngine<
+        const std::shared_ptr<PricingEngine> analyticEngine
+            = std::make_shared<QuantoEngine<
                 VanillaOption, AnalyticEuropeanEngine> >(
                      bsmProcess, foreignTS, fxVolTS,
                      Handle<Quote>(
-                         ext::make_shared<SimpleQuote>(equityFxCorrelation)));
+                         std::make_shared<SimpleQuote>(equityFxCorrelation)));
 
         option.setPricingEngine(analyticEngine);
 
@@ -1249,20 +1249,20 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
         flatVol(today, vol, dc));
 
     const Handle<Quote> spot(
-        ext::make_shared<SimpleQuote>(s));
+        std::make_shared<SimpleQuote>(s));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
-        = ext::make_shared<BlackScholesMertonProcess>(
+    const std::shared_ptr<BlackScholesMertonProcess> bsmProcess
+        = std::make_shared<BlackScholesMertonProcess>(
             spot, divTS, domesticTS, volTS);
 
-    const ext::shared_ptr<YieldTermStructure> foreignTS
+    const std::shared_ptr<YieldTermStructure> foreignTS
         = flatRate(today, foreignR, dc);
 
-    const ext::shared_ptr<BlackVolTermStructure> fxVolTS
+    const std::shared_ptr<BlackVolTermStructure> fxVolTS
         = flatVol(today, fxVol, dc);
 
-    const ext::shared_ptr<FdmQuantoHelper> quantoHelper
-        = ext::make_shared<FdmQuantoHelper>(
+    const std::shared_ptr<FdmQuantoHelper> quantoHelper
+        = std::make_shared<FdmQuantoHelper>(
               domesticTS.currentLink(),
               foreignTS,
               fxVolTS,
@@ -1275,11 +1275,11 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
     auto dividends = DividendVector(dividendDates, dividendAmounts);
 
     VanillaOption option(
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-        ext::make_shared<AmericanExercise>(maturity));
+        std::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        std::make_shared<AmericanExercise>(maturity));
 
     option.setPricingEngine(
-        ext::make_shared<FdBlackScholesVanillaEngine>(
+        std::make_shared<FdBlackScholesVanillaEngine>(
             bsmProcess, dividends, quantoHelper, 100, 400, 1));
 
     const Real tol = 1e-4;
@@ -1294,7 +1294,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
     }
 
     option.setPricingEngine(
-        ext::make_shared<FdBlackScholesVanillaEngine>(
+        std::make_shared<FdBlackScholesVanillaEngine>(
             bsmProcess, dividends, quantoHelper, 100, 400, 1));
 
     const Real localVolCalculated = option.NPV();
@@ -1314,8 +1314,8 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
     }
 
     VanillaOption divOption(
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-        ext::make_shared<AmericanExercise>(maturity));
+        std::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        std::make_shared<AmericanExercise>(maturity));
 
     const Real v0    = vol*vol;
     const Real kappa = 1.0;
@@ -1323,13 +1323,13 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
     const Real sigma = 1e-4;
     const Real rho   = 0.0;
 
-    const ext::shared_ptr<HestonModel> hestonModel =
-        ext::make_shared<HestonModel>(
-            ext::make_shared<HestonProcess>(
+    const std::shared_ptr<HestonModel> hestonModel =
+        std::make_shared<HestonModel>(
+            std::make_shared<HestonProcess>(
                 domesticTS, divTS, spot, v0, kappa, theta, sigma, rho));
 
     divOption.setPricingEngine(
-        ext::make_shared<FdHestonVanillaEngine>(
+        std::make_shared<FdHestonVanillaEngine>(
             hestonModel, dividends, quantoHelper, 100, 400, 3, 1));
 
     const Real hestonCalculated = divOption.NPV();
@@ -1341,16 +1341,16 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
                     << "\n    expected:   " << expected);
     }
 
-    const ext::shared_ptr<LocalVolTermStructure> localConstVol =
-        ext::make_shared<LocalConstantVol>(today, 2.0, dc);
+    const std::shared_ptr<LocalVolTermStructure> localConstVol =
+        std::make_shared<LocalConstantVol>(today, 2.0, dc);
 
-    const ext::shared_ptr<HestonModel> hestonModel05 =
-        ext::make_shared<HestonModel>(
-            ext::make_shared<HestonProcess>(
+    const std::shared_ptr<HestonModel> hestonModel05 =
+        std::make_shared<HestonModel>(
+            std::make_shared<HestonProcess>(
                 domesticTS, divTS, spot, 0.25*v0, kappa, 0.25*theta, sigma, rho));
 
     divOption.setPricingEngine(
-        ext::make_shared<FdHestonVanillaEngine>(
+        std::make_shared<FdHestonVanillaEngine>(
             hestonModel05, dividends, quantoHelper, 100, 400, 3, 1,
             FdmSchemeDesc::Hundsdorfer(), localConstVol));
 

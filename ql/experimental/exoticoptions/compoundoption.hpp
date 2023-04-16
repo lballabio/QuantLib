@@ -38,21 +38,21 @@ namespace QuantLib {
         class engine;
         // Mother is the compound Option.
         // Daughter is the option which plays the role of the underlying.
-        CompoundOption(const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
-                       const ext::shared_ptr<Exercise>& motherExercise,
-                       ext::shared_ptr<StrikedTypePayoff> daughterPayoff,
-                       ext::shared_ptr<Exercise> daughterExercise);
+        CompoundOption(const std::shared_ptr<StrikedTypePayoff>& motherPayoff,
+                       const std::shared_ptr<Exercise>& motherExercise,
+                       std::shared_ptr<StrikedTypePayoff> daughterPayoff,
+                       std::shared_ptr<Exercise> daughterExercise);
         void setupArguments(PricingEngine::arguments*) const override;
 
       private:
-        ext::shared_ptr<StrikedTypePayoff> daughterPayoff_;
-        ext::shared_ptr<Exercise> daughterExercise_;
+        std::shared_ptr<StrikedTypePayoff> daughterPayoff_;
+        std::shared_ptr<Exercise> daughterExercise_;
     };
 
     class CompoundOption::arguments : public OneAssetOption::arguments {
       public:
-        ext::shared_ptr<StrikedTypePayoff> daughterPayoff;
-        ext::shared_ptr<Exercise> daughterExercise;
+        std::shared_ptr<StrikedTypePayoff> daughterPayoff;
+        std::shared_ptr<Exercise> daughterExercise;
         void validate() const override;
     };
 

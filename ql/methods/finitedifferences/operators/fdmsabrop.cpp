@@ -31,8 +31,8 @@
 #include <utility>
 
 namespace QuantLib {
-    FdmSabrOp::FdmSabrOp(const ext::shared_ptr<FdmMesher>& mesher,
-                         ext::shared_ptr<YieldTermStructure> rTS,
+    FdmSabrOp::FdmSabrOp(const std::shared_ptr<FdmMesher>& mesher,
+                         std::shared_ptr<YieldTermStructure> rTS,
                          Real f0,
                          Real alpha,
                          Real beta,

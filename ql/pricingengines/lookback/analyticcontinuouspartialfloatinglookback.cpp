@@ -26,15 +26,15 @@ namespace QuantLib {
 
     AnalyticContinuousPartialFloatingLookbackEngine::
         AnalyticContinuousPartialFloatingLookbackEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticContinuousPartialFloatingLookbackEngine::calculate() const {
 
-        ext::shared_ptr<FloatingTypePayoff> payoff =
-            ext::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
+        std::shared_ptr<FloatingTypePayoff> payoff =
+            std::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-floating payoff given");
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying");

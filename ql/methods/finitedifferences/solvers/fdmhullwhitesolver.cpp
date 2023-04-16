@@ -38,10 +38,10 @@ namespace QuantLib {
 
 
     void FdmHullWhiteSolver::performCalculations() const {
-        const ext::shared_ptr<FdmHullWhiteOp> op(
-			ext::make_shared<FdmHullWhiteOp>(solverDesc_.mesher, model_.currentLink(), 0));
+        const std::shared_ptr<FdmHullWhiteOp> op(
+			std::make_shared<FdmHullWhiteOp>(solverDesc_.mesher, model_.currentLink(), 0));
 
-        solver_ = ext::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);
+        solver_ = std::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHullWhiteSolver::valueAt(Real r) const {

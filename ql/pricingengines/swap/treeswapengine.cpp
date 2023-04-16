@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
+    TreeVanillaSwapEngine::TreeVanillaSwapEngine(const std::shared_ptr<ShortRateModel>& model,
                                                  Size timeSteps,
                                                  Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeSteps),
@@ -32,7 +32,7 @@ namespace QuantLib {
         registerWith(termStructure_);
     }
 
-    TreeVanillaSwapEngine::TreeVanillaSwapEngine(const ext::shared_ptr<ShortRateModel>& model,
+    TreeVanillaSwapEngine::TreeVanillaSwapEngine(const std::shared_ptr<ShortRateModel>& model,
                                                  const TimeGrid& timeGrid,
                                                  Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<VanillaSwap::arguments, VanillaSwap::results>(model, timeGrid),
@@ -47,8 +47,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
-            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        std::shared_ptr<TermStructureConsistentModel> tsmodel =
+            std::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -60,7 +60,7 @@ namespace QuantLib {
         DiscretizedSwap swap(arguments_, referenceDate, dayCounter);
         std::vector<Time> times = swap.mandatoryTimes();
 
-        ext::shared_ptr<Lattice> lattice;
+        std::shared_ptr<Lattice> lattice;
         if (lattice_ != nullptr) {
             lattice = lattice_;
         } else {

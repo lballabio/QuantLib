@@ -55,7 +55,7 @@ namespace equitycashflow_test {
 
         Real notional;
 
-        ext::shared_ptr<EquityIndex> equityIndex;
+        std::shared_ptr<EquityIndex> equityIndex;
         
         RelinkableHandle<YieldTermStructure> localCcyInterestHandle;
         RelinkableHandle<YieldTermStructure> dividendHandle;
@@ -79,7 +79,7 @@ namespace equitycashflow_test {
             today = calendar.adjust(Date(27, January, 2023));
             Settings::instance().evaluationDate() = today;
 
-            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, localCcyInterestHandle,
+            equityIndex = std::make_shared<EquityIndex>("eqIndex", calendar, localCcyInterestHandle,
                                                         dividendHandle, spotHandle);
             IndexManager::instance().clearHistory(equityIndex->name());
             equityIndex->addFixing(Date(5, January, 2023), 9010.0);
@@ -92,27 +92,27 @@ namespace equitycashflow_test {
             equityVolHandle.linkTo(flatVol(0.4, dayCount));
             fxVolHandle.linkTo(flatVol(0.2, dayCount));
 
-            spotHandle.linkTo(ext::make_shared<SimpleQuote>(8700.0));
-            correlationHandle.linkTo(ext::make_shared<SimpleQuote>(0.4));
+            spotHandle.linkTo(std::make_shared<SimpleQuote>(8700.0));
+            correlationHandle.linkTo(std::make_shared<SimpleQuote>(0.4));
         }
 
-        ext::shared_ptr<EquityCashFlow>
-        createEquityQuantoCashFlow(const ext::shared_ptr<EquityIndex>& index,
+        std::shared_ptr<EquityCashFlow>
+        createEquityQuantoCashFlow(const std::shared_ptr<EquityIndex>& index,
                                    const Date& start,
                                    const Date& end,
                                    bool useQuantoPricer = true) {
 
-            auto cf = ext::make_shared<EquityCashFlow>(notional, index, start, end, end);
+            auto cf = std::make_shared<EquityCashFlow>(notional, index, start, end, end);
             if (useQuantoPricer) {
-                auto pricer = ext::make_shared<EquityQuantoCashFlowPricer>(
+                auto pricer = std::make_shared<EquityQuantoCashFlowPricer>(
                     quantoCcyInterestHandle, equityVolHandle, fxVolHandle, correlationHandle);
                 cf->setPricer(pricer);
             }
             return cf;
         }
 
-        ext::shared_ptr<EquityCashFlow>
-        createEquityQuantoCashFlow(const ext::shared_ptr<EquityIndex>& index,
+        std::shared_ptr<EquityCashFlow>
+        createEquityQuantoCashFlow(const std::shared_ptr<EquityIndex>& index,
                                    bool useQuantoPricer = true) {
             Date start(5, January, 2023);
             Date end(5, April, 2023);
@@ -120,7 +120,7 @@ namespace equitycashflow_test {
             return createEquityQuantoCashFlow(index, start, end, useQuantoPricer);
         }
 
-        ext::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(bool useQuantoPricer = true) {
+        std::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(bool useQuantoPricer = true) {
             return createEquityQuantoCashFlow(equityIndex, useQuantoPricer);
         }
     };
@@ -134,7 +134,7 @@ namespace equitycashflow_test {
         vars.equityVolHandle.linkTo(flatVol(0.45, vars.dayCount));
         vars.fxVolHandle.linkTo(flatVol(0.25, vars.dayCount));
 
-        vars.spotHandle.linkTo(ext::make_shared<SimpleQuote>(8710.0));
+        vars.spotHandle.linkTo(std::make_shared<SimpleQuote>(8710.0));
     }
 
     void checkQuantoCorrection(bool includeDividend, bool bumpData = false) {
@@ -142,7 +142,7 @@ namespace equitycashflow_test {
 
         CommonVars vars;
 
-        ext::shared_ptr<EquityIndex> equityIndex =
+        std::shared_ptr<EquityIndex> equityIndex =
             includeDividend ?
                 vars.equityIndex :
                 vars.equityIndex->clone(vars.localCcyInterestHandle, Handle<YieldTermStructure>(),
@@ -182,7 +182,7 @@ namespace equitycashflow_test {
                         << "    spot:    " << spot << "\n");
     }
 
-    void checkRaisedError(const ext::shared_ptr<EquityCashFlow>& cf, const std::string& message) {
+    void checkRaisedError(const std::shared_ptr<EquityCashFlow>& cf, const std::string& message) {
         BOOST_CHECK_EXCEPTION(cf->amount(), Error, equitycashflow_test::ExpErrorPred(message));
     }
 }
@@ -250,7 +250,7 @@ void EquityCashFlowTest::testErrorWhenQuantoCurveHandleIsEmpty() {
 
     auto cf = vars.createEquityQuantoCashFlow();
 
-    ext::shared_ptr<YieldTermStructure> yts;
+    std::shared_ptr<YieldTermStructure> yts;
     vars.quantoCcyInterestHandle.linkTo(yts);
     checkRaisedError(cf, "Quanto currency term structure handle cannot be empty.");
 }
@@ -264,7 +264,7 @@ void EquityCashFlowTest::testErrorWhenEquityVolHandleIsEmpty() {
 
     auto cf = vars.createEquityQuantoCashFlow();
 
-    ext::shared_ptr<BlackVolTermStructure> vol;
+    std::shared_ptr<BlackVolTermStructure> vol;
     vars.equityVolHandle.linkTo(vol);
     checkRaisedError(cf, "Equity volatility term structure handle cannot be empty.");
 }
@@ -278,7 +278,7 @@ void EquityCashFlowTest::testErrorWhenFXVolHandleIsEmpty() {
 
     auto cf = vars.createEquityQuantoCashFlow();
 
-    ext::shared_ptr<BlackVolTermStructure> vol;
+    std::shared_ptr<BlackVolTermStructure> vol;
     vars.fxVolHandle.linkTo(vol);
     checkRaisedError(cf, "FX volatility term structure handle cannot be empty.");
 }
@@ -292,7 +292,7 @@ void EquityCashFlowTest::testErrorWhenCorrelationHandleIsEmpty() {
 
     auto cf = vars.createEquityQuantoCashFlow();
 
-    ext::shared_ptr<Quote> correlation;
+    std::shared_ptr<Quote> correlation;
     vars.correlationHandle.linkTo(correlation);
     checkRaisedError(cf, "Correlation handle cannot be empty.");
 }

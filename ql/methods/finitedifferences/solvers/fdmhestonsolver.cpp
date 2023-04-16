@@ -32,7 +32,7 @@ namespace QuantLib {
                                      FdmSolverDesc solverDesc,
                                      const FdmSchemeDesc& schemeDesc,
                                      Handle<FdmQuantoHelper> quantoHelper,
-                                     ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                     std::shared_ptr<LocalVolTermStructure> leverageFct,
                                      const Real mixingFactor)
     : process_(std::move(process)), solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc),
       quantoHelper_(std::move(quantoHelper)), leverageFct_(std::move(leverageFct)),
@@ -43,14 +43,14 @@ namespace QuantLib {
     }
 
     void FdmHestonSolver::performCalculations() const {
-        ext::shared_ptr<FdmLinearOpComposite> op(
-			ext::make_shared<FdmHestonOp>(
+        std::shared_ptr<FdmLinearOpComposite> op(
+			std::make_shared<FdmHestonOp>(
                 solverDesc_.mesher, process_.currentLink(),
                 (!quantoHelper_.empty()) ? quantoHelper_.currentLink()
-                             : ext::shared_ptr<FdmQuantoHelper>(),
+                             : std::shared_ptr<FdmQuantoHelper>(),
                 leverageFct_, mixingFactor_));
 
-        solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
+        solver_ = std::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHestonSolver::valueAt(Real s, Real v) const {

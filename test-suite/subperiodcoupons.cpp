@@ -37,7 +37,7 @@ namespace subperiodcoupons_test {
         DayCounter dayCount;
         BusinessDayConvention businessConvention;
 
-        ext::shared_ptr<IborIndex> euribor;
+        std::shared_ptr<IborIndex> euribor;
         RelinkableHandle<YieldTermStructure> euriborHandle;
 
         // cleanup
@@ -50,7 +50,7 @@ namespace subperiodcoupons_test {
             dayCount = Actual365Fixed();
             businessConvention = ModifiedFollowing;
 
-            euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
+            euribor = std::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
             euribor->addFixing(Date(8, February, 2021), 0.0085);
             euribor->addFixing(Date(9, February, 2021), 0.0085);
             euribor->addFixing(Date(10, February, 2021), 0.0085);
@@ -78,7 +78,7 @@ namespace subperiodcoupons_test {
                 .withFixingDays(fixingDays);
         }
 
-        ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start,
+        std::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start,
                                                          const Date& end,
                                                          Spread rateSpread = 0.0,
                                                          Spread couponSpread = 0.0,
@@ -88,16 +88,16 @@ namespace subperiodcoupons_test {
             BusinessDayConvention paymentBdc = euribor->businessDayConvention();
             Date paymentDate = paymentCalendar.advance(end, 1 * Days, paymentBdc);
             Date exCouponDate = paymentCalendar.advance(paymentDate, -2 * Days, paymentBdc);
-            ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
+            std::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
                 paymentDate, 1.0, start, end, fixingDays, euribor, 1.0, couponSpread,
                 rateSpread, Date(), Date(), DayCounter(), exCouponDate));
             bool useCompoundedRate = (averaging == RateAveraging::Compound);
             if (useCompoundedRate)
                 cpn->setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
+                    std::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
             else
                 cpn->setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer()));
+                    std::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer()));
             return cpn;
         }
 
@@ -129,7 +129,7 @@ namespace subperiodcoupons_test {
     Real sumIborLegPayments(const Leg& leg)
     {
         Real payments = 0.0;
-        std::for_each(leg.begin(), leg.end(), [&payments](const ext::shared_ptr<CashFlow>& cf) {
+        std::for_each(leg.begin(), leg.end(), [&payments](const std::shared_ptr<CashFlow>& cf) {
             payments += cf->amount();
         });
         return payments;
@@ -137,8 +137,8 @@ namespace subperiodcoupons_test {
 
     Real compoundedIborLegPayment(const Leg& leg) {
         Real compound = 1.0;
-        std::for_each(leg.begin(), leg.end(), [&compound](const ext::shared_ptr<CashFlow>& cf) {
-            auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
+        std::for_each(leg.begin(), leg.end(), [&compound](const std::shared_ptr<CashFlow>& cf) {
+            auto cpn = std::dynamic_pointer_cast<IborCoupon>(cf);
             Real yearFraction = cpn->accrualPeriod();
             Rate fixing = cpn->indexFixing();
             compound *= (1.0 + yearFraction * (fixing + cpn->spread()));
@@ -148,8 +148,8 @@ namespace subperiodcoupons_test {
 
     Real averagedIborLegPayment(const Leg& leg) {
         Real acc = 0.0;
-        std::for_each(leg.begin(), leg.end(), [&acc](const ext::shared_ptr<CashFlow>& cf) {
-            auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
+        std::for_each(leg.begin(), leg.end(), [&acc](const std::shared_ptr<CashFlow>& cf) {
+            auto cpn = std::dynamic_pointer_cast<IborCoupon>(cf);
             Real yearFraction = cpn->accrualPeriod();
             Rate fixing = cpn->indexFixing();
             acc += yearFraction * (fixing + cpn->spread());
@@ -168,7 +168,7 @@ void testSinglePeriodCouponReplication(const Date& start,
 
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread, fixingDays);
     Spread couponSpread = 0.0;
-    ext::shared_ptr<CashFlow> subPeriodCpn =
+    std::shared_ptr<CashFlow> subPeriodCpn =
         vars.createSubPeriodsCoupon(start, end, rateSpread, couponSpread, averaging, fixingDays);
 
     Real tolerance = 1.0e-14;
@@ -193,7 +193,7 @@ void testMultipleCompoundedSubPeriodsCouponReplication(const Date& start,
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
 
     Spread couponSpread = 0.0;
-    ext::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
+    std::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
         start, end, rateSpread, couponSpread, RateAveraging::Compound);
 
     const Real tolerance = 1.0e-14;
@@ -218,7 +218,7 @@ void testMultipleAveragedSubPeriodsCouponReplication(const Date& start,
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
     
     Spread couponSpread = 0.0;
-    ext::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
+    std::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
         start, end, rateSpread, couponSpread, RateAveraging::Simple);
 
     const Real tolerance = 1.0e-14;
@@ -244,7 +244,7 @@ void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
     Spread rateSpread = 0.001;
     Spread couponSpread = 0.002;
 
-    ext::shared_ptr<CashFlow> subPeriodCpn =
+    std::shared_ptr<CashFlow> subPeriodCpn =
         vars.createSubPeriodsCoupon(start, end, rateSpread, couponSpread, averaging);
 
     Leg subPeriodLeg =
@@ -256,7 +256,7 @@ void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
     // Only one cash flow is expected with this parametrization
     std::for_each(
         subPeriodLeg.begin(), subPeriodLeg.end(),
-        [&actualPayment](const ext::shared_ptr<CashFlow>& cf) { actualPayment += cf->amount(); });
+        [&actualPayment](const std::shared_ptr<CashFlow>& cf) { actualPayment += cf->amount(); });
     Real expectedPayment = subPeriodCpn->amount();
 
     if (std::fabs(actualPayment - expectedPayment) > tolerance)
@@ -331,7 +331,7 @@ void SubPeriodsCouponTest::testExCouponCashFlow() {
     Date start(12, February, 2021);
     Date end(17, March, 2021);
 
-    std::vector<ext::shared_ptr<CashFlow> > cfs{vars.createSubPeriodsCoupon(start, end)};
+    std::vector<std::shared_ptr<CashFlow> > cfs{vars.createSubPeriodsCoupon(start, end)};
 
     Real npv = CashFlows::npv(cfs, **vars.euriborHandle, false, vars.settlement, vars.settlement);
 

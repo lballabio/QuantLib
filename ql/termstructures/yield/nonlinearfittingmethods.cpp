@@ -28,7 +28,7 @@ namespace QuantLib {
     ExponentialSplinesFitting::ExponentialSplinesFitting(
         bool constrainAtZero,
         const Array& weights,
-        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const std::shared_ptr<OptimizationMethod>& optimizationMethod,
         const Array& l2,
         const Real minCutoffTime,
         const Real maxCutoffTime,
@@ -45,7 +45,7 @@ namespace QuantLib {
         const Array& weights,
         const Array& l2, const Real minCutoffTime, const Real maxCutoffTime,
         const Size numCoeffs, const Real fixedKappa)
-        : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, ext::shared_ptr<OptimizationMethod>(), l2,
+        : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, std::shared_ptr<OptimizationMethod>(), l2,
                                                  minCutoffTime, maxCutoffTime),
           numCoeffs_(numCoeffs),fixedKappa_(fixedKappa) 
     {
@@ -56,7 +56,7 @@ namespace QuantLib {
                               const Size numCoeffs,
                               const Real fixedKappa,
                               const Array& weights )
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, ext::shared_ptr<OptimizationMethod>(), Array(),0.0,QL_MAX_REAL),
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, std::shared_ptr<OptimizationMethod>(), Array(),0.0,QL_MAX_REAL),
           numCoeffs_(numCoeffs), fixedKappa_(fixedKappa)
     {
         QL_REQUIRE(ExponentialSplinesFitting::size() > 0, "At least 1 unconstrained coefficient required");
@@ -104,7 +104,7 @@ namespace QuantLib {
 
     NelsonSiegelFitting::NelsonSiegelFitting(
         const Array& weights,
-        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const std::shared_ptr<OptimizationMethod>& optimizationMethod,
         const Array& l2,
         const Real minCutoffTime,
         const Real maxCutoffTime)
@@ -114,7 +114,7 @@ namespace QuantLib {
     NelsonSiegelFitting::NelsonSiegelFitting(const Array& weights,
                                              const Array& l2,
                                              const Real minCutoffTime, const Real maxCutoffTime)
-        : FittedBondDiscountCurve::FittingMethod(true, weights, ext::shared_ptr<OptimizationMethod>(), l2,
+        : FittedBondDiscountCurve::FittingMethod(true, weights, std::shared_ptr<OptimizationMethod>(), l2,
                                                  minCutoffTime, maxCutoffTime) {}
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -140,7 +140,7 @@ namespace QuantLib {
 
 
     SvenssonFitting::SvenssonFitting(const Array& weights,
-                                     const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+                                     const std::shared_ptr<OptimizationMethod>& optimizationMethod,
                                      const Array& l2,
                                      const Real minCutoffTime,
                                      const Real maxCutoffTime)
@@ -149,7 +149,7 @@ namespace QuantLib {
 
     SvenssonFitting::SvenssonFitting(const Array& weights,
         const Array& l2, const Real minCutoffTime, const Real maxCutoffTime)
-        : FittedBondDiscountCurve::FittingMethod(true, weights, ext::shared_ptr<OptimizationMethod>(), l2,
+        : FittedBondDiscountCurve::FittingMethod(true, weights, std::shared_ptr<OptimizationMethod>(), l2,
                                                  minCutoffTime, maxCutoffTime) {}
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -181,7 +181,7 @@ namespace QuantLib {
         const std::vector<Time>& knots,
         bool constrainAtZero,
         const Array& weights,
-        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const std::shared_ptr<OptimizationMethod>& optimizationMethod,
         const Array& l2,
         const Real minCutoffTime,
         const Real maxCutoffTime)
@@ -213,7 +213,7 @@ namespace QuantLib {
         const Array& weights,
         const Array& l2,
         const Real minCutoffTime, const Real maxCutoffTime)
-        : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, ext::shared_ptr<OptimizationMethod>(), l2,
+        : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, std::shared_ptr<OptimizationMethod>(), l2,
                                                  minCutoffTime, maxCutoffTime),
         splines_(3, knots.size() - 5, knots) {
 
@@ -284,7 +284,7 @@ namespace QuantLib {
         Natural degree,
         bool constrainAtZero,
         const Array& weights,
-        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const std::shared_ptr<OptimizationMethod>& optimizationMethod,
         const Array& l2,
         const Real minCutoffTime,
         const Real maxCutoffTime)
@@ -296,7 +296,7 @@ namespace QuantLib {
                                                      const Array& weights, const Array& l2,
                                                      const Real minCutoffTime, const Real maxCutoffTime)
         : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, 
-                                                 ext::shared_ptr<OptimizationMethod>(), l2, minCutoffTime, maxCutoffTime),
+                                                 std::shared_ptr<OptimizationMethod>(), l2, minCutoffTime, maxCutoffTime),
         size_(constrainAtZero ? degree : degree + 1) {}
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -324,14 +324,14 @@ namespace QuantLib {
         return d;
     }
 
-    SpreadFittingMethod::SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
+    SpreadFittingMethod::SpreadFittingMethod(const std::shared_ptr<FittingMethod>& method,
                                              Handle<YieldTermStructure> discountCurve,
                                              const Real minCutoffTime,
                                              const Real maxCutoffTime)
     : FittedBondDiscountCurve::FittingMethod(
           method != nullptr ? method->constrainAtZero() : true,
           method != nullptr ? method->weights() : Array(),
-          method != nullptr ? method->optimizationMethod() : ext::shared_ptr<OptimizationMethod>(),
+          method != nullptr ? method->optimizationMethod() : std::shared_ptr<OptimizationMethod>(),
           method != nullptr ? method->l2() : Array(),
           minCutoffTime,
           maxCutoffTime),

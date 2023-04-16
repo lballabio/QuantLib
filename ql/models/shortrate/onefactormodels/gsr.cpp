@@ -35,9 +35,9 @@ namespace QuantLib {
 
         volatilities_.resize(volatilities.size());
         for (Size i = 0; i < volatilities.size(); ++i)
-            volatilities_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+            volatilities_[i] = Handle<Quote>(std::make_shared<SimpleQuote>(volatilities[i]));
         reversions_.resize(1);
-        reversions_[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversion));
+        reversions_[0] = Handle<Quote>(std::make_shared<SimpleQuote>(reversion));
 
         initialize(T);
     }
@@ -54,10 +54,10 @@ namespace QuantLib {
 
         volatilities_.resize(volatilities.size());
         for (Size i = 0; i < volatilities.size(); ++i)
-            volatilities_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+            volatilities_[i] = Handle<Quote>(std::make_shared<SimpleQuote>(volatilities[i]));
         reversions_.resize(reversions.size());
         for (Size i = 0; i < reversions.size(); ++i)
-            reversions_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversions[i]));
+            reversions_[i] = Handle<Quote>(std::make_shared<SimpleQuote>(reversions[i]));
 
         initialize(T);
     }
@@ -91,7 +91,7 @@ namespace QuantLib {
 
 void Gsr::update() {
     if (stateProcess_ != nullptr)
-        ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        std::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
     LazyObject::update();
 }
 
@@ -111,7 +111,7 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j] << "@" << j << ")");
     }
     if (stateProcess_ != nullptr)
-        ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        std::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
 }
 
 void Gsr::updateVolatility() {
@@ -160,15 +160,15 @@ void Gsr::initialize(Real T) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
 
-    stateProcess_ = ext::make_shared<GsrProcess>(
+    stateProcess_ = std::make_shared<GsrProcess>(
         volsteptimesArray_, sigma_.params(), reversion_.params(), T);
 
     registerWith(termStructure());
 
     registerWith(stateProcess_);
 
-    volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
-    reversionObserver_ = ext::make_shared<ReversionObserver>(this);
+    volatilityObserver_ = std::make_shared<VolatilityObserver>(this);
+    reversionObserver_ = std::make_shared<ReversionObserver>(this);
 
     for (auto& reversion : reversions_)
         reversionObserver_->registerWith(reversion);
@@ -186,8 +186,8 @@ Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,
         return yts.empty() ? this->termStructure()->discount(T, true)
                            : yts->discount(T, true);
 
-    ext::shared_ptr<GsrProcess> p =
-        ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+    std::shared_ptr<GsrProcess> p =
+        std::dynamic_pointer_cast<GsrProcess>(stateProcess_);
 
     Real x = y * stateProcess_->stdDeviation(0.0, 0.0, t) +
              stateProcess_->expectation(0.0, 0.0, t);
@@ -206,8 +206,8 @@ Real Gsr::numeraireImpl(const Time t, const Real y,
 
     calculate();
 
-    ext::shared_ptr<GsrProcess> p =
-        ext::dynamic_pointer_cast<GsrProcess>(stateProcess_);
+    std::shared_ptr<GsrProcess> p =
+        std::dynamic_pointer_cast<GsrProcess>(stateProcess_);
 
     if (t == 0)
         return yts.empty()

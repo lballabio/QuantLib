@@ -37,8 +37,8 @@ namespace QuantLib {
       public:
 
         FdmG2Op(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<G2>& model,
+            const std::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<G2>& model,
             Size direction1, Size direction2);
 
         Size size() const override;
@@ -60,7 +60,7 @@ namespace QuantLib {
         NinePointLinearOp corrMap_;
         TripleBandLinearOp mapX_, mapY_;
 
-        const ext::shared_ptr<G2> model_;
+        const std::shared_ptr<G2> model_;
     };
 }
 

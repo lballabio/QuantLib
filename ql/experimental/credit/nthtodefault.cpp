@@ -29,7 +29,7 @@ namespace QuantLib {
 
 
     NthToDefault::NthToDefault(
-        const ext::shared_ptr<Basket>& basket,
+        const std::shared_ptr<Basket>& basket,
         Size n,
         Protection::Side side,
         const Schedule& premiumSchedule,

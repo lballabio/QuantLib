@@ -28,7 +28,7 @@ using namespace std;
 namespace QuantLib {
 
     ContinuousArithmeticAsianLevyEngine::ContinuousArithmeticAsianLevyEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Handle<Quote> currentAverage,
         Date startDate)
     : process_(std::move(process)), currentAverage_(std::move(currentAverage)),
@@ -51,8 +51,8 @@ namespace QuantLib {
         Real spot = process_->stateVariable()->value();
 
         // payoff
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         // original time to maturity

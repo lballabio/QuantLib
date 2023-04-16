@@ -24,7 +24,7 @@
 
 namespace QuantLib {
     DouglasScheme::DouglasScheme(Real theta,
-                                 ext::shared_ptr<FdmLinearOpComposite> map,
+                                 std::shared_ptr<FdmLinearOpComposite> map,
                                  const bc_set& bcSet)
     : dt_(Null<Real>()), theta_(theta), map_(std::move(map)), bcSet_(bcSet) {}
 

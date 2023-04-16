@@ -29,8 +29,8 @@
 namespace QuantLib {
 
     AnalyticAmericanMargrabeEngine::AnalyticAmericanMargrabeEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation)
     : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
@@ -42,12 +42,12 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American option");
 
-        ext::shared_ptr<AmericanExercise> exercise =
-            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        std::shared_ptr<AmericanExercise> exercise =
+            std::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an American option");
 
-        ext::shared_ptr<NullPayoff> payoff0 =
-            ext::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
+        std::shared_ptr<NullPayoff> payoff0 =
+            std::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff0, "not a null payoff");
 
         // The option can be priced as an American single-asset option
@@ -62,9 +62,9 @@ namespace QuantLib {
         Real s1 = process1_->stateVariable()->value();
         Real s2 = process2_->stateVariable()->value();
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(arguments_.Q1*s1));
+        std::shared_ptr<SimpleQuote> spot(new SimpleQuote(arguments_.Q1*s1));
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+        std::shared_ptr<StrikedTypePayoff> payoff(
                       new PlainVanillaPayoff(Option::Call, arguments_.Q2*s2));
 
         DiscountFactor dividendDiscount1 =
@@ -75,10 +75,10 @@ namespace QuantLib {
             process2_->dividendYield()->discount(exercise->lastDate());
         Rate q2 = -std::log(dividendDiscount2)/t;
 
-        ext::shared_ptr<YieldTermStructure> qTS(
+        std::shared_ptr<YieldTermStructure> qTS(
                                             new FlatForward(today, q1, rfdc));
 
-        ext::shared_ptr<YieldTermStructure> rTS(
+        std::shared_ptr<YieldTermStructure> rTS(
                                             new FlatForward(today, q2, rfdc));
 
         Real variance1 = process1_->blackVolatility()->blackVariance(
@@ -89,16 +89,16 @@ namespace QuantLib {
                       - 2*rho_*std::sqrt(variance1)*std::sqrt(variance2);
         Volatility volatility = std::sqrt(variance/t);
 
-        ext::shared_ptr<BlackVolTermStructure> volTS(
+        std::shared_ptr<BlackVolTermStructure> volTS(
                new BlackConstantVol(today, NullCalendar(), volatility, rfdc));
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                      new BjerksundStenslandApproximationEngine(stochProcess));
 
         VanillaOption option(payoff, exercise);

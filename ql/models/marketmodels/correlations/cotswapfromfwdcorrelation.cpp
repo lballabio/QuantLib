@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     CotSwapFromFwdCorrelation::CotSwapFromFwdCorrelation(
-            const ext::shared_ptr<PiecewiseConstantCorrelation>& fwdCorr,
+            const std::shared_ptr<PiecewiseConstantCorrelation>& fwdCorr,
             const CurveState& curveState,
             Spread displacement)
     : fwdCorr_(fwdCorr),

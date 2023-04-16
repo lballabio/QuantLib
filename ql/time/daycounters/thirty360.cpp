@@ -31,24 +31,24 @@ namespace QuantLib {
 
     }
 
-    ext::shared_ptr<DayCounter::Impl>
+    std::shared_ptr<DayCounter::Impl>
     Thirty360::implementation(Thirty360::Convention c, const Date& terminationDate) {
         switch (c) {
           case USA:
-            return ext::shared_ptr<DayCounter::Impl>(new US_Impl);
+            return std::shared_ptr<DayCounter::Impl>(new US_Impl);
           case European:
           case EurobondBasis:
-            return ext::shared_ptr<DayCounter::Impl>(new EU_Impl);
+            return std::shared_ptr<DayCounter::Impl>(new EU_Impl);
           case Italian:
-            return ext::shared_ptr<DayCounter::Impl>(new IT_Impl);
+            return std::shared_ptr<DayCounter::Impl>(new IT_Impl);
           case ISMA:
           case BondBasis:
-            return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
+            return std::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
           case ISDA:
           case German:
-            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl(terminationDate));
+            return std::shared_ptr<DayCounter::Impl>(new ISDA_Impl(terminationDate));
           case NASD:
-            return ext::shared_ptr<DayCounter::Impl>(new NASD_Impl);
+            return std::shared_ptr<DayCounter::Impl>(new NASD_Impl);
           default:
             QL_FAIL("unknown 30/360 convention");
         }

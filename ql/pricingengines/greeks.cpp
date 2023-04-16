@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     Real blackScholesTheta(
-                   const ext::shared_ptr<GeneralizedBlackScholesProcess>& p,
+                   const std::shared_ptr<GeneralizedBlackScholesProcess>& p,
                    Real value, Real delta, Real gamma) {
 
         Real u = p->stateVariable()->value();

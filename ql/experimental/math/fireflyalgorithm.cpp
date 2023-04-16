@@ -25,8 +25,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
     FireflyAlgorithm::FireflyAlgorithm(Size M,
-                                       ext::shared_ptr<Intensity> intensity,
-                                       ext::shared_ptr<RandomWalk> randomWalk,
+                                       std::shared_ptr<Intensity> intensity,
+                                       std::shared_ptr<RandomWalk> randomWalk,
                                        Size Mde,
                                        Real mutation,
                                        Real crossover,

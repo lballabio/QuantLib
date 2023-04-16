@@ -214,7 +214,7 @@ void BondTest::testAtmRate() {
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
     Handle<YieldTermStructure> disc(flatRate(vars.today,0.03,Actual360()));
-    ext::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(disc));
+    std::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(disc));
 
     for (int issueMonth : issueMonths) {
         for (int length : lengths) {
@@ -365,7 +365,7 @@ void BondTest::testTheoretical() {
                 Date issue = dated;
                 Date maturity = vars.calendar.advance(issue, length, Years);
 
-                ext::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
+                std::shared_ptr<SimpleQuote> rate(new SimpleQuote(0.0));
                 Handle<YieldTermStructure> discountCurve(flatRate(vars.today, rate, bondDayCount));
 
                 Schedule sch(dated, maturity, Period(frequencie), vars.calendar, accrualConvention,
@@ -375,7 +375,7 @@ void BondTest::testTheoretical() {
                                    std::vector<Rate>(1, coupon), bondDayCount, paymentConvention,
                                    redemption, issue);
 
-                ext::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(discountCurve));
+                std::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(discountCurve));
                 bond.setPricingEngine(bondEngine);
 
                 for (Real m : yields) {
@@ -462,7 +462,7 @@ void BondTest::testCached() {
         100.0, Date(1, November, 2004)
     );
 
-    ext::shared_ptr<PricingEngine> bondEngine(
+    std::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
     bond1NoSchedule.setPricingEngine(bondEngine);
@@ -716,7 +716,7 @@ void BondTest::testCachedZero() {
                          ModifiedFollowing,
                          100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
+    std::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -803,7 +803,7 @@ void BondTest::testCachedFixed() {
                         ModifiedFollowing,
                         100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
+    std::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     bond1.setPricingEngine(bondEngine);
 
@@ -891,12 +891,12 @@ void BondTest::testCachedFloating() {
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
-    ext::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
+    std::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
     Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<IborCouponPricer> pricer(new
+    std::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
 
     // plain
@@ -916,7 +916,7 @@ void BondTest::testCachedFloating() {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> bondEngine(
+    std::shared_ptr<PricingEngine> bondEngine(
                                      new DiscountingBondEngine(riskFreeRate));
     bond1.setPricingEngine(bondEngine);
 
@@ -943,7 +943,7 @@ void BondTest::testCachedFloating() {
                            false,
                            100.0, Date(30,November,2004));
 
-    ext::shared_ptr<PricingEngine> bondEngine2(
+    std::shared_ptr<PricingEngine> bondEngine2(
                                     new DiscountingBondEngine(discountCurve));
     bond2.setPricingEngine(bondEngine2);
 
@@ -1461,7 +1461,7 @@ void BondTest::testFixedBondWithGivenDates() {
 
     Real tolerance = 1.0e-6;
 
-    ext::shared_ptr<PricingEngine> bondEngine(
+    std::shared_ptr<PricingEngine> bondEngine(
                                     new DiscountingBondEngine(discountCurve));
     // plain
 
@@ -1578,14 +1578,14 @@ void BondTest::testRiskyBondWithGivenDates() {
     Settings::instance().evaluationDate() = today;
 
     // Probability Structure
-    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.1)));
+    Handle<Quote> hazardRate(std::shared_ptr<Quote>(new SimpleQuote(0.1)));
     Handle<DefaultProbabilityTermStructure> defaultProbability(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
+        std::shared_ptr<DefaultProbabilityTermStructure>(
             new FlatHazardRate(0, TARGET(), hazardRate, Actual360())));
 
     // Yield term structure
     RelinkableHandle<YieldTermStructure> riskFree;
-    riskFree.linkTo(ext::shared_ptr<YieldTermStructure>(new FlatForward(today, 0.02, Actual360())));
+    riskFree.linkTo(std::shared_ptr<YieldTermStructure>(new FlatForward(today, 0.02, Actual360())));
     Schedule sch1(Date(30, November, 2004), Date(30, November, 2008), Period(Semiannual),
                   UnitedStates(UnitedStates::GovernmentBond), Unadjusted, Unadjusted,
                   DateGeneration::Backward, false);
@@ -1606,7 +1606,7 @@ void BondTest::testRiskyBondWithGivenDates() {
                        Date(20, November, 2004));
 
     // Create Engine
-    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(defaultProbability, recoveryRate, riskFree));
+    std::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(defaultProbability, recoveryRate, riskFree));
     bond.setPricingEngine(bondEngine);
 
     // Calculate and validate NPV and price
@@ -1668,7 +1668,7 @@ void BondTest::testFixedRateBondWithArbitrarySchedule() {
     }
 
     Handle<YieldTermStructure> discountCurve(flatRate(today, 0.03, Actual360()));
-    bond.setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingBondEngine(discountCurve)));
+    bond.setPricingEngine(std::shared_ptr<PricingEngine>(new DiscountingBondEngine(discountCurve)));
 
     BOOST_CHECK_NO_THROW(bond.cleanPrice());
 }

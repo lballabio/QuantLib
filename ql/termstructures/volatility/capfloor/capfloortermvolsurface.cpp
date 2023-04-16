@@ -114,7 +114,7 @@ namespace QuantLib {
         for (Size i=0; i<nOptionTenors_; ++i) {
             volHandles_[i].resize(nStrikes_);
             for (Size j=0; j<nStrikes_; ++j)
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(std::shared_ptr<Quote>(new
                     SimpleQuote(vols_[i][j])));
         }
         interpolate();
@@ -145,7 +145,7 @@ namespace QuantLib {
         for (Size i=0; i<nOptionTenors_; ++i) {
             volHandles_[i].resize(nStrikes_);
             for (Size j=0; j<nStrikes_; ++j)
-                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(std::shared_ptr<Quote>(new
                     SimpleQuote(vols_[i][j])));
         }
         interpolate();

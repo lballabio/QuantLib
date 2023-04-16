@@ -21,7 +21,7 @@
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/functional.hpp>
+
 #include <memory>
 
 namespace QuantLib {

@@ -31,7 +31,7 @@ namespace QuantLib {
                            Natural settlementDays,
                            Real faceAmount,
                            const Schedule& schedule,
-                           const ext::shared_ptr<SwapIndex>& index,
+                           const std::shared_ptr<SwapIndex>& index,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
                            Natural fixingDays,

@@ -35,7 +35,7 @@ namespace QuantLib {
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
         CalibrationFunction(CalibratedModel* model,
-                            const vector<ext::shared_ptr<CalibrationHelper> >& h,
+                            const vector<std::shared_ptr<CalibrationHelper> >& h,
                             vector<Real> weights,
                             const Projection& projection)
         : model_(model, null_deleter()), instruments_(h), weights_(std::move(weights)),
@@ -66,14 +66,14 @@ namespace QuantLib {
         Real finiteDifferenceEpsilon() const override { return 1e-6; }
 
       private:
-        ext::shared_ptr<CalibratedModel> model_;
-        const vector<ext::shared_ptr<CalibrationHelper> >& instruments_;
+        std::shared_ptr<CalibratedModel> model_;
+        const vector<std::shared_ptr<CalibrationHelper> >& instruments_;
         vector<Real> weights_;
         const Projection projection_;
     };
 
     void CalibratedModel::calibrate(
-            const vector<ext::shared_ptr<CalibrationHelper> >& instruments,
+            const vector<std::shared_ptr<CalibrationHelper> >& instruments,
             OptimizationMethod& method,
             const EndCriteria& endCriteria,
             const Constraint& additionalConstraint,
@@ -116,7 +116,7 @@ namespace QuantLib {
 
     Real CalibratedModel::value(
                 const Array& params,
-                const vector<ext::shared_ptr<CalibrationHelper> >& instruments) {
+                const vector<std::shared_ptr<CalibrationHelper> >& instruments) {
         vector<Real> w = vector<Real>(instruments.size(), 1.0);
         Projection p(params);
         CalibrationFunction f(this, instruments, w, p);

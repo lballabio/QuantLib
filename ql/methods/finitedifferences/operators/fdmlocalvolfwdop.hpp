@@ -35,11 +35,11 @@ namespace QuantLib {
 
     class FdmLocalVolFwdOp : public FdmLinearOpComposite {
       public:
-        FdmLocalVolFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
-                         const ext::shared_ptr<Quote>& spot,
-                         ext::shared_ptr<YieldTermStructure> rTS,
-                         ext::shared_ptr<YieldTermStructure> qTS,
-                         const ext::shared_ptr<LocalVolTermStructure>& localVol,
+        FdmLocalVolFwdOp(const std::shared_ptr<FdmMesher>& mesher,
+                         const std::shared_ptr<Quote>& spot,
+                         std::shared_ptr<YieldTermStructure> rTS,
+                         std::shared_ptr<YieldTermStructure> qTS,
+                         const std::shared_ptr<LocalVolTermStructure>& localVol,
                          Size direction = 0);
 
         Size size() const override;
@@ -54,9 +54,9 @@ namespace QuantLib {
         std::vector<SparseMatrix> toMatrixDecomp() const override;
 
       private:
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
-        const ext::shared_ptr<LocalVolTermStructure> localVol_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<YieldTermStructure> rTS_, qTS_;
+        const std::shared_ptr<LocalVolTermStructure> localVol_;
         const Array x_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;

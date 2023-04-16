@@ -27,7 +27,7 @@
 #define quantlib_heston_risk_neutral_density_calculator_hpp
 
 #include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
     class HestonProcess;
@@ -44,7 +44,7 @@ namespace QuantLib {
 
     class HestonRNDCalculator : public RiskNeutralDensityCalculator {
     public:
-      explicit HestonRNDCalculator(ext::shared_ptr<HestonProcess> hestonProcess,
+      explicit HestonRNDCalculator(std::shared_ptr<HestonProcess> hestonProcess,
                                    Real integrationEps = 1e-6,
                                    Size maxIntegrationIterations = 10000UL);
 
@@ -56,7 +56,7 @@ namespace QuantLib {
     private:
         Real x_t(Real x, Time t) const;
 
-        const ext::shared_ptr<HestonProcess> hestonProcess_;
+        const std::shared_ptr<HestonProcess> hestonProcess_;
         const Real x0_;
         const Real integrationEps_;
         const Size maxIntegrationIterations_;

@@ -29,8 +29,8 @@
 namespace QuantLib {
 
     Fd2dBlackScholesVanillaEngine::Fd2dBlackScholesVanillaEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& p2,
         Real correlation,
         Size xGrid, Size yGrid,
         Size tGrid, Size dampingSteps,
@@ -51,32 +51,32 @@ namespace QuantLib {
 
     void Fd2dBlackScholesVanillaEngine::calculate() const {
         // 1. Payoff
-        const ext::shared_ptr<BasketPayoff> payoff =
-            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        const std::shared_ptr<BasketPayoff> payoff =
+            std::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
 
         // 2. Mesher
         const Time maturity = p1_->time(arguments_.exercise->lastDate());
-        const ext::shared_ptr<Fdm1dMesher> em1(
+        const std::shared_ptr<Fdm1dMesher> em1(
             new FdmBlackScholesMesher(
                     xGrid_, p1_, maturity, p1_->x0(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(p1_->x0(), 0.1)));
 
-        const ext::shared_ptr<Fdm1dMesher> em2(
+        const std::shared_ptr<Fdm1dMesher> em2(
             new FdmBlackScholesMesher(
                     yGrid_, p2_, maturity, p2_->x0(),
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(p2_->x0(), 0.1)));
 
-        const ext::shared_ptr<FdmMesher> mesher (
+        const std::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(em1, em2));
 
         // 3. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
+        const std::shared_ptr<FdmInnerValueCalculator> calculator(
                                 new FdmLogBasketInnerValue(payoff, mesher));
 
         // 4. Step conditions
-        const ext::shared_ptr<FdmStepConditionComposite> conditions =
+        const std::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
                                     DividendSchedule(), arguments_.exercise, 
                                     mesher, calculator, 
@@ -91,7 +91,7 @@ namespace QuantLib {
                                            conditions, calculator,
                                            maturity, tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<Fdm2dBlackScholesSolver> solver(
+        std::shared_ptr<Fdm2dBlackScholesSolver> solver(
                 new Fdm2dBlackScholesSolver(
                              Handle<GeneralizedBlackScholesProcess>(p1_),
                              Handle<GeneralizedBlackScholesProcess>(p2_),

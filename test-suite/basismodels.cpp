@@ -72,8 +72,8 @@ namespace {
         std::vector<Real> ratesPlusSpread(rates);
         for (Real& k : ratesPlusSpread)
             k += spread;
-        ext::shared_ptr<YieldTermStructure> ts =
-            ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
+        std::shared_ptr<YieldTermStructure> ts =
+            std::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
                 dates, ratesPlusSpread, Actual365Fixed(), NullCalendar()));
         return RelinkableHandle<YieldTermStructure>(ts);
     }
@@ -114,15 +114,15 @@ namespace {
             std::vector<Handle<Quote> > row;
             row.reserve(capletVol.size());
             for (Real j : capletVol)
-                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
+                row.push_back(RelinkableHandle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(j))));
             capletVolQuotes.push_back(row);
         }
         Handle<YieldTermStructure> curve3m = getYTS(terms, proj3mRates);
-        ext::shared_ptr<IborIndex> index(new Euribor3M(curve3m));
-        ext::shared_ptr<StrippedOptionletBase> tmp1(
+        std::shared_ptr<IborIndex> index(new Euribor3M(curve3m));
+        std::shared_ptr<StrippedOptionletBase> tmp1(
             new StrippedOptionlet(2, TARGET(), Following, index, dates, capletStrikes,
                                   capletVolQuotes, Actual365Fixed(), Normal, 0.0));
-        ext::shared_ptr<StrippedOptionletAdapter> tmp2(new StrippedOptionletAdapter(tmp1));
+        std::shared_ptr<StrippedOptionletAdapter> tmp2(new StrippedOptionletAdapter(tmp1));
         return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
     }
 
@@ -145,10 +145,10 @@ namespace {
             std::vector<Handle<Quote> > row;
             row.reserve(swaptionVol.size());
             for (Real j : swaptionVol)
-                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
+                row.push_back(RelinkableHandle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(j))));
             swaptionVolQuotes.push_back(row);
         }
-        ext::shared_ptr<SwaptionVolatilityStructure> tmp(
+        std::shared_ptr<SwaptionVolatilityStructure> tmp(
             new SwaptionVolatilityMatrix(TARGET(), Following, swaptionVTSTerms, swaptionVTSTerms,
                                          swaptionVolQuotes, Actual365Fixed(), true, Normal));
         return RelinkableHandle<SwaptionVolatilityStructure>(tmp);
@@ -159,7 +159,7 @@ namespace {
         // market data and floating rate index
         Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
         Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
-        ext::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
+        std::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
         // Vanilla swap details
         Date today = Settings::instance().evaluationDate();
         Date swapStart = TARGET().advance(today, Period(5, Years), Following);
@@ -169,13 +169,13 @@ namespace {
                                ModifiedFollowing, DateGeneration::Backward, false);
         Schedule floatSchedule(swapStart, swapEnd, Period(6, Months), TARGET(), ModifiedFollowing,
                                ModifiedFollowing, DateGeneration::Backward, false);
-        ext::shared_ptr<VanillaSwap> swap(
+        std::shared_ptr<VanillaSwap> swap(
             new VanillaSwap(Swap::Payer, 10000.0, fixedSchedule, 0.03, Thirty360(Thirty360::BondBasis),
                             floatSchedule, euribor6m, 0.0, euribor6m->dayCounter()));
-        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(discYTS)));
+        swap->setPricingEngine(std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(discYTS)));
         // European exercise and swaption
-        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(exerciseDate));
-        ext::shared_ptr<Swaption> swaption(
+        std::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(exerciseDate));
+        std::shared_ptr<Swaption> swaption(
             new Swaption(swap, europeanExercise, Settlement::Physical));
         // calculate basis model swaption cash flows, discount and conmpare with swap
         SwaptionCashFlows cashFlows(swaption, discYTS, contTenorSpread);
@@ -243,8 +243,8 @@ void BasismodelsTest::testTenoroptionletvts() {
     Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
     Handle<YieldTermStructure> proj3mYTS = getYTS(terms, proj3mRates);
     Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj3mRates, spread);
-    ext::shared_ptr<IborIndex> euribor3m(new Euribor6M(proj3mYTS));
-    ext::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
+    std::shared_ptr<IborIndex> euribor3m(new Euribor6M(proj3mYTS));
+    std::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
     // 3m optionlet VTS
     Handle<OptionletVolatilityStructure> optionletVTS3m = getOptionletTS();
     {
@@ -255,14 +255,14 @@ void BasismodelsTest::testTenoroptionletvts() {
         std::vector<Real> corrTimes(corrTimesRaw, corrTimesRaw + 2);
         std::vector<Real> rhoInfData(rhoInfDataRaw, rhoInfDataRaw + 2);
         std::vector<Real> betaData(betaDataRaw, betaDataRaw + 2);
-        ext::shared_ptr<Interpolation> rho(
+        std::shared_ptr<Interpolation> rho(
             new LinearInterpolation(corrTimes.begin(), corrTimes.end(), rhoInfData.begin()));
-        ext::shared_ptr<Interpolation> beta(
+        std::shared_ptr<Interpolation> beta(
             new LinearInterpolation(corrTimes.begin(), corrTimes.end(), betaData.begin()));
-        ext::shared_ptr<TenorOptionletVTS::CorrelationStructure> corr(
+        std::shared_ptr<TenorOptionletVTS::CorrelationStructure> corr(
             new TenorOptionletVTS::TwoParameterCorrelation(rho, beta));
         // now we can set up the new volTS and calculate volatilities
-        ext::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
+        std::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
             new TenorOptionletVTS(optionletVTS3m, euribor3m, euribor6m, corr));
         for (auto& capletTerm : capletTerms) {
             for (Real& capletStrike : capletStrikes) {
@@ -290,14 +290,14 @@ void BasismodelsTest::testTenoroptionletvts() {
         std::vector<Real> corrTimes(corrTimesRaw, corrTimesRaw + 2);
         std::vector<Real> rhoInfData(rhoInfDataRaw, rhoInfDataRaw + 2);
         std::vector<Real> betaData(betaDataRaw, betaDataRaw + 2);
-        ext::shared_ptr<Interpolation> rho(
+        std::shared_ptr<Interpolation> rho(
             new LinearInterpolation(corrTimes.begin(), corrTimes.end(), rhoInfData.begin()));
-        ext::shared_ptr<Interpolation> beta(
+        std::shared_ptr<Interpolation> beta(
             new LinearInterpolation(corrTimes.begin(), corrTimes.end(), betaData.begin()));
-        ext::shared_ptr<TenorOptionletVTS::CorrelationStructure> corr(
+        std::shared_ptr<TenorOptionletVTS::CorrelationStructure> corr(
             new TenorOptionletVTS::TwoParameterCorrelation(rho, beta));
         // now we can set up the new volTS and calculate volatilities
-        ext::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
+        std::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
             new TenorOptionletVTS(optionletVTS3m, euribor3m, euribor6m, corr));
         for (Size i = 0; i < capletTerms.size(); ++i) {
             for (Real& capletStrike : capletStrikes) {
@@ -327,12 +327,12 @@ void BasismodelsTest::testTenorswaptionvts() {
     Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
     Handle<YieldTermStructure> proj3mYTS = getYTS(terms, proj3mRates);
     Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj3mRates, spread);
-    ext::shared_ptr<IborIndex> euribor3m(new Euribor6M(proj3mYTS));
-    ext::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
+    std::shared_ptr<IborIndex> euribor3m(new Euribor6M(proj3mYTS));
+    std::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
     // Euribor6m ATM vols
     Handle<SwaptionVolatilityStructure> euribor6mSwVTS = getSwaptionVTS();
     {
-        ext::shared_ptr<TenorSwaptionVTS> euribor3mSwVTS(
+        std::shared_ptr<TenorSwaptionVTS> euribor3mSwVTS(
             new TenorSwaptionVTS(euribor6mSwVTS, discYTS, euribor6m, euribor3m, Period(1, Years),
                                  Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         // 6m vols should be slightly larger then 3m vols due to basis
@@ -351,7 +351,7 @@ void BasismodelsTest::testTenorswaptionvts() {
         }
     }
     {
-        ext::shared_ptr<TenorSwaptionVTS> euribor6mSwVTS2(
+        std::shared_ptr<TenorSwaptionVTS> euribor6mSwVTS2(
             new TenorSwaptionVTS(euribor6mSwVTS, discYTS, euribor6m, euribor6m, Period(1, Years),
                                  Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         // 6m vols to 6m vols should yield initiial vols
@@ -372,10 +372,10 @@ void BasismodelsTest::testTenorswaptionvts() {
         }
     }
     {
-        ext::shared_ptr<TenorSwaptionVTS> euribor3mSwVTS(
+        std::shared_ptr<TenorSwaptionVTS> euribor3mSwVTS(
             new TenorSwaptionVTS(euribor6mSwVTS, discYTS, euribor6m, euribor3m, Period(1, Years),
                                  Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
-        ext::shared_ptr<TenorSwaptionVTS> euribor6mSwVTS2(new TenorSwaptionVTS(
+        std::shared_ptr<TenorSwaptionVTS> euribor6mSwVTS2(new TenorSwaptionVTS(
             RelinkableHandle<SwaptionVolatilityStructure>(euribor3mSwVTS), discYTS, euribor3m,
             euribor6m, Period(1, Years), Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         // 6m vols to 6m vols should yield initiial vols

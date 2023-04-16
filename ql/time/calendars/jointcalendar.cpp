@@ -124,7 +124,7 @@ namespace QuantLib {
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
                                  JointCalendarRule r) {
-        impl_ = ext::shared_ptr<Calendar::Impl>(
+        impl_ = std::shared_ptr<Calendar::Impl>(
                                             new JointCalendar::Impl(c1,c2,r));
     }
 
@@ -132,7 +132,7 @@ namespace QuantLib {
                                  const Calendar& c2,
                                  const Calendar& c3,
                                  JointCalendarRule r) {
-        impl_ = ext::shared_ptr<Calendar::Impl>(
+        impl_ = std::shared_ptr<Calendar::Impl>(
                                          new JointCalendar::Impl(c1,c2,c3,r));
     }
 
@@ -141,13 +141,13 @@ namespace QuantLib {
                                  const Calendar& c3,
                                  const Calendar& c4,
                                  JointCalendarRule r) {
-        impl_ = ext::shared_ptr<Calendar::Impl>(
+        impl_ = std::shared_ptr<Calendar::Impl>(
                                       new JointCalendar::Impl(c1,c2,c3,c4,r));
     }
 
     JointCalendar::JointCalendar(const std::vector<Calendar> &cv,
                                  JointCalendarRule r) {
-        impl_ = ext::shared_ptr<Calendar::Impl>(
+        impl_ = std::shared_ptr<Calendar::Impl>(
                                       new JointCalendar::Impl(cv,r));
     }
 

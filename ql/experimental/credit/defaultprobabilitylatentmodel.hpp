@@ -54,8 +54,8 @@ namespace QuantLib {
     protected:
         // not a handle, the model doesnt keep any cached magnitudes, no need 
         //  for notifications, still...
-        mutable ext::shared_ptr<Basket> basket_;
-        ext::shared_ptr<LMIntegration> integration_;
+        mutable std::shared_ptr<Basket> basket_;
+        std::shared_ptr<LMIntegration> integration_;
     private:
         typedef typename copulaPolicy::initTraits initTraits;
     public:
@@ -94,7 +94,7 @@ namespace QuantLib {
         /* To interface with loss models. It is possible to change the basket 
         since there are no cached magnitudes.
         */
-        void resetBasket(const ext::shared_ptr<Basket>& basket) const {
+        void resetBasket(const std::shared_ptr<Basket>& basket) const {
             basket_ = basket;
             // in the future change 'size' to 'liveSize'
             QL_REQUIRE(basket_->size() == factorWeights_.size(), 
@@ -179,7 +179,7 @@ namespace QuantLib {
         Probability conditionalDefaultProbability(const Date& date, Size iName,
             const std::vector<Real>& mktFactors) const 
         {
-            const ext::shared_ptr<Pool>& pool = basket_->pool();
+            const std::shared_ptr<Pool>& pool = basket_->pool();
             Probability pDefUncond =
                 pool->get(pool->names()[iName]).
                 defaultProbability(basket_->defaultKeys()[iName])
@@ -202,7 +202,7 @@ namespace QuantLib {
         Real conditionalProbAtLeastNEvents(Size n, const Date& date,
             const std::vector<Real>& mktFactors) const;
         //! access to integration:
-        const ext::shared_ptr<LMIntegration>& integration() const override { return integration_; }
+        const std::shared_ptr<LMIntegration>& integration() const override { return integration_; }
 
       public:
         /*! Computes the unconditional probability of default of a given name. 
@@ -210,7 +210,7 @@ namespace QuantLib {
         */
         Probability probOfDefault(Size iName, const Date& d) const {
             QL_REQUIRE(basket_, "No portfolio basket set.");
-            const ext::shared_ptr<Pool>& pool = basket_->pool();
+            const std::shared_ptr<Pool>& pool = basket_->pool();
             // avoid repeating this in the integration:
             Probability pUncond = pool->get(pool->names()[iName]).
                 defaultProbability(basket_->defaultKeys()[iName])
@@ -251,7 +251,7 @@ namespace QuantLib {
     {
         QL_REQUIRE(basket_, "No portfolio basket set.");
 
-        const ext::shared_ptr<Pool>& pool = basket_->pool();
+        const std::shared_ptr<Pool>& pool = basket_->pool();
         // unconditionals:
         Probability pi = pool->get(pool->names()[iNamei]).
             defaultProbability(basket_->defaultKeys()[iNamei])
@@ -290,7 +290,7 @@ namespace QuantLib {
             */
             // first position with as many defaults as desired:
             Size poolSize = basket_->size();//move to 'livesize'
-            const ext::shared_ptr<Pool>& pool = basket_->pool();
+            const std::shared_ptr<Pool>& pool = basket_->pool();
 
             auto limit = static_cast<BigNatural>(std::pow(2., (int)(poolSize)));
 

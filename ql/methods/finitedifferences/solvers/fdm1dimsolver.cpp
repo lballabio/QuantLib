@@ -31,9 +31,9 @@ namespace QuantLib {
 
     Fdm1DimSolver::Fdm1DimSolver(const FdmSolverDesc& solverDesc,
                                  const FdmSchemeDesc& schemeDesc,
-                                 ext::shared_ptr<FdmLinearOpComposite> op)
+                                 std::shared_ptr<FdmLinearOpComposite> op)
     : solverDesc_(solverDesc), schemeDesc_(schemeDesc), op_(std::move(op)),
-      thetaCondition_(ext::make_shared<FdmSnapshotCondition>(
+      thetaCondition_(std::make_shared<FdmSnapshotCondition>(
           0.99 * std::min(1.0 / 365.0,
                           solverDesc.condition->stoppingTimes().empty() ?
                               solverDesc.maturity :
@@ -42,8 +42,8 @@ namespace QuantLib {
       x_(solverDesc.mesher->layout()->size()), initialValues_(solverDesc.mesher->layout()->size()),
       resultValues_(solverDesc.mesher->layout()->size()) {
 
-        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
@@ -65,7 +65,7 @@ namespace QuantLib {
                       solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
-        interpolation_ = ext::make_shared<MonotonicCubicNaturalSpline>(x_.begin(), x_.end(),
+        interpolation_ = std::make_shared<MonotonicCubicNaturalSpline>(x_.begin(), x_.end(),
                                         resultValues_.begin());
     }
 

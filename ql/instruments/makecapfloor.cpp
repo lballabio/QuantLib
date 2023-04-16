@@ -26,7 +26,7 @@ namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
                                const Period& tenor,
-                               const ext::shared_ptr<IborIndex>& iborIndex,
+                               const std::shared_ptr<IborIndex>& iborIndex,
                                Rate strike,
                                const Period& forwardStart)
     : capFloorType_(capFloorType), strike_(strike), firstCapletExcluded_(forwardStart == 0 * Days),
@@ -38,11 +38,11 @@ namespace QuantLib {
                            .withFixedLegDayCount(Actual365Fixed())) {}
 
     MakeCapFloor::operator CapFloor() const {
-        ext::shared_ptr<CapFloor> capfloor = *this;
+        std::shared_ptr<CapFloor> capfloor = *this;
         return *capfloor;
     }
 
-    MakeCapFloor::operator ext::shared_ptr<CapFloor>() const {
+    MakeCapFloor::operator std::shared_ptr<CapFloor>() const {
 
         VanillaSwap swap = makeVanillaSwap_;
 
@@ -61,8 +61,8 @@ namespace QuantLib {
 
             // temporary patch...
             // should be fixed for every CapFloor::Engine
-            ext::shared_ptr<BlackCapFloorEngine> temp = 
-                ext::dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
+            std::shared_ptr<BlackCapFloorEngine> temp = 
+                std::dynamic_pointer_cast<BlackCapFloorEngine>(engine_);
             QL_REQUIRE(temp,
                        "cannot calculate ATM without a BlackCapFloorEngine");
             Handle<YieldTermStructure> discountCurve = temp->termStructure();
@@ -72,7 +72,7 @@ namespace QuantLib {
                                                  discountCurve->referenceDate());
         }
 
-        ext::shared_ptr<CapFloor> capFloor(new
+        std::shared_ptr<CapFloor> capFloor(new
             CapFloor(capFloorType_, leg, strikeVector));
         capFloor->setPricingEngine(engine_);
         return capFloor;
@@ -147,7 +147,7 @@ namespace QuantLib {
     }
 
     MakeCapFloor& MakeCapFloor::withPricingEngine(
-                             const ext::shared_ptr<PricingEngine>& engine) {
+                             const std::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }

@@ -35,8 +35,8 @@ namespace QuantLib {
     namespace {
         class FdmOUInnerValue : public FdmInnerValueCalculator {
           public:
-            FdmOUInnerValue(ext::shared_ptr<Payoff> payoff,
-                            ext::shared_ptr<FdmMesher> mesher,
+            FdmOUInnerValue(std::shared_ptr<Payoff> payoff,
+                            std::shared_ptr<FdmMesher> mesher,
                             Size direction)
             : payoff_(std::move(payoff)), mesher_(std::move(mesher)), direction_(direction) {}
 
@@ -51,15 +51,15 @@ namespace QuantLib {
             }
 
           private:
-            const ext::shared_ptr<Payoff> payoff_;
-            const ext::shared_ptr<FdmMesher> mesher_;
+            const std::shared_ptr<Payoff> payoff_;
+            const std::shared_ptr<FdmMesher> mesher_;
             const Size direction_;
         };
     }
 
     FdOrnsteinUhlenbeckVanillaEngine::FdOrnsteinUhlenbeckVanillaEngine(
-        ext::shared_ptr<OrnsteinUhlenbeckProcess> process,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
+        std::shared_ptr<OrnsteinUhlenbeckProcess> process,
+        const std::shared_ptr<YieldTermStructure>& rTS,
         Size tGrid,
         Size xGrid,
         Size dampingSteps,
@@ -73,8 +73,8 @@ namespace QuantLib {
     }
 
     FdOrnsteinUhlenbeckVanillaEngine::FdOrnsteinUhlenbeckVanillaEngine(
-        ext::shared_ptr<OrnsteinUhlenbeckProcess> process,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
+        std::shared_ptr<OrnsteinUhlenbeckProcess> process,
+        const std::shared_ptr<YieldTermStructure>& rTS,
         DividendSchedule dividends,
         Size tGrid,
         Size xGrid,
@@ -97,8 +97,8 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
         const DayCounter dc = rTS_->dayCounter();
         const Date referenceDate = rTS_->referenceDate();
@@ -106,19 +106,19 @@ namespace QuantLib {
         const Time maturity = dc.yearFraction(
             referenceDate, arguments_.exercise->lastDate());
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
+        const std::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmSimpleProcess1dMesher(
                 xGrid_, process_, maturity, 1, epsilon_));
 
-        const ext::shared_ptr<FdmMesher> mesher (
+        const std::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher));
 
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
+        const std::shared_ptr<FdmInnerValueCalculator> calculator(
             new FdmOUInnerValue(payoff, mesher, 0));
 
         // 3. Step conditions
-        const ext::shared_ptr<FdmStepConditionComposite> conditions =
+        const std::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
                                     passedDividends, arguments_.exercise,
                                     mesher, calculator,
@@ -131,10 +131,10 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        const ext::shared_ptr<FdmOrnsteinUhlenbeckOp> op(
+        const std::shared_ptr<FdmOrnsteinUhlenbeckOp> op(
             new FdmOrnsteinUhlenbeckOp(mesher, process_, rTS_, 0));
 
-        const ext::shared_ptr<Fdm1DimSolver> solver(
+        const std::shared_ptr<Fdm1DimSolver> solver(
                 new Fdm1DimSolver(solverDesc, schemeDesc_, op));
 
         const Real spot = process_->x0();

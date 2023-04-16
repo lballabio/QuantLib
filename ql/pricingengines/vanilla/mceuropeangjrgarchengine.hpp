@@ -42,7 +42,7 @@ namespace QuantLib {
       public:
         typedef typename MCVanillaEngine<MultiVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        MCEuropeanGJRGARCHEngine(const ext::shared_ptr<GJRGARCHProcess>&,
+        MCEuropeanGJRGARCHEngine(const std::shared_ptr<GJRGARCHProcess>&,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool antitheticVariate,
@@ -51,14 +51,14 @@ namespace QuantLib {
                                Size maxSamples,
                                BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo GJR-GARCH European engine factory
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanGJRGARCHEngine {
       public:
-        MakeMCEuropeanGJRGARCHEngine(ext::shared_ptr<GJRGARCHProcess>);
+        MakeMCEuropeanGJRGARCHEngine(std::shared_ptr<GJRGARCHProcess>);
         // named parameters
         MakeMCEuropeanGJRGARCHEngine& withSteps(Size steps);
         MakeMCEuropeanGJRGARCHEngine& withStepsPerYear(Size steps);
@@ -68,9 +68,9 @@ namespace QuantLib {
         MakeMCEuropeanGJRGARCHEngine& withSeed(BigNatural seed);
         MakeMCEuropeanGJRGARCHEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<GJRGARCHProcess> process_;
+        std::shared_ptr<GJRGARCHProcess> process_;
         bool antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -95,7 +95,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     MCEuropeanGJRGARCHEngine<RNG, S>::MCEuropeanGJRGARCHEngine(
-                const ext::shared_ptr<GJRGARCHProcess>& process,
+                const std::shared_ptr<GJRGARCHProcess>& process,
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
@@ -106,20 +106,20 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    ext::shared_ptr<
+    std::shared_ptr<
         typename MCEuropeanGJRGARCHEngine<RNG,S>::path_pricer_type>
     MCEuropeanGJRGARCHEngine<RNG,S>::pathPricer() const {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-                  ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff(
+                  std::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                     this->arguments_.payoff));
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        ext::shared_ptr<GJRGARCHProcess> process =
-            ext::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
+        std::shared_ptr<GJRGARCHProcess> process =
+            std::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
         QL_REQUIRE(process, "GJRGARCH process required");
 
-        return ext::shared_ptr<
+        return std::shared_ptr<
             typename MCEuropeanGJRGARCHEngine<RNG,S>::path_pricer_type>(
                    new EuropeanGJRGARCHPathPricer(
                                         payoff->optionType(),
@@ -131,7 +131,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanGJRGARCHEngine<RNG, S>::MakeMCEuropeanGJRGARCHEngine(
-        ext::shared_ptr<GJRGARCHProcess> process)
+        std::shared_ptr<GJRGARCHProcess> process)
     : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
@@ -198,10 +198,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MakeMCEuropeanGJRGARCHEngine<RNG,S>::
-    operator ext::shared_ptr<PricingEngine>() const {
+    operator std::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
-        return ext::shared_ptr<PricingEngine>(
+        return std::shared_ptr<PricingEngine>(
                  new MCEuropeanGJRGARCHEngine<RNG,S>(process_,
                                                    steps_,
                                                    stepsPerYear_,

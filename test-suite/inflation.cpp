@@ -66,22 +66,22 @@ namespace inflation_test {
         Rate rate;
     };
 
-    ext::shared_ptr<YieldTermStructure> nominalTermStructure() {
+    std::shared_ptr<YieldTermStructure> nominalTermStructure() {
         Date evaluationDate(13, August, 2007);
-        return ext::shared_ptr<YieldTermStructure>(
+        return std::shared_ptr<YieldTermStructure>(
             new FlatForward(evaluationDate, 0.05, Actual360()));
     }
 
     template <class T>
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+    std::vector<std::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         const std::vector<Datum>& iiData,
-        std::function<ext::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>
+        std::function<std::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>
             makeHelper) {
 
-        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
+        std::vector<std::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Datum datum : iiData) {
             Date maturity = datum.date;
-            Handle<Quote> quote(ext::shared_ptr<Quote>(new SimpleQuote(datum.rate / 100.0)));
+            Handle<Quote> quote(std::shared_ptr<Quote>(new SimpleQuote(datum.rate / 100.0)));
             auto anInstrument = makeHelper(quote, maturity);
             instruments.push_back(anInstrument);
         }
@@ -166,7 +166,7 @@ void InflationTest::testZeroIndex() {
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3, 206.1 };
 
-    auto iir = ext::make_shared<UKRPI>();
+    auto iir = std::make_shared<UKRPI>();
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -227,7 +227,7 @@ void InflationTest::testZeroTermStructure() {
         207.3};
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
-    auto ii = ext::make_shared<UKRPI>(hz);
+    auto ii = std::make_shared<UKRPI>(hz);
     for (Size i=0; i<LENGTH(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -257,13 +257,13 @@ void InflationTest::testZeroTermStructure() {
     Frequency frequency = Monthly;
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
-        return ext::make_shared<ZeroCouponInflationSwapHelper>(
+        return std::make_shared<ZeroCouponInflationSwapHelper>(
             quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
     Rate baseZeroRate = zcData[0].rate/100.0;
-    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
+    std::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
                         new PiecewiseZeroInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
                         frequency, baseZeroRate, helpers));
@@ -273,7 +273,7 @@ void InflationTest::testZeroTermStructure() {
     // first check that the quoted swaps are repriced correctly
 
     const Real eps = 1.0e-6;
-    auto engine = ext::make_shared<DiscountingSwapEngine>(nominalTS);
+    auto engine = std::make_shared<DiscountingSwapEngine>(nominalTS);
     
     for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,
@@ -341,8 +341,8 @@ void InflationTest::testZeroTermStructure() {
         1.004186
     };
 
-    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
-        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    std::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+        std::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     pZITS->setSeasonality(nonUnitSeasonality);
     
@@ -370,20 +370,20 @@ void InflationTest::testZeroTermStructure() {
 
     bool interpYES = true;
     QL_DEPRECATED_DISABLE_WARNING
-    ext::shared_ptr<UKRPI> iiyes(new UKRPI(interpYES, hz));
+    std::shared_ptr<UKRPI> iiyes(new UKRPI(interpYES, hz));
     QL_DEPRECATED_ENABLE_WARNING
     for (Size i=0; i<LENGTH(fixData);i++) {
         iiyes->addFixing(rpiSchedule[i], fixData[i]);
     }
 
     auto makeHelperYes = [&](const Handle<Quote>& quote, const Date& maturity) {
-        return ext::make_shared<ZeroCouponInflationSwapHelper>(
+        return std::make_shared<ZeroCouponInflationSwapHelper>(
             quote, observationLag, maturity, calendar, bdc, dc, iiyes, CPI::AsIndex,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpersyes = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelperYes);
 
-    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
+    std::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
             new PiecewiseZeroInflationCurve<Linear>(
             evaluationDate, calendar, dc, observationLag,
             frequency, baseZeroRate, helpersyes));
@@ -435,13 +435,13 @@ void InflationTest::testZeroTermStructure() {
     }
 
     // remove circular refernce
-    hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    hz.linkTo(std::shared_ptr<ZeroInflationTermStructure>());
 }
 
 namespace inflation_test {
 
 void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
-    const ext::shared_ptr<ZeroInflationIndex>& ii) {
+    const std::shared_ptr<ZeroInflationIndex>& ii) {
 
     QL_REQUIRE(!hz->hasSeasonality(), "We require that the initially passed in term structure "
         << "does not have seasonality");
@@ -456,8 +456,8 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
 
     // 1) Monthly seasonality with all elements equal to 1 <=> no seasonality
     vector<Rate> seasonalityFactors(12, 1.0);
-    ext::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality =
-        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    std::shared_ptr<MultiplicativePriceSeasonality> unitSeasonality =
+        std::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // 2) Seasonality with factors != 1.0
     seasonalityFactors[0] = 1.003245;
@@ -473,8 +473,8 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     seasonalityFactors[10] = 1.003705;
     seasonalityFactors[11] = 1.004186;
 
-    ext::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
-        ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
+    std::shared_ptr<MultiplicativePriceSeasonality> nonUnitSeasonality =
+        std::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     // Create dates on which we will check fixings
     vector<Date> fixingDates(12);
@@ -612,12 +612,12 @@ void InflationTest::testSeasonalityCorrection() {
         207.3};
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
-    auto ii = ext::make_shared<UKRPI>(hz);
+    auto ii = std::make_shared<UKRPI>(hz);
     for (Size i=0; i<LENGTH(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
-    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    std::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     std::vector<Date> nodes = {
         Date(1, June, 2007),
@@ -659,7 +659,7 @@ void InflationTest::testSeasonalityCorrection() {
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
 
-    auto zeroCurve = ext::make_shared<InterpolatedZeroInflationCurve<Linear>>(
+    auto zeroCurve = std::make_shared<InterpolatedZeroInflationCurve<Linear>>(
                                  evaluationDate, calendar, dc, observationLag,
                                  frequency, nodes, rates);
     hz.linkTo(zeroCurve);
@@ -673,7 +673,7 @@ void InflationTest::testSeasonalityCorrection() {
 
     bool interpYES = true;
     QL_DEPRECATED_DISABLE_WARNING
-    ext::shared_ptr<UKRPI> iiyes(new UKRPI(interpYES, hz));
+    std::shared_ptr<UKRPI> iiyes(new UKRPI(interpYES, hz));
     QL_DEPRECATED_ENABLE_WARNING
     for (Size i=0; i<LENGTH(fixData);i++) {
         iiyes->addFixing(rpiSchedule[i], fixData[i]);
@@ -745,7 +745,7 @@ void InflationTest::testInterpolatedZeroTermStructure() {
     };
     std::vector<Rate> rates = { 0.01, 0.01, 0.011, 0.012, 0.013, 0.015, 0.018, 0.02, 0.025, 0.03, 0.03 };
 
-    auto curve = ext::make_shared<InterpolatedZeroInflationCurve<Linear>>(
+    auto curve = std::make_shared<InterpolatedZeroInflationCurve<Linear>>(
         today, TARGET(), Actual360(), lag, Monthly, dates, rates);
 
     auto nodes = curve->nodes();
@@ -856,8 +856,8 @@ void InflationTest::testYYIndex() {
         207.3 };
 
     bool interp = false;
-    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
-    ext::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
+    std::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
+    std::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
     for (Size i=0; i<LENGTH(fixData);i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
         iirYES->addFixing(rpiSchedule[i], fixData[i]);
@@ -947,14 +947,14 @@ void InflationTest::testYYTermStructure() {
 
     RelinkableHandle<YoYInflationTermStructure> hy;
     bool interp = false;
-    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
+    std::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
 
 
-    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+    std::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
     // now build the YoY inflation curve
     std::vector<Datum> yyData = {
@@ -980,14 +980,14 @@ void InflationTest::testYYTermStructure() {
 
     // now build the helpers ...
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
-        return ext::make_shared<YearOnYearInflationSwapHelper>(
+        return std::make_shared<YearOnYearInflationSwapHelper>(
             quote, observationLag, maturity, calendar, bdc, dc, iir,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
 
     Rate baseYYRate = yyData[0].rate/100.0;
-    ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
+    std::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
         new PiecewiseYoYInflationCurve<Linear>(
                 evaluationDate, calendar, dc, observationLag,
                 iir->frequency(),iir->interpolated(), baseYYRate,
@@ -1000,7 +1000,7 @@ void InflationTest::testYYTermStructure() {
     Real eps = 0.000001;
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
-    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+    std::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);
@@ -1073,7 +1073,7 @@ void InflationTest::testYYTermStructure() {
                             );
     }
     // remove circular refernce
-    hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    hy.linkTo(std::shared_ptr<YoYInflationTermStructure>());
 }
 
 void InflationTest::testPeriod() {
@@ -1161,8 +1161,8 @@ void InflationTest::testCpiFlatInterpolation() {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
-    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
+    auto testIndex1 = std::shared_ptr<UKRPI>(new UKRPI(false));
+    auto testIndex2 = std::shared_ptr<UKRPI>(new UKRPI(true));
 
     QL_DEPRECATED_ENABLE_WARNING
 
@@ -1210,8 +1210,8 @@ void InflationTest::testCpiLinearInterpolation() {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
-    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
+    auto testIndex1 = std::shared_ptr<UKRPI>(new UKRPI(false));
+    auto testIndex2 = std::shared_ptr<UKRPI>(new UKRPI(true));
 
     QL_DEPRECATED_ENABLE_WARNING
 
@@ -1221,7 +1221,7 @@ void InflationTest::testCpiLinearInterpolation() {
     testIndex1->addFixing(Date(1, February, 2021), 296.0);
     testIndex1->addFixing(Date(1, March,    2021), 296.9);
 
-    auto check = [&](const ext::shared_ptr<ZeroInflationIndex>& testIndex) {
+    auto check = [&](const std::shared_ptr<ZeroInflationIndex>& testIndex) {
         Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Linear);
         Real expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
 
@@ -1270,13 +1270,13 @@ void InflationTest::testCpiAsIndexInterpolation() {
     std::vector<Date> dates = { today - 3*Months, today + 5*Years };
     std::vector<Rate> rates = { 0.02, 0.02 };
     Handle<ZeroInflationTermStructure> mock_curve(
-            ext::make_shared<ZeroInflationCurve>(today, TARGET(), Actual360(),
+            std::make_shared<ZeroInflationCurve>(today, TARGET(), Actual360(),
                                                  3 * Months, Monthly, dates, rates));
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false, mock_curve));
-    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true, mock_curve));
+    auto testIndex1 = std::shared_ptr<UKRPI>(new UKRPI(false, mock_curve));
+    auto testIndex2 = std::shared_ptr<UKRPI>(new UKRPI(true, mock_curve));
 
     QL_DEPRECATED_ENABLE_WARNING
 

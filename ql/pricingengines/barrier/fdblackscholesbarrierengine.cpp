@@ -38,7 +38,7 @@
 namespace QuantLib {
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size tGrid,
         Size xGrid,
         Size dampingSteps,
@@ -54,7 +54,7 @@ namespace QuantLib {
     }
 
     FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         DividendSchedule dividends,
         Size tGrid,
         Size xGrid,
@@ -78,8 +78,8 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
         QL_REQUIRE(payoff, "non-striked type payoff given");
         QL_REQUIRE(payoff->strike() > 0.0, "strike must be positive");
@@ -104,27 +104,27 @@ namespace QuantLib {
             xMax = std::log(arguments_.barrier);
         }
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
+        const std::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
                 dividendSchedule));
         
-        const ext::shared_ptr<FdmMesher> mesher (
-            ext::make_shared<FdmMesherComposite>(equityMesher));
+        const std::shared_ptr<FdmMesher> mesher (
+            std::make_shared<FdmMesherComposite>(equityMesher));
 
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
-            ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
+        std::shared_ptr<FdmInnerValueCalculator> calculator(
+            std::make_shared<FdmLogInnerValue>(payoff, mesher, 0));
 
         // 3. Step conditions
-        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<std::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
 
         // 3.1 Step condition if discrete dividends
-        ext::shared_ptr<FdmDividendHandler> dividendCondition(
-            ext::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
+        std::shared_ptr<FdmDividendHandler> dividendCondition(
+            std::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
                                    process_->riskFreeRate()->referenceDate(),
                                    process_->riskFreeRate()->dayCounter(), 0));
 
@@ -137,15 +137,15 @@ namespace QuantLib {
             stoppingTimes.push_back(dividendTimes);
         }
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-            ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
+        std::shared_ptr<FdmStepConditionComposite> conditions(
+            std::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
 
         // 4. Boundary conditions
         FdmBoundaryConditionSet boundaries;
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::DownOut) {
             boundaries.push_back(
-                ext::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
+                std::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Lower));
 
         }
@@ -153,7 +153,7 @@ namespace QuantLib {
         if (   arguments_.barrierType == Barrier::UpIn
             || arguments_.barrierType == Barrier::UpOut) {
             boundaries.push_back(
-                ext::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
+                std::make_shared<FdmDirichletBoundary>(mesher, arguments_.rebate, 0,
                                          FdmDirichletBoundary::Upper));
         }
 
@@ -161,8 +161,8 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
                                      maturity, tGrid_, dampingSteps_ };
 
-        ext::shared_ptr<FdmBlackScholesSolver> solver(
-            ext::make_shared<FdmBlackScholesSolver>(
+        std::shared_ptr<FdmBlackScholesSolver> solver(
+            std::make_shared<FdmBlackScholesSolver>(
                                Handle<GeneralizedBlackScholesProcess>(process_),
                                payoff->strike(), solverDesc, schemeDesc_,
                                localVol_, illegalLocalVolOverwrite_));
@@ -176,15 +176,15 @@ namespace QuantLib {
         if (   arguments_.barrierType == Barrier::DownIn
             || arguments_.barrierType == Barrier::UpIn) {
             // Cast the payoff
-            ext::shared_ptr<StrikedTypePayoff> payoff =
-                    ext::dynamic_pointer_cast<StrikedTypePayoff>(
+            std::shared_ptr<StrikedTypePayoff> payoff =
+                    std::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
             
             VanillaOption vanillaOption(payoff, arguments_.exercise);
             
             vanillaOption.setPricingEngine(
-                ext::make_shared<FdBlackScholesVanillaEngine>(
+                std::make_shared<FdBlackScholesVanillaEngine>(
                         process_, dividendSchedule, tGrid_, xGrid_,
                         0, // dampingSteps
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
@@ -199,7 +199,7 @@ namespace QuantLib {
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
 
-            rebateOption.setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
+            rebateOption.setPricingEngine(std::make_shared<FdBlackScholesRebateEngine>(
                             process_, dividendSchedule, tGrid_, std::max(min_grid_size, xGrid_/5), 
                             rebateDampingSteps, schemeDesc_, localVol_, 
                             illegalLocalVolOverwrite_));

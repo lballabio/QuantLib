@@ -37,7 +37,7 @@ using std::sqrt;
 namespace QuantLib {
 
     HestonExpansionEngine::HestonExpansionEngine(
-                              const ext::shared_ptr<HestonModel>& model,
+                              const std::shared_ptr<HestonModel>& model,
                               HestonExpansionFormula formula)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
@@ -52,11 +52,11 @@ namespace QuantLib {
                    "not an European option");
 
         // plain vanilla
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
-        const ext::shared_ptr<HestonProcess>& process = model_->process();
+        const std::shared_ptr<HestonProcess>& process = model_->process();
 
         const Real riskFreeDiscount = process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());

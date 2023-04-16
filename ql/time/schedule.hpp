@@ -31,7 +31,7 @@
 #include <ql/time/period.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/errors.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -47,10 +47,10 @@ namespace QuantLib {
             const std::vector<Date>&,
             Calendar calendar = NullCalendar(),
             BusinessDayConvention convention = Unadjusted,
-            const ext::optional<BusinessDayConvention>& terminationDateConvention = ext::nullopt,
-            const ext::optional<Period>& tenor = ext::nullopt,
-            const ext::optional<DateGeneration::Rule>& rule = ext::nullopt,
-            const ext::optional<bool>& endOfMonth = ext::nullopt,
+            const std::optional<BusinessDayConvention>& terminationDateConvention = std::nullopt,
+            const std::optional<Period>& tenor = std::nullopt,
+            const std::optional<DateGeneration::Rule>& rule = std::nullopt,
+            const std::optional<bool>& endOfMonth = std::nullopt,
             std::vector<bool> isRegular = std::vector<bool>(0));
         /*! rule based constructor */
         Schedule(Date effectiveDate,
@@ -107,12 +107,12 @@ namespace QuantLib {
         Schedule until(const Date& truncationDate) const;
         //@}
       private:
-        ext::optional<Period> tenor_;
+        std::optional<Period> tenor_;
         Calendar calendar_;
         BusinessDayConvention convention_;
-        ext::optional<BusinessDayConvention> terminationDateConvention_;
-        ext::optional<DateGeneration::Rule> rule_;
-        ext::optional<bool> endOfMonth_;
+        std::optional<BusinessDayConvention> terminationDateConvention_;
+        std::optional<DateGeneration::Rule> rule_;
+        std::optional<bool> endOfMonth_;
         Date firstDate_, nextToLastDate_;
         std::vector<Date> dates_;
         std::vector<bool> isRegular_;
@@ -142,9 +142,9 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Date effectiveDate_, terminationDate_;
-        ext::optional<Period> tenor_;
-        ext::optional<BusinessDayConvention> convention_;
-        ext::optional<BusinessDayConvention> terminationDateConvention_;
+        std::optional<Period> tenor_;
+        std::optional<BusinessDayConvention> convention_;
+        std::optional<BusinessDayConvention> terminationDateConvention_;
         DateGeneration::Rule rule_ = DateGeneration::Backward;
         bool endOfMonth_ = false;
         Date firstDate_, nextToLastDate_;

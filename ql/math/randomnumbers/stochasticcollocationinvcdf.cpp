@@ -29,7 +29,7 @@ namespace QuantLib {
 
     namespace {
         Array g(Real sigma, const Array& x,
-                const ext::function<Real(Real)>& invCDF) {
+                const std::function<Real(Real)>& invCDF) {
 
             Array y(x.size());
             const CumulativeNormalDistribution normalCDF;
@@ -43,7 +43,7 @@ namespace QuantLib {
     }
 
     StochasticCollocationInvCDF::StochasticCollocationInvCDF(
-        const ext::function<Real(Real)>& invCDF,
+        const std::function<Real(Real)>& invCDF,
         Size lagrangeOrder, Real pMax, Real pMin)
     : x_(M_SQRT2*GaussHermiteIntegration(lagrangeOrder).x()),
       sigma_( (pMax != Null<Real>())

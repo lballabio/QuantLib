@@ -83,7 +83,7 @@ namespace QuantLib {
                                               Volatility volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(referenceDate, cal, Following, dc),
-      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
+      volatility_(std::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               const Calendar& cal,
@@ -99,7 +99,7 @@ namespace QuantLib {
                                               Volatility volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(settlementDays, cal, Following, dc),
-      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
+      volatility_(std::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
 
     inline BlackConstantVol::BlackConstantVol(Natural settlementDays,
                                               const Calendar& cal,

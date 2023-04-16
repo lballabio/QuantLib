@@ -57,7 +57,7 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::result_type
             result_type;
         // constructor
-        MCVanillaEngine(ext::shared_ptr<StochasticProcess>,
+        MCVanillaEngine(std::shared_ptr<StochasticProcess>,
                         Size timeSteps,
                         Size timeStepsPerYear,
                         bool brownianBridge,
@@ -69,19 +69,19 @@ namespace QuantLib {
                         BigNatural seed);
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type generator =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                    new path_generator_type(process_, grid,
                                            generator, brownianBridge_));
         }
         result_type controlVariateValue() const override;
         // data members
-        ext::shared_ptr<StochasticProcess> process_;
+        std::shared_ptr<StochasticProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -94,7 +94,7 @@ namespace QuantLib {
 
     template <template <class> class MC, class RNG, class S, class Inst>
     inline MCVanillaEngine<MC, RNG, S, Inst>::MCVanillaEngine(
-        ext::shared_ptr<StochasticProcess> process,
+        std::shared_ptr<StochasticProcess> process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool brownianBridge,
@@ -127,7 +127,7 @@ namespace QuantLib {
     inline typename MCVanillaEngine<MC,RNG,S,Inst>::result_type
     MCVanillaEngine<MC,RNG,S,Inst>::controlVariateValue() const {
 
-        ext::shared_ptr<PricingEngine> controlPE =
+        std::shared_ptr<PricingEngine> controlPE =
             this->controlPricingEngine();
         QL_REQUIRE(controlPE,
                    "engine does not provide "

@@ -18,12 +18,12 @@
 */
 
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
 
-    AnalyticCapFloorEngine::AnalyticCapFloorEngine(const ext::shared_ptr<AffineModel>& model,
+    AnalyticCapFloorEngine::AnalyticCapFloorEngine(const std::shared_ptr<AffineModel>& model,
                                                    Handle<YieldTermStructure> termStructure)
     : GenericModelEngine<AffineModel, CapFloor::arguments, CapFloor::results>(model),
       termStructure_(std::move(termStructure)) {
@@ -37,8 +37,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
-            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        std::shared_ptr<TermStructureConsistentModel> tsmodel =
+            std::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -54,7 +54,7 @@ namespace QuantLib {
         bool includeRefDatePayments =
             Settings::instance().includeReferenceDateEvents();
         if (referenceDate == Settings::instance().evaluationDate()) {
-            ext::optional<bool> includeTodaysPayments =
+            std::optional<bool> includeTodaysPayments =
                 Settings::instance().includeTodaysCashFlows();
             if (includeTodaysPayments) // NOLINT(readability-implicit-bool-conversion)
                 includeRefDatePayments = *includeTodaysPayments;

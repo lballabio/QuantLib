@@ -63,7 +63,7 @@ namespace QuantLib {
         };
 
         Gaussian1dNonstandardSwaptionEngine(
-            const ext::shared_ptr<Gaussian1dModel> &model,
+            const std::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,

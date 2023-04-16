@@ -66,7 +66,7 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<Rate>& hazardRates,
             const DayCounter& dayCounter,
-            const ext::shared_ptr<OneFactorAffineModel>& model,
+            const std::shared_ptr<OneFactorAffineModel>& model,
             const Calendar& cal = Calendar(),
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -74,13 +74,13 @@ namespace QuantLib {
         InterpolatedAffineHazardRateCurve(const std::vector<Date>& dates,
                                           const std::vector<Rate>& hazardRates,
                                           const DayCounter& dayCounter,
-                                          const ext::shared_ptr<OneFactorAffineModel>& model,
+                                          const std::shared_ptr<OneFactorAffineModel>& model,
                                           const Calendar& calendar,
                                           const Interpolator& interpolator);
         InterpolatedAffineHazardRateCurve(const std::vector<Date>& dates,
                                           const std::vector<Rate>& hazardRates,
                                           const DayCounter& dayCounter,
-                                          const ext::shared_ptr<OneFactorAffineModel>& model,
+                                          const std::shared_ptr<OneFactorAffineModel>& model,
                                           const Interpolator& interpolator);
         //! \name TermStructure interface
         //@{
@@ -97,14 +97,14 @@ namespace QuantLib {
       protected:
         InterpolatedAffineHazardRateCurve(
             const DayCounter&,
-            const ext::shared_ptr<OneFactorAffineModel>& model,
+            const std::shared_ptr<OneFactorAffineModel>& model,
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
         InterpolatedAffineHazardRateCurve(
             const Date& referenceDate,
             const DayCounter&,
-            const ext::shared_ptr<OneFactorAffineModel>& model,
+            const std::shared_ptr<OneFactorAffineModel>& model,
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
@@ -112,7 +112,7 @@ namespace QuantLib {
             Natural settlementDays,
             const Calendar&,
             const DayCounter&,
-            const ext::shared_ptr<OneFactorAffineModel>& model,
+            const std::shared_ptr<OneFactorAffineModel>& model,
             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
@@ -354,7 +354,7 @@ namespace QuantLib {
     template <class T>
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
         const DayCounter& dayCounter,
-        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::shared_ptr<OneFactorAffineModel>& model,
         const std::vector<Handle<Quote> >& jumps,
         const std::vector<Date>& jumpDates,
         const T& interpolator)
@@ -365,7 +365,7 @@ namespace QuantLib {
     InterpolatedAffineHazardRateCurve<T>::InterpolatedAffineHazardRateCurve(
         const Date& referenceDate,
         const DayCounter& dayCounter,
-        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::shared_ptr<OneFactorAffineModel>& model,
         const std::vector<Handle<Quote> >& jumps,
         const std::vector<Date>& jumpDates,
         const T& interpolator)
@@ -378,7 +378,7 @@ namespace QuantLib {
         Natural settlementDays,
         const Calendar& calendar,
         const DayCounter& dayCounter,
-        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::shared_ptr<OneFactorAffineModel>& model,
         const std::vector<Handle<Quote> >& jumps,
         const std::vector<Date>& jumpDates,
         const T& interpolator)
@@ -391,7 +391,7 @@ namespace QuantLib {
         const std::vector<Date>& dates,
         const std::vector<Rate>& hazardRates,
         const DayCounter& dayCounter,
-        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::shared_ptr<OneFactorAffineModel>& model,
         const Calendar& calendar,
         const std::vector<Handle<Quote> >& jumps,
         const std::vector<Date>& jumpDates,
@@ -406,7 +406,7 @@ namespace QuantLib {
         const std::vector<Date>& dates,
         const std::vector<Rate>& hazardRates,
         const DayCounter& dayCounter,
-        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::shared_ptr<OneFactorAffineModel>& model,
         const Calendar& calendar,
         const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), calendar, dayCounter),
@@ -419,7 +419,7 @@ namespace QuantLib {
         const std::vector<Date>& dates,
         const std::vector<Rate>& hazardRates,
         const DayCounter& dayCounter,
-        const ext::shared_ptr<OneFactorAffineModel>& model,
+        const std::shared_ptr<OneFactorAffineModel>& model,
         const T& interpolator)
     : OneFactorAffineSurvivalStructure(model, dates.at(0), Calendar(), dayCounter),
       InterpolatedCurve<T>(std::vector<Time>(), hazardRates, interpolator), dates_(dates) {

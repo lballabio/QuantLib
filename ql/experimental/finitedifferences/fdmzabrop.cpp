@@ -24,7 +24,7 @@
 namespace QuantLib {
 
 FdmZabrUnderlyingPart::FdmZabrUnderlyingPart(
-    const ext::shared_ptr<FdmMesher> &mesher, const Real beta, const Real nu,
+    const std::shared_ptr<FdmMesher> &mesher, const Real beta, const Real nu,
     const Real rho, const Real gamma)
     : volatilityValues_(mesher->locations(1)),
       forwardValues_(mesher->locations(0)),
@@ -40,7 +40,7 @@ const TripleBandLinearOp &FdmZabrUnderlyingPart::getMap() const {
 }
 
 FdmZabrVolatilityPart::FdmZabrVolatilityPart(
-    const ext::shared_ptr<FdmMesher> &mesher, const Real beta, const Real nu,
+    const std::shared_ptr<FdmMesher> &mesher, const Real beta, const Real nu,
     const Real rho, const Real gamma)
     : volatilityValues_(mesher->locations(1)),
       forwardValues_(mesher->locations(0)),
@@ -54,7 +54,7 @@ const TripleBandLinearOp &FdmZabrVolatilityPart::getMap() const {
     return mapT_;
 }
 
-FdmZabrOp::FdmZabrOp(const ext::shared_ptr<FdmMesher> &mesher,
+FdmZabrOp::FdmZabrOp(const std::shared_ptr<FdmMesher> &mesher,
                      const Real beta, const Real nu, const Real rho,
                      const Real gamma)
     : volatilityValues_(mesher->locations(1)),

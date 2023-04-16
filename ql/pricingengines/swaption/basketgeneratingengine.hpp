@@ -65,14 +65,14 @@ namespace QuantLib {
 
         virtual ~BasketGeneratingEngine() = default;
 
-        std::vector<ext::shared_ptr<BlackCalibrationHelper>>
-        calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
-                          const ext::shared_ptr<SwapIndex>& standardSwapBase,
-                          const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+        std::vector<std::shared_ptr<BlackCalibrationHelper>>
+        calibrationBasket(const std::shared_ptr<Exercise>& exercise,
+                          const std::shared_ptr<SwapIndex>& standardSwapBase,
+                          const std::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
                           CalibrationBasketType basketType = MaturityStrikeByDeltaGamma) const;
 
       protected:
-        BasketGeneratingEngine(const ext::shared_ptr<Gaussian1dModel>& model,
+        BasketGeneratingEngine(const std::shared_ptr<Gaussian1dModel>& model,
                                Handle<Quote> oas,
                                Handle<YieldTermStructure> discountCurve)
         : onefactormodel_(model), oas_(std::move(oas)), discountCurve_(std::move(discountCurve)) {}
@@ -104,8 +104,8 @@ namespace QuantLib {
                         const Real npv,
                         const Real delta,
                         const Real gamma,
-                        ext::shared_ptr<Gaussian1dModel> model,
-                        ext::shared_ptr<SwapIndex> indexBase,
+                        std::shared_ptr<Gaussian1dModel> model,
+                        std::shared_ptr<SwapIndex> indexBase,
                         const Date& expiry,
                         const Real maxMaturity,
                         const Real h)
@@ -113,22 +113,22 @@ namespace QuantLib {
               expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv), delta_(delta), gamma_(gamma),
               h_(h) {}
 
-            Real NPV(const ext::shared_ptr<VanillaSwap>& swap,
+            Real NPV(const std::shared_ptr<VanillaSwap>& swap,
                      Real fixedRate,
                      Real nominal,
                      Real y,
                      int type) const {
                 Real npv = 0.0;
                 for (const auto& i : swap->fixedLeg()) {
-                    ext::shared_ptr<FixedRateCoupon> c =
-                        ext::dynamic_pointer_cast<FixedRateCoupon>(i);
+                    std::shared_ptr<FixedRateCoupon> c =
+                        std::dynamic_pointer_cast<FixedRateCoupon>(i);
                     npv -=
                         fixedRate * c->accrualPeriod() * nominal *
                         mdl_->zerobond(c->date(), expiry_, y,
                                        indexBase_->discountingTermStructure());
                 }
                 for (const auto& i : swap->floatingLeg()) {
-                    ext::shared_ptr<IborCoupon> c = ext::dynamic_pointer_cast<IborCoupon>(i);
+                    std::shared_ptr<IborCoupon> c = std::dynamic_pointer_cast<IborCoupon>(i);
                     npv +=
                         mdl_->forwardRate(c->fixingDate(), expiry_, y,
                                           c->iborIndex()) *
@@ -177,12 +177,12 @@ namespace QuantLib {
                 Period lowerPeriod =
                     years * Years + months * Months;           //+days*Days;
                 Period upperPeriod = lowerPeriod + 1 * Months; // 1*Days;
-                ext::shared_ptr<SwapIndex> tmpIndexLower, tmpIndexUpper;
+                std::shared_ptr<SwapIndex> tmpIndexLower, tmpIndexUpper;
                 tmpIndexLower = indexBase_->clone(lowerPeriod);
                 tmpIndexUpper = indexBase_->clone(upperPeriod);
-                ext::shared_ptr<VanillaSwap> swapLower =
+                std::shared_ptr<VanillaSwap> swapLower =
                     tmpIndexLower->underlyingSwap(expiry_);
-                ext::shared_ptr<VanillaSwap> swapUpper =
+                std::shared_ptr<VanillaSwap> swapUpper =
                     tmpIndexUpper->underlyingSwap(expiry_);
                 // compute npv, delta, gamma
                 Real npvm =
@@ -223,8 +223,8 @@ namespace QuantLib {
             }
 
             const Swap::Type type_;
-            const ext::shared_ptr<Gaussian1dModel> mdl_;
-            const ext::shared_ptr<SwapIndex> indexBase_;
+            const std::shared_ptr<Gaussian1dModel> mdl_;
+            const std::shared_ptr<SwapIndex> indexBase_;
             const Date expiry_;
             const Real maxMaturity_;
             const Real npv_, delta_, gamma_, h_;

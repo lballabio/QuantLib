@@ -18,7 +18,7 @@
 */
 
 #include <ql/experimental/credit/pool.hpp>
-#include <ql/functional.hpp>
+
 #include <iterator>
 
 namespace QuantLib {

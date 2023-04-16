@@ -27,7 +27,7 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -37,7 +37,7 @@ namespace QuantLib {
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,
-                           const ext::shared_ptr<IborIndex>& iborIndex,
+                           const std::shared_ptr<IborIndex>& iborIndex,
                            Real gearing,
                            Spread spread,
                            const Date& refPeriodStart,
@@ -54,7 +54,7 @@ namespace QuantLib {
     }
 
     void IborCoupon::initializeCachedData() const {
-        auto p = ext::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+        auto p = std::dynamic_pointer_cast<IborCouponPricer>(pricer_);
         QL_REQUIRE(p, "IborCoupon: pricer not set or not derived from IborCouponPricer");
         p->initializeCachedData(*this);
     }
@@ -124,7 +124,7 @@ namespace QuantLib {
                                           spanningTime_);
     }
 
-    void IborCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+    void IborCoupon::setPricer(const std::shared_ptr<FloatingRateCouponPricer>& pricer) {
         cachedDataIsInitialized_ = false;
         FloatingRateCoupon::setPricer(pricer);
     }
@@ -150,7 +150,7 @@ namespace QuantLib {
         return usingAtParCoupons_;
     }
 
-    IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
+    IborLeg::IborLeg(Schedule schedule, std::shared_ptr<IborIndex> index)
     : schedule_(std::move(schedule)), index_(std::move(index)) {
         QL_REQUIRE(index_, "no index provided");
     }
@@ -256,7 +256,7 @@ namespace QuantLib {
         return *this;
 	}
 
-    IborLeg& IborLeg::withIndexedCoupons(ext::optional<bool> b) {
+    IborLeg& IborLeg::withIndexedCoupons(std::optional<bool> b) {
         useIndexedCoupons_ = b;
         return *this;
     }
@@ -275,10 +275,10 @@ namespace QuantLib {
 			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_) {
-            ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(
+            std::shared_ptr<IborCouponPricer> pricer = std::make_shared<BlackIborCouponPricer>(
                 Handle<OptionletVolatilityStructure>(),
                 BlackIborCouponPricer::TimingAdjustment::Black76,
-                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_);
+                Handle<Quote>(std::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_);
             setCouponPricer(leg, pricer);
         }
 

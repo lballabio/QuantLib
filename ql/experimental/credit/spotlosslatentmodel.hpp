@@ -53,11 +53,11 @@ namespace QuantLib {
         // products of default and recoveries factors, see refs ('covariances')
         std::vector<Real> crossIdiosyncFctrs_;
         mutable Size numNames_;
-        mutable ext::shared_ptr<Basket> basket_;
-        ext::shared_ptr<LMIntegration> integration_;
+        mutable std::shared_ptr<Basket> basket_;
+        std::shared_ptr<LMIntegration> integration_;
     protected:
         //! access to integration:
-      const ext::shared_ptr<LMIntegration>& integration() const override { return integration_; }
+      const std::shared_ptr<LMIntegration>& integration() const override { return integration_; }
 
     private:
         typedef typename copulaPolicy::initTraits initTraits;
@@ -70,7 +70,7 @@ namespace QuantLib {
             const initTraits& ini = initTraits()
             );
 
-        void resetBasket(const ext::shared_ptr<Basket>& basket) const;
+        void resetBasket(const std::shared_ptr<Basket>& basket) const;
         Probability conditionalDefaultProbability(const Date& date, Size iName,
             const std::vector<Real>& mktFactors) const;
         Probability conditionalDefaultProbability(Probability prob, Size iName,
@@ -135,7 +135,7 @@ namespace QuantLib {
 
     template <class CP>
     inline void
-    SpotRecoveryLatentModel<CP>::resetBasket(const ext::shared_ptr<Basket>& basket) const {
+    SpotRecoveryLatentModel<CP>::resetBasket(const std::shared_ptr<Basket>& basket) const {
         basket_ = basket;
         // in the future change 'size' to 'liveSize'
         QL_REQUIRE(basket_->size() == numNames_, 
@@ -148,7 +148,7 @@ namespace QuantLib {
         const Date& date, 
         Size iName, const std::vector<Real>& mktFactors) const 
     {
-        const ext::shared_ptr<Pool>& pool = basket_->pool();
+        const std::shared_ptr<Pool>& pool = basket_->pool();
         Probability pDefUncond =
             pool->get(pool->names()[iName]).
             defaultProbability(basket_->defaultKeys()[iName])
@@ -206,7 +206,7 @@ namespace QuantLib {
         QL_REQUIRE(mktFactors.size() == this->numFactors(), 
         "Realization of market factors and latent model size do not match");
     #endif
-        const ext::shared_ptr<Pool>& pool = basket_->pool();
+        const std::shared_ptr<Pool>& pool = basket_->pool();
         Probability pDefUncond =
             pool->get(pool->names()[iName]).
             defaultProbability(basket_->defaultKeys()[iName])
@@ -256,7 +256,7 @@ namespace QuantLib {
     Real SpotRecoveryLatentModel<CP>::conditionalRecovery(Real latentVarSample,
         Size iName, const Date& d) const 
     {
-        const ext::shared_ptr<Pool>& pool = basket_->pool();
+        const std::shared_ptr<Pool>& pool = basket_->pool();
 
         // retrieve the default probability for this name
         const Handle<DefaultProbabilityTermStructure>& dfts = 
@@ -292,7 +292,7 @@ namespace QuantLib {
         Size iName, 
         const std::vector<Real>& mktFactors) const 
     {
-        const ext::shared_ptr<Pool>& pool = basket_->pool();
+        const std::shared_ptr<Pool>& pool = basket_->pool();
         Probability pDefUncond =
             pool->get(pool->names()[iName]).
             defaultProbability(basket_->defaultKeys()[iName])
@@ -319,7 +319,7 @@ namespace QuantLib {
     inline Real SpotRecoveryLatentModel<CP>::expectedLoss(const Date& d, 
         Size iName) const 
     {
-        const ext::shared_ptr<Pool>& pool = basket_->pool();
+        const std::shared_ptr<Pool>& pool = basket_->pool();
         Probability pDefUncond =
             pool->get(pool->names()[iName]).
             defaultProbability(basket_->defaultKeys()[iName])

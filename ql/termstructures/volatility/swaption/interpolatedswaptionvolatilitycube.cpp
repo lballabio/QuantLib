@@ -34,8 +34,8 @@ namespace QuantLib {
         const std::vector<Period>& swapTenors,
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-        const ext::shared_ptr<SwapIndex>& swapIndexBase,
-        const ext::shared_ptr<SwapIndex>& shortSwapIndexBase,
+        const std::shared_ptr<SwapIndex>& swapIndexBase,
+        const std::shared_ptr<SwapIndex>& shortSwapIndexBase,
         bool vegaWeightedSmileFit)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
@@ -65,7 +65,7 @@ namespace QuantLib {
         }
     }
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     InterpolatedSwaptionVolatilityCube::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
 
@@ -82,7 +82,7 @@ namespace QuantLib {
         return smileSectionImpl(optionDate, swapTenor);
     }
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     InterpolatedSwaptionVolatilityCube::smileSectionImpl(const Date& optionDate,
                                        const Period& swapTenor) const {
         calculate();
@@ -102,7 +102,7 @@ namespace QuantLib {
                 atmVol + volSpreadsInterpolator_[i](length, optionTime)));
         }
         Real shift = atmVol_->shift(optionTime,length);
-        return ext::shared_ptr<SmileSection>(new
+        return std::shared_ptr<SmileSection>(new
             InterpolatedSmileSection<Linear>(optionTime,
                                              strikes,
                                              stdDevs,

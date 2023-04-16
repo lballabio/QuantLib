@@ -35,8 +35,8 @@
 namespace QuantLib {
 
     OptionletStripper1::OptionletStripper1(
-        const ext::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
-        const ext::shared_ptr<IborIndex>& index,
+        const std::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+        const std::shared_ptr<IborIndex>& index,
         Rate switchStrike,
         Real accuracy,
         Natural maxIter,
@@ -62,7 +62,7 @@ namespace QuantLib {
         // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
-        ext::shared_ptr<BlackCapFloorEngine> dummy(new
+        std::shared_ptr<BlackCapFloorEngine> dummy(new
                     BlackCapFloorEngine(// discounting does not matter here
                                         iborIndex_->forwardingTermStructure(),
                                         0.20, dc));
@@ -73,7 +73,7 @@ namespace QuantLib {
                                          0.04, // dummy strike
                                          0*Days)
                 .withPricingEngine(dummy);
-            ext::shared_ptr<FloatingRateCoupon> lFRC =
+            std::shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
             optionletDates_[i] = lFRC->fixingDate();
             optionletPaymentDates_[i] = lFRC->date();
@@ -98,16 +98,16 @@ namespace QuantLib {
 
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
 
-        ext::shared_ptr<PricingEngine> capFloorEngine;
-        ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+        std::shared_ptr<PricingEngine> capFloorEngine;
+        std::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
         if (volatilityType_ == ShiftedLognormal) {
-            capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
+            capFloorEngine = std::make_shared<BlackCapFloorEngine>(
                         
                             discountCurve, Handle<Quote>(volQuote),
                             dc, displacement_);
         } else if (volatilityType_ == Normal) {
-            capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
+            capFloorEngine = std::make_shared<BachelierCapFloorEngine>(
                         
                             discountCurve, Handle<Quote>(volQuote),
                             dc);
@@ -128,7 +128,7 @@ namespace QuantLib {
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
                 volQuote->setValue(capFloorVols_[i][j]);
-                ext::shared_ptr<CapFloor> capFloor =
+                std::shared_ptr<CapFloor> capFloor =
                     MakeCapFloor(capFloorType, capFloorLengths_[i],
                                  iborIndex_, strikes[j], -0 * Days)
                         .withPricingEngine(capFloorEngine);

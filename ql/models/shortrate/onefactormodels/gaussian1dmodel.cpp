@@ -28,7 +28,7 @@ namespace QuantLib {
     Real Gaussian1dModel::forwardRate(const Date& fixing,
                                       const Date& referenceDate,
                                       const Real y,
-                                      const ext::shared_ptr<IborIndex>& iborIdx) const {
+                                      const std::shared_ptr<IborIndex>& iborIdx) const {
 
         QL_REQUIRE(iborIdx != nullptr, "no ibor index given");
 
@@ -55,7 +55,7 @@ Real Gaussian1dModel::swapRate(const Date& fixing,
                                const Period& tenor,
                                const Date& referenceDate,
                                const Real y,
-                               const ext::shared_ptr<SwapIndex>& swapIdx) const {
+                               const std::shared_ptr<SwapIndex>& swapIdx) const {
 
     QL_REQUIRE(swapIdx != nullptr, "no swap index given");
 
@@ -72,13 +72,13 @@ Real Gaussian1dModel::swapRate(const Date& fixing,
 
     Schedule sched, floatSched;
 
-    ext::shared_ptr<VanillaSwap> underlying =
+    std::shared_ptr<VanillaSwap> underlying =
         underlyingSwap(swapIdx, fixing, tenor);
 
     sched = underlying->fixedSchedule();
 
-    ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
-        ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
+    std::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
+        std::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
     if (oisIdx != nullptr) {
         floatSched = sched;
     } else {
@@ -115,7 +115,7 @@ Real Gaussian1dModel::swapAnnuity(const Date& fixing,
                                   const Period& tenor,
                                   const Date& referenceDate,
                                   const Real y,
-                                  const ext::shared_ptr<SwapIndex>& swapIdx) const {
+                                  const std::shared_ptr<SwapIndex>& swapIdx) const {
 
     QL_REQUIRE(swapIdx != nullptr, "no swap index given");
 
@@ -125,7 +125,7 @@ Real Gaussian1dModel::swapAnnuity(const Date& fixing,
         swapIdx->discountingTermStructure(); // might be empty, then use
                                              // model curve
 
-    ext::shared_ptr<VanillaSwap> underlying =
+    std::shared_ptr<VanillaSwap> underlying =
         underlyingSwap(swapIdx, fixing, tenor);
 
     Schedule sched = underlying->fixedSchedule();

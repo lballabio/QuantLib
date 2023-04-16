@@ -83,7 +83,7 @@ namespace QuantLib {
         bool finalized_;
     };
 
-    typedef std::map<Date, ext::shared_ptr<CommodityCashFlow> >
+    typedef std::map<Date, std::shared_ptr<CommodityCashFlow> >
                                                            CommodityCashFlows;
 
     #ifndef __DOXYGEN__

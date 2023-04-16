@@ -45,7 +45,7 @@ namespace QuantLib {
     template <class T>
     class BinomialConvertibleEngine : public ConvertibleBond::engine {
       public:
-        BinomialConvertibleEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        BinomialConvertibleEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process,
                                   Size timeSteps,
                                   const Handle<Quote>& creditSpread,
                                   DividendSchedule dividends = DividendSchedule())
@@ -64,7 +64,7 @@ namespace QuantLib {
         const DividendSchedule& dividends() const { return dividends_; }
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
         DividendSchedule dividends_;
         Handle<Quote> creditSpread_;
@@ -101,24 +101,24 @@ namespace QuantLib {
             "negative value after subtracting dividends");
 
         // binomial trees with constant coefficient
-        Handle<Quote> underlying(ext::shared_ptr<Quote>(new SimpleQuote(s0)));
-        Handle<YieldTermStructure> flatRiskFree(ext::shared_ptr<YieldTermStructure>(
+        Handle<Quote> underlying(std::shared_ptr<Quote>(new SimpleQuote(s0)));
+        Handle<YieldTermStructure> flatRiskFree(std::shared_ptr<YieldTermStructure>(
             new FlatForward(referenceDate, riskFreeRate, rfdc)));
         Handle<YieldTermStructure> flatDividends(
-            ext::shared_ptr<YieldTermStructure>(new FlatForward(referenceDate, q, divdc)));
-        Handle<BlackVolTermStructure> flatVol(ext::shared_ptr<BlackVolTermStructure>(
+            std::shared_ptr<YieldTermStructure>(new FlatForward(referenceDate, q, divdc)));
+        Handle<BlackVolTermStructure> flatVol(std::shared_ptr<BlackVolTermStructure>(
             new BlackConstantVol(referenceDate, volcal, v, voldc)));
 
         Time maturity = rfdc.yearFraction(arguments_.settlementDate, maturityDate);
         Real strike = arguments_.redemption / arguments_.conversionRatio ;
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bs(
+        std::shared_ptr<GeneralizedBlackScholesProcess> bs(
             new GeneralizedBlackScholesProcess(underlying, flatDividends, flatRiskFree, flatVol));
-        ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_, strike));
+        std::shared_ptr<T> tree(new T(bs, maturity, timeSteps_, strike));
 
         Real creditSpread = creditSpread_->value();
 
-        ext::shared_ptr<Lattice> lattice(new TsiveriotisFernandesLattice<T>(
+        std::shared_ptr<Lattice> lattice(new TsiveriotisFernandesLattice<T>(
             tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q));
 
         DiscretizedConvertible convertible(arguments_, bs, dividends_, creditSpread_, TimeGrid(maturity, timeSteps_));

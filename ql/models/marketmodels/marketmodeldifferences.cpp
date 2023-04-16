@@ -87,7 +87,7 @@ namespace QuantLib {
 
     std::vector<Matrix> coterminalSwapPseudoRoots(
         const PiecewiseConstantCorrelation& piecewiseConstantCorrelation,
-        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&
+        const std::vector<std::shared_ptr<PiecewiseConstantVariance> >&
                                                  piecewiseConstantVariances) {
             QL_ENSURE(piecewiseConstantCorrelation.times()
                 == piecewiseConstantVariances.front()->rateTimes(),

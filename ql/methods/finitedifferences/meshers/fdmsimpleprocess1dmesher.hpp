@@ -26,7 +26,7 @@
 
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
           FdmSimpleProcess1dMesher(
             Size size,
-            const ext::shared_ptr<StochasticProcess1D>& process,
+            const std::shared_ptr<StochasticProcess1D>& process,
             Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
             Real mandatoryPoint = Null<Real>());
     };

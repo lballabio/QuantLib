@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Chile::Chile(Market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(new Chile::SseImpl);
+        static std::shared_ptr<Calendar::Impl> impl(new Chile::SseImpl);
         impl_ = impl;
     }
 

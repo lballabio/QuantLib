@@ -27,7 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -38,11 +38,11 @@ namespace QuantLib {
                              Rate fixedRate,
                              DayCounter fixedDayCount,
                              Schedule floatSchedule,
-                             ext::shared_ptr<IborIndex> iborIndex,
+                             std::shared_ptr<IborIndex> iborIndex,
                              Spread spread,
                              DayCounter floatingDayCount,
-                             ext::optional<BusinessDayConvention> paymentConvention,
-                             ext::optional<bool> useIndexedCoupons)
+                             std::optional<BusinessDayConvention> paymentConvention,
+                             std::optional<bool> useIndexedCoupons)
     : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),
@@ -100,8 +100,8 @@ namespace QuantLib {
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
-            ext::shared_ptr<FixedRateCoupon> coupon =
-                ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+            std::shared_ptr<FixedRateCoupon> coupon =
+                std::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
@@ -119,8 +119,8 @@ namespace QuantLib {
             std::vector<Spread>(floatingCoupons.size());
         arguments->floatingCoupons = std::vector<Real>(floatingCoupons.size());
         for (Size i=0; i<floatingCoupons.size(); ++i) {
-            ext::shared_ptr<IborCoupon> coupon =
-                ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
+            std::shared_ptr<IborCoupon> coupon =
+                std::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
 
             arguments->floatingResetDates[i] = coupon->accrualStartDate();
             arguments->floatingPayDates[i] = coupon->date();

@@ -127,18 +127,18 @@ void CdoTest::testHW(unsigned dataSet) {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    ext::shared_ptr<YieldTermStructure> yieldPtr(
+    std::shared_ptr<YieldTermStructure> yieldPtr(
                                               new FlatForward (asofDate, rate,
                                                                daycount, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
-    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(lambda)));
+    Handle<Quote> hazardRate(std::shared_ptr<Quote>(new SimpleQuote(lambda)));
     std::vector<Handle<DefaultProbabilityTermStructure> > basket;
-    ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
+    std::shared_ptr<DefaultProbabilityTermStructure> ptr (
                new FlatHazardRate (asofDate,
                                    hazardRate,
                                    ActualActual(ActualActual::ISDA)));
-    ext::shared_ptr<Pool> pool (new Pool());
+    std::shared_ptr<Pool> pool (new Pool());
     std::vector<std::string> names;
     // probability key items
     std::vector<Issuer> issuers;
@@ -158,27 +158,27 @@ void CdoTest::testHW(unsigned dataSet) {
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
     }
 
-    ext::shared_ptr<SimpleQuote> correlation (new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> correlation (new SimpleQuote(0.0));
     Handle<Quote> hCorrelation (correlation);
     QL_REQUIRE (LENGTH(hwAttachment) == LENGTH(hwDetachment),
                 "data length does not match");
 
-    ext::shared_ptr<PricingEngine> midPCDOEngine( new MidPointCDOEngine(
+    std::shared_ptr<PricingEngine> midPCDOEngine( new MidPointCDOEngine(
         yieldHandle));
-    ext::shared_ptr<PricingEngine> integralCDOEngine( new IntegralCDOEngine(
+    std::shared_ptr<PricingEngine> integralCDOEngine( new IntegralCDOEngine(
         yieldHandle));
 
     const Size i = dataSet;
     correlation->setValue (hwData7[i].correlation);
     QL_REQUIRE (LENGTH(hwAttachment) == LENGTH(hwData7[i].trancheSpread),
                 "data length does not match");
-    std::vector<ext::shared_ptr<DefaultLossModel> > basketModels;
+    std::vector<std::shared_ptr<DefaultLossModel> > basketModels;
     std::vector<std::string> modelNames;
     std::vector<Real> relativeToleranceMidp, relativeTolerancePeriod,
         absoluteTolerance;
 
     if (hwData7[i].nm == -1 && hwData7[i].nz == -1){
-        ext::shared_ptr<GaussianConstantLossLM> gaussKtLossLM(new
+        std::shared_ptr<GaussianConstantLossLM> gaussKtLossLM(new
             GaussianConstantLossLM(hCorrelation,
             std::vector<Real>(poolSize, recovery),
             LatentModelIntegrationType::GaussianQuadrature, poolSize,
@@ -186,21 +186,21 @@ void CdoTest::testHW(unsigned dataSet) {
 
         // 1.-Inhomogeneous gaussian
         modelNames.emplace_back("Inhomogeneous gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             IHGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous gaussian
         modelNames.emplace_back("Homogeneous gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             HomogGaussPoolLossModel(gaussKtLossLM, nBuckets, 5., -5, 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default gaussian
         modelNames.emplace_back("Random default gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>(new
             RandomDefaultLM<GaussianCopulaPolicy>(gaussKtLossLM, numSims)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
@@ -208,7 +208,7 @@ void CdoTest::testHW(unsigned dataSet) {
         // SECOND MC
         // gaussian LHP
         modelNames.emplace_back("Gaussian LHP");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>(new
             GaussianLHPLossModel(hCorrelation,
                 std::vector<Real>(poolSize, recovery))));
         absoluteTolerance.push_back(10.);
@@ -222,28 +222,28 @@ void CdoTest::testHW(unsigned dataSet) {
         TCopulaPolicy::initTraits initTG;
         initTG.tOrders.push_back(hwData7[i].nm);
         initTG.tOrders.push_back(hwData7[i].nz);
-        ext::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
+        std::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
             hCorrelation, std::vector<Real>(poolSize, recovery),
             LatentModelIntegrationType::GaussianQuadrature,
             poolSize,
             initTG));
         // 1.-inhomogeneous studentT
         modelNames.emplace_back("Inhomogeneous student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous student T
         modelNames.emplace_back("Homogeneous student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default student T
         modelNames.emplace_back("Random default studentT");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>(new
             RandomDefaultLM<TCopulaPolicy>(TKtLossLM, numSims)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
@@ -261,7 +261,7 @@ void CdoTest::testHW(unsigned dataSet) {
         be this conservative as the polynomial convolution gets shorter and
         faster as the order decreases.
         */
-        ext::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
+        std::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
             hCorrelation,
             std::vector<Real>(poolSize, recovery),
             LatentModelIntegrationType::GaussianQuadrature,
@@ -269,21 +269,21 @@ void CdoTest::testHW(unsigned dataSet) {
             initTG));
         // 1.-inhomogeneous
         modelNames.emplace_back("Inhomogeneous student-gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous
         modelNames.emplace_back("Homogeneous student-gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default
         modelNames.emplace_back("Random default student-gaussian");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>(new
             RandomDefaultLM<TCopulaPolicy>(TKtLossLM, numSims)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
@@ -297,7 +297,7 @@ void CdoTest::testHW(unsigned dataSet) {
         TCopulaPolicy::initTraits initTG;
         initTG.tOrders.push_back(45);// pretty close to gaussian
         initTG.tOrders.push_back(hwData7[i].nz);
-        ext::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
+        std::shared_ptr<TConstantLossLM> TKtLossLM(new TConstantLossLM(
             hCorrelation,
             std::vector<Real>(poolSize, recovery),
             LatentModelIntegrationType::GaussianQuadrature,
@@ -305,21 +305,21 @@ void CdoTest::testHW(unsigned dataSet) {
             initTG));
         // 1.-inhomogeneous gaussian
         modelNames.emplace_back("Inhomogeneous gaussian-student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             IHStudentPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 2.-homogeneous gaussian
         modelNames.emplace_back("Homogeneous gaussian-student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>( new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>( new
             HomogTPoolLossModel(TKtLossLM, nBuckets, 5., -5., 15)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.04);
         relativeTolerancePeriod.push_back(0.04);
         // 3.-random default gaussian
         modelNames.emplace_back("Random default gaussian-student");
-        basketModels.push_back(ext::shared_ptr<DefaultLossModel>(new
+        basketModels.push_back(std::shared_ptr<DefaultLossModel>(new
             RandomDefaultLM<TCopulaPolicy>(TKtLossLM, numSims)));
         absoluteTolerance.push_back(1.);
         relativeToleranceMidp.push_back(0.07);
@@ -334,7 +334,7 @@ void CdoTest::testHW(unsigned dataSet) {
     }
 
     for (Size j = 0; j < LENGTH(hwAttachment); j ++) {
-        ext::shared_ptr<Basket> basketPtr (
+        std::shared_ptr<Basket> basketPtr (
             new Basket(asofDate, names, nominals, pool,
                 hwAttachment[j], hwDetachment[j]));
         std::ostringstream trancheId;

@@ -113,7 +113,7 @@ namespace QuantLib {
                 Calendar calendar,
                 BusinessDayConvention businessDayConvention,
                 Natural settlementDays,
-                ext::shared_ptr<Payoff> payoff,
+                std::shared_ptr<Payoff> payoff,
                 const Date& valueDate,
                 const Date& maturityDate,
                 Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
@@ -128,7 +128,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention businessDayConvention_;
         Natural settlementDays_;
-        ext::shared_ptr<Payoff> payoff_;
+        std::shared_ptr<Payoff> payoff_;
         /*! valueDate = settlement date (date the fwd contract starts
             accruing)
         */

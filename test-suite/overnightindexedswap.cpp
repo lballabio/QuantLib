@@ -119,20 +119,20 @@ namespace overnight_indexed_swap_test {
         Period fixedEoniaPeriod, floatingEoniaPeriod;
         DayCounter fixedEoniaDayCount;
         BusinessDayConvention fixedEoniaConvention, floatingEoniaConvention;
-        ext::shared_ptr<Eonia> eoniaIndex;
+        std::shared_ptr<Eonia> eoniaIndex;
         RelinkableHandle<YieldTermStructure> eoniaTermStructure;
 
         Frequency fixedSwapFrequency;
         DayCounter fixedSwapDayCount;
         BusinessDayConvention fixedSwapConvention;
-        ext::shared_ptr<IborIndex> swapIndex;
+        std::shared_ptr<IborIndex> swapIndex;
         RelinkableHandle<YieldTermStructure> swapTermStructure;
 
         // cleanup
         SavedSettings backup;
 
         // utilities
-        ext::shared_ptr<OvernightIndexedSwap>
+        std::shared_ptr<OvernightIndexedSwap>
         makeSwap(Period length,
                  Rate fixedRate,
                  Spread spread,
@@ -159,11 +159,11 @@ namespace overnight_indexed_swap_test {
             fixedEoniaPeriod = 1*Years;
             floatingEoniaPeriod = 1*Years;
             fixedEoniaDayCount = Actual360();
-            eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
+            eoniaIndex = std::make_shared<Eonia>(eoniaTermStructure);
             fixedSwapConvention = ModifiedFollowing;
             fixedSwapFrequency = Annual;
             fixedSwapDayCount = Thirty360(Thirty360::BondBasis);
-            swapIndex = ext::shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
+            swapIndex = std::shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
             calendar = eoniaIndex->fixingCalendar();
             today = Date(5, February, 2009);
             //today = calendar.adjust(Date::todaysDate());
@@ -191,8 +191,8 @@ void OvernightIndexedSwapTest::testFairRate() {
     for (auto& length : lengths) {
         for (Real spread : spreads) {
 
-            ext::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(length, 0.0, spread, false);
-            ext::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(length, 0.0, spread, true);
+            std::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(length, 0.0, spread, false);
+            std::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(length, 0.0, spread, true);
             if(std::fabs(swap->fairRate()-swap2->fairRate()) > 1.0e-10) {
                 BOOST_ERROR("fair rates are different:\n"
                             << std::setprecision(2) << "    length: " << length << " \n"
@@ -236,8 +236,8 @@ void OvernightIndexedSwapTest::testFairSpread() {
     for (auto& length : lengths) {
         for (Real j : rates) {
 
-            ext::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(length, j, 0.0, false);
-            ext::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(length, j, 0.0, true);
+            std::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(length, j, 0.0, false);
+            std::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(length, j, 0.0, true);
             Spread fairSpread = swap->fairSpread();
             Spread fairSpread2 = swap2->fairSpread();
             if(std::fabs(fairSpread-fairSpread2) > 1.0e-10) {
@@ -280,8 +280,8 @@ void OvernightIndexedSwapTest::testCachedValue() {
     Real flat = 0.05;
     vars.eoniaTermStructure.linkTo(flatRate(vars.settlement,flat,Actual360()));
     Real fixedRate = exp(flat) - 1;
-    ext::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(1*Years, fixedRate, 0.0,false);
-    ext::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(1*Years, fixedRate, 0.0,true);
+    std::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(1*Years, fixedRate, 0.0,false);
+    std::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(1*Years, fixedRate, 0.0,true);
     Real cachedNPV   = 0.001730450147;
     Real tolerance = 1.0e-11;
     if (std::fabs(swap->NPV()-cachedNPV) > tolerance)
@@ -307,17 +307,17 @@ namespace overnight_indexed_swap_test {
 
     Natural paymentLag = 2;
 
-    std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
+    std::vector<std::shared_ptr<RateHelper> > eoniaHelpers;
 
-    ext::shared_ptr<IborIndex> euribor3m(new Euribor3M);
-    ext::shared_ptr<Eonia> eonia(new Eonia);
+    std::shared_ptr<IborIndex> euribor3m(new Euribor3M);
+    std::shared_ptr<Eonia> eonia(new Eonia);
 
     for (auto& i : depositData) {
         Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
-        ext::shared_ptr<Quote> quote (simple);
+        std::shared_ptr<SimpleQuote> simple = std::make_shared<SimpleQuote>(rate);
+        std::shared_ptr<Quote> quote (simple);
         Period term = i.n * i.unit;
-        ext::shared_ptr<RateHelper> helper(new DepositRateHelper(
+        std::shared_ptr<RateHelper> helper(new DepositRateHelper(
             Handle<Quote>(quote), term, i.settlementDays, euribor3m->fixingCalendar(),
             euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m->dayCounter()));
 
@@ -327,10 +327,10 @@ namespace overnight_indexed_swap_test {
 
     for (auto& i : eoniaSwapData) {
         Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
-        ext::shared_ptr<Quote> quote (simple);
+        std::shared_ptr<SimpleQuote> simple = std::make_shared<SimpleQuote>(rate);
+        std::shared_ptr<Quote> quote (simple);
         Period term = i.n * i.unit;
-        ext::shared_ptr<RateHelper> helper(new
+        std::shared_ptr<RateHelper> helper(new
                      OISRateHelper(i.settlementDays,
                                    term,
                                    Handle<Quote>(quote),
@@ -349,7 +349,7 @@ namespace overnight_indexed_swap_test {
         eoniaHelpers.push_back(helper);
     }
 
-    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
+    auto eoniaTS = std::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
 
     vars.eoniaTermStructure.linkTo(eoniaTS);
 
@@ -358,7 +358,7 @@ namespace overnight_indexed_swap_test {
         Rate expected = i.rate / 100;
         Period term = i.n * i.unit;
         // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
-        ext::shared_ptr<OvernightIndexedSwap> swap =
+        std::shared_ptr<OvernightIndexedSwap> swap =
             vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
         Rate calculated = swap->fairRate();
         Rate error = std::fabs(expected-calculated);
@@ -420,9 +420,9 @@ void OvernightIndexedSwapTest::testSeasonedSwaps() {
     for (auto& length : lengths) {
         for (Real spread : spreads) {
 
-            ext::shared_ptr<OvernightIndexedSwap> swap =
+            std::shared_ptr<OvernightIndexedSwap> swap =
                 vars.makeSwap(length, 0.0, spread, false, effectiveDate);
-            ext::shared_ptr<OvernightIndexedSwap> swap2 =
+            std::shared_ptr<OvernightIndexedSwap> swap2 =
                 vars.makeSwap(length, 0.0, spread, true, effectiveDate);
             if (std::fabs(swap->NPV() - swap2->NPV()) > 1.0e-10) {
                 BOOST_ERROR("swap npv is different:\n"
@@ -471,11 +471,11 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
 
     Settings::instance().evaluationDate() = Date(21, February, 2017);
 
-    std::vector<ext::shared_ptr<RateHelper> > helpers;
-    ext::shared_ptr<FedFunds> index(new FedFunds);
+    std::vector<std::shared_ptr<RateHelper> > helpers;
+    std::shared_ptr<FedFunds> index(new FedFunds);
 
     helpers.push_back(
-        ext::make_shared<DepositRateHelper>(data[0].rate,
+        std::make_shared<DepositRateHelper>(data[0].rate,
                                             Period(data[0].n, data[0].unit),
                                             index->fixingDays(),
                                             index->fixingCalendar(),
@@ -485,10 +485,10 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
 
     for (Size i=1; i<LENGTH(data); ++i) {
         helpers.push_back(
-            ext::shared_ptr<RateHelper>(
+            std::shared_ptr<RateHelper>(
                 new OISRateHelper(data[i].settlementDays,
                                   Period(data[i].n, data[i].unit),
-                                  Handle<Quote>(ext::make_shared<SimpleQuote>(data[i].rate)),
+                                  Handle<Quote>(std::make_shared<SimpleQuote>(data[i].rate)),
                                   index,
                                   Handle<YieldTermStructure>(),
                                   false, 2,

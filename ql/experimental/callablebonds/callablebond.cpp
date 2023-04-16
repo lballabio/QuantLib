@@ -78,10 +78,10 @@ namespace QuantLib {
                          bool matchNPV);
         Real operator()(Volatility x) const;
       private:
-        ext::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<PricingEngine> engine_;
         Real targetValue_;
         bool matchNPV_;
-        ext::shared_ptr<SimpleQuote> vol_;
+        std::shared_ptr<SimpleQuote> vol_;
         const CallableBond::results* results_;
     };
 
@@ -92,8 +92,8 @@ namespace QuantLib {
                               bool matchNPV)
     : targetValue_(targetValue), matchNPV_(matchNPV) {
 
-        vol_ = ext::make_shared<SimpleQuote>(0.0);
-        engine_ = ext::make_shared<BlackCallableFixedRateBondEngine>(Handle<Quote>(vol_),
+        vol_ = std::make_shared<SimpleQuote>(0.0);
+        engine_ = std::make_shared<BlackCallableFixedRateBondEngine>(Handle<Quote>(vol_),
                                                                      discountCurve);
 
         bond.setupArguments(engine_->getArguments());
@@ -172,7 +172,7 @@ namespace QuantLib {
 
     class OASHelper {
     public:
-        OASHelper(const ext::function<Real(Real)>& npvhelper,
+        OASHelper(const std::function<Real(Real)>& npvhelper,
                   Real targetValue):
             npvhelper_(npvhelper),
             targetValue_(targetValue)
@@ -184,7 +184,7 @@ namespace QuantLib {
             return targetValue_ - npvhelper_(x);
         }
     private:
-        const ext::function<Real(Real)>& npvhelper_;
+        const std::function<Real(Real)>& npvhelper_;
         Real targetValue_;
     };
 
@@ -306,7 +306,7 @@ namespace QuantLib {
 
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
 
-        ext::function<Real(Real)> f = NPVSpreadHelper(*this);
+        std::function<Real(Real)> f = NPVSpreadHelper(*this);
         OASHelper obj(f, dirtyPrice);
 
         Brent solver;
@@ -342,7 +342,7 @@ namespace QuantLib {
                              compounding,
                              frequency);
 
-        ext::function<Real(Real)> f = NPVSpreadHelper(*this);
+        std::function<Real(Real)> f = NPVSpreadHelper(*this);
 
         Real P = f(oas) - accruedAmount(settlement);
 
@@ -481,7 +481,7 @@ namespace QuantLib {
         for (const auto& cashflow : cashflows_) {
             // the first coupon paying after d is the one we're after
             if (!cashflow->hasOccurred(settlement, IncludeToday)) {
-                ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
+                std::shared_ptr<Coupon> coupon = std::dynamic_pointer_cast<Coupon>(cashflow);
                 if (coupon != nullptr)
                     // !!!
                     return coupon->accruedAmount(settlement) /

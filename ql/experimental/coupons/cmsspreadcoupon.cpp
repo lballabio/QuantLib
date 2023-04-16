@@ -26,7 +26,7 @@ namespace QuantLib {
     CmsSpreadCoupon::CmsSpreadCoupon(
         const Date &paymentDate, Real nominal, const Date &startDate,
         const Date &endDate, Natural fixingDays,
-        const ext::shared_ptr<SwapSpreadIndex> &index, Real gearing,
+        const std::shared_ptr<SwapSpreadIndex> &index, Real gearing,
         Spread spread, const Date &refPeriodStart,
         const Date &refPeriodEnd,
         const DayCounter &dayCounter, bool isInArrears, const Date &exCouponDate)
@@ -44,7 +44,7 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
-    CmsSpreadLeg::CmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> index)
+    CmsSpreadLeg::CmsSpreadLeg(Schedule schedule, std::shared_ptr<SwapSpreadIndex> index)
     : schedule_(std::move(schedule)), swapSpreadIndex_(std::move(index)) {
         QL_REQUIRE(swapSpreadIndex_, "no index provided");
     }

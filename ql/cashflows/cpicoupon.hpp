@@ -59,7 +59,7 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const std::shared_ptr<ZeroInflationIndex>& index,
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
@@ -74,7 +74,7 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const std::shared_ptr<ZeroInflationIndex>& index,
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
@@ -90,7 +90,7 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const std::shared_ptr<ZeroInflationIndex>& index,
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
@@ -110,7 +110,7 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
-                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const std::shared_ptr<ZeroInflationIndex>& index,
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
@@ -160,7 +160,7 @@ namespace QuantLib {
         Rate adjustedFixing() const;
 
         //! index used
-        ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+        std::shared_ptr<ZeroInflationIndex> cpiIndex() const;
         //@}
 
         //! \name Visitability
@@ -174,7 +174,7 @@ namespace QuantLib {
         CPI::InterpolationType observationInterpolation_;
         Date baseDate_;
 
-        bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
+        bool checkPricerImpl(const std::shared_ptr<InflationCouponPricer>&) const override;
 
         /*! \deprecated Use CPI::laggedFixing instead.
                         Deprecated in version 1.26.
@@ -189,7 +189,7 @@ namespace QuantLib {
     class CPICashFlow : public IndexedCashFlow {
       public:
         CPICashFlow(Real notional,
-                    const ext::shared_ptr<ZeroInflationIndex>& index,
+                    const std::shared_ptr<ZeroInflationIndex>& index,
                     const Date& baseDate,
                     Real baseFixing,
                     const Date& observationDate,
@@ -203,7 +203,7 @@ namespace QuantLib {
         */
         QL_DEPRECATED
         CPICashFlow(Real notional,
-                    const ext::shared_ptr<ZeroInflationIndex>& index,
+                    const std::shared_ptr<ZeroInflationIndex>& index,
                     const Date& baseDate,
                     Real baseFixing,
                     const Date& fixingDate,
@@ -226,7 +226,7 @@ namespace QuantLib {
         }
         virtual Frequency frequency() const { return frequency_; }
 
-        ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+        std::shared_ptr<ZeroInflationIndex> cpiIndex() const;
 
         Real indexFixing() const override;
 
@@ -252,7 +252,7 @@ namespace QuantLib {
     class CPILeg {
       public:
         CPILeg(const Schedule& schedule,
-               ext::shared_ptr<ZeroInflationIndex> index,
+               std::shared_ptr<ZeroInflationIndex> index,
                Real baseCPI,
                const Period& observationLag);
         CPILeg& withNotionals(Real notional);
@@ -290,7 +290,7 @@ namespace QuantLib {
 
       private:
         Schedule schedule_;
-        ext::shared_ptr<ZeroInflationIndex> index_;
+        std::shared_ptr<ZeroInflationIndex> index_;
         Real baseCPI_;
         Period observationLag_;
         std::vector<Real> notionals_;
@@ -350,13 +350,13 @@ namespace QuantLib {
         return adjustedIndexGrowth();
     }
 
-    inline ext::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {
-        return ext::dynamic_pointer_cast<ZeroInflationIndex>(index());
+    inline std::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {
+        return std::dynamic_pointer_cast<ZeroInflationIndex>(index());
     }
 
 
-    inline ext::shared_ptr<ZeroInflationIndex> CPICashFlow::cpiIndex() const {
-        return ext::dynamic_pointer_cast<ZeroInflationIndex>(index());
+    inline std::shared_ptr<ZeroInflationIndex> CPICashFlow::cpiIndex() const {
+        return std::dynamic_pointer_cast<ZeroInflationIndex>(index());
     }
 
 }

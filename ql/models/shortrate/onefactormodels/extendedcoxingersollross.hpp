@@ -55,9 +55,9 @@ namespace QuantLib {
                               Real x0 = 0.05,
                               bool withFellerConstraint = true);
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
+        std::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
+        std::shared_ptr<ShortRateDynamics> dynamics() const override;
 
         Real discountBondOption(Option::Type type,
                                 Real strike,
@@ -138,16 +138,16 @@ namespace QuantLib {
       public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real theta, Real k, Real sigma, Real x0)
-        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
+        : TermStructureFittingParameter(std::shared_ptr<Parameter::Impl>(
                  new FittingParameter::Impl(
                                      termStructure, theta, k, sigma, x0))) {}
     };
 
     // inline definitions
 
-    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+    inline std::shared_ptr<OneFactorModel::ShortRateDynamics>
     ExtendedCoxIngersollRoss::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
+        return std::shared_ptr<ShortRateDynamics>(
                             new Dynamics(phi_, theta(), k() , sigma(), x0()));
     }
 

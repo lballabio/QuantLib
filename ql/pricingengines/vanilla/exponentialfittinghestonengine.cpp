@@ -20,7 +20,7 @@
 /*! \file exponentialfittinghestonengine.cpp
 */
 
-#include <ql/functional.hpp>
+
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
@@ -183,7 +183,7 @@ namespace QuantLib {
     std::vector<Real> ExponentialFittingHestonEngine::moneyness_;
 
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
-        const ext::shared_ptr<HestonModel>& model,
+        const std::shared_ptr<HestonModel>& model,
         ControlVariate cv,
         Real scaling)
     : GenericModelEngine<HestonModel,
@@ -191,7 +191,7 @@ namespace QuantLib {
                          VanillaOption::results>(model),
       cv_(cv),
       scaling_(scaling),
-      analyticEngine_(ext::make_shared<AnalyticHestonEngine>(model, 1)) {
+      analyticEngine_(std::make_shared<AnalyticHestonEngine>(model, 1)) {
 
         if (moneyness_.empty()) {
             const Size n = sizeof(values4)/sizeof(values4[0]);
@@ -208,13 +208,13 @@ namespace QuantLib {
 
         const Date maturityDate = arguments_.exercise->lastDate();
 
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        const std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
         const Real strike = payoff->strike();
 
-        const ext::shared_ptr<HestonProcess> process = model_->process();
+        const std::shared_ptr<HestonProcess> process = model_->process();
 
         const Time t = process->time(maturityDate);
 

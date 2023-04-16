@@ -44,7 +44,7 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCForwardVanillaEngine(ext::shared_ptr<StochasticProcess> process,
+        MCForwardVanillaEngine(std::shared_ptr<StochasticProcess> process,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool brownianBridge,
@@ -68,18 +68,18 @@ namespace QuantLib {
         // McSimulation implementation
         TimeGrid timeGrid() const override;
         Real controlVariateValue() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
         // data members
-        ext::shared_ptr<StochasticProcess> process_;
+        std::shared_ptr<StochasticProcess> process_;
         Size timeSteps_, timeStepsPerYear_, requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -88,7 +88,7 @@ namespace QuantLib {
 
     template <template <class> class MC, class RNG, class S>
     inline MCForwardVanillaEngine<MC, RNG, S>::MCForwardVanillaEngine(
-        ext::shared_ptr<StochasticProcess> process,
+        std::shared_ptr<StochasticProcess> process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool brownianBridge,
@@ -143,15 +143,15 @@ namespace QuantLib {
     template <template <class> class MC, class RNG, class S>
     inline Real MCForwardVanillaEngine<MC,RNG,S>::controlVariateValue() const {
 
-        ext::shared_ptr<PricingEngine> controlPE =
+        std::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();
         QL_REQUIRE(controlPE, "engine does not provide "
                               "control variation pricing engine");
 
         // Create vanilla option arguments with the same payoff and expiry, but with
         // strike-reset equal to initial spot*moneyness, price analytically
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
@@ -159,7 +159,7 @@ namespace QuantLib {
         Real moneyness = this->arguments_.moneyness;
         Real strike = moneyness * spot;
 
-        ext::shared_ptr<StrikedTypePayoff> newPayoff(new
+        std::shared_ptr<StrikedTypePayoff> newPayoff(new
             PlainVanillaPayoff(payoff->optionType(), strike));
 
         auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());

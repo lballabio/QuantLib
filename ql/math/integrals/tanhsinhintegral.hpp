@@ -52,7 +52,7 @@ namespace QuantLib {
         tanh_sinh_(maxRefinements, minComplement) {}
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b)
         const override {
             Real error;
             Real value = tanh_sinh_.integrate(f, a, b, relTolerance_, &error);
@@ -79,7 +79,7 @@ namespace QuantLib {
         }
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b)
         const override { return 0.0; }
     };
 

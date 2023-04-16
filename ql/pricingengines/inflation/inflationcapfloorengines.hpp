@@ -43,11 +43,11 @@ namespace QuantLib {
     */
     class YoYInflationCapFloorEngine : public YoYInflationCapFloor::engine {
       public:
-        YoYInflationCapFloorEngine(ext::shared_ptr<YoYInflationIndex>,
+        YoYInflationCapFloorEngine(std::shared_ptr<YoYInflationIndex>,
                                    Handle<YoYOptionletVolatilitySurface> vol,
                                    Handle<YieldTermStructure> nominalTermStructure);
 
-        ext::shared_ptr<YoYInflationIndex> index() const { return index_;}
+        std::shared_ptr<YoYInflationIndex> index() const { return index_;}
         Handle<YoYOptionletVolatilitySurface> volatility() const { return volatility_; }
         Handle<YieldTermStructure> nominalTermStructure() const { return nominalTermStructure_; }
 
@@ -61,7 +61,7 @@ namespace QuantLib {
                                    Rate forward, Real stdDev,
                                    Real d) const = 0;
 
-        ext::shared_ptr<YoYInflationIndex> index_;
+        std::shared_ptr<YoYInflationIndex> index_;
         Handle<YoYOptionletVolatilitySurface> volatility_;
         Handle<YieldTermStructure> nominalTermStructure_;
     };
@@ -72,7 +72,7 @@ namespace QuantLib {
     class YoYInflationBlackCapFloorEngine
     : public YoYInflationCapFloorEngine {
       public:
-        YoYInflationBlackCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
+        YoYInflationBlackCapFloorEngine(const std::shared_ptr<YoYInflationIndex>&,
                                         const Handle<YoYOptionletVolatilitySurface>& vol,
                                         const Handle<YieldTermStructure>& nominalTermStructure);
       protected:
@@ -86,7 +86,7 @@ namespace QuantLib {
     : public YoYInflationCapFloorEngine {
       public:
         YoYInflationUnitDisplacedBlackCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>&,
+                    const std::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>& vol,
                     const Handle<YieldTermStructure>& nominalTermStructure);
       protected:
@@ -100,7 +100,7 @@ namespace QuantLib {
     : public YoYInflationCapFloorEngine {
       public:
         YoYInflationBachelierCapFloorEngine(
-                    const ext::shared_ptr<YoYInflationIndex>&,
+                    const std::shared_ptr<YoYInflationIndex>&,
                     const Handle<YoYOptionletVolatilitySurface>& vol,
                     const Handle<YieldTermStructure>& nominalTermStructure);
       protected:

@@ -38,7 +38,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeTS,
         Handle<BlackVolTermStructure> blackVolTS,
         Handle<LocalVolTermStructure> localVolTS)
-    : StochasticProcess1D(ext::make_shared<EulerDiscretization>()), x0_(std::move(x0)),
+    : StochasticProcess1D(std::make_shared<EulerDiscretization>()), x0_(std::move(x0)),
       riskFreeRate_(std::move(riskFreeTS)), dividendYield_(std::move(dividendTS)),
       blackVolatility_(std::move(blackVolTS)), externalLocalVolTS_(std::move(localVolTS)),
       forceDiscretization_(false), hasExternalLocalVol_(true), updated_(false),
@@ -55,7 +55,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> dividendTS,
         Handle<YieldTermStructure> riskFreeTS,
         Handle<BlackVolTermStructure> blackVolTS,
-        const ext::shared_ptr<discretization>& disc,
+        const std::shared_ptr<discretization>& disc,
         bool forceDiscretization)
     : StochasticProcess1D(disc), x0_(std::move(x0)), riskFreeRate_(std::move(riskFreeTS)),
       dividendYield_(std::move(dividendTS)), blackVolatility_(std::move(blackVolTS)),
@@ -185,12 +185,12 @@ namespace QuantLib {
             isStrikeIndependent_=true;
 
             // constant Black vol?
-            ext::shared_ptr<BlackConstantVol> constVol =
-                ext::dynamic_pointer_cast<BlackConstantVol>(
+            std::shared_ptr<BlackConstantVol> constVol =
+                std::dynamic_pointer_cast<BlackConstantVol>(
                                                           *blackVolatility());
             if (constVol != nullptr) {
                 // ok, the local vol is constant too.
-                localVolatility_.linkTo(ext::make_shared<LocalConstantVol>(
+                localVolatility_.linkTo(std::make_shared<LocalConstantVol>(
                     constVol->referenceDate(),
                     constVol->blackVol(0.0, x0_->value()),
                     constVol->dayCounter()));
@@ -199,12 +199,12 @@ namespace QuantLib {
             }
 
             // ok, so it's not constant. Maybe it's strike-independent?
-            ext::shared_ptr<BlackVarianceCurve> volCurve =
-                ext::dynamic_pointer_cast<BlackVarianceCurve>(
+            std::shared_ptr<BlackVarianceCurve> volCurve =
+                std::dynamic_pointer_cast<BlackVarianceCurve>(
                                                           *blackVolatility());
             if (volCurve != nullptr) {
                 // ok, we can use the optimized algorithm
-                localVolatility_.linkTo(ext::make_shared<LocalVolCurve>(
+                localVolatility_.linkTo(std::make_shared<LocalVolCurve>(
                     Handle<BlackVarianceCurve>(volCurve)));
                 updated_ = true;
                 return localVolatility_;
@@ -212,7 +212,7 @@ namespace QuantLib {
 
             // ok, so it's strike-dependent. Never mind.
             localVolatility_.linkTo(
-                ext::make_shared<LocalVolSurface>(blackVolatility_, riskFreeRate_,
+                std::make_shared<LocalVolSurface>(blackVolatility_, riskFreeRate_,
                                                     dividendYield_, x0_->value()));
             updated_ = true;
             isStrikeIndependent_ = false;
@@ -230,12 +230,12 @@ namespace QuantLib {
                               const Handle<Quote>& x0,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const ext::shared_ptr<discretization>& d,
+                              const std::shared_ptr<discretization>& d,
                               bool forceDiscretization)
     : GeneralizedBlackScholesProcess(
              x0,
              // no dividend yield
-             Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
+             Handle<YieldTermStructure>(std::shared_ptr<YieldTermStructure>(
                   new FlatForward(0, NullCalendar(), 0.0, Actual365Fixed()))),
              riskFreeTS,
              blackVolTS,
@@ -247,7 +247,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& dividendTS,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const ext::shared_ptr<discretization>& d,
+                              const std::shared_ptr<discretization>& d,
                               bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,dividendTS,riskFreeTS,blackVolTS,d,
                                      forceDiscretization) {}
@@ -256,7 +256,7 @@ namespace QuantLib {
     BlackProcess::BlackProcess(const Handle<Quote>& x0,
                                const Handle<YieldTermStructure>& riskFreeTS,
                                const Handle<BlackVolTermStructure>& blackVolTS,
-                               const ext::shared_ptr<discretization>& d,
+                               const std::shared_ptr<discretization>& d,
                                bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,riskFreeTS,riskFreeTS,blackVolTS,d,
                                      forceDiscretization) {}
@@ -267,7 +267,7 @@ namespace QuantLib {
                           const Handle<YieldTermStructure>& foreignRiskFreeTS,
                           const Handle<YieldTermStructure>& domesticRiskFreeTS,
                           const Handle<BlackVolTermStructure>& blackVolTS,
-                          const ext::shared_ptr<discretization>& d,
+                          const std::shared_ptr<discretization>& d,
                           bool forceDiscretization)
     : GeneralizedBlackScholesProcess(x0,foreignRiskFreeTS,domesticRiskFreeTS,
                                      blackVolTS,d,forceDiscretization) {}

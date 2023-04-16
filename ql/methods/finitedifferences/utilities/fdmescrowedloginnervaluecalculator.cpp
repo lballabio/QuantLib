@@ -27,9 +27,9 @@
 namespace QuantLib {
 
     FdmEscrowedLogInnerValueCalculator::FdmEscrowedLogInnerValueCalculator(
-        ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
-        ext::shared_ptr<Payoff> payoff,
-        ext::shared_ptr<FdmMesher> mesher,
+        std::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
+        std::shared_ptr<Payoff> payoff,
+        std::shared_ptr<FdmMesher> mesher,
         Size direction)
     : escrowedDividendAdj_(std::move(escrowedDividendAdj)),
       payoff_(std::move(payoff)), mesher_(std::move(mesher)),

@@ -76,7 +76,7 @@ namespace QuantLib {
         BilinearInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin, const I2& yEnd,
                               const M& zData) {
-            impl_ = ext::shared_ptr<Interpolation2D::Impl>(
+            impl_ = std::shared_ptr<Interpolation2D::Impl>(
                   new detail::BilinearInterpolationImpl<I1,I2,M>(xBegin, xEnd,
                                                                  yBegin, yEnd,
                                                                  zData));

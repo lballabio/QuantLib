@@ -24,16 +24,16 @@
 namespace QuantLib {
 
     EnergyBasisSwap::EnergyBasisSwap(const Calendar& calendar,
-                                     ext::shared_ptr<CommodityIndex> spreadIndex,
-                                     ext::shared_ptr<CommodityIndex> payIndex,
-                                     ext::shared_ptr<CommodityIndex> receiveIndex,
+                                     std::shared_ptr<CommodityIndex> spreadIndex,
+                                     std::shared_ptr<CommodityIndex> payIndex,
+                                     std::shared_ptr<CommodityIndex> receiveIndex,
                                      bool spreadToPayLeg,
                                      const Currency& payCurrency,
                                      const Currency& receiveCurrency,
                                      const PricingPeriods& pricingPeriods,
                                      CommodityUnitCost basis,
                                      const CommodityType& commodityType,
-                                     const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
+                                     const std::shared_ptr<SecondaryCosts>& secondaryCosts,
                                      Handle<YieldTermStructure> payLegTermStructure,
                                      Handle<YieldTermStructure> receiveLegTermStructure,
                                      Handle<YieldTermStructure> discountTermStructure)
@@ -268,7 +268,7 @@ namespace QuantLib {
                     (dDelta  > 0) ? receiveLegDiscountFactor : payLegDiscountFactor;
 
                 paymentCashFlows_[pricingPeriod->paymentDate()] =
-                    ext::make_shared<CommodityCashFlow> (
+                    std::make_shared<CommodityCashFlow> (
                            pricingPeriod->paymentDate(),
                                                  Money(baseCurrency,
                                                        uDelta * discountFactor),

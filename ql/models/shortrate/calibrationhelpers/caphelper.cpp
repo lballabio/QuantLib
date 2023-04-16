@@ -32,7 +32,7 @@ namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
-                         ext::shared_ptr<IborIndex> index,
+                         std::shared_ptr<IborIndex> index,
                          Frequency fixedLegFrequency,
                          DayCounter fixedLegDayCounter,
                          bool includeFirstSwaplet,
@@ -68,15 +68,15 @@ namespace QuantLib {
 
     Real CapHelper::blackPrice(Volatility sigma) const {
         calculate();
-        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
-        ext::shared_ptr<PricingEngine> engine;
+        Handle<Quote> vol(std::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        std::shared_ptr<PricingEngine> engine;
         switch(volatilityType_) {
           case ShiftedLognormal:
-            engine = ext::make_shared<BlackCapFloorEngine>(
+            engine = std::make_shared<BlackCapFloorEngine>(
                 termStructure_, vol, Actual365Fixed(), shift_);
             break;
           case Normal:
-            engine = ext::make_shared<BachelierCapFloorEngine>(
+            engine = std::make_shared<BachelierCapFloorEngine>(
                 termStructure_, vol, Actual365Fixed());
             break;
           default:
@@ -100,7 +100,7 @@ namespace QuantLib {
             startDate = termStructure_->referenceDate() + indexTenor;
             maturity = termStructure_->referenceDate() + length_;
         }
-        ext::shared_ptr<IborIndex> dummyIndex(new
+        std::shared_ptr<IborIndex> dummyIndex(new
             IborIndex("dummy",
                       indexTenor,
                       index_->fixingDays(),
@@ -133,10 +133,10 @@ namespace QuantLib {
             .withPaymentAdjustment(index_->businessDayConvention());
 
         Swap swap(floatingLeg, fixedLeg);
-        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap.setPricingEngine(std::shared_ptr<PricingEngine>(
                             new DiscountingSwapEngine(termStructure_, false)));
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
-        cap_ = ext::make_shared<Cap>(floatingLeg,
+        cap_ = std::make_shared<Cap>(floatingLeg,
                                               std::vector<Rate>(1, fairRate));
 
         BlackCalibrationHelper::performCalculations();

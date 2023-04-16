@@ -46,7 +46,7 @@ namespace integrals_test {
 
     template <class T>
     void testSingle(const T& I, const std::string& tag,
-                    const ext::function<Real (Real)>& f,
+                    const std::function<Real (Real)>& f,
                     Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
         if (std::fabs(calculated-expected) > integrals_test::tolerance) {
@@ -205,9 +205,9 @@ void IntegralTest::testTwoDimensionalIntegration() {
 
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
-        ext::shared_ptr<Integrator>(
+        std::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)),
-        ext::shared_ptr<Integrator>(
+        std::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)))(
         std::multiplies<>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
@@ -365,10 +365,10 @@ void IntegralTest::testPiecewiseIntegral() {
 
     x = { 1.0, 2.0, 3.0, 4.0, 5.0 };
     y = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-    ext::shared_ptr<Integrator> segment =
-        ext::make_shared<SegmentIntegral>(1);
-    ext::shared_ptr<Integrator> piecewise =
-        ext::make_shared<PiecewiseIntegral>(segment, x);
+    std::shared_ptr<Integrator> segment =
+        std::make_shared<SegmentIntegral>(1);
+    std::shared_ptr<Integrator> piecewise =
+        std::make_shared<PiecewiseIntegral>(segment, x);
     pw_check(*piecewise, -1.0, 0.0, 1.0);
     pw_check(*piecewise, 0.0, 1.0, 1.0);
     pw_check(*piecewise, 0.0, 1.5, 2.0);

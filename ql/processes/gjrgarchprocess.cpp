@@ -37,7 +37,7 @@ namespace QuantLib {
                                      Real lambda,
                                      Real daysPerYear,
                                      Discretization d)
-    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)),
+    : StochasticProcess(std::shared_ptr<discretization>(new EulerDiscretization)),
       riskFreeRate_(std::move(riskFreeRate)), dividendYield_(std::move(dividendYield)),
       s0_(std::move(s0)), v0_(v0), omega_(omega), alpha_(alpha), beta_(beta), gamma_(gamma),
       lambda_(lambda), daysPerYear_(daysPerYear), discretization_(d) {

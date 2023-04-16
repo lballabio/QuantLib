@@ -29,8 +29,8 @@
 
 namespace QuantLib {
 
-    HestonSLVProcess::HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
-                                       ext::shared_ptr<LocalVolTermStructure> leverageFct,
+    HestonSLVProcess::HestonSLVProcess(const std::shared_ptr<HestonProcess>& hestonProcess,
+                                       std::shared_ptr<LocalVolTermStructure> leverageFct,
                                        const Real mixingFactor)
     : mixingFactor_(mixingFactor), hestonProcess_(hestonProcess),
       leverageFct_(std::move(leverageFct)) {

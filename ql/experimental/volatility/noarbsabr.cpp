@@ -90,7 +90,7 @@ NoArbSabrModel::NoArbSabrModel(const Real expiryTime, const Real forward,
     QL_REQUIRE(fmax_ > fmin_, "could not find a reasonable integration domain");
 
     integrator_ =
-        ext::make_shared<GaussLobattoIntegral>(
+        std::make_shared<GaussLobattoIntegral>(
             detail::NoArbSabrModel::i_max_iterations, detail::NoArbSabrModel::i_accuracy);
 
     detail::D0Interpolator d0(forward_, expiryTime_, alpha_, beta_, nu_, rho_);

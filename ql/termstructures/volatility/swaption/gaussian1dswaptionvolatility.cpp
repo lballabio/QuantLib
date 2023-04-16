@@ -27,22 +27,22 @@ namespace QuantLib {
     Gaussian1dSwaptionVolatility::Gaussian1dSwaptionVolatility(
         const Calendar& cal,
         BusinessDayConvention bdc,
-        ext::shared_ptr<SwapIndex> indexBase,
-        const ext::shared_ptr<Gaussian1dModel>& model,
+        std::shared_ptr<SwapIndex> indexBase,
+        const std::shared_ptr<Gaussian1dModel>& model,
         const DayCounter& dc,
-        ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine)
+        std::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine)
     : SwaptionVolatilityStructure(model->termStructure()->referenceDate(), cal, bdc, dc),
       indexBase_(std::move(indexBase)), model_(model), engine_(std::move(swaptionEngine)),
       maxSwapTenor_(100 * Years) {}
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     Gaussian1dSwaptionVolatility::smileSectionImpl(const Date& d, const Period& tenor) const {
-        ext::shared_ptr<SmileSection> tmp = ext::make_shared<Gaussian1dSmileSection>(
+        std::shared_ptr<SmileSection> tmp = std::make_shared<Gaussian1dSmileSection>(
             d, indexBase_->clone(tenor), model_, this->dayCounter(), engine_);
         return tmp;
 }
 
-ext::shared_ptr<SmileSection>
+std::shared_ptr<SmileSection>
 Gaussian1dSwaptionVolatility::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
     DateHelper hlp(*this, optionTime);

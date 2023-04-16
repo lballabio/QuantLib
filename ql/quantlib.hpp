@@ -17,7 +17,7 @@
 #include <ql/exchangerate.hpp>
 #include <ql/exercise.hpp>
 #include <ql/event.hpp>
-#include <ql/functional.hpp>
+
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/index.hpp>
@@ -26,7 +26,7 @@
 #include <ql/money.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <ql/payoff.hpp>
 #include <ql/position.hpp>
 #include <ql/prices.hpp>
@@ -34,7 +34,7 @@
 #include <ql/quote.hpp>
 #include <ql/rebatedexercise.hpp>
 #include <ql/settings.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <ql/stochasticprocess.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/timegrid.hpp>

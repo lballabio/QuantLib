@@ -33,23 +33,23 @@
 namespace QuantLib {
 
     FdCIRVanillaEngine::FdCIRVanillaEngine(
-        ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        std::shared_ptr<CoxIngersollRossProcess> cirProcess,
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
         Size tGrid,
         Size xGrid,
         Size rGrid,
         Size dampingSteps,
         const Real rho,
         const FdmSchemeDesc& schemeDesc,
-        ext::shared_ptr<FdmQuantoHelper> quantoHelper)
+        std::shared_ptr<FdmQuantoHelper> quantoHelper)
     :  bsProcess_(std::move(bsProcess)), cirProcess_(std::move(cirProcess)),
        quantoHelper_(std::move(quantoHelper)), explicitDividends_(false),
        tGrid_(tGrid), xGrid_(xGrid), rGrid_(rGrid), dampingSteps_(dampingSteps),
        rho_(rho), schemeDesc_(schemeDesc) {}
 
     FdCIRVanillaEngine::FdCIRVanillaEngine(
-        ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        std::shared_ptr<CoxIngersollRossProcess> cirProcess,
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
         DividendSchedule dividends,
         Size tGrid,
         Size xGrid,
@@ -57,7 +57,7 @@ namespace QuantLib {
         Size dampingSteps,
         const Real rho,
         const FdmSchemeDesc& schemeDesc,
-        ext::shared_ptr<FdmQuantoHelper> quantoHelper)
+        std::shared_ptr<FdmQuantoHelper> quantoHelper)
     : bsProcess_(std::move(bsProcess)), cirProcess_(std::move(cirProcess)),
       quantoHelper_(std::move(quantoHelper)), dividends_(std::move(dividends)),
       explicitDividends_(true),
@@ -71,16 +71,16 @@ namespace QuantLib {
         const DividendSchedule& passedDividends = explicitDividends_ ? dividends_ : arguments_.cashFlow;
         QL_DEPRECATED_ENABLE_WARNING
 
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = bsProcess_->time(arguments_.exercise->lastDate());
 
         // The short rate mesher
-        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(
+        const std::shared_ptr<Fdm1dMesher> shortRateMesher(
             new FdmSimpleProcess1dMesher(rGrid_, cirProcess_, maturity, tGrid_));
 
         // The equity mesher
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
+        const std::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(
                 xGrid_, bsProcess_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
@@ -88,15 +88,15 @@ namespace QuantLib {
                 passedDividends, quantoHelper_,
                 0.0));
         
-        const ext::shared_ptr<FdmMesher> mesher(
+        const std::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(equityMesher, shortRateMesher));
 
         // Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
+        const std::shared_ptr<FdmInnerValueCalculator> calculator(
                           new FdmLogInnerValue(arguments_.payoff, mesher, 0));
 
         // Step conditions
-        const ext::shared_ptr<FdmStepConditionComposite> conditions = 
+        const std::shared_ptr<FdmStepConditionComposite> conditions = 
              FdmStepConditionComposite::vanillaComposite(
                                  passedDividends, arguments_.exercise, 
                                  mesher, calculator,
@@ -115,10 +115,10 @@ namespace QuantLib {
     }
 
     void FdCIRVanillaEngine::calculate() const {
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
-        ext::shared_ptr<FdmCIRSolver> solver(new FdmCIRSolver(
+        std::shared_ptr<FdmCIRSolver> solver(new FdmCIRSolver(
                     Handle<CoxIngersollRossProcess>(cirProcess_),
                     Handle<GeneralizedBlackScholesProcess>(bsProcess_),
                     getSolverDesc(1.5), schemeDesc_,
@@ -134,14 +134,14 @@ namespace QuantLib {
     }
 
     MakeFdCIRVanillaEngine::MakeFdCIRVanillaEngine(
-        ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        std::shared_ptr<CoxIngersollRossProcess> cirProcess,
+        std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
         const Real rho)
     : cirProcess_(std::move(cirProcess)), bsProcess_(std::move(bsProcess)), rho_(rho),
-      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::ModifiedHundsdorfer())) {}
+      schemeDesc_(std::make_shared<FdmSchemeDesc>(FdmSchemeDesc::ModifiedHundsdorfer())) {}
 
     MakeFdCIRVanillaEngine& MakeFdCIRVanillaEngine::withQuantoHelper(
-        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {
+        const std::shared_ptr<FdmQuantoHelper>& quantoHelper) {
         quantoHelper_ = quantoHelper;
         return *this;
     }
@@ -173,7 +173,7 @@ namespace QuantLib {
     MakeFdCIRVanillaEngine&
     MakeFdCIRVanillaEngine::withFdmSchemeDesc(
         const FdmSchemeDesc& schemeDesc) {
-        schemeDesc_ = ext::make_shared<FdmSchemeDesc>(schemeDesc);
+        schemeDesc_ = std::make_shared<FdmSchemeDesc>(schemeDesc);
         return *this;
     }
 
@@ -187,9 +187,9 @@ namespace QuantLib {
     }
 
     MakeFdCIRVanillaEngine::operator
-    ext::shared_ptr<PricingEngine>() const {
+    std::shared_ptr<PricingEngine>() const {
         if (explicitDividends_) {
-            return ext::make_shared<FdCIRVanillaEngine>(
+            return std::make_shared<FdCIRVanillaEngine>(
                 cirProcess_,
                 bsProcess_,
                 dividends_,
@@ -198,7 +198,7 @@ namespace QuantLib {
                 *schemeDesc_,
                 quantoHelper_);
         } else {
-            return ext::make_shared<FdCIRVanillaEngine>(
+            return std::make_shared<FdCIRVanillaEngine>(
                 cirProcess_,
                 bsProcess_,
                 tGrid_, xGrid_, rGrid_, dampingSteps_,

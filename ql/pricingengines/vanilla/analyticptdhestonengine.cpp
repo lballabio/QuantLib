@@ -43,7 +43,7 @@ namespace QuantLib {
         const Real v0_, x_, sx_;
         
         std::vector<Rate> r_, q_;
-        const ext::shared_ptr<YieldTermStructure> qTS_;
+        const std::shared_ptr<YieldTermStructure> qTS_;
         const Handle<PiecewiseTimeDependentHestonModel> model_;
         
         const TimeGrid timeGrid_;
@@ -209,7 +209,7 @@ namespace QuantLib {
     }
 
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const std::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Size integrationOrder)
     : GenericModelEngine<PiecewiseTimeDependentHestonModel,
                          VanillaOption::arguments,
@@ -222,7 +222,7 @@ namespace QuantLib {
     }
                          
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const std::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Real relTolerance, Size maxEvaluations)
     : GenericModelEngine<PiecewiseTimeDependentHestonModel,
                          VanillaOption::arguments,
@@ -235,7 +235,7 @@ namespace QuantLib {
     }
 
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const std::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         ComplexLogFormula cpxLog,
         const Integration& itg,
         Real andersenPiterbargEpsilon)
@@ -255,8 +255,8 @@ namespace QuantLib {
                 "not an European option");
 
         // plain vanilla
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
         
         const Real v0 = model_->v0();
@@ -366,7 +366,7 @@ namespace QuantLib {
 
               const Real c_inf = -(C_u_inf + D_u_inf*v0).real();
 
-              const ext::function<Real()> uM = [=](){
+              const std::function<Real()> uM = [=](){
                   return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
               };
 

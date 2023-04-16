@@ -32,7 +32,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -50,10 +50,10 @@ namespace QuantLib {
             Real nominal1,
             Real nominal2,
             const Schedule& schedule1,
-            ext::shared_ptr<InterestRateIndex> index1,
+            std::shared_ptr<InterestRateIndex> index1,
             DayCounter dayCount1,
             const Schedule& schedule2,
-            ext::shared_ptr<InterestRateIndex> index2,
+            std::shared_ptr<InterestRateIndex> index2,
             DayCounter dayCount2,
             bool intermediateCapitalExchange = false,
             bool finalCapitalExchange = false,
@@ -65,18 +65,18 @@ namespace QuantLib {
             Real spread2 = 0.0,
             Real cappedRate2 = Null<Real>(),
             Real flooredRate2 = Null<Real>(),
-            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
-            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
+            const std::optional<BusinessDayConvention>& paymentConvention1 = std::nullopt,
+            const std::optional<BusinessDayConvention>& paymentConvention2 = std::nullopt);
 
         FloatFloatSwap(
             Swap::Type type,
             std::vector<Real> nominal1,
             std::vector<Real> nominal2,
             Schedule schedule1,
-            ext::shared_ptr<InterestRateIndex> index1,
+            std::shared_ptr<InterestRateIndex> index1,
             DayCounter dayCount1,
             Schedule schedule2,
-            ext::shared_ptr<InterestRateIndex> index2,
+            std::shared_ptr<InterestRateIndex> index2,
             DayCounter dayCount2,
             bool intermediateCapitalExchange = false,
             bool finalCapitalExchange = false,
@@ -88,8 +88,8 @@ namespace QuantLib {
             std::vector<Real> spread2 = std::vector<Real>(),
             std::vector<Real> cappedRate2 = std::vector<Real>(),
             std::vector<Real> flooredRate2 = std::vector<Real>(),
-            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
-            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
+            const std::optional<BusinessDayConvention>& paymentConvention1 = std::nullopt,
+            const std::optional<BusinessDayConvention>& paymentConvention2 = std::nullopt);
 
         //! \name Inspectors
         //@{
@@ -100,8 +100,8 @@ namespace QuantLib {
         const Schedule &schedule1() const;
         const Schedule &schedule2() const;
 
-        const ext::shared_ptr<InterestRateIndex> &index1() const;
-        const ext::shared_ptr<InterestRateIndex> &index2() const;
+        const std::shared_ptr<InterestRateIndex> &index1() const;
+        const std::shared_ptr<InterestRateIndex> &index2() const;
 
         std::vector<Real> spread1() const;
         std::vector<Real> spread2() const;
@@ -132,13 +132,13 @@ namespace QuantLib {
         void fetchResults(const PricingEngine::results*) const override;
 
       private:
-        void init(ext::optional<BusinessDayConvention> paymentConvention1,
-                  ext::optional<BusinessDayConvention> paymentConvention2);
+        void init(std::optional<BusinessDayConvention> paymentConvention1,
+                  std::optional<BusinessDayConvention> paymentConvention2);
         void setupExpired() const override;
         Swap::Type type_;
         std::vector<Real> nominal1_, nominal2_;
         Schedule schedule1_, schedule2_;
-        ext::shared_ptr<InterestRateIndex> index1_, index2_;
+        std::shared_ptr<InterestRateIndex> index1_, index2_;
         std::vector<Real> gearing1_, gearing2_, spread1_, spread2_;
         std::vector<Real> cappedRate1_, flooredRate1_, cappedRate2_,
             flooredRate2_;
@@ -165,7 +165,7 @@ namespace QuantLib {
         std::vector<Real> leg1Coupons, leg2Coupons;
         std::vector<Real> leg1AccrualTimes, leg2AccrualTimes;
 
-        ext::shared_ptr<InterestRateIndex> index1, index2;
+        std::shared_ptr<InterestRateIndex> index1, index2;
 
         std::vector<bool> leg1IsRedemptionFlow, leg2IsRedemptionFlow;
 
@@ -202,12 +202,12 @@ namespace QuantLib {
         return schedule2_;
     }
 
-    inline const ext::shared_ptr<InterestRateIndex> &
+    inline const std::shared_ptr<InterestRateIndex> &
     FloatFloatSwap::index1() const {
         return index1_;
     }
 
-    inline const ext::shared_ptr<InterestRateIndex> &
+    inline const std::shared_ptr<InterestRateIndex> &
     FloatFloatSwap::index2() const {
         return index2_;
     }

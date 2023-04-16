@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-FdmDupire1dOp::FdmDupire1dOp(const ext::shared_ptr<FdmMesher> &mesher,
+FdmDupire1dOp::FdmDupire1dOp(const std::shared_ptr<FdmMesher> &mesher,
                              const Array &localVolatility)
     : mesher_(mesher), localVolatility_(localVolatility),
       mapT_(SecondDerivativeOp(0, mesher)

@@ -64,8 +64,8 @@ namespace QuantLib {
 
     void FdSabrVanillaEngine::calculate() const {
         // 1. Mesher
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         const DayCounter dc = rTS_->dayCounter();
@@ -77,8 +77,8 @@ namespace QuantLib {
         const Real upperAlpha = alpha_*
             std::exp(nu_*std::sqrt(maturityTime)*InverseCumulativeNormal()(0.75));
 
-        const ext::shared_ptr<Fdm1dMesher> cevMesher =
-            ext::make_shared<FdmCEV1dMesher>(
+        const std::shared_ptr<Fdm1dMesher> cevMesher =
+            std::make_shared<FdmCEV1dMesher>(
                 fGrid_, f0_, upperAlpha, beta_,
                 maturityTime, eps_, scalingFactor_,
                 std::make_pair(payoff->strike(), 0.025));
@@ -91,19 +91,19 @@ namespace QuantLib {
         const Real xMin = std::log(alpha_) + logDrift - volRange;
         const Real xMax = std::log(alpha_) + logDrift + volRange;
 
-        const ext::shared_ptr<Fdm1dMesher> xMesher =
-            ext::make_shared<Concentrating1dMesher>(
+        const std::shared_ptr<Fdm1dMesher> xMesher =
+            std::make_shared<Concentrating1dMesher>(
                 xMin, xMax, xGrid_, std::make_pair(std::log(alpha_), 0.1));
 
-        const ext::shared_ptr<FdmMesher> mesher =
-           ext::make_shared<FdmMesherComposite>(cevMesher, xMesher);
+        const std::shared_ptr<FdmMesher> mesher =
+           std::make_shared<FdmMesherComposite>(cevMesher, xMesher);
 
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator =
-            ext::make_shared<FdmCellAveragingInnerValue>(payoff, mesher, 0);
+        const std::shared_ptr<FdmInnerValueCalculator> calculator =
+            std::make_shared<FdmCellAveragingInnerValue>(payoff, mesher, 0);
 
         // 3. Step conditions
-        const ext::shared_ptr<FdmStepConditionComposite> conditions =
+        const std::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
                 DividendSchedule(), arguments_.exercise,
                 mesher, calculator, referenceDate, dc);
@@ -115,13 +115,13 @@ namespace QuantLib {
         const Real upperBound = cevMesher->locations().back();
 
         boundaries.push_back(
-            ext::make_shared<FdmDiscountDirichletBoundary>(
+            std::make_shared<FdmDiscountDirichletBoundary>(
                 mesher, rTS_.currentLink(),
                 maturityTime, (*payoff)(upperBound),
                 0, FdmDiscountDirichletBoundary::Upper));
 
         boundaries.push_back(
-            ext::make_shared<FdmDiscountDirichletBoundary>(
+            std::make_shared<FdmDiscountDirichletBoundary>(
                 mesher, rTS_.currentLink(),
                 maturityTime, (*payoff)(lowerBound),
                 0, FdmDiscountDirichletBoundary::Lower));
@@ -132,13 +132,13 @@ namespace QuantLib {
             calculator, maturityTime, tGrid_, dampingSteps_
         };
 
-        const ext::shared_ptr<FdmLinearOpComposite> op =
-            ext::make_shared<FdmSabrOp>(
+        const std::shared_ptr<FdmLinearOpComposite> op =
+            std::make_shared<FdmSabrOp>(
                mesher, rTS_.currentLink(),
                f0_, alpha_, beta_, nu_, rho_);
 
-        const ext::shared_ptr<Fdm2DimSolver> solver =
-            ext::make_shared<Fdm2DimSolver>(solverDesc, schemeDesc_, op);
+        const std::shared_ptr<Fdm2DimSolver> solver =
+            std::make_shared<Fdm2DimSolver>(solverDesc, schemeDesc_, op);
 
         results_.value = solver->interpolateAt(f0_, std::log(alpha_));
     }

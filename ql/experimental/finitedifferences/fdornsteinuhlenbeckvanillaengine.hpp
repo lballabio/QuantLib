@@ -39,8 +39,8 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
       public:
         FdOrnsteinUhlenbeckVanillaEngine(
-            ext::shared_ptr<OrnsteinUhlenbeckProcess>,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
+            std::shared_ptr<OrnsteinUhlenbeckProcess>,
+            const std::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid = 100,
             Size xGrid = 100,
             Size dampingSteps = 0,
@@ -48,8 +48,8 @@ namespace QuantLib {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         FdOrnsteinUhlenbeckVanillaEngine(
-            ext::shared_ptr<OrnsteinUhlenbeckProcess>,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
+            std::shared_ptr<OrnsteinUhlenbeckProcess>,
+            const std::shared_ptr<YieldTermStructure>& rTS,
             DividendSchedule dividends,
             Size tGrid = 100,
             Size xGrid = 100,
@@ -60,8 +60,8 @@ namespace QuantLib {
         void calculate() const override;
 
       private:
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess> process_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<OrnsteinUhlenbeckProcess> process_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
         DividendSchedule dividends_;
         bool explicitDividends_;
         const Size tGrid_, xGrid_, dampingSteps_;

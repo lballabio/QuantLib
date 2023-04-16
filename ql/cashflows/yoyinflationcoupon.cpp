@@ -32,7 +32,7 @@ namespace QuantLib {
                    const Date& startDate,
                    const Date& endDate,
                    Natural fixingDays,
-                   const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
+                   const std::shared_ptr<YoYInflationIndex>& yoyIndex,
                    const Period& observationLag,
                    const DayCounter& dayCounter,
                    Real gearing,
@@ -55,15 +55,15 @@ namespace QuantLib {
 
 
     bool YoYInflationCoupon::checkPricerImpl(
-            const ext::shared_ptr<InflationCouponPricer>&pricer) const {
+            const std::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
-               ext::dynamic_pointer_cast<YoYInflationCouponPricer>(pricer));
+               std::dynamic_pointer_cast<YoYInflationCouponPricer>(pricer));
     }
 
 
     yoyInflationLeg::yoyInflationLeg(Schedule schedule,
                                      Calendar paymentCalendar,
-                                     ext::shared_ptr<YoYInflationIndex> index,
+                                     std::shared_ptr<YoYInflationIndex> index,
                                      const Period& observationLag)
     : schedule_(std::move(schedule)), index_(std::move(index)), observationLag_(observationLag),
       paymentCalendar_(std::move(paymentCalendar)) {}
@@ -180,7 +180,7 @@ namespace QuantLib {
                 refEnd = schedule_.calendar().adjust(start + schedule_.tenor(), bdc);
             }
             if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(ext::make_shared<FixedRateCoupon>(
+                leg.push_back(std::make_shared<FixedRateCoupon>(
                             paymentDate,
                             detail::get(notionals_, i, 1.0),
                             detail::effectiveFixedRate(spreads_,caps_,
@@ -189,7 +189,7 @@ namespace QuantLib {
                             start, end, refStart, refEnd));
             } else { // yoy inflation coupon
                 if (detail::noOption(caps_, floors_, i)) { // just swaplet
-                    leg.push_back(ext::make_shared<YoYInflationCoupon>(
+                    leg.push_back(std::make_shared<YoYInflationCoupon>(
                             paymentDate,
                             detail::get(notionals_, i, 1.0),
                             start, end,
@@ -201,7 +201,7 @@ namespace QuantLib {
                             detail::get(spreads_, i, 0.0),
                             refStart, refEnd));
                 } else {    // cap/floorlet
-                    leg.push_back(ext::make_shared<CappedFlooredYoYInflationCoupon>(
+                    leg.push_back(std::make_shared<CappedFlooredYoYInflationCoupon>(
                             paymentDate,
                             detail::get(notionals_, i, 1.0),
                             start, end,
@@ -221,7 +221,7 @@ namespace QuantLib {
         // Without caps or floors, this is enough; otherwise, a more
         // specific pricer will need to be set in client code.
         if (caps_.empty() && floors_.empty())
-            setCouponPricer(leg, ext::make_shared<YoYInflationCouponPricer>());
+            setCouponPricer(leg, std::make_shared<YoYInflationCouponPricer>());
 
         return leg;
     }

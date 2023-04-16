@@ -41,7 +41,7 @@ namespace QuantLib {
                   model cannot provide one itself.
         */
         AnalyticCapFloorEngine(
-            const ext::shared_ptr<AffineModel>& model,
+            const std::shared_ptr<AffineModel>& model,
             Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         void calculate() const override;
 

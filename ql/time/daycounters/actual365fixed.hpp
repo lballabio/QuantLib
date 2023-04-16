@@ -76,7 +76,7 @@ namespace QuantLib {
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd) const override;
         };
-        static ext::shared_ptr<DayCounter::Impl> implementation(Convention);
+        static std::shared_ptr<DayCounter::Impl> implementation(Convention);
     };
 
 }

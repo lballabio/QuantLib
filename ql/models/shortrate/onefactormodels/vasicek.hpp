@@ -49,7 +49,7 @@ namespace QuantLib {
                                 Time maturity,
                                 Time bondMaturity) const override;
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
+        std::shared_ptr<ShortRateDynamics> dynamics() const override;
 
         Real a() const { return a_(0.0); }
         Real b() const { return b_(0.0); }
@@ -81,7 +81,7 @@ namespace QuantLib {
                  Real b,
                  Real sigma,
                  Real r0)
-        : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
+        : ShortRateDynamics(std::shared_ptr<StochasticProcess1D>(
                              new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
           b_(b) {}
 
@@ -95,9 +95,9 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+    inline std::shared_ptr<OneFactorModel::ShortRateDynamics>
     Vasicek::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
+        return std::shared_ptr<ShortRateDynamics>(
                                      new Dynamics(a(), b() , sigma(), r0_));
     }
 

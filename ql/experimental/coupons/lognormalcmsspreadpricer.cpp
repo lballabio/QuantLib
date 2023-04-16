@@ -25,7 +25,7 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 using std::sqrt;
@@ -43,11 +43,11 @@ namespace QuantLib {
     };
 
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(
-        const ext::shared_ptr<CmsCouponPricer>& cmsPricer,
+        const std::shared_ptr<CmsCouponPricer>& cmsPricer,
         const Handle<Quote>& correlation,
         Handle<YieldTermStructure> couponDiscountCurve,
         const Size integrationPoints,
-        const ext::optional<VolatilityType>& volatilityType,
+        const std::optional<VolatilityType>& volatilityType,
         const Real shift1,
         const Real shift2)
     : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
@@ -62,9 +62,9 @@ namespace QuantLib {
                    "at least 4 integration points should be used ("
                        << integrationPoints << ")");
         integrator_ =
-            ext::make_shared<GaussHermiteIntegration>(integrationPoints);
+            std::make_shared<GaussHermiteIntegration>(integrationPoints);
 
-        cnd_ = ext::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
+        cnd_ = std::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
 
         if (!volatilityType) {
             QL_REQUIRE(shift1 == Null<Real>() && shift2 == Null<Real>(),
@@ -171,14 +171,14 @@ namespace QuantLib {
                                 << ") should be positive while gearing2 ("
                                 << gearing2_ << ") should be negative");
 
-        c1_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c1_ = std::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
             coupon_->accrualEndDate(), coupon_->fixingDays(),
             index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
             coupon_->isInArrears()));
 
-        c2_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c2_ = std::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
             coupon_->accrualEndDate(), coupon_->fixingDays(),
             index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
@@ -199,10 +199,10 @@ namespace QuantLib {
             adjustedRate1_ = c1_->adjustedFixing();
             adjustedRate2_ = c2_->adjustedFixing();
 
-            ext::shared_ptr<SwaptionVolatilityStructure> swvol =
+            std::shared_ptr<SwaptionVolatilityStructure> swvol =
                 *cmsPricer_->swaptionVolatility();
-            ext::shared_ptr<SwaptionVolatilityCube> swcub =
-                ext::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
+            std::shared_ptr<SwaptionVolatilityCube> swcub =
+                std::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
 
             if(inheritedVolatilityType_ && volType_ == ShiftedLognormal) {
                 shift1_ =

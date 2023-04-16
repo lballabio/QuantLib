@@ -25,7 +25,7 @@
 #ifndef quantlib_global_bootstrap_hpp
 #define quantlib_global_bootstrap_hpp
 
-#include <ql/functional.hpp>
+
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/termstructures/bootstraperror.hpp>
@@ -58,9 +58,9 @@ template <class Curve> class GlobalBootstrap {
       in QL), it might fail for other traits - check the usage of Traits::updateGuess(), Traits::guess(),
       Traits::minValueAfter(), Traits::maxValueAfter() in this class against them.
     */
-    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
-                    ext::function<std::vector<Date>()> additionalDates,
-                    ext::function<Array()> additionalErrors,
+    GlobalBootstrap(std::vector<std::shared_ptr<typename Traits::helper> > additionalHelpers,
+                    std::function<std::vector<Date>()> additionalDates,
+                    std::function<Array()> additionalErrors,
                     Real accuracy = Null<Real>());
     void setup(Curve *ts);
     void calculate() const;
@@ -69,9 +69,9 @@ template <class Curve> class GlobalBootstrap {
     void initialize() const;
     Curve *ts_;
     Real accuracy_;
-    mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
-    ext::function<std::vector<Date>()> additionalDates_;
-    ext::function<Array()> additionalErrors_;
+    mutable std::vector<std::shared_ptr<typename Traits::helper> > additionalHelpers_;
+    std::function<std::vector<Date>()> additionalDates_;
+    std::function<Array()> additionalErrors_;
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_, numberHelpers_;
     mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
@@ -86,9 +86,9 @@ GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy) : ts_(0), accuracy_(accur
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
-    ext::function<std::vector<Date>()> additionalDates,
-    ext::function<Array()> additionalErrors,
+    std::vector<std::shared_ptr<typename Traits::helper> > additionalHelpers,
+    std::function<std::vector<Date>()> additionalDates,
+    std::function<Array()> additionalErrors,
     Real accuracy)
 : ts_(nullptr), accuracy_(accuracy), additionalHelpers_(std::move(additionalHelpers)),
   additionalDates_(std::move(additionalDates)), additionalErrors_(std::move(additionalErrors)) {}
@@ -131,7 +131,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     // skip expired additional dates
     std::vector<Date> additionalDates;
-    if (!(additionalDates_ == QL_NULL_FUNCTION))
+    if (!(additionalDates_ == nullptr))
         additionalDates = additionalDates_();
     firstAdditionalDate_ = 0;
     if (!additionalDates.empty()) {
@@ -197,7 +197,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
     // setup helpers
     for (Size j = 0; j < numberHelpers_; ++j) {
-        const ext::shared_ptr<typename Traits::helper> &helper = ts_->instruments_[firstHelper_ + j];
+        const std::shared_ptr<typename Traits::helper> &helper = ts_->instruments_[firstHelper_ + j];
         // check for valid quote
         QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
                                                    << " instrument (maturity: " << helper->maturityDate()
@@ -210,7 +210,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
     // setup additional helpers
     for (Size j = 0; j < numberAdditionalHelpers_; ++j) {
-        const ext::shared_ptr<typename Traits::helper> &helper = additionalHelpers_[firstAdditionalHelper_ + j];
+        const std::shared_ptr<typename Traits::helper> &helper = additionalHelpers_[firstAdditionalHelper_ + j];
         QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
                                                    << " additional instrument (maturity: " << helper->maturityDate()
                                                    << ") has an invalid quote");
@@ -244,7 +244,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
       public:
         TargetFunction(const Size firstHelper,
                        const Size numberHelpers,
-                       ext::function<Array()> additionalErrors,
+                       std::function<Array()> additionalErrors,
                        Curve* ts,
                        std::vector<Real> lowerBounds,
                        std::vector<Real> upperBounds)
@@ -276,7 +276,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
                 result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
                             ts_->instruments_[firstHelper_ + i]->impliedQuote();
             }
-            if (!(additionalErrors_ == QL_NULL_FUNCTION)) {
+            if (!(additionalErrors_ == nullptr)) {
                 Array tmp = additionalErrors_();
                 result.resize(numberHelpers_ + tmp.size());
                 for (Size i = 0; i < tmp.size(); ++i) {
@@ -288,7 +288,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
       private:
         Size firstHelper_, numberHelpers_;
-        ext::function<Array()> additionalErrors_;
+        std::function<Array()> additionalErrors_;
         Curve *ts_;
         const std::vector<Real> lowerBounds_, upperBounds_;
     };

@@ -42,7 +42,7 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        explicit ExplicitEulerScheme(ext::shared_ptr<FdmLinearOpComposite> map,
+        explicit ExplicitEulerScheme(std::shared_ptr<FdmLinearOpComposite> map,
                                      const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
@@ -53,7 +53,7 @@ namespace QuantLib {
         void step(array_type& a, Time t, Real theta);
 
         Time dt_;
-        const ext::shared_ptr<FdmLinearOpComposite> map_;
+        const std::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }

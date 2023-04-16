@@ -121,7 +121,7 @@ namespace QuantLib {
         /*! returns just the redemption flows (not interest payments) */
         const Leg& redemptions() const;
         /*! returns the redemption, if only one is defined */
-        const ext::shared_ptr<CashFlow>& redemption() const;
+        const std::shared_ptr<CashFlow>& redemption() const;
 
         Date startDate() const;
         Date maturityDate() const;
@@ -270,7 +270,7 @@ namespace QuantLib {
             data members.
         */
         void setSingleRedemption(Real notional,
-                                 const ext::shared_ptr<CashFlow>& redemption);
+                                 const std::shared_ptr<CashFlow>& redemption);
 
         /*! used internally to collect notional information from the
             coupons. It should not be called by derived classes,

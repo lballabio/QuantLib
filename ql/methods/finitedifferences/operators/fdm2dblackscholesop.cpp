@@ -31,9 +31,9 @@
 namespace QuantLib {
 
     Fdm2dBlackScholesOp::Fdm2dBlackScholesOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+            const std::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+            const std::shared_ptr<GeneralizedBlackScholesProcess>& p2,
             Real correlation,
             Time /*maturity*/,
             bool localVol,
@@ -43,9 +43,9 @@ namespace QuantLib {
       p2_(p2),
       
       localVol1_((localVol) ? p1->localVolatility().currentLink()
-                            : ext::shared_ptr<LocalVolTermStructure>()),
+                            : std::shared_ptr<LocalVolTermStructure>()),
       localVol2_((localVol) ? p2->localVolatility().currentLink()
-                            : ext::shared_ptr<LocalVolTermStructure>()),
+                            : std::shared_ptr<LocalVolTermStructure>()),
                             
       x_((localVol) ? Array(Exp(mesher->locations(0))) : Array()),
       y_((localVol) ? Array(Exp(mesher->locations(1))) : Array()),
@@ -69,7 +69,7 @@ namespace QuantLib {
         opY_.setTime(t1, t2);
 
         if (localVol1_ != nullptr) {
-            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const std::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
             Array vol1(layout->size()), vol2(layout->size());

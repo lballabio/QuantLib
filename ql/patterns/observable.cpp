@@ -120,7 +120,7 @@ namespace QuantLib {
         class ProxyUpdater {
             T* proxy_;
           public:
-            explicit ProxyUpdater(const ext::shared_ptr<T>& observerProxy)
+            explicit ProxyUpdater(const std::shared_ptr<T>& observerProxy)
             : proxy_(observerProxy.get()) {}
 
             void operator()() const {
@@ -138,7 +138,7 @@ namespace QuantLib {
 
     }
 
-    void Observable::registerObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy) {
+    void Observable::registerObserver(const std::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             std::lock_guard<std::recursive_mutex> lock(mutex_);
             observers_.insert(observerProxy);
@@ -152,7 +152,7 @@ namespace QuantLib {
         #endif
     }
 
-    void Observable::unregisterObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy,
+    void Observable::unregisterObserver(const std::shared_ptr<Observer::Proxy>& observerProxy,
                                         bool disconnect) {
         {
             std::lock_guard<std::recursive_mutex> lock(mutex_);

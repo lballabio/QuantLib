@@ -22,8 +22,8 @@
 #include <utility>
 
 namespace QuantLib {
-    LfmCovarianceProxy::LfmCovarianceProxy(ext::shared_ptr<LmVolatilityModel> volaModel,
-                                           const ext::shared_ptr<LmCorrelationModel>& corrModel)
+    LfmCovarianceProxy::LfmCovarianceProxy(std::shared_ptr<LmVolatilityModel> volaModel,
+                                           const std::shared_ptr<LmCorrelationModel>& corrModel)
 
     : LfmCovarianceParameterization(corrModel->size(), corrModel->factors()),
       volaModel_(std::move(volaModel)), corrModel_(corrModel) {
@@ -34,12 +34,12 @@ namespace QuantLib {
             ") models");
     }
 
-    ext::shared_ptr<LmVolatilityModel>
+    std::shared_ptr<LmVolatilityModel>
     LfmCovarianceProxy::volatilityModel() const {
         return volaModel_;
     }
 
-    ext::shared_ptr<LmCorrelationModel>
+    std::shared_ptr<LmCorrelationModel>
     LfmCovarianceProxy::correlationModel() const {
         return corrModel_;
     }

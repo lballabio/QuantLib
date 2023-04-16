@@ -46,7 +46,7 @@ namespace QuantLib {
                              Calendar payCalendar,
                              BusinessDayConvention payConvention,
                              Rate strike,
-                             const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+                             const std::shared_ptr<ZeroInflationIndex>& infIndex,
                              const Period& observationLag,
                              CPI::InterpolationType observationInterpolation)
     : CPICapFloor(type,

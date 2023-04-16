@@ -32,9 +32,9 @@ namespace QuantLib {
 
     class FdmSpreadPayoffInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmSpreadPayoffInnerValue(ext::shared_ptr<BasketPayoff> payoff,
-                                  ext::shared_ptr<FdmInnerValueCalculator> calc1,
-                                  ext::shared_ptr<FdmInnerValueCalculator> calc2)
+        FdmSpreadPayoffInnerValue(std::shared_ptr<BasketPayoff> payoff,
+                                  std::shared_ptr<FdmInnerValueCalculator> calc1,
+                                  std::shared_ptr<FdmInnerValueCalculator> calc2)
         : payoff_(std::move(payoff)), calc1_(std::move(calc1)), calc2_(std::move(calc2)) {}
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
@@ -49,9 +49,9 @@ namespace QuantLib {
         }
 
       private:
-        const ext::shared_ptr<BasketPayoff> payoff_;
-        const ext::shared_ptr<FdmInnerValueCalculator> calc1_;
-        const ext::shared_ptr<FdmInnerValueCalculator> calc2_;
+        const std::shared_ptr<BasketPayoff> payoff_;
+        const std::shared_ptr<FdmInnerValueCalculator> calc1_;
+        const std::shared_ptr<FdmInnerValueCalculator> calc2_;
     };
 }
 

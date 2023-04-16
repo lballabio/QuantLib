@@ -38,9 +38,9 @@
 namespace QuantLib {
 
     FdmKlugeExtOUOp::FdmKlugeExtOUOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
+        const std::shared_ptr<YieldTermStructure>& rTS,
         const FdmBoundaryConditionSet& bcSet,
         Size integroIntegrationOrder)
     : mesher_ (mesher),
@@ -52,9 +52,9 @@ namespace QuantLib {
                                   integroIntegrationOrder)),
       ouOp_   (new FdmExtendedOrnsteinUhlenbeckOp(
                   mesher, extOU_,
-                  ext::shared_ptr<YieldTermStructure>(
+                  std::shared_ptr<YieldTermStructure>(
                       new FlatForward(rTS->referenceDate(),
-                              Handle<Quote>(ext::shared_ptr<Quote>(
+                              Handle<Quote>(std::shared_ptr<Quote>(
                                       new SimpleQuote(0.0))),
                                       rTS->dayCounter())),
                   bcSet, 2)),

@@ -35,7 +35,7 @@ namespace QuantLib {
     class UniformGridMesher : public FdmMesher {
       public:
         UniformGridMesher(
-            const ext::shared_ptr<FdmLinearOpLayout> & index,
+            const std::shared_ptr<FdmLinearOpLayout> & index,
             const std::vector<std::pair<Real, Real> > & boundaries);
 
         Real dplus(const FdmLinearOpIterator&, Size direction) const override {

@@ -141,23 +141,23 @@ void NthToDefaultTest::testGauss() {
         TARGET().advance (asofDate, Period (7, Years))
     };
 
-    ext::shared_ptr<YieldTermStructure> yieldPtr (
+    std::shared_ptr<YieldTermStructure> yieldPtr (
                                    new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     std::vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Real i : lambda) {
-        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
-        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
+        Handle<Quote> h(std::shared_ptr<Quote>(new SimpleQuote(i)));
+        std::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    ext::shared_ptr<DefaultLossModel> copula( new 
+    std::shared_ptr<DefaultLossModel> copula( new 
         ConstantLossModel<GaussianCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, 
@@ -167,15 +167,15 @@ void NthToDefaultTest::testGauss() {
     instead below. But you need at least 1e6 simulations to pass the pricing 
     error tests
     */
-    //ext::shared_ptr<GaussianDefProbLM> gLM(
-    //    ext::make_shared<GaussianDefProbLM>(correlationHandle, names,
+    //std::shared_ptr<GaussianDefProbLM> gLM(
+    //    std::make_shared<GaussianDefProbLM>(correlationHandle, names,
     //    LatentModelIntegrationType::GaussianQuadrature,
     //    // g++ requires this when using make_shared
     //    GaussianCopulaPolicy::initTraits()));
     //Size numSimulations = 1000000;
     //// Size numCoresUsed = 4; use your are in the multithread branch
     //// Sobol, many cores
-    //ext::shared_ptr<RandomDefaultLM<GaussianCopulaPolicy> > copula( 
+    //std::shared_ptr<RandomDefaultLM<GaussianCopulaPolicy> > copula( 
     //    new RandomDefaultLM<GaussianCopulaPolicy>(gLM, 
     //        std::vector<Real>(names, recovery), numSimulations, 1.e-6, 
     //        2863311530));
@@ -195,7 +195,7 @@ void NthToDefaultTest::testGauss() {
         issuers.emplace_back(curves);
     }
 
-    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+    std::shared_ptr<Pool> thePool = std::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -203,10 +203,10 @@ void NthToDefaultTest::testGauss() {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
+    std::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
         std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
     std::vector<NthToDefault> ntd;
@@ -287,25 +287,25 @@ void NthToDefaultTest::testStudent() {
         TARGET().advance (asofDate, Period (7, Years))
     };
 
-    ext::shared_ptr<YieldTermStructure> yieldPtr (
+    std::shared_ptr<YieldTermStructure> yieldPtr (
                                 new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     std::vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Real i : lambda) {
-        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
-        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
+        Handle<Quote> h(std::shared_ptr<Quote>(new SimpleQuote(i)));
+        std::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
         probabilities.emplace_back(ptr);
     }
 
-    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
     Handle<Quote> correlationHandle (simpleQuote);
 
     TCopulaPolicy::initTraits iniT;
     iniT.tOrders = std::vector<QuantLib::Integer>(2,5);
-    ext::shared_ptr<DefaultLossModel> copula( new 
+    std::shared_ptr<DefaultLossModel> copula( new 
         ConstantLossModel<TCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, iniT));
@@ -325,7 +325,7 @@ void NthToDefaultTest::testStudent() {
         issuers.emplace_back(curves);
     }
 
-    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+    std::shared_ptr<Pool> thePool = std::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -333,10 +333,10 @@ void NthToDefaultTest::testStudent() {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
+    std::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
         std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
     std::vector<NthToDefault> ntd;

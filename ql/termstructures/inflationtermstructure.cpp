@@ -28,7 +28,7 @@ namespace QuantLib {
                                         const Period& observationLag,
                                         Frequency frequency,
                                         const DayCounter& dayCounter,
-                                        ext::shared_ptr<Seasonality> seasonality)
+                                        std::shared_ptr<Seasonality> seasonality)
     : TermStructure(dayCounter), seasonality_(std::move(seasonality)),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
@@ -45,7 +45,7 @@ namespace QuantLib {
                                         Frequency frequency,
                                         const Calendar& calendar,
                                         const DayCounter& dayCounter,
-                                        ext::shared_ptr<Seasonality> seasonality)
+                                        std::shared_ptr<Seasonality> seasonality)
     : TermStructure(referenceDate, calendar, dayCounter), seasonality_(std::move(seasonality)),
       observationLag_(observationLag), frequency_(frequency), baseRate_(baseRate) {
         if (seasonality_ != nullptr) {
@@ -61,7 +61,7 @@ namespace QuantLib {
                                         const Period& observationLag,
                                         Frequency frequency,
                                         const DayCounter &dayCounter,
-                                        ext::shared_ptr<Seasonality> seasonality)
+                                        std::shared_ptr<Seasonality> seasonality)
     : TermStructure(settlementDays, calendar, dayCounter), seasonality_(std::move(seasonality)),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     void InflationTermStructure::setSeasonality(
-                          const ext::shared_ptr<Seasonality>& seasonality) {
+                          const std::shared_ptr<Seasonality>& seasonality) {
         // always reset, whether with null or new pointer
         seasonality_ = seasonality;
         if (seasonality_ != nullptr) {
@@ -108,7 +108,7 @@ namespace QuantLib {
                                     Rate baseZeroRate,
                                     const Period& observationLag,
                                     Frequency frequency,
-                                    const ext::shared_ptr<Seasonality> &seasonality)
+                                    const std::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(baseZeroRate, observationLag, frequency,
                              dayCounter, seasonality) {}
 
@@ -119,7 +119,7 @@ namespace QuantLib {
                                     Rate baseZeroRate,
                                     const Period& observationLag,
                                     Frequency frequency,
-                                    const ext::shared_ptr<Seasonality> &seasonality)
+                                    const std::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(referenceDate, baseZeroRate, observationLag, frequency,
                              calendar, dayCounter, seasonality) {}
 
@@ -130,7 +130,7 @@ namespace QuantLib {
                                     Rate baseZeroRate,
                                     const Period& observationLag,
                                     Frequency frequency,
-                                    const ext::shared_ptr<Seasonality> &seasonality)
+                                    const std::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(settlementDays, calendar, baseZeroRate, observationLag, frequency,
                              dayCounter, seasonality) {}
 
@@ -183,7 +183,7 @@ namespace QuantLib {
                                     const Period& observationLag,
                                     Frequency frequency,
                                     bool indexIsInterpolated,
-                                    const ext::shared_ptr<Seasonality> &seasonality)
+                                    const std::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(baseYoYRate, observationLag, frequency,
                              dayCounter, seasonality),
       indexIsInterpolated_(indexIsInterpolated) {}
@@ -196,7 +196,7 @@ namespace QuantLib {
                                     const Period& observationLag,
                                     Frequency frequency,
                                     bool indexIsInterpolated,
-                                    const ext::shared_ptr<Seasonality> &seasonality)
+                                    const std::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(referenceDate, baseYoYRate, observationLag, frequency,
                              calendar, dayCounter, seasonality),
       indexIsInterpolated_(indexIsInterpolated) {}
@@ -209,7 +209,7 @@ namespace QuantLib {
                                     const Period& observationLag,
                                     Frequency frequency,
                                     bool indexIsInterpolated,
-                                    const ext::shared_ptr<Seasonality> &seasonality)
+                                    const std::shared_ptr<Seasonality> &seasonality)
     : InflationTermStructure(settlementDays, calendar, baseYoYRate, observationLag,
                              frequency, dayCounter, seasonality),
       indexIsInterpolated_(indexIsInterpolated) {}

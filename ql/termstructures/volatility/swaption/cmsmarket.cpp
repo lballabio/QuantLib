@@ -33,10 +33,10 @@ using std::vector;
 namespace QuantLib {
 
     CmsMarket::CmsMarket(vector<Period> swapLengths,
-                         vector<ext::shared_ptr<SwapIndex> > swapIndexes,
-                         ext::shared_ptr<IborIndex> iborIndex,
+                         vector<std::shared_ptr<SwapIndex> > swapIndexes,
+                         std::shared_ptr<IborIndex> iborIndex,
                          const vector<vector<Handle<Quote> > >& bidAskSpreads,
-                         const vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
+                         const vector<std::shared_ptr<CmsCouponPricer> >& pricers,
                          Handle<YieldTermStructure> discountingTS)
     : swapLengths_(std::move(swapLengths)), swapIndexes_(std::move(swapIndexes)),
       iborIndex_(std::move(iborIndex)), bidAskSpreads_(bidAskSpreads), pricers_(pricers),
@@ -58,8 +58,8 @@ namespace QuantLib {
       mktFwdCmsLegNPV_(nExercise_, nSwapIndexes_), mdlFwdCmsLegNPV_(nExercise_, nSwapIndexes_),
       errFwdCmsLegNPV_(nExercise_, nSwapIndexes_),
 
-      spotSwaps_(nExercise_, vector<ext::shared_ptr<Swap> >(nSwapIndexes_)),
-      fwdSwaps_(nExercise_, vector<ext::shared_ptr<Swap> >(nSwapIndexes_)) {
+      spotSwaps_(nExercise_, vector<std::shared_ptr<Swap> >(nSwapIndexes_)),
+      fwdSwaps_(nExercise_, vector<std::shared_ptr<Swap> >(nSwapIndexes_)) {
         QL_REQUIRE(2 * nSwapIndexes_ == bidAskSpreads[0].size(),
                    "2*nSwapIndexes_ (" << 2 * nSwapIndexes_
                                        << ") != bidAskSpreads columns() ("
@@ -91,14 +91,14 @@ namespace QuantLib {
                                            swapIndexes_[j],
                                            iborIndex_, 0.0,
                                            Period())
-                                   .operator ext::shared_ptr<Swap>();
+                                   .operator std::shared_ptr<Swap>();
                 fwdSwaps_[i][j]  = MakeCms(swapLengths_[i]-start,
                                            swapIndexes_[j],
                                            iborIndex_, 0.0,
                                            start)
                                    .withCmsCouponPricer(pricers_[j])
                                    .withDiscountingTermStructure(discTS_)
-                                   .operator ext::shared_ptr<Swap>();
+                                   .operator std::shared_ptr<Swap>();
             }
         }
         // probably useless
@@ -155,14 +155,14 @@ namespace QuantLib {
     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure> &v,
                             Real meanReversion) {
         Handle<Quote> meanReversionQuote(
-            ext::make_shared<SimpleQuote>(meanReversion));
+            std::make_shared<SimpleQuote>(meanReversion));
         for (Size j = 0; j < nSwapIndexes_; ++j) {
             // ??
             // set new volatility structure and new mean reversion
             pricers_[j]->setSwaptionVolatility(v);
             if (meanReversion != Null<Real>()) {
-                ext::shared_ptr<MeanRevertingPricer> p =
-                    ext::dynamic_pointer_cast<MeanRevertingPricer>(
+                std::shared_ptr<MeanRevertingPricer> p =
+                    std::dynamic_pointer_cast<MeanRevertingPricer>(
                         pricers_[j]);
                 QL_REQUIRE(p != nullptr, "mean reverting pricer required at index " << j);
                 p->setMeanReversion(meanReversionQuote);

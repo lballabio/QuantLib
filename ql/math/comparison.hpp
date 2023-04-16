@@ -25,7 +25,7 @@
 #define quantlib_comparison_hpp
 
 #include <ql/types.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -132,18 +132,18 @@ namespace QuantLib {
     /* partial specialization for shared pointers, forwarding to their
        pointees. */
     template <class T>
-    struct earlier_than<ext::shared_ptr<T> > {
+    struct earlier_than<std::shared_ptr<T> > {
         /*! \deprecated Use `auto` or `decltype` instead.
                         Deprecated in version 1.29.
         */
         QL_DEPRECATED
-        typedef ext::shared_ptr<T> first_argument_type;
+        typedef std::shared_ptr<T> first_argument_type;
 
         /*! \deprecated Use `auto` or `decltype` instead.
                         Deprecated in version 1.29.
         */
         QL_DEPRECATED
-        typedef ext::shared_ptr<T> second_argument_type;
+        typedef std::shared_ptr<T> second_argument_type;
 
         /*! \deprecated Use `auto` or `decltype` instead.
                         Deprecated in version 1.29.
@@ -151,8 +151,8 @@ namespace QuantLib {
         QL_DEPRECATED
         typedef bool result_type;
 
-        bool operator()(const ext::shared_ptr<T>& x,
-                        const ext::shared_ptr<T>& y) const {
+        bool operator()(const std::shared_ptr<T>& x,
+                        const std::shared_ptr<T>& y) const {
             return earlier_than<T>()(*x,*y);
         }
     };

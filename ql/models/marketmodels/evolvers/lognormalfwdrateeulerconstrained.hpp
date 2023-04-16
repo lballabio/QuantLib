@@ -37,7 +37,7 @@ namespace QuantLib {
     class LogNormalFwdRateEulerConstrained : public ConstrainedEvolver
         {
       public:
-        LogNormalFwdRateEulerConstrained(const ext::shared_ptr<MarketModel>&,
+        LogNormalFwdRateEulerConstrained(const std::shared_ptr<MarketModel>&,
                                          const BrownianGeneratorFactory&,
                                          const std::vector<Size>& numeraires,
                                          Size initialStep = 0);
@@ -60,10 +60,10 @@ namespace QuantLib {
       private:
         void setForwards(const std::vector<Real>& forwards);
         // inputs
-        ext::shared_ptr<MarketModel> marketModel_;
+        std::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
-        ext::shared_ptr<BrownianGenerator> generator_;
+        std::shared_ptr<BrownianGenerator> generator_;
 
         std::vector<Size> startIndexOfSwapRate_;
         std::vector<Size> endIndexOfSwapRate_;

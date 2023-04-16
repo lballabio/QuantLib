@@ -39,7 +39,7 @@ namespace QuantLib {
             for (Date periodStartDate=startDate; periodStartDate<endDate; ) {
                 Date periodEndDate = (periodStartDate + (1 * Months)) - 1;
                 Date paymentDate = paymentTerm.getPaymentDate(periodEndDate);
-                pricingPeriods.push_back(ext::make_shared<PricingPeriod>(
+                pricingPeriods.push_back(std::make_shared<PricingPeriod>(
                              periodStartDate, periodEndDate,
                                                paymentDate, periodQuantity));
                 periodStartDate = periodEndDate + 1;
@@ -54,7 +54,7 @@ namespace QuantLib {
                 Quantity periodQuantity =
                     quantity * (periodEndDate - periodStartDate);
                 Date paymentDate = paymentTerm.getPaymentDate(periodEndDate);
-                pricingPeriods.push_back(ext::make_shared<PricingPeriod>(
+                pricingPeriods.push_back(std::make_shared<PricingPeriod>(
                              periodStartDate, periodEndDate,
                                                paymentDate, periodQuantity));
                 periodStartDate = periodEndDate + 1;

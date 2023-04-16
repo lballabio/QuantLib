@@ -27,7 +27,7 @@
 
 #include <ql/math/statistics/statistics.hpp>
 #include <ql/methods/montecarlo/mctraits.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <utility>
 
 namespace QuantLib {
@@ -60,14 +60,14 @@ namespace QuantLib {
         typedef S stats_type;
         // constructor
         MonteCarloModel(
-            ext::shared_ptr<path_generator_type> pathGenerator,
-            ext::shared_ptr<path_pricer_type> pathPricer,
+            std::shared_ptr<path_generator_type> pathGenerator,
+            std::shared_ptr<path_pricer_type> pathPricer,
             stats_type sampleAccumulator,
             bool antitheticVariate,
-            ext::shared_ptr<path_pricer_type> cvPathPricer = ext::shared_ptr<path_pricer_type>(),
+            std::shared_ptr<path_pricer_type> cvPathPricer = std::shared_ptr<path_pricer_type>(),
             result_type cvOptionValue = result_type(),
-            ext::shared_ptr<path_generator_type> cvPathGenerator =
-                ext::shared_ptr<path_generator_type>())
+            std::shared_ptr<path_generator_type> cvPathGenerator =
+                std::shared_ptr<path_generator_type>())
         : pathGenerator_(std::move(pathGenerator)), pathPricer_(std::move(pathPricer)),
           sampleAccumulator_(std::move(sampleAccumulator)), isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(std::move(cvPathPricer)), cvOptionValue_(cvOptionValue),
@@ -77,14 +77,14 @@ namespace QuantLib {
         void addSamples(Size samples);
         const stats_type& sampleAccumulator() const;
       private:
-        ext::shared_ptr<path_generator_type> pathGenerator_;
-        ext::shared_ptr<path_pricer_type> pathPricer_;
+        std::shared_ptr<path_generator_type> pathGenerator_;
+        std::shared_ptr<path_pricer_type> pathPricer_;
         stats_type sampleAccumulator_;
         bool isAntitheticVariate_;
-        ext::shared_ptr<path_pricer_type> cvPathPricer_;
+        std::shared_ptr<path_pricer_type> cvPathPricer_;
         result_type cvOptionValue_;
         bool isControlVariate_;
-        ext::shared_ptr<path_generator_type> cvPathGenerator_;
+        std::shared_ptr<path_generator_type> cvPathGenerator_;
     };
 
     // inline definitions

@@ -51,7 +51,7 @@ namespace QuantLib {
     class MultiPathGenerator {
       public:
         typedef Sample<MultiPath> sample_type;
-        MultiPathGenerator(const ext::shared_ptr<StochasticProcess>&,
+        MultiPathGenerator(const std::shared_ptr<StochasticProcess>&,
                            const TimeGrid&,
                            GSG generator,
                            bool brownianBridge = false);
@@ -60,7 +60,7 @@ namespace QuantLib {
       private:
         const sample_type& next(bool antithetic) const;
         bool brownianBridge_;
-        ext::shared_ptr<StochasticProcess> process_;
+        std::shared_ptr<StochasticProcess> process_;
         GSG generator_;
         mutable sample_type next_;
     };
@@ -69,7 +69,7 @@ namespace QuantLib {
     // template definitions
 
     template <class GSG>
-    MultiPathGenerator<GSG>::MultiPathGenerator(const ext::shared_ptr<StochasticProcess>& process,
+    MultiPathGenerator<GSG>::MultiPathGenerator(const std::shared_ptr<StochasticProcess>& process,
                                                 const TimeGrid& times,
                                                 GSG generator,
                                                 bool brownianBridge)

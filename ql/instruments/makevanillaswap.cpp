@@ -33,12 +33,12 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/oceania.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
-                                     const ext::shared_ptr<IborIndex>& index,
+                                     const std::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
     : swapTenor_(swapTenor), iborIndex_(index), fixedRate_(fixedRate), forwardStart_(forwardStart),
@@ -53,11 +53,11 @@ namespace QuantLib {
       floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
-        ext::shared_ptr<VanillaSwap> swap = *this;
+        std::shared_ptr<VanillaSwap> swap = *this;
         return *swap;
     }
 
-    MakeVanillaSwap::operator ext::shared_ptr<VanillaSwap>() const {
+    MakeVanillaSwap::operator std::shared_ptr<VanillaSwap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -153,7 +153,7 @@ namespace QuantLib {
             VanillaSwap temp(type_, 100.00, fixedSchedule,
                              0.0, // fixed rate
                              fixedDayCount, floatSchedule, iborIndex_, floatSpread_, floatDayCount_,
-                             ext::nullopt, useIndexedCoupons_);
+                             std::nullopt, useIndexedCoupons_);
             if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                         iborIndex_->forwardingTermStructure();
@@ -161,7 +161,7 @@ namespace QuantLib {
                            "null term structure set to this instance of " <<
                            iborIndex_->name());
                 bool includeSettlementDateFlows = false;
-                ext::shared_ptr<PricingEngine> engine(new
+                std::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
             } else
@@ -170,15 +170,15 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
+        std::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount, floatSchedule, iborIndex_,
-            floatSpread_, floatDayCount_, ext::nullopt, useIndexedCoupons_));
+            floatSpread_, floatDayCount_, std::nullopt, useIndexedCoupons_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                     iborIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
-            ext::shared_ptr<PricingEngine> engine(new
+            std::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             swap->setPricingEngine(engine);
         } else
@@ -230,13 +230,13 @@ namespace QuantLib {
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
                                         const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = ext::shared_ptr<PricingEngine>(new
+        engine_ = std::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(d, includeSettlementDateFlows));
         return *this;
     }
 
     MakeVanillaSwap& MakeVanillaSwap::withPricingEngine(
-                             const ext::shared_ptr<PricingEngine>& engine) {
+                             const std::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
@@ -347,7 +347,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const ext::optional<bool>& b) {
+    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const std::optional<bool>& b) {
         useIndexedCoupons_ = b;
         return *this;
     }

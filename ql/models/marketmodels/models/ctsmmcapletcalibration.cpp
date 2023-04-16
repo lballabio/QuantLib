@@ -33,10 +33,10 @@ namespace QuantLib {
 
     CTSMMCapletCalibration::CTSMMCapletCalibration(
         EvolutionDescription evolution,
-        ext::shared_ptr<PiecewiseConstantCorrelation> corr,
-        std::vector<ext::shared_ptr<PiecewiseConstantVariance> > displacedSwapVariances,
+        std::shared_ptr<PiecewiseConstantCorrelation> corr,
+        std::vector<std::shared_ptr<PiecewiseConstantVariance> > displacedSwapVariances,
         std::vector<Volatility> mktCapletVols,
-        ext::shared_ptr<CurveState> cs,
+        std::shared_ptr<CurveState> cs,
         Spread displacement)
     : evolution_(std::move(evolution)), corr_(std::move(corr)),
       displacedSwapVariances_(std::move(displacedSwapVariances)),
@@ -68,7 +68,7 @@ namespace QuantLib {
     void CTSMMCapletCalibration::performChecks(
                     const EvolutionDescription& evolution,
                     const PiecewiseConstantCorrelation&  corr,
-                    const std::vector<ext::shared_ptr<
+                    const std::vector<std::shared_ptr<
                                 PiecewiseConstantVariance> >&
                                             displacedSwapVariances,
                     const std::vector<Volatility>& mktCapletVols,
@@ -149,7 +149,7 @@ namespace QuantLib {
                                          innerSolvingMaxIterations,
                                          innerSolvingTolerance);
 
-            ext::shared_ptr<MarketModel> ctsmm(new
+            std::shared_ptr<MarketModel> ctsmm(new
                 PseudoRootFacade(swapCovariancePseudoRoots_,
                                  rateTimes,
                                  cs_->coterminalSwapRates(),
@@ -185,7 +185,7 @@ namespace QuantLib {
         } while (iterations<maxIterations &&
                  capletRmsError_>capletVolTolerance);
 
-         ext::shared_ptr<MarketModel> ctsmm(new
+         std::shared_ptr<MarketModel> ctsmm(new
                 PseudoRootFacade(swapCovariancePseudoRoots_,
                                  rateTimes,
                                  cs_->coterminalSwapRates(),

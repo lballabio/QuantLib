@@ -23,7 +23,7 @@
 #define quantlib_onestep_optionlets_hpp
 
 #include <ql/models/marketmodels/products/multiproductonestep.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -34,7 +34,7 @@ namespace QuantLib {
         OneStepOptionlets(const std::vector<Time>& rateTimes,
                           std::vector<Real> accruals,
                           const std::vector<Time>& paymentTimes,
-                          std::vector<ext::shared_ptr<Payoff> >);
+                          std::vector<std::shared_ptr<Payoff> >);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;
@@ -49,7 +49,7 @@ namespace QuantLib {
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<ext::shared_ptr<Payoff> > payoffs_;
+        std::vector<std::shared_ptr<Payoff> > payoffs_;
     };
 
     // inline definitions

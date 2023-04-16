@@ -40,7 +40,7 @@ namespace QuantLib {
         class QdPutCallParityEngine: public VanillaOption::engine {
           public:
             explicit QdPutCallParityEngine(
-                ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+                std::shared_ptr<GeneralizedBlackScholesProcess> process);
 
             void calculate() const override;
 
@@ -48,7 +48,7 @@ namespace QuantLib {
             virtual Real calculatePut(
                 Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const = 0;
 
-            const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+            const std::shared_ptr<GeneralizedBlackScholesProcess> process_;
 
           private:
             Real calculatePutWithEdgeCases(
@@ -64,7 +64,7 @@ namespace QuantLib {
                              Rate q,
                              Volatility vol,
                              Real xmax,
-                             ext::shared_ptr<Interpolation> q_z);
+                             std::shared_ptr<Interpolation> q_z);
 
             Real operator()(Real z) const;
           private:
@@ -72,7 +72,7 @@ namespace QuantLib {
             const Real S_, K_, xmax_;
             const Rate r_, q_;
             const Volatility vol_;
-            const ext::shared_ptr<Interpolation> q_z_;
+            const std::shared_ptr<Interpolation> q_z_;
             const CumulativeNormalDistribution Phi_;
         };
     }
@@ -94,7 +94,7 @@ namespace QuantLib {
         enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
 
         explicit QdPlusAmericanEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess>,
+            std::shared_ptr<GeneralizedBlackScholesProcess>,
             Size interpolationPoints = 8,
             SolverType solverType = Halley,
             Real eps = 1e-6,
@@ -104,7 +104,7 @@ namespace QuantLib {
             Real S, Real K, Rate r, Rate q,
             Volatility vol, Time T, Time tau) const;
 
-        ext::shared_ptr<ChebyshevInterpolation> getPutExerciseBoundary(
+        std::shared_ptr<ChebyshevInterpolation> getPutExerciseBoundary(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
 
         static Real xMax(Real K, Rate r, Rate q);

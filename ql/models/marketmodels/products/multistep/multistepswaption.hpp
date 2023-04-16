@@ -22,7 +22,7 @@
 #define quantlib_multistep_multistep_swaption_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -38,7 +38,7 @@ namespace QuantLib {
         MultiStepSwaption(const std::vector<Time>& rateTimes,
                                      Size startIndex,
                                      Size endIndex,
-                                     ext::shared_ptr<StrikedTypePayoff> &);
+                                     std::shared_ptr<StrikedTypePayoff> &);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;
@@ -55,7 +55,7 @@ namespace QuantLib {
     
         Size startIndex_;
         Size endIndex_;
-        ext::shared_ptr<StrikedTypePayoff> payoff_;
+        std::shared_ptr<StrikedTypePayoff> payoff_;
         std::vector<Time> paymentTimes_;
         // things that vary in a path
         Size currentIndex_;

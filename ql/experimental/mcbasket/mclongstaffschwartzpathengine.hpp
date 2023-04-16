@@ -49,7 +49,7 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::path_generator_type
             path_generator_type;
 
-        MCLongstaffSchwartzPathEngine(ext::shared_ptr<StochasticProcess> process,
+        MCLongstaffSchwartzPathEngine(std::shared_ptr<StochasticProcess> process,
                                       Size timeSteps,
                                       Size timeStepsPerYear,
                                       bool brownianBridge,
@@ -64,14 +64,14 @@ namespace QuantLib {
         void calculate() const;
 
       protected:
-        virtual ext::shared_ptr<LongstaffSchwartzMultiPathPricer> 
+        virtual std::shared_ptr<LongstaffSchwartzMultiPathPricer> 
                                                     lsmPathPricer() const = 0;
 
         TimeGrid timeGrid() const;
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const;
+        std::shared_ptr<path_pricer_type> pathPricer() const;
+        std::shared_ptr<path_generator_type> pathGenerator() const;
 
-        ext::shared_ptr<StochasticProcess> process_;
+        std::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;
         const Size timeStepsPerYear_;
         const bool brownianBridge_;
@@ -81,12 +81,12 @@ namespace QuantLib {
         const Size seed_;
         const Size nCalibrationSamples_;
 
-        mutable ext::shared_ptr<LongstaffSchwartzMultiPathPricer> pathPricer_;
+        mutable std::shared_ptr<LongstaffSchwartzMultiPathPricer> pathPricer_;
     };
 
     template <class GenericEngine, template <class> class MC, class RNG, class S>
     inline MCLongstaffSchwartzPathEngine<GenericEngine, MC, RNG, S>::MCLongstaffSchwartzPathEngine(
-        ext::shared_ptr<StochasticProcess> process,
+        std::shared_ptr<StochasticProcess> process,
         Size timeSteps,
         Size timeStepsPerYear,
         bool brownianBridge,
@@ -120,7 +120,7 @@ namespace QuantLib {
     template <class GenericEngine, template <class> class MC,
               class RNG, class S>
     inline
-    ext::shared_ptr<typename
+    std::shared_ptr<typename
         MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::path_pricer_type>
         MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::pathPricer() 
         const {
@@ -135,7 +135,7 @@ namespace QuantLib {
     void MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::calculate() 
     const {
         pathPricer_ = this->lsmPathPricer();
-        this->mcModel_ = ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+        this->mcModel_ = std::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                           new MonteCarloModel<MC,RNG,S>
                               (pathGenerator(), pathPricer_,
                                stats_type(), this->antitheticVariate_));
@@ -175,7 +175,7 @@ namespace QuantLib {
     template <class GenericEngine, template <class> class MC,
               class RNG, class S>
     inline
-    ext::shared_ptr<typename
+    std::shared_ptr<typename
     MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::path_generator_type>
     MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::pathGenerator() 
     const {
@@ -184,7 +184,7 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
             RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-        return ext::shared_ptr<path_generator_type>(
+        return std::shared_ptr<path_generator_type>(
                    new path_generator_type(process_,
                                            grid, generator, brownianBridge_));
     }

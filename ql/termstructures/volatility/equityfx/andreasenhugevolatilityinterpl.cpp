@@ -58,7 +58,7 @@ namespace QuantLib {
             Array marketVegas,
             Array lnMarketStrikes,
             Array previousNPVs,
-            const ext::shared_ptr<FdmMesherComposite>& mesher,
+            const std::shared_ptr<FdmMesherComposite>& mesher,
             Time dT,
             AndreasenHugeVolatilityInterpl::InterpolationType interpolationType)
         : marketNPVs_(std::move(marketNPVs)), marketVegas_(std::move(marketVegas)),
@@ -103,7 +103,7 @@ namespace QuantLib {
                 QL_FAIL("unknown interpolation type");
             }
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout =
+            const std::shared_ptr<FdmLinearOpLayout> layout =
                 mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
@@ -158,7 +158,7 @@ namespace QuantLib {
       private:
         const Array marketNPVs_, marketVegas_;
         const Array lnMarketStrikes_, previousNPVs_;
-        const ext::shared_ptr<FdmMesherComposite> mesher_;
+        const std::shared_ptr<FdmMesherComposite> mesher_;
         const Size nGridPoints_;
         const Time dT_;
         const AndreasenHugeVolatilityInterpl::InterpolationType
@@ -172,8 +172,8 @@ namespace QuantLib {
 
     class CombinedCostFunction : public CostFunction {
       public:
-        CombinedCostFunction(ext::shared_ptr<AndreasenHugeCostFunction> putCostFct,
-                             ext::shared_ptr<AndreasenHugeCostFunction> callCostFct)
+        CombinedCostFunction(std::shared_ptr<AndreasenHugeCostFunction> putCostFct,
+                             std::shared_ptr<AndreasenHugeCostFunction> callCostFct)
         : putCostFct_(std::move(putCostFct)), callCostFct_(std::move(callCostFct)) {}
 
         Array values(const Array& sig) const override {
@@ -207,8 +207,8 @@ namespace QuantLib {
         }
 
       private:
-        const ext::shared_ptr<AndreasenHugeCostFunction> putCostFct_;
-        const ext::shared_ptr<AndreasenHugeCostFunction> callCostFct_;
+        const std::shared_ptr<AndreasenHugeCostFunction> putCostFct_;
+        const std::shared_ptr<AndreasenHugeCostFunction> callCostFct_;
     };
 
 
@@ -222,7 +222,7 @@ namespace QuantLib {
         Size nGridPoints,
         Real _minStrike,
         Real _maxStrike,
-        ext::shared_ptr<OptimizationMethod> optimizationMethod,
+        std::shared_ptr<OptimizationMethod> optimizationMethod,
         const EndCriteria& endCriteria)
     : spot_(std::move(spot)), rTS_(std::move(rTS)), qTS_(std::move(qTS)),
       interpolationType_(interplationType), calibrationType_(calibrationType),
@@ -236,7 +236,7 @@ namespace QuantLib {
         calibrationSet_.reserve(calibrationSet.size());
         for (const auto& i : calibrationSet) {
 
-            const ext::shared_ptr<Exercise> exercise = i.first->exercise();
+            const std::shared_ptr<Exercise> exercise = i.first->exercise();
 
             QL_REQUIRE(exercise->type() == Exercise::European,
                     "European option required");
@@ -244,8 +244,8 @@ namespace QuantLib {
             const Date expiry = exercise->lastDate();
             expiries.insert(expiry);
 
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::dynamic_pointer_cast<PlainVanillaPayoff>(i.first->payoff());
+            const std::shared_ptr<PlainVanillaPayoff> payoff =
+                std::dynamic_pointer_cast<PlainVanillaPayoff>(i.first->payoff());
 
             QL_REQUIRE(payoff, "plain vanilla payoff required");
 
@@ -253,7 +253,7 @@ namespace QuantLib {
             strikes.insert(strike);
 
             calibrationSet_.push_back(
-                std::make_pair(ext::make_shared<VanillaOption>(payoff, exercise), i.second));
+                std::make_pair(std::make_shared<VanillaOption>(payoff, exercise), i.second));
 
             registerWith(i.second);
         }
@@ -274,7 +274,7 @@ namespace QuantLib {
             const Size l = std::distance(expiries.begin(), expiries.lower_bound(expiry));
 
             const Real strike =
-                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+                std::dynamic_pointer_cast<PlainVanillaPayoff>(
                     calibrationSet[i].first->payoff())->strike();
 
             const Size k = std::distance(strikes_.begin(),
@@ -289,7 +289,7 @@ namespace QuantLib {
         registerWith(qTS_);
     }
 
-    ext::shared_ptr<AndreasenHugeCostFunction>
+    std::shared_ptr<AndreasenHugeCostFunction>
         AndreasenHugeVolatilityInterpl::buildCostFunction(
         Size iExpiry, Option::Type optionType,
         const Array& previousNPVs) const {
@@ -297,7 +297,7 @@ namespace QuantLib {
         if (calibrationType_ != CallPut
             && (   (calibrationType_ == Call && optionType ==Option::Put)
                 || (calibrationType_ == Put  && optionType ==Option::Call)))
-            return ext::shared_ptr<AndreasenHugeCostFunction>();
+            return std::shared_ptr<AndreasenHugeCostFunction>();
 
         const Time expiryTime = expiryTimes_[iExpiry];
 
@@ -334,7 +334,7 @@ namespace QuantLib {
             }
         }
 
-        return ext::make_shared<AndreasenHugeCostFunction>(
+        return std::make_shared<AndreasenHugeCostFunction>(
             marketNPVs,
             marketVegas,
             lnMarketStrikes,
@@ -357,8 +357,8 @@ namespace QuantLib {
         }
 
         mesher_ =
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Concentrating1dMesher>(
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Concentrating1dMesher>(
                     std::log(minStrike()/spot_->value()),
                     std::log(maxStrike()/spot_->value()),
                     nGridPoints_,
@@ -386,9 +386,9 @@ namespace QuantLib {
         }
 
         for (Size i=0; i < expiries_.size(); ++i) {
-            const ext::shared_ptr<AndreasenHugeCostFunction> putCostFct =
+            const std::shared_ptr<AndreasenHugeCostFunction> putCostFct =
                 buildCostFunction(i, Option::Put, npvPuts);
-            const ext::shared_ptr<AndreasenHugeCostFunction> callCostFct =
+            const std::shared_ptr<AndreasenHugeCostFunction> callCostFct =
                 buildCostFunction(i, Option::Call, npvCalls);
 
             CombinedCostFunction costFunction(putCostFct, callCostFct);
@@ -473,11 +473,11 @@ namespace QuantLib {
         return rTS_;
     }
 
-    ext::tuple<Real, Real, Real>
+    std::tuple<Real, Real, Real>
     AndreasenHugeVolatilityInterpl::calibrationError() const {
         calculate();
 
-        return ext::make_tuple(minError_, maxError_, avgError_);
+        return std::make_tuple(minError_, maxError_, avgError_);
     }
 
     Size AndreasenHugeVolatilityInterpl::getExerciseTimeIdx(Time t) const {
@@ -490,13 +490,13 @@ namespace QuantLib {
     Real AndreasenHugeVolatilityInterpl::getCacheValue(
         Real strike, const TimeValueCacheType::const_iterator& f) const {
 
-        const Real fwd = ext::get<0>(f->second);
+        const Real fwd = std::get<0>(f->second);
         const Real k = std::log(strike / fwd);
 
         const Real s = std::max(gridPoints_[1],
             std::min(*(gridPoints_.end()-2), k));
 
-        return (*(ext::get<2>(f->second)))(s);
+        return (*(std::get<2>(f->second)))(s);
     }
 
     Array AndreasenHugeVolatilityInterpl::getPriceSlice(
@@ -519,7 +519,7 @@ namespace QuantLib {
         const DiscountFactor df = rTS_->discount(t);
 
         if (f != priceCache_.end()) {
-            const Real fwd = ext::get<0>(f->second);
+            const Real fwd = std::get<0>(f->second);
 
             Real price = getCacheValue(strike, f);
 
@@ -535,8 +535,8 @@ namespace QuantLib {
         calculate();
 
 
-        ext::shared_ptr<Array> prices(
-            ext::make_shared<Array>(gridPoints_));
+        std::shared_ptr<Array> prices(
+            std::make_shared<Array>(gridPoints_));
 
         switch (calibrationType_) {
           case Put:
@@ -552,9 +552,9 @@ namespace QuantLib {
 
         Real fwd = spot_->value()*qTS_->discount(t)/df;
 
-        priceCache_[t] = ext::make_tuple(
+        priceCache_[t] = std::make_tuple(
                 fwd, prices,
-                ext::make_shared<CubicNaturalSpline>(
+                std::make_shared<CubicNaturalSpline>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
                     prices->begin()+1));
 
@@ -570,7 +570,7 @@ namespace QuantLib {
             (optionType == Option::Call)? calibrationResults_[iu].callNPVs
                                         : calibrationResults_[iu].putNPVs;
 
-        const ext::shared_ptr<AndreasenHugeCostFunction> costFunction
+        const std::shared_ptr<AndreasenHugeCostFunction> costFunction
             = calibrationResults_[iu].costFunction;
 
         const Time dt = (iu == 0) ? t : t-expiryTimes_[iu-1];
@@ -603,8 +603,8 @@ namespace QuantLib {
 
         calculate();
 
-        ext::shared_ptr<Array> localVol(
-            ext::make_shared<Array>(gridPoints_.size()));
+        std::shared_ptr<Array> localVol(
+            std::make_shared<Array>(gridPoints_.size()));
 
         switch (calibrationType_) {
           case CallPut: {
@@ -628,9 +628,9 @@ namespace QuantLib {
 
         Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
 
-        localVolCache_[t] = ext::make_tuple(
+        localVolCache_[t] = std::make_tuple(
                 fwd, localVol,
-                ext::make_shared<LinearInterpolation>(
+                std::make_shared<LinearInterpolation>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
                     localVol->begin()+1));
 

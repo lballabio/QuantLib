@@ -25,7 +25,7 @@ namespace QuantLib {
     YoYCapFloorTermPriceSurface::YoYCapFloorTermPriceSurface(
         Natural fixingDays,
         const Period& lag,
-        const ext::shared_ptr<YoYInflationIndex>& yii,
+        const std::shared_ptr<YoYInflationIndex>& yii,
         Rate baseRate,
         Handle<YieldTermStructure> nominal,
         const DayCounter& dc,

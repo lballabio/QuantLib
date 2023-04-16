@@ -35,17 +35,17 @@ namespace QuantLib {
 
     class FdmQuantoHelper : public Observable {
     public:
-      FdmQuantoHelper(ext::shared_ptr<YieldTermStructure> rTS,
-                      ext::shared_ptr<YieldTermStructure> fTS,
-                      ext::shared_ptr<BlackVolTermStructure> fxVolTS,
+      FdmQuantoHelper(std::shared_ptr<YieldTermStructure> rTS,
+                      std::shared_ptr<YieldTermStructure> fTS,
+                      std::shared_ptr<BlackVolTermStructure> fxVolTS,
                       Real equityFxCorrelation,
                       Real exchRateATMlevel);
 
       Rate quantoAdjustment(Volatility equityVol, Time t1, Time t2) const;
       Array quantoAdjustment(const Array& equityVol, Time t1, Time t2) const;
 
-      const ext::shared_ptr<YieldTermStructure> rTS_, fTS_;
-      const ext::shared_ptr<BlackVolTermStructure> fxVolTS_;
+      const std::shared_ptr<YieldTermStructure> rTS_, fTS_;
+      const std::shared_ptr<BlackVolTermStructure> fxVolTS_;
       const Real equityFxCorrelation_;
       const Real exchRateATMlevel_;
     };

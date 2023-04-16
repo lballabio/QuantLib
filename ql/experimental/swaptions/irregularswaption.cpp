@@ -41,10 +41,10 @@ namespace QuantLib {
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            ext::shared_ptr<PricingEngine> engine_;
+            std::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            ext::shared_ptr<SimpleQuote> vol_;
+            std::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
@@ -53,10 +53,10 @@ namespace QuantLib {
             Handle<YieldTermStructure> discountCurve,
             Real targetValue)
         : discountCurve_(std::move(discountCurve)), targetValue_(targetValue),
-          vol_(ext::make_shared<SimpleQuote>(-1.0)) {
+          vol_(std::make_shared<SimpleQuote>(-1.0)) {
 
             Handle<Quote> h(vol_);
-            engine_ = ext::shared_ptr<PricingEngine>(new
+            engine_ = std::shared_ptr<PricingEngine>(new
                                     BlackSwaptionEngine(discountCurve_, h));
             swaption.setupArguments(engine_->getArguments());
 
@@ -80,7 +80,7 @@ namespace QuantLib {
             auto vega_ = results_->additionalResults.find("vega");
             QL_REQUIRE(vega_ != results_->additionalResults.end(),
                        "vega not provided");
-            return ext::any_cast<Real>(vega_->second);
+            return std::any_cast<Real>(vega_->second);
         }
     }
 
@@ -96,10 +96,10 @@ namespace QuantLib {
         }
     }
 
-    IrregularSwaption::IrregularSwaption(ext::shared_ptr<IrregularSwap> swap,
-                                         const ext::shared_ptr<Exercise>& exercise,
+    IrregularSwaption::IrregularSwaption(std::shared_ptr<IrregularSwap> swap,
+                                         const std::shared_ptr<Exercise>& exercise,
                                          IrregularSettlement::Type delivery)
-    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
+    : Option(std::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
       settlementType_(delivery) {
         registerWith(swap_);
     }

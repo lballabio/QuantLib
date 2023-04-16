@@ -36,7 +36,7 @@ namespace QuantLib {
                                                         Swaption::arguments,
                                                         Swaption::results> {
       public:
-        LfmSwaptionEngine(const ext::shared_ptr<LiborForwardModel>& model,
+        LfmSwaptionEngine(const std::shared_ptr<LiborForwardModel>& model,
                           Handle<YieldTermStructure> discountCurve);
         void calculate() const override;
 

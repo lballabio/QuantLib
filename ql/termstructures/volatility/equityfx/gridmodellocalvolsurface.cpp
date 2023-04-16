@@ -23,14 +23,14 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>
-#include <ql/functional.hpp>
+
 #include <algorithm>
 
 namespace QuantLib {
     GridModelLocalVolSurface::GridModelLocalVolSurface(
         const Date& referenceDate,
         const std::vector<Date>& dates,
-        const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
+        const std::vector<std::shared_ptr<std::vector<Real> > >& strikes,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
@@ -83,14 +83,14 @@ namespace QuantLib {
     }
 
     void GridModelLocalVolSurface::generateArguments() {
-        const ext::shared_ptr<Matrix> localVolMatrix(
+        const std::shared_ptr<Matrix> localVolMatrix(
             new Matrix(strikes_.front()->size(), times_.size()));
 
         std::transform(arguments_.begin(), arguments_.end(),
                        localVolMatrix->begin(),
                        [](const Parameter& p) { return p(0.0); });
 
-        localVol_ = ext::make_shared<FixedLocalVolSurface>(
+        localVol_ = std::make_shared<FixedLocalVolSurface>(
                 referenceDate_,
                 times_,
                 strikes_,

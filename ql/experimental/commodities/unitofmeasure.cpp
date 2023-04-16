@@ -31,19 +31,19 @@ namespace QuantLib {
     }
 
     std::map<std::string,
-             ext::shared_ptr<UnitOfMeasure::Data> >
+             std::shared_ptr<UnitOfMeasure::Data> >
     UnitOfMeasure::unitsOfMeasure_;
 
     UnitOfMeasure::UnitOfMeasure(const std::string& name,
                                  const std::string& code,
                                  UnitOfMeasure::Type unitType) {
         std::map<std::string,
-            ext::shared_ptr<UnitOfMeasure::Data> >::const_iterator i =
+            std::shared_ptr<UnitOfMeasure::Data> >::const_iterator i =
             unitsOfMeasure_.find(name);
         if (i != unitsOfMeasure_.end()) {
             data_ = i->second;
         } else {
-            data_ = ext::make_shared<UnitOfMeasure::Data>(
+            data_ = std::make_shared<UnitOfMeasure::Data>(
                                name, code, unitType);
             unitsOfMeasure_[name] = data_;
         }

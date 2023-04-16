@@ -50,8 +50,8 @@ namespace QuantLib {
     }
 
     AnalyticBlackVasicekEngine::AnalyticBlackVasicekEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> blackProcess,
-        ext::shared_ptr<Vasicek> vasicekProcess,
+        std::shared_ptr<GeneralizedBlackScholesProcess> blackProcess,
+        std::shared_ptr<Vasicek> vasicekProcess,
         Real correlation)
     : blackProcess_(std::move(blackProcess)), vasicekProcess_(std::move(vasicekProcess)),
       simpsonIntegral_(new SimpsonIntegral(1e-5, 1000)), correlation_(correlation) {
@@ -63,8 +63,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-                ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+                std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
         QL_REQUIRE(payoff, "non-striked payoff given");
 

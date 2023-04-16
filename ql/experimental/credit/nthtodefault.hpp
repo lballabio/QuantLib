@@ -75,7 +75,7 @@ namespace QuantLib {
 
         //! This product is 'digital'; the basket might be tranched but this is 
         //  not relevant to it.
-        NthToDefault(const ext::shared_ptr<Basket>& basket,
+        NthToDefault(const std::shared_ptr<Basket>& basket,
                 Size n,
                 Protection::Side side,
                 const Schedule& premiumSchedule,
@@ -97,7 +97,7 @@ namespace QuantLib {
 
         const Date& maturity() const {return premiumSchedule_.endDate();}//???
 
-        const ext::shared_ptr<Basket>& basket() const {return basket_;}
+        const std::shared_ptr<Basket>& basket() const {return basket_;}
 
         // results
         Rate fairPremium() const;
@@ -111,7 +111,7 @@ namespace QuantLib {
       private:
         void setupExpired() const override;
 
-        ext::shared_ptr<Basket> basket_;
+        std::shared_ptr<Basket> basket_;
         Size n_;
         Protection::Side side_;
         Real nominal_;
@@ -140,7 +140,7 @@ namespace QuantLib {
                       upfrontRate(Null<Real>()) {}
         void validate() const override;
 
-        ext::shared_ptr<Basket> basket;
+        std::shared_ptr<Basket> basket;
         Protection::Side side;
         Leg premiumLeg;
 

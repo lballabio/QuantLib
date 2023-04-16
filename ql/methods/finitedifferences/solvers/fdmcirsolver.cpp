@@ -38,15 +38,15 @@ namespace QuantLib {
     }
 
     void FdmCIRSolver::performCalculations() const {
-        ext::shared_ptr<FdmLinearOpComposite> op(
-			ext::make_shared<FdmCIROp>(
+        std::shared_ptr<FdmLinearOpComposite> op(
+			std::make_shared<FdmCIROp>(
                 solverDesc_.mesher,
                 cirProcess_.currentLink(),
                 bsProcess_.currentLink(),
                 rho_,
                 strike_));
 
-        solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
+        solver_ = std::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmCIRSolver::valueAt(Real s, Real r) const {

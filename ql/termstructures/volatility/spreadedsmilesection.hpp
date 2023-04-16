@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class SpreadedSmileSection : public SmileSection {
       public:
-        SpreadedSmileSection(ext::shared_ptr<SmileSection>, Handle<Quote> spread);
+        SpreadedSmileSection(std::shared_ptr<SmileSection>, Handle<Quote> spread);
         //! \name SmileSection interface
         //@{
         Real minStrike() const override;
@@ -54,7 +54,7 @@ namespace QuantLib {
         Volatility volatilityImpl(Rate strike) const override;
 
       private:
-        const ext::shared_ptr<SmileSection> underlyingSection_;
+        const std::shared_ptr<SmileSection> underlyingSection_;
         const Handle<Quote> spread_;
     };
 

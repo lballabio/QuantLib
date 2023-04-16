@@ -26,7 +26,7 @@
 #define quantlib_region_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -43,7 +43,7 @@ namespace QuantLib {
       protected:
         Region() = default;
         struct Data;
-        ext::shared_ptr<Data> data_;
+        std::shared_ptr<Data> data_;
     };
 
     struct Region::Data {

@@ -74,7 +74,7 @@ namespace QuantLib {
                     Calendar payCalendar,
                     BusinessDayConvention payConvention,
                     Rate strike,
-                    const ext::shared_ptr<ZeroInflationIndex>& inflationIndex,
+                    const std::shared_ptr<ZeroInflationIndex>& inflationIndex,
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 
@@ -108,7 +108,7 @@ namespace QuantLib {
         Rate strike() const { return strike_; }
         Date fixingDate() const;
         Date payDate() const;
-        const ext::shared_ptr<ZeroInflationIndex>& index() const { return index_; }
+        const std::shared_ptr<ZeroInflationIndex>& index() const { return index_; }
         Period observationLag() const { return observationLag_; }
         //@}
 
@@ -139,7 +139,7 @@ namespace QuantLib {
         Calendar payCalendar_;
         BusinessDayConvention payConvention_;
         Rate strike_;
-        ext::shared_ptr<ZeroInflationIndex> index_;
+        std::shared_ptr<ZeroInflationIndex> index_;
         Period observationLag_;
         CPI::InterpolationType observationInterpolation_;
 
@@ -166,7 +166,7 @@ namespace QuantLib {
         Calendar fixCalendar, payCalendar;
         BusinessDayConvention fixConvention, payConvention;
         Rate strike;
-        ext::shared_ptr<ZeroInflationIndex> index;
+        std::shared_ptr<ZeroInflationIndex> index;
         Period observationLag;
         CPI::InterpolationType observationInterpolation;
 

@@ -28,7 +28,7 @@ namespace QuantLib {
       public:
         Helper(Size i, Real xMin, Real dx,
                Real discountBondPrice,
-               const ext::shared_ptr<ShortRateTree>& tree)
+               const std::shared_ptr<ShortRateTree>& tree)
         : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
           xMin_(xMin), dx_(dx),
@@ -66,19 +66,19 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    ext::shared_ptr<Lattice>
+    std::shared_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+        std::shared_ptr<ShortRateDynamics> numericDynamics(
                          new Dynamics(phi_, a(), sigma()));
-        ext::shared_ptr<TrinomialTree> trinomial(
+        std::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        ext::shared_ptr<ShortRateTree> numericTree(
+        std::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        ext::shared_ptr<NumericalImpl> impl =
-            ext::dynamic_pointer_cast<NumericalImpl>(phi_.implementation());
+        std::shared_ptr<NumericalImpl> impl =
+            std::dynamic_pointer_cast<NumericalImpl>(phi_.implementation());
         impl->reset();
         Real value = 1.0;
         Real vMin = -50.0;
@@ -96,13 +96,13 @@ namespace QuantLib {
         return numericTree;
     }
 
-    ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+    std::shared_ptr<OneFactorModel::ShortRateDynamics>
         BlackKarasinski::dynamics() const {
         // Calibrate fitting parameter to term structure
         Size steps = 50;
-        ext::shared_ptr<Lattice> lattice = this->tree(
+        std::shared_ptr<Lattice> lattice = this->tree(
             TimeGrid(termStructure()->maxTime(), steps));
-        ext::shared_ptr<ShortRateDynamics> numericDynamics(
+        std::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi_, a(), sigma()));
         return numericDynamics;
     }

@@ -45,7 +45,7 @@ namespace QuantLib {
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCPagodaEngine(ext::shared_ptr<StochasticProcessArray>,
+        MCPagodaEngine(std::shared_ptr<StochasticProcessArray>,
                        bool brownianBridge,
                        bool antitheticVariate,
                        Size requiredSamples,
@@ -65,7 +65,7 @@ namespace QuantLib {
       private:
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size numAssets = processes_->size();
 
@@ -73,14 +73,14 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // data members
-        ext::shared_ptr<StochasticProcessArray> processes_;
+        std::shared_ptr<StochasticProcessArray> processes_;
         Size requiredSamples_;
         Size maxSamples_;
         Real requiredTolerance_;
@@ -93,7 +93,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPagodaEngine {
       public:
-        explicit MakeMCPagodaEngine(ext::shared_ptr<StochasticProcessArray>);
+        explicit MakeMCPagodaEngine(std::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCPagodaEngine& withBrownianBridge(bool b = true);
         MakeMCPagodaEngine& withAntitheticVariate(bool b = true);
@@ -102,9 +102,9 @@ namespace QuantLib {
         MakeMCPagodaEngine& withMaxSamples(Size samples);
         MakeMCPagodaEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<StochasticProcessArray> process_;
+        std::shared_ptr<StochasticProcessArray> process_;
         bool brownianBridge_ = false, antithetic_ = false;
         Size samples_, maxSamples_;
         Real tolerance_;
@@ -127,7 +127,7 @@ namespace QuantLib {
     // template definitions
 
     template <class RNG, class S>
-    inline MCPagodaEngine<RNG, S>::MCPagodaEngine(ext::shared_ptr<StochasticProcessArray> processes,
+    inline MCPagodaEngine<RNG, S>::MCPagodaEngine(std::shared_ptr<StochasticProcessArray> processes,
                                                   bool brownianBridge,
                                                   bool antitheticVariate,
                                                   Size requiredSamples,
@@ -159,15 +159,15 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    ext::shared_ptr<typename MCPagodaEngine<RNG,S>::path_pricer_type>
+    std::shared_ptr<typename MCPagodaEngine<RNG,S>::path_pricer_type>
     MCPagodaEngine<RNG,S>::pathPricer() const {
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        std::shared_ptr<GeneralizedBlackScholesProcess> process =
+            std::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<
+        return std::shared_ptr<
                          typename MCPagodaEngine<RNG,S>::path_pricer_type>(
             new PagodaMultiPathPricer(arguments_.roof, arguments_.fraction,
                                       process->riskFreeRate()->discount(
@@ -177,7 +177,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCPagodaEngine<RNG, S>::MakeMCPagodaEngine(
-        ext::shared_ptr<StochasticProcessArray> process)
+        std::shared_ptr<StochasticProcessArray> process)
     : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()) {}
 
@@ -233,8 +233,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MakeMCPagodaEngine<RNG,S>::operator
-    ext::shared_ptr<PricingEngine>() const {
-        return ext::shared_ptr<PricingEngine>(new
+    std::shared_ptr<PricingEngine>() const {
+        return std::shared_ptr<PricingEngine>(new
             MCPagodaEngine<RNG,S>(process_,
                                   brownianBridge_,
                                   antithetic_,

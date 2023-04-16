@@ -128,7 +128,7 @@ class NoArbSabrModel {
       Real absProb_, fmin_, fmax_;
       mutable Real forward_, numericalIntegralOverP_;
       mutable Real numericalForward_;
-      ext::shared_ptr<GaussLobattoIntegral> integrator_;
+      std::shared_ptr<GaussLobattoIntegral> integrator_;
       class integrand;
       class p_integrand;
 };

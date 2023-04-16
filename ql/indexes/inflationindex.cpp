@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    Real CPI::laggedFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+    Real CPI::laggedFixing(const std::shared_ptr<ZeroInflationIndex>& index,
                            const Date& date,
                            const Period& observationLag,
                            CPI::InterpolationType interpolationType) {
@@ -271,11 +271,11 @@ namespace QuantLib {
     }
 
 
-    ext::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(
+    std::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(
                           const Handle<ZeroInflationTermStructure>& h) const {
         /* using the new constructor and set interpolated to avoid the deprecated warning and
          * error...  */
-        auto clonedIndex = ext::make_shared<ZeroInflationIndex>(
+        auto clonedIndex = std::make_shared<ZeroInflationIndex>(
             familyName_, region_, revised_, frequency_, availabilityLag_, currency_, h);
         QL_DEPRECATED_DISABLE_WARNING
         clonedIndex->interpolated_ = interpolated_;
@@ -416,9 +416,9 @@ namespace QuantLib {
         return yoyInflation_->yoyRate(d,0*Days);
     }
 
-    ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
+    std::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
                            const Handle<YoYInflationTermStructure>& h) const {
-        return ext::make_shared<YoYInflationIndex>(
+        return std::make_shared<YoYInflationIndex>(
                       familyName_, region_, revised_,
                                             interpolated_, ratio_, frequency_,
                                             availabilityLag_, currency_, h);
@@ -426,7 +426,7 @@ namespace QuantLib {
 
 
     CPI::InterpolationType
-    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+    detail::CPI::effectiveInterpolationType(const std::shared_ptr<ZeroInflationIndex>& index,
                                             const QuantLib::CPI::InterpolationType& type) {
         if (type == QuantLib::CPI::AsIndex) {
             QL_DEPRECATED_DISABLE_WARNING

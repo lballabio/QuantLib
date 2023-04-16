@@ -36,7 +36,7 @@
 namespace QuantLib {
 
     FdSimpleBSSwingEngine::FdSimpleBSSwingEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size tGrid,
         Size xGrid,
         const FdmSchemeDesc& schemeDesc)
@@ -47,29 +47,29 @@ namespace QuantLib {
                    "Bermudan exercise supported only");
 
         // 1. Mesher
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Strike type payoff expected");
             
         const Time maturity = process_->time(arguments_.exercise->lastDate());
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
+        const std::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(xGrid_, process_,
                                       maturity, payoff->strike()));
         
-        const ext::shared_ptr<Fdm1dMesher> exerciseMesher(
+        const std::shared_ptr<Fdm1dMesher> exerciseMesher(
                  new Uniform1dMesher(
                            0, static_cast<Real>(arguments_.maxExerciseRights),
                            arguments_.maxExerciseRights+1));
 
-        const ext::shared_ptr<FdmMesher> mesher (
+        const std::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, exerciseMesher));
         
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
+        std::shared_ptr<FdmInnerValueCalculator> calculator(
                                                     new FdmZeroInnerValue());
         
         // 3. Step conditions
-        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<std::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
         
         // 3.1 Bermudan step conditions
@@ -81,15 +81,15 @@ namespace QuantLib {
         }
         stoppingTimes.push_back(exerciseTimes);
         
-        ext::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
+        std::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
-        stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
+        stepConditions.push_back(std::shared_ptr<StepCondition<Array> >(
             new FdmSimpleSwingCondition(
                 exerciseTimes, mesher, exerciseCalculator,
                 1, arguments_.minExerciseRights)));
         
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
+        std::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
         
         // 4. Boundary conditions
@@ -98,7 +98,7 @@ namespace QuantLib {
         // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
-        ext::shared_ptr<FdmSimple2dBSSolver> solver(
+        std::shared_ptr<FdmSimple2dBSSolver> solver(
                 new FdmSimple2dBSSolver(
                                Handle<GeneralizedBlackScholesProcess>(process_),
                                payoff->strike(), solverDesc, schemeDesc_));

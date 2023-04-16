@@ -47,7 +47,7 @@ namespace QuantLib {
                 bool growthOnly,
                 Real baseCPI,
                 const Period& observationLag,
-                ext::shared_ptr<ZeroInflationIndex> cpiIndex,
+                std::shared_ptr<ZeroInflationIndex> cpiIndex,
                 CPI::InterpolationType observationInterpolation,
                 const Schedule& schedule,
                 const std::vector<Rate>& coupons,
@@ -65,7 +65,7 @@ namespace QuantLib {
         bool growthOnly() const { return growthOnly_; }
         Real baseCPI() const { return baseCPI_; }
         Period observationLag() const { return observationLag_; }
-        const ext::shared_ptr<ZeroInflationIndex>& cpiIndex() const { return cpiIndex_; }
+        const std::shared_ptr<ZeroInflationIndex>& cpiIndex() const { return cpiIndex_; }
         CPI::InterpolationType observationInterpolation() const { return observationInterpolation_; }
 
       protected:
@@ -74,7 +74,7 @@ namespace QuantLib {
         bool growthOnly_;
         Real baseCPI_;
         Period observationLag_;
-        ext::shared_ptr<ZeroInflationIndex> cpiIndex_;
+        std::shared_ptr<ZeroInflationIndex> cpiIndex_;
         CPI::InterpolationType observationInterpolation_;
     };
 

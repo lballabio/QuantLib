@@ -42,11 +42,11 @@ namespace QuantLib {
     class SuoWangDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
         explicit SuoWangDoubleBarrierEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series = 5);
+            std::shared_ptr<GeneralizedBlackScholesProcess> process, int series = 5);
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const int series_;
         CumulativeNormalDistribution f_;
         // helper methods

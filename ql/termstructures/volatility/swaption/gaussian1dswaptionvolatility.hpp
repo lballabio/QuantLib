@@ -38,11 +38,11 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
   public:
     Gaussian1dSwaptionVolatility(const Calendar& cal,
                                  BusinessDayConvention bdc,
-                                 ext::shared_ptr<SwapIndex> indexBase,
-                                 const ext::shared_ptr<Gaussian1dModel>& model,
+                                 std::shared_ptr<SwapIndex> indexBase,
+                                 const std::shared_ptr<Gaussian1dModel>& model,
                                  const DayCounter& dc,
-                                 ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
-                                     ext::shared_ptr<Gaussian1dSwaptionEngine>());
+                                 std::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
+                                     std::shared_ptr<Gaussian1dSwaptionEngine>());
     //@{
     Date maxDate() const override { return Date::maxDate(); }
     //@}
@@ -56,15 +56,15 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
     const Period& maxSwapTenor() const override { return maxSwapTenor_; }
     //@}
   protected:
-    ext::shared_ptr<SmileSection> smileSectionImpl(const Date&, const Period&) const override;
-    ext::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const override;
+    std::shared_ptr<SmileSection> smileSectionImpl(const Date&, const Period&) const override;
+    std::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const override;
     Volatility volatilityImpl(const Date&, const Period&, Rate) const override;
     Volatility volatilityImpl(Time, Time, Rate) const override;
 
   private:
-    ext::shared_ptr<SwapIndex> indexBase_;
-    ext::shared_ptr<Gaussian1dModel> model_;
-    ext::shared_ptr<Gaussian1dSwaptionEngine> engine_;
+    std::shared_ptr<SwapIndex> indexBase_;
+    std::shared_ptr<Gaussian1dModel> model_;
+    std::shared_ptr<Gaussian1dSwaptionEngine> engine_;
     const Period maxSwapTenor_;
 
     class DateHelper {

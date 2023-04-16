@@ -34,8 +34,8 @@ namespace QuantLib {
     
     public:
         AnalyticDoubleBarrierBinaryEngine_helper(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const ext::shared_ptr<CashOrNothingPayoff> &payoff,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<CashOrNothingPayoff> &payoff,
              const DoubleBarrierOption::arguments &arguments):
         process_(process),
         payoff_(payoff),
@@ -54,8 +54,8 @@ namespace QuantLib {
 
     private:
 
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process_;
-        const ext::shared_ptr<CashOrNothingPayoff> &payoff_;
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& process_;
+        const std::shared_ptr<CashOrNothingPayoff> &payoff_;
         const DoubleBarrierOption::arguments &arguments_;
     };
 
@@ -172,7 +172,7 @@ namespace QuantLib {
     }
 
     AnalyticDoubleBarrierBinaryEngine::AnalyticDoubleBarrierBinaryEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -181,21 +181,21 @@ namespace QuantLib {
 
         if (arguments_.barrierType == DoubleBarrier::KIKO ||
             arguments_.barrierType == DoubleBarrier::KOKI) {
-            ext::shared_ptr<AmericanExercise> ex =
-                ext::dynamic_pointer_cast<AmericanExercise>(
+            std::shared_ptr<AmericanExercise> ex =
+                std::dynamic_pointer_cast<AmericanExercise>(
                                                    arguments_.exercise);
             QL_REQUIRE(ex, "KIKO/KOKI options must have American exercise");
             QL_REQUIRE(ex->dates()[0] <=
                        process_->blackVolatility()->referenceDate(),
                        "American option with window exercise not handled yet");
         } else {
-            ext::shared_ptr<EuropeanExercise> ex =
-                ext::dynamic_pointer_cast<EuropeanExercise>(
+            std::shared_ptr<EuropeanExercise> ex =
+                std::dynamic_pointer_cast<EuropeanExercise>(
                                                    arguments_.exercise);
             QL_REQUIRE(ex, "non-European exercise given");
         }
-        ext::shared_ptr<CashOrNothingPayoff> payoff =
-            ext::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
+        std::shared_ptr<CashOrNothingPayoff> payoff =
+            std::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "a cash-or-nothing payoff must be given");
 
         Real spot = process_->stateVariable()->value();

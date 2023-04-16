@@ -37,16 +37,16 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 
         // set up the index
         RelinkableHandle<YieldTermStructure> curveHandle;
-        ext::shared_ptr<IborIndex> index = ext::make_shared<USDLibor>(Period(3, Months), curveHandle);
+        std::shared_ptr<IborIndex> index = std::make_shared<USDLibor>(Period(3, Months), curveHandle);
 
         // determine the settlement date for a FRA
         Date settlementDate = index->fixingCalendar().advance(today, index->fixingDays() * Days);
 
         // set up quotes with no values
-        std::vector<ext::shared_ptr<SimpleQuote> > quotes = {
-            ext::make_shared<SimpleQuote>(),
-            ext::make_shared<SimpleQuote>(),
-            ext::make_shared<SimpleQuote>()
+        std::vector<std::shared_ptr<SimpleQuote> > quotes = {
+            std::make_shared<SimpleQuote>(),
+            std::make_shared<SimpleQuote>(),
+            std::make_shared<SimpleQuote>()
         };
 
 #ifdef QL_USE_INDEXED_COUPON
@@ -56,21 +56,21 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 #endif
 
         // set up the curve (this bit is a very rough sketch - i'm actually using swaps !)
-        std::vector<ext::shared_ptr<RateHelper> > helpers;
-        helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]),
+        std::vector<std::shared_ptr<RateHelper> > helpers;
+        helpers.push_back(std::make_shared<FraRateHelper>(Handle<Quote>(quotes[0]),
                                                           Period(1, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
                                                           useIndexedFra));
-        helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]),
+        helpers.push_back(std::make_shared<FraRateHelper>(Handle<Quote>(quotes[1]),
                                                           Period(2, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
                                                           useIndexedFra));
-        helpers.push_back(ext::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]),
+        helpers.push_back(std::make_shared<FraRateHelper>(Handle<Quote>(quotes[2]),
                                                           Period(3, Years), index,
                                                           Pillar::LastRelevantDate, Date(),
                                                           useIndexedFra));
-        ext::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve =
-            ext::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(
+        std::shared_ptr<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> > curve =
+            std::make_shared<PiecewiseYieldCurve<ForwardRate, QuantLib::Cubic> >(
                 today, helpers, index->dayCounter());
 
         curveHandle.linkTo(curve);

@@ -26,7 +26,7 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& dividendTS,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,
-                              const ext::shared_ptr<discretization>& d,
+                              const std::shared_ptr<discretization>& d,
                               Discretization evolDisc)
     : GeneralizedBlackScholesProcess(x0,dividendTS,riskFreeTS,blackVolTS,d),
       discretization_(evolDisc) {}

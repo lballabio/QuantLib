@@ -64,7 +64,7 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDiscreteAveragingAsianEngineBase(ext::shared_ptr<StochasticProcess> process,
+        MCDiscreteAveragingAsianEngineBase(std::shared_ptr<StochasticProcess> process,
                                            bool brownianBridge,
                                            bool antitheticVariate,
                                            bool controlVariate,
@@ -106,19 +106,19 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
         Real controlVariateValue() const override;
         // data members
-        ext::shared_ptr<StochasticProcess> process_;
+        std::shared_ptr<StochasticProcess> process_;
         Size requiredSamples_, maxSamples_, timeSteps_, timeStepsPerYear_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -130,7 +130,7 @@ namespace QuantLib {
 
     template <template <class> class MC, class RNG, class S>
     inline MCDiscreteAveragingAsianEngineBase<MC, RNG, S>::MCDiscreteAveragingAsianEngineBase(
-        ext::shared_ptr<StochasticProcess> process,
+        std::shared_ptr<StochasticProcess> process,
         bool brownianBridge,
         bool antitheticVariate,
         bool controlVariate,
@@ -182,7 +182,7 @@ namespace QuantLib {
     inline
     Real MCDiscreteAveragingAsianEngineBase<MC,RNG,S>::controlVariateValue() const {
 
-        ext::shared_ptr<PricingEngine> controlPE =
+        std::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "

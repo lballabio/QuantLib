@@ -42,9 +42,9 @@ namespace QuantLib {
         Real pMin, Real pMax,
         Size tMinUp, Size tMinDown,
         Real startUpFuel, Real startUpFixCost,
-        const ext::shared_ptr<SwingExercise>& exercise,
+        const std::shared_ptr<SwingExercise>& exercise,
         Size nStarts, Size nRunningHours)
-    : MultiAssetOption(ext::shared_ptr<Payoff>(), exercise),
+    : MultiAssetOption(std::shared_ptr<Payoff>(), exercise),
       heatRate_(heatRate),
       pMin_(pMin), pMax_(pMax),
       tMinUp_(tMinUp), tMinDown_(tMinDown),
@@ -55,8 +55,8 @@ namespace QuantLib {
         Array weigths(2);
         weigths[0] = 1.0; weigths[1] = -heatRate;
 
-        payoff_ = ext::shared_ptr<Payoff>(new AverageBasketPayoff(
-            ext::shared_ptr<Payoff>(new IdenticalPayoff()), weigths));
+        payoff_ = std::shared_ptr<Payoff>(new AverageBasketPayoff(
+            std::shared_ptr<Payoff>(new IdenticalPayoff()), weigths));
     }
 
     void VanillaVPPOption::arguments::validate() const {

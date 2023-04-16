@@ -39,14 +39,14 @@ namespace QuantLib {
       public:
         // Constructor
         explicit FdBlackScholesShoutEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess>,
+            std::shared_ptr<GeneralizedBlackScholesProcess>,
             Size tGrid = 100,
             Size xGrid = 100,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         FdBlackScholesShoutEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess>,
+            std::shared_ptr<GeneralizedBlackScholesProcess>,
             DividendSchedule dividends,
             Size tGrid = 100,
             Size xGrid = 100,
@@ -56,7 +56,7 @@ namespace QuantLib {
         void calculate() const override;
 
       private:
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        const std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         DividendSchedule dividends_;
         bool explicitDividends_;
         const Size tGrid_, xGrid_, dampingSteps_;

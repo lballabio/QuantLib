@@ -53,7 +53,7 @@ namespace QuantLib {
                     Real nominal,
                     const Date& startDate,
                     const Date& endDate,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                    const std::shared_ptr<OvernightIndex>& overnightIndex,
                     Real gearing = 1.0,
                     Spread spread = 0.0,
                     const Date& refPeriodStart = Date(),
@@ -95,7 +95,7 @@ namespace QuantLib {
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
       public:
-        OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> overnightIndex);
+        OvernightLeg(const Schedule& schedule, std::shared_ptr<OvernightIndex> overnightIndex);
         OvernightLeg& withNotionals(Real notional);
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
@@ -111,7 +111,7 @@ namespace QuantLib {
         operator Leg() const;
       private:
         Schedule schedule_;
-        ext::shared_ptr<OvernightIndex> overnightIndex_;
+        std::shared_ptr<OvernightIndex> overnightIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         Calendar paymentCalendar_;

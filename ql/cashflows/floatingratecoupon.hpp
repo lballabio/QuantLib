@@ -49,7 +49,7 @@ namespace QuantLib {
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,
-                           const ext::shared_ptr<InterestRateIndex>& index,
+                           const std::shared_ptr<InterestRateIndex>& index,
                            Real gearing = 1.0,
                            Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
@@ -74,7 +74,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! floating index
-        const ext::shared_ptr<InterestRateIndex>& index() const;
+        const std::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
         Natural fixingDays() const { return fixingDays_; }
         //! fixing date
@@ -103,23 +103,23 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
 
-        virtual void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&);
-        ext::shared_ptr<FloatingRateCouponPricer> pricer() const;
+        virtual void setPricer(const std::shared_ptr<FloatingRateCouponPricer>&);
+        std::shared_ptr<FloatingRateCouponPricer> pricer() const;
       protected:
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
-        ext::shared_ptr<InterestRateIndex> index_;
+        std::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Natural fixingDays_;
         Real gearing_;
         Spread spread_;
         bool isInArrears_;
-        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
+        std::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
     // inline definitions
 
-    inline const ext::shared_ptr<InterestRateIndex>&
+    inline const std::shared_ptr<InterestRateIndex>&
     FloatingRateCoupon::index() const {
         return index_;
     }
@@ -132,7 +132,7 @@ namespace QuantLib {
         return (rate()-spread())/gearing();
     }
 
-    inline ext::shared_ptr<FloatingRateCouponPricer>
+    inline std::shared_ptr<FloatingRateCouponPricer>
     FloatingRateCoupon::pricer() const {
         return pricer_;
     }

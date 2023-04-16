@@ -31,7 +31,7 @@ namespace QuantLib {
     class CotSwapToFwdAdapter : public MarketModel {
       public:
         CotSwapToFwdAdapter(
-                       const ext::shared_ptr<MarketModel>& coterminalModel);
+                       const std::shared_ptr<MarketModel>& coterminalModel);
         //! \name MarketModel interface
         //@{
         const std::vector<Rate>& initialRates() const override;
@@ -43,7 +43,7 @@ namespace QuantLib {
         const Matrix& pseudoRoot(Size i) const override;
         //@}
       private:
-        ext::shared_ptr<MarketModel> coterminalModel_;
+        std::shared_ptr<MarketModel> coterminalModel_;
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
         std::vector<Matrix> pseudoRoots_;
@@ -54,13 +54,13 @@ namespace QuantLib {
                                               public Observer {
       public:
         CotSwapToFwdAdapterFactory(
-              const ext::shared_ptr<MarketModelFactory>& coterminalFactory);
-        ext::shared_ptr<MarketModel> create(const EvolutionDescription&,
+              const std::shared_ptr<MarketModelFactory>& coterminalFactory);
+        std::shared_ptr<MarketModel> create(const EvolutionDescription&,
                                             Size numberOfFactors) const override;
         void update() override;
 
       private:
-        ext::shared_ptr<MarketModelFactory> coterminalFactory_;
+        std::shared_ptr<MarketModelFactory> coterminalFactory_;
     };
 
 

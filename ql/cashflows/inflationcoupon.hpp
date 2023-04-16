@@ -51,7 +51,7 @@ namespace QuantLib {
                       const Date& startDate,
                       const Date& endDate,
                       Natural fixingDays,
-                      ext::shared_ptr<InflationIndex> index,
+                      std::shared_ptr<InflationIndex> index,
                       const Period& observationLag,
                       DayCounter dayCounter,
                       const Date& refPeriodStart = Date(),
@@ -74,7 +74,7 @@ namespace QuantLib {
       //! \name Inspectors
       //@{
       //! yoy inflation index
-      const ext::shared_ptr<InflationIndex>& index() const { return index_; }
+      const std::shared_ptr<InflationIndex>& index() const { return index_; }
       //! how the coupon observes the index
       Period observationLag() const { return observationLag_; }
       //! fixing days
@@ -94,12 +94,12 @@ namespace QuantLib {
       //@{
       void accept(AcyclicVisitor&) override;
       //@}
-      void setPricer(const ext::shared_ptr<InflationCouponPricer>&);
-      ext::shared_ptr<InflationCouponPricer> pricer() const;
+      void setPricer(const std::shared_ptr<InflationCouponPricer>&);
+      std::shared_ptr<InflationCouponPricer> pricer() const;
 
     protected:
-        ext::shared_ptr<InflationCouponPricer> pricer_;
-        ext::shared_ptr<InflationIndex> index_;
+        std::shared_ptr<InflationCouponPricer> pricer_;
+        std::shared_ptr<InflationIndex> index_;
         Period observationLag_;
         DayCounter dayCounter_;
         Natural fixingDays_;
@@ -108,7 +108,7 @@ namespace QuantLib {
         // this can also done in external pricer setter classes via
         // accept/visit mechanism
         virtual bool checkPricerImpl(const
-            ext::shared_ptr<InflationCouponPricer>&) const = 0;
+            std::shared_ptr<InflationCouponPricer>&) const = 0;
     };
 
     // inline definitions
@@ -122,7 +122,7 @@ namespace QuantLib {
             Coupon::accept(v);
     }
 
-    inline ext::shared_ptr<InflationCouponPricer>
+    inline std::shared_ptr<InflationCouponPricer>
     InflationCoupon::pricer() const {
         return pricer_;
     }

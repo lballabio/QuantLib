@@ -35,12 +35,12 @@ namespace QuantLib {
         };
       public:
         VolatilityConstraint()
-        : Constraint(ext::shared_ptr<Constraint::Impl>(
+        : Constraint(std::shared_ptr<Constraint::Impl>(
                                            new VolatilityConstraint::Impl)) {}
     };
 
     GJRGARCHModel::GJRGARCHModel(
-                           const ext::shared_ptr<GJRGARCHProcess> & process)
+                           const std::shared_ptr<GJRGARCHProcess> & process)
     : CalibratedModel(6), process_(process) {
         arguments_[0] = ConstantParameter(process->omega(),
                                           PositiveConstraint());
@@ -54,7 +54,7 @@ namespace QuantLib {
         arguments_[5] = ConstantParameter(process->v0(),
                                           PositiveConstraint());
 
-        constraint_ = ext::shared_ptr<Constraint>(
+        constraint_ = std::shared_ptr<Constraint>(
             new CompositeConstraint(*constraint_, VolatilityConstraint()));
 
         GJRGARCHModel::generateArguments();

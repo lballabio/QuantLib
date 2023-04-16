@@ -111,7 +111,7 @@ namespace QuantLib {
                   bool rebatesAccrual = true,
                   CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
         void setTermStructure(DefaultProbabilityTermStructure*) override;
-        ext::shared_ptr<CreditDefaultSwap> swap() const {
+        std::shared_ptr<CreditDefaultSwap> swap() const {
             return swap_;
         }
         void update() override;
@@ -135,7 +135,7 @@ namespace QuantLib {
         CreditDefaultSwap::PricingModel model_;
 
         Schedule schedule_;
-        ext::shared_ptr<CreditDefaultSwap> swap_;
+        std::shared_ptr<CreditDefaultSwap> swap_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
         //! protection effective date.
         Date protectionStart_;

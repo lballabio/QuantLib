@@ -67,7 +67,7 @@ namespace QuantLib {
         };
 
         Gaussian1dFloatFloatSwaptionEngine(
-            const ext::shared_ptr<Gaussian1dModel> &model,
+            const std::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
@@ -149,7 +149,7 @@ namespace QuantLib {
                                    bool includeExerciseOnxpiry,
                                    bool considerProbabilities = false) const;
 
-        mutable ext::shared_ptr<RebatedExercise> rebatedExercise_;
+        mutable std::shared_ptr<RebatedExercise> rebatedExercise_;
     };
 }
 

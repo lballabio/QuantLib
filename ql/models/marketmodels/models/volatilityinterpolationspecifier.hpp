@@ -30,7 +30,7 @@ synthetic rates which are interleaved
 
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/types.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 
 
@@ -45,8 +45,8 @@ namespace QuantLib
         virtual void setLastCapletVol(Real vol)=0;
 
 
-        virtual const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& interpolatedVariances() const=0;
-        virtual const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& originalVariances() const=0;
+        virtual const std::vector<std::shared_ptr<PiecewiseConstantVariance> >& interpolatedVariances() const=0;
+        virtual const std::vector<std::shared_ptr<PiecewiseConstantVariance> >& originalVariances() const=0;
 
         virtual Size getPeriod() const=0;
         virtual Size getOffset() const=0;

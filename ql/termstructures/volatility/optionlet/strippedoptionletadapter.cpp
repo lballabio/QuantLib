@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     StrippedOptionletAdapter::StrippedOptionletAdapter(
-                const ext::shared_ptr<StrippedOptionletBase>& s)
+                const std::shared_ptr<StrippedOptionletBase>& s)
     : OptionletVolatilityStructure(s->settlementDays(),
                                    s->calendar(),
                                    s->businessDayConvention(),
@@ -41,7 +41,7 @@ namespace QuantLib {
         registerWith(optionletStripper_);
     }
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     StrippedOptionletAdapter::smileSectionImpl(Time t) const {
         std::vector< Rate > optionletStrikes =
             optionletStripper_->optionletStrikes(
@@ -57,7 +57,7 @@ namespace QuantLib {
         CubicInterpolation::BoundaryCondition bc =
             optionletStrikes.size() >= 4 ? CubicInterpolation::Lagrange
                                          : CubicInterpolation::SecondDerivative;
-        return ext::make_shared< InterpolatedSmileSection< Cubic > >(
+        return std::make_shared< InterpolatedSmileSection< Cubic > >(
             t, optionletStrikes, stddevs, Null< Real >(),
             Cubic(CubicInterpolation::Spline, false, bc, 0.0, bc, 0.0),
             Actual365Fixed(), volatilityType(), displacement());
@@ -73,7 +73,7 @@ namespace QuantLib {
 
         const std::vector<Time>& optionletTimes =
                                     optionletStripper_->optionletFixingTimes();
-        ext::shared_ptr<LinearInterpolation> timeInterpolator(new
+        std::shared_ptr<LinearInterpolation> timeInterpolator(new
             LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
                                 vol.begin()));
         return (*timeInterpolator)(length, true);
@@ -89,7 +89,7 @@ namespace QuantLib {
                 optionletStripper_->optionletStrikes(i);
             const std::vector<Volatility>& optionletVolatilities =
                 optionletStripper_->optionletVolatilities(i);
-            //strikeInterpolations_[i] = ext::shared_ptr<SABRInterpolation>(new
+            //strikeInterpolations_[i] = std::shared_ptr<SABRInterpolation>(new
             //            SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
             //                              optionletVolatilities.begin(),
             //                              optionletTimes[i], atmForward[i],
@@ -106,7 +106,7 @@ namespace QuantLib {
             //                              //endCriteria_,
             //                              //optMethod_
             //                              ));
-            strikeInterpolations_[i] = ext::make_shared<LinearInterpolation>(optionletStrikes.begin(),
+            strikeInterpolations_[i] = std::make_shared<LinearInterpolation>(optionletStrikes.begin(),
                                     optionletStrikes.end(),
                                     optionletVolatilities.begin());
 

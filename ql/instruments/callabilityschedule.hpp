@@ -29,8 +29,8 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/shared_ptr.hpp>
-#include <ql/optional.hpp>
+#include <memory>
+#include <optional>
 #include <vector>
 
 namespace QuantLib {
@@ -57,7 +57,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        ext::optional<Bond::Price> price_;
+        std::optional<Bond::Price> price_;
         Type type_;
         Date date_;
     };
@@ -70,7 +70,7 @@ namespace QuantLib {
             Event::accept(v);
     }
 
-    typedef std::vector<ext::shared_ptr<Callability> > CallabilitySchedule;
+    typedef std::vector<std::shared_ptr<Callability> > CallabilitySchedule;
 
 }
 

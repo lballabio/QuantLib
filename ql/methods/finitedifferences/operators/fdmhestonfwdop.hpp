@@ -41,11 +41,11 @@ namespace QuantLib {
 
     class FdmHestonFwdOp : public FdmLinearOpComposite {
       public:
-        FdmHestonFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
-                       const ext::shared_ptr<HestonProcess>& process,
+        FdmHestonFwdOp(const std::shared_ptr<FdmMesher>& mesher,
+                       const std::shared_ptr<HestonProcess>& process,
                        FdmSquareRootFwdOp::TransformationType type = FdmSquareRootFwdOp::Plain,
-                       ext::shared_ptr<LocalVolTermStructure> leverageFct =
-                           ext::shared_ptr<LocalVolTermStructure>(),
+                       std::shared_ptr<LocalVolTermStructure> leverageFct =
+                           std::shared_ptr<LocalVolTermStructure>(),
                        Real mixingFactor = 1.0);
 
         Size size() const override;
@@ -64,22 +64,22 @@ namespace QuantLib {
         const FdmSquareRootFwdOp::TransformationType type_;
         const Real kappa_, theta_, sigma_, rho_, v0_, mixedSigma_;
 
-        const ext::shared_ptr<YieldTermStructure> rTS_;
-        const ext::shared_ptr<YieldTermStructure> qTS_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<YieldTermStructure> qTS_;
 
         const Array varianceValues_;
-        const ext::shared_ptr<FirstDerivativeOp> dxMap_;
-        const ext::shared_ptr<ModTripleBandLinearOp> dxxMap_;
-        const ext::shared_ptr<ModTripleBandLinearOp> boundary_;
+        const std::shared_ptr<FirstDerivativeOp> dxMap_;
+        const std::shared_ptr<ModTripleBandLinearOp> dxxMap_;
+        const std::shared_ptr<ModTripleBandLinearOp> boundary_;
         Array L_;
 
-        const ext::shared_ptr<TripleBandLinearOp> mapX_;
-        const ext::shared_ptr<FdmSquareRootFwdOp> mapY_;
+        const std::shared_ptr<TripleBandLinearOp> mapX_;
+        const std::shared_ptr<FdmSquareRootFwdOp> mapY_;
 
-        const ext::shared_ptr<NinePointLinearOp> correlation_;
+        const std::shared_ptr<NinePointLinearOp> correlation_;
 
-        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
-        const ext::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const std::shared_ptr<FdmMesher> mesher_;
         const Array x_;
     };
 }

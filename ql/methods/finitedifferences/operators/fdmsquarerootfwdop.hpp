@@ -38,7 +38,7 @@ namespace QuantLib {
         enum TransformationType { Plain, Power, Log };
 
         FdmSquareRootFwdOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<FdmMesher>& mesher,
             Real kappa, Real theta, Real sigma,
             Size direction,
             TransformationType type = Plain);
@@ -59,8 +59,8 @@ namespace QuantLib {
         Real v(Size i) const;
 
       private:
-        void setLowerBC(const ext::shared_ptr<FdmMesher>& mesher);
-        void setUpperBC(const ext::shared_ptr<FdmMesher>& mesher);
+        void setLowerBC(const std::shared_ptr<FdmMesher>& mesher);
+        void setUpperBC(const std::shared_ptr<FdmMesher>& mesher);
 
         void getCoeff(Real& alpha, Real& beta,
                                Real& gamma, Size n) const;
@@ -87,7 +87,7 @@ namespace QuantLib {
         const Size direction_;
         const Real kappa_, theta_, sigma_;
         const TransformationType transform_;
-        ext::shared_ptr<ModTripleBandLinearOp> mapX_;
+        std::shared_ptr<ModTripleBandLinearOp> mapX_;
         Array v_;
     };
 }

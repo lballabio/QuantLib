@@ -41,9 +41,9 @@ namespace QuantLib {
     {
       public:
     
-          SVDDFwdRatePc(const ext::shared_ptr<MarketModel>&,
+          SVDDFwdRatePc(const std::shared_ptr<MarketModel>&,
                            const BrownianGeneratorFactory&,
-                           const ext::shared_ptr<MarketModelVolProcess>& volProcess,
+                           const std::shared_ptr<MarketModelVolProcess>& volProcess,
                            Size firstVolatilityFactor, 
                            Size volatilityFactorStep,
                            const std::vector<Size>& numeraires,
@@ -60,9 +60,9 @@ namespace QuantLib {
         private:
           void setForwards(const std::vector<Real>& forwards);
           // inputs
-          ext::shared_ptr<MarketModel> marketModel_;
-          ext::shared_ptr<BrownianGenerator> generator_;
-          ext::shared_ptr<MarketModelVolProcess> volProcess_;
+          std::shared_ptr<MarketModel> marketModel_;
+          std::shared_ptr<BrownianGenerator> generator_;
+          std::shared_ptr<MarketModelVolProcess> volProcess_;
 
           Size firstVolatilityFactor_;
           Size volFactorsPerStep_;

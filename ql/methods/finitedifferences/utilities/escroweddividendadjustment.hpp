@@ -24,7 +24,7 @@
 #define quantlib_escrowed_dividend_adjustment_hpp
 
 #include <ql/handle.hpp>
-#include <ql/functional.hpp>
+
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 
@@ -36,7 +36,7 @@ namespace QuantLib {
             DividendSchedule dividendSchedule,
             Handle<YieldTermStructure> rTS,
             Handle<YieldTermStructure> qTS,
-            ext::function<Real(Date)> toTime,
+            std::function<Real(Date)> toTime,
             Time maturity);
 
         Real dividendAdjustment(Time t) const;
@@ -47,7 +47,7 @@ namespace QuantLib {
       private:
         const DividendSchedule dividendSchedule_;
         const Handle<YieldTermStructure> rTS_, qTS_;
-        const ext::function<Real(Date)> toTime_;
+        const std::function<Real(Date)> toTime_;
         const Time maturity_;
     };
 }

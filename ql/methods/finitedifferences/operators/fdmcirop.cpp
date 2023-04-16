@@ -27,8 +27,8 @@
 namespace QuantLib {
 
     FdmCIREquityPart::FdmCIREquityPart(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
         Real strike)
     : dxMap_ (FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher)),
@@ -53,7 +53,7 @@ namespace QuantLib {
     }
 
     FdmCIRRatesPart::FdmCIRRatesPart(
-        const ext::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<FdmMesher>& mesher,
         Real sigma, Real kappa, Real theta)
     : dyMap_(SecondDerivativeOp(1, mesher)
                    .mult(sigma*sigma*mesher->locations(1))
@@ -72,9 +72,9 @@ namespace QuantLib {
     }
 
     FdmCIRMixedPart::FdmCIRMixedPart(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<CoxIngersollRossProcess> & cirProcess,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<CoxIngersollRossProcess> & cirProcess,
+        const std::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
         const Real rho,
         const Real strike)
         : dyMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
@@ -96,9 +96,9 @@ namespace QuantLib {
     }
 
     FdmCIROp::FdmCIROp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<CoxIngersollRossProcess> & cirProcess,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<CoxIngersollRossProcess> & cirProcess,
+        const std::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
         const Real rho,
         const Real strike)
     : dxMap_(mesher,

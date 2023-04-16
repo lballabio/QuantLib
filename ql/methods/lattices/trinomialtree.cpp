@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     TrinomialTree::TrinomialTree(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         const TimeGrid& timeGrid,
                         bool isPositive)
     : Tree<TrinomialTree>(timeGrid.size()), dx_(1, 0.0), timeGrid_(timeGrid) {

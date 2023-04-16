@@ -80,10 +80,10 @@ namespace QuantLib {
             return result;
         }
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess>
+        std::shared_ptr<GeneralizedBlackScholesProcess>
         ImpliedVolatilityHelper::clone(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const ext::shared_ptr<SimpleQuote>& volQuote) {
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<SimpleQuote>& volQuote) {
 
             Handle<Quote> stateVariable = process->stateVariable();
             Handle<YieldTermStructure> dividendYield = process->dividendYield();
@@ -91,13 +91,13 @@ namespace QuantLib {
 
             Handle<BlackVolTermStructure> blackVol = process->blackVolatility();
             Handle<BlackVolTermStructure> volatility(
-                ext::shared_ptr<BlackVolTermStructure>(
+                std::shared_ptr<BlackVolTermStructure>(
                                new BlackConstantVol(blackVol->referenceDate(),
                                                     blackVol->calendar(),
                                                     Handle<Quote>(volQuote),
                                                     blackVol->dayCounter())));
 
-            return ext::make_shared<GeneralizedBlackScholesProcess>(
+            return std::make_shared<GeneralizedBlackScholesProcess>(
                 stateVariable, dividendYield,
                                                    riskFreeRate, volatility);
         }

@@ -34,15 +34,15 @@
 
 namespace QuantLib {
     SquareRootCLVModel::SquareRootCLVModel(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        ext::shared_ptr<SquareRootProcess> sqrtProcess,
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        std::shared_ptr<SquareRootProcess> sqrtProcess,
         std::vector<Date> maturityDates,
         Size lagrangeOrder,
         Real pMax,
         Real pMin)
     : pMax_(pMax), pMin_(pMin), bsProcess_(bsProcess), sqrtProcess_(std::move(sqrtProcess)),
       maturityDates_(std::move(maturityDates)), lagrangeOrder_(lagrangeOrder),
-      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)) {}
+      rndCalculator_(std::make_shared<GBSMRNDCalculator>(bsProcess)) {}
 
     Real SquareRootCLVModel::cdf(const Date& d, Real k) const {
         return rndCalculator_->cdf(k, bsProcess_->time(d));
@@ -118,26 +118,26 @@ namespace QuantLib {
         return s;
     }
 
-    ext::function<Real(Time, Real)> SquareRootCLVModel::g() const {
+    std::function<Real(Time, Real)> SquareRootCLVModel::g() const {
         calculate();
         return g_;
     }
 
     void SquareRootCLVModel::performCalculations() const {
-        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = std::function<Real(Time, Real)>(MappingFunction(*this));
     }
 
     SquareRootCLVModel::MappingFunction::MappingFunction(
         const SquareRootCLVModel& model)
-    : s_(ext::make_shared<Matrix>(
+    : s_(std::make_shared<Matrix>(
          model.maturityDates_.size(), model.lagrangeOrder_)),
-      x_(ext::make_shared<Matrix>(
+      x_(std::make_shared<Matrix>(
          model.maturityDates_.size(), model.lagrangeOrder_)) {
 
         std::vector<Date> maturityDates = model.maturityDates_;
         std::sort(maturityDates.begin(), maturityDates.end());
 
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>&
+        const std::shared_ptr<GeneralizedBlackScholesProcess>&
             bsProcess = model.bsProcess_;
 
         for (Size i=0, n = maturityDates.size(); i < n; ++i) {
@@ -153,7 +153,7 @@ namespace QuantLib {
 
             interpl.insert(
                 std::make_pair(maturity,
-                    ext::make_shared<LagrangeInterpolation>(
+                    std::make_shared<LagrangeInterpolation>(
                         x_->row_begin(i), x_->row_end(i),
                         s_->row_begin(i))));
         }

@@ -132,10 +132,10 @@ struct SviSpecs {
         return blackFormulaStdDevDerivative(strike, forward, stdDev, 1.0);
     }
     typedef SviWrapper type;
-    ext::shared_ptr<type> instance(const Time t, const Real &forward,
+    std::shared_ptr<type> instance(const Time t, const Real &forward,
                                      const std::vector<Real> &params,
                                      const std::vector<Real> &addParams) {
-        return ext::make_shared<type>(t, forward, params);
+        return std::make_shared<type>(t, forward, params);
     }
 };
 }
@@ -151,15 +151,15 @@ class SviInterpolation : public Interpolation {
                      const Real &forward, Real a, Real b, Real sigma, Real rho,
                      Real m, bool aIsFixed, bool bIsFixed, bool sigmaIsFixed,
                      bool rhoIsFixed, bool mIsFixed, bool vegaWeighted = true,
-                     const ext::shared_ptr<EndCriteria> &endCriteria =
-                         ext::shared_ptr<EndCriteria>(),
-                     const ext::shared_ptr<OptimizationMethod> &optMethod =
-                         ext::shared_ptr<OptimizationMethod>(),
+                     const std::shared_ptr<EndCriteria> &endCriteria =
+                         std::shared_ptr<EndCriteria>(),
+                     const std::shared_ptr<OptimizationMethod> &optMethod =
+                         std::shared_ptr<OptimizationMethod>(),
                      const Real errorAccept = 0.0020,
                      const bool useMaxError = false,
                      const Size maxGuesses = 50) {
 
-        impl_ = ext::shared_ptr<Interpolation::Impl>(
+        impl_ = std::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SviSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
                 {a, b, sigma, rho, m},
@@ -203,8 +203,8 @@ class Svi {
         bool rhoIsFixed,
         bool mIsFixed,
         bool vegaWeighted = false,
-        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-        ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
+        std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+        std::shared_ptr<OptimizationMethod> optMethod = std::shared_ptr<OptimizationMethod>(),
         const Real errorAccept = 0.0020,
         const bool useMaxError = false,
         const Size maxGuesses = 50)
@@ -230,8 +230,8 @@ class Svi {
     Real a_, b_, sigma_, rho_, m_;
     bool aIsFixed_, bIsFixed_, sigmaIsFixed_, rhoIsFixed_, mIsFixed_;
     bool vegaWeighted_;
-    const ext::shared_ptr<EndCriteria> endCriteria_;
-    const ext::shared_ptr<OptimizationMethod> optMethod_;
+    const std::shared_ptr<EndCriteria> endCriteria_;
+    const std::shared_ptr<OptimizationMethod> optMethod_;
     const Real errorAccept_;
     const bool useMaxError_;
     const Size maxGuesses_;

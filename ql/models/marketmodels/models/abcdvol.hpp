@@ -40,7 +40,7 @@ namespace QuantLib {
                 Real c,
                 Real d,
                 const std::vector<Real>& ks,
-                const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+                const std::shared_ptr<PiecewiseConstantCorrelation>& corr,
                 const EvolutionDescription& evolution,
                 Size numberOfFactors,
                 const std::vector<Rate>& initialRates,

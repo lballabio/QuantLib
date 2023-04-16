@@ -26,12 +26,13 @@
 #define quantlib_optimization_lmdif_hpp
 
 #include <ql/types.hpp>
-#include <ql/functional.hpp>
+#include <functional>
+
 
 namespace QuantLib {
 
     namespace MINPACK {
-        typedef ext::function<void (int,
+        typedef std::function<void (int,
                                       int, 
                                       Real*,
                                       Real*,

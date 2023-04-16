@@ -38,7 +38,7 @@ namespace QuantLib {
                      bool growthOnly,
                      Real baseCPI,
                      const Period& observationLag,
-                     ext::shared_ptr<ZeroInflationIndex> cpiIndex,
+                     std::shared_ptr<ZeroInflationIndex> cpiIndex,
                      CPI::InterpolationType observationInterpolation,
                      const Schedule& schedule,
                      const std::vector<Rate>& fixedRate,

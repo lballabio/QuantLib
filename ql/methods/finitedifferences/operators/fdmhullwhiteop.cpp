@@ -30,8 +30,8 @@
 namespace QuantLib {
 
     FdmHullWhiteOp::FdmHullWhiteOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<HullWhite>& model,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<HullWhite>& model,
         Size direction)
     : direction_(direction),
       x_(mesher->locations(direction)),
@@ -47,7 +47,7 @@ namespace QuantLib {
 
     void FdmHullWhiteOp::setTime(Time t1, Time t2) {
 
-        const ext::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
+        const std::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
             model_->dynamics();
 
         const Real phi = 0.5*(  dynamics->shortRate(t1, 0.0)

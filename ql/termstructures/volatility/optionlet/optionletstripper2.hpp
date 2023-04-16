@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         // Handle or just shared_ptr ??
         OptionletStripper2(
-            const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
+            const std::shared_ptr<OptionletStripper1>& optionletStripper1,
             const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve);
 
         std::vector<Rate> atmCapFloorStrikes() const;
@@ -60,24 +60,24 @@ namespace QuantLib {
 
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const ext::shared_ptr<OptionletStripper1>&,
-                              ext::shared_ptr<CapFloor>,
+            ObjectiveFunction(const std::shared_ptr<OptionletStripper1>&,
+                              std::shared_ptr<CapFloor>,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:
-            ext::shared_ptr<SimpleQuote> spreadQuote_;
-            ext::shared_ptr<CapFloor> cap_;
+            std::shared_ptr<SimpleQuote> spreadQuote_;
+            std::shared_ptr<CapFloor> cap_;
             Real targetValue_;
         };
 
-        const ext::shared_ptr<OptionletStripper1> stripper1_;
+        const std::shared_ptr<OptionletStripper1> stripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;
         DayCounter dc_;
         Size nOptionExpiries_;
         mutable std::vector<Rate> atmCapFloorStrikes_;
         mutable std::vector<Real> atmCapFloorPrices_;
         mutable std::vector<Volatility> spreadsVolImplied_;
-        mutable std::vector<ext::shared_ptr<CapFloor> > caps_;
+        mutable std::vector<std::shared_ptr<CapFloor> > caps_;
         Size maxEvaluations_ = 10000;
         Real accuracy_ = 1.e-6;
     };

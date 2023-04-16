@@ -37,7 +37,7 @@ namespace QuantLib {
     class EquityCashFlow : public IndexedCashFlow {
        public:
         EquityCashFlow(Real notional,
-                       ext::shared_ptr<EquityIndex> index,
+                       std::shared_ptr<EquityIndex> index,
                        const Date& baseDate,
                        const Date& fixingDate,
                        const Date& paymentDate,
@@ -50,11 +50,11 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-        void setPricer(const ext::shared_ptr<EquityCashFlowPricer>&);
-        const ext::shared_ptr<EquityCashFlowPricer>& pricer() const { return pricer_; };
+        void setPricer(const std::shared_ptr<EquityCashFlowPricer>&);
+        const std::shared_ptr<EquityCashFlowPricer>& pricer() const { return pricer_; };
 
       private:
-        ext::shared_ptr<EquityCashFlowPricer> pricer_;
+        std::shared_ptr<EquityCashFlowPricer> pricer_;
     };
 
     inline void EquityCashFlow::accept(AcyclicVisitor& v) {
@@ -65,7 +65,7 @@ namespace QuantLib {
             IndexedCashFlow::accept(v);
     }
 
-    void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityCashFlowPricer>&);
+    void setCouponPricer(const Leg& leg, const std::shared_ptr<EquityCashFlowPricer>&);
 
     class EquityCashFlowPricer : public virtual Observer, public virtual Observable {
       public:
@@ -81,7 +81,7 @@ namespace QuantLib {
         void update() override { notifyObservers(); }
         //@}
       protected:
-        ext::shared_ptr<EquityIndex> index_;
+        std::shared_ptr<EquityIndex> index_;
         Date baseDate_, fixingDate_;
         bool growthOnlyPayoff_;
     };

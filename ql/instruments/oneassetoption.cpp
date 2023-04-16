@@ -26,8 +26,8 @@
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const ext::shared_ptr<Payoff>& payoff,
-        const ext::shared_ptr<Exercise>& exercise)
+        const std::shared_ptr<Payoff>& payoff,
+        const std::shared_ptr<Exercise>& exercise)
     : Option(payoff, exercise) {}
 
     bool OneAssetOption::isExpired() const {

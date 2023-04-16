@@ -41,7 +41,7 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        MCPerformanceEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process,
                             bool brownianBridge,
                             bool antitheticVariate,
                             Size requiredSamples,
@@ -61,18 +61,18 @@ namespace QuantLib {
       protected:
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
 
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
@@ -84,7 +84,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPerformanceEngine {
       public:
-        MakeMCPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        MakeMCPerformanceEngine(std::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCPerformanceEngine& withBrownianBridge(bool b = true);
         MakeMCPerformanceEngine& withAntitheticVariate(bool b = true);
@@ -93,9 +93,9 @@ namespace QuantLib {
         MakeMCPerformanceEngine& withMaxSamples(Size samples);
         MakeMCPerformanceEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         bool brownianBridge_ = false, antithetic_ = false;
         Size samples_, maxSamples_;
         Real tolerance_;
@@ -122,7 +122,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MCPerformanceEngine<RNG, S>::MCPerformanceEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         bool brownianBridge,
         bool antitheticVariate,
         Size requiredSamples,
@@ -150,16 +150,16 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    ext::shared_ptr<typename MCPerformanceEngine<RNG,S>::path_pricer_type>
+    std::shared_ptr<typename MCPerformanceEngine<RNG,S>::path_pricer_type>
     MCPerformanceEngine<RNG,S>::pathPricer() const {
 
-        ext::shared_ptr<PercentageStrikePayoff> payoff =
-            ext::dynamic_pointer_cast<PercentageStrikePayoff>(
+        std::shared_ptr<PercentageStrikePayoff> payoff =
+            std::dynamic_pointer_cast<PercentageStrikePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-percentage payoff given");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
@@ -172,7 +172,7 @@ namespace QuantLib {
         discounts.push_back(this->process_->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate()));
 
-        return ext::shared_ptr<
+        return std::shared_ptr<
             typename MCPerformanceEngine<RNG,S>::path_pricer_type>(
                          new PerformanceOptionPathPricer(payoff->optionType(),
                                                          payoff->strike(),
@@ -182,7 +182,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCPerformanceEngine<RNG, S>::MakeMCPerformanceEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()) {}
 
@@ -237,9 +237,9 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCPerformanceEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
+    MakeMCPerformanceEngine<RNG,S>::operator std::shared_ptr<PricingEngine>()
                                                                       const {
-        return ext::shared_ptr<PricingEngine>(new
+        return std::shared_ptr<PricingEngine>(new
             MCPerformanceEngine<RNG,S>(process_,
                                        brownianBridge_,
                                        antithetic_,

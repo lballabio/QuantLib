@@ -81,7 +81,7 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! general constructor
-        DigitalCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
+        DigitalCoupon(const std::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike = Null<Rate>(),
                       Position::Type callPosition = Position::Long,
                       bool isCallITMIncluded = false,
@@ -90,8 +90,8 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      const ext::shared_ptr<DigitalReplication>& replication =
-                        ext::shared_ptr<DigitalReplication>(),
+                      const std::shared_ptr<DigitalReplication>& replication =
+                        std::shared_ptr<DigitalReplication>(),
                       bool nakedOption = false);
 
         //@}
@@ -112,7 +112,7 @@ namespace QuantLib {
         bool hasCollar() const {return (hasCallStrike_ && hasPutStrike_); }
         bool isLongPut() const { return (putCsi_==1.); }
         bool isLongCall() const { return (callCsi_==1.); }
-        ext::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
+        std::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
         /*! Returns the call option rate
            (multiplied by: nominal*accrualperiod*discount is the NPV of the option)
         */
@@ -130,7 +130,7 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
 
-        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override {
+        void setPricer(const std::shared_ptr<FloatingRateCouponPricer>& pricer) override {
             if (pricer_ != nullptr)
                 unregisterWith(pricer_);
             pricer_ = pricer;
@@ -144,7 +144,7 @@ namespace QuantLib {
         //! \name Data members
         //@{
         //!
-        ext::shared_ptr<FloatingRateCoupon> underlying_;
+        std::shared_ptr<FloatingRateCoupon> underlying_;
         //! strike rate for the the call option
         Rate callStrike_;
         //! strike rate for the the put option

@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     FdmDirichletBoundary::FdmDirichletBoundary(
-                            const ext::shared_ptr<FdmMesher>& mesher,
+                            const std::shared_ptr<FdmMesher>& mesher,
                             Real valueOnBoundary, Size direction,
                             FdmDirichletBoundary::Side side)
     : side_(side),

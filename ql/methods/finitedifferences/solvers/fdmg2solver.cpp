@@ -38,10 +38,10 @@ namespace QuantLib {
 
 
     void FdmG2Solver::performCalculations() const {
-        const ext::shared_ptr<FdmG2Op> op(
+        const std::shared_ptr<FdmG2Op> op(
             new FdmG2Op(solverDesc_.mesher, model_.currentLink(), 0, 1));
 
-        solver_ = ext::make_shared<Fdm2DimSolver>(
+        solver_ = std::make_shared<Fdm2DimSolver>(
             solverDesc_, schemeDesc_, op);
     }
 

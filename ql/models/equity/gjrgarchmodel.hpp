@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class GJRGARCHModel : public CalibratedModel {
       public:
-        GJRGARCHModel(const ext::shared_ptr<GJRGARCHProcess>& process);
+        GJRGARCHModel(const std::shared_ptr<GJRGARCHProcess>& process);
 
         // variance mean reversion level multiplied by
         // the proportion not accounted by alpha, beta and gamma
@@ -58,12 +58,12 @@ namespace QuantLib {
         Real v0()    const { return arguments_[5](0.0); }
 
         // underlying process
-        ext::shared_ptr<GJRGARCHProcess> process() const { return process_; }
+        std::shared_ptr<GJRGARCHProcess> process() const { return process_; }
 
         class VolatilityConstraint;
       protected:
         void generateArguments() override;
-        ext::shared_ptr<GJRGARCHProcess> process_;
+        std::shared_ptr<GJRGARCHProcess> process_;
     };
 }
 

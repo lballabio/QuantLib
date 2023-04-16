@@ -52,7 +52,7 @@ namespace QuantLib {
         typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::path_pricer_type path_pricer_type;
         typedef typename MCDiscreteAveragingAsianEngineBase<MultiVariate,RNG,S>::stats_type stats_type;
         // constructor
-        MCDiscreteGeometricAPHestonEngine(const ext::shared_ptr<P>& process,
+        MCDiscreteGeometricAPHestonEngine(const std::shared_ptr<P>& process,
                                           bool antitheticVariate,
                                           Size requiredSamples,
                                           Real requiredTolerance,
@@ -61,7 +61,7 @@ namespace QuantLib {
                                           Size timeSteps = Null<Size>(),
                                           Size timeStepsPerYear = Null<Size>());
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
 
@@ -69,7 +69,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCDiscreteGeometricAPHestonEngine {
       public:
-        explicit MakeMCDiscreteGeometricAPHestonEngine(ext::shared_ptr<P> process);
+        explicit MakeMCDiscreteGeometricAPHestonEngine(std::shared_ptr<P> process);
         // named parameters
         MakeMCDiscreteGeometricAPHestonEngine& withSamples(Size samples);
         MakeMCDiscreteGeometricAPHestonEngine& withAbsoluteTolerance(Real tolerance);
@@ -79,9 +79,9 @@ namespace QuantLib {
         MakeMCDiscreteGeometricAPHestonEngine& withSteps(Size steps);
         MakeMCDiscreteGeometricAPHestonEngine& withStepsPerYear(Size steps);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<P> process_;
+        std::shared_ptr<P> process_;
         bool antithetic_ = false;
         Size samples_, maxSamples_, steps_, stepsPerYear_;
         Real tolerance_;
@@ -112,7 +112,7 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline
     MCDiscreteGeometricAPHestonEngine<RNG,S,P>::MCDiscreteGeometricAPHestonEngine(
-             const ext::shared_ptr<P>& process,
+             const std::shared_ptr<P>& process,
              bool antitheticVariate,
              Size requiredSamples,
              Real requiredTolerance,
@@ -135,7 +135,7 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline ext::shared_ptr<
+    inline std::shared_ptr<
             typename MCDiscreteGeometricAPHestonEngine<RNG,S,P>::path_pricer_type>
         MCDiscreteGeometricAPHestonEngine<RNG,S,P>::pathPricer() const {
 
@@ -148,21 +148,21 @@ namespace QuantLib {
             fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        ext::shared_ptr<P> process =
-            ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<P> process =
+            std::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
+        return std::shared_ptr<typename
             MCDiscreteGeometricAPHestonEngine<RNG,S,P>::path_pricer_type>(
                 new GeometricAPOHestonPathPricer(
                     payoff->optionType(),
@@ -175,7 +175,7 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCDiscreteGeometricAPHestonEngine<RNG, S, P>::MakeMCDiscreteGeometricAPHestonEngine(
-        ext::shared_ptr<P> process)
+        std::shared_ptr<P> process)
     : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       steps_(Null<Size>()), stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()) {}
 
@@ -241,8 +241,8 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>() const {
-        return ext::shared_ptr<PricingEngine>(new
+    inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>::operator std::shared_ptr<PricingEngine>() const {
+        return std::shared_ptr<PricingEngine>(new
             MCDiscreteGeometricAPHestonEngine<RNG,S,P>(process_,
                                                        antithetic_,
                                                        samples_,

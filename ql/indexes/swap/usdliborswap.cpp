@@ -36,7 +36,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                ext::shared_ptr<IborIndex>(new USDLibor(3*Months, h))) {}
+                std::shared_ptr<IborIndex>(new USDLibor(3*Months, h))) {}
 
     UsdLiborSwapIsdaFixAm::UsdLiborSwapIsdaFixAm(
                                 const Period& tenor,
@@ -50,7 +50,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                ext::shared_ptr<IborIndex>(new USDLibor(3*Months, forwarding)),
+                std::shared_ptr<IborIndex>(new USDLibor(3*Months, forwarding)),
                 discounting) {}
 
     UsdLiborSwapIsdaFixPm::UsdLiborSwapIsdaFixPm(
@@ -64,7 +64,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                ext::shared_ptr<IborIndex>(new USDLibor(3*Months, h))) {}
+                std::shared_ptr<IborIndex>(new USDLibor(3*Months, h))) {}
 
     UsdLiborSwapIsdaFixPm::UsdLiborSwapIsdaFixPm(
                                 const Period& tenor,
@@ -78,7 +78,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                ext::shared_ptr<IborIndex>(new USDLibor(3*Months, forwarding)),
+                std::shared_ptr<IborIndex>(new USDLibor(3*Months, forwarding)),
                 discounting) {}
 
 }

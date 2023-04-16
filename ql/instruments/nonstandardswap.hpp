@@ -28,7 +28,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -50,13 +50,13 @@ namespace QuantLib {
                         std::vector<Real> fixedRate,
                         DayCounter fixedDayCount,
                         Schedule floatingSchedule,
-                        ext::shared_ptr<IborIndex> iborIndex,
+                        std::shared_ptr<IborIndex> iborIndex,
                         Real gearing,
                         Spread spread,
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt);
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt);
         NonstandardSwap(Swap::Type type,
                         std::vector<Real> fixedNominal,
                         std::vector<Real> floatingNominal,
@@ -64,13 +64,13 @@ namespace QuantLib {
                         std::vector<Real> fixedRate,
                         DayCounter fixedDayCount,
                         Schedule floatingSchedule,
-                        ext::shared_ptr<IborIndex> iborIndex,
+                        std::shared_ptr<IborIndex> iborIndex,
                         std::vector<Real> gearing,
                         std::vector<Spread> spread,
                         DayCounter floatingDayCount,
                         bool intermediateCapitalExchange = false,
                         bool finalCapitalExchange = false,
-                        ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt);
+                        std::optional<BusinessDayConvention> paymentConvention = std::nullopt);
         //! \name Inspectors
         //@{
         Swap::Type type() const;
@@ -82,7 +82,7 @@ namespace QuantLib {
         const DayCounter &fixedDayCount() const;
 
         const Schedule &floatingSchedule() const;
-        const ext::shared_ptr<IborIndex> &iborIndex() const;
+        const std::shared_ptr<IborIndex> &iborIndex() const;
         Spread spread() const;
         Real gearing() const;
         const std::vector<Spread>& spreads() const;
@@ -111,7 +111,7 @@ namespace QuantLib {
         std::vector<Real> fixedRate_;
         DayCounter fixedDayCount_;
         Schedule floatingSchedule_;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<IborIndex> iborIndex_;
         std::vector<Spread> spread_;
         std::vector<Real> gearing_;
         bool singleSpreadAndGearing_;
@@ -142,7 +142,7 @@ namespace QuantLib {
         std::vector<Real> floatingGearings;
         std::vector<Real> floatingCoupons;
 
-        ext::shared_ptr<IborIndex> iborIndex;
+        std::shared_ptr<IborIndex> iborIndex;
 
         std::vector<bool> fixedIsRedemptionFlow;
         std::vector<bool> floatingIsRedemptionFlow;
@@ -188,7 +188,7 @@ namespace QuantLib {
         return floatingSchedule_;
     }
 
-    inline const ext::shared_ptr<IborIndex> &
+    inline const std::shared_ptr<IborIndex> &
     NonstandardSwap::iborIndex() const {
         return iborIndex_;
     }

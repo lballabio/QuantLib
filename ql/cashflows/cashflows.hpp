@@ -30,7 +30,7 @@
 #include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -413,7 +413,7 @@ namespace QuantLib {
             and the relative frequency and day counter.
         */
         static Real npv(const Leg& leg,
-                        const ext::shared_ptr<YieldTermStructure>& discount,
+                        const std::shared_ptr<YieldTermStructure>& discount,
                         Spread zSpread,
                         const DayCounter& dayCounter,
                         Compounding compounding,
@@ -424,7 +424,7 @@ namespace QuantLib {
         //! implied Z-spread.
         static Spread zSpread(const Leg& leg,
                               Real npv,
-                              const ext::shared_ptr<YieldTermStructure>&,
+                              const std::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
@@ -436,7 +436,7 @@ namespace QuantLib {
                               Rate guess = 0.0);
         //! deprecated implied Z-spread.
         static Spread zSpread(const Leg& leg,
-                              const ext::shared_ptr<YieldTermStructure>& d,
+                              const std::shared_ptr<YieldTermStructure>& d,
                               Real npv,
                               const DayCounter& dayCounter,
                               Compounding compounding,

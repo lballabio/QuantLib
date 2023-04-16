@@ -83,7 +83,7 @@ namespace QuantLib {
                            unsigned long seed = 0,
                            SobolRsg::DirectionIntegers directionIntegers
                                                          = SobolRsg::Jaeckel);
-        ext::shared_ptr<BrownianGenerator> create(Size factors, Size steps) const override;
+        std::shared_ptr<BrownianGenerator> create(Size factors, Size steps) const override;
 
       private:
         SobolBrownianGenerator::Ordering ordering_;

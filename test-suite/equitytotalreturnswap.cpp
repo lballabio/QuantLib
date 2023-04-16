@@ -58,14 +58,14 @@ namespace equitytotalreturnswap_test {
         Calendar calendar;
         DayCounter dayCount;
 
-        ext::shared_ptr<EquityIndex> equityIndex;
-        ext::shared_ptr<IborIndex> usdLibor;
-        ext::shared_ptr<OvernightIndex> sofr;
+        std::shared_ptr<EquityIndex> equityIndex;
+        std::shared_ptr<IborIndex> usdLibor;
+        std::shared_ptr<OvernightIndex> sofr;
         RelinkableHandle<YieldTermStructure> interestHandle;
         RelinkableHandle<YieldTermStructure> dividendHandle;
-        ext::shared_ptr<Quote> spot;
+        std::shared_ptr<Quote> spot;
         RelinkableHandle<Quote> spotHandle;
-        ext::shared_ptr<PricingEngine> discountEngine;
+        std::shared_ptr<PricingEngine> discountEngine;
 
         // cleanup
         SavedSettings backup;
@@ -78,13 +78,13 @@ namespace equitytotalreturnswap_test {
             today = calendar.adjust(Date(27, January, 2023));
             Settings::instance().evaluationDate() = today;
 
-            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+            equityIndex = std::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
                                                         dividendHandle, spotHandle);
             IndexManager::instance().clearHistory(equityIndex->name());
             equityIndex->addFixing(Date(5, January, 2023), 9010.0);
             equityIndex->addFixing(today, 8690.0);
 
-            sofr = ext::make_shared<Sofr>(interestHandle);
+            sofr = std::make_shared<Sofr>(interestHandle);
             IndexManager::instance().clearHistory(sofr->name());
             sofr->addFixing(Date(3, January, 2023), 0.03);
             sofr->addFixing(Date(4, January, 2023), 0.031);
@@ -104,7 +104,7 @@ namespace equitytotalreturnswap_test {
             sofr->addFixing(Date(25, January, 2023), 0.034);
             sofr->addFixing(Date(26, January, 2023), 0.034);
 
-            usdLibor = ext::make_shared<USDLibor>(3 * Months, interestHandle);
+            usdLibor = std::make_shared<USDLibor>(3 * Months, interestHandle);
             IndexManager::instance().clearHistory(usdLibor->name());
             usdLibor->addFixing(Date(3, January, 2023), 0.035);
 
@@ -112,26 +112,26 @@ namespace equitytotalreturnswap_test {
             dividendHandle.linkTo(flatRate(0.005, dayCount));
 
             discountEngine =
-                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(interestHandle));
+                std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(interestHandle));
 
-            spot = ext::make_shared<SimpleQuote>(8700.0);
+            spot = std::make_shared<SimpleQuote>(8700.0);
             spotHandle.linkTo(spot);
         }
 
-        ext::shared_ptr<EquityTotalReturnSwap> createTRS(Swap::Type type,
+        std::shared_ptr<EquityTotalReturnSwap> createTRS(Swap::Type type,
                                                          const Schedule& schedule,
                                                          bool useOvernightIndex,
                                                          Rate margin = 0.0,
                                                          Real nominal = 1.0e7,
                                                          Real gearing = 1.0,
                                                          Natural paymentDelay = 0) {
-            ext::shared_ptr<EquityTotalReturnSwap> swap;
+            std::shared_ptr<EquityTotalReturnSwap> swap;
             if (useOvernightIndex) {
-                swap = ext::make_shared<EquityTotalReturnSwap>(
+                swap = std::make_shared<EquityTotalReturnSwap>(
                     type, nominal, schedule, equityIndex, sofr, dayCount, margin, gearing,
                     schedule.calendar(), Following, paymentDelay);
             } else {
-                swap = ext::make_shared<EquityTotalReturnSwap>(
+                swap = std::make_shared<EquityTotalReturnSwap>(
                     type, nominal, schedule, equityIndex, usdLibor, dayCount, margin, gearing,
                     schedule.calendar(), Following, paymentDelay);
             }
@@ -139,7 +139,7 @@ namespace equitytotalreturnswap_test {
             return swap;
         }
 
-        ext::shared_ptr<EquityTotalReturnSwap> createTRS(Swap::Type type,
+        std::shared_ptr<EquityTotalReturnSwap> createTRS(Swap::Type type,
                                                          const Date& start,
                                                          const Date& end,
                                                          bool useOvernightIndex,
@@ -187,7 +187,7 @@ namespace equitytotalreturnswap_test {
 
     Real legNPV(const Leg& leg, const Handle<YieldTermStructure>& ts) {
         Real npv = 0.0;
-        std::for_each(leg.begin(), leg.end(), [&](const ext::shared_ptr<CashFlow>& cf) {
+        std::for_each(leg.begin(), leg.end(), [&](const std::shared_ptr<CashFlow>& cf) {
             npv += cf->amount() * ts->discount(cf->date());
         });
         return npv;

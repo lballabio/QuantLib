@@ -179,7 +179,7 @@ namespace {
 
     Handle<YieldTermStructure> flatYts() {
 
-        return Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
+        return Handle<YieldTermStructure>(std::shared_ptr<YieldTermStructure>(
             new FlatForward(0, TARGET(), 0.03, Actual365Fixed())));
     }
 
@@ -188,7 +188,7 @@ namespace {
     Handle<SwaptionVolatilityStructure> flatSwaptionVts() {
 
         return Handle<SwaptionVolatilityStructure>(
-            ext::shared_ptr<SwaptionVolatilityStructure>(
+            std::shared_ptr<SwaptionVolatilityStructure>(
                 new ConstantSwaptionVolatility(0, TARGET(), ModifiedFollowing,
                                                0.20, Actual365Fixed())));
     }
@@ -198,7 +198,7 @@ namespace {
     Handle<OptionletVolatilityStructure> flatOptionletVts() {
 
         return Handle<OptionletVolatilityStructure>(
-            ext::shared_ptr<OptionletVolatilityStructure>(
+            std::shared_ptr<OptionletVolatilityStructure>(
                 new ConstantOptionletVolatility(0, TARGET(), ModifiedFollowing,
                                                 0.20, Actual365Fixed())));
     }
@@ -207,10 +207,10 @@ namespace {
 
     Handle<YieldTermStructure> md0Yts() {
 
-        ext::shared_ptr<IborIndex> euribor6mEmpty(new Euribor(6 * Months));
+        std::shared_ptr<IborIndex> euribor6mEmpty(new Euribor(6 * Months));
 
-        std::vector<ext::shared_ptr<Quote> > q6m;
-        std::vector<ext::shared_ptr<RateHelper> > r6m;
+        std::vector<std::shared_ptr<Quote> > q6m;
+        std::vector<std::shared_ptr<RateHelper> > r6m;
 
         double q6mh[] = { 0.0001,  0.0001,  0.0001,  0.0003,  0.00055, 0.0009,
                           0.0014,  0.0019,  0.0025,  0.0031,  0.00325, 0.00313,
@@ -242,12 +242,12 @@ namespace {
 
         q6m.reserve(10 + 15 + 35);
         for (Real i : q6mh) {
-            q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(i)));
+            q6m.push_back(std::shared_ptr<Quote>(new SimpleQuote(i)));
         }
 
         r6m.reserve(10);
         for (int i = 0; i < 10; i++) {
-            r6m.push_back(ext::make_shared<DepositRateHelper>(
+            r6m.push_back(std::make_shared<DepositRateHelper>(
                 Handle<Quote>(q6m[i]), q6mh1[i],
                                       i < 2 ? i : 2, TARGET(),
                                       ModifiedFollowing, false, Actual360()));
@@ -255,7 +255,7 @@ namespace {
 
         for (int i = 0; i < 18; i++) {
             if (i + 1 != 6 && i + 1 != 12 && i + 1 != 18) {
-                r6m.push_back(ext::make_shared<FraRateHelper>(
+                r6m.push_back(std::make_shared<FraRateHelper>(
                             Handle<Quote>(q6m[10 + i]), i + 1,
                                           i + 7, 2, TARGET(), ModifiedFollowing,
                                           false, Actual360()));
@@ -264,14 +264,14 @@ namespace {
 
         for (int i = 0; i < 15 + 35; i++) {
             if (i + 7 == 12 || i + 7 == 18 || i + 7 >= 24) {
-                r6m.push_back(ext::make_shared<SwapRateHelper>(
+                r6m.push_back(std::make_shared<SwapRateHelper>(
                     Handle<Quote>(q6m[10 + i]), q6mh2[i],
                                        TARGET(), Annual, ModifiedFollowing,
                                        Actual360(), euribor6mEmpty));
             }
         }
 
-        Handle<YieldTermStructure> res(ext::shared_ptr<YieldTermStructure>(
+        Handle<YieldTermStructure> res(std::shared_ptr<YieldTermStructure>(
             new PiecewiseYieldCurve<Discount, LogLinear>(0, TARGET(), r6m,
                                                          Actual365Fixed())));
         res->enableExtrapolation();
@@ -338,13 +338,13 @@ namespace {
             qSwAtmTmp.reserve(14);
             for (int j = 0; j < 14; j++) {
                 qSwAtmTmp.emplace_back(
-                    ext::shared_ptr<Quote>(new SimpleQuote(qSwAtmh[i * 14 + j])));
+                    std::shared_ptr<Quote>(new SimpleQuote(qSwAtmh[i * 14 + j])));
             }
             qSwAtm.push_back(qSwAtmTmp);
         }
 
         Handle<SwaptionVolatilityStructure> swaptionVolAtm(
-            ext::shared_ptr<SwaptionVolatilityStructure>(
+            std::shared_ptr<SwaptionVolatilityStructure>(
                 new SwaptionVolatilityMatrix(TARGET(), ModifiedFollowing,
                                              optionTenors, swapTenors, qSwAtm,
                                              Actual365Fixed())));
@@ -405,7 +405,7 @@ namespace {
             qSwSmileTmp.reserve(9);
             for (int j = 0; j < 9; j++) {
                 qSwSmileTmp.emplace_back(
-                    ext::shared_ptr<Quote>(new SimpleQuote(qSwSmileh[i * 9 + j])));
+                    std::shared_ptr<Quote>(new SimpleQuote(qSwSmileh[i * 9 + j])));
             }
             qSwSmile.push_back(qSwSmileTmp);
         }
@@ -431,17 +431,17 @@ namespace {
             parameterGuessTmp.reserve(4);
             for (int j = 0; j < 4; j++) {
                 parameterGuessTmp.emplace_back(
-                    ext::shared_ptr<Quote>(new SimpleQuote(qSwSmileh1[i * 4 + j])));
+                    std::shared_ptr<Quote>(new SimpleQuote(qSwSmileh1[i * 4 + j])));
             }
             parameterGuess.push_back(parameterGuessTmp);
         }
 
-        ext::shared_ptr<EndCriteria> ec(
+        std::shared_ptr<EndCriteria> ec(
             new EndCriteria(50000, 250, 1E-6, 1E-6, 1E-6));
 
-        ext::shared_ptr<SwapIndex> swapIndex(new EuriborSwapIsdaFixA(
+        std::shared_ptr<SwapIndex> swapIndex(new EuriborSwapIsdaFixA(
             30 * Years, Handle<YieldTermStructure>(md0Yts())));
-        ext::shared_ptr<SwapIndex> shortSwapIndex(new EuriborSwapIsdaFixA(
+        std::shared_ptr<SwapIndex> shortSwapIndex(new EuriborSwapIsdaFixA(
             1 * Years,
             Handle<YieldTermStructure>(md0Yts()))); // We assume that we have 6m
                                                     // vols (which we actually
@@ -453,7 +453,7 @@ namespace {
         // InterpolatedSwaptionVolatilityCube(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,false));
         // // bilinear interpolation gives nasty digitals
         Handle<SwaptionVolatilityStructure> res(
-            ext::shared_ptr<SwaptionVolatilityStructure>(new SabrSwaptionVolatilityCube(
+            std::shared_ptr<SwaptionVolatilityStructure>(new SabrSwaptionVolatilityCube(
                 swaptionVolAtm, optionTenorsSmile, swapTenorsSmile,
                 strikeSpreads, qSwSmile, swapIndex, shortSwapIndex, true,
                 parameterGuess, parameterFixed, true, ec,
@@ -535,15 +535,15 @@ namespace {
             }
         }
 
-        ext::shared_ptr<IborIndex> iborIndex(
+        std::shared_ptr<IborIndex> iborIndex(
             new Euribor(6 * Months, md0Yts()));
-        ext::shared_ptr<CapFloorTermVolSurface> cf(new CapFloorTermVolSurface(
+        std::shared_ptr<CapFloorTermVolSurface> cf(new CapFloorTermVolSurface(
             0, TARGET(), ModifiedFollowing, optionTenors, strikes, vols));
-        ext::shared_ptr<OptionletStripper> stripper(
+        std::shared_ptr<OptionletStripper> stripper(
             new OptionletStripper1(cf, iborIndex));
 
         return Handle<OptionletVolatilityStructure>(
-            ext::shared_ptr<OptionletVolatilityStructure>(
+            std::shared_ptr<OptionletVolatilityStructure>(
                 new StrippedOptionletAdapter(stripper)));
     }
 
@@ -656,12 +656,12 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     }
 
     std::vector<Real> stdDevs0 = impliedStdDevs(atm, strikes, calls0);
-    ext::shared_ptr<SmileSection> sec1(
+    std::shared_ptr<SmileSection> sec1(
         new InterpolatedSmileSection<Linear>(t, strikes, stdDevs0, atm));
 
     // test arbitrage free smile reproduction
 
-    ext::shared_ptr<KahaleSmileSection> ksec11(
+    std::shared_ptr<KahaleSmileSection> ksec11(
         new KahaleSmileSection(sec1, atm, false, false, false, money));
 
     if (std::fabs(ksec11->leftCoreStrike() - 0.01) > tol)
@@ -685,7 +685,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     // test interpolation
 
-    ext::shared_ptr<KahaleSmileSection> ksec12(
+    std::shared_ptr<KahaleSmileSection> ksec12(
         new KahaleSmileSection(sec1, atm, true, false, false, money));
 
     // sanity check for left point extrapolation may mark 0.01 as bad as well as
@@ -730,7 +730,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
 
     // test exponential extrapolation
 
-    ext::shared_ptr<KahaleSmileSection> ksec13(
+    std::shared_ptr<KahaleSmileSection> ksec13(
         new KahaleSmileSection(sec1, atm, false, true, false, money));
 
     k = strikes.back();
@@ -749,12 +749,12 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     calls1[0] = (atm - strikes[0]) +
                 0.0010; // introduce arbitrage by changing call price
     std::vector<Real> stdDevs1 = impliedStdDevs(atm, strikes, calls1);
-    ext::shared_ptr<SmileSection> sec2(
+    std::shared_ptr<SmileSection> sec2(
         new InterpolatedSmileSection<Linear>(t, strikes, stdDevs1, atm));
 
-    ext::shared_ptr<KahaleSmileSection> ksec21(
+    std::shared_ptr<KahaleSmileSection> ksec21(
         new KahaleSmileSection(sec2, atm, false, false, false, money));
-    ext::shared_ptr<KahaleSmileSection> ksec22(
+    std::shared_ptr<KahaleSmileSection> ksec22(
         new KahaleSmileSection(sec2, atm, true, false, true, money));
 
     if (std::fabs(ksec21->leftCoreStrike() - 0.02) > tol)
@@ -793,12 +793,12 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     calls2[8] = 0.9 * calls2[9] +
                 0.1 * calls2[8]; // introduce arbitrage by changing call price
     std::vector<Real> stdDevs2 = impliedStdDevs(atm, strikes, calls2);
-    ext::shared_ptr<SmileSection> sec3(
+    std::shared_ptr<SmileSection> sec3(
         new InterpolatedSmileSection<Linear>(t, strikes, stdDevs2, atm));
 
-    ext::shared_ptr<KahaleSmileSection> ksec31(
+    std::shared_ptr<KahaleSmileSection> ksec31(
         new KahaleSmileSection(sec3, atm, false, false, false, money));
-    ext::shared_ptr<KahaleSmileSection> ksec32(
+    std::shared_ptr<KahaleSmileSection> ksec32(
         new KahaleSmileSection(sec3, atm, true, false, true, money));
 
     if (std::fabs(ksec31->leftCoreStrike() - 0.01) > tol)
@@ -860,9 +860,9 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
     Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-    ext::shared_ptr<SwapIndex> swapIndexBase(
+    std::shared_ptr<SwapIndex> swapIndexBase(
         new EuriborSwapIsdaFixA(1 * Years));
-    ext::shared_ptr<IborIndex> iborIndex(new Euribor(6 * Months));
+    std::shared_ptr<IborIndex> iborIndex(new Euribor(6 * Months));
 
     std::vector<Date> volStepDates;
     std::vector<Real> vols = {1.0};
@@ -874,7 +874,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 
     // Calibration Basket 1 / flat yts, vts
 
-    ext::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
         flatYts_, 0.01, volStepDates, vols, flatSwaptionVts_,
         expiriesCalBasket1(), tenorsCalBasket1(), swapIndexBase,
         MarkovFunctional::ModelSettings()
@@ -927,7 +927,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 
     // Calibration Basket 2 / flat yts, vts
 
-    ext::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(
         flatYts_, 0.01, volStepDates, vols, flatOptionletVts_,
         expiriesCalBasket2(), iborIndex,
         MarkovFunctional::ModelSettings()
@@ -974,7 +974,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 
     // Calibration Basket 1 / real yts, vts
 
-    ext::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(
         md0Yts_, 0.01, volStepDates, vols, md0SwaptionVts_,
         expiriesCalBasket1(), tenorsCalBasket1(), swapIndexBase,
         MarkovFunctional::ModelSettings()
@@ -1021,7 +1021,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
 
     // Calibration Basket 2 / real yts, vts
 
-    ext::shared_ptr<MarkovFunctional> mf4(
+    std::shared_ptr<MarkovFunctional> mf4(
         new MarkovFunctional(md0Yts_, 0.01, volStepDates, vols,
                              md0OptionletVts_, expiriesCalBasket2(), iborIndex,
                              MarkovFunctional::ModelSettings()
@@ -1089,7 +1089,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
     Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-    ext::shared_ptr<SwapIndex> swapIndexBase(
+    std::shared_ptr<SwapIndex> swapIndexBase(
         new EuriborSwapIsdaFixA(1 * Years));
 
     std::vector<Date> volStepDates;
@@ -1100,9 +1100,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
 
     // Calibration Basket 1 / flat yts, vts
 
-    ext::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, flatYts_));
+    std::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, flatYts_));
 
-    ext::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
         flatYts_, 0.01, volStepDates, vols, flatSwaptionVts_,
         expiriesCalBasket1(), tenorsCalBasket1(), swapIndexBase,
         MarkovFunctional::ModelSettings()
@@ -1118,26 +1118,26 @@ void MarkovFunctionalTest::testVanillaEngines() {
     MarkovFunctional::ModelOutputs outputs1 = mf1->modelOutputs();
     // BOOST_TEST_MESSAGE(outputs1);
 
-    ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
+    std::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
         new Gaussian1dSwaptionEngine(mf1, 64, 7.0));
-    ext::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1(
+    std::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine1(
         new BlackSwaptionEngine(flatYts_, flatSwaptionVts_));
 
     for (Size i = 0; i < outputs1.expiries_.size(); i++) {
         for (Size j = 0; j < outputs1.smileStrikes_[0].size(); j++) {
-            ext::shared_ptr<VanillaSwap> underlyingCall =
+            std::shared_ptr<VanillaSwap> underlyingCall =
                 MakeVanillaSwap(outputs1.tenors_[i], iborIndex1,
                                 outputs1.smileStrikes_[i][j])
                     .withEffectiveDate(
                          TARGET().advance(outputs1.expiries_[i], 2, Days))
                     .receiveFixed(false);
-            ext::shared_ptr<VanillaSwap> underlyingPut =
+            std::shared_ptr<VanillaSwap> underlyingPut =
                 MakeVanillaSwap(outputs1.tenors_[i], iborIndex1,
                                 outputs1.smileStrikes_[i][j])
                     .withEffectiveDate(
                          TARGET().advance(outputs1.expiries_[i], 2, Days))
                     .receiveFixed(true);
-            ext::shared_ptr<Exercise> exercise(
+            std::shared_ptr<Exercise> exercise(
                 new EuropeanExercise(outputs1.expiries_[i]));
             Swaption swaptionC(underlyingCall, exercise);
             Swaption swaptionP(underlyingPut, exercise);
@@ -1164,9 +1164,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
 
     // Calibration Basket 2 / flat yts, vts
 
-    ext::shared_ptr<IborIndex> iborIndex2(new Euribor(6 * Months, flatYts_));
+    std::shared_ptr<IborIndex> iborIndex2(new Euribor(6 * Months, flatYts_));
 
-    ext::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(
         flatYts_, 0.01, volStepDates, vols, flatOptionletVts_,
         expiriesCalBasket2(), iborIndex2,
         MarkovFunctional::ModelSettings()
@@ -1182,9 +1182,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
     MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
     // BOOST_TEST_MESSAGE(outputs2);
 
-    ext::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine2(
+    std::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine2(
         new BlackCapFloorEngine(flatYts_, flatOptionletVts_));
-    ext::shared_ptr<Gaussian1dCapFloorEngine> mfCapFloorEngine2(
+    std::shared_ptr<Gaussian1dCapFloorEngine> mfCapFloorEngine2(
         new Gaussian1dCapFloorEngine(mf2, 64, 7.0));
     std::vector<CapFloor> c2 = {
         MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.01),
@@ -1217,9 +1217,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
 
     // Calibration Basket 1 / real yts, vts
 
-    ext::shared_ptr<IborIndex> iborIndex3(new Euribor(6 * Months, md0Yts_));
+    std::shared_ptr<IborIndex> iborIndex3(new Euribor(6 * Months, md0Yts_));
 
-    ext::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf3(new MarkovFunctional(
         md0Yts_, 0.01, volStepDates, vols, md0SwaptionVts_,
         expiriesCalBasket1(), tenorsCalBasket1(), swapIndexBase,
         MarkovFunctional::ModelSettings()
@@ -1232,9 +1232,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
             .withUpperRateBound(2.0)
             .withSmileMoneynessCheckpoints(money)));
 
-    ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine3(
+    std::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine3(
         new Gaussian1dSwaptionEngine(mf3, 64, 7.0));
-    ext::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine3(
+    std::shared_ptr<BlackSwaptionEngine> blackSwaptionEngine3(
         new BlackSwaptionEngine(md0Yts_, md0SwaptionVts_));
 
     MarkovFunctional::ModelOutputs outputs3 = mf3->modelOutputs();
@@ -1242,19 +1242,19 @@ void MarkovFunctionalTest::testVanillaEngines() {
 
     for (Size i = 0; i < outputs3.expiries_.size(); i++) {
         for (Size j = 0; j < outputs3.smileStrikes_[0].size(); j++) {
-            ext::shared_ptr<VanillaSwap> underlyingCall =
+            std::shared_ptr<VanillaSwap> underlyingCall =
                 MakeVanillaSwap(outputs3.tenors_[i], iborIndex3,
                                 outputs3.smileStrikes_[i][j])
                     .withEffectiveDate(
                          TARGET().advance(outputs3.expiries_[i], 2, Days))
                     .receiveFixed(false);
-            ext::shared_ptr<VanillaSwap> underlyingPut =
+            std::shared_ptr<VanillaSwap> underlyingPut =
                 MakeVanillaSwap(outputs3.tenors_[i], iborIndex3,
                                 outputs3.smileStrikes_[i][j])
                     .withEffectiveDate(
                          TARGET().advance(outputs3.expiries_[i], 2, Days))
                     .receiveFixed(true);
-            ext::shared_ptr<Exercise> exercise(
+            std::shared_ptr<Exercise> exercise(
                 new EuropeanExercise(outputs3.expiries_[i]));
             Swaption swaptionC(underlyingCall, exercise);
             Swaption swaptionP(underlyingPut, exercise);
@@ -1289,9 +1289,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
 
     // Calibration Basket 2 / real yts, vts
 
-    ext::shared_ptr<IborIndex> iborIndex4(new Euribor(6 * Months, md0Yts_));
+    std::shared_ptr<IborIndex> iborIndex4(new Euribor(6 * Months, md0Yts_));
 
-    ext::shared_ptr<MarkovFunctional> mf4(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf4(new MarkovFunctional(
         md0Yts_, 0.01, volStepDates, vols, md0OptionletVts_,
         expiriesCalBasket2(), iborIndex4,
         MarkovFunctional::ModelSettings()
@@ -1313,9 +1313,9 @@ void MarkovFunctionalTest::testVanillaEngines() {
     MarkovFunctional::ModelOutputs outputs4 = mf4->modelOutputs();
     // BOOST_TEST_MESSAGE(outputs4);
 
-    ext::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(
+    std::shared_ptr<BlackCapFloorEngine> blackCapFloorEngine4(
         new BlackCapFloorEngine(md0Yts_, md0OptionletVts_));
-    ext::shared_ptr<Gaussian1dCapFloorEngine> mfCapFloorEngine4(
+    std::shared_ptr<Gaussian1dCapFloorEngine> mfCapFloorEngine4(
         new Gaussian1dCapFloorEngine(mf4, 64, 7.0));
 
     std::vector<CapFloor> c4 = {
@@ -1370,7 +1370,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
     Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-    ext::shared_ptr<SwapIndex> swapIndexBase(
+    std::shared_ptr<SwapIndex> swapIndexBase(
         new EuriborSwapIsdaFixA(1 * Years));
 
     std::vector<Date> volStepDates = {
@@ -1389,37 +1389,37 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     // Calibration Basket 1 / flat yts, vts / Secondary calibration set consists
     // of coterminal swaptions
 
-    ext::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, flatYts_));
+    std::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, flatYts_));
 
-    std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationHelper1;
+    std::vector<std::shared_ptr<BlackCalibrationHelper> > calibrationHelper1;
     std::vector<Real> calibrationHelperVols1 = {0.20, 0.20, 0.20, 0.20};
 
-    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper1.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(1 * Years, 4 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[0]))),
                            iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
-    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper1.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[1]))),
                            iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
-    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper1.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[2]))),
                            iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
-    calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper1.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[3]))),
                            iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
 
-    ext::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
         flatYts_, 0.01, volStepDates, vols, flatSwaptionVts_,
         expiriesCalBasket1(), tenorsCalBasket1(), swapIndexBase,
         MarkovFunctional::ModelSettings()
@@ -1432,7 +1432,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
             .withUpperRateBound(2.0)
             .withSmileMoneynessCheckpoints(money)));
 
-    ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
+    std::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine1(
         new Gaussian1dSwaptionEngine(mf1, 64, 7.0));
     calibrationHelper1[0]->setPricingEngine(mfSwaptionEngine1);
     calibrationHelper1[1]->setPricingEngine(mfSwaptionEngine1);
@@ -1448,24 +1448,24 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
 
     std::vector<Swaption> ch1;
     ch1.push_back(
-        MakeSwaption(ext::shared_ptr<SwapIndex>(
+        MakeSwaption(std::shared_ptr<SwapIndex>(
                          new EuriborSwapIsdaFixA(4 * Years, flatYts_)),
                      1 * Years));
     ch1.push_back(
-        MakeSwaption(ext::shared_ptr<SwapIndex>(
+        MakeSwaption(std::shared_ptr<SwapIndex>(
                          new EuriborSwapIsdaFixA(3 * Years, flatYts_)),
                      2 * Years));
     ch1.push_back(
-        MakeSwaption(ext::shared_ptr<SwapIndex>(
+        MakeSwaption(std::shared_ptr<SwapIndex>(
                          new EuriborSwapIsdaFixA(2 * Years, flatYts_)),
                      3 * Years));
     ch1.push_back(
-        MakeSwaption(ext::shared_ptr<SwapIndex>(
+        MakeSwaption(std::shared_ptr<SwapIndex>(
                          new EuriborSwapIsdaFixA(1 * Years, flatYts_)),
                      4 * Years));
 
     for (Size i = 0; i < ch1.size(); i++) {
-        ext::shared_ptr<BlackSwaptionEngine> blackEngine(
+        std::shared_ptr<BlackSwaptionEngine> blackEngine(
             new BlackSwaptionEngine(flatYts_, calibrationHelperVols1[i]));
         ch1[i].setPricingEngine(blackEngine);
         Real blackPrice = ch1[i].NPV();
@@ -1486,9 +1486,9 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     // Calibration Basket 1 / real yts, vts / Secondary calibration set consists
     // of coterminal swaptions
 
-    ext::shared_ptr<IborIndex> iborIndex2(new Euribor(6 * Months, md0Yts_));
+    std::shared_ptr<IborIndex> iborIndex2(new Euribor(6 * Months, md0Yts_));
 
-    ext::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(
+    std::shared_ptr<MarkovFunctional> mf2(new MarkovFunctional(
         md0Yts_, 0.01, volStepDates, vols, md0SwaptionVts_,
         expiriesCalBasket1(), tenorsCalBasket1(), swapIndexBase,
         MarkovFunctional::ModelSettings()
@@ -1501,51 +1501,51 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
             .withUpperRateBound(2.0)
             .withSmileMoneynessCheckpoints(money)));
 
-    std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationHelper2;
+    std::vector<std::shared_ptr<BlackCalibrationHelper> > calibrationHelper2;
     std::vector<Real> calibrationHelperVols2;
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         1 * Years, 4 * Years,
-        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        std::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(1 * Years, 4 * Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         2 * Years, 3 * Years,
-        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        std::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(2 * Years, 3 * Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         3 * Years, 2 * Years,
-        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        std::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(3 * Years, 2 * Years)));
     calibrationHelperVols2.push_back(md0SwaptionVts_->volatility(
         4 * Years, 1 * Years,
-        ext::dynamic_pointer_cast<SwaptionVolatilityCube>(
+        std::dynamic_pointer_cast<SwaptionVolatilityCube>(
             md0SwaptionVts_.currentLink())->atmStrike(4 * Years, 1 * Years)));
 
-    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper2.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(1 * Years, 4 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[0]))),
                            iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
-    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper2.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[1]))),
                            iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
-    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper2.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[2]))),
                            iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
-    calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
+    calibrationHelper2.push_back(std::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
-                           Handle<Quote>(ext::shared_ptr<Quote>(
+                           Handle<Quote>(std::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[3]))),
                            iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
 
-    ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine2(
+    std::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine2(
         new Gaussian1dSwaptionEngine(mf2, 64, 7.0));
     calibrationHelper2[0]->setPricingEngine(mfSwaptionEngine2);
     calibrationHelper2[1]->setPricingEngine(mfSwaptionEngine2);
@@ -1560,21 +1560,21 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     // std::cout << std::endl;
 
     std::vector<Swaption> ch2;
-    ch2.push_back(MakeSwaption(ext::shared_ptr<SwapIndex>(
+    ch2.push_back(MakeSwaption(std::shared_ptr<SwapIndex>(
                                    new EuriborSwapIsdaFixA(4 * Years, md0Yts_)),
                                1 * Years));
-    ch2.push_back(MakeSwaption(ext::shared_ptr<SwapIndex>(
+    ch2.push_back(MakeSwaption(std::shared_ptr<SwapIndex>(
                                    new EuriborSwapIsdaFixA(3 * Years, md0Yts_)),
                                2 * Years));
-    ch2.push_back(MakeSwaption(ext::shared_ptr<SwapIndex>(
+    ch2.push_back(MakeSwaption(std::shared_ptr<SwapIndex>(
                                    new EuriborSwapIsdaFixA(2 * Years, md0Yts_)),
                                3 * Years));
-    ch2.push_back(MakeSwaption(ext::shared_ptr<SwapIndex>(
+    ch2.push_back(MakeSwaption(std::shared_ptr<SwapIndex>(
                                    new EuriborSwapIsdaFixA(1 * Years, md0Yts_)),
                                4 * Years));
 
     for (Size i = 0; i < ch2.size(); i++) {
-        ext::shared_ptr<BlackSwaptionEngine> blackEngine(
+        std::shared_ptr<BlackSwaptionEngine> blackEngine(
             new BlackSwaptionEngine(md0Yts_, calibrationHelperVols2[i]));
         ch2[i].setPricingEngine(blackEngine);
         Real blackPrice = ch2[i].NPV();
@@ -1612,15 +1612,15 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     Handle<OptionletVolatilityStructure> flatOptionletVts_ = flatOptionletVts();
     Handle<OptionletVolatilityStructure> md0OptionletVts_ = md0OptionletVts();
 
-    ext::shared_ptr<SwapIndex> swapIndexBase(
+    std::shared_ptr<SwapIndex> swapIndexBase(
         new EuriborSwapIsdaFixA(1 * Years));
 
     std::vector<Date> volStepDates;
     std::vector<Real> vols = {1.0};
 
-    ext::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, md0Yts_));
+    std::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, md0Yts_));
 
-    ext::shared_ptr<MarkovFunctional> mf1(
+    std::shared_ptr<MarkovFunctional> mf1(
         new MarkovFunctional(md0Yts_, 0.01, volStepDates, vols, md0SwaptionVts_,
                              expiriesCalBasket3(), tenorsCalBasket3(),
                              swapIndexBase, MarkovFunctional::ModelSettings()
@@ -1632,26 +1632,26 @@ void MarkovFunctionalTest::testBermudanSwaption() {
                                                 .withLowerRateBound(0.0)
                                                 .withUpperRateBound(2.0)));
 
-    ext::shared_ptr<PricingEngine> mfSwaptionEngine1(
+    std::shared_ptr<PricingEngine> mfSwaptionEngine1(
         new Gaussian1dSwaptionEngine(mf1, 64, 7.0));
 
-    ext::shared_ptr<VanillaSwap> underlyingCall =
+    std::shared_ptr<VanillaSwap> underlyingCall =
         MakeVanillaSwap(10 * Years, iborIndex1, 0.03)
             .withEffectiveDate(TARGET().advance(referenceDate, 2, Days))
         //.withNominal(100000000.0)
             .receiveFixed(false);
 
-    std::vector<ext::shared_ptr<Exercise> > europeanExercises;
+    std::vector<std::shared_ptr<Exercise> > europeanExercises;
     std::vector<Date> expiries = expiriesCalBasket3();
     std::vector<Swaption> europeanSwaptions;
     for (Size i = 0; i < expiries.size(); i++) {
         europeanExercises.push_back(
-            ext::shared_ptr<Exercise>(new EuropeanExercise(expiries[i])));
+            std::shared_ptr<Exercise>(new EuropeanExercise(expiries[i])));
         europeanSwaptions.emplace_back(underlyingCall, europeanExercises[i]);
         europeanSwaptions.back().setPricingEngine(mfSwaptionEngine1);
     }
 
-    ext::shared_ptr<Exercise> bermudanExercise(
+    std::shared_ptr<Exercise> bermudanExercise(
         new BermudanExercise(expiries));
     Swaption bermudanSwaption(underlyingCall, bermudanExercise);
     bermudanSwaption.setPricingEngine(mfSwaptionEngine1);

@@ -45,7 +45,7 @@ namespace QuantLib
 
         bool doesIntersect(const VegaBumpCluster& comparee) const;
 
-        bool isCompatible(const ext::shared_ptr<MarketModel>& volStructure) const;
+        bool isCompatible(const std::shared_ptr<MarketModel>& volStructure) const;
         Size factorBegin() const
         {
             return factorBegin_;
@@ -100,15 +100,15 @@ namespace QuantLib
     {
     public:
 
-        VegaBumpCollection(const ext::shared_ptr<MarketModel>& volStructure, 
+        VegaBumpCollection(const std::shared_ptr<MarketModel>& volStructure, 
                            bool allowFactorwiseBumping = true);
 
         VegaBumpCollection(std::vector<VegaBumpCluster> allBumps,
-                           ext::shared_ptr<MarketModel> volStructure);
+                           std::shared_ptr<MarketModel> volStructure);
 
         Size numberBumps() const;
 
-        const ext::shared_ptr<MarketModel>& associatedModel() const
+        const std::shared_ptr<MarketModel>& associatedModel() const
         {
             return associatedVolStructure_;
         }
@@ -124,7 +124,7 @@ namespace QuantLib
     private:
 
         std::vector<VegaBumpCluster> allBumps_;
-        ext::shared_ptr<MarketModel> associatedVolStructure_;
+        std::shared_ptr<MarketModel> associatedVolStructure_;
         mutable bool checked_;
         mutable bool nonOverlapped_;
         mutable bool full_;

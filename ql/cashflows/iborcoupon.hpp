@@ -33,7 +33,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -45,7 +45,7 @@ namespace QuantLib {
                    const Date& startDate,
                    const Date& endDate,
                    Natural fixingDays,
-                   const ext::shared_ptr<IborIndex>& index,
+                   const std::shared_ptr<IborIndex>& index,
                    Real gearing = 1.0,
                    Spread spread = 0.0,
                    const Date& refPeriodStart = Date(),
@@ -55,13 +55,13 @@ namespace QuantLib {
                    const Date& exCouponDate = Date());
         //! \name Inspectors
         //@{
-        const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
+        const std::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
         // implemented in order to manage the case of par coupon
         Rate indexFixing() const override;
-        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&) override;
+        void setPricer(const std::shared_ptr<FloatingRateCouponPricer>&) override;
         //@}
         //! \name Visitability
         //@{
@@ -89,7 +89,7 @@ namespace QuantLib {
 
       private:
         friend class IborCouponPricer;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<IborIndex> iborIndex_;
         Date fixingDate_;
         // computed by coupon pricer (depending on par coupon flag) and stored here
         void initializeCachedData() const;
@@ -132,7 +132,7 @@ namespace QuantLib {
     //! helper class building a sequence of capped/floored ibor-rate coupons
     class IborLeg {
       public:
-        IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index);
+        IborLeg(Schedule schedule, std::shared_ptr<IborIndex> index);
         IborLeg& withNotionals(Real notional);
         IborLeg& withNotionals(const std::vector<Real>& notionals);
         IborLeg& withPaymentDayCounter(const DayCounter&);
@@ -155,13 +155,13 @@ namespace QuantLib {
                                     const Calendar&,
                                     BusinessDayConvention,
                                     bool endOfMonth = false);
-        IborLeg& withIndexedCoupons(ext::optional<bool> b = true);
+        IborLeg& withIndexedCoupons(std::optional<bool> b = true);
         IborLeg& withAtParCoupons(bool b = true);
         operator Leg() const;
 
       private:
         Schedule schedule_;
-        ext::shared_ptr<IborIndex> index_;
+        std::shared_ptr<IborIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_ = Following;
@@ -176,7 +176,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_ = Unadjusted;
         bool exCouponEndOfMonth_ = false;
-        ext::optional<bool> useIndexedCoupons_;
+        std::optional<bool> useIndexedCoupons_;
     };
 
 }

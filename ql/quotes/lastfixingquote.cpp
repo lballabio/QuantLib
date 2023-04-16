@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    LastFixingQuote::LastFixingQuote(ext::shared_ptr<Index> index) : index_(std::move(index)) {
+    LastFixingQuote::LastFixingQuote(std::shared_ptr<Index> index) : index_(std::move(index)) {
         registerWith(index_);
     }
 

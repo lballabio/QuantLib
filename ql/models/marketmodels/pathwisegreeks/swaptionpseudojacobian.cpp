@@ -32,7 +32,7 @@ namespace QuantLib
 {
 
     SwaptionPseudoDerivative::SwaptionPseudoDerivative(
-        const ext::shared_ptr<MarketModel>& inputModel, Size startIndex, Size endIndex) {
+        const std::shared_ptr<MarketModel>& inputModel, Size startIndex, Size endIndex) {
         std::vector<Real> subRateTimes(inputModel->evolution().rateTimes().begin()+startIndex, 
             inputModel->evolution().rateTimes().begin()+endIndex+1);
 
@@ -229,7 +229,7 @@ namespace QuantLib
 
     }
 
-    CapPseudoDerivative::CapPseudoDerivative(const ext::shared_ptr<MarketModel>& inputModel,
+    CapPseudoDerivative::CapPseudoDerivative(const std::shared_ptr<MarketModel>& inputModel,
                                              Real strike,
                                              Size startIndex,
                                              Size endIndex,

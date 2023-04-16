@@ -27,7 +27,7 @@ namespace QuantLib {
 
     DiscretizedConvertible::DiscretizedConvertible(
         ConvertibleBond::arguments args,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         DividendSchedule dividends,
         Handle<Quote> creditSpread,
         const TimeGrid& grid)
@@ -234,7 +234,7 @@ namespace QuantLib {
         for (Size i=0; i<dividends_.size(); i++) {
             Time dividendTime = dividendTimes_[i];
             if (dividendTime >= t || close(dividendTime,t)) {
-                const ext::shared_ptr<Dividend>& d = dividends_[i];
+                const std::shared_ptr<Dividend>& d = dividends_[i];
                 DiscountFactor dividendDiscount =
                     process_->riskFreeRate()->discount(dividendTime) /
                     process_->riskFreeRate()->discount(t);

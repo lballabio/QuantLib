@@ -23,14 +23,14 @@
 namespace QuantLib {
     CrankNicolsonScheme::CrankNicolsonScheme(
         Real theta,
-        const ext::shared_ptr<FdmLinearOpComposite> & map,
+        const std::shared_ptr<FdmLinearOpComposite> & map,
         const bc_set& bcSet,
         Real relTol,
         ImplicitEulerScheme::SolverType solverType)
     : dt_(Null<Real>()),
       theta_(theta),
-      explicit_(ext::make_shared<ExplicitEulerScheme>(map, bcSet)),
-      implicit_(ext::make_shared<ImplicitEulerScheme>(
+      explicit_(std::make_shared<ExplicitEulerScheme>(map, bcSet)),
+      implicit_(std::make_shared<ImplicitEulerScheme>(
           map, bcSet, relTol, solverType)) {
     }
 

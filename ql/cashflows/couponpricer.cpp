@@ -31,7 +31,7 @@
 #include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp> /* internal */
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -42,7 +42,7 @@ namespace QuantLib {
 
     IborCouponPricer::IborCouponPricer(
             Handle<OptionletVolatilityStructure> v,
-            ext::optional<bool> useIndexedCoupon)
+            std::optional<bool> useIndexedCoupon)
         : capletVol_(std::move(v)),
           useIndexedCoupon_(useIndexedCoupon ?
                             *useIndexedCoupon :
@@ -255,9 +255,9 @@ namespace QuantLib {
                              public Visitor<RangeAccrualFloatersCoupon>,
                              public Visitor<SubPeriodsCoupon> {
           private:
-            ext::shared_ptr<FloatingRateCouponPricer> pricer_;
+            std::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
-            explicit PricerSetter(ext::shared_ptr<FloatingRateCouponPricer> pricer)
+            explicit PricerSetter(std::shared_ptr<FloatingRateCouponPricer> pricer)
             : pricer_(std::move(pricer)) {}
 
             void visit(CashFlow& c) override;
@@ -293,109 +293,109 @@ namespace QuantLib {
             // we might end up here because a CappedFlooredCoupon
             // was directly constructed; we should then check
             // the underlying for consistency with the pricer
-            if (ext::dynamic_pointer_cast<IborCoupon>(c.underlying()) != nullptr) {
-                QL_REQUIRE(ext::dynamic_pointer_cast<IborCouponPricer>(pricer_),
+            if (std::dynamic_pointer_cast<IborCoupon>(c.underlying()) != nullptr) {
+                QL_REQUIRE(std::dynamic_pointer_cast<IborCouponPricer>(pricer_),
                            "pricer not compatible with Ibor Coupon");
-            } else if (ext::dynamic_pointer_cast<CmsCoupon>(c.underlying()) != nullptr) {
-                QL_REQUIRE(ext::dynamic_pointer_cast<CmsCouponPricer>(pricer_),
+            } else if (std::dynamic_pointer_cast<CmsCoupon>(c.underlying()) != nullptr) {
+                QL_REQUIRE(std::dynamic_pointer_cast<CmsCouponPricer>(pricer_),
                            "pricer not compatible with CMS Coupon");
-            } else if (ext::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying()) != nullptr) {
-                QL_REQUIRE(ext::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_),
+            } else if (std::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying()) != nullptr) {
+                QL_REQUIRE(std::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_),
                            "pricer not compatible with CMS spread Coupon");
             }
             c.setPricer(pricer_);
         }
 
         void PricerSetter::visit(IborCoupon& c) {
-            const ext::shared_ptr<IborCouponPricer> iborCouponPricer =
-                ext::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+            const std::shared_ptr<IborCouponPricer> iborCouponPricer =
+                std::dynamic_pointer_cast<IborCouponPricer>(pricer_);
             QL_REQUIRE(iborCouponPricer,
                        "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
         }
 
         void PricerSetter::visit(DigitalIborCoupon& c) {
-            const ext::shared_ptr<IborCouponPricer> iborCouponPricer =
-                ext::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+            const std::shared_ptr<IborCouponPricer> iborCouponPricer =
+                std::dynamic_pointer_cast<IborCouponPricer>(pricer_);
             QL_REQUIRE(iborCouponPricer,
                        "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
         }
 
         void PricerSetter::visit(CappedFlooredIborCoupon& c) {
-            const ext::shared_ptr<IborCouponPricer> iborCouponPricer =
-                ext::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+            const std::shared_ptr<IborCouponPricer> iborCouponPricer =
+                std::dynamic_pointer_cast<IborCouponPricer>(pricer_);
             QL_REQUIRE(iborCouponPricer,
                        "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
         }
 
         void PricerSetter::visit(CmsCoupon& c) {
-            const ext::shared_ptr<CmsCouponPricer> cmsCouponPricer =
-                ext::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+            const std::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+                std::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
             QL_REQUIRE(cmsCouponPricer,
                        "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
         }
 
         void PricerSetter::visit(CmsSpreadCoupon& c) {
-            const ext::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
-                ext::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            const std::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                std::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
             QL_REQUIRE(cmsSpreadCouponPricer,
                        "pricer not compatible with CMS spread coupon");
             c.setPricer(cmsSpreadCouponPricer);
         }
 
         void PricerSetter::visit(CappedFlooredCmsCoupon& c) {
-            const ext::shared_ptr<CmsCouponPricer> cmsCouponPricer =
-                ext::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+            const std::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+                std::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
             QL_REQUIRE(cmsCouponPricer,
                        "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
         }
 
         void PricerSetter::visit(CappedFlooredCmsSpreadCoupon& c) {
-            const ext::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
-                ext::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            const std::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                std::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
             QL_REQUIRE(cmsSpreadCouponPricer,
                        "pricer not compatible with CMS spread coupon");
             c.setPricer(cmsSpreadCouponPricer);
         }
 
         void PricerSetter::visit(DigitalCmsCoupon& c) {
-            const ext::shared_ptr<CmsCouponPricer> cmsCouponPricer =
-                ext::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+            const std::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+                std::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
             QL_REQUIRE(cmsCouponPricer,
                        "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
         }
 
         void PricerSetter::visit(DigitalCmsSpreadCoupon& c) {
-            const ext::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
-                ext::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
+            const std::shared_ptr<CmsSpreadCouponPricer> cmsSpreadCouponPricer =
+                std::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_);
             QL_REQUIRE(cmsSpreadCouponPricer,
                        "pricer not compatible with CMS spread coupon");
             c.setPricer(cmsSpreadCouponPricer);
         }
 
         void PricerSetter::visit(RangeAccrualFloatersCoupon& c) {
-            const ext::shared_ptr<RangeAccrualPricer> rangeAccrualPricer =
-                ext::dynamic_pointer_cast<RangeAccrualPricer>(pricer_);
+            const std::shared_ptr<RangeAccrualPricer> rangeAccrualPricer =
+                std::dynamic_pointer_cast<RangeAccrualPricer>(pricer_);
             QL_REQUIRE(rangeAccrualPricer,
                        "pricer not compatible with range-accrual coupon");
             c.setPricer(rangeAccrualPricer);
         }
 
         void PricerSetter::visit(SubPeriodsCoupon& c) {
-            const ext::shared_ptr<SubPeriodsPricer> subPeriodsPricer =
-                ext::dynamic_pointer_cast<SubPeriodsPricer>(pricer_);
+            const std::shared_ptr<SubPeriodsPricer> subPeriodsPricer =
+                std::dynamic_pointer_cast<SubPeriodsPricer>(pricer_);
             QL_REQUIRE(subPeriodsPricer,
                        "pricer not compatible with sub-period coupon");
             c.setPricer(subPeriodsPricer);
         }
 
         void setCouponPricersFirstMatching(const Leg& leg,
-                                           const std::vector<ext::shared_ptr<FloatingRateCouponPricer> >& p) {
+                                           const std::vector<std::shared_ptr<FloatingRateCouponPricer> >& p) {
             std::vector<PricerSetter> setter;
             setter.reserve(p.size());
             for (const auto& i : p) {
@@ -416,7 +416,7 @@ namespace QuantLib {
 
     } // anonymous namespace
 
-    void setCouponPricer(const Leg& leg, const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+    void setCouponPricer(const Leg& leg, const std::shared_ptr<FloatingRateCouponPricer>& pricer) {
             PricerSetter setter(pricer);
             for (const auto& i : leg) {
                 i->accept(setter);
@@ -425,7 +425,7 @@ namespace QuantLib {
 
     void setCouponPricers(
             const Leg& leg,
-            const std::vector<ext::shared_ptr<FloatingRateCouponPricer> >&
+            const std::vector<std::shared_ptr<FloatingRateCouponPricer> >&
                                                                     pricers) {
         Size nCashFlows = leg.size();
         QL_REQUIRE(nCashFlows>0, "no cashflows");
@@ -443,9 +443,9 @@ namespace QuantLib {
 
     void setCouponPricers(
             const Leg& leg,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p1,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p2) {
-        std::vector<ext::shared_ptr<FloatingRateCouponPricer> > p;
+            const std::shared_ptr<FloatingRateCouponPricer>& p1,
+            const std::shared_ptr<FloatingRateCouponPricer>& p2) {
+        std::vector<std::shared_ptr<FloatingRateCouponPricer> > p;
         p.push_back(p1);
         p.push_back(p2);
         setCouponPricersFirstMatching(leg, p);
@@ -453,10 +453,10 @@ namespace QuantLib {
 
     void setCouponPricers(
             const Leg& leg,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p1,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p2,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p3) {
-        std::vector<ext::shared_ptr<FloatingRateCouponPricer> > p;
+            const std::shared_ptr<FloatingRateCouponPricer>& p1,
+            const std::shared_ptr<FloatingRateCouponPricer>& p2,
+            const std::shared_ptr<FloatingRateCouponPricer>& p3) {
+        std::vector<std::shared_ptr<FloatingRateCouponPricer> > p;
         p.push_back(p1);
         p.push_back(p2);
         p.push_back(p3);
@@ -465,11 +465,11 @@ namespace QuantLib {
 
     void setCouponPricers(
             const Leg& leg,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p1,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p2,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p3,
-            const ext::shared_ptr<FloatingRateCouponPricer>& p4) {
-        std::vector<ext::shared_ptr<FloatingRateCouponPricer> > p;
+            const std::shared_ptr<FloatingRateCouponPricer>& p1,
+            const std::shared_ptr<FloatingRateCouponPricer>& p2,
+            const std::shared_ptr<FloatingRateCouponPricer>& p3,
+            const std::shared_ptr<FloatingRateCouponPricer>& p4) {
+        std::vector<std::shared_ptr<FloatingRateCouponPricer> > p;
         p.push_back(p1);
         p.push_back(p2);
         p.push_back(p3);

@@ -39,8 +39,8 @@ namespace QuantLib {
         typedef BoundaryCondition<FdmLinearOp>::Side Side;
 
         FdmDiscountDirichletBoundary(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
+            const std::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<YieldTermStructure>& rTS,
             Time maturityTime,
             Real valueOnBoundary,
             Size direction, Side side);
@@ -52,7 +52,7 @@ namespace QuantLib {
         void applyAfterSolving(array_type&) const override;
 
       private:
-        const ext::shared_ptr<FdmTimeDepDirichletBoundary> bc_;
+        const std::shared_ptr<FdmTimeDepDirichletBoundary> bc_;
     };
 }
 

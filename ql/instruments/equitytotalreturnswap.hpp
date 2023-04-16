@@ -56,8 +56,8 @@ namespace QuantLib {
         EquityTotalReturnSwap(Type type,
                               Real nominal,
                               Schedule schedule,
-                              ext::shared_ptr<EquityIndex> equityIndex,
-                              const ext::shared_ptr<IborIndex>& interestRateIndex,
+                              std::shared_ptr<EquityIndex> equityIndex,
+                              const std::shared_ptr<IborIndex>& interestRateIndex,
                               DayCounter dayCounter,
                               Rate margin,
                               Real gearing = 1.0,
@@ -68,8 +68,8 @@ namespace QuantLib {
         EquityTotalReturnSwap(Type type,
                               Real nominal,
                               Schedule schedule,
-                              ext::shared_ptr<EquityIndex> equityIndex,
-                              const ext::shared_ptr<OvernightIndex>& interestRateIndex,
+                              std::shared_ptr<EquityIndex> equityIndex,
+                              const std::shared_ptr<OvernightIndex>& interestRateIndex,
                               DayCounter dayCounter,
                               Rate margin,
                               Real gearing = 1.0,
@@ -81,8 +81,8 @@ namespace QuantLib {
         //@{
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
-        const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; } 
-        const ext::shared_ptr<InterestRateIndex>& interestRateIndex() const { return interestRateIndex_; }
+        const std::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; } 
+        const std::shared_ptr<InterestRateIndex>& interestRateIndex() const { return interestRateIndex_; }
         const Schedule& schedule() const { return schedule_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
         Rate margin() const { return margin_; }
@@ -103,8 +103,8 @@ namespace QuantLib {
         //@}
 
       private:
-        EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,
-                              ext::shared_ptr<InterestRateIndex> interestRateIndex,
+        EquityTotalReturnSwap(std::shared_ptr<EquityIndex> equityIndex,
+                              std::shared_ptr<InterestRateIndex> interestRateIndex,
                               Type type,
                               Real nominal,
                               Schedule schedule,
@@ -115,8 +115,8 @@ namespace QuantLib {
                               BusinessDayConvention paymentConvention = Unadjusted,
                               Natural paymentDelay = 0);
 
-        ext::shared_ptr<EquityIndex> equityIndex_;
-        ext::shared_ptr<InterestRateIndex> interestRateIndex_;
+        std::shared_ptr<EquityIndex> equityIndex_;
+        std::shared_ptr<InterestRateIndex> interestRateIndex_;
         Type type_;
         Real nominal_;
         Schedule schedule_;

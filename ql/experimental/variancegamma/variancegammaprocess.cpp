@@ -31,7 +31,7 @@ namespace QuantLib {
                                                Real sigma,
                                                Real nu,
                                                Real theta)
-    : StochasticProcess1D(ext::shared_ptr<discretization>(new EulerDiscretization)),
+    : StochasticProcess1D(std::shared_ptr<discretization>(new EulerDiscretization)),
       s0_(std::move(s0)), dividendYield_(std::move(dividendYield)),
       riskFreeRate_(std::move(riskFreeRate)), sigma_(sigma), nu_(nu), theta_(theta) {
         registerWith(riskFreeRate_);

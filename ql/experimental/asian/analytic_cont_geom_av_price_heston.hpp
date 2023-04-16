@@ -65,7 +65,7 @@ namespace QuantLib {
         : public ContinuousAveragingAsianOption::engine {
       public:
         explicit AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
-            ext::shared_ptr<HestonProcess> process,
+            std::shared_ptr<HestonProcess> process,
             Size summationCutoff = 50,
             Real xiRightLimit = 100.0);
         void calculate() const override;
@@ -83,7 +83,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate_;
         Handle<Quote> s0_;
 
-        ext::shared_ptr<HestonProcess> process_;
+        std::shared_ptr<HestonProcess> process_;
 
         // Some intermediate calculation constant parameters
         Real a1_, a2_;

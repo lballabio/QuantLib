@@ -32,7 +32,7 @@ namespace QuantLib
 {
     class PseudoRootFacade : public MarketModel {
       public:
-        PseudoRootFacade(const ext::shared_ptr<CTSMMCapletCalibration>& calibrator);
+        PseudoRootFacade(const std::shared_ptr<CTSMMCapletCalibration>& calibrator);
         PseudoRootFacade(const std::vector<Matrix>& covariancePseudoRoots,
                          const std::vector<Rate>& rateTimes,
                          std::vector<Rate> initialRates,

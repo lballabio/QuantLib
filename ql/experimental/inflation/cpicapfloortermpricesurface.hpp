@@ -60,7 +60,7 @@ namespace QuantLib {
             const Calendar& cal, // calendar in index may not be useful
             const BusinessDayConvention& bdc,
             const DayCounter& dc,
-            const ext::shared_ptr<ZeroInflationIndex>& zii,
+            const std::shared_ptr<ZeroInflationIndex>& zii,
             CPI::InterpolationType interpolationType,
             Handle<YieldTermStructure> yts,
             const std::vector<Rate>& cStrikes,
@@ -82,7 +82,7 @@ namespace QuantLib {
         //@{
         virtual Real nominal() const;
         virtual BusinessDayConvention businessDayConvention() const;
-        ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const { return zii_; }
+        std::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const { return zii_; }
         //@}
 
         Rate atmRate(Date maturity) const;
@@ -123,7 +123,7 @@ namespace QuantLib {
             return ( minDate() <= d && d <= maxDate() );
         }
 
-        ext::shared_ptr<ZeroInflationIndex> zii_;
+        std::shared_ptr<ZeroInflationIndex> zii_;
         CPI::InterpolationType interpolationType_;
         Handle<YieldTermStructure> nominalTS_;
         // data
@@ -152,7 +152,7 @@ namespace QuantLib {
                                                 const Calendar &cal,
                                                 const BusinessDayConvention &bdc,
                                                 const DayCounter &dc,
-                                                const ext::shared_ptr<ZeroInflationIndex>& zii,
+                                                const std::shared_ptr<ZeroInflationIndex>& zii,
                                                 CPI::InterpolationType interpolationType,
                                                 const Handle<YieldTermStructure>& yts,
                                                 const std::vector<Rate> &cStrikes,
@@ -203,7 +203,7 @@ namespace QuantLib {
                                             const Calendar &cal,
                                             const BusinessDayConvention &bdc,
                                             const DayCounter &dc,
-                                            const ext::shared_ptr<ZeroInflationIndex>& zii,
+                                            const std::shared_ptr<ZeroInflationIndex>& zii,
                                             CPI::InterpolationType interpolationType,
                                             const Handle<YieldTermStructure>& yts,
                                             const std::vector<Rate> &cStrikes,

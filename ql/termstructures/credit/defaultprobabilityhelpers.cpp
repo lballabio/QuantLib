@@ -88,7 +88,7 @@ namespace QuantLib {
         RelativeDateDefaultProbabilityHelper::setTermStructure(ts);
 
         probability_.linkTo(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
+            std::shared_ptr<DefaultProbabilityTermStructure>(ts, null_deleter()),
             false);
 
         resetEngine();
@@ -184,20 +184,20 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = std::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_));
+            std::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_));
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
-            swap_->setPricingEngine(ext::make_shared<IsdaCdsEngine>(
+            swap_->setPricingEngine(std::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
                 IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise));
             break;
           case CreditDefaultSwap::Midpoint:
-            swap_->setPricingEngine(ext::make_shared<MidPointCdsEngine>(
+            swap_->setPricingEngine(std::make_shared<MidPointCdsEngine>(
                 probability_, recoveryRate_, discountCurve_));
             break;
           default:
@@ -268,22 +268,22 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = std::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_,
+            std::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_,
             evaluationDate_));
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
-            swap_->setPricingEngine(ext::make_shared<IsdaCdsEngine>(
+            swap_->setPricingEngine(std::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
                 IsdaCdsEngine::Taylor, IsdaCdsEngine::HalfDayBias,
                 IsdaCdsEngine::Piecewise));
             break;
           case CreditDefaultSwap::Midpoint:
-            swap_->setPricingEngine(ext::make_shared<MidPointCdsEngine>(
+            swap_->setPricingEngine(std::make_shared<MidPointCdsEngine>(
                 probability_, recoveryRate_, discountCurve_));
             break;
           default:

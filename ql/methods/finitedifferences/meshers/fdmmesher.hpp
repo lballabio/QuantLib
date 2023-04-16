@@ -26,7 +26,7 @@
 #define quantlib_fdm_mesher_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -36,7 +36,7 @@ namespace QuantLib {
 
     class FdmMesher {
       public:
-        explicit FdmMesher(ext::shared_ptr<FdmLinearOpLayout> layout)
+        explicit FdmMesher(std::shared_ptr<FdmLinearOpLayout> layout)
         : layout_(std::move(layout)) {}
         virtual ~FdmMesher() = default;
 
@@ -48,12 +48,12 @@ namespace QuantLib {
                               Size direction) const = 0;
         virtual Array locations(Size direction) const = 0;
 
-        const ext::shared_ptr<FdmLinearOpLayout>& layout() const {
+        const std::shared_ptr<FdmLinearOpLayout>& layout() const {
             return layout_;
         }
 
       protected:
-        const ext::shared_ptr<FdmLinearOpLayout> layout_;
+        const std::shared_ptr<FdmLinearOpLayout> layout_;
     };
 }
 

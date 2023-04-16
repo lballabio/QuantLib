@@ -41,7 +41,7 @@ namespace QuantLib {
         StrippedOptionlet(Natural settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention bdc,
-                          ext::shared_ptr<IborIndex> iborIndex,
+                          std::shared_ptr<IborIndex> iborIndex,
                           const std::vector<Date>& optionletDates,
                           const std::vector<Rate>& strikes,
                           std::vector<std::vector<Handle<Quote> > >,
@@ -76,7 +76,7 @@ namespace QuantLib {
         Natural settlementDays_;
         BusinessDayConvention businessDayConvention_;
         DayCounter dc_;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<IborIndex> iborIndex_;
         VolatilityType type_;
         Real displacement_;
 

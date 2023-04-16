@@ -23,7 +23,7 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -32,7 +32,7 @@ namespace QuantLib {
                                          Handle<DefaultProbabilityTermStructure> probability,
                                          Real recoveryRate,
                                          Handle<YieldTermStructure> discountCurve,
-                                         const ext::optional<bool>& includeSettlementDateFlows)
+                                         const std::optional<bool>& includeSettlementDateFlows)
     : integrationStep_(step), probability_(std::move(probability)), recoveryRate_(recoveryRate),
       discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
@@ -77,8 +77,8 @@ namespace QuantLib {
                                                includeSettlementDateFlows_))
                 continue;
 
-            ext::shared_ptr<FixedRateCoupon> coupon =
-                ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
+            std::shared_ptr<FixedRateCoupon> coupon =
+                std::dynamic_pointer_cast<FixedRateCoupon>(arguments_.leg[i]);
 
             // In order to avoid a few switches, we calculate the NPV
             // of both legs as a positive quantity. We'll give them

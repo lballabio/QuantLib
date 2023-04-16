@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    TreeCapFloorEngine::TreeCapFloorEngine(const ext::shared_ptr<ShortRateModel>& model,
+    TreeCapFloorEngine::TreeCapFloorEngine(const std::shared_ptr<ShortRateModel>& model,
                                            Size timeSteps,
                                            Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<CapFloor::arguments, CapFloor::results>(model, timeSteps),
@@ -32,7 +32,7 @@ namespace QuantLib {
         registerWith(termStructure_);
     }
 
-    TreeCapFloorEngine::TreeCapFloorEngine(const ext::shared_ptr<ShortRateModel>& model,
+    TreeCapFloorEngine::TreeCapFloorEngine(const std::shared_ptr<ShortRateModel>& model,
                                            const TimeGrid& timeGrid,
                                            Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<CapFloor::arguments, CapFloor::results>(model, timeGrid),
@@ -47,8 +47,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
-            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        std::shared_ptr<TermStructureConsistentModel> tsmodel =
+            std::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -58,7 +58,7 @@ namespace QuantLib {
         }
 
         DiscretizedCapFloor capfloor(arguments_, referenceDate, dayCounter);
-        ext::shared_ptr<Lattice> lattice;
+        std::shared_ptr<Lattice> lattice;
 
         if (lattice_ != nullptr) {
             lattice = lattice_;

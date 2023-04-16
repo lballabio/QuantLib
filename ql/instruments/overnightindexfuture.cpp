@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    OvernightIndexFuture::OvernightIndexFuture(ext::shared_ptr<OvernightIndex> overnightIndex,
+    OvernightIndexFuture::OvernightIndexFuture(std::shared_ptr<OvernightIndex> overnightIndex,
                                                const Date& valueDate,
                                                const Date& maturityDate,
                                                Handle<Quote> convexityAdjustment,

@@ -63,8 +63,8 @@ namespace QuantLib {
     class VanillaSwingOption : public OneAssetOption {
       public:
           class arguments;
-          VanillaSwingOption(const ext::shared_ptr<Payoff>& payoff,
-                             const ext::shared_ptr<SwingExercise>& ex,
+          VanillaSwingOption(const std::shared_ptr<Payoff>& payoff,
+                             const std::shared_ptr<SwingExercise>& ex,
                              Size minExerciseRights, Size maxExerciseRights)
         : OneAssetOption(payoff, ex),
           minExerciseRights_(minExerciseRights),
@@ -84,8 +84,8 @@ namespace QuantLib {
         void validate() const override;
 
         Size minExerciseRights, maxExerciseRights;
-        ext::shared_ptr<StrikedTypePayoff> payoff;
-        ext::shared_ptr<SwingExercise> exercise;
+        std::shared_ptr<StrikedTypePayoff> payoff;
+        std::shared_ptr<SwingExercise> exercise;
     };
 }
 

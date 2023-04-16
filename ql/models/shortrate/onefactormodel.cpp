@@ -29,7 +29,7 @@ namespace QuantLib {
       public:
         Helper(Size i,
                Real discountBondPrice,
-               ext::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta,
+               std::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta,
                ShortRateTree& tree)
         : size_(tree.size(i)), i_(i), statePrices_(tree.statePrices(i)),
           discountBondPrice_(discountBondPrice), theta_(std::move(theta)), tree_(tree) {
@@ -49,14 +49,14 @@ namespace QuantLib {
         Size i_;
         const Array& statePrices_;
         Real discountBondPrice_;
-        ext::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
+        std::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
         ShortRateTree& tree_;
     };
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-        const ext::shared_ptr<TrinomialTree>& tree,
-        ext::shared_ptr<ShortRateDynamics> dynamics,
-        const ext::shared_ptr<TermStructureFittingParameter::NumericalImpl>& theta,
+        const std::shared_ptr<TrinomialTree>& tree,
+        std::shared_ptr<ShortRateDynamics> dynamics,
+        const std::shared_ptr<TermStructureFittingParameter::NumericalImpl>& theta,
         const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)), tree_(tree),
       dynamics_(std::move(dynamics)), spread_(0.0) {
@@ -77,8 +77,8 @@ namespace QuantLib {
         }
     }
 
-    OneFactorModel::ShortRateTree::ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
-                                                 ext::shared_ptr<ShortRateDynamics> dynamics,
+    OneFactorModel::ShortRateTree::ShortRateTree(const std::shared_ptr<TrinomialTree>& tree,
+                                                 std::shared_ptr<ShortRateDynamics> dynamics,
                                                  const TimeGrid& timeGrid)
     : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)), tree_(tree),
       dynamics_(std::move(dynamics)), spread_(0.0) {}
@@ -86,11 +86,11 @@ namespace QuantLib {
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    ext::shared_ptr<Lattice>
+    std::shared_ptr<Lattice>
     OneFactorModel::tree(const TimeGrid& grid) const {
-        ext::shared_ptr<TrinomialTree> trinomial(
+        std::shared_ptr<TrinomialTree> trinomial(
                               new TrinomialTree(dynamics()->process(), grid));
-        return ext::shared_ptr<Lattice>(
+        return std::shared_ptr<Lattice>(
                               new ShortRateTree(trinomial, dynamics(), grid));
     }
 

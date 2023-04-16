@@ -43,7 +43,7 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
             stats_type;
-        MCHimalayaEngine(ext::shared_ptr<StochasticProcessArray>,
+        MCHimalayaEngine(std::shared_ptr<StochasticProcessArray>,
                          bool brownianBridge,
                          bool antitheticVariate,
                          Size requiredSamples,
@@ -65,7 +65,7 @@ namespace QuantLib {
       private:
         // McSimulation implementation
         TimeGrid timeGrid() const override;
-        ext::shared_ptr<path_generator_type> pathGenerator() const override {
+        std::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size numAssets = processes_->size();
 
@@ -73,14 +73,14 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-            return ext::shared_ptr<path_generator_type>(
+            return std::shared_ptr<path_generator_type>(
                          new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // data members
-        ext::shared_ptr<StochasticProcessArray> processes_;
+        std::shared_ptr<StochasticProcessArray> processes_;
         Size requiredSamples_;
         Size maxSamples_;
         Real requiredTolerance_;
@@ -93,7 +93,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCHimalayaEngine {
       public:
-        explicit MakeMCHimalayaEngine(ext::shared_ptr<StochasticProcessArray>);
+        explicit MakeMCHimalayaEngine(std::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCHimalayaEngine& withBrownianBridge(bool b = true);
         MakeMCHimalayaEngine& withAntitheticVariate(bool b = true);
@@ -102,9 +102,9 @@ namespace QuantLib {
         MakeMCHimalayaEngine& withMaxSamples(Size samples);
         MakeMCHimalayaEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<StochasticProcessArray> process_;
+        std::shared_ptr<StochasticProcessArray> process_;
         bool brownianBridge_ = false, antithetic_ = false;
         Size samples_, maxSamples_;
         Real tolerance_;
@@ -114,11 +114,11 @@ namespace QuantLib {
 
     class HimalayaMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        HimalayaMultiPathPricer(ext::shared_ptr<Payoff> payoff, DiscountFactor discount);
+        HimalayaMultiPathPricer(std::shared_ptr<Payoff> payoff, DiscountFactor discount);
         Real operator()(const MultiPath& multiPath) const override;
 
       private:
-        ext::shared_ptr<Payoff> payoff_;
+        std::shared_ptr<Payoff> payoff_;
         DiscountFactor discount_;
     };
 
@@ -126,7 +126,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MCHimalayaEngine<RNG, S>::MCHimalayaEngine(
-        ext::shared_ptr<StochasticProcessArray> processes,
+        std::shared_ptr<StochasticProcessArray> processes,
         bool brownianBridge,
         bool antitheticVariate,
         Size requiredSamples,
@@ -157,15 +157,15 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    ext::shared_ptr<typename MCHimalayaEngine<RNG,S>::path_pricer_type>
+    std::shared_ptr<typename MCHimalayaEngine<RNG,S>::path_pricer_type>
     MCHimalayaEngine<RNG,S>::pathPricer() const {
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        std::shared_ptr<GeneralizedBlackScholesProcess> process =
+            std::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return ext::shared_ptr<
+        return std::shared_ptr<
                          typename MCHimalayaEngine<RNG,S>::path_pricer_type>(
             new HimalayaMultiPathPricer(arguments_.payoff,
                                         process->riskFreeRate()->discount(
@@ -175,7 +175,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCHimalayaEngine<RNG, S>::MakeMCHimalayaEngine(
-        ext::shared_ptr<StochasticProcessArray> process)
+        std::shared_ptr<StochasticProcessArray> process)
     : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()) {}
 
@@ -230,9 +230,9 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCHimalayaEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
+    MakeMCHimalayaEngine<RNG,S>::operator std::shared_ptr<PricingEngine>()
                                                                       const {
-        return ext::shared_ptr<PricingEngine>(new
+        return std::shared_ptr<PricingEngine>(new
             MCHimalayaEngine<RNG,S>(process_,
                                     brownianBridge_,
                                     antithetic_,

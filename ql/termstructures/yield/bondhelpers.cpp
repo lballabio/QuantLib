@@ -28,9 +28,9 @@
 namespace QuantLib {
 
     BondHelper::BondHelper(const Handle<Quote>& price,
-                           const ext::shared_ptr<Bond>& bond,
+                           const std::shared_ptr<Bond>& bond,
                            const Bond::Price::Type priceType)
-    : RateHelper(price), bond_(ext::make_shared<Bond>(*bond)), priceType_(priceType) {
+    : RateHelper(price), bond_(std::make_shared<Bond>(*bond)), priceType_(priceType) {
 
         // the bond's last cashflow date, which can be later than
         // bond's maturity date because of adjustment
@@ -38,14 +38,14 @@ namespace QuantLib {
         earliestDate_ = bond_->nextCashFlowDate();
 
         bond_->setPricingEngine(
-             ext::make_shared<DiscountingBondEngine>(termStructureHandle_));
+             std::make_shared<DiscountingBondEngine>(termStructureHandle_));
     }
 
     void BondHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-            ext::shared_ptr<YieldTermStructure>(t, null_deleter()), false);
+            std::shared_ptr<YieldTermStructure>(t, null_deleter()), false);
 
         BootstrapHelper<YieldTermStructure>::setTermStructure(t);
     }
@@ -94,14 +94,14 @@ namespace QuantLib {
                                     bool exCouponEndOfMonth,
                                     const Bond::Price::Type priceType)
     : BondHelper(price,
-                 ext::shared_ptr<Bond>(
+                 std::shared_ptr<Bond>(
                      new FixedRateBond(settlementDays, faceAmount, schedule,
                                        coupons, dayCounter, paymentConvention,
                                        redemption, issueDate, paymentCalendar,
                                        exCouponPeriod, exCouponCalendar,
                                        exCouponConvention, exCouponEndOfMonth)),
                  priceType) {
-        fixedRateBond_ = ext::dynamic_pointer_cast<FixedRateBond>(bond_);
+        fixedRateBond_ = std::dynamic_pointer_cast<FixedRateBond>(bond_);
     }
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
@@ -119,7 +119,7 @@ namespace QuantLib {
                             const bool growthOnly,
                             Real baseCPI,
                             const Period& observationLag,
-                            const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                            const std::shared_ptr<ZeroInflationIndex>& cpiIndex,
                             CPI::InterpolationType observationInterpolation,
                             const Schedule& schedule,
                             const std::vector<Rate>& fixedRate,
@@ -133,14 +133,14 @@ namespace QuantLib {
                             bool exCouponEndOfMonth,
                             const Bond::Price::Type priceType)
     : BondHelper(price,
-                 ext::shared_ptr<Bond>(
+                 std::shared_ptr<Bond>(
                      new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI,
                                        observationLag, cpiIndex, observationInterpolation,
                                        schedule, fixedRate, accrualDayCounter, paymentConvention,
                                        issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
                                        exCouponConvention, exCouponEndOfMonth)),
                  priceType) {
-        cpiBond_ = ext::dynamic_pointer_cast<CPIBond>(bond_);
+        cpiBond_ = std::dynamic_pointer_cast<CPIBond>(bond_);
     }
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {

@@ -54,7 +54,7 @@ void DefaultProbabilityCurveTest::testDefaultProbability() {
 
     Real hazardRate = 0.0100;
     Handle<Quote> hazardRateQuote = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(hazardRate)));
+                std::shared_ptr<Quote>(new SimpleQuote(hazardRate)));
     DayCounter dayCounter = Actual360();
     Calendar calendar = TARGET();
     Size n = 20;
@@ -118,7 +118,7 @@ void DefaultProbabilityCurveTest::testFlatHazardRate() {
 
     Real hazardRate = 0.0100;
     Handle<Quote> hazardRateQuote = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(hazardRate)));
+                std::shared_ptr<Quote>(new SimpleQuote(hazardRate)));
     DayCounter dayCounter = Actual360();
     Calendar calendar = TARGET();
     Size n = 20;
@@ -167,14 +167,14 @@ namespace {
         Real recoveryRate = 0.4;
 
         RelinkableHandle<YieldTermStructure> discountCurve;
-        discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+        discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                                     new FlatForward(today,0.06,Actual360())));
 
-        std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
+        std::vector<std::shared_ptr<DefaultProbabilityHelper> > helpers;
 
         for(Size i=0; i<n.size(); i++)
             helpers.push_back(
-                ext::shared_ptr<DefaultProbabilityHelper>(
+                std::shared_ptr<DefaultProbabilityHelper>(
                     new SpreadCdsHelper(quote[i], Period(n[i], Years),
                                         settlementDays, calendar,
                                         frequency, convention, rule,
@@ -183,7 +183,7 @@ namespace {
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(
+            std::shared_ptr<DefaultProbabilityTermStructure>(
                 new PiecewiseDefaultCurve<T,I>(today, helpers,
                                                Thirty360(Thirty360::BondBasis))));
 
@@ -205,7 +205,7 @@ namespace {
             CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
                                   schedule, convention, dayCounter,
                                   true, true, protectionStart);
-            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            cds.setPricingEngine(std::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve)));
 
@@ -244,14 +244,14 @@ namespace {
         Integer upfrontSettlementDays = 3;
 
         RelinkableHandle<YieldTermStructure> discountCurve;
-        discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+        discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                                     new FlatForward(today,0.06,Actual360())));
 
-        std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
+        std::vector<std::shared_ptr<DefaultProbabilityHelper> > helpers;
 
         for(Size i=0; i<n.size(); i++)
             helpers.push_back(
-                ext::shared_ptr<DefaultProbabilityHelper>(
+                std::shared_ptr<DefaultProbabilityHelper>(
                     new UpfrontCdsHelper(quote[i], fixedRate,
                                          Period(n[i], Years),
                                          settlementDays, calendar,
@@ -263,7 +263,7 @@ namespace {
 
         RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
         piecewiseCurve.linkTo(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(
+            std::shared_ptr<DefaultProbabilityTermStructure>(
                 new PiecewiseDefaultCurve<T,I>(today, helpers,
                                                Thirty360(Thirty360::BondBasis))));
 
@@ -291,10 +291,10 @@ namespace {
                                   schedule, convention, dayCounter,
                                   true, true, protectionStart,
                                   upfrontDate,
-                                  ext::shared_ptr<Claim>(),
+                                  std::shared_ptr<Claim>(),
                                   Actual360(true),
                                   true, today);
-            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            cds.setPricingEngine(std::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));
 
@@ -375,12 +375,12 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     Real recoveryRate = 0.4;
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                                     new FlatForward(today,0.06,Actual360())));
 
-    std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers(1);
+    std::vector<std::shared_ptr<DefaultProbabilityHelper> > helpers(1);
 
-    helpers[0] = ext::shared_ptr<DefaultProbabilityHelper>(
+    helpers[0] = std::shared_ptr<DefaultProbabilityHelper>(
                         new SpreadCdsHelper(quote, tenor,
                                             settlementDays, calendar,
                                             frequency, convention, rule,
@@ -402,7 +402,7 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
     testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 
     // also ensure that we didn't override the flag permanently
-    ext::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
+    std::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
     if (flag != false)
         BOOST_ERROR("Cash-flow settings improperly modified");
 }
@@ -481,7 +481,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
         0.839314063
     };
 
-    Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
+    Handle<YieldTermStructure> usdYts(std::make_shared<InterpolatedDiscountCurve<LogLinear> >(
         usdCurveDates, usdCurveDfs, tsDayCounter));
 
     // CDS spreads
@@ -505,9 +505,9 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     Actual360 lastPeriodDayCounter(true);
 
     // Create the CDS spread helpers.
-    vector<ext::shared_ptr<DefaultProbabilityHelper> > instruments;
+    vector<std::shared_ptr<DefaultProbabilityHelper> > instruments;
     for (map<Period, Rate>::const_iterator it = cdsSpreads.begin(); it != cdsSpreads.end(); ++it) {
-        instruments.push_back(ext::shared_ptr<SpreadCdsHelper>(
+        instruments.push_back(std::shared_ptr<SpreadCdsHelper>(
             new SpreadCdsHelper(it->second, it->first, settlementDays, calendar,
                                 frequency, paymentConvention, rule, dayCounter, recoveryRate, usdYts, true, true, Date(),
                                 lastPeriodDayCounter)));
@@ -515,7 +515,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
     // Create the default curve with the default IterativeBootstrap.
     typedef PiecewiseDefaultCurve<SurvivalProbability, LogLinear, IterativeBootstrap> SPCurve;
-    ext::shared_ptr<DefaultProbabilityTermStructure> dpts = ext::make_shared<SPCurve>(asof, instruments, tsDayCounter);
+    std::shared_ptr<DefaultProbabilityTermStructure> dpts = std::make_shared<SPCurve>(asof, instruments, tsDayCounter);
 
     // Check that the default curve throws by requesting a default probability.
     Date testDate(21, Dec, 2020);
@@ -527,7 +527,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     // words, the survival probability cannot increase with time so best max at current pillar is the previous 
     // pillar's value - there is no point increasing it on a retry.
     IterativeBootstrap<SPCurve> ib(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0);
-    dpts = ext::make_shared<SPCurve>(asof, instruments, tsDayCounter, ib);
+    dpts = std::make_shared<SPCurve>(asof, instruments, tsDayCounter, ib);
 
     // Check that the default curve still throws. It throws at the third pillar because the survival probability is 
     // too low at the second pillar.
@@ -536,7 +536,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
     // Create the default curve with an IterativeBootstrap that allows for 4 retries and does not throw.
     IterativeBootstrap<SPCurve> ibNoThrow(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0, true, 2);
-    dpts = ext::make_shared<SPCurve>(asof, instruments, tsDayCounter, ibNoThrow);
+    dpts = std::make_shared<SPCurve>(asof, instruments, tsDayCounter, ibNoThrow);
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
 }
 

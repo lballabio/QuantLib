@@ -645,7 +645,6 @@ set(QL_SOURCES
     models/volatility/constantestimator.cpp
     models/volatility/garch.cpp
     money.cpp
-    optional.cpp
     patterns/observable.cpp
     position.cpp
     prices.cpp
@@ -1235,7 +1234,6 @@ set(QL_HEADERS
     experimental/volatility/zabrinterpolatedsmilesection.hpp
     experimental/volatility/zabrinterpolation.hpp
     experimental/volatility/zabrsmilesection.hpp
-    functional.hpp
     grid.hpp
     handle.hpp
     index.hpp
@@ -1832,7 +1830,6 @@ set(QL_HEADERS
     money.hpp
     numericalmethod.hpp
     option.hpp
-    optional.hpp
     patterns/composite.hpp
     patterns/curiouslyrecurring.hpp
     patterns/lazyobject.hpp
@@ -2009,7 +2006,6 @@ set(QL_HEADERS
     quotes/simplequote.hpp
     rebatedexercise.hpp
     settings.hpp
-    shared_ptr.hpp
     stochasticprocess.hpp
     termstructure.hpp
     termstructures/bootstraperror.hpp

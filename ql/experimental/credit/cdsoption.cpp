@@ -39,10 +39,10 @@ namespace QuantLib {
                    Real recoveryRate,
                    const Handle<YieldTermStructure>& termStructure,
                    Real targetValue)
-            : targetValue_(targetValue), vol_(ext::make_shared<SimpleQuote>(0.0)) {
+            : targetValue_(targetValue), vol_(std::make_shared<SimpleQuote>(0.0)) {
 
                 Handle<Quote> h(vol_);
-                engine_ = ext::shared_ptr<PricingEngine>(
+                engine_ = std::shared_ptr<PricingEngine>(
                            new BlackCdsOptionEngine(probability, recoveryRate,
                                                     termStructure, h));
                 cdsoption.setupArguments(engine_->getArguments());
@@ -57,19 +57,19 @@ namespace QuantLib {
                 return results_->value-targetValue_;
             }
           private:
-            ext::shared_ptr<PricingEngine> engine_;
+            std::shared_ptr<PricingEngine> engine_;
             Real targetValue_;
-            ext::shared_ptr<SimpleQuote> vol_;
+            std::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
     }
 
 
-    CdsOption::CdsOption(const ext::shared_ptr<CreditDefaultSwap>& swap,
-                         const ext::shared_ptr<Exercise>& exercise,
+    CdsOption::CdsOption(const std::shared_ptr<CreditDefaultSwap>& swap,
+                         const std::shared_ptr<Exercise>& exercise,
                          bool knocksOut)
-    : Option(ext::shared_ptr<Payoff>(new NullPayoff), exercise),
+    : Option(std::shared_ptr<Payoff>(new NullPayoff), exercise),
       swap_(swap), knocksOut_(knocksOut) {
         QL_REQUIRE(swap->side() == Protection::Buyer || knocksOut_,
                    "receiver CDS options must knock out");

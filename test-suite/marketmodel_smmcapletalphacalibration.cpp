@@ -226,21 +226,21 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     EvolutionDescription evolution(rateTimes_);
     // Size numberOfSteps = evolution.numberOfSteps();
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
+    std::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
         ExponentialForwardCorrelation(rateTimes_,
                                       longTermCorrelation_,
                                       beta_));
 
-    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    std::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
     cs->setOnForwardRates(todaysForwards_);
 
-    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
+    std::shared_ptr<PiecewiseConstantCorrelation> corr(new
         CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
 
-    std::vector<ext::shared_ptr<PiecewiseConstantVariance> >
+    std::vector<std::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
     for (Size i=0; i<numberOfRates; ++i) {
-        swapVariances[i] = ext::shared_ptr<PiecewiseConstantVariance>(new
+        swapVariances[i] = std::shared_ptr<PiecewiseConstantVariance>(new
             PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
                                           i, rateTimes_));
     }
@@ -291,7 +291,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
         BOOST_ERROR("calibration failed");
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
-    ext::shared_ptr<MarketModel> smm(new
+    std::shared_ptr<MarketModel> smm(new
         PseudoRootFacade(swapPseudoRoots,
                          rateTimes_,
                          cs->coterminalSwapRates(),

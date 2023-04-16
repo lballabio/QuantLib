@@ -38,7 +38,7 @@ namespace QuantLib {
                    Currency receiveCurrency,
                    PricingPeriods pricingPeriods,
                    const CommodityType& commodityType,
-                   const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
+                   const std::shared_ptr<SecondaryCosts>& secondaryCosts);
 
         bool isExpired() const override;
         const Calendar& calendar() const { return calendar_; }

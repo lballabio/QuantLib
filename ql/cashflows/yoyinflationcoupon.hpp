@@ -39,7 +39,7 @@ namespace QuantLib {
                         const Date& startDate,
                         const Date& endDate,
                         Natural fixingDays,
-                        const ext::shared_ptr<YoYInflationIndex>& index,
+                        const std::shared_ptr<YoYInflationIndex>& index,
                         const Period& observationLag,
                         const DayCounter& dayCounter,
                         Real gearing = 1.0,
@@ -57,7 +57,7 @@ namespace QuantLib {
 
         Rate adjustedFixing() const;
 
-        const ext::shared_ptr<YoYInflationIndex>& yoyIndex() const;
+        const std::shared_ptr<YoYInflationIndex>& yoyIndex() const;
 
         //@}
         //! \name Visitability
@@ -66,15 +66,15 @@ namespace QuantLib {
         //@}
 
     private:
-        ext::shared_ptr<YoYInflationIndex> yoyIndex_;
+        std::shared_ptr<YoYInflationIndex> yoyIndex_;
     protected:
 
         Real gearing_;
         Spread spread_;
-        bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
+        bool checkPricerImpl(const std::shared_ptr<InflationCouponPricer>&) const override;
     };
 
-    inline const ext::shared_ptr<YoYInflationIndex>&
+    inline const std::shared_ptr<YoYInflationIndex>&
     YoYInflationCoupon::yoyIndex() const {
         return yoyIndex_;
     }
@@ -92,7 +92,7 @@ namespace QuantLib {
     public:
       yoyInflationLeg(Schedule schedule,
                       Calendar cal,
-                      ext::shared_ptr<YoYInflationIndex> index,
+                      std::shared_ptr<YoYInflationIndex> index,
                       const Period& observationLag);
       yoyInflationLeg& withNotionals(Real notional);
       yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
@@ -111,7 +111,7 @@ namespace QuantLib {
       operator Leg() const;
     private:
         Schedule schedule_;
-        ext::shared_ptr<YoYInflationIndex> index_;
+        std::shared_ptr<YoYInflationIndex> index_;
         Period observationLag_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;

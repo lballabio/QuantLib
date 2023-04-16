@@ -27,7 +27,7 @@ namespace QuantLib {
 
     NinePointLinearOp::NinePointLinearOp(
         Size d0, Size d1,
-        const ext::shared_ptr<FdmMesher>& mesher)
+        const std::shared_ptr<FdmMesher>& mesher)
     : d0_(d0), d1_(d1),
       i00_(new Size[mesher->layout()->size()]),
       i10_(new Size[mesher->layout()->size()]),
@@ -53,7 +53,7 @@ namespace QuantLib {
             && d1_ < mesher->layout()->dim().size(),
             "inconsistent derivative directions");
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
@@ -112,7 +112,7 @@ namespace QuantLib {
 
     Array NinePointLinearOp::apply(const Array& u) const {
 
-        const ext::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
         QL_REQUIRE(u.size() == index->size(),"inconsistent length of r "
                     << u.size() << " vs " << index->size());
 
@@ -141,7 +141,7 @@ namespace QuantLib {
     }
 
     SparseMatrix NinePointLinearOp::toMatrix() const {
-        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
 
         SparseMatrix retVal(n, n, 9*n);

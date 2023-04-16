@@ -93,7 +93,7 @@ namespace QuantLib {
     Error::Error(const std::string& file, long line,
                  const std::string& function,
                  const std::string& message) {
-        message_ = ext::make_shared<std::string>(
+        message_ = std::make_shared<std::string>(
                                       format(file, line, function, message));
     }
 

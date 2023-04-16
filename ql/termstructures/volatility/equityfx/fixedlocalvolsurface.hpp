@@ -40,7 +40,7 @@ namespace QuantLib {
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,
-                             ext::shared_ptr<Matrix> localVolMatrix,
+                             std::shared_ptr<Matrix> localVolMatrix,
                              const DayCounter& dayCounter,
                              Extrapolation lowerExtrapolation = ConstantExtrapolation,
                              Extrapolation upperExtrapolation = ConstantExtrapolation);
@@ -48,15 +48,15 @@ namespace QuantLib {
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Time>& times,
                              const std::vector<Real>& strikes,
-                             ext::shared_ptr<Matrix> localVolMatrix,
+                             std::shared_ptr<Matrix> localVolMatrix,
                              const DayCounter& dayCounter,
                              Extrapolation lowerExtrapolation = ConstantExtrapolation,
                              Extrapolation upperExtrapolation = ConstantExtrapolation);
 
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Time>& times,
-                             const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
-                             ext::shared_ptr<Matrix> localVolMatrix,
+                             const std::vector<std::shared_ptr<std::vector<Real> > >& strikes,
+                             std::shared_ptr<Matrix> localVolMatrix,
                              const DayCounter& dayCounter,
                              Extrapolation lowerExtrapolation = ConstantExtrapolation,
                              Extrapolation upperExtrapolation = ConstantExtrapolation);
@@ -82,8 +82,8 @@ namespace QuantLib {
 
         const Date maxDate_;
         std::vector<Time> times_;
-        const ext::shared_ptr<Matrix> localVolMatrix_;
-        const std::vector<ext::shared_ptr<std::vector<Real> > > strikes_;
+        const std::shared_ptr<Matrix> localVolMatrix_;
+        const std::vector<std::shared_ptr<std::vector<Real> > > strikes_;
 
         std::vector<Interpolation> localVolInterpol_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;

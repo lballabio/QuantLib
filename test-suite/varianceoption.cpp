@@ -34,9 +34,9 @@ void VarianceOptionTest::testIntegralHeston() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
+    Handle<Quote> s0(std::make_shared<SimpleQuote>(1.0));
     Handle<YieldTermStructure> qTS;
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     Real v0 = 2.0;
@@ -45,10 +45,10 @@ void VarianceOptionTest::testIntegralHeston() {
     Real sigma = 0.1;
     Real rho = -0.5;
 
-    ext::shared_ptr<HestonProcess> process(new HestonProcess(rTS, qTS, s0,
+    std::shared_ptr<HestonProcess> process(new HestonProcess(rTS, qTS, s0,
                                                                v0, kappa, theta,
                                                                sigma, rho));
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
                                new IntegralHestonVarianceOptionEngine(process));
 
     Real strike = 0.05;
@@ -56,7 +56,7 @@ void VarianceOptionTest::testIntegralHeston() {
     Time T = 1.5;
     Date exDate = today + int(360*T);
 
-    ext::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call,
+    std::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call,
                                                             strike));
 
     VarianceOption varianceOption1(payoff, nominal, today, exDate);
@@ -80,9 +80,9 @@ void VarianceOptionTest::testIntegralHeston() {
     sigma = 0.1;
     rho = -0.5;
 
-    process = ext::make_shared<HestonProcess>(
+    process = std::make_shared<HestonProcess>(
                rTS, qTS, s0, v0, kappa, theta, sigma, rho);
-    engine = ext::shared_ptr<PricingEngine>(
+    engine = std::shared_ptr<PricingEngine>(
                                new IntegralHestonVarianceOptionEngine(process));
 
     strike = 0.7;
@@ -90,7 +90,7 @@ void VarianceOptionTest::testIntegralHeston() {
     T = 1.0;
     exDate = today + int(360*T);
 
-    payoff = ext::shared_ptr<Payoff>(new PlainVanillaPayoff(Option::Put,
+    payoff = std::shared_ptr<Payoff>(new PlainVanillaPayoff(Option::Put,
                                                               strike));
 
     VarianceOption varianceOption2(payoff, nominal, today, exDate);

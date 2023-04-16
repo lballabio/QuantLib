@@ -34,7 +34,7 @@ namespace QuantLib {
                          Real nominal,
                          const Date& startDate,
                          const Date& endDate,
-                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const std::shared_ptr<ZeroInflationIndex>& zeroIndex,
                          const Period& observationLag,
                          CPI::InterpolationType observationInterpolation,
                          const DayCounter& dayCounter,
@@ -64,7 +64,7 @@ namespace QuantLib {
                          Real nominal,
                          const Date& startDate,
                          const Date& endDate,
-                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const std::shared_ptr<ZeroInflationIndex>& zeroIndex,
                          const Period& observationLag,
                          CPI::InterpolationType observationInterpolation,
                          const DayCounter& dayCounter,
@@ -95,7 +95,7 @@ namespace QuantLib {
                          Real nominal,
                          const Date& startDate,
                          const Date& endDate,
-                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const std::shared_ptr<ZeroInflationIndex>& zeroIndex,
                          const Period& observationLag,
                          CPI::InterpolationType observationInterpolation,
                          const DayCounter& dayCounter,
@@ -132,7 +132,7 @@ namespace QuantLib {
                          const Date& startDate,
                          const Date& endDate,
                          Natural fixingDays,
-                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const std::shared_ptr<ZeroInflationIndex>& zeroIndex,
                          const Period& observationLag,
                          CPI::InterpolationType observationInterpolation,
                          const DayCounter& dayCounter,
@@ -163,9 +163,9 @@ namespace QuantLib {
 
 
     bool CPICoupon::checkPricerImpl(
-            const ext::shared_ptr<InflationCouponPricer>&pricer) const {
+            const std::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
-                        ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
+                        std::dynamic_pointer_cast<CPICouponPricer>(pricer));
     }
 
 
@@ -199,7 +199,7 @@ namespace QuantLib {
 
 
     CPICashFlow::CPICashFlow(Real notional,
-                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const std::shared_ptr<ZeroInflationIndex>& index,
                              const Date& baseDate,
                              Real baseFixing,
                              const Date& observationDate,
@@ -219,7 +219,7 @@ namespace QuantLib {
     }
 
     CPICashFlow::CPICashFlow(Real notional,
-                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const std::shared_ptr<ZeroInflationIndex>& index,
                              const Date& baseDate,
                              Real baseFixing,
                              const Date& fixingDate,
@@ -280,7 +280,7 @@ namespace QuantLib {
     }
 
     CPILeg::CPILeg(const Schedule& schedule,
-                   ext::shared_ptr<ZeroInflationIndex> index,
+                   std::shared_ptr<ZeroInflationIndex> index,
                    const Real baseCPI,
                    const Period& observationLag)
     : schedule_(schedule), index_(std::move(index)), baseCPI_(baseCPI),
@@ -436,13 +436,13 @@ namespace QuantLib {
                     refEnd = schedule_.calendar().adjust(start + schedule_.tenor(), bdc);
                 }
                 if (detail::get(fixedRates_, i, 1.0) == 0.0) { // fixed coupon
-                    leg.push_back(ext::make_shared<FixedRateCoupon>
+                    leg.push_back(std::make_shared<FixedRateCoupon>
                                    (paymentDate, detail::get(notionals_, i, 0.0),
                                     detail::effectiveFixedRate(spreads_,caps_,floors_,i),
                                     paymentDayCounter_, start, end, refStart, refEnd, exCouponDate));
                 } else { // zero inflation coupon
                     if (detail::noOption(caps_, floors_, i)) { // just swaplet
-                        leg.push_back(ext::make_shared<CPICoupon>
+                        leg.push_back(std::make_shared<CPICoupon>
                                     (baseCPI_,    // all have same base for ratio
                                      baseDate,
                                      paymentDate,
@@ -463,14 +463,14 @@ namespace QuantLib {
 
         // in CPI legs you always have a notional flow of some sort
         Date paymentDate = paymentCalendar_.adjust(schedule_.date(n), paymentAdjustment_);
-        leg.push_back(ext::make_shared<CPICashFlow>
+        leg.push_back(std::make_shared<CPICashFlow>
                           (detail::get(notionals_, n, 0.0), index_,
                            baseDate, baseCPI_, 
                            schedule_.date(n), observationLag_, observationInterpolation_,
                            paymentDate, subtractInflationNominal_));
 
         // no caps and floors here, so this is enough
-        setCouponPricer(leg, ext::make_shared<CPICouponPricer>());
+        setCouponPricer(leg, std::make_shared<CPICouponPricer>());
 
         return leg;
     }

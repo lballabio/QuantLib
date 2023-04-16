@@ -39,7 +39,7 @@ namespace QuantLib {
         DynProgVPPIntrinsicValueEngine(std::vector<Real> fuelPrices,
                                        std::vector<Real> powerPrices,
                                        Real fuelCostAddon,
-                                       ext::shared_ptr<YieldTermStructure> rTS);
+                                       std::shared_ptr<YieldTermStructure> rTS);
 
         void calculate() const override;
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         const std::vector<Real> fuelPrices_;
         const std::vector<Real> powerPrices_;
         const Real fuelCostAddon_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
     };
 }
 

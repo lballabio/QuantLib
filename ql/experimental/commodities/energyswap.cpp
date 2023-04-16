@@ -28,7 +28,7 @@ namespace QuantLib {
                            Currency receiveCurrency,
                            PricingPeriods pricingPeriods,
                            const CommodityType& commodityType,
-                           const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
+                           const std::shared_ptr<SecondaryCosts>& secondaryCosts)
     : EnergyCommodity(commodityType, secondaryCosts), calendar_(std::move(calendar)),
       payCurrency_(std::move(payCurrency)), receiveCurrency_(std::move(receiveCurrency)),
       pricingPeriods_(std::move(pricingPeriods)) {}

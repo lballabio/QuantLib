@@ -26,7 +26,7 @@ namespace QuantLib {
 
     AnalyticDiscreteGeometricAverageStrikeAsianEngine::
         AnalyticDiscreteGeometricAverageStrikeAsianEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -46,8 +46,8 @@ namespace QuantLib {
         Size pastFixings = arguments_.pastFixings;
         QL_REQUIRE(pastFixings == 0, "past fixings currently not managed");
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();

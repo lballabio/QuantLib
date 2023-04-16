@@ -56,12 +56,12 @@ namespace QuantLib {
                              bool useConvergenceEstimate = true);
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override;
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b) const override;
 
-        Real adaptivGaussLobattoStep(const ext::function<Real (Real)>& f,
+        Real adaptivGaussLobattoStep(const std::function<Real (Real)>& f,
                                      Real a, Real b, Real fa, Real fb,
                                      Real is) const;
-        Real calculateAbsTolerance(const ext::function<Real (Real)>& f,
+        Real calculateAbsTolerance(const std::function<Real (Real)>& f,
                                    Real a, Real b) const;
 
         Real relAccuracy_;

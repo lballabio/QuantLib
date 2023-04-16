@@ -19,7 +19,7 @@
 
 /*! \file fdmcev1dmesher.cpp */
 
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <ql/methods/finitedifferences/meshers/fdmcev1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
@@ -49,15 +49,15 @@ namespace QuantLib {
             : Real(rndCalculator.invcdf(eps, maturity)/scaleFactor);
 
 
-        ext::shared_ptr<Fdm1dMesher> helper;
+        std::shared_ptr<Fdm1dMesher> helper;
         if (   cPoint.first != Null<Real>()
             && cPoint.first >= lowerBound && cPoint.first <= upperBound) {
 
-            helper = ext::make_shared<Concentrating1dMesher>(
+            helper = std::make_shared<Concentrating1dMesher>(
                 lowerBound, upperBound,size, cPoint);
         }
         else {
-            helper = ext::make_shared<Uniform1dMesher>(
+            helper = std::make_shared<Uniform1dMesher>(
                 lowerBound, upperBound, size );
         }
 

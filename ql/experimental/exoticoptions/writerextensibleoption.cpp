@@ -24,10 +24,10 @@
 namespace QuantLib {
 
     WriterExtensibleOption::WriterExtensibleOption(
-        const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
-        const ext::shared_ptr<Exercise>& exercise1,
-        const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
-        ext::shared_ptr<Exercise> exercise2)
+        const std::shared_ptr<PlainVanillaPayoff>& payoff1,
+        const std::shared_ptr<Exercise>& exercise1,
+        const std::shared_ptr<PlainVanillaPayoff>& payoff2,
+        std::shared_ptr<Exercise> exercise2)
     : OneAssetOption(payoff1, exercise1), payoff2_(payoff2), exercise2_(std::move(exercise2)) {}
 
     void WriterExtensibleOption::setupArguments(

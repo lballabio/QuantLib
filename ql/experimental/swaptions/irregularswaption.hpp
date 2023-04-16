@@ -48,8 +48,8 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        IrregularSwaption(ext::shared_ptr<IrregularSwap> swap,
-                          const ext::shared_ptr<Exercise>& exercise,
+        IrregularSwaption(std::shared_ptr<IrregularSwap> swap,
+                          const std::shared_ptr<Exercise>& exercise,
                           IrregularSettlement::Type delivery = IrregularSettlement::Physical);
         //! \name Instrument interface
         //@{
@@ -60,7 +60,7 @@ namespace QuantLib {
         //@{
         IrregularSettlement::Type settlementType() const { return settlementType_; }
         Swap::Type type() const { return swap_->type(); }
-        const ext::shared_ptr<IrregularSwap>& underlyingSwap() const {
+        const std::shared_ptr<IrregularSwap>& underlyingSwap() const {
             return swap_;
         }
         //@}
@@ -75,7 +75,7 @@ namespace QuantLib {
                               Volatility maxVol = 4.0) const;
       private:
         // arguments
-        ext::shared_ptr<IrregularSwap> swap_;
+        std::shared_ptr<IrregularSwap> swap_;
         IrregularSettlement::Type settlementType_;
     };
 
@@ -84,7 +84,7 @@ namespace QuantLib {
                                          public Option::arguments {
       public:
         arguments() = default;
-        ext::shared_ptr<IrregularSwap> swap;
+        std::shared_ptr<IrregularSwap> swap;
         IrregularSettlement::Type settlementType = IrregularSettlement::Physical;
         void validate() const override;
     };

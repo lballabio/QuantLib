@@ -42,7 +42,7 @@ namespace QuantLib {
         }
 
         rebatedExercise_ =
-            ext::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
+            std::dynamic_pointer_cast<RebatedExercise>(arguments_.exercise);
 
         std::pair<Real, Real> result =
             npvs(settlement, 0.0, includeTodaysExercise_, true);
@@ -169,18 +169,18 @@ namespace QuantLib {
         Date event1 = Null<Date>(), event0;
         Time event1Time = Null<Real>(), event0Time;
 
-        ext::shared_ptr<IborIndex> ibor1 =
-            ext::dynamic_pointer_cast<IborIndex>(arguments_.index1);
-        ext::shared_ptr<SwapIndex> cms1 =
-            ext::dynamic_pointer_cast<SwapIndex>(arguments_.index1);
-        ext::shared_ptr<SwapSpreadIndex> cmsspread1 =
-            ext::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index1);
-        ext::shared_ptr<IborIndex> ibor2 =
-            ext::dynamic_pointer_cast<IborIndex>(arguments_.index2);
-        ext::shared_ptr<SwapIndex> cms2 =
-            ext::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
-        ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
-            ext::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
+        std::shared_ptr<IborIndex> ibor1 =
+            std::dynamic_pointer_cast<IborIndex>(arguments_.index1);
+        std::shared_ptr<SwapIndex> cms1 =
+            std::dynamic_pointer_cast<SwapIndex>(arguments_.index1);
+        std::shared_ptr<SwapSpreadIndex> cmsspread1 =
+            std::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index1);
+        std::shared_ptr<IborIndex> ibor2 =
+            std::dynamic_pointer_cast<IborIndex>(arguments_.index2);
+        std::shared_ptr<SwapIndex> cms2 =
+            std::dynamic_pointer_cast<SwapIndex>(arguments_.index2);
+        std::shared_ptr<SwapSpreadIndex> cmsspread2 =
+            std::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
 
         QL_REQUIRE(ibor1 != nullptr || cms1 != nullptr || cmsspread1 != nullptr,
                    "index1 must be ibor or swap or swap spread index");

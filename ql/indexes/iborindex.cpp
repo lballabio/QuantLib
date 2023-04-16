@@ -58,9 +58,9 @@ namespace QuantLib {
                                         endOfMonth_);
     }
 
-    ext::shared_ptr<IborIndex> IborIndex::clone(
+    std::shared_ptr<IborIndex> IborIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
-        return ext::make_shared<IborIndex>(
+        return std::make_shared<IborIndex>(
                                         familyName(),
                                                       tenor(),
                                                       fixingDays(),
@@ -82,9 +82,9 @@ namespace QuantLib {
    : IborIndex(familyName, 1*Days, settlementDays, curr,
                fixCal, Following, false, dc, h) {}
 
-    ext::shared_ptr<IborIndex> OvernightIndex::clone(
+    std::shared_ptr<IborIndex> OvernightIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
-        return ext::shared_ptr<IborIndex>(
+        return std::shared_ptr<IborIndex>(
                                         new OvernightIndex(familyName(),
                                                            fixingDays(),
                                                            currency(),

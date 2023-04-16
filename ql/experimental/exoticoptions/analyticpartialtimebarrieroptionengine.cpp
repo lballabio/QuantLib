@@ -26,14 +26,14 @@
 namespace QuantLib {
 
     AnalyticPartialTimeBarrierOptionEngine::AnalyticPartialTimeBarrierOptionEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticPartialTimeBarrierOptionEngine::calculate() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
@@ -171,16 +171,16 @@ namespace QuantLib {
     // eta = -1: Up-and-In Call
     // eta =  1: Down-and-In Call
     Real AnalyticPartialTimeBarrierOptionEngine::CIA(Integer eta) const {
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
 
         VanillaOption europeanOption(payoff, exercise);
 
         europeanOption.setPricingEngine(
-                        ext::make_shared<AnalyticEuropeanEngine>(process_));
+                        std::make_shared<AnalyticEuropeanEngine>(process_));
 
         return europeanOption.NPV() - CA(eta);
     }
@@ -200,8 +200,8 @@ namespace QuantLib {
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }

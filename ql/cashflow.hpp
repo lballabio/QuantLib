@@ -27,7 +27,7 @@
 
 #include <ql/event.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <vector>
 
 namespace QuantLib {
@@ -48,7 +48,7 @@ namespace QuantLib {
             Settings::includeTodaysCashflows in account
         */
         bool hasOccurred(const Date& refDate = Date(),
-                         ext::optional<bool> includeRefDate = ext::nullopt) const override;
+                         std::optional<bool> includeRefDate = std::nullopt) const override;
         //@}
         //! \name CashFlow interface
         //@{
@@ -70,7 +70,7 @@ namespace QuantLib {
     };
 
     //! Sequence of cash-flows
-    typedef std::vector<ext::shared_ptr<CashFlow> > Leg;
+    typedef std::vector<std::shared_ptr<CashFlow> > Leg;
 
     template <>
     struct earlier_than<CashFlow> {

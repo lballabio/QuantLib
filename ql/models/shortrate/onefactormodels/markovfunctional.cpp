@@ -38,7 +38,7 @@ namespace QuantLib {
                                        const Handle<SwaptionVolatilityStructure>& swaptionVol,
                                        const std::vector<Date>& swaptionExpiries,
                                        const std::vector<Period>& swaptionTenors,
-                                       const ext::shared_ptr<SwapIndex>& swapIndexBase,
+                                       const std::shared_ptr<SwapIndex>& swapIndexBase,
                                        MarkovFunctional::ModelSettings modelSettings)
     : Gaussian1dModel(termStructure), CalibratedModel(1), modelSettings_(std::move(modelSettings)),
       capletCalibrated_(false), reversion_(ConstantParameter(reversion, NoConstraint())),
@@ -68,7 +68,7 @@ namespace QuantLib {
                                        std::vector<Real> volatilities,
                                        const Handle<OptionletVolatilityStructure>& capletVol,
                                        const std::vector<Date>& capletExpiries,
-                                       ext::shared_ptr<IborIndex> iborIndex,
+                                       std::shared_ptr<IborIndex> iborIndex,
                                        MarkovFunctional::ModelSettings modelSettings)
     : Gaussian1dModel(termStructure), CalibratedModel(1), modelSettings_(std::move(modelSettings)),
       capletCalibrated_(true), reversion_(ConstantParameter(reversion, NoConstraint())),
@@ -219,15 +219,15 @@ namespace QuantLib {
             sigma_.setParam(i, volatilities_[i]);
         }
 
-        stateProcess_ = ext::make_shared<MfStateProcess>(
+        stateProcess_ = std::make_shared<MfStateProcess>(
             reversion_(0.0), volsteptimesArray_, sigma_.params());
 
         y_ = yGrid(modelSettings_.yStdDevs_, modelSettings_.yGridPoints_);
 
-        discreteNumeraire_ = ext::make_shared<Matrix>(
+        discreteNumeraire_ = std::make_shared<Matrix>(
             times_.size(), 2 * modelSettings_.yGridPoints_ + 1, 1.0);
         for (Size i = 0; i < times_.size(); i++) {
-            ext::shared_ptr<Interpolation> numInt(new CubicInterpolation(
+            std::shared_ptr<Interpolation> numInt(new CubicInterpolation(
                 y_.begin(), y_.end(), discreteNumeraire_->row_begin(i),
                 CubicInterpolation::Spline, true, CubicInterpolation::Lagrange,
                 0.0, CubicInterpolation::Lagrange, 0.0));
@@ -254,7 +254,7 @@ namespace QuantLib {
         p.isCaplet_ = false;
         p.tenor_ = tenor;
 
-        ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIndexBase_, expiry, tenor);
+        std::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIndexBase_, expiry, tenor);
 
         Schedule sched = underlying->fixedSchedule();
         const Calendar& cal = sched.calendar();
@@ -303,7 +303,7 @@ namespace QuantLib {
 
         for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend(); ++i) {
 
-            ext::shared_ptr<SmileSection> smileSection;
+            std::shared_ptr<SmileSection> smileSection;
             if (i->second.isCaplet_) {
                 i->second.annuity_ =
                     i->second.yearFractions_[0] *
@@ -330,7 +330,7 @@ namespace QuantLib {
                     i->first, i->second.tenor_, true);
             }
 
-            i->second.rawSmileSection_ = ext::shared_ptr<SmileSection>(
+            i->second.rawSmileSection_ = std::shared_ptr<SmileSection>(
                 new AtmSmileSection(smileSection, i->second.atm_));
 
             int forcedLeftIndex = -1;
@@ -342,7 +342,7 @@ namespace QuantLib {
 
             if ((modelSettings_.adjustments_ & ModelSettings::KahaleSmile) != 0) {
 
-                i->second.smileSection_ = ext::make_shared<KahaleSmileSection>(
+                i->second.smileSection_ = std::make_shared<KahaleSmileSection>(
                     
                         i->second.rawSmileSection_, i->second.atm_,
                         (modelSettings_.adjustments_ &
@@ -356,7 +356,7 @@ namespace QuantLib {
                         forcedLeftIndex, forcedRightIndex);
 
                 arbitrageIndices_.push_back(
-                    ext::dynamic_pointer_cast<KahaleSmileSection>(
+                    std::dynamic_pointer_cast<KahaleSmileSection>(
                         i->second.smileSection_)->coreIndices());
 
             } else {
@@ -385,21 +385,21 @@ namespace QuantLib {
 
                     // TODO should we fix beta to avoid numerical instabilities
                     // during calibration ?
-                    ext::shared_ptr<SabrInterpolatedSmileSection> sabrSection(
+                    std::shared_ptr<SabrInterpolatedSmileSection> sabrSection(
                         new SabrInterpolatedSmileSection(
                             i->first, i->second.atm_, k, false,
                             i->second.rawSmileSection_->volatility(
                                 i->second.atm_),
                             v, 0.03, 0.80, 0.50, 0.00, false, false, false,
-                            false, true, ext::shared_ptr<EndCriteria>(),
-                            ext::shared_ptr<OptimizationMethod>(),
+                            false, true, std::shared_ptr<EndCriteria>(),
+                            std::shared_ptr<OptimizationMethod>(),
                             Actual365Fixed(),
                                 i->second.rawSmileSection_->shift()));
 
                     // we make the sabr section arbitrage free by superimposing
                     // a kahalesection
 
-                    i->second.smileSection_ = ext::make_shared<
+                    i->second.smileSection_ = std::make_shared<
                         KahaleSmileSection>(
                         sabrSection, i->second.atm_, false,
                         (modelSettings_.adjustments_ &
@@ -411,7 +411,7 @@ namespace QuantLib {
                         forcedLeftIndex, forcedRightIndex);
 
                     arbitrageIndices_.push_back(
-                        ext::dynamic_pointer_cast<KahaleSmileSection>(
+                        std::dynamic_pointer_cast<KahaleSmileSection>(
                             i->second.smileSection_)->coreIndices());
 
                 } else if ((modelSettings_.adjustments_ & ModelSettings::CustomSmile) != 0) {
@@ -459,9 +459,9 @@ namespace QuantLib {
 
         for (auto i = calibrationPoints_.rbegin(); i != calibrationPoints_.rend(); ++i, --idx) {
 
-            ext::shared_ptr<CustomSmileSection> mfSec;
+            std::shared_ptr<CustomSmileSection> mfSec;
             if ((modelSettings_.adjustments_ & ModelSettings::CustomSmile) != 0) {
-                mfSec = ext::dynamic_pointer_cast<CustomSmileSection>(
+                mfSec = std::dynamic_pointer_cast<CustomSmileSection>(
                     i->second.smileSection_);
                 QL_REQUIRE(mfSec,
                            "no CustomSmileSection given, this is unexpected...");
@@ -649,8 +649,8 @@ namespace QuantLib {
             for (auto& calibrationPoint : calibrationPoints_) {
                 modelOutputs_.atm_.push_back(calibrationPoint.second.atm_);
                 modelOutputs_.annuity_.push_back(calibrationPoint.second.annuity_);
-                ext::shared_ptr<SmileSection> sec = calibrationPoint.second.smileSection_;
-                ext::shared_ptr<SmileSection> rawSec = calibrationPoint.second.rawSmileSection_;
+                std::shared_ptr<SmileSection> sec = calibrationPoint.second.smileSection_;
+                std::shared_ptr<SmileSection> rawSec = calibrationPoint.second.rawSmileSection_;
                 SmileSectionUtils ssutils(*sec, modelSettings_.smileMoneynessCheckpoints_,
                                           calibrationPoint.second.atm_);
                 Real shift = sec->shift();
@@ -952,7 +952,7 @@ namespace QuantLib {
 
     Real MarkovFunctional::forwardRateInternal(
         const Date &fixing, const Date &referenceDate, const Real y,
-        const bool zeroFixingDays, ext::shared_ptr<IborIndex> iborIdx) const {
+        const bool zeroFixingDays, std::shared_ptr<IborIndex> iborIdx) const {
 
         calculate();
 
@@ -976,7 +976,7 @@ namespace QuantLib {
     MarkovFunctional::swapRateInternal(const Date &fixing, const Period &tenor,
                                        const Date &referenceDate, const Real y,
                                        bool zeroFixingDays,
-                                       ext::shared_ptr<SwapIndex> swapIdx) const {
+                                       std::shared_ptr<SwapIndex> swapIdx) const {
 
         calculate();
 
@@ -984,7 +984,7 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+        std::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
 
         Schedule sched = underlying->fixedSchedule();
         Real annuity = swapAnnuityInternal(fixing, tenor, referenceDate, y,
@@ -1002,7 +1002,7 @@ namespace QuantLib {
     Real MarkovFunctional::swapAnnuityInternal(
         const Date &fixing, const Period &tenor, const Date &referenceDate,
         const Real y, const bool zeroFixingDays,
-        ext::shared_ptr<SwapIndex> swapIdx) const {
+        std::shared_ptr<SwapIndex> swapIdx) const {
 
         calculate();
 
@@ -1010,7 +1010,7 @@ namespace QuantLib {
             swapIdx = swapIndexBase_;
         QL_REQUIRE(swapIdx, "No swap index given");
 
-        ext::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
+        std::shared_ptr<VanillaSwap> underlying = underlyingSwap(swapIdx, fixing, tenor);
 
         Schedule sched = underlying->fixedSchedule();
 
@@ -1034,7 +1034,7 @@ namespace QuantLib {
                                                  const Date& referenceDate,
                                                  const Real y,
                                                  const bool zeroFixingDays,
-                                                 const ext::shared_ptr<SwapIndex>& swapIdx) const {
+                                                 const std::shared_ptr<SwapIndex>& swapIdx) const {
 
         calculate();
 
@@ -1101,7 +1101,7 @@ namespace QuantLib {
     Real MarkovFunctional::capletPriceInternal(
         const Option::Type &type, const Date &expiry, const Rate strike,
         const Date &referenceDate, const Real y, const bool zeroFixingDays,
-        ext::shared_ptr<IborIndex> iborIdx) const {
+        std::shared_ptr<IborIndex> iborIdx) const {
 
         calculate();
 

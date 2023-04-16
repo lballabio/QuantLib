@@ -46,7 +46,7 @@ namespace QuantLib {
                      helper has sole ownership of it.
         */
         BondHelper(const Handle<Quote>& price,
-                   const ext::shared_ptr<Bond>& bond,
+                   const std::shared_ptr<Bond>& bond,
                    Bond::Price::Type priceType = Bond::Price::Clean);
 
         //! \name RateHelper interface
@@ -56,7 +56,7 @@ namespace QuantLib {
         //@}
         //! \name Additional inspectors
         //@{
-        ext::shared_ptr<Bond> bond() const;
+        std::shared_ptr<Bond> bond() const;
 
         Bond::Price::Type priceType() const;
         //@}
@@ -65,7 +65,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        ext::shared_ptr<Bond> bond_;
+        std::shared_ptr<Bond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Bond::Price::Type priceType_;
     };
@@ -92,14 +92,14 @@ namespace QuantLib {
 
         //! \name Additional inspectors
         //@{
-        ext::shared_ptr<FixedRateBond> fixedRateBond() const;
+        std::shared_ptr<FixedRateBond> fixedRateBond() const;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        ext::shared_ptr<FixedRateBond> fixedRateBond_;
+        std::shared_ptr<FixedRateBond> fixedRateBond_;
     };
 
 
@@ -112,7 +112,7 @@ namespace QuantLib {
                       bool growthOnly,
                       Real baseCPI,
                       const Period& observationLag,
-                      const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                      const std::shared_ptr<ZeroInflationIndex>& cpiIndex,
                       CPI::InterpolationType observationInterpolation,
                       const Schedule& schedule,
                       const std::vector<Rate>& fixedRate,
@@ -128,20 +128,20 @@ namespace QuantLib {
 
         //! \name Additional inspectors
         //@{
-        ext::shared_ptr<CPIBond> cpiBond() const;
+        std::shared_ptr<CPIBond> cpiBond() const;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        ext::shared_ptr<CPIBond> cpiBond_;
+        std::shared_ptr<CPIBond> cpiBond_;
     };
 
 
     // inline
 
-    inline ext::shared_ptr<Bond> BondHelper::bond() const {
+    inline std::shared_ptr<Bond> BondHelper::bond() const {
         return bond_;
     }
 
@@ -149,12 +149,12 @@ namespace QuantLib {
         return priceType_;
     }
 
-    inline ext::shared_ptr<FixedRateBond>
+    inline std::shared_ptr<FixedRateBond>
     FixedRateBondHelper::fixedRateBond() const {
         return fixedRateBond_;
     }
 
-    inline ext::shared_ptr<CPIBond>
+    inline std::shared_ptr<CPIBond>
     CPIBondHelper::cpiBond() const {
         return cpiBond_;
     }

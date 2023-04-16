@@ -49,8 +49,8 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
       public:
         FdHestonHullWhiteVanillaEngine(
-            const ext::shared_ptr<HestonModel>& model,
-            ext::shared_ptr<HullWhiteProcess> hwProcess,
+            const std::shared_ptr<HestonModel>& model,
+            std::shared_ptr<HullWhiteProcess> hwProcess,
             Real corrEquityShortRate,
             Size tGrid = 50,
             Size xGrid = 100,
@@ -61,8 +61,8 @@ namespace QuantLib {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         FdHestonHullWhiteVanillaEngine(
-            const ext::shared_ptr<HestonModel>& model,
-            ext::shared_ptr<HullWhiteProcess> hwProcess,
+            const std::shared_ptr<HestonModel>& model,
+            std::shared_ptr<HullWhiteProcess> hwProcess,
             DividendSchedule dividends,
             Real corrEquityShortRate,
             Size tGrid = 50,
@@ -80,7 +80,7 @@ namespace QuantLib {
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
       private:
-        const ext::shared_ptr<HullWhiteProcess> hwProcess_;
+        const std::shared_ptr<HullWhiteProcess> hwProcess_;
         DividendSchedule dividends_;
         bool explicitDividends_;
         const Real corrEquityShortRate_;

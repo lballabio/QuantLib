@@ -27,7 +27,7 @@
 
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/instruments/swaption.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -44,16 +44,16 @@ namespace QuantLib {
     */
     class MakeSwaption {
       public:
-        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+        MakeSwaption(std::shared_ptr<SwapIndex> swapIndex,
                      const Period& optionTenor,
                      Rate strike = Null<Rate>());
 
-        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+        MakeSwaption(std::shared_ptr<SwapIndex> swapIndex,
                      const Date& fixingDate,
                      Rate strike = Null<Rate>());
 
         operator Swaption() const;
-        operator ext::shared_ptr<Swaption>() const ;
+        operator std::shared_ptr<Swaption>() const ;
 
         MakeSwaption& withNominal(Real n);
         MakeSwaption& withSettlementType(Settlement::Type delivery);
@@ -61,29 +61,29 @@ namespace QuantLib {
         MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withExerciseDate(const Date&);
         MakeSwaption& withUnderlyingType(Swap::Type type);
-        MakeSwaption& withIndexedCoupons(const ext::optional<bool>& b = true);
+        MakeSwaption& withIndexedCoupons(const std::optional<bool>& b = true);
         MakeSwaption& withAtParCoupons(bool b = true);
 
         MakeSwaption& withPricingEngine(
-                              const ext::shared_ptr<PricingEngine>& engine);
+                              const std::shared_ptr<PricingEngine>& engine);
       private:
-        ext::shared_ptr<SwapIndex> swapIndex_;
+        std::shared_ptr<SwapIndex> swapIndex_;
         Settlement::Type delivery_;
         Settlement::Method settlementMethod_;
-        mutable ext::shared_ptr<VanillaSwap> underlyingSwap_;
+        mutable std::shared_ptr<VanillaSwap> underlyingSwap_;
 
         Period optionTenor_;
         BusinessDayConvention optionConvention_;
         mutable Date fixingDate_;
         Date exerciseDate_;
-        mutable ext::shared_ptr<Exercise> exercise_;
+        mutable std::shared_ptr<Exercise> exercise_;
 
         Rate strike_;
         Swap::Type underlyingType_;
         Real nominal_;
-        ext::optional<bool> useIndexedCoupons_;
+        std::optional<bool> useIndexedCoupons_;
 
-        ext::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<PricingEngine> engine_;
     };
 
 }

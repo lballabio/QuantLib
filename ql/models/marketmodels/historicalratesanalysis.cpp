@@ -31,7 +31,7 @@ namespace QuantLib {
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
-                const std::vector<ext::shared_ptr<InterestRateIndex> >& indexes) {
+                const std::vector<std::shared_ptr<InterestRateIndex> >& indexes) {
 
         skippedDates.clear();
         skippedDatesErrorMessage.clear();
@@ -80,11 +80,11 @@ namespace QuantLib {
     }
 
     HistoricalRatesAnalysis::HistoricalRatesAnalysis(
-        ext::shared_ptr<SequenceStatistics> stats,
+        std::shared_ptr<SequenceStatistics> stats,
         const Date& startDate,
         const Date& endDate,
         const Period& step,
-        const std::vector<ext::shared_ptr<InterestRateIndex> >& indexes)
+        const std::vector<std::shared_ptr<InterestRateIndex> >& indexes)
     : stats_(std::move(stats)) {
         historicalRatesAnalysis(
                     *stats_,

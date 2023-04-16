@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    GBSMRNDCalculator::GBSMRNDCalculator(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    GBSMRNDCalculator::GBSMRNDCalculator(std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {}
 
     Real GBSMRNDCalculator::pdf(Real k, Time t) const {

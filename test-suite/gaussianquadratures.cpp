@@ -293,13 +293,13 @@ void GaussianQuadraturesTest::testMomentBasedGaussianPolynomial() {
 
      GaussLaguerrePolynomial g;
 
-     std::vector<ext::shared_ptr<GaussianOrthogonalPolynomial> > ml;
+     std::vector<std::shared_ptr<GaussianOrthogonalPolynomial> > ml;
      ml.push_back(
-         ext::make_shared<MomentBasedGaussLaguerrePolynomial<Real> >());
+         std::make_shared<MomentBasedGaussLaguerrePolynomial<Real> >());
 
 #ifdef TEST_BOOST_MULTIPRECISION_GAUSSIAN_QUADRATURE
      ml.push_back(
-         ext::make_shared<MomentBasedGaussLaguerrePolynomial<
+         std::make_shared<MomentBasedGaussLaguerrePolynomial<
              boost::multiprecision::number<
                  boost::multiprecision::cpp_dec_float<20> > > >());
 #endif

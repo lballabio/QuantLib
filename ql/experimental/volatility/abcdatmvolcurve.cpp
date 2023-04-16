@@ -80,7 +80,7 @@ namespace QuantLib {
 
     void AbcdAtmVolCurve::interpolate()
     {
-        interpolation_ = ext::make_shared<AbcdInterpolation>(actualOptionTimes_.begin(),
+        interpolation_ = std::make_shared<AbcdInterpolation>(actualOptionTimes_.begin(),
                                               actualOptionTimes_.end(),
                                               actualVols_.begin());
     }

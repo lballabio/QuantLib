@@ -42,7 +42,7 @@ namespace QuantLib {
         typedef FdmLinearOp::array_type array_type;
         typedef BoundaryCondition<FdmLinearOp>::Side Side;
 
-        FdmDirichletBoundary(const ext::shared_ptr<FdmMesher>& mesher,
+        FdmDirichletBoundary(const std::shared_ptr<FdmMesher>& mesher,
                              Real valueOnBoundary, Size direction, Side side);
 
         void applyBeforeApplying(operator_type&) const override;

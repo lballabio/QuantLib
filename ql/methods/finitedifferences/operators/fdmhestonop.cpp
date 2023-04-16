@@ -29,11 +29,11 @@
 
 namespace QuantLib {
 
-    FdmHestonEquityPart::FdmHestonEquityPart(const ext::shared_ptr<FdmMesher>& mesher,
-                                             ext::shared_ptr<YieldTermStructure> rTS,
-                                             ext::shared_ptr<YieldTermStructure> qTS,
-                                             ext::shared_ptr<FdmQuantoHelper> quantoHelper,
-                                             ext::shared_ptr<LocalVolTermStructure> leverageFct)
+    FdmHestonEquityPart::FdmHestonEquityPart(const std::shared_ptr<FdmMesher>& mesher,
+                                             std::shared_ptr<YieldTermStructure> rTS,
+                                             std::shared_ptr<YieldTermStructure> qTS,
+                                             std::shared_ptr<FdmQuantoHelper> quantoHelper,
+                                             std::shared_ptr<LocalVolTermStructure> leverageFct)
     : varianceValues_(0.5 * mesher->locations(1)), dxMap_(FirstDerivativeOp(0, mesher)),
       dxxMap_(SecondDerivativeOp(0, mesher).mult(0.5 * mesher->locations(1))), mapT_(0, mesher),
       mesher_(mesher), rTS_(std::move(rTS)), qTS_(std::move(qTS)),
@@ -42,7 +42,7 @@ namespace QuantLib {
         // on the boundary s_min and s_max the second derivative
         // d^2V/dS^2 is zero and due to Ito's Lemma the variance term
         // in the drift should vanish.
-        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        std::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
             ++iter) {
@@ -74,7 +74,7 @@ namespace QuantLib {
 
     Array FdmHestonEquityPart::getLeverageFctSlice(Time t1, Time t2) const {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         Array v(layout->size(), 1.0);
 
         if (!leverageFct_) {
@@ -106,8 +106,8 @@ namespace QuantLib {
         return mapT_;
     }
 
-    FdmHestonVariancePart::FdmHestonVariancePart(const ext::shared_ptr<FdmMesher>& mesher,
-                                                 ext::shared_ptr<YieldTermStructure> rTS,
+    FdmHestonVariancePart::FdmHestonVariancePart(const std::shared_ptr<FdmMesher>& mesher,
+                                                 std::shared_ptr<YieldTermStructure> rTS,
                                                  Real mixedSigma,
                                                  Real kappa,
                                                  Real theta)
@@ -126,10 +126,10 @@ namespace QuantLib {
     }
 
     FdmHestonOp::FdmHestonOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<HestonProcess> & hestonProcess,
-        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<HestonProcess> & hestonProcess,
+        const std::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        const std::shared_ptr<LocalVolTermStructure>& leverageFct,
         const Real mixingFactor)
     : correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher)
                         .mult(hestonProcess->rho()*hestonProcess->sigma()

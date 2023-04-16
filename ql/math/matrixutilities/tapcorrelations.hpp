@@ -21,7 +21,7 @@
 #ifndef quantlib_tap_correlations_hpp
 #define quantlib_tap_correlations_hpp
 
-#include <ql/functional.hpp>
+
 #include <ql/math/matrix.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/types.hpp>
@@ -88,7 +88,7 @@ namespace QuantLib {
     class FrobeniusCostFunction : public CostFunction{
       public:
         FrobeniusCostFunction(Matrix target,
-                              ext::function<Matrix(const Array&, Size, Size)> f,
+                              std::function<Matrix(const Array&, Size, Size)> f,
                               Size matrixSize,
                               Size rank)
         : target_(std::move(target)), f_(std::move(f)), matrixSize_(matrixSize), rank_(rank) {}
@@ -97,7 +97,7 @@ namespace QuantLib {
 
       private:
         Matrix target_;
-        ext::function<Matrix(const Array&, Size, Size)> f_;
+        std::function<Matrix(const Array&, Size, Size)> f_;
         Size matrixSize_;
         Size rank_;
     };

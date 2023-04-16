@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     UniformGridMesher::UniformGridMesher(
-        const ext::shared_ptr<FdmLinearOpLayout> & layout,
+        const std::shared_ptr<FdmLinearOpLayout> & layout,
         const std::vector<std::pair<Real, Real> > & boundaries)
     : FdmMesher (layout),
       dx_       (new Real[layout->dim().size()]),

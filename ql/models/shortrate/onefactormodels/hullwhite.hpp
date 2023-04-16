@@ -51,9 +51,9 @@ namespace QuantLib {
         HullWhite(const Handle<YieldTermStructure>& termStructure,
                   Real a = 0.1, Real sigma = 0.01);
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
+        std::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
+        std::shared_ptr<ShortRateDynamics> dynamics() const override;
 
         Real discountBondOption(Option::Type type,
                                 Real strike,
@@ -111,7 +111,7 @@ namespace QuantLib {
       public:
         Dynamics(Parameter fitting, Real a, Real sigma)
         : ShortRateDynamics(
-              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(a, sigma))),
+              std::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(std::move(fitting)) {}
 
         Real variable(Time t, Rate r) const override { return r - fitting_(t); }
@@ -152,16 +152,16 @@ namespace QuantLib {
       public:
         FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
-        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
+        : TermStructureFittingParameter(std::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
 
 
     // inline definitions
 
-    inline ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+    inline std::shared_ptr<OneFactorModel::ShortRateDynamics>
     HullWhite::dynamics() const {
-        return ext::shared_ptr<ShortRateDynamics>(
+        return std::shared_ptr<ShortRateDynamics>(
                                             new Dynamics(phi_, a(), sigma()));
     }
 

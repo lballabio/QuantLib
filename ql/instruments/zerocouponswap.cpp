@@ -27,16 +27,16 @@
 namespace QuantLib {
 
     namespace {       
-        ext::shared_ptr<CashFlow>
+        std::shared_ptr<CashFlow>
         compoundedSubPeriodicCoupon(const Date& paymentDate,
                                     const Date& startDate,
                                     const Date& maturityDate,
                                     Real nominal,
-                                    const ext::shared_ptr<IborIndex>& index) {
-            auto floatCpn = ext::make_shared<SubPeriodsCoupon>(
+                                    const std::shared_ptr<IborIndex>& index) {
+            auto floatCpn = std::make_shared<SubPeriodsCoupon>(
                 paymentDate, nominal, startDate, maturityDate, index->fixingDays(), index);
             floatCpn->setPricer(
-                ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
+                std::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
             return floatCpn;
         }
     }
@@ -45,7 +45,7 @@ namespace QuantLib {
                                    Real baseNominal,
                                    const Date& startDate,
                                    const Date& maturityDate,
-                                   ext::shared_ptr<IborIndex> iborIndex,
+                                   std::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
                                    Natural paymentDelay)
@@ -84,7 +84,7 @@ namespace QuantLib {
                                    const Date& startDate,
                                    const Date& maturityDate,
                                    Real fixedPayment,
-                                   ext::shared_ptr<IborIndex> iborIndex,
+                                   std::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
                                    Natural paymentDelay)
@@ -98,7 +98,7 @@ namespace QuantLib {
                      paymentDelay) {
 
         legs_[0].push_back(
-            ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment, paymentDate_)));
+            std::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment, paymentDate_)));
     }
 
     ZeroCouponSwap::ZeroCouponSwap(Type type,
@@ -107,7 +107,7 @@ namespace QuantLib {
                                    const Date& maturityDate,
                                    Rate fixedRate,
                                    const DayCounter& fixedDayCounter,
-                                   ext::shared_ptr<IborIndex> iborIndex,
+                                   std::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
                                    Natural paymentDelay)
@@ -121,7 +121,7 @@ namespace QuantLib {
                      paymentDelay) {
 
         InterestRate interest(fixedRate, fixedDayCounter, Compounded, Annual);
-        legs_[0].push_back(ext::shared_ptr<CashFlow>(
+        legs_[0].push_back(std::shared_ptr<CashFlow>(
             new FixedRateCoupon(paymentDate_, baseNominal_, interest, startDate, maturityDate)));
     }
 

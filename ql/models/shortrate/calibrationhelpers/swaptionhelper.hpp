@@ -38,7 +38,7 @@ namespace QuantLib {
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const Handle<Quote>& volatility,
-                       ext::shared_ptr<IborIndex> index,
+                       std::shared_ptr<IborIndex> index,
                        const Period& fixedLegTenor,
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
@@ -53,7 +53,7 @@ namespace QuantLib {
         SwaptionHelper(const Date& exerciseDate,
                        const Period& length,
                        const Handle<Quote>& volatility,
-                       ext::shared_ptr<IborIndex> index,
+                       std::shared_ptr<IborIndex> index,
                        const Period& fixedLegTenor,
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
@@ -68,7 +68,7 @@ namespace QuantLib {
         SwaptionHelper(const Date& exerciseDate,
                        const Date& endDate,
                        const Handle<Quote>& volatility,
-                       ext::shared_ptr<IborIndex> index,
+                       std::shared_ptr<IborIndex> index,
                        const Period& fixedLegTenor,
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
@@ -84,20 +84,20 @@ namespace QuantLib {
         Real modelValue() const override;
         Real blackPrice(Volatility volatility) const override;
 
-        ext::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
-        ext::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
+        std::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
+        std::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
 
       private:
         void performCalculations() const override;
         mutable Date exerciseDate_, endDate_;
         const Period maturity_, length_, fixedLegTenor_;
-        const ext::shared_ptr<IborIndex> index_;
+        const std::shared_ptr<IborIndex> index_;
         const Handle<YieldTermStructure> termStructure_;
         const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
         const Real strike_, nominal_;
         mutable Rate exerciseRate_;
-        mutable ext::shared_ptr<VanillaSwap> swap_;
-        mutable ext::shared_ptr<Swaption> swaption_;
+        mutable std::shared_ptr<VanillaSwap> swap_;
+        mutable std::shared_ptr<Swaption> swaption_;
     };
 
 }

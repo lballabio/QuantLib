@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         NthOrderDerivativeOp(
             Size direction, Size order, Integer nPoints,
-            const ext::shared_ptr<FdmMesher>& mesher);
+            const std::shared_ptr<FdmMesher>& mesher);
 
         array_type apply(const array_type& r) const override;
         SparseMatrix toMatrix() const override;

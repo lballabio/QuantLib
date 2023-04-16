@@ -64,8 +64,8 @@ namespace QuantLib {
 
     AnalyticBSMHullWhiteEngine::AnalyticBSMHullWhiteEngine(
         Real equityShortRateCorrelation,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-        const ext::shared_ptr<HullWhite>& model)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
+        const std::shared_ptr<HullWhite>& model)
     : GenericModelEngine<HullWhite, VanillaOption::arguments, VanillaOption::results>(model),
       rho_(equityShortRateCorrelation), process_(std::move(process)) {
         QL_REQUIRE(process_, "no Black-Scholes process specified");
@@ -77,11 +77,11 @@ namespace QuantLib {
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying given");
 
-        const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const ext::shared_ptr<Exercise> exercise = arguments_.exercise;
+        const std::shared_ptr<Exercise> exercise = arguments_.exercise;
 
         Time t = process_->riskFreeRate()->dayCounter().yearFraction(
                                     process_->riskFreeRate()->referenceDate(),
@@ -110,17 +110,17 @@ namespace QuantLib {
         }
 
         Handle<BlackVolTermStructure> volTS(
-             ext::shared_ptr<BlackVolTermStructure>(
+             std::shared_ptr<BlackVolTermStructure>(
               new ShiftedBlackVolTermStructure(varianceOffset,
                                                process_->blackVolatility())));
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> adjProcess(
+        std::shared_ptr<GeneralizedBlackScholesProcess> adjProcess(
                 new GeneralizedBlackScholesProcess(process_->stateVariable(),
                                                    process_->dividendYield(),
                                                    process_->riskFreeRate(),
                                                    volTS));
 
-        ext::shared_ptr<AnalyticEuropeanEngine> bsmEngine(
+        std::shared_ptr<AnalyticEuropeanEngine> bsmEngine(
                                       new AnalyticEuropeanEngine(adjProcess));
 
         VanillaOption(payoff, exercise).setupArguments(

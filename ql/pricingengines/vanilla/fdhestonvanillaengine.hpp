@@ -53,44 +53,44 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
       public:
         explicit
-        FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
+        FdHestonVanillaEngine(const std::shared_ptr<HestonModel>& model,
                               Size tGrid = 100,
                               Size xGrid = 100,
                               Size vGrid = 50,
                               Size dampingSteps = 0,
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                              ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+                              std::shared_ptr<LocalVolTermStructure> leverageFct = {},
                               Real mixingFactor = 1.0);
 
-        FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
+        FdHestonVanillaEngine(const std::shared_ptr<HestonModel>& model,
                               DividendSchedule dividends,
                               Size tGrid = 100,
                               Size xGrid = 100,
                               Size vGrid = 50,
                               Size dampingSteps = 0,
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                              ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+                              std::shared_ptr<LocalVolTermStructure> leverageFct = {},
                               Real mixingFactor = 1.0);
 
-        FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
-                              ext::shared_ptr<FdmQuantoHelper> quantoHelper,
+        FdHestonVanillaEngine(const std::shared_ptr<HestonModel>& model,
+                              std::shared_ptr<FdmQuantoHelper> quantoHelper,
                               Size tGrid = 100,
                               Size xGrid = 100,
                               Size vGrid = 50,
                               Size dampingSteps = 0,
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                              ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+                              std::shared_ptr<LocalVolTermStructure> leverageFct = {},
                               Real mixingFactor = 1.0);
 
-        FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
+        FdHestonVanillaEngine(const std::shared_ptr<HestonModel>& model,
                               DividendSchedule dividends,
-                              ext::shared_ptr<FdmQuantoHelper> quantoHelper,
+                              std::shared_ptr<FdmQuantoHelper> quantoHelper,
                               Size tGrid = 100,
                               Size xGrid = 100,
                               Size vGrid = 50,
                               Size dampingSteps = 0,
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                              ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+                              std::shared_ptr<LocalVolTermStructure> leverageFct = {},
                               Real mixingFactor = 1.0);
 
         void calculate() const override;
@@ -107,8 +107,8 @@ namespace QuantLib {
         bool explicitDividends_;
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
-        const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        const std::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const std::shared_ptr<FdmQuantoHelper> quantoHelper_;
         const Real mixingFactor_;
 
         std::vector<Real> strikes_;
@@ -121,10 +121,10 @@ namespace QuantLib {
 
     class MakeFdHestonVanillaEngine {
       public:
-        explicit MakeFdHestonVanillaEngine(ext::shared_ptr<HestonModel> hestonModel);
+        explicit MakeFdHestonVanillaEngine(std::shared_ptr<HestonModel> hestonModel);
 
         MakeFdHestonVanillaEngine& withQuantoHelper(
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
+            const std::shared_ptr<FdmQuantoHelper>& quantoHelper);
 
         MakeFdHestonVanillaEngine& withTGrid(Size tGrid);
         MakeFdHestonVanillaEngine& withXGrid(Size xGrid);
@@ -136,22 +136,22 @@ namespace QuantLib {
             const FdmSchemeDesc& schemeDesc);
 
         MakeFdHestonVanillaEngine& withLeverageFunction(
-            ext::shared_ptr<LocalVolTermStructure>& leverageFct);
+            std::shared_ptr<LocalVolTermStructure>& leverageFct);
 
         MakeFdHestonVanillaEngine& withCashDividends(
             const std::vector<Date>& dividendDates,
             const std::vector<Real>& dividendAmounts);
 
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
 
       private:
-        ext::shared_ptr<HestonModel> hestonModel_;
+        std::shared_ptr<HestonModel> hestonModel_;
         DividendSchedule dividends_;
         bool explicitDividends_ = false;
         Size tGrid_ = 100, xGrid_ = 100, vGrid_ = 50, dampingSteps_ = 0;
-        ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
-        ext::shared_ptr<LocalVolTermStructure> leverageFct_;
-        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        std::shared_ptr<FdmSchemeDesc> schemeDesc_;
+        std::shared_ptr<LocalVolTermStructure> leverageFct_;
+        std::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 
 }

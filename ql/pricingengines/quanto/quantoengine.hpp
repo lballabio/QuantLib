@@ -50,14 +50,14 @@ namespace QuantLib {
         public GenericEngine<typename Instr::arguments,
                              QuantoOptionResults<typename Instr::results> > {
       public:
-        QuantoEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>,
+        QuantoEngine(std::shared_ptr<GeneralizedBlackScholesProcess>,
                      Handle<YieldTermStructure> foreignRiskFreeRate,
                      Handle<BlackVolTermStructure> exchangeRateVolatility,
                      Handle<Quote> correlation);
         void calculate() const override;
 
       protected:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Handle<YieldTermStructure> foreignRiskFreeRate_;
         Handle<BlackVolTermStructure> exchangeRateVolatility_;
         Handle<Quote> correlation_;
@@ -68,7 +68,7 @@ namespace QuantLib {
 
     template <class Instr, class Engine>
     QuantoEngine<Instr, Engine>::QuantoEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         Handle<YieldTermStructure> foreignRiskFreeRate,
         Handle<BlackVolTermStructure> exchangeRateVolatility,
         Handle<Quote> correlation)
@@ -88,8 +88,8 @@ namespace QuantLib {
         Real exchangeRateATMlevel = 1.0;
 
         // determine strike from payoff
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
         Real strike = payoff->strike();
@@ -99,7 +99,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate = process_->riskFreeRate();
         // dividendTS needs modification
         Handle<YieldTermStructure> dividendYield(
-            ext::shared_ptr<YieldTermStructure>(
+            std::shared_ptr<YieldTermStructure>(
                 new QuantoTermStructure(process_->dividendYield(),
                                         process_->riskFreeRate(),
                                         foreignRiskFreeRate_,
@@ -110,11 +110,11 @@ namespace QuantLib {
                                         correlation_->value())));
         Handle<BlackVolTermStructure> blackVol = process_->blackVolatility();
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> quantoProcess(
+        std::shared_ptr<GeneralizedBlackScholesProcess> quantoProcess(
                   new GeneralizedBlackScholesProcess(spot, dividendYield,
                                                      riskFreeRate, blackVol));
 
-        ext::shared_ptr<Engine> originalEngine(new Engine(quantoProcess));
+        std::shared_ptr<Engine> originalEngine(new Engine(quantoProcess));
         originalEngine->reset();
         auto* originalArguments =
             dynamic_cast<typename Instr::arguments*>(originalEngine->getArguments());

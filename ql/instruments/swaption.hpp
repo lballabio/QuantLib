@@ -82,8 +82,8 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        Swaption(ext::shared_ptr<VanillaSwap> swap,
-                 const ext::shared_ptr<Exercise>& exercise,
+        Swaption(std::shared_ptr<VanillaSwap> swap,
+                 const std::shared_ptr<Exercise>& exercise,
                  Settlement::Type delivery = Settlement::Physical,
                  Settlement::Method settlementMethod = Settlement::PhysicalOTC);
         //! \name Instrument interface
@@ -98,7 +98,7 @@ namespace QuantLib {
             return settlementMethod_;
         }
         Swap::Type type() const { return swap_->type(); }
-        const ext::shared_ptr<VanillaSwap>& underlyingSwap() const {
+        const std::shared_ptr<VanillaSwap>& underlyingSwap() const {
             return swap_;
         }
         //@}
@@ -115,7 +115,7 @@ namespace QuantLib {
                               Real displacement = 0.0) const;
       private:
         // arguments
-        ext::shared_ptr<VanillaSwap> swap_;
+        std::shared_ptr<VanillaSwap> swap_;
         //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
         Settlement::Method settlementMethod_;
@@ -126,7 +126,7 @@ namespace QuantLib {
                                 public Option::arguments {
       public:
         arguments() = default;
-        ext::shared_ptr<VanillaSwap> swap;
+        std::shared_ptr<VanillaSwap> swap;
         Settlement::Type settlementType = Settlement::Physical;
         Settlement::Method settlementMethod;
         void validate() const override;

@@ -39,17 +39,17 @@ namespace QuantLib {
         typedef FiniteDifferenceModel<Scheme<TridiagonalOperator> > model_type;
 
         FDMultiPeriodEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100, Size gridPoints = 100,
              bool timeDependent = false);
-        mutable std::vector<ext::shared_ptr<Event> > events_;
+        mutable std::vector<std::shared_ptr<Event> > events_;
         mutable std::vector<Time> stoppingTimes_;
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
 
         virtual void setupArguments(
                const PricingEngine::arguments* args,
-               const std::vector<ext::shared_ptr<Event> >& schedule) const {
+               const std::vector<std::shared_ptr<Event> >& schedule) const {
             FDVanillaEngine::setupArguments(args);
             events_ = schedule;
             stoppingTimes_.clear();
@@ -73,8 +73,8 @@ namespace QuantLib {
         }
 
         virtual void calculate(PricingEngine::results*) const;
-        mutable ext::shared_ptr<StandardStepCondition > stepCondition_;
-        mutable ext::shared_ptr<model_type> model_;
+        mutable std::shared_ptr<StandardStepCondition > stepCondition_;
+        mutable std::shared_ptr<model_type> model_;
         virtual void executeIntermediateStep(Size step) const = 0;
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
@@ -88,7 +88,7 @@ namespace QuantLib {
 
     template <template <class> class Scheme>
     FDMultiPeriodEngine<Scheme>::FDMultiPeriodEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps, Size gridPoints, bool timeDependent)
     : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
@@ -187,13 +187,13 @@ namespace QuantLib {
 
     template <template <class> class Scheme>
     void FDMultiPeriodEngine<Scheme>::initializeStepCondition() const{
-        stepCondition_ = ext::shared_ptr<StandardStepCondition>(
+        stepCondition_ = std::shared_ptr<StandardStepCondition>(
                                                   new NullCondition<Array>());
     }
 
     template <template <class> class Scheme>
     void FDMultiPeriodEngine<Scheme>::initializeModel() const{
-        model_ = ext::shared_ptr<model_type>(
+        model_ = std::shared_ptr<model_type>(
                               new model_type(finiteDifferenceOperator_,BCs_));
     }
 

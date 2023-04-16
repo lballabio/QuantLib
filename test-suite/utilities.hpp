@@ -27,7 +27,7 @@
 #include <ql/quote.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/functional.hpp>
+
 #include <boost/test/unit_test.hpp>
 #if BOOST_VERSION < 105900
 #include <boost/test/floating_point_comparison.hpp>
@@ -73,7 +73,7 @@ namespace QuantLib {
 
         // used to avoid no-assertion messages in Boost 1.35
         class quantlib_test_case {
-            ext::function<void()> test_;
+            std::function<void()> test_;
           public:
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
@@ -99,44 +99,44 @@ namespace QuantLib {
 
     }
 
-    std::string payoffTypeToString(const ext::shared_ptr<Payoff>&);
-    std::string exerciseTypeToString(const ext::shared_ptr<Exercise>&);
+    std::string payoffTypeToString(const std::shared_ptr<Payoff>&);
+    std::string exerciseTypeToString(const std::shared_ptr<Exercise>&);
 
 
-    ext::shared_ptr<YieldTermStructure>
+    std::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
-             const ext::shared_ptr<Quote>& forward,
+             const std::shared_ptr<Quote>& forward,
              const DayCounter& dc);
 
-    ext::shared_ptr<YieldTermStructure>
+    std::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              Rate forward,
              const DayCounter& dc);
 
-    ext::shared_ptr<YieldTermStructure>
-    flatRate(const ext::shared_ptr<Quote>& forward,
+    std::shared_ptr<YieldTermStructure>
+    flatRate(const std::shared_ptr<Quote>& forward,
              const DayCounter& dc);
 
-    ext::shared_ptr<YieldTermStructure>
+    std::shared_ptr<YieldTermStructure>
     flatRate(Rate forward,
              const DayCounter& dc);
 
 
-    ext::shared_ptr<BlackVolTermStructure>
+    std::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            const ext::shared_ptr<Quote>& volatility,
+            const std::shared_ptr<Quote>& volatility,
             const DayCounter& dc);
 
-    ext::shared_ptr<BlackVolTermStructure>
+    std::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
             Volatility volatility,
             const DayCounter& dc);
 
-    ext::shared_ptr<BlackVolTermStructure>
-    flatVol(const ext::shared_ptr<Quote>& volatility,
+    std::shared_ptr<BlackVolTermStructure>
+    flatVol(const std::shared_ptr<Quote>& volatility,
             const DayCounter& dc);
 
-    ext::shared_ptr<BlackVolTermStructure>
+    std::shared_ptr<BlackVolTermStructure>
     flatVol(Volatility volatility,
             const DayCounter& dc);
 

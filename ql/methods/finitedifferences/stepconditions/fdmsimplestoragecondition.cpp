@@ -27,13 +27,13 @@ namespace QuantLib {
 
     FdmSimpleStorageCondition::FdmSimpleStorageCondition(
         std::vector<Time> exerciseTimes,
-        ext::shared_ptr<FdmMesher> mesher,
-        ext::shared_ptr<FdmInnerValueCalculator> calculator,
+        std::shared_ptr<FdmMesher> mesher,
+        std::shared_ptr<FdmInnerValueCalculator> calculator,
         Real changeRate)
     : exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)),
       calculator_(std::move(calculator)), changeRate_(changeRate) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
 
         x_.reserve(layout->dim()[0]);
         y_.reserve(layout->dim()[1]);
@@ -62,7 +62,7 @@ namespace QuantLib {
             BilinearInterpolation interpl(x_.begin(), x_.end(),
                                           y_.begin(), y_.end(), m);
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const std::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
 
             QL_REQUIRE(layout->size() == a.size(),
                        "inconsistent array dimensions");

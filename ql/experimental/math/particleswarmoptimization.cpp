@@ -26,8 +26,8 @@ using std::sqrt;
 
 namespace QuantLib {
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,
-                                                         ext::shared_ptr<Topology> topology,
-                                                         ext::shared_ptr<Inertia> inertia,
+                                                         std::shared_ptr<Topology> topology,
+                                                         std::shared_ptr<Inertia> inertia,
                                                          Real c1,
                                                          Real c2,
                                                          unsigned long seed)
@@ -40,8 +40,8 @@ namespace QuantLib {
     }
 
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,
-                                                         ext::shared_ptr<Topology> topology,
-                                                         ext::shared_ptr<Inertia> inertia,
+                                                         std::shared_ptr<Topology> topology,
+                                                         std::shared_ptr<Inertia> inertia,
                                                          Real omega,
                                                          Real c1,
                                                          Real c2,

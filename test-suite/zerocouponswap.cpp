@@ -38,9 +38,9 @@ namespace zerocouponswap_test {
         BusinessDayConvention businessConvention;
         Real baseNominal, finalPayment;
 
-        ext::shared_ptr<IborIndex> euribor;
+        std::shared_ptr<IborIndex> euribor;
         RelinkableHandle<YieldTermStructure> euriborHandle;
-        ext::shared_ptr<PricingEngine> discountEngine;
+        std::shared_ptr<PricingEngine> discountEngine;
 
         // cleanup
         SavedSettings backup;
@@ -55,7 +55,7 @@ namespace zerocouponswap_test {
             baseNominal = 1.0e6;
             finalPayment = 1.2e6;
 
-            euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
+            euribor = std::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
             euribor->addFixing(Date(10, February, 2021), 0.0085);
 
             today = calendar.adjust(Date(15, March, 2021));
@@ -64,47 +64,47 @@ namespace zerocouponswap_test {
 
             euriborHandle.linkTo(flatRate(settlement, 0.007, dayCount));
             discountEngine =
-                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
+                std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
         }
 
-        ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
+        std::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
             Date paymentDate = calendar.advance(end, paymentDelay * Days, businessConvention);
-            ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
+            std::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
                 paymentDate, baseNominal, start, end, settlementDays, euribor));
             cpn->setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
+                    std::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
             return cpn;
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
+        std::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
                                                      const Date& start,
                                                      const Date& end,
                                                      Real baseNominal,
                                                      Real finalPayment) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(type, baseNominal, start, end, finalPayment, 
+            auto swap = std::make_shared<ZeroCouponSwap>(type, baseNominal, start, end, finalPayment, 
                                                          euribor, calendar, businessConvention,
                                                          paymentDelay);
             swap->setPricingEngine(discountEngine);
             return swap;
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
+        std::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
                                                      const Date& start,
                                                      const Date& end,
                                                      Real finalPayment) {
             return createZCSwap(type, start, end, baseNominal, finalPayment);
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
+        std::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
                                                      const Date& start,
                                                      const Date& end) {
             return createZCSwap(type, start, end, finalPayment);
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(const Date& start, 
+        std::shared_ptr<ZeroCouponSwap> createZCSwap(const Date& start, 
                                                      const Date& end, 
                                                      Rate fixedRate) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(Swap::Receiver, baseNominal, 
+            auto swap = std::make_shared<ZeroCouponSwap>(Swap::Receiver, baseNominal, 
                                                          start, end, fixedRate, dayCount, euribor,
                                                          calendar, businessConvention, paymentDelay);
             swap->setPricingEngine(discountEngine);

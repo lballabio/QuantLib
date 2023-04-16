@@ -24,8 +24,9 @@
 #ifndef quantlib_gaussian_non_central_chi_squared_polynomial_hpp
 #define quantlib_gaussian_non_central_chi_squared_polynomial_hpp
 
-#include <ql/functional.hpp>
+
 #include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
+#include <functional>
 
 namespace QuantLib {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
       private:
         const Real nu_, lambda_;
 
-        static std::vector<ext::function<Real(Real, Real)> > moments;
+        static std::vector<std::function<Real(Real, Real)> > moments;
     };
 }
 

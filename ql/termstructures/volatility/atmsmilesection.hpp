@@ -32,7 +32,7 @@ namespace QuantLib {
     class AtmSmileSection : public SmileSection {
 
       public:
-        AtmSmileSection(const ext::shared_ptr<SmileSection>& source, Real atm = Null<Real>());
+        AtmSmileSection(const std::shared_ptr<SmileSection>& source, Real atm = Null<Real>());
 
         Real minStrike() const override { return source_->minStrike(); }
         Real maxStrike() const override { return source_->maxStrike(); }
@@ -51,7 +51,7 @@ namespace QuantLib {
         Real varianceImpl(Rate strike) const override { return source_->variance(strike); }
 
       private:
-        ext::shared_ptr<SmileSection> source_;
+        std::shared_ptr<SmileSection> source_;
         Real f_;
     };
 }

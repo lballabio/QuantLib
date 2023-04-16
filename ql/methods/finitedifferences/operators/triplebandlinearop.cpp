@@ -29,7 +29,7 @@ namespace QuantLib {
 
     TripleBandLinearOp::TripleBandLinearOp(
         Size direction,
-        const ext::shared_ptr<FdmMesher>& mesher)
+        const std::shared_ptr<FdmMesher>& mesher)
     : direction_(direction),
       i0_       (new Size[mesher->layout()->size()]),
       i2_       (new Size[mesher->layout()->size()]),
@@ -39,7 +39,7 @@ namespace QuantLib {
       upper_    (new Real[mesher->layout()->size()]),
       mesher_(mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         std::vector<Size> newDim(layout->dim());
@@ -192,7 +192,7 @@ namespace QuantLib {
     }
 
     TripleBandLinearOp TripleBandLinearOp::multR(const Array& u) const {
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const Size size = layout->size();
         QL_REQUIRE(u.size() == size, "inconsistent size of rhs");
         TripleBandLinearOp retVal(direction_, mesher_);
@@ -226,7 +226,7 @@ namespace QuantLib {
     }
 
     Array TripleBandLinearOp::apply(const Array& r) const {
-        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
 
         QL_REQUIRE(r.size() == index->size(), "inconsistent length of r");
 
@@ -246,7 +246,7 @@ namespace QuantLib {
     }
 
     SparseMatrix TripleBandLinearOp::toMatrix() const {
-        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
 
         SparseMatrix retVal(n, n, 3*n);
@@ -261,7 +261,7 @@ namespace QuantLib {
 
 
     Array TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         QL_REQUIRE(r.size() == layout->size(), "inconsistent size of rhs");
 
 #ifdef QL_EXTRA_SAFETY_CHECKS

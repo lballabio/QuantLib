@@ -46,7 +46,7 @@ namespace QuantLib {
         // constructors
         CrankNicolsonScheme(
             Real theta,
-            const ext::shared_ptr<FdmLinearOpComposite>& map,
+            const std::shared_ptr<FdmLinearOpComposite>& map,
             const bc_set& bcSet = bc_set(),
             Real relTol = 1e-8,
             ImplicitEulerScheme::SolverType solverType
@@ -59,8 +59,8 @@ namespace QuantLib {
       protected:
         Real dt_;
         const Real theta_;
-        const ext::shared_ptr<ExplicitEulerScheme> explicit_;
-        const ext::shared_ptr<ImplicitEulerScheme> implicit_;
+        const std::shared_ptr<ExplicitEulerScheme> explicit_;
+        const std::shared_ptr<ImplicitEulerScheme> implicit_;
     };
 }
 

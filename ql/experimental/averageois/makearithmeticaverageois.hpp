@@ -37,12 +37,12 @@ namespace QuantLib {
     class MakeArithmeticAverageOIS {
       public:
         MakeArithmeticAverageOIS(const Period& swapTenor,
-                const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                const std::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
         operator ArithmeticAverageOIS() const;
-        operator ext::shared_ptr<ArithmeticAverageOIS>() const;
+        operator std::shared_ptr<ArithmeticAverageOIS>() const;
 
         MakeArithmeticAverageOIS& receiveFixed(bool flag = true);
         MakeArithmeticAverageOIS& withType(Swap::Type type);
@@ -64,14 +64,14 @@ namespace QuantLib {
         MakeArithmeticAverageOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeArithmeticAverageOIS& withPricingEngine(
-                              const ext::shared_ptr<PricingEngine>& engine);
+                              const std::shared_ptr<PricingEngine>& engine);
         MakeArithmeticAverageOIS& withArithmeticAverage(
                                        Real meanReversionSpeed = 0.03,
                                        Real volatility = 0.00, // NO convexity adjustment by default
                                        bool byApprox = false); // TRUE to use Katsumi Takada approximation
       private:
         Period swapTenor_;
-        ext::shared_ptr<OvernightIndex> overnightIndex_;
+        std::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
         Period forwardStart_;
 
@@ -94,7 +94,7 @@ namespace QuantLib {
         Spread overnightSpread_ = 0.0;
         DayCounter fixedDayCount_;
 
-        ext::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<PricingEngine> engine_;
     };
 
 }

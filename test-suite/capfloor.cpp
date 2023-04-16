@@ -52,7 +52,7 @@ namespace capfloor_test {
         std::vector<Real> nominals;
         BusinessDayConvention convention;
         Frequency frequency;
-        ext::shared_ptr<IborIndex> index;
+        std::shared_ptr<IborIndex> index;
         Calendar calendar;
         Natural fixingDays;
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -65,7 +65,7 @@ namespace capfloor_test {
         CommonVars()
         : nominals(1,100) {
             frequency = Semiannual;
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            index = std::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             convention = ModifiedFollowing;
             Date today = Settings::instance().evaluationDate();
@@ -89,33 +89,33 @@ namespace capfloor_test {
                 .withFixingDays(fixingDays);
         }
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
+        std::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
+            Handle<Quote> vol(std::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
+            return std::shared_ptr<PricingEngine>(
                                 new BlackCapFloorEngine(termStructure, vol));
         }
 
-        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
+        std::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
+            Handle<Quote> vol(std::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
+            return std::shared_ptr<PricingEngine>(
                                 new BachelierCapFloorEngine(termStructure, vol));
         }
 
-        ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+        std::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
                                                const Leg& leg,
                                                Rate strike,
                                                Volatility volatility,
                                                bool isLogNormal = true) const {
-            ext::shared_ptr<CapFloor> result;
+            std::shared_ptr<CapFloor> result;
             switch (type) {
               case CapFloor::Cap:
-                result = ext::shared_ptr<CapFloor>(
+                result = std::shared_ptr<CapFloor>(
                                   new Cap(leg, std::vector<Rate>(1, strike)));
                 break;
               case CapFloor::Floor:
-                result = ext::shared_ptr<CapFloor>(
+                result = std::shared_ptr<CapFloor>(
                                 new Floor(leg, std::vector<Rate>(1, strike)));
                 break;
               default:
@@ -172,10 +172,10 @@ void CapFloorTest::testVega() {
             for (Real strike : strikes) {
                 for (auto& type : types) {
                     Leg leg = vars.makeLeg(startDate, length);
-                    ext::shared_ptr<CapFloor> capFloor = vars.makeCapFloor(type, leg, strike, vol);
-                    ext::shared_ptr<CapFloor> shiftedCapFloor2 =
+                    std::shared_ptr<CapFloor> capFloor = vars.makeCapFloor(type, leg, strike, vol);
+                    std::shared_ptr<CapFloor> shiftedCapFloor2 =
                         vars.makeCapFloor(type, leg, strike, vol + shift);
-                    ext::shared_ptr<CapFloor> shiftedCapFloor1 =
+                    std::shared_ptr<CapFloor> shiftedCapFloor1 =
                         vars.makeCapFloor(type, leg, strike, vol - shift);
                     Real value1 = shiftedCapFloor1->NPV();
                     Real value2 = shiftedCapFloor2->NPV();
@@ -221,10 +221,10 @@ void CapFloorTest::testStrikeDependency() {
             std::vector<Real> cap_values, floor_values;
             for (Real strike : strikes) {
                 Leg leg = vars.makeLeg(startDate, length);
-                ext::shared_ptr<Instrument> cap =
+                std::shared_ptr<Instrument> cap =
                     vars.makeCapFloor(CapFloor::Cap, leg, strike, vol);
                 cap_values.push_back(cap->NPV());
-                ext::shared_ptr<Instrument> floor =
+                std::shared_ptr<Instrument> floor =
                     vars.makeCapFloor(CapFloor::Floor, leg, strike, vol);
                 floor_values.push_back(floor->NPV());
             }
@@ -277,9 +277,9 @@ void CapFloorTest::testConsistency() {
                 for (Real vol : vols) {
 
                     Leg leg = vars.makeLeg(startDate, length);
-                    ext::shared_ptr<CapFloor> cap =
+                    std::shared_ptr<CapFloor> cap =
                         vars.makeCapFloor(CapFloor::Cap, leg, cap_rate, vol);
-                    ext::shared_ptr<CapFloor> floor =
+                    std::shared_ptr<CapFloor> floor =
                         vars.makeCapFloor(CapFloor::Floor, leg, floor_rate, vol);
                     Collar collar(leg, std::vector<Rate>(1, cap_rate),
                                   std::vector<Rate>(1, floor_rate));
@@ -298,7 +298,7 @@ void CapFloorTest::testConsistency() {
 
                         // test re-composition by optionlets, N.B. two per year
                         Real capletsNPV = 0.0;
-                        std::vector<ext::shared_ptr<CapFloor> > caplets;
+                        std::vector<std::shared_ptr<CapFloor> > caplets;
                         for (Integer m = 0; m < length * 2; m++) {
                             caplets.push_back(cap->optionlet(m));
                             caplets[m]->setPricingEngine(vars.makeEngine(vol));
@@ -317,7 +317,7 @@ void CapFloorTest::testConsistency() {
                         }
 
                         Real floorletsNPV = 0.0;
-                        std::vector<ext::shared_ptr<CapFloor> > floorlets;
+                        std::vector<std::shared_ptr<CapFloor> > floorlets;
                         for (Integer m = 0; m < length * 2; m++) {
                             floorlets.push_back(floor->optionlet(m));
                             floorlets[m]->setPricingEngine(vars.makeEngine(vol));
@@ -336,7 +336,7 @@ void CapFloorTest::testConsistency() {
                         }
 
                         Real collarletsNPV = 0.0;
-                        std::vector<ext::shared_ptr<CapFloor> > collarlets;
+                        std::vector<std::shared_ptr<CapFloor> > collarlets;
                         for (Integer m = 0; m < length * 2; m++) {
                             collarlets.push_back(collar.optionlet(m));
                             collarlets[m]->setPricingEngine(vars.makeEngine(vol));
@@ -382,9 +382,9 @@ void CapFloorTest::testParity() {
             for (Real vol : vols) {
 
                 Leg leg = vars.makeLeg(startDate, length);
-                ext::shared_ptr<Instrument> cap =
+                std::shared_ptr<Instrument> cap =
                     vars.makeCapFloor(CapFloor::Cap, leg, strike, vol);
-                ext::shared_ptr<Instrument> floor =
+                std::shared_ptr<Instrument> floor =
                     vars.makeCapFloor(CapFloor::Floor, leg, strike, vol);
                 Date maturity = vars.calendar.advance(startDate, length, Years, vars.convention);
                 Schedule schedule(startDate, maturity, Period(vars.frequency), vars.calendar,
@@ -393,7 +393,7 @@ void CapFloorTest::testParity() {
                                  vars.index->dayCounter(), schedule, vars.index, 0.0,
                                  vars.index->dayCounter());
                 swap.setPricingEngine(
-                    ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(vars.termStructure)));
+                    std::shared_ptr<PricingEngine>(new DiscountingSwapEngine(vars.termStructure)));
                 if (std::fabs((cap->NPV() - floor->NPV()) - swap.NPV()) > 1.0e-10) {
                     BOOST_FAIL("put/call parity violated:\n"
                                << "    length:      " << length << " years\n"
@@ -432,8 +432,8 @@ void CapFloorTest::testATMRate() {
 
         for (Real strike : strikes) {
             for (Real vol : vols) {
-                ext::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap, leg, strike, vol);
-                ext::shared_ptr<CapFloor> floor =
+                std::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap, leg, strike, vol);
+                std::shared_ptr<CapFloor> floor =
                     vars.makeCapFloor(CapFloor::Floor, leg, strike, vol);
                 Rate capATMRate = cap->atmRate(**vars.termStructure);
                 Rate floorATMRate = floor->atmRate(**vars.termStructure);
@@ -451,7 +451,7 @@ void CapFloorTest::testATMRate() {
                                  vars.index->dayCounter(),
                                  schedule, vars.index, 0.0,
                                  vars.index->dayCounter());
-                swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                swap.setPricingEngine(std::shared_ptr<PricingEngine>(
                               new DiscountingSwapEngine(vars.termStructure)));
                 Real swapNPV = swap.NPV();
                 if (!checkAbsError(swapNPV, 0, 1.0e-10))
@@ -492,7 +492,7 @@ void CapFloorTest::testImpliedVolatility() {
         for (auto& type : types) {
             for (Real strike : strikes) {
 
-                ext::shared_ptr<CapFloor> capfloor = vars.makeCapFloor(type, leg, strike, 0.0);
+                std::shared_ptr<CapFloor> capfloor = vars.makeCapFloor(type, leg, strike, 0.0);
 
                 for (Real r : rRates) {
                     for (Real v : vols) {
@@ -566,9 +566,9 @@ void CapFloorTest::testCachedValue() {
     vars.termStructure.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);
-    ext::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+    std::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
                                                           0.07,0.20);
-    ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+    std::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                             0.03,0.20);
 
     Real cachedCapNPV, cachedFloorNPV ;
@@ -609,15 +609,15 @@ void CapFloorTest::testCachedValueFromOptionLets() {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+    std::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
                                                              0.05, Actual360());                                              
     vars.termStructure.linkTo(baseCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
 
-    ext::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+    std::shared_ptr<Instrument> cap = vars.makeCapFloor(CapFloor::Cap,leg,
                                                           0.07,0.20);
-    ext::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+    std::shared_ptr<Instrument> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                             0.03,0.20);
     Real calculatedCapletsNPV = 0.0,
          calculatedFloorletsNPV = 0.0;
@@ -678,14 +678,14 @@ void CapFloorTest::testOptionLetsDelta() {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+    std::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
                                                              0.05, Actual360());
     RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
+    std::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
                                                             Continuous,
@@ -695,9 +695,9 @@ void CapFloorTest::testOptionLetsDelta() {
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
 
-    ext::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+    std::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap,leg,
                                                           0.05,0.20);
-    ext::shared_ptr<CapFloor> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+    std::shared_ptr<CapFloor> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                             0.05,0.20);
 
     
@@ -747,7 +747,7 @@ void CapFloorTest::testOptionLetsDelta() {
     for (Size n=1; n < capletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(capLeg[n]);
+        std::shared_ptr<FloatingRateCoupon> c = std::dynamic_pointer_cast<FloatingRateCoupon>(capLeg[n]);
         accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
         capletFDDelta[n] = (capletUpPrices[n] / capletDiscountFactorsUp[n]
                            - capletDownPrices[n] / capletDiscountFactorsDown[n]) 
@@ -758,7 +758,7 @@ void CapFloorTest::testOptionLetsDelta() {
     for (Size n=0; n<floorletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(floorLeg[n]);
+        std::shared_ptr<FloatingRateCoupon> c = std::dynamic_pointer_cast<FloatingRateCoupon>(floorLeg[n]);
         accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
         floorletFDDelta[n] = (floorletUpPrices[n] / floorletDiscountFactorsUp[n] 
                              - floorletDownPrices[n] / floorletDiscountFactorsDown[n]) 
@@ -801,14 +801,14 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
-    ext::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
+    std::shared_ptr<YieldTermStructure> baseCurve = flatRate(cachedSettlement, 
                                                              0.05, Actual360());
     RelinkableHandle<YieldTermStructure> baseCurveHandle(baseCurve);
 
     // Define spreaded curve with eps as spread used for FD sensitivities
     Real eps = 1.0e-6;
-    ext::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
+    std::shared_ptr<SimpleQuote> spread(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
                                                             Continuous,
@@ -821,9 +821,9 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     // Use normal model (BachelierCapFloorEngine)
     bool isLogNormal = false;
 
-    ext::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap,leg,
+    std::shared_ptr<CapFloor> cap = vars.makeCapFloor(CapFloor::Cap,leg,
                                                       0.05, 0.01, isLogNormal);
-    ext::shared_ptr<CapFloor> floor = vars.makeCapFloor(CapFloor::Floor,leg,
+    std::shared_ptr<CapFloor> floor = vars.makeCapFloor(CapFloor::Floor,leg,
                                                         0.05, 0.01, isLogNormal);
 
     
@@ -873,7 +873,7 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     for (Size n=1; n < capletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(capLeg[n]);
+        std::shared_ptr<FloatingRateCoupon> c = std::dynamic_pointer_cast<FloatingRateCoupon>(capLeg[n]);
         accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
         capletFDDelta[n] = (capletUpPrices[n] / capletDiscountFactorsUp[n]
                            - capletDownPrices[n] / capletDiscountFactorsDown[n]) 
@@ -884,7 +884,7 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
     for (Size n=0; n<floorletUpPrices.size(); n++){
         // calculating only caplet's FD sensitivity w.r.t. forward rate
         // without the effect of sensitivity related to changed discount factor
-        ext::shared_ptr<FloatingRateCoupon> c = ext::dynamic_pointer_cast<FloatingRateCoupon>(floorLeg[n]);
+        std::shared_ptr<FloatingRateCoupon> c = std::dynamic_pointer_cast<FloatingRateCoupon>(floorLeg[n]);
         accrualFactor = c->nominal() * c->accrualPeriod() * c->gearing();
         floorletFDDelta[n] = (floorletUpPrices[n] / floorletDiscountFactorsUp[n] 
                              - floorletDownPrices[n] / floorletDiscountFactorsDown[n]) 

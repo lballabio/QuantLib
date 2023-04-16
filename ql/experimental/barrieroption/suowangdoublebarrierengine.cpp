@@ -26,15 +26,15 @@
 namespace QuantLib {
 
     SuoWangDoubleBarrierEngine::SuoWangDoubleBarrierEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
     : process_(std::move(process)), series_(series) {
         registerWith(process_);
     }
 
     void SuoWangDoubleBarrierEngine::calculate() const {
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
@@ -67,8 +67,8 @@ namespace QuantLib {
 
         //european option
         EuropeanOption europeanOption(payoff, arguments_.exercise);
-        ext::shared_ptr<PricingEngine> analyticEuropeanEngine =
-            ext::make_shared<AnalyticEuropeanEngine>(process_);
+        std::shared_ptr<PricingEngine> analyticEuropeanEngine =
+            std::make_shared<AnalyticEuropeanEngine>(process_);
         europeanOption.setPricingEngine(analyticEuropeanEngine);
         Real european = europeanOption.NPV();
 
@@ -131,8 +131,8 @@ namespace QuantLib {
 
 
     Real SuoWangDoubleBarrierEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }

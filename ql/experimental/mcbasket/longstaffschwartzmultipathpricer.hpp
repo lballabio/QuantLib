@@ -25,7 +25,7 @@
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/experimental/mcbasket/pathpayoff.hpp>
-#include <ql/functional.hpp>
+
 #include <memory>
 
 namespace QuantLib {
@@ -44,7 +44,7 @@ namespace QuantLib {
     */
     class LongstaffSchwartzMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        LongstaffSchwartzMultiPathPricer(const ext::shared_ptr<PathPayoff>& payoff,
+        LongstaffSchwartzMultiPathPricer(const std::shared_ptr<PathPayoff>& payoff,
                                          const std::vector<Size>& timePositions,
                                          std::vector<Handle<YieldTermStructure> > forwardTermStructure,
                                          Array discounts,
@@ -69,7 +69,7 @@ namespace QuantLib {
 
         bool calibrationPhase_ = true;
 
-        const ext::shared_ptr<PathPayoff> payoff_;
+        const std::shared_ptr<PathPayoff> payoff_;
 
         std::unique_ptr<Array[]> coeff_;
         std::unique_ptr<Real[]> lowerBounds_;
@@ -79,7 +79,7 @@ namespace QuantLib {
         const Array dF_;
 
         mutable std::vector<PathInfo> paths_;
-        const std::vector<ext::function<Real(Array)> > v_;
+        const std::vector<std::function<Real(Array)> > v_;
     };
 
 }

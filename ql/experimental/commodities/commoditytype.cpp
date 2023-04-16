@@ -22,16 +22,16 @@
 
 namespace QuantLib {
 
-    std::map<std::string, ext::shared_ptr<CommodityType::Data> >
+    std::map<std::string, std::shared_ptr<CommodityType::Data> >
     CommodityType::commodityTypes_;
 
     CommodityType::CommodityType(const std::string& name,
                                  const std::string& code) {
-        std::map<std::string, ext::shared_ptr<CommodityType::Data> >::const_iterator i = commodityTypes_.find(code);
+        std::map<std::string, std::shared_ptr<CommodityType::Data> >::const_iterator i = commodityTypes_.find(code);
         if (i != commodityTypes_.end())
             data_ = i->second;
         else {
-            data_ = ext::make_shared<CommodityType::Data>(
+            data_ = std::make_shared<CommodityType::Data>(
                                          name, code);
             commodityTypes_[code] = data_;
         }

@@ -38,7 +38,7 @@ namespace QuantLib {
     class FFTVarianceGammaEngine : public FFTEngine {
     public:
         explicit FFTVarianceGammaEngine(
-            const ext::shared_ptr<VarianceGammaProcess>&process,
+            const std::shared_ptr<VarianceGammaProcess>&process,
             Real logStrikeSpacing = 0.001);
         std::unique_ptr<FFTEngine> clone() const override;
     protected:

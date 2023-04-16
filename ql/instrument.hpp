@@ -32,6 +32,7 @@
 #include <ql/any.hpp>
 #include <map>
 #include <string>
+#include <any>
 
 namespace QuantLib {
 
@@ -58,7 +59,7 @@ namespace QuantLib {
         //! returns any additional result returned by the pricing engine.
         template <typename T> T result(const std::string& tag) const;
         //! returns all additional result returned by the pricing engine.
-        const std::map<std::string, ext::any>& additionalResults() const;
+        const std::map<std::string, std::any>& additionalResults() const;
 
         //! returns whether the instrument might have value greater than zero.
         virtual bool isExpired() const = 0;
@@ -70,7 +71,7 @@ namespace QuantLib {
                      case the <b>performCalculation</b> method
                      was overridden in a derived class.
         */
-        void setPricingEngine(const ext::shared_ptr<PricingEngine>&);
+        void setPricingEngine(const std::shared_ptr<PricingEngine>&);
         //@}
         /*! When a derived argument structure is defined for an
             instrument, this method should be overridden to fill
@@ -105,9 +106,9 @@ namespace QuantLib {
         //@{
         mutable Real NPV_, errorEstimate_;
         mutable Date valuationDate_;
-        mutable std::map<std::string, ext::any> additionalResults_;
+        mutable std::map<std::string, std::any> additionalResults_;
         //@}
-        ext::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<PricingEngine> engine_;
     };
 
     class Instrument::results : public virtual PricingEngine::results {
@@ -120,7 +121,7 @@ namespace QuantLib {
         Real value;
         Real errorEstimate;
         Date valuationDate;
-        std::map<std::string, ext::any> additionalResults;
+        std::map<std::string, std::any> additionalResults;
     };
 
 
@@ -129,7 +130,7 @@ namespace QuantLib {
     inline Instrument::Instrument() : NPV_(Null<Real>()), errorEstimate_(Null<Real>()) {}
 
     inline void Instrument::setPricingEngine(
-                                  const ext::shared_ptr<PricingEngine>& e) {
+                                  const std::shared_ptr<PricingEngine>& e) {
         if (engine_ != nullptr)
             unregisterWith(engine_);
         engine_ = e;
@@ -204,14 +205,14 @@ namespace QuantLib {
     template <class T>
     inline T Instrument::result(const std::string& tag) const {
         calculate();
-        std::map<std::string, ext::any>::const_iterator value =
+        std::map<std::string, std::any>::const_iterator value =
             additionalResults_.find(tag);
         QL_REQUIRE(value != additionalResults_.end(),
                    tag << " not provided");
-        return ext::any_cast<T>(value->second);
+        return std::any_cast<T>(value->second);
     }
 
-    inline const std::map<std::string, ext::any>&
+    inline const std::map<std::string, std::any>&
     Instrument::additionalResults() const {
         calculate();
         return additionalResults_;

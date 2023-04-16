@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functional.hpp>
+
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
@@ -27,11 +27,11 @@
 
 namespace QuantLib {
 
-    ImplicitEulerScheme::ImplicitEulerScheme(ext::shared_ptr<FdmLinearOpComposite> map,
+    ImplicitEulerScheme::ImplicitEulerScheme(std::shared_ptr<FdmLinearOpComposite> map,
                                              const bc_set& bcSet,
                                              Real relTol,
                                              SolverType solverType)
-    : dt_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)), relTol_(relTol),
+    : dt_(Null<Real>()), iterations_(std::make_shared<Size>(0U)), relTol_(relTol),
       map_(std::move(map)), bcSet_(bcSet), solverType_(solverType) {}
 
     Array ImplicitEulerScheme::apply(const Array& r, Real theta) const {

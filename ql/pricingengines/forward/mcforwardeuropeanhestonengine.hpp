@@ -58,7 +58,7 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCForwardEuropeanHestonEngine(
-             const ext::shared_ptr<P>& process,
+             const std::shared_ptr<P>& process,
              Size timeSteps,
              Size timeStepsPerYear,
              bool antitheticVariate,
@@ -68,17 +68,17 @@ namespace QuantLib {
              BigNatural seed,
              bool controlVariate = false);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        std::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // Use the vanilla option running from t=0 to t=expiryTime with an analytic Heston pricer
         // as a control variate. Works well if resetTime small.
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
-            ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        std::shared_ptr<PricingEngine> controlPricingEngine() const override {
+            std::shared_ptr<P> process = std::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
-            ext::shared_ptr<HestonModel> hestonModel(new HestonModel(process));
-            return ext::shared_ptr<PricingEngine>(new
+            std::shared_ptr<HestonModel> hestonModel(new HestonModel(process));
+            return std::shared_ptr<PricingEngine>(new
                 AnalyticHestonEngine(hestonModel));
         }
     };
@@ -88,7 +88,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCForwardEuropeanHestonEngine {
       public:
-        explicit MakeMCForwardEuropeanHestonEngine(ext::shared_ptr<P> process);
+        explicit MakeMCForwardEuropeanHestonEngine(std::shared_ptr<P> process);
         // named parameters
         MakeMCForwardEuropeanHestonEngine& withSteps(Size steps);
         MakeMCForwardEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -99,9 +99,9 @@ namespace QuantLib {
         MakeMCForwardEuropeanHestonEngine& withAntitheticVariate(bool b = true);
         MakeMCForwardEuropeanHestonEngine& withControlVariate(bool b = false);
         // conversion to pricing engine
-        operator ext::shared_ptr<PricingEngine>() const;
+        operator std::shared_ptr<PricingEngine>() const;
       private:
-        ext::shared_ptr<P> process_;
+        std::shared_ptr<P> process_;
         bool antithetic_ = false, controlVariate_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
@@ -129,7 +129,7 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MCForwardEuropeanHestonEngine<RNG,S,P>::MCForwardEuropeanHestonEngine(
-             const ext::shared_ptr<P>& process,
+             const std::shared_ptr<P>& process,
              Size timeSteps,
              Size timeStepsPerYear,
              bool antitheticVariate,
@@ -151,7 +151,7 @@ namespace QuantLib {
 
 
     template <class RNG, class S, class P>
-    inline ext::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
+    inline std::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
         MCForwardEuropeanHestonEngine<RNG,S,P>::pathPricer() const {
 
         TimeGrid timeGrid = this->timeGrid();
@@ -159,21 +159,21 @@ namespace QuantLib {
         Time resetTime = this->process_->time(this->arguments_.resetDate);
         Size resetIndex = timeGrid.closestIndex(resetTime);
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        ext::shared_ptr<P> process =
-            ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<P> process =
+            std::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
+        return std::shared_ptr<typename
             MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
                 new ForwardEuropeanHestonPathPricer(
                                         payoff->optionType(),
@@ -184,7 +184,7 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline ext::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
+    inline std::shared_ptr<typename MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>
         MCForwardEuropeanHestonEngine<RNG,S,P>::controlPathPricer() const {
 
         // Control variate prices a vanilla option on the path, and compares to analytical Heston
@@ -192,21 +192,21 @@ namespace QuantLib {
         Size resetIndex = 0;
         TimeGrid timeGrid = this->timeGrid();
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        ext::shared_ptr<P> process =
-            ext::dynamic_pointer_cast<P>(this->process_);
+        std::shared_ptr<P> process =
+            std::dynamic_pointer_cast<P>(this->process_);
         QL_REQUIRE(process, "Heston like process required");
 
-        return ext::shared_ptr<typename
+        return std::shared_ptr<typename
             MCForwardEuropeanHestonEngine<RNG,S,P>::path_pricer_type>(
                 new ForwardEuropeanHestonPathPricer(
                                         payoff->optionType(),
@@ -218,7 +218,7 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG, S, P>::MakeMCForwardEuropeanHestonEngine(
-        ext::shared_ptr<P> process)
+        std::shared_ptr<P> process)
     : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
@@ -287,13 +287,13 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::operator ext::shared_ptr<PricingEngine>()
+    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::operator std::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified - set EITHER steps OR stepsPerYear");
-        return ext::shared_ptr<PricingEngine>(new
+        return std::shared_ptr<PricingEngine>(new
             MCForwardEuropeanHestonEngine<RNG,S,P>(process_,
                                                    steps_,
                                                    stepsPerYear_,

@@ -26,7 +26,7 @@
 
 #include <ql/types.hpp>
 #include <ql/math/rounding.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <map>
 #include <iosfwd>
@@ -67,9 +67,9 @@ namespace QuantLib {
         //@}
       protected:
         struct Data;
-        ext::shared_ptr<Data> data_;
+        std::shared_ptr<Data> data_;
       private:
-        static std::map<std::string, ext::shared_ptr<UnitOfMeasure::Data> >
+        static std::map<std::string, std::shared_ptr<UnitOfMeasure::Data> >
         unitsOfMeasure_;
     };
 
@@ -138,7 +138,7 @@ namespace QuantLib {
     class LotUnitOfMeasure : public UnitOfMeasure {
       public:
         LotUnitOfMeasure() {
-            static ext::shared_ptr<Data> data(
+            static std::shared_ptr<Data> data(
                 new Data("Lot", "Lot", UnitOfMeasure::Quantity));
             data_ = data;
         }

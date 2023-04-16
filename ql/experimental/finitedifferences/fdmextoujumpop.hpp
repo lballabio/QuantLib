@@ -45,9 +45,9 @@ namespace QuantLib {
 
     class FdmExtOUJumpOp : public FdmLinearOpComposite {
       public:
-        FdmExtOUJumpOp(const ext::shared_ptr<FdmMesher>& mesher,
-                       const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
-                       const ext::shared_ptr<YieldTermStructure>& rTS,
+        FdmExtOUJumpOp(const std::shared_ptr<FdmMesher>& mesher,
+                       const std::shared_ptr<ExtOUWithJumpsProcess>& process,
+                       const std::shared_ptr<YieldTermStructure>& rTS,
                        const FdmBoundaryConditionSet& bcSet,
                        Size integroIntegrationOrder);
 
@@ -65,14 +65,14 @@ namespace QuantLib {
       private:
         Array integro(const Array& r) const;
 
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<ExtOUWithJumpsProcess> process_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
         const FdmBoundaryConditionSet bcSet_;
         GaussLaguerreIntegration gaussLaguerreIntegration_;
 
         const Array x_;
-        const ext::shared_ptr<FdmExtendedOrnsteinUhlenbeckOp> ouOp_;
+        const std::shared_ptr<FdmExtendedOrnsteinUhlenbeckOp> ouOp_;
 
         const TripleBandLinearOp dyMap_;
 

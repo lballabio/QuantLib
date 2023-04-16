@@ -61,29 +61,29 @@ void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(50.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.08);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot = std::make_shared<SimpleQuote>(50.0);
+    std::shared_ptr<SimpleQuote> qRate = std::make_shared<SimpleQuote>(0.0);
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate = std::make_shared<SimpleQuote>(0.08);
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol = std::make_shared<SimpleQuote>(0.25);
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-        ext::make_shared<BlackScholesMertonProcess>(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        std::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS));
 
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<AnalyticSimpleChooserEngine>(stochProcess);
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<AnalyticSimpleChooserEngine>(stochProcess);
 
     Real strike = 50.0;
 
     Date exerciseDate = today + 180;
-    ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(exerciseDate);
+    std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(exerciseDate);
 
     Date choosingDate = today + 90;
     SimpleChooserOption option(choosingDate,strike,exercise);
@@ -111,23 +111,23 @@ void ChooserOptionTest::testAnalyticComplexChooserEngine(){
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(50.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.05);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.10);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.35);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    std::shared_ptr<SimpleQuote> spot = std::make_shared<SimpleQuote>(50.0);
+    std::shared_ptr<SimpleQuote> qRate = std::make_shared<SimpleQuote>(0.05);
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    std::shared_ptr<SimpleQuote> rRate = std::make_shared<SimpleQuote>(0.10);
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    std::shared_ptr<SimpleQuote> vol = std::make_shared<SimpleQuote>(0.35);
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-        ext::make_shared<BlackScholesMertonProcess>(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        std::make_shared<BlackScholesMertonProcess>(
                                   Handle<Quote>(spot),
                                   Handle<YieldTermStructure>(qTS),
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS));
 
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<AnalyticComplexChooserEngine>(stochProcess);
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<AnalyticComplexChooserEngine>(stochProcess);
 
     Real callStrike = 55.0;
     Real putStrike = 48.0;
@@ -135,10 +135,10 @@ void ChooserOptionTest::testAnalyticComplexChooserEngine(){
     Date choosingDate = today + 90;
     Date callExerciseDate = choosingDate + 180;
     Date putExerciseDate = choosingDate + 210;
-    ext::shared_ptr<Exercise> callExercise =
-        ext::make_shared<EuropeanExercise>(callExerciseDate);
-    ext::shared_ptr<Exercise> putExercise =
-        ext::make_shared<EuropeanExercise>(putExerciseDate);
+    std::shared_ptr<Exercise> callExercise =
+        std::make_shared<EuropeanExercise>(callExerciseDate);
+    std::shared_ptr<Exercise> putExercise =
+        std::make_shared<EuropeanExercise>(putExerciseDate);
 
     ComplexChooserOption option(choosingDate,callStrike,putStrike,
                                 callExercise,putExercise);

@@ -80,7 +80,7 @@ namespace QuantLib {
                                 const UnitOfMeasureConversion& r2);
 
         struct Data;
-        ext::shared_ptr<Data> data_;
+        std::shared_ptr<Data> data_;
 
         struct Data {
             CommodityType commodityType;
@@ -88,8 +88,8 @@ namespace QuantLib {
             Real conversionFactor;
             Type type;
             std::string code;
-            std::pair<ext::shared_ptr<UnitOfMeasureConversion>,
-                      ext::shared_ptr<UnitOfMeasureConversion> >
+            std::pair<std::shared_ptr<UnitOfMeasureConversion>,
+                      std::shared_ptr<UnitOfMeasureConversion> >
             conversionFactorChain;
 
             Data(const CommodityType& commodityType,

@@ -26,7 +26,7 @@
 #ifndef quantlib_longstaff_schwartz_path_pricer_hpp
 #define quantlib_longstaff_schwartz_path_pricer_hpp
 
-#include <ql/functional.hpp>
+
 #include <ql/math/generallinearleastsquares.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
@@ -55,8 +55,8 @@ namespace QuantLib {
         typedef typename EarlyExerciseTraits<PathType>::StateType StateType;
 
         LongstaffSchwartzPathPricer(const TimeGrid& times,
-                                    ext::shared_ptr<EarlyExercisePathPricer<PathType> >,
-                                    const ext::shared_ptr<YieldTermStructure>& termStructure);
+                                    std::shared_ptr<EarlyExercisePathPricer<PathType> >,
+                                    const std::shared_ptr<YieldTermStructure>& termStructure);
 
         Real operator()(const PathType& path) const override;
         virtual void calibrate();
@@ -69,7 +69,7 @@ namespace QuantLib {
                                      const std::vector<Real> &price,
                                      const std::vector<Real> &exercise) {}
         bool calibrationPhase_ = true;
-        const ext::shared_ptr<EarlyExercisePathPricer<PathType> >
+        const std::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
 
         mutable QuantLib::IncrementalStatistics exerciseProbability_;
@@ -78,7 +78,7 @@ namespace QuantLib {
         std::unique_ptr<DiscountFactor[]> dF_;
 
         mutable std::vector<PathType> paths_;
-        const   std::vector<ext::function<Real(StateType)> > v_;
+        const   std::vector<std::function<Real(StateType)> > v_;
 
         const Size len_;
     };
@@ -86,8 +86,8 @@ namespace QuantLib {
     template <class PathType>
     inline LongstaffSchwartzPathPricer<PathType>::LongstaffSchwartzPathPricer(
         const TimeGrid& times,
-        ext::shared_ptr<EarlyExercisePathPricer<PathType> > pathPricer,
-        const ext::shared_ptr<YieldTermStructure>& termStructure)
+        std::shared_ptr<EarlyExercisePathPricer<PathType> > pathPricer,
+        const std::shared_ptr<YieldTermStructure>& termStructure)
     : pathPricer_(std::move(pathPricer)), coeff_(new Array[times.size() - 2]),
       dF_(new DiscountFactor[times.size() - 1]), v_(pathPricer_->basisSystem()),
       len_(times.size()) {

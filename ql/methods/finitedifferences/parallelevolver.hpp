@@ -44,7 +44,7 @@ namespace QuantLib {
 
     template <typename array_type>
     class StepConditionSet {
-        typedef ext::shared_ptr<StepCondition<array_type> > itemType;
+        typedef std::shared_ptr<StepCondition<array_type> > itemType;
         std::vector<itemType> stepConditions_;
       public:
         void applyTo(std::vector<array_type>& a, Time t) const {
@@ -93,7 +93,7 @@ namespace QuantLib {
                         const bc_set& bcs) {
             evolvers_.reserve(L.size());
             for (Size i=0; i < L.size(); i++) {
-                evolvers_.push_back(ext::shared_ptr<Evolver>(new
+                evolvers_.push_back(std::shared_ptr<Evolver>(new
                     Evolver(L[i], bcs[i])));
             }
         }
@@ -110,7 +110,7 @@ namespace QuantLib {
             }
         }
       private:
-        std::vector<ext::shared_ptr<Evolver> > evolvers_;
+        std::vector<std::shared_ptr<Evolver> > evolvers_;
     };
 
 }

@@ -54,9 +54,9 @@ namespace QuantLib {
             BusinessDayConvention bdc,
             const DayCounter& dc,
             const Period& lag,
-            const ext::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
-            ext::shared_ptr<YoYInflationCapFloorEngine> pricer,
-            ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper,
+            const std::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
+            std::shared_ptr<YoYInflationCapFloorEngine> pricer,
+            std::shared_ptr<YoYOptionletStripper> yoyOptionletStripper,
             Real slope,
             const Interpolator1D& interpolator = Interpolator1D(),
             VolatilityType volType = ShiftedLognormal,
@@ -74,9 +74,9 @@ namespace QuantLib {
         Volatility volatilityImpl(Time length, Rate strike) const override;
         virtual void performCalculations() const;
 
-        ext::shared_ptr<YoYCapFloorTermPriceSurface> capFloorPrices_;
-        ext::shared_ptr<YoYInflationCapFloorEngine> yoyInflationCouponPricer_;
-        ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper_;
+        std::shared_ptr<YoYCapFloorTermPriceSurface> capFloorPrices_;
+        std::shared_ptr<YoYInflationCapFloorEngine> yoyInflationCouponPricer_;
+        std::shared_ptr<YoYOptionletStripper> yoyOptionletStripper_;
 
         mutable Interpolator1D factory1D_;
         mutable Real slope_;
@@ -99,9 +99,9 @@ namespace QuantLib {
             const BusinessDayConvention bdc,
             const DayCounter& dc,
             const Period& lag,
-            const ext::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
-            ext::shared_ptr<YoYInflationCapFloorEngine> pricer,
-            ext::shared_ptr<YoYOptionletStripper> yoyOptionletStripper,
+            const std::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
+            std::shared_ptr<YoYInflationCapFloorEngine> pricer,
+            std::shared_ptr<YoYOptionletStripper> yoyOptionletStripper,
             const Real slope,
             const Interpolator1D& interpolator,
             VolatilityType volType,

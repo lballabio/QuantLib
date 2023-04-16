@@ -61,7 +61,7 @@ namespace swaption_test {
 
         BusinessDayConvention floatingConvention;
         Period floatingTenor;
-        ext::shared_ptr<IborIndex> index;
+        std::shared_ptr<IborIndex> index;
 
         Natural settlementDays;
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -70,32 +70,32 @@ namespace swaption_test {
         SavedSettings backup;
 
         // utilities
-        ext::shared_ptr<Swaption> makeSwaption(
-            const ext::shared_ptr<VanillaSwap>& swap,
+        std::shared_ptr<Swaption> makeSwaption(
+            const std::shared_ptr<VanillaSwap>& swap,
             const Date& exercise,
             Volatility volatility,
             Settlement::Type settlementType = Settlement::Physical,
             Settlement::Method settlementMethod = Settlement::PhysicalOTC,
             BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
+            Handle<Quote> vol(std::shared_ptr<Quote>(
                                                 new SimpleQuote(volatility)));
-            ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
+            std::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
                 termStructure, vol, Actual365Fixed(), 0.0, model));
 
-            ext::shared_ptr<Swaption> result(new
+            std::shared_ptr<Swaption> result(new
                 Swaption(swap,
-                         ext::shared_ptr<Exercise>(
+                         std::shared_ptr<Exercise>(
                                               new EuropeanExercise(exercise)),
                          settlementType, settlementMethod));
             result->setPricingEngine(engine);
             return result;
         }
 
-        ext::shared_ptr<PricingEngine> makeEngine(
+        std::shared_ptr<PricingEngine> makeEngine(
             Volatility volatility,
             BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-            Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
+            Handle<Quote> h(std::shared_ptr<Quote>(new SimpleQuote(volatility)));
+            return std::shared_ptr<PricingEngine>(
                 new BlackSwaptionEngine(termStructure, h, Actual365Fixed(), 0.0, model));
         }
 
@@ -106,7 +106,7 @@ namespace swaption_test {
             fixedFrequency = Annual;
             fixedDayCount = Thirty360(Thirty360::BondBasis);
 
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            index = std::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             floatingConvention = index->businessDayConvention();
             floatingTenor = index->tenor();
             calendar = index->fixingCalendar();
@@ -142,17 +142,17 @@ void SwaptionTest::testStrikeDependency() {
                 std::vector<Real> values_cash;
                 Volatility vol = 0.20;
                 for (Real strike : strikes) {
-                    ext::shared_ptr<VanillaSwap> swap =
+                    std::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
                             .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withFloatingLegSpread(0.0)
                             .withType(k);
-                    ext::shared_ptr<Swaption> swaption =
+                    std::shared_ptr<Swaption> swaption =
                         vars.makeSwaption(swap,exerciseDate,vol);
                     values.push_back(swaption->NPV());
-                    ext::shared_ptr<Swaption> swaption_cash =
+                    std::shared_ptr<Swaption> swaption_cash =
                         vars.makeSwaption(swap,exerciseDate,vol,
                                           Settlement::Cash, Settlement::ParYieldCurve);
                     values_cash.push_back(swaption_cash->NPV());
@@ -236,17 +236,17 @@ void SwaptionTest::testSpreadDependency() {
                 std::vector<Real> values;
                 std::vector<Real> values_cash;
                 for (Real spread : spreads) {
-                    ext::shared_ptr<VanillaSwap> swap =
+                    std::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, 0.06)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withEffectiveDate(startDate)
                             .withFloatingLegSpread(spread)
                             .withType(k);
-                    ext::shared_ptr<Swaption> swaption =
+                    std::shared_ptr<Swaption> swaption =
                         vars.makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
-                    ext::shared_ptr<Swaption> swaption_cash =
+                    std::shared_ptr<Swaption> swaption_cash =
                         vars.makeSwaption(swap,exerciseDate,0.20,
                                           Settlement::Cash, Settlement::ParYieldCurve);
                     values_cash.push_back(swaption_cash->NPV());
@@ -321,7 +321,7 @@ void SwaptionTest::testSpreadTreatment() {
                     vars.calendar.advance(exerciseDate,
                                           vars.settlementDays,Days);
                 for (Real spread : spreads) {
-                    ext::shared_ptr<VanillaSwap> swap =
+                    std::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, 0.06)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
@@ -329,21 +329,21 @@ void SwaptionTest::testSpreadTreatment() {
                             .withFloatingLegSpread(spread)
                             .withType(k);
                     Spread correction = spread * swap->floatingLegBPS() / swap->fixedLegBPS();
-                    ext::shared_ptr<VanillaSwap> equivalentSwap =
+                    std::shared_ptr<VanillaSwap> equivalentSwap =
                         MakeVanillaSwap(length, vars.index, 0.06 + correction)
                             .withFixedLegTenor(1 * Years)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withEffectiveDate(startDate)
                             .withFloatingLegSpread(0.0)
                             .withType(k);
-                    ext::shared_ptr<Swaption> swaption1 =
+                    std::shared_ptr<Swaption> swaption1 =
                         vars.makeSwaption(swap,exerciseDate,0.20);
-                    ext::shared_ptr<Swaption> swaption2 =
+                    std::shared_ptr<Swaption> swaption2 =
                         vars.makeSwaption(equivalentSwap,exerciseDate,0.20);
-                    ext::shared_ptr<Swaption> swaption1_cash =
+                    std::shared_ptr<Swaption> swaption1_cash =
                         vars.makeSwaption(swap,exerciseDate,0.20,
                                           Settlement::Cash, Settlement::ParYieldCurve);
-                    ext::shared_ptr<Swaption> swaption2_cash =
+                    std::shared_ptr<Swaption> swaption2_cash =
                         vars.makeSwaption(equivalentSwap,exerciseDate,0.20,
                                           Settlement::Cash, Settlement::ParYieldCurve);
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-6)
@@ -383,13 +383,13 @@ void SwaptionTest::testCachedValue() {
     Date exerciseDate = vars.calendar.advance(vars.settlement, 5*Years);
     Date startDate = vars.calendar.advance(exerciseDate,
                                            vars.settlementDays, Days);
-    ext::shared_ptr<VanillaSwap> swap =
+    std::shared_ptr<VanillaSwap> swap =
         MakeVanillaSwap(10*Years, vars.index, 0.06)
         .withEffectiveDate(startDate)
         .withFixedLegTenor(1*Years)
         .withFixedLegDayCount(vars.fixedDayCount);
 
-    ext::shared_ptr<Swaption> swaption =
+    std::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
     Real cachedNPV = usingAtParCoupons ? 0.036418158579 : 0.036421429684;
@@ -421,7 +421,7 @@ void SwaptionTest::testVega() {
         for (auto& length : lengths) {
             for (Real strike : strikes) {
                 for (Size h=0; h<LENGTH(type); h++) {
-                    ext::shared_ptr<VanillaSwap> swap =
+                    std::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
                             .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
@@ -429,11 +429,11 @@ void SwaptionTest::testVega() {
                             .withFloatingLegSpread(0.0)
                             .withType(type[h]);
                     for (Real vol : vols) {
-                        ext::shared_ptr<Swaption> swaption =
+                        std::shared_ptr<Swaption> swaption =
                             vars.makeSwaption(swap, exerciseDate, vol, types[h], methods[h]);
-                        ext::shared_ptr<Swaption> swaption1 = vars.makeSwaption(
+                        std::shared_ptr<Swaption> swaption1 = vars.makeSwaption(
                             swap, exerciseDate, vol - shift, types[h], methods[h]);
-                        ext::shared_ptr<Swaption> swaption2 = vars.makeSwaption(
+                        std::shared_ptr<Swaption> swaption2 = vars.makeSwaption(
                             swap, exerciseDate, vol + shift, types[h], methods[h]);
 
                         Real swaptionNPV = swaption->NPV();
@@ -498,14 +498,14 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      Period(vars.fixedFrequency),
                                      vars.calendar, Unadjusted, Unadjusted,
                                      DateGeneration::Forward, true);
-            ext::shared_ptr<VanillaSwap> swap_u360(
+            std::shared_ptr<VanillaSwap> swap_u360(
                 new VanillaSwap(type[0], vars.nominal,
                                 fixedSchedule_u,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = Act/365
-            ext::shared_ptr<VanillaSwap> swap_u365(
+            std::shared_ptr<VanillaSwap> swap_u365(
                 new VanillaSwap(type[0],vars.nominal,
                                 fixedSchedule_u,strike,Actual365Fixed(),
                                 floatSchedule,vars.index,0.0,
@@ -517,20 +517,20 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      vars.calendar,ModifiedFollowing,
                                      ModifiedFollowing,
                                      DateGeneration::Forward, true);
-            ext::shared_ptr<VanillaSwap> swap_a360(
+            std::shared_ptr<VanillaSwap> swap_a360(
                 new VanillaSwap(type[0],vars.nominal,
                                 fixedSchedule_a,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = Act/365
-            ext::shared_ptr<VanillaSwap> swap_a365(
+            std::shared_ptr<VanillaSwap> swap_a365(
                 new VanillaSwap(type[0],vars.nominal,
                                 fixedSchedule_a,strike,Actual365Fixed(),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
-            ext::shared_ptr<PricingEngine> swapEngine(
+            std::shared_ptr<PricingEngine> swapEngine(
                                new DiscountingSwapEngine(vars.termStructure));
 
             swap_u360->setPricingEngine(swapEngine);
@@ -545,22 +545,22 @@ void SwaptionTest::testCashSettledSwaptions() {
 
             // FlatForward curves
             Handle<YieldTermStructure> termStructure_u360(
-                ext::shared_ptr<YieldTermStructure>(
+                std::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_u360->fairRate(),
                                     Thirty360(Thirty360::BondBasis),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_a360(
-                ext::shared_ptr<YieldTermStructure>(
+                std::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_a360->fairRate(),
                                     Thirty360(Thirty360::BondBasis),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_u365(
-                ext::shared_ptr<YieldTermStructure>(
+                std::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_u365->fairRate(),
                                     Actual365Fixed(),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_a365(
-                ext::shared_ptr<YieldTermStructure>(
+                std::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_a365->fairRate(),
                                     Actual365Fixed(),Compounded,
                                     vars.fixedFrequency)));
@@ -618,11 +618,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // unadjusted, 30/360
 
             // Physical settled swaption
-            ext::shared_ptr<Swaption> swaption_p_u360 =
+            std::shared_ptr<Swaption> swaption_p_u360 =
                 vars.makeSwaption(swap_u360,exerciseDate,0.20);
             Real value_p_u360 = swaption_p_u360->NPV();
             // Cash settled swaption
-            ext::shared_ptr<Swaption> swaption_c_u360 =
+            std::shared_ptr<Swaption> swaption_c_u360 =
                 vars.makeSwaption(swap_u360,exerciseDate,0.20,
                                   Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_u360 = swaption_c_u360->NPV();
@@ -634,11 +634,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // modified following, act/365
 
             // Physical settled swaption
-            ext::shared_ptr<Swaption> swaption_p_a365 =
+            std::shared_ptr<Swaption> swaption_p_a365 =
                 vars.makeSwaption(swap_a365,exerciseDate,0.20);
             Real value_p_a365 = swaption_p_a365->NPV();
             // Cash settled swaption
-            ext::shared_ptr<Swaption> swaption_c_a365 =
+            std::shared_ptr<Swaption> swaption_c_a365 =
                 vars.makeSwaption(swap_a365,exerciseDate,0.20,
                                   Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_a365 = swaption_c_a365->NPV();
@@ -650,11 +650,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // modified following, 30/360
 
             // Physical settled swaption
-            ext::shared_ptr<Swaption> swaption_p_a360 =
+            std::shared_ptr<Swaption> swaption_p_a360 =
                 vars.makeSwaption(swap_a360,exerciseDate,0.20);
             Real value_p_a360 = swaption_p_a360->NPV();
             // Cash settled swaption
-            ext::shared_ptr<Swaption> swaption_c_a360 =
+            std::shared_ptr<Swaption> swaption_c_a360 =
                 vars.makeSwaption(swap_a360,exerciseDate,0.20,
                                   Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_a360 = swaption_c_a360->NPV();
@@ -666,11 +666,11 @@ void SwaptionTest::testCashSettledSwaptions() {
             // unadjusted, act/365
 
             // Physical settled swaption
-            ext::shared_ptr<Swaption> swaption_p_u365 =
+            std::shared_ptr<Swaption> swaption_p_u365 =
                 vars.makeSwaption(swap_u365,exerciseDate,0.20);
             Real value_p_u365 = swaption_p_u365->NPV();
             // Cash settled swaption
-            ext::shared_ptr<Swaption> swaption_c_u365 =
+            std::shared_ptr<Swaption> swaption_c_u365 =
                 vars.makeSwaption(swap_u365,exerciseDate,0.20,
                                   Settlement::Cash, Settlement::ParYieldCurve);
             Real value_c_u365 = swaption_c_u365->NPV();
@@ -797,7 +797,7 @@ void SwaptionTest::testImpliedVolatility() {
 
             for (Real& strike : strikes) {
                 for (auto& k : type) {
-                    ext::shared_ptr<VanillaSwap> swap =
+                    std::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
                             .withEffectiveDate(startDate)
                             .withFixedLegTenor(1 * Years)
@@ -806,7 +806,7 @@ void SwaptionTest::testImpliedVolatility() {
                             .withType(k);
                     for (Size h=0; h<LENGTH(types); h++) {
                         for (Real vol : vols) {
-                            ext::shared_ptr<Swaption> swaption =
+                            std::shared_ptr<Swaption> swaption =
                                 vars.makeSwaption(swap, exerciseDate, vol, types[h], methods[h],
                                                   BlackSwaptionEngine::DiscountCurve);
                             // Black price
@@ -866,12 +866,12 @@ void SwaptionTest::testImpliedVolatility() {
 }
 
 template <typename Engine>
-ext::shared_ptr<Engine> makeConstVolEngine(
+std::shared_ptr<Engine> makeConstVolEngine(
     const Handle<YieldTermStructure> &discountCurve,
     Volatility volatility)
 {
-    Handle<Quote> h(ext::make_shared<SimpleQuote>(volatility));
-    return ext::make_shared<Engine>(discountCurve, h);
+    Handle<Quote> h(std::make_shared<SimpleQuote>(volatility));
+    return std::make_shared<Engine>(discountCurve, h);
 }
 
 template <typename Engine>
@@ -891,18 +891,18 @@ void checkSwaptionDelta(bool useBachelierVol)
     const Real projectionRate = 0.01;
     RelinkableHandle<Quote> projectionQuoteHandle;
 
-    ext::shared_ptr<YieldTermStructure> projectionCurve = ext::make_shared<FlatForward>(
+    std::shared_ptr<YieldTermStructure> projectionCurve = std::make_shared<FlatForward>(
         today, projectionQuoteHandle, Actual365Fixed());
     projectionCurveHandle.linkTo(projectionCurve);
 
-    Handle<YieldTermStructure> discountHandle(ext::make_shared<FlatForward>(
+    Handle<YieldTermStructure> discountHandle(std::make_shared<FlatForward>(
             today, 
-            Handle<Quote>(ext::make_shared<SimpleQuote>(0.0085)), 
+            Handle<Quote>(std::make_shared<SimpleQuote>(0.0085)), 
             Actual365Fixed()));
-    ext::shared_ptr<DiscountingSwapEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(
+    std::shared_ptr<DiscountingSwapEngine> swapEngine = std::make_shared<DiscountingSwapEngine>(
         discountHandle);
     
-    ext::shared_ptr<IborIndex> idx = ext::make_shared<Euribor6M>(projectionCurveHandle);
+    std::shared_ptr<IborIndex> idx = std::make_shared<Euribor6M>(projectionCurveHandle);
     
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::CollateralizedCashPrice};
@@ -916,14 +916,14 @@ void checkSwaptionDelta(bool useBachelierVol)
                 for (Real& strike : strikes) {
                     for (Size h=0; h<LENGTH(type); h++) {
                         Volatility volatility = useBachelierVol ? vol / 100.0 : vol;
-                        ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
+                        std::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
                             discountHandle, volatility);
 
                         Date exerciseDate = calendar.advance(today, exercise);
                         Date startDate = calendar.advance(exerciseDate, 2*Days);
-                        projectionQuoteHandle.linkTo(ext::make_shared<SimpleQuote>(projectionRate));
+                        projectionQuoteHandle.linkTo(std::make_shared<SimpleQuote>(projectionRate));
 
-                        ext::shared_ptr<VanillaSwap> underlying =
+                        std::shared_ptr<VanillaSwap> underlying =
                             MakeVanillaSwap(length, idx, strike)
                                 .withEffectiveDate(startDate)
                                 .withFixedLegTenor(1 * Years)
@@ -934,9 +934,9 @@ void checkSwaptionDelta(bool useBachelierVol)
                         
                         Real fairRate = underlying->fairRate();
 
-                        ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+                        std::shared_ptr<Swaption> swaption = std::make_shared<Swaption>(
                             underlying, 
-                            ext::make_shared<EuropeanExercise>(exerciseDate), 
+                            std::make_shared<EuropeanExercise>(exerciseDate), 
                             types[h], 
                             methods[h]);
                         swaption->setPricingEngine(swaptionEngine);
@@ -944,7 +944,7 @@ void checkSwaptionDelta(bool useBachelierVol)
                         Real value = swaption->NPV();
                         Real delta = swaption->result<Real>("delta") * bump;
 
-                        projectionQuoteHandle.linkTo(ext::make_shared<SimpleQuote>(
+                        projectionQuoteHandle.linkTo(std::make_shared<SimpleQuote>(
                             projectionRate + bump));
     
                         Real bumpedFairRate = underlying->fairRate();

@@ -29,8 +29,8 @@ namespace QuantLib {
                                    UnitOfMeasure unitOfMeasure,
                                    Calendar calendar,
                                    Real lotQuantity,
-                                   ext::shared_ptr<CommodityCurve> forwardCurve,
-                                   ext::shared_ptr<ExchangeContracts> exchangeContracts,
+                                   std::shared_ptr<CommodityCurve> forwardCurve,
+                                   std::shared_ptr<ExchangeContracts> exchangeContracts,
                                    int nearbyOffset)
     : name_(indexName), commodityType_(std::move(commodityType)),
       unitOfMeasure_(std::move(unitOfMeasure)), currency_(std::move(currency)),

@@ -45,11 +45,11 @@ namespace QuantLib {
     */
     class AnalyticBarrierEngine : public BarrierOption::engine {
       public:
-        AnalyticBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        AnalyticBarrierEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;
         // helper methods
         Real underlying() const;

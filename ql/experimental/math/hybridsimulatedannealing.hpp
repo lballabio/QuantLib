@@ -86,8 +86,8 @@ namespace QuantLib {
                                  Size reAnnealSteps = 50,
                                  ResetScheme resetScheme = ResetToBestPoint,
                                  Size resetSteps = 150,
-                                 ext::shared_ptr<OptimizationMethod> localOptimizer =
-                                     ext::shared_ptr<OptimizationMethod>(),
+                                 std::shared_ptr<OptimizationMethod> localOptimizer =
+                                     std::shared_ptr<OptimizationMethod>(),
                                  LocalOptimizeScheme optimizeScheme = EveryBestPoint)
         : sampler_(sampler), probability_(probability), temperature_(std::move(temperature)),
           reannealing_(reannealing), startTemperature_(startTemperature),
@@ -112,7 +112,7 @@ namespace QuantLib {
         Size reAnnealSteps_;
         ResetScheme resetScheme_;
         Size resetSteps_;
-        ext::shared_ptr<OptimizationMethod> localOptimizer_;
+        std::shared_ptr<OptimizationMethod> localOptimizer_;
         LocalOptimizeScheme optimizeScheme_;
     };
 

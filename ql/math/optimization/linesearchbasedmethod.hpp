@@ -27,7 +27,7 @@
 
 #include <ql/math/optimization/method.hpp>
 #include <ql/math/array.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -37,7 +37,7 @@ namespace QuantLib {
     class LineSearchBasedMethod : public OptimizationMethod {
       public:
         explicit LineSearchBasedMethod(
-            ext::shared_ptr<LineSearch> lSearch = ext::shared_ptr<LineSearch>());
+            std::shared_ptr<LineSearch> lSearch = std::shared_ptr<LineSearch>());
         ~LineSearchBasedMethod() override = default;
 
         EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
@@ -48,7 +48,7 @@ namespace QuantLib {
                                           Real gold2,
                                           const Array& gradient) = 0;
         //! line search
-        ext::shared_ptr<LineSearch> lineSearch_;
+        std::shared_ptr<LineSearch> lineSearch_;
     };
 
 }

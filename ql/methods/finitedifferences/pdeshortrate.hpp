@@ -36,7 +36,7 @@ namespace QuantLib {
     */
     class QL_DEPRECATED PdeShortRate : public PdeSecondOrderParabolic {
       public:
-        typedef ext::shared_ptr<OneFactorModel::ShortRateDynamics>
+        typedef std::shared_ptr<OneFactorModel::ShortRateDynamics>
                                                                 argument_type;
         typedef TransformedGrid grid_type;
         PdeShortRate(argument_type d) : dynamics_(std::move(d)) {}

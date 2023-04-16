@@ -44,15 +44,15 @@ void ExtensibleOptionsTest::testAnalyticHolderExtensibleOptionEngine() {
     Date exDate2 = today + 270;
     Real premium = 1.0;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.08);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    std::shared_ptr<SimpleQuote> spot = std::make_shared<SimpleQuote>(100.0);
+    std::shared_ptr<SimpleQuote> qRate = std::make_shared<SimpleQuote>(0.0);
+    std::shared_ptr<SimpleQuote> rRate = std::make_shared<SimpleQuote>(0.08);
+    std::shared_ptr<SimpleQuote> vol = std::make_shared<SimpleQuote>(0.25);
 
-    ext::shared_ptr<StrikedTypePayoff> payoff =
-        ext::make_shared<PlainVanillaPayoff>(type, strike1);
-    ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(exDate1);
+    std::shared_ptr<StrikedTypePayoff> payoff =
+        std::make_shared<PlainVanillaPayoff>(type, strike1);
+    std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(exDate1);
 
     HolderExtensibleOption option(type, premium,
                                   exDate2, strike2,
@@ -63,14 +63,14 @@ void ExtensibleOptionsTest::testAnalyticHolderExtensibleOptionEngine() {
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> process =
-        ext::make_shared<BlackScholesMertonProcess>(underlying,
+    const std::shared_ptr<BlackScholesMertonProcess> process =
+        std::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
                                                       blackVolTS);
 
     option.setPricingEngine(
-           ext::make_shared<AnalyticHolderExtensibleOptionEngine>(process));
+           std::make_shared<AnalyticHolderExtensibleOptionEngine>(process));
 
     Real calculated = option.NPV();
     Real expected = 9.4233;
@@ -96,38 +96,38 @@ void ExtensibleOptionsTest::testAnalyticWriterExtensibleOptionEngine() {
     Date exDate1 = today + 180;
     Date exDate2 = today + 270;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(80.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> dividendTS =
+    std::shared_ptr<SimpleQuote> spot = std::make_shared<SimpleQuote>(80.0);
+    std::shared_ptr<SimpleQuote> qRate = std::make_shared<SimpleQuote>(0.0);
+    std::shared_ptr<YieldTermStructure> dividendTS =
         flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.10);
-    ext::shared_ptr<YieldTermStructure> riskFreeTS =
+    std::shared_ptr<SimpleQuote> rRate = std::make_shared<SimpleQuote>(0.10);
+    std::shared_ptr<YieldTermStructure> riskFreeTS =
         flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.30);
-    ext::shared_ptr<BlackVolTermStructure> blackVolTS =
+    std::shared_ptr<SimpleQuote> vol = std::make_shared<SimpleQuote>(0.30);
+    std::shared_ptr<BlackVolTermStructure> blackVolTS =
         flatVol(today, vol, dc);
 
     // B&S process (needed for the engine):
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-        ext::make_shared<GeneralizedBlackScholesProcess>(
+    const std::shared_ptr<GeneralizedBlackScholesProcess> process =
+        std::make_shared<GeneralizedBlackScholesProcess>(
                     Handle<Quote>(spot),
                     Handle<YieldTermStructure>(dividendTS),
                     Handle<YieldTermStructure>(riskFreeTS),
                     Handle<BlackVolTermStructure>(blackVolTS));
 
     // The engine:
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<AnalyticWriterExtensibleOptionEngine>(process);
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<AnalyticWriterExtensibleOptionEngine>(process);
 
     // Create the arguments:
-    ext::shared_ptr<PlainVanillaPayoff> payoff1 =
-        ext::make_shared<PlainVanillaPayoff>(type, strike1);
-    ext::shared_ptr<Exercise> exercise1 =
-        ext::make_shared<EuropeanExercise>(exDate1);
-    ext::shared_ptr<PlainVanillaPayoff> payoff2 =
-        ext::make_shared<PlainVanillaPayoff>(type, strike2);
-    ext::shared_ptr<Exercise> exercise2 =
-        ext::make_shared<EuropeanExercise>(exDate2);
+    std::shared_ptr<PlainVanillaPayoff> payoff1 =
+        std::make_shared<PlainVanillaPayoff>(type, strike1);
+    std::shared_ptr<Exercise> exercise1 =
+        std::make_shared<EuropeanExercise>(exDate1);
+    std::shared_ptr<PlainVanillaPayoff> payoff2 =
+        std::make_shared<PlainVanillaPayoff>(type, strike2);
+    std::shared_ptr<Exercise> exercise2 =
+        std::make_shared<EuropeanExercise>(exDate2);
 
     // Create the option by calling the constructor:
     WriterExtensibleOption option(payoff1, exercise1,

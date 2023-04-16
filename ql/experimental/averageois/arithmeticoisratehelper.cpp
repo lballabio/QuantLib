@@ -32,7 +32,7 @@ namespace QuantLib {
                                                      const Period& tenor, // swap maturity
                                                      Frequency fixedLegPaymentFrequency,
                                                      const Handle<Quote>& fixedRate,
-                                                     ext::shared_ptr<OvernightIndex> overnightIndex,
+                                                     std::shared_ptr<OvernightIndex> overnightIndex,
                                                      Frequency overnightLegPaymentFrequency,
                                                      Handle<Quote> spread,
                                                      Real meanReversionSpeed,
@@ -54,10 +54,10 @@ namespace QuantLib {
 
         // dummy OvernightIndex with curve/swap arguments
         // review here
-        ext::shared_ptr<IborIndex> clonedIborIndex =
+        std::shared_ptr<IborIndex> clonedIborIndex =
             overnightIndex_->clone(termStructureHandle_);
-        ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+        std::shared_ptr<OvernightIndex> clonedOvernightIndex =
+            std::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
 
        swap_ = MakeArithmeticAverageOIS(tenor_, clonedOvernightIndex, 0.0)
                 .withDiscountingTermStructure(discountRelinkableHandle_)
@@ -75,7 +75,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        std::shared_ptr<YieldTermStructure> temp(t, no_deletion);
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())

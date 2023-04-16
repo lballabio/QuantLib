@@ -24,7 +24,7 @@
 #ifndef quantlib_tr_bdf2_scheme_hpp
 #define quantlib_tr_bdf2_scheme_hpp
 
-#include <ql/functional.hpp>
+
 #include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
@@ -49,8 +49,8 @@ namespace QuantLib {
 
         // constructors
         TrBDF2Scheme(Real alpha,
-                     ext::shared_ptr<FdmLinearOpComposite> map,
-                     const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
+                     std::shared_ptr<FdmLinearOpComposite> map,
+                     const std::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
                      const bc_set& bcSet = bc_set(),
                      Real relTol = 1e-8,
                      SolverType solverType = BiCGstab);
@@ -64,11 +64,11 @@ namespace QuantLib {
 
         Time dt_;
         Real beta_;
-        ext::shared_ptr<Size> iterations_;
+        std::shared_ptr<Size> iterations_;
 
         const Real alpha_;
-        const ext::shared_ptr<FdmLinearOpComposite> map_;
-        const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
+        const std::shared_ptr<FdmLinearOpComposite> map_;
+        const std::shared_ptr<TrapezoidalScheme>& trapezoidalScheme_;
         const BoundaryConditionSchemeHelper bcSet_;
         const Real relTol_;
         const SolverType solverType_;
@@ -77,12 +77,12 @@ namespace QuantLib {
     template <class TrapezoidalScheme>
     inline TrBDF2Scheme<TrapezoidalScheme>::TrBDF2Scheme(
         Real alpha,
-        ext::shared_ptr<FdmLinearOpComposite> map,
-        const ext::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
+        std::shared_ptr<FdmLinearOpComposite> map,
+        const std::shared_ptr<TrapezoidalScheme>& trapezoidalScheme,
         const bc_set& bcSet,
         Real relTol,
         SolverType solverType)
-    : dt_(Null<Real>()), beta_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)),
+    : dt_(Null<Real>()), beta_(Null<Real>()), iterations_(std::make_shared<Size>(0U)),
       alpha_(alpha), map_(std::move(map)), trapezoidalScheme_(trapezoidalScheme), bcSet_(bcSet),
       relTol_(relTol), solverType_(solverType) {}
 

@@ -166,14 +166,14 @@ namespace piecewise_yield_curve_test {
         DayCounter bmaDayCounter;
 
         Size deposits, fras, immFuts, asxFuts, swaps, bonds, bmas;
-        std::vector<ext::shared_ptr<SimpleQuote> > rates, fraRates,
+        std::vector<std::shared_ptr<SimpleQuote> > rates, fraRates,
                                                      immFutPrices, asxFutPrices,
                                                      prices, fractions;
-        std::vector<ext::shared_ptr<RateHelper> > instruments, fraHelpers,
+        std::vector<std::shared_ptr<RateHelper> > instruments, fraHelpers,
                                                     immFutHelpers, asxFutHelpers,
                                                     bondHelpers, bmaHelpers;
         std::vector<Schedule> schedules;
-        ext::shared_ptr<YieldTermStructure> termStructure;
+        std::shared_ptr<YieldTermStructure> termStructure;
 
         // cleanup
         SavedSettings backup;
@@ -208,62 +208,62 @@ namespace piecewise_yield_curve_test {
 
             // market elements
             rates =
-                std::vector<ext::shared_ptr<SimpleQuote> >(deposits+swaps);
-            fraRates = std::vector<ext::shared_ptr<SimpleQuote> >(fras);
-            immFutPrices = std::vector<ext::shared_ptr<SimpleQuote> >(immFuts);
-            asxFutPrices = std::vector<ext::shared_ptr<SimpleQuote> >(asxFuts);
-            prices = std::vector<ext::shared_ptr<SimpleQuote> >(bonds);
-            fractions = std::vector<ext::shared_ptr<SimpleQuote> >(bmas);
+                std::vector<std::shared_ptr<SimpleQuote> >(deposits+swaps);
+            fraRates = std::vector<std::shared_ptr<SimpleQuote> >(fras);
+            immFutPrices = std::vector<std::shared_ptr<SimpleQuote> >(immFuts);
+            asxFutPrices = std::vector<std::shared_ptr<SimpleQuote> >(asxFuts);
+            prices = std::vector<std::shared_ptr<SimpleQuote> >(bonds);
+            fractions = std::vector<std::shared_ptr<SimpleQuote> >(bmas);
             for (Size i=0; i<deposits; i++) {
-                rates[i] = ext::make_shared<SimpleQuote>(
+                rates[i] = std::make_shared<SimpleQuote>(
                                     depositData[i].rate/100);
             }
             for (Size i=0; i<swaps; i++) {
-                rates[i+deposits] = ext::make_shared<SimpleQuote>(
+                rates[i+deposits] = std::make_shared<SimpleQuote>(
                                        swapData[i].rate/100);
             }
             for (Size i=0; i<fras; i++) {
-                fraRates[i] = ext::make_shared<SimpleQuote>(
+                fraRates[i] = std::make_shared<SimpleQuote>(
                                         fraData[i].rate/100);
             }
             for (Size i = 0; i<bonds; i++) {
-                prices[i] = ext::make_shared<SimpleQuote>(
+                prices[i] = std::make_shared<SimpleQuote>(
                                           bondData[i].price);
             }
             for (Size i = 0; i<immFuts; i++) {
-                immFutPrices[i] = ext::make_shared<SimpleQuote>(
+                immFutPrices[i] = std::make_shared<SimpleQuote>(
                     100.0 - immFutData[i].rate);
             }
             for (Size i = 0; i<asxFuts; i++) {
-                asxFutPrices[i] = ext::make_shared<SimpleQuote>(
+                asxFutPrices[i] = std::make_shared<SimpleQuote>(
                     100.0 - asxFutData[i].rate);
             }
             for (Size i = 0; i<bmas; i++) {
-                fractions[i] = ext::make_shared<SimpleQuote>(
+                fractions[i] = std::make_shared<SimpleQuote>(
                                         bmaData[i].rate/100);
             }
 
             // rate helpers
             instruments =
-                std::vector<ext::shared_ptr<RateHelper> >(deposits+swaps);
-            fraHelpers = std::vector<ext::shared_ptr<RateHelper> >(fras);
-            immFutHelpers = std::vector<ext::shared_ptr<RateHelper> >(immFuts);
-            asxFutHelpers = std::vector<ext::shared_ptr<RateHelper> >();
-            bondHelpers = std::vector<ext::shared_ptr<RateHelper> >(bonds);
+                std::vector<std::shared_ptr<RateHelper> >(deposits+swaps);
+            fraHelpers = std::vector<std::shared_ptr<RateHelper> >(fras);
+            immFutHelpers = std::vector<std::shared_ptr<RateHelper> >(immFuts);
+            asxFutHelpers = std::vector<std::shared_ptr<RateHelper> >();
+            bondHelpers = std::vector<std::shared_ptr<RateHelper> >(bonds);
             schedules = std::vector<Schedule>(bonds);
-            bmaHelpers = std::vector<ext::shared_ptr<RateHelper> >(bmas);
+            bmaHelpers = std::vector<std::shared_ptr<RateHelper> >(bmas);
 
-            ext::shared_ptr<IborIndex> euribor6m(new Euribor6M);
+            std::shared_ptr<IborIndex> euribor6m(new Euribor6M);
             for (Size i=0; i<deposits; i++) {
                 Handle<Quote> r(rates[i]);
-                instruments[i] = ext::shared_ptr<RateHelper>(new
+                instruments[i] = std::shared_ptr<RateHelper>(new
                     DepositRateHelper(r,
-                                      ext::make_shared<Euribor>(
+                                      std::make_shared<Euribor>(
                                           depositData[i].n*depositData[i].units)));
             }
             for (Size i=0; i<swaps; i++) {
                 Handle<Quote> r(rates[i+deposits]);
-                instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
+                instruments[i+deposits] = std::shared_ptr<RateHelper>(new
                     SwapRateHelper(r, swapData[i].n*swapData[i].units,
                                    calendar,
                                    fixedLegFrequency, fixedLegConvention,
@@ -277,10 +277,10 @@ namespace piecewise_yield_curve_test {
             bool useIndexedFra = true;
 #endif
 
-            ext::shared_ptr<IborIndex> euribor3m(new Euribor3M());
+            std::shared_ptr<IborIndex> euribor3m(new Euribor3M());
             for (Size i=0; i<fras; i++) {
                 Handle<Quote> r(fraRates[i]);
-                fraHelpers[i] = ext::shared_ptr<RateHelper>(new
+                fraHelpers[i] = std::shared_ptr<RateHelper>(new
                     FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
                                   euribor3m->fixingDays(),
                                   euribor3m->fixingCalendar(),
@@ -300,7 +300,7 @@ namespace piecewise_yield_curve_test {
                 if (euribor3m->fixingDate(immDate) <
                     Settings::instance().evaluationDate())
                     immDate = IMM::nextDate(immDate, false);
-                immFutHelpers[i] = ext::shared_ptr<RateHelper>(new
+                immFutHelpers[i] = std::shared_ptr<RateHelper>(new
                     FuturesRateHelper(r, immDate, euribor3m, Handle<Quote>(),
                                       Futures::IMM));
             }
@@ -314,7 +314,7 @@ namespace piecewise_yield_curve_test {
                     Settings::instance().evaluationDate())
                     asxDate = ASX::nextDate(asxDate, false);
                 if (euribor3m->fixingCalendar().isBusinessDay(asxDate))
-                    asxFutHelpers.push_back(ext::shared_ptr<RateHelper>(new
+                    asxFutHelpers.push_back(std::shared_ptr<RateHelper>(new
                         FuturesRateHelper(r, asxDate, euribor3m,
                                           Handle<Quote>(), Futures::ASX)));
             }
@@ -331,7 +331,7 @@ namespace piecewise_yield_curve_test {
                                         calendar,
                                         bondConvention, bondConvention,
                                         DateGeneration::Backward, false);
-                bondHelpers[i] = ext::shared_ptr<RateHelper>(new
+                bondHelpers[i] = std::shared_ptr<RateHelper>(new
                     FixedRateBondHelper(p,
                                         bondSettlementDays,
                                         bondRedemption, schedules[i],
@@ -348,7 +348,7 @@ namespace piecewise_yield_curve_test {
                               const I& interpolator = I(),
                               Real tolerance = 1.0e-9) {
 
-        vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+        vars.termStructure = std::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.instruments,
                                        Actual360(),
                                        interpolator));
@@ -373,7 +373,7 @@ namespace piecewise_yield_curve_test {
         }
 
         // check swaps
-        ext::shared_ptr<IborIndex> euribor6m(new Euribor6M(curveHandle));
+        std::shared_ptr<IborIndex> euribor6m(new Euribor6M(curveHandle));
         for (Size i=0; i<vars.swaps; i++) {
             Period tenor = swapData[i].n*swapData[i].units;
 
@@ -399,7 +399,7 @@ namespace piecewise_yield_curve_test {
         }
 
         // check bonds
-        vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+        vars.termStructure = std::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.settlement, vars.bondHelpers,
                                        Actual360(),
                                        interpolator));
@@ -419,7 +419,7 @@ namespace piecewise_yield_curve_test {
                                vars.bondDayCounter, vars.bondConvention,
                                vars.bondRedemption, issue);
 
-            ext::shared_ptr<PricingEngine> bondEngine(
+            std::shared_ptr<PricingEngine> bondEngine(
                                       new DiscountingBondEngine(curveHandle));
             bond.setPricingEngine(bondEngine);
 
@@ -436,7 +436,7 @@ namespace piecewise_yield_curve_test {
         }
 
         // check FRA
-        vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+        vars.termStructure = std::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I>(vars.settlement, vars.fraHelpers,
                                      Actual360(),
                                      interpolator));
@@ -448,7 +448,7 @@ namespace piecewise_yield_curve_test {
         bool useIndexedFra = true;
 #endif
 
-        ext::shared_ptr<IborIndex> euribor3m(new Euribor3M(curveHandle));
+        std::shared_ptr<IborIndex> euribor3m(new Euribor3M(curveHandle));
         for (Size i=0; i<vars.fras; i++) {
             Date start =
                 vars.calendar.advance(vars.settlement,
@@ -476,7 +476,7 @@ namespace piecewise_yield_curve_test {
         }
 
         // check immFuts
-        vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+        vars.termStructure = std::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T, I>(vars.settlement, vars.immFutHelpers,
             Actual360(),
             interpolator));
@@ -508,7 +508,7 @@ namespace piecewise_yield_curve_test {
         }
 
         // check asxFuts
-        vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+        vars.termStructure = std::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T, I>(vars.settlement, vars.asxFutHelpers,
             Actual360(),
             interpolator));
@@ -560,15 +560,15 @@ namespace piecewise_yield_curve_test {
 
 
         Handle<YieldTermStructure> riskFreeCurve(
-            ext::shared_ptr<YieldTermStructure>(
+            std::shared_ptr<YieldTermStructure>(
                         new FlatForward(vars.settlement, 0.04, Actual360())));
 
-        ext::shared_ptr<BMAIndex> bmaIndex(new BMAIndex);
-        ext::shared_ptr<IborIndex> liborIndex(
+        std::shared_ptr<BMAIndex> bmaIndex(new BMAIndex);
+        std::shared_ptr<IborIndex> liborIndex(
                                         new USDLibor(3*Months,riskFreeCurve));
         for (Size i=0; i<vars.bmas; ++i) {
             Handle<Quote> f(vars.fractions[i]);
-            vars.bmaHelpers[i] = ext::shared_ptr<RateHelper>(
+            vars.bmaHelpers[i] = std::shared_ptr<RateHelper>(
                       new BMASwapRateHelper(f, bmaData[i].n*bmaData[i].units,
                                             vars.settlementDays,
                                             vars.calendar,
@@ -585,7 +585,7 @@ namespace piecewise_yield_curve_test {
         Date lastFixing = bmaIndex->fixingCalendar().adjust(lastWednesday);
         bmaIndex->addFixing(lastFixing, 0.03);
 
-        vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+        vars.termStructure = std::shared_ptr<YieldTermStructure>(new
             PiecewiseYieldCurve<T,I,B>(vars.today, vars.bmaHelpers,
                                        Actual360(),
                                        interpolator));
@@ -594,8 +594,8 @@ namespace piecewise_yield_curve_test {
         curveHandle.linkTo(vars.termStructure);
 
         // check BMA swaps
-        ext::shared_ptr<BMAIndex> bma(new BMAIndex(curveHandle));
-        ext::shared_ptr<IborIndex> libor3m(new USDLibor(3*Months,
+        std::shared_ptr<BMAIndex> bma(new BMAIndex(curveHandle));
+        std::shared_ptr<IborIndex> libor3m(new USDLibor(3*Months,
                                                           riskFreeCurve));
         for (Size i=0; i<vars.bmas; i++) {
             Period tenor = bmaData[i].n*bmaData[i].units;
@@ -621,7 +621,7 @@ namespace piecewise_yield_curve_test {
                          liborSchedule, 0.75, 0.0,
                          libor3m, libor3m->dayCounter(),
                          bmaSchedule, bma, vars.bmaDayCounter);
-            swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            swap.setPricingEngine(std::shared_ptr<PricingEngine>(
               new DiscountingSwapEngine(libor3m->forwardingTermStructure())));
 
             Real expectedFraction = bmaData[i].rate/100,
@@ -820,7 +820,7 @@ void PiecewiseYieldCurveTest::testObservability() {
 
     CommonVars vars;
 
-    vars.termStructure = ext::shared_ptr<YieldTermStructure>(
+    vars.termStructure = std::shared_ptr<YieldTermStructure>(
        new PiecewiseYieldCurve<Discount,LogLinear>(vars.settlementDays,
                                                    vars.calendar,
                                                    vars.instruments,
@@ -866,19 +866,19 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     CommonVars vars;
 
-    std::vector<ext::shared_ptr<RateHelper> > swapHelpers(vars.swaps);
-    ext::shared_ptr<IborIndex> euribor6m(new Euribor6M);
+    std::vector<std::shared_ptr<RateHelper> > swapHelpers(vars.swaps);
+    std::shared_ptr<IborIndex> euribor6m(new Euribor6M);
 
     for (Size i=0; i<vars.swaps; i++) {
         Handle<Quote> r(vars.rates[i+vars.deposits]);
-        swapHelpers[i] = ext::shared_ptr<RateHelper>(new
+        swapHelpers[i] = std::shared_ptr<RateHelper>(new
             SwapRateHelper(r, Period(swapData[i].n, swapData[i].units),
                            vars.calendar,
                            vars.fixedLegFrequency, vars.fixedLegConvention,
                            vars.fixedLegDayCounter, euribor6m));
     }
 
-    vars.termStructure = ext::shared_ptr<YieldTermStructure>(new
+    vars.termStructure = std::shared_ptr<YieldTermStructure>(new
         PiecewiseYieldCurve<Discount,LogLinear>(vars.settlement,
                                                 swapHelpers,
                                                 Actual360()));
@@ -886,7 +886,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     Handle<YieldTermStructure> curveHandle =
         Handle<YieldTermStructure>(vars.termStructure);
 
-    ext::shared_ptr<IborIndex> index(new Euribor6M(curveHandle));
+    std::shared_ptr<IborIndex> index(new Euribor6M(curveHandle));
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
@@ -961,26 +961,26 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
         vars.calendar.advance(vars.today,vars.settlementDays,Days);
 
     // market elements
-    vars.rates = std::vector<ext::shared_ptr<SimpleQuote> >(vars.swaps);
+    vars.rates = std::vector<std::shared_ptr<SimpleQuote> >(vars.swaps);
     for (Size i=0; i<vars.swaps; i++) {
-        vars.rates[i] = ext::make_shared<SimpleQuote>(
+        vars.rates[i] = std::make_shared<SimpleQuote>(
                                        swapData[i].rate/100);
     }
 
     // rate helpers
-    vars.instruments = std::vector<ext::shared_ptr<RateHelper> >(vars.swaps);
+    vars.instruments = std::vector<std::shared_ptr<RateHelper> >(vars.swaps);
 
-    ext::shared_ptr<IborIndex> index(new JPYLibor(6*Months));
+    std::shared_ptr<IborIndex> index(new JPYLibor(6*Months));
     for (Size i=0; i<vars.swaps; i++) {
         Handle<Quote> r(vars.rates[i]);
-        vars.instruments[i] = ext::shared_ptr<RateHelper>(
+        vars.instruments[i] = std::shared_ptr<RateHelper>(
            new SwapRateHelper(r, swapData[i].n*swapData[i].units,
                               vars.calendar,
                               vars.fixedLegFrequency, vars.fixedLegConvention,
                               vars.fixedLegDayCounter, index));
     }
 
-    vars.termStructure = ext::shared_ptr<YieldTermStructure>(
+    vars.termStructure = std::shared_ptr<YieldTermStructure>(
         new PiecewiseYieldCurve<Discount,LogLinear>(
                                        vars.settlement, vars.instruments,
                                        Actual360()));
@@ -989,7 +989,7 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     curveHandle.linkTo(vars.termStructure);
 
     // check swaps
-    ext::shared_ptr<IborIndex> jpylibor6m(new JPYLibor(6*Months,curveHandle));
+    std::shared_ptr<IborIndex> jpylibor6m(new JPYLibor(6*Months,curveHandle));
     for (Size i=0; i<vars.swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
@@ -1046,16 +1046,16 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     Date today = Settings::instance().evaluationDate();
 
     Handle<YieldTermStructure> flat3m(
-        ext::make_shared<FlatForward>(today, Handle<Quote>(ext::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
-    ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months, flat3m);
+        std::make_shared<FlatForward>(today, Handle<Quote>(std::make_shared<SimpleQuote>(0.02)), Actual365Fixed()));
+    std::shared_ptr<IborIndex> usdLibor3m = std::make_shared<USDLibor>(3 * Months, flat3m);
 
     // note that the calendar should be US+UK here actually, but technically it should also work with
     // the US calendar only
-    ext::shared_ptr<RateHelper> helper = ext::make_shared<SwapRateHelper>(
+    std::shared_ptr<RateHelper> helper = std::make_shared<SwapRateHelper>(
         0.02, 50 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
         Thirty360(Thirty360::BondBasis), usdLibor3m);
 
-    PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<ext::shared_ptr<RateHelper> >(1, helper),
+    PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<std::shared_ptr<RateHelper> >(1, helper),
                                                    Actual365Fixed());
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
@@ -1065,9 +1065,9 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
 
     SavedSettings backup;
 
-    ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
+    std::shared_ptr<IborIndex> usdLibor3m = std::make_shared<USDLibor>(3 * Months);
 
-    ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
+    std::shared_ptr<SwapRateHelper> helper = std::make_shared<SwapRateHelper>(
         0.02, 5 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
         Thirty360(Thirty360::BondBasis), usdLibor3m);
 
@@ -1109,10 +1109,10 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
         { 50, Years,   0.01185 }
     };
 
-    std::vector<ext::shared_ptr<RateHelper> > helpers;
-    ext::shared_ptr<Euribor> euribor1m(new Euribor1M);
+    std::vector<std::shared_ptr<RateHelper> > helpers;
+    std::shared_ptr<Euribor> euribor1m(new Euribor1M);
     for (auto& i : data) {
-        helpers.push_back(ext::make_shared<SwapRateHelper>(
+        helpers.push_back(std::make_shared<SwapRateHelper>(
             i.rate, Period(i.n, i.units), TARGET(), Monthly, Unadjusted,
             Thirty360(Thirty360::BondBasis), euribor1m));
     }
@@ -1122,8 +1122,8 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
 
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<YieldTermStructure> curve =
-        ext::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(
+    std::shared_ptr<YieldTermStructure> curve =
+        std::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(
                                             test_date, helpers, Actual360());
 
     // force bootstrap on today's date, so we have a previous curve...
@@ -1135,7 +1135,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     RelinkableHandle<YieldTermStructure> h;
     h.linkTo(curve);
 
-    ext::shared_ptr<Euribor1M> index = ext::make_shared<Euribor1M>(h);
+    std::shared_ptr<Euribor1M> index = std::make_shared<Euribor1M>(h);
     for (auto& i : data) {
         Period tenor = i.n * i.units;
 
@@ -1143,7 +1143,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
             .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
             .withFixedLegTenor(Period(1, Months))
             .withFixedLegConvention(Unadjusted);
-        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(h));
+        swap.setPricingEngine(std::make_shared<DiscountingSwapEngine>(h));
 
         Rate expectedRate = i.rate, estimatedRate = swap.fairRate();
         Spread error = std::fabs(expectedRate-estimatedRate);
@@ -1169,8 +1169,8 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
 
     // With an explicit IterativeBootstrap object
     typedef PiecewiseYieldCurve<ForwardRate, Linear, IterativeBootstrap> PwLinearForward;
-    ext::shared_ptr<YieldTermStructure> yts = 
-        ext::make_shared<PwLinearForward>(
+    std::shared_ptr<YieldTermStructure> yts = 
+        std::make_shared<PwLinearForward>(
             vars.settlement, vars.instruments, Actual360(), Linear(),
             PwLinearForward::bootstrap_type());
 
@@ -1179,7 +1179,7 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
 
     // With an explicit LocalBootstrap object
     typedef PiecewiseYieldCurve<ForwardRate, ConvexMonotone, LocalBootstrap> PwCmForward;
-    yts = ext::make_shared<PwCmForward>(
+    yts = std::make_shared<PwCmForward>(
         vars.settlement, vars.instruments, Actual360(), ConvexMonotone(), 
         PwCmForward::bootstrap_type());
 
@@ -1200,9 +1200,9 @@ void PiecewiseYieldCurveTest::testLargeRates() {
         {  1, Months, 0.829009 }
     };
 
-    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    std::vector<std::shared_ptr<RateHelper> > helpers;
     for (auto& i : data) {
-        helpers.push_back(ext::make_shared<DepositRateHelper>(
+        helpers.push_back(std::make_shared<DepositRateHelper>(
             i.rate, Period(i.n, i.units), 0, WeekendsOnly(), Following, false, Actual360()));
     }
 
@@ -1215,8 +1215,8 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     Real maxValue = 3.0;          // override
 
     typedef PiecewiseYieldCurve<ForwardRate, BackwardFlat> PiecewiseCurve;
-    ext::shared_ptr<YieldTermStructure> curve =
-        ext::make_shared<PiecewiseCurve>(
+    std::shared_ptr<YieldTermStructure> curve =
+        std::make_shared<PiecewiseCurve>(
                                   today, helpers, Actual360(), BackwardFlat(),
                                   PiecewiseCurve::bootstrap_type(accuracy, minValue, maxValue));
 
@@ -1231,9 +1231,9 @@ namespace piecewise_yield_curve_test {
     // functor returning the additional error terms for the cost function
     struct additionalErrors {
         explicit additionalErrors(
-            std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers)
+            std::vector<std::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers)
         : additionalHelpers(std::move(additionalHelpers)) {}
-        std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+        std::vector<std::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
         Array operator()() {
             Array errors(5);
             Real a = additionalHelpers[0]->impliedQuote();
@@ -1294,36 +1294,36 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
                            0.00150782,  0.00121145,  0.000933912, 0.000628946};
 
     // build ql helpers
-    std::vector<ext::shared_ptr<RateHelper> > helpers;
-    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor>(6 * Months);
+    std::vector<std::shared_ptr<RateHelper> > helpers;
+    std::shared_ptr<IborIndex> index = std::make_shared<Euribor>(6 * Months);
 
-    helpers.push_back(ext::make_shared<DepositRateHelper>(
+    helpers.push_back(std::make_shared<DepositRateHelper>(
         refMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
 
     for (Size i = 0; i < 12; ++i) {
         helpers.push_back(
-            ext::make_shared<FraRateHelper>(refMktRate[1 + i] / 100.0, (i + 1) * Months, index));
+            std::make_shared<FraRateHelper>(refMktRate[1 + i] / 100.0, (i + 1) * Months, index));
     }
 
     Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
     for (Size i = 0; i < 19; ++i) {
-        helpers.push_back(ext::make_shared<SwapRateHelper>(
+        helpers.push_back(std::make_shared<SwapRateHelper>(
             refMktRate[13 + i] / 100.0, swapTenors[i] * Years, TARGET(), Annual, ModifiedFollowing,
             Thirty360(Thirty360::BondBasis), index));
     }
 
     // global bootstrap constraints
-    std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
+    std::vector<std::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
 
     // set up the additional rate helpers we need in the cost function
     for (Size i = 0; i < 7; ++i) {
         additionalHelpers.push_back(
-            ext::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
+            std::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
     }
 
     // build curve with additional dates and constraints using a global bootstrapper
     typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> Curve;
-    ext::shared_ptr<Curve> curve = ext::make_shared<Curve>(
+    std::shared_ptr<Curve> curve = std::make_shared<Curve>(
         2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
         Linear(),
         Curve::bootstrap_type(additionalHelpers, additionalDates(),
@@ -1398,11 +1398,11 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
         0.984413446
     };
 
-    Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
+    Handle<YieldTermStructure> usdYts(std::make_shared<InterpolatedDiscountCurve<LogLinear> >(
         usdCurveDates, usdCurveDfs, tsDayCounter));
 
     // USD/ARS forward points
-    Handle<Quote> arsSpot(ext::make_shared<SimpleQuote>(56.881));
+    Handle<Quote> arsSpot(std::make_shared<SimpleQuote>(56.881));
     map<Period, Real> arsFwdPoints = {
         {1 * Months, 8.5157},
         {2 * Months, 12.7180},
@@ -1413,16 +1413,16 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     };
 
     // Create the FX swap rate helpers for the ARS in USD curve.
-    vector<ext::shared_ptr<RateHelper> > instruments;
+    vector<std::shared_ptr<RateHelper> > instruments;
     for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); ++it) {
-        Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(it->second));
-        instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
+        Handle<Quote> arsFwd(std::make_shared<SimpleQuote>(it->second));
+        instruments.push_back(std::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
             UnitedStates(UnitedStates::GovernmentBond), Following, false, true, usdYts));
     }
 
     // Create the ARS in USD curve with the default IterativeBootstrap.
     typedef PiecewiseYieldCurve<Discount, LogLinear, IterativeBootstrap> LLDFCurve;
-    ext::shared_ptr<YieldTermStructure> arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter);
+    std::shared_ptr<YieldTermStructure> arsYts = std::make_shared<LLDFCurve>(asof, instruments, tsDayCounter);
 
     // USD/ARS spot date. The date on which we check the ARS discount curve.
     Date spotDate(27, Sep, 2019);
@@ -1434,7 +1434,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
 
     // Create the ARS in USD curve with an IterativeBootstrap allowing for 4 retries.
     IterativeBootstrap<LLDFCurve> ib(Null<Real>(), Null<Real>(), Null<Real>(), 5);
-    arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter, ib);
+    arsYts = std::make_shared<LLDFCurve>(asof, instruments, tsDayCounter, ib);
     
     // Check that the ARS in USD curve builds and populate the spot ARS discount factor.
     DiscountFactor spotDfArs = 1.0;

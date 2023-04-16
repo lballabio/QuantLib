@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    FwdPeriodAdapter::FwdPeriodAdapter(const ext::shared_ptr<MarketModel>& largeModel,
+    FwdPeriodAdapter::FwdPeriodAdapter(const std::shared_ptr<MarketModel>& largeModel,
                                        Size period,
                                        Size offset,
                                        std::vector<Spread> newDisplacements)

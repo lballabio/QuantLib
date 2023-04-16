@@ -30,7 +30,7 @@ namespace QuantLib {
                                                Position::Type type,
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
-                                               const ext::shared_ptr<IborIndex>& index,
+                                               const std::shared_ptr<IborIndex>& index,
                                                Handle<YieldTermStructure> discountCurve,
                                                bool useIndexedCoupon)
     : fraType_(type), notionalAmount_(notionalAmount), index_(index),
@@ -56,7 +56,7 @@ namespace QuantLib {
                                                Position::Type type,
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
-                                               const ext::shared_ptr<IborIndex>& index,
+                                               const std::shared_ptr<IborIndex>& index,
                                                Handle<YieldTermStructure> discountCurve)
     : ForwardRateAgreement(valueDate, index->maturityDate(valueDate), type, strikeForwardRate,
                            notionalAmount, index, std::move(discountCurve), true) {}

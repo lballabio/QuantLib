@@ -42,7 +42,7 @@ namespace QuantLib {
     };
 
 
-    BlackCalculator::BlackCalculator(const ext::shared_ptr<StrikedTypePayoff>& p,
+    BlackCalculator::BlackCalculator(const std::shared_ptr<StrikedTypePayoff>& p,
                                      Real forward,
                                      Real stdDev,
                                      Real discount)
@@ -58,11 +58,11 @@ namespace QuantLib {
                                      Real discount)
     : strike_(strike), forward_(forward), stdDev_(stdDev),
       discount_(discount), variance_(stdDev*stdDev) {
-        initialize(ext::shared_ptr<StrikedTypePayoff>(new
+        initialize(std::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(optionType, strike)));
     }
 
-    void BlackCalculator::initialize(const ext::shared_ptr<StrikedTypePayoff>& p) {
+    void BlackCalculator::initialize(const std::shared_ptr<StrikedTypePayoff>& p) {
         QL_REQUIRE(strike_>=0.0,
                    "strike (" << strike_ << ") must be non-negative");
         QL_REQUIRE(forward_>0.0,

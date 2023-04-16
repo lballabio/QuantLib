@@ -33,10 +33,10 @@ namespace QuantLib {
 
     FdmShoutLogInnerValueCalculator::FdmShoutLogInnerValueCalculator(
         Handle<BlackVolTermStructure> blackVolatility,
-        ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
+        std::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
         Time maturity,
-        ext::shared_ptr<PlainVanillaPayoff> payoff,
-        ext::shared_ptr<FdmMesher> mesher,
+        std::shared_ptr<PlainVanillaPayoff> payoff,
+        std::shared_ptr<FdmMesher> mesher,
         Size direction)
     : blackVolatility_(std::move(blackVolatility)),
       escrowedDividendAdj_(std::move(escrowedDividendAdj)),

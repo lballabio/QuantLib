@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         FdmHestonVarianceMesher(
             Size size,
-            const ext::shared_ptr<HestonProcess> & process,
+            const std::shared_ptr<HestonProcess> & process,
             Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
             Real mixingFactor = 1.0);
 
@@ -52,8 +52,8 @@ namespace QuantLib {
       public:
         FdmHestonLocalVolatilityVarianceMesher(
             Size size,
-            const ext::shared_ptr<HestonProcess>& process,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+            const std::shared_ptr<HestonProcess>& process,
+            const std::shared_ptr<LocalVolTermStructure>& leverageFct,
             Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
             Real mixingFactor = 1.0);
 

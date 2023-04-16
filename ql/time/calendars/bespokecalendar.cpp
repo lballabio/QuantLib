@@ -43,7 +43,7 @@ namespace QuantLib {
 
 
     BespokeCalendar::BespokeCalendar(const std::string& name) {
-        bespokeImpl_ = ext::make_shared<BespokeCalendar::Impl>(
+        bespokeImpl_ = std::make_shared<BespokeCalendar::Impl>(
                                              name);
         impl_ = bespokeImpl_;
     }

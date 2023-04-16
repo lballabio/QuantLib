@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     ExtendedJarrowRudd::ExtendedJarrowRudd(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualProbabilitiesBinomialTree<ExtendedJarrowRudd>(
                                                         process, end, steps) {
@@ -41,7 +41,7 @@ namespace QuantLib {
 
 
     ExtendedCoxRossRubinstein::ExtendedCoxRossRubinstein(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualJumpsBinomialTree<ExtendedCoxRossRubinstein>(
                                                         process, end, steps) {
@@ -64,7 +64,7 @@ namespace QuantLib {
 
 
     ExtendedAdditiveEQPBinomialTree::ExtendedAdditiveEQPBinomialTree(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualProbabilitiesBinomialTree<ExtendedAdditiveEQPBinomialTree>(
                                                         process, end, steps) {
@@ -84,7 +84,7 @@ namespace QuantLib {
 
 
     ExtendedTrigeorgis::ExtendedTrigeorgis(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualJumpsBinomialTree<ExtendedTrigeorgis>(process, end, steps) {
 
@@ -108,7 +108,7 @@ namespace QuantLib {
 
 
     ExtendedTian::ExtendedTian(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedBinomialTree<ExtendedTian>(process, end, steps) {
 
@@ -157,7 +157,7 @@ namespace QuantLib {
     }
 
 
-    ExtendedLeisenReimer::ExtendedLeisenReimer(const ext::shared_ptr<StochasticProcess1D>& process,
+    ExtendedLeisenReimer::ExtendedLeisenReimer(const std::shared_ptr<StochasticProcess1D>& process,
                                                Time end,
                                                Size steps,
                                                Real strike)
@@ -232,7 +232,7 @@ namespace QuantLib {
         return p;
     }
 
-    ExtendedJoshi4::ExtendedJoshi4(const ext::shared_ptr<StochasticProcess1D>& process,
+    ExtendedJoshi4::ExtendedJoshi4(const std::shared_ptr<StochasticProcess1D>& process,
                                    Time end,
                                    Size steps,
                                    Real strike)

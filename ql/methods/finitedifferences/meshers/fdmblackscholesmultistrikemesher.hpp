@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         FdmBlackScholesMultiStrikeMesher(
             Size size,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, const std::vector<Real>& strikes,
             Real eps = 0.0001,
             Real scaleFactor = 1.5,

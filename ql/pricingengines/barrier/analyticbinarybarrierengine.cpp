@@ -32,9 +32,9 @@ namespace QuantLib {
     
     public:
         AnalyticBinaryBarrierEngine_helper(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const ext::shared_ptr<StrikedTypePayoff> &payoff,
-             const ext::shared_ptr<AmericanExercise> &exercise,
+             const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const std::shared_ptr<StrikedTypePayoff> &payoff,
+             const std::shared_ptr<AmericanExercise> &exercise,
              const BarrierOption::arguments &arguments):
         process_(process),
         payoff_(payoff),
@@ -45,31 +45,31 @@ namespace QuantLib {
 
         Real payoffAtExpiry(Real spot, Real variance, Real discount);
     private:
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process_;
-        const ext::shared_ptr<StrikedTypePayoff> &payoff_;
-        const ext::shared_ptr<AmericanExercise> &exercise_;
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& process_;
+        const std::shared_ptr<StrikedTypePayoff> &payoff_;
+        const std::shared_ptr<AmericanExercise> &exercise_;
         const BarrierOption::arguments &arguments_;
     };
 
 
     AnalyticBinaryBarrierEngine::AnalyticBinaryBarrierEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticBinaryBarrierEngine::calculate() const {
 
-        ext::shared_ptr<AmericanExercise> ex =
-            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        std::shared_ptr<AmericanExercise> ex =
+            std::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->payoffAtExpiry(), "payoff must be at expiry");
         QL_REQUIRE(ex->dates()[0] <=
                    process_->blackVolatility()->referenceDate(),
                    "American option with window exercise not handled yet");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real spot = process_->stateVariable()->value();
@@ -102,10 +102,10 @@ namespace QuantLib {
         if ((barrierType == Barrier::DownIn && spot <= barrier) ||
            (barrierType == Barrier::UpIn && spot >= barrier)) {
             // knocked in - is a digital european
-            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(
+            std::shared_ptr<Exercise> exercise(new EuropeanExercise(
                                              arguments_.exercise->lastDate()));
 
-            ext::shared_ptr<PricingEngine> engine(
+            std::shared_ptr<PricingEngine> engine(
                                        new AnalyticEuropeanEngine(process_));
 
             VanillaOption opt(payoff, exercise);
@@ -158,15 +158,15 @@ namespace QuantLib {
         Real K = 0;
 
         // binary cash-or-nothing payoff?
-        ext::shared_ptr<CashOrNothingPayoff> coo =
-            ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
+        std::shared_ptr<CashOrNothingPayoff> coo =
+            std::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
         if (coo != nullptr) {
             K = coo->cashPayoff();
         }
 
         // binary asset-or-nothing payoff?
-        ext::shared_ptr<AssetOrNothingPayoff> aoo =
-            ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
+        std::shared_ptr<AssetOrNothingPayoff> aoo =
+            std::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
         if (aoo != nullptr) {
             mu += 1.0; 
             K = spot * dividendDiscount / discount; // forward

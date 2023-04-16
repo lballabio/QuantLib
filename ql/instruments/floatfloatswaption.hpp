@@ -41,8 +41,8 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        FloatFloatSwaption(ext::shared_ptr<FloatFloatSwap> swap,
-                           const ext::shared_ptr<Exercise>& exercise,
+        FloatFloatSwaption(std::shared_ptr<FloatFloatSwap> swap,
+                           const std::shared_ptr<Exercise>& exercise,
                            Settlement::Type delivery = Settlement::Physical,
                            Settlement::Method settlementMethod = Settlement::PhysicalOTC);
         //! \name Instrument interface
@@ -57,19 +57,19 @@ namespace QuantLib {
             return settlementMethod_;
         }
         Swap::Type type() const { return swap_->type(); }
-        const ext::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
+        const std::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
             return swap_;
         }
         //@}
-        std::vector<ext::shared_ptr<BlackCalibrationHelper>>
-        calibrationBasket(const ext::shared_ptr<SwapIndex>& standardSwapBase,
-                          const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+        std::vector<std::shared_ptr<BlackCalibrationHelper>>
+        calibrationBasket(const std::shared_ptr<SwapIndex>& standardSwapBase,
+                          const std::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
                           BasketGeneratingEngine::CalibrationBasketType basketType =
                               BasketGeneratingEngine::MaturityStrikeByDeltaGamma) const;
 
       private:
         // arguments
-        ext::shared_ptr<FloatFloatSwap> swap_;
+        std::shared_ptr<FloatFloatSwap> swap_;
         Settlement::Type settlementType_;
         Settlement::Method settlementMethod_;
     };
@@ -79,7 +79,7 @@ namespace QuantLib {
                                           public Option::arguments {
       public:
         arguments() = default;
-        ext::shared_ptr<FloatFloatSwap> swap;
+        std::shared_ptr<FloatFloatSwap> swap;
         Settlement::Type settlementType;
         Settlement::Method settlementMethod;
         void validate() const override;

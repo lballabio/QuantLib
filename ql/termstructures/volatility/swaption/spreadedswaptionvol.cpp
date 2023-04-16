@@ -34,21 +34,21 @@ namespace QuantLib {
         registerWith(spread_);
     }
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     SpreadedSwaptionVolatility::smileSectionImpl(const Date& d,
                                                  const Period& swapT) const {
-        ext::shared_ptr<SmileSection> baseSmile =
+        std::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(d, swapT, true);
-        return ext::shared_ptr<SmileSection>(new
+        return std::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 
-    ext::shared_ptr<SmileSection>
+    std::shared_ptr<SmileSection>
     SpreadedSwaptionVolatility::smileSectionImpl(Time optionTime,
                                                  Time swapLength) const {
-        ext::shared_ptr<SmileSection> baseSmile =
+        std::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(optionTime, swapLength, true);
-        return ext::shared_ptr<SmileSection>(new
+        return std::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 

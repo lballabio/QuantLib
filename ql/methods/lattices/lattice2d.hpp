@@ -41,13 +41,13 @@ namespace QuantLib {
     template <class Impl, class T = TrinomialTree>
     class TreeLattice2D : public TreeLattice<Impl> {
       public:
-        TreeLattice2D(const ext::shared_ptr<T>& tree1, ext::shared_ptr<T> tree2, Real correlation);
+        TreeLattice2D(const std::shared_ptr<T>& tree1, std::shared_ptr<T> tree2, Real correlation);
 
         Size size(Size i) const;
         Size descendant(Size i, Size index, Size branch) const;
         Real probability(Size i, Size index, Size branch) const;
       protected:
-        ext::shared_ptr<T> tree1_, tree2_;
+        std::shared_ptr<T> tree1_, tree2_;
         // smelly
         Array grid(Time) const override { QL_FAIL("not implemented"); }
 
@@ -68,8 +68,8 @@ namespace QuantLib {
     // template definitions
 
     template <class Impl, class T>
-    TreeLattice2D<Impl, T>::TreeLattice2D(const ext::shared_ptr<T>& tree1,
-                                          ext::shared_ptr<T> tree2,
+    TreeLattice2D<Impl, T>::TreeLattice2D(const std::shared_ptr<T>& tree1,
+                                          std::shared_ptr<T> tree2,
                                           Real correlation)
     : TreeLattice<Impl>(tree1->timeGrid(), T::branches * T::branches), tree1_(tree1),
       tree2_(std::move(tree2)), m_(T::branches, T::branches), rho_(std::fabs(correlation)) {

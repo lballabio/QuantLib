@@ -41,21 +41,21 @@ namespace QuantLib {
                                const Period& observationLag,
                                Frequency frequency,
                                const DayCounter& dayCounter = DayCounter(),
-                               ext::shared_ptr<Seasonality> seasonality = {});
+                               std::shared_ptr<Seasonality> seasonality = {});
         InflationTermStructure(const Date& referenceDate,
                                Rate baseRate,
                                const Period& observationLag,
                                Frequency frequency,
                                const Calendar& calendar = Calendar(),
                                const DayCounter& dayCounter = DayCounter(),
-                               ext::shared_ptr<Seasonality> seasonality = {});
+                               std::shared_ptr<Seasonality> seasonality = {});
         InflationTermStructure(Natural settlementDays,
                                const Calendar& calendar,
                                Rate baseRate,
                                const Period& observationLag,
                                Frequency frequency,
                                const DayCounter& dayCounter = DayCounter(),
-                               ext::shared_ptr<Seasonality> seasonality = {});
+                               std::shared_ptr<Seasonality> seasonality = {});
         //@}
 
         //! \name Inflation interface
@@ -84,8 +84,8 @@ namespace QuantLib {
         /*! Calling setSeasonality with no arguments means unsetting
             as the default is used to choose unsetting.
         */
-        void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality = {});
-        ext::shared_ptr<Seasonality> seasonality() const;
+        void setSeasonality(const std::shared_ptr<Seasonality>& seasonality = {});
+        std::shared_ptr<Seasonality> seasonality() const;
         bool hasSeasonality() const;
 
       protected:
@@ -104,7 +104,7 @@ namespace QuantLib {
         void checkRange(Time t,
                         bool extrapolate) const;
 
-        ext::shared_ptr<Seasonality> seasonality_;
+        std::shared_ptr<Seasonality> seasonality_;
         Period observationLag_;
         Frequency frequency_;
         mutable Rate baseRate_;
@@ -121,7 +121,7 @@ namespace QuantLib {
                                    Rate baseZeroRate,
                                    const Period& lag,
                                    Frequency frequency,
-                                   const ext::shared_ptr<Seasonality> &seasonality = {});
+                                   const std::shared_ptr<Seasonality> &seasonality = {});
 
         ZeroInflationTermStructure(const Date& referenceDate,
                                    const Calendar& calendar,
@@ -129,7 +129,7 @@ namespace QuantLib {
                                    Rate baseZeroRate,
                                    const Period& lag,
                                    Frequency frequency,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {});
+                                   const std::shared_ptr<Seasonality>& seasonality = {});
 
         ZeroInflationTermStructure(Natural settlementDays,
                                    const Calendar& calendar,
@@ -137,7 +137,7 @@ namespace QuantLib {
                                    Rate baseZeroRate,
                                    const Period& lag,
                                    Frequency frequency,
-                                   const ext::shared_ptr<Seasonality> &seasonality = {});
+                                   const std::shared_ptr<Seasonality> &seasonality = {});
         //@}
 
         //! \name Inspectors
@@ -181,7 +181,7 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   bool indexIsInterpolated,
-                                  const ext::shared_ptr<Seasonality> &seasonality = {});
+                                  const std::shared_ptr<Seasonality> &seasonality = {});
 
         YoYInflationTermStructure(const Date& referenceDate,
                                   const Calendar& calendar,
@@ -190,7 +190,7 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   bool indexIsInterpolated,
-                                  const ext::shared_ptr<Seasonality> &seasonality = {});
+                                  const std::shared_ptr<Seasonality> &seasonality = {});
 
         YoYInflationTermStructure(Natural settlementDays,
                                   const Calendar& calendar,
@@ -199,7 +199,7 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   bool indexIsInterpolated,
-                                  const ext::shared_ptr<Seasonality> &seasonality = {});
+                                  const std::shared_ptr<Seasonality> &seasonality = {});
         //@}
 
         //! \name Inspectors
@@ -259,7 +259,7 @@ namespace QuantLib {
         return baseRate_;
     }
 
-    inline ext::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {
+    inline std::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {
         return seasonality_;
     }
 

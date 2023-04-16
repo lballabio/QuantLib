@@ -40,18 +40,18 @@ namespace QuantLib {
     class AnalyticDividendEuropeanEngine : public DividendVanillaOption::engine {
         QL_DEPRECATED_ENABLE_WARNING
       public:
-        AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        AnalyticDividendEuropeanEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process,
                                        DividendSchedule dividends);
         
         /*! \deprecated Use the other constructor instead and pass the dividends to the engine.
                         Deprecated in version 1.30.
         */
         QL_DEPRECATED
-        explicit AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        explicit AnalyticDividendEuropeanEngine(std::shared_ptr<GeneralizedBlackScholesProcess> process);
 
         void calculate() const override;
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         DividendSchedule dividends_;
         bool explicitDividends_;
     };

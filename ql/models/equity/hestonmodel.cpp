@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    HestonModel::HestonModel(const ext::shared_ptr<HestonProcess> & process)
+    HestonModel::HestonModel(const std::shared_ptr<HestonProcess> & process)
     : CalibratedModel(5), process_(process) {
         arguments_[0] = ConstantParameter(process->theta(),
                                           PositiveConstraint());

@@ -91,7 +91,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<nOptionTenors_; ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
+            volHandles_[i] = Handle<Quote>(std::shared_ptr<Quote>(new
                 SimpleQuote(vols_[i])));
         interpolate();
     }
@@ -116,7 +116,7 @@ namespace QuantLib {
         initializeOptionDatesAndTimes();
         // fill dummy handles to allow generic handle-based computations later
         for (Size i=0; i<nOptionTenors_; ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
+            volHandles_[i] = Handle<Quote>(std::shared_ptr<Quote>(new
                 SimpleQuote(vols_[i])));
         interpolate();
     }

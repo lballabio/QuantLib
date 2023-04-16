@@ -39,7 +39,7 @@ namespace QuantLib {
     class OvernightIndexFuture : public Instrument {
       public:
         OvernightIndexFuture(
-            ext::shared_ptr<OvernightIndex> overnightIndex,
+            std::shared_ptr<OvernightIndex> overnightIndex,
             const Date& valueDate,
             const Date& maturityDate,
             Handle<Quote> convexityAdjustment = Handle<Quote>(),
@@ -47,7 +47,7 @@ namespace QuantLib {
 
         Real convexityAdjustment() const;
         bool isExpired() const override;
-        const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
+        const std::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Date valueDate() const { return valueDate_; }
         Date maturityDate() const { return maturityDate_; }
       private:
@@ -55,7 +55,7 @@ namespace QuantLib {
         Real rate() const;
         Real averagedRate() const;
         Real compoundedRate() const;
-        ext::shared_ptr<OvernightIndex> overnightIndex_;
+        std::shared_ptr<OvernightIndex> overnightIndex_;
         Date valueDate_, maturityDate_;
         Handle<Quote> convexityAdjustment_;
         RateAveraging::Type averagingMethod_;

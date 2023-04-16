@@ -80,8 +80,8 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsApply() {
     const Real dx = 1/5.0;
 
     const NthOrderDerivativeOp op(0, 1, 3,
-        ext::make_shared<FdmMesherComposite>(
-            ext::make_shared<Uniform1dMesher>(0.0, 1.0, 6)));
+        std::make_shared<FdmMesherComposite>(
+            std::make_shared<Uniform1dMesher>(0.0, 1.0, 6)));
 
     const Array x(6,0.0, 1.0);
     const Array y = op.apply(x);
@@ -98,8 +98,8 @@ void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 3,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Uniform1dMesher>(0.0, 1.0, 6))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Uniform1dMesher>(0.0, 1.0, 6))).toMatrix();
 
     // to reproduce the reference results use
     // http://web.media.mit.edu/~crtaylor/calculator.html
@@ -134,8 +134,8 @@ void NthOrderDerivativeOpTest::testFirstOrder5PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 5,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Uniform1dMesher>(0.0, 2.0, 6))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Uniform1dMesher>(0.0, 2.0, 6))).toMatrix();
 
     BOOST_CHECK(close_enough(m(2,0), 1.0/12.0*ddx));
     BOOST_CHECK(close_enough(m(2,1), -2.0/3.0*ddx));
@@ -181,8 +181,8 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 2,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), -ddx));
     BOOST_CHECK(close_enough(m(0,1), ddx));
@@ -213,8 +213,8 @@ void NthOrderDerivativeOpTest::testFirstOrder4PointsOnUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 1, 4,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), -11.0/6.0*ddx));
     BOOST_CHECK(close_enough(m(0,1), 3.0*ddx));
@@ -244,14 +244,14 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid() {
     const Real ddx = 1.0/0.2;
 
     const Size xGrid=4;
-    const ext::shared_ptr<FdmMesher> mesher =
-        ext::make_shared<FdmMesherComposite>(
-            ext::make_shared<Uniform1dMesher>(0.0, 1, xGrid),
-            ext::make_shared<Uniform1dMesher>(0.0, 0.4, 3));
+    const std::shared_ptr<FdmMesher> mesher =
+        std::make_shared<FdmMesherComposite>(
+            std::make_shared<Uniform1dMesher>(0.0, 1, xGrid),
+            std::make_shared<Uniform1dMesher>(0.0, 0.4, 3));
 
     const SparseMatrix m = NthOrderDerivativeOp(1, 1, 2, mesher).toMatrix();
 
-    const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+    const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
     const FdmLinearOpIterator endIter = layout->end();
 
     for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
@@ -292,8 +292,8 @@ void NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 2, 3,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Predefined1dMesher>(xValues))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Predefined1dMesher>(xValues))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), 8.0/3.0));
     BOOST_CHECK(close_enough(m(0,1), -4.0));
@@ -329,8 +329,8 @@ void NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 2, 4,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Predefined1dMesher>(xValues))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Predefined1dMesher>(xValues))).toMatrix();
 
     BOOST_CHECK(close_enough(m(0,0), 88.0/21.0));
     BOOST_CHECK(close_enough(m(0,1), -140.0/21.0));
@@ -369,8 +369,8 @@ void NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid() {
 
     const SparseMatrix m =
         NthOrderDerivativeOp(0, 3, 4,
-            ext::make_shared<FdmMesherComposite>(
-                ext::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
+            std::make_shared<FdmMesherComposite>(
+                std::make_shared<Uniform1dMesher>(0.0, 0.6, 4))).toMatrix();
 
     for (Size i=0; i < 4; ++i) {
         BOOST_CHECK(close_enough(m(i,0), -125.0));
@@ -397,8 +397,8 @@ namespace {
     class FdmHestonNthOrderOp : public FdmLinearOpComposite {
       public:
         FdmHestonNthOrderOp(Size nPoints,
-                            const ext::shared_ptr<HestonProcess>& hestonProcess,
-                            const ext::shared_ptr<FdmMesher>& mesher,
+                            const std::shared_ptr<HestonProcess>& hestonProcess,
+                            const std::shared_ptr<FdmMesher>& mesher,
                             Size direction = 0)
         : vol2_(0.5 * hestonProcess->theta()),
           preconditioner_(
@@ -407,7 +407,7 @@ namespace {
             const Array vv(mesher->locations(1));
             Array varianceValues(0.5*vv);
 
-            ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+            std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
             FdmLinearOpIterator endIter = layout->end();
             for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
                 ++iter) {
@@ -486,7 +486,7 @@ namespace {
 
     class AvgPayoffFct {
       public:
-        AvgPayoffFct(ext::shared_ptr<PlainVanillaPayoff> payoff,
+        AvgPayoffFct(std::shared_ptr<PlainVanillaPayoff> payoff,
                      Volatility vol, Time T, Real growthFactor)
         : payoff_(std::move(payoff)),
           vol2_(0.5*vol*vol*T),
@@ -497,17 +497,17 @@ namespace {
         }
 
        private:
-        const ext::shared_ptr<PlainVanillaPayoff> payoff_;
+        const std::shared_ptr<PlainVanillaPayoff> payoff_;
         const Volatility vol2_;
         const Real growthFactor_;
     };
 
    class MyInnerValueCalculator : public FdmInnerValueCalculator {
       public:
-        MyInnerValueCalculator(ext::shared_ptr<Payoff> payoff,
-                               ext::shared_ptr<FdmMesher> mesher,
-                               ext::shared_ptr<YieldTermStructure> rTS,
-                               ext::shared_ptr<YieldTermStructure> qTS,
+        MyInnerValueCalculator(std::shared_ptr<Payoff> payoff,
+                               std::shared_ptr<FdmMesher> mesher,
+                               std::shared_ptr<YieldTermStructure> rTS,
+                               std::shared_ptr<YieldTermStructure> qTS,
                                Volatility vol,
                                Size direction)
         : payoff_(std::move(payoff)), mesher_(std::move(mesher)),
@@ -526,9 +526,9 @@ namespace {
         }
 
       private:
-        const ext::shared_ptr<Payoff> payoff_;
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
+        const std::shared_ptr<Payoff> payoff_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<YieldTermStructure> rTS_, qTS_;
         const Volatility vol_;
         const Size direction_;
     };
@@ -541,9 +541,9 @@ namespace {
         const Date maturity = today + Period(1, Years);
         const Time T = dc.yearFraction(today, maturity);
 
-        const ext::shared_ptr<YieldTermStructure> rTS
+        const std::shared_ptr<YieldTermStructure> rTS
             = flatRate(today, 0.05, dc);
-        const ext::shared_ptr<YieldTermStructure> qTS
+        const std::shared_ptr<YieldTermStructure> qTS
             = flatRate(today, 0.0, dc);
 
         const Real S = 100.0;
@@ -554,11 +554,11 @@ namespace {
         const Real sig = 0.2;
         const Real rho = -0.75;
 
-        const ext::shared_ptr<HestonProcess> hestonProcess
-            = ext::make_shared<HestonProcess>(
+        const std::shared_ptr<HestonProcess> hestonProcess
+            = std::make_shared<HestonProcess>(
                   Handle<YieldTermStructure>(rTS),
                   Handle<YieldTermStructure>(qTS),
-                  Handle<Quote>(ext::make_shared<SimpleQuote>(S)),
+                  Handle<Quote>(std::make_shared<SimpleQuote>(S)),
                   v0, kappa, theta, sig, rho);
 
         const Real stdDev = vol * std::sqrt(T);
@@ -578,8 +578,8 @@ namespace {
             const Real strike = strikes[k];
             const Real specialPoint = std::log(strike/df) + 0.5*vol*vol*T;
 
-            const ext::shared_ptr<Fdm1dMesher> mesher1d =
-                ext::make_shared<Concentrating1dMesher>(
+            const std::shared_ptr<Fdm1dMesher> mesher1d =
+                std::make_shared<Concentrating1dMesher>(
                     ymin, ymax, yGrid,
                     std::pair<Real, Real>(specialPoint, setup.density));
 
@@ -596,10 +596,10 @@ namespace {
                     break;
                 }
 
-            const ext::shared_ptr<FdmMesherComposite> mesher =
-                ext::make_shared<FdmMesherComposite>(
-                    ext::make_shared<Predefined1dMesher>(loc),
-                    ext::make_shared<FdmHestonVarianceMesher>(
+            const std::shared_ptr<FdmMesherComposite> mesher =
+                std::make_shared<FdmMesherComposite>(
+                    std::make_shared<Predefined1dMesher>(loc),
+                    std::make_shared<FdmHestonVarianceMesher>(
                         vGrid, hestonProcess, 1.0)
             );
 
@@ -608,10 +608,10 @@ namespace {
 
             Array rhs(mesher->layout()->size());
 
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+            const std::shared_ptr<PlainVanillaPayoff> payoff =
+                std::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+            const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
             for (FdmLinearOpIterator iter = layout->begin();
@@ -639,14 +639,14 @@ namespace {
                     rhs[idx] = (*payoff)(sT[idx]);
             }
 
-            const ext::shared_ptr<FdmHestonNthOrderOp> heatEqn =
-                ext::make_shared<FdmHestonNthOrderOp>(
+            const std::shared_ptr<FdmHestonNthOrderOp> heatEqn =
+                std::make_shared<FdmHestonNthOrderOp>(
                     setup.nPoints, hestonProcess, mesher);
 
             FdmBackwardSolver solver(
               heatEqn,
               FdmBoundaryConditionSet(),
-              ext::shared_ptr<FdmStepConditionComposite>(),
+              std::shared_ptr<FdmStepConditionComposite>(),
               setup.scheme);
 
             solver.rollback(rhs, T, 0.0, setup.tGrid, 1);
@@ -661,19 +661,19 @@ namespace {
             Matrix resultValues_(layout->dim()[1], layout->dim()[0]);
             std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 
-            const ext::shared_ptr<BicubicSpline> interpolation =
-                ext::make_shared<BicubicSpline>(
+            const std::shared_ptr<BicubicSpline> interpolation =
+                std::make_shared<BicubicSpline>(
                     x.begin(), x.end(), v.begin(), v.end(), resultValues_);
 
             const Real fdmPrice = (*interpolation)(y, hestonProcess->v0());
 
             VanillaOption option(
-                ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
-                ext::make_shared<EuropeanExercise>(maturity)
+                std::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+                std::make_shared<EuropeanExercise>(maturity)
             );
             option.setPricingEngine(
-                ext::make_shared<AnalyticHestonEngine>(
-                    ext::make_shared<HestonModel>(hestonProcess), 192)
+                std::make_shared<AnalyticHestonEngine>(
+                    std::make_shared<HestonModel>(hestonProcess), 192)
             );
             const Real npv = option.NPV();
 
@@ -807,18 +807,18 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid() {
 
     Array xValues = Exp(Array(7, 0, 0.1));
 
-    const ext::shared_ptr<Fdm1dMesher> m
-        = ext::make_shared<Predefined1dMesher>(
+    const std::shared_ptr<Fdm1dMesher> m
+        = std::make_shared<Predefined1dMesher>(
             std::vector<Real>(xValues.begin(), xValues.end()));
 
-    const ext::shared_ptr<FdmMesher> m1d(
-        ext::make_shared<FdmMesherComposite>(m));
+    const std::shared_ptr<FdmMesher> m1d(
+        std::make_shared<FdmMesherComposite>(m));
 
-    const ext::shared_ptr<FirstDerivativeOp> fx
-        = ext::make_shared<FirstDerivativeOp>(0, m1d);
+    const std::shared_ptr<FirstDerivativeOp> fx
+        = std::make_shared<FirstDerivativeOp>(0, m1d);
 
-    const ext::shared_ptr<NthOrderDerivativeOp> dx
-        = ext::make_shared<NthOrderDerivativeOp>(0, 1, 3, m1d);
+    const std::shared_ptr<NthOrderDerivativeOp> dx
+        = std::make_shared<NthOrderDerivativeOp>(0, 1, 3, m1d);
 
     const SparseMatrix fm = fx->toMatrix();
     const SparseMatrix dm = dx->toMatrix();
@@ -832,15 +832,15 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
     BOOST_TEST_MESSAGE(
         "Testing with FirstDerivativeOp on a 2d uniform grid...");
 
-    const ext::shared_ptr<Fdm1dMesher> m1
-        = ext::make_shared<Uniform1dMesher>(0.0, 0.6, 5);
-    const ext::shared_ptr<Fdm1dMesher> m2
-        = ext::make_shared<Uniform1dMesher>(0.0, 1.6, 6);
+    const std::shared_ptr<Fdm1dMesher> m1
+        = std::make_shared<Uniform1dMesher>(0.0, 0.6, 5);
+    const std::shared_ptr<Fdm1dMesher> m2
+        = std::make_shared<Uniform1dMesher>(0.0, 1.6, 6);
 
-    const ext::shared_ptr<FdmMesher> mc(
-        ext::make_shared<FdmMesherComposite>(m1, m2));
+    const std::shared_ptr<FdmMesher> mc(
+        std::make_shared<FdmMesherComposite>(m1, m2));
 
-    const ext::shared_ptr<FdmLinearOpLayout> layout = mc->layout();
+    const std::shared_ptr<FdmLinearOpLayout> layout = mc->layout();
 
     const Size n = layout->dim()[0];
     const Size m = layout->dim()[1];
@@ -868,11 +868,11 @@ void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {
             "Testing nine points mixed second order "
             "derivative operator on a uniform grid...");
 
-    const ext::shared_ptr<Fdm1dMesher> m
-        = ext::make_shared<Uniform1dMesher>(0.0, 0.6, 5);
+    const std::shared_ptr<Fdm1dMesher> m
+        = std::make_shared<Uniform1dMesher>(0.0, 0.6, 5);
 
-    const ext::shared_ptr<FdmMesher> mc(
-        ext::make_shared<FdmMesherComposite>(m, m));
+    const std::shared_ptr<FdmMesher> mc(
+        std::make_shared<FdmMesherComposite>(m, m));
 
     const SparseMatrix cc =
             prod(NthOrderDerivativeOp(0, 1, 3, mc).toMatrix(),

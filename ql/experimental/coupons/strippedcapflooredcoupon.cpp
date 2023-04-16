@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     StrippedCappedFlooredCoupon::StrippedCappedFlooredCoupon(
-        const ext::shared_ptr<CappedFlooredCoupon> &underlying)
+        const std::shared_ptr<CappedFlooredCoupon> &underlying)
         : FloatingRateCoupon(
               underlying->date(), underlying->nominal(),
               underlying->accrualStartDate(), underlying->accrualEndDate(),
@@ -100,7 +100,7 @@ namespace QuantLib {
     }
 
     void StrippedCappedFlooredCoupon::setPricer(
-        const ext::shared_ptr<FloatingRateCouponPricer> &pricer) {
+        const std::shared_ptr<FloatingRateCouponPricer> &pricer) {
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
     }
@@ -111,11 +111,11 @@ namespace QuantLib {
     StrippedCappedFlooredCouponLeg::operator Leg() const {
         Leg resultLeg;
         resultLeg.reserve(underlyingLeg_.size());
-        ext::shared_ptr<CappedFlooredCoupon> c;
+        std::shared_ptr<CappedFlooredCoupon> c;
         for (const auto& i : underlyingLeg_) {
-            if ((c = ext::dynamic_pointer_cast<CappedFlooredCoupon>(i)) != nullptr) {
+            if ((c = std::dynamic_pointer_cast<CappedFlooredCoupon>(i)) != nullptr) {
                 resultLeg.push_back(
-                    ext::make_shared<StrippedCappedFlooredCoupon>(c));
+                    std::make_shared<StrippedCappedFlooredCoupon>(c));
             } else {
                 resultLeg.push_back(i);
             }

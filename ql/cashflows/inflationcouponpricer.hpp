@@ -83,7 +83,7 @@ namespace QuantLib {
 
 
     void setCouponPricer(const Leg& leg,
-                         const ext::shared_ptr<InflationCouponPricer>&);
+                         const std::shared_ptr<InflationCouponPricer>&);
 
 
     //! base pricer for capped/floored YoY inflation coupons

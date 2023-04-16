@@ -53,8 +53,8 @@ namespace QuantLib {
         Real rho() const;
       private:
         Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
-        ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
-        ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
+        std::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
+        std::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
     };
 
     //! %Forward %G2 stochastic process
@@ -74,8 +74,8 @@ namespace QuantLib {
         //@}
       protected:
         Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
-        ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
-        ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
+        std::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
+        std::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
         Real xForwardDrift(Time t, Time T) const;
         Real yForwardDrift(Time t, Time T) const;
         Real Mx_T(Real s, Real t, Real T) const;

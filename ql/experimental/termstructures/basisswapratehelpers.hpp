@@ -46,8 +46,8 @@ namespace QuantLib {
                                     Calendar calendar,
                                     BusinessDayConvention convention,
                                     bool endOfMonth,
-                                    const ext::shared_ptr<IborIndex>& baseIndex,
-                                    const ext::shared_ptr<IborIndex>& otherIndex,
+                                    const std::shared_ptr<IborIndex>& baseIndex,
+                                    const std::shared_ptr<IborIndex>& otherIndex,
                                     Handle<YieldTermStructure> discountHandle,
                                     bool bootstrapBaseCurve);
 
@@ -62,12 +62,12 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         bool endOfMonth_;
-        ext::shared_ptr<IborIndex> baseIndex_;
-        ext::shared_ptr<IborIndex> otherIndex_;
+        std::shared_ptr<IborIndex> baseIndex_;
+        std::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
         bool bootstrapBaseCurve_;
 
-        ext::shared_ptr<Swap> swap_;
+        std::shared_ptr<Swap> swap_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -88,8 +88,8 @@ namespace QuantLib {
                                          Calendar calendar,
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
-                                         const ext::shared_ptr<OvernightIndex>& baseIndex,
-                                         const ext::shared_ptr<IborIndex>& otherIndex,
+                                         const std::shared_ptr<OvernightIndex>& baseIndex,
+                                         const std::shared_ptr<IborIndex>& otherIndex,
                                          Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
 
         Real impliedQuote() const override;
@@ -103,11 +103,11 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         bool endOfMonth_;
-        ext::shared_ptr<OvernightIndex> baseIndex_;
-        ext::shared_ptr<IborIndex> otherIndex_;
+        std::shared_ptr<OvernightIndex> baseIndex_;
+        std::shared_ptr<IborIndex> otherIndex_;
         Handle<YieldTermStructure> discountHandle_;
 
-        ext::shared_ptr<Swap> swap_;
+        std::shared_ptr<Swap> swap_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };

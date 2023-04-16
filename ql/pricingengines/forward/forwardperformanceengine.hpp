@@ -43,7 +43,7 @@ namespace QuantLib {
         : public ForwardVanillaEngine<Engine> {
       public:
         ForwardPerformanceVanillaEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+                    const std::shared_ptr<GeneralizedBlackScholesProcess>&);
         void calculate() const override;
 
       protected:
@@ -55,7 +55,7 @@ namespace QuantLib {
 
     template <class Engine>
     ForwardPerformanceVanillaEngine<Engine>::ForwardPerformanceVanillaEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& process)
     : ForwardVanillaEngine<Engine>(process) {}
 
     template <class Engine>

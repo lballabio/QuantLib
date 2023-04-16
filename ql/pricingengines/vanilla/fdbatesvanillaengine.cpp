@@ -31,7 +31,7 @@ namespace QuantLib {
     QL_DEPRECATED_DISABLE_WARNING
 
     FdBatesVanillaEngine::FdBatesVanillaEngine(
-            const ext::shared_ptr<BatesModel>& model,
+            const std::shared_ptr<BatesModel>& model,
             Size tGrid, Size xGrid, 
             Size vGrid, Size dampingSteps,
             const FdmSchemeDesc& schemeDesc)
@@ -44,7 +44,7 @@ namespace QuantLib {
       schemeDesc_(schemeDesc) {}
 
     FdBatesVanillaEngine::FdBatesVanillaEngine(
-            const ext::shared_ptr<BatesModel>& model,
+            const std::shared_ptr<BatesModel>& model,
             DividendSchedule dividends,
             Size tGrid, Size xGrid, 
             Size vGrid, Size dampingSteps,
@@ -78,10 +78,10 @@ namespace QuantLib {
 
         FdmSolverDesc solverDesc = helperEngine.getSolverDesc(2.0);
 
-        const ext::shared_ptr<BatesProcess> process =
-                ext::dynamic_pointer_cast<BatesProcess>(model_->process());
+        const std::shared_ptr<BatesProcess> process =
+                std::dynamic_pointer_cast<BatesProcess>(model_->process());
 
-        ext::shared_ptr<FdmBatesSolver> solver(
+        std::shared_ptr<FdmBatesSolver> solver(
             new FdmBatesSolver(Handle<BatesProcess>(process),
                                solverDesc, schemeDesc_));
 

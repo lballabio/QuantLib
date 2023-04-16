@@ -75,7 +75,7 @@ namespace QuantLib {
                        const Date& startDate,
                        const Date& maturityDate,
                        Real fixedPayment,
-                       ext::shared_ptr<IborIndex> iborIndex,
+                       std::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
                        BusinessDayConvention paymentConvention = Following,
                        Natural paymentDelay = 0);
@@ -86,7 +86,7 @@ namespace QuantLib {
                        const Date& maturityDate,
                        Rate fixedRate,
                        const DayCounter& fixedDayCounter,
-                       ext::shared_ptr<IborIndex> iborIndex,
+                       std::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
                        BusinessDayConvention paymentConvention = Following,
                        Natural paymentDelay = 0);
@@ -98,7 +98,7 @@ namespace QuantLib {
         Real baseNominal() const { return baseNominal_; }
         Date startDate() const override { return startDate_; }
         Date maturityDate() const override { return maturityDate_; }
-        const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
+        const std::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
 
         //! just one cashflow in each leg
         const Leg& fixedLeg() const;
@@ -121,14 +121,14 @@ namespace QuantLib {
                        Real baseNominal,
                        const Date& startDate,
                        const Date& maturityDate,
-                       ext::shared_ptr<IborIndex> iborIndex,
+                       std::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
                        BusinessDayConvention paymentConvention,
                        Natural paymentDelay);
 
         Type type_;
         Real baseNominal_;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<IborIndex> iborIndex_;
         Date startDate_;
         Date maturityDate_;
         Date paymentDate_;

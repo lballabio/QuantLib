@@ -35,7 +35,7 @@ namespace QuantLib {
     class ForwardSwapQuote : public Quote,
                              public LazyObject {
       public:
-        ForwardSwapQuote(ext::shared_ptr<SwapIndex> swapIndex,
+        ForwardSwapQuote(std::shared_ptr<SwapIndex> swapIndex,
                          Handle<Quote> spread,
                          const Period& fwdStart);
         //! \name Quote interface
@@ -54,12 +54,12 @@ namespace QuantLib {
         void initializeDates();
         void performCalculations() const override;
 
-        ext::shared_ptr<SwapIndex> swapIndex_;
+        std::shared_ptr<SwapIndex> swapIndex_;
         Handle<Quote> spread_;
         Period fwdStart_;
 
         Date evaluationDate_, valueDate_, startDate_, fixingDate_;
-        ext::shared_ptr<VanillaSwap> swap_;
+        std::shared_ptr<VanillaSwap> swap_;
 
         mutable Rate result_;
     };

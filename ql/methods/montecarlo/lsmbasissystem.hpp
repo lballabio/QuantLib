@@ -29,7 +29,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/math/array.hpp>
-#include <ql/functional.hpp>
+
 #include <vector>
 
 namespace QuantLib {
@@ -47,10 +47,10 @@ namespace QuantLib {
         QL_DEPRECATED
         typedef PolynomialType PolynomType;
 
-        static std::vector<ext::function<Real(Real)> >
+        static std::vector<std::function<Real(Real)> >
         pathBasisSystem(Size order, PolynomialType type);
 
-        static std::vector<ext::function<Real(Array)> >
+        static std::vector<std::function<Real(Array)> >
         multiPathBasisSystem(Size dim, Size order, PolynomialType type);
     };
 

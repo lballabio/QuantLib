@@ -40,8 +40,8 @@ namespace QuantLib {
     class FdmCIREquityPart {
       public:
         FdmCIREquityPart(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
+            const std::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
             Real strike);
 
         void setTime(Time t1, Time t2);
@@ -52,16 +52,16 @@ namespace QuantLib {
         const TripleBandLinearOp dxxMap_;
         TripleBandLinearOp mapT_;
 
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<YieldTermStructure> qTS_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<YieldTermStructure> qTS_;
         const Real strike_;
-        const ext::shared_ptr<BlackVolTermStructure> sigma1_;
+        const std::shared_ptr<BlackVolTermStructure> sigma1_;
     };
 
     class FdmCIRRatesPart {
       public:
         FdmCIRRatesPart(
-            const ext::shared_ptr<FdmMesher>& mesher,
+            const std::shared_ptr<FdmMesher>& mesher,
             Real sigma, Real kappa, Real theta);
 
         void setTime(Time t1, Time t2);
@@ -70,14 +70,14 @@ namespace QuantLib {
       protected:
         const TripleBandLinearOp dyMap_;
         TripleBandLinearOp mapT_;
-        const ext::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<FdmMesher> mesher_;
     };
 
     class FdmCIRMixedPart {
       public:
-        FdmCIRMixedPart(const ext::shared_ptr<FdmMesher>& mesher,
-                        const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
-                        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        FdmCIRMixedPart(const std::shared_ptr<FdmMesher>& mesher,
+                        const std::shared_ptr<CoxIngersollRossProcess>& cirProcess,
+                        const std::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
                         Real rho,
                         Real strike);
 
@@ -87,17 +87,17 @@ namespace QuantLib {
       protected:
         const NinePointLinearOp dyMap_;
         NinePointLinearOp mapT_;
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<BlackVolTermStructure> sigma1_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<BlackVolTermStructure> sigma1_;
         const Real strike_;
     };
 
 
     class FdmCIROp : public FdmLinearOpComposite {
       public:
-        FdmCIROp(const ext::shared_ptr<FdmMesher>& mesher,
-                 const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
-                 const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+        FdmCIROp(const std::shared_ptr<FdmMesher>& mesher,
+                 const std::shared_ptr<CoxIngersollRossProcess>& cirProcess,
+                 const std::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
                  Real rho,
                  Real strike);
 

@@ -36,7 +36,7 @@ namespace QuantLib {
     class LogNormalCmSwapRatePc : public MarketModelEvolver {
       public:
         LogNormalCmSwapRatePc(Size spanningForwards,
-                              const ext::shared_ptr<MarketModel>&,
+                              const std::shared_ptr<MarketModel>&,
                               const BrownianGeneratorFactory&,
                               const std::vector<Size>& numeraires,
                               Size initialStep = 0);
@@ -53,10 +53,10 @@ namespace QuantLib {
         void setCMSwapRates(const std::vector<Real>& swapRates);
         // inputs
         Size spanningForwards_;
-        ext::shared_ptr<MarketModel> marketModel_;
+        std::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
-        ext::shared_ptr<BrownianGenerator> generator_;
+        std::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
          // working variables

@@ -38,7 +38,7 @@ namespace QuantLib {
                                        const Date& valueDate,
                                        // delivery date
                                        const Date& maturityDate,
-                                       const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                                       const std::shared_ptr<OvernightIndex>& overnightIndex,
                                        const Handle<Quote>& convexityAdjustment = {},
                                        RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
@@ -53,7 +53,7 @@ namespace QuantLib {
         //@}
         Real convexityAdjustment() const;
       private:
-        ext::shared_ptr<OvernightIndexFuture> future_;
+        std::shared_ptr<OvernightIndexFuture> future_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 

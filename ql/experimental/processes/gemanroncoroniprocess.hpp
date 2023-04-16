@@ -73,7 +73,7 @@ namespace QuantLib {
         const Real sig2_, a_, b_;
         const Real theta1_, theta2_, theta3_;
         const Real psi_;
-        mutable ext::shared_ptr<PseudoRandom::urng_type> urng_;
+        mutable std::shared_ptr<PseudoRandom::urng_type> urng_;
     };
 }
 

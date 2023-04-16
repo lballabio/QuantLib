@@ -50,7 +50,7 @@ void QuoteTest::testObservable() {
 
     BOOST_TEST_MESSAGE("Testing observability of quotes...");
 
-    ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> me(new SimpleQuote(0.0));
     Flag f;
     f.registerWith(me);
     me->setValue(3.14);
@@ -64,7 +64,7 @@ void QuoteTest::testObservableHandle() {
 
     BOOST_TEST_MESSAGE("Testing observability of quote handles...");
 
-    ext::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
     Flag f;
     f.registerWith(h);
@@ -74,7 +74,7 @@ void QuoteTest::testObservableHandle() {
         BOOST_FAIL("Observer was not notified of quote change");
 
     f.lower();
-    ext::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
@@ -90,7 +90,7 @@ void QuoteTest::testDerived() {
     typedef Real (*unary_f)(Real);
     unary_f funcs[3] = { add10, mul10, sub10 };
 
-    ext::shared_ptr<Quote> me(new SimpleQuote(17.0));
+    std::shared_ptr<Quote> me(new SimpleQuote(17.0));
     Handle<Quote> h(me);
 
     for (auto& func : funcs) {
@@ -109,7 +109,7 @@ void QuoteTest::testComposite() {
     typedef Real (*binary_f)(Real,Real);
     binary_f funcs[3] = { quotes_test::add, quotes_test::mul, quotes_test::sub };
 
-    ext::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
+    std::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
                              me2(new SimpleQuote(13.0));
     Handle<Quote> h1(me1), h2(me2);
 
@@ -128,16 +128,16 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Real forwardRate = .05;
     DayCounter dc = ActualActual(ActualActual::ISDA);
     Calendar calendar = TARGET();
-    ext::shared_ptr<SimpleQuote> forwardQuote(new SimpleQuote(forwardRate));
+    std::shared_ptr<SimpleQuote> forwardQuote(new SimpleQuote(forwardRate));
     Handle<Quote> forwardHandle(forwardQuote);
     Date evaluationDate = Settings::instance().evaluationDate();
-    ext::shared_ptr<YieldTermStructure>yc (new FlatForward(
+    std::shared_ptr<YieldTermStructure>yc (new FlatForward(
         evaluationDate, forwardHandle, dc));
     Handle<YieldTermStructure> ycHandle(yc);
     Period euriborTenor(1,Years);
-    ext::shared_ptr<Index> euribor(new Euribor(euriborTenor, ycHandle));
+    std::shared_ptr<Index> euribor(new Euribor(euriborTenor, ycHandle));
     Date fixingDate = calendar.advance(evaluationDate, euriborTenor);
-    ext::shared_ptr<ForwardValueQuote> forwardValueQuote( new
+    std::shared_ptr<ForwardValueQuote> forwardValueQuote( new
         ForwardValueQuote(euribor, fixingDate));
     Rate forwardValue =  forwardValueQuote->value();
     Rate expectedForwardValue = euribor->fixing(fixingDate, true);
@@ -167,9 +167,9 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Volatility guess = .15;
     Real accuracy = 1.0e-6;
     Option::Type optionType = Option::Call;
-    ext::shared_ptr<SimpleQuote> priceQuote(new SimpleQuote(price));
+    std::shared_ptr<SimpleQuote> priceQuote(new SimpleQuote(price));
     Handle<Quote> priceHandle(priceQuote);
-    ext::shared_ptr<ImpliedStdDevQuote> impliedStdevQuote(new
+    std::shared_ptr<ImpliedStdDevQuote> impliedStdevQuote(new
         ImpliedStdDevQuote(optionType, forwardHandle, priceHandle,
                            strike, guess, accuracy));
     Real impliedStdev = impliedStdevQuote->value();
@@ -181,7 +181,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
         BOOST_FAIL("\nimpliedStdevQuote yields :" << impliedStdev <<
                    "\nexpected result is       :" << expectedImpliedStdev);
     // then we test the observer/observable chain
-    ext::shared_ptr<Quote> quote = impliedStdevQuote;
+    std::shared_ptr<Quote> quote = impliedStdevQuote;
     f.registerWith(quote);
     forwardQuote->setValue(0.05);
     if (!f.isUp())

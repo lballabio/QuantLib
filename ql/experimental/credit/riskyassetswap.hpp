@@ -122,7 +122,7 @@ namespace QuantLib {
         Period integrationStepSize_;
 
         Date evaluationDate_;
-        ext::shared_ptr<RiskyAssetSwap> asw_;
+        std::shared_ptr<RiskyAssetSwap> asw_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
     };
 

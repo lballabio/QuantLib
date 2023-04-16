@@ -185,11 +185,11 @@ void OperatorTest::testBSMOperatorConsistency() {
     Date exercise = today + 2*Years;
     Time residualTime = dc.yearFraction(today,exercise);
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, sigma, dc);
-    ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<YieldTermStructure> qTS = flatRate(today, q, dc);
+    std::shared_ptr<YieldTermStructure> rTS = flatRate(today, r, dc);
+    std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, sigma, dc);
+    std::shared_ptr<GeneralizedBlackScholesProcess> stochProcess(
         new GeneralizedBlackScholesProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),

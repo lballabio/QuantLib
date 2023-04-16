@@ -37,7 +37,7 @@ namespace QuantLib {
                                       Real sig2, Real a, Real b,
                                       Real theta1, Real theta2, Real theta3,
                                       Real psi)
-    : StochasticProcess1D(ext::shared_ptr<discretization>(
+    : StochasticProcess1D(std::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       x0_(x0),
       alpha_(alpha), beta_(beta),
@@ -77,7 +77,7 @@ namespace QuantLib {
         // random number generator for the jump part 
         if (!urng_) {
             typedef PseudoRandom::urng_type urng_type;
-            urng_ = ext::make_shared<urng_type>((unsigned long)(1234UL * dw + 56789UL));
+            urng_ = std::make_shared<urng_type>((unsigned long)(1234UL * dw + 56789UL));
         }
         Array du(3); 
         du[0] = urng_->next().value; 

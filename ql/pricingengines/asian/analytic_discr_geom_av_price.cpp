@@ -31,7 +31,7 @@ namespace QuantLib {
 
     AnalyticDiscreteGeometricAveragePriceAsianEngine::
         AnalyticDiscreteGeometricAveragePriceAsianEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -61,8 +61,8 @@ namespace QuantLib {
             pastFixings = 0;
         }
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Date referenceDate = process_->riskFreeRate()->referenceDate();

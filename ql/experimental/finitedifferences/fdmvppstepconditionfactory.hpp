@@ -36,12 +36,12 @@ namespace QuantLib {
       public:
         explicit FdmVPPStepConditionFactory(VanillaVPPOption::arguments args);
 
-        ext::shared_ptr<Fdm1dMesher> stateMesher() const;
-        ext::shared_ptr<FdmVPPStepCondition> build(
+        std::shared_ptr<Fdm1dMesher> stateMesher() const;
+        std::shared_ptr<FdmVPPStepCondition> build(
             const FdmVPPStepConditionMesher& mesh,
             Real fuelCostAddon,
-            const ext::shared_ptr<FdmInnerValueCalculator>& fuel,
-            const ext::shared_ptr<FdmInnerValueCalculator>& spark) const;
+            const std::shared_ptr<FdmInnerValueCalculator>& fuel,
+            const std::shared_ptr<FdmInnerValueCalculator>& spark) const;
 
       private:
         enum Type { Vanilla, StartLimit, RunningHourLimit } type_;

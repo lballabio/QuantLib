@@ -39,7 +39,7 @@ namespace QuantLib
     {
 
         public:
-          SwaptionPseudoDerivative(const ext::shared_ptr<MarketModel>& inputModel,
+          SwaptionPseudoDerivative(const std::shared_ptr<MarketModel>& inputModel,
                                    Size startIndex,
                                    Size endIndex);
 
@@ -53,7 +53,7 @@ namespace QuantLib
 
 
         private:
-            ext::shared_ptr<MarketModel> inputModel_;
+            std::shared_ptr<MarketModel> inputModel_;
             std::vector<Matrix> varianceDerivatives_;
             std::vector<Matrix> volatilityDerivatives_;
 
@@ -79,7 +79,7 @@ This is  tested in the pathwise vegas routine in MarketModels.cpp
     {
 
         public:
-          CapPseudoDerivative(const ext::shared_ptr<MarketModel>& inputModel,
+          CapPseudoDerivative(const std::shared_ptr<MarketModel>& inputModel,
                               Real strike,
                               Size startIndex,
                               Size endIndex,
@@ -93,7 +93,7 @@ This is  tested in the pathwise vegas routine in MarketModels.cpp
 
 
         private:
-            ext::shared_ptr<MarketModel> inputModel_;
+            std::shared_ptr<MarketModel> inputModel_;
       
             std::vector<Matrix> volatilityDerivatives_;
             

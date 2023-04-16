@@ -40,8 +40,8 @@ namespace QuantLib {
                         Real barrier_lo,
                         Real barrier_hi,
                         Real rebate,
-                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                        const ext::shared_ptr<Exercise>& exercise
+                        const std::shared_ptr<StrikedTypePayoff>& payoff,
+                        const std::shared_ptr<Exercise>& exercise
             );
         //! \name greeks
         //@{

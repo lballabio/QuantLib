@@ -66,7 +66,7 @@ namespace QuantLib {
         void calculate() const override;
 
       private:
-        const ext::shared_ptr<CEVCalculator> calculator_;
+        const std::shared_ptr<CEVCalculator> calculator_;
         const Handle<YieldTermStructure> discountCurve_;
     };
 }

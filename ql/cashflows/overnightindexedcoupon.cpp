@@ -46,8 +46,8 @@ namespace QuantLib {
 
                 const Date today = Settings::instance().evaluationDate();
 
-                const ext::shared_ptr<OvernightIndex> index =
-                    ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+                const std::shared_ptr<OvernightIndex> index =
+                    std::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
                 const auto& pastFixings = IndexManager::instance().getHistory(index->name());
 
                 const vector<Date>& fixingDates = coupon_->fixingDates();
@@ -140,7 +140,7 @@ namespace QuantLib {
                     Real nominal,
                     const Date& startDate,
                     const Date& endDate,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                    const std::shared_ptr<OvernightIndex>& overnightIndex,
                     Real gearing,
                     Spread spread,
                     const Date& refPeriodStart,
@@ -219,12 +219,12 @@ namespace QuantLib {
 
         switch (averagingMethod) {
             case RateAveraging::Simple:
-                setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
+                setPricer(std::shared_ptr<FloatingRateCouponPricer>(
                     new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
                 break;
             case RateAveraging::Compound:
                 setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new OvernightIndexedCouponPricer));
+                    std::shared_ptr<FloatingRateCouponPricer>(new OvernightIndexedCouponPricer));
                 break;
             default:
                 QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
@@ -246,7 +246,7 @@ namespace QuantLib {
     Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-        const auto overnightIndexPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
+        const auto overnightIndexPricer = std::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
         if (overnightIndexPricer)
             return overnightIndexPricer->averageRate(d);
 
@@ -269,7 +269,7 @@ namespace QuantLib {
         }
     }
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
+    OvernightLeg::OvernightLeg(const Schedule& schedule, std::shared_ptr<OvernightIndex> i)
     : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
@@ -360,7 +360,7 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
 
-            cashflows.push_back(ext::shared_ptr<CashFlow>(new
+            cashflows.push_back(std::shared_ptr<CashFlow>(new
                 OvernightIndexedCoupon(paymentDate,
                                        detail::get(notionals_, i,
                                                    notionals_.back()),

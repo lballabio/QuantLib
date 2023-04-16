@@ -26,7 +26,7 @@
 #define quantlib_bicgstab_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/functional.hpp>
+
 
 namespace QuantLib {
 
@@ -38,7 +38,7 @@ namespace QuantLib {
 
     class BiCGstab  {
       public:
-        typedef ext::function<Array(const Array&)> MatrixMult;
+        typedef std::function<Array(const Array&)> MatrixMult;
 
         BiCGstab(MatrixMult A, Size maxIter, Real relTol, MatrixMult preConditioner = MatrixMult());
 

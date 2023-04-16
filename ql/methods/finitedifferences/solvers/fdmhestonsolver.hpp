@@ -45,8 +45,8 @@ namespace QuantLib {
                         FdmSolverDesc solverDesc,
                         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                         Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>(),
-                        ext::shared_ptr<LocalVolTermStructure> leverageFct =
-                            ext::shared_ptr<LocalVolTermStructure>(),
+                        std::shared_ptr<LocalVolTermStructure> leverageFct =
+                            std::shared_ptr<LocalVolTermStructure>(),
                         Real mixingFactor = 1.0);
 
         Real valueAt(Real s, Real v) const;
@@ -71,10 +71,10 @@ namespace QuantLib {
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
         const Handle<FdmQuantoHelper> quantoHelper_;
-        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const std::shared_ptr<LocalVolTermStructure> leverageFct_;
         const Real mixingFactor_;
 
-        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
+        mutable std::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

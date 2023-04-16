@@ -113,7 +113,7 @@ namespace QuantLib {
 
         mutable std::vector<bool> inclusionInInterpolation_;
 
-        ext::shared_ptr<AbcdInterpolation> interpolation_;
+        std::shared_ptr<AbcdInterpolation> interpolation_;
     };
 
     // inline

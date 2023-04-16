@@ -99,21 +99,21 @@ namespace QuantLib {
                             "Only same type barrier supported");
 
                  Handle<Quote> x0Quote( // used for shift
-                     ext::make_shared<SimpleQuote>(spotFX_->value()));
+                     std::make_shared<SimpleQuote>(spotFX_->value()));
                  Handle<Quote> atmVolQuote( // used for shift
-                     ext::make_shared<SimpleQuote>(atmVol_->value()));
+                     std::make_shared<SimpleQuote>(atmVol_->value()));
 
-                 ext::shared_ptr<BlackVolTermStructure> blackVolTS =
-                     ext::make_shared<BlackConstantVol>(Settings::instance().evaluationDate(),
+                 std::shared_ptr<BlackVolTermStructure> blackVolTS =
+                     std::make_shared<BlackConstantVol>(Settings::instance().evaluationDate(),
                                                         NullCalendar(), atmVolQuote,
                                                         Actual365Fixed());
-                 ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-                     ext::make_shared<BlackScholesMertonProcess>(
+                 std::shared_ptr<BlackScholesMertonProcess> stochProcess =
+                     std::make_shared<BlackScholesMertonProcess>(
                          x0Quote, foreignTS_, domesticTS_,
                          Handle<BlackVolTermStructure>(blackVolTS));
 
-                 ext::shared_ptr<PricingEngine> engineBS =
-                     ext::make_shared<DoubleBarrierEngine>(stochProcess, series_);
+                 std::shared_ptr<PricingEngine> engineBS =
+                     std::make_shared<DoubleBarrierEngine>(stochProcess, series_);
 
                  BlackDeltaCalculator blackDeltaCalculatorAtm(
                      Option::Call, atmVol_->deltaType(), x0Quote->value(),
@@ -146,8 +146,8 @@ namespace QuantLib {
                  Interpolation interpolation =
                      vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
                  interpolation.enableExtrapolation();
-                 const ext::shared_ptr<StrikedTypePayoff> payoff =
-                     ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+                 const std::shared_ptr<StrikedTypePayoff> payoff =
+                     std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
                  Real strikeVol = interpolation(payoff->strike());
                  // vanilla option price
                  Real vanillaOption = blackFormula(payoff->optionType(), payoff->strike(),
@@ -181,8 +181,8 @@ namespace QuantLib {
                      // set up BS barrier option pricing
                      // only calculate out barrier option price
                      // in barrier price = vanilla - out barrier
-                     ext::shared_ptr<StrikedTypePayoff> payoff =
-                         ext::static_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+                     std::shared_ptr<StrikedTypePayoff> payoff =
+                         std::static_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
                      DoubleBarrierOption doubleBarrierOption(
                          DoubleBarrier::KnockOut, arguments_.barrier_lo, arguments_.barrier_hi,
                          arguments_.rebate, payoff, arguments_.exercise);
@@ -261,69 +261,69 @@ namespace QuantLib {
 
 
                      // BS vega
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() + sigmaShift_vega);
                      doubleBarrierOption.recalculate();
                      Real vegaBarBS = (doubleBarrierOption.NPV() - priceBS) / sigmaShift_vega;
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() - sigmaShift_vega); // setback
 
                      // BS volga
 
                      // vegaBar2
                      // base NPV
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() + sigmaShift_volga);
                      doubleBarrierOption.recalculate();
                      Real priceBS2 = doubleBarrierOption.NPV();
 
                      // shifted npv
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() + sigmaShift_vega);
                      doubleBarrierOption.recalculate();
                      Real vegaBarBS2 = (doubleBarrierOption.NPV() - priceBS2) / sigmaShift_vega;
                      Real volgaBarBS = (vegaBarBS2 - vegaBarBS) / sigmaShift_volga;
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() - sigmaShift_volga -
                                     sigmaShift_vega); // setback
 
                      // BS Delta
                      // base delta
-                     ext::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
                          ->setValue(x0Quote->value() + spotShift_delta); // shift forth
                      doubleBarrierOption.recalculate();
                      Real priceBS_delta1 = doubleBarrierOption.NPV();
 
-                     ext::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
                          ->setValue(x0Quote->value() - 2 * spotShift_delta); // shift back
                      doubleBarrierOption.recalculate();
                      Real priceBS_delta2 = doubleBarrierOption.NPV();
 
-                     ext::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
                          ->setValue(x0Quote->value() + spotShift_delta); // set back
                      Real deltaBar1 = (priceBS_delta1 - priceBS_delta2) / (2.0 * spotShift_delta);
 
                      // shifted vanna
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() + sigmaShift_vanna); // shift sigma
                      // shifted delta
-                     ext::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
                          ->setValue(x0Quote->value() + spotShift_delta); // shift forth
                      doubleBarrierOption.recalculate();
                      priceBS_delta1 = doubleBarrierOption.NPV();
 
-                     ext::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
                          ->setValue(x0Quote->value() - 2 * spotShift_delta); // shift back
                      doubleBarrierOption.recalculate();
                      priceBS_delta2 = doubleBarrierOption.NPV();
 
-                     ext::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(x0Quote.currentLink())
                          ->setValue(x0Quote->value() + spotShift_delta); // set back
                      Real deltaBar2 = (priceBS_delta1 - priceBS_delta2) / (2.0 * spotShift_delta);
 
                      Real vannaBarBS = (deltaBar2 - deltaBar1) / sigmaShift_vanna;
 
-                     ext::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
+                     std::static_pointer_cast<SimpleQuote>(atmVolQuote.currentLink())
                          ->setValue(atmVolQuote->value() - sigmaShift_vanna); // set back
 
                      // Matrix

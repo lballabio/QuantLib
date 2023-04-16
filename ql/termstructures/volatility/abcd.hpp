@@ -109,7 +109,7 @@ namespace QuantLib {
         Real operator()(Time t) const;
       
       private:
-        ext::shared_ptr<AbcdFunction> abcd_;
+        std::shared_ptr<AbcdFunction> abcd_;
         Time T_, S_;
     };
 

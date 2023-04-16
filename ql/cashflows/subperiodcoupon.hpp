@@ -52,7 +52,7 @@ namespace QuantLib {
                          const Date& startDate,
                          const Date& endDate,
                          Natural fixingDays,
-                         const ext::shared_ptr<IborIndex>& index,
+                         const std::shared_ptr<IborIndex>& index,
                          Real gearing = 1.0,
                          Rate couponSpread = 0.0, // Spread added to the computed
                                                   // averaging/compounding rate.
@@ -120,7 +120,7 @@ namespace QuantLib {
     //! helper class building a sequence of overnight coupons
     class SubPeriodsLeg {
       public:
-        SubPeriodsLeg(const Schedule &schedule, ext::shared_ptr<IborIndex> index);
+        SubPeriodsLeg(const Schedule &schedule, std::shared_ptr<IborIndex> index);
         SubPeriodsLeg& withNotionals(Real notional);
         SubPeriodsLeg& withNotionals(const std::vector<Real>& notionals);
         SubPeriodsLeg& withPaymentDayCounter(const DayCounter&);
@@ -144,7 +144,7 @@ namespace QuantLib {
 
       private:
         Schedule schedule_;
-        ext::shared_ptr<IborIndex> index_;
+        std::shared_ptr<IborIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         Calendar paymentCalendar_;

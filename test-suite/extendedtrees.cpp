@@ -58,72 +58,72 @@ namespace extended_trees_test {
     enum EngineType { Analytic,
                       JR, CRR, EQP, TGEO, TIAN, LR, JOSHI };
 
-    ext::shared_ptr<GeneralizedBlackScholesProcess>
-    makeProcess(const ext::shared_ptr<Quote>& u,
-                const ext::shared_ptr<YieldTermStructure>& q,
-                const ext::shared_ptr<YieldTermStructure>& r,
-                const ext::shared_ptr<BlackVolTermStructure>& vol) {
-        return ext::make_shared<BlackScholesMertonProcess>(
+    std::shared_ptr<GeneralizedBlackScholesProcess>
+    makeProcess(const std::shared_ptr<Quote>& u,
+                const std::shared_ptr<YieldTermStructure>& q,
+                const std::shared_ptr<YieldTermStructure>& r,
+                const std::shared_ptr<BlackVolTermStructure>& vol) {
+        return std::make_shared<BlackScholesMertonProcess>(
            Handle<Quote>(u),
                                          Handle<YieldTermStructure>(q),
                                          Handle<YieldTermStructure>(r),
                                          Handle<BlackVolTermStructure>(vol));
     }
 
-    ext::shared_ptr<VanillaOption>
-    makeOption(const ext::shared_ptr<StrikedTypePayoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise,
-               const ext::shared_ptr<Quote>& u,
-               const ext::shared_ptr<YieldTermStructure>& q,
-               const ext::shared_ptr<YieldTermStructure>& r,
-               const ext::shared_ptr<BlackVolTermStructure>& vol,
+    std::shared_ptr<VanillaOption>
+    makeOption(const std::shared_ptr<StrikedTypePayoff>& payoff,
+               const std::shared_ptr<Exercise>& exercise,
+               const std::shared_ptr<Quote>& u,
+               const std::shared_ptr<YieldTermStructure>& q,
+               const std::shared_ptr<YieldTermStructure>& r,
+               const std::shared_ptr<BlackVolTermStructure>& vol,
                EngineType engineType,
                Size binomialSteps) {
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
+        std::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
             makeProcess(u,q,r,vol);
 
-        ext::shared_ptr<PricingEngine> engine;
+        std::shared_ptr<PricingEngine> engine;
         switch (engineType) {
           case Analytic:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                                     new AnalyticEuropeanEngine(stochProcess));
             break;
           case JR:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<ExtendedJarrowRudd>(stochProcess,
                                                               binomialSteps));
             break;
           case CRR:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<ExtendedCoxRossRubinstein>(
                                                               stochProcess,
                                                               binomialSteps));
             break;
           case EQP:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<ExtendedAdditiveEQPBinomialTree>(
                                                               stochProcess,
                                                               binomialSteps));
             break;
           case TGEO:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<ExtendedTrigeorgis>(stochProcess,
                                                               binomialSteps));
             break;
           case TIAN:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<ExtendedTian>(stochProcess,
                                                         binomialSteps));
             break;
           case LR:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                       new BinomialVanillaEngine<ExtendedLeisenReimer>(
                                                               stochProcess,
                                                               binomialSteps));
             break;
           case JOSHI:
-            engine = ext::shared_ptr<PricingEngine>(
+            engine = std::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<ExtendedJoshi4>(stochProcess,
                                                           binomialSteps));
             break;
@@ -131,7 +131,7 @@ namespace extended_trees_test {
             QL_FAIL("unknown engine type");
         }
 
-        ext::shared_ptr<VanillaOption> option(
+        std::shared_ptr<VanillaOption> option(
                                         new EuropeanOption(payoff, exercise));
         option->setPricingEngine(engine);
         return option;
@@ -163,25 +163,25 @@ namespace {
         DayCounter dc = Actual360();
         Date today = Date::todaysDate();
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
+        std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        std::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
+        std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        std::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
+        std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        std::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
         for (auto& type : types) {
             for (Real strike : strikes) {
                 for (int length : lengths) {
                     Date exDate = today + length * 360;
-                    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-                    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                    std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                    std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
                     // reference option
-                    ext::shared_ptr<VanillaOption> refOption =
+                    std::shared_ptr<VanillaOption> refOption =
                         makeOption(payoff, exercise, spot, qTS, rTS, volTS, Analytic, Null<Size>());
                     // option to check
-                    ext::shared_ptr<VanillaOption> option =
+                    std::shared_ptr<VanillaOption> option =
                         makeOption(payoff, exercise, spot, qTS, rTS, volTS, engine, binomialSteps);
 
                     for (Real u : underlyings) {

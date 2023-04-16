@@ -1293,12 +1293,12 @@ void InterpolationTest::testSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-8;
     // initialize optimization methods
-    std::vector<ext::shared_ptr<OptimizationMethod>> methods_ = {
-        ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
-        ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
+    std::vector<std::shared_ptr<OptimizationMethod>> methods_ = {
+        std::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
+        std::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
     };
     // Initialize end criteria
-    ext::shared_ptr<EndCriteria> endCriteria(new
+    std::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (auto& method : methods_) {
@@ -1881,12 +1881,12 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-6;
     // initialize optimization methods
-    std::vector<ext::shared_ptr<OptimizationMethod>> methods_ = {
-        ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
-        ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
+    std::vector<std::shared_ptr<OptimizationMethod>> methods_ = {
+        std::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
+        std::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
     };
     // Initialize end criteria
-    ext::shared_ptr<EndCriteria> endCriteria(new
+    std::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
@@ -2330,7 +2330,7 @@ void InterpolationTest::testBSplines() {
     const Natural p = 2;
     const BSpline bspline(p, knots.size()-p-2, knots);
 
-    std::vector<ext::tuple<Natural, Real, Real>> referenceValues = {
+    std::vector<std::tuple<Natural, Real, Real>> referenceValues = {
         {0, -0.95, 9.5238095238e-04},
         {0, -0.01, 0.37337142857},
         {0, 0.49, 0.84575238095},
@@ -2345,9 +2345,9 @@ void InterpolationTest::testBSplines() {
 
     const Real tol = 1e-10;
     for (auto& referenceValue : referenceValues) {
-        const Natural idx = ext::get<0>(referenceValue);
-        const Real x = ext::get<1>(referenceValue);
-        const Real expected = ext::get<2>(referenceValue);
+        const Natural idx = std::get<0>(referenceValue);
+        const Real x = std::get<1>(referenceValue);
+        const Real expected = std::get<2>(referenceValue);
 
         const Real calculated = bspline(idx, x);
 

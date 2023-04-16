@@ -41,10 +41,10 @@
 
 namespace QuantLib {
     LocalVolRNDCalculator::LocalVolRNDCalculator(
-        ext::shared_ptr<Quote> spot,
-        ext::shared_ptr<YieldTermStructure> rTS,
-        ext::shared_ptr<YieldTermStructure> qTS,
-        const ext::shared_ptr<LocalVolTermStructure>& localVol,
+        std::shared_ptr<Quote> spot,
+        std::shared_ptr<YieldTermStructure> rTS,
+        std::shared_ptr<YieldTermStructure> qTS,
+        const std::shared_ptr<LocalVolTermStructure>& localVol,
         Size xGrid,
         Size tGrid,
         Real x0Density,
@@ -62,11 +62,11 @@ namespace QuantLib {
         registerWith(localVol_);
     }
 
-    LocalVolRNDCalculator::LocalVolRNDCalculator(ext::shared_ptr<Quote> spot,
-                                                 ext::shared_ptr<YieldTermStructure> rTS,
-                                                 ext::shared_ptr<YieldTermStructure> qTS,
-                                                 ext::shared_ptr<LocalVolTermStructure> localVol,
-                                                 const ext::shared_ptr<TimeGrid>& timeGrid,
+    LocalVolRNDCalculator::LocalVolRNDCalculator(std::shared_ptr<Quote> spot,
+                                                 std::shared_ptr<YieldTermStructure> rTS,
+                                                 std::shared_ptr<YieldTermStructure> qTS,
+                                                 std::shared_ptr<LocalVolTermStructure> localVol,
+                                                 const std::shared_ptr<TimeGrid>& timeGrid,
                                                  Size xGrid,
                                                  Real x0Density,
                                                  Real eps,
@@ -193,7 +193,7 @@ namespace QuantLib {
         }
     }
 
-    ext::shared_ptr<Fdm1dMesher>
+    std::shared_ptr<Fdm1dMesher>
     LocalVolRNDCalculator::mesher(Time t) const {
         calculate();
 
@@ -204,12 +204,12 @@ namespace QuantLib {
             return xm_[idx-1];
         }
         else {
-            return ext::make_shared<Predefined1dMesher>(
+            return std::make_shared<Predefined1dMesher>(
                 std::vector<Real>(xGrid_, std::log(spot_->value())));
         }
     }
 
-    ext::shared_ptr<TimeGrid> LocalVolRNDCalculator::timeGrid() const {
+    std::shared_ptr<TimeGrid> LocalVolRNDCalculator::timeGrid() const {
         return timeGrid_;
     }
 
@@ -231,7 +231,7 @@ namespace QuantLib {
         Real sLowerBound = xm - normInvEps * stdDevOfFirstStep;
         Real sUpperBound = xm + normInvEps * stdDevOfFirstStep;
 
-        ext::shared_ptr<Fdm1dMesher> mesher(
+        std::shared_ptr<Fdm1dMesher> mesher(
             new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
                 std::make_pair(xm, x0Density_), true));
 
@@ -250,10 +250,10 @@ namespace QuantLib {
 
         const Size b = std::max(Size(1), Size(x.size()*0.04));
 
-        ext::shared_ptr<DouglasScheme> evolver(
+        std::shared_ptr<DouglasScheme> evolver(
             new DouglasScheme(0.5,
-                ext::make_shared<FdmLocalVolFwdOp>(
-                    ext::make_shared<FdmMesherComposite>(mesher),
+                std::make_shared<FdmLocalVolFwdOp>(
+                    std::make_shared<FdmMesherComposite>(mesher),
                     spot_, rTS_, qTS_, localVol_)));
 
         pFct_.resize(tGrid_);
@@ -291,7 +291,7 @@ namespace QuantLib {
                 if (maxRightValue > localVolProbEps_)
                     sUpperBound += scalingFactor*(oldUpperBound-oldLowerBound);
 
-                mesher = ext::shared_ptr<Fdm1dMesher>(
+                mesher = std::shared_ptr<Fdm1dMesher>(
                     new Concentrating1dMesher(sLowerBound, sUpperBound, xGrid_,
                         std::make_pair(xm, 0.1), false));
 
@@ -308,9 +308,9 @@ namespace QuantLib {
                 x = xn;
                 p = rescalePDF(xn, pn);
 
-                evolver = ext::make_shared<DouglasScheme>(0.5,
-                    ext::make_shared<FdmLocalVolFwdOp>(
-                        ext::make_shared<FdmMesherComposite>(mesher),
+                evolver = std::make_shared<DouglasScheme>(0.5,
+                    std::make_shared<FdmLocalVolFwdOp>(
+                        std::make_shared<FdmMesherComposite>(mesher),
                         spot_, rTS_, qTS_, localVol_));
             }
             evolver->setStep(dt);
@@ -323,7 +323,7 @@ namespace QuantLib {
 
             xm_[i-1] = mesher;
             std::copy(p.begin(), p.end(), pm_->row_begin(i-1));
-            pFct_[i-1] = ext::make_shared<CubicNaturalSpline>(
+            pFct_[i-1] = std::make_shared<CubicNaturalSpline>(
                 xm_[i-1]->locations().begin(),
                 xm_[i-1]->locations().end(),
                 pm_->row_begin(i-1));

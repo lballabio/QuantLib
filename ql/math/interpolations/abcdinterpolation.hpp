@@ -91,8 +91,8 @@ namespace QuantLib {
                                   bool cIsFixed,
                                   bool dIsFixed,
                                   bool vegaWeighted,
-                                  ext::shared_ptr<EndCriteria> endCriteria,
-                                  ext::shared_ptr<OptimizationMethod> optMethod)
+                                  std::shared_ptr<EndCriteria> endCriteria,
+                                  std::shared_ptr<OptimizationMethod> optMethod)
             : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin),
               AbcdCoeffHolder(a, b, c, d, aIsFixed, bIsFixed, cIsFixed, dIsFixed),
               endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
@@ -106,7 +106,7 @@ namespace QuantLib {
                     times.push_back(*x);
                     blackVols.push_back(*y);
                 }
-                abcdCalibrator_ = ext::shared_ptr<AbcdCalibration>(
+                abcdCalibrator_ = std::shared_ptr<AbcdCalibration>(
                     new AbcdCalibration(times, blackVols,
                                         a_, b_, c_, d_,
                                         aIsFixed_, bIsFixed_,
@@ -140,10 +140,10 @@ namespace QuantLib {
             }
 
           private:
-            const ext::shared_ptr<EndCriteria> endCriteria_;
-            const ext::shared_ptr<OptimizationMethod> optMethod_;
+            const std::shared_ptr<EndCriteria> endCriteria_;
+            const std::shared_ptr<OptimizationMethod> optMethod_;
             bool vegaWeighted_;
-            ext::shared_ptr<AbcdCalibration> abcdCalibrator_;
+            std::shared_ptr<AbcdCalibration> abcdCalibrator_;
 
         };
 
@@ -170,12 +170,12 @@ namespace QuantLib {
                           bool cIsFixed = false,
                           bool dIsFixed = false,
                           bool vegaWeighted = false,
-                          const ext::shared_ptr<EndCriteria>& endCriteria
-                              = ext::shared_ptr<EndCriteria>(),
-                          const ext::shared_ptr<OptimizationMethod>& optMethod
-                              = ext::shared_ptr<OptimizationMethod>()) {
+                          const std::shared_ptr<EndCriteria>& endCriteria
+                              = std::shared_ptr<EndCriteria>(),
+                          const std::shared_ptr<OptimizationMethod>& optMethod
+                              = std::shared_ptr<OptimizationMethod>()) {
 
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
+            impl_ = std::shared_ptr<Interpolation::Impl>(new
                 detail::AbcdInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                      a, b, c, d,
                                                      aIsFixed, bIsFixed,
@@ -219,8 +219,8 @@ namespace QuantLib {
              bool cIsFixed,
              bool dIsFixed,
              bool vegaWeighted = false,
-             ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-             ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>())
+             std::shared_ptr<EndCriteria> endCriteria = std::shared_ptr<EndCriteria>(),
+             std::shared_ptr<OptimizationMethod> optMethod = std::shared_ptr<OptimizationMethod>())
         : a_(a), b_(b), c_(c), d_(d), aIsFixed_(aIsFixed), bIsFixed_(bIsFixed), cIsFixed_(cIsFixed),
           dIsFixed_(dIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
           optMethod_(std::move(optMethod)) {}
@@ -239,8 +239,8 @@ namespace QuantLib {
         Real a_, b_, c_, d_;
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
         bool vegaWeighted_;
-        const ext::shared_ptr<EndCriteria> endCriteria_;
-        const ext::shared_ptr<OptimizationMethod> optMethod_;
+        const std::shared_ptr<EndCriteria> endCriteria_;
+        const std::shared_ptr<OptimizationMethod> optMethod_;
     };
 
 }

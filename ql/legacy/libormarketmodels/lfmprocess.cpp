@@ -30,8 +30,8 @@
 
 namespace QuantLib {
 
-    LiborForwardModelProcess::LiborForwardModelProcess(Size size, ext::shared_ptr<IborIndex> index)
-    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)), size_(size),
+    LiborForwardModelProcess::LiborForwardModelProcess(Size size, std::shared_ptr<IborIndex> index)
+    : StochasticProcess(std::shared_ptr<discretization>(new EulerDiscretization)), size_(size),
       index_(std::move(index)), initialValues_(size_), fixingTimes_(size_), fixingDates_(size_),
       accrualStartTimes_(size), accrualEndTimes_(size), accrualPeriod_(size_), m1(size_),
       m2(size_) {
@@ -43,11 +43,11 @@ namespace QuantLib {
 
         Date settlement = index_->forwardingTermStructure()->referenceDate();
         const Date startDate =
-            ext::dynamic_pointer_cast<IborCoupon>(flows[0])->fixingDate();
+            std::dynamic_pointer_cast<IborCoupon>(flows[0])->fixingDate();
 
         for (Size i = 0; i < size_; ++i) {
-            const ext::shared_ptr<IborCoupon> coupon =
-               ext::dynamic_pointer_cast<IborCoupon>(flows[i]);
+            const std::shared_ptr<IborCoupon> coupon =
+               std::dynamic_pointer_cast<IborCoupon>(flows[i]);
 
             QL_REQUIRE(coupon->date() == coupon->accrualEndDate(),
                        "irregular coupon types are not suppported");
@@ -149,16 +149,16 @@ namespace QuantLib {
     }
 
     void LiborForwardModelProcess::setCovarParam(
-             const ext::shared_ptr<LfmCovarianceParameterization> & param) {
+             const std::shared_ptr<LfmCovarianceParameterization> & param) {
         lfmParam_ = param;
     }
 
-    ext::shared_ptr<LfmCovarianceParameterization>
+    std::shared_ptr<LfmCovarianceParameterization>
     LiborForwardModelProcess::covarParam() const {
         return lfmParam_;
     }
 
-    ext::shared_ptr<IborIndex>
+    std::shared_ptr<IborIndex>
     LiborForwardModelProcess::index() const {
         return index_;
     }

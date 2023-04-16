@@ -59,7 +59,7 @@ namespace QuantLib {
         std::vector<Real> annuityWeights_;
 
       public:
-        SwapCashFlows(const ext::shared_ptr<VanillaSwap>& swap,
+        SwapCashFlows(const std::shared_ptr<VanillaSwap>& swap,
                       const Handle<YieldTermStructure>& discountCurve,
                       bool contTenorSpread = true);
         SwapCashFlows() = default;
@@ -74,17 +74,17 @@ namespace QuantLib {
 
     class SwaptionCashFlows : public SwapCashFlows {
       protected:
-        ext::shared_ptr<Swaption> swaption_;
+        std::shared_ptr<Swaption> swaption_;
         std::vector<Real> exerciseTimes_;
 
       public:
-        SwaptionCashFlows(const ext::shared_ptr<Swaption>& swaption,
+        SwaptionCashFlows(const std::shared_ptr<Swaption>& swaption,
                           const Handle<YieldTermStructure>& discountCurve,
                           bool contTenorSpread = true);
         SwaptionCashFlows() = default;
         ; // allow default constructor which does nothing
         // inspectors
-        inline ext::shared_ptr<Swaption> swaption() const { return swaption_; }
+        inline std::shared_ptr<Swaption> swaption() const { return swaption_; }
         inline const std::vector<Real>& exerciseTimes() const { return exerciseTimes_; }
     };
 

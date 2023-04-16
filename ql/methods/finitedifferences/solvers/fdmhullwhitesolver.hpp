@@ -49,7 +49,7 @@ namespace QuantLib {
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable ext::shared_ptr<Fdm1DimSolver> solver_;
+        mutable std::shared_ptr<Fdm1DimSolver> solver_;
     };
 }
 

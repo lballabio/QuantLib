@@ -38,8 +38,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
-                    ext::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
+                    std::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
+                    std::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
 
     EuriborSwapIsdaFixA::EuriborSwapIsdaFixA(
                                 const Period& tenor,
@@ -54,8 +54,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new Euribor(6*Months, forwarding)) :
-                    ext::shared_ptr<IborIndex>(new Euribor(3*Months, forwarding)),
+                    std::shared_ptr<IborIndex>(new Euribor(6*Months, forwarding)) :
+                    std::shared_ptr<IborIndex>(new Euribor(3*Months, forwarding)),
                 discounting) {}
 
     EuriborSwapIsdaFixB::EuriborSwapIsdaFixB(
@@ -70,8 +70,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
-                    ext::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
+                    std::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
+                    std::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
 
     EuriborSwapIsdaFixB::EuriborSwapIsdaFixB(
                                 const Period& tenor,
@@ -86,8 +86,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new Euribor(6*Months, forwarding)) :
-                    ext::shared_ptr<IborIndex>(new Euribor(3*Months, forwarding)),
+                    std::shared_ptr<IborIndex>(new Euribor(6*Months, forwarding)) :
+                    std::shared_ptr<IborIndex>(new Euribor(3*Months, forwarding)),
                 discounting) {}
 
 
@@ -102,8 +102,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
-                    ext::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
+                    std::shared_ptr<IborIndex>(new Euribor(6*Months, h)) :
+                    std::shared_ptr<IborIndex>(new Euribor(3*Months, h))) {}
 
     EuriborSwapIfrFix::EuriborSwapIfrFix(
                                 const Period& tenor,
@@ -118,8 +118,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new Euribor(6*Months, forwarding)) :
-                    ext::shared_ptr<IborIndex>(new Euribor(3*Months, forwarding)),
+                    std::shared_ptr<IborIndex>(new Euribor(6*Months, forwarding)) :
+                    std::shared_ptr<IborIndex>(new Euribor(3*Months, forwarding)),
                 discounting) {}
 
 

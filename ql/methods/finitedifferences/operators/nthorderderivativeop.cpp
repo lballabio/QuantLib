@@ -31,13 +31,13 @@ namespace QuantLib {
 
     NthOrderDerivativeOp::NthOrderDerivativeOp(
         Size direction, Size order, Integer nPoints,
-        const ext::shared_ptr<FdmMesher>& mesher)
+        const std::shared_ptr<FdmMesher>& mesher)
     : m_(mesher->layout()->size(), mesher->layout()->size()) {
 
         const Integer hPoints = nPoints/2;
         const bool isEven = (nPoints == 2*hPoints);
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         Array xValues = mesher->locations(direction);
@@ -53,7 +53,7 @@ namespace QuantLib {
              "inconsistent number of points");
 
         Array xOffsets(nPoints);
-        const ext::function<Real(Real)> emptyFct;
+        const std::function<Real(Real)> emptyFct;
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
             const auto ix = Integer(iter.coordinates()[direction]);

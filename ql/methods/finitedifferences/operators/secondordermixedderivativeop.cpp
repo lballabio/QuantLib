@@ -25,10 +25,10 @@
 namespace QuantLib {
     SecondOrderMixedDerivativeOp::SecondOrderMixedDerivativeOp(
         Size d0, Size d1,
-        const ext::shared_ptr<FdmMesher>& mesher)
+        const std::shared_ptr<FdmMesher>& mesher)
     : NinePointLinearOp(d0, d1, mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {

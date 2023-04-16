@@ -34,7 +34,7 @@
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -79,8 +79,8 @@ namespace {
         }
 
         template <class R>
-        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
-            return ext::shared_ptr<YieldTermStructure>(
+        std::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
+            return std::shared_ptr<YieldTermStructure>(
                                   new FlatForward(settlement, r, dayCounter));
         }
 
@@ -103,12 +103,12 @@ void CallableBondTest::testInterplay() {
     Globals vars;
 
     vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+    vars.model.linkTo(std::make_shared<HullWhite>(vars.termStructure));
 
     Size timeSteps = 240;
 
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<TreeCallableZeroCouponBondEngine>(
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<TreeCallableZeroCouponBondEngine>(
                                 *(vars.model), timeSteps, vars.termStructure);
 
     /* case 1: an earlier out-of-the-money callability must prevent
@@ -117,12 +117,12 @@ void CallableBondTest::testInterplay() {
 
     CallabilitySchedule callabilities;
 
-    callabilities.push_back(ext::make_shared<Callability>(
+    callabilities.push_back(std::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Call,
                          vars.calendar.advance(vars.issueDate(),4,Years)));
 
-    callabilities.push_back(ext::make_shared<Callability>(
+    callabilities.push_back(std::make_shared<Callability>(
                          Bond::Price(1000.0, Bond::Price::Clean),
                          Callability::Put,
                          vars.calendar.advance(vars.issueDate(),6,Years)));
@@ -147,7 +147,7 @@ void CallableBondTest::testInterplay() {
 
     /* case 2: same as case 1, with an added callability later on */
 
-    callabilities.push_back(ext::make_shared<Callability>(
+    callabilities.push_back(std::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Call,
                          vars.calendar.advance(vars.issueDate(),8,Years)));
@@ -172,12 +172,12 @@ void CallableBondTest::testInterplay() {
 
     callabilities.clear();
 
-    callabilities.push_back(ext::make_shared<Callability>(
+    callabilities.push_back(std::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Put,
                          vars.calendar.advance(vars.issueDate(),4,Years)));
 
-    callabilities.push_back(ext::make_shared<Callability>(
+    callabilities.push_back(std::make_shared<Callability>(
                          Bond::Price(10.0, Bond::Price::Clean),
                          Callability::Call,
                          vars.calendar.advance(vars.issueDate(),6,Years)));
@@ -202,7 +202,7 @@ void CallableBondTest::testInterplay() {
 
     /* case 4: same as case 3, with an added puttability later on */
 
-    callabilities.push_back(ext::make_shared<Callability>(
+    callabilities.push_back(std::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Put,
                          vars.calendar.advance(vars.issueDate(),8,Years)));
@@ -230,7 +230,7 @@ void CallableBondTest::testConsistency() {
     Globals vars;
 
     vars.termStructure.linkTo(vars.makeFlatCurve(0.032));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+    vars.model.linkTo(std::make_shared<HullWhite>(vars.termStructure));
 
     Schedule schedule =
         MakeSchedule()
@@ -246,26 +246,26 @@ void CallableBondTest::testConsistency() {
     FixedRateBond bond(3, 100.0, schedule,
                        coupons, Thirty360(Thirty360::BondBasis));
     bond.setPricingEngine(
-               ext::make_shared<DiscountingBondEngine>(vars.termStructure));
+               std::make_shared<DiscountingBondEngine>(vars.termStructure));
 
     CallabilitySchedule callabilities;
     std::vector<Date> callabilityDates = vars.evenYears();
     for (auto& callabilityDate : callabilityDates) {
-        callabilities.push_back(ext::make_shared<Callability>(
+        callabilities.push_back(std::make_shared<Callability>(
             Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate));
     }
 
     CallabilitySchedule puttabilities;
     std::vector<Date> puttabilityDates = vars.oddYears();
     for (auto& puttabilityDate : puttabilityDates) {
-        puttabilities.push_back(ext::make_shared<Callability>(Bond::Price(90.0, Bond::Price::Clean),
+        puttabilities.push_back(std::make_shared<Callability>(Bond::Price(90.0, Bond::Price::Clean),
                                                               Callability::Put, puttabilityDate));
     }
 
     Size timeSteps = 240;
 
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<TreeCallableFixedRateBondEngine>(
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<TreeCallableFixedRateBondEngine>(
                                 *(vars.model), timeSteps, vars.termStructure);
 
     CallableFixedRateBond callable(3, 100.0, schedule,
@@ -306,10 +306,10 @@ void CallableBondTest::testObservability() {
 
     Globals vars;
 
-    ext::shared_ptr<SimpleQuote> observable(new SimpleQuote(0.03));
+    std::shared_ptr<SimpleQuote> observable(new SimpleQuote(0.03));
     Handle<Quote> h(observable);
     vars.termStructure.linkTo(vars.makeFlatCurve(h));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+    vars.model.linkTo(std::make_shared<HullWhite>(vars.termStructure));
 
     Schedule schedule =
         MakeSchedule()
@@ -326,12 +326,12 @@ void CallableBondTest::testObservability() {
 
     std::vector<Date> callabilityDates = vars.evenYears();
     for (auto& callabilityDate : callabilityDates) {
-        callabilities.push_back(ext::make_shared<Callability>(
+        callabilities.push_back(std::make_shared<Callability>(
             Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate));
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
     for (auto& puttabilityDate : puttabilityDates) {
-        callabilities.push_back(ext::make_shared<Callability>(Bond::Price(90.0, Bond::Price::Clean),
+        callabilities.push_back(std::make_shared<Callability>(Bond::Price(90.0, Bond::Price::Clean),
                                                               Callability::Put, puttabilityDate));
     }
 
@@ -342,8 +342,8 @@ void CallableBondTest::testObservability() {
 
     Size timeSteps = 240;
 
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<TreeCallableFixedRateBondEngine>(
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<TreeCallableFixedRateBondEngine>(
                                 *(vars.model), timeSteps, vars.termStructure);
 
     bond.setPricingEngine(engine);
@@ -366,7 +366,7 @@ void CallableBondTest::testDegenerate() {
     Globals vars;
 
     vars.termStructure.linkTo(vars.makeFlatCurve(0.034));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+    vars.model.linkTo(std::make_shared<HullWhite>(vars.termStructure));
 
     Schedule schedule =
         MakeSchedule()
@@ -399,16 +399,16 @@ void CallableBondTest::testDegenerate() {
                                 100.0, vars.issueDate(),
                                 callabilities);
 
-    ext::shared_ptr<PricingEngine> discountingEngine =
-        ext::make_shared<DiscountingBondEngine>(vars.termStructure);
+    std::shared_ptr<PricingEngine> discountingEngine =
+        std::make_shared<DiscountingBondEngine>(vars.termStructure);
 
     zeroCouponBond.setPricingEngine(discountingEngine);
     couponBond.setPricingEngine(discountingEngine);
 
     Size timeSteps = 240;
 
-    ext::shared_ptr<PricingEngine> treeEngine =
-        ext::make_shared<TreeCallableFixedRateBondEngine>(
+    std::shared_ptr<PricingEngine> treeEngine =
+        std::make_shared<TreeCallableFixedRateBondEngine>(
                                 *(vars.model), timeSteps, vars.termStructure);
 
     bond1.setPricingEngine(treeEngine);
@@ -434,12 +434,12 @@ void CallableBondTest::testDegenerate() {
 
     std::vector<Date> callabilityDates = vars.evenYears();
     for (auto& callabilityDate : callabilityDates) {
-        callabilities.push_back(ext::make_shared<Callability>(
+        callabilities.push_back(std::make_shared<Callability>(
             Bond::Price(10000.0, Bond::Price::Clean), Callability::Call, callabilityDate));
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
     for (auto& puttabilityDate : puttabilityDates) {
-        callabilities.push_back(ext::make_shared<Callability>(Bond::Price(0.0, Bond::Price::Clean),
+        callabilities.push_back(std::make_shared<Callability>(Bond::Price(0.0, Bond::Price::Clean),
                                                               Callability::Put, puttabilityDate));
     }
 
@@ -483,7 +483,7 @@ void CallableBondTest::testCached() {
     vars.settlement = vars.calendar.advance(vars.today,3,Days);
 
     vars.termStructure.linkTo(vars.makeFlatCurve(0.032));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+    vars.model.linkTo(std::make_shared<HullWhite>(vars.termStructure));
 
     Schedule schedule =
         MakeSchedule()
@@ -502,14 +502,14 @@ void CallableBondTest::testCached() {
 
     std::vector<Date> callabilityDates = vars.evenYears();
     for (auto& callabilityDate : callabilityDates) {
-        ext::shared_ptr<Callability> exercise = ext::make_shared<Callability>(
+        std::shared_ptr<Callability> exercise = std::make_shared<Callability>(
             Bond::Price(110.0, Bond::Price::Clean), Callability::Call, callabilityDate);
         callabilities.push_back(exercise);
         all_exercises.push_back(exercise);
     }
     std::vector<Date> puttabilityDates = vars.oddYears();
     for (auto& puttabilityDate : puttabilityDates) {
-        ext::shared_ptr<Callability> exercise = ext::make_shared<Callability>(
+        std::shared_ptr<Callability> exercise = std::make_shared<Callability>(
             Bond::Price(100.0, Bond::Price::Clean), Callability::Put, puttabilityDate);
         puttabilities.push_back(exercise);
         all_exercises.push_back(exercise);
@@ -517,8 +517,8 @@ void CallableBondTest::testCached() {
 
     Size timeSteps = 240;
 
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<TreeCallableFixedRateBondEngine>(
+    std::shared_ptr<PricingEngine> engine =
+        std::make_shared<TreeCallableFixedRateBondEngine>(
                                 *(vars.model), timeSteps, vars.termStructure);
 
     double tolerance = 1.0e-8;
@@ -587,11 +587,11 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     auto accrualDCC = Thirty360(Thirty360::Convention::USA);
     auto frequency = Semiannual;
     RelinkableHandle<YieldTermStructure> termStructure;
-    termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    termStructure.linkTo(std::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
 
     auto makeBonds = [&calendar, &accrualDCC, frequency,
-                      &termStructure](Date callDate, ext::shared_ptr<FixedRateBond>& fixedRateBond,
-                                      ext::shared_ptr<CallableFixedRateBond>& callableBond) {
+                      &termStructure](Date callDate, std::shared_ptr<FixedRateBond>& fixedRateBond,
+                                      std::shared_ptr<CallableFixedRateBond>& callableBond) {
         auto settlementDays = 2;
         auto settlementDate = Date(20, May, 2021);
         auto coupon = 0.05;
@@ -611,15 +611,15 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
         auto coupons = std::vector<Rate>(schedule.size() - 1, coupon);
 
         CallabilitySchedule callabilitySchedule;
-        callabilitySchedule.push_back(ext::make_shared<Callability>(
+        callabilitySchedule.push_back(std::make_shared<Callability>(
             Bond::Price(faceAmount, Bond::Price::Clean), Callability::Type::Call, callDate));
 
-        auto newCallableBond = ext::make_shared<CallableFixedRateBond>(
+        auto newCallableBond = std::make_shared<CallableFixedRateBond>(
             settlementDays, faceAmount, schedule, coupons, accrualDCC,
             BusinessDayConvention::Following, redemption, issueDate, callabilitySchedule);
 
-        auto model = ext::make_shared<HullWhite>(termStructure, 1e-12, 0.003);
-        auto treeEngine = ext::make_shared<TreeCallableFixedRateBondEngine>(model, 40);
+        auto model = std::make_shared<HullWhite>(termStructure, 1e-12, 0.003);
+        auto treeEngine = std::make_shared<TreeCallableFixedRateBondEngine>(model, 40);
         newCallableBond->setPricingEngine(treeEngine);
 
         callableBond.swap(newCallableBond);
@@ -627,10 +627,10 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
         auto fixedRateBondSchedule = schedule.until(callDate);
         auto fixedRateBondCoupons = std::vector<Rate>(schedule.size() - 1, coupon);
 
-        auto newFixedRateBond = ext::make_shared<FixedRateBond>(
+        auto newFixedRateBond = std::make_shared<FixedRateBond>(
             settlementDays, faceAmount, fixedRateBondSchedule, fixedRateBondCoupons, accrualDCC,
             BusinessDayConvention::Following, redemption, issueDate);
-        auto discountingEngine = ext::make_shared<DiscountingBondEngine>(termStructure);
+        auto discountingEngine = std::make_shared<DiscountingBondEngine>(termStructure);
         newFixedRateBond->setPricingEngine(discountingEngine);
 
         fixedRateBond.swap(newFixedRateBond);
@@ -641,8 +641,8 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     Real prevOAS = 0.0266;
     Real expectedOasStep = 0.00005;
 
-    ext::shared_ptr<CallableFixedRateBond> callableBond;
-    ext::shared_ptr<FixedRateBond> fixedRateBond;
+    std::shared_ptr<CallableFixedRateBond> callableBond;
+    std::shared_ptr<FixedRateBond> fixedRateBond;
 
     for (int i = -10; i < 11; i++) {
         auto callDate = initialCallDate + i * Days;
@@ -688,7 +688,7 @@ void CallableBondTest::testBlackEngine() {
     vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
 
     CallabilitySchedule callabilities = {
-        ext::make_shared<Callability>(
+        std::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Call,
                          vars.calendar.advance(vars.issueDate(),4,Years))
@@ -699,8 +699,8 @@ void CallableBondTest::testBlackEngine() {
                                 vars.rollingConvention, 100.0,
                                 vars.issueDate(), callabilities);
 
-    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(0.3)), vars.termStructure));
+    bond.setPricingEngine(std::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(std::make_shared<SimpleQuote>(0.3)), vars.termStructure));
 
     Real expected = 74.52915084;
     Real calculated = bond.cleanPrice();
@@ -735,7 +735,7 @@ void CallableBondTest::testImpliedVol() {
     std::vector<Rate> coupons = { 0.01 };
 
     CallabilitySchedule callabilities = {
-        ext::make_shared<Callability>(
+        std::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Call,
                          schedule.at(8))
@@ -755,8 +755,8 @@ void CallableBondTest::testImpliedVol() {
                                              1e-4,  // min vol
                                              1.0);  // max vol
 
-    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
+    bond.setPricingEngine(std::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(std::make_shared<SimpleQuote>(volatility)), vars.termStructure));
 
     if (std::fabs(bond.dirtyPrice() - targetPrice.amount()) > 1.0e-4)
         BOOST_ERROR(
@@ -774,8 +774,8 @@ void CallableBondTest::testImpliedVol() {
                                         1e-4,  // min vol
                                         1.0);  // max vol
 
-    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
+    bond.setPricingEngine(std::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(std::make_shared<SimpleQuote>(volatility)), vars.termStructure));
 
     if (std::fabs(bond.cleanPrice() - targetPrice.amount()) > 1.0e-4)
         BOOST_ERROR(
@@ -798,8 +798,8 @@ void CallableBondTest::testImpliedVol() {
 
     QL_DEPRECATED_ENABLE_WARNING
 
-    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
+    bond.setPricingEngine(std::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(std::make_shared<SimpleQuote>(volatility)), vars.termStructure));
 
     if (std::fabs(bond.NPV() - targetNPV) > 1.0e-4)
         BOOST_ERROR(

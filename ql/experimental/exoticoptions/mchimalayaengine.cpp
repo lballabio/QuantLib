@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    HimalayaMultiPathPricer::HimalayaMultiPathPricer(ext::shared_ptr<Payoff> payoff,
+    HimalayaMultiPathPricer::HimalayaMultiPathPricer(std::shared_ptr<Payoff> payoff,
                                                      DiscountFactor discount)
     : payoff_(std::move(payoff)), discount_(discount) {}
 

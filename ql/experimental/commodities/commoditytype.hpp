@@ -25,7 +25,7 @@
 #define quantlib_commodity_type_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <iosfwd>
 #include <map>
 #include <string>
@@ -60,7 +60,7 @@ namespace QuantLib {
 
       protected:
         struct Data;
-        ext::shared_ptr<Data> data_;
+        std::shared_ptr<Data> data_;
 
         struct Data {
             std::string name, code;
@@ -69,7 +69,7 @@ namespace QuantLib {
             : name(std::move(name)), code(std::move(code)) {}
         };
 
-        static std::map<std::string, ext::shared_ptr<Data> > commodityTypes_;
+        static std::map<std::string, std::shared_ptr<Data> > commodityTypes_;
     };
 
     /*! \relates CommodityType */

@@ -40,7 +40,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <map>
 #include <iomanip>
 #include <iostream>
@@ -61,15 +61,15 @@ void CreditDefaultSwapTest::testCachedValue() {
     Calendar calendar = TARGET();
 
     Handle<Quote> hazardRate = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(0.01234)));
+                std::shared_ptr<Quote>(new SimpleQuote(0.01234)));
     RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
     probabilityCurve.linkTo(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
+        std::shared_ptr<DefaultProbabilityTermStructure>(
                    new FlatHazardRate(0, calendar, hazardRate, Actual360())));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
 
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                             new FlatForward(today,0.06,Actual360())));
 
     // Build the schedule
@@ -89,7 +89,7 @@ void CreditDefaultSwapTest::testCachedValue() {
 
     CreditDefaultSwap cds(Protection::Seller, notional, fixedRate,
                           schedule, convention, dayCount, true, true);
-    cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+    cds.setPricingEngine(std::shared_ptr<PricingEngine>(
          new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve)));
 
     Real npv = 295.0153398;
@@ -113,7 +113,7 @@ void CreditDefaultSwapTest::testCachedValue() {
             << "    calculated fair rate: " << calculatedFairRate << "\n"
             << "    expected fair rate:   " << fairRate);
 
-    cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+    cds.setPricingEngine(std::shared_ptr<PricingEngine>(
                           new IntegralCdsEngine(1*Days,probabilityCurve,
                                                 recoveryRate,discountCurve)));
 
@@ -137,7 +137,7 @@ void CreditDefaultSwapTest::testCachedValue() {
             << "    calculated fair rate: " << calculatedFairRate << "\n"
             << "    expected fair rate:   " << fairRate);
 
-    cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+    cds.setPricingEngine(std::shared_ptr<PricingEngine>(
                           new IntegralCdsEngine(1*Weeks,probabilityCurve,
                                                 recoveryRate,discountCurve)));
 
@@ -218,7 +218,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
 
     RelinkableHandle<YieldTermStructure> discountCurve;
     discountCurve.linkTo(
-        ext::shared_ptr<YieldTermStructure>(
+        std::shared_ptr<YieldTermStructure>(
             new DiscountCurve(discountDates, dfs, curveDayCounter)));
 
     DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
@@ -258,7 +258,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
 
     RelinkableHandle<DefaultProbabilityTermStructure> piecewiseFlatHazardRate;
     piecewiseFlatHazardRate.linkTo(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
+        std::shared_ptr<DefaultProbabilityTermStructure>(
                new InterpolatedHazardRateCurve<BackwardFlat>(dates,
                                                              hazardRates,
                                                              Thirty360(Thirty360::BondBasis))));
@@ -283,7 +283,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
 
     CreditDefaultSwap cds(Protection::Seller, cdsNotional, fixedRate,
                           schedule, cdsConvention, dayCount, true, true);
-    cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+    cds.setPricingEngine(std::shared_ptr<PricingEngine>(
                           new MidPointCdsEngine(piecewiseFlatHazardRate,
                                                 recoveryRate,discountCurve)));
 
@@ -337,13 +337,13 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
     hazardRates[2] = h2;
 
     RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
-    probabilityCurve.linkTo(ext::shared_ptr<DefaultProbabilityTermStructure>(
+    probabilityCurve.linkTo(std::shared_ptr<DefaultProbabilityTermStructure>(
                     new InterpolatedHazardRateCurve<BackwardFlat>(dates,
                                                                   hazardRates,
                                                                   dayCounter)));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                             new FlatForward(today,0.03,Actual360())));
 
 
@@ -367,7 +367,7 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
         CreditDefaultSwap cds(Protection::Seller, notional, fixedRate,
                               schedule, convention, cdsDayCount,
                               true, true);
-        cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        cds.setPricingEngine(std::shared_ptr<PricingEngine>(
                          new MidPointCdsEngine(probabilityCurve,
                                                recoveryRate, discountCurve)));
 
@@ -394,16 +394,16 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
         latestRate = flatRate;
 
         RelinkableHandle<DefaultProbabilityTermStructure> probability;
-        probability.linkTo(ext::shared_ptr<DefaultProbabilityTermStructure>(
+        probability.linkTo(std::shared_ptr<DefaultProbabilityTermStructure>(
          new FlatHazardRate(
            today,
-           Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(flatRate))),
+           Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(flatRate))),
            dayCounter)));
 
         CreditDefaultSwap cds2(Protection::Seller, notional, fixedRate,
                                schedule, convention, cdsDayCount,
                                true, true);
-        cds2.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        cds2.setPricingEngine(std::shared_ptr<PricingEngine>(
                                new MidPointCdsEngine(probability,recoveryRate,
                                                      discountCurve)));
 
@@ -431,14 +431,14 @@ void CreditDefaultSwapTest::testFairSpread() {
     Settings::instance().evaluationDate() = today;
 
     Handle<Quote> hazardRate = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(0.01234)));
+                std::shared_ptr<Quote>(new SimpleQuote(0.01234)));
     RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
     probabilityCurve.linkTo(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
+        std::shared_ptr<DefaultProbabilityTermStructure>(
                    new FlatHazardRate(0, calendar, hazardRate, Actual360())));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                             new FlatForward(today,0.06,Actual360())));
 
     // Build the schedule
@@ -460,7 +460,7 @@ void CreditDefaultSwapTest::testFairSpread() {
     Real notional = 10000.0;
     Real recoveryRate = 0.4;
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
           new MidPointCdsEngine(probabilityCurve,recoveryRate,discountCurve));
 
     CreditDefaultSwap cds(Protection::Seller, notional, fixedRate,
@@ -496,14 +496,14 @@ void CreditDefaultSwapTest::testFairUpfront() {
     Settings::instance().evaluationDate() = today;
 
     Handle<Quote> hazardRate = Handle<Quote>(
-                ext::shared_ptr<Quote>(new SimpleQuote(0.01234)));
+                std::shared_ptr<Quote>(new SimpleQuote(0.01234)));
     RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
     probabilityCurve.linkTo(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
+        std::shared_ptr<DefaultProbabilityTermStructure>(
                    new FlatHazardRate(0, calendar, hazardRate, Actual360())));
 
     RelinkableHandle<YieldTermStructure> discountCurve;
-    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    discountCurve.linkTo(std::shared_ptr<YieldTermStructure>(
                             new FlatForward(today,0.06,Actual360())));
 
     // Build the schedule
@@ -526,7 +526,7 @@ void CreditDefaultSwapTest::testFairUpfront() {
     Real notional = 10000.0;
     Real recoveryRate = 0.4;
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
           new MidPointCdsEngine(probabilityCurve, recoveryRate,
                                 discountCurve, true));
 
@@ -587,7 +587,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
     //build an ISDA compliant yield curve
     //data comes from Markit published rates
-    std::vector<ext::shared_ptr<RateHelper> > isdaRateHelpers;
+    std::vector<std::shared_ptr<RateHelper> > isdaRateHelpers;
     int dep_tenors[] = {1, 2, 3, 6, 9, 12};
     double dep_quotes[] = {0.003081,
                            0.005525,
@@ -597,7 +597,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                            0.015488};
 
     for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
+        isdaRateHelpers.push_back(std::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,
                                      false, Actual360()
@@ -620,11 +620,11 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                             0.037246,
                             0.037605};
 
-    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+    std::shared_ptr<IborIndex> isda_ibor = std::make_shared<IborIndex>(
         "IsdaIbor", 3 * Months, 2, USDCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(ext::make_shared<SwapRateHelper>(
+        isdaRateHelpers.push_back(std::make_shared<SwapRateHelper>(
                                       swap_quotes[i], swap_tenors[i] * Years,
                                       WeekendsOnly(),
                                       Semiannual,
@@ -635,7 +635,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
     RelinkableHandle<YieldTermStructure> discountCurve;
     discountCurve.linkTo(
-            ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+            std::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
         );
 
@@ -683,20 +683,20 @@ void CreditDefaultSwapTest::testIsdaEngine() {
         for (Real spread : spreads) {
             for (Real& recovery : recoveries) {
 
-                ext::shared_ptr<CreditDefaultSwap> quotedTrade =
+                std::shared_ptr<CreditDefaultSwap> quotedTrade =
                     MakeCreditDefaultSwap(termDate, spread).withNominal(10000000.);
 
                 Rate h = quotedTrade->impliedHazardRate(0., discountCurve, Actual365Fixed(),
                                                         recovery, 1e-10, CreditDefaultSwap::ISDA);
 
                 probabilityCurve.linkTo(
-                    ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
+                    std::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-                ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-                    probabilityCurve, recovery, discountCurve, ext::nullopt, IsdaCdsEngine::Taylor,
+                std::shared_ptr<IsdaCdsEngine> engine = std::make_shared<IsdaCdsEngine>(
+                    probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
                     IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
-                ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
+                std::shared_ptr<CreditDefaultSwap> conventionalTrade =
                     MakeCreditDefaultSwap(termDate, 0.01)
                         .withNominal(10000000.)
                         .withPricingEngine(engine);
@@ -706,7 +706,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
                 // Now testing that with the calculated fair-upfront, both Buyer and Seller sides
                 // price close to zero
-                ext::shared_ptr<CreditDefaultSwap> conventionalTradeBuy =
+                std::shared_ptr<CreditDefaultSwap> conventionalTradeBuy =
                     MakeCreditDefaultSwap(termDate, 0.01)
                         .withNominal(10000000.)
                         .withUpfrontRate(conventionalTrade->fairUpfront())
@@ -715,7 +715,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
                 QL_CHECK_SMALL(conventionalTradeBuy->NPV(), tolerance);
 
-                ext::shared_ptr<CreditDefaultSwap> conventionalTradeSell =
+                std::shared_ptr<CreditDefaultSwap> conventionalTradeSell =
                     MakeCreditDefaultSwap(termDate, 0.01)
                         .withNominal(10000000.)
                         .withUpfrontRate(conventionalTrade->fairUpfront())
@@ -779,12 +779,12 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
 
     //build an ISDA compliant yield curve
     //data comes from Markit published rates
-    std::vector<ext::shared_ptr<RateHelper> > isdaRateHelpers;
+    std::vector<std::shared_ptr<RateHelper> > isdaRateHelpers;
     int dep_tenors[] = {1, 3, 6, 12};
     double dep_quotes[] = {-0.0056,-0.005440,-0.005190,-0.004930};
 
     for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
+        isdaRateHelpers.push_back(std::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,
                                      false, Actual360()
@@ -806,11 +806,11 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
                             0.002940,
                             0.002820};
 
-    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+    std::shared_ptr<IborIndex> isda_ibor = std::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(ext::make_shared<SwapRateHelper>(
+        isdaRateHelpers.push_back(std::make_shared<SwapRateHelper>(
                                       swap_quotes[i], swap_tenors[i] * Years,
                                       WeekendsOnly(),
                                       Annual,
@@ -821,7 +821,7 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
 
     RelinkableHandle<YieldTermStructure> discountCurve;
     discountCurve.linkTo(
-            ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+            std::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
         );
 
@@ -830,20 +830,20 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
     Rate coupon = 0.01, conventionalSpread = 0.006713, recovery = 0.4;
     double nominal = 1e6, markitValue = -16070.7, expected_accrual = 1000, tolerance = 1.0e-3;
 
-    ext::shared_ptr<CreditDefaultSwap> quotedTrade =
+    std::shared_ptr<CreditDefaultSwap> quotedTrade =
         MakeCreditDefaultSwap(instrumentMaturity, conventionalSpread).withNominal(nominal);
 
     Rate h = quotedTrade->impliedHazardRate(0., discountCurve, Actual365Fixed(),
                                             recovery, 1e-10, CreditDefaultSwap::ISDA);
 
     probabilityCurve.linkTo(
-        ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
+        std::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-    ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-        probabilityCurve, recovery, discountCurve, ext::nullopt, IsdaCdsEngine::Taylor,
+    std::shared_ptr<IsdaCdsEngine> engine = std::make_shared<IsdaCdsEngine>(
+        probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
         IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
-    ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
+    std::shared_ptr<CreditDefaultSwap> conventionalTrade =
         MakeCreditDefaultSwap(instrumentMaturity, coupon)
             .withNominal(nominal)
             .withPricingEngine(engine);
@@ -889,12 +889,12 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
 
     //build an ISDA compliant yield curve
     //data comes from Markit published rates
-    std::vector<ext::shared_ptr<RateHelper> > isdaRateHelpers;
+    std::vector<std::shared_ptr<RateHelper> > isdaRateHelpers;
     int dep_tenors[] = {1, 3, 6, 12};
     double dep_quotes[] = {-0.0056,-0.005440,-0.005190,-0.004930};
 
     for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
+        isdaRateHelpers.push_back(std::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,
                                      false, Actual360()
@@ -916,11 +916,11 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
                             0.002940,
                             0.002820};
 
-    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+    std::shared_ptr<IborIndex> isda_ibor = std::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
-        isdaRateHelpers.push_back(ext::make_shared<SwapRateHelper>(
+        isdaRateHelpers.push_back(std::make_shared<SwapRateHelper>(
                                       swap_quotes[i], swap_tenors[i] * Years,
                                       WeekendsOnly(),
                                       Annual,
@@ -931,7 +931,7 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
 
     RelinkableHandle<YieldTermStructure> discountCurve;
     discountCurve.linkTo(
-            ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+            std::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
                 0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
         );
 
@@ -943,7 +943,7 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
     //previous test (old_markit_value - old_accrual or -16070.7 - 1000)
     double nominal = 1e6, markitValue = -17070.77, expected_accrual = 0, tolerance = 1.0e-3;
 
-    ext::shared_ptr<CreditDefaultSwap> quotedTrade =
+    std::shared_ptr<CreditDefaultSwap> quotedTrade =
         MakeCreditDefaultSwap(instrumentMaturity, conventionalSpread)
         .withNominal(nominal);
 
@@ -951,13 +951,13 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
                                             recovery, 1e-10, CreditDefaultSwap::ISDA);
 
     probabilityCurve.linkTo(
-        ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
+        std::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-    ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-        probabilityCurve, recovery, discountCurve, ext::nullopt, IsdaCdsEngine::Taylor,
+    std::shared_ptr<IsdaCdsEngine> engine = std::make_shared<IsdaCdsEngine>(
+        probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
         IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
-    ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
+    std::shared_ptr<CreditDefaultSwap> conventionalTrade =
         MakeCreditDefaultSwap(instrumentMaturity, coupon)
             .withNominal(nominal)
             .withPricingEngine(engine)

@@ -31,10 +31,10 @@ namespace QuantLib {
                                            DayCounter yoyDayCounter,
                                            Calendar paymentCalendar,
                                            Natural fixingDays,
-                                           ext::shared_ptr<YoYInflationIndex> index,
+                                           std::shared_ptr<YoYInflationIndex> index,
                                            Rate strike,
                                            Size n,
-                                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
+                                           std::shared_ptr<YoYInflationCapFloorEngine> pricer)
     : BootstrapHelper<YoYOptionletVolatilitySurface>(price), notional_(notional),
       capFloorType_(capFloorType), lag_(lag), fixingDays_(fixingDays), index_(std::move(index)),
       strike_(strike), n_(n), yoyDayCounter_(std::move(yoyDayCounter)),
@@ -52,9 +52,9 @@ namespace QuantLib {
         // dates already build in lag of index/instrument
         // these are the dates of the values of the index
         // that fix the capfloor
-          earliestDate_ = ext::dynamic_pointer_cast<YoYInflationCoupon>(
+          earliestDate_ = std::dynamic_pointer_cast<YoYInflationCoupon>(
               yoyCapFloor_->yoyLeg().front())->fixingDate();
-          latestDate_ = ext::dynamic_pointer_cast<YoYInflationCoupon>(
+          latestDate_ = std::dynamic_pointer_cast<YoYInflationCoupon>(
               yoyCapFloor_->yoyLeg().back())->fixingDate();
 
         // each reprice is resetting the inflation surf in the
@@ -79,7 +79,7 @@ namespace QuantLib {
         const bool own = false;
         // create a handle to the new vol surface
         Handle<YoYOptionletVolatilitySurface> volSurf(
-            ext::shared_ptr<YoYOptionletVolatilitySurface>(v, null_deleter()),
+            std::shared_ptr<YoYOptionletVolatilitySurface>(v, null_deleter()),
             own);
         // in this case all we need to do is reset the vol in the pricer
         // we must do it because the surface is a different one each time

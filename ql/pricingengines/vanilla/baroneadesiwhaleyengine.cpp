@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     BaroneAdesiWhaleyApproximationEngine::BaroneAdesiWhaleyApproximationEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -37,7 +37,7 @@ namespace QuantLib {
 
     // critical commodity price
     Real BaroneAdesiWhaleyApproximationEngine::criticalPrice(
-        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const std::shared_ptr<StrikedTypePayoff>& payoff,
         DiscountFactor riskFreeDiscount,
         DiscountFactor dividendDiscount,
         Real variance, Real tolerance) {
@@ -137,14 +137,14 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        ext::shared_ptr<AmericanExercise> ex =
-            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        std::shared_ptr<AmericanExercise> ex =
+            std::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance = process_->blackVolatility()->blackVariance(

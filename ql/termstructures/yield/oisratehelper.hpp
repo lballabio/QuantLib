@@ -27,7 +27,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 
 namespace QuantLib {
 
@@ -37,7 +37,7 @@ namespace QuantLib {
         OISRateHelper(Natural settlementDays,
                       const Period& tenor, // swap maturity
                       const Handle<Quote>& fixedRate,
-                      ext::shared_ptr<OvernightIndex> overnightIndex,
+                      std::shared_ptr<OvernightIndex> overnightIndex,
                       // exogenous discounting curve
                       Handle<YieldTermStructure> discountingCurve = {},
                       bool telescopicValueDates = false,
@@ -50,7 +50,7 @@ namespace QuantLib {
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      ext::optional<bool> endOfMonth = ext::nullopt);
+                      std::optional<bool> endOfMonth = std::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -58,7 +58,7 @@ namespace QuantLib {
         //@}
         //! \name inspectors
         //@{
-        ext::shared_ptr<OvernightIndexedSwap> swap() const { return swap_; }
+        std::shared_ptr<OvernightIndexedSwap> swap() const { return swap_; }
         //@}
         //! \name Visitability
         //@{
@@ -70,9 +70,9 @@ namespace QuantLib {
 
       Natural settlementDays_;
       Period tenor_;
-      ext::shared_ptr<OvernightIndex> overnightIndex_;
+      std::shared_ptr<OvernightIndex> overnightIndex_;
 
-      ext::shared_ptr<OvernightIndexedSwap> swap_;
+      std::shared_ptr<OvernightIndexedSwap> swap_;
       RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
       Handle<YieldTermStructure> discountHandle_;
@@ -86,7 +86,7 @@ namespace QuantLib {
       Period forwardStart_;
       Spread overnightSpread_;
       RateAveraging::Type averagingMethod_;
-      ext::optional<bool> endOfMonth_;
+      std::optional<bool> endOfMonth_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
@@ -96,7 +96,7 @@ namespace QuantLib {
             const Date& startDate,
             const Date& endDate,
             const Handle<Quote>& fixedRate,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            const std::shared_ptr<OvernightIndex>& overnightIndex,
             // exogenous discounting curve
             Handle<YieldTermStructure> discountingCurve = {},
             bool telescopicValueDates = false,
@@ -111,7 +111,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
     protected:
-        ext::shared_ptr<OvernightIndexedSwap> swap_;
+        std::shared_ptr<OvernightIndexedSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 
         Handle<YieldTermStructure> discountHandle_;

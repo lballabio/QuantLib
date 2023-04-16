@@ -22,7 +22,7 @@
 #define quantlib_market_model_differences_hpp
 
 #include <ql/types.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 
 namespace QuantLib {
@@ -41,7 +41,7 @@ namespace QuantLib {
 
     std::vector<Real> coterminalSwapPseudoRoots(
             const PiecewiseConstantCorrelation&,
-            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&,
+            const std::vector<std::shared_ptr<PiecewiseConstantVariance> >&,
             const std::vector<Time>&);
 }
 

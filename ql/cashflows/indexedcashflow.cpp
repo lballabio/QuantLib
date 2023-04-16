@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     IndexedCashFlow::IndexedCashFlow(Real notional,
-                                     ext::shared_ptr<Index> index,
+                                     std::shared_ptr<Index> index,
                                      const Date& baseDate,
                                      const Date& fixingDate,
                                      const Date& paymentDate,

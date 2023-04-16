@@ -82,8 +82,8 @@ namespace QuantLib {
         class RandomWalk;
         class Intensity;
         FireflyAlgorithm(Size M,
-                         ext::shared_ptr<Intensity> intensity,
-                         ext::shared_ptr<RandomWalk> randomWalk,
+                         std::shared_ptr<Intensity> intensity,
+                         std::shared_ptr<RandomWalk> randomWalk,
                          Size Mde = 0,
                          Real mutationFactor = 1.0,
                          Real crossoverFactor = 0.5,
@@ -97,8 +97,8 @@ namespace QuantLib {
         Array lX_, uX_;
         Real mutation_, crossover_;
         Size M_, N_, Mde_, Mfa_;
-        ext::shared_ptr<Intensity> intensity_;
-        ext::shared_ptr<RandomWalk> randomWalk_;
+        std::shared_ptr<Intensity> intensity_;
+        std::shared_ptr<RandomWalk> randomWalk_;
         std::mt19937 generator_;
         std::uniform_int_distribution<QuantLib::Size> distribution_;
         MersenneTwisterUniformRng rng_;

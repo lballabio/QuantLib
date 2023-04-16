@@ -37,8 +37,8 @@ namespace QuantLib {
     class ProxyGreekEngine {
       public:
         ProxyGreekEngine(
-            ext::shared_ptr<MarketModelEvolver> evolver,
-            std::vector<std::vector<ext::shared_ptr<ConstrainedEvolver> > > constrainedEvolvers,
+            std::shared_ptr<MarketModelEvolver> evolver,
+            std::vector<std::vector<std::shared_ptr<ConstrainedEvolver> > > constrainedEvolvers,
             std::vector<std::vector<std::vector<Real> > > diffWeights,
             std::vector<Size> startIndexOfConstraint,
             std::vector<Size> endIndexOfConstraint,
@@ -55,8 +55,8 @@ namespace QuantLib {
         void singleEvolverValues(MarketModelEvolver& evolver,
                                  std::vector<Real>& values,
                                  bool storeRates = false);
-        ext::shared_ptr<MarketModelEvolver> originalEvolver_;
-        std::vector<std::vector<ext::shared_ptr<ConstrainedEvolver> > >
+        std::shared_ptr<MarketModelEvolver> originalEvolver_;
+        std::vector<std::vector<std::shared_ptr<ConstrainedEvolver> > >
             constrainedEvolvers_;
         std::vector<std::vector<std::vector<Real> > > diffWeights_;
         std::vector<Size> startIndexOfConstraint_;

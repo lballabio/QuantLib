@@ -54,7 +54,7 @@ namespace QuantLib {
                                       interpolation) will be observed.
             \param interpolationType  The interpolation type (flat or linear)
         */
-        static Real laggedFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+        static Real laggedFixing(const std::shared_ptr<ZeroInflationIndex>& index,
                                  const Date& date,
                                  const Period& observationLag,
                                  InterpolationType interpolationType);
@@ -212,7 +212,7 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-        ext::shared_ptr<ZeroInflationIndex> clone(
+        std::shared_ptr<ZeroInflationIndex> clone(
                            const Handle<ZeroInflationTermStructure>& h) const;
         //@}
       private:
@@ -253,7 +253,7 @@ namespace QuantLib {
         bool ratio() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
-        ext::shared_ptr<YoYInflationIndex> clone(
+        std::shared_ptr<YoYInflationIndex> clone(
                             const Handle<YoYInflationTermStructure>& h) const;
         //@}
 
@@ -273,14 +273,14 @@ namespace QuantLib {
             // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
             // CPI::InterpolationType.
             QuantLib::CPI::InterpolationType effectiveInterpolationType(
-                const ext::shared_ptr<ZeroInflationIndex>& index,
+                const std::shared_ptr<ZeroInflationIndex>& index,
                 const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
 
 
             // checks whether the combination of index and CPI::InterpolationType results
             // effectively in CPI::Linear
             bool
-            isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+            isInterpolated(const std::shared_ptr<ZeroInflationIndex>& index,
                            const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
         }
     }
@@ -338,7 +338,7 @@ namespace QuantLib {
         return yoyInflation_;
     }
 
-    inline bool detail::CPI::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+    inline bool detail::CPI::isInterpolated(const std::shared_ptr<ZeroInflationIndex>& index,
                                             const QuantLib::CPI::InterpolationType& type) {
         return detail::CPI::effectiveInterpolationType(index, type) == QuantLib::CPI::Linear;
     }

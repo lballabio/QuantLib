@@ -51,14 +51,14 @@ namespace QuantLib {
     class LiborForwardModel : public CalibratedModel, public AffineModel {
       public:
         LiborForwardModel(
-            const ext::shared_ptr<LiborForwardModelProcess> & process,
-            const ext::shared_ptr<LmVolatilityModel>  & volaModel,
-            const ext::shared_ptr<LmCorrelationModel> & corrModel);
+            const std::shared_ptr<LiborForwardModelProcess> & process,
+            const std::shared_ptr<LmVolatilityModel>  & volaModel,
+            const std::shared_ptr<LmCorrelationModel> & corrModel);
 
         Rate S_0(Size alpha, Size beta) const;
         // approx. swaption matrix using Rebonato's approx.
         // fix and floating leg have the same frequency
-        virtual ext::shared_ptr<SwaptionVolatilityMatrix>
+        virtual std::shared_ptr<SwaptionVolatilityMatrix>
             getSwaptionVolatilityMatrix() const;
 
         DiscountFactor discount(Time t) const override;
@@ -76,10 +76,10 @@ namespace QuantLib {
         std::vector<Real> f_;
         std::vector<Time> accrualPeriod_;
 
-        const ext::shared_ptr<LfmCovarianceProxy> covarProxy_;
-        const ext::shared_ptr<LiborForwardModelProcess> process_;
+        const std::shared_ptr<LfmCovarianceProxy> covarProxy_;
+        const std::shared_ptr<LiborForwardModelProcess> process_;
 
-        mutable ext::shared_ptr<SwaptionVolatilityMatrix> swaptionVola;
+        mutable std::shared_ptr<SwaptionVolatilityMatrix> swaptionVola;
     };
 
 }

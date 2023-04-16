@@ -25,7 +25,7 @@
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
-#include <ql/functional.hpp>
+
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -66,15 +66,15 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     const Real qRate = 0.05;
     const Volatility vol = 0.25;
 
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
+    const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        std::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, volTS));
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
+    const std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
 
     const NormalCLVModel m(
         bsProcess, ouProcess, std::vector<Date>(), 5);
@@ -114,22 +114,22 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
     const Real sigma = 0.4;
     const Real rho = -0.75;
 
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
-    const ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
+    const std::shared_ptr<HestonProcess> process(
+        std::make_shared<HestonProcess>(
             rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<BlackVolTermStructure> hestonVolTS(
-        ext::make_shared<HestonBlackVolSurface>(
-            Handle<HestonModel>(ext::make_shared<HestonModel>(process))));
+        std::make_shared<HestonBlackVolSurface>(
+            Handle<HestonModel>(std::make_shared<HestonModel>(process))));
 
     const NormalCLVModel m(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
+        std::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, hestonVolTS),
-        ext::shared_ptr<OrnsteinUhlenbeckProcess>(),
+        std::shared_ptr<OrnsteinUhlenbeckProcess>(),
         std::vector<Date>(), 5);
 
     const HestonRNDCalculator rndCalculator(process);
@@ -181,20 +181,20 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     const Real rRate = 0.03;
     const Real qRate = 0.0;
 
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     const Handle<BlackVolTermStructure> sabrVol(
-        ext::make_shared<SABRVolTermStructure>(
+        std::make_shared<SABRVolTermStructure>(
             alpha, beta, gamma, rho, s0, rRate, today, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
+    const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        std::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, sabrVol));
 
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        ext::make_shared<OrnsteinUhlenbeckProcess>(
+    const std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        std::make_shared<OrnsteinUhlenbeckProcess>(
             speed, vol, x0, level));
 
     std::vector<Date> maturityDates = {
@@ -206,7 +206,7 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturityDates, 4);
-    const ext::function<Real(Real, Real)> g = m.g();
+    const std::function<Real(Real, Real)> g = m.g();
 
     // test collocation points in x_ij
     std::vector<Date> maturities = { maturityDates[0], maturityDates[2], maturityDates[4] };
@@ -272,13 +272,13 @@ void NormalCLVModelTest::testIllustrative1DExample() {
 namespace normal_clv_model_test {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+        CLVModelPayoff(Option::Type type, Real strike, std::function<Real(Real)> g)
         : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
         Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
       private:
-        const ext::function<Real(Real)> g_;
+        const std::function<Real(Real)> g_;
     };
 }
 
@@ -295,10 +295,10 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     const Time t = dc.yearFraction(today, maturity);
 
     const Real strike = 110;
-    const ext::shared_ptr<StrikedTypePayoff> payoff =
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
-    const ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(maturity);
+    const std::shared_ptr<StrikedTypePayoff> payoff =
+        std::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    const std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(maturity);
 
     // Ornstein-Uhlenbeck
     const Real speed = 2.3;
@@ -311,23 +311,23 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     const Real rRate     = 0.10;
     const Real qRate     = 0.04;
 
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(s0));
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> vTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
+    const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        std::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS));
 
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        ext::make_shared<OrnsteinUhlenbeckProcess>(
+    const std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        std::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigma, x0, level));
 
     std::vector<Date> maturities = { today + Period(6, Months), maturity };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
-    const ext::function<Real(Real, Real)> g = m.g();
+    const std::function<Real(Real, Real)> g = m.g();
 
     const Size nSims = 32767;
     const LowDiscrepancy::rsg_type ld
@@ -348,7 +348,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     VanillaOption option(payoff, exercise);
     option.setPricingEngine(
-        ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
+        std::make_shared<AnalyticEuropeanEngine>(bsProcess));
     const Real expected = option.NPV();
 
     const Real tol = 0.01;
@@ -361,12 +361,12 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     }
 
     VanillaOption fdmOption(
-         ext::make_shared<CLVModelPayoff>(payoff->optionType(), payoff->strike(),
+         std::make_shared<CLVModelPayoff>(payoff->optionType(), payoff->strike(),
                                           [&](Real _x) { return g(t, _x); }),
          exercise);
 
     fdmOption.setPricingEngine(
-        ext::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
+        std::make_shared<FdOrnsteinUhlenbeckVanillaEngine>(
             ouProcess, rTS.currentLink(), 50, 800));
 
     calculated = fdmOption.NPV();
@@ -399,7 +399,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
     Settings::instance().evaluationDate() = todaysDate;
 
     const Real s0 = 100;
-    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+    const Handle<Quote> spot(std::make_shared<SimpleQuote>(s0));
     const Rate r = 0.02;
     const Rate q = 0.01;
 
@@ -413,17 +413,17 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
-            ext::make_shared<HestonProcess>(
+    const std::shared_ptr<HestonModel> hestonModel(
+        std::make_shared<HestonModel>(
+            std::make_shared<HestonProcess>(
                 rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
 
     const Handle<BlackVolTermStructure> vTS(
-        ext::make_shared<HestonBlackVolSurface>(
+        std::make_shared<HestonBlackVolSurface>(
             Handle<HestonModel>(hestonModel)));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-        ext::make_shared<GeneralizedBlackScholesProcess>(
+    const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+        std::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS);
 
     // Ornstein-Uhlenbeck
@@ -432,28 +432,28 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Real sigmaOU = 0.15;
     const Real x0      = 100;
 
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        ext::make_shared<OrnsteinUhlenbeckProcess>(
+    const std::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
+        std::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigmaOU, x0, level));
 
-    const ext::shared_ptr<Exercise> europeanExercise(
-        ext::make_shared<EuropeanExercise>(maturityDate));
+    const std::shared_ptr<Exercise> europeanExercise(
+        std::make_shared<EuropeanExercise>(maturityDate));
 
     VanillaOption vanillaOption(
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, s0),
+        std::make_shared<PlainVanillaPayoff>(Option::Call, s0),
         europeanExercise);
 
     vanillaOption.setPricingEngine(
-        ext::make_shared<AnalyticHestonEngine>(hestonModel));
+        std::make_shared<AnalyticHestonEngine>(hestonModel));
 
     const Volatility atmVol = vanillaOption.impliedVolatility(
         vanillaOption.NPV(),
-        ext::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
+        std::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(std::sqrt(theta), dc))));
 
-    const ext::shared_ptr<PricingEngine> analyticEngine(
-        ext::make_shared<AnalyticDoubleBarrierBinaryEngine>(
-            ext::make_shared<GeneralizedBlackScholesProcess>(
+    const std::shared_ptr<PricingEngine> analyticEngine(
+        std::make_shared<AnalyticDoubleBarrierBinaryEngine>(
+            std::make_shared<GeneralizedBlackScholesProcess>(
                 spot, qTS, rTS,
                 Handle<BlackVolTermStructure>(flatVol(atmVol, dc)))));
 
@@ -463,13 +463,13 @@ void NormalCLVModelTest::testMoustacheGraph() {
         maturities.push_back(maturities.back() + Period(2, Weeks));
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
-    const ext::function<Real(Real, Real)> g = m.g();
+    const std::function<Real(Real, Real)> g = m.g();
 
     const Size n = 18;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n);
 
-    const ext::shared_ptr<CashOrNothingPayoff> payoff =
-        ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
+    const std::shared_ptr<CashOrNothingPayoff> payoff =
+        std::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
 
     for (Size i=0; i < n; ++i) {
         const Real dist = 10.0+5.0*i;
@@ -492,8 +492,8 @@ void NormalCLVModelTest::testMoustacheGraph() {
     const Size tSteps = 200;
     const TimeGrid grid(maturityTime, tSteps);
 
-    const ext::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
-        ext::make_shared<PathGenerator<rsg_type> >(
+    const std::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
+        std::make_shared<PathGenerator<rsg_type> >(
             ouProcess, grid, rsg_type(factors, tSteps), false);
 
     const Size nSims = 100000;

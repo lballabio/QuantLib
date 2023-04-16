@@ -42,7 +42,7 @@ namespace QuantLib {
     
     class FdmStepConditionComposite : public StepCondition<Array> {
     public:
-        typedef std::list<ext::shared_ptr<StepCondition<Array> > > Conditions;
+        typedef std::list<std::shared_ptr<StepCondition<Array> > > Conditions;
 
         FdmStepConditionComposite(const std::list<std::vector<Time> >& stoppingTimes,
                                   Conditions conditions);
@@ -51,15 +51,15 @@ namespace QuantLib {
         const std::vector<Time>& stoppingTimes() const;
         const Conditions& conditions() const;
 
-        static ext::shared_ptr<FdmStepConditionComposite> joinConditions(
-                    const ext::shared_ptr<FdmSnapshotCondition>& c1,
-                    const ext::shared_ptr<FdmStepConditionComposite>& c2);
+        static std::shared_ptr<FdmStepConditionComposite> joinConditions(
+                    const std::shared_ptr<FdmSnapshotCondition>& c1,
+                    const std::shared_ptr<FdmStepConditionComposite>& c2);
 
-        static ext::shared_ptr<FdmStepConditionComposite> vanillaComposite(
+        static std::shared_ptr<FdmStepConditionComposite> vanillaComposite(
              const DividendSchedule& schedule,
-             const ext::shared_ptr<Exercise>& exercise,
-             const ext::shared_ptr<FdmMesher>& mesher,
-             const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
+             const std::shared_ptr<Exercise>& exercise,
+             const std::shared_ptr<FdmMesher>& mesher,
+             const std::shared_ptr<FdmInnerValueCalculator>& calculator,
              const Date& refDate,
              const DayCounter& dayCounter);
         

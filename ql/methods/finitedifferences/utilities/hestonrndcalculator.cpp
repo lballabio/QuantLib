@@ -37,7 +37,7 @@ namespace {
         };
 
         HestonParams getHestonParams(
-            const ext::shared_ptr<HestonProcess>& process) {
+            const std::shared_ptr<HestonProcess>& process) {
             const HestonParams p = { process->v0(),    process->kappa(),
                                      process->theta(), process->sigma(),
                                      process->rho() };
@@ -107,7 +107,7 @@ namespace {
     }
 
 
-    HestonRNDCalculator::HestonRNDCalculator(ext::shared_ptr<HestonProcess> hestonProcess,
+    HestonRNDCalculator::HestonRNDCalculator(std::shared_ptr<HestonProcess> hestonProcess,
                                              Real integrationEps,
                                              Size maxIntegrationIterations)
     : hestonProcess_(std::move(hestonProcess)), x0_(std::log(hestonProcess_->s0()->value())),
@@ -143,13 +143,13 @@ namespace {
         const Volatility expVol
             = std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
-        const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-            ext::make_shared<BlackScholesMertonProcess>(
+        const std::shared_ptr<BlackScholesMertonProcess> bsmProcess(
+            std::make_shared<BlackScholesMertonProcess>(
                 hestonProcess_->s0(),
                 hestonProcess_->dividendYield(),
                 hestonProcess_->riskFreeRate(),
                 Handle<BlackVolTermStructure>(
-                    ext::make_shared<BlackConstantVol>(
+                    std::make_shared<BlackConstantVol>(
                             hestonProcess_->riskFreeRate()->referenceDate(),
                             NullCalendar(),
                             expVol,

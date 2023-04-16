@@ -42,29 +42,29 @@ namespace QuantLib {
 
         CmsMarketCalibration(
             Handle<SwaptionVolatilityStructure>& volCube,
-            ext::shared_ptr<CmsMarket>& cmsMarket,
+            std::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights,
             CalibrationType calibrationType);
 
         Handle<SwaptionVolatilityStructure> volCube_;
-        ext::shared_ptr<CmsMarket> cmsMarket_;
+        std::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         CalibrationType calibrationType_;
         Matrix sparseSabrParameters_, denseSabrParameters_, browseCmsMarket_;
 
-        Array compute(const ext::shared_ptr<EndCriteria>& endCriteria,
-                      const ext::shared_ptr<OptimizationMethod>& method,
+        Array compute(const std::shared_ptr<EndCriteria>& endCriteria,
+                      const std::shared_ptr<OptimizationMethod>& method,
                       const Array& guess,
                       bool isMeanReversionFixed);
 
-        Matrix compute(const ext::shared_ptr<EndCriteria>& endCriteria,
-                       const ext::shared_ptr<OptimizationMethod>& method,
+        Matrix compute(const std::shared_ptr<EndCriteria>& endCriteria,
+                       const std::shared_ptr<OptimizationMethod>& method,
                        const Matrix& guess,
                        bool isMeanReversionFixed,
                        Real meanReversionGuess = Null<Real>());
 
-        Matrix computeParametric(const ext::shared_ptr<EndCriteria>& endCriteria,
-                                 const ext::shared_ptr<OptimizationMethod>& method,
+        Matrix computeParametric(const std::shared_ptr<EndCriteria>& endCriteria,
+                                 const std::shared_ptr<OptimizationMethod>& method,
                                  const Matrix& guess,
                                  bool isMeanReversionFixed,
                                  Real meanReversionGuess = Null<Real>());

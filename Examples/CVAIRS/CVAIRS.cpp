@@ -60,16 +60,16 @@ int main(int, char* []) {
 
         Settings::instance().evaluationDate() = todaysDate;
 
-        ext::shared_ptr<IborIndex>  yieldIndx(new Euribor3M());
+        std::shared_ptr<IborIndex>  yieldIndx(new Euribor3M());
         Size tenorsSwapMkt[] = {5, 10, 15, 20, 25, 30};
         
         // rates ignoring counterparty risk:
         Rate ratesSwapmkt[] = {.03249, .04074, .04463, .04675, .04775, .04811};
 
-        vector<ext::shared_ptr<RateHelper> > swapHelpers;
+        vector<std::shared_ptr<RateHelper> > swapHelpers;
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++)
-            swapHelpers.push_back(ext::make_shared<SwapRateHelper>(
-                Handle<Quote>(ext::shared_ptr<Quote>(
+            swapHelpers.push_back(std::make_shared<SwapRateHelper>(
+                Handle<Quote>(std::shared_ptr<Quote>(
                                    new SimpleQuote(ratesSwapmkt[i]))),
                     tenorsSwapMkt[i] * Years,
                     TARGET(),
@@ -78,13 +78,13 @@ int main(int, char* []) {
                     ActualActual(ActualActual::ISDA),
                     yieldIndx));
 
-        ext::shared_ptr<YieldTermStructure> swapTS(
+        std::shared_ptr<YieldTermStructure> swapTS(
             new PiecewiseYieldCurve<Discount,LogLinear>(
              2, TARGET(), swapHelpers, ActualActual(ActualActual::ISDA)));
         swapTS->enableExtrapolation();
 
-        ext::shared_ptr<PricingEngine> riskFreeEngine(
-            ext::make_shared<DiscountingSwapEngine>(
+        std::shared_ptr<PricingEngine> riskFreeEngine(
+            std::make_shared<DiscountingSwapEngine>(
                  Handle<YieldTermStructure>(swapTS)));
 
         std::vector<Handle<DefaultProbabilityTermStructure> >
@@ -115,33 +115,33 @@ int main(int, char* []) {
             intesitiesVHigh.push_back(intensitiesHigh[i]);
         }
 
-        defaultIntensityTS.emplace_back(ext::shared_ptr<DefaultProbabilityTermStructure>(
+        defaultIntensityTS.emplace_back(std::shared_ptr<DefaultProbabilityTermStructure>(
             new InterpolatedHazardRateCurve<BackwardFlat>(defaultTSDates, intesitiesVLow,
                                                           Actual360(), TARGET())));
-        defaultIntensityTS.emplace_back(ext::shared_ptr<DefaultProbabilityTermStructure>(
+        defaultIntensityTS.emplace_back(std::shared_ptr<DefaultProbabilityTermStructure>(
             new InterpolatedHazardRateCurve<BackwardFlat>(defaultTSDates, intesitiesVMedium,
                                                           Actual360(), TARGET())));
-        defaultIntensityTS.emplace_back(ext::shared_ptr<DefaultProbabilityTermStructure>(
+        defaultIntensityTS.emplace_back(std::shared_ptr<DefaultProbabilityTermStructure>(
             new InterpolatedHazardRateCurve<BackwardFlat>(defaultTSDates, intesitiesVHigh,
                                                           Actual360(), TARGET())));
 
         Volatility blackVol = 0.15;   
-        ext::shared_ptr<PricingEngine> ctptySwapCvaLow = 
-            ext::make_shared<CounterpartyAdjSwapEngine>(
+        std::shared_ptr<PricingEngine> ctptySwapCvaLow = 
+            std::make_shared<CounterpartyAdjSwapEngine>(
                  Handle<YieldTermStructure>(swapTS), 
                  blackVol,
                  defaultIntensityTS[0], 
                  ctptyRRLow
                  );
 
-        ext::shared_ptr<PricingEngine> ctptySwapCvaMedium = 
-            ext::make_shared<CounterpartyAdjSwapEngine>(
+        std::shared_ptr<PricingEngine> ctptySwapCvaMedium = 
+            std::make_shared<CounterpartyAdjSwapEngine>(
                  Handle<YieldTermStructure>(swapTS), 
                  blackVol, 
                  defaultIntensityTS[1],
                  ctptyRRMedium);
-        ext::shared_ptr<PricingEngine> ctptySwapCvaHigh = 
-            ext::make_shared<CounterpartyAdjSwapEngine>(
+        std::shared_ptr<PricingEngine> ctptySwapCvaHigh = 
+            std::make_shared<CounterpartyAdjSwapEngine>(
                  Handle<YieldTermStructure>(swapTS), 
                  blackVol,
                  defaultIntensityTS[2],
@@ -161,7 +161,7 @@ int main(int, char* []) {
         DayCounter floatingLegDayCounter = ActualActual(ActualActual::ISDA);
 
         Swap::Type swapType = Swap::Payer;
-        ext::shared_ptr<IborIndex> yieldIndxS(
+        std::shared_ptr<IborIndex> yieldIndxS(
              new Euribor3M(Handle<YieldTermStructure>(swapTS)));
         std::vector<VanillaSwap> riskySwaps;
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++) 

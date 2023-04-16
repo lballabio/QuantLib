@@ -73,7 +73,7 @@ namespace QuantLib {
     }
 
 
-    bool VegaBumpCluster::isCompatible(const ext::shared_ptr<MarketModel>& volStructure) const
+    bool VegaBumpCluster::isCompatible(const std::shared_ptr<MarketModel>& volStructure) const
     {
         if (rateEnd_ > volStructure->numberOfRates())
             return false;
@@ -91,7 +91,7 @@ namespace QuantLib {
 
 
 
-    VegaBumpCollection::VegaBumpCollection(const ext::shared_ptr<MarketModel>& volStructure,
+    VegaBumpCollection::VegaBumpCollection(const std::shared_ptr<MarketModel>& volStructure,
                            bool factorwiseBumping)
                             : associatedVolStructure_(volStructure)
     {
@@ -128,7 +128,7 @@ namespace QuantLib {
 
 
     VegaBumpCollection::VegaBumpCollection(std::vector<VegaBumpCluster> allBumps,
-                                           ext::shared_ptr<MarketModel> volStructure)
+                                           std::shared_ptr<MarketModel> volStructure)
     : allBumps_(std::move(allBumps)), associatedVolStructure_(std::move(volStructure)),
       checked_(false) {
         for (auto& allBump : allBumps_)

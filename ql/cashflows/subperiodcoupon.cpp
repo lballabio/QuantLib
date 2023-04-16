@@ -32,7 +32,7 @@ namespace QuantLib {
                                        const Date& startDate,
                                        const Date& endDate,
                                        Natural fixingDays,
-                                       const ext::shared_ptr<IborIndex>& index,
+                                       const std::shared_ptr<IborIndex>& index,
                                        Real gearing,
                                        Rate couponSpread,
                                        Rate rateSpread,
@@ -90,7 +90,7 @@ namespace QuantLib {
         coupon_ = dynamic_cast<const SubPeriodsCoupon*>(&coupon);
         QL_REQUIRE(coupon_, "sub-periods coupon required");
 
-        ext::shared_ptr<IborIndex> index = ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
+        std::shared_ptr<IborIndex> index = std::dynamic_pointer_cast<IborIndex>(coupon_->index());
         if (!index) {
             // coupon was right, index is not
             QL_FAIL("IborIndex required");
@@ -155,7 +155,7 @@ namespace QuantLib {
         return coupon_->gearing() * rate + coupon_->spread();
     }
 
-    SubPeriodsLeg::SubPeriodsLeg(const Schedule& schedule, ext::shared_ptr<IborIndex> i)
+    SubPeriodsLeg::SubPeriodsLeg(const Schedule& schedule, std::shared_ptr<IborIndex> i)
     : schedule_(schedule), index_(std::move(i)), paymentCalendar_(schedule.calendar()) {
         QL_REQUIRE(index_, "no index provided");
     }
@@ -283,7 +283,7 @@ namespace QuantLib {
                         paymentDate, -exCouponPeriod_, exCouponAdjustment_, exCouponEndOfMonth_);
                 }
             }
-            cashflows.push_back(ext::shared_ptr<CashFlow>(new SubPeriodsCoupon(
+            cashflows.push_back(std::shared_ptr<CashFlow>(new SubPeriodsCoupon(
                 paymentDate, detail::get(notionals_, i, notionals_.back()), start, end,
                 detail::get(fixingDays_, i, index_->fixingDays()), index_,
                 detail::get(gearings_, i, 1.0), detail::get(couponSpreads_, i, 0.0),
@@ -294,10 +294,10 @@ namespace QuantLib {
         switch (averagingMethod_) {
             case RateAveraging::Simple:
                 setCouponPricer(cashflows,
-                                ext::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer));
+                                std::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer));
                 break;
             case RateAveraging::Compound:
-                setCouponPricer(cashflows, ext::shared_ptr<FloatingRateCouponPricer>(
+                setCouponPricer(cashflows, std::shared_ptr<FloatingRateCouponPricer>(
                                                new CompoundingRatePricer));
                 break;
             default:

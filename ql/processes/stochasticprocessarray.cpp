@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     StochasticProcessArray::StochasticProcessArray(
-        const std::vector<ext::shared_ptr<StochasticProcess1D> >& processes,
+        const std::vector<std::shared_ptr<StochasticProcess1D> >& processes,
         const Matrix& correlation)
     : processes_(processes),
       sqrtCorrelation_(pseudoSqrt(correlation,SalvagingAlgorithm::Spectral)) {
@@ -121,7 +121,7 @@ namespace QuantLib {
         return processes_[0]->time(d);
     }
 
-    const ext::shared_ptr<StochasticProcess1D>&
+    const std::shared_ptr<StochasticProcess1D>&
     StochasticProcessArray::process(Size i) const {
         return processes_[i];
     }

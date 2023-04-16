@@ -40,7 +40,7 @@ namespace QuantLib {
                                              const Date& referenceDate,
                                              const DayCounter& dayCounter)
     : DiscretizedOption(
-          ext::shared_ptr<DiscretizedAsset>(), args.exercise->type(), std::vector<Time>()),
+          std::shared_ptr<DiscretizedAsset>(), args.exercise->type(), std::vector<Time>()),
       arguments_(args) {
 
         // Date adjustments can get time vectors out of synch.
@@ -65,7 +65,7 @@ namespace QuantLib {
         lastPayment_ = std::max(lastFixedPayment, lastFloatingPayment);
 
         underlying_ =
-            ext::make_shared<DiscretizedSwap>(snappedArgs, referenceDate, dayCounter,
+            std::make_shared<DiscretizedSwap>(snappedArgs, referenceDate, dayCounter,
                                               fixedCouponAdjustments, floatingCouponAdjustments);
     }
 
@@ -113,7 +113,7 @@ namespace QuantLib {
         Schedule snappedFixedSchedule(fixedDates);
         Schedule snappedFloatSchedule(floatDates);
 
-        auto snappedSwap = ext::make_shared<VanillaSwap>(
+        auto snappedSwap = std::make_shared<VanillaSwap>(
             args.swap->type(), args.swap->nominal(), snappedFixedSchedule, args.swap->fixedRate(),
             args.swap->fixedDayCount(), snappedFloatSchedule, args.swap->iborIndex(),
             args.swap->spread(), args.swap->floatingDayCount(), args.swap->paymentConvention());

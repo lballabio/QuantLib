@@ -28,7 +28,7 @@ namespace QuantLib {
 
     AnalyticContinuousGeometricAveragePriceAsianEngine::
         AnalyticContinuousGeometricAveragePriceAsianEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
@@ -42,8 +42,8 @@ namespace QuantLib {
 
         Date exercise = arguments_.exercise->lastDate();
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Volatility volatility =

@@ -24,7 +24,7 @@
 #ifndef quantlib_chebyshev_interpolation_hpp
 #define quantlib_chebyshev_interpolation_hpp
 
-#include <ql/functional.hpp>
+
 #include <ql/math/array.hpp>
 #include <ql/math/interpolation.hpp>
 
@@ -44,7 +44,7 @@ namespace QuantLib {
         explicit ChebyshevInterpolation(
             const Array& y, PointsType pointsType = SecondKind);
         ChebyshevInterpolation(
-            Size n, const ext::function<Real(Real)>& f,
+            Size n, const std::function<Real(Real)>& f,
             PointsType pointsType = SecondKind);
 
         void updateY(const Array& y);
@@ -55,7 +55,7 @@ namespace QuantLib {
       private:
         const Array x_;
         Array y_;
-        ext::shared_ptr<LagrangeInterpolation> lagrangeInterp_;
+        std::shared_ptr<LagrangeInterpolation> lagrangeInterp_;
     };
 }
 

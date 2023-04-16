@@ -106,8 +106,8 @@ namespace QuantLib {
 
 
     UpperBoundEngine::UpperBoundEngine(
-        ext::shared_ptr<MarketModelEvolver> evolver,
-        std::vector<ext::shared_ptr<MarketModelEvolver> > innerEvolvers,
+        std::shared_ptr<MarketModelEvolver> evolver,
+        std::vector<std::shared_ptr<MarketModelEvolver> > innerEvolvers,
         const MarketModelMultiProduct& underlying,
         const MarketModelExerciseValue& rebate,
         const MarketModelMultiProduct& hedge,
@@ -239,7 +239,7 @@ namespace QuantLib {
                     // reset() method brings them to the current point
                     // rather than the beginning of the path.
 
-                    ext::shared_ptr<MarketModelEvolver> currentEvolver =
+                    std::shared_ptr<MarketModelEvolver> currentEvolver =
                         innerEvolvers_[exercise++];
                     currentEvolver->setInitialState(evolver_->currentState());
 

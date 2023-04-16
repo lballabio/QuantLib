@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     CotSwapToFwdAdapter::CotSwapToFwdAdapter(
-                               const ext::shared_ptr<MarketModel>& ctModel)
+                               const std::shared_ptr<MarketModel>& ctModel)
     : coterminalModel_(ctModel),
       numberOfFactors_(ctModel->numberOfFactors()),
       numberOfRates_(ctModel->numberOfRates()),
@@ -80,18 +80,18 @@ namespace QuantLib {
 
 
     CotSwapToFwdAdapterFactory::CotSwapToFwdAdapterFactory(
-             const ext::shared_ptr<MarketModelFactory>& coterminalFactory)
+             const std::shared_ptr<MarketModelFactory>& coterminalFactory)
     : coterminalFactory_(coterminalFactory) {
         registerWith(coterminalFactory);
     }
 
-    ext::shared_ptr<MarketModel>
+    std::shared_ptr<MarketModel>
     CotSwapToFwdAdapterFactory::create(
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors) const {
-        ext::shared_ptr<MarketModel> coterminalModel =
+        std::shared_ptr<MarketModel> coterminalModel =
             coterminalFactory_->create(evolution,numberOfFactors);
-        return ext::shared_ptr<MarketModel>(
+        return std::shared_ptr<MarketModel>(
                              new CotSwapToFwdAdapter(coterminalModel));
     }
 

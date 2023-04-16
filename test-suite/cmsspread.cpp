@@ -51,34 +51,34 @@ struct TestData {
         Settings::instance().evaluationDate() = refDate;
 
         yts2 = Handle<YieldTermStructure>(
-            ext::make_shared<FlatForward>(refDate, 0.02, Actual365Fixed()));
+            std::make_shared<FlatForward>(refDate, 0.02, Actual365Fixed()));
 
         swLn = Handle<SwaptionVolatilityStructure>(
-            ext::make_shared<ConstantSwaptionVolatility>(
+            std::make_shared<ConstantSwaptionVolatility>(
                 refDate, TARGET(), Following, 0.20, Actual365Fixed(),
                 ShiftedLognormal, 0.0));
         swSln = Handle<SwaptionVolatilityStructure>(
-            ext::make_shared<ConstantSwaptionVolatility>(
+            std::make_shared<ConstantSwaptionVolatility>(
                 refDate, TARGET(), Following, 0.10, Actual365Fixed(),
                 ShiftedLognormal, 0.01));
         swN = Handle<SwaptionVolatilityStructure>(
-            ext::make_shared<ConstantSwaptionVolatility>(
+            std::make_shared<ConstantSwaptionVolatility>(
                 refDate, TARGET(), Following, 0.0075, Actual365Fixed(), Normal,
                 0.01));
 
-        reversion = Handle<Quote>(ext::make_shared<SimpleQuote>(0.01));
+        reversion = Handle<Quote>(std::make_shared<SimpleQuote>(0.01));
         cmsPricerLn =
-            ext::make_shared<LinearTsrPricer>(swLn, reversion, yts2);
+            std::make_shared<LinearTsrPricer>(swLn, reversion, yts2);
         cmsPricerSln =
-            ext::make_shared<LinearTsrPricer>(swSln, reversion, yts2);
-        cmsPricerN = ext::make_shared<LinearTsrPricer>(swN, reversion, yts2);
+            std::make_shared<LinearTsrPricer>(swSln, reversion, yts2);
+        cmsPricerN = std::make_shared<LinearTsrPricer>(swN, reversion, yts2);
 
-        correlation = Handle<Quote>(ext::make_shared<SimpleQuote>(0.6));
-        cmsspPricerLn = ext::make_shared<LognormalCmsSpreadPricer>(
+        correlation = Handle<Quote>(std::make_shared<SimpleQuote>(0.6));
+        cmsspPricerLn = std::make_shared<LognormalCmsSpreadPricer>(
             cmsPricerLn, correlation, yts2, 32);
-        cmsspPricerSln = ext::make_shared<LognormalCmsSpreadPricer>(
+        cmsspPricerSln = std::make_shared<LognormalCmsSpreadPricer>(
             cmsPricerSln, correlation, yts2, 32);
-        cmsspPricerN = ext::make_shared<LognormalCmsSpreadPricer>(
+        cmsspPricerN = std::make_shared<LognormalCmsSpreadPricer>(
             cmsPricerN, correlation, yts2, 32);
     }
 
@@ -87,8 +87,8 @@ struct TestData {
     Handle<YieldTermStructure> yts2;
     Handle<SwaptionVolatilityStructure> swLn, swSln, swN;
     Handle<Quote> reversion, correlation;
-    ext::shared_ptr<CmsCouponPricer> cmsPricerLn, cmsPricerSln, cmsPricerN;
-    ext::shared_ptr<CmsSpreadCouponPricer> cmsspPricerLn, cmsspPricerSln,
+    std::shared_ptr<CmsCouponPricer> cmsPricerLn, cmsPricerSln, cmsPricerN;
+    std::shared_ptr<CmsSpreadCouponPricer> cmsspPricerLn, cmsspPricerSln,
         cmsspPricerN;
 };
 } // namespace
@@ -98,12 +98,12 @@ void CmsSpreadTest::testFixings() {
 
     TestData d;
 
-    ext::shared_ptr<SwapIndex> cms10y =
-        ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
-    ext::shared_ptr<SwapIndex> cms2y =
-        ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
-    ext::shared_ptr<SwapSpreadIndex> cms10y2y =
-        ext::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
+    std::shared_ptr<SwapIndex> cms10y =
+        std::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
+    std::shared_ptr<SwapIndex> cms2y =
+        std::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
+    std::shared_ptr<SwapSpreadIndex> cms10y2y =
+        std::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Settings::instance().enforcesTodaysHistoricFixings() = false;
 
@@ -134,8 +134,8 @@ void CmsSpreadTest::testFixings() {
 }
 
 namespace {
-Real mcReferenceValue(const ext::shared_ptr<CmsCoupon>& cpn1,
-                      const ext::shared_ptr<CmsCoupon>& cpn2, const Real cap,
+Real mcReferenceValue(const std::shared_ptr<CmsCoupon>& cpn1,
+                      const std::shared_ptr<CmsCoupon>& cpn2, const Real cap,
                       const Real floor,
                       const Handle<SwaptionVolatilityStructure>& vol,
                       const Real correlation) {
@@ -193,24 +193,24 @@ void CmsSpreadTest::testCouponPricing() {
     TestData d;
     Real tol = 1E-6; // abs tolerance coupon rate
 
-    ext::shared_ptr<SwapIndex> cms10y =
-        ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
-    ext::shared_ptr<SwapIndex> cms2y =
-        ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
-    ext::shared_ptr<SwapSpreadIndex> cms10y2y =
-        ext::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
+    std::shared_ptr<SwapIndex> cms10y =
+        std::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
+    std::shared_ptr<SwapIndex> cms2y =
+        std::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
+    std::shared_ptr<SwapSpreadIndex> cms10y2y =
+        std::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Date valueDate = cms10y2y->valueDate(d.refDate);
     Date payDate = valueDate + 1 * Years;
-    ext::shared_ptr<CmsCoupon> cpn1a =
-        ext::shared_ptr<CmsCoupon>(new CmsCoupon(
+    std::shared_ptr<CmsCoupon> cpn1a =
+        std::shared_ptr<CmsCoupon>(new CmsCoupon(
             payDate, 10000.0, valueDate, payDate, cms10y->fixingDays(), cms10y,
             1.0, 0.0, Date(), Date(), Actual360(), false));
-    ext::shared_ptr<CmsCoupon> cpn1b = ext::shared_ptr<CmsCoupon>(
+    std::shared_ptr<CmsCoupon> cpn1b = std::shared_ptr<CmsCoupon>(
         new CmsCoupon(payDate, 10000.0, valueDate, payDate, cms2y->fixingDays(),
                       cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
-    ext::shared_ptr<CmsSpreadCoupon> cpn1 =
-        ext::shared_ptr<CmsSpreadCoupon>(new CmsSpreadCoupon(
+    std::shared_ptr<CmsSpreadCoupon> cpn1 =
+        std::shared_ptr<CmsSpreadCoupon>(new CmsSpreadCoupon(
             payDate, 10000.0, valueDate, payDate, cms10y2y->fixingDays(),
             cms10y2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
     BOOST_CHECK(cpn1->fixingDate() == d.refDate);
@@ -230,35 +230,35 @@ void CmsSpreadTest::testCouponPricing() {
     QL_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     IndexManager::instance().clearHistories();
 
-    ext::shared_ptr<CmsCoupon> cpn2a = ext::shared_ptr<CmsCoupon>(
+    std::shared_ptr<CmsCoupon> cpn2a = std::shared_ptr<CmsCoupon>(
         new CmsCoupon(Date(23, February, 2029), 10000.0,
                       Date(23, February, 2028), Date(23, February, 2029), 2,
                       cms10y, 1.0, 0.0, Date(), Date(), Actual360(), false));
-    ext::shared_ptr<CmsCoupon> cpn2b = ext::shared_ptr<CmsCoupon>(
+    std::shared_ptr<CmsCoupon> cpn2b = std::shared_ptr<CmsCoupon>(
         new CmsCoupon(Date(23, February, 2029), 10000.0,
                       Date(23, February, 2028), Date(23, February, 2029), 2,
                       cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false));
 
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> plainCpn =
-        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    std::shared_ptr<CappedFlooredCmsSpreadCoupon> plainCpn =
+        std::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
                 Null<Rate>(), Date(), Date(), Actual360(), false));
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> cappedCpn =
-        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    std::shared_ptr<CappedFlooredCmsSpreadCoupon> cappedCpn =
+        std::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03,
                 Null<Rate>(), Date(), Date(), Actual360(), false));
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> flooredCpn =
-        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    std::shared_ptr<CappedFlooredCmsSpreadCoupon> flooredCpn =
+        std::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
                 0.01, Date(), Date(), Actual360(), false));
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> collaredCpn =
-        ext::shared_ptr<CappedFlooredCmsSpreadCoupon>(
+    std::shared_ptr<CappedFlooredCmsSpreadCoupon> collaredCpn =
+        std::shared_ptr<CappedFlooredCmsSpreadCoupon>(
             new CappedFlooredCmsSpreadCoupon(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03, 0.01,

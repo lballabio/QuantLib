@@ -75,7 +75,7 @@ namespace QuantLib {
     }
 
     EnergyCommodity::EnergyCommodity(CommodityType commodityType,
-                                     const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
+                                     const std::shared_ptr<SecondaryCosts>& secondaryCosts)
     : Commodity(secondaryCosts), commodityType_(std::move(commodityType)) {}
 
     const CommodityType& EnergyCommodity::commodityType() const {
@@ -144,16 +144,16 @@ namespace QuantLib {
             try {
                 for (SecondaryCosts::const_iterator i = secondaryCosts_->begin();
                      i != secondaryCosts_->end(); ++i) {
-                    if (ext::any_cast<CommodityUnitCost>(&i->second) != nullptr) {
+                    if (std::any_cast<CommodityUnitCost>(&i->second) != nullptr) {
                         Real value =
                             calculateUnitCost(
                                 commodityType,
-                                ext::any_cast<CommodityUnitCost>(i->second),
+                                std::any_cast<CommodityUnitCost>(i->second),
                                 evaluationDate) * totalQuantityValue;
                         secondaryCostAmounts_[i->first] =
                             Money(baseCurrency, value);
-                    } else if (ext::any_cast<Money>(&i->second) != nullptr) {
-                        const Money& amount = ext::any_cast<Money>(i->second);
+                    } else if (std::any_cast<Money>(&i->second) != nullptr) {
+                        const Money& amount = std::any_cast<Money>(i->second);
                         Real fxConversionFactor =
                             calculateFxConversionFactor(amount.currency(),
                                                         baseCurrency,

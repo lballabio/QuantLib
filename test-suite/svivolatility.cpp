@@ -44,19 +44,19 @@ void SviVolatilityTest::testSviSmileSection() {
     // this simplifies the variance expression to a+b*sigma so we can test the correctness
     // against the input parameters
     Real strike = forward * std::exp(m);
-    ext::shared_ptr<SviSmileSection> time_section;
+    std::shared_ptr<SviSmileSection> time_section;
 
     BOOST_CHECK_NO_THROW(time_section =
-                             ext::make_shared<SviSmileSection>(tte, forward, sviParameters));
+                             std::make_shared<SviSmileSection>(tte, forward, sviParameters));
     BOOST_CHECK_EQUAL(time_section->atmLevel(), forward);
     QL_CHECK_CLOSE(time_section->variance(strike), a + b * sigma, 1E-10);
 
     // Test date based constructor
     Date date = today + Period(11, Days);
-    ext::shared_ptr<SviSmileSection> date_section;
+    std::shared_ptr<SviSmileSection> date_section;
 
     BOOST_CHECK_NO_THROW(date_section =
-                             ext::make_shared<SviSmileSection>(date, forward, sviParameters));
+                             std::make_shared<SviSmileSection>(date, forward, sviParameters));
 
     BOOST_CHECK_EQUAL(date_section->atmLevel(), forward);
     QL_CHECK_CLOSE(date_section->variance(strike), a + b * sigma, 1E-10);

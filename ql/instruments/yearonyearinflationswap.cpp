@@ -37,7 +37,7 @@ namespace QuantLib {
                                                      Rate fixedRate,
                                                      DayCounter fixedDayCount,
                                                      Schedule yoySchedule,
-                                                     ext::shared_ptr<YoYInflationIndex> yoyIndex,
+                                                     std::shared_ptr<YoYInflationIndex> yoyIndex,
                                                      const Period& observationLag,
                                                      Spread spread,
                                                      DayCounter yoyDayCount,
@@ -95,8 +95,8 @@ namespace QuantLib {
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
-            ext::shared_ptr<FixedRateCoupon> coupon =
-            ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+            std::shared_ptr<FixedRateCoupon> coupon =
+            std::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
@@ -114,8 +114,8 @@ namespace QuantLib {
         std::vector<Spread>(yoyCoupons.size());
         arguments->yoyCoupons = std::vector<Real>(yoyCoupons.size());
         for (Size i=0; i<yoyCoupons.size(); ++i) {
-            ext::shared_ptr<YoYInflationCoupon> coupon =
-            ext::dynamic_pointer_cast<YoYInflationCoupon>(yoyCoupons[i]);
+            std::shared_ptr<YoYInflationCoupon> coupon =
+            std::dynamic_pointer_cast<YoYInflationCoupon>(yoyCoupons[i]);
 
             arguments->yoyResetDates[i] = coupon->accrualStartDate();
             arguments->yoyPayDates[i] = coupon->date();

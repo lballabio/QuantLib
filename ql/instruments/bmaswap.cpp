@@ -30,11 +30,11 @@ namespace QuantLib {
                      const Schedule& liborSchedule,
                      Real liborFraction,
                      Spread liborSpread,
-                     const ext::shared_ptr<IborIndex>& liborIndex,
+                     const std::shared_ptr<IborIndex>& liborIndex,
                      const DayCounter& liborDayCount,
                      // BMA leg
                      const Schedule& bmaSchedule,
-                     const ext::shared_ptr<BMAIndex>& bmaIndex,
+                     const std::shared_ptr<BMAIndex>& bmaIndex,
                      const DayCounter& bmaDayCount)
     : Swap(2), type_(type), nominal_(nominal),
       liborFraction_(liborFraction), liborSpread_(liborSpread)  {

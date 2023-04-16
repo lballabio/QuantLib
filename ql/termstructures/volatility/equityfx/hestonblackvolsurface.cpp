@@ -74,7 +74,7 @@ namespace QuantLib {
     }
 
     Volatility HestonBlackVolSurface::blackVolImpl(Time t, Real strike) const {
-        const ext::shared_ptr<HestonProcess> process = hestonModel_->process();
+        const std::shared_ptr<HestonProcess> process = hestonModel_->process();
 
         const DiscountFactor df = process->riskFreeRate()->discount(t, true);
         const DiscountFactor div = process->dividendYield()->discount(t, true);

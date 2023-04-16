@@ -23,8 +23,8 @@
 
 namespace QuantLib {
 
-    CliquetOption::CliquetOption(const ext::shared_ptr<PercentageStrikePayoff>& payoff,
-                                 const ext::shared_ptr<EuropeanExercise>& maturity,
+    CliquetOption::CliquetOption(const std::shared_ptr<PercentageStrikePayoff>& payoff,
+                                 const std::shared_ptr<EuropeanExercise>& maturity,
                                  std::vector<Date> resetDates)
     : OneAssetOption(payoff, maturity), resetDates_(std::move(resetDates)) {}
 
@@ -39,8 +39,8 @@ namespace QuantLib {
     void CliquetOption::arguments::validate() const {
         OneAssetOption::arguments::validate();
 
-        ext::shared_ptr<PercentageStrikePayoff> moneyness =
-            ext::dynamic_pointer_cast<PercentageStrikePayoff>(payoff);
+        std::shared_ptr<PercentageStrikePayoff> moneyness =
+            std::dynamic_pointer_cast<PercentageStrikePayoff>(payoff);
         QL_REQUIRE(moneyness,
                    "wrong payoff type");
         QL_REQUIRE(moneyness->strike() > 0.0,

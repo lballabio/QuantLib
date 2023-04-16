@@ -23,7 +23,7 @@ namespace QuantLib {
 
     TARGET::TARGET() {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(new TARGET::Impl);
+        static std::shared_ptr<Calendar::Impl> impl(new TARGET::Impl);
         impl_ = impl;
     }
 

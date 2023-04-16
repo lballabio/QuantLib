@@ -32,7 +32,7 @@ namespace QuantLib {
     StrippedOptionlet::StrippedOptionlet(Natural settlementDays,
                                          const Calendar& calendar,
                                          BusinessDayConvention bdc,
-                                         ext::shared_ptr<IborIndex> iborIndex,
+                                         std::shared_ptr<IborIndex> iborIndex,
                                          const std::vector<Date>& optionletDates,
                                          const vector<Rate>& strikes,
                                          vector<vector<Handle<Quote> > > v,

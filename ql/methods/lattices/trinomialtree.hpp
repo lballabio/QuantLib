@@ -42,7 +42,7 @@ namespace QuantLib {
         class Branching;
       public:
         enum Branches { branches = 3 };
-        TrinomialTree(const ext::shared_ptr<StochasticProcess1D>& process,
+        TrinomialTree(const std::shared_ptr<StochasticProcess1D>& process,
                       const TimeGrid& timeGrid,
                       bool isPositive = false);
         Real dx(Size i) const { return dx_[i]; }

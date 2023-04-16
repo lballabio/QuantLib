@@ -35,18 +35,18 @@ namespace QuantLib {
     class FdmEscrowedLogInnerValueCalculator: public FdmInnerValueCalculator {
       public:
         FdmEscrowedLogInnerValueCalculator(
-            ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
-            ext::shared_ptr<Payoff> payoff,
-            ext::shared_ptr<FdmMesher> mesher,
+            std::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
+            std::shared_ptr<Payoff> payoff,
+            std::shared_ptr<FdmMesher> mesher,
             Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
-        const ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj_;
-        const ext::shared_ptr<Payoff> payoff_;
-        const ext::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj_;
+        const std::shared_ptr<Payoff> payoff_;
+        const std::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
     };
 }

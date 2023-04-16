@@ -57,7 +57,7 @@ namespace QuantLib {
     class MarketModelFactory : public Observable {
       public:
         ~MarketModelFactory() override = default;
-        virtual ext::shared_ptr<MarketModel> create(
+        virtual std::shared_ptr<MarketModel> create(
                                               const EvolutionDescription&,
                                               Size numberOfFactors) const = 0;
     };

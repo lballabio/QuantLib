@@ -27,8 +27,8 @@ using std::log;
 namespace QuantLib {
 
     AnalyticTwoAssetCorrelationEngine::AnalyticTwoAssetCorrelationEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> p1,
-        ext::shared_ptr<GeneralizedBlackScholesProcess> p2,
+        std::shared_ptr<GeneralizedBlackScholesProcess> p1,
+        std::shared_ptr<GeneralizedBlackScholesProcess> p2,
         Handle<Quote> correlation)
     : p1_(std::move(p1)), p2_(std::move(p2)), correlation_(std::move(correlation)) {
         registerWith(p1_);
@@ -39,11 +39,11 @@ namespace QuantLib {
     void AnalyticTwoAssetCorrelationEngine::calculate() const {
         BivariateCumulativeNormalDistributionDr78 M(correlation_->value());
 
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        const std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0, "strike must be positive");
-        ext::shared_ptr<Exercise> exercise = arguments_.exercise;
+        std::shared_ptr<Exercise> exercise = arguments_.exercise;
         Real strike = payoff->strike();//X1
         Real spot = p1_->x0();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");

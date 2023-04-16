@@ -46,7 +46,7 @@ void CdsOptionTest::testCached() {
     Calendar calendar = TARGET();
 
     RelinkableHandle<YieldTermStructure> riskFree;
-    riskFree.linkTo(ext::shared_ptr<YieldTermStructure>(
+    riskFree.linkTo(std::shared_ptr<YieldTermStructure>(
                               new FlatForward(cachedToday,0.02,Actual360())));
 
     Date expiry = calendar.advance(cachedToday,9,Months);
@@ -57,7 +57,7 @@ void CdsOptionTest::testCached() {
     BusinessDayConvention convention = ModifiedFollowing;
     Real notional = 1000000.0;
 
-    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.001)));
+    Handle<Quote> hazardRate(std::shared_ptr<Quote>(new SimpleQuote(0.001)));
 
     Schedule schedule(startDate,maturity, Period(Quarterly),
                       calendar, convention, convention,
@@ -65,10 +65,10 @@ void CdsOptionTest::testCached() {
 
     Real recoveryRate = 0.4;
     Handle<DefaultProbabilityTermStructure> defaultProbability(
-        ext::shared_ptr<DefaultProbabilityTermStructure>(
+        std::shared_ptr<DefaultProbabilityTermStructure>(
                     new FlatHazardRate(0, calendar, hazardRate, dayCounter)));
 
-    ext::shared_ptr<PricingEngine> swapEngine(
+    std::shared_ptr<PricingEngine> swapEngine(
            new MidPointCdsEngine(defaultProbability, recoveryRate, riskFree));
 
     CreditDefaultSwap swap(Protection::Seller, notional, 0.001, schedule,
@@ -76,16 +76,16 @@ void CdsOptionTest::testCached() {
     swap.setPricingEngine(swapEngine);
     Rate strike = swap.fairSpread();
 
-    Handle<Quote> cdsVol(ext::shared_ptr<Quote>(new SimpleQuote(0.20)));
+    Handle<Quote> cdsVol(std::shared_ptr<Quote>(new SimpleQuote(0.20)));
 
-    ext::shared_ptr<CreditDefaultSwap> underlying(
+    std::shared_ptr<CreditDefaultSwap> underlying(
          new CreditDefaultSwap(Protection::Seller, notional, strike, schedule,
                                convention, dayCounter));
     underlying->setPricingEngine(swapEngine);
 
-    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
+    std::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
     CdsOption option1(underlying, exercise);
-    option1.setPricingEngine(ext::shared_ptr<PricingEngine>(
+    option1.setPricingEngine(std::shared_ptr<PricingEngine>(
                     new BlackCdsOptionEngine(defaultProbability, recoveryRate,
                                              riskFree, cdsVol)));
 
@@ -96,13 +96,13 @@ void CdsOptionTest::testCached() {
                     << "    calculated: " << option1.NPV() << "\n"
                     << "    expected:   " << cachedValue);
 
-    underlying = ext::make_shared<CreditDefaultSwap>(
+    underlying = std::make_shared<CreditDefaultSwap>(
          Protection::Buyer, notional, strike, schedule,
                                convention, dayCounter);
     underlying->setPricingEngine(swapEngine);
 
     CdsOption option2(underlying, exercise);
-    option2.setPricingEngine(ext::shared_ptr<PricingEngine>(
+    option2.setPricingEngine(std::shared_ptr<PricingEngine>(
                     new BlackCdsOptionEngine(defaultProbability, recoveryRate,
                                              riskFree, cdsVol)));
 

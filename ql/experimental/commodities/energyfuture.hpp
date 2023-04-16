@@ -36,21 +36,21 @@ namespace QuantLib {
         EnergyFuture(Integer buySell,
                      Quantity quantity,
                      CommodityUnitCost tradePrice,
-                     ext::shared_ptr<CommodityIndex> index,
+                     std::shared_ptr<CommodityIndex> index,
                      const CommodityType& commodityType,
-                     const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
+                     const std::shared_ptr<SecondaryCosts>& secondaryCosts);
         bool isExpired() const override;
         //Integer buySell{} const { return buySell_; }
         Quantity quantity() const override { return quantity_; }
         const CommodityUnitCost& tradePrice() const { return tradePrice_; }
-        ext::shared_ptr<CommodityIndex> index() const { return index_; }
+        std::shared_ptr<CommodityIndex> index() const { return index_; }
 
       protected:
         void performCalculations() const override;
         Integer buySell_;
         Quantity quantity_;
         CommodityUnitCost tradePrice_;
-        ext::shared_ptr<CommodityIndex> index_;
+        std::shared_ptr<CommodityIndex> index_;
     };
 
 }

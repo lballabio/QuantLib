@@ -58,11 +58,11 @@ namespace QuantLib {
                                       const Date& refPeriodStart,
                                       const Date& refPeriodEnd) const = 0;
         };
-        ext::shared_ptr<Impl> impl_;
+        std::shared_ptr<Impl> impl_;
         /*! This constructor can be invoked by derived classes which
             define a given implementation.
         */
-        explicit DayCounter(ext::shared_ptr<Impl> impl) : impl_(std::move(impl)) {}
+        explicit DayCounter(std::shared_ptr<Impl> impl) : impl_(std::move(impl)) {}
 
       public:
         /*! The default constructor returns a day counter with a null

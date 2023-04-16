@@ -44,28 +44,28 @@ void HimalayaOptionTest::testCached() {
 
     Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > processes(4);
-    processes[0] = ext::shared_ptr<StochasticProcess1D>(
+    std::vector<std::shared_ptr<StochasticProcess1D> > processes(4);
+    processes[0] = std::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(100.0))),
+              Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(100.0))),
               Handle<YieldTermStructure>(flatRate(today, 0.01, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc))));
-    processes[1] = ext::shared_ptr<StochasticProcess1D>(
+    processes[1] = std::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(110.0))),
+              Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(110.0))),
               Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc))));
-    processes[2] = ext::shared_ptr<StochasticProcess1D>(
+    processes[2] = std::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(90.0))),
+              Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(90.0))),
               Handle<YieldTermStructure>(flatRate(today, 0.04, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))));
-    processes[3] = ext::shared_ptr<StochasticProcess1D>(
+    processes[3] = std::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(105.0))),
+              Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(105.0))),
               Handle<YieldTermStructure>(flatRate(today, 0.03, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc))));
@@ -93,7 +93,7 @@ void HimalayaOptionTest::testCached() {
     BigNatural seed = 86421;
     Size fixedSamples = 1023;
 
-    ext::shared_ptr<StochasticProcessArray> process(
+    std::shared_ptr<StochasticProcessArray> process(
                           new StochasticProcessArray(processes, correlation));
 
     option.setPricingEngine(MakeMCHimalayaEngine<PseudoRandom>(process)

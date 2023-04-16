@@ -40,18 +40,18 @@ namespace QuantLib {
     class MakeCms {
       public:
         MakeCms(const Period& swapTenor,
-                const ext::shared_ptr<SwapIndex>& swapIndex,
-                const ext::shared_ptr<IborIndex>& iborIndex,
+                const std::shared_ptr<SwapIndex>& swapIndex,
+                const std::shared_ptr<IborIndex>& iborIndex,
                 Spread iborSpread = 0.0,
                 const Period& forwardStart = 0*Days);
 
         MakeCms(const Period& swapTenor,
-                const ext::shared_ptr<SwapIndex>& swapIndex,
+                const std::shared_ptr<SwapIndex>& swapIndex,
                 Spread iborSpread = 0.0,
                 const Period& forwardStart = 0*Days);
 
         operator Swap() const;
-        operator ext::shared_ptr<Swap>() const ;
+        operator std::shared_ptr<Swap>() const ;
 
         MakeCms& receiveCms(bool flag = true);
         MakeCms& withNominal(Real n);
@@ -83,12 +83,12 @@ namespace QuantLib {
         MakeCms& withDiscountingTermStructure(
             const Handle<YieldTermStructure>& discountingTermStructure);
         MakeCms& withCmsCouponPricer(
-            const ext::shared_ptr<CmsCouponPricer>& couponPricer);
+            const std::shared_ptr<CmsCouponPricer>& couponPricer);
 
       private:
         Period swapTenor_;
-        ext::shared_ptr<SwapIndex> swapIndex_;
-        ext::shared_ptr<IborIndex> iborIndex_;
+        std::shared_ptr<SwapIndex> swapIndex_;
+        std::shared_ptr<IborIndex> iborIndex_;
         Spread iborSpread_;
         bool useAtmSpread_;
         Period forwardStart_;
@@ -111,8 +111,8 @@ namespace QuantLib {
         Date floatFirstDate_, floatNextToLastDate_;
         DayCounter cmsDayCount_, floatDayCount_;
 
-        ext::shared_ptr<PricingEngine> engine_;
-        ext::shared_ptr<CmsCouponPricer> couponPricer_;
+        std::shared_ptr<PricingEngine> engine_;
+        std::shared_ptr<CmsCouponPricer> couponPricer_;
     };
 
 }

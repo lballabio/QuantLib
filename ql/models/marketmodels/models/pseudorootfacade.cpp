@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    PseudoRootFacade::PseudoRootFacade(const ext::shared_ptr<CTSMMCapletCalibration>& c)
+    PseudoRootFacade::PseudoRootFacade(const std::shared_ptr<CTSMMCapletCalibration>& c)
     : numberOfFactors_(c->swapPseudoRoots().front().columns()),
       numberOfRates_(c->swapPseudoRoots().front().rows()),
       numberOfSteps_(c->swapPseudoRoots().size()),

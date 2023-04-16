@@ -36,11 +36,11 @@ namespace QuantLib {
     class AnalyticSimpleChooserEngine : public SimpleChooserOption::engine {
       public:
         explicit AnalyticSimpleChooserEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+            std::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

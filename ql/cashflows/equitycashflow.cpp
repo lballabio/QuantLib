@@ -32,8 +32,8 @@ namespace QuantLib {
         Handle<YieldTermStructure>
             configureDividendHandle(const Handle<YieldTermStructure>& dividendHandle) {
             if (dividendHandle.empty()) {
-                ext::shared_ptr<YieldTermStructure> flatTs(ext::make_shared<FlatForward>(
-                    0, NullCalendar(), Handle<Quote>(ext::make_shared<SimpleQuote>(0.0)),
+                std::shared_ptr<YieldTermStructure> flatTs(std::make_shared<FlatForward>(
+                    0, NullCalendar(), Handle<Quote>(std::make_shared<SimpleQuote>(0.0)),
                     Actual365Fixed()));
                 return Handle<YieldTermStructure>(flatTs);
             }
@@ -41,24 +41,24 @@ namespace QuantLib {
         }
     }
 
-    void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityCashFlowPricer>& p) {
+    void setCouponPricer(const Leg& leg, const std::shared_ptr<EquityCashFlowPricer>& p) {
         for (const auto& i : leg) {
-            ext::shared_ptr<EquityCashFlow> c =
-                ext::dynamic_pointer_cast<EquityCashFlow>(i);
+            std::shared_ptr<EquityCashFlow> c =
+                std::dynamic_pointer_cast<EquityCashFlow>(i);
             if (c != nullptr)
                 c->setPricer(p);
         }
     }
 
     EquityCashFlow::EquityCashFlow(Real notional,
-                                   ext::shared_ptr<EquityIndex> index,
+                                   std::shared_ptr<EquityIndex> index,
                                    const Date& baseDate,
                                    const Date& fixingDate,
                                    const Date& paymentDate,
                                    bool growthOnly)
     : IndexedCashFlow(notional, std::move(index), baseDate, fixingDate, paymentDate, growthOnly) {}
 
-    void EquityCashFlow::setPricer(const ext::shared_ptr<EquityCashFlowPricer>& pricer) {
+    void EquityCashFlow::setPricer(const std::shared_ptr<EquityCashFlowPricer>& pricer) {
         if (pricer_ != nullptr)
             unregisterWith(pricer_);
         pricer_ = pricer;
@@ -89,7 +89,7 @@ namespace QuantLib {
     }
 
     void EquityQuantoCashFlowPricer::initialize(const EquityCashFlow& cashFlow) {
-        index_ = ext::dynamic_pointer_cast<EquityIndex>(cashFlow.index());
+        index_ = std::dynamic_pointer_cast<EquityIndex>(cashFlow.index());
         if (!index_) {
             QL_FAIL("Equity index required.");
         }
@@ -118,11 +118,11 @@ namespace QuantLib {
         Handle<YieldTermStructure> dividendHandle =
             configureDividendHandle(index_->equityDividendCurve());
 
-        Handle<YieldTermStructure> quantoTermStructure(ext::make_shared<QuantoTermStructure>(
+        Handle<YieldTermStructure> quantoTermStructure(std::make_shared<QuantoTermStructure>(
             dividendHandle, quantoCurrencyTermStructure_,
             index_->equityInterestRateCurve(), equityVolatility_, strike, fxVolatility_, 1.0,
             correlation_->value()));
-        ext::shared_ptr<EquityIndex> quantoIndex =
+        std::shared_ptr<EquityIndex> quantoIndex =
             index_->clone(quantoCurrencyTermStructure_, quantoTermStructure, index_->spot());
 
         Real I0 = quantoIndex->fixing(baseDate_);

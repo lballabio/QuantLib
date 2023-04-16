@@ -43,7 +43,7 @@ namespace QuantLib {
     }
 
     Real GaussLobattoIntegral::integrate(
-                                     const ext::function<Real (Real)>& f, 
+                                     const std::function<Real (Real)>& f, 
                                      Real a, Real b) const {
 
         setNumberOfEvaluations(0);
@@ -54,7 +54,7 @@ namespace QuantLib {
     }
 
     Real GaussLobattoIntegral::calculateAbsTolerance(
-                                     const ext::function<Real (Real)>& f, 
+                                     const std::function<Real (Real)>& f, 
                                      Real a, Real b) const {
         
 
@@ -112,7 +112,7 @@ namespace QuantLib {
     }
     
     Real GaussLobattoIntegral::adaptivGaussLobattoStep(
-                                     const ext::function<Real (Real)>& f,
+                                     const std::function<Real (Real)>& f,
                                      Real a, Real b, Real fa, Real fb,
                                      Real acc) const {
         QL_REQUIRE(numberOfEvaluations() < maxEvaluations(),

@@ -51,24 +51,24 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
       public:
         explicit FdHestonBarrierEngine(
-            const ext::shared_ptr<HestonModel>& model,
+            const std::shared_ptr<HestonModel>& model,
             Size tGrid = 100,
             Size xGrid = 100,
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+            std::shared_ptr<LocalVolTermStructure> leverageFct = {},
             Real mixingFactor = 1.0);
 
         explicit FdHestonBarrierEngine(
-            const ext::shared_ptr<HestonModel>& model,
+            const std::shared_ptr<HestonModel>& model,
             DividendSchedule dividends,
             Size tGrid = 100,
             Size xGrid = 100,
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
+            std::shared_ptr<LocalVolTermStructure> leverageFct = {},
             Real mixingFactor = 1.0);
 
         void calculate() const override;
@@ -78,7 +78,7 @@ namespace QuantLib {
         bool explicitDividends_;
         Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         FdmSchemeDesc schemeDesc_;
-        ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        std::shared_ptr<LocalVolTermStructure> leverageFct_;
         Real mixingFactor_;
     };
 

@@ -34,7 +34,6 @@ this_include_HEADERS = \
 	exchangerate.hpp \
 	exercise.hpp \
 	event.hpp \
-	functional.hpp \
 	grid.hpp \
 	handle.hpp \
 	index.hpp \
@@ -44,7 +43,6 @@ this_include_HEADERS = \
 	money.hpp \
 	numericalmethod.hpp \
 	option.hpp \
-	optional.hpp \
 	payoff.hpp \
 	position.hpp \
 	prices.hpp \
@@ -54,7 +52,6 @@ this_include_HEADERS = \
 	quote.hpp \
 	rebatedexercise.hpp \
 	settings.hpp \
-	shared_ptr.hpp \
 	stochasticprocess.hpp \
 	termstructure.hpp \
 	timegrid.hpp \
@@ -75,7 +72,6 @@ cpp_files = \
     index.cpp \
     interestrate.cpp \
     money.cpp \
-    optional.cpp \
     position.cpp \
     prices.cpp \
 	rebatedexercise.cpp \

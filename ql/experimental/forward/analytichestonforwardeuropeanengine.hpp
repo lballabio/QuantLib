@@ -64,7 +64,7 @@ namespace QuantLib {
     class AnalyticHestonForwardEuropeanEngine : public GenericEngine<ForwardOptionArguments<VanillaOption::arguments>,
                                                        VanillaOption::results> {
       public:
-        explicit AnalyticHestonForwardEuropeanEngine(ext::shared_ptr<HestonProcess> process,
+        explicit AnalyticHestonForwardEuropeanEngine(std::shared_ptr<HestonProcess> process,
                                                      Size integrationOrder = 144);
 
         void calculate() const override;
@@ -74,13 +74,13 @@ namespace QuantLib {
                         Real varReset) const;
 
         // Forward characteristic function for given (t, vt, St)
-        ext::shared_ptr<AnalyticHestonEngine> forwardChF(
+        std::shared_ptr<AnalyticHestonEngine> forwardChF(
                                             Handle<Quote>& spotReset,
                                             Real varReset) const;
 
       private:
         // Parameters for the internal chF generators
-        ext::shared_ptr<HestonProcess> process_;
+        std::shared_ptr<HestonProcess> process_;
         Size integrationOrder_;
 
         // Initial process params

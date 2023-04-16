@@ -26,10 +26,10 @@ namespace QuantLib {
 
     Romania::Romania(Market market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> publicImpl =
-            ext::make_shared<Romania::PublicImpl>();
-        static ext::shared_ptr<Calendar::Impl> bvbImpl =
-            ext::make_shared<Romania::BVBImpl>();
+        static std::shared_ptr<Calendar::Impl> publicImpl =
+            std::make_shared<Romania::PublicImpl>();
+        static std::shared_ptr<Calendar::Impl> bvbImpl =
+            std::make_shared<Romania::BVBImpl>();
         switch (market) {
           case Public:
             impl_ = publicImpl;

@@ -27,7 +27,7 @@
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/math/bspline.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -51,8 +51,8 @@ namespace QuantLib {
       public:
         ExponentialSplinesFitting(bool constrainAtZero = true,
                                   const Array& weights = Array(),
-                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                      ext::shared_ptr<OptimizationMethod>(),
+                                  const std::shared_ptr<OptimizationMethod>& optimizationMethod =
+                                      std::shared_ptr<OptimizationMethod>(),
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
                                   Real maxCutoffTime = QL_MAX_REAL,
@@ -94,8 +94,8 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting(const Array& weights = Array(),
-                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                ext::shared_ptr<OptimizationMethod>(),
+                            const std::shared_ptr<OptimizationMethod>& optimizationMethod =
+                                std::shared_ptr<OptimizationMethod>(),
                             const Array& l2 = Array(),
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL);
@@ -126,8 +126,8 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SvenssonFitting(const Array& weights = Array(),
-                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                            ext::shared_ptr<OptimizationMethod>(),
+                        const std::shared_ptr<OptimizationMethod>& optimizationMethod =
+                            std::shared_ptr<OptimizationMethod>(),
                         const Array& l2 = Array(),
                         Real minCutoffTime = 0.0,
                         Real maxCutoffTime = QL_MAX_REAL);
@@ -167,8 +167,8 @@ namespace QuantLib {
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero = true,
                              const Array& weights = Array(),
-                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                 ext::shared_ptr<OptimizationMethod>(),
+                             const std::shared_ptr<OptimizationMethod>& optimizationMethod =
+                                 std::shared_ptr<OptimizationMethod>(),
                              const Array& l2 = Array(),
                              Real minCutoffTime = 0.0,
                              Real maxCutoffTime = QL_MAX_REAL);
@@ -207,8 +207,8 @@ namespace QuantLib {
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
-                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                    ext::shared_ptr<OptimizationMethod>(),
+                                const std::shared_ptr<OptimizationMethod>& optimizationMethod =
+                                    std::shared_ptr<OptimizationMethod>(),
                                 const Array& l2 = Array(),
                                 Real minCutoffTime = 0.0,
                                 Real maxCutoffTime = QL_MAX_REAL);
@@ -232,7 +232,7 @@ namespace QuantLib {
     class SpreadFittingMethod
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
+        SpreadFittingMethod(const std::shared_ptr<FittingMethod>& method,
                             Handle<YieldTermStructure> discountCurve,
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL);
@@ -244,7 +244,7 @@ namespace QuantLib {
       Size size() const override;
       DiscountFactor discountFunction(const Array& x, Time t) const override;
       // underlying parametric method
-      ext::shared_ptr<FittingMethod> method_;
+      std::shared_ptr<FittingMethod> method_;
       // adjustment in case underlying discount curve has different reference date
       DiscountFactor rebase_;
       // discount curve from on top of which the spread will be calculated

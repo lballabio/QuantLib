@@ -106,15 +106,15 @@ namespace QuantLib {
         return CashFlows::maturityDate(yoyLeg_);
     }
 
-    ext::shared_ptr<YoYInflationCoupon>
+    std::shared_ptr<YoYInflationCoupon>
     YoYInflationCapFloor::lastYoYInflationCoupon() const {
-        ext::shared_ptr<CashFlow> lastCF(yoyLeg_.back());
-        ext::shared_ptr<YoYInflationCoupon> lastYoYInflationCoupon =
-        ext::dynamic_pointer_cast<YoYInflationCoupon>(lastCF);
+        std::shared_ptr<CashFlow> lastCF(yoyLeg_.back());
+        std::shared_ptr<YoYInflationCoupon> lastYoYInflationCoupon =
+        std::dynamic_pointer_cast<YoYInflationCoupon>(lastCF);
         return lastYoYInflationCoupon;
     }
 
-    ext::shared_ptr<YoYInflationCapFloor> YoYInflationCapFloor::optionlet(const Size i) const {
+    std::shared_ptr<YoYInflationCapFloor> YoYInflationCapFloor::optionlet(const Size i) const {
         QL_REQUIRE(i < yoyLeg().size(),
                    io::ordinal(i+1) << " optionlet does not exist, only " <<
                    yoyLeg().size());
@@ -126,7 +126,7 @@ namespace QuantLib {
         if (type() == Floor || type() == Collar)
             floor.push_back(floorRates()[i]);
 
-        return ext::make_shared<YoYInflationCapFloor>(type(),
+        return std::make_shared<YoYInflationCapFloor>(type(),
                                                     cf, cap, floor);
     }
 
@@ -149,8 +149,8 @@ namespace QuantLib {
         arguments->type = type_;
 
         for (Size i=0; i<n; ++i) {
-            ext::shared_ptr<YoYInflationCoupon> coupon =
-            ext::dynamic_pointer_cast<YoYInflationCoupon>(
+            std::shared_ptr<YoYInflationCoupon> coupon =
+            std::dynamic_pointer_cast<YoYInflationCoupon>(
                                                             yoyLeg_[i]);
             QL_REQUIRE(coupon, "non-YoYInflationCoupon given");
             arguments->startDates[i] = coupon->accrualStartDate();

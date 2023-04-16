@@ -42,15 +42,15 @@ namespace QuantLib {
         \ingroup instruments
     */
     class CompositeInstrument : public Instrument {
-        typedef std::pair<ext::shared_ptr<Instrument>, Real> component;
+        typedef std::pair<std::shared_ptr<Instrument>, Real> component;
         typedef std::list<component>::iterator iterator;
         typedef std::list<component>::const_iterator const_iterator;
       public:
         //! adds an instrument to the composite
-        void add(const ext::shared_ptr<Instrument>& instrument,
+        void add(const std::shared_ptr<Instrument>& instrument,
                  Real multiplier = 1.0);
         //! shorts an instrument from the composite
-        void subtract(const ext::shared_ptr<Instrument>& instrument,
+        void subtract(const std::shared_ptr<Instrument>& instrument,
                       Real multiplier = 1.0);
         //! \name Observer interface
         //@{

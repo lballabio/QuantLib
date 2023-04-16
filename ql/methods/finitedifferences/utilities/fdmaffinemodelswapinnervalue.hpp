@@ -39,41 +39,41 @@ namespace QuantLib {
     template <class ModelType>
     class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmAffineModelSwapInnerValue(ext::shared_ptr<ModelType> disModel,
-                                     ext::shared_ptr<ModelType> fwdModel,
-                                     const ext::shared_ptr<VanillaSwap>& swap,
+        FdmAffineModelSwapInnerValue(std::shared_ptr<ModelType> disModel,
+                                     std::shared_ptr<ModelType> fwdModel,
+                                     const std::shared_ptr<VanillaSwap>& swap,
                                      std::map<Time, Date> exerciseDates,
-                                     ext::shared_ptr<FdmMesher> mesher,
+                                     std::shared_ptr<FdmMesher> mesher,
                                      Size direction);
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
-        Array getState(const ext::shared_ptr<ModelType>& model,
+        Array getState(const std::shared_ptr<ModelType>& model,
                        Time t,
                        const FdmLinearOpIterator& iter) const;
 
         RelinkableHandle<YieldTermStructure> disTs_, fwdTs_;
-        const ext::shared_ptr<ModelType> disModel_, fwdModel_;
+        const std::shared_ptr<ModelType> disModel_, fwdModel_;
 
-        const ext::shared_ptr<IborIndex> index_;
-        const ext::shared_ptr<VanillaSwap> swap_;
+        const std::shared_ptr<IborIndex> index_;
+        const std::shared_ptr<VanillaSwap> swap_;
         const std::map<Time, Date> exerciseDates_;
-        const ext::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
     };
 
     template <class ModelType>
     inline FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
-        ext::shared_ptr<ModelType> disModel,
-        ext::shared_ptr<ModelType> fwdModel,
-        const ext::shared_ptr<VanillaSwap>& swap,
+        std::shared_ptr<ModelType> disModel,
+        std::shared_ptr<ModelType> fwdModel,
+        const std::shared_ptr<VanillaSwap>& swap,
         std::map<Time, Date> exerciseDates,
-        ext::shared_ptr<FdmMesher> mesher,
+        std::shared_ptr<FdmMesher> mesher,
         Size direction)
     : disModel_(std::move(disModel)), fwdModel_(std::move(fwdModel)), index_(swap->iborIndex()),
-      swap_(ext::shared_ptr<VanillaSwap>(new VanillaSwap(swap->type(),
+      swap_(std::shared_ptr<VanillaSwap>(new VanillaSwap(swap->type(),
                                                          swap->nominal(),
                                                          swap->fixedSchedule(),
                                                          swap->fixedRate(),
@@ -99,7 +99,7 @@ namespace QuantLib {
             const Handle<YieldTermStructure> discount
                 = disModel_->termStructure();
 
-            disTs_.linkTo(ext::shared_ptr<YieldTermStructure>(
+            disTs_.linkTo(std::shared_ptr<YieldTermStructure>(
                 new FdmAffineModelTermStructure(disRate,
                     discount->calendar(), discount->dayCounter(),
                     iterExerciseDate, discount->referenceDate(),
@@ -107,7 +107,7 @@ namespace QuantLib {
 
             const Handle<YieldTermStructure> fwd = fwdModel_->termStructure();
 
-            fwdTs_.linkTo(ext::shared_ptr<YieldTermStructure>(
+            fwdTs_.linkTo(std::shared_ptr<YieldTermStructure>(
                 new FdmAffineModelTermStructure(fwdRate,
                     fwd->calendar(), fwd->dayCounter(),
                     iterExerciseDate, fwd->referenceDate(),
@@ -115,9 +115,9 @@ namespace QuantLib {
 
         }
         else {
-            ext::dynamic_pointer_cast<FdmAffineModelTermStructure>(
+            std::dynamic_pointer_cast<FdmAffineModelTermStructure>(
                 disTs_.currentLink())->setVariable(disRate);
-            ext::dynamic_pointer_cast<FdmAffineModelTermStructure>(
+            std::dynamic_pointer_cast<FdmAffineModelTermStructure>(
                 fwdTs_.currentLink())->setVariable(fwdRate);
         }
 
@@ -125,7 +125,7 @@ namespace QuantLib {
         for (Size j = 0; j < 2; j++) {
             for (const auto& i : swap_->leg(j)) {
                 npv +=
-                    ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
+                    std::dynamic_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
                         Real(i->amount() * disTs_->discount(i->date())) :
                         0.0;
             }

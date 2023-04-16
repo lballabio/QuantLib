@@ -41,17 +41,17 @@ namespace QuantLib {
 class Gaussian1dSmileSection : public SmileSection {
   public:
     Gaussian1dSmileSection(const Date& fixingDate,
-                           ext::shared_ptr<SwapIndex> swapIndex,
-                           const ext::shared_ptr<Gaussian1dModel>& model,
+                           std::shared_ptr<SwapIndex> swapIndex,
+                           const std::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
-                           const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine =
-                               ext::shared_ptr<Gaussian1dSwaptionEngine>());
+                           const std::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine =
+                               std::shared_ptr<Gaussian1dSwaptionEngine>());
     Gaussian1dSmileSection(const Date& fixingDate,
-                           ext::shared_ptr<IborIndex> swapIndex,
-                           const ext::shared_ptr<Gaussian1dModel>& model,
+                           std::shared_ptr<IborIndex> swapIndex,
+                           const std::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
-                           const ext::shared_ptr<Gaussian1dCapFloorEngine>& capEngine =
-                               ext::shared_ptr<Gaussian1dCapFloorEngine>());
+                           const std::shared_ptr<Gaussian1dCapFloorEngine>& capEngine =
+                               std::shared_ptr<Gaussian1dCapFloorEngine>());
 
     // the minimum strike is zero only because we are
     // returning a lognormal section
@@ -67,10 +67,10 @@ class Gaussian1dSmileSection : public SmileSection {
   private:
     Real atm_, annuity_;
     Date fixingDate_;
-    ext::shared_ptr<SwapIndex> swapIndex_;
-    ext::shared_ptr<IborIndex> iborIndex_;
-    ext::shared_ptr<Gaussian1dModel> model_;
-    ext::shared_ptr<PricingEngine> engine_;
+    std::shared_ptr<SwapIndex> swapIndex_;
+    std::shared_ptr<IborIndex> iborIndex_;
+    std::shared_ptr<Gaussian1dModel> model_;
+    std::shared_ptr<PricingEngine> engine_;
 };
 }
 

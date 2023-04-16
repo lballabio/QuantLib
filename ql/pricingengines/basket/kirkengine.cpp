@@ -26,8 +26,8 @@
 
 namespace QuantLib {
 
-    KirkEngine::KirkEngine(ext::shared_ptr<BlackProcess> process1,
-                           ext::shared_ptr<BlackProcess> process2,
+    KirkEngine::KirkEngine(std::shared_ptr<BlackProcess> process1,
+                           std::shared_ptr<BlackProcess> process2,
                            Real correlation)
     : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
@@ -39,16 +39,16 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not a European option");
 
-        ext::shared_ptr<EuropeanExercise> exercise =
-            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        std::shared_ptr<EuropeanExercise> exercise =
+            std::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not a European exercise");
 
-        ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
-            ext::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
+        std::shared_ptr<SpreadBasketPayoff> spreadPayoff =
+            std::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(spreadPayoff," spread payoff expected");
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(
+        std::shared_ptr<PlainVanillaPayoff> payoff =
+            std::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                    spreadPayoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
         const Real strike = payoff->strike();
@@ -73,7 +73,7 @@ namespace QuantLib {
                             *(f2/(f2+strike)));
         
         BlackCalculator black(
-             ext::make_shared<PlainVanillaPayoff>(
+             std::make_shared<PlainVanillaPayoff>(
                  payoff->optionType(),1.0),
              f, v, riskFreeDiscount);
         

@@ -37,7 +37,7 @@ namespace QuantLib {
     class FdmDividendHandler : public StepCondition<Array> {
       public:
         FdmDividendHandler(const DividendSchedule& schedule,
-                           const ext::shared_ptr<FdmMesher>& mesher,
+                           const std::shared_ptr<FdmMesher>& mesher,
                            const Date& referenceDate,
                            const DayCounter& dayCounter,
                            Size equityDirection);
@@ -54,7 +54,7 @@ namespace QuantLib {
         std::vector<Time> dividendTimes_;
         std::vector<Date> dividendDates_;
         std::vector<Real> dividends_;
-        const ext::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<FdmMesher> mesher_;
         const Size equityDirection_;
     };
 }

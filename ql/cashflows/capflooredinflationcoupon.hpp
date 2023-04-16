@@ -67,7 +67,7 @@ namespace QuantLib {
       public:
         // we may watch an underlying coupon ...
         CappedFlooredYoYInflationCoupon(
-                const ext::shared_ptr<YoYInflationCoupon>& underlying,
+                const std::shared_ptr<YoYInflationCoupon>& underlying,
                 Rate cap = Null<Rate>(),
                 Rate floor = Null<Rate>());
 
@@ -77,7 +77,7 @@ namespace QuantLib {
                                         const Date& startDate,
                                         const Date& endDate,
                                         Natural fixingDays,
-                                        const ext::shared_ptr<YoYInflationIndex>& index,
+                                        const std::shared_ptr<YoYInflationIndex>& index,
                                         const Period& observationLag,
                                         const DayCounter& dayCounter,
                                         Real gearing = 1.0,
@@ -125,7 +125,7 @@ namespace QuantLib {
         bool isCapped() const { return isCapped_; }
         bool isFloored() const { return isFloored_; }
 
-        void setPricer(const ext::shared_ptr<YoYInflationCouponPricer>&);
+        void setPricer(const std::shared_ptr<YoYInflationCouponPricer>&);
 
       protected:
         // to be made private and non-virtual after deprecation, not removed
@@ -140,7 +140,7 @@ namespace QuantLib {
 
         // data, we only use underlying_ if it was constructed that way,
         // generally we use the shared_ptr conversion to boolean to test
-        ext::shared_ptr<YoYInflationCoupon> underlying_;
+        std::shared_ptr<YoYInflationCoupon> underlying_;
         bool isFloored_, isCapped_;
         Rate cap_, floor_;
     };

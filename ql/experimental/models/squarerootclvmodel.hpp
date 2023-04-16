@@ -29,7 +29,7 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
-#include <ql/functional.hpp>
+
 #include <map>
 
 namespace QuantLib {
@@ -40,8 +40,8 @@ namespace QuantLib {
 
     class SquareRootCLVModel : public LazyObject {
       public:
-        SquareRootCLVModel(const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-                           ext::shared_ptr<SquareRootProcess> sqrtProcess,
+        SquareRootCLVModel(const std::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                           std::shared_ptr<SquareRootProcess> sqrtProcess,
                            std::vector<Date> maturityDates,
                            Size lagrangeOrder,
                            Real pMax = Null<Real>(),
@@ -60,7 +60,7 @@ namespace QuantLib {
         Array collocationPointsY(const Date& d) const;
 
         // CLV mapping function
-        ext::function<Real(Time, Real)> g() const;
+        std::function<Real(Time, Real)> g() const;
 
       protected:
         void performCalculations() const override;
@@ -73,8 +73,8 @@ namespace QuantLib {
             Real operator()(Time t, Real x) const;
 
           private:
-            const ext::shared_ptr<Matrix> s_, x_;
-            typedef std::map<Time, ext::shared_ptr<LagrangeInterpolation> >
+            const std::shared_ptr<Matrix> s_, x_;
+            typedef std::map<Time, std::shared_ptr<LagrangeInterpolation> >
                 interpl_type;
 
             interpl_type interpl;
@@ -83,13 +83,13 @@ namespace QuantLib {
         std::pair<Real, Real> nonCentralChiSquaredParams(const Date& d) const;
 
         const Real pMax_, pMin_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        const ext::shared_ptr<SquareRootProcess> sqrtProcess_;
+        const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        const std::shared_ptr<SquareRootProcess> sqrtProcess_;
         const std::vector<Date> maturityDates_;
         const Size lagrangeOrder_;
-        const ext::shared_ptr<GBSMRNDCalculator> rndCalculator_;
+        const std::shared_ptr<GBSMRNDCalculator> rndCalculator_;
 
-        mutable ext::function<Real(Time, Real)> g_;
+        mutable std::function<Real(Time, Real)> g_;
     };
 }
 

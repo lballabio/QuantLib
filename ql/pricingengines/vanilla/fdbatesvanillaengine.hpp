@@ -43,13 +43,13 @@ namespace QuantLib {
       public:
         explicit
         FdBatesVanillaEngine(
-            const ext::shared_ptr<BatesModel>& model,
+            const std::shared_ptr<BatesModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         FdBatesVanillaEngine(
-            const ext::shared_ptr<BatesModel>& model,
+            const std::shared_ptr<BatesModel>& model,
             DividendSchedule dividends,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,

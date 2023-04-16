@@ -42,13 +42,13 @@ namespace QuantLib {
     FixedLocalVolSurface::FixedLocalVolSurface(const Date& referenceDate,
                                                const std::vector<Date>& dates,
                                                const std::vector<Real>& strikes,
-                                               ext::shared_ptr<Matrix> localVolMatrix,
+                                               std::shared_ptr<Matrix> localVolMatrix,
                                                const DayCounter& dayCounter,
                                                Extrapolation lowerExtrapolation,
                                                Extrapolation upperExtrapolation)
     : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(dates.back()), localVolMatrix_(std::move(localVolMatrix)),
-      strikes_(dates.size(), ext::make_shared<std::vector<Real> >(strikes)),
+      strikes_(dates.size(), std::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(dates.size()), lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {
 
@@ -66,14 +66,14 @@ namespace QuantLib {
     FixedLocalVolSurface::FixedLocalVolSurface(const Date& referenceDate,
                                                const std::vector<Time>& times,
                                                const std::vector<Real>& strikes,
-                                               ext::shared_ptr<Matrix> localVolMatrix,
+                                               std::shared_ptr<Matrix> localVolMatrix,
                                                const DayCounter& dayCounter,
                                                Extrapolation lowerExtrapolation,
                                                Extrapolation upperExtrapolation)
     : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
       maxDate_(time2Date(referenceDate, dayCounter, times.back())), times_(times),
       localVolMatrix_(std::move(localVolMatrix)),
-      strikes_(times.size(), ext::make_shared<std::vector<Real> >(strikes)),
+      strikes_(times.size(), std::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(times.size()), lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {
 
@@ -86,8 +86,8 @@ namespace QuantLib {
     FixedLocalVolSurface::FixedLocalVolSurface(
         const Date& referenceDate,
         const std::vector<Time>& times,
-        const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
-        ext::shared_ptr<Matrix> localVolMatrix,
+        const std::vector<std::shared_ptr<std::vector<Real> > >& strikes,
+        std::shared_ptr<Matrix> localVolMatrix,
         const DayCounter& dayCounter,
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)

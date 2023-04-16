@@ -37,11 +37,11 @@ namespace overnight_indexed_coupon_tests {
 
         Date today;
         Real notional = 10000.0;
-        ext::shared_ptr<OvernightIndex> sofr;
+        std::shared_ptr<OvernightIndex> sofr;
         RelinkableHandle<YieldTermStructure> forecastCurve;
 
-        ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
-            return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
+        std::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
+            return std::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
         }
 
         CommonVars() {
@@ -49,7 +49,7 @@ namespace overnight_indexed_coupon_tests {
 
             Settings::instance().evaluationDate() = today;
 
-            sofr = ext::make_shared<Sofr>(forecastCurve);
+            sofr = std::make_shared<Sofr>(forecastCurve);
 
             std::vector<Date> pastDates = {
                 Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),

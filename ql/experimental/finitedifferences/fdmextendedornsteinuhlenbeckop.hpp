@@ -38,9 +38,9 @@ namespace QuantLib {
 
     class FdmExtendedOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
       public:
-        FdmExtendedOrnsteinUhlenbeckOp(const ext::shared_ptr<FdmMesher>& mesher,
-                                       ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> p,
-                                       ext::shared_ptr<YieldTermStructure> rTS,
+        FdmExtendedOrnsteinUhlenbeckOp(const std::shared_ptr<FdmMesher>& mesher,
+                                       std::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> p,
+                                       std::shared_ptr<YieldTermStructure> rTS,
                                        FdmBoundaryConditionSet bcSet,
                                        Size direction = 0);
 
@@ -57,9 +57,9 @@ namespace QuantLib {
         std::vector<SparseMatrix> toMatrixDecomp() const override;
 
       private:
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
         const FdmBoundaryConditionSet bcSet_;
         const Size direction_;
 

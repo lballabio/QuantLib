@@ -31,7 +31,7 @@ namespace QuantLib {
           public:
             DiscountedCashflowAtBoundary(Time maturityTime,
                                          Real valueOnBoundary,
-                                         ext::shared_ptr<YieldTermStructure> rTS)
+                                         std::shared_ptr<YieldTermStructure> rTS)
             : maturityTime_(maturityTime), cashFlow_(valueOnBoundary), rTS_(std::move(rTS)) {}
 
             Real operator()(Real t) const {
@@ -42,19 +42,19 @@ namespace QuantLib {
           private:
             const Time maturityTime_;
             const Real cashFlow_;
-            const ext::shared_ptr<YieldTermStructure> rTS_;
+            const std::shared_ptr<YieldTermStructure> rTS_;
         };
     }
 
     FdmDiscountDirichletBoundary::FdmDiscountDirichletBoundary(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<YieldTermStructure>& rTS,
         Time maturityTime,
         Real valueOnBoundary,
         Size direction, Side side)
-    : bc_(ext::make_shared<FdmTimeDepDirichletBoundary>(
+    : bc_(std::make_shared<FdmTimeDepDirichletBoundary>(
             mesher,
-            ext::function<Real (Real)>(
+            std::function<Real (Real)>(
                 DiscountedCashflowAtBoundary(
                     maturityTime, valueOnBoundary, rTS)),
             direction, side)) {

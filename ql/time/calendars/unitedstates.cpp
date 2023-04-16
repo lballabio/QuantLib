@@ -94,17 +94,17 @@ namespace QuantLib {
     UnitedStates::UnitedStates(UnitedStates::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static ext::shared_ptr<Calendar::Impl> settlementImpl(
+        static std::shared_ptr<Calendar::Impl> settlementImpl(
                                         new UnitedStates::SettlementImpl);
-        static ext::shared_ptr<Calendar::Impl> liborImpactImpl(
+        static std::shared_ptr<Calendar::Impl> liborImpactImpl(
                                         new UnitedStates::LiborImpactImpl);
-        static ext::shared_ptr<Calendar::Impl> nyseImpl(
+        static std::shared_ptr<Calendar::Impl> nyseImpl(
                                         new UnitedStates::NyseImpl);
-        static ext::shared_ptr<Calendar::Impl> governmentImpl(
+        static std::shared_ptr<Calendar::Impl> governmentImpl(
                                         new UnitedStates::GovernmentBondImpl);
-        static ext::shared_ptr<Calendar::Impl> nercImpl(
+        static std::shared_ptr<Calendar::Impl> nercImpl(
                                         new UnitedStates::NercImpl);
-        static ext::shared_ptr<Calendar::Impl> federalReserveImpl(
+        static std::shared_ptr<Calendar::Impl> federalReserveImpl(
                                         new UnitedStates::FederalReserveImpl);
         switch (market) {
           case Settlement:

@@ -45,7 +45,7 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
       public:
         explicit FdBlackScholesBarrierEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+            std::shared_ptr<GeneralizedBlackScholesProcess> process,
             Size tGrid = 100,
             Size xGrid = 100,
             Size dampingSteps = 0,
@@ -54,7 +54,7 @@ namespace QuantLib {
             Real illegalLocalVolOverwrite = -Null<Real>());
 
         explicit FdBlackScholesBarrierEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+            std::shared_ptr<GeneralizedBlackScholesProcess> process,
             DividendSchedule dividends,
             Size tGrid = 100,
             Size xGrid = 100,
@@ -66,7 +66,7 @@ namespace QuantLib {
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         DividendSchedule dividends_;
         bool explicitDividends_;
         Size tGrid_, xGrid_, dampingSteps_;

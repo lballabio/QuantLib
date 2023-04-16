@@ -35,7 +35,7 @@ namespace QuantLib {
     class StochasticProcessArray : public StochasticProcess {
       public:
         StochasticProcessArray(
-                  const std::vector<ext::shared_ptr<StochasticProcess1D> >&,
+                  const std::vector<std::shared_ptr<StochasticProcess1D> >&,
                   const Matrix& correlation);
         // stochastic process interface
         Size size() const override;
@@ -52,10 +52,10 @@ namespace QuantLib {
 
         Time time(const Date&) const override;
         // inspectors
-        const ext::shared_ptr<StochasticProcess1D>& process(Size i) const;
+        const std::shared_ptr<StochasticProcess1D>& process(Size i) const;
         Matrix correlation() const;
       protected:
-        std::vector<ext::shared_ptr<StochasticProcess1D> > processes_;
+        std::vector<std::shared_ptr<StochasticProcess1D> > processes_;
         Matrix sqrtCorrelation_;
     };
 

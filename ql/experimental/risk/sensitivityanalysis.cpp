@@ -38,7 +38,7 @@ namespace QuantLib {
         }
     }
 
-    Real aggregateNPV(const vector<ext::shared_ptr<Instrument> >& instruments,
+    Real aggregateNPV(const vector<std::shared_ptr<Instrument> >& instruments,
                       const vector<Real>& quant) {
         Size n = instruments.size();
         Real npv = 0.0;
@@ -57,7 +57,7 @@ namespace QuantLib {
 
     pair<Real, Real>
     parallelAnalysis(const vector<Handle<SimpleQuote> >& quotes,
-                     const vector<ext::shared_ptr<Instrument> >& instruments,
+                     const vector<std::shared_ptr<Instrument> >& instruments,
                      const vector<Real>& quantities,
                      Real shift,
                      SensitivityAnalysis type,
@@ -116,7 +116,7 @@ namespace QuantLib {
     }
 
     pair<Real, Real> bucketAnalysis(const Handle<SimpleQuote>& quote,
-                                    const vector<ext::shared_ptr<Instrument> >& instruments,
+                                    const vector<std::shared_ptr<Instrument> >& instruments,
                                     const vector<Real>& quantities,
                                     Real shift,
                                     SensitivityAnalysis type,
@@ -256,7 +256,7 @@ namespace QuantLib {
 
     pair<vector<Real>, vector<Real> >
     bucketAnalysis(const vector<Handle<SimpleQuote> >& quotes,
-                   const vector<ext::shared_ptr<Instrument> >& instr,
+                   const vector<std::shared_ptr<Instrument> >& instr,
                    const vector<Real>& quant,
                    Real shift,
                    SensitivityAnalysis type)
@@ -310,7 +310,7 @@ namespace QuantLib {
 
     pair<vector<vector<Real> >, vector<vector<Real> > >
     bucketAnalysis(const vector<vector<Handle<SimpleQuote> > >& quotes,
-                   const vector<ext::shared_ptr<Instrument> >& instr,
+                   const vector<std::shared_ptr<Instrument> >& instr,
                    const vector<Real>& quant,
                    Real shift,
                    SensitivityAnalysis type)

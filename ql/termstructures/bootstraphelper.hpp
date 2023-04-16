@@ -155,7 +155,7 @@ namespace QuantLib {
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(Real quote)
-    : quote_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(quote)))),
+    : quote_(Handle<Quote>(std::shared_ptr<Quote>(new SimpleQuote(quote)))),
       termStructure_(nullptr) {}
 
     template <class TS>
@@ -246,8 +246,8 @@ namespace QuantLib {
           public:
             template <class Helper>
             bool operator()(
-                    const ext::shared_ptr<Helper>& h1,
-                    const ext::shared_ptr<Helper>& h2) const {
+                    const std::shared_ptr<Helper>& h1,
+                    const std::shared_ptr<Helper>& h2) const {
                 return (h1->pillarDate() < h2->pillarDate());
             }
         };

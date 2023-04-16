@@ -19,7 +19,7 @@
 
 #include "fdsabr.hpp"
 #include "utilities.hpp"
-#include <ql/functional.hpp>
+
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
@@ -32,7 +32,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
-#include <ql/shared_ptr.hpp>
+#include <memory>
 #include <utility>
 
 using namespace QuantLib;
@@ -43,7 +43,7 @@ namespace {
       public:
         SabrMonteCarloPricer(Real f0,
                              Time maturity,
-                             ext::shared_ptr<Payoff> payoff,
+                             std::shared_ptr<Payoff> payoff,
                              Real alpha,
                              Real beta,
                              Real nu,
@@ -97,7 +97,7 @@ namespace {
       private:
         const Real f0_;
         const Time maturity_;
-        const ext::shared_ptr<Payoff> payoff_;
+        const std::shared_ptr<Payoff> payoff_;
         const Real alpha_, beta_, nu_, rho_;
     };
 
@@ -118,13 +118,13 @@ void FdSabrTest::testFdmSabrOp() {
 
     const Real strike = 1.5;
 
-    const ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(maturityDate);
+    const std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(maturityDate);
 
-    const ext::shared_ptr<PlainVanillaPayoff> putPayoff =
-        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
-    const ext::shared_ptr<PlainVanillaPayoff> callPayoff =
-        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    const std::shared_ptr<PlainVanillaPayoff> putPayoff =
+        std::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+    const std::shared_ptr<PlainVanillaPayoff> callPayoff =
+        std::make_shared<PlainVanillaPayoff>(Option::Call, strike);
 
     VanillaOption optionPut(putPayoff, exercise);
     VanillaOption optionCall(callPayoff, exercise);
@@ -139,15 +139,15 @@ void FdSabrTest::testFdmSabrOp() {
 
     const Real betas[] = { 0.25, 0.6 };
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
+    const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+        std::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(std::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));
 
     for (Real beta : betas) {
 
-        const ext::shared_ptr<PricingEngine> pdeEngine =
-            ext::make_shared<FdSabrVanillaEngine>(f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
+        const std::shared_ptr<PricingEngine> pdeEngine =
+            std::make_shared<FdSabrVanillaEngine>(f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
 
         optionPut.setPricingEngine(pdeEngine);
         const Real pdePut = optionPut.NPV();
@@ -174,7 +174,7 @@ void FdSabrTest::testFdmSabrOp() {
         const Real putPdeImplVol =
             optionPut.impliedVolatility(optionPut.NPV(), bsProcess, 1e-6);
 
-        const ext::function<Real(Real)> mcSabr(
+        const std::function<Real(Real)> mcSabr(
             SabrMonteCarloPricer(f0, maturityTime, putPayoff,
                                  alpha, beta, nu, rho));
 
@@ -222,8 +222,8 @@ void FdSabrTest::testFdmSabrCevPricing() {
     const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
         flatRate(today, 0.05, dc));
 
-    const ext::shared_ptr<Exercise> exercise =
-        ext::make_shared<EuropeanExercise>(maturityDate);
+    const std::shared_ptr<Exercise> exercise =
+        std::make_shared<EuropeanExercise>(maturityDate);
 
     const Option::Type optionTypes[] = {Option::Put, Option::Call};
 
@@ -231,18 +231,18 @@ void FdSabrTest::testFdmSabrCevPricing() {
 
     for (auto optionType : optionTypes) {
         for (Real strike : strikes) {
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::make_shared<PlainVanillaPayoff>(optionType, strike);
+            const std::shared_ptr<PlainVanillaPayoff> payoff =
+                std::make_shared<PlainVanillaPayoff>(optionType, strike);
 
             VanillaOption option(payoff, exercise);
 
             for (Real beta : betas) {
-                option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
+                option.setPricingEngine(std::make_shared<FdSabrVanillaEngine>(
                     f0, alpha, beta, nu, rho, rTS, 100, 400, 3));
 
                 const Real calculated = option.NPV();
 
-                option.setPricingEngine(ext::make_shared<AnalyticCEVEngine>(
+                option.setPricingEngine(std::make_shared<AnalyticCEVEngine>(
                     f0, alpha, beta, rTS));
 
                 const Real expected = option.NPV();
@@ -282,9 +282,9 @@ void FdSabrTest::testFdmSabrVsVolApproximation() {
 
     const Real f0 = 100;
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
+    const std::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+        std::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(std::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));
 
     const Real alpha = 0.35;
@@ -298,10 +298,10 @@ void FdSabrTest::testFdmSabrVsVolApproximation() {
     const Real tol = 2.5e-3;
     for (auto optionType : optionTypes) {
         for (Real strike : strikes) {
-            VanillaOption option(ext::make_shared<PlainVanillaPayoff>(optionType, strike),
-                                 ext::make_shared<EuropeanExercise>(maturityDate));
+            VanillaOption option(std::make_shared<PlainVanillaPayoff>(optionType, strike),
+                                 std::make_shared<EuropeanExercise>(maturityDate));
 
-            option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
+            option.setPricingEngine(std::make_shared<FdSabrVanillaEngine>(
                 f0, alpha, beta, nu, rho, rTS, 25, 100, 50));
 
             const Volatility fdmVol =
@@ -395,16 +395,16 @@ void FdSabrTest::testOosterleeTestCaseIV() {
 
         const Size timeSteps = Size(5*maturityTime);
 
-        const ext::shared_ptr<PricingEngine> engine =
-            ext::make_shared<FdSabrVanillaEngine>(
+        const std::shared_ptr<PricingEngine> engine =
+            std::make_shared<FdSabrVanillaEngine>(
                 f0, alpha, beta, nu, rho, rTS, timeSteps, 200, 21);
 
-        const ext::shared_ptr<Exercise> exercise =
-            ext::make_shared<EuropeanExercise>(maturityDate);
+        const std::shared_ptr<Exercise> exercise =
+            std::make_shared<EuropeanExercise>(maturityDate);
 
         for (Size j=0; j < LENGTH(strikes); ++j) {
-            const ext::shared_ptr<StrikedTypePayoff> payoff =
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, strikes[j]);
+            const std::shared_ptr<StrikedTypePayoff> payoff =
+                std::make_shared<PlainVanillaPayoff>(Option::Call, strikes[j]);
 
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(engine);
@@ -414,7 +414,7 @@ void FdSabrTest::testOosterleeTestCaseIV() {
             const OsterleeReferenceResults referenceResuts(i*3+j);
 
             const Real expected = RichardsonExtrapolation(
-                ext::function<Real(Real)>(referenceResuts), 1/16., 1)(2.);
+                std::function<Real(Real)>(referenceResuts), 1/16., 1)(2.);
 
             const Real diff = std::fabs(calculated - expected);
             if (diff > tol) {
@@ -492,10 +492,10 @@ void FdSabrTest::testBenchOpSabrCase() {
             const Real strike = strikes[j];
 
             VanillaOption option(
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-                ext::make_shared<EuropeanExercise>(maturity));
+                std::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                std::make_shared<EuropeanExercise>(maturity));
 
-            option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
+            option.setPricingEngine(std::make_shared<FdSabrVanillaEngine>(
                     f0, alpha, beta, nu, rho, rTS,
                     Size(gridT*factor),
                     Size(gridX*factor),

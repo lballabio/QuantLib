@@ -19,16 +19,16 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <algorithm>
 #include <utility>
 
 namespace QuantLib {
 
     MonteCarloCatBondEngine::MonteCarloCatBondEngine(
-        ext::shared_ptr<CatRisk> catRisk,
+        std::shared_ptr<CatRisk> catRisk,
         Handle<YieldTermStructure> discountCurve,
-        const ext::optional<bool>& includeSettlementDateFlows)
+        const std::optional<bool>& includeSettlementDateFlows)
     : catRisk_(std::move(catRisk)), discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
@@ -90,7 +90,7 @@ namespace QuantLib {
         Real totalNPV = 0.0;
         Date effectiveDate = std::max(arguments_.startDate, settlementDate);
         Date maturityDate = (*arguments_.cashflows.rbegin())->date();
-        ext::shared_ptr<CatSimulation> catSimulation = catRisk_->newSimulation(effectiveDate, maturityDate);
+        std::shared_ptr<CatSimulation> catSimulation = catRisk_->newSimulation(effectiveDate, maturityDate);
         std::vector<std::pair<Date, Real> > eventsPath;
         NotionalPath notionalPath;
         Real riskFreeNPV = pathNpv(includeSettlementDateFlows, settlementDate, notionalPath);
@@ -128,7 +128,7 @@ namespace QuantLib {
         return totalNPV;
     }
 
-    Real MonteCarloCatBondEngine::cashFlowRiskyValue(const ext::shared_ptr<CashFlow>& cf,
+    Real MonteCarloCatBondEngine::cashFlowRiskyValue(const std::shared_ptr<CashFlow>& cf,
                                                      const NotionalPath& notionalPath) const {
         return cf->amount()*notionalPath.notionalRate(cf->date()); //TODO: fix for more complicated cashflows
     }

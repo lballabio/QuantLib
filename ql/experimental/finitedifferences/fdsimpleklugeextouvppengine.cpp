@@ -49,9 +49,9 @@ namespace QuantLib {
         class FdmSparkSpreadInnerValue : public FdmInnerValueCalculator {
 
           public:
-            FdmSparkSpreadInnerValue(ext::shared_ptr<BasketPayoff> basketPayoff,
-                                     ext::shared_ptr<FdmInnerValueCalculator> fuelPrice,
-                                     ext::shared_ptr<FdmInnerValueCalculator> powerPrice)
+            FdmSparkSpreadInnerValue(std::shared_ptr<BasketPayoff> basketPayoff,
+                                     std::shared_ptr<FdmInnerValueCalculator> fuelPrice,
+                                     std::shared_ptr<FdmInnerValueCalculator> powerPrice)
             : basketPayoff_(std::move(basketPayoff)), fuelPrice_(std::move(fuelPrice)),
               powerPrice_(std::move(powerPrice)) {}
 
@@ -67,18 +67,18 @@ namespace QuantLib {
             }
 
           private:
-            const ext::shared_ptr<BasketPayoff> basketPayoff_;
-            const ext::shared_ptr<FdmInnerValueCalculator> fuelPrice_;
-            const ext::shared_ptr<FdmInnerValueCalculator> powerPrice_;
+            const std::shared_ptr<BasketPayoff> basketPayoff_;
+            const std::shared_ptr<FdmInnerValueCalculator> fuelPrice_;
+            const std::shared_ptr<FdmInnerValueCalculator> powerPrice_;
         };
     }
 
 
     FdSimpleKlugeExtOUVPPEngine::FdSimpleKlugeExtOUVPPEngine(
-        ext::shared_ptr<KlugeExtOUProcess> process,
-        ext::shared_ptr<YieldTermStructure> rTS,
-        ext::shared_ptr<Shape> fuelShape,
-        ext::shared_ptr<Shape> powerShape,
+        std::shared_ptr<KlugeExtOUProcess> process,
+        std::shared_ptr<YieldTermStructure> rTS,
+        std::shared_ptr<Shape> fuelShape,
+        std::shared_ptr<Shape> powerShape,
         Real fuelCostAddon,
         Size tGrid,
         Size xGrid,
@@ -91,8 +91,8 @@ namespace QuantLib {
 
     void FdSimpleKlugeExtOUVPPEngine::calculate() const {
 
-        ext::shared_ptr<SwingExercise> swingExercise(
-            ext::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
+        std::shared_ptr<SwingExercise> swingExercise(
+            std::dynamic_pointer_cast<SwingExercise>(arguments_.exercise));
 
         QL_REQUIRE(swingExercise, "Swing exercise supported only");
 
@@ -105,65 +105,65 @@ namespace QuantLib {
 
         // 2. mesher set-up
         const Time maturity = exerciseTimes.back();
-        const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess
+        const std::shared_ptr<ExtOUWithJumpsProcess> klugeProcess
             = process_->getKlugeProcess();
 
-        const ext::shared_ptr<StochasticProcess1D> klugeOUProcess
+        const std::shared_ptr<StochasticProcess1D> klugeOUProcess
             = klugeProcess->getExtendedOrnsteinUhlenbeckProcess();
 
-        const ext::shared_ptr<Fdm1dMesher> xMesher(
+        const std::shared_ptr<Fdm1dMesher> xMesher(
             new FdmSimpleProcess1dMesher(xGrid_, klugeOUProcess, maturity));
 
-        const ext::shared_ptr<Fdm1dMesher> yMesher(
+        const std::shared_ptr<Fdm1dMesher> yMesher(
             new ExponentialJump1dMesher(yGrid_,
                                         klugeProcess->beta(),
                                         klugeProcess->jumpIntensity(),
                                         klugeProcess->eta(), 1e-3));
 
-        const ext::shared_ptr<Fdm1dMesher> gMesher(
+        const std::shared_ptr<Fdm1dMesher> gMesher(
             new FdmSimpleProcess1dMesher(gGrid_,
                                          process_->getExtOUProcess(),maturity));
 
-        const ext::shared_ptr<Fdm1dMesher> exerciseMesher(
+        const std::shared_ptr<Fdm1dMesher> exerciseMesher(
             stepConditionFactory.stateMesher());
 
-        const ext::shared_ptr<FdmMesher> mesher (
+        const std::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(xMesher, yMesher, gMesher, exerciseMesher));
 
         // 3. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> zeroInnerValue(
+        const std::shared_ptr<FdmInnerValueCalculator> zeroInnerValue(
             new FdmZeroInnerValue());
 
-        const ext::shared_ptr<Payoff> zeroStrikeCall(
+        const std::shared_ptr<Payoff> zeroStrikeCall(
             new PlainVanillaPayoff(Option::Call, 0.0));
 
-        const ext::shared_ptr<FdmInnerValueCalculator> fuelPrice(
+        const std::shared_ptr<FdmInnerValueCalculator> fuelPrice(
             new FdmExpExtOUInnerValueCalculator(zeroStrikeCall,
                                                 mesher, fuelShape_, 2));
 
-        const ext::shared_ptr<FdmInnerValueCalculator> powerPrice(
+        const std::shared_ptr<FdmInnerValueCalculator> powerPrice(
             new FdmExtOUJumpModelInnerValue(zeroStrikeCall,mesher,powerShape_));
 
-        const ext::shared_ptr<FdmInnerValueCalculator> sparkSpread(
+        const std::shared_ptr<FdmInnerValueCalculator> sparkSpread(
             new FdmSparkSpreadInnerValue(
-                ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
+                std::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff),
                 fuelPrice, powerPrice));
 
         // 4. Step conditions
         std::list<std::vector<Time> > stoppingTimes;
-        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<std::shared_ptr<StepCondition<Array> > > stepConditions;
 
         // 4.1 Bermudan step conditions
         stoppingTimes.push_back(exerciseTimes);
         const FdmVPPStepConditionMesher mesh = {3U, mesher};
 
-        const ext::shared_ptr<FdmVPPStepCondition> stepCondition(
+        const std::shared_ptr<FdmVPPStepCondition> stepCondition(
             stepConditionFactory.build(mesh, fuelCostAddon_,
                                        fuelPrice, sparkSpread));
 
         stepConditions.push_back(stepCondition);
 
-        const ext::shared_ptr<FdmStepConditionComposite> conditions(
+        const std::shared_ptr<FdmStepConditionComposite> conditions(
             new FdmStepConditionComposite(stoppingTimes, stepConditions));
 
         // 5. Boundary conditions
@@ -173,7 +173,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      zeroInnerValue, maturity, tGrid_, 0 };
 
-        const ext::shared_ptr<FdmKlugeExtOUSolver<4> > solver(
+        const std::shared_ptr<FdmKlugeExtOUSolver<4> > solver(
             new FdmKlugeExtOUSolver<4>(Handle<KlugeExtOUProcess>(process_),
                                        rTS_, solverDesc, schemeDesc_));
 

@@ -46,9 +46,9 @@
 namespace QuantLib {
 
     FdmExtOUJumpOp::FdmExtOUJumpOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const std::shared_ptr<FdmMesher>& mesher,
+        const std::shared_ptr<ExtOUWithJumpsProcess>& process,
+        const std::shared_ptr<YieldTermStructure>& rTS,
         const FdmBoundaryConditionSet& bcSet,
         Size integroIntegrationOrder)
     : mesher_ (mesher),
@@ -72,7 +72,7 @@ namespace QuantLib {
         integroPart_ = SparseMatrix(mesher_->layout()->size(),
                                     mesher_->layout()->size());
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const std::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         Array yLoc(mesher_->layout()->dim()[1]);

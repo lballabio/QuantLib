@@ -44,8 +44,8 @@ namespace QuantLib {
 
     class FdmSabrOp : public FdmLinearOpComposite {
       public:
-        FdmSabrOp(const ext::shared_ptr<FdmMesher>& mesher,
-                  ext::shared_ptr<YieldTermStructure> rTS,
+        FdmSabrOp(const std::shared_ptr<FdmMesher>& mesher,
+                  std::shared_ptr<YieldTermStructure> rTS,
                   Real f0,
                   Real alpha,
                   Real beta,
@@ -64,7 +64,7 @@ namespace QuantLib {
         std::vector<SparseMatrix> toMatrixDecomp() const override;
 
       private:
-        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const std::shared_ptr<YieldTermStructure> rTS_;
 
         const TripleBandLinearOp dffMap_;
         const TripleBandLinearOp dxMap_, dxxMap_;

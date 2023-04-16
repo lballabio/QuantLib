@@ -96,28 +96,28 @@ void ForwardOptionTest::testValues() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
               new ForwardVanillaEngine<AnalyticEuropeanEngine>(stochProcess));
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
+        std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         Date reset = today + timeToDays(value.start);
 
         spot->setValue(value.s);
@@ -156,29 +156,29 @@ void ForwardOptionTest::testPerformanceValues() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+    std::shared_ptr<BlackScholesMertonProcess> stochProcess(
          new BlackScholesMertonProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-    ext::shared_ptr<PricingEngine> engine(
+    std::shared_ptr<PricingEngine> engine(
         new ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine>(
                                                                stochProcess));
 
     for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
+        std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         Date reset = today + timeToDays(value.start);
 
         spot->setValue(value.s);
@@ -225,18 +225,18 @@ namespace {
         DayCounter dc = Actual360();
         Date today = Settings::instance().evaluationDate();
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        std::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
         Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
         Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
         Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        std::shared_ptr<BlackScholesMertonProcess> stochProcess(
           new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-        ext::shared_ptr<PricingEngine> engine(
+        std::shared_ptr<PricingEngine> engine(
                             new Engine<AnalyticEuropeanEngine>(stochProcess));
 
         for (auto& type : types) {
@@ -245,11 +245,11 @@ namespace {
                     for (int startMonth : startMonths) {
 
                         Date exDate = today + length * Years;
-                        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                        std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
                         Date reset = today + startMonth * Months;
 
-                        ext::shared_ptr<StrikedTypePayoff> payoff(
+                        std::shared_ptr<StrikedTypePayoff> payoff(
                             new PlainVanillaPayoff(type, 0.0));
 
                         ForwardVanillaOption option(moneynes, reset, payoff, exercise);
@@ -374,7 +374,7 @@ class TestBinomialEngine : public BinomialVanillaEngine<CoxRossRubinstein>
 private:
 public:
    explicit TestBinomialEngine(
-           const ext::shared_ptr<GeneralizedBlackScholesProcess > &process)
+           const std::shared_ptr<GeneralizedBlackScholesProcess > &process)
    : BinomialVanillaEngine<CoxRossRubinstein>(process, 300) // fixed steps
     {}
 };
@@ -387,30 +387,30 @@ void ForwardOptionTest::testGreeksInitialization() {
    SavedSettings backup;
    Date today = Settings::instance().evaluationDate();
 
-   ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-   ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+   std::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+   std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-   ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+   std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-   ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.11));
+   std::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.11));
    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-   ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+   std::shared_ptr<BlackScholesMertonProcess> stochProcess(
       new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-   ext::shared_ptr<PricingEngine> engine(
+   std::shared_ptr<PricingEngine> engine(
                         new ForwardVanillaEngine<TestBinomialEngine>(stochProcess));
    Date exDate = today + 1*Years;
-   ext::shared_ptr<Exercise> exercise(
+   std::shared_ptr<Exercise> exercise(
                                  new EuropeanExercise(exDate));
    Date reset = today + 6*Months;
-   ext::shared_ptr<StrikedTypePayoff> payoff(
+   std::shared_ptr<StrikedTypePayoff> payoff(
                         new PlainVanillaPayoff(Option::Call, 0.0));
 
    ForwardVanillaOption option(0.9, reset, payoff, exercise);
    option.setPricingEngine(engine);
 
-   ext::shared_ptr<PricingEngine> ctrlengine(
+   std::shared_ptr<PricingEngine> ctrlengine(
                         new TestBinomialEngine(stochProcess));
    VanillaOption ctrloption(payoff, exercise);
    ctrloption.setPricingEngine(ctrlengine);
@@ -507,31 +507,31 @@ void ForwardOptionTest::testMCPrices() {
    SavedSettings backup;
    Date today = Settings::instance().evaluationDate();
 
-   ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
-   ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+   std::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
+   std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-   ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+   std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-   ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma));
+   std::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma));
    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-   ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+   std::shared_ptr<BlackScholesMertonProcess> stochProcess(
       new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-   ext::shared_ptr<PricingEngine> analyticEngine(
+   std::shared_ptr<PricingEngine> analyticEngine(
                         new ForwardVanillaEngine<AnalyticEuropeanEngine>(stochProcess));
 
-   ext::shared_ptr<PricingEngine> mcEngine 
+   std::shared_ptr<PricingEngine> mcEngine 
       = MakeMCForwardEuropeanBSEngine<PseudoRandom>(stochProcess)
             .withSteps(timeSteps)
             .withSamples(numberOfSamples)
             .withSeed(mcSeed);
 
    Date exDate = today + 1*Years;
-   ext::shared_ptr<Exercise> exercise(
+   std::shared_ptr<Exercise> exercise(
                                  new EuropeanExercise(exDate));
    Date reset = today + 6*Months;
-   ext::shared_ptr<StrikedTypePayoff> payoff(
+   std::shared_ptr<StrikedTypePayoff> payoff(
                         new PlainVanillaPayoff(Option::Call, 0.0));
 
    Real moneyness[] = { 0.8, 0.9, 1.0, 1.1, 1.2 };
@@ -606,28 +606,28 @@ void ForwardOptionTest::testHestonMCPrices() {
        Date today = Settings::instance().evaluationDate();
 
        Date exDate = today + 1 * Years;
-       ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+       std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
        Date reset = today + 6 * Months;
-       ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[type_index], 0.0));
+       std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[type_index], 0.0));
 
-       ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
-       ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+       std::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
+       std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-       ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+       std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-       ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma_bs));
+       std::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma_bs));
        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-       ext::shared_ptr<BlackScholesMertonProcess> bsProcess(
+       std::shared_ptr<BlackScholesMertonProcess> bsProcess(
            new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-       ext::shared_ptr<PricingEngine> analyticEngine(
+       std::shared_ptr<PricingEngine> analyticEngine(
            new ForwardVanillaEngine<AnalyticEuropeanEngine>(bsProcess));
 
-       ext::shared_ptr<HestonProcess> hestonProcess(
+       std::shared_ptr<HestonProcess> hestonProcess(
            new HestonProcess(rTS, qTS, Handle<Quote>(spot), v0, kappa, theta, sigma, rho));
 
-       ext::shared_ptr<PricingEngine> mcEngine =
+       std::shared_ptr<PricingEngine> mcEngine =
            MakeMCForwardEuropeanHestonEngine<LowDiscrepancy>(hestonProcess)
                .withSteps(timeSteps)
                .withSamples(numberOfSamples)
@@ -663,27 +663,27 @@ void ForwardOptionTest::testHestonMCPrices() {
 
        reset = today;
 
-       ext::shared_ptr<HestonProcess> hestonProcessSmile(
+       std::shared_ptr<HestonProcess> hestonProcessSmile(
            new HestonProcess(rTS, qTS, Handle<Quote>(spot), v0, kappa, theta, sigma, rho));
 
-       ext::shared_ptr<HestonModel> hestonModel(ext::make_shared<HestonModel>(hestonProcessSmile));
+       std::shared_ptr<HestonModel> hestonModel(std::make_shared<HestonModel>(hestonProcessSmile));
 
-       ext::shared_ptr<PricingEngine> analyticHestonEngine(
-           ext::make_shared<AnalyticHestonEngine>(hestonModel, 96));
+       std::shared_ptr<PricingEngine> analyticHestonEngine(
+           std::make_shared<AnalyticHestonEngine>(hestonModel, 96));
 
-       ext::shared_ptr<PricingEngine> mcEngineSmile =
+       std::shared_ptr<PricingEngine> mcEngineSmile =
            MakeMCForwardEuropeanHestonEngine<LowDiscrepancy>(hestonProcessSmile)
                .withSteps(timeSteps)
                .withSamples(numberOfSamples)
                .withSeed(mcSeed);
 
-       ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticForwardHestonEngine(
+       std::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticForwardHestonEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcessSmile));
 
        for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
 
            Real strike = s * moneyness[moneyness_index];
-           ext::shared_ptr<StrikedTypePayoff> vanillaPayoff(new PlainVanillaPayoff(optionTypes[type_index], strike));
+           std::shared_ptr<StrikedTypePayoff> vanillaPayoff(new PlainVanillaPayoff(optionTypes[type_index], strike));
 
            VanillaOption vanillaOption(vanillaPayoff, exercise);
            ForwardVanillaOption forwardOption(moneyness[moneyness_index], reset, payoff, exercise);
@@ -757,33 +757,33 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
        Date today = Settings::instance().evaluationDate();
 
        Date exDate = today + 1 * Years;
-       ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+       std::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
        Date reset = today + 6 * Months;
-       ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[option_type_index], 0.0));
+       std::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[option_type_index], 0.0));
 
-       ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
-       ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+       std::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
+       std::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-       ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+       std::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
 
-       ext::shared_ptr<HestonProcess> hestonProcess(
+       std::shared_ptr<HestonProcess> hestonProcess(
            new HestonProcess(rTS, qTS, Handle<Quote>(spot), v0, kappa, theta, sigma, rho));
 
-       ext::shared_ptr<PricingEngine> mcEngine =
+       std::shared_ptr<PricingEngine> mcEngine =
            MakeMCForwardEuropeanHestonEngine<PseudoRandom>(hestonProcess)
                .withSteps(timeSteps)
                .withSamples(numberOfSamples)
                .withSeed(mcSeed);
 
-       ext::shared_ptr<PricingEngine> mcEngineCv =
+       std::shared_ptr<PricingEngine> mcEngineCv =
            MakeMCForwardEuropeanHestonEngine<PseudoRandom>(hestonProcess)
                .withSteps(timeSteps)
                .withSamples(numberOfSamples)
                .withSeed(mcSeed)
                .withControlVariate(true);
 
-       ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticEngine(
+       std::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcess));
 
       Real moneyness[] = { 0.8, 1.0, 1.2 };

@@ -92,9 +92,9 @@ namespace QuantLib {
         return forward;
     }
 
-    ext::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
+    std::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
                                                     const Handle<YieldTermStructure>& dividend,
                                                     const Handle<Quote>& spot) const {
-        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend, spot);
+        return std::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend, spot);
     }
 }

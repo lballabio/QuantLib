@@ -35,13 +35,13 @@ namespace QuantLib {
 
     FdmBlackScholesMesher::FdmBlackScholesMesher(
         Size size,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        const std::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Time maturity, Real strike,
         Real xMinConstraint, Real xMaxConstraint,
         Real eps, Real scaleFactor,
         const std::pair<Real, Real>& cPoint,
         const DividendSchedule& dividendSchedule,
-        const ext::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper,
+        const std::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper,
         Real spotAdjustment)
     : Fdm1dMesher(size) {
 
@@ -65,7 +65,7 @@ namespace QuantLib {
 
         const Handle<YieldTermStructure> qTS =
             (fdmQuantoHelper) != nullptr ?
-                Handle<YieldTermStructure>(ext::make_shared<QuantoTermStructure>(
+                Handle<YieldTermStructure>(std::make_shared<QuantoTermStructure>(
                     process->dividendYield(), process->riskFreeRate(),
                     Handle<YieldTermStructure>(fdmQuantoHelper->fTS_), process->blackVolatility(),
                     strike, Handle<BlackVolTermStructure>(fdmQuantoHelper->fxVolTS_),
@@ -108,17 +108,17 @@ namespace QuantLib {
             xMax = xMaxConstraint;
         }
 
-        ext::shared_ptr<Fdm1dMesher> helper;
+        std::shared_ptr<Fdm1dMesher> helper;
         if (   cPoint.first != Null<Real>() 
             && std::log(cPoint.first) >=xMin && std::log(cPoint.first) <=xMax) {
             
-            helper = ext::shared_ptr<Fdm1dMesher>(
+            helper = std::shared_ptr<Fdm1dMesher>(
                 new Concentrating1dMesher(xMin, xMax, size, 
                     std::pair<Real,Real>(std::log(cPoint.first),
                                          cPoint.second)));
         }
         else {
-            helper = ext::shared_ptr<Fdm1dMesher>(
+            helper = std::shared_ptr<Fdm1dMesher>(
                                         new Uniform1dMesher(xMin, xMax, size));
             
         }
@@ -130,17 +130,17 @@ namespace QuantLib {
         }
     }
             
-    ext::shared_ptr<GeneralizedBlackScholesProcess> 
+    std::shared_ptr<GeneralizedBlackScholesProcess> 
     FdmBlackScholesMesher::processHelper(const Handle<Quote>& s0,
                                          const Handle<YieldTermStructure>& rTS,
                                          const Handle<YieldTermStructure>& qTS,
                                          Volatility vol) {
         
-        return ext::make_shared<GeneralizedBlackScholesProcess>(
+        return std::make_shared<GeneralizedBlackScholesProcess>(
             
                 s0, qTS, rTS,
                 Handle<BlackVolTermStructure>(
-                    ext::shared_ptr<BlackVolTermStructure>(
+                    std::shared_ptr<BlackVolTermStructure>(
                         new BlackConstantVol(rTS->referenceDate(),
                                              Calendar(),
                                              vol,

@@ -49,7 +49,7 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittedBondDiscountCurve(
         Natural settlementDays,
         const Calendar& calendar,
-        vector<ext::shared_ptr<BondHelper> > bondHelpers,
+        vector<std::shared_ptr<BondHelper> > bondHelpers,
         const DayCounter& dayCounter,
         const FittingMethod& fittingMethod,
         Real accuracy,
@@ -68,7 +68,7 @@ namespace QuantLib {
 
     FittedBondDiscountCurve::FittedBondDiscountCurve(
         const Date& referenceDate,
-        vector<ext::shared_ptr<BondHelper> > bondHelpers,
+        vector<std::shared_ptr<BondHelper> > bondHelpers,
         const DayCounter& dayCounter,
         const FittingMethod& fittingMethod,
         Real accuracy,
@@ -95,7 +95,7 @@ namespace QuantLib {
 
         // double check bond quotes still valid and/or instruments not expired
         for (Size i=0; i<bondHelpers_.size(); ++i) {
-            ext::shared_ptr<Bond> bond = bondHelpers_[i]->bond();
+            std::shared_ptr<Bond> bond = bondHelpers_[i]->bond();
             QL_REQUIRE(bondHelpers_[i]->quote()->isValid(),
                        io::ordinal(i+1) << " bond (maturity: " <<
                        bond->maturityDate() << ") has an invalid price quote");
@@ -120,7 +120,7 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittingMethod::FittingMethod(
         bool constrainAtZero,
         const Array& weights,
-        ext::shared_ptr<OptimizationMethod> optimizationMethod,
+        std::shared_ptr<OptimizationMethod> optimizationMethod,
         Array l2,
         const Real minCutoffTime,
         const Real maxCutoffTime)
@@ -135,7 +135,7 @@ namespace QuantLib {
         Frequency yieldFreq = Annual;
 
         Size n = curve_->bondHelpers_.size();
-        costFunction_ = ext::make_shared<FittingCost>(this);
+        costFunction_ = std::make_shared<FittingCost>(this);
 
         for (auto& bondHelper : curve_->bondHelpers_) {
             bondHelper->setTermStructure(curve_);
@@ -147,7 +147,7 @@ namespace QuantLib {
 
             Real squaredSum = 0.0;
             for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
-                ext::shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
+                std::shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
 
                 Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
 
@@ -206,9 +206,9 @@ namespace QuantLib {
         }
 
         //workaround for backwards compatibility
-        ext::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
+        std::shared_ptr<OptimizationMethod> optimization = optimizationMethod_;
         if(!optimization){
-            optimization = ext::make_shared<Simplex>(curve_->simplexLambda_);
+            optimization = std::make_shared<Simplex>(curve_->simplexLambda_);
         }
         Problem problem(costFunction, constraint, x);
 
@@ -258,7 +258,7 @@ namespace QuantLib {
 
         Array values(n + N);
         for (Size i=0; i<n; ++i) {
-            ext::shared_ptr<BondHelper> helper = fittingMethod_->curve_->bondHelpers_[i];
+            std::shared_ptr<BondHelper> helper = fittingMethod_->curve_->bondHelpers_[i];
             Real error = helper->impliedQuote() - helper->quote()->value();
             Real weightedError = fittingMethod_->weights_[i] * error;
             values[i] = weightedError * weightedError;

@@ -58,20 +58,20 @@ namespace inflation_cpi_capfloor_test {
     };
 
     template <class T, class U, class I>
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+    std::vector<std::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         Datum iiData[], Size N,
-        const ext::shared_ptr<I> &ii, const Period &observationLag,
+        const std::shared_ptr<I> &ii, const Period &observationLag,
         const Calendar &calendar,
         const BusinessDayConvention &bdc,
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
-        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
+        std::vector<std::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
-            Handle<Quote> quote(ext::shared_ptr<Quote>(
+            Handle<Quote> quote(std::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
+            std::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
                                                                     calendar, bdc, dc, ii,
                                                                     CPI::AsIndex, discountCurve));
             instruments.push_back(anInstrument);
@@ -103,7 +103,7 @@ namespace inflation_cpi_capfloor_test {
         DayCounter dcZCIIS,dcNominal;
         std::vector<Date> zciisD;
         std::vector<Rate> zciisR;
-        ext::shared_ptr<UKRPI> ii;
+        std::shared_ptr<UKRPI> ii;
         Size zciisDataLength;
 
         RelinkableHandle<YieldTermStructure> nominalUK;
@@ -113,10 +113,10 @@ namespace inflation_cpi_capfloor_test {
         std::vector<Rate> cStrikesUK;
         std::vector<Rate> fStrikesUK;
         std::vector<Period> cfMaturitiesUK;
-        ext::shared_ptr<Matrix> cPriceUK;
-        ext::shared_ptr<Matrix> fPriceUK;
+        std::shared_ptr<Matrix> cPriceUK;
+        std::shared_ptr<Matrix> fPriceUK;
 
-        ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFsurfUK;
+        std::shared_ptr<CPICapFloorTermPriceSurface> cpiCFsurfUK;
 
         // cleanup
 
@@ -161,7 +161,7 @@ namespace inflation_cpi_capfloor_test {
                 -999};
 
             // link from cpi index to cpi TS
-            ii = ext::make_shared<UKRPI>(hcpi);
+            ii = std::make_shared<UKRPI>(hcpi);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -209,8 +209,8 @@ namespace inflation_cpi_capfloor_test {
                 nomD.push_back(i.date);
                 nomR.push_back(i.rate / 100.0);
             }
-            ext::shared_ptr<YieldTermStructure> nominalTS =
-                ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
+            std::shared_ptr<YieldTermStructure> nominalTS =
+                std::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
             nominalUK.linkTo(nominalTS);
 
@@ -246,7 +246,7 @@ namespace inflation_cpi_capfloor_test {
             }
 
             // now build the helpers ...
-            std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
+            std::vector<std::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
             makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
             ZeroInflationIndex>(zciisData, zciisDataLength, ii,
                                 observationLag,
@@ -256,7 +256,7 @@ namespace inflation_cpi_capfloor_test {
             // we can use historical or first ZCIIS for this
             // we know historical is WAY off market-implied, so use market implied flat.
             baseZeroRate = zciisData[0].rate/100.0;
-            ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
+            std::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
                                 new PiecewiseZeroInflationCurve<Linear>(
                                     evaluationDate, calendar, dcZCIIS, observationLag,
                                     ii->frequency(), baseZeroRate, helpers));
@@ -296,8 +296,8 @@ namespace inflation_cpi_capfloor_test {
             for(Size i = 0; i < ncStrikes; i++) cStrikesUK.push_back(cStrike[i]);
             for(Size i = 0; i < nfStrikes; i++) fStrikesUK.push_back(fStrike[i]);
             for(Size i = 0; i < ncfMaturities; i++) cfMaturitiesUK.push_back(cfMat[i]);
-            cPriceUK = ext::make_shared<Matrix>(ncStrikes, ncfMaturities);
-            fPriceUK = ext::make_shared<Matrix>(nfStrikes, ncfMaturities);
+            cPriceUK = std::make_shared<Matrix>(ncStrikes, ncfMaturities);
+            fPriceUK = std::make_shared<Matrix>(nfStrikes, ncfMaturities);
             for(Size i = 0; i < ncStrikes; i++) {
                 for(Size j = 0; j < ncfMaturities; j++) {
                     (*cPriceUK)[i][j] = cPrice[j][i]/10000.0;
@@ -380,7 +380,7 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
     }
 
     // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.linkTo(std::shared_ptr<ZeroInflationTermStructure>());
 }
 
 
@@ -391,7 +391,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     CommonVars common;
     Real nominal = 1.0;
-    ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf(new InterpolatedCPICapFloorTermPriceSurface
+    std::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf(new InterpolatedCPICapFloorTermPriceSurface
                                                     <Bilinear>(nominal,
                                                                common.baseZeroRate,
                                                                common.observationLag,
@@ -434,7 +434,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                      observationInterpolation);
 
     Handle<CPICapFloorTermPriceSurface> cpiCFsurfUKh(common.cpiCFsurfUK);
-    ext::shared_ptr<PricingEngine>engine(new InterpolatingCPICapFloorEngine(cpiCFsurfUKh));
+    std::shared_ptr<PricingEngine>engine(new InterpolatingCPICapFloorEngine(cpiCFsurfUKh));
 
     aCap.setPricingEngine(engine);
 
@@ -445,7 +445,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                << cached << " vs " << aCap.NPV());
 
     // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.linkTo(std::shared_ptr<ZeroInflationTermStructure>());
 }
 
 

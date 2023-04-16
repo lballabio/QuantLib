@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     JarrowRudd::JarrowRudd(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<JarrowRudd>(process, end, steps) {
         // drift removed
@@ -35,7 +35,7 @@ namespace QuantLib {
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<CoxRossRubinstein>(process, end, steps) {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
 
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<AdditiveEQPBinomialTree>(process,
                                                               end, steps) {
@@ -60,7 +60,7 @@ namespace QuantLib {
 
 
     Trigeorgis::Trigeorgis(
-                        const ext::shared_ptr<StochasticProcess1D>& process,
+                        const std::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<Trigeorgis>(process, end, steps) {
 
@@ -74,7 +74,7 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const ext::shared_ptr<StochasticProcess1D>& process,
+    Tian::Tian(const std::shared_ptr<StochasticProcess1D>& process,
                Time end, Size steps, Real)
     : BinomialTree<Tian>(process, end, steps) {
 
@@ -96,7 +96,7 @@ namespace QuantLib {
     }
 
 
-    LeisenReimer::LeisenReimer(const ext::shared_ptr<StochasticProcess1D>& process,
+    LeisenReimer::LeisenReimer(const std::shared_ptr<StochasticProcess1D>& process,
                                Time end,
                                Size steps,
                                Real strike)
@@ -137,7 +137,7 @@ namespace QuantLib {
         return p;
     }
 
-    Joshi4::Joshi4(const ext::shared_ptr<StochasticProcess1D>& process,
+    Joshi4::Joshi4(const std::shared_ptr<StochasticProcess1D>& process,
                    Time end,
                    Size steps,
                    Real strike)

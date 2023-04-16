@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     AnalyticDividendEuropeanEngine::AnalyticDividendEuropeanEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        std::shared_ptr<GeneralizedBlackScholesProcess> process,
         DividendSchedule dividends)
     : process_(std::move(process)), dividends_(std::move(dividends)),
       explicitDividends_(true) {
@@ -33,7 +33,7 @@ namespace QuantLib {
     }
 
     AnalyticDividendEuropeanEngine::AnalyticDividendEuropeanEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        std::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)), explicitDividends_(false) {
         registerWith(process_);
     }
@@ -48,8 +48,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        std::shared_ptr<StrikedTypePayoff> payoff =
+            std::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Date settlementDate = process_->riskFreeRate()->referenceDate();

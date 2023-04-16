@@ -48,7 +48,7 @@ namespace QuantLib {
 
     FlatVol::FlatVol(
             const vector<Volatility>& vols,
-            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const std::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const vector<Rate>& initialRates,
@@ -161,7 +161,7 @@ namespace QuantLib {
         registerWith(yieldCurve_);
     }
 
-    ext::shared_ptr<MarketModel>
+    std::shared_ptr<MarketModel>
     FlatVolFactory::create(const EvolutionDescription& evolution,
                                   Size numberOfFactors) const {
         const vector<Time>& rateTimes = evolution.rateTimes();
@@ -186,10 +186,10 @@ namespace QuantLib {
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation_,
                                                       beta_);
-        ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
+        std::shared_ptr<PiecewiseConstantCorrelation> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
                                               rateTimes));
-        return ext::shared_ptr<MarketModel>(new
+        return std::shared_ptr<MarketModel>(new
             FlatVol(displacedVolatilities,
                            corr,
                            evolution,

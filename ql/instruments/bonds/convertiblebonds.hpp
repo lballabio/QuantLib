@@ -59,7 +59,7 @@ namespace QuantLib {
         const CallabilitySchedule& callability() const { return callability_; }
 
       protected:
-        ConvertibleBond(ext::shared_ptr<Exercise> exercise,
+        ConvertibleBond(std::shared_ptr<Exercise> exercise,
                         Real conversionRatio,
                         const CallabilitySchedule& callability,
                         const Date& issueDate,
@@ -69,7 +69,7 @@ namespace QuantLib {
         void setupArguments(PricingEngine::arguments*) const override;
 
       private:
-        ext::shared_ptr<Exercise> exercise_;
+        std::shared_ptr<Exercise> exercise_;
         Real conversionRatio_;
         CallabilitySchedule callability_;
         Real redemption_;
@@ -84,7 +84,7 @@ namespace QuantLib {
     */
     class ConvertibleZeroCouponBond : public ConvertibleBond {
       public:
-        ConvertibleZeroCouponBond(const ext::shared_ptr<Exercise>& exercise,
+        ConvertibleZeroCouponBond(const std::shared_ptr<Exercise>& exercise,
                                   Real conversionRatio,
                                   const CallabilitySchedule& callability,
                                   const Date& issueDate,
@@ -103,7 +103,7 @@ namespace QuantLib {
     */
     class ConvertibleFixedCouponBond : public ConvertibleBond {
       public:
-        ConvertibleFixedCouponBond(const ext::shared_ptr<Exercise>& exercise,
+        ConvertibleFixedCouponBond(const std::shared_ptr<Exercise>& exercise,
                                    Real conversionRatio,
                                    const CallabilitySchedule& callability,
                                    const Date& issueDate,
@@ -127,12 +127,12 @@ namespace QuantLib {
     */
     class ConvertibleFloatingRateBond : public ConvertibleBond {
       public:
-        ConvertibleFloatingRateBond(const ext::shared_ptr<Exercise>& exercise,
+        ConvertibleFloatingRateBond(const std::shared_ptr<Exercise>& exercise,
                                     Real conversionRatio,
                                     const CallabilitySchedule& callability,
                                     const Date& issueDate,
                                     Natural settlementDays,
-                                    const ext::shared_ptr<IborIndex>& index,
+                                    const std::shared_ptr<IborIndex>& index,
                                     Natural fixingDays,
                                     const std::vector<Spread>& spreads,
                                     const DayCounter& dayCounter,
@@ -150,7 +150,7 @@ namespace QuantLib {
         arguments()
         : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()), redemption(Null<Real>()) {}
 
-        ext::shared_ptr<Exercise> exercise;
+        std::shared_ptr<Exercise> exercise;
         Real conversionRatio;
         std::vector<Date> callabilityDates; 
         std::vector<Callability::Type> callabilityTypes;

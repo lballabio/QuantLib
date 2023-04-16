@@ -28,7 +28,7 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/optional.hpp>
+#include <optional>
 #include <utility>
 
 namespace QuantLib {
@@ -36,7 +36,7 @@ namespace QuantLib {
     IsdaCdsEngine::IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                                  Real recoveryRate,
                                  Handle<YieldTermStructure> discountCurve,
-                                 const ext::optional<bool>& includeSettlementDateFlows,
+                                 const std::optional<bool>& includeSettlementDateFlows,
                                  const NumericalFix numericalFix,
                                  const AccrualBias accrualBias,
                                  const ForwardsInCouponPeriod forwardsInCouponPeriod)
@@ -94,7 +94,7 @@ namespace QuantLib {
                    "ISDA engine not compatible with non accrual paying CDS");
         QL_REQUIRE(arguments_.paysAtDefaultTime,
                    "ISDA engine not compatible with end period payment");
-        QL_REQUIRE(ext::dynamic_pointer_cast<FaceValueClaim>(arguments_.claim) != nullptr,
+        QL_REQUIRE(std::dynamic_pointer_cast<FaceValueClaim>(arguments_.claim) != nullptr,
                    "ISDA engine not compatible with non face value claim");
 
         Date maturity = arguments_.maturity;
@@ -110,38 +110,38 @@ namespace QuantLib {
         discountCurve_->discount(0.0);
         probability_->defaultProbability(0.0);
 
-        if(ext::shared_ptr<InterpolatedDiscountCurve<LogLinear> > castY1 =
-            ext::dynamic_pointer_cast<
+        if(std::shared_ptr<InterpolatedDiscountCurve<LogLinear> > castY1 =
+            std::dynamic_pointer_cast<
                 InterpolatedDiscountCurve<LogLinear> >(*discountCurve_)) {
             yDates = castY1->dates();
-        } else if(ext::shared_ptr<InterpolatedForwardCurve<BackwardFlat> >
-        castY2 = ext::dynamic_pointer_cast<
+        } else if(std::shared_ptr<InterpolatedForwardCurve<BackwardFlat> >
+        castY2 = std::dynamic_pointer_cast<
             InterpolatedForwardCurve<BackwardFlat> >(*discountCurve_)) {
             yDates = castY2->dates();
-        } else if(ext::shared_ptr<InterpolatedForwardCurve<ForwardFlat> >
-        castY3 = ext::dynamic_pointer_cast<
+        } else if(std::shared_ptr<InterpolatedForwardCurve<ForwardFlat> >
+        castY3 = std::dynamic_pointer_cast<
             InterpolatedForwardCurve<ForwardFlat> >(*discountCurve_)) {
             yDates = castY3->dates();
-        } else if(ext::shared_ptr<FlatForward> castY4 =
-            ext::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
+        } else if(std::shared_ptr<FlatForward> castY4 =
+            std::dynamic_pointer_cast<FlatForward>(*discountCurve_)) {
             // no dates to extract
         } else {
             QL_FAIL("Yield curve must be flat forward interpolated");
         }
 
-        if(ext::shared_ptr<InterpolatedSurvivalProbabilityCurve<LogLinear> >
-        castC1 = ext::dynamic_pointer_cast<
+        if(std::shared_ptr<InterpolatedSurvivalProbabilityCurve<LogLinear> >
+        castC1 = std::dynamic_pointer_cast<
             InterpolatedSurvivalProbabilityCurve<LogLinear> >(
             *probability_)) {
             cDates = castC1->dates();
         } else if(
-        ext::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat> > castC2 =
-            ext::dynamic_pointer_cast<
+        std::shared_ptr<InterpolatedHazardRateCurve<BackwardFlat> > castC2 =
+            std::dynamic_pointer_cast<
             InterpolatedHazardRateCurve<BackwardFlat> >(*probability_)) {
             cDates = castC2->dates();
         } else if(
-        ext::shared_ptr<FlatHazardRate> castC3 =
-            ext::dynamic_pointer_cast<FlatHazardRate>(*probability_)) {
+        std::shared_ptr<FlatHazardRate> castC3 =
+            std::dynamic_pointer_cast<FlatHazardRate>(*probability_)) {
             // no dates to extract
         } else{
             QL_FAIL("Credit curve must be flat forward interpolated");
@@ -202,7 +202,7 @@ namespace QuantLib {
 
         Real premiumNpv = 0.0, defaultAccrualNpv = 0.0;
         for (auto& i : arguments_.leg) {
-            ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(i);
+            std::shared_ptr<FixedRateCoupon> coupon = std::dynamic_pointer_cast<FixedRateCoupon>(i);
 
             QL_REQUIRE(coupon->dayCounter() == dc ||
                            coupon->dayCounter() == dc1 ||

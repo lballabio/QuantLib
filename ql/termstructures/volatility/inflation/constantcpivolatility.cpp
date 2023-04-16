@@ -44,7 +44,7 @@ namespace QuantLib {
                                                   bool indexIsInterpolated)
     : CPIVolatilitySurface(settlementDays, cal, bdc, dc,
                            observationLag, frequency, indexIsInterpolated),
-      volatility_(ext::make_shared<SimpleQuote>(vol)) {}
+      volatility_(std::make_shared<SimpleQuote>(vol)) {}
 
 
     Volatility ConstantCPIVolatility::volatilityImpl(Time, Rate) const {

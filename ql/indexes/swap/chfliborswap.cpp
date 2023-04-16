@@ -38,8 +38,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, h)) :
-                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, h))) {}
+                    std::shared_ptr<IborIndex>(new CHFLibor(6*Months, h)) :
+                    std::shared_ptr<IborIndex>(new CHFLibor(3*Months, h))) {}
 
     ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(
                                 const Period& tenor,
@@ -54,8 +54,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, forwarding)) :
-                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, forwarding)),
+                    std::shared_ptr<IborIndex>(new CHFLibor(6*Months, forwarding)) :
+                    std::shared_ptr<IborIndex>(new CHFLibor(3*Months, forwarding)),
                 discounting) {}
 
 }

@@ -37,16 +37,16 @@ namespace QuantLib {
         FdmBermudanStepCondition(const std::vector<Date>& exerciseDates,
                                  const Date& referenceDate,
                                  const DayCounter& dayCounter,
-                                 ext::shared_ptr<FdmMesher> mesher,
-                                 ext::shared_ptr<FdmInnerValueCalculator> calculator);
+                                 std::shared_ptr<FdmMesher> mesher,
+                                 std::shared_ptr<FdmInnerValueCalculator> calculator);
 
         void applyTo(Array& a, Time t) const override;
         const std::vector<Time>& exerciseTimes() const;
 
       private:
         std::vector<Time> exerciseTimes_;
-        const ext::shared_ptr<FdmMesher> mesher_;
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator_;
+        const std::shared_ptr<FdmMesher> mesher_;
+        const std::shared_ptr<FdmInnerValueCalculator> calculator_;
     };
 }
 

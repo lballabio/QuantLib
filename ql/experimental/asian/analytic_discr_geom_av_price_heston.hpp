@@ -64,7 +64,7 @@ namespace QuantLib {
         : public DiscreteAveragingAsianOption::engine {
       public:
         explicit AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            ext::shared_ptr<HestonProcess> process, Real xiRightLimit = 100.0);
+            std::shared_ptr<HestonProcess> process, Real xiRightLimit = 100.0);
         void calculate() const override;
 
         // Equation (21) - must be public so the integrand can access it.
@@ -83,7 +83,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> riskFreeRate_;
         Handle<Quote> s0_;
 
-        ext::shared_ptr<HestonProcess> process_;
+        std::shared_ptr<HestonProcess> process_;
 
         // A lookup table for the reuslts of omega_tilde() to avoid repeated calls for given Phi call
         mutable std::map<Size, std::complex<Real> > omegaTildeLookupTable_;

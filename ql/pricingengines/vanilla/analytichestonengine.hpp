@@ -31,7 +31,7 @@
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/functional.hpp>
+
 #include <complex>
 
 namespace QuantLib {
@@ -111,17 +111,17 @@ namespace QuantLib {
         // Be aware: using a too large number for maxEvaluations might result
         // in a stack overflow as the Lobatto integration is a recursive
         // algorithm.
-        AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
+        AnalyticHestonEngine(const std::shared_ptr<HestonModel>& model,
                              Real relTolerance, Size maxEvaluations);
 
         // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
-        AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
+        AnalyticHestonEngine(const std::shared_ptr<HestonModel>& model,
                              Size integrationOrder = 144);
 
         // Constructor giving full control
         // over the Fourier integration algorithm
-        AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
+        AnalyticHestonEngine(const std::shared_ptr<HestonModel>& model,
                              ComplexLogFormula cpxLog, const Integration& itg,
                              Real andersenPiterbargEpsilon = 1e-8);
 
@@ -184,7 +184,7 @@ namespace QuantLib {
 
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
-        const ext::shared_ptr<Integration> integration_;
+        const std::shared_ptr<Integration> integration_;
         const Real andersenPiterbargEpsilon_;
     };
 
@@ -218,12 +218,12 @@ namespace QuantLib {
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
-                       const ext::function<Real(Real)>& f,
-                       const ext::function<Real()>& maxBound =
-                           ext::function<Real()>()) const;
+                       const std::function<Real(Real)>& f,
+                       const std::function<Real()>& maxBound =
+                           std::function<Real()>()) const;
 
         Real calculate(Real c_inf,
-            const ext::function<Real(Real)>& f, Real maxBound) const;
+            const std::function<Real(Real)>& f, Real maxBound) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
@@ -235,13 +235,13 @@ namespace QuantLib {
               GaussLaguerre, GaussLegendre,
               GaussChebyshev, GaussChebyshev2nd };
 
-        Integration(Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> quadrature);
+        Integration(Algorithm intAlgo, std::shared_ptr<GaussianQuadrature> quadrature);
 
-        Integration(Algorithm intAlgo, ext::shared_ptr<Integrator> integrator);
+        Integration(Algorithm intAlgo, std::shared_ptr<Integrator> integrator);
 
         const Algorithm intAlgo_;
-        const ext::shared_ptr<Integrator> integrator_;
-        const ext::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
+        const std::shared_ptr<Integrator> integrator_;
+        const std::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
     };
 
     // inline

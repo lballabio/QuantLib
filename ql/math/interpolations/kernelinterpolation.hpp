@@ -160,7 +160,7 @@ namespace QuantLib {
                             const I2& yBegin,
                             const Kernel& kernel,
                             const double epsilon = 1.0E-7) {
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
+            impl_ = std::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
                                                               yBegin, kernel,
                                                               epsilon));

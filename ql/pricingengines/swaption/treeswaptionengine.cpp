@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    TreeSwaptionEngine::TreeSwaptionEngine(const ext::shared_ptr<ShortRateModel>& model,
+    TreeSwaptionEngine::TreeSwaptionEngine(const std::shared_ptr<ShortRateModel>& model,
                                            Size timeSteps,
                                            Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results>(model, timeSteps),
@@ -32,7 +32,7 @@ namespace QuantLib {
         registerWith(termStructure_);
     }
 
-    TreeSwaptionEngine::TreeSwaptionEngine(const ext::shared_ptr<ShortRateModel>& model,
+    TreeSwaptionEngine::TreeSwaptionEngine(const std::shared_ptr<ShortRateModel>& model,
                                            const TimeGrid& timeGrid,
                                            Handle<YieldTermStructure> termStructure)
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results>(model, timeGrid),
@@ -58,8 +58,8 @@ namespace QuantLib {
         Date referenceDate;
         DayCounter dayCounter;
 
-        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
-            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        std::shared_ptr<TermStructureConsistentModel> tsmodel =
+            std::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
         if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
@@ -69,7 +69,7 @@ namespace QuantLib {
         }
 
         DiscretizedSwaption swaption(arguments_, referenceDate, dayCounter);
-        ext::shared_ptr<Lattice> lattice;
+        std::shared_ptr<Lattice> lattice;
 
         if (lattice_ != nullptr) {
             lattice = lattice_;

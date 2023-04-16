@@ -33,11 +33,11 @@ namespace QuantLib {
     class AnalyticComplexChooserEngine : public ComplexChooserOption::engine {
       public:
         explicit AnalyticComplexChooserEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+            std::shared_ptr<GeneralizedBlackScholesProcess> process);
         void calculate() const override;
 
       private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        std::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Real strike(Option::Type optionType) const;
         Time choosingTime() const;
         Time putMaturity() const;

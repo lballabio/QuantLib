@@ -54,7 +54,7 @@ namespace QuantLib {
                        const std::string& formatString,
                        const Currency& triangulationCurrency,
                        const std::set<std::string>& minorUnitCodes)
-    : data_(ext::make_shared<Currency::Data>(name,
+    : data_(std::make_shared<Currency::Data>(name,
                                              code,
                                              numericCode,
                                              symbol,
