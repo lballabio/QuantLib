@@ -48,7 +48,7 @@
     - Added a few missing holidays to Danish calendar; thanks to Fredrik
       Gerdin Börjesson.
     - Added the Matariki holiday to the New Zealand calendar; thanks to
-      GitHub user jakeheke75.
+      Jake Heke.
 
     CASHFLOWS
     - Added a new equity cash flow class to model equity legs in total

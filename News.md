@@ -48,7 +48,7 @@ Date/time
   Gerdin Börjesson (@gbfredrik).
 
 - Added the Matariki holiday to the New Zealand calendar; thanks to
-  g.t. (@jakeheke75).
+  Jake Heke (@jakeheke75).
 
 
 Cashflows

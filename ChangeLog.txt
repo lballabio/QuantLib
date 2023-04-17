@@ -1,3 +1,84 @@
+commit 621660f8043e0e2158a5e65b4dcad8e241517884
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.30 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 71f59ce9e807e3e7ce6328fef73ec7bb54cd0b01
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 14 Apr 2023 11:04:01 +0200
+
+    Use latest Boost in cmake Windows build
+
+ .github/workflows/cmake.yml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 27a247409a927c8056281ccd2251a768d6af12c6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 14 Apr 2023 10:38:37 +0200
+
+    Avoid including deprecated files
+
+ cmake/GenerateHeaders.cmake | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 53ed4b5711abab65e1050a2bfb4d55fb067dd688
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 14 Apr 2023 09:29:45 +0200
+
+    Fix deprecation message
+
+ ql/experimental/amortizingbonds/amortizingcmsratebond.hpp      | 2 +-
+ ql/experimental/amortizingbonds/amortizingfixedratebond.hpp    | 2 +-
+ ql/experimental/amortizingbonds/amortizingfloatingratebond.hpp | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 416dd3f214f641fa4280189323222042e6bb3a09
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Apr 2023 13:16:19 +0200
+
+    Fix typo in news
+
+ News.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 7f5beceea34cf6a4d59255e90528db43a149f074
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.30 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 27415c3a841a328d449c491ecf8e719d204c0165
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Apr 2023 14:23:58 +0200
+
+    Strip local path from docs correctly in out-of-source build
+
+ Docs/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 77cb89eff775bf4687496426e43785ded03057a6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Apr 2023 12:11:53 +0200
+
+    Update news and contributors
+
+ ChangeLog.txt           | 4042 ++++++++++++++++++++---------------------------
+ Contributors.txt        |    2 +
+ Docs/pages/history.docs |  109 +-
+ News.md                 |  198 +--
+ 4 files changed, 1949 insertions(+), 2402 deletions(-)
+
 commit 8ac7f751df6c7304ccf4faef5b0ca555c6bd48a2
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 11 Apr 2023 16:15:34 +0200
