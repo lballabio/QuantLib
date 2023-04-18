@@ -91,24 +91,6 @@ namespace QuantLib {
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             bool useIndexedCoupon = true);
 
-        /*! When using this constructor, the forward rate will be
-            forecast directly from the passed term structure.  Lacking
-            an index, we need to pass the number of fixing days and
-            the business day convention explicitly to calculate the
-            relevant dates.
-        */
-        ForwardRateAgreement(
-            const Date& valueDate,
-            const Date& maturityDate,
-            Position::Type type,
-            Rate strikeForwardRate,
-            Real notionalAmount,
-            //Handle<YieldTermStructure> discountCurve,
-            Handle<YieldTermStructure> forecastCurve,
-            Natural fixingDays,
-            BusinessDayConvention businessDayConvention,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
-
         //! \name Calculations
         //@{
         //! A FRA expires/settles on the value date
@@ -149,17 +131,12 @@ namespace QuantLib {
         //! maturityDate of the underlying index; not the date the FRA is settled.
         Date maturityDate_;
         Handle<YieldTermStructure> discountCurve_;
-        //! the number of fixingDays for fixingDate calculation without the index
-        Natural fixingDays_;
-        //! forecasting curve for fixings calculation
-        Handle<YieldTermStructure> forecastCurve_;
 
       private:
         void calculateForwardRate() const;
         void calculateAmount() const;
         mutable Real amount_;
     };
-
 
     inline const Calendar& ForwardRateAgreement::calendar() const { return calendar_; }
 
