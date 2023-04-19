@@ -41,12 +41,6 @@ namespace QuantLib {
             Legendre, Chebyshev, Chebyshev2nd
         };
 
-        /*! \deprecated Renamed to PolynomialType.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        typedef PolynomialType PolynomType;
-
         static std::vector<ext::function<Real(Real)> >
         pathBasisSystem(Size order, PolynomialType type);
 

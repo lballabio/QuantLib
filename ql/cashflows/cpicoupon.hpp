@@ -100,26 +100,6 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const Date& exCouponDate = Date());
 
-        /*! \deprecated Use the other constructor instead.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        CPICoupon(Real baseCPI,
-                  const Date& paymentDate,
-                  Real nominal,
-                  const Date& startDate,
-                  const Date& endDate,
-                  Natural fixingDays,
-                  const ext::shared_ptr<ZeroInflationIndex>& index,
-                  const Period& observationLag,
-                  CPI::InterpolationType observationInterpolation,
-                  const DayCounter& dayCounter,
-                  Real fixedRate, // aka gearing
-                  Spread spread = 0.0,
-                  const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date(),
-                  const Date& exCouponDate = Date());
-
         //! \name Inspectors
         //@{
         //! fixed rate that will be inflated by the index ratio
@@ -147,18 +127,6 @@ namespace QuantLib {
         //! how do you observe the index?  as-is, flat, linear?
         CPI::InterpolationType observationInterpolation() const;
 
-        /*! \deprecated Use CPI::laggedFixing instead.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        Rate indexObservation(const Date& onDate) const;
-
-        /*! \deprecated Renamed to adjustedIndexGrowth.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        Rate adjustedFixing() const;
-
         //! index used
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
         //@}
@@ -175,12 +143,6 @@ namespace QuantLib {
         Date baseDate_;
 
         bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
-
-        /*! \deprecated Use CPI::laggedFixing instead.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        Rate indexFixing(const Date &) const;
     };
 
 
@@ -197,20 +159,6 @@ namespace QuantLib {
                     CPI::InterpolationType interpolation,
                     const Date& paymentDate,
                     bool growthOnly = false);
-
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        CPICashFlow(Real notional,
-                    const ext::shared_ptr<ZeroInflationIndex>& index,
-                    const Date& baseDate,
-                    Real baseFixing,
-                    const Date& fixingDate,
-                    const Date& paymentDate,
-                    bool growthOnly = false,
-                    CPI::InterpolationType interpolation = CPI::AsIndex,
-                    const Frequency& frequency = QuantLib::NoFrequency);
 
         //! value used on base date
         /*! This does not have to agree with index on that date. */
@@ -262,16 +210,6 @@ namespace QuantLib {
         CPILeg& withPaymentDayCounter(const DayCounter&);
         CPILeg& withPaymentAdjustment(BusinessDayConvention);
         CPILeg& withPaymentCalendar(const Calendar&);
-        /*! \deprecated No-op; do not use.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        CPILeg& withFixingDays(Natural fixingDays);
-        /*! \deprecated No-op; do not use.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        CPILeg& withFixingDays(const std::vector<Natural>& fixingDays);
         CPILeg& withObservationInterpolation(CPI::InterpolationType);
         CPILeg& withSubtractInflationNominal(bool);
         CPILeg& withSpreads(Spread spread);
@@ -338,16 +276,6 @@ namespace QuantLib {
 
     inline CPI::InterpolationType CPICoupon::observationInterpolation() const {
         return observationInterpolation_;
-    }
-
-    inline Rate CPICoupon::indexObservation(const Date& onDate) const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return indexFixing(onDate);
-        QL_DEPRECATED_ENABLE_WARNING
-    }
-
-    inline Rate CPICoupon::adjustedFixing() const {
-        return adjustedIndexGrowth();
     }
 
     inline ext::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {
