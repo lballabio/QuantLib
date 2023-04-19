@@ -66,7 +66,7 @@ namespace QuantLib {
     class ForwardRateAgreement: public Instrument {
       public:
         /*! \deprecated Use one of the other constructors.
-                        Deprecated in version 1.30.
+                        Deprecated in version 1.31.
         */
         QL_DEPRECATED
         ForwardRateAgreement(
