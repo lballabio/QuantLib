@@ -36,7 +36,7 @@ namespace {
         }
     };
 
-#if defined(__clang__) && __clang_major__ >= 15
+#if defined(__clang__) && __clang_major__ >= 14
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #endif
@@ -74,7 +74,7 @@ namespace {
         }
     }
 
-#if defined(__clang__) && __clang_major__ >= 15
+#if defined(__clang__) && __clang_major__ >= 14
 #pragma clang diagnostic pop
 #endif
 
