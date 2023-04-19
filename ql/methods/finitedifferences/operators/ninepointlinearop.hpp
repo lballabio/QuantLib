@@ -46,7 +46,7 @@ namespace QuantLib {
         Array apply(const Array& r) const override;
         NinePointLinearOp mult(const Array& u) const;
 
-        void swap(NinePointLinearOp& m);
+        void swap(NinePointLinearOp& m) noexcept;
 
         SparseMatrix toMatrix() const override;
 
