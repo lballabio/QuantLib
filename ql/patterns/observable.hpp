@@ -350,6 +350,7 @@ namespace QuantLib {
     /*! \ingroup patterns */
     class Observable {
         friend class Observer;
+        friend class ObservableSettings;
       private:
         typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
       public:
