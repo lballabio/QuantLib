@@ -33,13 +33,13 @@ namespace QuantLib {
 
     class FdmLinearOpLayout {
       public:
-        explicit FdmLinearOpLayout(const std::vector<Size>& dim)
-        : dim_(dim), spacing_(dim.size()) {
+        explicit FdmLinearOpLayout(std::vector<Size> dim)
+        : dim_(std::move(dim)), spacing_(dim_.size()) {
             spacing_[0] = 1;
-            std::partial_sum(dim.begin(), dim.end()-1,
+            std::partial_sum(dim_.begin(), dim_.end()-1,
                 spacing_.begin()+1, std::multiplies<>());
 
-            size_ = spacing_.back()*dim.back();
+            size_ = spacing_.back()*dim_.back();
         }
 
         FdmLinearOpIterator begin() const {
