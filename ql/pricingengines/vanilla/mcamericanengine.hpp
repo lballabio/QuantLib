@@ -123,12 +123,6 @@ namespace QuantLib {
         MakeMCAmericanEngine& withAntitheticVariateCalibration(bool b = true);
         MakeMCAmericanEngine& withSeedCalibration(BigNatural seed);
 
-        /*! \deprecated Renamed to withPolynomialOrder.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        MakeMCAmericanEngine& withPolynomOrder(Size polynomialOrder);
-
         // conversion to pricing engine
         operator ext::shared_ptr<PricingEngine>() const;
       private:
@@ -282,12 +276,6 @@ namespace QuantLib {
     MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withPolynomialOrder(Size polynomialOrder) {
         polynomialOrder_ = polynomialOrder;
         return *this;
-    }
-
-    template <class RNG, class S, class RNG_Calibration>
-    inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &
-    MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withPolynomOrder(Size polynomialOrder) {
-        return withPolynomialOrder(polynomialOrder);
     }
 
     template <class RNG, class S, class RNG_Calibration>

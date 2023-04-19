@@ -126,32 +126,6 @@ namespace QuantLib {
                    "|baseCPI_| < 1e-16, future divide-by-zero problem");
     }
 
-    CPICoupon::CPICoupon(Real baseCPI,
-                         const Date& paymentDate,
-                         Real nominal,
-                         const Date& startDate,
-                         const Date& endDate,
-                         Natural fixingDays,
-                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
-                         const Period& observationLag,
-                         CPI::InterpolationType observationInterpolation,
-                         const DayCounter& dayCounter,
-                         Real fixedRate,
-                         Spread spread,
-                         const Date& refPeriodStart,
-                         const Date& refPeriodEnd,
-                         const Date& exCouponDate)
-    : InflationCoupon(paymentDate, nominal, startDate, endDate,
-                      fixingDays, zeroIndex, observationLag,
-                      dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
-      baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
-      observationInterpolation_(observationInterpolation) {
-
-        QL_REQUIRE(zeroIndex, "no index provided");
-        QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
-                   "|baseCPI_| < 1e-16, future divide-by-zero problem");
-    }
-
 
     void CPICoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CPICoupon>*>(&v);
@@ -166,34 +140,6 @@ namespace QuantLib {
             const ext::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
                         ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
-    }
-
-
-    Rate CPICoupon::indexFixing(const Date &d) const {
-        // you may want to modify the interpolation of the index
-        // this gives you the chance
-
-        Rate I1;
-        // what interpolation do we use? Index / flat / linear
-        if (observationInterpolation() == CPI::AsIndex) {
-            I1 = cpiIndex()->fixing(d);
-
-        } else {
-            // work out what it should be
-            std::pair<Date,Date> dd = inflationPeriod(d, cpiIndex()->frequency());
-            Real indexStart = cpiIndex()->fixing(dd.first);
-            if (observationInterpolation() == CPI::Linear) {
-                Real indexEnd = cpiIndex()->fixing(dd.second+Period(1,Days));
-                // linear interpolation
-                I1 = indexStart + (indexEnd - indexStart) * (d - dd.first)
-                / (Real)( (dd.second+Period(1,Days)) - dd.first); // can't get to next period's value within current period
-            } else {
-                // no interpolation, i.e. flat = constant, so use start-of-period value
-                I1 = indexStart;
-            }
-
-        }
-        return I1;
     }
 
 
@@ -216,28 +162,6 @@ namespace QuantLib {
             "baseCPI and baseDate can not be both null, provide a valid baseCPI or baseDate");
         QL_REQUIRE(baseFixing_ == Null<Rate>() || std::fabs(baseFixing_) > 1e-16,
                    "|baseCPI_| < 1e-16, future divide-by-zero problem");
-    }
-
-    CPICashFlow::CPICashFlow(Real notional,
-                             const ext::shared_ptr<ZeroInflationIndex>& index,
-                             const Date& baseDate,
-                             Real baseFixing,
-                             const Date& fixingDate,
-                             const Date& paymentDate,
-                             bool growthOnly,
-                             CPI::InterpolationType interpolation,
-                             const Frequency& frequency)
-    : IndexedCashFlow(notional, index, baseDate, fixingDate,
-                      paymentDate, growthOnly),
-      baseFixing_(baseFixing), interpolation_(interpolation),
-      frequency_(frequency) {
-
-        QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
-                   "|baseFixing|<1e-16, future divide-by-zero error");
-        if (interpolation_ != CPI::AsIndex) {
-            QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
-                       "non-index interpolation w/o frequency");
-        }
     }
 
     Date CPICashFlow::baseDate() const {
@@ -333,14 +257,6 @@ namespace QuantLib {
 
     CPILeg& CPILeg::withPaymentCalendar(const Calendar& cal) {
         paymentCalendar_ = cal;
-        return *this;
-    }
-
-    CPILeg& CPILeg::withFixingDays(Natural fixingDays) {
-        return *this;
-    }
-
-    CPILeg& CPILeg::withFixingDays(const std::vector<Natural>& fixingDays) {
         return *this;
     }
 
