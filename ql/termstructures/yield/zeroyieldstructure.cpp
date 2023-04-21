@@ -23,23 +23,26 @@
 
 namespace QuantLib {
 
-    ZeroYieldStructure::ZeroYieldStructure(const DayCounter& dc)
-    : YieldTermStructure(dc) {}
+    ZeroYieldStructure::ZeroYieldStructure(const DayCounter& dc,
+                                           bool extrapolate)
+    : YieldTermStructure(dc, extrapolate) {}
 
     ZeroYieldStructure::ZeroYieldStructure(
                                     const Date& refDate,
                                     const Calendar& cal,
                                     const DayCounter& dc,
                                     const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : YieldTermStructure(refDate, cal, dc, jumps, jumpDates) {}
+                                    const std::vector<Date>& jumpDates,
+                                    bool extrapolate)
+    : YieldTermStructure(refDate, cal, dc, jumps, jumpDates, extrapolate) {}
 
     ZeroYieldStructure::ZeroYieldStructure(
                                     Natural settlementDays,
                                     const Calendar& cal,
                                     const DayCounter& dc,
                                     const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : YieldTermStructure(settlementDays, cal, dc, jumps, jumpDates) {}
+                                    const std::vector<Date>& jumpDates,
+                                    bool extrapolate)
+    : YieldTermStructure(settlementDays, cal, dc, jumps, jumpDates, extrapolate) {}
 
 }

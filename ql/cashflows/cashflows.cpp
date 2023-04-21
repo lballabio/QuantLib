@@ -409,7 +409,7 @@ namespace QuantLib {
                 bps_ += bps;
             }
             void visit(CashFlow& cf) override {
-                nonSensNPV_ += cf.amount() * 
+                nonSensNPV_ += cf.amount() *
                                discountCurve_.discount(cf.date());
             }
             Real bps() const { return bps_; }
@@ -1157,7 +1157,10 @@ namespace QuantLib {
                           Date npvDate)
             : leg_(leg), npv_(npv), zSpread_(new SimpleQuote(0.0)),
               curve_(Handle<YieldTermStructure>(discountCurve),
-                     Handle<Quote>(zSpread_), comp, freq, dc),
+                     Handle<Quote>(zSpread_), comp, freq, dc,
+                     // if the discount curve allows extrapolation,
+                     // then the spreaded curve should too
+                     discountCurve->allowsExtrapolation()),
               includeSettlementDateFlows_(includeSettlementDateFlows),
               settlementDate_(settlementDate),
               npvDate_(npvDate) {
@@ -1167,11 +1170,6 @@ namespace QuantLib {
 
                 if (npvDate_ == Date())
                     npvDate_ = settlementDate_;
-
-                // if the discount curve allows extrapolation, let's
-                // the spreaded curve do too.
-                curve_.enableExtrapolation(
-                                  discountCurve->allowsExtrapolation());
             }
             Real operator()(Rate zSpread) const {
                 zSpread_->setValue(zSpread);
@@ -1216,9 +1214,8 @@ namespace QuantLib {
 
         ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
                                                 zSpreadQuoteHandle,
-                                                comp, freq, dc);
-
-        spreadedCurve.enableExtrapolation(discountCurveHandle->allowsExtrapolation());
+                                                comp, freq, dc,
+                                                discountCurveHandle->allowsExtrapolation());
 
         return npv(leg, spreadedCurve,
                    includeSettlementDateFlows,

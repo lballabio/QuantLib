@@ -45,17 +45,20 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         VolatilityTermStructure(BusinessDayConvention bdc,
-                                const DayCounter& dc = DayCounter());
+                                const DayCounter& dc = DayCounter(),
+                                bool extrapolate = false);
         //! initialize with a fixed reference date
         VolatilityTermStructure(const Date& referenceDate,
                                 const Calendar& cal,
                                 BusinessDayConvention bdc,
-                                const DayCounter& dc = DayCounter());
+                                const DayCounter& dc = DayCounter(),
+                                bool extrapolate = false);
         //! calculate the reference date based on the global evaluation date
         VolatilityTermStructure(Natural settlementDays,
                                 const Calendar& cal,
                                 BusinessDayConvention bdc,
-                                const DayCounter& dc = DayCounter());
+                                const DayCounter& dc = DayCounter(),
+                                bool extrapolate = false);
         //@}
         //! the business day convention used in tenor to date conversion
         virtual BusinessDayConvention businessDayConvention() const;

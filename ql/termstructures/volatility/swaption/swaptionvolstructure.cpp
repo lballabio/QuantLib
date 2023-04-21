@@ -26,22 +26,25 @@ namespace QuantLib {
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                     BusinessDayConvention bdc,
-                                                    const DayCounter& dc)
-    : VolatilityTermStructure(bdc, dc) {}
+                                                    const DayCounter& dc,
+                                                    bool extrapolate)
+    : VolatilityTermStructure(bdc, dc, extrapolate) {}
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 const Date& referenceDate,
                                                 const Calendar& calendar,
                                                 BusinessDayConvention bdc,
-                                                const DayCounter& dc)
-    : VolatilityTermStructure(referenceDate, calendar, bdc, dc) {}
+                                                const DayCounter& dc,
+                                                bool extrapolate)
+    : VolatilityTermStructure(referenceDate, calendar, bdc, dc, extrapolate) {}
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 Natural settlementDays,
                                                 const Calendar& calendar,
                                                 BusinessDayConvention bdc,
-                                                const DayCounter& dc)
-    : VolatilityTermStructure(settlementDays, calendar, bdc, dc) {}
+                                                const DayCounter& dc,
+                                                bool extrapolate)
+    : VolatilityTermStructure(settlementDays, calendar, bdc, dc, extrapolate) {}
 
 
     Time SwaptionVolatilityStructure::swapLength(const Period& p) const {

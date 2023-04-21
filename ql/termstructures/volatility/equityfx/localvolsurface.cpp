@@ -49,8 +49,9 @@ namespace QuantLib {
     LocalVolSurface::LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
                                      Handle<YieldTermStructure> riskFreeTS,
                                      Handle<YieldTermStructure> dividendTS,
-                                     Handle<Quote> underlying)
-    : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter()),
+                                     Handle<Quote> underlying,
+                                     bool extrapolate)
+    : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter(), extrapolate),
       blackTS_(blackTS), riskFreeTS_(std::move(riskFreeTS)), dividendTS_(std::move(dividendTS)),
       underlying_(std::move(underlying)) {
         registerWith(blackTS_);
@@ -62,8 +63,9 @@ namespace QuantLib {
     LocalVolSurface::LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
                                      Handle<YieldTermStructure> riskFreeTS,
                                      Handle<YieldTermStructure> dividendTS,
-                                     Real underlying)
-    : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter()),
+                                     Real underlying,
+                                     bool extrapolate)
+    : LocalVolTermStructure(blackTS->businessDayConvention(), blackTS->dayCounter(), extrapolate),
       blackTS_(blackTS), riskFreeTS_(std::move(riskFreeTS)), dividendTS_(std::move(dividendTS)),
       underlying_(ext::shared_ptr<Quote>(new SimpleQuote(underlying))) {
         registerWith(blackTS_);
@@ -85,7 +87,7 @@ namespace QuantLib {
         DiscountFactor dr = riskFreeTS_->discount(t, true);
         DiscountFactor dq = dividendTS_->discount(t, true);
         Real forwardValue = underlying_->value()*dq/dr;
-        
+
         // strike derivatives
         Real strike, y, dy, strikep, strikem;
         Real w, wp, wm, dwdy, d2wdy2;
@@ -105,9 +107,9 @@ namespace QuantLib {
         if (t==0.0) {
             dt = 0.0001;
             DiscountFactor drpt = riskFreeTS_->discount(t+dt, true);
-            DiscountFactor dqpt = dividendTS_->discount(t+dt, true);           
+            DiscountFactor dqpt = dividendTS_->discount(t+dt, true);
             Real strikept = strike*dr*dqpt/(drpt*dq);
-        
+
             wpt = blackTS_->blackVariance(t+dt, strikept, true);
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike " << strike
@@ -119,10 +121,10 @@ namespace QuantLib {
             DiscountFactor drmt = riskFreeTS_->discount(t-dt, true);
             DiscountFactor dqpt = dividendTS_->discount(t+dt, true);
             DiscountFactor dqmt = dividendTS_->discount(t-dt, true);
-            
+
             Real strikept = strike*dr*dqpt/(drpt*dq);
             Real strikemt = strike*dr*dqmt/(drmt*dq);
-            
+
             wpt = blackTS_->blackVariance(t+dt, strikept, true);
             wmt = blackTS_->blackVariance(t-dt, strikemt, true);
 
@@ -132,7 +134,7 @@ namespace QuantLib {
             QL_ENSURE(w>=wmt,
                       "decreasing variance at strike " << strike
                       << " between time " << t-dt << " and time " << t);
-         
+
             dwdt = (wpt-wmt)/(2.0*dt);
         }
 
@@ -155,4 +157,3 @@ namespace QuantLib {
     }
 
 }
-

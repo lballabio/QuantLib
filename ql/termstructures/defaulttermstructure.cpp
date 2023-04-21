@@ -27,8 +27,8 @@
 namespace QuantLib {
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-        const DayCounter& dc, std::vector<Handle<Quote> > jumps, const std::vector<Date>& jumpDates)
-    : TermStructure(dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+        const DayCounter& dc, std::vector<Handle<Quote> > jumps, const std::vector<Date>& jumpDates, bool extrapolate)
+    : TermStructure(dc, extrapolate), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps();
         for (Size i=0; i<nJumps_; ++i)
@@ -40,8 +40,9 @@ namespace QuantLib {
         const Calendar& cal,
         const DayCounter& dc,
         std::vector<Handle<Quote> > jumps,
-        const std::vector<Date>& jumpDates)
-    : TermStructure(referenceDate, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+        const std::vector<Date>& jumpDates,
+        bool extrapolate)
+    : TermStructure(referenceDate, cal, dc, extrapolate), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps();
         for (Size i=0; i<nJumps_; ++i)
@@ -53,8 +54,9 @@ namespace QuantLib {
         const Calendar& cal,
         const DayCounter& dc,
         std::vector<Handle<Quote> > jumps,
-        const std::vector<Date>& jumpDates)
-    : TermStructure(settlementDays, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+        const std::vector<Date>& jumpDates,
+        bool extrapolate)
+    : TermStructure(settlementDays, cal, dc, extrapolate), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps();
         for (Size i=0; i<nJumps_; ++i)

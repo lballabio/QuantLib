@@ -51,9 +51,9 @@ namespace QuantLib {
 
         optionInterpolator_= LinearInterpolation(optionInterpolatorTimes_.begin(),
                                                  optionInterpolatorTimes_.end(),
-                                                 optionInterpolatorDatesAsReal_.begin());
+                                                 optionInterpolatorDatesAsReal_.begin(),
+                                                 true);
         optionInterpolator_.update();
-        optionInterpolator_.enableExtrapolation();
         cachedReferenceDate_ = referenceDate();
     }
 
@@ -84,9 +84,9 @@ namespace QuantLib {
 
         optionInterpolator_= LinearInterpolation(optionInterpolatorTimes_.begin(),
                                                  optionInterpolatorTimes_.end(),
-                                                 optionInterpolatorDatesAsReal_.begin());
+                                                 optionInterpolatorDatesAsReal_.begin(),
+                                                 true);
         optionInterpolator_.update();
-        optionInterpolator_.enableExtrapolation();
     }
 
     SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
@@ -116,9 +116,9 @@ namespace QuantLib {
 
         optionInterpolator_= LinearInterpolation(optionInterpolatorTimes_.begin(),
                                                  optionInterpolatorTimes_.end(),
-                                                 optionInterpolatorDatesAsReal_.begin());
+                                                 optionInterpolatorDatesAsReal_.begin(),
+                                                 true);
         optionInterpolator_.update();
-        optionInterpolator_.enableExtrapolation();
     }
 
     void SwaptionVolatilityDiscrete::checkOptionDates(const Date& reference) const {
@@ -173,7 +173,7 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::initializeSwapLengths() const {
-        for (Size i=0; i<nSwapTenors_; ++i) 
+        for (Size i=0; i<nSwapTenors_; ++i)
             swapLengths_[i] = swapLength(swapTenors_[i]);
     }
 

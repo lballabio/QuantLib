@@ -48,7 +48,7 @@
     #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
 
-namespace QuantLib {    
+namespace QuantLib {
 
     class Interpolation2D;
     class EndCriteria;
@@ -56,7 +56,7 @@ namespace QuantLib {
 
     //! XABR Swaption Volatility Cube
     /*! This class implements the XABR Swaption Volatility Cube
-        which is a generic for different SABR, ZABR and 
+        which is a generic for different SABR, ZABR and
         different smile models that can be used to instantiate concrete cubes.
     */
     template<class Model>
@@ -929,10 +929,9 @@ namespace QuantLib {
                     ext::make_shared<BilinearInterpolation>(
                         optionTimes_.begin(), optionTimes_.end(),
                         swapLengths_.begin(), swapLengths_.end(),
-                        transposedPoints_[k]);
+                        transposedPoints_[k], true);
             interpolators_.push_back(ext::shared_ptr<Interpolation2D>(
                 new FlatExtrapolator2D(interpolation)));
-            interpolators_[k]->enableExtrapolation();
         }
         setPoints(points);
      }
@@ -1161,7 +1160,7 @@ namespace QuantLib {
     //                      SabrSwaptionVolatilityCube                      //
     //======================================================================//
 
-    //! Swaption Volatility Cube SABR 
+    //! Swaption Volatility Cube SABR
     /*! This struct defines the types used by SABR Volatility cubes
         for interpolation (SABRInterpolation) and for modeling the
         smile (SabrSmileSection).

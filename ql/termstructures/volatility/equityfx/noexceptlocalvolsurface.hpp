@@ -35,16 +35,18 @@ namespace QuantLib {
                                 const Handle<YieldTermStructure>& riskFreeTS,
                                 const Handle<YieldTermStructure>& dividendTS,
                                 const Handle<Quote>& underlying,
-                                Real illegalLocalVolOverwrite)
-        : LocalVolSurface(blackTS, riskFreeTS, dividendTS, underlying),
+                                Real illegalLocalVolOverwrite,
+                                bool extrapolate = false)
+        : LocalVolSurface(blackTS, riskFreeTS, dividendTS, underlying, extrapolate),
           illegalLocalVolOverwrite_(illegalLocalVolOverwrite) { }
 
         NoExceptLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
                                 const Handle<YieldTermStructure>& riskFreeTS,
                                 const Handle<YieldTermStructure>& dividendTS,
                                 Real underlying,
-                                Real illegalLocalVolOverwrite)
-        : LocalVolSurface(blackTS, riskFreeTS, dividendTS, underlying),
+                                Real illegalLocalVolOverwrite,
+                                bool extrapolate = false)
+        : LocalVolSurface(blackTS, riskFreeTS, dividendTS, underlying, extrapolate),
           illegalLocalVolOverwrite_(illegalLocalVolOverwrite) { }
 
       protected:

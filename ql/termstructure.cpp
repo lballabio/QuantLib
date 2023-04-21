@@ -23,15 +23,15 @@
 
 namespace QuantLib {
 
-    TermStructure::TermStructure(DayCounter dc)
-    : settlementDays_(Null<Natural>()), dayCounter_(std::move(dc)) {}
+    TermStructure::TermStructure(DayCounter dc, bool extrapolate)
+    : Extrapolator(extrapolate), settlementDays_(Null<Natural>()), dayCounter_(std::move(dc)) {}
 
-    TermStructure::TermStructure(const Date& referenceDate, Calendar cal, DayCounter dc)
-    : calendar_(std::move(cal)), referenceDate_(referenceDate), settlementDays_(Null<Natural>()),
+    TermStructure::TermStructure(const Date& referenceDate, Calendar cal, DayCounter dc, bool extrapolate)
+    : Extrapolator(extrapolate), calendar_(std::move(cal)), referenceDate_(referenceDate), settlementDays_(Null<Natural>()),
       dayCounter_(std::move(dc)) {}
 
-    TermStructure::TermStructure(Natural settlementDays, Calendar cal, DayCounter dc)
-    : moving_(true), updated_(false), calendar_(std::move(cal)), settlementDays_(settlementDays),
+    TermStructure::TermStructure(Natural settlementDays, Calendar cal, DayCounter dc, bool extrapolate)
+    : Extrapolator(extrapolate), moving_(true), updated_(false), calendar_(std::move(cal)), settlementDays_(settlementDays),
       dayCounter_(std::move(dc)) {
         registerWith(Settings::instance().evaluationDate());
     }

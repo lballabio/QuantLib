@@ -149,8 +149,7 @@ Real fokkerPlanckPrice1D(const ext::shared_ptr<FdmMesher>& mesher,
         payoffTimesDensity[i] = (*payoff)(std::exp(x[i]))*p[i];
     }
 
-    CubicNaturalSpline f(x.begin(), x.end(), payoffTimesDensity.begin());
-    f.enableExtrapolation();
+    CubicNaturalSpline f(x.begin(), x.end(), payoffTimesDensity.begin(), true);
     return GaussLobattoIntegral(1000, 1e-6)(f, x.front(), x.back());
 }
 
@@ -1576,8 +1575,7 @@ BOOST_AUTO_TEST_CASE(testLocalVolsvSLVPropDensity) {
         ext::make_shared<HestonModel>(hestonProcess));
 
     const Handle<LocalVolTermStructure> localVol(
-        ext::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.3));
-    localVol->enableExtrapolation(true);
+        ext::make_shared<NoExceptLocalVolSurface>(vTS, rTS, qTS, spot, 0.3, true));
 
     const Size vGrid = 151;
     const Size xGrid = 51;

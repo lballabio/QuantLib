@@ -49,19 +49,22 @@ namespace QuantLib {
         */
         //@{
         explicit ZeroYieldStructure(
-            const DayCounter& dc = DayCounter());
+            const DayCounter& dc = DayCounter(),
+            bool extrapolate = false);
         explicit ZeroYieldStructure(
             const Date& referenceDate,
             const Calendar& calendar = Calendar(),
             const DayCounter& dc = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = {},
-            const std::vector<Date>& jumpDates = {});
+            const std::vector<Date>& jumpDates = {},
+            bool extrapolate = false);
         ZeroYieldStructure(
             Natural settlementDays,
             const Calendar& calendar,
             const DayCounter& dc = DayCounter(),
             const std::vector<Handle<Quote> >& jumps = {},
-            const std::vector<Date>& jumpDates = {});
+            const std::vector<Date>& jumpDates = {},
+            bool extrapolate = false);
         //@}
       protected:
         /*! \name Calculations

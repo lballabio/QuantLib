@@ -130,7 +130,7 @@ namespace QuantLib {
             Akima,
 
             //! Kruger approximation (local, monotonic, non-linear)
-            Kruger, 
+            Kruger,
 
             //! Weighted harmonic mean approximation (local, monotonic, non-linear)
             Harmonic,
@@ -163,7 +163,9 @@ namespace QuantLib {
                            CubicInterpolation::BoundaryCondition leftCond,
                            Real leftConditionValue,
                            CubicInterpolation::BoundaryCondition rightCond,
-                           Real rightConditionValue) {
+                           Real rightConditionValue,
+                           bool extrapolate = false)
+        : Interpolation(extrapolate) {
             impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                       da,
@@ -198,11 +200,13 @@ namespace QuantLib {
         template <class I1, class I2>
         CubicNaturalSpline(const I1& xBegin,
                            const I1& xEnd,
-                           const I2& yBegin)
+                           const I2& yBegin,
+                           bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Spline, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class MonotonicCubicNaturalSpline : public CubicInterpolation {
@@ -211,11 +215,13 @@ namespace QuantLib {
         template <class I1, class I2>
         MonotonicCubicNaturalSpline(const I1& xBegin,
                                     const I1& xEnd,
-                                    const I2& yBegin)
+                                    const I2& yBegin,
+                                    bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Spline, true,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class CubicSplineOvershootingMinimization1 : public CubicInterpolation {
@@ -224,11 +230,13 @@ namespace QuantLib {
         template <class I1, class I2>
         CubicSplineOvershootingMinimization1 (const I1& xBegin,
                                            const I1& xEnd,
-                                           const I2& yBegin)
+                                           const I2& yBegin,
+                                           bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              SplineOM1, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class CubicSplineOvershootingMinimization2 : public CubicInterpolation {
@@ -237,11 +245,13 @@ namespace QuantLib {
         template <class I1, class I2>
         CubicSplineOvershootingMinimization2 (const I1& xBegin,
                                            const I1& xEnd,
-                                           const I2& yBegin)
+                                           const I2& yBegin,
+                                           bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              SplineOM2, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class AkimaCubicInterpolation : public CubicInterpolation {
@@ -250,11 +260,13 @@ namespace QuantLib {
         template <class I1, class I2>
         AkimaCubicInterpolation(const I1& xBegin,
                                 const I1& xEnd,
-                                const I2& yBegin)
+                                const I2& yBegin,
+                                bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Akima, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class KrugerCubic : public CubicInterpolation {
@@ -263,11 +275,13 @@ namespace QuantLib {
         template <class I1, class I2>
         KrugerCubic(const I1& xBegin,
                     const I1& xEnd,
-                    const I2& yBegin)
+                    const I2& yBegin,
+                    bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Kruger, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class HarmonicCubic : public CubicInterpolation {
@@ -276,11 +290,13 @@ namespace QuantLib {
         template <class I1, class I2>
         HarmonicCubic(const I1& xBegin,
                       const I1& xEnd,
-                      const I2& yBegin)
+                      const I2& yBegin,
+                      bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Harmonic, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class FritschButlandCubic : public CubicInterpolation {
@@ -289,11 +305,13 @@ namespace QuantLib {
         template <class I1, class I2>
         FritschButlandCubic(const I1& xBegin,
                             const I1& xEnd,
-                            const I2& yBegin)
+                            const I2& yBegin,
+                            bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              FritschButland, true,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class Parabolic : public CubicInterpolation {
@@ -302,11 +320,13 @@ namespace QuantLib {
         template <class I1, class I2>
         Parabolic(const I1& xBegin,
                   const I1& xEnd,
-                  const I2& yBegin)
+                  const I2& yBegin,
+                  bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              CubicInterpolation::Parabolic, false,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     class MonotonicParabolic : public CubicInterpolation {
@@ -315,11 +335,13 @@ namespace QuantLib {
         template <class I1, class I2>
         MonotonicParabolic(const I1& xBegin,
                            const I1& xEnd,
-                           const I2& yBegin)
+                           const I2& yBegin,
+                           bool extrapolate = false)
         : CubicInterpolation(xBegin, xEnd, yBegin,
                              Parabolic, true,
                              SecondDerivative, 0.0,
-                             SecondDerivative, 0.0) {}
+                             SecondDerivative, 0.0,
+                             extrapolate) {}
     };
 
     //! %Cubic interpolation factory and traits
@@ -334,10 +356,12 @@ namespace QuantLib {
               Real leftConditionValue = 0.0,
               CubicInterpolation::BoundaryCondition rightCondition
                   = CubicInterpolation::SecondDerivative,
-              Real rightConditionValue = 0.0)
+              Real rightConditionValue = 0.0,
+              bool extrapolate = false)
         : da_(da), monotonic_(monotonic),
           leftType_(leftCondition), rightType_(rightCondition),
-          leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
+          leftValue_(leftConditionValue), rightValue_(rightConditionValue),
+          extrapolate_(extrapolate) {}
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin,
                                   const I1& xEnd,
@@ -345,7 +369,8 @@ namespace QuantLib {
             return CubicInterpolation(xBegin, xEnd, yBegin,
                                       da_, monotonic_,
                                       leftType_, leftValue_,
-                                      rightType_, rightValue_);
+                                      rightType_, rightValue_,
+                                      extrapolate_);
         }
         static const bool global = true;
         static const Size requiredPoints = 2;
@@ -354,6 +379,7 @@ namespace QuantLib {
         bool monotonic_;
         CubicInterpolation::BoundaryCondition leftType_, rightType_;
         Real leftValue_, rightValue_;
+        bool extrapolate_;
     };
 
 
@@ -385,7 +411,7 @@ namespace QuantLib {
                     || rightType_ == CubicInterpolation::Lagrange) {
                     QL_REQUIRE((xEnd-xBegin) >= 4,
                                "Lagrange boundary condition requires at least "
-                               "4 points (" << (xEnd-xBegin) << " are given)"); 
+                               "4 points (" << (xEnd-xBegin) << " are given)");
                 }
             }
 

@@ -138,6 +138,10 @@ namespace QuantLib {
         };
 
         Interpolation2D() = default;
+
+        explicit Interpolation2D(bool extrapolate)
+            : Extrapolator(extrapolate) {}
+
         Real operator()(Real x, Real y,
                         bool allowExtrapolation = false) const {
             checkRange(x,y,allowExtrapolation);

@@ -48,19 +48,22 @@ namespace QuantLib {
         DefaultProbabilityTermStructure(
             const DayCounter& dc = DayCounter(),
             std::vector<Handle<Quote> > jumps = {},
-            const std::vector<Date>& jumpDates = {});
+            const std::vector<Date>& jumpDates = {},
+            bool extrapolate = false);
         DefaultProbabilityTermStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dc = DayCounter(),
             std::vector<Handle<Quote> > jumps = {},
-            const std::vector<Date>& jumpDates = {});
+            const std::vector<Date>& jumpDates = {},
+            bool extrapolate = false);
         DefaultProbabilityTermStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dc = DayCounter(),
             std::vector<Handle<Quote> > jumps = {},
-            const std::vector<Date>& jumpDates = {});
+            const std::vector<Date>& jumpDates = {},
+            bool extrapolate = false);
         //@}
 
         /*! \name Survival probabilities
@@ -121,7 +124,7 @@ namespace QuantLib {
             These methods returns the hazard rate at a given date or time.
             In the latter case, the time is calculated as a fraction of year
             from the reference date.
-            
+
             Hazard rates are defined with annual frequency and continuous
             compounding.
         */

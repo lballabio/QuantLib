@@ -22,20 +22,23 @@
 namespace QuantLib {
 
     VolatilityTermStructure::VolatilityTermStructure(BusinessDayConvention bdc,
-                                                     const DayCounter& dc)
-    : TermStructure(dc), bdc_(bdc) {}
+                                                     const DayCounter& dc,
+                                                     bool extrapolate)
+    : TermStructure(dc, extrapolate), bdc_(bdc) {}
 
     VolatilityTermStructure::VolatilityTermStructure(const Date& referenceDate,
                                                      const Calendar& cal,
                                                      BusinessDayConvention bdc,
-                                                     const DayCounter& dc)
-    : TermStructure(referenceDate, cal, dc), bdc_(bdc) {}
+                                                     const DayCounter& dc,
+                                                     bool extrapolate)
+    : TermStructure(referenceDate, cal, dc, extrapolate), bdc_(bdc) {}
 
     VolatilityTermStructure::VolatilityTermStructure(Natural settlementDays,
                                                      const Calendar& cal,
                                                      BusinessDayConvention bdc,
-                                                     const DayCounter& dc)
-    : TermStructure(settlementDays, cal, dc), bdc_(bdc) {}
+                                                     const DayCounter& dc,
+                                                     bool extrapolate)
+    : TermStructure(settlementDays, cal, dc, extrapolate), bdc_(bdc) {}
 
     void VolatilityTermStructure::checkStrike(Rate k,
                                               bool extrapolate) const {

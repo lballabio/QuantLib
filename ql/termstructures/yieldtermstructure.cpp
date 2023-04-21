@@ -30,14 +30,17 @@ namespace QuantLib {
         const Time dt = 0.0001;
     }
 
-    YieldTermStructure::YieldTermStructure(const DayCounter& dc) : TermStructure(dc) {}
+    YieldTermStructure::YieldTermStructure(const DayCounter& dc,
+                                           bool extrapolate)
+    : TermStructure(dc, extrapolate) {}
 
     YieldTermStructure::YieldTermStructure(const Date& referenceDate,
                                            const Calendar& cal,
                                            const DayCounter& dc,
                                            std::vector<Handle<Quote> > jumps,
-                                           const std::vector<Date>& jumpDates)
-    : TermStructure(referenceDate, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+                                           const std::vector<Date>& jumpDates,
+                                           bool extrapolate)
+    : TermStructure(referenceDate, cal, dc, extrapolate), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps(YieldTermStructure::referenceDate());
         for (Size i=0; i<nJumps_; ++i)
@@ -48,8 +51,9 @@ namespace QuantLib {
                                            const Calendar& cal,
                                            const DayCounter& dc,
                                            std::vector<Handle<Quote> > jumps,
-                                           const std::vector<Date>& jumpDates)
-    : TermStructure(settlementDays, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+                                           const std::vector<Date>& jumpDates,
+                                           bool extrapolate)
+    : TermStructure(settlementDays, cal, dc, extrapolate), jumps_(std::move(jumps)), jumpDates_(jumpDates),
       jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps(YieldTermStructure::referenceDate());
         for (Size i=0; i<nJumps_; ++i)

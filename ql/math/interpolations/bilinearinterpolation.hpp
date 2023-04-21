@@ -75,7 +75,8 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         BilinearInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin, const I2& yEnd,
-                              const M& zData) {
+                              const M& zData, bool extrapolate = false)
+        : Interpolation2D(extrapolate) {
             impl_ = ext::shared_ptr<Interpolation2D::Impl>(
                   new detail::BilinearInterpolationImpl<I1,I2,M>(xBegin, xEnd,
                                                                  yBegin, yEnd,
@@ -89,8 +90,8 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         Interpolation2D interpolate(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin, const I2& yEnd,
-                                    const M& z) const {
-            return BilinearInterpolation(xBegin,xEnd,yBegin,yEnd,z);
+                                    const M& z, bool extrapolate = false) const {
+            return BilinearInterpolation(xBegin,xEnd,yBegin,yEnd,z,extrapolate);
         }
     };
 

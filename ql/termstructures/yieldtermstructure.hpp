@@ -48,17 +48,20 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        explicit YieldTermStructure(const DayCounter& dc = DayCounter());
+        explicit YieldTermStructure(const DayCounter& dc = DayCounter(),
+                                    bool extrapolate = false);
         YieldTermStructure(const Date& referenceDate,
                            const Calendar& cal = Calendar(),
                            const DayCounter& dc = DayCounter(),
                            std::vector<Handle<Quote> > jumps = {},
-                           const std::vector<Date>& jumpDates = {});
+                           const std::vector<Date>& jumpDates = {},
+                           bool extrapolate = false);
         YieldTermStructure(Natural settlementDays,
                            const Calendar& cal,
                            const DayCounter& dc = DayCounter(),
                            std::vector<Handle<Quote> > jumps = {},
-                           const std::vector<Date>& jumpDates = {});
+                           const std::vector<Date>& jumpDates = {},
+                           bool extrapolate = false);
         //@}
 
         /*! \name Discount factors

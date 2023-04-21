@@ -115,6 +115,9 @@ namespace QuantLib {
             I2 yBegin_;
         };
 
+        explicit Interpolation(bool extrapolate)
+            : Extrapolator(extrapolate) {}
+
         Interpolation() = default;
         ~Interpolation() override = default;
         bool empty() const { return !impl_; }

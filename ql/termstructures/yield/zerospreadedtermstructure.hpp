@@ -50,7 +50,8 @@ namespace QuantLib {
                                   Handle<Quote> spread,
                                   Compounding comp = Continuous,
                                   Frequency freq = NoFrequency,
-                                  DayCounter dc = DayCounter());
+                                  DayCounter dc = DayCounter(),
+                                  bool extrapolate = false);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const override;
@@ -82,7 +83,8 @@ namespace QuantLib {
                                                                 Handle<Quote> spread,
                                                                 Compounding comp,
                                                                 Frequency freq,
-                                                                DayCounter dc)
+                                                                DayCounter dc,
+                                                                bool extrapolate)
     : originalCurve_(std::move(h)), spread_(std::move(spread)), comp_(comp), freq_(freq),
       dc_(std::move(dc)) {
         if (!originalCurve_.empty())
