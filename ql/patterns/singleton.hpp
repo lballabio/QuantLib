@@ -62,6 +62,7 @@ namespace QuantLib {
         Singleton(Singleton&&) = delete;
         Singleton& operator=(const Singleton&) = delete;
         Singleton& operator=(Singleton&&) = delete;
+        ~Singleton() = default;
 
         //! access to the unique instance
         static T& instance();

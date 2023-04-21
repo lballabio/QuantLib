@@ -42,6 +42,7 @@ namespace QuantLib {
         NinePointLinearOp(NinePointLinearOp&& m) noexcept;
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
         NinePointLinearOp& operator=(NinePointLinearOp&& m) noexcept;
+        ~NinePointLinearOp() override = default;
 
         Array apply(const Array& r) const override;
         NinePointLinearOp mult(const Array& u) const;

@@ -46,7 +46,7 @@ namespace QuantLib {
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
-    class Observable {
+    class Observable { // NOLINT(cppcoreguidelines-special-member-functions)
         friend class Observer;
         friend class ObservableSettings;
       public:
@@ -98,7 +98,7 @@ namespace QuantLib {
 
     //! Object that gets notified when a given observable changes
     /*! \ingroup patterns */
-    class Observer {
+    class Observer { // NOLINT(cppcoreguidelines-special-member-functions)
       private:
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
       public:

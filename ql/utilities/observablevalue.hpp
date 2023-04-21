@@ -39,7 +39,7 @@ namespace QuantLib {
               code should modify the value via re-assignment instead.
     */
     template <class T>
-    class ObservableValue {
+    class ObservableValue { // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         ObservableValue();
         ObservableValue(T&&);

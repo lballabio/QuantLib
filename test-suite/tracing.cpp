@@ -28,7 +28,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    class TestCaseCleaner {
+    class TestCaseCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         TestCaseCleaner() = default;
         ~TestCaseCleaner() {

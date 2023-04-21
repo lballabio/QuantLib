@@ -51,6 +51,7 @@ namespace QuantLib {
         T* operator->() const;
         bool empty() const;
         void swap(Clone<T>& t) noexcept;
+        ~Clone() = default;
       private:
         std::unique_ptr<T> ptr_;
     };
