@@ -33,6 +33,12 @@
 #include <iomanip>
 #include <ctime>
 
+#if BOOST_VERSION < 106700
+#include <boost/functional/hash.hpp>
+#else
+#include <boost/container_hash/hash.hpp>
+#endif
+
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm;
                     using ::gmtime; using ::localtime; }
