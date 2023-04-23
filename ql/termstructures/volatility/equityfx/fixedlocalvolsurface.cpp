@@ -21,23 +21,11 @@
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/yearfractiontodate.hpp>
 #include <utility>
 
 
 namespace QuantLib {
-
-    namespace {
-        Date time2Date(const Date referenceDate, const DayCounter& dc, Time t) {
-            t-=1e4*QL_EPSILON; // add a small buffer for rounding errors
-            Date d(referenceDate);
-            while(dc.yearFraction(referenceDate, d+=Period(1, Years)) < t);
-            d-=Period(1, Years);
-            while(dc.yearFraction(referenceDate, d+=Period(1, Months)) < t);
-            d-=Period(1, Months);
-            while(dc.yearFraction(referenceDate, d++) < t);
-            return d;
-        }
-    }
 
     FixedLocalVolSurface::FixedLocalVolSurface(const Date& referenceDate,
                                                const std::vector<Date>& dates,
@@ -71,7 +59,7 @@ namespace QuantLib {
                                                Extrapolation lowerExtrapolation,
                                                Extrapolation upperExtrapolation)
     : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
-      maxDate_(time2Date(referenceDate, dayCounter, times.back())), times_(times),
+      maxDate_(YearFractionToDate(dayCounter, referenceDate)(times.back())), times_(times),
       localVolMatrix_(std::move(localVolMatrix)),
       strikes_(times.size(), ext::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(times.size()), lowerExtrapolation_(lowerExtrapolation),
@@ -92,7 +80,7 @@ namespace QuantLib {
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
     : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
-      maxDate_(time2Date(referenceDate, dayCounter, times.back())), times_(times),
+      maxDate_(YearFractionToDate(dayCounter, referenceDate)(times.back())), times_(times),
       localVolMatrix_(std::move(localVolMatrix)), strikes_(strikes),
       localVolInterpol_(times.size()), lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {

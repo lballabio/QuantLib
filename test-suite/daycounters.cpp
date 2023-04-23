@@ -28,6 +28,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actual36525.hpp>
 #include <ql/time/daycounters/actual366.hpp>
+#include <ql/time/daycounters/actual364.hpp>
 #include <ql/time/daycounters/one.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/daycounters/business252.hpp>
@@ -37,9 +38,12 @@
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/time/calendars/china.hpp>
+#include <ql/time/daycounters/yearfractiontodate.hpp>
+
 #include <cmath>
 #include <iomanip>
-#include <ql/time/calendars/china.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1197,6 +1201,128 @@ void DayCounterTest::testAct36525() {
 }
 
 
+void DayCounterTest::testActualConsistency() {
+    BOOST_TEST_MESSAGE("Testing consistency between different actual day-counter...");
+
+    const std::vector<Date> todayDates = {
+    		Date(12, January, 2022)
+#ifdef QL_HIGH_RESOLUTION_DATE
+			,
+			Date(7, February, 2022, 11, 43, 12, 293, 32)
+#endif
+    };
+
+    const std::vector<Date> testDates = {
+        Date(1, February, 2023), Date(4, February, 2023), Date(16, May, 2024),
+        Date(17, December, 2024),Date(17, December, 2025), Date(19, December, 2026),
+        Date(2, January, 2027), Date(13, March, 2028), Date(15, May, 2028),
+        Date(26, July, 2036)
+#ifdef QL_HIGH_RESOLUTION_DATE
+		,
+		Date(23, August, 2025, 18, 1, 22, 927, 832),
+		Date(23, August, 2032, 2, 23, 22, 0, 636)
+#endif
+    };
+
+    const DayCounter actual365 = Actual365Fixed();
+    const DayCounter actual366 = Actual366();
+    const DayCounter actual364 = Actual364();
+    const DayCounter actual36525 = Actual36525();
+    const DayCounter actual360 = Actual360();
+    const DayCounter actual360incl = Actual360(true);
+
+    for (const auto& today: todayDates)
+		for (const auto& d: testDates) {
+			const Time t365 = actual365.yearFraction(today, d);
+			const Time t366 = actual366.yearFraction(today, d);
+			const Time t364 = actual364.yearFraction(today, d);
+			const Time t360 = actual360.yearFraction(today, d);
+			const Time t360incl = actual360incl.yearFraction(today, d);
+			const Time t36525 = actual36525.yearFraction(today, d);
+
+			BOOST_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
+			BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+			BOOST_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
+			BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+			BOOST_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
+			BOOST_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
+		}
+}
+
+
+void DayCounterTest::testYearFraction2DateBulk() {
+    BOOST_TEST_MESSAGE("Testing bulk dates for YearFractionToDate ...");
+
+    const auto dayCounters = std::vector<DayCounter>{
+        Actual365Fixed(),
+        Actual365Fixed(Actual365Fixed::NoLeap),
+        Actual360(), Actual360(true),
+        Actual36525(), Actual36525(true),
+        Actual364(),
+        Actual366(), Actual366(true),
+        ActualActual(ActualActual::ISDA),
+        ActualActual(ActualActual::ISMA),
+        ActualActual(ActualActual::Bond),
+        ActualActual(ActualActual::Historical),
+        ActualActual(ActualActual::Actual365),
+        ActualActual(ActualActual::AFB),
+        ActualActual(ActualActual::Euro),
+        Business252(),
+        Thirty360(Thirty360::USA),
+        Thirty360(Thirty360::BondBasis),
+        Thirty360(Thirty360::European),
+        Thirty360(Thirty360::EurobondBasis),
+        Thirty360(Thirty360::Italian),
+        Thirty360(Thirty360::German),
+        Thirty360(Thirty360::ISMA),
+        Thirty360(Thirty360::ISDA),
+        Thirty360(Thirty360::NASD),
+        Thirty365(),
+        SimpleDayCounter()
+    };
+
+    for (auto dc: dayCounters)
+        for (Integer i=-360; i < 730; ++i) {
+            const Date today = Date(1, January, 2020) + Period(i, Days);
+            const YearFractionToDate td(dc, today);
+            const Date target = today + Period(i, Days);
+
+            const Time t = dc.yearFraction(today, target);
+            const Date time2Date = YearFractionToDate(dc, today)(t);
+            const Time tNew = dc.yearFraction(today, time2Date);
+
+            if (!close_enough(t, dc.yearFraction(today, time2Date))) {
+                BOOST_FAIL(
+                       "\ntoday      : " << today
+                    << "\ntarget     : " << target
+                    << "\ninverse    : " << time2Date
+                    << "\ntime diff  : " << t - tNew
+                    << "\nday counter: " << dc.name()
+                );
+            }
+        }
+}
+
+void DayCounterTest::testYearFraction2DateRounding() {
+    BOOST_TEST_MESSAGE("Testing YearFractionToDate rounding to closer date...");
+
+    const std::vector<DayCounter> dayCounters
+        = {Thirty360(Thirty360::USA), Actual360()};
+    const Date d1(1, February, 2023), d2(17, February, 2124);
+
+    for (DayCounter dc: dayCounters) {
+        Time t = dc.yearFraction(d1, d2);
+        for (Time offset = 0; offset < 1 + 1e-10; offset+=0.05) {
+            const Date inv = YearFractionToDate(dc, d1)(t + offset/360);
+            if (offset < 0.4999)
+                BOOST_CHECK_EQUAL(inv, d2);
+            else
+                BOOST_CHECK_EQUAL(inv, d2 + Period(1, Days));
+        }
+    }
+}
+
+
 
 test_suite* DayCounterTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Day counter tests");
@@ -1219,9 +1345,13 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualOutOfScheduleRange));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct366));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct36525));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualConsistency));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateBulk));
 
 #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
+#else
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateRounding));
 #endif
 
     return suite;

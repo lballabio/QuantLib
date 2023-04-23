@@ -51,7 +51,8 @@ namespace QuantLib {
             }
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override {
-                return dayCount(d1,d2)/365.25;
+                return (daysBetween(d1,d2)
+                        + (includeLastDay_ ? 1.0 : 0.0))/365.25;
             }
         };
       public:

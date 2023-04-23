@@ -4444,6 +4444,9 @@
     <ClInclude Include="ql\cashflows\equitycashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\daycounters\yearfractiontodate.hpp">
+      <Filter>time\daycounters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7176,6 +7179,9 @@
     </ClCompile>
     <ClCompile Include="ql\cashflows\equitycashflow.cpp">
       <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\daycounters\yearfractiontodate.cpp">
+      <Filter>time\daycounters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

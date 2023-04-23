@@ -479,6 +479,21 @@ namespace QuantLib {
                   }
                  }
                 break;
+              case Hours:
+                dt += boost::posix_time::hours(n);
+                break;
+              case Minutes:
+                  dt += boost::posix_time::minutes(n);
+                  break;
+              case Seconds:
+                dt += boost::posix_time::seconds(n);
+                break;
+              case Milliseconds:
+                dt += boost::posix_time::milliseconds(n);
+                break;
+              case Microseconds:
+                dt += boost::posix_time::microseconds(n);
+                break;
               default:
                 QL_FAIL("undefined time units");
            }
