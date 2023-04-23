@@ -1205,10 +1205,10 @@ void DayCounterTest::testActualConsistency() {
     BOOST_TEST_MESSAGE("Testing consistency between different actual day-counter...");
 
     const std::vector<Date> todayDates = {
-    		Date(12, January, 2022)
+            Date(12, January, 2022)
 #ifdef QL_HIGH_RESOLUTION_DATE
-			,
-			Date(7, February, 2022, 11, 43, 12, 293, 32)
+            ,
+            Date(7, February, 2022, 11, 43, 12, 293, 32)
 #endif
     };
 
@@ -1218,9 +1218,9 @@ void DayCounterTest::testActualConsistency() {
         Date(2, January, 2027), Date(13, March, 2028), Date(15, May, 2028),
         Date(26, July, 2036)
 #ifdef QL_HIGH_RESOLUTION_DATE
-		,
-		Date(23, August, 2025, 18, 1, 22, 927, 832),
-		Date(23, August, 2032, 2, 23, 22, 0, 636)
+        ,
+        Date(23, August, 2025, 18, 1, 22, 927, 832),
+        Date(23, August, 2032, 2, 23, 22, 0, 636)
 #endif
     };
 
@@ -1232,21 +1232,21 @@ void DayCounterTest::testActualConsistency() {
     const DayCounter actual360incl = Actual360(true);
 
     for (const auto& today: todayDates)
-		for (const auto& d: testDates) {
-			const Time t365 = actual365.yearFraction(today, d);
-			const Time t366 = actual366.yearFraction(today, d);
-			const Time t364 = actual364.yearFraction(today, d);
-			const Time t360 = actual360.yearFraction(today, d);
-			const Time t360incl = actual360incl.yearFraction(today, d);
-			const Time t36525 = actual36525.yearFraction(today, d);
+        for (const auto& d: testDates) {
+            const Time t365 = actual365.yearFraction(today, d);
+            const Time t366 = actual366.yearFraction(today, d);
+            const Time t364 = actual364.yearFraction(today, d);
+            const Time t360 = actual360.yearFraction(today, d);
+            const Time t360incl = actual360incl.yearFraction(today, d);
+            const Time t36525 = actual36525.yearFraction(today, d);
 
-			BOOST_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
-			BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
-			BOOST_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
-			BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
-			BOOST_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
-			BOOST_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
-		}
+            BOOST_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
+            BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+            BOOST_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
+            BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+            BOOST_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
+            BOOST_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
+        }
 }
 
 
@@ -1347,11 +1347,10 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct36525));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualConsistency));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateBulk));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateRounding));
 
 #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
-#else
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateRounding));
 #endif
 
     return suite;
