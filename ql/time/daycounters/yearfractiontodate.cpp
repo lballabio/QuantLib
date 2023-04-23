@@ -20,6 +20,8 @@
 #include "yearfractiontodate.hpp"
 
 #include <ql/math/comparison.hpp>
+
+#include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
 
 namespace QuantLib {
@@ -31,16 +33,19 @@ namespace QuantLib {
     }
 
     Date YearFractionToDate::operator()(Time t) const {
-        Date guessDate = referenceDate_ + Period(round(t * 365.25), Days);
+        Date guessDate = referenceDate_
+            + Period(boost::numeric_cast<Integer>(round(t * 365.25)), Days);
         Time guessTime = dayCounter_.yearFraction(referenceDate_, guessDate);
 
-        guessDate += Period(round((t - guessTime)*365.25), Days);
+        guessDate += Period(boost::numeric_cast<Integer>(
+            round((t - guessTime)*365.25)), Days);
         guessTime = dayCounter_.yearFraction(referenceDate_, guessDate);
 
         if (close_enough(guessTime, t))
             return guessDate;
 
-        const int searchDirection = copysign(1.0, t - guessTime);
+        const Integer searchDirection
+            = boost::numeric_cast<Integer>(copysign(1.0, t - guessTime));
 
         t += searchDirection*100*QL_EPSILON;
 
