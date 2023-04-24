@@ -22,6 +22,7 @@
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>

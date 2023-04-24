@@ -41,7 +41,7 @@ namespace QuantLib {
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {
-                calculate();
+                BilinearInterpolationImpl::calculate();
             }
             void calculate() override {}
             Real value(Real x, Real y) const override {

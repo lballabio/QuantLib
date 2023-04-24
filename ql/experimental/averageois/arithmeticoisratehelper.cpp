@@ -47,7 +47,7 @@ namespace QuantLib {
         registerWith(overnightIndex_);
         registerWith(discountHandle_);
         registerWith(spread_);
-        initializeDates();
+        ArithmeticOISRateHelper::initializeDates();
     }
 
     void ArithmeticOISRateHelper::initializeDates() {

@@ -84,7 +84,7 @@ namespace QuantLib {
       public:
         //! Austrian calendars
         enum Market { Settlement,     //!< generic settlement calendar
-                      Exchange        //!< Paris stock-exchange calendar
+                      Exchange        //!< Vienna stock-exchange calendar
         };
         explicit Austria(Market market = Settlement);
     };

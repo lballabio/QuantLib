@@ -42,10 +42,10 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
 #include <ql/experimental/models/squarerootclvmodel.hpp>
-#include <ql/experimental/models/hestonslvfdmmodel.hpp>
-#include <ql/experimental/processes/hestonslvprocess.hpp>
-#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/models/equity/hestonslvfdmmodel.hpp>
+#include <ql/processes/hestonslvprocess.hpp>
+#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
 
 #include <boost/math/distributions/non_central_chi_squared.hpp>
@@ -140,7 +140,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const ext::function<Real(Real)> f = [&](Real xi) {
+        const ext::function<Real(Real)> f = [&](Real xi) -> Real {
             return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
         };
 
@@ -238,7 +238,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
 
             const CLVModelPayoff clvModelPayoff(optionType, strike, [&](Real x) { return g(t, x); });
 
-            const ext::function<Real(Real)> f = [&](Real xi) {
+            const ext::function<Real(Real)> f = [&](Real xi) -> Real {
                 return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
             };
 

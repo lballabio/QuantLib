@@ -20,6 +20,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -44,7 +45,25 @@ namespace QuantLib {
         const FdmSchemeDesc& schemeDesc,
         bool localVol,
         Real illegalLocalVolOverwrite)
-    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+    : process_(std::move(process)), explicitDividends_(false),
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+
+        registerWith(process_);
+    }
+
+    FdBlackScholesBarrierEngine::FdBlackScholesBarrierEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        DividendSchedule dividends,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite)
+    : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
 
@@ -52,6 +71,11 @@ namespace QuantLib {
     }
 
     void FdBlackScholesBarrierEngine::calculate() const {
+
+        // dividends will eventually be moved out of arguments, but for now we need the switch
+        QL_DEPRECATED_DISABLE_WARNING
+        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -85,7 +109,7 @@ namespace QuantLib {
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                arguments_.cashFlow));
+                dividendSchedule));
         
         const ext::shared_ptr<FdmMesher> mesher (
             ext::make_shared<FdmMesherComposite>(equityMesher));
@@ -100,13 +124,17 @@ namespace QuantLib {
 
         // 3.1 Step condition if discrete dividends
         ext::shared_ptr<FdmDividendHandler> dividendCondition(
-            ext::make_shared<FdmDividendHandler>(arguments_.cashFlow, mesher,
+            ext::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
                                    process_->riskFreeRate()->referenceDate(),
                                    process_->riskFreeRate()->dayCounter(), 0));
 
-        if(!arguments_.cashFlow.empty()) {
+        if (!dividendSchedule.empty()) {
             stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
+            std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
+            // this effectively excludes times after maturity
+            for (auto& t: dividendTimes)
+                t = std::min(maturity, t);
+            stoppingTimes.push_back(dividendTimes);
         }
 
         ext::shared_ptr<FdmStepConditionComposite> conditions(
@@ -153,43 +181,33 @@ namespace QuantLib {
                                                             arguments_.payoff);
             // Calculate the vanilla option
             
-            ext::shared_ptr<DividendVanillaOption> vanillaOption(
-                ext::make_shared<DividendVanillaOption>(payoff,arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            VanillaOption vanillaOption(payoff, arguments_.exercise);
             
-            vanillaOption->setPricingEngine(
+            vanillaOption.setPricingEngine(
                 ext::make_shared<FdBlackScholesVanillaEngine>(
-                        process_, tGrid_, xGrid_,
+                        process_, dividendSchedule, tGrid_, xGrid_,
                         0, // dampingSteps
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
 
             // Calculate the rebate value
-            ext::shared_ptr<DividendBarrierOption> rebateOption(
-                ext::make_shared<DividendBarrierOption>(arguments_.barrierType,
-                                          arguments_.barrier,
-                                          arguments_.rebate,
-                                          payoff, arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            BarrierOption rebateOption(arguments_.barrierType,
+                                       arguments_.barrier,
+                                       arguments_.rebate,
+                                       payoff, arguments_.exercise);
             
             const Size min_grid_size = 50;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
 
-            rebateOption->setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
-                            process_, tGrid_, std::max(min_grid_size, xGrid_/5), 
+            rebateOption.setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
+                            process_, dividendSchedule, tGrid_, std::max(min_grid_size, xGrid_/5), 
                             rebateDampingSteps, schemeDesc_, localVol_, 
                             illegalLocalVolOverwrite_));
 
-            results_.value = vanillaOption->NPV()   + rebateOption->NPV()
-                                                    - results_.value;
-            results_.delta = vanillaOption->delta() + rebateOption->delta()
-                                                    - results_.delta;
-            results_.gamma = vanillaOption->gamma() + rebateOption->gamma()
-                                                    - results_.gamma;
-            results_.theta = vanillaOption->theta() + rebateOption->theta()
-                                                    - results_.theta;
+            results_.value = vanillaOption.NPV()   + rebateOption.NPV()   - results_.value;
+            results_.delta = vanillaOption.delta() + rebateOption.delta() - results_.delta;
+            results_.gamma = vanillaOption.gamma() + rebateOption.gamma() - results_.gamma;
+            results_.theta = vanillaOption.theta() + rebateOption.theta() - results_.theta;
         }
     }
 }

@@ -8,12 +8,11 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: linux-ci-build-times-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: linux-ci-test-times-${{ github.ref }}
         restore-keys: |
-          linux-ci-build-times-${{ github.ref }}-${{ github.head_ref }}-
-          linux-ci-build-times-${{ github.ref }}-
-          linux-ci-build-times-refs/heads/master-
-          linux-ci-build-times-
+          linux-ci-test-times-${{ github.ref }}
+          linux-ci-test-times-refs/heads/master
+          linux-ci-test-times-
     - name: Setup
       run: |
         sudo apt update

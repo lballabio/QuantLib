@@ -44,8 +44,7 @@ namespace QuantLib {
 	class Pribor : public IborIndex {
 	public:
 		Pribor(const Period& tenor,
-			const Handle<YieldTermStructure>& h =
-			Handle<YieldTermStructure>())
+               const Handle<YieldTermStructure>& h = {})
 			: IborIndex("PRIBOR", tenor, (tenor == 1 * Days ? 0 : 2), CZKCurrency(),
 				CzechRepublic(), ModifiedFollowing, false,
 				Actual360(), h) {}

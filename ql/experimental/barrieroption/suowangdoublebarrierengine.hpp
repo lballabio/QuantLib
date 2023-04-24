@@ -24,7 +24,7 @@
 #ifndef wulin_yong_double_barrier_engine_hpp
 #define wulin_yong_double_barrier_engine_hpp
 
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
@@ -60,12 +60,6 @@ namespace QuantLib {
         Real D(Real X, Real lambda, Real sigma, Real T) const;
 
     };
-
-    /*! \deprecated Use SuoWangDoubleBarrierEngine instead.
-                    Deprecated in version 1.25.
-    */
-    QL_DEPRECATED
-    typedef SuoWangDoubleBarrierEngine WulinYongDoubleBarrierEngine;
 
 }
 

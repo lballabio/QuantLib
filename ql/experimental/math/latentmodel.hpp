@@ -42,7 +42,12 @@ namespace QuantLib {
     namespace detail {
         // havent figured out how to do this in-place
         struct multiplyV {
+            /*! \deprecated Use `auto` or `decltype` instead.
+                            Deprecated in version 1.29.
+            */
+            QL_DEPRECATED
             typedef std::vector<Real> result_type;
+
             std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 

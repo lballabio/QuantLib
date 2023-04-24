@@ -38,23 +38,6 @@ namespace QuantLib {
       zeroInflationIndex_(index), observationInterpolation_(observationInterpolation),
       startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
 
-    ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
-                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
-                                                 CPI::InterpolationType observationInterpolation,
-                                                 const Date& startDate,
-                                                 const Date& endDate,
-                                                 const Period& observationLag,
-                                                 const Calendar& calendar,
-                                                 BusinessDayConvention convention,
-                                                 const Date& paymentDate,
-                                                 bool growthOnly)
-    : IndexedCashFlow(notional, index,
-                      calendar.adjust(startDate - observationLag, convention),
-                      calendar.adjust(endDate - observationLag, convention),
-                      paymentDate, growthOnly),
-      zeroInflationIndex_(index), observationInterpolation_(observationInterpolation),
-      startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
-
     Real ZeroInflationCashFlow::amount() const {
 
         Real I0, I1;

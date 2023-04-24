@@ -32,7 +32,7 @@ namespace QuantLib {
             arguments_[2] = ConstantParameter(process->theta(),
                 NoConstraint());
 
-            generateArguments();
+            VarianceGammaModel::generateArguments();
 
             registerWith(process_->riskFreeRate());
             registerWith(process_->dividendYield());

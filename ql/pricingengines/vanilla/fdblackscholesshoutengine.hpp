@@ -32,7 +32,10 @@ namespace QuantLib {
 
     class GeneralizedBlackScholesProcess;
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     class FdBlackScholesShoutEngine : public DividendVanillaOption::engine {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
         // Constructor
         explicit FdBlackScholesShoutEngine(
@@ -42,13 +45,24 @@ namespace QuantLib {
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
+        FdBlackScholesShoutEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess>,
+            DividendSchedule dividends,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+
         void calculate() const override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        DividendSchedule dividends_;
+        bool explicitDividends_;
         const Size tGrid_, xGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
     };
+
 }
 
 #endif

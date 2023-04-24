@@ -687,6 +687,9 @@
     <ClCompile Include="dividendoption.cpp" />
     <ClCompile Include="doublebarrieroption.cpp" />
     <ClCompile Include="doublebinaryoption.cpp" />
+    <ClCompile Include="equityindex.cpp" />
+    <ClCompile Include="equitycashflow.cpp" />
+    <ClCompile Include="equitytotalreturnswap.cpp" />
     <ClCompile Include="europeanoption.cpp" />
     <ClCompile Include="everestoption.cpp" />
     <ClCompile Include="exchangerate.cpp" />
@@ -718,7 +721,6 @@
     <ClCompile Include="inflationcpicapfloor.cpp" />
     <ClCompile Include="inflationcpiswap.cpp" />
     <ClCompile Include="inflationvolatility.cpp" />
-    <ClCompile Include="inflationzciisinterpolation.cpp" />
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interestrates.cpp" />
@@ -855,6 +857,9 @@
     <ClInclude Include="dividendoption.hpp" />
     <ClInclude Include="doublebarrieroption.hpp" />
     <ClInclude Include="doublebinaryoption.hpp" />
+    <ClInclude Include="equityindex.hpp" />
+    <ClInclude Include="equitycashflow.hpp" />
+    <ClInclude Include="equitytotalreturnswap.hpp" />
     <ClInclude Include="europeanoption.hpp" />
     <ClInclude Include="everestoption.hpp" />
     <ClInclude Include="exchangerate.hpp" />
@@ -886,7 +891,6 @@
     <ClInclude Include="inflationcpicapfloor.hpp" />
     <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />
-    <ClInclude Include="inflationzciisinterpolation.hpp" />
     <ClInclude Include="instruments.hpp" />
     <ClInclude Include="integrals.hpp" />
     <ClInclude Include="interestrates.hpp" />

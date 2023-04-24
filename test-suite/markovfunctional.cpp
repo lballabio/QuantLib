@@ -28,8 +28,8 @@
 #include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
+#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
@@ -450,10 +450,10 @@ namespace {
                                                     // just a test...)
 
         // return Handle<SwaptionVolatilityStructure>(new
-        // SwaptionVolCube2(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,false));
+        // InterpolatedSwaptionVolatilityCube(swaptionVolAtm,optionTenorsSmile,swapTenorsSmile,strikeSpreads,qSwSmile,swapIndex,shortSwapIndex,false));
         // // bilinear interpolation gives nasty digitals
         Handle<SwaptionVolatilityStructure> res(
-            ext::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolCube1(
+            ext::shared_ptr<SwaptionVolatilityStructure>(new SabrSwaptionVolatilityCube(
                 swaptionVolAtm, optionTenorsSmile, swapTenorsSmile,
                 strikeSpreads, qSwSmile, swapIndex, shortSwapIndex, true,
                 parameterGuess, parameterFixed, true, ec,

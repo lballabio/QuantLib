@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,16 +45,22 @@ namespace QuantLib {
             || (dd == em+25)
             // Ascension
             || (dd == em+38)
+            // Day after Ascension
+            || (dd == em+39 && y >= 2009)
             // Whit Monday
             || (dd == em+49)
             // New Year's Day
             || (d == 1  && m == January)
             // Constitution Day, June 5th
             || (d == 5  && m == June)
+            // Christmas Eve
+            || (d == 24 && m == December)
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day
-            || (d == 26 && m == December))
+            || (d == 26 && m == December)
+            // New Year's Eve
+            || (d == 31 && m == December))
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }

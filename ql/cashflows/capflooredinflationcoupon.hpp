@@ -64,7 +64,7 @@ namespace QuantLib {
         \f]
      */
     class CappedFlooredYoYInflationCoupon : public YoYInflationCoupon {
-    public:
+      public:
         // we may watch an underlying coupon ...
         CappedFlooredYoYInflationCoupon(
                 const ext::shared_ptr<YoYInflationCoupon>& underlying,
@@ -90,7 +90,9 @@ namespace QuantLib {
                              fixingDays, index, observationLag,  dayCounter,
                              gearing, spread, refPeriodStart, refPeriodEnd),
           isFloored_(false), isCapped_(false) {
+            QL_DEPRECATED_DISABLE_WARNING
             setCommon(cap, floor);
+            QL_DEPRECATED_ENABLE_WARNING
         }
 
         //! \name augmented Coupon interface
@@ -117,12 +119,23 @@ namespace QuantLib {
         void accept(AcyclicVisitor& v) override;
         //@}
 
+        //! this returns the expected rate before cap and floor are applied
+        Rate underlyingRate() const;
+
         bool isCapped() const { return isCapped_; }
         bool isFloored() const { return isFloored_; }
 
         void setPricer(const ext::shared_ptr<YoYInflationCouponPricer>&);
 
-    protected:
+      protected:
+        // to be made private and non-virtual after deprecation, not removed
+        /*! \deprecated Do not use this method and rely on its being
+                        called by the constructor of the base class.
+                        If you have overridden it, move the code to the
+                        constructor of your derived class.
+                        Deprecated in version 1.30.
+        */
+        QL_DEPRECATED
         virtual void setCommon(Rate cap, Rate floor);
 
         // data, we only use underlying_ if it was constructed that way,

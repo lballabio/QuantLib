@@ -28,13 +28,22 @@
 
 namespace QuantLib {
 
+    class Quote;
+
     //! Constant surface, no K or T dependence.
     class ConstantCPIVolatility : public CPIVolatilitySurface {
       public:
-        //! \name Constructor
+        //! \name Constructors
         //@{
-        //! calculate the reference date based on the global evaluation date
-        ConstantCPIVolatility(Volatility v,
+        ConstantCPIVolatility(const Handle<Quote>& vol,
+                              Natural settlementDays,
+                              const Calendar&,
+                              BusinessDayConvention bdc,
+                              const DayCounter& dc,
+                              const Period& observationLag,
+                              Frequency frequency,
+                              bool indexIsInterpolated);
+        ConstantCPIVolatility(Volatility vol,
                               Natural settlementDays,
                               const Calendar&,
                               BusinessDayConvention bdc,
@@ -55,7 +64,7 @@ namespace QuantLib {
 
       private:
         Volatility volatilityImpl(Time length, Rate strike) const override;
-        Volatility volatility_;
+        Handle<Quote> volatility_;
     };
 
 }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2010, 2011 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -84,17 +85,12 @@ namespace QuantLib {
         QL_REQUIRE(fixCalendar_ != Calendar(), "no fixing calendar passed");
         QL_REQUIRE(payCalendar_ != Calendar(), "no payment calendar passed");
 
-        if (observationInterpolation_ == CPI::Flat  ||
-            (observationInterpolation_ == CPI::AsIndex && !index_->interpolated())
-            ) {
+        if (!detail::CPI::isInterpolated(index_, observationInterpolation_)) {
             QL_REQUIRE(observationLag_ >= index_->availabilityLag(),
                        "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "
                        <<"when the observation is effectively flat"
                        << observationLag_ << " vs " << index_->availabilityLag());
-        }
-        if (observationInterpolation_ == CPI::Linear ||
-            (observationInterpolation_ == CPI::AsIndex && index_->interpolated())
-            ) {
+        } else {
             QL_REQUIRE(observationLag_ > index_->availabilityLag(),
                        "CPIcapfloor's observationLag must be greater than availabilityLag of inflation index: "
                        <<"when the observation is effectively linear"
@@ -140,7 +136,7 @@ namespace QuantLib {
         arguments->maturity = maturity_;
         arguments->fixCalendar = fixCalendar_;
         arguments->fixConvention = fixConvention_;
-        arguments->payCalendar = fixCalendar_;
+        arguments->payCalendar = payCalendar_;
         arguments->payConvention = payConvention_;
         arguments->fixDate = fixingDate();
         arguments->payDate = payDate();

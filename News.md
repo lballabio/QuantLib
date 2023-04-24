@@ -1,129 +1,158 @@
-Changes for QuantLib 1.28:
+Changes for QuantLib 1.30:
 ==========================
 
-QuantLib 1.28 includes 33 pull requests from several contributors.
+QuantLib 1.30 includes 34 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/24?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/27?closed=1>.
+
 
 Portability
 -----------
 
-- **New language standard:** as announced in the notes for the
-  previous release, this release started using some C++14 syntax.
-  This should be supported by most compilers released in the past
-  several years.
+- **Future end of support:** as announced in the notes for the
+  previous release, after this release and the next, using
+  `std::tuple`, `std::function` and `std::bind` (instead of their
+  `boost` counterparts) will become the default.  If you're using
+  `ext::tuple` etc. in your code (which is suggested), this should be
+  a transparent change.  If not, you'll still be able to choose the
+  `boost` versions via a configure switch for a while; but we do
+  suggest you start using `ext::tuple` etc. in the meantime.
 
-- **End of support:** as announced in the notes for the previous
-  release, this release is the last to manage thread-local singletons
-  via a user-provided `sessionId` function.  Future releases will use
-  the built-in language support for thread-local variables.
+- CMake builds now use a stricter warning level by default; thanks to
+  Ralf Konrad (@ralfkonrad).
 
-- **Future end of support:** after the next two or three releases,
-  using `std::tuple`, `std::function` and `std::bind` (instead of
-  their `boost` counterparts) will become the default.  If you're
-  using `ext::tuple` etc. in your code (which is suggested), this
-  should be a transparent change.  If not, you'll still be able to
-  choose the `boost` versions via a configure switch for a while.
+- Is it now possible to use `std::any` and `std::optional` (and the
+  related `std::any_cast` and `std::nullopt`) instead of their `boost`
+  counterparts by setting new compilation switches; thanks to Jonathan
+  Sweemer (@sweemer).  Using the `std` classes requires C++17.  We
+  expect the `boost` classes to remain the default for a while, but in
+  the meantime we encourage to start using `ext::any` and
+  `ext::optional` in preparation for a new default.
+
 
 Date/time
 ---------
 
-- Added Act/366 and Act/365.25 day counters; thanks to Ignacio Anguita
-  (@IgnacioAnguita).
+- Good Friday 2023 is now a business day for the US government bond
+  calendar; thanks to Anastasiia Shumyk (@ashumyk).
 
-- Added H.M. the Queen's funeral to the UK calendars; thanks to Tomass
-  Wilson (@Wilsontomass).
+- Added specialized Australian calendar for ASX; thanks to Trent
+  Maetzold (@trentmaetzold).
+
+- Fixed Turkish holidays between 2019 and 2023; thanks to Fredrik
+  Gerdin Börjesson (@gbfredrik).
+
+- Added a few missing holidays to Danish calendar; thanks to Fredrik
+  Gerdin Börjesson (@gbfredrik).
+
+- Added the Matariki holiday to the New Zealand calendar; thanks to
+  Jake Heke (@jakeheke75).
+
+
+Cashflows
+---------
+
+- Added a new equity cash flow class to model equity legs in total
+  return swaps; thanks to Marcin Rybacki (@marcin-rybacki).  Quanto
+  pricing is also supported.
+
+- Added an overloaded constructor for CPI coupons that allows to
+  specify a base date instead of a base CPI value; thanks to Matthias
+  Groncki (@mgroncki).
+
 
 Instruments
 -----------
 
-- Amortizing bonds were moved out of the experimental folder.  Also, a
-  couple of utility functions were provided to calculate amortization
-  schedules and notionals.
+- Added a new total-return swap; thanks to Marcin Rybacki
+  (@marcin-rybacki).  An equity-index class was also added to support
+  this instrument.
 
-Pricing engines
----------------
+- The analytic engine for barrier options would return NaN for low
+  values of volatility; this is now fixed (@lballabio).
 
-- Fixed results from `COSHestonEngine` in the case of an option with
-  short time to expiration and deep ITM or deep OTM strike prices;
-  thanks to Ignacio Anguita (@IgnacioAnguita).
+- The `VanillaOption` and `BarrierOption` classes can now be used to
+  model vanilla and barrier options with discrete dividends; the
+  future dividends (not being part of the terms and conditions of the
+  contract) should be passed to the pricing engine instead (@lballabio).
 
-- The ISDA engine for CDS could calculate the fair upfront with the
-  wrong sign; this is now fixed, thanks to Gualtiero Chiaia
-  (@gchiaia).
+- Added analytical Greeks to Bjerksund-Stensland engine; thanks to
+  Klaus Spanderen (@klausspanderen).
+
+
+Indexes
+-------
+
+- Added UKHICP inflation index; thanks to Fredrik Gerdin Börjesson
+  (@gbfredrik).
+
 
 Term structures
 ---------------
 
-- The constructor for `OISRateHelper` now allows to specify the
-  `endOfMonth` parameter; thanks to Guillaume Horel (@thrasibule).
+- Renamed `SwaptionVolCube1`, `SwaptionVolCube1x`, `SwaptionVolCube1a`
+  and `SwaptionVolCube2` to `SabrSwaptionVolatilityCube`,
+  `XabrSwaptionVolatilityCube`, `NoArbSabrSwaptionVolatilityCube` and
+  `InterpolatedSwaptionVolatilityCube`, respectively; thanks to
+  Ignacio Anguita (@IgnacioAnguita).  The old names are deprecated but
+  still available for a few releases.
 
-Finite differences
-------------------
+- Ensure that inflation curves are re-bootstrapped correctly when
+  seasonality is added (@lballabio).
 
-- Fixed computation of cds boundaries in `LocalVolRNDCalculator`;
-  thanks to @mdotlic.
 
-Experimental folder
--------------------
+Models
+------
 
-The `ql/experimental` folder contains code whose interface is not
-fully stable, but is released in order to get user
-feedback. Experimental classes make no guarantees of backward
-compatibility; their interfaces might change in future releases.
+- Moved the Heston SLV model from experimental to main; thanks to
+  Klaus Spanderen (@klausspanderen).
 
-- **Breaking change**: the constructor of the
-  `CPICapFloorTermPriceSurface` class now also takes an explicit
-  interpolation type.
 
-- **Possibly breaking**: the protected constructor for `CallableBond`
-  changes its arguments.  If you inherited from this class, you'll
-  need to update your code.  If you're using the existing derived bond
-  classes, the change will be transparent.
+Math
+----
 
-- Pricing engines for callable bonds worked incorrectly when the face
-  amount was not 100. This is now fixed.
+- Added a few overloads to Array and Matrix operators taking rvalue
+  references for increased speed; thanks to Jonathan Sweemer (@sweemer).
 
-- The `impliedVolatility` method for callable bonds was taking a
-  target NPV, not a price. This implementation is now deprecated, and
-  a new overload was added taking a price in base 100.
 
 Deprecated features
 -------------------
 
-- **Removed** features deprecated in version 1.23:
-  - the constructors of `ZeroCouponInflationSwap` and
-    `ZeroCouponInflationSwapHelper` missing an explicit CPI
-    interpolation type;
-  - the constructors of `ActualActual` and `Thirty360` missing an
-    explicit choice of convention, and the constructor of `Thirty360`
-    passing an `isLastPeriod` boolean flag.
+- **Removed** features deprecated in version 1.25:
+  - the protected `spreadLegValue_` data member of `BlackIborCouponPricer`;
+  - the `WulinYongDoubleBarrierEngine` alias for `SuoWangDoubleBarrierEngine`;
+  - the `settlementDate`, `incomeDiscountCurve`, `spotIncome`,
+    `spotValue`, `impliedYield` and `forwardValue` methods of
+    `ForwardRateAgreement`, as well as its protected
+    `underlyingIncome_`, `underlyingSpotValue_`, `settlementDays_`,
+    `payoff_` and `incomeDiscountCurve_` data members;
+  - constructors for `InflationTermStructure`,
+    `ZeroInflationTermStructure`, `InterpolatedZeroInflationCurve`,
+    `PiecewiseZeroInflationCurve` taking an `indexIsInterpolated`
+    parameter;
+  - the `indexIsInterpolated` method of `InflationTermStructure` and
+    its protected `indexIsInterpolated_` data member;
+  - some overloaded constructors of `SofrFutureRateHelper`.
 
-- Deprecated the constructors of `FixedRateBond` taking an
-  `InterestRate` instance or not taking a `Schedule` instance.
+- Deprecated the `DividendVanillaOption` and `DividendBarrierOption`
+  classes; use `VanillaOption` and `BarrierOption` instead (see
+  above).
 
-- Deprecated the constructor of `FloatingRateBond` not taking a
-  `Schedule` instance.
+- Deprecated the constructor of `AnalyticDividendEuropeanEngine` that
+  takes no dividend information; use the other overload instead.
 
-- Deprecated the constructors of `AmortizingFixedRateBond` taking a
-  sinking frequency or a vector of `InterestRate` instances.
+- Deprecated the names `SwaptionVolCube1`, `SwaptionVolCube1x`,
+  `SwaptionVolCube1a` and `SwaptionVolCube2` (see above).
 
-- Deprecated the constructor of `CPICapFloor` taking a `Handle` to an
-  inflation index, and its `inflationIndex` method returning a `Handle`.
-  New versions of both were added using `shared_ptr` instead.
-
-- Deprecated one of the constructors of `SabrSmileSection`; a new
-  version was added also taking an optional reference date.
-
-- Deprecated the old `impliedVolatility` method for callable bonds;
-  see above.
+- Deprecated the protected `setCommon` method of
+  `CappedFlooredYoYInflationCoupon`.
 
 
-**Thanks go also** to Konstantin Novitsky (@novitk), Peter Caspers
-(@pcaspers), Klaus Spanderen (@klausspanderen), Fredrik Gerdin
-Börjesson (@gbfredrik) and Dirk Eddelbuettel (@eddelbuettel) for a
-number of smaller fixes, and to Jonathan Sweemer (@sweemer) for
-various improvements to the automated CI builds.
+**Thanks go also** to Jonathan Sweemer (@sweemer), the Xcelerit Dev
+Team (@xcelerit-dev), Fredrik Gerdin Börjesson (@gbfredrik), Klaus
+Spanderen (@klausspanderen) and Peter Caspers (@pcaspers) for a number
+of smaller fixes and improvements, and to Matthias Groncki (@mgroncki)
+and @lukey8767 for raising issues.
 

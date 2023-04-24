@@ -394,7 +394,6 @@ void CapFloorTest::testParity() {
                                  vars.index->dayCounter());
                 swap.setPricingEngine(
                     ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(vars.termStructure)));
-                // FLOATING_POINT_EXCEPTION
                 if (std::fabs((cap->NPV() - floor->NPV()) - swap.NPV()) > 1.0e-10) {
                     BOOST_FAIL("put/call parity violated:\n"
                                << "    length:      " << length << " years\n"
@@ -921,7 +920,6 @@ test_suite* CapFloorTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testConsistency));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testParity));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testVega));
     suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testATMRate));

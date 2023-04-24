@@ -55,7 +55,7 @@ namespace QuantLib {
             referenceDate_ = Settings::instance().evaluationDate();
         } else
             referenceDate_ = referenceDate;
-        initializeExerciseTime();
+        SmileSection::initializeExerciseTime();
     }
 
     SmileSection::SmileSection(Time exerciseTime,

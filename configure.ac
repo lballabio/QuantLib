@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.29-dev],
+AC_INIT([QuantLib], [1.31-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -41,16 +41,6 @@ if test [ -n "$ql_boost_include_path" ] ; then
    AC_SUBST([BOOST_INCLUDE],["-isystem ${ql_boost_include_path}"])
    AC_SUBST([CPPFLAGS],["${CPPFLAGS} -isystem ${ql_boost_include_path}"])
 fi
-AC_ARG_WITH([boost-lib],
-            AS_HELP_STRING([--with-boost-lib=LIB_PATH],
-                           [Supply the location of Boost libraries]),
-            [ql_boost_lib_path="`cd ${withval} 2>/dev/null && pwd`"],
-            [ql_boost_lib_path=""])
-if test [ -n "$ql_boost_lib_path" ] ; then
-   AC_SUBST([BOOST_LIB],["-L${ql_boost_lib_path}"])
-   AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path}"])
-fi
-
 
 # Continue setup
 
@@ -82,7 +72,6 @@ QL_CHECK_SYSTEM_HEADER_PREFIX
 
 # Check for Boost components
 QL_CHECK_BOOST
-AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${HAVE_BOOST_TEST}" != "x")
 
 # Check for Emacs
 AM_PATH_LISPDIR
@@ -258,11 +247,11 @@ if test "$ql_use_tsop" = "yes" ; then
               thread-safe observer pattern.])
 fi
 
-if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes" || test "$ql_use_safe_singleton_init" = "yes"; then
+if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes"; then
    QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
-   QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+   QL_CHECK_BOOST_SIGNALS2
 else
-   AC_SUBST([BOOST_THREAD_LIB],[""])
+   AC_SUBST([PTHREAD_LIB],[""])
 fi
 
 AC_MSG_CHECKING([whether to enable parallel unit test runner])
@@ -341,6 +330,37 @@ if test "$ql_use_intraday" = "yes" ; then
              [Define this if you want to enable high resolution date class.])
 fi
 AC_MSG_RESULT([$ql_use_intraday])
+
+AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
+AC_ARG_ENABLE([std-any],
+              AS_HELP_STRING([--enable-std-any],
+                             [If enabled, std::any and related classes and
+                              functions will be used instead of boost::any.
+                              This requires C++17. If disabled (the default)
+                              the Boost facilities are used.]),
+              [ql_use_std_any=$enableval],
+              [ql_use_std_any=no])
+if test "$ql_use_std_any" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_ANY],[1],
+             [Define this if you want to use std::any.])
+fi
+AC_MSG_RESULT([$ql_use_std_any])
+
+AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
+AC_ARG_ENABLE([std-optional],
+              AS_HELP_STRING([--enable-std-optional],
+                             [If enabled, std::optional and related
+                              classes and functions will be used instead
+                              of boost::optional. This requires C++17.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_optional=$enableval],
+              [ql_use_std_optional=no])
+if test "$ql_use_std_optional" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
+             [Define this if you want to use std::optional.])
+fi
+AC_MSG_RESULT([$ql_use_std_optional])
 
 AC_MSG_CHECKING([whether to enable standard smart pointers])
 AC_ARG_ENABLE([std-pointers],
@@ -427,6 +447,17 @@ if test "$ql_use_null_functions" = "yes" ; then
              [Define this if you want to enable the implementation of Null as template functions.])
 fi
 AC_MSG_RESULT([$ql_use_null_functions])
+
+AC_MSG_CHECKING([whether to compile the test suite])
+AC_ARG_ENABLE([test-suite],
+              AS_HELP_STRING([--enable-test-suite],
+                             [If enabled (the default), the test suite is
+                              also built, assuming Boost.Test could be found.
+                              If disabled, it is not. Do not try this at home.]),
+              [ql_build_test_suite=$enableval],
+              [ql_build_test_suite=yes])
+AM_CONDITIONAL(BUILD_TEST_SUITE, test "$ql_build_test_suite" != "no" && test "x${HAVE_BOOST_TEST}" != "x" )
+AC_MSG_RESULT([$ql_build_test_suite])
 
 
 # manual configurations for specific hosts

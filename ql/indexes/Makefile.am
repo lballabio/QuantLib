@@ -7,6 +7,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     bmaindex.hpp \
+    equityindex.hpp \
     iborindex.hpp \
     indexmanager.hpp \
     inflationindex.hpp \
@@ -16,6 +17,7 @@ this_include_HEADERS = \
 
 cpp_files = \
     bmaindex.cpp \
+    equityindex.cpp \
     iborindex.cpp \
     indexmanager.cpp \
     inflationindex.cpp \

@@ -110,7 +110,7 @@ namespace QuantLib {
         results_.additionalResults["riskFreeDiscount"] = riskFreeDiscountForFwdEstimation;
         results_.additionalResults["forward"] = forwardPrice;
         results_.additionalResults["strike"] = payoff->strike();
-        results_.additionalResults["volatility"] = std::sqrt(variance / tte);
+        results_.additionalResults["volatility"] = Real(std::sqrt(variance / tte));
         results_.additionalResults["timeToExpiry"] = tte;
     }
 

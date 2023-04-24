@@ -39,13 +39,16 @@ namespace QuantLib {
               code should modify the value via re-assignment instead.
     */
     template <class T>
-    class ObservableValue {
+    class ObservableValue { // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         ObservableValue();
+        ObservableValue(T&&);
         ObservableValue(const T&);
         ObservableValue(const ObservableValue<T>&);
+        ~ObservableValue() = default;
         //! \name controlled assignment
         //@{
+        ObservableValue<T>& operator=(T&&);
         ObservableValue<T>& operator=(const T&);
         ObservableValue<T>& operator=(const ObservableValue<T>&);
         //@}
@@ -67,12 +70,23 @@ namespace QuantLib {
     : value_(), observable_(new Observable) {}
 
     template <class T>
+    ObservableValue<T>::ObservableValue(T&& t)
+    : value_(std::move(t)), observable_(new Observable) {}
+
+    template <class T>
     ObservableValue<T>::ObservableValue(const T& t)
     : value_(t), observable_(new Observable) {}
 
     template <class T>
     ObservableValue<T>::ObservableValue(const ObservableValue<T>& t)
     : value_(t.value_), observable_(new Observable) {}
+
+    template <class T>
+    ObservableValue<T>& ObservableValue<T>::operator=(T&& t) {
+        value_ = std::move(t);
+        observable_->notifyObservers();
+        return *this;
+    }
 
     template <class T>
     ObservableValue<T>& ObservableValue<T>::operator=(const T& t) {

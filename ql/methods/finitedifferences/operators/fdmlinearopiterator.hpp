@@ -38,10 +38,10 @@ namespace QuantLib {
         explicit FdmLinearOpIterator(Size index = 0)
         : index_(index) {}
 
-        explicit FdmLinearOpIterator(const std::vector<Size>& dim)
+        explicit FdmLinearOpIterator(std::vector<Size> dim)
         : index_(0),
-          dim_(dim),
-          coordinates_(dim.size(), 0) {}
+          dim_(std::move(dim)),
+          coordinates_(dim_.size(), 0) {}
 
         FdmLinearOpIterator(std::vector<Size> dim, std::vector<Size> coordinates, Size index)
         : index_(index), dim_(std::move(dim)), coordinates_(std::move(coordinates)) {}
@@ -58,6 +58,11 @@ namespace QuantLib {
             }
         }
 
+        // this is not really a dereference, but is intended to make this class compatible with range-bound for loops
+        const FdmLinearOpIterator& operator*() const {
+            return *this;
+        }
+
         bool operator!=(const FdmLinearOpIterator& iterator) const {
             return index_ != iterator.index_;
         }
@@ -70,7 +75,7 @@ namespace QuantLib {
             return coordinates_;
         }
 
-        void swap(FdmLinearOpIterator& iter) {
+        void swap(FdmLinearOpIterator& iter) noexcept {
             std::swap(iter.index_, index_);
             dim_.swap(iter.dim_);
             coordinates_.swap(iter.coordinates_);

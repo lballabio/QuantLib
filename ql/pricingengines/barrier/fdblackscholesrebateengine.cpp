@@ -40,7 +40,25 @@ namespace QuantLib {
         const FdmSchemeDesc& schemeDesc,
         bool localVol,
         Real illegalLocalVolOverwrite)
-    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+    : process_(std::move(process)), explicitDividends_(false),
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+
+        registerWith(process_);
+    }
+
+    FdBlackScholesRebateEngine::FdBlackScholesRebateEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        DividendSchedule dividends,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite)
+    : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
 
@@ -48,6 +66,11 @@ namespace QuantLib {
     }
 
     void FdBlackScholesRebateEngine::calculate() const {
+
+        // dividends will eventually be moved out of arguments, but for now we need the switch
+        QL_DEPRECATED_DISABLE_WARNING
+        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -70,7 +93,7 @@ namespace QuantLib {
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                arguments_.cashFlow));
+                dividendSchedule));
         
         const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher));
@@ -87,7 +110,7 @@ namespace QuantLib {
         
         const ext::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
-                                arguments_.cashFlow, arguments_.exercise, 
+                                dividendSchedule, arguments_.exercise, 
                                 mesher, calculator, 
                                 process_->riskFreeRate()->referenceDate(),
                                 process_->riskFreeRate()->dayCounter());

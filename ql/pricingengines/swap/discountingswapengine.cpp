@@ -21,13 +21,14 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
 
     DiscountingSwapEngine::DiscountingSwapEngine(
         Handle<YieldTermStructure> discountCurve,
-        const boost::optional<bool>& includeSettlementDateFlows,
+        const ext::optional<bool>& includeSettlementDateFlows,
         Date settlementDate,
         Date npvDate)
     : discountCurve_(std::move(discountCurve)),
@@ -77,13 +78,12 @@ namespace QuantLib {
         for (Size i=0; i<n; ++i) {
             try {
                 const YieldTermStructure& discount_ref = **discountCurve_;
-                CashFlows::npvbps(arguments_.legs[i],
-                                  discount_ref,
-                                  includeRefDateFlows,
-                                  settlementDate,
-                                  results_.valuationDate,
-                                  results_.legNPV[i],
-                                  results_.legBPS[i]);
+                std::tie(results_.legNPV[i], results_.legBPS[i]) =
+                    CashFlows::npvbps(arguments_.legs[i],
+                                      discount_ref,
+                                      includeRefDateFlows,
+                                      settlementDate,
+                                      results_.valuationDate);
                 results_.legNPV[i] *= arguments_.payer[i];
                 results_.legBPS[i] *= arguments_.payer[i];
 

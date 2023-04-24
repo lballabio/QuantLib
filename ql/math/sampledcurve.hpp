@@ -82,7 +82,7 @@ namespace QuantLib {
 
         //! \name utilities
         //@{
-        void swap(SampledCurve&);
+        void swap(SampledCurve&) noexcept;
         void setLogGrid(Real min, Real max) {
             setGrid(BoundedLogGrid(min, max, size()-1));
         }
@@ -153,7 +153,7 @@ namespace QuantLib {
     };
 
     /* \relates SampledCurve */
-    void swap(SampledCurve&, SampledCurve&);
+    void swap(SampledCurve&, SampledCurve&) noexcept;
 
     typedef SampledCurve SampledCurveSet;
 
@@ -214,13 +214,12 @@ namespace QuantLib {
         values_ = g;
     }
 
-    inline void SampledCurve::swap(SampledCurve& from) {
-        using std::swap;
+    inline void SampledCurve::swap(SampledCurve& from) noexcept {
         grid_.swap(from.grid_);
         values_.swap(from.values_);
     }
 
-    inline void swap(SampledCurve& c1, SampledCurve& c2) {
+    inline void swap(SampledCurve& c1, SampledCurve& c2) noexcept {
         c1.swap(c2);
     }
 

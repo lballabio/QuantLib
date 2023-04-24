@@ -27,6 +27,7 @@
 #define quantlib_mid_point_cds_engine_hpp
 
 #include <ql/instruments/creditdefaultswap.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -35,14 +36,14 @@ namespace QuantLib {
         MidPointCdsEngine(Handle<DefaultProbabilityTermStructure>,
                           Real recoveryRate,
                           Handle<YieldTermStructure> discountCurve,
-                          const boost::optional<bool>& includeSettlementDateFlows = boost::none);
+                          const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt);
         void calculate() const override;
 
       private:
         Handle<DefaultProbabilityTermStructure> probability_;
         Real recoveryRate_;
         Handle<YieldTermStructure> discountCurve_;
-        boost::optional<bool> includeSettlementDateFlows_;
+        ext::optional<bool> includeSettlementDateFlows_;
     };
 
 }
