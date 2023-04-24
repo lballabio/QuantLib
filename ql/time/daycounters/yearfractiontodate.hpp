@@ -24,21 +24,13 @@
 #ifndef quantlib_year_fraction_to_date_hpp
 #define quantlib_year_fraction_to_date_hpp
 
-#include <functional>
 #include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
-    class YearFractionToDate : public std::function<Date(Time)> {
-      public:
-        YearFractionToDate(const DayCounter& dayCounter, const Date& referenceDate);
+    Date yearFractionToDate(
+        const DayCounter& dayCounter, const Date& referenceDate, Time t);
 
-        Date operator()(Time t) const;
-
-      private:
-        const DayCounter dayCounter_;
-        const Date referenceDate_;
-    };
 }
 
 #endif

@@ -1284,14 +1284,13 @@ void DayCounterTest::testYearFraction2DateBulk() {
     for (auto dc: dayCounters)
         for (Integer i=-360; i < 730; ++i) {
             const Date today = Date(1, January, 2020) + Period(i, Days);
-            const YearFractionToDate td(dc, today);
             const Date target = today + Period(i, Days);
 
             const Time t = dc.yearFraction(today, target);
-            const Date time2Date = YearFractionToDate(dc, today)(t);
+            const Date time2Date = yearFractionToDate(dc, today, t);
             const Time tNew = dc.yearFraction(today, time2Date);
 
-            if (!close_enough(t, dc.yearFraction(today, time2Date))) {
+            if (!close_enough(t, tNew)) {
                 BOOST_FAIL(
                        "\ntoday      : " << today
                     << "\ntarget     : " << target
@@ -1313,7 +1312,7 @@ void DayCounterTest::testYearFraction2DateRounding() {
     for (DayCounter dc: dayCounters) {
         Time t = dc.yearFraction(d1, d2);
         for (Time offset = 0; offset < 1 + 1e-10; offset+=0.05) {
-            const Date inv = YearFractionToDate(dc, d1)(t + offset/360);
+            const Date inv = yearFractionToDate(dc, d1, t + offset/360);
             if (offset < 0.4999)
                 BOOST_CHECK_EQUAL(inv, d2);
             else

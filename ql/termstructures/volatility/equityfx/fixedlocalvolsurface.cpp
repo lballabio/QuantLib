@@ -59,7 +59,7 @@ namespace QuantLib {
                                                Extrapolation lowerExtrapolation,
                                                Extrapolation upperExtrapolation)
     : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
-      maxDate_(YearFractionToDate(dayCounter, referenceDate)(times.back())), times_(times),
+      maxDate_(yearFractionToDate(dayCounter, referenceDate, times.back())), times_(times),
       localVolMatrix_(std::move(localVolMatrix)),
       strikes_(times.size(), ext::make_shared<std::vector<Real> >(strikes)),
       localVolInterpol_(times.size()), lowerExtrapolation_(lowerExtrapolation),
@@ -80,7 +80,7 @@ namespace QuantLib {
         Extrapolation lowerExtrapolation,
         Extrapolation upperExtrapolation)
     : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
-      maxDate_(YearFractionToDate(dayCounter, referenceDate)(times.back())), times_(times),
+      maxDate_(yearFractionToDate(dayCounter, referenceDate, times.back())), times_(times),
       localVolMatrix_(std::move(localVolMatrix)), strikes_(strikes),
       localVolInterpol_(times.size()), lowerExtrapolation_(lowerExtrapolation),
       upperExtrapolation_(upperExtrapolation) {

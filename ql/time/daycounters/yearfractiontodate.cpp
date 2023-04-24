@@ -17,29 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "yearfractiontodate.hpp"
-
 #include <ql/math/comparison.hpp>
+#include "ql/time/daycounters/yearfractiontodate.hpp"
 
 #include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
 
 namespace QuantLib {
 
-    YearFractionToDate::YearFractionToDate(
-        const DayCounter& dayCounter, const Date& referenceDate):
-        dayCounter_(dayCounter),
-        referenceDate_(referenceDate) {
-    }
-
-    Date YearFractionToDate::operator()(Time t) const {
-        Date guessDate = referenceDate_
+    Date yearFractionToDate(
+        const DayCounter& dayCounter, const Date& referenceDate, Time t) {
+        Date guessDate = referenceDate
             + Period(boost::numeric_cast<Integer>(round(t * 365.25)), Days);
-        Time guessTime = dayCounter_.yearFraction(referenceDate_, guessDate);
+        Time guessTime = dayCounter.yearFraction(referenceDate, guessDate);
 
         guessDate += Period(boost::numeric_cast<Integer>(
             round((t - guessTime)*365.25)), Days);
-        guessTime = dayCounter_.yearFraction(referenceDate_, guessDate);
+        guessTime = dayCounter.yearFraction(referenceDate, guessDate);
 
         if (close_enough(guessTime, t))
             return guessDate;
@@ -52,15 +46,15 @@ namespace QuantLib {
         Date nextDate;
         for (TimeUnit u: {Years, Months, Days}) {
             while (searchDirection*(
-                dayCounter_.yearFraction(
-                    referenceDate_,
+                dayCounter.yearFraction(
+                    referenceDate,
                     nextDate = guessDate + Period(searchDirection, u)) - t) < 0.0)
                 guessDate = nextDate;
         }
 
-        guessTime = dayCounter_.yearFraction(referenceDate_, guessDate);
+        guessTime = dayCounter.yearFraction(referenceDate, guessDate);
         if (close_enough(guessTime, t)
-                || std::abs(dayCounter_.yearFraction(referenceDate_,
+                || std::abs(dayCounter.yearFraction(referenceDate,
                     guessDate + Period(searchDirection, Days)) - t) >
                     std::abs(guessTime - t))
             return guessDate;
