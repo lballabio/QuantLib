@@ -33,9 +33,23 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/patterns/singleton.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <boost/unordered_set.hpp>
 #include <unordered_set>
 #include <set>
+
+#if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
+
+namespace std {
+
+    template<typename T>
+    struct hash<boost::shared_ptr<T>> {
+        std::size_t operator()(const boost::shared_ptr<T>& ptr) const noexcept {
+            return std::hash<typename boost::shared_ptr<T>::element_type*>()(ptr.get());
+        }
+    };
+
+}
+
+#endif
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
@@ -100,7 +114,7 @@ namespace QuantLib {
     /*! \ingroup patterns */
     class Observer { // NOLINT(cppcoreguidelines-special-member-functions)
       private:
-        typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
+        typedef std::unordered_set<ext::shared_ptr<Observable>> set_type;
       public:
         typedef set_type::iterator iterator;
 
@@ -263,7 +277,7 @@ namespace QuantLib {
         friend class Observable;
         friend class ObservableSettings;
       private:
-        typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
+        typedef std::unordered_set<ext::shared_ptr<Observable>> set_type;
       public:
         typedef set_type::iterator iterator;
 
@@ -352,7 +366,7 @@ namespace QuantLib {
         friend class Observer;
         friend class ObservableSettings;
       private:
-        typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
+        typedef std::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
       public:
         typedef set_type::iterator iterator;
 
