@@ -135,7 +135,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">QuantLib-x64-mt-s</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-x64-mt</TargetName>
-  </PropertyGroup>  
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -1832,6 +1832,7 @@
     <ClInclude Include="ql\time\daycounters\simpledaycounter.hpp" />
     <ClInclude Include="ql\time\daycounters\thirty360.hpp" />
     <ClInclude Include="ql\time\daycounters\thirty365.hpp" />
+    <ClInclude Include="ql\time\daycounters\yearfractiontodate.hpp" />
     <ClInclude Include="ql\time\ecb.hpp" />
     <ClInclude Include="ql\time\frequency.hpp" />
     <ClInclude Include="ql\time\imm.hpp" />
@@ -2794,6 +2795,7 @@
     <ClCompile Include="ql\time\daycounters\simpledaycounter.cpp" />
     <ClCompile Include="ql\time\daycounters\thirty360.cpp" />
     <ClCompile Include="ql\time\daycounters\thirty365.cpp" />
+    <ClCompile Include="ql\time\daycounters\yearfractiontodate.cpp" />
     <ClCompile Include="ql\time\ecb.cpp" />
     <ClCompile Include="ql\time\frequency.cpp" />
     <ClCompile Include="ql\time\imm.cpp" />

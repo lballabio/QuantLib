@@ -14,7 +14,8 @@ this_include_HEADERS = \
 	one.hpp \
 	simpledaycounter.hpp \
 	thirty360.hpp \
-	thirty365.hpp
+	thirty365.hpp \
+	yearfractiontodate.hpp
 
 cpp_files = \
     actual365fixed.cpp \
@@ -22,7 +23,8 @@ cpp_files = \
     business252.cpp \
 	simpledaycounter.cpp \
     thirty360.cpp \
-    thirty365.cpp
+    thirty365.cpp \
+   	yearfractiontodate.cpp
 
 if UNITY_BUILD
 

@@ -912,6 +912,7 @@ set(QL_SOURCES
     time/daycounters/simpledaycounter.cpp
     time/daycounters/thirty360.cpp
     time/daycounters/thirty365.cpp
+    time/daycounters/yearfractiontodate.cpp
     time/ecb.cpp
     time/frequency.cpp
     time/imm.cpp
@@ -2185,6 +2186,7 @@ set(QL_HEADERS
     time/daycounters/simpledaycounter.hpp
     time/daycounters/thirty360.hpp
     time/daycounters/thirty365.hpp
+    time/daycounters/yearfractiontodate.hpp
     time/ecb.hpp
     time/frequency.hpp
     time/imm.hpp

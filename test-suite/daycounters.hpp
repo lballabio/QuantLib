@@ -44,6 +44,9 @@ class DayCounterTest {
     static void testActualActualOutOfScheduleRange();
     static void testAct366();
     static void testAct36525();
+    static void testActualConsistency();
+    static void testYearFraction2DateBulk();
+    static void testYearFraction2DateRounding();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -405,6 +405,23 @@ void DateTest::intraday() {
     BOOST_CHECK_MESSAGE(s.str() == std::string("2015-02-07T01:04:02,003004"),
         "datetime to string failed to reproduce expected result");
 
+    const Date d3 = Date(10, April, 2023, 11, 43, 13, 234, 253);
+
+    BOOST_CHECK_MESSAGE(d3 + Period(23, Hours) ==
+            Date(11, April, 2023, 10, 43, 13, 234, 253), "failed to add hours");
+
+    BOOST_CHECK_MESSAGE(d3 + Period(2, Minutes) ==
+            Date(10, April, 2023, 11, 45, 13, 234, 253), "failed to add minutes");
+
+    BOOST_CHECK_MESSAGE(d3 + Period(-2, Seconds) ==
+            Date(10, April, 2023, 11, 43, 11, 234, 253), "failed to add seconds");
+
+    BOOST_CHECK_MESSAGE(d3 + Period(-20, Milliseconds) ==
+            Date(10, April, 2023, 11, 43, 13, 214, 253), "failed to add milliseconds");
+
+    BOOST_CHECK_MESSAGE(d3 + Period(20, Microseconds) ==
+            Date(10, April, 2023, 11, 43, 13, 234, 273), "failed to add microseconds");
+
 #endif
 }
 
@@ -448,6 +465,7 @@ void DateTest::canHash() {
         BOOST_FAIL("Expected to find date " << start_date << " in unordered_set\n");
     }
 }
+
 
 test_suite* DateTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Date tests");
