@@ -358,38 +358,33 @@ namespace QuantLib {
             for (auto& date : dates_)
                 date = Date::nthWeekday(3, Wednesday, date.month(), date.year());
 
+        // first date not adjusted for old CDS schedules
+        if (convention != Unadjusted && *rule_ != DateGeneration::OldCDS)
+            dates_.front() = calendar_.adjust(dates_.front(), convention);
+
+        // termination date is NOT adjusted as per ISDA
+        // specifications, unless otherwise specified in the
+        // confirmation of the deal or unless we're creating a CDS
+        // schedule
+        if (terminationDateConvention != Unadjusted 
+            && *rule_ != DateGeneration::CDS 
+            && *rule_ != DateGeneration::CDS2015) {
+            dates_.back() = calendar_.adjust(dates_.back(), 
+                                             terminationDateConvention);
+        }
+
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
             if (convention == Unadjusted) {
                 for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = Date::endOfMonth(dates_[i]);
             } else {
-                dates_.front() = calendar_.adjust(dates_.front(), convention);
                 for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
-
-            if (terminationDateConvention != Unadjusted) {
-                dates_.back() = calendar_.adjust(dates_.back(), terminationDateConvention);
-            }
-
         } else {
-            // first date not adjusted for old CDS schedules
-            if (*rule_ != DateGeneration::OldCDS)
-                dates_[0] = calendar_.adjust(dates_[0], convention);
             for (Size i=1; i<dates_.size()-1; ++i)
                 dates_[i] = calendar_.adjust(dates_[i], convention);
-
-            // termination date is NOT adjusted as per ISDA
-            // specifications, unless otherwise specified in the
-            // confirmation of the deal or unless we're creating a CDS
-            // schedule
-            if (terminationDateConvention != Unadjusted
-                && *rule_ != DateGeneration::CDS
-                && *rule_ != DateGeneration::CDS2015) {
-                dates_.back() = calendar_.adjust(dates_.back(),
-                                                 terminationDateConvention);
-            }
         }
 
         // Final safety checks to remove extra next-to-last date, if
