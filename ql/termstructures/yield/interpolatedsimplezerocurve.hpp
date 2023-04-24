@@ -43,9 +43,9 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
     // constructor
     InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Calendar &calendar = Calendar(),
-                                const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
-                                const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                const Interpolator &interpolator = Interpolator());
+                                const std::vector<Handle<Quote> > &jumps = {},
+                                const std::vector<Date> &jumpDates = {},
+                                const Interpolator &interpolator = {});
     InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Calendar &calendar,
                                 const Interpolator &interpolator);
@@ -65,15 +65,15 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
     //@}
   protected:
     explicit InterpolatedSimpleZeroCurve(const DayCounter &,
-                                         const Interpolator &interpolator = Interpolator());
+                                         const Interpolator &interpolator = {});
     InterpolatedSimpleZeroCurve(const Date &referenceDate, const DayCounter &,
-                                const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
-                                const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                const Interpolator &interpolator = Interpolator());
+                                const std::vector<Handle<Quote> > &jumps = {},
+                                const std::vector<Date> &jumpDates = {},
+                                const Interpolator &interpolator = {});
     InterpolatedSimpleZeroCurve(Natural settlementDays, const Calendar &, const DayCounter &,
-                                const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
-                                const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                const Interpolator &interpolator = Interpolator());
+                                const std::vector<Handle<Quote> > &jumps = {},
+                                const std::vector<Date> &jumpDates = {},
+                                const Interpolator &interpolator = {});
 
     //! \name YieldTermStructure implementation
     //@{
@@ -181,20 +181,13 @@ InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const std::vector<Da
 #endif
 
 template <class T> void InterpolatedSimpleZeroCurve<T>::initialize() {
-    QL_REQUIRE(dates_.size() >= T::requiredPoints, "not enough input dates given");
-    QL_REQUIRE(this->data_.size() == dates_.size(), "dates/data count mismatch");
+    QL_REQUIRE(dates_.size() >= T::requiredPoints,
+               "not enough input dates given");
+    QL_REQUIRE(this->data_.size() == dates_.size(),
+               "dates/data count mismatch");
 
-    this->times_.resize(dates_.size());
-    this->times_[0] = 0.0;
-    for (Size i = 1; i < dates_.size(); ++i) {
-        QL_REQUIRE(dates_[i] > dates_[i - 1], "invalid date (" << dates_[i] << ", vs " << dates_[i - 1] << ")");
-        this->times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
-        QL_REQUIRE(!close(this->times_[i], this->times_[i - 1]), "two dates correspond to the same time "
-                                                                 "under this curve's day count convention");
-    }
-
-    this->interpolation_ =
-        this->interpolator_.interpolate(this->times_.begin(), this->times_.end(), this->data_.begin());
+    this->setupTimes(dates_, dates_[0], dayCounter());
+    this->setupInterpolation();
     this->interpolation_.update();
 }
 

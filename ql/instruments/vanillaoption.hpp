@@ -27,6 +27,7 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/instruments/dividendschedule.hpp>
 
 namespace QuantLib {
 
@@ -57,6 +58,7 @@ namespace QuantLib {
                      value lower than the intrinsic value in the case
                      of American options.
         */
+        //@{
         Volatility impliedVolatility(
              Real price,
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -64,6 +66,18 @@ namespace QuantLib {
              Size maxEvaluations = 100,
              Volatility minVol = 1.0e-7,
              Volatility maxVol = 4.0) const;
+
+        Volatility impliedVolatility(
+             Real price,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const DividendSchedule& dividends,
+             Real accuracy = 1.0e-4,
+             Size maxEvaluations = 100,
+             Volatility minVol = 1.0e-7,
+             Volatility maxVol = 4.0) const;
+        //@}
+
+        void setupArguments(PricingEngine::arguments*) const override;
     };
 
 }

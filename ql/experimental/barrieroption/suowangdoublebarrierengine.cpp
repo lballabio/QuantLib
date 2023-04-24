@@ -125,7 +125,7 @@ namespace QuantLib {
             results_.value = european - barrierOut;
         results_.additionalResults["vanilla"] = european;
         results_.additionalResults["barrierOut"] = barrierOut;
-        results_.additionalResults["barrierIn"] = european - barrierOut;
+        results_.additionalResults["barrierIn"] = Real(european - barrierOut);
         results_.additionalResults["rebateIn"] = rebateIn;
     }
 

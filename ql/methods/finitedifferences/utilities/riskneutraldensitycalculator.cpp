@@ -36,7 +36,7 @@ namespace QuantLib {
     Real RiskNeutralDensityCalculator::InvCDFHelper::inverseCDF(Real p, Time t) const {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations_);
-        return solver.solve([&](Real _x){ return calculator_->cdf(_x, t) - p; },
+        return solver.solve([&](Real _x) -> Real { return calculator_->cdf(_x, t) - p; },
                             accuracy_, guess_, stepSize_);
     }
 

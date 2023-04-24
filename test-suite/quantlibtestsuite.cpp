@@ -92,6 +92,9 @@
 #include "doublebinaryoption.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
+#include "equityindex.hpp"
+#include "equitycashflow.hpp"
+#include "equitytotalreturnswap.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
 #include "extensibleoptions.hpp"
@@ -121,7 +124,6 @@
 #include "inflationcpicapfloor.hpp"
 #include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
-#include "inflationzciisinterpolation.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -245,7 +247,7 @@ namespace {
         */
 
         // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        // QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+        // QuantLib::Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
         QuantLib::Settings::instance().evaluationDate() = evaluationDate;
     }
@@ -329,10 +331,11 @@ test_suite* init_unit_test_suite(int, char* []) {
            << (settings.includeReferenceDateEvents()
                ? "reference date events are included,\n"
                : "reference date events are excluded,\n")
-           << (settings.includeTodaysCashFlows() == boost::none ?
-               "" : (*settings.includeTodaysCashFlows() ?
-                     "today's cashflows are included,\n"
-                     : "today's cashflows are excluded,\n"))
+           << (settings.includeTodaysCashFlows()
+               ? (*settings.includeTodaysCashFlows()
+                    ? "today's cashflows are included,\n"
+                    : "today's cashflows are excluded,\n")
+               : "")
            << (settings.enforcesTodaysHistoricFixings()
                ? "today's historic fixings are enforced."
                : "today's historic fixings are not enforced.")
@@ -387,6 +390,9 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite(speed));
     test->add(DividendOptionTest::suite());
+    test->add(EquityIndexTest::suite());
+    test->add(EquityCashFlowTest::suite());
+    test->add(EquityTotalReturnSwapTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
     test->add(FastFourierTransformTest::suite());
@@ -404,13 +410,13 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GJRGARCHModelTest::suite(speed));
     test->add(GsrTest::suite());
     test->add(HestonModelTest::suite(speed));
+    test->add(HestonSLVModelTest::suite(speed));
     test->add(HybridHestonHullWhiteProcessTest::suite(speed));
     test->add(IndexTest::suite());
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
     test->add(InflationCPIBondTest::suite());
-    test->add(InflationZCIISInterpolationTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -499,7 +505,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExtensibleOptionsTest::suite());
     test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
-    test->add(HestonSLVModelTest::experimental(speed));
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());

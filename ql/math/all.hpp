@@ -8,7 +8,6 @@
 #include <ql/math/beta.hpp>
 #include <ql/math/bspline.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/math/curve.hpp>
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/fastfouriertransform.hpp>
@@ -17,7 +16,6 @@
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/incompletegamma.hpp>
 #include <ql/math/interpolation.hpp>
-#include <ql/math/lexicographicalview.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/modifiedbessel.hpp>

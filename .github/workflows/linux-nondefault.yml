@@ -1,5 +1,8 @@
 name: Linux build with non-default configuration
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -127,7 +130,7 @@ jobs:
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-classes --enable-std-any --enable-std-optional
           - name: "OpenMP enabled"
             shortname: openmp
             tag: rolling

@@ -84,6 +84,7 @@ namespace QuantLib {
         const ext::shared_ptr<HullWhite> hullWhiteModel_;
 
       private:
+        void setParameters();
         mutable Real m_;
         mutable Real a_, sigma_;
     };

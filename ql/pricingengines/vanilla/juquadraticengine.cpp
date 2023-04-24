@@ -124,7 +124,6 @@ namespace QuantLib {
                   QL_FAIL("unknown option type");
             }
             //it can throw: to be fixed
-            // FLOATING_POINT_EXCEPTION
             Real temp_root = std::sqrt ((beta-1)*(beta-1) + (4*alpha)/h);
             Real lambda = (-(beta-1) + phi * temp_root) / 2;
             Real lambda_prime = - phi * alpha / (h*h * temp_root);

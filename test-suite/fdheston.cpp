@@ -79,7 +79,7 @@ namespace fd_heston_test {
         Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
 
       protected:
-        Volatility localVolImpl(Time t, Real s) const override {
+        Volatility localVolImpl(Time, Real s) const override {
             return alpha_*(squared(s0_ - s) + 25.0);
         }
 
@@ -569,8 +569,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 
 void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
-    BOOST_TEST_MESSAGE("Testing FDM with European option with dividends"
-                       " in Heston model...");
+    BOOST_TEST_MESSAGE("Testing FDM with European option with dividends in Heston model...");
 
     SavedSettings backup;
 
@@ -579,25 +578,24 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual365Fixed()));
 
-    ext::shared_ptr<HestonProcess> hestonProcess(
-        new HestonProcess(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8));
+    auto hestonProcess = ext::make_shared<HestonProcess>(rTS, qTS, s0, 0.04, 2.5, 0.04, 0.66, -0.8);
 
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(28, March, 2005);
 
-    ext::shared_ptr<Exercise> exercise(new AmericanExercise(exerciseDate));
-
-    ext::shared_ptr<StrikedTypePayoff> payoff(new
-                                      PlainVanillaPayoff(Option::Put, 100));
+    auto exercise = ext::make_shared<AmericanExercise>(exerciseDate);
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100);
 
     const std::vector<Real> dividends(1, 5);
     const std::vector<Date> dividendDates(1, Date(28, September, 2004));
 
-    DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
-    ext::shared_ptr<PricingEngine> engine(
+    QL_DEPRECATED_DISABLE_WARNING
+    DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
+    QL_DEPRECATED_ENABLE_WARNING
+    ext::shared_ptr<PricingEngine> engine1(
          new FdHestonVanillaEngine(ext::make_shared<HestonModel>(
                              hestonProcess), 50, 100, 50));
-    option.setPricingEngine(engine);
+    option1.setPricingEngine(engine1);
     
     const Real tol = 0.01;
     const Real gammaTol = 0.001;
@@ -605,21 +603,48 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     const Real deltaExpected = -0.397902;
     const Real gammaExpected =  0.027747;
         
-    if (std::fabs(option.NPV() - npvExpected) > tol) {
+    if (std::fabs(option1.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
-                    << "\n    calculated: " << option.NPV()
+                    << "\n    calculated: " << option1.NPV()
                     << "\n    expected:   " << npvExpected
                     << "\n    tolerance:  " << tol); 
     }
-    if (std::fabs(option.delta() - deltaExpected) > tol) {
+    if (std::fabs(option1.delta() - deltaExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected delta"
-                    << "\n    calculated: " << option.delta()
+                    << "\n    calculated: " << option1.delta()
                     << "\n    expected:   " << deltaExpected
                     << "\n    tolerance:  " << tol); 
     }
-    if (std::fabs(option.gamma() - gammaExpected) > gammaTol) {
+    if (std::fabs(option1.gamma() - gammaExpected) > gammaTol) {
         BOOST_ERROR("Failed to reproduce expected gamma"
-                    << "\n    calculated: " << option.gamma()
+                    << "\n    calculated: " << option1.gamma()
+                    << "\n    expected:   " << gammaExpected
+                    << "\n    tolerance:  " << tol); 
+    }
+
+
+    VanillaOption option2(payoff, exercise);
+    auto engine2 = ext::make_shared<FdHestonVanillaEngine>(
+        ext::make_shared<HestonModel>(hestonProcess),
+        DividendVector(dividendDates, dividends),
+        50, 100, 50);
+    option2.setPricingEngine(engine2);
+        
+    if (std::fabs(option2.NPV() - npvExpected) > tol) {
+        BOOST_ERROR("Failed to reproduce expected npv"
+                    << "\n    calculated: " << option2.NPV()
+                    << "\n    expected:   " << npvExpected
+                    << "\n    tolerance:  " << tol); 
+    }
+    if (std::fabs(option2.delta() - deltaExpected) > tol) {
+        BOOST_ERROR("Failed to reproduce expected delta"
+                    << "\n    calculated: " << option2.delta()
+                    << "\n    expected:   " << deltaExpected
+                    << "\n    tolerance:  " << tol); 
+    }
+    if (std::fabs(option2.gamma() - gammaExpected) > gammaTol) {
+        BOOST_ERROR("Failed to reproduce expected gamma"
+                    << "\n    calculated: " << option2.gamma()
                     << "\n    expected:   " << gammaExpected
                     << "\n    tolerance:  " << tol); 
     }
@@ -981,8 +1006,8 @@ void FdHestonTest::testSpuriousOscillations() {
 
 
 void FdHestonTest::testAmericanCallPutParity() {
-    BOOST_TEST_MESSAGE("Testing Call/Put parity for American option "
-            "under the Heston model...");
+    BOOST_TEST_MESSAGE("Testing call/put parity for American options "
+                       "under the Heston model...");
 
     // A. Battauz, M. De Donno,m A. Sbuelz:
     // The put-call symmetry for American options in
@@ -1081,7 +1106,7 @@ void FdHestonTest::testAmericanCallPutParity() {
         const Real tol = 0.025;
 
         if (diff > tol) {
-            BOOST_FAIL("failed to reproduce American Call/Put parity"
+            BOOST_FAIL("failed to reproduce American call/put parity"
                     << "\n    Put NPV   : " << putNpv
                     << "\n    Call NPV  : " << callNpv
                     << "\n    difference: " << diff
@@ -1097,24 +1122,19 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testFdmHestonEuropeanWithDividends));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdHestonTest::testFdmHestonIntradayPricing));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonEuropeanWithDividends));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIntradayPricing));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testAmericanCallPutParity));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &FdHestonTest::testFdmHestonBlackScholes));
-        suite->add(QUANTLIB_TEST_CASE(
-            &FdHestonTest::testFdmHestonConvergence));
+        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
+        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
     }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &FdHestonTest::testFdmHestonBarrierVsBlackScholes));
+        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrierVsBlackScholes));
     }
 
     return suite;

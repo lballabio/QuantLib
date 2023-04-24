@@ -41,7 +41,7 @@ namespace QuantLib {
             : payoff_(std::move(payoff)), mesher_(std::move(mesher)), direction_(direction) {}
 
 
-            Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
+            Real innerValue(const FdmLinearOpIterator& iter, Time) override {
                 const Real s = mesher_->location(iter, direction_);
                 return (*payoff_)(s);
             }
@@ -65,13 +65,36 @@ namespace QuantLib {
         Size dampingSteps,
         Real epsilon,
         const FdmSchemeDesc& schemeDesc)
-    : process_(std::move(process)), rTS_(rTS), tGrid_(tGrid), xGrid_(xGrid),
+    : process_(std::move(process)), rTS_(rTS), explicitDividends_(false),
+      tGrid_(tGrid), xGrid_(xGrid),
+      dampingSteps_(dampingSteps), epsilon_(epsilon), schemeDesc_(schemeDesc) {
+        registerWith(process_);
+        registerWith(rTS);
+    }
+
+    FdOrnsteinUhlenbeckVanillaEngine::FdOrnsteinUhlenbeckVanillaEngine(
+        ext::shared_ptr<OrnsteinUhlenbeckProcess> process,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        DividendSchedule dividends,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        Real epsilon,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), rTS_(rTS),
+      dividends_(std::move(dividends)), explicitDividends_(true),
+      tGrid_(tGrid), xGrid_(xGrid),
       dampingSteps_(dampingSteps), epsilon_(epsilon), schemeDesc_(schemeDesc) {
         registerWith(process_);
         registerWith(rTS);
     }
 
     void FdOrnsteinUhlenbeckVanillaEngine::calculate() const {
+
+        // dividends will eventually be moved out of arguments, but for now we need the switch
+        QL_DEPRECATED_DISABLE_WARNING
+        const DividendSchedule& passedDividends = explicitDividends_ ? dividends_ : arguments_.cashFlow;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -97,7 +120,7 @@ namespace QuantLib {
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
-                                    arguments_.cashFlow, arguments_.exercise,
+                                    passedDividends, arguments_.exercise,
                                     mesher, calculator,
                                     referenceDate, dc);
 

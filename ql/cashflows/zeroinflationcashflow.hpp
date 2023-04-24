@@ -49,21 +49,6 @@ namespace QuantLib {
                               const Date& paymentDate,
                               bool growthOnly = false);
 
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED
-        ZeroInflationCashFlow(Real notional,
-                              const ext::shared_ptr<ZeroInflationIndex>& index,
-                              CPI::InterpolationType observationInterpolation,
-                              const Date& startDate,
-                              const Date& endDate,
-                              const Period& observationLag,
-                              const Calendar& calendar,
-                              BusinessDayConvention convention,
-                              const Date& paymentDate,
-                              bool growthOnly = false);
-
         //! \name ZeroInflationCashFlow interface
         //@{
         ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const {

@@ -37,7 +37,16 @@ namespace QuantLib {
         template <class Container>
         class LinearFct {
           public:
+            /*! \deprecated Use `auto` or `decltype` instead.
+                            Deprecated in version 1.29.
+            */
+            QL_DEPRECATED
             typedef Container argument_type;
+
+            /*! \deprecated Use `auto` or `decltype` instead.
+                            Deprecated in version 1.29.
+            */
+            QL_DEPRECATED
             typedef Real result_type;
             explicit LinearFct(Size i) : i_(i) {}
 

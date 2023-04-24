@@ -24,7 +24,7 @@
 #ifndef quantlib_vanna_volga_double_barrier_engine_hpp
 #define quantlib_vanna_volga_double_barrier_engine_hpp
 
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/experimental/fx/deltavolquote.hpp>
@@ -164,7 +164,7 @@ namespace QuantLib {
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
                      results_.additionalResults["BarrierInPrice"] =
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
-                     results_.additionalResults["BarrierOutPrice"] = 0.0;
+                     results_.additionalResults["BarrierOutPrice"] = Real(0.0);
                  }
                  // already in
                  else if ((x0Quote->value() > arguments_.barrier_hi ||
@@ -175,7 +175,7 @@ namespace QuantLib {
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
                      results_.additionalResults["BarrierInPrice"] =
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
-                     results_.additionalResults["BarrierOutPrice"] = 0.0;
+                     results_.additionalResults["BarrierOutPrice"] = Real(0.0);
                  } else {
 
                      // set up BS barrier option pricing

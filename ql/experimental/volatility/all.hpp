@@ -12,12 +12,12 @@
 #include <ql/experimental/volatility/noarbsabrinterpolatedsmilesection.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
+#include <ql/experimental/volatility/noarbsabrswaptionvolatilitycube.hpp>
 #include <ql/experimental/volatility/sabrvolsurface.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
 #include <ql/experimental/volatility/sviinterpolatedsmilesection.hpp>
 #include <ql/experimental/volatility/sviinterpolation.hpp>
 #include <ql/experimental/volatility/svismilesection.hpp>
-#include <ql/experimental/volatility/swaptionvolcube1a.hpp>
 #include <ql/experimental/volatility/volcube.hpp>
 #include <ql/experimental/volatility/zabr.hpp>
 #include <ql/experimental/volatility/zabrinterpolatedsmilesection.hpp>

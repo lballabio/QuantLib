@@ -70,8 +70,9 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd()),
       underlying_(underlying), isFloored_(false), isCapped_(false) {
-
-        setCommon(cap, floor);
+        QL_DEPRECATED_DISABLE_WARNING
+        CappedFlooredYoYInflationCoupon::setCommon(cap, floor);
+        QL_DEPRECATED_ENABLE_WARNING
         registerWith(underlying);
     }
 
@@ -85,30 +86,21 @@ namespace QuantLib {
     }
 
 
+    Rate CappedFlooredYoYInflationCoupon::underlyingRate() const {
+        return underlying_ != nullptr ? underlying_->rate() : YoYInflationCoupon::rate();
+    }
+
     Rate CappedFlooredYoYInflationCoupon::rate() const {
-        Rate swapletRate =
-            underlying_ != nullptr ? underlying_->rate() : YoYInflationCoupon::rate();
+        Rate swapletRate = underlyingRate();
 
-        if(isFloored_ || isCapped_) {
-            if (underlying_ != nullptr) {
-                QL_REQUIRE(underlying_->pricer(), "pricer not set");
-            } else {
-                QL_REQUIRE(pricer_, "pricer not set");
-            }
+        auto couponPricer = underlying_ != nullptr ? underlying_->pricer() : pricer();
+
+        if (isFloored_ || isCapped_) {
+            QL_REQUIRE(couponPricer, "pricer not set");
         }
 
-        Rate floorletRate = 0.;
-        if(isFloored_) {
-            floorletRate = underlying_ != nullptr ?
-                               underlying_->pricer()->floorletRate(effectiveFloor()) :
-                               pricer()->floorletRate(effectiveFloor());
-        }
-        Rate capletRate = 0.;
-        if(isCapped_) {
-            capletRate = underlying_ != nullptr ?
-                             underlying_->pricer()->capletRate(effectiveCap()) :
-                             pricer()->capletRate(effectiveCap());
-        }
+        Rate floorletRate = isFloored_ ? couponPricer->floorletRate(effectiveFloor()) : 0.0;
+        Rate capletRate = isCapped_? couponPricer->capletRate(effectiveCap()) : 0.0;
 
         return swapletRate + floorletRate - capletRate;
     }

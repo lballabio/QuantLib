@@ -40,29 +40,21 @@ namespace QuantLib {
     class QdPlusBoundaryEvaluator {
       public:
         QdPlusBoundaryEvaluator(
-            Real S, Real strike,
-            Rate rf, Rate dy, Volatility vol, Time t, Time T)
-        : tau(t),
-          K(strike),
-          sigma(vol),
-          sigma2(sigma*sigma),
-          v(sigma*std::sqrt(tau)),
-          r(rf),
-          q(dy),
-          dr(std::exp(-r*tau)),
-          dq(std::exp(-q*tau)),
-          omega(2*(r-q)/sigma2),
-          lambda(0.5*(-(omega-1)
-                - std::sqrt(squared(omega - 1) + 8*r/(sigma2 * (1-dr))))),
-          lambdaPrime(2*r/(sigma2*squared(1-dr)
-                  *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
-          alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
-          beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
+            Real S, Real strike, Rate rf, Rate dy, Volatility vol, Time t, Time T)
+        : tau(t), K(strike), sigma(vol), sigma2(sigma * sigma), v(sigma * std::sqrt(tau)), r(rf),
+          q(dy), dr(std::exp(-r * tau)), dq(std::exp(-q * tau)),
+          ddr((std::abs(r*tau) > 1e-5)? Real(r/(1-dr)) : Real(1/(tau*(1-0.5*r*tau*(1-r*tau/3))))),
+          omega(2 * (r - q) / sigma2),
+          lambda(0.5 *
+                 (-(omega - 1) - std::sqrt(squared(omega - 1) + 8 * ddr / sigma2))),
+          lambdaPrime(2 * ddr*ddr /
+                      (sigma2 * std::sqrt(squared(omega - 1) + 8 * ddr / sigma2))),
+          alpha(2 * dr / (sigma2 * (2 * lambda + omega - 1))),
+          beta(alpha * (ddr + lambdaPrime / (2 * lambda + omega - 1)) - lambda),
           xMax(QdPlusAmericanEngine::xMax(strike, r, q)),
-          xMin(QL_EPSILON*1e4*std::min(0.5*(strike + S), xMax)),
-          nrEvaluations(0),
-          sc(Null<Real>()) {
-        }
+          xMin(QL_EPSILON * 1e4 * std::min(0.5 * (strike + S), xMax)),
+
+          sc(Null<Real>()) {}
 
         Real operator()(Real S) const {
             ++nrEvaluations;
@@ -71,10 +63,10 @@ namespace QuantLib {
                 preCalculate(S);
 
             if (close_enough(K-S, npv)) {
-                return (1-dq*Phi_dp)*S + alpha*theta/(dr*r);
+                return (1-dq*Phi_dp)*S + alpha*theta/dr;
             }
             else {
-                const Real c0 = -beta - lambda + alpha*theta/(dr*r*(K-S-npv));
+                const Real c0 = -beta - lambda + alpha*theta/(dr*(K-S-npv));
                 return (1-dq*Phi_dp)*S + (lambda+c0)*(K-S-npv);
             }
         }
@@ -83,7 +75,7 @@ namespace QuantLib {
                 preCalculate(S);
 
             return 1 - dq*Phi_dp + dq/v*phi_dp + beta*(1-dq*Phi_dp)
-                    + alpha/(r*dr)*charm;
+                    + alpha/dr*charm;
         }
         Real fprime2(Real S) const {
             if (S != sc)
@@ -93,7 +85,7 @@ namespace QuantLib {
             const Real colour = gamma*(q + (r-q)*dp/v + (1-dp*dm)/(2*tau));
 
             return dq*(phi_dp/(S*v) - phi_dp*dp/(S*v*v))
-                    + beta*gamma + alpha/(r*dr)*colour;
+                    + beta*gamma + alpha/dr*colour;
         }
 
         Real xmin() const { return xMin; }
@@ -121,9 +113,9 @@ namespace QuantLib {
         const Real K;
         const Volatility sigma, sigma2, v;
         const Rate r, q;
-        const DiscountFactor dr, dq;
+        const DiscountFactor dr, dq, ddr;
         const Real omega, lambda, lambdaPrime, alpha, beta, xMax, xMin;
-        mutable Size nrEvaluations;
+        mutable Size nrEvaluations = 0;
         mutable Real sc, dp, dm, Phi_dp, Phi_dm, phi_dp;
         mutable Real npv, theta, charm;
     };
@@ -217,15 +209,15 @@ namespace QuantLib {
                                 vol*std::sqrt(T), std::exp(-r*T)).value());
 
         if (close(vol, 0.0)) {
-            const auto intrinsic = [&](Real t) {
+            const auto intrinsic = [&](Real t)  -> Real {
                 return std::max(0.0, K*std::exp(-r*t)-S*std::exp(-q*t));
             };
             const Real npv0 = intrinsic(0.0);
             const Real npvT = intrinsic(T);
             const Real extremT
-                = close_enough(r, q)? QL_MAX_REAL : std::log(r*K/(q*S))/(r-q);
+                = close_enough(r, q)? QL_MAX_REAL : Real(std::log(r*K/(q*S))/(r-q));
 
-             if (extremT > 0.0 && extremT < T)
+            if (extremT > 0.0 && extremT < T)
                 return std::max(npv0, std::max(npvT, intrinsic(extremT)));
             else
                 return std::max(npv0, npvT);
@@ -236,7 +228,25 @@ namespace QuantLib {
 
 
     Real QdPlusAmericanEngine::xMax(Real K, Rate r, Rate q) {
-        return K*std::min(1.0, r/ ((q != 0.0)? q : QL_EPSILON));
+        //Table 2 from Leif Andersen, Mark Lake (2021)
+        //"Fast American Option Pricing: The Double-Boundary Case"
+
+        if (r > 0.0 && q > 0.0)
+            return K*std::min(1.0, r/q);
+        else if (r > 0.0 && q <= 0.0)
+            return K;
+        else if (r == 0.0 && q < 0.0)
+            return K;
+        else if (r == 0.0 && q >= 0.0)
+            return 0.0; // Eurpoean case
+        else if (r < 0.0 && q >= 0.0)
+            return 0.0; // European case
+        else if (r < 0.0 && q < r)
+            return K; // double boundary case
+        else if (r < 0.0 && r <= q && q < 0.0)
+            return 0; // European case
+        else
+            QL_FAIL("internal error");
     }
 
     QdPlusAmericanEngine::QdPlusAmericanEngine(
@@ -287,8 +297,6 @@ namespace QuantLib {
 
         const QdPlusBoundaryEvaluator eval(S, K, r, q, vol, tau, T);
 
-        const Real xmin = eval.xmin();
-
         Real x;
         switch (solverType_) {
           case Brent:
@@ -306,6 +314,7 @@ namespace QuantLib {
                 bool resultCloseEnough;
                 x = eval.xmax();
                 Real xOld, fx;
+                const Real xmin = eval.xmin();
 
                 do {
                     xOld = x;
@@ -313,8 +322,8 @@ namespace QuantLib {
                     const Real fPrime = eval.derivative(x);
                     const Real lf = fx*eval.fprime2(x)/(fPrime*fPrime);
                     const Real step = (solverType_ == Halley)
-                        ? 1/(1 - 0.5*lf)*fx/fPrime
-                        : (1 + 0.5*lf/(1-lf))*fx/fPrime;
+                        ? Real(1/(1 - 0.5*lf)*fx/fPrime)
+                        : Real((1 + 0.5*lf/(1-lf))*fx/fPrime);
 
                     x = std::max(xmin, x - step);
                     resultCloseEnough = std::fabs(x-xOld) < 0.5*eps_;
@@ -355,7 +364,7 @@ namespace QuantLib {
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
         if (r < 0.0 && q < r)
-            QL_FAIL("double-boundary case q<r<0 given");
+            QL_FAIL("double-boundary case q<r<0 for a put option is given");
 
         const ext::shared_ptr<Interpolation> q_z
             = getPutExerciseBoundary(S, K, r, q, vol, T);

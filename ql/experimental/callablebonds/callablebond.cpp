@@ -157,7 +157,7 @@ namespace QuantLib {
     namespace {
 
     template<class T>
-    class RestoreVal {
+    class RestoreVal { // NOLINT(cppcoreguidelines-special-member-functions)
         T orig_;
         T &ref_;
     public:

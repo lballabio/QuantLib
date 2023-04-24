@@ -42,9 +42,9 @@ namespace QuantLib {
             const std::vector<Probability>& probabilities,
             const DayCounter& dayCounter,
             const Calendar& calendar = Calendar(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         InterpolatedSurvivalProbabilityCurve(
             const std::vector<Date>& dates,
             const std::vector<Probability>& probabilities,
@@ -71,22 +71,22 @@ namespace QuantLib {
       protected:
         InterpolatedSurvivalProbabilityCurve(
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         InterpolatedSurvivalProbabilityCurve(
             const Date& referenceDate,
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         InterpolatedSurvivalProbabilityCurve(
             Natural settlementDays,
             const Calendar&,
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         //! \name DefaultProbabilityTermStructure implementation
         //@{
         Probability survivalProbabilityImpl(Time) const override;
@@ -256,16 +256,9 @@ namespace QuantLib {
                    "the first probability must be == 1.0 "
                    "to flag the corresponding date as reference date");
 
-        this->times_.resize(dates_.size());
-        this->times_[0] = 0.0;
+        this->setupTimes(dates_, dates_[0], dayCounter());
+
         for (Size i=1; i<dates_.size(); ++i) {
-            QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "invalid date (" << dates_[i] << ", vs "
-                       << dates_[i-1] << ")");
-            this->times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(this->times_[i],this->times_[i-1]),
-                       "two dates correspond to the same time "
-                       "under this curve's day count convention");
             QL_REQUIRE(this->data_[i] > 0.0, "negative probability");
             QL_REQUIRE(this->data_[i] <= this->data_[i-1],
                        "negative hazard rate implied by the survival "
@@ -277,10 +270,7 @@ namespace QuantLib {
                        " (t=" << this->times_[i-1] << ")");
         }
 
-        this->interpolation_ =
-            this->interpolator_.interpolate(this->times_.begin(),
-                                            this->times_.end(),
-                                            this->data_.begin());
+        this->setupInterpolation();
         this->interpolation_.update();
     }
 

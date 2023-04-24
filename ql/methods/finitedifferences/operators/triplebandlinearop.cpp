@@ -80,8 +80,8 @@ namespace QuantLib {
         std::copy(m.upper_.get(), m.upper_.get() + len, upper_.get());
     }
 
-    void TripleBandLinearOp::swap(TripleBandLinearOp& m) {
-        std::swap(mesher_, m.mesher_);
+    void TripleBandLinearOp::swap(TripleBandLinearOp& m) noexcept {
+        mesher_.swap(m.mesher_);
         std::swap(direction_, m.direction_);
 
         i0_.swap(m.i0_); i2_.swap(m.i2_);

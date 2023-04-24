@@ -19,17 +19,16 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
+        key: macos-ci-build-${{ matrix.shortname }}-${{ github.ref }}
         restore-keys: |
-          ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-${{ github.head_ref }}-
-          ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-
-          ${{ matrix.os }}-${{ matrix.shortname }}-build-refs/heads/master-
-          ${{ matrix.os }}-${{ matrix.shortname }}-build-
+          macos-ci-build-${{ matrix.shortname }}-${{ github.ref }}
+          macos-ci-build-${{ matrix.shortname }}-refs/heads/master
+          macos-ci-build-${{ matrix.shortname }}-
     - name: Build
       run: |
         ./autogen.sh
         ./configure --disable-shared ${{ matrix.configureflags }} CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
-        make -j 2
+        make -j 3
     - name: Run tests
       run: |
         ./test-suite/quantlib-test-suite --log_level=message

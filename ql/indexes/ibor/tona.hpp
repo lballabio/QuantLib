@@ -38,8 +38,7 @@ namespace QuantLib {
     */
     class Tona : public OvernightIndex {
       public:
-        explicit Tona(const Handle<YieldTermStructure>& h =
-                              Handle<YieldTermStructure>())
+        explicit Tona(const Handle<YieldTermStructure>& h = {})
         : OvernightIndex("Tona", 0, JPYCurrency(),
                          Japan(),
                          Actual365Fixed(), h) {}

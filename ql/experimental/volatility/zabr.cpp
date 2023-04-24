@@ -130,10 +130,19 @@ std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
         (Size)std::ceil(expiryTime_ * 24); // number of steps in dimension t
     const Size dampingSteps = 5;           // thereof damping steps
 
+#if defined(__GNUC__) && (__GNUC__ >= 12)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
     // Layout
     std::vector<Size> dim(1, size);
     const ext::shared_ptr<FdmLinearOpLayout> layout(
         new FdmLinearOpLayout(dim));
+
+#if defined(__GNUC__) && (__GNUC__ >= 12)
+#pragma GCC diagnostic pop
+#endif
 
     // Mesher
     const ext::shared_ptr<Fdm1dMesher> m1(new Concentrating1dMesher(

@@ -6,59 +6,48 @@ this_include_HEADERS = \
     all.hpp \
     dynprogvppintrinsicvalueengine.hpp \
     fdextoujumpvanillaengine.hpp \
-	fdklugeextouspreadengine.hpp \
-	fdmblackscholesfwdop.hpp \
-	fdmdupire1dop.hpp \
-	fdmexpextouinnervaluecalculator.hpp \
-	fdmextendedornsteinuhlenbeckop.hpp \
-	fdmextoujumpmodelinnervalue.hpp \
-	fdmextoujumpop.hpp \
-	fdmextoujumpsolver.hpp \
-	fdhestondoublebarrierengine.hpp \
-	fdmhestongreensfct.hpp \
-	fdmhestonfwdop.hpp \
-	fdmklugeextouop.hpp \
-	fdmklugeextousolver.hpp \
-	fdmsimple2dextousolver.hpp \
+    fdklugeextouspreadengine.hpp \
+    fdmdupire1dop.hpp \
+    fdmexpextouinnervaluecalculator.hpp \
+    fdmextendedornsteinuhlenbeckop.hpp \
+    fdmextoujumpmodelinnervalue.hpp \
+    fdmextoujumpop.hpp \
+    fdmextoujumpsolver.hpp \
+    fdmklugeextouop.hpp \
+    fdmklugeextousolver.hpp \
+    fdmsimple2dextousolver.hpp \
     fdmsimple3dextoujumpsolver.hpp \
-	fdmspreadpayoffinnervalue.hpp \
-	fdmsquarerootfwdop.hpp \
-	fdmvppstartlimitstepcondition.hpp \
-	fdmvppstepcondition.hpp \
-	fdmvppstepconditionfactory.hpp \
-	fdmzabrop.hpp \
-	fdornsteinuhlenbeckvanillaengine.hpp \
-	fdsimpleextoujumpswingengine.hpp \
+    fdmspreadpayoffinnervalue.hpp \
+    fdmvppstartlimitstepcondition.hpp \
+    fdmvppstepcondition.hpp \
+    fdmvppstepconditionfactory.hpp \
+    fdmzabrop.hpp \
+    fdornsteinuhlenbeckvanillaengine.hpp \
+    fdsimpleextoujumpswingengine.hpp \
     fdsimpleextoustorageengine.hpp \
-	fdsimpleklugeextouvppengine.hpp \
-	glued1dmesher.hpp \
-	modtriplebandlinearop.hpp \
-	vanillavppoption.hpp
+    fdsimpleklugeextouvppengine.hpp \
+    glued1dmesher.hpp \
+    vanillavppoption.hpp
 
 cpp_files = \
-	dynprogvppintrinsicvalueengine.cpp \
+    dynprogvppintrinsicvalueengine.cpp \
     fdextoujumpvanillaengine.cpp \
-	fdklugeextouspreadengine.cpp \
-	fdmblackscholesfwdop.cpp \
-	fdmdupire1dop.cpp \
-	fdmextendedornsteinuhlenbeckop.cpp \
-	fdmextoujumpop.cpp \
-	fdmextoujumpsolver.cpp \
-	fdhestondoublebarrierengine.cpp \
-	fdmhestongreensfct.cpp \
-	fdmhestonfwdop.cpp \
-	fdmklugeextouop.cpp \
-	fdmsquarerootfwdop.cpp \
-	fdmvppstartlimitstepcondition.cpp \
-	fdmvppstepcondition.cpp \
-	fdmvppstepconditionfactory.cpp \
-	fdmzabrop.cpp \
-	fdornsteinuhlenbeckvanillaengine.cpp \
-	fdsimpleextoujumpswingengine.cpp \
+    fdklugeextouspreadengine.cpp \
+    fdmdupire1dop.cpp \
+    fdmextendedornsteinuhlenbeckop.cpp \
+    fdmextoujumpop.cpp \
+    fdmextoujumpsolver.cpp \
+    fdmklugeextouop.cpp \
+    fdmvppstartlimitstepcondition.cpp \
+    fdmvppstepcondition.cpp \
+    fdmvppstepconditionfactory.cpp \
+    fdmzabrop.cpp \
+    fdornsteinuhlenbeckvanillaengine.cpp \
+    fdsimpleextoujumpswingengine.cpp \
     fdsimpleextoustorageengine.cpp \
     fdsimpleklugeextouvppengine.cpp \
-	glued1dmesher.cpp \
-	vanillavppoption.cpp
+    glued1dmesher.cpp \
+    vanillavppoption.cpp
 
 if UNITY_BUILD
 

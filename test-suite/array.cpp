@@ -121,30 +121,59 @@ void ArrayTest::testArrayFunctions() {
 
     BOOST_TEST_MESSAGE("Testing array functions...");
 
-    Array a(5);
-    for (Size i=0; i < a.size(); ++i) {
-        a[i] = std::sin(Real(i))+1.1;
-    }
+    auto get_array = []() {
+        Array a(5);
+        for (Size i=0; i < a.size(); ++i) {
+            a[i] = std::sin(Real(i))+1.1;
+        }
+        return a;
+    };
+
+    const Array a = get_array();
 
     constexpr double exponential = -2.3;
-    const Array p = Pow(a, exponential);
-    const Array e = Exp(a);
-    const Array l = Log(a);
-    const Array s = Sqrt(a);
+    const Array p_lvalue = Pow(a, exponential);
+    const Array e_lvalue = Exp(a);
+    const Array l_lvalue = Log(a);
+    const Array s_lvalue = Sqrt(a);
+    const Array a_lvalue = Abs(a);
+    const Array p_rvalue = Pow(get_array(), exponential);
+    const Array e_rvalue = Exp(get_array());
+    const Array l_rvalue = Log(get_array());
+    const Array s_rvalue = Sqrt(get_array());
+    const Array a_rvalue = Abs(get_array());
 
     constexpr double tol = 10*QL_EPSILON;
     for (Size i=0; i < a.size(); ++i) {
-        if (std::fabs(p[i]-std::pow(a[i], exponential)) > tol) {
-            BOOST_FAIL("Array function test Pow failed");
+        if (std::fabs(p_lvalue[i]-std::pow(a[i], exponential)) > tol) {
+            BOOST_FAIL("Array function test Pow failed (lvalue)");
         }
-        if (std::fabs(e[i]-std::exp(a[i])) > tol) {
-            BOOST_FAIL("Array function test Exp failed");
+        if (std::fabs(p_rvalue[i]-std::pow(a[i], exponential)) > tol) {
+            BOOST_FAIL("Array function test Pow failed (lvalue)");
         }
-        if (std::fabs(l[i]-std::log(a[i])) > tol) {
-            BOOST_FAIL("Array function test Log failed");
+        if (std::fabs(e_lvalue[i]-std::exp(a[i])) > tol) {
+            BOOST_FAIL("Array function test Exp failed (lvalue)");
         }
-        if (std::fabs(s[i]-std::sqrt(a[i])) > tol) {
-            BOOST_FAIL("Array function test Sqrt failed");
+        if (std::fabs(e_rvalue[i]-std::exp(a[i])) > tol) {
+            BOOST_FAIL("Array function test Exp failed (rvalue)");
+        }
+        if (std::fabs(l_lvalue[i]-std::log(a[i])) > tol) {
+            BOOST_FAIL("Array function test Log failed (lvalue)");
+        }
+        if (std::fabs(l_rvalue[i]-std::log(a[i])) > tol) {
+            BOOST_FAIL("Array function test Log failed (rvalue)");
+        }
+        if (std::fabs(s_lvalue[i]-std::sqrt(a[i])) > tol) {
+            BOOST_FAIL("Array function test Sqrt failed (lvalue)");
+        }
+        if (std::fabs(s_rvalue[i]-std::sqrt(a[i])) > tol) {
+            BOOST_FAIL("Array function test Sqrt failed (rvalue)");
+        }
+        if (std::fabs(a_lvalue[i]-std::abs(a[i])) > tol) {
+            BOOST_FAIL("Array function test Abs failed (lvalue)");
+        }
+        if (std::fabs(a_rvalue[i]-std::abs(a[i])) > tol) {
+            BOOST_FAIL("Array function test Abs failed (rvalue)");
         }
     }
 }
@@ -178,12 +207,132 @@ void ArrayTest::testArrayResize() {
     BOOST_CHECK(iter == a.begin());
 }
 
+#define QL_CHECK_CLOSE_ARRAY(actual, expected)                      \
+    BOOST_REQUIRE(actual.size() == expected.size());                \
+    for (auto i = 0u; i < actual.size(); i++) {                     \
+        QL_CHECK_CLOSE(actual[i], expected[i], 100 * QL_EPSILON);   \
+    }                                                               \
+
+void ArrayTest::testArrayOperators() {
+    BOOST_TEST_MESSAGE("Testing array operators...");
+
+    auto get_array = []() {
+        return Array{1.1, 2.2, 3.3};
+    };
+
+    const auto a = get_array();
+
+    const auto positive = Array{1.1, 2.2, 3.3};
+    const auto lvalue_positive = +a;
+    const auto rvalue_positive = +get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_positive, positive);
+    QL_CHECK_CLOSE_ARRAY(rvalue_positive, positive);
+
+    const auto negative = Array{-1.1, -2.2, -3.3};
+    const auto lvalue_negative = -a;
+    const auto rvalue_negative = -get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_negative, negative);
+    QL_CHECK_CLOSE_ARRAY(rvalue_negative, negative);
+
+    const auto array_sum = Array{2.2, 4.4, 6.6};
+    const auto lvalue_lvalue_sum = a + a;
+    const auto lvalue_rvalue_sum = a + get_array();
+    const auto rvalue_lvalue_sum = get_array() + a;
+    const auto rvalue_rvalue_sum = get_array() + get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_lvalue_sum, array_sum);
+    QL_CHECK_CLOSE_ARRAY(lvalue_rvalue_sum, array_sum);
+    QL_CHECK_CLOSE_ARRAY(rvalue_lvalue_sum, array_sum);
+    QL_CHECK_CLOSE_ARRAY(rvalue_rvalue_sum, array_sum);
+
+    const auto scalar_sum = Array{2.2, 3.3, 4.4};
+    const auto lvalue_real_sum = a + 1.1;
+    const auto rvalue_real_sum = get_array() + 1.1;
+    const auto real_lvalue_sum = 1.1 + a;
+    const auto real_rvalue_sum = 1.1 + get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_real_sum, scalar_sum);
+    QL_CHECK_CLOSE_ARRAY(rvalue_real_sum, scalar_sum);
+    QL_CHECK_CLOSE_ARRAY(real_lvalue_sum, scalar_sum);
+    QL_CHECK_CLOSE_ARRAY(real_rvalue_sum, scalar_sum);
+
+    const auto array_difference = Array{0.0, 0.0, 0.0};
+    const auto lvalue_lvalue_difference = a - a;  // NOLINT(misc-redundant-expression)
+    const auto lvalue_rvalue_difference = a - get_array();
+    const auto rvalue_lvalue_difference = get_array() - a;
+    const auto rvalue_rvalue_difference = get_array() - get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_lvalue_difference, array_difference);
+    QL_CHECK_CLOSE_ARRAY(lvalue_rvalue_difference, array_difference);
+    QL_CHECK_CLOSE_ARRAY(rvalue_lvalue_difference, array_difference);
+    QL_CHECK_CLOSE_ARRAY(rvalue_rvalue_difference, array_difference);
+
+    const auto scalar_difference_1 = Array{0.0, +1.1, +2.2};
+    const auto scalar_difference_2 = Array{0.0, -1.1, -2.2};
+    const auto lvalue_real_difference = a - 1.1;
+    const auto rvalue_real_difference = get_array() - 1.1;
+    const auto real_lvalue_difference = 1.1 - a;
+    const auto real_rvalue_difference = 1.1 - get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_real_difference, scalar_difference_1);
+    QL_CHECK_CLOSE_ARRAY(rvalue_real_difference, scalar_difference_1);
+    QL_CHECK_CLOSE_ARRAY(real_lvalue_difference, scalar_difference_2);
+    QL_CHECK_CLOSE_ARRAY(real_rvalue_difference, scalar_difference_2);
+
+    const auto array_product = Array{1.1 * 1.1, 2.2 * 2.2, 3.3 * 3.3};
+    const auto lvalue_lvalue_product = a * a;
+    const auto lvalue_rvalue_product = a * get_array();
+    const auto rvalue_lvalue_product = get_array() * a;
+    const auto rvalue_rvalue_product = get_array() * get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_lvalue_product, array_product);
+    QL_CHECK_CLOSE_ARRAY(lvalue_rvalue_product, array_product);
+    QL_CHECK_CLOSE_ARRAY(rvalue_lvalue_product, array_product);
+    QL_CHECK_CLOSE_ARRAY(rvalue_rvalue_product, array_product);
+
+    const auto scalar_product = Array{1.1 * 1.1, 2.2 * 1.1, 3.3 * 1.1};
+    const auto lvalue_real_product = a * 1.1;
+    const auto rvalue_real_product = get_array() * 1.1;
+    const auto real_lvalue_product = 1.1 * a;
+    const auto real_rvalue_product = 1.1 * get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_real_product, scalar_product);
+    QL_CHECK_CLOSE_ARRAY(rvalue_real_product, scalar_product);
+    QL_CHECK_CLOSE_ARRAY(real_lvalue_product, scalar_product);
+    QL_CHECK_CLOSE_ARRAY(real_rvalue_product, scalar_product);
+
+    const auto array_quotient = Array{1.0, 1.0, 1.0};
+    const auto lvalue_lvalue_quotient = a / a;  // NOLINT(misc-redundant-expression)
+    const auto lvalue_rvalue_quotient = a / get_array();
+    const auto rvalue_lvalue_quotient = get_array() / a;
+    const auto rvalue_rvalue_quotient = get_array() / get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_lvalue_quotient, array_quotient);
+    QL_CHECK_CLOSE_ARRAY(lvalue_rvalue_quotient, array_quotient);
+    QL_CHECK_CLOSE_ARRAY(rvalue_lvalue_quotient, array_quotient);
+    QL_CHECK_CLOSE_ARRAY(rvalue_rvalue_quotient, array_quotient);
+
+    const auto scalar_quotient_1 = Array{1.1 / 1.1, 2.2 / 1.1, 3.3 / 1.1};
+    const auto scalar_quotient_2 = Array{1.1 / 1.1, 1.1 / 2.2, 1.1 / 3.3};
+    const auto lvalue_real_quotient = a / 1.1;
+    const auto rvalue_real_quotient = get_array() / 1.1;
+    const auto real_lvalue_quotient = 1.1 / a;
+    const auto real_rvalue_quotient = 1.1 / get_array();
+
+    QL_CHECK_CLOSE_ARRAY(lvalue_real_quotient, scalar_quotient_1);
+    QL_CHECK_CLOSE_ARRAY(rvalue_real_quotient, scalar_quotient_1);
+    QL_CHECK_CLOSE_ARRAY(real_lvalue_quotient, scalar_quotient_2);
+    QL_CHECK_CLOSE_ARRAY(real_rvalue_quotient, scalar_quotient_2);
+}
 
 test_suite* ArrayTest::suite() {
     auto* suite = BOOST_TEST_SUITE("array tests");
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testConstruction));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayFunctions));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayResize));
+    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayOperators));
     return suite;
 }
 

@@ -36,8 +36,8 @@ namespace QuantLib {
     }
 
     Real IndexedCashFlow::amount() const {
-        Real I0 = index_->fixing(baseDate_);
-        Real I1 = index_->fixing(fixingDate_);
+        Real I0 = baseFixing();
+        Real I1 = indexFixing();
 
         if (growthOnly_)
             return notional_ * (I1 / I0 - 1.0);

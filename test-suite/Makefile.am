@@ -52,6 +52,9 @@ QL_TEST_SRCS = \
 	dividendoption.cpp \
 	doublebarrieroption.cpp \
 	doublebinaryoption.cpp \
+	equityindex.cpp \
+	equitycashflow.cpp \
+	equitytotalreturnswap.cpp \
 	europeanoption.cpp \
 	everestoption.cpp \
 	exchangerate.cpp \
@@ -83,7 +86,6 @@ QL_TEST_SRCS = \
 	inflationcpicapfloor.cpp \
 	inflationcpiswap.cpp \
 	inflationvolatility.cpp \
-	inflationzciisinterpolation.cpp \
 	instruments.cpp \
 	integrals.cpp \
 	interestrates.cpp \
@@ -220,6 +222,9 @@ QL_TEST_HDRS = \
 	dividendoption.hpp \
 	doublebarrieroption.hpp \
 	doublebinaryoption.hpp \
+	equityindex.hpp \
+	equitycashflow.hpp \
+	equitytotalreturnswap.hpp \
 	europeanoption.hpp \
 	everestoption.hpp \
 	exchangerate.hpp \
@@ -251,7 +256,6 @@ QL_TEST_HDRS = \
 	inflationcpicapfloor.hpp \
 	inflationcpiswap.hpp \
 	inflationvolatility.hpp \
-	inflationzciisinterpolation.hpp \
 	instruments.hpp \
 	integrals.hpp \
 	interestrates.hpp \
@@ -392,7 +396,7 @@ dist-hook:
 	mkdir -p $(distdir)/bin
 	cp -p $(srcdir)/bin/runtest.bat $(distdir)/bin
 
-if BOOST_UNIT_TEST_FOUND
+if BUILD_TEST_SUITE
 
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
@@ -442,10 +446,10 @@ EXTRA_DIST =
 endif
 
 quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                            ${BOOST_THREAD_LIB} ${BOOST_INTERPROCESS_LIB}
+                            ${PTHREAD_LIB} ${BOOST_INTERPROCESS_LIB}
 
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                           ${BOOST_THREAD_LIB}
+                           ${PTHREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false

@@ -179,7 +179,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    void NinePointLinearOp::swap(NinePointLinearOp& m) {
+    void NinePointLinearOp::swap(NinePointLinearOp& m) noexcept {
         std::swap(d0_, m.d0_);
         std::swap(d1_, m.d1_);
 
@@ -190,6 +190,6 @@ namespace QuantLib {
         a01_.swap(m.a01_); a21_.swap(m.a21_); a02_.swap(m.a02_);
         a12_.swap(m.a12_); a22_.swap(m.a22_); a11_.swap(m.a11_);
 
-        std::swap(mesher_, m.mesher_);
+        mesher_.swap(m.mesher_);
     }
 }

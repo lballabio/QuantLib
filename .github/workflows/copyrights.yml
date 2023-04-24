@@ -11,10 +11,10 @@ jobs:
     - name: Check
       run: |
         ./tools/check_copyrights.sh
-    - uses: peter-evans/create-pull-request@v4
+    - uses: peter-evans/create-pull-request@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: update-copyright-list-${{ github.ref }}
+        branch: update-copyright-list-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Update copyright list in license'
         title: 'Update copyright list in license'

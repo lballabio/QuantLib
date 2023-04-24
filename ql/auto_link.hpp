@@ -61,15 +61,4 @@
 #  pragma message("Will (need to) link to lib file: " QL_LIB_NAME)
 #endif
 
-/* Also, these Boost libraries might be needed */
-#if defined(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_thread
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
-
 #endif

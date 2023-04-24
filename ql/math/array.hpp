@@ -69,6 +69,7 @@ namespace QuantLib {
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
+        ~Array() = default;
 
         Array& operator=(const Array&);
         Array& operator=(Array&&) noexcept;
@@ -137,7 +138,7 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         void resize(Size n);
-        void swap(Array&);  // never throws
+        void swap(Array&) noexcept;
         //@}
 
       private:
@@ -175,49 +176,103 @@ namespace QuantLib {
     /*! \relates Array */
     Array operator+(const Array& v);
     /*! \relates Array */
+    Array operator+(Array&& v);
+    /*! \relates Array */
     Array operator-(const Array& v);
+    /*! \relates Array */
+    Array operator-(Array&& v);
 
     // binary operators
     /*! \relates Array */
     Array operator+(const Array&, const Array&);
     /*! \relates Array */
+    Array operator+(const Array&, Array&&);
+    /*! \relates Array */
+    Array operator+(Array&&, const Array&);
+    /*! \relates Array */
+    Array operator+(Array&&, Array&&);
+    /*! \relates Array */
     Array operator+(const Array&, Real);
+    /*! \relates Array */
+    Array operator+(Array&&, Real);
     /*! \relates Array */
     Array operator+(Real, const Array&);
     /*! \relates Array */
+    Array operator+(Real, Array&&);
+    /*! \relates Array */
     Array operator-(const Array&, const Array&);
+    /*! \relates Array */
+    Array operator-(const Array&, Array&&);
+    /*! \relates Array */
+    Array operator-(Array&&, const Array&);
+    /*! \relates Array */
+    Array operator-(Array&&, Array&&);
     /*! \relates Array */
     Array operator-(const Array&, Real);
     /*! \relates Array */
     Array operator-(Real, const Array&);
     /*! \relates Array */
+    Array operator-(Array&&, Real);
+    /*! \relates Array */
+    Array operator-(Real, Array&&);
+    /*! \relates Array */
     Array operator*(const Array&, const Array&);
+    /*! \relates Array */
+    Array operator*(const Array&, Array&&);
+    /*! \relates Array */
+    Array operator*(Array&&, const Array&);
+    /*! \relates Array */
+    Array operator*(Array&&, Array&&);
     /*! \relates Array */
     Array operator*(const Array&, Real);
     /*! \relates Array */
     Array operator*(Real, const Array&);
     /*! \relates Array */
+    Array operator*(Array&&, Real);
+    /*! \relates Array */
+    Array operator*(Real, Array&&);
+    /*! \relates Array */
     Array operator/(const Array&, const Array&);
+    /*! \relates Array */
+    Array operator/(const Array&, Array&&);
+    /*! \relates Array */
+    Array operator/(Array&&, const Array&);
+    /*! \relates Array */
+    Array operator/(Array&&, Array&&);
     /*! \relates Array */
     Array operator/(const Array&, Real);
     /*! \relates Array */
     Array operator/(Real, const Array&);
+    /*! \relates Array */
+    Array operator/(Array&&, Real);
+    /*! \relates Array */
+    Array operator/(Real, Array&&);
 
     // math functions
     /*! \relates Array */
     Array Abs(const Array&);
     /*! \relates Array */
+    Array Abs(Array&&);
+    /*! \relates Array */
     Array Sqrt(const Array&);
+    /*! \relates Array */
+    Array Sqrt(Array&&);
     /*! \relates Array */
     Array Log(const Array&);
     /*! \relates Array */
+    Array Log(Array&&);
+    /*! \relates Array */
     Array Exp(const Array&);
     /*! \relates Array */
+    Array Exp(Array&&);
+    /*! \relates Array */
     Array Pow(const Array&, Real);
+    /*! \relates Array */
+    Array Pow(Array&&, Real);
 
     // utilities
     /*! \relates Array */
-    void swap(Array&, Array&);
+    void swap(Array&, Array&) noexcept;
 
     // format
     /*! \relates Array */
@@ -488,10 +543,9 @@ namespace QuantLib {
         }
     }
 
-    inline void Array::swap(Array& from) {
-        using std::swap;
+    inline void Array::swap(Array& from) noexcept {
         data_.swap(from.data_);
-        swap(n_,from.n_);
+        std::swap(n_, from.n_);
     }
 
     // dot product and norm
@@ -516,12 +570,21 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array operator+(Array&& v) {
+        return std::move(v);
+    }
+
     inline Array operator-(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(), v.end(), result.begin(), std::negate<>());
         return result;
     }
 
+    inline Array operator-(Array&& v) {
+        Array result = std::move(v);
+        std::transform(result.begin(), result.end(), result.begin(), std::negate<>());
+        return result;
+    }
 
     // binary operators
 
@@ -534,15 +597,54 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array operator+(const Array& v1, Array&& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be added");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::plus<>());
+        return result;
+    }
+
+    inline Array operator+(Array&& v1, const Array& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be added");
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), v2.begin(), result.begin(), std::plus<>());
+        return result;
+    }
+
+    inline Array operator+(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be added");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::plus<>());
+        return result;
+    }
+
     inline Array operator+(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(), v1.end(), result.begin(), [=](Real y) -> Real { return y + a; });
         return result;
     }
 
+    inline Array operator+(Array&& v1, Real a) {
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return y + a; });
+        return result;
+    }
+
     inline Array operator+(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a + y; });
+        return result;
+    }
+
+    inline Array operator+(Real a, Array&& v2) {
+        Array result = std::move(v2);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return a + y; });
         return result;
     }
 
@@ -555,15 +657,54 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array operator-(const Array& v1, Array&& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be subtracted");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::minus<>());
+        return result;
+    }
+
+    inline Array operator-(Array&& v1, const Array& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be subtracted");
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), v2.begin(), result.begin(), std::minus<>());
+        return result;
+    }
+
+    inline Array operator-(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be subtracted");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::minus<>());
+        return result;
+    }
+
     inline Array operator-(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y - a; });
         return result;
     }
 
+    inline Array operator-(Array&& v1, Real a) {
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return y - a; });
+        return result;
+    }
+
     inline Array operator-(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a - y; });
+        return result;
+    }
+
+    inline Array operator-(Real a, Array&& v2) {
+        Array result = std::move(v2);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return a - y; });
         return result;
     }
 
@@ -576,15 +717,54 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array operator*(const Array& v1, Array&& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be multiplied");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::multiplies<>());
+        return result;
+    }
+
+    inline Array operator*(Array&& v1, const Array& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be multiplied");
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), v2.begin(), result.begin(), std::multiplies<>());
+        return result;
+    }
+
+    inline Array operator*(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be multiplied");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::multiplies<>());
+        return result;
+    }
+
     inline Array operator*(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y * a; });
         return result;
     }
 
+    inline Array operator*(Array&& v1, Real a) {
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return y * a; });
+        return result;
+    }
+
     inline Array operator*(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a * y; });
+        return result;
+    }
+
+    inline Array operator*(Real a, Array&& v2) {
+        Array result = std::move(v2);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return a * y; });
         return result;
     }
 
@@ -597,15 +777,54 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array operator/(const Array& v1, Array&& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be divided");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::divides<>());
+        return result;
+    }
+
+    inline Array operator/(Array&& v1, const Array& v2) {
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be divided");
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), v2.begin(), result.begin(), std::divides<>());
+        return result;
+    }
+
+    inline Array operator/(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
+        QL_REQUIRE(v1.size() == v2.size(),
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be divided");
+        Array result = std::move(v2);
+        std::transform(v1.begin(), v1.end(), result.begin(), result.begin(), std::divides<>());
+        return result;
+    }
+
     inline Array operator/(const Array& v1, Real a) {
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y / a; });
         return result;
     }
 
+    inline Array operator/(Array&& v1, Real a) {
+        Array result = std::move(v1);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return y / a; });
+        return result;
+    }
+
     inline Array operator/(Real a, const Array& v2) {
         Array result(v2.size());
         std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a / y; });
+        return result;
+    }
+
+    inline Array operator/(Real a, Array&& v2) {
+        Array result = std::move(v2);
+        std::transform(result.begin(), result.end(), result.begin(), [=](Real y) -> Real { return a / y; });
         return result;
     }
 
@@ -618,9 +837,23 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array Abs(Array&& v) {
+        Array result = std::move(v);
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [](Real x) -> Real { return std::fabs(x); });
+        return result;
+    }
+
     inline Array Sqrt(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
+                       [](Real x) -> Real { return std::sqrt(x); });
+        return result;
+    }
+
+    inline Array Sqrt(Array&& v) {
+        Array result = std::move(v);
+        std::transform(result.begin(), result.end(), result.begin(),
                        [](Real x) -> Real { return std::sqrt(x); });
         return result;
     }
@@ -632,6 +865,13 @@ namespace QuantLib {
         return result;
     }
 
+    inline Array Log(Array&& v) {
+        Array result = std::move(v);
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [](Real x) -> Real { return std::log(x); });
+        return result;
+    }
+
     inline Array Exp(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(), v.end(), result.begin(),
@@ -639,15 +879,28 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array Pow(const Array& v, Real alpha) {
-        Array result(v.size());
-        for (Size i=0; i<v.size(); ++i)
-            result[i] = std::pow(v[i], alpha);
+    inline Array Exp(Array&& v) {
+        Array result = std::move(v);
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [](Real x) -> Real { return std::exp(x); });
         return result;
     }
 
+    inline Array Pow(const Array& v, Real alpha) {
+        Array result(v.size());
+        std::transform(v.begin(), v.end(), result.begin(),
+                       [=](Real x) -> Real { return std::pow(x, alpha); });
+        return result;
+    }
 
-    inline void swap(Array& v, Array& w) {
+    inline Array Pow(Array&& v, Real alpha) {
+        Array result = std::move(v);
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [=](Real x) -> Real { return std::pow(x, alpha); });
+        return result;
+    }
+
+    inline void swap(Array& v, Array& w) noexcept {
         v.swap(w);
     }
 

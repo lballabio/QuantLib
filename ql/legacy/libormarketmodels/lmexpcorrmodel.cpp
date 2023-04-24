@@ -28,7 +28,7 @@ namespace QuantLib {
      corrMatrix_(size, size),
      pseudoSqrt_(size, size) {
         arguments_[0] = ConstantParameter(rho, PositiveConstraint());
-        generateArguments();
+        LmExponentialCorrelationModel::generateArguments();
     }
 
     Matrix LmExponentialCorrelationModel::correlation(Time, const Array&) const {

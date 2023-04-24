@@ -93,9 +93,9 @@ namespace QuantLib {
         static const Size requiredPoints = 2;
         static const Size dataSizeAdjustment = 1;
 
-        explicit ConvexMonotone(Real quadraticity = 0.3,
-                                Real monotonicity = 0.7,
-                                bool forcePositive = true)
+        ConvexMonotone(Real quadraticity = 0.3,
+                       Real monotonicity = 0.7,
+                       bool forcePositive = true)
         : quadraticity_(quadraticity), monotonicity_(monotonicity),
           forcePositive_(forcePositive) {}
 

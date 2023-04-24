@@ -144,7 +144,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-classes --enable-std-any --enable-std-optional
             tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
@@ -187,11 +187,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}
         restore-keys: |
-          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
-          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-
-          linux-ci-build-${{ matrix.shortname }}-refs/heads/master-
+          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}
+          linux-ci-build-${{ matrix.shortname }}-refs/heads/master
           linux-ci-build-${{ matrix.shortname }}-
     - name: Compiler version
       run: |

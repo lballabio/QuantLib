@@ -29,20 +29,31 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     //! Analytic pricing engine for European options with discrete dividends
     /*! \ingroup vanillaengines
 
         \test the correctness of the returned greeks is tested by
               reproducing numerical derivatives.
     */
-    class AnalyticDividendEuropeanEngine
-        : public DividendVanillaOption::engine {
+    class AnalyticDividendEuropeanEngine : public DividendVanillaOption::engine {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
-        AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
-        void calculate() const override;
+        AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                       DividendSchedule dividends);
+        
+        /*! \deprecated Use the other constructor instead and pass the dividends to the engine.
+                        Deprecated in version 1.30.
+        */
+        QL_DEPRECATED
+        explicit AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
 
+        void calculate() const override;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        DividendSchedule dividends_;
+        bool explicitDividends_;
     };
 
 }

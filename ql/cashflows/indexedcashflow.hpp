@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2022 Quaternion Risk Management Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -59,6 +60,8 @@ namespace QuantLib {
         virtual Date fixingDate() const { return fixingDate_; }
         virtual ext::shared_ptr<Index> index() const { return index_; }
         virtual bool growthOnly() const { return growthOnly_; }
+        virtual Real baseFixing() const { return index_->fixing(baseDate()); }
+        virtual Real indexFixing() const { return index_->fixing(fixingDate_); }
         //! \name CashFlow interface
         //@{
         Real amount() const override; // already virtual

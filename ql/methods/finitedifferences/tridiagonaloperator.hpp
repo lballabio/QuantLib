@@ -65,6 +65,7 @@ namespace QuantLib {
         TridiagonalOperator(TridiagonalOperator&&) noexcept;
         TridiagonalOperator& operator=(const TridiagonalOperator&);
         TridiagonalOperator& operator=(TridiagonalOperator&&) noexcept;
+        ~TridiagonalOperator() = default;
         //! \name Operator interface
         //@{
         //! apply operator to a given array
@@ -101,7 +102,7 @@ namespace QuantLib {
         //@}
         //! \name Utilities
         //@{
-        void swap(TridiagonalOperator&);
+        void swap(TridiagonalOperator&) noexcept;
         //@}
         //! encapsulation of time-setting logic
         class TimeSetter {
@@ -118,7 +119,7 @@ namespace QuantLib {
     };
 
     /* \relates TridiagonalOperator */
-    void swap(TridiagonalOperator&, TridiagonalOperator&);
+    void swap(TridiagonalOperator&, TridiagonalOperator&) noexcept;
 
 
     // inline definitions
@@ -178,14 +179,13 @@ namespace QuantLib {
             timeSetter_->setTime(t, *this);
     }
 
-    inline void TridiagonalOperator::swap(TridiagonalOperator& from) {
-        using std::swap;
-        swap(n_, from.n_);
+    inline void TridiagonalOperator::swap(TridiagonalOperator& from) noexcept {
+        std::swap(n_, from.n_);
         diagonal_.swap(from.diagonal_);
         lowerDiagonal_.swap(from.lowerDiagonal_);
         upperDiagonal_.swap(from.upperDiagonal_);
         temp_.swap(from.temp_);
-        swap(timeSetter_, from.timeSetter_);
+        timeSetter_.swap(from.timeSetter_);
     }
 
 
@@ -250,7 +250,7 @@ namespace QuantLib {
     }
 
     inline void swap(TridiagonalOperator& L1,
-                     TridiagonalOperator& L2) {
+                     TridiagonalOperator& L2) noexcept {
         L1.swap(L2);
     }
 

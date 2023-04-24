@@ -177,7 +177,7 @@ namespace QuantLib {
 
 
     // this cleans up index-fixing histories when destroyed
-    class IndexHistoryCleaner {
+    class IndexHistoryCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         IndexHistoryCleaner() = default;
         ~IndexHistoryCleaner();

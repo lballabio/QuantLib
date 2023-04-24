@@ -35,6 +35,7 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -299,7 +300,7 @@ namespace QuantLib {
                       tenor, fixingDays,
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
-        initializeDates();
+        DepositRateHelper::initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(Rate rate,
@@ -314,21 +315,21 @@ namespace QuantLib {
                       tenor, fixingDays,
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
-        initializeDates();
+        DepositRateHelper::initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(const Handle<Quote>& rate,
                                          const ext::shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
         iborIndex_ = i->clone(termStructureHandle_);
-        initializeDates();
+        DepositRateHelper::initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(Rate rate,
                                          const ext::shared_ptr<IborIndex>& i)
     : RelativeDateRateHelper(rate) {
         iborIndex_ = i->clone(termStructureHandle_);
-        initializeDates();
+        DepositRateHelper::initializeDates();
     }
 
     Real DepositRateHelper::impliedQuote() const {
@@ -394,7 +395,7 @@ namespace QuantLib {
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
@@ -422,7 +423,7 @@ namespace QuantLib {
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
@@ -441,7 +442,7 @@ namespace QuantLib {
         iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
@@ -458,7 +459,7 @@ namespace QuantLib {
         iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
@@ -482,7 +483,7 @@ namespace QuantLib {
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
@@ -506,7 +507,7 @@ namespace QuantLib {
                       Currency(), calendar, convention,
                       endOfMonth, dayCounter, termStructureHandle_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
@@ -523,7 +524,7 @@ namespace QuantLib {
         iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
@@ -540,7 +541,7 @@ namespace QuantLib {
         iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
@@ -558,7 +559,7 @@ namespace QuantLib {
         iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
@@ -576,7 +577,7 @@ namespace QuantLib {
         iborIndex_->unregisterWith(termStructureHandle_);
         registerWith(iborIndex_);
         pillarDate_ = customPillarDate;
-        initializeDates();
+        FraRateHelper::initializeDates();
     }
 
     Real FraRateHelper::impliedQuote() const {
@@ -685,7 +686,7 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
       pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
@@ -704,7 +705,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        initializeDates();
+        SwapRateHelper::initializeDates();
     }
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
@@ -721,7 +722,7 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
@@ -741,7 +742,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        initializeDates();
+        SwapRateHelper::initializeDates();
     }
 
     SwapRateHelper::SwapRateHelper(Rate rate,
@@ -752,7 +753,7 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
       pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
@@ -772,7 +773,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        initializeDates();
+        SwapRateHelper::initializeDates();
     }
 
     SwapRateHelper::SwapRateHelper(Rate rate,
@@ -789,7 +790,7 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
@@ -809,7 +810,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        initializeDates();
+        SwapRateHelper::initializeDates();
     }
 
     void SwapRateHelper::initializeDates() {
@@ -919,7 +920,7 @@ namespace QuantLib {
       iborIndex_(std::move(iborIndex)) {
         registerWith(iborIndex_);
         registerWith(bmaIndex_);
-        initializeDates();
+        BMASwapRateHelper::initializeDates();
     }
 
     void BMASwapRateHelper::initializeDates() {
@@ -1020,7 +1021,7 @@ namespace QuantLib {
         else
             jointCalendar_ = JointCalendar(tradingCalendar_, cal_,
                                            JoinHolidays);
-        initializeDates();
+        FxSwapRateHelper::initializeDates();
     }
 
     void FxSwapRateHelper::initializeDates() {

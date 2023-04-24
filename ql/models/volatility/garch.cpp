@@ -22,7 +22,6 @@
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/models/volatility/garch.hpp>
-#include <boost/foreach.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -72,7 +71,7 @@ namespace QuantLib {
             Real retval(0.0);
             Real sigma2 = 0;
             Real u2 = 0;
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 retval += std::log(sigma2) + u2 / sigma2;
@@ -85,7 +84,7 @@ namespace QuantLib {
             Real sigma2 = 0;
             Real u2 = 0;
             Size i = 0;
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 retval[i++] = (std::log(sigma2) + u2 / sigma2)/(2.0*r2_.size());
@@ -100,7 +99,7 @@ namespace QuantLib {
             Real sigma2prev = sigma2;
             Real u2prev = u2;
             Real norm = 2.0 * r2_.size();
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 Real w = (sigma2 - u2) / (sigma2*sigma2);
@@ -123,7 +122,7 @@ namespace QuantLib {
             Real sigma2prev = sigma2;
             Real u2prev = u2;
             Real norm = 2.0 * r2_.size();
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 retval += std::log(sigma2) + u2 / sigma2;

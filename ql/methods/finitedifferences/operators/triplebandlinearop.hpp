@@ -43,6 +43,7 @@ namespace QuantLib {
         TripleBandLinearOp(TripleBandLinearOp&& m) noexcept;
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
         TripleBandLinearOp& operator=(TripleBandLinearOp&& m) noexcept;
+        ~TripleBandLinearOp() override = default;
 
         Array apply(const Array& r) const override;
         Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;
@@ -58,7 +59,7 @@ namespace QuantLib {
         void axpyb(const Array& a, const TripleBandLinearOp& x,
                    const TripleBandLinearOp& y, const Array& b);
 
-        void swap(TripleBandLinearOp& m);
+        void swap(TripleBandLinearOp& m) noexcept;
 
         SparseMatrix toMatrix() const override;
 

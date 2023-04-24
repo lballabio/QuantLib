@@ -47,20 +47,20 @@ namespace QuantLib {
         //@{
         DefaultProbabilityTermStructure(
             const DayCounter& dc = DayCounter(),
-            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            std::vector<Handle<Quote> > jumps = {},
+            const std::vector<Date>& jumpDates = {});
         DefaultProbabilityTermStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dc = DayCounter(),
-            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            std::vector<Handle<Quote> > jumps = {},
+            const std::vector<Date>& jumpDates = {});
         DefaultProbabilityTermStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dc = DayCounter(),
-            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            std::vector<Handle<Quote> > jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
 
         /*! \name Survival probabilities

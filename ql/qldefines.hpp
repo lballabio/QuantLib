@@ -191,6 +191,12 @@
 /*! @}  */
 
 
+// For the time being we're keeping a QL_DEPRECATED macro because
+// of <https://stackoverflow.com/questions/38378693/>.  We need to
+// use it to deprecate constructors until we drop support for VC++2015.
+// Other features (methods, typedefs etc.) can use [[deprecated]] and
+// possibly add a message.
+
 // emit warning when using deprecated features
 // clang-format off
 #if defined(BOOST_MSVC)       // Microsoft Visual C++

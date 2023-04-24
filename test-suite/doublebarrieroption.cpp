@@ -26,12 +26,13 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/suowangdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
-#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -41,7 +42,6 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
-#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

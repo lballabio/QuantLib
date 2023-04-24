@@ -44,8 +44,10 @@ namespace QuantLib {
       nominalTermStructure_(std::move(nominalTermStructure)) {
 
         std::pair<Date, Date> limStart = inflationPeriod(maturity_ - swapObsLag_, zii_->frequency());
+        std::pair<Date, Date> interpolationPeriod = inflationPeriod(maturity, zii_->frequency());
 
-        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) == CPI::Linear) {
+        if ((detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) == CPI::Linear) &&
+            (maturity > interpolationPeriod.first)) {
             // if interpolated, we need to cover the end of the interpolation period
             earliestDate_ = limStart.first;
             latestDate_ = limStart.second + 1;

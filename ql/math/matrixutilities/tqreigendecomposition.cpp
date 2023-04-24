@@ -57,7 +57,6 @@ namespace QuantLib {
                     // [ d_[k-1] e_[k] ]
                     // [  e_[k]  d_[k] ]
                     // which is closer to d_[k+1].
-                    // FLOATING_POINT_EXCEPTION
                     const Real t1 = std::sqrt(
                                           0.25*(d_[k]*d_[k] + d_[k-1]*d_[k-1])
                                           - 0.5*d_[k-1]*d_[k] + e[k]*e[k]);

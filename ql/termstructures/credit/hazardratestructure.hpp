@@ -54,20 +54,20 @@ namespace QuantLib {
         //@{
         HazardRateStructure(
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         HazardRateStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         HazardRateStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
       protected:
         /*! \name Calculations

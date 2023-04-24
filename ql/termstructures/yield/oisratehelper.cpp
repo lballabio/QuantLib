@@ -41,7 +41,7 @@ namespace QuantLib {
                                  Pillar::Choice pillar,
                                  Date customPillarDate,
                                  RateAveraging::Type averagingMethod,
-                                 boost::optional<bool> endOfMonth)
+                                 ext::optional<bool> endOfMonth)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays),
       tenor_(tenor), overnightIndex_(std::move(overnightIndex)),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
@@ -53,7 +53,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        initializeDates();
+        OISRateHelper::initializeDates();
     }
 
     void OISRateHelper::initializeDates() {

@@ -350,4 +350,20 @@ namespace QuantLib {
         return discount_ * temp2;
     }
 
+
+    Real BlackCalculator::strikeGamma() const {
+
+        Real temp = stdDev_*strike_;
+        Real DalphaDstrike = -DalphaDd1_/temp;
+        Real DbetaDstrike  = -DbetaDd2_/temp;
+
+        Real D2alphaD2strike = -DalphaDstrike/strike_*(1-d1_/stdDev_);
+        Real D2betaD2strike  = -DbetaDstrike /strike_*(1-d2_/stdDev_);
+
+        Real temp2 =
+                D2alphaD2strike * forward_ + D2betaD2strike * x_
+                + 2.0*DbetaDstrike *DxDstrike_;
+
+        return discount_ * temp2;
+    }
 }

@@ -31,6 +31,7 @@
 #include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp> /* internal */
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -41,7 +42,7 @@ namespace QuantLib {
 
     IborCouponPricer::IborCouponPricer(
             Handle<OptionletVolatilityStructure> v,
-            boost::optional<bool> useIndexedCoupon)
+            ext::optional<bool> useIndexedCoupon)
         : capletVol_(std::move(v)),
           useIndexedCoupon_(useIndexedCoupon ?
                             *useIndexedCoupon :
@@ -117,22 +118,16 @@ namespace QuantLib {
 
         IborCouponPricer::initialize(coupon);
 
-        Handle<YieldTermStructure> rateCurve = index_->forwardingTermStructure();
+        const Handle<YieldTermStructure>& rateCurve = index_->forwardingTermStructure();
 
         if (rateCurve.empty()) {
             discount_ = Null<Real>(); // might not be needed, will be checked later
-            QL_DEPRECATED_DISABLE_WARNING
-            spreadLegValue_ = Null<Real>();
-            QL_DEPRECATED_ENABLE_WARNING
         } else {
             Date paymentDate = coupon_->date();
             if (paymentDate > rateCurve->referenceDate())
                 discount_ = rateCurve->discount(paymentDate);
             else
                 discount_ = 1.0;
-            QL_DEPRECATED_DISABLE_WARNING
-            spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
-            QL_DEPRECATED_ENABLE_WARNING
         }
 
     }
