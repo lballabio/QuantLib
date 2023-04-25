@@ -76,13 +76,14 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         curveHandle.linkTo(curve);
 
         // set up the instrument to price
-        ForwardRateAgreement fra(settlementDate + Period(12, Months),
+        // check the constructor without maturity date
+        // inferring maturity date from the index
+        ForwardRateAgreement fra(index,
+                                 settlementDate + Period(12, Months),
                                  Position::Long,
                                  0,
                                  1,
-                                 index,
-                                 curveHandle,
-                                 useIndexedFra);
+                                 curveHandle);
 
         // finally put values in the quotes
         quotes[0]->setValue(0.01);
@@ -91,8 +92,23 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 
         Real rate = fra.forwardRate();
         if (std::fabs(rate - 0.01) > 1e-6) {
-            BOOST_ERROR("grid creation failed, got rate " << rate << " expected " << 0.01);
+            BOOST_ERROR("grid creation failed for FRA without maturityDate, got rate " << rate << " expected " << 0.01);
         }
+
+        // check the constructor with explicit maturity date
+        ForwardRateAgreement fra2(index,
+                                 settlementDate + Period(12, Months),
+                                 settlementDate + Period(15, Months),
+                                 Position::Long,
+                                 0,
+                                 1,
+                                 curveHandle);       
+
+        Real rate2 = fra2.forwardRate();
+        if (std::fabs(rate2 - 0.01) > 1e-6) {
+            BOOST_ERROR("grid creation failed for FRA with maturityDate, got rate " << rate << " expected " << 0.01);
+        }
+
 }
 
 test_suite* ForwardRateAgreementTest::suite() {

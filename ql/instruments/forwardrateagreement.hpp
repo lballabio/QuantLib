@@ -79,18 +79,38 @@ namespace QuantLib {
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             bool useIndexedCoupon = true);         
 
-        /*! When using this constructor, the forward rate will be
-            forecast from the passed index.
+        /*! \deprecated Use one of the other constructors.
+                        Deprecated in version 1.31.
         */
+        QL_DEPRECATED     
         ForwardRateAgreement(
             const Date& valueDate,
             Position::Type type,
             Rate strikeForwardRate,
             Real notionalAmount,
             const ext::shared_ptr<IborIndex>& index,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
-            bool useIndexedCoupon = true);
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
 
+        /*! When using this constructor, the forward rate will be
+            forecast from the passed index.
+        */
+        ForwardRateAgreement(
+            const ext::shared_ptr<IborIndex>& index,
+            const Date& valueDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
+
+        ForwardRateAgreement(
+            const ext::shared_ptr<IborIndex>& index,
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
+            
         //! \name Calculations
         //@{
         //! A FRA expires/settles on the value date

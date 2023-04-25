@@ -453,10 +453,8 @@ namespace piecewise_yield_curve_test {
                                       euribor3m->endOfMonth());
             BOOST_REQUIRE(fraData[i].units == Months);
 
-            ForwardRateAgreement fra(start, Position::Long,
-                                     fraData[i].rate/100, 100.0,
-                                     euribor3m, curveHandle,
-                                     useIndexedFra);
+            ForwardRateAgreement fra(euribor3m, start, Position::Long,
+                                     fraData[i].rate/100, 100.0, curveHandle);
             Rate expectedRate = fraData[i].rate/100,
                  estimatedRate = fra.forwardRate();
             if (std::fabs(expectedRate-estimatedRate) > tolerance) {
@@ -486,10 +484,11 @@ namespace piecewise_yield_curve_test {
                                       euribor3m->endOfMonth());
             BOOST_REQUIRE(fraData[i].units == Months);
 
-            ForwardRateAgreement fra(start, Position::Long,
-                                     fraData[i].rate/100, 100.0,
-                                     euribor3m, curveHandle,
-                                     useIndexedFra);
+            Date end = vars.calendar.advance(vars.settlement, 3 + fraData[i].n, Months,
+                                             euribor3m->businessDayConvention(),
+                                             euribor3m->endOfMonth());
+            ForwardRateAgreement fra(euribor3m, start, end, Position::Long,
+                                     fraData[i].rate/100, 100.0, curveHandle);
             Rate expectedRate = fraData[i].rate/100,
                  estimatedRate = fra.forwardRate();
             if (std::fabs(expectedRate-estimatedRate) > tolerance) {
@@ -516,9 +515,8 @@ namespace piecewise_yield_curve_test {
                 Settings::instance().evaluationDate())
                 immStart = IMM::nextDate(immStart, false);
                 
-            ForwardRateAgreement immFut(immStart, Position::Long,
-                immFutData[i].rate / 100, 100.0,
-                euribor3m, curveHandle);
+            ForwardRateAgreement immFut(euribor3m, immStart, Position::Long,
+                                        immFutData[i].rate / 100, 100.0, curveHandle);
             Rate expectedRate = immFutData[i].rate / 100,
                 estimatedRate = immFut.forwardRate();
             if (std::fabs(expectedRate - estimatedRate) > tolerance) {
@@ -547,9 +545,8 @@ namespace piecewise_yield_curve_test {
             if (euribor3m->fixingCalendar().isHoliday(asxStart))
                 continue;
 
-            ForwardRateAgreement asxFut(asxStart, Position::Long,
-                asxFutData[i].rate / 100, 100.0,
-                euribor3m, curveHandle);
+            ForwardRateAgreement asxFut(euribor3m, asxStart, Position::Long,
+                                        asxFutData[i].rate / 100, 100.0, curveHandle);
             Rate expectedRate = asxFutData[i].rate / 100,
                 estimatedRate = asxFut.forwardRate();
             if (std::fabs(expectedRate - estimatedRate) > tolerance) {
@@ -853,10 +850,11 @@ void PiecewiseYieldCurveTest::testParFraRegression() {
                                            euribor3m->endOfMonth());
         BOOST_REQUIRE(fraData[i].units == Months);
 
-        ForwardRateAgreement fra(start, Position::Long,
-                                 fraData[i].rate/100, 100.0,
-                                 euribor3m, curveHandle,
-                                 useIndexedFra);
+        Date end = vars.calendar.advance(vars.settlement, 3 + fraData[i].n, Months,
+                                         euribor3m->businessDayConvention(),
+                                         euribor3m->endOfMonth());
+        ForwardRateAgreement fra(euribor3m, start, end, Position::Long,
+                                 fraData[i].rate/100, 100.0, curveHandle);
         Rate expectedRate = fraData[i].rate/100;
         Rate estimatedRate = fra.forwardRate();
         Real tolerance = 1.0e-6;
