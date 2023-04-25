@@ -329,6 +329,40 @@ namespace QuantLib {
                return false;
         }
 
+        if (y == 2022)
+        {
+            if (// Lunar New Year
+                ((d >= 1 && d <= 3) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 9 && m == May)
+                // Tuen Ng festival
+                || (d == 3 && m == June)
+                // Mid-autumn festival
+                || (d == 12 && m == September)
+                // Chung Yeung festival
+                || (d == 4 && m == October))
+                return false;
+        }
+
+        if (y == 2023)
+        {
+            if (// Lunar New Year
+                ((d >= 23 && d <= 25) && m == January)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 26 && m == May)
+                // Tuen Ng festival
+                || (d == 22 && m == June)
+                // Mid-autumn festival
+                || (d == 12 && m == September)
+                // Chung Yeung festival
+                || (d == 4 && m == October))
+                return false;
+        }
+
         return true;
     }
 
