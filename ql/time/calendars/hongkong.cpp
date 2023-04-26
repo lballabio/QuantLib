@@ -329,6 +329,25 @@ namespace QuantLib {
                return false;
         }
 
+        // data from https://www.hkex.com.hk/-/media/hkex-market/services/circulars-and-notices/participant-and-members-circulars/sehk/2020/ce_sehk_ct_038_2020.pdf
+        if (y == 2021)
+        {
+            if (// Lunar New Year
+                ((d == 12 || d == 15) && m == February)
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 19 && m == May)
+                // Tuen Ng festival
+                || (d == 14 && m == June)
+                // Mid-autumn festival
+                || (d == 22 && m == September)
+                // Chung Yeung festival
+                || (d == 14 && m == October))
+                return false;
+        }
+
+        // data from https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2021/ce_SEHK_CT_082_2021.pdf
         if (y == 2022)
         {
             if (// Lunar New Year
@@ -346,6 +365,7 @@ namespace QuantLib {
                 return false;
         }
 
+        // data from https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2022/ce_SEHK_CT_058_2022.pdf
         if (y == 2023)
         {
             if (// Lunar New Year
