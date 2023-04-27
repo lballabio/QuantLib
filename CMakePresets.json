@@ -107,6 +107,7 @@
       "generator": "Ninja",
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
+        "BUILD_SHARED_LIBS": false,
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_CXX_STANDARD": "17",
