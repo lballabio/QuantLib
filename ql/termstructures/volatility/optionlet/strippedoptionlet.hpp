@@ -48,6 +48,16 @@ namespace QuantLib {
                           DayCounter dc,
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
+        StrippedOptionlet(Natural settlementDays,
+                          const Calendar& calendar,
+                          BusinessDayConvention bdc,
+                          ext::shared_ptr<IborIndex> iborIndex,
+                          const std::vector<Date>& optionletDates,
+                          const std::vector<std::vector<Rate>>& strikes,
+                          std::vector<std::vector<Handle<Quote>>>,
+                          DayCounter dc,
+                          VolatilityType type = ShiftedLognormal,
+                          Real displacement = 0.0);
         //! \name StrippedOptionletBase interface
         //@{
         const std::vector<Rate>& optionletStrikes(Size i) const override;
@@ -85,7 +95,6 @@ namespace QuantLib {
         std::vector<Time> optionletTimes_;
         mutable std::vector<Rate> optionletAtmRates_;
         std::vector<std::vector<Rate> > optionletStrikes_;
-        Size nStrikes_;
 
         std::vector<std::vector<Handle<Quote> > > optionletVolQuotes_;
         mutable std::vector<std::vector<Volatility> > optionletVolatilities_;
