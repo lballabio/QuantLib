@@ -65,6 +65,10 @@ namespace QuantLib {
     */
     class ForwardRateAgreement: public Instrument {
       public:
+        /*! \deprecated Use one of the other constructors.
+                        Deprecated in version 1.31.
+        */
+        QL_DEPRECATED
         ForwardRateAgreement(
             const Date& valueDate,
             const Date& maturityDate,
@@ -72,15 +76,47 @@ namespace QuantLib {
             Rate strikeForwardRate,
             Real notionalAmount,
             const ext::shared_ptr<IborIndex>& index,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = {},
             bool useIndexedCoupon = true);
+
+        /*! \deprecated Use one of the other constructors.
+                        Deprecated in version 1.31.
+        */
+        QL_DEPRECATED
         ForwardRateAgreement(
             const Date& valueDate,
             Position::Type type,
             Rate strikeForwardRate,
             Real notionalAmount,
             const ext::shared_ptr<IborIndex>& index,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
+            Handle<YieldTermStructure> discountCurve = {});
+
+        /*! When using this constructor, the forward rate will be
+            forecast by the passed index.  This corresponds to
+            useIndexedCoupon=true in the FraRateHelper class.
+        */
+        ForwardRateAgreement(
+            const ext::shared_ptr<IborIndex>& index,
+            const Date& valueDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            Handle<YieldTermStructure> discountCurve = {});
+
+        /*! When using this constructor, a par-rate approximation will
+            be used, i.e., the forward rate will be forecast from
+            value date to maturity date by the forecast curve
+            contained in the index.  This corresponds to
+            useIndexedCoupon=false in the FraRateHelper class.
+        */
+        ForwardRateAgreement(
+            const ext::shared_ptr<IborIndex>& index,
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            Handle<YieldTermStructure> discountCurve = {});
 
         //! \name Calculations
         //@{
@@ -128,7 +164,6 @@ namespace QuantLib {
         void calculateAmount() const;
         mutable Real amount_;
     };
-
 
     inline const Calendar& ForwardRateAgreement::calendar() const { return calendar_; }
 
