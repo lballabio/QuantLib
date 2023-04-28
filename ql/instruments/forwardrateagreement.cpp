@@ -33,23 +33,9 @@ namespace QuantLib {
                                                const ext::shared_ptr<IborIndex>& index,
                                                Handle<YieldTermStructure> discountCurve,
                                                bool useIndexedCoupon)
-    : fraType_(type), notionalAmount_(notionalAmount), index_(index),
-      useIndexedCoupon_(useIndexedCoupon), dayCounter_(index->dayCounter()),
-      calendar_(index->fixingCalendar()), businessDayConvention_(index->businessDayConvention()),
-      valueDate_(valueDate), maturityDate_(maturityDate),
-      discountCurve_(std::move(discountCurve)) {
-
-        maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
-
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(discountCurve_);
-
-        QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
-
-        strikeForwardRate_ = InterestRate(strikeForwardRate,
-                                          index->dayCounter(),
-                                          Simple, Once);
-        registerWith(index_);
+    : ForwardRateAgreement(index, valueDate, maturityDate, type, strikeForwardRate,
+                           notionalAmount, std::move(discountCurve)) {
+        useIndexedCoupon_ = useIndexedCoupon;
     }
 
     ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
@@ -58,24 +44,8 @@ namespace QuantLib {
                                                Real notionalAmount,
                                                const ext::shared_ptr<IborIndex>& index,
                                                Handle<YieldTermStructure> discountCurve)
-    : fraType_(type), notionalAmount_(notionalAmount), index_(index),
-      useIndexedCoupon_(true), dayCounter_(index->dayCounter()),
-      calendar_(index->fixingCalendar()), businessDayConvention_(index->businessDayConvention()),
-      valueDate_(valueDate), maturityDate_(index->maturityDate(valueDate)),
-      discountCurve_(std::move(discountCurve)) {
-
-        maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
-
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(discountCurve_);
-
-        QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
-
-        strikeForwardRate_ = InterestRate(strikeForwardRate,
-                                          index->dayCounter(),
-                                          Simple, Once);
-        registerWith(index_);
-    }
+    : ForwardRateAgreement(index, valueDate, type, strikeForwardRate,
+                           notionalAmount, std::move(discountCurve)) {}
 
     ForwardRateAgreement::ForwardRateAgreement(const ext::shared_ptr<IborIndex>& index,
                                                const Date& valueDate,
@@ -83,24 +53,9 @@ namespace QuantLib {
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
                                                Handle<YieldTermStructure> discountCurve)
-    : fraType_(type), notionalAmount_(notionalAmount), index_(index),
-      useIndexedCoupon_(true), dayCounter_(index->dayCounter()),
-      calendar_(index->fixingCalendar()), businessDayConvention_(index->businessDayConvention()),
-      valueDate_(valueDate), maturityDate_(index->maturityDate(valueDate)),
-      discountCurve_(std::move(discountCurve)) {
-
-        maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
-
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(discountCurve_);
-
-        QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
-        QL_REQUIRE(valueDate_ < maturityDate_, "valueDate must be earlier than maturityDate");
-
-        strikeForwardRate_ = InterestRate(strikeForwardRate,
-                                          index->dayCounter(),
-                                          Simple, Once);
-        registerWith(index_);
+    : ForwardRateAgreement(index, valueDate, index->maturityDate(valueDate), type,
+                           strikeForwardRate, notionalAmount, std::move(discountCurve)) {
+        useIndexedCoupon_ = true;
     }
 
     ForwardRateAgreement::ForwardRateAgreement(const ext::shared_ptr<IborIndex>& index,
@@ -156,7 +111,7 @@ namespace QuantLib {
     void ForwardRateAgreement::performCalculations() const {
         calculateAmount();
         Handle<YieldTermStructure> discount =
-            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;            
+            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
         NPV_ = amount_ * discount->discount(valueDate_);
     }
 
@@ -171,7 +126,7 @@ namespace QuantLib {
                                   index_->forwardingTermStructure()->discount(maturityDate_) -
                               1.0) /
                                  index_->dayCounter().yearFraction(valueDate_, maturityDate_),
-                             index_->dayCounter(), Simple, Once);                         
+                             index_->dayCounter(), Simple, Once);
     }
 
     void ForwardRateAgreement::calculateAmount() const {

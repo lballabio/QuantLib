@@ -102,7 +102,7 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
                                  Position::Long,
                                  0,
                                  1,
-                                 curveHandle);       
+                                 curveHandle);
 
         Real rate2 = fra2.forwardRate();
         if (std::fabs(rate2 - 0.01) > 1e-6) {
