@@ -27,6 +27,7 @@
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -810,6 +811,47 @@ void CallableBondTest::testImpliedVol() {
             << "    difference:     " << bond.NPV() - targetNPV);
 }
 
+void CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule() {
+    BOOST_TEST_MESSAGE("Testing callable fixed-rate bond with arbitrary schedule...");
+
+    Globals vars;
+
+    Natural settlementDays = 2;
+    vars.today = Date(10, Jan, 2020);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = vars.calendar.advance(vars.today, settlementDays, Days);
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
+    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+
+    Size timeSteps = 240;
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<TreeCallableFixedRateBondEngine>(
+        *(vars.model), timeSteps, vars.termStructure);
+
+    std::vector<Date> dates(4);
+    dates[0] = Date(20, February, 2020);
+    dates[1] = Date(15, Aug, 2020);
+    dates[2] = Date(25, Sep, 2021);
+    dates[3] = Date(27, Jan, 2022);
+
+    Schedule schedule(dates, vars.calendar, Unadjusted);
+
+    CallabilitySchedule callabilities = {
+        ext::make_shared<Callability>(
+                         Bond::Price(100.0, Bond::Price::Clean), 
+                         Callability::Call, 
+                         dates[2])
+    };
+
+    std::vector<Rate> coupons(1, 0.06);
+
+    CallableFixedRateBond callableBond(settlementDays, 100.0, schedule, coupons, vars.dayCounter,
+                                       vars.rollingConvention, 100.0, vars.issueDate(), callabilities);
+    callableBond.setPricingEngine(engine);
+
+    BOOST_CHECK_NO_THROW(callableBond.cleanPrice());
+}
+
 
 test_suite* CallableBondTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Callable-bond tests");
@@ -821,5 +863,6 @@ test_suite* CallableBondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testBlackEngine));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule));
     return suite;
 }
