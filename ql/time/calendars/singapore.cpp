@@ -111,6 +111,94 @@ namespace QuantLib {
             || (d == 28 && m == July && y == 2014)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
+
+        // https://api2.sgx.com/sites/default/files/2019-01/2019%20DT%20Calendar.pdf
+        if (y == 2019)
+        {
+            if ( // Chinese New Year
+                ((d == 1 || d == 2) && m == February)
+                // Vesak Poya Day
+                || (d == 20 && m == May)
+                // Hari Raya Puasa
+                || (d == 5 && m == June)
+                // Hari Raya Haji
+                || (d == 12 && m == August)
+                // Deepavali
+                || (d == 28 && m == October)
+                )
+                return false;
+        }
+
+        // https://api2.sgx.com/sites/default/files/2020-11/SGX%20Derivatives%20Trading%20Calendar%202020_Dec%20Update_D3.pdf
+        if (y == 2020)
+        {
+            if ( // Chinese New Year
+                (d == 27 && m == January)
+                // Vesak Poya Day
+                || (d == 7 && m == May)
+                // Hari Raya Puasa
+                || (d == 25 && m == May)
+                // Hari Raya Haji
+                || (d == 31 && m == July)
+                // Deepavali
+                || (d == 14 && m == November)
+                )
+                return false;
+        }
+
+        // https://api2.sgx.com/sites/default/files/2021-07/SGX_Derivatives%20Trading%20Calendar%202021%20%28Final%20-%20Jul%29.pdf
+        if (y == 2021)
+        {
+            if ( // Chinese New Year
+                (d == 12 && m == February)
+                // Hari Raya Puasa
+                || (d == 13 && m == May)
+                // Vesak Poya Day
+                || (d == 26 && m == May)
+                // Hari Raya Haji
+                || (d == 20 && m == July)
+                // Deepavali
+                || (d == 4 && m == November)
+                )
+                return false;
+        }
+
+        // https://api2.sgx.com/sites/default/files/2022-06/DT%20Trading%20Calendar%202022%20%28Final%29.pdf
+        if (y == 2022)
+        {
+            if (// Chinese New Year
+                ((d == 1 || d == 2) && m == February)
+                // Labour Day
+                || (d == 2 && m == May)
+                // Hari Raya Puasa
+                || (d == 3 && m == May)
+                // Vesak Poya Day
+                || (d == 16 && m == May)
+                // Hari Raya Haji
+                || (d == 11 && m == July)
+                // Deepavali
+                || (d == 24 && m == October)
+                // Christmas Day
+                || (d == 26 && m == December)
+                )
+                return false;
+        }
+
+        // https://api2.sgx.com/sites/default/files/2023-01/SGX%20Calendar%202023_0.pdf
+        if (y == 2023)
+        {
+            if (// Chinese New Year
+                ((d == 23 || d == 24) && m == January)
+                // Hari Raya Puasa
+                || (d == 22 && m == April)
+                // Vesak Poya Day
+                || (d == 2 && m == June)
+                // Hari Raya Haji
+                || (d == 29 && m == June)
+                // Deepavali
+                || (d == 13 && m == November))
+                return false;
+        }
         return true;
     }
 
