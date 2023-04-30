@@ -42,11 +42,11 @@ namespace QuantLib {
     : StrippedOptionlet(settlementDays,
                         calendar,
                         bdc,
-                        iborIndex,
+                        std::move(iborIndex),
                         optionletDates,
                         vector<vector<Rate>>(optionletDates.size(), strikes),
-                        v,
-                        dc,
+                        std::move(v),
+                        std::move(dc),
                         type,
                         displacement) {}
 
@@ -116,8 +116,8 @@ namespace QuantLib {
 
     void StrippedOptionlet::registerWithMarketData() {
         for (Size i = 0; i < nOptionletDates_; ++i)
-            for (Size j = 0; j < optionletVolQuotes_[i].size(); ++j)
-                registerWith(optionletVolQuotes_[i][j]);
+            for (auto& j : optionletVolQuotes_[i])
+                registerWith(j);
     }
 
     void StrippedOptionlet::performCalculations() const {
