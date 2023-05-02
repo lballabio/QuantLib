@@ -511,7 +511,7 @@ namespace QuantLib {
     : CallableBond(settlementDays, schedule.dates().back(), schedule.calendar(),
                    accrualDayCounter, faceAmount, issueDate, putCallSchedule) {
 
-        frequency_ = schedule.tenor().frequency();
+        frequency_ = schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency;
 
         cashflows_ =
             FixedRateLeg(schedule)
