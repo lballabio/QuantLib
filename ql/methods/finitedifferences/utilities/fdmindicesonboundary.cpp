@@ -35,9 +35,7 @@ namespace QuantLib {
         indices_.resize(hyperSize);
 
         Size i=0;
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *layout) {
             if (   (   side == FdmDirichletBoundary::Lower
                     && iter.coordinates()[direction] == 0)
                 || (   side == FdmDirichletBoundary::Upper

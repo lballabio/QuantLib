@@ -66,10 +66,7 @@ namespace QuantLib {
             avgInnerValues_.resize(mesher_->layout()->dim()[direction_]);
             std::deque<bool> initialized(avgInnerValues_.size(), false);
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout =
-                mesher_->layout();
-            const FdmLinearOpIterator endIter = layout->end();
-            for (FdmLinearOpIterator i = layout->begin(); i != endIter; ++i) {
+            for (const auto& i : *mesher_->layout()) {
                 const Size xn = i.coordinates()[direction_];
                 if (!initialized[xn]) {
                     initialized[xn]     = true;

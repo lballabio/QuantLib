@@ -41,12 +41,9 @@ namespace QuantLib {
         // on the boundary s_min and s_max the second derivative
         // d²V/dS² is zero and due to Ito's Lemma the variance term
         // in the drift should vanish.
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             if (   iter.coordinates()[0] == 0
-                || iter.coordinates()[0] == layout->dim()[0]-1) {
+                || iter.coordinates()[0] == mesher_->layout()->dim()[0]-1) {
                 varianceValues_[iter.index()] = 0.0;
             }
         }

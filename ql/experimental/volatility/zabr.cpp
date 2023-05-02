@@ -163,8 +163,7 @@ std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
 
     // initial values
     Array rhs(mesher->layout()->size());
-    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
-         ++iter) {
+    for (const auto& iter : *layout) {
         Real k = mesher->location(iter, 0);
         rhs[iter.index()] = std::max(forward_ - k, 0.0);
     }
@@ -275,8 +274,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     Array rhs(mesher->layout()->size());
     std::vector<Real> f_;
     std::vector<Real> v_;
-    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
-         ++iter) {
+    for (const auto& iter : *layout) {
         Real f = mesher->location(iter, 0);
         // Real v = mesher->location(iter, 0);
         rhs[iter.index()] = std::max(f - strike, 0.0);
