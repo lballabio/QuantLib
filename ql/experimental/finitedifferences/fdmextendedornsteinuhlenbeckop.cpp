@@ -52,12 +52,8 @@ namespace QuantLib {
     void FdmExtendedOrnsteinUhlenbeckOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        Array drift(layout->size());
-        for (FdmLinearOpIterator iter = layout->begin();
-             iter!=endIter; ++iter) {
+        Array drift(mesher_->layout()->size());
+        for (const auto& iter : *mesher_->layout()) {
             const Size i = iter.index();
             drift[i] = process_->drift(0.5*(t1+t2), x_[i]);
         }

@@ -42,16 +42,11 @@ namespace QuantLib {
       x_(solverDesc.mesher->layout()->size()), initialValues_(solverDesc.mesher->layout()->size()),
       resultValues_(solverDesc.mesher->layout()->size()) {
 
-        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-             ++iter) {
+        for (const auto& iter : *solverDesc.mesher->layout()) {
             initialValues_[iter.index()]
                  = solverDesc_.calculator->avgInnerValue(iter,
                                                          solverDesc.maturity);
-            x_[iter.index()] = mesher->location(iter, 0);
+            x_[iter.index()] = solverDesc.mesher->location(iter, 0);
         }
     }
 

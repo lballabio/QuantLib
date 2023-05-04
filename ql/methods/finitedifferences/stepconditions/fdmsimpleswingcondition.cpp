@@ -44,15 +44,10 @@ namespace QuantLib {
 
             const Size d = std::distance(iter, exerciseTimes_.end());
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-
-            QL_REQUIRE(layout->size() == a.size(),
+            QL_REQUIRE(mesher_->layout()->size() == a.size(),
                        "inconsistent array dimensions");
 
-            const FdmLinearOpIterator endIter = layout->end();
-            
-            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-                 ++iter) {
+            for (const auto& iter : *mesher_->layout()) {
                 
                 const std::vector<Size>& coor = iter.coordinates();
                 
@@ -62,7 +57,7 @@ namespace QuantLib {
                     const Real cashflow = calculator_->innerValue(iter, t);
                     const Real currentValue = a[iter.index()];
                     const Real valuePlusOneExercise
-                         = a[layout->neighbourhood(iter, swingDirection_, 1)];
+                         = a[mesher_->layout()->neighbourhood(iter, swingDirection_, 1)];
                     
                     if (   currentValue < valuePlusOneExercise + cashflow
                         || exercisesUsed + d <=  minExercises_) {

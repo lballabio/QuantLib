@@ -52,12 +52,8 @@ namespace QuantLib {
         const Real kappa = process_->kappa();
         const Real sigma = process_->sigma();
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
         Array p(mesher_->layout()->size());
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Real x = mesher_->location(iter, 0);
             const Real v = (trafoType_ != FdmSquareRootFwdOp::Log)
                 ? mesher_->location(iter, 1)

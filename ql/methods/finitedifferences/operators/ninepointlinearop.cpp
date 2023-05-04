@@ -53,20 +53,17 @@ namespace QuantLib {
             && d1_ < mesher->layout()->dim().size(),
             "inconsistent derivative directions");
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             const Size i = iter.index();
 
-            i10_[i] = layout->neighbourhood(iter, d1_, -1);
-            i01_[i] = layout->neighbourhood(iter, d0_, -1);
-            i21_[i] = layout->neighbourhood(iter, d0_,  1);
-            i12_[i] = layout->neighbourhood(iter, d1_,  1);
-            i00_[i] = layout->neighbourhood(iter, d0_, -1, d1_, -1);
-            i20_[i] = layout->neighbourhood(iter, d0_,  1, d1_, -1);
-            i02_[i] = layout->neighbourhood(iter, d0_, -1, d1_,  1);
-            i22_[i] = layout->neighbourhood(iter, d0_,  1, d1_,  1);
+            i10_[i] = mesher->layout()->neighbourhood(iter, d1_, -1);
+            i01_[i] = mesher->layout()->neighbourhood(iter, d0_, -1);
+            i21_[i] = mesher->layout()->neighbourhood(iter, d0_,  1);
+            i12_[i] = mesher->layout()->neighbourhood(iter, d1_,  1);
+            i00_[i] = mesher->layout()->neighbourhood(iter, d0_, -1, d1_, -1);
+            i20_[i] = mesher->layout()->neighbourhood(iter, d0_,  1, d1_, -1);
+            i02_[i] = mesher->layout()->neighbourhood(iter, d0_, -1, d1_,  1);
+            i22_[i] = mesher->layout()->neighbourhood(iter, d0_,  1, d1_,  1);
         }
     }
 
@@ -112,9 +109,8 @@ namespace QuantLib {
 
     Array NinePointLinearOp::apply(const Array& u) const {
 
-        const ext::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
-        QL_REQUIRE(u.size() == index->size(),"inconsistent length of r "
-                    << u.size() << " vs " << index->size());
+        QL_REQUIRE(u.size() == mesher_->layout()->size(),"inconsistent length of r "
+                    << u.size() << " vs " << mesher_->layout()->size());
 
         Array retVal(u.size());
         // direct access to make the following code faster.
@@ -141,11 +137,10 @@ namespace QuantLib {
     }
 
     SparseMatrix NinePointLinearOp::toMatrix() const {
-        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
-        const Size n = index->size();
+        const Size n = mesher_->layout()->size();
 
         SparseMatrix retVal(n, n, 9*n);
-        for (Size i=0; i < index->size(); ++i) {
+        for (Size i=0; i < mesher_->layout()->size(); ++i) {
             retVal(i, i00_[i]) += a00_[i];
             retVal(i, i01_[i]) += a01_[i];
             retVal(i, i02_[i]) += a02_[i];

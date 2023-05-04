@@ -42,12 +42,9 @@ namespace QuantLib {
         // on the boundary s_min and s_max the second derivative
         // d^2V/dS^2 is zero and due to Ito's Lemma the variance term
         // in the drift should vanish.
-        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             if (   iter.coordinates()[0] == 0
-                || iter.coordinates()[0] == layout->dim()[0]-1) {
+                || iter.coordinates()[0] == mesher_->layout()->dim()[0]-1) {
                 varianceValues_[iter.index()] = 0.0;
             }
         }
@@ -74,8 +71,7 @@ namespace QuantLib {
 
     Array FdmHestonEquityPart::getLeverageFctSlice(Time t1, Time t2) const {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-        Array v(layout->size(), 1.0);
+        Array v(mesher_->layout()->size(), 1.0);
 
         if (!leverageFct_) {
             return v;
@@ -83,9 +79,7 @@ namespace QuantLib {
         const Real t = 0.5*(t1+t2);
         const Time time = std::min(leverageFct_->maxTime(), t);
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin();
-             iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Size nx = iter.coordinates()[0];
 
             if (iter.coordinates()[1] == 0) {

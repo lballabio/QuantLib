@@ -638,14 +638,11 @@ namespace {
                        const ext::shared_ptr<FdmMesherComposite>& mesher) {
 
         std::vector<Real> x, y;
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
-        x.reserve(layout->dim()[0]);
-        y.reserve(layout->dim()[1]);
+        x.reserve(mesher->layout()->dim()[0]);
+        y.reserve(mesher->layout()->dim()[1]);
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-              ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[1] == 0U) {
                 x.push_back(mesher->location(iter, 0));
             }
@@ -809,7 +806,6 @@ namespace {
         Array p = FdmHestonGreensFct(mesher, process, testCase.trafoType)
                 .get(eT, testCase.greensAlgorithm);
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const Real strikes[] = { 50, 80, 90, 100, 110, 120, 150, 200 };
 
         Time t=eT;
@@ -834,8 +830,7 @@ namespace {
                                                          strike));
 
                 Array pd(p.size());
-                for (FdmLinearOpIterator iter = layout->begin();
-                    iter != layout->end(); ++iter) {
+                for (const auto& iter : *mesher->layout()) {
                     const Size idx = iter.index();
                     const Real s = std::exp(mesher->location(iter, 0));
 
@@ -1125,9 +1120,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Real bsV0 = squared(lvProcess->blackVolatility()->blackVol(0.0, s0, true));
 
     SquareRootProcessRNDCalculator rndCalculator(v0, kappa, theta, sigma);
-    const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-    for (FdmLinearOpIterator iter = layout->begin(); iter != layout->end();
-         ++iter) {
+    for (const auto& iter : *mesher->layout()) {
         const Real x = mesher->location(iter, 0);
         if (v != mesher->location(iter, 1)) {
             v = mesher->location(iter, 1);
@@ -1192,8 +1185,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
 			ext::make_shared<CashOrNothingPayoff>(Option::Put, Real(strike), 1.0));
 
         Array pd(p.size());
-        for (FdmLinearOpIterator iter = layout->begin();
-            iter != layout->end(); ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             const Size idx = iter.index();
             const Real s = std::exp(mesher->location(iter, 0));
 

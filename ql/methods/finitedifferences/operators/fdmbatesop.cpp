@@ -87,16 +87,12 @@ namespace QuantLib {
     }
     
     Array FdmBatesOp::integro(const Array& r) const {
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        
-        QL_REQUIRE(layout->dim().size() == 2, "invalid layout dimension");
+        QL_REQUIRE(mesher_->layout()->dim().size() == 2, "invalid layout dimension");
 
-        Array x(layout->dim()[0]);
-        Matrix f(layout->dim()[1], layout->dim()[0]);
+        Array x(mesher_->layout()->dim()[0]);
+        Matrix f(mesher_->layout()->dim()[1], mesher_->layout()->dim()[0]);
         
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Size i = iter.coordinates()[0];
             const Size j = iter.coordinates()[1];
             
@@ -111,7 +107,7 @@ namespace QuantLib {
         }
         
         Array integral(r.size());
-        for (FdmLinearOpIterator iter=layout->begin(); iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Size i = iter.coordinates()[0];
             const Size j = iter.coordinates()[1];
 

@@ -61,9 +61,8 @@ namespace QuantLib {
               SecondOrderMixedDerivativeOp(0, 1, mesher)
                   .mult(rho_ * mixedSigma_ * mesher->locations(1)))),
       leverageFct_(std::move(leverageFct)), mesher_(mesher) {
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         // zero flux boundary condition
-        const Size n = layout->dim()[1];
+        const Size n = mesher->layout()->dim()[1];
         const Real lowerBoundaryFactor = mapY_->lowerBoundaryFactor(type);
         const Real upperBoundaryFactor = mapY_->upperBoundaryFactor(type);
 
@@ -75,8 +74,7 @@ namespace QuantLib {
 
         ModTripleBandLinearOp fDx(FirstDerivativeOp(0, mesher));
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[1] == 0) {
                 const Size idx = iter.index();
                 if (!leverageFct_) {
@@ -193,8 +191,7 @@ namespace QuantLib {
     }
 
     Array FdmHestonFwdOp::getLeverageFctSlice(Time t1, Time t2) const {
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-        Array v(layout->size(), 1.0);
+        Array v(mesher_->layout()->size(), 1.0);
 
         if (!leverageFct_)
             return v;
@@ -203,9 +200,7 @@ namespace QuantLib {
         const Time time = std::min(leverageFct_->maxTime(), t);
                                    //std::max(leverageFct_->minTime(), t));
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin();
-             iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Size nx = iter.coordinates()[0];
 
             if (iter.coordinates()[1] == 0) {
