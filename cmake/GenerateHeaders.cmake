@@ -47,9 +47,12 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube1.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube2.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube1a.hpp")
-    list(FILTER children_hpp EXCLUDE REGEX "amortizingfixedratebond.hpp")
-    list(FILTER children_hpp EXCLUDE REGEX "amortizingfloatingratebond.hpp")
-    list(FILTER children_hpp EXCLUDE REGEX "amortizingcmsratebond.hpp")
+
+    ### Temporarily disabled as the headers are also removed from ql/instruments/bonds/all.hpp
+    # list(FILTER children_hpp EXCLUDE REGEX "amortizingfixedratebond.hpp")
+    # list(FILTER children_hpp EXCLUDE REGEX "amortizingfloatingratebond.hpp")
+    # list(FILTER children_hpp EXCLUDE REGEX "amortizingcmsratebond.hpp")
+    
     list(FILTER children_hpp EXCLUDE REGEX "riskybond.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "composite.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "lexicographicalview.hpp")
