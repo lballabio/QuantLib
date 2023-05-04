@@ -1240,12 +1240,12 @@ void DayCounterTest::testActualConsistency() {
             const Time t360incl = actual360incl.yearFraction(today, d);
             const Time t36525 = actual36525.yearFraction(today, d);
 
-            BOOST_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
-            BOOST_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
+            QL_CHECK_SMALL(t365*365/366.0 - t366, 1e-14);
+            QL_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+            QL_CHECK_SMALL(t365*365/360.0 - t360, 1e-14);
+            QL_CHECK_SMALL(t365*365/364.0 - t364, 1e-14);
+            QL_CHECK_SMALL(t365*365/365.25 - t36525, 1e-14);
+            QL_CHECK_SMALL(t365*365/360.0 - (t360incl*360-1)/360, 1e-14);
         }
 }
 
