@@ -34,7 +34,6 @@ namespace QuantLib {
     class LazyObject : public virtual Observable,
                        public virtual Observer {
       public:
-        LazyObject();
         ~LazyObject() override = default;
         //! \name Observer interface
         //@{
@@ -103,60 +102,23 @@ namespace QuantLib {
             After recalculation, this object would again forward the first notification
             received.
 
-            The behaviour is not always correct though and should only be enabled in
-            appropriate configurations.  In if doubt, do not use it.
+            This behaviour is not always correct though and should only be enabled in
+            appropriate cases.  In if doubt, do not use it.
         */
         void forwardFirstNotificationOnly();
 
         /*! This method causes the object to forward all notifications received.
-            The behaviour is already the default, unless changed by calling
-            LazyObjectSettings::forwardFirstNotificationOnly().
+            This behaviour is already the default.
         */
         void alwaysForwardNotifications();
         //@}
 
       protected:
-        mutable bool calculated_ = false, frozen_ = false, alwaysForward_;
-    };
-
-    //! Per-session settings for the LazyObject class
-    class LazyObjectSettings : public Singleton<LazyObjectSettings> {
-        friend class Singleton<LazyObjectSettings>;
-      private:
-        LazyObjectSettings() = default;
-
-      public:
-        /*! by default, lazy objects created after calling this method
-            will only forward the first notification after successful
-            recalculation; see
-            LazyObject::forwardFirstNotificationOnly for details.
-        */
-        void forwardFirstNotificationOnly() {
-            forwardsAllNotifications_ = false;
-        }
-
-        /*! by default, lazy objects created after calling this method
-            will always forward notifications; see
-            LazyObject::alwaysForwardNotifications for details.
-        */
-        void alwaysForwardNotifications() {
-            forwardsAllNotifications_ = true;
-        }
-
-        //! returns the current default
-        bool forwardsAllNotifications() const {
-            return forwardsAllNotifications_;
-        }
-
-      private:
-        bool forwardsAllNotifications_ = true;
+        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true;
     };
 
 
     // inline definitions
-
-    inline LazyObject::LazyObject()
-    : alwaysForward_(LazyObjectSettings::instance().forwardsAllNotifications()) {}
 
     inline void LazyObject::update() {
         // forwards notifications only the first time
