@@ -45,6 +45,7 @@ option(QL_BUILD_TEST_SUITE "Build test suite" ON)
 option(QL_ENABLE_OPENMP "Detect and use OpenMP" OFF)
 option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner" OFF)
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
+option(QL_ENABLE_SUPPORTED_OPTIMIZATIONS "Compile with optimization flags that are known to work" OFF)
 option(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "Enable the thread-safe observer pattern" OFF)
 option(QL_ENABLE_TRACING "Tracing messages should be allowed" OFF)
 option(QL_ENABLE_DEFAULT_WARNING_LEVEL "Enable the default warning level to pass the ci pipeline" ON)
@@ -103,13 +104,23 @@ if (CMAKE_CXX_STANDARD LESS 17)
     endif()
 endif ()
 
+if (QL_ENABLE_SUPPORTED_OPTIMIZATIONS)
+    if (NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+        message(WARNING "QL_ENABLE_SUPPORTED_OPTIMIZATIONS is intended for release builds only")
+    endif()
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options(-fno-math-errno)
+        add_compile_options(-fno-trapping-math)
+    endif()
+endif()
+
 # Set the default warning level we use to pass the GitHub workflows
 if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
     if (MSVC)
         # warning level 3
         # There are also specific warnings disabled for MSCV in cmake/Platform.cmake.
         add_compile_options(-W3)
-    else()
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # lots of warnings
         add_compile_options(-Wall -Wno-unknown-pragmas)
     endif()
