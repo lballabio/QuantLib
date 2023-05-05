@@ -112,11 +112,11 @@ namespace detail {
         bool dontThrow_;
         Size dontThrowSteps_;
         Curve* ts_;
-        Size n_;
+        Size n_ = 0;
         Brent firstSolver_;
         FiniteDifferenceNewtonSafe solver_;
         mutable bool initialized_ = false, validCurve_ = false, loopRequired_;
-        mutable Size firstAliveHelper_, alive_;
+        mutable Size firstAliveHelper_ = 0, alive_ = 0;
         mutable std::vector<Real> previousData_;
         mutable std::vector<ext::shared_ptr<BootstrapError<Curve> > > errors_;
     };
