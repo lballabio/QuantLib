@@ -109,7 +109,7 @@ if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
         # warning level 3
         # There are also specific warnings disabled for MSCV in cmake/Platform.cmake.
         add_compile_options(-W3)
-    else()
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # lots of warnings
         add_compile_options(-Wall -Wno-unknown-pragmas)
     endif()
@@ -125,7 +125,7 @@ if (QL_COMPILE_WARNING_AS_ERROR)
         # or set them manually
         if (MSVC)
             add_compile_options(-WX)
-        else()
+        elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             add_compile_options(-Werror)
         endif()
     endif()
