@@ -22,16 +22,20 @@ jobs:
         ./autogen.sh
         ./configure --disable-static CC="ccache gcc" CXX="ccache g++" CXXFLAGS="-O2 -g0"
         make -j 2
-    - name: Run tests
+    - name: Run faster tests
       run: |
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,faster.xml:HRF,message -- --faster
+    - name: Run fast tests
+      run: |
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,fast.xml:HRF,message -- --fast
+    - name: Run all tests
+      run: |
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,all.xml:HRF,message
     - name: Save test times
       uses: actions/upload-artifact@v3
       with:
         name: test-reports
-        path: ./all.xml
+        path: ./*.xml
     - name: Check test times
       run: |
         python ./tools/check_test_times.py
