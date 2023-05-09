@@ -6,7 +6,7 @@
  Copyright (C) 2008, 2011 Charles Chongseok Hyun
  Copyright (C) 2015 Riccardo Barone
  Copyright (C) 2015 Paolo Mazzocchi
-
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -124,6 +124,9 @@ namespace QuantLib {
             || (d ==  9 && m == May      && y == 2017) // Presidency
             || (d == 13 && m == June     && y == 2018) // Local election
             || (d == 15 && m == April    && y == 2020) // National Assembly
+            || (d ==  9 && m == March    && y == 2022) // Presidency
+            || (d ==  1 && m == June     && y == 2022) // Local election
+            || (d == 10 && m == April    && y == 2024) // National Assembly
             // Buddha's birthday
             || (d == 26 && m == May   && y == 2004)
             || (d == 15 && m == May   && y == 2005)
