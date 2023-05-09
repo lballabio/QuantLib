@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2023 Andre Miemiec
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,10 +41,10 @@
 namespace QuantLib {
 
 //===========================================================================//
-//                          BlackVanillaOptionPricer                         //
+//                 Market Quoted Options Pricer                              //
 //===========================================================================//
 
-    BlackVanillaOptionPricer::BlackVanillaOptionPricer(
+    MarketQuotedOptionPricer::MarketQuotedOptionPricer(
             Rate forwardValue,
             Date expiryDate,
             const Period& swapTenor,
@@ -51,17 +52,24 @@ namespace QuantLib {
     forwardValue_(forwardValue), expiryDate_(expiryDate), swapTenor_(swapTenor),
         volatilityStructure_(volatilityStructure),
         smile_(volatilityStructure_->smileSection(expiryDate_, swapTenor_)) {
-        QL_REQUIRE(volatilityStructure->volatilityType() == ShiftedLognormal &&
-                   close_enough(volatilityStructure->shift(expiryDate,swapTenor),0.0),
-                   "BlackVanillaOptionPricer: zero-shift lognormal volatility required");
+        QL_REQUIRE((volatilityStructure->volatilityType() == Normal) ||
+              (volatilityStructure->volatilityType() == ShiftedLognormal &&
+                    close_enough(volatilityStructure->shift(expiryDate, swapTenor), 0.0)),
+               "VanillaOptionPricer: zero-shift lognormal volatility required");
+ 
         }
 
-    Real BlackVanillaOptionPricer::operator()(Real strike,
+    Real MarketQuotedOptionPricer::operator()(Real strike,
                                               Option::Type optionType,
                                               Real deflator) const {
-        const Real variance = smile_->variance(strike);
-        return deflator * blackFormula(optionType, strike,
-            forwardValue_, std::sqrt(variance));
+       const Real variance = smile_->variance(strike);
+       if (volatilityStructure_->volatilityType() == ShiftedLognormal) {
+         return deflator *
+                blackFormula(optionType, strike, forwardValue_, std::sqrt(variance));
+       } else {
+         return deflator * 
+                bachelierBlackFormula(optionType, strike, forwardValue_, std::sqrt(variance));
+       }
     }
 
 
@@ -87,7 +95,7 @@ namespace QuantLib {
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
         const ext::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
-        rateCurve_ = *(swapIndex->forwardingTermStructure());
+        rateCurve_ = *(swapIndex->discountingTermStructure());
 
         Date today = Settings::instance().evaluationDate();
 
@@ -137,7 +145,7 @@ namespace QuantLib {
                     QL_FAIL("unknown/illegal gFunction type");
             }
             vanillaOptionPricer_= ext::shared_ptr<VanillaOptionPricer>(new
-                BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
+                MarketQuotedOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
                                         *swaptionVolatility()));
          }
     }
@@ -370,13 +378,16 @@ namespace QuantLib {
         return integralValue;
     }
 
-    Real NumericHaganPricer::resetUpperLimit(
-                        Real stdDeviationsForUpperLimit) const {
-        //return 1.0;
+    Real NumericHaganPricer::resetUpperLimit(Real stdDeviationsForUpperLimit) const {
+        // return 1.0;
         Real variance =
-            swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
-        return swapRateValue_ *
-            std::exp(stdDeviationsForUpperLimit*std::sqrt(variance));
+            swaptionVolatility()->blackVariance(fixingDate_, swapTenor_, swapRateValue_);
+
+        if (swaptionVolatility()->volatilityType() == ShiftedLognormal) {
+            return swapRateValue_ * std::exp(stdDeviationsForUpperLimit * std::sqrt(variance));
+        } else {
+            return swapRateValue_ + stdDeviationsForUpperLimit * std::sqrt(variance);
+        }
     }
 
 

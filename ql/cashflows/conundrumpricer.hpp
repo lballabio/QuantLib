@@ -1,6 +1,8 @@
 /*
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2023 Andre Miemiec
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,9 +42,9 @@ namespace QuantLib {
                                 Real deflator) const = 0;
     };
 
-    class BlackVanillaOptionPricer : public VanillaOptionPricer {
+    class MarketQuotedOptionPricer : public VanillaOptionPricer {
       public:
-        BlackVanillaOptionPricer(
+        MarketQuotedOptionPricer(
                 Rate forwardValue,
                 Date expiryDate,
                 const Period& swapTenor,
