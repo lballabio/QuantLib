@@ -1056,35 +1056,26 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
 test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testArbitrageFree));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testDifferentOptimizers));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testFlatVolCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testArbitrageFree));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testDifferentOptimizers));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testFlatVolCalibration));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testLinearInterpolation));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates));
+    }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testLinearInterpolation));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing));
     }
+
     return suite;
 }
 
