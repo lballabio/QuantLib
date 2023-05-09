@@ -381,7 +381,7 @@ test_suite* BermudanSwaptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testTreeEngineTimeSnapping));
 
-    if (speed == Slow) {
+    if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedG2Values));
     }
 
