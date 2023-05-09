@@ -217,7 +217,12 @@ namespace QuantLib {
         return putOptionRate;
     }
 
-    Rate DigitalCoupon::rate() const {
+    void DigitalCoupon::deepUpdate() {
+        update();
+        underlying_->deepUpdate();
+    }
+
+    void DigitalCoupon::performCalculations() const {
 
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
 
@@ -229,18 +234,24 @@ namespace QuantLib {
         if (fixingDate < today ||
             ((fixingDate == today) && enforceTodaysHistoricFixings)) {
             // must have been fixed
-            return underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
-        }
-        if (fixingDate == today) {
+            rate_ = underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
+        } else if (fixingDate == today) {
             // might have been fixed
             Rate pastFixing =
                 IndexManager::instance().getHistory((underlying_->index())->name())[fixingDate];
             if (pastFixing != Null<Real>()) {
-                return underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
-            } else
-                return underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
+                rate_ = underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
+            } else {
+                rate_ = underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
+            }
+        } else {
+            rate_ = underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
         }
-        return underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
+    }
+
+    Rate DigitalCoupon::rate() const {
+        calculate();
+        return rate_;
     }
 
     Rate DigitalCoupon::convexityAdjustment() const {
@@ -273,10 +284,6 @@ namespace QuantLib {
             return putDigitalPayoff_;
         else
             return Null<Rate>();
-    }
-
-    void DigitalCoupon::update() {
-        notifyObservers();
     }
 
     void DigitalCoupon::accept(AcyclicVisitor& v) {

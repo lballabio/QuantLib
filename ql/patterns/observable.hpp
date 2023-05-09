@@ -130,8 +130,18 @@ namespace QuantLib {
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
+            itself.
+
+            \deprecated This method was introduced to work around incorrect behaviour
+                        caused by limiting notifications from LazyObject instances to
+                        the first notification. The default behaviour of LazyObject was
+                        changed to forward all notifications so that a call to this
+                        method should no longer be necessary.
+                        Deprecated in version 1.30.
+        */
+        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -291,8 +301,18 @@ namespace QuantLib {
         registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
+            itself.
+
+            \deprecated This method was introduced to work around incorrect behaviour
+                        caused by limiting notifications from LazyObject instances to
+                        the first notification. The default behaviour of LazyObject was
+                        changed to forward all notifications so that a call to this
+                        method should no longer be necessary.
+                        Deprecated in version 1.30.
+        */
+        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -356,9 +376,9 @@ namespace QuantLib {
         set_type observables_;
     };
 
-	namespace detail {
-		class Signal;
-	}
+    namespace detail {
+        class Signal;
+    }
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */

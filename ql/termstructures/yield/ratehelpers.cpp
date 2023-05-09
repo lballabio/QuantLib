@@ -885,7 +885,7 @@ namespace QuantLib {
     Real SwapRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
-        swap_->recalculate();
+        swap_->deepUpdate();
         // weak implementation... to be improved
         static const Spread basisPoint = 1.0e-4;
         Real floatingLegNPV = swap_->floatingLegNPV();
@@ -988,7 +988,7 @@ namespace QuantLib {
     Real BMASwapRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
-        swap_->recalculate();
+        swap_->deepUpdate();
         return swap_->fairLiborFraction();
     }
 

@@ -880,6 +880,9 @@ void PiecewiseYieldCurveTest::testObservability() {
                                                    vars.calendar,
                                                    vars.instruments,
                                                    Actual360()));
+
+    ext::dynamic_pointer_cast<LazyObject>(vars.termStructure)->forwardFirstNotificationOnly();
+
     Flag f;
     f.registerWith(vars.termStructure);
 
