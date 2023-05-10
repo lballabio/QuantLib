@@ -251,6 +251,7 @@ namespace QuantLib {
         // Override the deprecation above
         bool interpolated() const;
         bool ratio() const;
+        ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
         ext::shared_ptr<YoYInflationIndex> clone(
@@ -264,6 +265,7 @@ namespace QuantLib {
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
+        ext::shared_ptr<ZeroInflationIndex> underlyingIndex_;
         Handle<YoYInflationTermStructure> yoyInflation_;
     };
 
@@ -331,6 +333,10 @@ namespace QuantLib {
 
     inline bool YoYInflationIndex::ratio() const {
         return ratio_;
+    }
+
+    inline ext::shared_ptr<ZeroInflationIndex> YoYInflationIndex::underlyingIndex() const {
+        return underlyingIndex_;
     }
 
     inline Handle<YoYInflationTermStructure>

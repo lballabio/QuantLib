@@ -283,7 +283,6 @@ namespace QuantLib {
         return clonedIndex;
     }
 
-    // these still need to be fixed to latest versions
 
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
@@ -296,6 +295,9 @@ namespace QuantLib {
                                          Handle<YoYInflationTermStructure> yoyInflation)
     : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       interpolated_(interpolated), ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
+        if (ratio)
+            underlyingIndex_ = ext::make_shared<ZeroInflationIndex>(familyName, region, revised,
+                                                                    frequency, availabilityLag, currency);
         registerWith(yoyInflation_);
     }
 
@@ -311,7 +313,6 @@ namespace QuantLib {
         Date flatMustForecastOn = lastFix+1;
         Date interpMustForecastOn = lastFix+1 - Period(frequency_);
 
-
         if (interpolated() && fixingDate >= interpMustForecastOn) {
             return forecastFixing(fixingDate);
         }
@@ -320,54 +321,15 @@ namespace QuantLib {
             return forecastFixing(fixingDate);
         }
 
-        // four cases with ratio() and interpolated()
-
         const TimeSeries<Real>& ts = timeSeries();
         if (ratio()) {
 
-            if(interpolated()){ // IS ratio, IS interpolated
+            auto interpolationType = interpolated() ? CPI::Linear : CPI::Flat;
 
-                std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-                Date fixMinus1Y = NullCalendar().advance(fixingDate, -1*Years, ModifiedFollowing);
-                std::pair<Date,Date> limBef = inflationPeriod(fixMinus1Y, frequency_);
-                Real dp = lim.second + 1 - lim.first;
-                Real dpBef = limBef.second + 1 - limBef.first;
-                Real dl = fixingDate-lim.first;
-                // potentially does not work on 29th Feb
-                Real dlBef = fixMinus1Y - limBef.first;
-                // get the four relevant fixings
-                Rate limFirstFix = ts[lim.first];
-                QL_REQUIRE(limFirstFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.first );
-                Rate limSecondFix = ts[lim.second+1];
-                QL_REQUIRE(limSecondFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.second+1 );
-                Rate limBefFirstFix = ts[limBef.first];
-                QL_REQUIRE(limBefFirstFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << limBef.first );
-                Rate limBefSecondFix = ts[limBef.second+1];
-                QL_REQUIRE(limBefSecondFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << limBef.second+1 );
+            Rate pastFixing = CPI::laggedFixing(underlyingIndex_, fixingDate, Period(0, Months), interpolationType);
+            Rate previousFixing = CPI::laggedFixing(underlyingIndex_, fixingDate - 1*Years, Period(0, Months), interpolationType);
 
-                Real linearNow = limFirstFix + (limSecondFix-limFirstFix)*dl/dp;
-                Real linearBef = limBefFirstFix + (limBefSecondFix-limBefFirstFix)*dlBef/dpBef;
-                Rate wasYES = linearNow / linearBef - 1.0;
-
-                return wasYES;
-
-            } else {    // IS ratio, NOT interpolated
-                std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-                Rate pastFixing = ts[lim.first];
-                QL_REQUIRE(pastFixing != Null<Rate>(),
-                            "Missing " << name() << " fixing for " << fixingDate);
-                Date previousDate = fixingDate - 1*Years;
-                std::pair<Date,Date> limBef = inflationPeriod(previousDate, frequency_);
-                Rate previousFixing = ts[limBef.first];
-                QL_REQUIRE(previousFixing != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << limBef.first );
-
-                return pastFixing/previousFixing - 1.0;
-            }
+            return pastFixing/previousFixing - 1.0;
 
         } else {  // NOT ratio
 
