@@ -377,6 +377,13 @@ namespace QuantLib {
                 // the last otherwise.
                 if (*rule_ == DateGeneration::Backward)
                     d2 = Date::endOfMonth(dates_.back());
+                // corner case, does nothing but prevents to clip the effective
+                // date to end of month when the first date is in the same
+                // month and same year of the effective date
+                else if (firstDate_ != Date()
+                         && (effectiveDate.month() == firstDate_.month()
+                         &&  effectiveDate.year() == firstDate_.year())
+                        ) ;
                 else
                     d1 = Date::endOfMonth(dates_.front());
             }

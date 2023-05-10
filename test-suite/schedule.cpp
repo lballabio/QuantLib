@@ -24,6 +24,7 @@
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <map>
 #include <vector>
@@ -1074,6 +1075,32 @@ void ScheduleTest::testTruncation() {
     BOOST_CHECK(t.isRegular().front() == true);
 }
 
+void ScheduleTest::testEomAdjustmentWithFirstDate() {
+    BOOST_TEST_MESSAGE(
+        "Testing forward schedule effective date not changed with EOM adjustment...");
+
+    Schedule s =
+        MakeSchedule().from(Date(16, January, 2023))
+                      .to(Date(16, March, 2023))
+                      .withCalendar(NullCalendar())
+                      .withTenor(1 * Months)
+                      .withConvention(Unadjusted)
+                      .withTerminationDateConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth()
+                      .withFirstDate(Date(31, January, 2023));
+
+    std::vector<Date> expected(4);
+    // Effective date is not moved to EOM when the first
+    // date is in the same month of the effective date. 
+    expected[0] = Date(16, January, 2023);
+    expected[1] = Date(31, January, 2023);
+    expected[2] = Date(28, February, 2023);
+    expected[3] = Date(16, March, 2023);;
+
+    check_dates(s, expected);
+}
+
 test_suite* ScheduleTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Schedule tests");
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testDailySchedule));
@@ -1103,5 +1130,6 @@ test_suite* ScheduleTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFirstDateOnMaturity));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testNextToLastDateOnStart));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testTruncation));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEomAdjustmentWithFirstDate));
     return suite;
 }

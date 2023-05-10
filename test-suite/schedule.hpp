@@ -49,6 +49,7 @@ class ScheduleTest {
     static void testFirstDateOnMaturity();
     static void testNextToLastDateOnStart();
     static void testTruncation();
+    static void testEomAdjustmentWithFirstDate();
     static boost::unit_test_framework::test_suite* suite();
 };
 
