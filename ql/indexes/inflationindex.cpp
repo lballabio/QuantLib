@@ -284,6 +284,29 @@ namespace QuantLib {
     }
 
 
+    YoYInflationIndex::YoYInflationIndex(const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
+                                         bool interpolated,
+                                         Handle<YoYInflationTermStructure> yoyInflation)
+    : InflationIndex("YYR_" + underlyingIndex->familyName(), underlyingIndex->region(),
+                     underlyingIndex->revised(), underlyingIndex->frequency(),
+                     underlyingIndex->availabilityLag(), underlyingIndex->currency()),
+      interpolated_(interpolated), ratio_(true), underlyingIndex_(underlyingIndex),
+      yoyInflation_(std::move(yoyInflation)) {
+        registerWith(underlyingIndex_);
+        registerWith(yoyInflation_);
+    }
+
+    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
+                                         const Region& region,
+                                         bool revised,
+                                         bool interpolated,
+                                         Frequency frequency,
+                                         const Period& availabilityLag,
+                                         const Currency& currency,
+                                         Handle<YoYInflationTermStructure> yoyInflation)
+    : YoYInflationIndex(familyName, region, revised, interpolated, false,
+                        frequency, availabilityLag, currency, std::move(yoyInflation)) {}
+
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
@@ -380,10 +403,13 @@ namespace QuantLib {
 
     ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
                            const Handle<YoYInflationTermStructure>& h) const {
-        return ext::make_shared<YoYInflationIndex>(
-                      familyName_, region_, revised_,
-                                            interpolated_, ratio_, frequency_,
-                                            availabilityLag_, currency_, h);
+        if (ratio_) {
+            return ext::make_shared<YoYInflationIndex>(underlyingIndex_, interpolated_, h);
+        } else {
+            return ext::make_shared<YoYInflationIndex>(familyName_, region_, revised_,
+                                                       interpolated_, frequency_,
+                                                       availabilityLag_, currency_, h);
+        }
     }
 
 
