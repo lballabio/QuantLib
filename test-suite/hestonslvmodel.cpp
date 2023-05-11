@@ -2756,12 +2756,12 @@ test_suite* HestonSLVModelTest::suite(SpeedLevel speed) {
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMonteCarloVsFdmPricing));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
     }
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMonteCarloCalibration));
-        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMoustacheGraph));
     }
 

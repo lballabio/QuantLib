@@ -753,7 +753,7 @@ test_suite* DistributionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testInvCDFviaStochasticCollocation));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testSankaranApproximation));
 
-    if (speed == Slow) {
+    if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudentVsBivariate));
     }
 

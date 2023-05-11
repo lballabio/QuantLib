@@ -636,12 +636,9 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
 }
 
-test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
+test_suite* DoubleBarrierOptionTest::suite(SpeedLevel) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
 
     return suite;
 }

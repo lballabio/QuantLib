@@ -1,6 +1,7 @@
 import re
 import sys
 import xml.etree.ElementTree as ET
+from collections import namedtuple, defaultdict
 
 regex1 = re.compile(".*test_case\(&(.*?)__(.*?)\)")
 regex2 = re.compile(".*ext__bind\(&(.*?)__(.*?)__.*\)\)")
@@ -38,18 +39,58 @@ def extract_test_info(filename):
         yield (cls, method, time)
 
 
-def check(filename, max_time, action):
+Case = namedtuple("Case", ["files", "times"])
+
+
+def collect():
+    data = defaultdict(lambda: Case([], []))
+    for filename in ["faster.xml", "fast.xml", "all.xml"]:
+        for cls, method, time in extract_test_info(filename):
+            c = data[(cls, method)]
+            c.files.append(filename)
+            c.times.append(time)
+    return data
+
+
+def check(data, condition, action):
     errors = False
-    for cls, method, time in extract_test_info(filename):
-        if time > max_time:
-            print(f"{cls}.{method} ({time:.2f} s) should be {action}")
+    for cls, method in data:
+        c = data[(cls, method)]
+        if condition(c):
+            print(
+                f"{cls}.{method} ({min(c.times):.2f} s / {max(c.times):.2f} s) {action}"
+            )
             errors = True
     return errors
 
 
-errors = check("faster.xml", 3.0, "moved out of the 'Faster' section")
-errors |= check("fast.xml", 8.0, "moved out of the 'Fast' section")
-errors |= check("all.xml", 30.0, "kept under 30 seconds")
+data = collect()
+
+errors = check(
+    data,
+    lambda c: "faster.xml" in c.files and min(c.times) > 3.0,
+    "should be moved out of the 'Faster' section",
+)
+errors |= check(
+    data,
+    lambda c: "fast.xml" in c.files and min(c.times) > 8.0,
+    "should be moved out of the 'Fast' section",
+)
+errors |= check(
+    data, lambda c: max(c.times) > 30.0, "should be kept reliably under 30 seconds"
+)
+
+errors |= check(
+    data,
+    lambda c: "faster.xml" not in c.files and max(c.times) < 1.0,
+    "could be moved into the 'Faster' section",
+)
+errors |= check(
+    data,
+    lambda c: "fast.xml" not in c.files and max(c.times) < 3.0,
+    "could be moved into the 'Fast' section",
+)
+
 
 if errors:
     sys.exit(1)
