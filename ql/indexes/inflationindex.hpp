@@ -261,7 +261,11 @@ namespace QuantLib {
             `ratio` is false, the stored values must be the
             year-on-year values; if `ratio` is true, they must be the
             past fixings of the underlying index.
+
+            \deprecated Use one of the other constructors instead.
+                        Deprecated in version 1.31.
         */
+        QL_DEPRECATED
         YoYInflationIndex(
             const std::string& familyName,
             const Region& region,

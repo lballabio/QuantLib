@@ -930,7 +930,12 @@ void InflationTest::testOldRatioYYIndex() {
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     YYEUHICPr yyeuhicpr(true);
+
+    QL_DEPRECATED_ENABLE_WARNING
+
     if (yyeuhicpr.name() != "EU YYR_HICP"
         || yyeuhicpr.frequency() != Monthly
         || yyeuhicpr.revised()
@@ -946,7 +951,12 @@ void InflationTest::testOldRatioYYIndex() {
                     << yyeuhicpr.availabilityLag() << ")");
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     YYUKRPIr yyukrpir(false);
+
+    QL_DEPRECATED_ENABLE_WARNING
+
     if (yyukrpir.name() != "UK YYR_RPI"
         || yyukrpir.frequency() != Monthly
         || yyukrpir.revised()
@@ -986,8 +996,14 @@ void InflationTest::testOldRatioYYIndex() {
         207.3 };
 
     bool interp = false;
+
+    QL_DEPRECATED_DISABLE_WARNING
+
     ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
     ext::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
+
+    QL_DEPRECATED_ENABLE_WARNING
+
     for (Size i=0; i<LENGTH(fixData);i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
         iirYES->addFixing(rpiSchedule[i], fixData[i]);
@@ -1076,9 +1092,10 @@ void InflationTest::testYYTermStructure() {
 
     RelinkableHandle<YoYInflationTermStructure> hy;
     bool interp = false;
-    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
+    auto rpi = ext::make_shared<UKRPI>();
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
     for (Size i=0; i<LENGTH(fixData); i++) {
-        iir->addFixing(rpiSchedule[i], fixData[i]);
+        rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 
 

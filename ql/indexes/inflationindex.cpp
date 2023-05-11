@@ -296,6 +296,8 @@ namespace QuantLib {
         registerWith(yoyInflation_);
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
@@ -306,6 +308,8 @@ namespace QuantLib {
                                          Handle<YoYInflationTermStructure> yoyInflation)
     : YoYInflationIndex(familyName, region, revised, interpolated, false,
                         frequency, availabilityLag, currency, std::move(yoyInflation)) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
