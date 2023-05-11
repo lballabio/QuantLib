@@ -95,7 +95,7 @@ namespace QuantLib {
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
         const ext::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
-        rateCurve_ = *(swapIndex->discountingTermStructure());
+        rateCurve_ = *(swapIndex->discountingTermStructure()) ? *(swapIndex->discountingTermStructure()) : *(swapIndex->forwardingTermStructure());
 
         Date today = Settings::instance().evaluationDate();
 
