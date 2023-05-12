@@ -64,26 +64,25 @@ namespace QuantLib {
                                                const Calendar& paymentCalendar,
                                                bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::move(nominals)),
-      paymentFrequency_(schedule.tenor().frequency()),
+    : Swap(2), type_(type), nominals_(std::move(nominals)), schedule_(schedule),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
       fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
       telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
-        initialize(schedule);
+        initialize();
     }
 
-    void OvernightIndexedSwap::initialize(const Schedule& schedule) {
+    void OvernightIndexedSwap::initialize() {
         if (fixedDC_ == DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
-        legs_[0] = FixedRateLeg(schedule)
+        legs_[0] = FixedRateLeg(schedule_)
                        .withNotionals(nominals_)
                        .withCouponRates(fixedRate_, fixedDC_)
                        .withPaymentLag(paymentLag_)
                        .withPaymentAdjustment(paymentAdjustment_)
                        .withPaymentCalendar(paymentCalendar_);
 
-        legs_[1] = OvernightLeg(schedule, overnightIndex_)
+        legs_[1] = OvernightLeg(schedule_, overnightIndex_)
                        .withNotionals(nominals_)
                        .withSpreads(spread_)
                        .withTelescopicValueDates(telescopicValueDates_)
