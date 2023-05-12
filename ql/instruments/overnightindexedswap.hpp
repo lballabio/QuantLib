@@ -27,11 +27,11 @@
 #ifndef quantlib_overnight_indexed_swap_hpp
 #define quantlib_overnight_indexed_swap_hpp
 
-#include <ql/instruments/swap.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
-#include <ql/time/daycounter.hpp>
+#include <ql/instruments/swap.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
@@ -107,7 +107,7 @@ namespace QuantLib {
         BusinessDayConvention paymentAdjustment_;
         Natural paymentLag_;
 
-        //Schedule schedule_;
+        // Schedule schedule_;
 
         Rate fixedRate_;
         DayCounter fixedDC_;
@@ -122,7 +122,7 @@ namespace QuantLib {
     // inline
 
     inline Real OvernightIndexedSwap::nominal() const {
-        QL_REQUIRE(nominals_.size()==1, "varying nominals");
+        QL_REQUIRE(nominals_.size() == 1, "varying nominals");
         return nominals_[0];
     }
 

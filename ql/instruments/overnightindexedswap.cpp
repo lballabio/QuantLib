@@ -37,7 +37,7 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates, 
+                                               bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
@@ -59,7 +59,7 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates, 
+                                               bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::move(nominals)),
       paymentFrequency_(schedule.tenor().frequency()),
@@ -72,53 +72,53 @@ namespace QuantLib {
     }
 
     void OvernightIndexedSwap::initialize(const Schedule& schedule) {
-        if (fixedDC_==DayCounter())
+        if (fixedDC_ == DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
         legs_[0] = FixedRateLeg(schedule)
-            .withNotionals(nominals_)
-            .withCouponRates(fixedRate_, fixedDC_)
-            .withPaymentLag(paymentLag_)
-            .withPaymentAdjustment(paymentAdjustment_)
-            .withPaymentCalendar(paymentCalendar_);
+                       .withNotionals(nominals_)
+                       .withCouponRates(fixedRate_, fixedDC_)
+                       .withPaymentLag(paymentLag_)
+                       .withPaymentAdjustment(paymentAdjustment_)
+                       .withPaymentCalendar(paymentCalendar_);
 
-		legs_[1] = OvernightLeg(schedule, overnightIndex_)
-            .withNotionals(nominals_)
-            .withSpreads(spread_)
-            .withTelescopicValueDates(telescopicValueDates_)
-            .withPaymentLag(paymentLag_)
-            .withPaymentAdjustment(paymentAdjustment_)
-            .withPaymentCalendar(paymentCalendar_)
-            .withAveragingMethod(averagingMethod_);
+        legs_[1] = OvernightLeg(schedule, overnightIndex_)
+                       .withNotionals(nominals_)
+                       .withSpreads(spread_)
+                       .withTelescopicValueDates(telescopicValueDates_)
+                       .withPaymentLag(paymentLag_)
+                       .withPaymentAdjustment(paymentAdjustment_)
+                       .withPaymentCalendar(paymentCalendar_)
+                       .withAveragingMethod(averagingMethod_);
 
-        for (Size j=0; j<2; ++j) {
+        for (Size j = 0; j < 2; ++j) {
             for (auto& i : legs_[j])
                 registerWith(i);
         }
 
         switch (type_) {
-          case Payer:
-            payer_[0] = -1.0;
-            payer_[1] = +1.0;
-            break;
-          case Receiver:
-            payer_[0] = +1.0;
-            payer_[1] = -1.0;
-            break;
-          default:
-            QL_FAIL("Unknown overnight-swap type");
+            case Payer:
+                payer_[0] = -1.0;
+                payer_[1] = +1.0;
+                break;
+            case Receiver:
+                payer_[0] = +1.0;
+                payer_[1] = -1.0;
+                break;
+            default:
+                QL_FAIL("Unknown overnight-swap type");
         }
     }
 
     Real OvernightIndexedSwap::fairRate() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
-        return fixedRate_ - NPV_/(fixedLegBPS()/basisPoint);
+        return fixedRate_ - NPV_ / (fixedLegBPS() / basisPoint);
     }
 
     Spread OvernightIndexedSwap::fairSpread() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
-        return spread_ - NPV_/(overnightLegBPS()/basisPoint);
+        return spread_ - NPV_ / (overnightLegBPS() / basisPoint);
     }
 
     Real OvernightIndexedSwap::fixedLegBPS() const {
