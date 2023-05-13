@@ -24,23 +24,10 @@
 #ifndef quantlib_nulldeleter_hpp
 #define quantlib_nulldeleter_hpp
 
-#include <ql/qldefines.hpp>
-
-#if BOOST_VERSION >= 105600
-
-#include <boost/core/null_deleter.hpp>
-namespace QuantLib {
-using boost::null_deleter;   // NOLINT(misc-unused-using-decls)
-}
-
-#else
-
 namespace QuantLib {
 struct null_deleter {
-    template <typename T> void operator()(T *) const {}
+    template <typename T> void operator()(T *) const noexcept {}
 };
 }
-
-#endif
 
 #endif
