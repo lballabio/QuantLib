@@ -376,10 +376,8 @@ namespace QuantLib {
                 || (d == 26 && m == May)
                 // Tuen Ng festival
                 || (d == 22 && m == June)
-                // Mid-autumn festival
-                || (d == 12 && m == September)
                 // Chung Yeung festival
-                || (d == 4 && m == October))
+                || (d == 23 && m == October))
                 return false;
         }
 
