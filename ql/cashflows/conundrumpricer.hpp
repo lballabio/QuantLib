@@ -256,6 +256,7 @@ namespace QuantLib {
             Real hardUpperLimit = QL_MAX_REAL);
 
         Real upperLimit() const { return upperLimit_; }
+        Real lowerLimit() const { return lowerLimit_; }
         Real stdDeviations() const { return stdDeviationsForUpperLimit_; }
 
         // private:
@@ -314,10 +315,11 @@ namespace QuantLib {
         Real optionletPrice(Option::Type optionType, Rate strike) const override;
         Real swapletPrice() const override;
         Real resetUpperLimit(Real stdDeviationsForUpperLimit) const;
+        Real resetLowerLimit(Real stdDeviationsForLowerLimit) const;
         Real refineIntegration(Real integralValue, const ConundrumIntegrand& integrand) const;
 
-        mutable Real upperLimit_, stdDeviationsForUpperLimit_;
-        const Real lowerLimit_, requiredStdDeviations_ = 8, precision_,
+        mutable Real lowerLimit_, stdDeviationsForLowerLimit_, upperLimit_, stdDeviationsForUpperLimit_;
+        const Real  requiredStdDeviations_ = 8, precision_,
                                 refiningIntegrationTolerance_ = .0001;
         const Real hardUpperLimit_;
     };
