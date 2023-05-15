@@ -279,7 +279,7 @@ namespace cms_normal_test {
 
 void CmsNormalTest::testFairRate()  {
 
-    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons...");
+    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons (normal case)...");
 
     using namespace cms_normal_test;
 
@@ -344,7 +344,7 @@ void CmsNormalTest::testFairRate()  {
 
 void CmsNormalTest::testCmsSwap() {
 
-    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps...");
+    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps (normal case)...");
 
     using namespace cms_normal_test;
 
@@ -406,7 +406,7 @@ void CmsNormalTest::testCmsSwap() {
 
 void CmsNormalTest::testParity() {
 
-    BOOST_TEST_MESSAGE("Testing put-call parity for capped-floored CMS coupons...");
+    BOOST_TEST_MESSAGE("Testing put-call parity for capped-floored CMS coupons (normal case)...");
 
     using namespace cms_normal_test;
 
