@@ -66,7 +66,7 @@ namespace QuantLib {
          return deflator *
                 blackFormula(optionType, strike, forwardValue_, std::sqrt(variance));
        } else {
-         return deflator * 
+         return deflator *
                 bachelierBlackFormula(optionType, strike, forwardValue_, std::sqrt(variance));
        }
     }
@@ -171,13 +171,13 @@ namespace QuantLib {
           if (swaptionVolatility()->volatilityType() == ShiftedLognormal)
           {
             Real cutoffNearZero = 1e-10;
-								 
+
             if (effectiveCap < cutoffForCaplet_) {
                 Rate effectiveStrikeForMax = std::max(effectiveCap, cutoffNearZero);
                 capletPrice = optionletPrice(Option::Call, effectiveStrikeForMax);
             }
-          } 
-          else 
+          }
+          else
           {
                 capletPrice = optionletPrice(Option::Call, effectiveCap);
           }
@@ -204,17 +204,17 @@ namespace QuantLib {
           if(swaptionVolatility()->volatilityType() == ShiftedLognormal)
           {
             Real cutoffNearZero = 1e-10;
-								   
+
             if (effectiveFloor > cutoffForFloorlet_) {
                 Rate effectiveStrikeForMin = std::max(effectiveFloor, cutoffNearZero);
                 floorletPrice = optionletPrice(Option::Put, effectiveStrikeForMin);
             }
           }
-          else 
+          else
           {
                 floorletPrice = optionletPrice(Option::Put, effectiveFloor);
           }
- 
+
           return gearing_ * floorletPrice;
         }
     }
@@ -274,75 +274,72 @@ namespace QuantLib {
                                            Real upperLimit,
                                            Real precision,
                                            Real hardUpperLimit)
-    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion), upperLimit_(upperLimit),
-      lowerLimit_(lowerLimit),
-
-      precision_(precision),
-
-      hardUpperLimit_(hardUpperLimit) {}
+    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion),
+      lowerLimit_(lowerLimit), upperLimit_(upperLimit),
+      precision_(precision), hardUpperLimit_(hardUpperLimit) {}
 
     Real NumericHaganPricer::integrate(Real a, Real b, const ConundrumIntegrand& integrand) const {
 
-            Real result =.0;
-            //double abserr =.0;
-            //double alpha = 1.0;
-            //double epsabs = precision_;
-            //double epsrel = 1.0; // we are interested only in absolute precision
-            //size_t neval =0;
+        Real result =.0;
+        //double abserr =.0;
+        //double alpha = 1.0;
+        //double epsabs = precision_;
+        //double epsrel = 1.0; // we are interested only in absolute precision
+        //size_t neval =0;
 
-            // we use the non adaptive algorithm only for semi infinite interval
-           if (a > 0) {
+        // we use the non adaptive algorithm only for semi infinite interval
+        if (a > 0) {
 
-                // we estimate the actual boundary by testing integrand values
-                Real upperBoundary = 2 * a;
-                while (integrand(upperBoundary) > precision_)
-                    upperBoundary *= 2.0;
-                // sometimes b < a because of a wrong estimation of b based on stdev
-                if (b > a)
-                    upperBoundary = std::min(upperBoundary, b);
+            // we estimate the actual boundary by testing integrand values
+            Real upperBoundary = 2 * a;
+            while (integrand(upperBoundary) > precision_)
+                upperBoundary *= 2.0;
+            // sometimes b < a because of a wrong estimation of b based on stdev
+            if (b > a)
+                upperBoundary = std::min(upperBoundary, b);
 
-                ext::function<Real(Real)> f;
-                GaussKronrodNonAdaptive
-                    gaussKronrodNonAdaptive(precision_, 1000000, 1.0);
-                // if the integration intervall is wide enough we use the
-                // following change variable x -> a + (b-a)*(t/(a-b))^3
-                upperBoundary = std::max(a, std::min(upperBoundary, hardUpperLimit_));
-                if (upperBoundary > 2 * a) {
-                    Size k = 3;
-                    ext::function<Real(Real)> temp = ext::cref(integrand);
-                    VariableChange variableChange(temp, a, upperBoundary, k);
-                    f = [&](Real _x) { return variableChange.value(_x); };
-                    result = gaussKronrodNonAdaptive(f, .0, 1.0);
-                }
-                else {
-                    f = ext::cref(integrand);
-                    result = gaussKronrodNonAdaptive(f, a, upperBoundary);
-                }
-
-                // if the expected precision has not been reached we use the old algorithm
-                if (!gaussKronrodNonAdaptive.integrationSuccess()) {
-                    const GaussKronrodAdaptive integrator(precision_, 100000);
-                    b = std::max(a, std::min(b, hardUpperLimit_));
-                    result = integrator(integrand, a, b);
-                }					 
+            ext::function<Real(Real)> f;
+            GaussKronrodNonAdaptive
+                gaussKronrodNonAdaptive(precision_, 1000000, 1.0);
+            // if the integration intervall is wide enough we use the
+            // following change variable x -> a + (b-a)*(t/(a-b))^3
+            upperBoundary = std::max(a, std::min(upperBoundary, hardUpperLimit_));
+            if (upperBoundary > 2 * a) {
+                Size k = 3;
+                ext::function<Real(Real)> temp = ext::cref(integrand);
+                VariableChange variableChange(temp, a, upperBoundary, k);
+                f = [&](Real _x) { return variableChange.value(_x); };
+                result = gaussKronrodNonAdaptive(f, .0, 1.0);
             }
-            else {   // if a < b we use the old algorithm
+            else {
+                f = ext::cref(integrand);
+                result = gaussKronrodNonAdaptive(f, a, upperBoundary);
+            }
+
+            // if the expected precision has not been reached we use the old algorithm
+            if (!gaussKronrodNonAdaptive.integrationSuccess()) {
+                const GaussKronrodAdaptive integrator(precision_, 100000);
                 b = std::max(a, std::min(b, hardUpperLimit_));
-                if (swaptionVolatility()->volatilityType() == ShiftedLognormal) {
-                    const GaussKronrodAdaptive integrator(precision_, 100000);
-                    result = integrator(integrand, a, b);
-                }
-                else //Normal and floorlet
+                result = integrator(integrand, a, b);
+            }
+        }
+        else {   // if a < b we use the old algorithm
+            b = std::max(a, std::min(b, hardUpperLimit_));
+            if (swaptionVolatility()->volatilityType() == ShiftedLognormal) {
+                const GaussKronrodAdaptive integrator(precision_, 100000);
+                result = integrator(integrand, a, b);
+            }
+            else //Normal and floorlet
                 {
-                    const GaussKronrodNonAdaptive integrator(precision_, 100000, 1.0); 
+                    const GaussKronrodNonAdaptive integrator(precision_, 100000, 1.0);
                     //Doing an integral from -inf to strike, where strike itself is negative,
-                    //the GaussKronrodAdaptive quadrature rule throws an exceptions in 
-                    //GaussKronrodAdaptive::integrateRecursively due to maximum number of 
+                    //the GaussKronrodAdaptive quadrature rule throws an exceptions in
+                    //GaussKronrodAdaptive::integrateRecursively due to maximum number of
                     //function evaluations exceed.
                     result = integrator(integrand, a, b);
                 }
-            }
-            return result;
+        }
+        return result;
     }
 
 
@@ -412,7 +409,7 @@ namespace QuantLib {
     }
 
    Real NumericHaganPricer::resetUpperLimit(Real stdDeviationsForUpperLimit) const {
-																
+
         // return 1.0;
         Real variance =
             swaptionVolatility()->blackVariance(fixingDate_, swapTenor_, swapRateValue_);
@@ -503,7 +500,7 @@ namespace QuantLib {
 //                          AnalyticHaganPricer                           //
 //===========================================================================//
 
-   AnalyticHaganPricer::AnalyticHaganPricer(
+    AnalyticHaganPricer::AnalyticHaganPricer(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
         GFunctionFactory::YieldCurveModel modelOfYieldCurve,
         const Handle<Quote>& meanReversion)
@@ -511,8 +508,8 @@ namespace QuantLib {
       { }
 
     //Hagan, 3.5b, 3.5c
-  Real AnalyticHaganPricer::optionletPrice(Option::Type optionType,
-                                                  Real strike) const {
+    Real AnalyticHaganPricer::optionletPrice(Option::Type optionType,
+                                             Real strike) const {
         Real variance = swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
                                                            swapRateValue_);
@@ -522,42 +519,40 @@ namespace QuantLib {
 
         Real CK = (*vanillaOptionPricer_)(strike, optionType, annuity_);
         price += (discount_/annuity_)*CK;
-												
-		     if (swaptionVolatility()->volatilityType() == ShiftedLognormal) {
-			      const Real sqrtSigma2T = std::sqrt(variance);
-			      const Real lnRoverK = std::log(swapRateValue_ / strike);
-			      const Real d32 = (lnRoverK + 1.5*variance) / sqrtSigma2T;
-			      const Real d12 = (lnRoverK + .5*variance) / sqrtSigma2T;
-			      const Real dminus12 = (lnRoverK - .5*variance) / sqrtSigma2T;
 
-			      CumulativeNormalDistribution cumulativeOfNormal;
-         auto sign = Integer(optionType);
-			      const Real N32 = cumulativeOfNormal(sign*d32);
-			      const Real N12 = cumulativeOfNormal(sign*d12);
-			      const Real Nminus12 = cumulativeOfNormal(sign*dminus12);
+        if (swaptionVolatility()->volatilityType() == ShiftedLognormal) {
+            const Real sqrtSigma2T = std::sqrt(variance);
+            const Real lnRoverK = std::log(swapRateValue_ / strike);
+            const Real d32 = (lnRoverK + 1.5*variance) / sqrtSigma2T;
+            const Real d12 = (lnRoverK + .5*variance) / sqrtSigma2T;
+            const Real dminus12 = (lnRoverK - .5*variance) / sqrtSigma2T;
 
-			      price += sign * firstDerivativeOfGAtForwardValue * annuity_ *
-				              swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32 -
-				              (swapRateValue_ + strike) * N12 + strike * Nminus12);
-		    }
-		    else 
-      {
-			      const Real sqrtSigma2T = std::sqrt(variance);
-			      const Real d = (swapRateValue_ - strike) / sqrtSigma2T;
-			
-			      CumulativeNormalDistribution cumulativeOfNormal;
-         auto sign = Integer(optionType);
-       
-			      const Real N = cumulativeOfNormal(sign*d);
-			      price += sign * firstDerivativeOfGAtForwardValue * annuity_ * variance * N;
-		    }
+            CumulativeNormalDistribution cumulativeOfNormal;
+            auto sign = Integer(optionType);
+            const Real N32 = cumulativeOfNormal(sign*d32);
+            const Real N12 = cumulativeOfNormal(sign*d12);
+            const Real Nminus12 = cumulativeOfNormal(sign*dminus12);
 
-      price *= coupon_->accrualPeriod();
-      return price;
-   }
+            price += sign * firstDerivativeOfGAtForwardValue * annuity_ *
+                              swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32 -
+                              (swapRateValue_ + strike) * N12 + strike * Nminus12);
+        } else {
+            const Real sqrtSigma2T = std::sqrt(variance);
+            const Real d = (swapRateValue_ - strike) / sqrtSigma2T;
+
+            CumulativeNormalDistribution cumulativeOfNormal;
+            auto sign = Integer(optionType);
+
+            const Real N = cumulativeOfNormal(sign*d);
+            price += sign * firstDerivativeOfGAtForwardValue * annuity_ * variance * N;
+        }
+
+        price *= coupon_->accrualPeriod();
+        return price;
+    }
 
     //Hagan 3.4c
-    Real AnalyticHaganPricer::swapletPrice() const 
+    Real AnalyticHaganPricer::swapletPrice() const
     {
 
         Date today = Settings::instance().evaluationDate();
@@ -568,22 +563,19 @@ namespace QuantLib {
             return price;
         } else {
             Real variance(swaptionVolatility()->blackVariance(fixingDate_,
-                                                               swapTenor_,
-                                                               swapRateValue_));
+                                                              swapTenor_,
+                                                              swapRateValue_));
             Real firstDerivativeOfGAtForwardValue(gFunction_->firstDerivative(
-                                                            swapRateValue_));
+                                                                              swapRateValue_));
             Real price = 0.0;
             price += discount_*swapRateValue_;
-			         if (swaptionVolatility()->volatilityType()==ShiftedLognormal) 
-            {
-				          price += firstDerivativeOfGAtForwardValue * annuity_*swapRateValue_*
-					         swapRateValue_*(std::exp(variance) - 1.);
-			         }
-			         else 
-            {
-				           price += firstDerivativeOfGAtForwardValue * annuity_*variance;
-			         }
-            return (gearing_ * price +spread_*discount_)* coupon_->accrualPeriod();        
+            if (swaptionVolatility()->volatilityType()==ShiftedLognormal) {
+                price += firstDerivativeOfGAtForwardValue * annuity_*swapRateValue_*
+                        swapRateValue_*(std::exp(variance) - 1.);
+            } else {
+                price += firstDerivativeOfGAtForwardValue * annuity_*variance;
+            }
+            return (gearing_ * price +spread_*discount_)* coupon_->accrualPeriod();
         }
     }
 
