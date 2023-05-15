@@ -667,6 +667,7 @@
     <ClCompile Include="chooseroption.cpp" />
     <ClCompile Include="cliquetoption.cpp" />
     <ClCompile Include="cms.cpp" />
+    <ClCompile Include="cms_normal.cpp" />
     <ClCompile Include="cmsspread.cpp" />
     <ClCompile Include="commodityunitofmeasure.cpp" />
     <ClCompile Include="compiledboostversion.cpp" />
@@ -837,6 +838,7 @@
     <ClInclude Include="chooseroption.hpp" />
     <ClInclude Include="cliquetoption.hpp" />
     <ClInclude Include="cms.hpp" />
+    <ClInclude Include="cms_normal.hpp" />
     <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
     <ClInclude Include="compiledboostversion.hpp" />

@@ -89,6 +89,9 @@
     <ClCompile Include="cms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cms_normal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="cmsspread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -591,6 +594,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cms.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cms_normal.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cmsspread.hpp">

@@ -70,6 +70,7 @@
 #include "chooseroption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
+#include "cms_normal.hpp"
 #include "cmsspread.hpp"
 #include "commodityunitofmeasure.hpp"
 #include "compiledboostversion.hpp"
@@ -376,6 +377,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CashFlowsTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
+    test->add(CmsNormalTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
