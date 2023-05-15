@@ -30,6 +30,7 @@
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/exercise.hpp>
+#include <complex>
 
 namespace QuantLib {
 

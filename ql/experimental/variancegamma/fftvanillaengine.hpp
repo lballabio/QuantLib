@@ -26,6 +26,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <complex>
 
 namespace QuantLib {
 

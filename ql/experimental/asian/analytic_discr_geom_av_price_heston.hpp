@@ -29,6 +29,7 @@
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/exercise.hpp>
+#include <complex>
 
 namespace QuantLib {
 

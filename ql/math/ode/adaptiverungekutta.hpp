@@ -32,6 +32,7 @@
 #include <ql/functional.hpp>
 #include <vector>
 #include <cmath>
+#include <complex>
 
 namespace QuantLib {
 
