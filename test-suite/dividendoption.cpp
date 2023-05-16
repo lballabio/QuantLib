@@ -962,9 +962,7 @@ namespace {
 
 
 void DividendOptionTest::testFdEuropeanGreeks() {
-
-    BOOST_TEST_MESSAGE(
-             "Testing finite-differences dividend European option greeks...");
+    BOOST_TEST_MESSAGE("Testing finite-differences dividend European option greeks...");
 
     SavedSettings backup;
 
@@ -1350,7 +1348,7 @@ void DividendOptionTest::testEscrowedDividendModel() {
     }
 }
 
-test_suite* DividendOptionTest::suite() {
+test_suite* DividendOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Dividend European option tests");
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
@@ -1360,13 +1358,16 @@ test_suite* DividendOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testOldEuropeanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanWithDividendToday));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanWithDividendToday));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEscrowedDividendModel));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
+    }
 
     return suite;
 }

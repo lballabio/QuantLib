@@ -391,7 +391,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite(speed));
-    test->add(DividendOptionTest::suite());
+    test->add(DividendOptionTest::suite(speed));
     test->add(EquityIndexTest::suite());
     test->add(EquityCashFlowTest::suite());
     test->add(EquityTotalReturnSwapTest::suite());
