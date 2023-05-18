@@ -143,11 +143,14 @@ namespace QuantLib {
 
 
     Rate CPICouponPricer::swapletRate() const {
-        // This way we do not require the index to have
-        // a yield curve, i.e. we do not get the problem
-        // that a discounting-instrument-pricer is used
-        // with a different yield curve
         return gearing_ * adjustedFixing() + spread_;
+        // after deprecating and removing adjustedFixing:
+        // return accruedRate(coupon_->accrualEndDate());
+    }
+
+
+    Rate CPICouponPricer::accruedRate(Date settlementDate) const {
+        return gearing_ * coupon_->indexRatio(settlementDate) + spread_;
     }
 
 }

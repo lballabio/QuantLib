@@ -66,6 +66,7 @@ namespace QuantLib {
         void initialize(const InflationCoupon&) override;
         //@}
 
+        virtual Rate accruedRate(Date settlementDate) const;
 
       protected:
         virtual Real optionletPrice(Option::Type optionType,

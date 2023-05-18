@@ -107,13 +107,6 @@ namespace QuantLib {
         //! spread paid over the fixing of the underlying index
         Spread spread() const;
 
-        //! the ratio between the end index fixing and the base CPI
-        /*! This might include adjustments calculated by the pricer */
-        Rate adjustedIndexGrowth() const;
-
-        //! the index value observed (with a lag) at the end date
-        Rate indexFixing() const override;
-
         //! base value for the CPI index
         /*! \warning make sure that the interpolation used to create
                      this is what you are using for the fixing,
@@ -129,10 +122,22 @@ namespace QuantLib {
 
         //! index used
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+        //@}
 
-        //! the ratio between the index fixing at the given date and the base CPI
+        //! \name Calculations
+        //@{
+        Real accruedAmount(const Date&) const override;
+
+        //! the index value observed (with a lag) at the end date
+        Rate indexFixing() const override;
+
+        //! the ratio between the index fixing at the passed date and the base CPI
         /*! No adjustments are applied */
         Rate indexRatio(Date d) const;
+
+        //! the ratio between the end index fixing and the base CPI
+        /*! This might include adjustments calculated by the pricer */
+        Rate adjustedIndexGrowth() const;
         //@}
 
         //! \name Visitability

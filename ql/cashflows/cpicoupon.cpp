@@ -135,6 +135,17 @@ namespace QuantLib {
             InflationCoupon::accept(v);
     }
 
+    Real CPICoupon::accruedAmount(const Date& d) const {
+        if (d <= accrualStartDate_ || d > paymentDate_) {
+            return 0.0;
+        } else {
+            auto pricer = ext::dynamic_pointer_cast<CPICouponPricer>(pricer_);
+            QL_REQUIRE(pricer, "pricer not set or of wrong type");
+            pricer->initialize(*this);
+            return nominal() * pricer->accruedRate(d) * accruedPeriod(d);
+        }
+    }
+
     Rate CPICoupon::indexRatio(Date d) const {
 
         Rate I0 = baseCPI();
