@@ -84,7 +84,7 @@ namespace QuantLib {
                                        Real forward, Real stdDev) const;
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
-        //! data
+        // data
         Handle<CPIVolatilitySurface> capletVol_;
         Handle<YieldTermStructure> nominalTermStructure_;
         const CPICoupon* coupon_;
