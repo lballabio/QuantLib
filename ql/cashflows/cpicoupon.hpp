@@ -129,6 +129,10 @@ namespace QuantLib {
 
         //! index used
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+
+        //! the ratio between the index fixing at the given date and the base CPI
+        /*! No adjustments are applied */
+        Rate indexRatio(Date d) const;
         //@}
 
         //! \name Visitability

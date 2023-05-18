@@ -112,17 +112,7 @@ namespace QuantLib {
         if (fixing != Null<Rate>())
             return fixing;
 
-        Rate I0 = coupon_->baseCPI();
-
-        if (I0 == Null<Rate>()) {
-            I0 = CPI::laggedFixing(coupon_->cpiIndex(),
-                                   coupon_->baseDate() + coupon_->observationLag(),
-                                   coupon_->observationLag(), coupon_->observationInterpolation());
-        }
-
-        Rate I1 = coupon_->indexFixing();
-
-        return I1 / I0;
+        return coupon_->indexRatio(coupon_->accrualEndDate());
     }
 
 

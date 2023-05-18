@@ -135,6 +135,24 @@ namespace QuantLib {
             InflationCoupon::accept(v);
     }
 
+    Rate CPICoupon::indexRatio(Date d) const {
+
+        Rate I0 = baseCPI();
+
+        if (I0 == Null<Rate>()) {
+            I0 = CPI::laggedFixing(cpiIndex(),
+                                   baseDate() + observationLag(),
+                                   observationLag(),
+                                   observationInterpolation());
+        }
+
+        Rate I1 = CPI::laggedFixing(cpiIndex(),
+                                    d,
+                                    observationLag(),
+                                    observationInterpolation());
+
+        return I1 / I0;
+    }
 
     bool CPICoupon::checkPricerImpl(
             const ext::shared_ptr<InflationCouponPricer>&pricer) const {
