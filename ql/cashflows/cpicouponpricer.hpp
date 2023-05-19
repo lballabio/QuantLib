@@ -43,6 +43,10 @@ namespace QuantLib {
         explicit CPICouponPricer(Handle<CPIVolatilitySurface> capletVol,
                                  Handle<YieldTermStructure> nominalTermStructure = Handle<YieldTermStructure>());
 
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPICouponPricer() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         virtual Handle<CPIVolatilitySurface> capletVolatility() const{
             return capletVol_;
         }
@@ -83,6 +87,11 @@ namespace QuantLib {
         */
         virtual Real optionletPriceImp(Option::Type, Real strike,
                                        Real forward, Real stdDev) const;
+
+        /*! \deprecated Don't use this method.  In derived classes, override accruedRate.
+                        Deprecated in version 1.31.
+        */
+        [[deprecated("Do not use this method. In derived classes, override accruedRate.")]]
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
         // data
@@ -90,6 +99,10 @@ namespace QuantLib {
         Handle<YieldTermStructure> nominalTermStructure_;
         const CPICoupon* coupon_;
         Real gearing_;
+        /*! \deprecated Don't use this data member. A spread doesn't make sense for this coupon.
+                        Deprecated in version 1.31.
+        */
+        [[deprecated("Do not use this data member. A spread doesn't make sense for these coupons.")]]
         Spread spread_;
         Real discount_;
     };
