@@ -261,15 +261,13 @@ namespace cms_normal_test {
 
             numericalPricers.clear();
             analyticPricers.clear();
-            for (Size j = 0; j < yieldCurveModels.size(); ++j) {
-                numericalPricers.push_back(ext::shared_ptr<CmsCouponPricer>(new 
-                    NumericHaganPricer(atmVol, yieldCurveModels[j], 
-                                        zeroMeanRev)));
- 
+            for (auto& yieldCurveModel : yieldCurveModels) {
+                numericalPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
+                    new NumericHaganPricer(atmVol, yieldCurveModel, zeroMeanRev)));
 
-                analyticPricers.push_back(ext::shared_ptr<CmsCouponPricer>(new
-                    AnalyticHaganPricer(atmVol, yieldCurveModels[j],
-                                        zeroMeanRev)));
+
+                analyticPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
+                    new AnalyticHaganPricer(atmVol, yieldCurveModel, zeroMeanRev)));
             }
         }
     };
