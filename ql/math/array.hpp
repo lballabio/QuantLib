@@ -29,7 +29,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/iterator/reverse_iterator.hpp>
+#include <iterator>
 #include <functional>
 #include <algorithm>
 #include <numeric>
@@ -122,8 +122,8 @@ namespace QuantLib {
         typedef Real value_type;
         typedef Real* iterator;
         typedef const Real* const_iterator;
-        typedef boost::reverse_iterator<iterator> reverse_iterator;
-        typedef boost::reverse_iterator<const_iterator> const_reverse_iterator;
+        typedef std::reverse_iterator<iterator> reverse_iterator;
+        typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
         //! \name Iterator access
         //@{
         const_iterator begin() const;
