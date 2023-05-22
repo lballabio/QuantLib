@@ -219,6 +219,23 @@ set(QL_HEX_VERSION ${PACKAGE_VERSION_HEX})
 configure_file(ql/config.hpp.cfg ql/config.hpp @ONLY)
 configure_file(ql/qldefines.hpp.cfg ql/qldefines.hpp @ONLY)
 
+
+# Generate quantlib-config
+set(input_file quantlib-config.in)
+set(output_file quantlib-config)
+# Define the variables to be substituted in the input file
+set(prefix ${CMAKE_INSTALL_PREFIX})
+set(exec_prefix "\${prefix}")
+set(PACKAGE_VERSION ${PACKAGE_VERSION})
+set(includedir "\${prefix}/include")
+set(boost_include "@BOOST_INCLUDE@")
+set(openmp_cxxflags "@OPENMP_CXXFLAGS@")
+set(pthread_cxxflags "@PTHREAD_CXXFLAGS@") 
+set(cpp14_cxxflags "@CPP14_CXXFLAGS@")
+set(libdir "\${exec_prefix}/lib")
+set(pthread_lib "@PTHREAD_LIB@")
+configure_file("${input_file}" "${output_file}" @ONLY)
+
 include(Platform)
 
 # Check for library name layout tagging
