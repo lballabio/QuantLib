@@ -54,7 +54,9 @@ namespace QuantLib {
     */
     class CPICoupon : public InflationCoupon {
       public:
-        CPICoupon(Real baseCPI, // user provided, could be arbitrary
+        //! \name Constructors
+        //@{
+        CPICoupon(Real baseCPI,
                   const Date& paymentDate,
                   Real nominal,
                   const Date& startDate,
@@ -63,8 +65,7 @@ namespace QuantLib {
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
-                  Real fixedRate, // aka gearing
-                  Spread spread = 0.0,
+                  Real fixedRate,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const Date& exCouponDate = Date());
@@ -78,8 +79,7 @@ namespace QuantLib {
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
-                  Real fixedRate, // aka gearing
-                  Spread spread = 0.0,
+                  Real fixedRate,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const Date& exCouponDate = Date());
@@ -94,25 +94,84 @@ namespace QuantLib {
                   const Period& observationLag,
                   CPI::InterpolationType observationInterpolation,
                   const DayCounter& dayCounter,
-                  Real fixedRate, // aka gearing
-                  Spread spread = 0.0,
+                  Real fixedRate,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const Date& exCouponDate = Date());
+
+        /*! \deprecated Use one of the constructors without spread.
+                        Deprecated in version 1.31.
+        */
+        QL_DEPRECATED
+        CPICoupon(Real baseCPI, // user provided, could be arbitrary
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const Period& observationLag,
+                  CPI::InterpolationType observationInterpolation,
+                  const DayCounter& dayCounter,
+                  Real fixedRate,
+                  Spread spread,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const Date& exCouponDate = Date());
+
+        /*! \deprecated Use one of the constructors without spread.
+                        Deprecated in version 1.31.
+        */
+        QL_DEPRECATED
+        CPICoupon(const Date& baseDate, // user provided, could be arbitrary
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const Period& observationLag,
+                  CPI::InterpolationType observationInterpolation,
+                  const DayCounter& dayCounter,
+                  Real fixedRate,
+                  Spread spread,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const Date& exCouponDate = Date());
+
+        /*! \deprecated Use one of the constructors without spread.
+                        Deprecated in version 1.31.
+        */
+        QL_DEPRECATED
+        CPICoupon(Real baseCPI, // user provided, could be arbitrary
+                  const Date& baseDate,
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const Period& observationLag,
+                  CPI::InterpolationType observationInterpolation,
+                  const DayCounter& dayCounter,
+                  Real fixedRate,
+                  Spread spread,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const Date& exCouponDate = Date());
+        //@}
+
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPICoupon() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
 
         //! \name Inspectors
         //@{
         //! fixed rate that will be inflated by the index ratio
         Real fixedRate() const;
-        //! spread paid over the fixing of the underlying index
+
+        /*! \deprecated Do not use this method. A spread doesn't make sense for this coupon.
+                        Deprecated in version 1.31.
+        */
+        [[deprecated("Do not use this method. A spread doesn't make sense for this coupon.")]]
         Spread spread() const;
-
-        //! the ratio between the end index fixing and the base CPI
-        /*! This might include adjustments calculated by the pricer */
-        Rate adjustedIndexGrowth() const;
-
-        //! the index value observed (with a lag) at the end date
-        Rate indexFixing() const override;
 
         //! base value for the CPI index
         /*! \warning make sure that the interpolation used to create
@@ -131,6 +190,22 @@ namespace QuantLib {
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
         //@}
 
+        //! \name Calculations
+        //@{
+        Real accruedAmount(const Date&) const override;
+
+        //! the index value observed (with a lag) at the end date
+        Rate indexFixing() const override;
+
+        //! the ratio between the index fixing at the passed date and the base CPI
+        /*! No adjustments are applied */
+        Rate indexRatio(Date d) const;
+
+        //! the ratio between the end index fixing and the base CPI
+        /*! This might include adjustments calculated by the pricer */
+        Rate adjustedIndexGrowth() const;
+        //@}
+
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
@@ -138,6 +213,10 @@ namespace QuantLib {
       protected:
         Real baseCPI_;
         Real fixedRate_;
+        /*! \deprecated Don't use this data member. A spread doesn't make sense for this coupon.
+                        Deprecated in version 1.31.
+        */
+        [[deprecated("Do not use this data member. A spread doesn't make sense for this coupon.")]]
         Spread spread_;
         CPI::InterpolationType observationInterpolation_;
         Date baseDate_;
@@ -192,10 +271,8 @@ namespace QuantLib {
     //! Helper class building a sequence of capped/floored CPI coupons.
     /*! Also allowing for the inflated notional at the end...
         especially if there is only one date in the schedule.
-        If a fixedRate is zero you get a FixedRateCoupon, otherwise
+        If the fixed rate is zero you get a FixedRateCoupon, otherwise
         you get a ZeroInflationCoupon.
-
-        payoff is: spread + fixedRate x index
     */
     class CPILeg {
       public:
@@ -212,7 +289,15 @@ namespace QuantLib {
         CPILeg& withPaymentCalendar(const Calendar&);
         CPILeg& withObservationInterpolation(CPI::InterpolationType);
         CPILeg& withSubtractInflationNominal(bool);
+        /*! \deprecated Do not use this method. A spread doesn't make sense for these coupons.
+                        Deprecated in version 1.31.
+        */
+        [[deprecated("Do not use this method. A spread doesn't make sense for these coupons.")]]
         CPILeg& withSpreads(Spread spread);
+        /*! \deprecated Do not use this method. A spread doesn't make sense for these coupons.
+                        Deprecated in version 1.31.
+        */
+        [[deprecated("Do not use this method. A spread doesn't make sense for these coupons.")]]
         CPILeg& withSpreads(const std::vector<Spread>& spreads);
         CPILeg& withCaps(Rate cap);
         CPILeg& withCaps(const std::vector<Rate>& caps);
@@ -232,7 +317,7 @@ namespace QuantLib {
         Real baseCPI_;
         Period observationLag_;
         std::vector<Real> notionals_;
-        std::vector<Real> fixedRates_;  // aka gearing
+        std::vector<Real> fixedRates_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_ = ModifiedFollowing;
         Calendar paymentCalendar_;
@@ -255,11 +340,15 @@ namespace QuantLib {
     }
 
     inline Real CPICoupon::spread() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return spread_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Rate CPICoupon::adjustedIndexGrowth() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return (rate()-spread())/fixedRate();
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Rate CPICoupon::indexFixing() const {
