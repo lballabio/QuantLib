@@ -342,7 +342,7 @@ namespace QuantLib {
 
 
     bool UnitedStates::FederalReserveImpl::isBusinessDay(const Date& date) const {
-        // see https://www.frbservices.org/holidayschedules/ for details
+        // see https://www.frbservices.org/about/holiday-schedules for details
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
