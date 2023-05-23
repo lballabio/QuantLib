@@ -46,8 +46,8 @@ namespace QuantLib {
             || (dd == em+38)
             // Labour Day
             || (d == 1 && m == May)
-            // Midsummer Eve (Friday between June 18-24)
-            || (w == Friday && (d >= 18 && d <= 24) && m == June)
+            // Midsummer Eve (Friday between June 19-25)
+            || (w == Friday && (d >= 19 && d <= 25) && m == June)
             // Independence Day
             || (d == 6 && m == December)
             // Christmas Eve
