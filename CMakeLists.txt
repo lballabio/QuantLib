@@ -219,6 +219,15 @@ set(QL_HEX_VERSION ${PACKAGE_VERSION_HEX})
 configure_file(ql/config.hpp.cfg ql/config.hpp @ONLY)
 configure_file(ql/qldefines.hpp.cfg ql/qldefines.hpp @ONLY)
 
+
+# Generate quantlib-config
+# Define the variables to be substituted in the input file
+set(prefix ${CMAKE_INSTALL_PREFIX})
+set(exec_prefix "\${prefix}")
+set(includedir "\${prefix}/include")
+set(libdir "\${exec_prefix}/lib")
+configure_file(quantlib-config.in quantlib-config @ONLY)
+
 include(Platform)
 
 # Check for library name layout tagging
