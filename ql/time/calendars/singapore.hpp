@@ -44,7 +44,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2010, 2012-2014 only:)
+        (data available for 2004-2010, 2012-2014, 2019-2023 only:)
         <ul>
         <li>Chinese New Year</li>
         <li>Hari Raya Haji</li>
