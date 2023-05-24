@@ -116,7 +116,7 @@ namespace QuantLib {
         if (y == 2019)
         {
             if ( // Chinese New Year
-                ((d == 1 || d == 2) && m == February)
+                ((d == 5 || d == 6) && m == February)
                 // Vesak Poya Day
                 || (d == 20 && m == May)
                 // Hari Raya Puasa
