@@ -88,6 +88,8 @@ void TimeSeriesTest::testIterators() {
 
     // projection iterators
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     std::copy(ts.cbegin_time(), ts.cend_time(), dates.begin());
     if (dates[0] != Date(15, March, 2005)) {
         BOOST_ERROR("date does not match");
@@ -145,6 +147,8 @@ void TimeSeriesTest::testIterators() {
     if (prices[0] != 23) {
         BOOST_ERROR("value does not match");
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     // The following should not compile:
     // std::transform(ts1.crbegin(), ts1.crend(), prices.begin(),
