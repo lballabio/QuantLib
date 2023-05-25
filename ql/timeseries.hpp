@@ -179,98 +179,92 @@ namespace QuantLib {
         //! \name Projection iterators
         //@{
 
-        /*! \deprecated Use const_iterator instead.
+        /*! \deprecated Use const_iterator instead and access the `first` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
-        typedef boost::transform_iterator<projection_time, const_iterator>
-                                                          const_time_iterator;
+        [[deprecated("Use const_iterator instead and access the `first` data member.")]]
+        typedef boost::transform_iterator<projection_time, const_iterator> const_time_iterator;
 
-        /*! \deprecated Use const_iterator instead.
+        /*! \deprecated Use const_iterator instead and access the `second` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
-        typedef boost::transform_iterator<projection_value, const_iterator>
-                                                         const_value_iterator;
+        [[deprecated("Use const_iterator instead and access the `second` data member.")]]
+        typedef boost::transform_iterator<projection_value, const_iterator> const_value_iterator;
 
-        /*! \deprecated Use const_reverse_iterator instead.
+        /*! \deprecated Use const_reverse_iterator instead and access the `first` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
-        typedef boost::transform_iterator<projection_time,
-                                          const_reverse_iterator>
-                                                  const_reverse_time_iterator;
+        [[deprecated("Use const_reverse_iterator instead and access the `first` data member.")]]
+        typedef boost::transform_iterator<projection_time, const_reverse_iterator> const_reverse_time_iterator;
 
-        /*! \deprecated Use const_reverse_iterator instead.
+        /*! \deprecated Use const_reverse_iterator instead and access the `second` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
-        typedef boost::transform_iterator<projection_value,
-                                          const_reverse_iterator>
-                                                 const_reverse_value_iterator;
+        [[deprecated("Use const_reverse_iterator instead and access the `second` data member.")]]
+        typedef boost::transform_iterator<projection_value, const_reverse_iterator> const_reverse_value_iterator;
 
         QL_DEPRECATED_DISABLE_WARNING
 
-        /*! \deprecated Use cbegin instead.
+        /*! \deprecated Use cbegin instead and access the `second` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use cbegin instead and access the `second` data member.")]]
         const_value_iterator cbegin_values() const {
             return const_value_iterator(cbegin(), get_value);
         }
 
-        /*! \deprecated Use cend instead.
+        /*! \deprecated Use cend instead and access the `second` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use cend instead and access the `second` data member.")]]
         const_value_iterator cend_values() const {
             return const_value_iterator(cend(), get_value);
         }
 
-        /*! \deprecated Use crbegin instead.
+        /*! \deprecated Use crbegin instead and access the `second` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use crbegin instead and access the `second` data member.")]]
         const_reverse_value_iterator crbegin_values() const {
             return const_reverse_value_iterator(crbegin(), get_value);
         }
 
-        /*! \deprecated Use crend instead.
+        /*! \deprecated Use crend instead and access the `second` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use crend instead and access the `second` data member.")]]
         const_reverse_value_iterator crend_values() const {
             return const_reverse_value_iterator(crend(), get_value);
         }
 
-        /*! \deprecated Use cbegin instead.
+        /*! \deprecated Use cbegin instead and access the `first` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use cbegin instead and access the `first` data member.")]]
         const_time_iterator cbegin_time() const {
             return const_time_iterator(cbegin(), get_time);
         }
 
-        /*! \deprecated Use cend instead.
+        /*! \deprecated Use cend instead and access the `first` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use cend instead and access the `first` data member.")]]
         const_time_iterator cend_time() const {
             return const_time_iterator(cend(), get_time);
         }
 
-        /*! \deprecated Use crbegin instead.
+        /*! \deprecated Use crbegin instead and access the `first` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use crbegin instead and access the `first` data member.")]]
         const_reverse_time_iterator crbegin_time() const {
             return const_reverse_time_iterator(crbegin(), get_time);
         }
 
-        /*! \deprecated Use crend instead.
+        /*! \deprecated Use crend instead and access the `first` data member.
                         Deprecated in version 1.31.
         */
-        QL_DEPRECATED
+        [[deprecated("Use crend instead and access the `first` data member.")]]
         const_reverse_time_iterator crend_time() const {
             return const_reverse_time_iterator(crend(), get_time);
         }
