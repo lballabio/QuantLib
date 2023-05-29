@@ -293,7 +293,7 @@ void ScheduleTest::testEffectiveDateWithEomAdjustment() {
     Schedule s =
         MakeSchedule().from(Date(16,January,2023))
                       .to(Date(16,March,2023))
-                      .withFirstDate(Date(31, January, 2023))
+                      .withFirstDate(Date(31,January,2023))
                       .withCalendar(NullCalendar())
                       .withTenor(1*Months)
                       .withConvention(Unadjusted)
@@ -302,10 +302,10 @@ void ScheduleTest::testEffectiveDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(4);
-    // check that the effective date is not moved to the end of the month
+    // check that the effective date is not moved at the end of the month
     expected[0] = Date(16,January,2023);
-    expected[1] = Date(31,January, 2023);
-    expected[2] = Date(28,February, 2023);
+    expected[1] = Date(31,January,2023);
+    expected[2] = Date(28,February,2023);
     expected[3] = Date(16,March,2023);
 
     check_dates(s, expected);
