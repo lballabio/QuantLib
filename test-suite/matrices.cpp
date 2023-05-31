@@ -35,6 +35,7 @@
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <cmath>
+#include <iterator>
 #include <utility>
 #include <numeric>
 
@@ -42,6 +43,13 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 using std::fabs;
+
+#ifdef __cpp_concepts
+static_assert(std::random_access_iterator<Matrix::column_iterator>);
+static_assert(std::random_access_iterator<Matrix::const_column_iterator>);
+static_assert(std::random_access_iterator<Matrix::reverse_column_iterator>);
+static_assert(std::random_access_iterator<Matrix::const_reverse_column_iterator>);
+#endif
 
 namespace matrices_test {
 
