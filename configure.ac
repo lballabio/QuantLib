@@ -285,6 +285,16 @@ AC_ARG_ENABLE([examples],
 AM_CONDITIONAL(AUTO_EXAMPLES, test "$ql_install_examples" != "no")
 AC_MSG_RESULT([$ql_install_examples])
 
+AC_MSG_CHECKING([whether to skip examples])
+AC_ARG_ENABLE([skip-examples],
+              AS_HELP_STRING([--enable-skip-examples],
+                             [If enabled, examples are not built.
+                              Disabled by default.]),
+              [ql_skip_examples=$enableval],
+              [ql_skip_examples=no])
+AM_CONDITIONAL(AUTO_SKIP_EXAMPLES, test "$ql_skip_examples" != "no")
+AC_MSG_RESULT([$ql_skip_examples])
+
 AC_MSG_CHECKING([whether to install the benchmark])
 AC_ARG_ENABLE([benchmark],
               AS_HELP_STRING([--enable-benchmark],
