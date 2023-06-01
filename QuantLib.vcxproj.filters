@@ -4447,6 +4447,9 @@
     <ClInclude Include="ql\time\daycounters\yearfractiontodate.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\bfix.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7182,6 +7185,9 @@
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\yearfractiontodate.cpp">
       <Filter>time\daycounters</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\time\calendars\bfix.cpp">
+      <Filter>time\calendars</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

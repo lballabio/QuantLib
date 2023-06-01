@@ -1776,6 +1776,7 @@
     <ClInclude Include="ql\time\calendars\australia.hpp" />
     <ClInclude Include="ql\time\calendars\austria.hpp" />
     <ClInclude Include="ql\time\calendars\bespokecalendar.hpp" />
+    <ClInclude Include="ql\time\calendars\bfix.hpp" />
     <ClInclude Include="ql\time\calendars\botswana.hpp" />
     <ClInclude Include="ql\time\calendars\brazil.hpp" />
     <ClInclude Include="ql\time\calendars\canada.hpp" />
@@ -2747,6 +2748,7 @@
     <ClCompile Include="ql\time\calendars\australia.cpp" />
     <ClCompile Include="ql\time\calendars\austria.cpp" />
     <ClCompile Include="ql\time\calendars\bespokecalendar.cpp" />
+    <ClCompile Include="ql\time\calendars\bfix.cpp" />
     <ClCompile Include="ql\time\calendars\botswana.cpp" />
     <ClCompile Include="ql\time\calendars\brazil.cpp" />
     <ClCompile Include="ql\time\calendars\canada.cpp" />

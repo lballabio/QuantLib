@@ -864,6 +864,7 @@ set(QL_SOURCES
     time/calendars/australia.cpp
     time/calendars/austria.cpp
     time/calendars/bespokecalendar.cpp
+    time/calendars/bfix.cpp
     time/calendars/botswana.cpp
     time/calendars/brazil.cpp
     time/calendars/canada.cpp
@@ -2131,6 +2132,7 @@ set(QL_HEADERS
     time/calendars/australia.hpp
     time/calendars/austria.hpp
     time/calendars/bespokecalendar.hpp
+    time/calendars/bfix.hpp
     time/calendars/botswana.hpp
     time/calendars/brazil.hpp
     time/calendars/canada.hpp

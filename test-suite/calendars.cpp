@@ -30,6 +30,7 @@
 #include <ql/errors.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/calendars/bespokecalendar.hpp>
+#include <ql/time/calendars/bfix.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/china.hpp>
 #include <ql/time/calendars/denmark.hpp>
@@ -2259,6 +2260,47 @@ void CalendarTest::testDayLists() {
     }
 }
 
+void CalendarTest::testBFix() {
+    BOOST_TEST_MESSAGE("Testing holidayList and businessDaysList...");
+
+    Calendar bfix = BFix();
+
+    std::vector<Date> expectedHol;
+
+    // BFix holidays from 2018-2024 as given by the 'bfix_methodology.pdf' from:
+    // <https://data.bloomberglp.com/notices/sites/3/2016/04/bfix_methodology.pdf>
+    expectedHol.emplace_back(25, Dec, 2018);
+    expectedHol.emplace_back(1, Jan, 2019);
+    expectedHol.emplace_back(19, Apr, 2019);
+    expectedHol.emplace_back(25, Dec, 2019);
+    expectedHol.emplace_back(1, Jan, 2020);
+    expectedHol.emplace_back(10, Apr, 2020);
+    expectedHol.emplace_back(25, Dec, 2020);
+    expectedHol.emplace_back(1, Jan, 2021);
+    expectedHol.emplace_back(2, Apr, 2021);
+    expectedHol.emplace_back(15, Apr, 2022);
+    expectedHol.emplace_back(26, Dec, 2022);
+    expectedHol.emplace_back(2, Jan, 2023);
+    expectedHol.emplace_back(7, Apr, 2023);
+    expectedHol.emplace_back(25, Dec, 2023);
+    expectedHol.emplace_back(1, Jan, 2024);
+    expectedHol.emplace_back(29, Mar, 2024);
+    expectedHol.emplace_back(25, Dec, 2024);
+
+    for (auto expDate : expectedHol) {
+        if (!bfix.isHoliday(expDate)) {
+            BOOST_FAIL("Expected holiday on " << expDate << " but calendar returned false");
+        }
+    }
+
+    std::vector<Date> hol = bfix.holidayList(Date(1, Jul, 2018), Date(31, December, 2024));
+
+    if (hol.size() != expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+}
+
+
 test_suite* CalendarTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Calendar tests");
 
@@ -2300,6 +2342,8 @@ test_suite* CalendarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDayLists));
+
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBFix));
 
     return suite;
 }
