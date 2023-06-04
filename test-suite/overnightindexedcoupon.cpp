@@ -33,7 +33,6 @@ namespace overnight_indexed_coupon_tests {
     struct CommonVars {
         // cleanup
         SavedSettings backup;
-        IndexHistoryCleaner cleaner;
 
         Date today;
         Real notional = 10000.0;

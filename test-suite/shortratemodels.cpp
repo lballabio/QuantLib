@@ -63,7 +63,6 @@ void ShortRateModelTest::testCachedHullWhite() {
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -140,7 +139,6 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -221,7 +219,6 @@ void ShortRateModelTest::testCachedHullWhite2() {
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -302,7 +299,6 @@ void ShortRateModelTest::testSwaps() {
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today = Settings::instance().evaluationDate();
     Calendar calendar = TARGET();

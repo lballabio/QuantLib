@@ -509,8 +509,6 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 void CashFlowsTest::testFixedIborCouponWithoutForecastCurve() {
     BOOST_TEST_MESSAGE("Testing past ibor coupon without forecast curve...");
 
-    IndexHistoryCleaner cleaner;
-
     Date today = Settings::instance().evaluationDate();
 
     auto index = ext::make_shared<USDLibor>(6*Months);
