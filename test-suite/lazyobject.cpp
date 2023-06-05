@@ -91,10 +91,31 @@ void LazyObjectTest::testForwardingNotificationsByDefault() {
         BOOST_FAIL("Observer was not notified of second change");
 }
 
+void LazyObjectTest::testNotificationLoop() {
+
+    BOOST_TEST_MESSAGE("Testing that lazy objects raise an exception if notifications recur...");
+
+    auto q = ext::make_shared<SimpleQuote>(0.0);
+    auto s1 = ext::make_shared<Stock>(Handle<Quote>(q));
+    auto s2 = ext::make_shared<Stock>(Handle<Quote>());
+    auto s3 = ext::make_shared<Stock>(Handle<Quote>());
+
+    s3->registerWith(s2);
+    s2->registerWith(s1);
+    s1->registerWith(s3);
+
+    Flag f;
+    f.registerWith(s3);
+    q->setValue(2.0);
+
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of change");
+}
 
 test_suite* LazyObjectTest::suite() {
     auto* suite = BOOST_TEST_SUITE("LazyObject tests");
     suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
     suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotificationsByDefault));
+    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testNotificationLoop));
     return suite;
 }
