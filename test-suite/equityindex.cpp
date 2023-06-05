@@ -69,7 +69,6 @@ namespace equityindex_test {
 
             equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
                                                         dividendHandle, spotHandle);
-            IndexManager::instance().clearHistory(equityIndex->name());
 
             today = calendar.adjust(Date(27, January, 2023));
             

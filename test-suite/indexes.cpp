@@ -86,8 +86,6 @@ void IndexTest::testFixingHasHistoricalFixing() {
     while (!euribor6M->isValidFixingDate(today))
         today--;
 
-    IndexManager::instance().clearHistories();
-
     euribor6M->addFixing(today, 0.01);
 
     name = euribor3M->name();

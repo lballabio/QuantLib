@@ -19,7 +19,6 @@
 
 #include "utilities.hpp"
 #include <ql/instruments/payoffs.hpp>
-#include <ql/indexes/indexmanager.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -122,10 +121,4 @@ namespace QuantLib {
             // fall back to absolute error
             return std::fabs(x1-x2);
     }
-
-
-    IndexHistoryCleaner::~IndexHistoryCleaner() {
-        IndexManager::instance().clearHistories();
-    }
-
 }

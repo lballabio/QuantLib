@@ -106,7 +106,6 @@ namespace inflation_cpi_swap_test {
         // cleanup
 
         SavedSettings backup;
-        IndexHistoryCleaner cleaner;
 
         // setup
         CommonVars()
