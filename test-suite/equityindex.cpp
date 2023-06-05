@@ -28,25 +28,6 @@ using namespace boost::unit_test_framework;
 
 namespace equityindex_test {
 
-    // Used to check that the exception message contains the expected message string, expMsg.
-    struct ExpErrorPred {
-
-        explicit ExpErrorPred(std::string msg) : expMsg(std::move(msg)) {}
-
-        bool operator()(const Error& ex) const {
-            std::string errMsg(ex.what());
-            if (errMsg.find(expMsg) == std::string::npos) {
-                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
-                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        std::string expMsg;
-    };
-
     struct CommonVars {
 
         Date today;
@@ -211,7 +192,7 @@ void EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing() {
 
     BOOST_CHECK_EXCEPTION(
         equityIndexExSpot->fixing(forecastedDate), Error,
-        equityindex_test::ExpErrorPred(
+        ExpectedErrorMessage(
             "Cannot forecast equity index, missing both spot and historical index"));
 }
 
@@ -248,7 +229,7 @@ void EquityIndexTest::testErrorWhenInvalidFixingDate() {
 
     BOOST_CHECK_EXCEPTION(
         vars.equityIndex->fixing(Date(1, January, 2023)), Error,
-        equityindex_test::ExpErrorPred("Fixing date January 1st, 2023 is not valid"));
+        ExpectedErrorMessage("Fixing date January 1st, 2023 is not valid"));
 }
 
 void EquityIndexTest::testErrorWhenFixingMissing() {
@@ -260,7 +241,7 @@ void EquityIndexTest::testErrorWhenFixingMissing() {
 
     BOOST_CHECK_EXCEPTION(
         vars.equityIndex->fixing(Date(2, January, 2023)), Error,
-        equityindex_test::ExpErrorPred("Missing eqIndex fixing for January 2nd, 2023"));
+        ExpectedErrorMessage("Missing eqIndex fixing for January 2nd, 2023"));
 }
 
 void EquityIndexTest::testErrorWhenInterestHandleMissing() {
@@ -277,7 +258,7 @@ void EquityIndexTest::testErrorWhenInterestHandleMissing() {
             Handle<YieldTermStructure>(), Handle<YieldTermStructure>(), Handle<Quote>());
 
     BOOST_CHECK_EXCEPTION(equityIndexExDiv->fixing(forecastedDate), Error,
-                          equityindex_test::ExpErrorPred(
+                          ExpectedErrorMessage(
                               "null interest rate term structure set to this instance of eqIndex"));
 }
 

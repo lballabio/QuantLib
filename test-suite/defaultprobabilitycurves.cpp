@@ -311,25 +311,6 @@ namespace {
         }
     }
 
-    // Used to check that the exception message contains the expected message string, expMsg.
-    struct ExpErrorPred {
-
-        explicit ExpErrorPred(string msg) : expMsg(std::move(msg)) {}
-
-        bool operator()(const Error& ex) const {
-            string errMsg(ex.what());
-            if (errMsg.find(expMsg) == string::npos) {
-                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
-                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        string expMsg;
-    };
-
 }
 
 void DefaultProbabilityCurveTest::testFlatHazardConsistency() {
@@ -520,7 +501,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     // Check that the default curve throws by requesting a default probability.
     Date testDate(21, Dec, 2020);
     BOOST_CHECK_EXCEPTION(dpts->survivalProbability(testDate), Error,
-        ExpErrorPred("1st iteration: failed at 1st alive instrument"));
+        ExpectedErrorMessage("1st iteration: failed at 1st alive instrument"));
 
     // Create the default curve with an IterativeBootstrap allowing for 4 retries.
     // Use a maxFactor value of 1.0 so that we still use the previous survival probability at each pillar. In other
@@ -532,7 +513,7 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     // Check that the default curve still throws. It throws at the third pillar because the survival probability is 
     // too low at the second pillar.
     BOOST_CHECK_EXCEPTION(dpts->survivalProbability(testDate), Error,
-        ExpErrorPred("1st iteration: failed at 3rd alive instrument"));
+        ExpectedErrorMessage("1st iteration: failed at 3rd alive instrument"));
 
     // Create the default curve with an IterativeBootstrap that allows for 4 retries and does not throw.
     IterativeBootstrap<SPCurve> ibNoThrow(Null<Real>(), Null<Real>(), Null<Real>(), 5, 1.0, 10.0, true, 2);
