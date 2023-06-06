@@ -342,8 +342,105 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2020) {
+            if (// adjusted holiday
+                (d == 23 && m == January)
+                // Lunar New Year
+                || (d >= 24 && d <= 29 && m == January)
+                // adjusted holiday
+                || (d == 2 && m == April)
+                // adjusted holiday
+                || (d == 3 && m == April)
+                // Dragon Boat Festival
+                || (d == 25 && m == June)
+                // adjusted holiday
+                || (d == 26 && m == June)
+                // Mid-Autumn Festival
+                || (d == 1 && m == October)
+                // adjusted holiday
+                || (d == 2 && m == October)
+                // adjusted holiday
+                || (d == 9 && m == October)
+                )
+                return false;
+        }
+
+        if (y == 2021) {
+            // Tomb Sweeping Day falls on Sunday
+            if (// adjusted holiday
+                (d == 10 && m == February)
+                // Lunar New Year
+                || (d >= 11 && d <= 16 && m == February)
+                // adjusted holiday
+                || (d == 1 && m == March)
+                // Children's Day
+                || (d == 2 && m == April)
+                // adjusted holiday
+                || (d == 5 && m == April)
+                // adjusted holiday
+                || (d == 30 && m == April)
+                // Dragon Boat Festival
+                || (d == 14 && m == June)
+                // adjusted holiday
+                || (d == 20 && m == September)
+                // Mid-Autumn Festival
+                || (d == 21 && m == September)
+                // adjusted holiday
+                || (d == 11 && m == October)
+                // adjusted holiday
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2022) {
+            // Mid-Autumn Festival falls on Saturday
+            if ( // Lunar New Year
+                ((d == 31 && m == January) || (d <= 4 && m == February))
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // adjusted holiday
+                || (d == 2 && m == May)
+                // Dragon Boat Festival
+                || (d == 3 && m == June)
+                // adjusted holiday
+                || (d == 9 && m == September)
+                )
+                return false;
+        }
+
+        if (y == 2023) {
+            if (// adjusted holiday
+                (d == 2 && m == January)
+                // adjusted holiday
+                || (d == 20 && m == January)
+                // Lunar New Year
+                || (d >= 21 && d <= 24 && m == January)
+                // adjusted holiday
+                || (d >= 25 && d <= 27 && m == January)
+                // adjusted holiday
+                || (d == 27 && m == February)
+                // adjusted holiday
+                || (d == 3 && m == April)
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // Dragon Boat Festival
+                || (d == 22 && m == June)
+                // adjusted holiday
+                || (d == 23 && m == June)
+                // Mid-Autumn Festival
+                || (d == 29 && m == September)
+                // adjusted holiday
+                || (d == 9 && m == October)
+                )
+                return false;
+        }
+
         return true;
     }
 
 }
-
