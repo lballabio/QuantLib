@@ -114,13 +114,14 @@ namespace QuantLib {
         //@}
 
       protected:
-        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true, updating_ = false;
+        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true;
 
       private:
+        bool updating_ = false;
         class UpdateChecker {
             LazyObject* subject_;
           public:
-            UpdateChecker(LazyObject* subject) : subject_(subject) {
+            explicit UpdateChecker(LazyObject* subject) : subject_(subject) {
                 subject_->updating_ = true;
             }
             ~UpdateChecker() {
