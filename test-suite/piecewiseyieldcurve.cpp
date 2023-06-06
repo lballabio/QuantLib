@@ -24,7 +24,6 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
-#include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/math/comparison.hpp>
@@ -198,7 +197,6 @@ namespace piecewise_yield_curve_test {
 
         // cleanup
         SavedSettings backup;
-        IndexHistoryCleaner cleaner;
 
         // setup
         CommonVars(Date evaluationDate = Date()) {

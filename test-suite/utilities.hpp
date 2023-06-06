@@ -20,6 +20,7 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
+#include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -78,6 +79,8 @@ namespace QuantLib {
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
+                // Clear all fixings before running a test to avoid interference.
+                IndexManager::instance().clearHistories();
                 Date before = Settings::instance().evaluationDate();
                 BOOST_CHECK(true);
                 test_();
@@ -174,14 +177,6 @@ namespace QuantLib {
     inline Integer timeToDays(Time t, Integer daysPerYear = 360) {
         return Integer(std::lround(t * daysPerYear));
     }
-
-
-    // this cleans up index-fixing histories when destroyed
-    class IndexHistoryCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
-      public:
-        IndexHistoryCleaner() = default;
-        ~IndexHistoryCleaner();
-    };
 
 
     // Used to check that an exception message contains the expected message string

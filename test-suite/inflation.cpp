@@ -98,7 +98,6 @@ void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     QL_DEPRECATED_DISABLE_WARNING
 
@@ -201,7 +200,6 @@ void InflationTest::testZeroTermStructure() {
     using namespace inflation_test;
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -588,7 +586,6 @@ void InflationTest::testSeasonalityCorrection() {
     using namespace inflation_test;
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -687,7 +684,6 @@ void InflationTest::testZeroIndexFutureFixing() {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     EUHICP euhicp;
 
@@ -766,7 +762,6 @@ void InflationTest::testQuotedYYIndex() {
     BOOST_TEST_MESSAGE("Testing quoted year-on-year inflation indices...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     YYEUHICP yyeuhicp(true);
     if (yyeuhicp.name() != "EU YY_HICP"
@@ -806,7 +801,6 @@ void InflationTest::testRatioYYIndex() {
     BOOST_TEST_MESSAGE("Testing ratio year-on-year inflation indices...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     auto euhicp = ext::make_shared<EUHICP>();
     auto ukrpi = ext::make_shared<UKRPI>();
@@ -928,7 +922,6 @@ void InflationTest::testOldRatioYYIndex() {
     BOOST_TEST_MESSAGE("Testing old-style ratio year-on-year inflation indices...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     QL_DEPRECATED_DISABLE_WARNING
 
@@ -1066,7 +1059,6 @@ void InflationTest::testYYTermStructure() {
     using namespace inflation_test;
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     // try the YY UK
     Calendar calendar = UnitedKingdom();
@@ -1301,7 +1293,6 @@ void InflationTest::testCpiFlatInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI flat interpolation...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
@@ -1350,7 +1341,6 @@ void InflationTest::testCpiLinearInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI linear interpolation...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
@@ -1407,7 +1397,6 @@ void InflationTest::testCpiAsIndexInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI as-index interpolation...");
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today = Date(10, February, 2022);
     Settings::instance().evaluationDate() = today;

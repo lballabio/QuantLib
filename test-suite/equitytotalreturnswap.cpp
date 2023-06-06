@@ -61,12 +61,10 @@ namespace equitytotalreturnswap_test {
 
             equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
                                                         dividendHandle, spotHandle);
-            IndexManager::instance().clearHistory(equityIndex->name());
             equityIndex->addFixing(Date(5, January, 2023), 9010.0);
             equityIndex->addFixing(today, 8690.0);
 
             sofr = ext::make_shared<Sofr>(interestHandle);
-            IndexManager::instance().clearHistory(sofr->name());
             sofr->addFixing(Date(3, January, 2023), 0.03);
             sofr->addFixing(Date(4, January, 2023), 0.031);
             sofr->addFixing(Date(5, January, 2023), 0.031);
@@ -86,7 +84,6 @@ namespace equitytotalreturnswap_test {
             sofr->addFixing(Date(26, January, 2023), 0.034);
 
             usdLibor = ext::make_shared<USDLibor>(3 * Months, interestHandle);
-            IndexManager::instance().clearHistory(usdLibor->name());
             usdLibor->addFixing(Date(3, January, 2023), 0.035);
 
             interestHandle.linkTo(flatRate(0.0375, dayCount));

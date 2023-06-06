@@ -62,7 +62,6 @@ namespace equitycashflow_test {
 
             equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, localCcyInterestHandle,
                                                         dividendHandle, spotHandle);
-            IndexManager::instance().clearHistory(equityIndex->name());
             equityIndex->addFixing(Date(5, January, 2023), 9010.0);
             equityIndex->addFixing(today, 8690.0);
 
