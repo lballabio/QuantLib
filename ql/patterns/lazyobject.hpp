@@ -134,8 +134,13 @@ namespace QuantLib {
     // inline definitions
 
     inline void LazyObject::update() {
-        if (updating_)
+        if (updating_) {
+            #ifdef QL_THROW_IN_CYCLES
+            QL_FAIL("recursive notification loop detected; you probably created an object cycle");
+            #else
             return;
+            #endif
+        }
 
         // This sets updating to true (so the above check breaks the
         // infinite loop if we enter this method recursively) and will

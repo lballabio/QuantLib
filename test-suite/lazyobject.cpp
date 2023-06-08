@@ -93,7 +93,7 @@ void LazyObjectTest::testForwardingNotificationsByDefault() {
 
 void LazyObjectTest::testNotificationLoop() {
 
-    BOOST_TEST_MESSAGE("Testing that lazy objects raise an exception if notifications recur...");
+    BOOST_TEST_MESSAGE("Testing that lazy objects manage recursive notifications...");
 
     auto q = ext::make_shared<SimpleQuote>(0.0);
     auto s1 = ext::make_shared<Stock>(Handle<Quote>(q));
@@ -104,12 +104,22 @@ void LazyObjectTest::testNotificationLoop() {
     s2->registerWith(s1);
     s1->registerWith(s3);
 
+#ifdef QL_THROW_IN_CYCLES
+
+    BOOST_CHECK_EXCEPTION(q->setValue(2.0), Error,
+                          ExpectedErrorMessage("recursive notification loop detected"));
+
+#else
+
     Flag f;
     f.registerWith(s3);
     q->setValue(2.0);
 
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of change");
+
+#endif
+
 }
 
 test_suite* LazyObjectTest::suite() {

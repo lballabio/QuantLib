@@ -341,6 +341,25 @@ if test "$ql_use_intraday" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_intraday])
 
+AC_MSG_CHECKING([whether to throw exceptions for notification cycles])
+AC_ARG_ENABLE([throwing-in-cycles],
+              AS_HELP_STRING([--enable-throwing-in-cycles],
+                             [If enabled, lazy objects will raise an
+                              exception when they detect a
+                              notification cycle which would result in
+                              an infinite recursion loop. If disabled
+                              (the default), they will break the
+                              recursion without throwing.  Enabling
+                              this option is recommended but might
+                              cause existing code to throw.]),
+              [ql_throw_in_cycles=$enableval],
+              [ql_throw_in_cycles=no])
+if test "$ql_throw_in_cycles" = "yes" ; then
+   AC_DEFINE([QL_THROW_IN_CYCLES],[1],
+             [Define this if you want to throw an exception when a notification loop is detected.])
+fi
+AC_MSG_RESULT([$ql_throw_in_cycles])
+
 AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
 AC_ARG_ENABLE([std-any],
               AS_HELP_STRING([--enable-std-any],
