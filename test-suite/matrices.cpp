@@ -35,6 +35,7 @@
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <cmath>
+#include <iterator>
 #include <utility>
 #include <numeric>
 
@@ -42,6 +43,13 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 using std::fabs;
+
+#ifdef __cpp_concepts
+static_assert(std::random_access_iterator<Matrix::column_iterator>);
+static_assert(std::random_access_iterator<Matrix::const_column_iterator>);
+static_assert(std::random_access_iterator<Matrix::reverse_column_iterator>);
+static_assert(std::random_access_iterator<Matrix::const_reverse_column_iterator>);
+#endif
 
 namespace matrices_test {
 
@@ -791,6 +799,73 @@ void MatricesTest::testSparseMatrixMemory() {
 
 }
 
+#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+    BOOST_REQUIRE(actual.rows() == expected.rows() &&                       \
+                  actual.columns() == expected.columns());                  \
+    for (auto i = 0u; i < actual.rows(); i++) {                             \
+        for (auto j = 0u; j < actual.columns(); j++) {                      \
+            QL_CHECK_CLOSE(actual(i, j), expected(i, j), 100 * QL_EPSILON); \
+        }                                                                   \
+    }                                                                       \
+
+void MatricesTest::testOperators() {
+
+    BOOST_TEST_MESSAGE("Testing matrix operators...");
+
+    auto get_matrix = []() {
+        return Matrix(2, 3, 4.0);
+    };
+
+    const auto m = get_matrix();
+
+    const auto negative = Matrix(2, 3, -4.0);
+    const auto lvalue_negative = -m;
+    const auto rvalue_negative = -get_matrix();
+
+    QL_CHECK_CLOSE_MATRIX(lvalue_negative, negative);
+    QL_CHECK_CLOSE_MATRIX(rvalue_negative, negative);
+
+    const auto matrix_sum = Matrix(2, 3, 8.0);
+    const auto lvalue_lvalue_sum = m + m;
+    const auto lvalue_rvalue_sum = m + get_matrix();
+    const auto rvalue_lvalue_sum = get_matrix() + m;
+    const auto rvalue_rvalue_sum = get_matrix() + get_matrix();
+
+    QL_CHECK_CLOSE_MATRIX(lvalue_lvalue_sum, matrix_sum);
+    QL_CHECK_CLOSE_MATRIX(lvalue_rvalue_sum, matrix_sum);
+    QL_CHECK_CLOSE_MATRIX(rvalue_lvalue_sum, matrix_sum);
+    QL_CHECK_CLOSE_MATRIX(rvalue_rvalue_sum, matrix_sum);
+
+    const auto matrix_difference = Matrix(2, 3, 0.0);
+    const auto lvalue_lvalue_difference = m - m;  // NOLINT(misc-redundant-expression)
+    const auto lvalue_rvalue_difference = m - get_matrix();
+    const auto rvalue_lvalue_difference = get_matrix() - m;
+    const auto rvalue_rvalue_difference = get_matrix() - get_matrix();
+
+    QL_CHECK_CLOSE_MATRIX(lvalue_lvalue_difference, matrix_difference);
+    QL_CHECK_CLOSE_MATRIX(lvalue_rvalue_difference, matrix_difference);
+    QL_CHECK_CLOSE_MATRIX(rvalue_lvalue_difference, matrix_difference);
+    QL_CHECK_CLOSE_MATRIX(rvalue_rvalue_difference, matrix_difference);
+
+    const auto scalar_product = Matrix(2, 3, 6.0);
+    const auto lvalue_real_product = m * 1.5;
+    const auto rvalue_real_product = get_matrix() * 1.5;
+    const auto real_lvalue_product = 1.5 * m;
+    const auto real_rvalue_product = 1.5 * get_matrix();
+
+    QL_CHECK_CLOSE_MATRIX(lvalue_real_product, scalar_product);
+    QL_CHECK_CLOSE_MATRIX(rvalue_real_product, scalar_product);
+    QL_CHECK_CLOSE_MATRIX(real_lvalue_product, scalar_product);
+    QL_CHECK_CLOSE_MATRIX(real_rvalue_product, scalar_product);
+
+    const auto scalar_quotient = Matrix(2, 3, 2.0);
+    const auto lvalue_real_quotient = m / 2.0;
+    const auto rvalue_real_quotient = get_matrix() / 2.0;
+
+    QL_CHECK_CLOSE_MATRIX(lvalue_real_quotient, scalar_quotient);
+    QL_CHECK_CLOSE_MATRIX(rvalue_real_quotient, scalar_quotient);
+}
+
 test_suite* MatricesTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Matrix tests");
 
@@ -808,6 +883,7 @@ test_suite* MatricesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testIterativeSolvers));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInitializers));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOperators));
     return suite;
 }
 

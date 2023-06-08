@@ -20,6 +20,7 @@ this_include_HEADERS = \
     digitaliborcoupon.hpp \
     dividend.hpp \
     duration.hpp \
+    equitycashflow.hpp \
     fixedratecoupon.hpp \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
@@ -54,6 +55,7 @@ cpp_files = \
     digitaliborcoupon.cpp \
     dividend.cpp \
     duration.cpp \
+    equitycashflow.cpp \
     fixedratecoupon.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \

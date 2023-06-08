@@ -3415,7 +3415,6 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaWithDividendsVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdAmerican));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticPiecewiseTimeDependent));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibrationOfTimeDependentModel));
@@ -3443,6 +3442,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
+        suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaWithDividendsVsCached));
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
     }
 

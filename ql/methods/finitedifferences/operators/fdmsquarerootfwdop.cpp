@@ -65,9 +65,7 @@ namespace QuantLib {
             ),
       v_  (mesher->layout()->dim()[direction_]) {
 
-        const FdmLinearOpIterator endIter = mesher->layout()->end();
-        for (FdmLinearOpIterator iter = mesher->layout()->begin();
-            iter != endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             const Real v = mesher->location(iter, direction_);
             v_[iter.coordinates()[direction_]] = v;
         }
@@ -88,9 +86,7 @@ namespace QuantLib {
         const Real b = -(h(n-1)+h(n))/zeta(n);
         const Real c =  h(n-1)/zetap(n);
 
-        const FdmLinearOpIterator endIter = mesher->layout()->end();
-        for (FdmLinearOpIterator iter = mesher->layout()->begin();
-            iter != endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[direction_] == 0) {
                 const Size idx = iter.index();
                 mapX_->diag(idx)  = beta  + f*b; //*v(n-1);
@@ -110,9 +106,7 @@ namespace QuantLib {
         const Real b = (h(n)+h(n-1))/zeta(n);
         const Real c = -h(n)/zetam(n);
 
-        const FdmLinearOpIterator endIter = mesher->layout()->end();
-        for (FdmLinearOpIterator iter = mesher->layout()->begin();
-            iter != endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[direction_] == n-1) {
                 const Size idx = iter.index();
                 mapX_->diag(idx) = beta   + f*b; //*v(n+1);

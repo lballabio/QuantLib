@@ -34,7 +34,6 @@ Checks: >
           -cppcoreguidelines-pro-type-const-cast,
           -cppcoreguidelines-pro-type-member-init,
           -cppcoreguidelines-pro-type-vararg,
-          -cppcoreguidelines-special-member-functions,
         misc-*,
           -misc-confusable-identifiers,
           -misc-const-correctness,
@@ -70,6 +69,8 @@ Checks: >
 HeaderFilterRegex: '.*'
 FormatStyle: file
 CheckOptions:
+  - key:   cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: 1
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
 ...

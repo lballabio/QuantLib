@@ -134,9 +134,7 @@ namespace QuantLib {
             }
             else {
                 Array tp(p.size());
-                const FdmLinearOpIterator end = mesher->layout()->end();
-                for (FdmLinearOpIterator iter = mesher->layout()->begin();
-                    iter != end; ++iter) {
+                for (const auto& iter : *mesher->layout()) {
                     const Size idx = iter.index();
                     const Real nu = mesher->location(iter, 1);
 
@@ -165,16 +163,11 @@ namespace QuantLib {
             const ext::shared_ptr<FdmMesherComposite>& newMesher,
             const Interpolator& interp = Interpolator()) {
 
-            const ext::shared_ptr<FdmLinearOpLayout> oldLayout
-                = oldMesher->layout();
-            const ext::shared_ptr<FdmLinearOpLayout> newLayout
-                = newMesher->layout();
-
-            QL_REQUIRE(   oldLayout->size() == newLayout->size()
-                       && oldLayout->size() == p.size(),
+            QL_REQUIRE(   oldMesher->layout()->size() == newMesher->layout()->size()
+                       && oldMesher->layout()->size() == p.size(),
                        "inconsistent mesher or vector size given");
 
-            Matrix m(oldLayout->dim()[1], oldLayout->dim()[0]);
+            Matrix m(oldMesher->layout()->dim()[1], oldMesher->layout()->dim()[0]);
             for (Size i=0; i < m.rows(); ++i) {
                 std::copy(p.begin() + i*m.columns(),
                           p.begin() + (i+1)*m.columns(), m.row_begin(i));
@@ -186,9 +179,7 @@ namespace QuantLib {
                 oldMesher->getFdm1dMeshers()[1]->locations().end(), m);
 
             Array pNew(p.size());
-            const FdmLinearOpIterator endIter = newLayout->end();
-            for (FdmLinearOpIterator iter = newLayout->begin();
-                iter != endIter; ++iter) {
+            for (const auto& iter : *newMesher->layout()) {
                 const Real x = newMesher->location(iter, 0);
                 const Real v = newMesher->location(iter, 1);
 

@@ -21,6 +21,7 @@
 
 #include "americanoption.hpp"
 #include "utilities.hpp"
+#include <ql/any.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
@@ -2084,7 +2085,7 @@ void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
                             const Real rho = option.rho();
                             const Real vega = option.vega();
                             const Real theta = option.theta();
-                            const std::string exerciseType = boost::any_cast<std::string>(
+                            const std::string exerciseType = ext::any_cast<std::string>(
                                 option.additionalResults().find("exerciseType")->second);
 
                             OneAssetOption::results numericalResults;
@@ -2243,7 +2244,7 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
     const Real vega = option.vega();
     const Real theta = option.theta();
     const Real thetaPerDay = option.thetaPerDay();
-    const std::string exerciseType = boost::any_cast<std::string>(
+    const std::string exerciseType = ext::any_cast<std::string>(
         option.additionalResults().find("exerciseType")->second);
 
     const Real expectedNpv = 17.9251834488399169;

@@ -66,7 +66,11 @@ namespace QuantLib {
         };
       public:
         CashFlows() = delete;
+        CashFlows(CashFlows&&) = delete;
         CashFlows(const CashFlows&) = delete;
+        CashFlows& operator=(CashFlows&&) = delete;
+        CashFlows& operator=(const CashFlows&) = delete;
+        ~CashFlows() = default;
 
         //! \name Date functions
         //@{

@@ -29,6 +29,7 @@
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -52,8 +53,8 @@ namespace QuantLib {
                                    const Real spread2,
                                    const Real cappedRate2,
                                    const Real flooredRate2,
-                                   const boost::optional<BusinessDayConvention>& paymentConvention1,
-                                   const boost::optional<BusinessDayConvention>& paymentConvention2)
+                                   const ext::optional<BusinessDayConvention>& paymentConvention1,
+                                   const ext::optional<BusinessDayConvention>& paymentConvention2)
     : Swap(2), type_(type), nominal1_(std::vector<Real>(schedule1.size() - 1, nominal1)),
       nominal2_(std::vector<Real>(schedule2.size() - 1, nominal2)), schedule1_(schedule1),
       schedule2_(schedule2), index1_(std::move(index1)), index2_(std::move(index2)),
@@ -91,8 +92,8 @@ namespace QuantLib {
                                    std::vector<Real> spread2,
                                    std::vector<Real> cappedRate2,
                                    std::vector<Real> flooredRate2,
-                                   const boost::optional<BusinessDayConvention>& paymentConvention1,
-                                   const boost::optional<BusinessDayConvention>& paymentConvention2)
+                                   const ext::optional<BusinessDayConvention>& paymentConvention1,
+                                   const ext::optional<BusinessDayConvention>& paymentConvention2)
     : Swap(2), type_(type), nominal1_(std::move(nominal1)), nominal2_(std::move(nominal2)),
       schedule1_(std::move(schedule1)), schedule2_(std::move(schedule2)),
       index1_(std::move(index1)), index2_(std::move(index2)), gearing1_(std::move(gearing1)),
@@ -107,8 +108,8 @@ namespace QuantLib {
     }
 
     void FloatFloatSwap::init(
-        boost::optional<BusinessDayConvention> paymentConvention1,
-        boost::optional<BusinessDayConvention> paymentConvention2) {
+        ext::optional<BusinessDayConvention> paymentConvention1,
+        ext::optional<BusinessDayConvention> paymentConvention2) {
 
         QL_REQUIRE(nominal1_.size() == schedule1_.size() - 1,
                    "nominal1 size (" << nominal1_.size()

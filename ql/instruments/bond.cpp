@@ -355,9 +355,9 @@ namespace QuantLib {
 
     void Bond::deepUpdate() {
         for (auto& cashflow : cashflows_) {
-            ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(cashflow);
-            if (f != nullptr)
-                f->update();
+            if(auto lazy = ext::dynamic_pointer_cast<LazyObject>(cashflow)) {
+                lazy->deepUpdate();
+            }
         }
         update();
     }

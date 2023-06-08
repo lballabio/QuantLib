@@ -33,7 +33,7 @@ namespace QuantLib {
             for (Size i=0; i < dim.size(); ++i) {
                 dim[i] = meshers[i]->size();
             }
-            return ext::make_shared<FdmLinearOpLayout>(dim);
+            return ext::make_shared<FdmLinearOpLayout>(std::move(dim));
         }
     }
 
@@ -101,9 +101,7 @@ namespace QuantLib {
     Array FdmMesherComposite::locations(Size direction) const {
         Array retVal(layout_->size());
 
-        const FdmLinearOpIterator endIter = layout_->end();
-        for (FdmLinearOpIterator iter = layout_->begin();
-             iter != endIter; ++iter) {
+        for (const auto& iter : *layout_) {
             retVal[iter.index()] =
                 mesher_[direction]->locations()[iter.coordinates()[direction]];
         }

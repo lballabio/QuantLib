@@ -52,7 +52,7 @@ namespace QuantLib {
     };
 
 
-    //! Genuine year-on-year UK RPI (i.e. not a ratio of UK RPI)
+    //! Quoted year-on-year UK RPI (i.e. not a ratio of UK RPI)
     class YYUKRPI : public YoYInflationIndex {
       public:
         explicit YYUKRPI(
@@ -62,7 +62,6 @@ namespace QuantLib {
                             UKRegion(),
                             false,
                             interpolated,
-                            false,
                             Monthly,
                             Period(1, Months),
                             GBPCurrency(),
@@ -70,8 +69,13 @@ namespace QuantLib {
     };
 
 
-    //! Fake year-on-year UK RPI (i.e. a ratio of UK RPI)
-    class YYUKRPIr : public YoYInflationIndex {
+    QL_DEPRECATED_DISABLE_WARNING
+
+    //! Year-on-year UK RPI (i.e. a ratio of UK RPI)
+    /*! \deprecated Pass the UKRPI index to YoYInflationIndex instead.
+                    Deprecated in version 1.31.
+    */
+    class [[deprecated("Pass the UKRPI index to YoYInflationIndex instead")]] YYUKRPIr : public YoYInflationIndex {
       public:
         explicit YYUKRPIr(
             bool interpolated,
@@ -87,6 +91,7 @@ namespace QuantLib {
                             ts) {}
     };
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

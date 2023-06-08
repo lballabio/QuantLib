@@ -108,11 +108,6 @@ namespace QuantLib {
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
             "only monthly and quarterly SOFR futures accepted");
-        if (referenceFreq == Quarterly) {
-            QL_REQUIRE(referenceMonth == Mar || referenceMonth == Jun || referenceMonth == Sep ||
-                referenceMonth == Dec,
-                "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
-        }
     }
 
     SofrFutureRateHelper::SofrFutureRateHelper(
@@ -130,10 +125,5 @@ namespace QuantLib {
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
             "only monthly and quarterly SOFR futures accepted");
-        if (referenceFreq == Quarterly) {
-            QL_REQUIRE(referenceMonth == Mar || referenceMonth == Jun || referenceMonth == Sep ||
-                referenceMonth == Dec,
-                "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
-        }
     }
 }

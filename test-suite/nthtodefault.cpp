@@ -36,7 +36,6 @@
 #include <string>
 
 using namespace QuantLib;
-using namespace std;
 using namespace boost::unit_test_framework;
 
 #ifndef QL_PATCH_SOLARIS
@@ -122,7 +121,7 @@ void NthToDefaultTest::testGauss() {
     Compounding cmp = Continuous; // Simple;
 
     Real recovery = 0.4;
-    vector<Real> lambda (names, 0.01);
+    std::vector<Real> lambda (names, 0.01);
 
     Real namesNotional = 100.0;
 
@@ -135,7 +134,7 @@ void NthToDefaultTest::testGauss() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates = {
+    std::vector<Date> gridDates = {
         asofDate,
         TARGET().advance (asofDate, Period (1, Years)),
         TARGET().advance (asofDate, Period (5, Years)),
@@ -146,7 +145,7 @@ void NthToDefaultTest::testGauss() {
                                    new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
-    vector<Handle<DefaultProbabilityTermStructure> > probabilities;
+    std::vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Real i : lambda) {
         Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
@@ -210,7 +209,7 @@ void NthToDefaultTest::testGauss() {
     ext::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
-    vector<NthToDefault> ntd;
+    std::vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
         ntd.emplace_back(basket, i, Protection::Seller, schedule, 0.0, 0.02, Actual360(),
                          namesNotional * names, true);
@@ -268,7 +267,7 @@ void NthToDefaultTest::testStudent() {
 
 
     Real recovery = 0.4;
-    vector<Real> lambda (names, 0.01);
+    std::vector<Real> lambda (names, 0.01);
 
     Real namesNotional = 100.0;
 
@@ -281,7 +280,7 @@ void NthToDefaultTest::testStudent() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates {
+    std::vector<Date> gridDates {
         asofDate,
         TARGET().advance (asofDate, Period (1, Years)),
         TARGET().advance (asofDate, Period (5, Years)),
@@ -292,7 +291,7 @@ void NthToDefaultTest::testStudent() {
                                 new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
-    vector<Handle<DefaultProbabilityTermStructure> > probabilities;
+    std::vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
     for (Real i : lambda) {
         Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
@@ -340,7 +339,7 @@ void NthToDefaultTest::testStudent() {
     ext::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
-    vector<NthToDefault> ntd;
+    std::vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
         ntd.emplace_back(basket, i, Protection::Seller, schedule, 0.0, 0.02, Actual360(),
                          namesNotional * names, true);

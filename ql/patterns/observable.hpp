@@ -33,9 +33,23 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/patterns/singleton.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <boost/unordered_set.hpp>
 #include <unordered_set>
 #include <set>
+
+#if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
+
+namespace std {
+
+    template<typename T>
+    struct hash<boost::shared_ptr<T>> {
+        std::size_t operator()(const boost::shared_ptr<T>& ptr) const noexcept {
+            return std::hash<typename boost::shared_ptr<T>::element_type*>()(ptr.get());
+        }
+    };
+
+}
+
+#endif
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
@@ -46,7 +60,7 @@ namespace QuantLib {
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
-    class Observable {
+    class Observable { // NOLINT(cppcoreguidelines-special-member-functions)
         friend class Observer;
         friend class ObservableSettings;
       public:
@@ -98,19 +112,11 @@ namespace QuantLib {
 
     //! Object that gets notified when a given observable changes
     /*! \ingroup patterns */
-    class Observer {
+    class Observer { // NOLINT(cppcoreguidelines-special-member-functions)
+      private:
+        typedef std::unordered_set<ext::shared_ptr<Observable>> set_type;
       public:
-        /*! \deprecated Don't use `set_type`; it's not used in the public interface
-                        anyway.  Use `Observer::iterator` if you need to
-                        capture the return value from `registerWith`.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED  // to be moved to private section, not removed
-        typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
-
-        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() = default;
@@ -124,8 +130,18 @@ namespace QuantLib {
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
+            itself.
+
+            \deprecated This method was introduced to work around incorrect behaviour
+                        caused by limiting notifications from LazyObject instances to
+                        the first notification. The default behaviour of LazyObject was
+                        changed to forward all notifications so that a call to this
+                        method should no longer be necessary.
+                        Deprecated in version 1.30.
+        */
+        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -143,9 +159,7 @@ namespace QuantLib {
         virtual void deepUpdate();
 
       private:
-        QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
 
@@ -272,17 +286,10 @@ namespace QuantLib {
     class Observer : public ext::enable_shared_from_this<Observer> {
         friend class Observable;
         friend class ObservableSettings;
+      private:
+        typedef std::unordered_set<ext::shared_ptr<Observable>> set_type;
       public:
-        /*! \deprecated Don't use `set_type`; it's not used in the public interface
-                        anyway.  Use `Observer::iterator` if you need to capture
-                        the return value from `registerWith`.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED  // to be moved to private section, not removed
-        typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
-        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() {}
@@ -294,8 +301,18 @@ namespace QuantLib {
         registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
+            itself.
+
+            \deprecated This method was introduced to work around incorrect behaviour
+                        caused by limiting notifications from LazyObject instances to
+                        the first notification. The default behaviour of LazyObject was
+                        changed to forward all notifications so that a call to this
+                        method should no longer be necessary.
+                        Deprecated in version 1.30.
+        */
+        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -356,28 +373,22 @@ namespace QuantLib {
         ext::shared_ptr<Proxy> proxy_;
         mutable std::recursive_mutex mutex_;
 
-        QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
-	namespace detail {
-		class Signal;
-	}
+    namespace detail {
+        class Signal;
+    }
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
     class Observable {
         friend class Observer;
+        friend class ObservableSettings;
+      private:
+        typedef std::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
       public:
-        /*! \deprecated Don't use `set_type`; it's not used in the public interface anyway.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED  // to be moved to private section, not removed
-        typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
-        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observable();
@@ -394,13 +405,8 @@ namespace QuantLib {
             const ext::shared_ptr<Observer::Proxy>& proxy, bool disconnect);
 
         ext::shared_ptr<detail::Signal> sig_;
-
-        QL_DEPRECATED_DISABLE_WARNING
         set_type observers_;
-        QL_DEPRECATED_ENABLE_WARNING
-
         mutable std::recursive_mutex mutex_;
-
         ObservableSettings& settings_;
     };
 
@@ -425,9 +431,7 @@ namespace QuantLib {
                          boost::owner_less<ext::weak_ptr<Observer::Proxy> > >
             set_type;
 
-        QL_DEPRECATED_DISABLE_WARNING
         void registerDeferredObservers(const Observable::set_type& observers);
-        QL_DEPRECATED_ENABLE_WARNING
         void unregisterDeferredObserver(const ext::shared_ptr<Observer::Proxy>& proxy);
 
         set_type deferredObservers_;
@@ -440,11 +444,9 @@ namespace QuantLib {
 
     // inline definitions
 
-    QL_DEPRECATED_DISABLE_WARNING
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         deferredObservers_.insert(observers.begin(), observers.end());
     }
-    QL_DEPRECATED_ENABLE_WARNING
 
     inline void ObservableSettings::unregisterDeferredObserver(
         const ext::shared_ptr<Observer::Proxy>& o) {

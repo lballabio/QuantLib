@@ -84,7 +84,7 @@ namespace QuantLib {
     };
 
 
-    //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
+    //! Quoted year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
       public:
         explicit YYEUHICP(
@@ -94,14 +94,13 @@ namespace QuantLib {
                             EURegion(),
                             false,
                             interpolated,
-                            false,
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
                             ts) {}
     };
 
-    //! Genuine year-on-year EU HICPXT
+    //! Quoted year-on-year EU HICPXT
     class YYEUHICPXT : public YoYInflationIndex {
       public:
         explicit YYEUHICPXT(
@@ -111,7 +110,6 @@ namespace QuantLib {
                             EURegion(),
                             false,
                             interpolated,
-                            false,
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
@@ -119,8 +117,13 @@ namespace QuantLib {
     };
 
 
-    //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
-    class YYEUHICPr : public YoYInflationIndex {
+    QL_DEPRECATED_DISABLE_WARNING
+
+    //! Year-on-year EU HICP (i.e. a ratio of EU HICP)
+    /*! \deprecated Pass the EUHICP index to YoYInflationIndex instead.
+                    Deprecated in version 1.31.
+    */
+    class [[deprecated("Pass the EUHICP index to YoYInflationIndex instead")]] YYEUHICPr : public YoYInflationIndex {
       public:
         explicit YYEUHICPr(
             bool interpolated,
@@ -136,6 +139,7 @@ namespace QuantLib {
                             ts) {}
     };
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

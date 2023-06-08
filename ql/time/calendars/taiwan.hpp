@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! Taiwanese calendars
     /*! Holidays for the Taiwan stock exchange
-        (data from <http://www.tse.com.tw/en/trading/trading_days.php>):
+        (data from <https://www.twse.com.tw/en/trading/holiday.html>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -42,7 +42,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2002-2014 only:)
+        (data available for 2002-2023 only:)
         <ul>
         <li>Chinese Lunar New Year</li>
         <li>Tomb Sweeping Day</li>

@@ -1127,13 +1127,10 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testAmericanCallPutParity));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
         suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
-    }
-
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrierVsBlackScholes));
     }
 

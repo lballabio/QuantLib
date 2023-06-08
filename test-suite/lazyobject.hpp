@@ -28,7 +28,7 @@
 class LazyObjectTest {
   public:
     static void testDiscardingNotifications();
-    static void testForwardingNotifications();
+    static void testForwardingNotificationsByDefault();
     static boost::unit_test_framework::test_suite* suite();
 };
 

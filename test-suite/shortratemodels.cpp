@@ -63,7 +63,6 @@ void ShortRateModelTest::testCachedHullWhite() {
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -140,7 +139,6 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -221,7 +219,6 @@ void ShortRateModelTest::testCachedHullWhite2() {
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -302,7 +299,6 @@ void ShortRateModelTest::testSwaps() {
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today = Settings::instance().evaluationDate();
     Calendar calendar = TARGET();
@@ -461,19 +457,15 @@ void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
     }
 }
 
-test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
+test_suite* ShortRateModelTest::suite(SpeedLevel) {
     auto* suite = BOOST_TEST_SUITE("Short-rate model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
-    suite->add(QUANTLIB_TEST_CASE(
-        &ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
+    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
 
     return suite;
 }

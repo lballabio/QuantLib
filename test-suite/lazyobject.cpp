@@ -28,20 +28,21 @@ using ext::shared_ptr;
 
 void LazyObjectTest::testDiscardingNotifications() {
 
-    BOOST_TEST_MESSAGE(
-        "Testing that lazy objects discard notifications after the first...");
+    BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first...");
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
     f.registerWith(s);
-    
+
+    s->forwardFirstNotificationOnly();
+
     s->NPV();
     q->setValue(1.0);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of change");
-    
+
     f.lower();
     q->setValue(2.0);
     if (f.isUp())
@@ -52,27 +53,38 @@ void LazyObjectTest::testDiscardingNotifications() {
     q->setValue(3.0);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of change after recalculation");
-}
-
-
-void LazyObjectTest::testForwardingNotifications() {
-
-    BOOST_TEST_MESSAGE(
-        "Testing that lazy objects forward all notifications when told...");
-
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     s->alwaysForwardNotifications();
 
-    Flag f;
-    f.registerWith(s);
-    
+    f.lower();
     s->NPV();
     q->setValue(1.0);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of change");
-    
+
+    f.lower();
+    q->setValue(2.0);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of second change");
+
+}
+
+
+void LazyObjectTest::testForwardingNotificationsByDefault() {
+
+    BOOST_TEST_MESSAGE("Testing that lazy objects forward all notifications by default...");
+
+    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+
+    Flag f;
+    f.registerWith(s);
+
+    s->NPV();
+    q->setValue(1.0);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of change");
+
     f.lower();
     q->setValue(2.0);
     if (!f.isUp())
@@ -82,10 +94,7 @@ void LazyObjectTest::testForwardingNotifications() {
 
 test_suite* LazyObjectTest::suite() {
     auto* suite = BOOST_TEST_SUITE("LazyObject tests");
-    suite->add(
-        QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
-    suite->add(
-        QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotifications));
+    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
+    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotificationsByDefault));
     return suite;
 }
-

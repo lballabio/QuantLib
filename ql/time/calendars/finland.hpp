@@ -39,7 +39,7 @@ namespace QuantLib {
         <li>Easter Monday</li>
         <li>Ascension Thursday</li>
         <li>Labour Day, May 1st</li>
-        <li>Midsummer Eve (Friday between June 18-24)</li>
+        <li>Midsummer Eve (Friday between June 19-25)</li>
         <li>Independence Day, December 6th</li>
         <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>

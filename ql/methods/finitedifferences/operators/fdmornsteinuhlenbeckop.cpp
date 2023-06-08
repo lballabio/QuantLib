@@ -39,13 +39,10 @@ namespace QuantLib {
     : mesher_(mesher), process_(std::move(process)), rTS_(std::move(rTS)), direction_(direction),
       m_(direction, mesher), mapX_(direction, mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-
-        Array drift(layout->size());
+        Array drift(mesher_->layout()->size());
         const Array x(mesher_->locations(direction));
 
-        for (FdmLinearOpIterator iter=layout->begin(), endIter=layout->end();
-             iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Size i = iter.index();
             drift[i] = process_->drift(0.0, x[i]);
         }

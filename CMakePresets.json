@@ -107,6 +107,7 @@
       "generator": "Ninja",
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
+        "BUILD_SHARED_LIBS": false,
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_CXX_STANDARD": "17",
@@ -116,7 +117,8 @@
         "QL_HIGH_RESOLUTION_DATE": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON"
+        "QL_USE_STD_CLASSES": "ON",
+        "QL_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
     {
@@ -137,6 +139,7 @@
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
         "QL_USE_STD_CLASSES": "ON",
+        "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       },
       "vendor": {

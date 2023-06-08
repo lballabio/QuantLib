@@ -96,7 +96,7 @@ namespace QuantLib {
                 << cdf(lower, t) << ", " << cdf(upper, t) << ")");
 
         return Brent().solve(
-            [&](Real _k){ return cdf(_k, t) - q; },
+            [&](Real _k) -> Real { return cdf(_k, t) - q; },
             1e-10, 0.5*(lower+upper), lower, upper);
     }
 }

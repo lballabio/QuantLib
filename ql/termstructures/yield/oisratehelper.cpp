@@ -29,7 +29,7 @@ namespace QuantLib {
     OISRateHelper::OISRateHelper(Natural settlementDays,
                                  const Period& tenor, // swap maturity
                                  const Handle<Quote>& fixedRate,
-                                 ext::shared_ptr<OvernightIndex> overnightIndex,
+                                 const ext::shared_ptr<OvernightIndex>& overnightIndex,
                                  Handle<YieldTermStructure> discount,
                                  bool telescopicValueDates,
                                  Natural paymentLag,
@@ -41,14 +41,17 @@ namespace QuantLib {
                                  Pillar::Choice pillar,
                                  Date customPillarDate,
                                  RateAveraging::Type averagingMethod,
-                                 boost::optional<bool> endOfMonth)
-    : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays),
-      tenor_(tenor), overnightIndex_(std::move(overnightIndex)),
+                                 ext::optional<bool> endOfMonth)
+    : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays), tenor_(tenor),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
       forwardStart_(forwardStart), overnightSpread_(overnightSpread),
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth) {
+
+        overnightIndex_ =
+            ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
+
         registerWith(overnightIndex_);
         registerWith(discountHandle_);
 
@@ -58,15 +61,9 @@ namespace QuantLib {
 
     void OISRateHelper::initializeDates() {
 
-        // dummy OvernightIndex with curve/swap arguments
-        // review here
-        ext::shared_ptr<IborIndex> clonedIborIndex =
-            overnightIndex_->clone(termStructureHandle_);
-        ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        MakeOIS tmp = MakeOIS(tenor_, clonedOvernightIndex, 0.0, forwardStart_)
+        MakeOIS tmp = MakeOIS(tenor_, overnightIndex_, 0.0, forwardStart_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withSettlementDays(settlementDays_)
             .withTelescopicValueDates(telescopicValueDates_)
@@ -133,7 +130,7 @@ namespace QuantLib {
     Real OISRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
-        swap_->recalculate();
+        swap_->deepUpdate();
         return swap_->fairRate();
     }
 
@@ -156,15 +153,11 @@ namespace QuantLib {
       telescopicValueDates_(telescopicValueDates),
       averagingMethod_(averagingMethod) {
 
-        registerWith(overnightIndex);
-        registerWith(discountHandle_);
+        auto clonedOvernightIndex =
+            ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
 
-        // dummy OvernightIndex with curve/swap arguments
-        // review here
-        ext::shared_ptr<IborIndex> clonedIborIndex =
-            overnightIndex->clone(termStructureHandle_);
-        ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
-            ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
+        registerWith(clonedOvernightIndex);
+        registerWith(discountHandle_);
 
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
@@ -200,7 +193,7 @@ namespace QuantLib {
     Real DatedOISRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
-        swap_->recalculate();
+        swap_->deepUpdate();
         return swap_->fairRate();
     }
 

@@ -29,9 +29,17 @@
 #include <ql/errors.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#include <boost/functional/hash.hpp>
+#include <functional>
 #include <iomanip>
 #include <ctime>
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+#if BOOST_VERSION < 106700
+#include <boost/functional/hash.hpp>
+#else
+#include <boost/container_hash/hash.hpp>
+#endif
+#endif
 
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm;
@@ -479,6 +487,21 @@ namespace QuantLib {
                   }
                  }
                 break;
+              case Hours:
+                dt += boost::posix_time::hours(n);
+                break;
+              case Minutes:
+                  dt += boost::posix_time::minutes(n);
+                  break;
+              case Seconds:
+                dt += boost::posix_time::seconds(n);
+                break;
+              case Milliseconds:
+                dt += boost::posix_time::milliseconds(n);
+                break;
+              case Microseconds:
+                dt += boost::posix_time::microseconds(n);
+                break;
               default:
                 QL_FAIL("undefined time units");
            }
@@ -827,8 +850,7 @@ namespace QuantLib {
         boost::hash_combine(seed, d.dateTime().time_of_day().total_nanoseconds());
         return seed;
 #else
-
-        return boost::hash<Date::serial_type>()(d.serialNumber());
+        return std::hash<Date::serial_type>()(d.serialNumber());
 #endif
     }
 
@@ -840,7 +862,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        struct FormatResetter {
+        struct FormatResetter { // NOLINT(cppcoreguidelines-special-member-functions)
             // An instance of this object will have undefined behaviour
             // if the object out passed in the constructor is destroyed
             // before this instance

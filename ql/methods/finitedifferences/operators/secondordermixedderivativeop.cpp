@@ -28,10 +28,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmMesher>& mesher)
     : NinePointLinearOp(d0, d1, mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             const Size i = iter.index();
             const Real hm_d0 = mesher->dminus(iter, d0_);
             const Real hp_d0 = mesher->dplus(iter, d0_);
@@ -52,17 +49,17 @@ namespace QuantLib {
                 a00_[i] = a01_[i] = a02_[i] = a10_[i] = a20_[i] = 0.0;
                 a21_[i] = a12_[i] = -(a11_[i] = a22_[i] = 1.0/(hp_d0*hp_d1));
             }
-            else if (c0 == layout->dim()[d0_]-1 && c1 == 0) {
+            else if (c0 == mesher->layout()->dim()[d0_]-1 && c1 == 0) {
                 // upper left corner
                 a22_[i] = a21_[i] = a20_[i] = a10_[i] = a00_[i] = 0.0;
                 a11_[i] = a02_[i] = -(a01_[i] = a12_[i] = 1.0/(hm_d0*hp_d1));
             }
-            else if (c0 == 0 && c1 == layout->dim()[d1_]-1) {
+            else if (c0 == 0 && c1 == mesher->layout()->dim()[d1_]-1) {
                 // lower right corner
                 a00_[i] = a01_[i] = a02_[i] = a12_[i] = a22_[i] = 0.0;
                 a20_[i] = a11_[i] = -(a10_[i] = a21_[i] = 1.0/(hp_d0*hm_d1));
             }
-            else if (c0 == layout->dim()[d0_]-1 && c1 == layout->dim()[d1_]-1) {
+            else if (c0 == mesher->layout()->dim()[d0_]-1 && c1 == mesher->layout()->dim()[d1_]-1) {
                 // upper right corner
                 a20_[i] = a21_[i] = a22_[i] = a12_[i] = a02_[i] = 0.0;
                 a10_[i] = a01_[i] = -(a00_[i] = a11_[i] = 1.0/(hm_d0*hm_d1));
@@ -75,7 +72,7 @@ namespace QuantLib {
                 a11_[i] = -(a21_[i] = (hp_d1-hm_d1)/(hp_d0*phi0));
                 a12_[i] = -(a22_[i] = hm_d1/(hp_d0*phip1));
             }
-            else if (c0 == layout->dim()[d0_]-1) {
+            else if (c0 == mesher->layout()->dim()[d0_]-1) {
                 // upper side
                 a20_[i] = a21_[i] = a22_[i] = 0.0;
 
@@ -91,7 +88,7 @@ namespace QuantLib {
                 a11_[i] = -(a12_[i] = (hp_d0-hm_d0)/(zeta0*hp_d1));
                 a21_[i] = -(a22_[i] = hm_d0/(zetap1*hp_d1));
             }
-            else if (c1 == layout->dim()[d1_]-1) {
+            else if (c1 == mesher->layout()->dim()[d1_]-1) {
                 // right side
                 a22_[i] = a12_[i] = a02_[i] = 0.0;
 

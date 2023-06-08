@@ -92,7 +92,7 @@ QuantLib is
     Copyright (C) 2010 Robert Philipp
     Copyright (C) 2010 Slava Mazur
     Copyright (C) 2010 SunTrust Bank
-    Copyright (C) 2010, 2011, 2012, 2013 Andre Miemiec
+    Copyright (C) 2010, 2011, 2012, 2013, 2023 Andre Miemiec
     Copyright (C) 2010, 2014 Cavit Hafizoglu
 
     Copyright (C) 2011, 2013, 2014 Fabien Le Floc'h
@@ -161,6 +161,8 @@ QuantLib is
 
     Copyright (C) 2022 Jonghee Lee
     Copyright (C) 2022, 2023 Ignacio Anguita
+
+    Copyright (C) 2023 Jonathan Sweemer
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

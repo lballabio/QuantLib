@@ -73,7 +73,6 @@ namespace asset_swap_test {
 
         // clean-up
         SavedSettings backup;
-        IndexHistoryCleaner indexCleaner;
 
         // initial setup
         CommonVars() {

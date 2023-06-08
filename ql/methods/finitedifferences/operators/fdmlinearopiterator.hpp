@@ -75,7 +75,7 @@ namespace QuantLib {
             return coordinates_;
         }
 
-        void swap(FdmLinearOpIterator& iter) {
+        void swap(FdmLinearOpIterator& iter) noexcept {
             std::swap(iter.index_, index_);
             dim_.swap(iter.dim_);
             coordinates_.swap(iter.coordinates_);

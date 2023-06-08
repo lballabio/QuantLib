@@ -22,6 +22,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/any.hpp>
 #include <ql/exercise.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
@@ -98,7 +99,7 @@ namespace QuantLib {
             auto vega_ = results_->additionalResults.find("vega");
             QL_REQUIRE(vega_ != results_->additionalResults.end(),
                        "vega not provided");
-            return boost::any_cast<Real>(vega_->second);
+            return ext::any_cast<Real>(vega_->second);
         }
     }
 
@@ -136,7 +137,11 @@ namespace QuantLib {
     : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
       settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
-        registerWithObservables(swap_);
+    }
+
+    void Swaption::deepUpdate() {
+        swap_->deepUpdate();
+        update();
     }
 
     bool Swaption::isExpired() const {

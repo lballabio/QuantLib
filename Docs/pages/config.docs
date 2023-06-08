@@ -122,6 +122,20 @@
     default) the Boost facilities are used.
 
     \code
+    #define QL_USE_STD_ANY
+    \endcode
+    If enabled, `std::any` and related classes and functions will be
+    used instead of `boost::any`. This requires C++17. If disabled
+    (the default) the Boost facilities are used.
+
+    \code
+    #define QL_USE_STD_OPTIONAL
+    \endcode
+    If enabled, `std::optional` and related classes and functions will
+    be used instead of `boost::optional`. This requires C++17. If
+    disabled (the default) the Boost facilities are used.
+
+    \code
     #define QL_NULL_AS_FUNCTIONS
     \endcode
     If defined, `Null` will be implemented as a set of template

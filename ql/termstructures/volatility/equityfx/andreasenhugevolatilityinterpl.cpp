@@ -103,13 +103,8 @@ namespace QuantLib {
                 QL_FAIL("unknown interpolation type");
             }
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout =
-                mesher_->layout();
-            const FdmLinearOpIterator endIter = layout->end();
-
-            Array z(layout->size());
-            for (FdmLinearOpIterator iter = layout->begin();
-                 iter!=endIter; ++iter) {
+            Array z(mesher_->layout()->size());
+            for (const auto& iter : *mesher_->layout()) {
                 const Size i = iter.index();
                 const Real lnStrike = mesher_->location(iter, 0);
 

@@ -53,12 +53,8 @@ namespace QuantLib {
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
         if (localVol_ != nullptr) {
-            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-            const FdmLinearOpIterator endIter = layout->end();
-
-            Array v(layout->size());
-            for (FdmLinearOpIterator iter = layout->begin();
-                 iter!=endIter; ++iter) {
+            Array v(mesher_->layout()->size());
+            for (const auto& iter : *mesher_->layout()) {
                 const Size i = iter.index();
 
                 if (illegalLocalVolOverwrite_ < 0.0) {

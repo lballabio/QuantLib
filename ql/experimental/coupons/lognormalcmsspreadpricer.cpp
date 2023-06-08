@@ -25,8 +25,8 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
+#include <ql/optional.hpp>
 #include <utility>
-
 
 using std::sqrt;
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         const Handle<Quote>& correlation,
         Handle<YieldTermStructure> couponDiscountCurve,
         const Size integrationPoints,
-        const boost::optional<VolatilityType>& volatilityType,
+        const ext::optional<VolatilityType>& volatilityType,
         const Real shift1,
         const Real shift2)
     : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
@@ -66,7 +66,7 @@ namespace QuantLib {
 
         cnd_ = ext::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
 
-        if(volatilityType == boost::none) {
+        if (!volatilityType) {
             QL_REQUIRE(shift1 == Null<Real>() && shift2 == Null<Real>(),
                        "if volatility type is inherited, no shifts should be "
                        "specified");

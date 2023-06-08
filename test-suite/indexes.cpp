@@ -22,6 +22,7 @@
 #include <ql/indexes/bmaindex.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -85,17 +86,23 @@ void IndexTest::testFixingHasHistoricalFixing() {
     while (!euribor6M->isValidFixingDate(today))
         today--;
 
-    IndexManager::instance().clearHistories();
-
     euribor6M->addFixing(today, 0.01);
 
     name = euribor3M->name();
     testCase(name, fixingNotFound, euribor3M->hasHistoricalFixing(today));
     testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_upper_copy(euribor3M->name());
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_lower_copy(euribor3M->name());
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
 
     name = euribor6M->name();
     testCase(name, fixingFound, euribor6M->hasHistoricalFixing(today));
     testCase(name, fixingFound, euribor6M_a->hasHistoricalFixing(today));
+    testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_upper_copy(euribor6M->name());
+    testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_lower_copy(euribor6M->name());
     testCase(name, fixingFound, IndexManager::instance().hasHistoricalFixing(name, today));
 
     IndexManager::instance().clearHistories();
@@ -103,13 +110,20 @@ void IndexTest::testFixingHasHistoricalFixing() {
     name = euribor3M->name();
     testCase(name, fixingNotFound, euribor3M->hasHistoricalFixing(today));
     testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_upper_copy(euribor3M->name());
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_lower_copy(euribor3M->name());
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
 
     name = euribor6M->name();
     testCase(name, fixingNotFound, euribor6M->hasHistoricalFixing(today));
     testCase(name, fixingNotFound, euribor6M_a->hasHistoricalFixing(today));
     testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_upper_copy(euribor6M->name());
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
+    name = boost::to_lower_copy(euribor6M->name());
+    testCase(name, fixingNotFound, IndexManager::instance().hasHistoricalFixing(name, today));
 }
-
 
 test_suite* IndexTest::suite() {
     auto* suite = BOOST_TEST_SUITE("index tests");

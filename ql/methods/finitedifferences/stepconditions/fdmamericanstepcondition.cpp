@@ -30,15 +30,10 @@ namespace QuantLib {
     : mesher_(std::move(mesher)), calculator_(std::move(calculator)) {}
 
     void FdmAmericanStepCondition::applyTo(Array& a, Time t) const {
-        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-
-        QL_REQUIRE(layout->size() == a.size(),
+        QL_REQUIRE(mesher_->layout()->size() == a.size(),
                    "inconsistent array dimensions");
 
-        const FdmLinearOpIterator endIter = layout->end();
-
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const Real innerValue = calculator_->innerValue(iter, t);
             if (innerValue > a[iter.index()]) {
                 a[iter.index()] = innerValue;

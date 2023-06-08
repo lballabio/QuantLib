@@ -64,27 +64,24 @@ namespace QuantLib {
 
 
     void FdmVPPStepCondition::applyTo(Array& a, Time t) const {
-        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        const Size nStates = mesher_->layout()->dim()[stateDirection_];
 
-        const Size nStates = layout->dim()[stateDirection_];
-        const FdmLinearOpIterator endIter = layout->end();
-
-        for (FdmLinearOpIterator iter=layout->begin();iter != endIter; ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             a[iter.index()] += evolve(iter, t);
         }
 
-        for (FdmLinearOpIterator iter=layout->begin();iter != endIter; ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             if (iter.coordinates()[stateDirection_] == 0U) {
 
                 Array x(nStates);
                 for (Size i=0; i < nStates; ++i) {
-                    x[i] = a[layout->neighbourhood(iter, stateDirection_, i)];
+                    x[i] = a[mesher_->layout()->neighbourhood(iter, stateDirection_, i)];
                 }
 
                 const Real gasPrice = gasPrice_->innerValue(iter, t);
                 x = changeState(gasPrice, x, t);
                 for (Size i=0; i < nStates; ++i) {
-                    a[layout->neighbourhood(iter, stateDirection_, i)] = x[i];
+                    a[mesher_->layout()->neighbourhood(iter, stateDirection_, i)] = x[i];
                 }
             }
         }

@@ -17,8 +17,8 @@ Copyright (C) 2023 Marcin Rybacki
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/equitycashflow.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/instruments/equitytotalreturnswap.hpp>
@@ -44,8 +44,8 @@ namespace QuantLib {
             }
             Date paymentDate =
                 cal.advance(endDate, paymentDelay, Days, paymentConvention, schedule.endOfMonth());
-            return ext::make_shared<IndexedCashFlow>(nominal, equityIndex, startDate, endDate,
-                                                     paymentDate, true);
+            return ext::make_shared<EquityCashFlow>(nominal, equityIndex, startDate, endDate,
+                                                    paymentDate);
         }
 
         template <typename IndexType, typename LegType>

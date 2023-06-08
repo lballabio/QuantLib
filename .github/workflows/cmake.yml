@@ -21,12 +21,13 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -GNinja -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build .
+        cmake .. -GNinja -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -L
+        cmake --build . --verbose
+        sudo cmake --install .
+        sudo ldconfig
     - name: Test
       run: |
-        cd build
-        ./test-suite/quantlib-test-suite --log_level=message
+        quantlib-test-suite --log_level=message
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
@@ -45,12 +46,12 @@ jobs:
           cmake-linux-ci-opts-
     - name: Compile
       run: |
-        cmake --preset linux-ci-build-with-nonstandard-options
-        cmake --build --preset linux-ci-build-with-nonstandard-options 
+        cmake --preset linux-ci-build-with-nonstandard-options -L
+        cmake --build --preset linux-ci-build-with-nonstandard-options --verbose
+        sudo cmake --build --preset linux-ci-build-with-nonstandard-options --target install
     - name: Test
       run: |
-        cd build
-        ./test-suite/quantlib-test-suite --log_level=message
+        quantlib-test-suite --log_level=message
   cmake-win:
     runs-on: windows-2022
     steps:
@@ -66,7 +67,7 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.81.0/binaries/boost_1_81_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.82.0/binaries/boost_1_82_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
@@ -78,13 +79,13 @@ jobs:
         mkdir build
         cd build
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
-        cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
         cmake --build . --verbose
+        cmake --install .
         dir ql\*.lib
     - name: Test
       run: |
-        cd build
-        .\test-suite\quantlib-test-suite --log_level=message
+        & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-win-dynamic-runtime:
     runs-on: windows-2022
     steps:
@@ -100,7 +101,7 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.81.0/binaries/boost_1_81_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.82.0/binaries/boost_1_82_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
@@ -112,13 +113,13 @@ jobs:
         mkdir build
         cd build
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
-        cmake .. -GNinja -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        cmake .. -GNinja -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
         cmake --build . --verbose
+        cmake --install .
         dir ql\*.lib
     - name: Test
       run: |
-        cd build
-        .\test-suite\quantlib-test-suite --log_level=message
+        & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
@@ -134,7 +135,7 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.81.0/binaries/boost_1_81_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.82.0/binaries/boost_1_82_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
@@ -144,12 +145,12 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
-        cmake --preset windows-ci-build-with-nonstandard-options
-        cmake --build --preset windows-ci-build-with-nonstandard-options
+        cmake --preset windows-ci-build-with-nonstandard-options -L
+        cmake --build --preset windows-ci-build-with-nonstandard-options --verbose
+        cmake --build --preset windows-ci-build-with-nonstandard-options --target install
     - name: Test
       run: |
-        cd build
-        .\test-suite\quantlib-test-suite --log_level=message
+        & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-macos:
     runs-on: macos-latest
     steps:
@@ -171,9 +172,9 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -GNinja
-        cmake --build .
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -GNinja -L
+        cmake --build . --verbose
+        cmake --install .
     - name: Test
       run: |
-        cd build
-        ./test-suite/quantlib-test-suite --log_level=message
+        quantlib-test-suite --log_level=message

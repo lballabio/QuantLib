@@ -43,7 +43,11 @@
 #include <boost/math/bindings/rr.hpp>
 #endif
 
-#include <boost/math/special_functions/erf.hpp>
+#if BOOST_VERSION < 106700
+#include <boost/functional/hash.hpp>
+#else
+#include <boost/container_hash/hash.hpp>
+#endif
 
 #include <unordered_map>
 

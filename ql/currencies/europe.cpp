@@ -94,7 +94,7 @@ namespace QuantLib {
 
     // Danish krone
     /* The ISO three-letter code is DKK; the numeric code is 208.
-       It is divided in 100 øre.
+       It is divided in 100 Ã¸re.
     */
     DKKCurrency::DKKCurrency() {
         static ext::shared_ptr<Data> dkkData(
@@ -198,7 +198,7 @@ namespace QuantLib {
 
     // Norwegian krone
     /* The ISO three-letter code is NOK; the numeric code is 578.
-       It is divided in 100 øre.
+       It is divided in 100 Ã¸re.
     */
     NOKCurrency::NOKCurrency() {
         static ext::shared_ptr<Data> nokData(
@@ -265,7 +265,7 @@ namespace QuantLib {
 
     // Swedish krona
     /* The ISO three-letter code is SEK; the numeric code is 752.
-       It is divided in 100 öre.
+       It is divided in 100 Ã¶re.
     */
     SEKCurrency::SEKCurrency() {
         static ext::shared_ptr<Data> sekData(
@@ -376,7 +376,7 @@ namespace QuantLib {
 
     // Finnish markka
     /* The ISO three-letter code was FIM; the numeric code was 246.
-       It was divided in 100 penniä.
+       It was divided in 100 penniÃ¤.
     */
     FIMCurrency::FIMCurrency() {
         static ext::shared_ptr<Data> fimData(

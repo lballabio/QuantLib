@@ -42,7 +42,7 @@ using namespace boost::unit_test_framework;
 
 namespace optionlet_stripper_test {
 
-struct CommonVars {
+    struct CommonVars {
         // global data
         Calendar calendar;
         DayCounter dayCounter;
@@ -381,7 +381,7 @@ struct CommonVars {
                                                optionTenors, strikes, termV,
                                                dayCounter);
         }
-};
+    };
 }
 
 void OptionletStripperTest::testFlatTermVolatilityStripping1() {
@@ -656,7 +656,7 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
   using namespace optionlet_stripper_test;
 
   CommonVars vars;
-  Settings::instance().evaluationDate() = Date::todaysDate();
+  Settings::instance().evaluationDate() = Date(28, October, 2013);
 
   vars.setFlatTermVolCurve();
   vars.setFlatTermVolSurface();
@@ -725,7 +725,7 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
   using namespace optionlet_stripper_test;
 
   CommonVars vars;
-  Settings::instance().evaluationDate() = Date::todaysDate();
+  Settings::instance().evaluationDate() = Date(30, April, 2015);
 
   vars.setCapFloorTermVolCurve();
   vars.setCapFloorTermVolSurface();
@@ -833,20 +833,13 @@ void OptionletStripperTest::testSwitchStrike() {
 
 test_suite* OptionletStripperTest::suite() {
     auto* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
-    suite->add(QUANTLIB_TEST_CASE(
-                   &OptionletStripperTest::testFlatTermVolatilityStripping1));
-    suite->add(QUANTLIB_TEST_CASE(
-                       &OptionletStripperTest::testTermVolatilityStripping1));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &OptionletStripperTest::testFlatTermVolatilityStripping2));
-    suite->add(QUANTLIB_TEST_CASE(
-                       &OptionletStripperTest::testTermVolatilityStripping2));
-    suite->add(QUANTLIB_TEST_CASE(
-                       &OptionletStripperTest::testSwitchStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-        &OptionletStripperTest::testTermVolatilityStrippingNormalVol));
-    suite->add(QUANTLIB_TEST_CASE(
-        &OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testFlatTermVolatilityStripping1));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStripping1));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testFlatTermVolatilityStripping2));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStripping2));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testSwitchStrike));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStrippingNormalVol));
+    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol));
 
     return suite;
 }

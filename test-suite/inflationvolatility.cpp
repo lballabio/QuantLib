@@ -46,7 +46,6 @@
 //*************************************************************************
 namespace inflation_volatility_test {
 
-    using namespace std;
     using namespace QuantLib;
 
     // local data globals
@@ -56,18 +55,18 @@ namespace inflation_volatility_test {
     RelinkableHandle<YoYInflationTermStructure> yoyEU;
     RelinkableHandle<YoYInflationTermStructure> yoyUK;
 
-    vector<Rate> cStrikesEU;
-    vector<Rate> fStrikesEU;
-    vector<Period> cfMaturitiesEU;
+    std::vector<Rate> cStrikesEU;
+    std::vector<Rate> fStrikesEU;
+    std::vector<Period> cfMaturitiesEU;
     ext::shared_ptr<Matrix> cPriceEU;
     ext::shared_ptr<Matrix> fPriceEU;
 
     ext::shared_ptr<YoYInflationIndex> yoyIndexUK;
     ext::shared_ptr<YoYInflationIndex> yoyIndexEU;
 
-    vector<Rate> cStrikesUK;
-    vector<Rate> fStrikesUK;
-    vector<Period> cfMaturitiesUK;
+    std::vector<Rate> cStrikesUK;
+    std::vector<Rate> fStrikesUK;
+    std::vector<Period> cfMaturitiesUK;
     ext::shared_ptr<Matrix> cPriceUK;
     ext::shared_ptr<Matrix> fPriceUK;
 
@@ -101,8 +100,8 @@ namespace inflation_volatility_test {
         Date eval = Date(Day(23), Month(11), Year(2007));
         Settings::instance().evaluationDate() = eval;
 
-        yoyIndexUK = ext::shared_ptr<YoYInflationIndex>(new YYUKRPIr(true, yoyUK));
-        yoyIndexEU = ext::shared_ptr<YoYInflationIndex>(new YYEUHICPr(true, yoyEU));
+        yoyIndexUK = ext::make_shared<YoYInflationIndex>(ext::make_shared<UKRPI>(), true, yoyUK);
+        yoyIndexEU = ext::make_shared<YoYInflationIndex>(ext::make_shared<EUHICP>(), true, yoyEU);
 
         // nominal yield curve (interpolated; times assume year parts have 365 days)
         Real timesEUR[] = {0.0109589, 0.0684932, 0.263014, 0.317808, 0.567123, 0.816438,
@@ -129,8 +128,8 @@ namespace inflation_volatility_test {
                0.0498998, 0.0490464, 0.04768, 0.0464862, 0.045452,
                0.0437699, 0.0425311, 0.0420073, 0.041151};
 
-        vector <Real> r;
-        vector <Date> d;
+        std::vector <Real> r;
+        std::vector <Date> d;
         Size nTimesEUR = LENGTH(timesEUR);
         Size nTimesGBP = LENGTH(timesGBP);
         for (Size i = 0; i < nTimesEUR; i++) {
@@ -344,8 +343,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     };
 
     Date d = yoySurf->baseDate() + Period(1,Years);
-    pair<vector<Rate>, vector<Volatility> > someSlice;
-    someSlice = yoySurf->Dslice(d);
+    auto someSlice = yoySurf->Dslice(d);
 
     Size n = someSlice.first.size();
     Real eps = 0.0001;
@@ -356,8 +354,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     }
 
     d = yoySurf->baseDate() + Period(3,Years);
-    pair<vector<Rate>, vector<Volatility> >
-        someOtherSlice = yoySurf->Dslice(d);
+    auto someOtherSlice = yoySurf->Dslice(d);
     n = someOtherSlice.first.size();
     for(Size i = 0; i < n; i++){
         QL_REQUIRE(fabs(someOtherSlice.second[i]-volATyear3[i]) < eps,
@@ -383,8 +380,8 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
 
     setupPriceSurface();
 
-    pair<vector<Time>, vector<Rate> > yyATMt = priceSurfEU->atmYoYSwapTimeRates();
-    pair<vector<Date>, vector<Rate> > yyATMd = priceSurfEU->atmYoYSwapDateRates();
+    auto yyATMt = priceSurfEU->atmYoYSwapTimeRates();
+    auto yyATMd = priceSurfEU->atmYoYSwapDateRates();
 
     // Real dy = (Real)lag / 12.0;
     const Real crv[] = {0.024586, 0.0247575, 0.0249396, 0.0252596,

@@ -27,6 +27,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -40,8 +41,8 @@ namespace QuantLib {
                              ext::shared_ptr<IborIndex> iborIndex,
                              Spread spread,
                              DayCounter floatingDayCount,
-                             boost::optional<BusinessDayConvention> paymentConvention,
-                             boost::optional<bool> useIndexedCoupons)
+                             ext::optional<BusinessDayConvention> paymentConvention,
+                             ext::optional<bool> useIndexedCoupons)
     : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),

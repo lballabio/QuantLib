@@ -25,6 +25,7 @@
 #define quantlib_lazy_object_h
 
 #include <ql/patterns/observable.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +34,6 @@ namespace QuantLib {
     class LazyObject : public virtual Observable,
                        public virtual Observer {
       public:
-        LazyObject() = default;
         ~LazyObject() override = default;
         //! \name Observer interface
         //@{
@@ -67,22 +67,7 @@ namespace QuantLib {
             method, thus re-enabling recalculations.
         */
         void unfreeze();
-        /*! This method causes the object to forward all
-            notifications, even when not calculated.  The default
-            behavior is to forward the first notification received,
-            and discard the others until recalculated; the rationale
-            is that observers were already notified, and don't need
-            further notification until they recalculate, at which
-            point this object would be recalculated too.  After
-            recalculation, this object would again forward the first
-            notification received.
 
-            \warning Forwarding all notifications will cause a
-                     performance hit, and should be used only when
-                     discarding notifications cause an incorrect
-                     behavior.
-        */
-        void alwaysForwardNotifications();
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.
@@ -106,7 +91,30 @@ namespace QuantLib {
         */
         virtual void performCalculations() const = 0;
         //@}
-        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = false;
+
+      public:
+        //! \name Notification settings
+        //@{
+        /*! This method causes the object to forward the first notification received,
+            and discard the others until recalculated; the rationale is that observers
+            were already notified, and don't need further notifications until they
+            recalculate, at which point this object would be recalculated too.
+            After recalculation, this object would again forward the first notification
+            received.
+
+            This behaviour is not always correct though and should only be enabled in
+            appropriate cases.  In if doubt, do not use it.
+        */
+        void forwardFirstNotificationOnly();
+
+        /*! This method causes the object to forward all notifications received.
+            This behaviour is already the default.
+        */
+        void alwaysForwardNotifications();
+        //@}
+
+      protected:
+        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true;
     };
 
 
@@ -127,7 +135,7 @@ namespace QuantLib {
                 // already true because of non-lazy observers
         }
     }
- 
+
     inline void LazyObject::recalculate() {
         bool wasFrozen = frozen_;
         calculated_ = frozen_ = false;
@@ -155,6 +163,10 @@ namespace QuantLib {
         }
     }
 
+    inline void LazyObject::forwardFirstNotificationOnly() {
+        alwaysForward_ = false;
+    }
+
     inline void LazyObject::alwaysForwardNotifications() {
         alwaysForward_ = true;
     }
@@ -171,7 +183,6 @@ namespace QuantLib {
             }
         }
     }
-
 }
 
 #endif

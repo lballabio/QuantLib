@@ -36,6 +36,7 @@
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/bonds/cpibond.hpp>
+#include <ql/cashflows/cashflows.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -73,7 +74,7 @@ namespace inflation_cpi_bond_test {
     }
 
 
-    struct CommonVars {
+    struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
     
         Calendar calendar;
         BusinessDayConvention convention;
@@ -89,7 +90,6 @@ namespace inflation_cpi_bond_test {
         // cleanup
 
         SavedSettings backup;
-        IndexHistoryCleaner cleaner;
 
         // setup
         CommonVars() {
@@ -170,7 +170,7 @@ namespace inflation_cpi_bond_test {
 
 
 void InflationCPIBondTest::testCleanPrice() {
-    IndexManager::instance().clearHistories();
+    BOOST_TEST_MESSAGE("Checking cached pricers for CPI bond...");
 
     using namespace inflation_cpi_bond_test;
   
@@ -203,13 +203,21 @@ void InflationCPIBondTest::testCleanPrice() {
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
 
-    ext::shared_ptr<DiscountingBondEngine> engine(
-                                 new DiscountingBondEngine(common.yTS));
+    auto engine = ext::make_shared<DiscountingBondEngine>(common.yTS);
     bond.setPricingEngine(engine);
 
-    Real storedPrice = 383.01816406;
-    Real calculated = bond.cleanPrice();
+    Real storedPrice = 384.71666770;
+    Real calculated = bond.dirtyPrice();
     Real tolerance = 1.0e-8;
+    if (std::fabs(calculated-storedPrice) > tolerance) {
+        BOOST_FAIL("failed to reproduce expected CPI-bond dirty price"
+                   << std::fixed << std::setprecision(12)
+                   << "\n  expected:   " << storedPrice
+                   << "\n  calculated: " << calculated);
+    }
+
+    storedPrice = 383.04297558;
+    calculated = bond.cleanPrice();
     if (std::fabs(calculated-storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
                    << std::fixed << std::setprecision(12)
@@ -219,11 +227,91 @@ void InflationCPIBondTest::testCleanPrice() {
 }
 
 
+void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
+    BOOST_TEST_MESSAGE("Checking CPI leg with or without explicit base CPI fixing...");
+
+    using namespace inflation_cpi_bond_test;
+
+    CommonVars common;
+
+    Real notional = 1000000.0;
+    std::vector<Rate> fixedRates(1, 0.1);
+    DayCounter fixedDayCount = Actual365Fixed();
+    BusinessDayConvention fixedPaymentConvention = ModifiedFollowing;
+    Calendar fixedPaymentCalendar = UnitedKingdom();
+    ext::shared_ptr<ZeroInflationIndex> fixedIndex = common.ii;
+    Period contractObservationLag = Period(3, Months);
+    CPI::InterpolationType observationInterpolation = CPI::Flat;
+    Natural settlementDays = 3;
+    bool growthOnly = true;
+    Real baseCPI = 206.1;
+    // set the schedules
+    Date baseDate(1, July, 2007);
+    Date startDate(2, October, 2007);
+    Date endDate(2, October, 2052);
+    Schedule fixedSchedule = MakeSchedule()
+                                 .from(startDate)
+                                 .to(endDate)
+                                 .withTenor(Period(6, Months))
+                                 .withCalendar(fixedPaymentCalendar)
+                                 .withConvention(Unadjusted)
+                                 .backwards();
+
+    Leg legWithBaseDate = CPILeg(fixedSchedule, fixedIndex, Null<Real>(), contractObservationLag)
+                              .withSubtractInflationNominal(growthOnly)
+                              .withNotionals(notional)
+                              .withBaseDate(baseDate)
+                              .withFixedRates(fixedRates)
+                              .withPaymentDayCounter(fixedDayCount)
+                              .withObservationInterpolation(observationInterpolation)
+                              .withPaymentAdjustment(fixedPaymentConvention)
+                              .withPaymentCalendar(fixedPaymentCalendar);
+
+    Leg legWithBaseCPI = CPILeg(fixedSchedule, fixedIndex, baseCPI, contractObservationLag)
+                             .withSubtractInflationNominal(growthOnly)
+                             .withNotionals(notional)
+                             .withFixedRates(fixedRates)
+                             .withPaymentDayCounter(fixedDayCount)
+                             .withObservationInterpolation(observationInterpolation)
+                             .withPaymentAdjustment(fixedPaymentConvention)
+                             .withPaymentCalendar(fixedPaymentCalendar);
+
+    Date settlementDate = fixedPaymentCalendar.advance(common.evaluationDate, settlementDays * Days,
+                                                       fixedPaymentConvention);
+
+    Real npvWithBaseDate =
+        CashFlows::npv(legWithBaseDate, **common.yTS, false, settlementDate, settlementDate);
+    Real accruedsBaseDate = CashFlows::accruedAmount(legWithBaseDate, false, settlementDate);
+
+    Real npvWithBaseCPI =
+        CashFlows::npv(legWithBaseCPI, **common.yTS, false, settlementDate, settlementDate);
+    Real accruedsBaseCPI = CashFlows::accruedAmount(legWithBaseCPI, false, settlementDate);
+
+
+    Real cleanPriceWithBaseDate = (npvWithBaseDate - accruedsBaseDate) * 100. / notional;
+    Real cleanPriceWithBaseCPI = (npvWithBaseCPI - accruedsBaseCPI) * 100. / notional;
+
+    Real tolerance = 1.0e-8;
+    if (std::fabs(cleanPriceWithBaseDate - cleanPriceWithBaseCPI) > tolerance) {
+        BOOST_FAIL("prices of CPI leg with base date and explicit base CPI fixing are not equal "
+                   << std::fixed << std::setprecision(12)
+                   << "\n  clean npv of leg with baseDate:   " << cleanPriceWithBaseDate
+                   << "\n clean npv of leg with explicit baseCPI: " << cleanPriceWithBaseCPI);
+    }
+    // Compare to expected price
+    Real storedPrice = 383.04297558;
+    if (std::fabs(cleanPriceWithBaseDate - storedPrice) > tolerance) {
+        BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
+                   << std::fixed << std::setprecision(12) << "\n  expected:   " << storedPrice
+                   << "\n  calculated: " << cleanPriceWithBaseDate);
+    }
+}
+
 test_suite* InflationCPIBondTest::suite() {
     auto* suite = BOOST_TEST_SUITE("CPI bond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCleanPrice));
-
+    suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCPILegWithoutBaseCPI));
     return suite;
 }
 

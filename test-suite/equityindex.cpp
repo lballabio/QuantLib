@@ -69,7 +69,6 @@ namespace equityindex_test {
 
             equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
                                                         dividendHandle, spotHandle);
-            IndexManager::instance().clearHistory(equityIndex->name());
 
             today = calendar.adjust(Date(27, January, 2023));
             
@@ -88,7 +87,7 @@ namespace equityindex_test {
 }
 
 void EquityIndexTest::testTodaysFixing() {
-    BOOST_TEST_MESSAGE("Testing todays fixing...");
+    BOOST_TEST_MESSAGE("Testing today's fixing...");
 
     using namespace equityindex_test;
 
@@ -113,7 +112,7 @@ void EquityIndexTest::testTodaysFixing() {
 }
 
 void EquityIndexTest::testTodaysFixingWithSpotAsProxy() {
-    BOOST_TEST_MESSAGE("Testing todays fixing with spot as proxy...");
+    BOOST_TEST_MESSAGE("Testing today's fixing with spot as proxy...");
 
     using namespace equityindex_test;
 
@@ -304,7 +303,7 @@ void EquityIndexTest::testFixingObservability() {
 }
 
 void EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay() {
-    BOOST_TEST_MESSAGE("Testing no error if today is not a business day...");
+    BOOST_TEST_MESSAGE("Testing that no error is thrown if today is not a business day...");
 
     using namespace equityindex_test;
 

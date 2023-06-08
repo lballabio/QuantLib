@@ -32,7 +32,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
-#include <boost/optional.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -65,8 +65,8 @@ namespace QuantLib {
             Real spread2 = 0.0,
             Real cappedRate2 = Null<Real>(),
             Real flooredRate2 = Null<Real>(),
-            const boost::optional<BusinessDayConvention>& paymentConvention1 = boost::none,
-            const boost::optional<BusinessDayConvention>& paymentConvention2 = boost::none);
+            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
+            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
 
         FloatFloatSwap(
             Swap::Type type,
@@ -88,8 +88,8 @@ namespace QuantLib {
             std::vector<Real> spread2 = std::vector<Real>(),
             std::vector<Real> cappedRate2 = std::vector<Real>(),
             std::vector<Real> flooredRate2 = std::vector<Real>(),
-            const boost::optional<BusinessDayConvention>& paymentConvention1 = boost::none,
-            const boost::optional<BusinessDayConvention>& paymentConvention2 = boost::none);
+            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
+            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
 
         //! \name Inspectors
         //@{
@@ -132,8 +132,8 @@ namespace QuantLib {
         void fetchResults(const PricingEngine::results*) const override;
 
       private:
-        void init(boost::optional<BusinessDayConvention> paymentConvention1,
-                  boost::optional<BusinessDayConvention> paymentConvention2);
+        void init(ext::optional<BusinessDayConvention> paymentConvention1,
+                  ext::optional<BusinessDayConvention> paymentConvention2);
         void setupExpired() const override;
         Swap::Type type_;
         std::vector<Real> nominal1_, nominal2_;

@@ -450,7 +450,7 @@ int main(int, char* []) {
                   << io::rate(fairRate);
         std::cout << std::endl;
 
-        // now let's say that the 5-years swap rate goes up to 0.009%.
+        // now let's say that the 5-years swap rate goes up to 0.90%.
         // A smarter market element--say, connected to a data source-- would
         // notice the change itself. Since we're using SimpleQuotes,
         // we'll have to change the value manually--which forces us to
