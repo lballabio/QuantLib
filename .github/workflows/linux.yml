@@ -132,6 +132,13 @@ jobs:
             cxx: g++
             configureflags: --enable-intraday
             tests: true
+          - name: "Throwing in cycles enabled"
+            shortname: cycles
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-throwing-in-cycles
+            tests: true
           - name: "Indexed coupons enabled"
             shortname: indexed
             tag: rolling

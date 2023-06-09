@@ -179,6 +179,26 @@ namespace QuantLib {
     }
 
 
+    // Used to check that an exception message contains the expected message string
+    struct ExpectedErrorMessage {
+
+        explicit ExpectedErrorMessage(std::string msg) : expected(std::move(msg)) {}
+
+        bool operator()(const Error& ex) const {
+            std::string actual(ex.what());
+            if (actual.find(expected) == std::string::npos) {
+                BOOST_TEST_MESSAGE("Error expected to contain: '" << expected << "'.");
+                BOOST_TEST_MESSAGE("Actual error is: '" << actual << "'.");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        std::string expected;
+    };
+
+
     // Allow streaming vectors to error messages.
 
     // The standard forbids defining new overloads in the std

@@ -95,9 +95,18 @@
     resolution down to microseconds.  Strictly monotone daycounters
     (`Actual360`, `Actual365Fixed` and `ActualActual`) will take the
     additional information into account and allow for accurate
-    intraday pricing.  If disabled (the default) the smallest
+    intraday pricing.  If undefined (the default) the smallest
     resolution of date objects is a single day.  Intraday
     datetime resolution is experimental.
+
+    \code
+    #define QL_THROW_IN_CYCLES
+    \endcode
+    If defined, lazy objects will raise an exception when they detect
+    a notification cycle which would result in an infinite recursion
+    loop. If undefined (the default), they will break the recursion
+    without throwing.  Enabling this option is recommended but might
+    cause existing code to throw.
 
     \code
     #define QL_USE_STD_SHARED_PTR

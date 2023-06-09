@@ -115,12 +115,39 @@ namespace QuantLib {
 
       protected:
         mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true;
+
+      private:
+        bool updating_ = false;
+        class UpdateChecker {
+            LazyObject* subject_;
+          public:
+            explicit UpdateChecker(LazyObject* subject) : subject_(subject) {
+                subject_->updating_ = true;
+            }
+            ~UpdateChecker() {
+                subject_->updating_ = false;
+            }
+        };
     };
 
 
     // inline definitions
 
     inline void LazyObject::update() {
+        if (updating_) {
+            #ifdef QL_THROW_IN_CYCLES
+            QL_FAIL("recursive notification loop detected; you probably created an object cycle");
+            #else
+            return;
+            #endif
+        }
+
+        // This sets updating to true (so the above check breaks the
+        // infinite loop if we enter this method recursively) and will
+        // set it back to false when we exit this scope, either
+        // successfully or because of an exception.
+        UpdateChecker checker(this);
+
         // forwards notifications only the first time
         if (calculated_ || alwaysForward_) {
             // set to false early

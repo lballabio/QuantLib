@@ -652,25 +652,6 @@ namespace piecewise_yield_curve_test {
         }
     }
 
-    // Used to check that the exception message contains the expected message string, expMsg.
-    struct ExpErrorPred {
-
-        explicit ExpErrorPred(string msg) : expMsg(std::move(msg)) {}
-
-        bool operator()(const Error& ex) const {
-            string errMsg(ex.what());
-            if (errMsg.find(expMsg) == string::npos) {
-                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
-                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        string expMsg;
-    };
-
 }
 
 
@@ -1484,9 +1465,8 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     Date spotDate(27, Sep, 2019);
 
     // Check that the ARS in USD curve throws by requesting a discount factor.
-    using piecewise_yield_curve_test::ExpErrorPred;
     BOOST_CHECK_EXCEPTION(arsYts->discount(spotDate), Error,
-        ExpErrorPred("1st iteration: failed at 1st alive instrument"));
+        ExpectedErrorMessage("1st iteration: failed at 1st alive instrument"));
 
     // Create the ARS in USD curve with an IterativeBootstrap allowing for 4 retries.
     IterativeBootstrap<LLDFCurve> ib(Null<Real>(), Null<Real>(), Null<Real>(), 5);
