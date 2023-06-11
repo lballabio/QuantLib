@@ -57,12 +57,12 @@ namespace QuantLib {
     */
     class Russia : public Calendar {
       private:
-        class SettlementImpl : public Calendar::OrthodoxImpl {
+        class SettlementImpl final : public Calendar::OrthodoxImpl {
           public:
             std::string name() const override { return "Russian settlement"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class ExchangeImpl : public Calendar::OrthodoxImpl {
+        class ExchangeImpl final : public Calendar::OrthodoxImpl {
           public:
             std::string name() const override { return "Moscow exchange"; }
             bool isBusinessDay(const Date&) const override;

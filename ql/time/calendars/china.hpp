@@ -57,14 +57,14 @@ namespace QuantLib {
     */
     class China : public Calendar {
       private:
-        class SseImpl : public Calendar::Impl {
+        class SseImpl final : public Calendar::Impl {
           public:
             std::string name() const override { return "Shanghai stock exchange"; }
             bool isWeekend(Weekday) const override;
             bool isBusinessDay(const Date&) const override;
         };
 
-        class IbImpl : public Calendar::Impl {
+        class IbImpl final : public Calendar::Impl {
           public:
             IbImpl()
             : sseImpl(ext::make_shared<China::SseImpl>()) {}

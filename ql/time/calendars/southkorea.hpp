@@ -81,7 +81,7 @@ namespace QuantLib {
             bool isWeekend(Weekday) const override;
             bool isBusinessDay(const Date&) const override;
         };
-        class KrxImpl : public SettlementImpl {
+        class KrxImpl final : public SettlementImpl {
           public:
             std::string name() const override { return "South-Korea exchange"; }
             bool isBusinessDay(const Date&) const override;

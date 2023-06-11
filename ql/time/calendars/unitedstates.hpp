@@ -137,29 +137,29 @@ namespace QuantLib {
             std::string name() const override { return "US settlement"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class LiborImpactImpl : public SettlementImpl {
+        class LiborImpactImpl final : public SettlementImpl {
           public:
             std::string name() const override { return "US with Libor impact"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class NyseImpl : public Calendar::WesternImpl {
+        class NyseImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "New York stock exchange"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class GovernmentBondImpl : public Calendar::WesternImpl {
+        class GovernmentBondImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "US government bond market"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class NercImpl : public Calendar::WesternImpl {
+        class NercImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override {
                 return "North American Energy Reliability Council";
             }
             bool isBusinessDay(const Date&) const override;
         };
-        class FederalReserveImpl : public Calendar::WesternImpl {
+        class FederalReserveImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Federal Reserve Bankwire System"; }
             bool isBusinessDay(const Date&) const override;

@@ -61,7 +61,7 @@ namespace QuantLib {
     */
     class Japan : public Calendar {
       private:
-        class Impl : public Calendar::Impl {
+        class Impl final : public Calendar::Impl {
           public:
             std::string name() const override { return "Japan"; }
             bool isWeekend(Weekday) const override;

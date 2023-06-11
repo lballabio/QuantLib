@@ -54,7 +54,7 @@ namespace QuantLib {
     */
     class Taiwan : public Calendar {
       private:
-        class TsecImpl : public Calendar::Impl {
+        class TsecImpl final : public Calendar::Impl {
           public:
             std::string name() const override { return "Taiwan stock exchange"; }
             bool isWeekend(Weekday) const override;
