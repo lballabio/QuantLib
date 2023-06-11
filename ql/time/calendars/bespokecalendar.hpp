@@ -47,8 +47,8 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const override;
             void addWeekend(Weekday);
           private:
-            std::set<Weekday> weekend_;
             std::string name_;
+            unsigned int weekend_mask_ = 0;
         };
         ext::shared_ptr<BespokeCalendar::Impl> bespokeImpl_;
       public:
