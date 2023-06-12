@@ -20,13 +20,10 @@
 #include <ql/experimental/averageois/arithmeticoisratehelper.hpp>
 #include <ql/experimental/averageois/makearithmeticaverageois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
 namespace QuantLib {
-
-    namespace {
-        void no_deletion(YieldTermStructure*) {}
-    }
 
     ArithmeticOISRateHelper::ArithmeticOISRateHelper(Natural settlementDays,
                                                      const Period& tenor, // swap maturity
@@ -75,7 +72,7 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, no_deletion);
+        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
         if (discountHandle_.empty())
