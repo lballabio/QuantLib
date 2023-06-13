@@ -50,7 +50,7 @@ namespace QuantLib {
     */
     class Hungary : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class Impl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Hungary"; }
             bool isBusinessDay(const Date&) const override;

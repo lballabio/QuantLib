@@ -65,7 +65,7 @@ namespace QuantLib {
 
     class HestonModel::FellerConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             bool test(const Array& params) const override {
                 const Real theta = params[0];

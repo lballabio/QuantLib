@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class BespokeCalendar : public Calendar {
       private:
-        class Impl : public Calendar::Impl {
+        class Impl final : public Calendar::Impl {
           public:
             explicit Impl(std::string name = "");
             std::string name() const override;

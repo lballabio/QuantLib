@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! \ingroup daycounters */
     class OneDayCounter : public DayCounter {
       private:
-        class Impl : public DayCounter::Impl {
+        class Impl final : public DayCounter::Impl {
           public:
             std::string name() const override { return std::string("1/1"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override {

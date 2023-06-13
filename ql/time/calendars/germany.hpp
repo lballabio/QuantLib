@@ -111,27 +111,27 @@ namespace QuantLib {
     */
     class Germany : public Calendar {
       private:
-        class SettlementImpl : public Calendar::WesternImpl {
+        class SettlementImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "German settlement"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class FrankfurtStockExchangeImpl : public Calendar::WesternImpl {
+        class FrankfurtStockExchangeImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Frankfurt stock exchange"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class XetraImpl : public Calendar::WesternImpl {
+        class XetraImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Xetra"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class EurexImpl : public Calendar::WesternImpl {
+        class EurexImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Eurex"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class EuwaxImpl : public Calendar::WesternImpl {
+        class EuwaxImpl final : public Calendar::WesternImpl {
         public:
           std::string name() const override { return "Euwax"; }
           bool isBusinessDay(const Date&) const override;

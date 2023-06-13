@@ -24,7 +24,7 @@ namespace QuantLib {
 
     class GJRGARCHModel::VolatilityConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             bool test(const Array& params) const override {
                 const Real beta  = params[2];

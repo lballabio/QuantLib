@@ -36,7 +36,7 @@ namespace QuantLib {
     //! Parameter that holds an interpolation object
     class InterpolationParameter : public Parameter {
     private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
         public:
           Real value(const Array&, Time t) const override { return interpolator_(t); }
           void reset(const Interpolation& interp) { interpolator_ = interp; }
@@ -274,7 +274,7 @@ namespace QuantLib {
     class GeneralizedHullWhite::FittingParameter
         : public TermStructureFittingParameter {
       private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
           public:
             Impl(Handle<YieldTermStructure> termStructure, Real a, Real sigma)
             : termStructure_(std::move(termStructure)), a_(a), sigma_(sigma) {}

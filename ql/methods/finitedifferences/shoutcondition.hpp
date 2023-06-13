@@ -70,7 +70,7 @@ namespace QuantLib {
                                   int i) = 0;
         };
 
-        class ArrayImpl : public Impl {
+        class ArrayImpl final : public Impl {
           private:
             Array intrinsicValues_;
           public:

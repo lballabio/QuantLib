@@ -63,7 +63,7 @@ namespace QuantLib {
             std::string name() const override { return "Romania"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class BVBImpl : public PublicImpl {
+        class BVBImpl final : public PublicImpl {
           public:
             std::string name() const override { return "Bucharest stock exchange"; }
             bool isBusinessDay(const Date&) const override;

@@ -76,8 +76,8 @@ namespace QuantLib {
         };
 
         template <class I1, class I2>
-        class AbcdInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
-                                      public AbcdCoeffHolder {
+        class AbcdInterpolationImpl final : public Interpolation::templateImpl<I1,I2>,
+                                            public AbcdCoeffHolder {
           public:
             AbcdInterpolationImpl(const I1& xBegin,
                                   const I1& xEnd,

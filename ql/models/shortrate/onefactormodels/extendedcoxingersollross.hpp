@@ -113,7 +113,7 @@ namespace QuantLib {
     class ExtendedCoxIngersollRoss::FittingParameter
         : public TermStructureFittingParameter {
       private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
           public:
             Impl(Handle<YieldTermStructure> termStructure, Real theta, Real k, Real sigma, Real x0)
             : termStructure_(std::move(termStructure)), theta_(theta), k_(k), sigma_(sigma),

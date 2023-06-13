@@ -360,8 +360,8 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2>
-        class CubicInterpolationImpl : public CoefficientHolder,
-                                    public Interpolation::templateImpl<I1,I2> {
+        class CubicInterpolationImpl final : public CoefficientHolder,
+                                             public Interpolation::templateImpl<I1,I2> {
           public:
             CubicInterpolationImpl(const I1& xBegin,
                                    const I1& xEnd,

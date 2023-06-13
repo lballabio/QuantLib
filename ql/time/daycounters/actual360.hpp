@@ -36,7 +36,7 @@ namespace QuantLib {
     */
     class Actual360 : public DayCounter {
       private:
-        class Impl : public DayCounter::Impl {
+        class Impl final : public DayCounter::Impl {
           private:
               bool includeLastDay_;
           public:

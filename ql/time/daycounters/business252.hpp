@@ -36,7 +36,7 @@ namespace QuantLib {
     /*! \ingroup daycounters */
     class Business252 : public DayCounter {
       private:
-        class Impl : public DayCounter::Impl {
+        class Impl final : public DayCounter::Impl {
           private:
             Calendar calendar_;
           public:
