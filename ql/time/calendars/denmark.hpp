@@ -36,7 +36,7 @@ namespace QuantLib {
         <li>Maunday Thursday</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
-        <li>General Prayer Day, 25 days after Easter Monday</li>
+        <li>General Prayer Day, 25 days after Easter Monday (up until 2023)</li>
         <li>Ascension</li>
         <li>Day after Ascension (from 2009)</li>
         <li>Whit (Pentecost) Monday </li>
