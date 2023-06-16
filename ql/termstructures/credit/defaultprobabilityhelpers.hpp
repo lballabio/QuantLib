@@ -5,6 +5,7 @@
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2023 Andrea Pellegatta
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -230,6 +231,7 @@ namespace QuantLib {
         Real impliedQuote() const override;
 
       private:
+        Date getUpfrontDate();
         void initializeDates() override;
         void resetEngine() override;
         Natural upfrontSettlementDays_;

@@ -229,8 +229,8 @@ namespace QuantLib {
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),
       upfrontSettlementDays_(upfrontSettlementDays),
-      runningSpread_(runningSpread) {
-        UpfrontCdsHelper::initializeDates();
+      runningSpread_(runningSpread),
+      upfrontDate_(getUpfrontDate()) {           
     }
 
     UpfrontCdsHelper::UpfrontCdsHelper(
@@ -256,15 +256,18 @@ namespace QuantLib {
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),
-      upfrontSettlementDays_(upfrontSettlementDays),
-      runningSpread_(runningSpread) {
-        UpfrontCdsHelper::initializeDates();
+      upfrontSettlementDays_(upfrontSettlementDays), 
+      runningSpread_(runningSpread), 
+      upfrontDate_(getUpfrontDate()) {           
+    }
+
+    Date UpfrontCdsHelper::getUpfrontDate() {
+        return calendar_.advance(evaluationDate_, upfrontSettlementDays_, Days, paymentConvention_);
     }
 
     void UpfrontCdsHelper::initializeDates() {
-        upfrontDate_ = calendar_.advance(evaluationDate_,
-                                         upfrontSettlementDays_, Days,
-                                         paymentConvention_);
+        CdsHelper::initializeDates();
+        upfrontDate_ = getUpfrontDate();
     }
 
     void UpfrontCdsHelper::resetEngine() {
