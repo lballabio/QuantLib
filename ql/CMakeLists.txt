@@ -246,6 +246,7 @@ set(QL_SOURCES
     indexes/ibor/shibor.cpp
     indexes/ibor/sofr.cpp
     indexes/ibor/sonia.cpp
+    indexes/ibor/corra.cpp
     indexes/iborindex.cpp
     indexes/indexmanager.cpp
     indexes/inflationindex.cpp
