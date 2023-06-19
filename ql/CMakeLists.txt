@@ -237,6 +237,7 @@ set(QL_SOURCES
     indexes/bmaindex.cpp
     indexes/equityindex.cpp
     indexes/ibor/bibor.cpp
+    indexes/ibor/corra.cpp
     indexes/ibor/eonia.cpp
     indexes/ibor/estr.cpp
     indexes/ibor/euribor.cpp
@@ -246,7 +247,6 @@ set(QL_SOURCES
     indexes/ibor/shibor.cpp
     indexes/ibor/sofr.cpp
     indexes/ibor/sonia.cpp
-    indexes/ibor/corra.cpp
     indexes/iborindex.cpp
     indexes/indexmanager.cpp
     indexes/inflationindex.cpp
@@ -1251,6 +1251,7 @@ set(QL_HEADERS
     indexes/ibor/cadlibor.hpp
     indexes/ibor/cdor.hpp
     indexes/ibor/chflibor.hpp
+    indexes/ibor/corra.hpp
     indexes/ibor/dkklibor.hpp
     indexes/ibor/eonia.hpp
     indexes/ibor/estr.hpp
@@ -1277,7 +1278,6 @@ set(QL_HEADERS
     indexes/ibor/usdlibor.hpp
     indexes/ibor/wibor.hpp
     indexes/ibor/zibor.hpp
-    indexes/ibor/corra.hpp
     indexes/iborindex.hpp
     indexes/indexmanager.hpp
     indexes/inflation/aucpi.hpp

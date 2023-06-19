@@ -642,6 +642,9 @@
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\corra.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
     <ClInclude Include="ql\indexes\ibor\dkklibor.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
@@ -718,9 +721,6 @@
       <Filter>indexes\ibor</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\ibor\zibor.hpp">
-      <Filter>indexes\ibor</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\indexes\ibor\corra.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\swap\all.hpp">
@@ -4587,6 +4587,9 @@
     <ClCompile Include="ql\indexes\ibor\bibor.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
+    <ClCompile Include="ql\indexes\ibor\corra.cpp">
+      <Filter>indexes\ibor</Filter>
+    </ClCompile>
     <ClCompile Include="ql\indexes\ibor\eonia.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
@@ -4612,9 +4615,6 @@
       <Filter>indexes\ibor</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\ibor\sonia.cpp">
-      <Filter>indexes\ibor</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\indexes\ibor\corra.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\swap\chfliborswap.cpp">

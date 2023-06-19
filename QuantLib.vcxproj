@@ -834,6 +834,7 @@
     <ClInclude Include="ql\indexes\ibor\cadlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\cdor.hpp" />
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\corra.hpp" />
     <ClInclude Include="ql\indexes\ibor\dkklibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\eonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\estr.hpp" />
@@ -860,7 +861,6 @@
     <ClInclude Include="ql\indexes\ibor\usdlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\wibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\zibor.hpp" />
-    <ClInclude Include="ql\indexes\ibor\corra.hpp" />
     <ClInclude Include="ql\indexes\iborindex.hpp" />
     <ClInclude Include="ql\indexes\indexmanager.hpp" />
     <ClInclude Include="ql\indexes\inflation\all.hpp" />
@@ -2130,6 +2130,7 @@
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
     <ClCompile Include="ql\indexes\equityindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
+    <ClCompile Include="ql\indexes\ibor\corra.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />
     <ClCompile Include="ql\indexes\ibor\estr.cpp" />
     <ClCompile Include="ql\indexes\ibor\euribor.cpp" />
@@ -2139,7 +2140,6 @@
     <ClCompile Include="ql\indexes\ibor\shibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\sofr.cpp" />
     <ClCompile Include="ql\indexes\ibor\sonia.cpp" />
-    <ClCompile Include="ql\indexes\ibor\corra.cpp" />
     <ClCompile Include="ql\indexes\iborindex.cpp" />
     <ClCompile Include="ql\indexes\indexmanager.cpp" />
     <ClCompile Include="ql\indexes\inflationindex.cpp" />
