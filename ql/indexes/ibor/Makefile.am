@@ -37,7 +37,8 @@ this_include_HEADERS = \
     trlibor.hpp \
     usdlibor.hpp \
     wibor.hpp \
-    zibor.hpp
+    zibor.hpp \
+    corra.hpp
 
 cpp_files = \
     bibor.cpp \
@@ -49,7 +50,8 @@ cpp_files = \
     libor.cpp \
     shibor.cpp \
     sofr.cpp \
-    sonia.cpp
+    sonia.cpp \
+    corra.cpp
 
 
 if UNITY_BUILD

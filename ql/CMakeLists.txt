@@ -1277,6 +1277,7 @@ set(QL_HEADERS
     indexes/ibor/usdlibor.hpp
     indexes/ibor/wibor.hpp
     indexes/ibor/zibor.hpp
+    indexes/ibor/corra.hpp
     indexes/iborindex.hpp
     indexes/indexmanager.hpp
     indexes/inflation/aucpi.hpp
