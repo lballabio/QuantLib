@@ -61,12 +61,7 @@ namespace QuantLib {
         // Substitute holiday of National Foundation Day
         // Substitute holiday of Hangul Proclamation of Korea
         // Substitute holiday of Christmas Day
-        if ((w == Monday && (d ==  2 || d ==  3) && m == March && y > 2021) ||
-            (w == Monday && (d ==  6 || d ==  7) && m == May && y > 2013) ||
-            (w == Monday && (d == 16 || d == 17) && m == August && y > 2020) ||
-            (w == Monday && (d ==  4 || d ==  5) && m == October && y > 2020) ||
-            (w == Monday && (d == 10 || d == 11) && m == October && y > 2020) ||
-            (w == Monday && (d == 26 || d == 27) && m == December && y > 2022)) {
+        if () {
             return false;
         }
 
@@ -278,9 +273,15 @@ namespace QuantLib {
                                     || (d ==  1 && m == October)) && y == 2051)
             || ((((d == 29|| d == 30) && m == September)
                                     || (d ==  1 && m == October)) && y == 2052)
-
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
+            // Substitute holiday
+            || (w == Monday && (d ==  2 || d ==  3) && m == March && y > 2021)
+            || (w == Monday && (d ==  6 || d ==  7) && m == May && y > 2013)
+            || (w == Monday && (d == 16 || d == 17) && m == August && y > 2020)
+            || (w == Monday && (d ==  4 || d ==  5) && m == October && y > 2020)
+            || (w == Monday && (d == 10 || d == 11) && m == October && y > 2020)
+            || (w == Monday && (d == 26 || d == 27) && m == December && y > 2022)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
 
