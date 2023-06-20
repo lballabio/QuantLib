@@ -99,7 +99,7 @@ namespace QuantLib {
             || ((d ==  4 || d ==  5 || d ==  6) && m == February && y == 2019)
             || ((d >= 24 && d <= 27)            && m == January  && y == 2020)
             || ((d == 11 || d == 12 || d == 13) && m == February && y == 2021)
-            || (((d == 31 && m == January) || ((d == 1|| d == 2)
+            || (((d == 31 && m == January) || ((d == 1 || d == 2)
                                               && m == February)) && y == 2022)
             || ((d == 23 || d == 24) && m == January   && y == 2023)
             || ((d >=  9 && d <= 12) && m == February  && y == 2024)
