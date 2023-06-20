@@ -231,7 +231,7 @@ namespace QuantLib {
         Real impliedQuote() const override;
 
       private:
-        Date getUpfrontDate();
+        Date upfrontDate();
         void initializeDates() override;
         void resetEngine() override;
         Natural upfrontSettlementDays_;
