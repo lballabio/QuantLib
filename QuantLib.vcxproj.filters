@@ -4450,6 +4450,12 @@
     <ClInclude Include="ql\time\daycounters\yearfractiontodate.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\destr.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\swestr.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

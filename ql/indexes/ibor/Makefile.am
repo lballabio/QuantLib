@@ -13,6 +13,7 @@ this_include_HEADERS = \
     cdor.hpp \
     chflibor.hpp \
     corra.hpp \
+    destr.hpp \
     dkklibor.hpp \
     eonia.hpp \
     estr.hpp \
@@ -32,6 +33,7 @@ this_include_HEADERS = \
     shibor.hpp \
     sofr.hpp \
     sonia.hpp \
+    swestr.hpp \
     tibor.hpp \
     tona.hpp \
     thbfix.hpp \

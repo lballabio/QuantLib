@@ -835,6 +835,7 @@
     <ClInclude Include="ql\indexes\ibor\cdor.hpp" />
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\corra.hpp" />
+    <ClInclude Include="ql\indexes\ibor\destr.hpp" />
     <ClInclude Include="ql\indexes\ibor\dkklibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\eonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\estr.hpp" />
@@ -854,6 +855,7 @@
     <ClInclude Include="ql\indexes\ibor\shibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\sofr.hpp" />
     <ClInclude Include="ql\indexes\ibor\sonia.hpp" />
+    <ClInclude Include="ql\indexes\ibor\swestr.hpp" />
     <ClInclude Include="ql\indexes\ibor\thbfix.hpp" />
     <ClInclude Include="ql\indexes\ibor\tibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\tona.hpp" />
