@@ -61,24 +61,27 @@ namespace QuantLib {
             || (d == 1 && m == January)
             // Independence Day
             || (d == 1 && m == March)
+            || (w == Monday && (d ==  2 || d ==  3) && m == March && y > 2021)
             // Arbour Day
             || (d == 5 && m == April && y <= 2005)
             // Labour Day
             || (d == 1 && m == May)
             // Children's Day
             || (d == 5 && m == May)
-            || (d == 7 && m == May && y == 2018)
-            || (d == 6 && m == May && y == 2019)
+            || (w == Monday && (d ==  6 || d ==  7) && m == May && y > 2013)
             // Memorial Day
             || (d == 6 && m == June)
             // Constitution Day
             || (d == 17 && m == July && y <= 2007)
             // Liberation Day
             || (d == 15 && m == August)
+            || (w == Monday && (d == 16 || d == 17) && m == August && y > 2020)
             // National Foundation Day
             || (d == 3 && m == October)
+            || (w == Monday && (d ==  4 || d ==  5) && m == October && y > 2020)
             // Christmas Day
             || (d == 25 && m == December)
+            || (w == Monday && (d == 26 || d == 27) && m == December && y > 2022)
 
             // Lunar New Year
             || ((d == 21 || d == 22 || d == 23) && m == January  && y == 2004)
@@ -265,15 +268,10 @@ namespace QuantLib {
             || ((((d == 29|| d == 30) && m == September)
                                     || (d ==  1 && m == October)) && y == 2052)
             || ((d == 24 || d == 25) && m == January   && y == 2053)
+
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
-            // Substitute holiday
-            || (w == Monday && (d ==  2 || d ==  3) && m == March && y > 2021)
-            || (w == Monday && (d ==  6 || d ==  7) && m == May && y > 2013)
-            || (w == Monday && (d == 16 || d == 17) && m == August && y > 2020)
-            || (w == Monday && (d ==  4 || d ==  5) && m == October && y > 2020)
             || (w == Monday && (d == 10 || d == 11) && m == October && y > 2020)
-            || (w == Monday && (d == 26 || d == 27) && m == December && y > 2022)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
 
