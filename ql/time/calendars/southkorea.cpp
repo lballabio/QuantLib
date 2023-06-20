@@ -7,6 +7,7 @@
  Copyright (C) 2015 Riccardo Barone
  Copyright (C) 2015 Paolo Mazzocchi
  Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2023 Jonghee Lee
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
