@@ -56,15 +56,6 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
 
-        // Substitute holiday of Independence Day
-        // Substitute holiday of Children's Day
-        // Substitute holiday of National Foundation Day
-        // Substitute holiday of Hangul Proclamation of Korea
-        // Substitute holiday of Christmas Day
-        if () {
-            return false;
-        }
-
         if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
