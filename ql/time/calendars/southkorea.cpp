@@ -264,6 +264,7 @@ namespace QuantLib {
                                     || (d ==  1 && m == October)) && y == 2051)
             || ((((d == 29|| d == 30) && m == September)
                                     || (d ==  1 && m == October)) && y == 2052)
+            || ((d == 24 || d == 25) && m == January   && y == 2053)
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
             // Substitute holiday
