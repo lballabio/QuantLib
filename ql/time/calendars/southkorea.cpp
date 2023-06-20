@@ -55,6 +55,20 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
 
+        // Substitute holiday of Independence Day
+        // Substitute holiday of Children's Day
+        // Substitute holiday of National Foundation Day
+        // Substitute holiday of Hangul Proclamation of Korea
+        // Substitute holiday of Christmas Day
+        if ((w == Monday && (d ==  2 || d ==  3) && m == March && y > 2021) ||
+            (w == Monday && (d ==  6 || d ==  7) && m == May && y > 2013) ||
+            (w == Monday && (d == 16 || d == 17) && m == August && y > 2020) ||
+            (w == Monday && (d ==  4 || d ==  5) && m == October && y > 2020) ||
+            (w == Monday && (d == 10 || d == 11) && m == October && y > 2020) ||
+            (w == Monday && (d == 26 || d == 27) && m == December && y > 2022)) {
+            return false;
+        }
+
         if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
@@ -98,18 +112,41 @@ namespace QuantLib {
             || ((d ==  4 || d ==  5 || d ==  6) && m == February && y == 2019)
             || ((d >= 24 && d <= 27)            && m == January  && y == 2020)
             || ((d == 11 || d == 12 || d == 13) && m == February && y == 2021)
-            || (((d == 31 && m == January) || ((d == 1 || d == 2)
+            || (((d == 31 && m == January) || ((d ==  1|| d ==  2)
                                               && m == February)) && y == 2022)
-            || ((d == 21 || d == 22 || d == 23) && m == January  && y == 2023)
-            || ((d ==  9 || d == 10 || d == 11) && m == February && y == 2024)
-            || ((d == 28 || d == 29 || d == 30) && m == January  && y == 2025)
-            || ((d == 16 || d == 17 || d == 18) && m == February && y == 2026)
-            || ((d ==  5 || d ==  6 || d ==  7) && m == February && y == 2027)
-            || ((d == 25 || d == 26 || d == 27) && m == January  && y == 2028)
-            || ((d == 12 || d == 13 || d == 14) && m == February && y == 2029)
-            || ((d ==  2 || d ==  3 || d ==  4) && m == February && y == 2030)
-            || ((d == 22 || d == 23 || d == 24) && m == January  && y == 2031)
-            || ((d == 10 || d == 11 || d == 12) && m == February && y == 2032)
+            || ((d == 23 || d == 24) && m == January   && y == 2023)
+            || ((d >=  9 && d <= 12) && m == February  && y == 2024)
+            || ((d == 28 || d == 29 || d == 30) && m == January   && y == 2025)
+            || ((d == 16 || d == 17 || d == 18) && m == February  && y == 2026)
+            || ((d ==  8 || d ==  9) && m == February  && y == 2027)
+            || ((d == 26 || d == 27 || d == 28) && m == January   && y == 2028)
+            || ((d == 12 || d == 13 || d == 14) && m == February  && y == 2029)
+            || ((d ==  4 || d ==  5) && m == February  && y == 2030)
+            || ((d == 22 || d == 23 || d == 24) && m == January   && y == 2031)
+            || ((d == 10 || d == 11 || d == 12) && m == February  && y == 2032)
+            || (((d == 31 && m == January) || ((d ==  1|| d ==  2)
+                                               && m == February)) && y == 2033)
+            || ((d == 20 || d == 21) && m == February  && y == 2034)
+            || ((d ==  7 || d ==  8 || d ==  9) && m == February  && y == 2035)
+            || ((d == 28 || d == 29 || d == 30) && m == January   && y == 2036)
+            || ((d == 16 || d == 17) && m == February  && y == 2037)
+            || ((d ==  3 || d ==  4 || d ==  5) && m == February  && y == 2038)
+            || ((d == 24 || d == 25 || d == 26) && m == January   && y == 2039)
+            || ((d == 13 || d == 14) && m == February  && y == 2040)
+            || (((d == 31 && m == January) || ((d ==  1|| d ==  2)
+                                               && m == February)) && y == 2041)
+            || ((d == 21 || d == 22 || d == 23) && m == January   && y == 2042)
+            || ((d ==  9 || d == 10 || d == 11) && m == February  && y == 2043)
+            || ((((d == 29|| d == 30|| d == 31) && m == January)
+                                   || (d ==  1 && m == February)) && y == 2044)
+            || ((d == 16 || d == 17 || d == 18) && m == February  && y == 2045)
+            || ((d ==  5 || d ==  6 || d ==  7) && m == February  && y == 2046)
+            || ((d >= 25 && d <= 28)            && m == January   && y == 2047)
+            || ((d == 13 || d == 14 || d == 15) && m == February  && y == 2048)
+            || ((d ==  1 || d ==  2 || d ==  3) && m == February  && y == 2049)
+            || ((d == 24 || d == 25)            && m == January   && y == 2050)
+            || ((d == 24 || d == 25)            && m == January   && y == 2051)
+            || ((d == 24 || d == 25)            && m == January   && y == 2052)
 
             // Election Days
             || (d == 15 && m == April    && y == 2004) // National Assembly
@@ -147,16 +184,37 @@ namespace QuantLib {
             || (d == 30 && m == April && y == 2020)
             || (d == 19 && m == May   && y == 2021)
             || (d ==  8 && m == May   && y == 2022)
-            || (d == 26 && m == May   && y == 2023)
+            || (d == 29 && m == May   && y == 2023) // Substitute holiday
             || (d == 15 && m == May   && y == 2024)
             || (d ==  5 && m == May   && y == 2025)
-            || (d == 24 && m == May   && y == 2026)
+            || (d == 25 && m == May   && y == 2026) // Substitute holiday
             || (d == 13 && m == May   && y == 2027)
             || (d ==  2 && m == May   && y == 2028)
-            || (d == 20 && m == May   && y == 2029)
+            || (d == 21 && m == May   && y == 2029) // Substitute holiday
             || (d ==  9 && m == May   && y == 2030)
             || (d == 28 && m == May   && y == 2031)
-            || (d == 16 && m == May   && y == 2032)
+            || (d == 17 && m == May   && y == 2032) // Substitute holiday
+            || (d ==  6 && m == May   && y == 2033)
+            || (d == 25 && m == May   && y == 2034)
+            || (d == 15 && m == May   && y == 2035)
+            || (d ==  5 && m == May   && y == 2036) // Substitute holiday
+            || (d == 22 && m == May   && y == 2037)
+            || (d == 11 && m == May   && y == 2038)
+            || (d ==  2 && m == May   && y == 2039) // Substitute holiday
+            || (d == 18 && m == May   && y == 2040)
+            || (d ==  7 && m == May   && y == 2041)
+            || (d == 26 && m == May   && y == 2042)
+            || (d == 18 && m == May   && y == 2043) // Substitute holiday
+            || (d ==  5 && m == May   && y == 2044)
+            || (d == 24 && m == May   && y == 2045)
+            || (d == 14 && m == May   && y == 2046) // Substitute holiday
+            || (d ==  2 && m == May   && y == 2047)
+            || (d == 20 && m == May   && y == 2048)
+            || (d == 10 && m == May   && y == 2049) // Substitute holiday
+            || (d == 30 && m == May   && y == 2050) // Substitute holiday
+            || (d == 30 && m == May   && y == 2051) // Substitute holiday
+            || (d == 30 && m == May   && y == 2052) // Substitute holiday
+            || (d == 30 && m == May   && y == 2053) // Substitute holiday
 
             // Special holiday: 70 years from Independence Day
             || (d == 14 && m == August && y == 2015)
@@ -184,17 +242,39 @@ namespace QuantLib {
                                                 && m == October)) && y == 2020)
             || ((d == 20 || d == 21 || d == 22) && m == September && y == 2021)
             || ((d ==  9 || d == 10 || d == 11) && m == September && y == 2022)
+            || ((d >=  9 && d <= 12)            && m == September && y == 2022)
             || ((d == 28 || d == 29 || d == 30) && m == September && y == 2023)
             || ((d == 16 || d == 17 || d == 18) && m == September && y == 2024)
-            || ((d ==  5 || d ==  6 || d ==  7) && m == October   && y == 2025)
+            || ((d ==  6 || d ==  7 || d ==  8) && m == October   && y == 2025)
             || ((d == 24 || d == 25 || d == 26) && m == September && y == 2026)
             || ((d == 14 || d == 15 || d == 16) && m == September && y == 2027)
-            || ((d ==  2 || d ==  3 || d ==  4) && m == October   && y == 2028)
-            || ((d == 21 || d == 22 || d == 23) && m == September && y == 2029)
+            || ((d >=  2 && d <=  5)            && m == October   && y == 2028)
+            || ((d >= 21 && d <= 24)            && m == September && y == 2029)
             || ((d == 11 || d == 12 || d == 13) && m == September && y == 2030)
             || (((d == 30 && m == September) || ((d == 1 || d == 2)
                                                 && m == October)) && y == 2031)
-            || ((d == 18 || d == 19 || d == 20) && m == September && y == 2032)
+            || ((d == 20 || d == 21) && m == September && y == 2032)
+            || ((d ==  7 || d ==  8 || d ==  9) && m == September && y == 2033)
+            || ((d == 26 || d == 27 || d == 28) && m == September && y == 2034)
+            || ((d == 17 || d == 18) && m == September && y == 2035)
+            || ((d >=  3 && d <=  6) && m == October   && y == 2036)
+            || ((d == 23 || d == 24 || d == 25) && m == September && y == 2037)
+            || ((d == 13 || d == 14 || d == 15) && m == September && y == 2038)
+            || ((d ==  3 || d ==  4 || d == 5) && m == October   && y == 2039)
+            || ((d == 20 || d == 21 || d == 22) && m == September && y == 2040)
+            || ((d ==  9 || d == 10 || d == 11) && m == September && y == 2041)
+            || ((d == 29 || d == 30) && m == September && y == 2042)
+            || ((d == 16 || d == 17 || d == 18) && m == September && y == 2043)
+            || ((d ==  4 || d ==  5 || d ==  6) && m == October   && y == 2044)
+            || ((d == 25 || d == 26 || d == 27) && m == September && y == 2045)
+            || ((d >= 14 && d <= 17) && m == September && y == 2046)
+            || ((d ==  3 || d ==  4 || d ==  5) && m == October   && y == 2047)
+            || ((d == 21 || d == 22 || d == 23) && m == September && y == 2048)
+            || ((d >= 10 && d <= 13) && m == September && y == 2049)
+            || ((((d == 29|| d == 30) && m == September) || (d ==  1 && m == October)) && y == 2050)
+            || ((((d == 29|| d == 30) && m == September) || (d ==  1 && m == October)) && y == 2051)
+            || ((((d == 29|| d == 30) && m == September) || (d ==  1 && m == October)) && y == 2052)
+
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
             )
