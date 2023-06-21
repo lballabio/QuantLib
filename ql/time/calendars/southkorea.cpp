@@ -135,8 +135,6 @@ namespace QuantLib {
             || ((d == 13 || d == 14 || d == 15) && m == February  && y == 2048)
             || ((d ==  1 || d ==  2 || d ==  3) && m == February  && y == 2049)
             || ((d == 24 || d == 25)            && m == January   && y == 2050)
-            || ((d == 24 || d == 25)            && m == January   && y == 2051)
-            || ((d == 24 || d == 25)            && m == January   && y == 2052)
 
             // Election Days
             || (d == 15 && m == April    && y == 2004) // National Assembly
@@ -176,7 +174,7 @@ namespace QuantLib {
             || (d ==  8 && m == May   && y == 2022)
             || (d == 29 && m == May   && y == 2023) // Substitute holiday
             || (d == 15 && m == May   && y == 2024)
-            || (d ==  5 && m == May   && y == 2025)
+            || (d ==  6 && m == May   && y == 2025)
             || (d == 25 && m == May   && y == 2026) // Substitute holiday
             || (d == 13 && m == May   && y == 2027)
             || (d ==  2 && m == May   && y == 2028)
@@ -187,7 +185,7 @@ namespace QuantLib {
             || (d ==  6 && m == May   && y == 2033)
             || (d == 25 && m == May   && y == 2034)
             || (d == 15 && m == May   && y == 2035)
-            || (d ==  5 && m == May   && y == 2036) // Substitute holiday
+            || (d ==  6 && m == May   && y == 2036) // Substitute holiday
             || (d == 22 && m == May   && y == 2037)
             || (d == 11 && m == May   && y == 2038)
             || (d ==  2 && m == May   && y == 2039) // Substitute holiday
@@ -195,16 +193,13 @@ namespace QuantLib {
             || (d ==  7 && m == May   && y == 2041)
             || (d == 26 && m == May   && y == 2042)
             || (d == 18 && m == May   && y == 2043) // Substitute holiday
-            || (d ==  5 && m == May   && y == 2044)
+            || (d ==  6 && m == May   && y == 2044)
             || (d == 24 && m == May   && y == 2045)
             || (d == 14 && m == May   && y == 2046) // Substitute holiday
             || (d ==  2 && m == May   && y == 2047)
             || (d == 20 && m == May   && y == 2048)
             || (d == 10 && m == May   && y == 2049) // Substitute holiday
             || (d == 30 && m == May   && y == 2050) // Substitute holiday
-            || (d == 30 && m == May   && y == 2051) // Substitute holiday
-            || (d == 30 && m == May   && y == 2052) // Substitute holiday
-            || (d == 30 && m == May   && y == 2053) // Substitute holiday
 
             // Special holiday: 70 years from Independence Day
             || (d == 14 && m == August && y == 2015)
@@ -247,7 +242,7 @@ namespace QuantLib {
             || ((d ==  7 || d ==  8 || d ==  9) && m == September && y == 2033)
             || ((d == 26 || d == 27 || d == 28) && m == September && y == 2034)
             || ((d == 17 || d == 18) && m == September && y == 2035)
-            || ((d >=  3 && d <=  6) && m == October   && y == 2036)
+            || ((d >=  3 && d <=  7) && m == October   && y == 2036)
             || ((d == 23 || d == 24 || d == 25) && m == September && y == 2037)
             || ((d == 13 || d == 14 || d == 15) && m == September && y == 2038)
             || ((d ==  3 || d ==  4 || d == 5) && m == October   && y == 2039)
@@ -258,16 +253,11 @@ namespace QuantLib {
             || ((d ==  4 || d ==  5 || d ==  6) && m == October   && y == 2044)
             || ((d == 25 || d == 26 || d == 27) && m == September && y == 2045)
             || ((d >= 14 && d <= 17) && m == September && y == 2046)
-            || ((d ==  3 || d ==  4 || d ==  5) && m == October   && y == 2047)
+            || ((d ==  4 || d ==  5 || d ==  7) && m == October   && y == 2047)
             || ((d == 21 || d == 22 || d == 23) && m == September && y == 2048)
             || ((d >= 10 && d <= 13) && m == September && y == 2049)
             || ((((d == 29|| d == 30) && m == September) 
                                     || (d ==  1 && m == October)) && y == 2050)
-            || ((((d == 29|| d == 30) && m == September)
-                                    || (d ==  1 && m == October)) && y == 2051)
-            || ((((d == 29|| d == 30) && m == September)
-                                    || (d ==  1 && m == October)) && y == 2052)
-            || ((d == 24 || d == 25) && m == January   && y == 2053)
 
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
