@@ -19,6 +19,7 @@
 
 #include <ql/termstructures/volatility/smilesectionutils.hpp>
 #include <ql/math/comparison.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
