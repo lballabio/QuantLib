@@ -22,6 +22,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/america.hpp>
 #include <ql/settings.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
