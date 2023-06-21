@@ -2140,8 +2140,10 @@ void CalendarTest::testSouthKoreanSettlement() {
     expectedHol.emplace_back(3, October, 2050);
     expectedHol.emplace_back(10, October, 2050);
     expectedHol.emplace_back(26, December, 2050);
+
     Calendar c = SouthKorea(SouthKorea::Settlement);
     std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2050));
+
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
             BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
@@ -2912,6 +2914,7 @@ void CalendarTest::testKoreaStockExchange() {
     expectedHol.emplace_back(10, October, 2050);
     expectedHol.emplace_back(26, December, 2050);
     expectedHol.emplace_back(30, December, 2050);
+
     Calendar c = SouthKorea(SouthKorea::KRX);
     std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2050));
 
