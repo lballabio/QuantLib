@@ -50,7 +50,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2053 only:)
+        (data available for 2004-2050 only:)
         <ul>
         <li>Lunar New Year, the last day of the previous lunar year</li>
         <li>Election Days</li>
