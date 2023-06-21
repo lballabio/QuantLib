@@ -60,8 +60,6 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
     BOOST_TEST_MESSAGE("Testing European option pricing for a BSM process"
                        " with one-factor Hull-White model...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual365Fixed();
 
     const Date today = Date::todaysDate();
@@ -156,8 +154,6 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     BOOST_TEST_MESSAGE("Comparing European option pricing for a BSM process"
                        " with one-factor Hull-White model...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual365Fixed();
 
     const Date today = Date::todaysDate();
@@ -247,8 +243,6 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
 
 void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo zero bond pricing...");
-
-    SavedSettings backup;
 
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
@@ -365,8 +359,6 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
 void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo vanilla option pricing...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
 
@@ -454,8 +446,6 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo Heston option pricing...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
 
@@ -539,8 +529,6 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
     BOOST_TEST_MESSAGE("Testing analytic Heston Hull-White option pricing...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
 
@@ -623,8 +611,6 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
 void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     BOOST_TEST_MESSAGE("Testing the pricing of a callable equity product...");
-
-    SavedSettings backup;
 
     /*
        For the definition of the example product see
@@ -738,8 +724,6 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     BOOST_TEST_MESSAGE("Testing the discretization error of the "
                        "Heston Hull-White process...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     const Date today = Date::todaysDate();
 
@@ -823,8 +807,6 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
 
 void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
     BOOST_TEST_MESSAGE("Testing the FDM Heston Hull-White engine...");
-
-    SavedSettings backup;
 
     const Date today = Date(28, March, 2004);
     Settings::instance().evaluationDate() = today;
@@ -996,8 +978,6 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
 
     using namespace hybrid_heston_hullwhite_process_test;
 
-    SavedSettings backup;
-
     Date today(27, December, 2004);
     Settings::instance().evaluationDate() = today;
 
@@ -1083,8 +1063,6 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
     BOOST_TEST_MESSAGE("Testing spatial convergence speed of Heston engine...");
 
     using namespace hybrid_heston_hullwhite_process_test;
-
-    SavedSettings backup;
 
     Date today(27, December, 2004);
     Settings::instance().evaluationDate() = today;
@@ -1181,8 +1159,6 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     // Heston    : \nu = 0.12, \kappa = 2.0,
     //             \theta = 0.09, \sigma = 0.5, \rho=-0.75
     // Equity Short rate correlation: -0.5
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Calendar calendar = TARGET();
@@ -1371,8 +1347,6 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
 }
 
 void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
-
-    SavedSettings backup;
 
     /*
      * Example taken from Lech Aleksander Grzelak,

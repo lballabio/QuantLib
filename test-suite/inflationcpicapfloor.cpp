@@ -118,10 +118,6 @@ namespace inflation_cpi_capfloor_test {
 
         ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFsurfUK;
 
-        // cleanup
-
-        SavedSettings backup;
-
         // setup
         CommonVars()
         : nominals(1,1000000) {

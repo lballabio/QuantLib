@@ -50,9 +50,6 @@ namespace piecewise_zero_spreaded_term_structure_test {
         Date today;
         Date settlementDate;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             calendar = TARGET();

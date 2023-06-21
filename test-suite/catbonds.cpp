@@ -195,9 +195,6 @@ namespace catbonds_test {
         Date today;
         Real faceAmount;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             calendar = TARGET();

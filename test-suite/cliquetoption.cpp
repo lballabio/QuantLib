@@ -105,8 +105,6 @@ namespace {
     template <class T>
     void testOptionGreeks() {
 
-        SavedSettings backup;
-
         std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["delta"]  = 1.0e-5;
         tolerance["gamma"]  = 1.0e-5;
@@ -270,8 +268,6 @@ void CliquetOptionTest::testPerformanceGreeks() {
 void CliquetOptionTest::testMcPerformance() {
     BOOST_TEST_MESSAGE(
         "Testing Monte Carlo performance engine against analytic results...");
-
-    SavedSettings backup;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real moneyness[] = { 0.9, 1.1 };

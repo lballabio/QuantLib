@@ -71,9 +71,6 @@ namespace asset_swap_test {
         Compounding compounding;
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        // clean-up
-        SavedSettings backup;
-
         // initial setup
         CommonVars() {
             Natural swapSettlementDays = 2;

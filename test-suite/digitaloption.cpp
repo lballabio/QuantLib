@@ -511,8 +511,6 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     BOOST_TEST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
                        "digital option greeks...");
 
-    SavedSettings backup;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 5.0e-5;
     tolerance["gamma"]  = 5.0e-5;
@@ -668,8 +666,6 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     BOOST_TEST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
                        "American engine...");
-
-    SavedSettings backup;
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol

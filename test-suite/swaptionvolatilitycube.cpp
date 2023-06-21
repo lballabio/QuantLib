@@ -48,9 +48,6 @@ namespace swaption_volatility_cube_test {
         ext::shared_ptr<SwapIndex> swapIndexBase, shortSwapIndexBase;
         bool vegaWeighedSmileFit;
 
-        // cleanup
-        SavedSettings backup;
-
         // utilities
         void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
                             Real tolerance) {

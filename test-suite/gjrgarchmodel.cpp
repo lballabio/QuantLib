@@ -203,8 +203,6 @@ void GJRGARCHModelTest::testDAXCalibration() {
     BOOST_TEST_MESSAGE(
          "Testing GJR-GARCH model calibration using DAX volatility data...");
 
-    SavedSettings backup;
-
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
 

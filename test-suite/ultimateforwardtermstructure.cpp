@@ -61,8 +61,6 @@ namespace ultimate_forward_term_structure_test {
         Period fsp;
         Real alpha;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars() {

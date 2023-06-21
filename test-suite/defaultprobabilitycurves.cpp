@@ -191,7 +191,6 @@ namespace {
         double tolerance = 1.0e-6;
 
         // ensure apple-to-apple comparison
-        SavedSettings backup;
         Settings::instance().includeTodaysCashFlows() = true;
 
         for (Size i=0; i<n.size(); i++) {
@@ -270,6 +269,8 @@ namespace {
         Real notional = 1.0;
         double tolerance = 1.0e-6;
 
+        // UpfrontCdsHelper::impliedQuote() overrides includeTodaysCashFlows.
+        // Save settings here so we can test that impliedQuote restored settings correctly.
         SavedSettings backup;
         // ensure apple-to-apple comparison
         Settings::instance().includeTodaysCashFlows() = true;
@@ -376,7 +377,6 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
 void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
     BOOST_TEST_MESSAGE("Testing bootstrap on upfront quotes...");
 
-    SavedSettings backup;
     // not taken into account, this would prevent the upfront from being used
     Settings::instance().includeTodaysCashFlows() = false;
 
@@ -396,8 +396,6 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
 void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
     BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
-
-    SavedSettings backup;
 
     Date asof(1, Apr, 2020);
     Settings::instance().evaluationDate() = asof;

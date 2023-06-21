@@ -105,8 +105,6 @@ void CompoundOptionTest::testPutCallParity(){
         { Option::Call, Option::Put,  0.02,           1.6   ,      1.6,     0.013, 0.022,  0.45,     0.5,         0.17},
     };
 
-    SavedSettings backup;
-
     Calendar calendar = TARGET();
 
     DayCounter dc = Actual360();
@@ -238,8 +236,6 @@ void CompoundOptionTest::testValues(){
         { Option::Put, Option::Call,  0.02,           1.6   ,      1.6,  0.013, 0.022,  0.45,     0.5,         0.17,  0.0081,   1.0e-3,  -0.0417,0.0761, -0.0045, -0.0020},
         { Option::Put, Option::Put,  0.02,           1.6   ,      1.6,   0.013, 0.022,  0.45,     0.5,         0.17,  0.0078,   1.0e-3,   0.0413,0.0326, -0.0133, -0.0016}
     };
-
-    SavedSettings backup;
 
     Calendar calendar = TARGET();
 

@@ -45,8 +45,6 @@ namespace {
 void SofrFuturesTest::testBootstrap() {
     BOOST_TEST_MESSAGE("Testing bootstrap over SOFR futures...");
 
-    SavedSettings backup;
-
     Date today = Date(26, October, 2018);
     Settings::instance().evaluationDate() = today;
 

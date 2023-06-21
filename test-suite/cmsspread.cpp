@@ -82,7 +82,6 @@ struct TestData {
             cmsPricerN, correlation, yts2, 32);
     }
 
-    SavedSettings backup;
     Date refDate;
     Handle<YieldTermStructure> yts2;
     Handle<SwaptionVolatilityStructure> swLn, swSln, swN;

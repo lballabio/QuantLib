@@ -48,8 +48,6 @@ namespace equitytotalreturnswap_test {
         RelinkableHandle<Quote> spotHandle;
         ext::shared_ptr<PricingEngine> discountEngine;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars() {

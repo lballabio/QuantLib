@@ -40,8 +40,6 @@ namespace equityindex_test {
         ext::shared_ptr<Quote> spot;
         RelinkableHandle<Quote> spotHandle;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars(bool addTodaysFixing = true) {

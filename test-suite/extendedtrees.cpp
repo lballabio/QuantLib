@@ -238,8 +238,6 @@ void ExtendedTreesTest::testJRBinomialEngines() {
 
     using namespace extended_trees_test;
 
-    SavedSettings backup;
-
     EngineType engine = JR;
     Size steps = 251;
     std::map<std::string,Real> relativeTol;
@@ -256,8 +254,6 @@ void ExtendedTreesTest::testCRRBinomialEngines() {
                        "against analytic results...");
 
     using namespace extended_trees_test;
-
-    SavedSettings backup;
 
     EngineType engine = CRR;
     Size steps = 501;
@@ -276,8 +272,6 @@ void ExtendedTreesTest::testEQPBinomialEngines() {
 
     using namespace extended_trees_test;
 
-    SavedSettings backup;
-
     EngineType engine = EQP;
     Size steps = 501;
     std::map<std::string,Real> relativeTol;
@@ -294,8 +288,6 @@ void ExtendedTreesTest::testTGEOBinomialEngines() {
                        "against analytic results...");
 
     using namespace extended_trees_test;
-
-    SavedSettings backup;
 
     EngineType engine = TGEO;
     Size steps = 251;
@@ -314,8 +306,6 @@ void ExtendedTreesTest::testTIANBinomialEngines() {
 
     using namespace extended_trees_test;
 
-    SavedSettings backup;
-
     EngineType engine = TIAN;
     Size steps = 251;
     std::map<std::string,Real> relativeTol;
@@ -333,8 +323,6 @@ void ExtendedTreesTest::testLRBinomialEngines() {
 
     using namespace extended_trees_test;
 
-    SavedSettings backup;
-
     EngineType engine = LR;
     Size steps = 251;
     std::map<std::string,Real> relativeTol;
@@ -351,8 +339,6 @@ void ExtendedTreesTest::testJOSHIBinomialEngines() {
                        "against analytic results...");
 
     using namespace extended_trees_test;
-
-    SavedSettings backup;
 
     EngineType engine = JOSHI;
     Size steps = 251;

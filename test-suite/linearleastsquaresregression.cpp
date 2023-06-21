@@ -32,8 +32,6 @@ void LinearLeastSquaresRegressionTest::testRegression() {
 
     BOOST_TEST_MESSAGE("Testing linear least-squares regression...");
 
-    SavedSettings backup;
-
     const Real tolerance = 0.05;
 
     const Size nr=100000;
@@ -122,8 +120,6 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
 
     using namespace linear_least_square_regression_test;
 
-    SavedSettings backup;
-
     const Size nr=100000;
     const Size dims = 4;
     const Real tolerance = 0.01;
@@ -195,8 +191,6 @@ void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
 
     /* Example taken from the QuantLib-User list, see posting
     * Multiple linear regression/weighted regression, Boris Skorodumov */
-
-    SavedSettings backup;
 
     std::vector<Real> x = {2.4, 1.8, 2.5, 3.0, 2.1, 1.2, 2.0, 2.7, 3.6};
     std::vector<Real> y = {7.8, 5.5, 8.0, 9.0, 6.5, 4.0, 6.3, 8.4, 10.2};

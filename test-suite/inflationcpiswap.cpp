@@ -103,10 +103,6 @@ namespace inflation_cpi_swap_test {
         ext::shared_ptr<ZeroInflationTermStructure> cpiTS;
         RelinkableHandle<ZeroInflationTermStructure> hcpi;
 
-        // cleanup
-
-        SavedSettings backup;
-
         // setup
         CommonVars()
         : nominals(1,1000000) {

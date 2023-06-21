@@ -31,9 +31,6 @@ using namespace boost::unit_test_framework;
 namespace overnight_indexed_coupon_tests {
 
     struct CommonVars {
-        // cleanup
-        SavedSettings backup;
-
         Date today;
         Real notional = 10000.0;
         ext::shared_ptr<OvernightIndex> sofr;

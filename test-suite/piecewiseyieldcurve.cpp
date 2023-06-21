@@ -195,9 +195,6 @@ namespace piecewise_yield_curve_test {
         std::vector<Schedule> schedules;
         ext::shared_ptr<YieldTermStructure> termStructure;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars(Date evaluationDate = Date()) {
             // data
@@ -1078,7 +1075,6 @@ void PiecewiseYieldCurveTest::testDefaultInstantiation() {
 void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
-    SavedSettings backup;
     Settings::instance().evaluationDate() = Date(22, Dec, 2016);
     Date today = Settings::instance().evaluationDate();
 
@@ -1099,8 +1095,6 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
 
 void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper spot date...");
-
-    SavedSettings backup;
 
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
@@ -1134,8 +1128,6 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
 
     using namespace piecewise_yield_curve_test;
-
-    SavedSettings backup;
 
     Datum data[] = {
         {  1, Weeks,  -0.003488 },
@@ -1228,8 +1220,6 @@ void PiecewiseYieldCurveTest::testLargeRates() {
 
     using namespace piecewise_yield_curve_test;
 
-    SavedSettings backup;
-
     Datum data[] = {
         {  1, Weeks,  2.418633 },
         {  2, Weeks,  1.361540 },
@@ -1300,8 +1290,6 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     BOOST_TEST_MESSAGE("Testing global bootstrap...");
 
     using namespace piecewise_yield_curve_test;
-
-    SavedSettings backup;
 
     Date today(26, Sep, 2019);
     Settings::instance().evaluationDate() = today;
@@ -1387,8 +1375,6 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
 
     BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
-
-    SavedSettings backup;
 
     Date asof(25, Sep, 2019);
     Settings::instance().evaluationDate() = asof;
