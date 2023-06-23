@@ -269,8 +269,6 @@ namespace {
         Real notional = 1.0;
         double tolerance = 1.0e-6;
 
-        // UpfrontCdsHelper::impliedQuote() overrides includeTodaysCashFlows.
-        // Save settings here so we can test that impliedQuote restored settings correctly.
         SavedSettings backup;
         // ensure apple-to-apple comparison
         Settings::instance().includeTodaysCashFlows() = true;
@@ -377,12 +375,16 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
 void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
     BOOST_TEST_MESSAGE("Testing bootstrap on upfront quotes...");
 
-    // not taken into account, this would prevent the upfront from being used
+    // Setting this to false would prevent the upfront from being used.
+    // By checking that the bootstrap works, we indirectly check that
+    // UpfrontCdsHelper::impliedQuote() overrides it.
     Settings::instance().includeTodaysCashFlows() = false;
 
     testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 
-    // also ensure that we didn't override the flag permanently
+    // This checks that UpfrontCdsHelper::impliedQuote() didn't
+    // override the flag permanently; after the bootstrap, it should
+    // go back to its previous value.
     ext::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
     if (flag != false)
         BOOST_ERROR("Cash-flow settings improperly modified");
