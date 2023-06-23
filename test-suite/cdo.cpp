@@ -99,8 +99,6 @@ void CdoTest::testHW(unsigned dataSet) {
 
     using namespace cdo_test;
 
-    SavedSettings backup;
-
     Size poolSize = 100;
     Real lambda = 0.01;
 

@@ -157,8 +157,6 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
     // Black Scholes calculator, since premium adjusted deltas can be calculated
     // from spot deltas by adding/subtracting the premium.
 
-    SavedSettings backup;
-
     // actually, value and tol won't be needed for testing
     EuropeanOptionData values[] = {
       //        type, strike,   spot,    rd,    rf,    t,  vol,   value,    tol
@@ -321,8 +319,6 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
     using namespace black_delta_calculator_test;
 
     // Test for put call parity between put and call deltas.
-
-    SavedSettings backup;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -526,8 +522,6 @@ void BlackDeltaCalculatorTest::testAtmCalcs(){
     BOOST_TEST_MESSAGE("Testing delta-neutral ATM quotations...");
 
     using namespace black_delta_calculator_test;
-
-    SavedSettings backup;
 
     DeltaData values[] = {
         {Option::Call, DeltaVolQuote::Spot,     1.421, 0.997306, 0.992266,          0.1180654,  1.608080, 0.15},

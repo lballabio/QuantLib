@@ -128,9 +128,6 @@ namespace overnight_indexed_swap_test {
         ext::shared_ptr<IborIndex> swapIndex;
         RelinkableHandle<YieldTermStructure> swapTermStructure;
 
-        // cleanup
-        SavedSettings backup;
-
         // utilities
         ext::shared_ptr<OvernightIndexedSwap>
         makeSwap(Period length,
@@ -440,8 +437,6 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
     BOOST_TEST_MESSAGE("Testing 1.16 regression with OIS bootstrap...");
 
     using namespace overnight_indexed_swap_test;
-
-    SavedSettings backup;
 
     Datum data[] = {
         { 0,  1, Days,   0.0066   },

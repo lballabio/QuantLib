@@ -67,9 +67,6 @@ namespace optionlet_stripper_test {
         Real accuracy;
         Real tolerance;
 
-        // cleanup
-        SavedSettings backup;
-
         CommonVars() {
             accuracy = 1.0e-6;
             tolerance = 2.5e-8;

@@ -70,8 +70,6 @@ void InstrumentTest::testCompositeWhenShiftingDates() {
     BOOST_TEST_MESSAGE(
         "Testing reaction of composite instrument to date changes...");
 
-    SavedSettings backup;
-
     Date today = Date::todaysDate();
     DayCounter dc = Actual360();
 

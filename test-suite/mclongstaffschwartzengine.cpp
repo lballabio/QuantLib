@@ -124,8 +124,6 @@ namespace {
 void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
-    SavedSettings backup;
-
     // most of the example taken from the EquityOption.cpp
     const Option::Type type(Option::Put);
     const Real underlying = 36;
@@ -231,8 +229,6 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     // by Paul Glasserman, 2004 Springer Verlag, p. 462
 
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American max options...");
-
-    SavedSettings backup;
 
     // most of the example taken from the EquityOption.cpp
     const Option::Type type(Option::Call);

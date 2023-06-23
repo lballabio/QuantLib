@@ -38,8 +38,6 @@ void CdsOptionTest::testCached() {
 
     BOOST_TEST_MESSAGE("Testing CDS-option value against cached values...");
 
-    SavedSettings backup;
-
     Date cachedToday = Date(10,December,2007);
     Settings::instance().evaluationDate() = cachedToday;
 

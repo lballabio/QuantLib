@@ -34,9 +34,6 @@ namespace bond_forward_test {
         Date today;
         RelinkableHandle<YieldTermStructure> curveHandle;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             today = Date(7, March, 2022);

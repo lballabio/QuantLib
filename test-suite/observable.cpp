@@ -267,7 +267,6 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 
 void ObservableTest::testDeepUpdate() {
 
-    SavedSettings backup;
     RestoreUpdates guard;
 
     Date refDate = Settings::instance().evaluationDate();
@@ -313,8 +312,6 @@ namespace {
 
 void ObservableTest::testEmptyObserverList() {
 	BOOST_TEST_MESSAGE("Testing unregisterWith call on empty observer...");
-
-    SavedSettings backup;
 
     const ext::shared_ptr<DummyObserver> dummyObserver=ext::make_shared<DummyObserver>();
     dummyObserver->unregisterWith(ext::make_shared<SimpleQuote>(10.0));

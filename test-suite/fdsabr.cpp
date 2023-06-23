@@ -107,8 +107,6 @@ namespace {
 void FdSabrTest::testFdmSabrOp() {
     BOOST_TEST_MESSAGE("Testing FDM SABR operator...");
 
-    SavedSettings backup;
-
     const Date today = Date(22, February, 2018);
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = today;
@@ -203,8 +201,6 @@ void FdSabrTest::testFdmSabrOp() {
 void FdSabrTest::testFdmSabrCevPricing() {
     BOOST_TEST_MESSAGE("Testing FDM CEV pricing with trivial SABR model...");
 
-    SavedSettings backup;
-
     const Date today = Date(3, January, 2019);
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = today;
@@ -267,8 +263,6 @@ void FdSabrTest::testFdmSabrCevPricing() {
 
 void FdSabrTest::testFdmSabrVsVolApproximation() {
     BOOST_TEST_MESSAGE("Testing FDM SABR vs approximations...");
-
-    SavedSettings backup;
 
     const Date today = Date(8, January, 2019);
     const DayCounter dc = Actual365Fixed();
@@ -367,8 +361,6 @@ namespace {
 void FdSabrTest::testOosterleeTestCaseIV() {
     BOOST_TEST_MESSAGE("Testing Chen, Oosterlee and Weide test case IV...");
 
-    SavedSettings backup;
-
     const Date today = Date(8, January, 2019);
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = today;
@@ -442,8 +434,6 @@ void FdSabrTest::testBenchOpSabrCase() {
      * Pricing–Stochastic and Local Volatility problems
      * https://ir.cwi.nl/pub/28249
      */
-
-    SavedSettings backup;
 
     const Date today = Date(8, January, 2019);
     const DayCounter dc = Actual365Fixed();

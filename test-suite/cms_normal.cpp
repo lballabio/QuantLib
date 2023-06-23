@@ -60,9 +60,6 @@ namespace cms_normal_test {
         std::vector<ext::shared_ptr<CmsCouponPricer> > numericalPricers;
         std::vector<ext::shared_ptr<CmsCouponPricer> > analyticPricers;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
 

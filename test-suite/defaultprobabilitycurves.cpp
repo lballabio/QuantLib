@@ -190,35 +190,37 @@ namespace {
         Real notional = 1.0;
         double tolerance = 1.0e-6;
 
-        // ensure apple-to-apple comparison
-        SavedSettings backup;
-        Settings::instance().includeTodaysCashFlows() = true;
+        {
+            SavedSettings restore;
+            // ensure apple-to-apple comparison
+            Settings::instance().includeTodaysCashFlows() = true;
 
-        for (Size i=0; i<n.size(); i++) {
-            Date protectionStart = today + settlementDays;
-            Date startDate = calendar.adjust(protectionStart, convention);
-            Date endDate = today + n[i]*Years;
+            for (Size i=0; i<n.size(); i++) {
+                Date protectionStart = today + settlementDays;
+                Date startDate = calendar.adjust(protectionStart, convention);
+                Date endDate = today + n[i]*Years;
 
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              convention, Unadjusted, rule, false);
+                Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                                  convention, Unadjusted, rule, false);
 
-            CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
-                                  schedule, convention, dayCounter,
-                                  true, true, protectionStart);
-            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
+                                      schedule, convention, dayCounter,
+                                      true, true, protectionStart);
+                cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve)));
 
-            // test
-            Rate inputRate = quote[i];
-            Rate computedRate = cds.fairSpread();
-            if (std::fabs(inputRate - computedRate) > tolerance)
-                BOOST_ERROR(
-                    "\nFailed to reproduce fair spread for " << n[i] <<
-                    "Y credit-default swaps\n"
-                    << std::setprecision(10)
-                    << "    computed rate: " << io::rate(computedRate) << "\n"
-                    << "    input rate:    " << io::rate(inputRate));
+                // test
+                Rate inputRate = quote[i];
+                Rate computedRate = cds.fairSpread();
+                if (std::fabs(inputRate - computedRate) > tolerance)
+                    BOOST_ERROR(
+                                "\nFailed to reproduce fair spread for " << n[i] <<
+                                "Y credit-default swaps\n"
+                                << std::setprecision(10)
+                                << "    computed rate: " << io::rate(computedRate) << "\n"
+                                << "    input rate:    " << io::rate(inputRate));
+            }
         }
     }
 
@@ -270,44 +272,46 @@ namespace {
         Real notional = 1.0;
         double tolerance = 1.0e-6;
 
-        SavedSettings backup;
-        // ensure apple-to-apple comparison
-        Settings::instance().includeTodaysCashFlows() = true;
+        {
+            SavedSettings backup;
+            // ensure apple-to-apple comparison
+            Settings::instance().includeTodaysCashFlows() = true;
 
-        for (Size i=0; i<n.size(); i++) {
-            Date protectionStart = today + settlementDays;
-            Date startDate = protectionStart;
-            Date endDate = cdsMaturity(today, n[i] * Years, rule);
-            Date upfrontDate = calendar.advance(today,
-                                         upfrontSettlementDays,
-                                         Days,
-                                         convention);
+            for (Size i=0; i<n.size(); i++) {
+                Date protectionStart = today + settlementDays;
+                Date startDate = protectionStart;
+                Date endDate = cdsMaturity(today, n[i] * Years, rule);
+                Date upfrontDate = calendar.advance(today,
+                                                    upfrontSettlementDays,
+                                                    Days,
+                                                    convention);
 
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              convention, Unadjusted, rule, false);
+                Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                                  convention, Unadjusted, rule, false);
 
-            CreditDefaultSwap cds(Protection::Buyer, notional,
-                                  quote[i], fixedRate,
-                                  schedule, convention, dayCounter,
-                                  true, true, protectionStart,
-                                  upfrontDate,
-                                  ext::shared_ptr<Claim>(),
-                                  Actual360(true),
-                                  true, today);
-            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                CreditDefaultSwap cds(Protection::Buyer, notional,
+                                      quote[i], fixedRate,
+                                      schedule, convention, dayCounter,
+                                      true, true, protectionStart,
+                                      upfrontDate,
+                                      ext::shared_ptr<Claim>(),
+                                      Actual360(true),
+                                      true, today);
+                cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));
 
-            // test
-            Rate inputUpfront = quote[i];
-            Rate computedUpfront = cds.fairUpfront();
-            if (std::fabs(inputUpfront - computedUpfront) > tolerance)
-                BOOST_ERROR(
-                    "\nFailed to reproduce fair upfront for " << n[i] <<
-                    "Y credit-default swaps\n"
-                    << std::setprecision(10)
-                    << "    computed: " << io::rate(computedUpfront) << "\n"
-                    << "    expected: " << io::rate(inputUpfront));
+                // test
+                Rate inputUpfront = quote[i];
+                Rate computedUpfront = cds.fairUpfront();
+                if (std::fabs(inputUpfront - computedUpfront) > tolerance)
+                    BOOST_ERROR(
+                                "\nFailed to reproduce fair upfront for " << n[i] <<
+                                "Y credit-default swaps\n"
+                                << std::setprecision(10)
+                                << "    computed: " << io::rate(computedUpfront) << "\n"
+                                << "    expected: " << io::rate(inputUpfront));
+            }
         }
     }
 
@@ -376,13 +380,16 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
 void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
     BOOST_TEST_MESSAGE("Testing bootstrap on upfront quotes...");
 
-    SavedSettings backup;
-    // not taken into account, this would prevent the upfront from being used
+    // Setting this to false would prevent the upfront from being used.
+    // By checking that the bootstrap works, we indirectly check that
+    // UpfrontCdsHelper::impliedQuote() overrides it.
     Settings::instance().includeTodaysCashFlows() = false;
 
     testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 
-    // also ensure that we didn't override the flag permanently
+    // This checks that UpfrontCdsHelper::impliedQuote() didn't
+    // override the flag permanently; after the bootstrap, it should
+    // go back to its previous value.
     ext::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
     if (flag != false)
         BOOST_ERROR("Cash-flow settings improperly modified");
@@ -396,8 +403,6 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
 void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
 
     BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
-
-    SavedSettings backup;
 
     Date asof(1, Apr, 2020);
     Settings::instance().evaluationDate() = asof;

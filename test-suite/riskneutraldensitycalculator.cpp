@@ -49,8 +49,6 @@ using namespace boost::unit_test_framework;
 void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
     BOOST_TEST_MESSAGE("Testing density against option prices...");
 
-    SavedSettings backup;
-
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Settings::instance().evaluationDate();
 
@@ -120,8 +118,6 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 
 void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Heston densities...");
-
-    SavedSettings backup;
 
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Settings::instance().evaluationDate();
@@ -287,8 +283,6 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for local volatility process to calculate "
                        "risk neutral densities...");
-
-    SavedSettings backup;
 
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Date(28, Dec, 2012);
@@ -561,8 +555,6 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     BOOST_TEST_MESSAGE(
         "Testing probability density for a BSM process "
         "with strike dependent volatility vs local volatility...");
-
-    SavedSettings backup;
 
     const Date todaysDate = Date(3, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;

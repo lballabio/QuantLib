@@ -389,8 +389,6 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
 
     using namespace double_barrier_option_test;
 
-    SavedSettings backup;
-
     DoubleBarrierFxOptionData values[] = {
 
         //            BarrierType, barr.1, barr.2, rebate,         type,    strike,          s,         q,         r,  t, vol25Put,    volAtm,vol25Call,      vol,    result,   tol
@@ -531,8 +529,6 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     BOOST_TEST_MESSAGE("Testing MC double-barrier options against analytical values...");
 
     using namespace double_barrier_option_test;
-
-    SavedSettings backup;
 
     Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated
 

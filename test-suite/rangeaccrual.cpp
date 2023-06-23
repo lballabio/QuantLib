@@ -103,9 +103,6 @@ namespace range_accrual_test {
         Real priceTolerance;
 
 
-        // cleanup
-        SavedSettings backup;
-
         void createYieldCurve() {
 
             // Yield Curve

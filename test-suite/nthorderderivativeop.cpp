@@ -708,8 +708,6 @@ void NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Heston model option pricing convergence with "
             "higher order finite difference operators...");
 
-    SavedSettings backup;
-
     const Array strikes = {50, 75, 90, 100, 110, 125, 150, 200};
 
     const GridSetup initSetup = {
@@ -775,8 +773,6 @@ void NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation() {
     BOOST_TEST_MESSAGE(
             "Testing Heston option pricing convergence with "
             "higher order FDM operators and Richardson Extrapolation...");
-
-    SavedSettings backup;
 
     const Real n1 = priceQuality(1.0/25);
     const Real n3

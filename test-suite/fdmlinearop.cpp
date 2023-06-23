@@ -716,8 +716,6 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
-    SavedSettings backup;
-
     const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
@@ -804,8 +802,6 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
     BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
-    SavedSettings backup;
-
     const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
@@ -876,8 +872,6 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 void FdmLinearOpTest::testFdmHestonExpress() {
 
     BOOST_TEST_MESSAGE("Testing FDM with express certificate in Heston model...");
-
-    SavedSettings backup;
 
     const std::vector<Size> dim = {200, 100};
 
@@ -1056,8 +1050,6 @@ namespace {
 
 void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     BOOST_TEST_MESSAGE("Testing FDM with Heston Hull-White model...");
-
-    SavedSettings backup;
 
     const Date today = Date(28, March, 2004);
     Settings::instance().evaluationDate() = today;
@@ -1310,8 +1302,6 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     BOOST_TEST_MESSAGE("Testing Crank-Nicolson with initial implicit damping steps "
                        "for a digital option...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
@@ -1528,8 +1518,6 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a "
             "high interest rate scenario...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(11, February, 2018);
 
@@ -1592,8 +1580,6 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
 void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a low volatility and "
             "high discrete dividend scenario...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(28, January, 2018);

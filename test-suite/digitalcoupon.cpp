@@ -49,9 +49,6 @@ namespace digital_coupon_test {
         Real optionTolerance;
         Real blackTolerance;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             fixingDays = 2;

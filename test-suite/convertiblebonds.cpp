@@ -66,9 +66,6 @@ namespace convertible_bonds_test {
 
         Real faceAmount, redemption, conversionRatio;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             calendar = TARGET();
@@ -361,8 +358,6 @@ void ConvertibleBondTest::testRegression() {
 
     BOOST_TEST_MESSAGE(
        "Testing fixed-coupon convertible bond in known regression case...");
-
-    SavedSettings backup;
 
     Date today = Date(23, December, 2008);
     Date tomorrow = today + 1;

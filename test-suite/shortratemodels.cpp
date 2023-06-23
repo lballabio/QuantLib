@@ -62,8 +62,6 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
-    SavedSettings backup;
-
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
     Settings::instance().evaluationDate() = today;
@@ -137,8 +135,6 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     using namespace short_rate_models_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-
-    SavedSettings backup;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -218,8 +214,6 @@ void ShortRateModelTest::testCachedHullWhite2() {
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
-    SavedSettings backup;
-
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
     Settings::instance().evaluationDate() = today;
@@ -297,8 +291,6 @@ void ShortRateModelTest::testSwaps() {
     BOOST_TEST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-
-    SavedSettings backup;
 
     Date today = Settings::instance().evaluationDate();
     Calendar calendar = TARGET();
@@ -429,7 +421,6 @@ void ShortRateModelTest::testFuturesConvexityBias() {
 void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
     BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
 
-    SavedSettings backup;
     const Date today = Settings::instance().evaluationDate();
 
     const Rate rate = 0.1;

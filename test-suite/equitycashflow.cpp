@@ -48,8 +48,6 @@ namespace equitycashflow_test {
         RelinkableHandle<Quote> spotHandle;
         RelinkableHandle<Quote> correlationHandle;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars() {

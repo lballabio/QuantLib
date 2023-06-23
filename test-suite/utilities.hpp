@@ -79,16 +79,12 @@ namespace QuantLib {
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
+                // Restore settings after each test.
+                SavedSettings restore;
                 // Clear all fixings before running a test to avoid interference.
                 IndexManager::instance().clearHistories();
-                Date before = Settings::instance().evaluationDate();
                 BOOST_CHECK(true);
                 test_();
-                Date after = Settings::instance().evaluationDate();
-                if (before != after)
-                    BOOST_ERROR("Evaluation date not reset"
-                                << "\n  before: " << before
-                                << "\n  after:  " << after);
             }
             #if BOOST_VERSION <= 105300
             // defined to avoid unused-variable warnings. It doesn't

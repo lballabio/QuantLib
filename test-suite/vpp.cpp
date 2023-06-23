@@ -106,8 +106,6 @@ void VPPTest::testGemanRoncoroniProcess() {
 
     using namespace vpp_test;
 
-    SavedSettings backup;
-
     const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;
     const DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -224,8 +222,6 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
     using namespace vpp_test;
 
-    SavedSettings backup;
-
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
     DayCounter dayCounter = ActualActual(ActualActual::ISDA);
@@ -273,8 +269,6 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     BOOST_TEST_MESSAGE("Testing simple Kluge ext-Ornstein-Uhlenbeck spread option...");
 
     using namespace vpp_test;
-
-    SavedSettings backup;
 
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
@@ -410,8 +404,6 @@ void VPPTest::testVPPIntrinsicValue() {
     BOOST_TEST_MESSAGE("Testing VPP step condition...");
 
     using namespace vpp_test;
-
-    SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
     const DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -562,8 +554,6 @@ void VPPTest::testVPPPricing() {
     BOOST_TEST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
 
     using namespace vpp_test;
-
-    SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
     const DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -879,8 +869,6 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
     BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
 
     using namespace vpp_test;
-
-    SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;

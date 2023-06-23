@@ -97,8 +97,6 @@ namespace inflation_test {
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
 
-    SavedSettings backup;
-
     QL_DEPRECATED_DISABLE_WARNING
 
     EUHICP euhicp(true);
@@ -198,8 +196,6 @@ void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
 
     using namespace inflation_test;
-
-    SavedSettings backup;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -585,8 +581,6 @@ void InflationTest::testSeasonalityCorrection() {
 
     using namespace inflation_test;
 
-    SavedSettings backup;
-
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
     Date evaluationDate(13, August, 2007);
@@ -683,8 +677,6 @@ void InflationTest::testSeasonalityCorrection() {
 void InflationTest::testZeroIndexFutureFixing() {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
-    SavedSettings backup;
-
     EUHICP euhicp;
 
     Date sample_date = Date(1,December,2013);
@@ -718,8 +710,6 @@ void InflationTest::testZeroIndexFutureFixing() {
 
 void InflationTest::testInterpolatedZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing interpolated zero-rate inflation curve...");
-
-    SavedSettings backup;
 
     Date today = Date(27, January, 2022);
     Settings::instance().evaluationDate() = today;
@@ -761,8 +751,6 @@ void InflationTest::testInterpolatedZeroTermStructure() {
 void InflationTest::testQuotedYYIndex() {
     BOOST_TEST_MESSAGE("Testing quoted year-on-year inflation indices...");
 
-    SavedSettings backup;
-
     YYEUHICP yyeuhicp(true);
     if (yyeuhicp.name() != "EU YY_HICP"
         || yyeuhicp.frequency() != Monthly
@@ -799,8 +787,6 @@ void InflationTest::testQuotedYYIndex() {
 
 void InflationTest::testRatioYYIndex() {
     BOOST_TEST_MESSAGE("Testing ratio year-on-year inflation indices...");
-
-    SavedSettings backup;
 
     auto euhicp = ext::make_shared<EUHICP>();
     auto ukrpi = ext::make_shared<UKRPI>();
@@ -920,8 +906,6 @@ void InflationTest::testRatioYYIndex() {
 
 void InflationTest::testOldRatioYYIndex() {
     BOOST_TEST_MESSAGE("Testing old-style ratio year-on-year inflation indices...");
-
-    SavedSettings backup;
 
     QL_DEPRECATED_DISABLE_WARNING
 
@@ -1057,8 +1041,6 @@ void InflationTest::testYYTermStructure() {
     BOOST_TEST_MESSAGE("Testing year-on-year inflation term structure...");
 
     using namespace inflation_test;
-
-    SavedSettings backup;
 
     // try the YY UK
     Calendar calendar = UnitedKingdom();
@@ -1292,8 +1274,6 @@ void InflationTest::testPeriod() {
 void InflationTest::testCpiFlatInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI flat interpolation...");
 
-    SavedSettings backup;
-
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
     QL_DEPRECATED_DISABLE_WARNING
@@ -1339,8 +1319,6 @@ void InflationTest::testCpiFlatInterpolation() {
 
 void InflationTest::testCpiLinearInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI linear interpolation...");
-
-    SavedSettings backup;
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
@@ -1395,8 +1373,6 @@ void InflationTest::testCpiLinearInterpolation() {
 
 void InflationTest::testCpiAsIndexInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI as-index interpolation...");
-
-    SavedSettings backup;
 
     Date today = Date(10, February, 2022);
     Settings::instance().evaluationDate() = today;

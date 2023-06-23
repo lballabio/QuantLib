@@ -80,8 +80,6 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
     using namespace square_root_clv_model;
 
-    SavedSettings backup;
-
     const Date todaysDate(5, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
 
@@ -163,8 +161,6 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
         "Testing mapping function of the square-root kernel process...");
 
     using namespace square_root_clv_model;
-
-    SavedSettings backup;
 
     const Date todaysDate(16, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
@@ -450,8 +446,6 @@ void SquareRootCLVModelTest::testForwardSkew() {
         "Testing forward skew dynamics with square-root kernel process...");
 
     using namespace square_root_clv_model;
-
-    SavedSettings backup;
 
     const Date todaysDate(16, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;

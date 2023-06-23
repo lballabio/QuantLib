@@ -44,9 +44,6 @@ namespace swaption_volatility_matrix_test {
         RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix;
         Real tolerance;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             conventions.setConventions();
