@@ -100,7 +100,14 @@ namespace QuantLib {
             // exogenous discounting curve
             Handle<YieldTermStructure> discountingCurve = {},
             bool telescopicValueDates = false,
-            RateAveraging::Type averagingMethod = RateAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+            Natural paymentLag = 0,
+            BusinessDayConvention paymentConvention = Following,
+            Frequency paymentFrequency = Annual,
+            Calendar paymentCalendar = Calendar(),
+            const Period& forwardStart = 0 * Days,
+            Spread overnightSpread = 0.0,
+            ext::optional<bool> endOfMonth = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

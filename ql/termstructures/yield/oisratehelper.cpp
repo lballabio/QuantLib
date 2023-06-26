@@ -148,7 +148,14 @@ namespace QuantLib {
                                            const ext::shared_ptr<OvernightIndex>& overnightIndex,
                                            Handle<YieldTermStructure> discount,
                                            bool telescopicValueDates,
-                                           RateAveraging::Type averagingMethod)
+                                           RateAveraging::Type averagingMethod,
+                                           Natural paymentLag,
+                                           BusinessDayConvention paymentConvention,
+                                           Frequency paymentFrequency,
+                                           Calendar paymentCalendar,
+                                           const Period& forwardStart,
+                                           Spread overnightSpread,
+                                           ext::optional<bool> endOfMonth)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
       telescopicValueDates_(telescopicValueDates),
       averagingMethod_(averagingMethod) {
@@ -161,12 +168,22 @@ namespace QuantLib {
 
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeOIS(Period(), clonedOvernightIndex, 0.0)
+        auto tmp = MakeOIS(Period(), clonedOvernightIndex, 0.0, forwardStart)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withEffectiveDate(startDate)
             .withTerminationDate(endDate)
             .withTelescopicValueDates(telescopicValueDates_)
+            .withPaymentLag(paymentLag)
+            .withPaymentAdjustment(paymentConvention)
+            .withPaymentFrequency(paymentFrequency)
+            .withPaymentCalendar(paymentCalendar)
+            .withOvernightLegSpread(overnightSpread)
             .withAveragingMethod(averagingMethod_);
+        if (endOfMonth) {
+            swap_ = tmp.withEndOfMonth(*endOfMonth);
+        } else {
+            swap_ = tmp;
+        }
 
         earliestDate_ = swap_->startDate();
         Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
