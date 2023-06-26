@@ -117,11 +117,6 @@ namespace QuantLib {
                 }
                 break;
               case Days:
-                if ((length_ % 7) == 0) {
-                    length_ /= 7;
-                    units_ = Weeks;
-                }
-                break;
               case Weeks:
               case Years:
                 break;
@@ -359,10 +354,6 @@ namespace QuantLib {
             return p1.length() < 12*p2.length();
         if (p1.units() == Years && p2.units() == Months)
             return 12*p1.length() < p2.length();
-        if (p1.units() == Days && p2.units() == Weeks)
-            return p1.length() < 7*p2.length();
-        if (p1.units() == Weeks && p2.units() == Days)
-            return 7*p1.length() < p2.length();
 
         // inexact comparisons (handled by converting to days and using limits)
         std::pair<Integer, Integer> p1lim = daysMinMax(p1);

@@ -19,6 +19,7 @@
 
 #include "period.hpp"
 #include "utilities.hpp"
+#include "ql/time/calendars/weekendsonly.hpp"
 #include "ql/time/period.hpp"
 
 using namespace QuantLib;
@@ -150,10 +151,17 @@ void PeriodTest::testNormalization() {
         2 * Years
     };
 
+    auto date = Date(1, Jan, 2023);
+    auto cal = WeekendsOnly();
     for (Period p1 : test_values) {
         auto n1 = p1.normalized();
         if (n1 != p1) {
             BOOST_ERROR("Normalizing " << p1 << " yields " << n1 << ", which compares different");
+        }
+        auto dp = cal.advance(date, p1), dn = cal.advance(date, n1);
+        if (dp != dn) {
+            BOOST_ERROR("Normalizing " << p1 << " yields " << n1 << ", which gives different "
+                        "results in advance: " << dp << " vs " << dn);
         }
 
         for (Period p2 : test_values) {
