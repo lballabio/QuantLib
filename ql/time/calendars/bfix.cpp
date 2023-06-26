@@ -16,7 +16,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-// #include <ql/errors.hpp>
 #include <ql/time/calendars/bfix.hpp>
 
 namespace QuantLib {
@@ -24,7 +23,9 @@ namespace QuantLib {
     BFix::BFix() {
         // all calendar instances on the same market share the same
         // implementation instance
-        impl_ = boost::make_shared<BFix::Impl>();
+        // all calendar instances share the same implementation instance
+        static ext::shared_ptr<Calendar::Impl> impl(new BFix::Impl);
+        impl_ = impl;
     }
 
     bool BFix::Impl::isBusinessDay(const Date& date) const {
