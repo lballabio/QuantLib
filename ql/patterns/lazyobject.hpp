@@ -118,7 +118,7 @@ namespace QuantLib {
 
       private:
         bool updating_ = false;
-        class UpdateChecker {
+        class UpdateChecker {  // NOLINT(cppcoreguidelines-special-member-functions)
             LazyObject* subject_;
           public:
             explicit UpdateChecker(LazyObject* subject) : subject_(subject) {

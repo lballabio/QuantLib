@@ -41,7 +41,7 @@ namespace QuantLib {
 #else
     template <class Iterator>
 #endif
-    class step_iterator {
+    class step_iterator {  // NOLINT(cppcoreguidelines-special-member-functions)
       private:
         Iterator base_{};
         // a Size would mess up integer division in distance_to
