@@ -26,17 +26,20 @@
 #include <ql/errors.hpp>
 
 namespace QuantLib {
+
     namespace {
+
         // Requires: from < to.
         Date::serial_type daysBetweenImpl(const Calendar& cal,
                                           const Date& from, const Date& to,
                                           bool includeFirst, bool includeLast) {
-            Date::serial_type res(includeLast && cal.isBusinessDay(to));
+            auto res = static_cast<Date::serial_type>(includeLast && cal.isBusinessDay(to));
             for (Date d = includeFirst ? from : from + 1; d < to; ++d) {
-                res += Date::serial_type(cal.isBusinessDay(d));
+                res += static_cast<Date::serial_type>(cal.isBusinessDay(d));
             }
             return res;
         }
+
     }
 
     void Calendar::addHoliday(const Date& d) {
