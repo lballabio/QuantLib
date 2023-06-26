@@ -66,9 +66,6 @@ namespace swaption_test {
         Natural settlementDays;
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        // cleanup
-        SavedSettings backup;
-
         // utilities
         ext::shared_ptr<Swaption> makeSwaption(
             const ext::shared_ptr<VanillaSwap>& swap,

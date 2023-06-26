@@ -100,8 +100,6 @@ void JumpDiffusionTest::testMerton76() {
     BOOST_TEST_MESSAGE("Testing Merton 76 jump-diffusion model "
                        "for European options...");
 
-    SavedSettings backup;
-
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998, pag 9
 
@@ -343,8 +341,6 @@ void JumpDiffusionTest::testMerton76() {
 void JumpDiffusionTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing jump-diffusion option greeks...");
-
-    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;

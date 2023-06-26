@@ -30,7 +30,7 @@ namespace QuantLib {
     }
 
     bool BespokeCalendar::Impl::isWeekend(Weekday w) const {
-        return (weekend_.find(w) != weekend_.end());
+        return (weekend_mask_ & (1 << w)) != 0;
     }
 
     bool BespokeCalendar::Impl::isBusinessDay(const Date& date) const {
@@ -38,7 +38,7 @@ namespace QuantLib {
     }
 
     void BespokeCalendar::Impl::addWeekend(Weekday w) {
-        weekend_.insert(w);
+        weekend_mask_ |= (1 << w);
     }
 
 

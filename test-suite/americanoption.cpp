@@ -461,8 +461,6 @@ namespace {
     template <class Engine>
     void testFdGreeks() {
 
-        SavedSettings backup;
-
         std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["delta"]  = 7.0e-4;
         tolerance["gamma"]  = 2.0e-4;
@@ -579,8 +577,6 @@ void AmericanOptionTest::testFdShoutGreeks() {
 void AmericanOptionTest::testFDShoutNPV() {
     BOOST_TEST_MESSAGE("Testing finite-differences shout option pricing...");
 
-    SavedSettings backup;
-
     const auto dc = Actual365Fixed();
     const auto today = Date(4, February, 2021);
     Settings::instance().evaluationDate() = today;
@@ -637,8 +633,6 @@ void AmericanOptionTest::testFDShoutNPV() {
 
 void AmericanOptionTest::testZeroVolFDShoutNPV() {
     BOOST_TEST_MESSAGE("Testing zero volatility shout option pricing with discrete dividends...");
-
-    SavedSettings backup;
 
     const auto dc = Actual365Fixed();
     const auto today = Date(14, February, 2021);
@@ -718,8 +712,6 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
 
 void AmericanOptionTest::testLargeDividendShoutNPV() {
     BOOST_TEST_MESSAGE("Testing zero strike shout option pricing with discrete dividends...");
-
-    SavedSettings backup;
 
     const auto dc = Actual365Fixed();
     const auto today = Date(21, February, 2021);
@@ -803,8 +795,6 @@ void AmericanOptionTest::testLargeDividendShoutNPV() {
 void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
     BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model for American options...");
 
-    SavedSettings backup;
-
     const auto dc = Actual360();
     const auto today = Date(27, February, 2021);
     Settings::instance().evaluationDate() = today;
@@ -876,8 +866,6 @@ void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
 
 void AmericanOptionTest::testTodayIsDividendDate() {
     BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model on dividend dates for American options...");
-
-    SavedSettings backup;
 
     const auto dc = Actual360();
     const auto today = Date(27, February, 2021);
@@ -999,8 +987,6 @@ void AmericanOptionTest::testCallPutParity() {
     BOOST_TEST_MESSAGE("Testing call/put parity for American options...");
 
     // R.L. McDonald, M.D. Schroder: A parity result for American option
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(8, April, 2022);
@@ -1203,8 +1189,6 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
 
 void AmericanOptionTest::testQdAmericanEngines() {
     BOOST_TEST_MESSAGE("Testing QD+ American option pricing...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(1, June, 2022);
@@ -1480,8 +1464,6 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "high precision example...");
 
-    SavedSettings backup;
-
     // Example and results are taken from
     //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
     //    "High Performance American Option Pricing",
@@ -1579,8 +1561,6 @@ void AmericanOptionTest::testQdEngineStandardExample() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "standard example...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(1, June, 2022);
     Settings::instance().evaluationDate() = today;
@@ -1677,8 +1657,6 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
     //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
     //    "High Performance American Option Pricing",
     //    https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2547027
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(1, June, 2022);
@@ -1784,8 +1762,6 @@ void AmericanOptionTest::testQdEngineWithLobattoIntegral() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "with high precision Gauss-Lobatto integration...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(5, November, 2022);
     Settings::instance().evaluationDate() = today;
@@ -1853,8 +1829,6 @@ void AmericanOptionTest::testQdNegativeDividendYield() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "with positive or zero interest rate and "
                         "negative dividend yield...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(5, December, 2022);
@@ -1925,8 +1899,6 @@ void AmericanOptionTest::testQdNegativeDividendYield() {
 void AmericanOptionTest::testBjerksundStenslandEuropeanGreeks() {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early "
                        "exercise is not optimal...");
-
-    SavedSettings backup;
 
     const Date today = Date(5, November, 2022);
     Settings::instance().evaluationDate() = today;
@@ -2004,8 +1976,6 @@ void AmericanOptionTest::testBjerksundStenslandEuropeanGreeks() {
 
 void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland American greeks...");
-
-    SavedSettings backup;
 
     const Date today = Date(5, December, 2022);
     Settings::instance().evaluationDate() = today;
@@ -2197,8 +2167,6 @@ void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
 
 void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
     BOOST_TEST_MESSAGE("Testing a single Bjerksund-Stensland greeks set...");
-
-    SavedSettings backup;
 
     const Date today = Date(20, January, 2023);
     Settings::instance().evaluationDate() = today;

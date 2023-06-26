@@ -53,6 +53,7 @@ option(QL_ERROR_FUNCTIONS "Error messages should include current function inform
 option(QL_ERROR_LINES "Error messages should include file and line information" OFF)
 option(QL_EXTRA_SAFETY_CHECKS "Extra safety checks should be performed" OFF)
 option(QL_HIGH_RESOLUTION_DATE "Enable date resolution down to microseconds" OFF)
+option(QL_THROW_IN_CYCLES "Throw an exception when a notification loop is detected" OFF)
 option(QL_NULL_AS_FUNCTIONS "Enable the implementation of Null as template functions" OFF)
 option(QL_INSTALL_BENCHMARK "Install benchmark" ON)
 option(QL_INSTALL_EXAMPLES "Install examples" ON)

@@ -805,8 +805,6 @@ void BarrierOptionTest::testLocalVolAndHestonComparison() {
     BOOST_TEST_MESSAGE("Testing local volatility and Heston FD engines "
                        "for barrier options...");
 
-    SavedSettings backup;
-
     const Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
 
@@ -943,8 +941,6 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
     BOOST_TEST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
 
     using namespace barrier_option_test;
-
-    SavedSettings backup;
 
     BarrierFxOptionData values[] = {
 
@@ -1167,8 +1163,6 @@ void BarrierOptionTest::testVannaVolgaSimpleBarrierValues() {
 void BarrierOptionTest::testOldDividendBarrierOption() {
     BOOST_TEST_MESSAGE("Testing old-style barrier option pricing with discrete dividends...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
 
     const Date today(11, February, 2018);
@@ -1284,8 +1278,6 @@ void BarrierOptionTest::testOldDividendBarrierOption() {
 void BarrierOptionTest::testDividendBarrierOption() {
     BOOST_TEST_MESSAGE("Testing barrier option pricing with discrete dividends...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual365Fixed();
 
     Date today(11, February, 2018);
@@ -1393,8 +1385,6 @@ void BarrierOptionTest::testDividendBarrierOption() {
 void BarrierOptionTest::testDividendBarrierOptionWithDividendsPastMaturity() {
     BOOST_TEST_MESSAGE("Testing barrier option pricing with discrete dividends past maturity...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual365Fixed();
 
     Date today(11, February, 2018);
@@ -1479,8 +1469,6 @@ void BarrierOptionTest::testDividendBarrierOptionWithDividendsPastMaturity() {
 void BarrierOptionTest::testBarrierAndDividendEngine() {
     BOOST_TEST_MESSAGE("Testing the use of a single engine for barrier and dividend options...");
 
-    SavedSettings backup;
-
     auto today = Date(1, January, 2023);
     Settings::instance().evaluationDate() = today;
 
@@ -1520,8 +1508,6 @@ void BarrierOptionTest::testBarrierAndDividendEngine() {
 
 void BarrierOptionTest::testImpliedVolatility() {
     BOOST_TEST_MESSAGE("Testing implied volatility for barrier options...");
-
-    SavedSettings backup;
 
     DayCounter dc = Actual365Fixed();
 
@@ -1601,8 +1587,6 @@ void BarrierOptionTest::testImpliedVolatility() {
 
 void BarrierOptionTest::testLowVolatility() {
     BOOST_TEST_MESSAGE("Testing barrier options with low volatility value...");
-
-    SavedSettings backup;
 
     DayCounter dc = Actual365Fixed();
 

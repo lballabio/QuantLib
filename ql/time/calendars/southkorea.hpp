@@ -50,7 +50,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2032 only:)
+        (data available for 2004-2050 only:)
         <ul>
         <li>Lunar New Year, the last day of the previous lunar year</li>
         <li>Election Days</li>
@@ -64,7 +64,8 @@ namespace QuantLib {
         Holidays for the Korea exchange
         (data from
         <http://eng.krx.co.kr/> or
-        <http://www.dooriworld.com/daishin/holiday/holiday.html>):
+        <http://www.dooriworld.com/daishin/holiday/holiday.html>
+        <https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B4%80%EA%B3%B5%EC%84%9C%EC%9D%98%20%EA%B3%B5%ED%9C%B4%EC%9D%BC%EC%97%90%20%EA%B4%80%ED%95%9C%20%EA%B7%9C%EC%A0%95>):
         <ul>
         <li>Public holidays as listed above</li>
         <li>Year-end closing</li>
@@ -81,7 +82,7 @@ namespace QuantLib {
             bool isWeekend(Weekday) const override;
             bool isBusinessDay(const Date&) const override;
         };
-        class KrxImpl : public SettlementImpl {
+        class KrxImpl final : public SettlementImpl {
           public:
             std::string name() const override { return "South-Korea exchange"; }
             bool isBusinessDay(const Date&) const override;

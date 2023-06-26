@@ -37,7 +37,7 @@ namespace QuantLib {
         OISRateHelper(Natural settlementDays,
                       const Period& tenor, // swap maturity
                       const Handle<Quote>& fixedRate,
-                      ext::shared_ptr<OvernightIndex> overnightIndex,
+                      const ext::shared_ptr<OvernightIndex>& overnightIndex,
                       // exogenous discounting curve
                       Handle<YieldTermStructure> discountingCurve = {},
                       bool telescopicValueDates = false,
@@ -110,7 +110,7 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-    protected:
+      protected:
         ext::shared_ptr<OvernightIndexedSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
 

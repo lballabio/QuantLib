@@ -32,7 +32,7 @@ namespace QuantLib {
 
         class Garch11Constraint : public Constraint {
           private:
-            class Impl : public Constraint::Impl {
+            class Impl final : public Constraint::Impl {
                 Real gammaLower_, gammaUpper_;
               public:
                 Impl (Real gammaLower, Real gammaUpper)
@@ -206,7 +206,7 @@ namespace QuantLib {
 
         class FitAcfConstraint : public Constraint {
           private:
-            class Impl : public Constraint::Impl {
+            class Impl final : public Constraint::Impl {
                 Real gammaLower_, gammaUpper_;
               public:
                 Impl(Real gammaLower, Real gammaUpper)

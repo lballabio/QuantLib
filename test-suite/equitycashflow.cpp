@@ -28,25 +28,6 @@ using namespace boost::unit_test_framework;
 
 namespace equitycashflow_test {
 
-    // Used to check that the exception message contains the expected message string, expMsg.
-    struct ExpErrorPred {
-
-        explicit ExpErrorPred(std::string msg) : expMsg(std::move(msg)) {}
-
-        bool operator()(const Error& ex) const {
-            std::string errMsg(ex.what());
-            if (errMsg.find(expMsg) == std::string::npos) {
-                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
-                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        std::string expMsg;
-    };
-
     struct CommonVars {
 
         Date today;
@@ -67,8 +48,6 @@ namespace equitycashflow_test {
         RelinkableHandle<Quote> spotHandle;
         RelinkableHandle<Quote> correlationHandle;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars() {
@@ -81,7 +60,6 @@ namespace equitycashflow_test {
 
             equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, localCcyInterestHandle,
                                                         dividendHandle, spotHandle);
-            IndexManager::instance().clearHistory(equityIndex->name());
             equityIndex->addFixing(Date(5, January, 2023), 9010.0);
             equityIndex->addFixing(today, 8690.0);
 
@@ -183,7 +161,7 @@ namespace equitycashflow_test {
     }
 
     void checkRaisedError(const ext::shared_ptr<EquityCashFlow>& cf, const std::string& message) {
-        BOOST_CHECK_EXCEPTION(cf->amount(), Error, equitycashflow_test::ExpErrorPred(message));
+        BOOST_CHECK_EXCEPTION(cf->amount(), Error, ExpectedErrorMessage(message));
     }
 }
 

@@ -54,9 +54,6 @@ namespace swap_test {
         Natural settlementDays;
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        // cleanup
-        SavedSettings backup;
-        
         // utilities
         ext::shared_ptr<VanillaSwap>
         makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {

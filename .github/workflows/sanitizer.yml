@@ -19,7 +19,7 @@ jobs:
         make -j 2
     - name: Run tests
       run: |
-        ./test-suite/quantlib-test-suite --log_level=message
+        LSAN_OPTIONS=suppressions=.lsan.txt ./test-suite/quantlib-test-suite --log_level=message
     - name: Run examples
       run: |
         make check-examples

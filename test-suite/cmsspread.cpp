@@ -82,7 +82,6 @@ struct TestData {
             cmsPricerN, correlation, yts2, 32);
     }
 
-    SavedSettings backup;
     Date refDate;
     Handle<YieldTermStructure> yts2;
     Handle<SwaptionVolatilityStructure> swLn, swSln, swN;
@@ -130,7 +129,6 @@ void CmsSpreadTest::testFixings() {
     cms2y->addFixing(d.refDate, 0.04);
     BOOST_CHECK_EQUAL(cms10y2y->fixing(d.refDate),
                       cms10y->fixing(d.refDate) - cms2y->fixing(d.refDate));
-    IndexManager::instance().clearHistories();
 }
 
 namespace {

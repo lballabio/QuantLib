@@ -87,11 +87,6 @@ namespace inflation_cpi_bond_test {
         RelinkableHandle<YieldTermStructure> yTS;
         RelinkableHandle<ZeroInflationTermStructure> cpiTS;
 
-        // cleanup
-
-        SavedSettings backup;
-        IndexHistoryCleaner cleaner;
-
         // setup
         CommonVars() {
             // usual setup
@@ -173,8 +168,6 @@ namespace inflation_cpi_bond_test {
 void InflationCPIBondTest::testCleanPrice() {
     BOOST_TEST_MESSAGE("Checking cached pricers for CPI bond...");
 
-    IndexManager::instance().clearHistories();
-
     using namespace inflation_cpi_bond_test;
   
     CommonVars common;
@@ -232,8 +225,6 @@ void InflationCPIBondTest::testCleanPrice() {
 
 void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
     BOOST_TEST_MESSAGE("Checking CPI leg with or without explicit base CPI fixing...");
-
-    IndexManager::instance().clearHistories();
 
     using namespace inflation_cpi_bond_test;
 

@@ -163,7 +163,7 @@ namespace QuantLib {
 
     class CalibratedModel::PrivateConstraint : public Constraint {
       private:
-        class Impl :  public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             explicit Impl(const std::vector<Parameter>& arguments)
             : arguments_(arguments) {}

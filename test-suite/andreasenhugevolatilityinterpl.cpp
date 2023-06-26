@@ -150,8 +150,6 @@ namespace andreasen_huge_volatility_interpl_test {
     void testAndreasenHugeVolatilityInterpolation(
         const CalibrationData& data, const CalibrationResults& expected) {
 
-        SavedSettings backup;
-
         const Handle<YieldTermStructure> rTS = data.rTS;
         const Handle<YieldTermStructure> qTS = data.qTS;
 
@@ -448,8 +446,6 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
 
     using namespace andreasen_huge_volatility_interpl_test;
 
-    SavedSettings backup;
-
     const CalibrationData data = AndreasenHugeExampleData();
 
     const DayCounter dc = data.rTS->dayCounter();
@@ -533,8 +529,6 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
         "Testing Andreasen-Huge volatility interpolation with "
         "a single option...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(4, January, 2018);
 
@@ -595,8 +589,6 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
         "arbitrage free prices...");
 
     using namespace andreasen_huge_volatility_interpl_test;
-
-    SavedSettings backup;
 
     CalibrationData data[] = { BorovkovaExampleData(), arbitrageData() };;
 
@@ -684,8 +676,6 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
     BOOST_TEST_MESSAGE(
         "Testing Barrier option pricing with Andreasen-Huge "
          "local volatility surface...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(4, January, 2018);
@@ -838,8 +828,6 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
 
     using namespace andreasen_huge_volatility_interpl_test;
 
-    SavedSettings backup;
-
     const std::pair<CalibrationData, std::vector<Real> > sd = sabrData();
     const CalibrationData& data = sd.first;
     const std::vector<Real>& parameter = sd.second;
@@ -916,8 +904,6 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
         "Testing that reference date of adapter surface moves along with "
         "evaluation date...");
 
-    SavedSettings backup;
-
     const Date today = Date(4, January, 2018);
     Settings::instance().evaluationDate() = today;
 
@@ -993,8 +979,6 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
         "Testing Andreasen-Huge example with flat volatility surface...");
 
     using namespace andreasen_huge_volatility_interpl_test;
-
-    SavedSettings backup;
 
     const Date ref(1, November, 2019);
     const DayCounter dc = Actual365Fixed();

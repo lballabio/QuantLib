@@ -20,6 +20,7 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
+#include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -78,14 +79,12 @@ namespace QuantLib {
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}
             void operator()() const {
-                Date before = Settings::instance().evaluationDate();
+                // Restore settings after each test.
+                SavedSettings restore;
+                // Clear all fixings before running a test to avoid interference.
+                IndexManager::instance().clearHistories();
                 BOOST_CHECK(true);
                 test_();
-                Date after = Settings::instance().evaluationDate();
-                if (before != after)
-                    BOOST_ERROR("Evaluation date not reset"
-                                << "\n  before: " << before
-                                << "\n  after:  " << after);
             }
             #if BOOST_VERSION <= 105300
             // defined to avoid unused-variable warnings. It doesn't
@@ -176,11 +175,23 @@ namespace QuantLib {
     }
 
 
-    // this cleans up index-fixing histories when destroyed
-    class IndexHistoryCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
-      public:
-        IndexHistoryCleaner() = default;
-        ~IndexHistoryCleaner();
+    // Used to check that an exception message contains the expected message string
+    struct ExpectedErrorMessage {
+
+        explicit ExpectedErrorMessage(std::string msg) : expected(std::move(msg)) {}
+
+        bool operator()(const Error& ex) const {
+            std::string actual(ex.what());
+            if (actual.find(expected) == std::string::npos) {
+                BOOST_TEST_MESSAGE("Error expected to contain: '" << expected << "'.");
+                BOOST_TEST_MESSAGE("Actual error is: '" << actual << "'.");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        std::string expected;
     };
 
 

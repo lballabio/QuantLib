@@ -42,7 +42,7 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // General Prayer Day
-            || (dd == em+25)
+            || (dd == em+25 && y <= 2023)
             // Ascension
             || (dd == em+38)
             // Day after Ascension

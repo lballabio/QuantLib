@@ -25,7 +25,7 @@ namespace QuantLib {
 
     class CoxIngersollRoss::VolatilityConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
             Real k_, theta_;
           public:
             Impl(Real k, Real theta) : k_(k), theta_(theta) {}

@@ -288,8 +288,6 @@ void MargrabeOptionTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing analytic European exchange option greeks...");
 
-    SavedSettings backup;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta1"]  = 1.0e-5;
     tolerance["delta2"]  = 1.0e-5;

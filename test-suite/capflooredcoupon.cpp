@@ -58,9 +58,6 @@ namespace capfloored_coupon_test {
         Integer length;
         Volatility volatility;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             length = 20;           //years

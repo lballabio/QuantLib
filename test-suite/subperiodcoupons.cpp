@@ -40,8 +40,6 @@ namespace subperiodcoupons_test {
         ext::shared_ptr<IborIndex> euribor;
         RelinkableHandle<YieldTermStructure> euriborHandle;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars() {

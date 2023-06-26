@@ -27,6 +27,21 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        // Requires: from < to.
+        Date::serial_type daysBetweenImpl(const Calendar& cal,
+                                          const Date& from, const Date& to,
+                                          bool includeFirst, bool includeLast) {
+            auto res = static_cast<Date::serial_type>(includeLast && cal.isBusinessDay(to));
+            for (Date d = includeFirst ? from : from + 1; d < to; ++d) {
+                res += static_cast<Date::serial_type>(cal.isBusinessDay(d));
+            }
+            return res;
+        }
+
+    }
+
     void Calendar::addHoliday(const Date& d) {
         QL_REQUIRE(impl_, "no calendar implementation provided");
 
@@ -162,38 +177,9 @@ namespace QuantLib {
                                                     const Date& to,
                                                     bool includeFirst,
                                                     bool includeLast) const {
-        Date::serial_type wd = 0;
-        if (from != to) {
-            if (from < to) {
-                // the last one is treated separately to avoid
-                // incrementing Date::maxDate()
-                for (Date d = from; d < to; ++d) {
-                    if (isBusinessDay(d))
-                        ++wd;
-                }
-                if (isBusinessDay(to))
-                    ++wd;
-            } else if (from > to) {
-                for (Date d = to; d < from; ++d) {
-                    if (isBusinessDay(d))
-                        ++wd;
-                }
-                if (isBusinessDay(from))
-                    ++wd;
-            }
-
-            if (isBusinessDay(from) && !includeFirst)
-                --wd;
-            if (isBusinessDay(to) && !includeLast)
-                --wd;
-
-            if (from > to)
-                wd = -wd;
-        } else if (includeFirst && includeLast && isBusinessDay(from)) {
-            wd = 1;
-        }
-
-        return wd;
+        return (from < to) ? daysBetweenImpl(*this, from, to, includeFirst, includeLast) :
+               (from > to) ? -daysBetweenImpl(*this, to, from, includeLast, includeFirst) :
+               Date::serial_type(includeFirst && includeLast && isBusinessDay(from));
     }
 
 

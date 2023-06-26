@@ -24,7 +24,6 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
-#include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/math/comparison.hpp>
@@ -195,10 +194,6 @@ namespace piecewise_yield_curve_test {
 
         std::vector<Schedule> schedules;
         ext::shared_ptr<YieldTermStructure> termStructure;
-
-        // cleanup
-        SavedSettings backup;
-        IndexHistoryCleaner cleaner;
 
         // setup
         CommonVars(Date evaluationDate = Date()) {
@@ -654,25 +649,6 @@ namespace piecewise_yield_curve_test {
         }
     }
 
-    // Used to check that the exception message contains the expected message string, expMsg.
-    struct ExpErrorPred {
-
-        explicit ExpErrorPred(string msg) : expMsg(std::move(msg)) {}
-
-        bool operator()(const Error& ex) const {
-            string errMsg(ex.what());
-            if (errMsg.find(expMsg) == string::npos) {
-                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
-                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        string expMsg;
-    };
-
 }
 
 
@@ -1099,7 +1075,6 @@ void PiecewiseYieldCurveTest::testDefaultInstantiation() {
 void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
-    SavedSettings backup;
     Settings::instance().evaluationDate() = Date(22, Dec, 2016);
     Date today = Settings::instance().evaluationDate();
 
@@ -1120,8 +1095,6 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
 
 void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper spot date...");
-
-    SavedSettings backup;
 
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
@@ -1155,8 +1128,6 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
 
     using namespace piecewise_yield_curve_test;
-
-    SavedSettings backup;
 
     Datum data[] = {
         {  1, Weeks,  -0.003488 },
@@ -1249,8 +1220,6 @@ void PiecewiseYieldCurveTest::testLargeRates() {
 
     using namespace piecewise_yield_curve_test;
 
-    SavedSettings backup;
-
     Datum data[] = {
         {  1, Weeks,  2.418633 },
         {  2, Weeks,  1.361540 },
@@ -1321,8 +1290,6 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     BOOST_TEST_MESSAGE("Testing global bootstrap...");
 
     using namespace piecewise_yield_curve_test;
-
-    SavedSettings backup;
 
     Date today(26, Sep, 2019);
     Settings::instance().evaluationDate() = today;
@@ -1409,8 +1376,6 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
 
     BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
 
-    SavedSettings backup;
-
     Date asof(25, Sep, 2019);
     Settings::instance().evaluationDate() = asof;
     Actual365Fixed tsDayCounter;
@@ -1486,9 +1451,8 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     Date spotDate(27, Sep, 2019);
 
     // Check that the ARS in USD curve throws by requesting a discount factor.
-    using piecewise_yield_curve_test::ExpErrorPred;
     BOOST_CHECK_EXCEPTION(arsYts->discount(spotDate), Error,
-        ExpErrorPred("1st iteration: failed at 1st alive instrument"));
+        ExpectedErrorMessage("1st iteration: failed at 1st alive instrument"));
 
     // Create the ARS in USD curve with an IterativeBootstrap allowing for 4 retries.
     IterativeBootstrap<LLDFCurve> ib(Null<Real>(), Null<Real>(), Null<Real>(), 5);

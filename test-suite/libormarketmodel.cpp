@@ -112,8 +112,6 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
     using namespace libor_market_model_test;
 
-    SavedSettings backup;
-
     const Size size = 10;
     const Real tolerance = 1e-14;
     Size i;
@@ -193,8 +191,6 @@ void LiborMarketModelTest::testCapletPricing() {
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
-    SavedSettings backup;
-
     const Size size = 10;
     Real tolerance = usingAtParCoupons ? 1e-12 : 1e-5;
 
@@ -243,8 +239,6 @@ void LiborMarketModelTest::testCalibration() {
     BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
 
     using namespace libor_market_model_test;
-
-    SavedSettings backup;
 
     const Size size = 14;
     const Real tolerance = 8e-3;
@@ -351,8 +345,6 @@ void LiborMarketModelTest::testSwaptionPricing() {
     using namespace libor_market_model_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-
-    SavedSettings backup;
 
     const Size size  = 10;
     const Size steps = 8*size;

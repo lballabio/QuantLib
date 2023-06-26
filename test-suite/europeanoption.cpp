@@ -196,8 +196,6 @@ void EuropeanOptionTest::testValues() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
     */
@@ -313,8 +311,6 @@ void EuropeanOptionTest::testGreekValues() {
     BOOST_TEST_MESSAGE("Testing European option greek values...");
 
     using namespace european_option_test;
-
-    SavedSettings backup;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -605,8 +601,6 @@ void EuropeanOptionTest::testGreeks() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -758,8 +752,6 @@ void EuropeanOptionTest::testImpliedVol() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
 
@@ -876,8 +868,6 @@ void EuropeanOptionTest::testImpliedVolWithDividends() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
 
@@ -993,8 +983,6 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
     BOOST_TEST_MESSAGE("Testing self-containment of "
                        "implied volatility calculation...");
-
-    SavedSettings backup;
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -1169,8 +1157,6 @@ void EuropeanOptionTest::testJRBinomialEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = JR;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1188,8 +1174,6 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
                        "against analytic results...");
 
     using namespace european_option_test;
-
-    SavedSettings backup;
 
     EngineType engine = CRR;
     Size steps = 501;
@@ -1209,8 +1193,6 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = EQP;
     Size steps = 501;
     Size samples = Null<Size>();
@@ -1228,8 +1210,6 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
                        "against analytic results...");
 
     using namespace european_option_test;
-
-    SavedSettings backup;
 
     EngineType engine = TGEO;
     Size steps = 251;
@@ -1249,8 +1229,6 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = TIAN;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1268,8 +1246,6 @@ void EuropeanOptionTest::testLRBinomialEngines() {
                        "against analytic results...");
 
     using namespace european_option_test;
-
-    SavedSettings backup;
 
     EngineType engine = LR;
     Size steps = 251;
@@ -1289,8 +1265,6 @@ void EuropeanOptionTest::testJOSHIBinomialEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = JOSHI;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1309,8 +1283,6 @@ void EuropeanOptionTest::testFdEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = FiniteDifferences;
     Size timeSteps = 500;
     Size gridPoints = 500;
@@ -1328,8 +1300,6 @@ void EuropeanOptionTest::testIntegralEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = Integral;
     Size timeSteps = 300;
     Size gridPoints = 300;
@@ -1344,8 +1314,6 @@ void EuropeanOptionTest::testMcEngines() {
                        "against analytic results...");
 
     using namespace european_option_test;
-
-    SavedSettings backup;
 
     EngineType engine = PseudoMonteCarlo;
     Size steps = Null<Size>();
@@ -1362,8 +1330,6 @@ void EuropeanOptionTest::testQmcEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = QuasiMonteCarlo;
     Size steps = Null<Size>();
     Size samples = 4095; // 2^12-1
@@ -1379,8 +1345,6 @@ void EuropeanOptionTest::testFFTEngines() {
 
     using namespace european_option_test;
 
-    SavedSettings backup;
-
     EngineType engine = FFT;
     Size steps = Null<Size>();
     Size samples = Null<Size>();
@@ -1394,8 +1358,6 @@ void EuropeanOptionTest::testLocalVolatility() {
     BOOST_TEST_MESSAGE("Testing finite-differences with local volatility...");
 
     using namespace european_option_test;
-
-    SavedSettings backup;
 
     const Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -1536,8 +1498,6 @@ void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
     BOOST_TEST_MESSAGE(
         "Testing separate discount curve for analytic European engine...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
@@ -1583,8 +1543,6 @@ void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
 
 void EuropeanOptionTest::testPDESchemes() {
     BOOST_TEST_MESSAGE("Testing different PDE schemes to solve Black-Scholes PDEs...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(18, February, 2018);
@@ -1686,8 +1644,6 @@ void EuropeanOptionTest::testFdEngineWithNonConstantParameters() {
     BOOST_TEST_MESSAGE("Testing finite-difference European engine "
                        "with non-constant parameters...");
 
-    SavedSettings backup;
-
     Real u = 190.0;
     Volatility v = 0.20;
 
@@ -1742,8 +1698,6 @@ void EuropeanOptionTest::testFdEngineWithNonConstantParameters() {
 void EuropeanOptionTest::testDouglasVsCrankNicolson() {
     BOOST_TEST_MESSAGE("Testing Douglas vs Crank-Nicolson scheme "
                         "for finite-difference European PDE engines...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(5, October, 2018);
@@ -1809,8 +1763,6 @@ void EuropeanOptionTest::testDouglasVsCrankNicolson() {
 
 void EuropeanOptionTest::testVanillaAndDividendEngine() {
     BOOST_TEST_MESSAGE("Testing the use of a single engine for vanilla and dividend options...");
-
-    SavedSettings backup;
 
     auto today = Date(1, January, 2023);
     Settings::instance().evaluationDate() = today;

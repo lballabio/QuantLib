@@ -58,7 +58,7 @@ namespace QuantLib {
     */
     class Chile : public Calendar {
       private:
-        class SseImpl : public Calendar::WesternImpl {
+        class SseImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Santiago Stock Exchange"; }
             bool isBusinessDay(const Date&) const override;

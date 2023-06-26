@@ -55,8 +55,6 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes cumulative distribution function"
                        " with constant volatility...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(22, June, 2016);
     const Date maturity = today + Period(6, Months);
@@ -98,8 +96,6 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
 
 void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
     BOOST_TEST_MESSAGE("Testing Heston cumulative distribution function...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(22, June, 2016);
@@ -154,8 +150,6 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
 void NormalCLVModelTest::testIllustrative1DExample() {
     BOOST_TEST_MESSAGE(
         "Testing illustrative 1D example of normal CLV model...");
-
-    SavedSettings backup;
 
     // example taken from:
     // A. Grzelak, 2015, The CLV Framework -
@@ -287,8 +281,6 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 
     using namespace normal_clv_model_test;
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(22, June, 2016);
     const Date maturity = today + Period(1, Years);
@@ -382,8 +374,6 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
 void NormalCLVModelTest::testMoustacheGraph() {
     BOOST_TEST_MESSAGE(
         "Testing double no-touch pricing with normal CLV model...");
-
-    SavedSettings backup;
 
     /*
      The comparison of Black-Scholes and normal CLV prices is derived

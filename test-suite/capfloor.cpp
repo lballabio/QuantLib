@@ -57,10 +57,6 @@ namespace capfloor_test {
         Natural fixingDays;
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        // cleanup
-
-        SavedSettings backup;
-
         // setup
         CommonVars()
         : nominals(1,100) {
