@@ -130,10 +130,13 @@ namespace QuantLib {
         Real strikeVol = interpolation(payoff->strike());
 
         //vanilla option price
+        Real forward = x0Quote->value() * foreignTS_->discount(T_) / domesticTS_->discount(T_);
         Real vanillaOption = blackFormula(payoff->optionType(), payoff->strike(), 
-                                      x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
+                                      forward, 
                                       strikeVol * sqrt(T_),
                                       domesticTS_->discount(T_));
+        results_.additionalResults["Forward"] = forward;
+        results_.additionalResults["StrikeVol"] = strikeVol;
 
         //spot > barrier up&out 0
         if(x0Quote->value() >= arguments_.barrier && arguments_.barrierType == Barrier::UpOut){
@@ -190,49 +193,49 @@ namespace QuantLib {
             Real priceBS = barrierOption.NPV();
 
             Real priceAtmCallBS = blackFormula(Option::Call,atmStrike,
-                                              x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
+                                              forward, 
                                               atmVol_->value() * sqrt(T_),
                                               domesticTS_->discount(T_));
             Real price25CallBS = blackFormula(Option::Call,call25Strike,
-                                              x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
+                                              forward, 
                                               atmVol_->value() * sqrt(T_),
                                               domesticTS_->discount(T_));
             Real price25PutBS = blackFormula(Option::Put,put25Strike,
-                                              x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_),
+                                              forward,
                                               atmVol_->value() * sqrt(T_),
                                               domesticTS_->discount(T_));
 
             //market price
             Real priceAtmCallMkt = blackFormula(Option::Call,atmStrike,
-                                              x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
+                                              forward, 
                                               atmVol_->value() * sqrt(T_),
                                               domesticTS_->discount(T_));
 
             Real price25CallMkt = blackFormula(Option::Call,call25Strike,
-                                              x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
+                                              forward, 
                                               call25Vol * sqrt(T_),
                                               domesticTS_->discount(T_));
             Real price25PutMkt = blackFormula(Option::Put,put25Strike,
-                                              x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_),
+                                              forward,
                                               put25Vol * sqrt(T_),
                                               domesticTS_->discount(T_));
 
 
             //Analytical Black Scholes formula for vanilla option
             NormalDistribution norm;
-            Real d1atm = (std::log(x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_)/atmStrike) 
+            Real d1atm = (std::log(forward/atmStrike) 
                            + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
             Real vegaAtm_Analytical = x0Quote->value() * norm(d1atm) * sqrt(T_) * foreignTS_->discount(T_);
             Real vannaAtm_Analytical = vegaAtm_Analytical/x0Quote->value() *(1.0 - d1atm/(atmVolQuote->value()*sqrt(T_)));
             Real volgaAtm_Analytical = vegaAtm_Analytical * d1atm * (d1atm - atmVolQuote->value() * sqrt(T_))/atmVolQuote->value();
 
-            Real d125call = (std::log(x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_)/call25Strike) 
+            Real d125call = (std::log(forward/call25Strike) 
                            + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
             Real vega25Call_Analytical = x0Quote->value() * norm(d125call) * sqrt(T_) * foreignTS_->discount(T_);
             Real vanna25Call_Analytical = vega25Call_Analytical/x0Quote->value() *(1.0 - d125call/(atmVolQuote->value()*sqrt(T_)));
             Real volga25Call_Analytical = vega25Call_Analytical * d125call * (d125call - atmVolQuote->value() * sqrt(T_))/atmVolQuote->value();
 
-            Real d125Put = (std::log(x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_)/put25Strike) 
+            Real d125Put = (std::log(forward/put25Strike) 
                            + 0.5*std::pow(atmVolQuote->value(),2.0) * T_)/(atmVolQuote->value() * sqrt(T_));
             Real vega25Put_Analytical = x0Quote->value() * norm(d125Put) * sqrt(T_) * foreignTS_->discount(T_);
             Real vanna25Put_Analytical = vega25Put_Analytical/x0Quote->value() *(1.0 - d125Put/(atmVolQuote->value()*sqrt(T_)));
