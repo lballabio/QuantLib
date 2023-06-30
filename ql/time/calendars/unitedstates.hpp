@@ -147,9 +147,14 @@ namespace QuantLib {
             std::string name() const override { return "New York stock exchange"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class GovernmentBondImpl final : public Calendar::WesternImpl {
+        class GovernmentBondImpl : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "US government bond market"; }
+            bool isBusinessDay(const Date&) const override;
+        };
+        class SofrImpl final : public GovernmentBondImpl {
+          public:
+            std::string name() const override { return "SOFR fixing calendar"; }
             bool isBusinessDay(const Date&) const override;
         };
         class NercImpl final : public Calendar::WesternImpl {
@@ -171,7 +176,8 @@ namespace QuantLib {
                       GovernmentBond, //!< government-bond calendar
                       NERC,           //!< off-peak days for NERC
                       LiborImpact,    //!< Libor impact calendar
-                      FederalReserve  //!< Federal Reserve Bankwire System
+                      FederalReserve, //!< Federal Reserve Bankwire System
+                      SOFR            //!< SOFR fixing calendar
         };
 
         explicit UnitedStates(Market market);

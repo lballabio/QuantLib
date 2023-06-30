@@ -92,20 +92,15 @@ namespace QuantLib {
     }
 
     UnitedStates::UnitedStates(UnitedStates::Market market) {
-        // all calendar instances on the same market share the same
-        // implementation instance
-        static ext::shared_ptr<Calendar::Impl> settlementImpl(
-                                        new UnitedStates::SettlementImpl);
-        static ext::shared_ptr<Calendar::Impl> liborImpactImpl(
-                                        new UnitedStates::LiborImpactImpl);
-        static ext::shared_ptr<Calendar::Impl> nyseImpl(
-                                        new UnitedStates::NyseImpl);
-        static ext::shared_ptr<Calendar::Impl> governmentImpl(
-                                        new UnitedStates::GovernmentBondImpl);
-        static ext::shared_ptr<Calendar::Impl> nercImpl(
-                                        new UnitedStates::NercImpl);
-        static ext::shared_ptr<Calendar::Impl> federalReserveImpl(
-                                        new UnitedStates::FederalReserveImpl);
+        // all calendar instances on the same market share the same implementation instance
+        static auto settlementImpl = ext::make_shared<UnitedStates::SettlementImpl>();
+        static auto liborImpactImpl = ext::make_shared<UnitedStates::LiborImpactImpl>();
+        static auto nyseImpl = ext::make_shared<UnitedStates::NyseImpl>();
+        static auto governmentImpl = ext::make_shared<UnitedStates::GovernmentBondImpl>();
+        static auto nercImpl = ext::make_shared<UnitedStates::NercImpl>();
+        static auto federalReserveImpl = ext::make_shared<UnitedStates::FederalReserveImpl>();
+        static auto sofrImpl = ext::make_shared<UnitedStates::SofrImpl>();
+
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
@@ -118,6 +113,9 @@ namespace QuantLib {
             break;
           case GovernmentBond:
             impl_ = governmentImpl;
+            break;
+          case SOFR:
+            impl_ = sofrImpl;
             break;
           case NERC:
             impl_ = nercImpl;
@@ -315,6 +313,14 @@ namespace QuantLib {
             ) return false;
 
         return true;
+    }
+
+
+    bool UnitedStates::SofrImpl::isBusinessDay(const Date& date) const {
+        // Good Friday 2023 was only a half close for SIFMA but SOFR didn't fix
+        if (date == Date(7, April, 2023))
+            return false;
+        return GovernmentBondImpl::isBusinessDay(date);
     }
 
 
