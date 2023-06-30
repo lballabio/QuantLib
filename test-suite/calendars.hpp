@@ -49,6 +49,7 @@ class CalendarTest {
     static void testUSSettlement();
     static void testUSGovernmentBondMarket();
     static void testUSNewYorkStockExchange();
+    static void testSOFR();
 
     static void testSouthKoreanSettlement();
     static void testKoreaStockExchange();

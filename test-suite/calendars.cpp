@@ -43,6 +43,7 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <fstream>
 
 using namespace QuantLib;
@@ -368,6 +369,22 @@ void CalendarTest::testUSNewYorkStockExchange() {
             BOOST_FAIL(histClose[i] << " should be holiday (historical close)");
     }
 }
+
+
+void CalendarTest::testSOFR() {
+    BOOST_TEST_MESSAGE("Testing extra non-fixing day for SOFR...");
+
+    auto fedCalendar = UnitedStates(UnitedStates::GovernmentBond);
+    auto testDate = Date(7, April, 2023); // Good Friday 2023 was only a half close but SOFR didn't fix
+
+    if (fedCalendar.isHoliday(testDate))
+        BOOST_ERROR(testDate << " should not be a holiday for " << fedCalendar.name());
+
+    auto sofr = Sofr();
+    if (sofr.isValidFixingDate(testDate))
+        BOOST_ERROR(testDate << " should not be a fixing date for " << sofr.name());
+}
+
 
 void CalendarTest::testTARGET() {
     BOOST_TEST_MESSAGE("Testing TARGET holiday list...");
@@ -3605,6 +3622,7 @@ test_suite* CalendarTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSSettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSOFR));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testKoreaStockExchange));
