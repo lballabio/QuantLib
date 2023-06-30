@@ -35,7 +35,9 @@ namespace QuantLib {
     : familyName_(std::move(familyName)), tenor_(tenor), fixingDays_(fixingDays),
       currency_(std::move(currency)), dayCounter_(std::move(dayCounter)),
       fixingCalendar_(std::move(fixingCalendar)) {
-        tenor_.normalize();
+        // tenor_.normalize() does too much; we want to leave days alone
+        if (tenor.units() == Months && tenor.length() % 12 == 0)
+            tenor_ = Period(tenor.length() / 12, Years);
 
         std::ostringstream out;
         out << familyName_;

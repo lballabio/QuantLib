@@ -29,6 +29,7 @@ class IndexTest {
   public:
     static void testFixingObservability();
     static void testFixingHasHistoricalFixing();
+    static void testTenorNormalization();
     static boost::unit_test_framework::test_suite* suite();
 };
 
