@@ -3603,14 +3603,12 @@ test_suite* CalendarTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBrazil));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testRussia));
 
-    //    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalySettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalyExchange));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKSettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKExchange));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKMetals));
 
-    //    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanySettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyFrankfurt));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyXetra));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyEurex));
