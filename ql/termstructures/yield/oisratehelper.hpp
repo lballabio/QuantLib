@@ -92,22 +92,21 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
     class DatedOISRateHelper : public RateHelper {
       public:
-        DatedOISRateHelper(
-            const Date& startDate,
-            const Date& endDate,
-            const Handle<Quote>& fixedRate,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            // exogenous discounting curve
-            Handle<YieldTermStructure> discountingCurve = {},
-            bool telescopicValueDates = false,
-            RateAveraging::Type averagingMethod = RateAveraging::Compound,
-            Natural paymentLag = 0,
-            BusinessDayConvention paymentConvention = Following,
-            Frequency paymentFrequency = Annual,
-            Calendar paymentCalendar = Calendar(),
-            const Period& forwardStart = 0 * Days,
-            Spread overnightSpread = 0.0,
-            ext::optional<bool> endOfMonth = ext::nullopt);
+        DatedOISRateHelper(const Date& startDate,
+                           const Date& endDate,
+                           const Handle<Quote>& fixedRate,
+                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                           // exogenous discounting curve
+                           Handle<YieldTermStructure> discountingCurve = {},
+                           bool telescopicValueDates = false,
+                           RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                           Natural paymentLag = 0,
+                           BusinessDayConvention paymentConvention = Following,
+                           Frequency paymentFrequency = Annual,
+                           const Calendar& paymentCalendar = Calendar(),
+                           const Period& forwardStart = 0 * Days,
+                           Spread overnightSpread = 0.0,
+                           ext::optional<bool> endOfMonth = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
