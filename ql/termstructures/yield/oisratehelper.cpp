@@ -152,13 +152,12 @@ namespace QuantLib {
                                            Natural paymentLag,
                                            BusinessDayConvention paymentConvention,
                                            Frequency paymentFrequency,
-                                           Calendar paymentCalendar,
+                                           const Calendar& paymentCalendar,
                                            const Period& forwardStart,
                                            Spread overnightSpread,
                                            ext::optional<bool> endOfMonth)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
-      telescopicValueDates_(telescopicValueDates),
-      averagingMethod_(averagingMethod) {
+      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
         auto clonedOvernightIndex =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
