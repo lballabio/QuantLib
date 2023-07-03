@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2014 Klaus Spanderen
+ Copyright (C) 2023 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,26 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_functions_hpp
-#define quantlib_test_functions_hpp
+ /*! \file expm1.hpp
+    \brief complex versions of expm1 and logp1
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_expm1_hpp
+#define quantlib_expm1_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/types.hpp>
+#include <complex>
 
-class FunctionsTest {
-  public:
-    static void testFactorial();
-    static void testGammaFunction();
-    static void testGammaValues();
-    static void testModifiedBesselFunctions();
-    static void testWeightedModifiedBesselFunctions();
-    static void testExpm1();
-    static void testLog1p();
-
-    static boost::unit_test_framework::test_suite* suite();
-};
-
-
+namespace QuantLib {
+    std::complex<Real> expm1(const std::complex<Real>& z);
+    std::complex<Real> log1p(const std::complex<Real>& z);
+}
 #endif
+
