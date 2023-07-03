@@ -77,6 +77,10 @@ namespace QuantLib {
         Interest Rate Modeling, Volume I: Foundations and Vanilla Models,
         Atlantic Financial Press London.
 
+        L. Andersen and M. Lake, 2018
+        Robust High-Precision Option Pricing by Fourier Transforms:
+        Contour Deformations and Double-Exponential Quadrature,
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3231626
 
         \ingroup vanillaengines
 
@@ -90,6 +94,9 @@ namespace QuantLib {
                                     VanillaOption::results> {
       public:
         class Integration;
+        class OptimalAlpha;
+        class AP_Helper;
+
         enum ComplexLogFormula {
             // Gatheral form of characteristic function w/o control variate
             Gatheral,
@@ -102,6 +109,8 @@ namespace QuantLib {
             // Gatheral form with asymptotic expansion of the characteristic function as control variate
             // https://hpcquantlib.wordpress.com/2020/08/30/a-novel-control-variate-for-the-heston-model
             AsymptoticChF,
+            // angled contour shift integral
+            AngledContour,
             // auto selection of best control variate algorithm from above
             OptimalCV
         };
@@ -152,26 +161,6 @@ namespace QuantLib {
         static ComplexLogFormula optimalControlVariate(
              Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho);
 
-        class AP_Helper {
-          public:
-            AP_Helper(Time term,
-                      Real fwd,
-                      Real strike,
-                      ComplexLogFormula cpxLog,
-                      const AnalyticHestonEngine* enginePtr);
-
-            Real operator()(Real u) const;
-            Real controlVariateValue() const;
-
-          private:
-            const Time term_;
-            const Real fwd_, strike_, freq_;
-            const ComplexLogFormula cpxLog_;
-            const AnalyticHestonEngine* const enginePtr_;
-            Real vAvg_;
-            std::complex<Real> phi_, psi_;
-        };
-
       protected:
         // call back for extended stochastic volatility
         // plus jump diffusion engines like bates model
@@ -187,7 +176,6 @@ namespace QuantLib {
         const ext::shared_ptr<Integration> integration_;
         const Real andersenPiterbargEpsilon_;
     };
-
 
     class AnalyticHestonEngine::Integration {
       public:
@@ -244,12 +232,50 @@ namespace QuantLib {
         const ext::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
     };
 
-    // inline
+    class AnalyticHestonEngine::OptimalAlpha {
+      public:
+        OptimalAlpha(
+            const Time t,
+            const AnalyticHestonEngine* const enginePtr);
 
-    inline 
-    std::complex<Real> AnalyticHestonEngine::addOnTerm(Real,
-                                                       Time,
-                                                       Size) const {
+        Real operator()(Real strike) const;
+
+        Size numberOfEvaluations() const;
+      private:
+        Real M(Real k) const;
+        Real k(Real x, Integer sgn) const;
+        Real findMinima(Real lower, Real upper, Real strike, int bits) const;
+
+        const Real t_, fwd_, kappa_, theta_, sigma_, rho_;
+        const AnalyticHestonEngine* const enginePtr_;
+        Real km_, kp_;
+        mutable Size evaluations_;
+    };
+
+    class AnalyticHestonEngine::AP_Helper {
+      public:
+        AP_Helper(Time term, Real fwd, Real strike,
+                  ComplexLogFormula cpxLog,
+                  const AnalyticHestonEngine* enginePtr,
+                  const Real alpha = -0.5);
+
+        Real operator()(Real u) const;
+        Real controlVariateValue() const;
+
+      private:
+        const Time term_;
+        const Real fwd_, strike_, freq_;
+        const ComplexLogFormula cpxLog_;
+        const AnalyticHestonEngine* const enginePtr_;
+        const Real alpha_, s_alpha_;
+        Real vAvg_, tanPhi_;
+        std::complex<Real> phi_, psi_;
+    };
+
+
+
+    inline std::complex<Real> AnalyticHestonEngine::addOnTerm(
+        Real, Time, Size) const {
         return std::complex<Real>(0,0);
     }
 }

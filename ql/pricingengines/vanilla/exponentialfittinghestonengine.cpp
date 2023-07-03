@@ -242,6 +242,8 @@ namespace QuantLib {
                          AnalyticHestonEngine::AndersenPiterbargOptCV
                  : (cv_ == AsymptoticChF)?
                          AnalyticHestonEngine::AsymptoticChF
+                 : (cv_ == AngledContour)?
+                         AnalyticHestonEngine::AngledContour
                  : AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho);
 
         const AnalyticHestonEngine::AP_Helper helper(
@@ -251,7 +253,7 @@ namespace QuantLib {
 
         const Real scalingFactor = (scaling_ == Null<Real>())
             ? (analyticCV != AnalyticHestonEngine::AsymptoticChF)
-                    ? std::max(0.01, std::min(10.0, 0.25/std::sqrt(0.5*vAvg*t)))
+                    ? std::max(0.01, std::min(100.0, 0.25/std::sqrt(0.5*vAvg*t)))
                     : Real(1.0)
             : scaling_;
 
@@ -287,7 +289,7 @@ namespace QuantLib {
             s += w_i*u*helper(u*x_i);
         }
 
-        const Real h_cv = s * std::sqrt(strike * fwd)/M_PI;
+        const Real h_cv = s * fwd/M_PI;
         const Real cvValue = helper.controlVariateValue();
 
         switch (payoff->optionType())

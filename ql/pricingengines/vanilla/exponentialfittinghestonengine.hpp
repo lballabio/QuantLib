@@ -58,6 +58,8 @@ namespace QuantLib {
             AndersenPiterbargOptCV,
             // Gatheral form with asymptotic expansion of the characteristic function as control variate
             AsymptoticChF,
+            // angled contour shift integral
+            AngledContour,
             // auto selection of best control variate algorithm from above
             OptimalCV
         };

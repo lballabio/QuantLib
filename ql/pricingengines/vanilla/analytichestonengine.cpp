@@ -32,14 +32,25 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/expm1.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+
+#include <boost/math/tools/minima.hpp>
+#include <boost/math/special_functions/sign.hpp>
+
+#include <cmath>
+#include <limits>
 #include <utility>
+
+#include <iostream>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
 #endif
+
+#include <iostream>
 
 namespace QuantLib {
 
@@ -360,16 +371,147 @@ namespace QuantLib {
         }
     }
 
+    AnalyticHestonEngine::OptimalAlpha::OptimalAlpha(
+        const Time t,
+        const AnalyticHestonEngine* const enginePtr)
+    : t_(t),
+      fwd_(enginePtr->model_->process()->s0()->value()),
+      kappa_(enginePtr->model_->kappa()),
+      theta_(enginePtr->model_->theta()),
+      sigma_(enginePtr->model_->sigma()),
+      rho_(enginePtr->model_->rho()),
+      enginePtr_(enginePtr),
+      evaluations_(0) {
+        km_ = k(0.0, -1);
+        kp_ = k(0.0,  1);
+    }
+
+    Real AnalyticHestonEngine::OptimalAlpha::operator()(Real strike) const {
+        // TODO: we are using control variates, hence cancellation
+        //       is present anyhow. Shouldn't we check both intervals and
+        //       chose the interval (alpha_min, -1) or (0, alpha_max), which
+        //       gives the lowest minimum?
+
+        constexpr int bits(0.4*std::numeric_limits<Real>::digits);
+        constexpr Real eps = std::pow(0.5, bits);
+
+        const auto cm = [this](Real k) -> Real { return M(k) - t_; };
+
+        if (fwd_ >= strike) {
+            const Real km_2pi = k(2*M_PI, -1);
+
+            const Real alpha_min = Brent().solve(
+                cm, eps, 0.5*(km_2pi + km_), km_2pi, (1+1e-12)*km_
+            ) - 1.0;
+
+            QL_REQUIRE(alpha_min <= -1.0,
+                "alpha min must be smaller than minus one");
+
+            return std::min(
+                -1.001, findMinima(-1 + 0.99*(alpha_min + 1.0), -1.0, strike, bits)
+            );
+        }
+        else {
+            Real alpha_max;
+            const Real adx = kappa_ - sigma_*rho_;
+            if (adx > 0.0) {
+                const Real kp_2pi = k(2*M_PI, 1);
+
+                alpha_max = Brent().solve(
+                    cm, eps, 0.5*(kp_ + kp_2pi), (1+1e-12)*kp_, kp_2pi
+                ) - 1.0;
+            }
+            else if (adx < 0.0) {
+                const Time tCut = -2/(kappa_ - sigma_*rho_*kp_);
+                if (t_ < tCut) {
+                    const Real kp_pi = k(M_PI, 1);
+                    alpha_max = Brent().solve(
+                        cm, eps, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
+                    ) - 1.0;
+                }
+                else {
+                    alpha_max = Brent().solve(
+                        cm, eps, 0.5*(1.0 + kp_), 1 + 1e-12, (1-1e-12)*kp_
+                    ) - 1.0;
+                }
+            }
+            else { // adx == 0.0
+                const Real kp_pi = k(M_PI, 1);
+                alpha_max = Brent().solve(
+                    cm, eps, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
+                ) - 1.0;
+            }
+
+            QL_REQUIRE(alpha_max >= 0.0, "alpha max must be larger than zero");
+
+            return std::max(
+                1e-3, findMinima(0.0, 0.99*alpha_max, strike, bits)
+            );
+
+        }
+
+        return -0.5;
+    }
+
+    Size AnalyticHestonEngine::OptimalAlpha::numberOfEvaluations() const {
+        return evaluations_;
+    }
+
+    Real AnalyticHestonEngine::OptimalAlpha::findMinima(
+        Real lower, Real upper, Real strike, int bits) const {
+        const Real freq = std::log(fwd_/strike);
+
+        return boost::math::tools::brent_find_minima(
+            [freq, this](Real alpha) -> Real {
+                ++evaluations_;
+                const std::complex<Real> z(0, -(alpha+1));
+                // TODO: do we need to add the control variate here?
+                // follow chapter 3.2 in
+                // Optimal Fourier inversion in semianalytical option pricing
+                return std::log(enginePtr_->chF(z, t_).real())
+                    - std::log(alpha*(alpha+1)) + alpha*freq;
+            },
+            lower, upper, bits
+        ).first;
+    }
+
+    Real AnalyticHestonEngine::OptimalAlpha::M(Real k) const {
+        const Real beta = kappa_ - sigma_*rho_*k;
+
+        if (k >= km_ && k <= kp_) {
+            const Real D = std::sqrt(beta*beta - sigma_*sigma_*k*(k-1));
+            return std::log((beta-D)/(beta+D)) / D;
+        }
+        else {
+            const Real D_imag =
+                std::sqrt(-(beta*beta - sigma_*sigma_*k*(k-1)));
+
+            return 2/D_imag
+                * ( ((beta>0.0)? M_PI : 0.0) - std::atan(D_imag/beta) );
+        }
+    }
+
+    Real AnalyticHestonEngine::OptimalAlpha::k(Real x, Integer sgn) const {
+        return ( (sigma_ - 2*rho_*kappa_)
+                + sgn*std::sqrt(
+                      squared(sigma_-2*rho_*kappa_)
+                    + 4*(kappa_*kappa_ + x*x/(t_*t_))*(1-rho_*rho_)))
+               /(2*sigma_*(1-rho_*rho_));
+    }
 
     AnalyticHestonEngine::AP_Helper::AP_Helper(
         Time term, Real fwd, Real strike, ComplexLogFormula cpxLog,
-        const AnalyticHestonEngine* const enginePtr)
+        const AnalyticHestonEngine* const enginePtr,
+        const Real alpha)
     : term_(term),
       fwd_(fwd),
       strike_(strike),
       freq_(std::log(fwd/strike)),
       cpxLog_(cpxLog),
-      enginePtr_(enginePtr) {
+      enginePtr_(enginePtr),
+      alpha_(alpha),
+      s_alpha_(std::exp(alpha*freq_))
+      {
         QL_REQUIRE(enginePtr != nullptr, "pricing engine required");
 
         const Real v0    = enginePtr->model_->v0();
@@ -385,7 +527,7 @@ namespace QuantLib {
             break;
           case AndersenPiterbargOptCV:
               vAvg_ = -8.0*std::log(enginePtr->chF(
-                         std::complex<Real>(0, -0.5), term).real())/term;
+                         std::complex<Real>(0, alpha_), term).real())/term;
             break;
           case AsymptoticChF:
             phi_ = -(v0+term*kappa*theta)/sigma
@@ -399,6 +541,17 @@ namespace QuantLib {
                   - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
                           /(sigma*sigma);
             break;
+          case AngledContour:
+            {
+                vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
+                          /(kappa*term) + theta;
+
+                const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
+                tanPhi_ = std::tan(
+                     (r*freq_ < 0)? M_PI/12*boost::math::sign(freq_) : 0.0
+                );
+            }
+            break;
           default:
             QL_FAIL("unknown control variate");
         }
@@ -411,15 +564,35 @@ namespace QuantLib {
                         == std::complex<Real>(0.0),
                    "only Heston model is supported");
 
-        const std::complex<Real> z(u, -0.5);
-
         std::complex<Real> phiBS;
+        constexpr std::complex<Real> i(0, 1);
+
+        if (cpxLog_ == AngledContour) {
+            const std::complex<Real> h_u(u, u*tanPhi_ - alpha_);
+            const std::complex<Real> hPrime(h_u-i);
+
+            phiBS = std::exp(
+                -0.5*vAvg_*term_*(hPrime*hPrime +
+                        std::complex<Real>(-hPrime.imag(), hPrime.real()))
+            );
+
+            return std::exp(-u*tanPhi_*freq_)
+                    *(std::exp(std::complex<Real>(0.0, u*freq_))
+                      *std::complex<Real>(1, tanPhi_)
+                      *(phiBS - enginePtr_->chF(hPrime, term_))/(h_u*hPrime)
+                      ).real()*s_alpha_;
+        }
+
+        const std::complex<Real> z(u, -alpha_);
+        const std::complex<Real> zPrime(u, -alpha_-1);
 
         switch (cpxLog_) {
           case AndersenPiterbarg:
           case AndersenPiterbargOptCV:
             phiBS = std::exp(
-                -0.5*vAvg_*term_*(z*z + std::complex<Real>(-z.imag(), z.real())));
+                -0.5*vAvg_*term_*(zPrime*zPrime +
+                        std::complex<Real>(-zPrime.imag(), zPrime.real()))
+            );
             break;
           case AsymptoticChF:
             phiBS = std::exp(u*phi_ + psi_);
@@ -429,11 +602,13 @@ namespace QuantLib {
         }
 
         return (std::exp(std::complex<Real>(0.0, u*freq_))
-            * (phiBS - enginePtr_->chF(z, term_)) / (u*u + 0.25)).real();
+            * (phiBS - enginePtr_->chF(zPrime, term_)) / (z*zPrime)
+            ).real()*s_alpha_;
     }
 
     Real AnalyticHestonEngine::AP_Helper::controlVariateValue() const {
-        if (cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
+        if (   cpxLog_ == AngledContour
+            || cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
               return BlackCalculator(
                   Option::Call, strike_, fwd_, std::sqrt(vAvg_*term_))
                       .value();
@@ -454,28 +629,21 @@ namespace QuantLib {
     std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
 
-        const Real kappa = model_->kappa();
-        const Real sigma = model_->sigma();
-        const Real theta = model_->theta();
-        const Real rho   = model_->rho();
-        const Real v0    = model_->v0();
-
-        const Real sigma2 = sigma*sigma;
-
-        if (sigma > 1e-4) {
-            const std::complex<Real> g
-                = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
-
-            const std::complex<Real> D = std::sqrt(
-                g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
-
-            const std::complex<Real> G = (g-D)/(g+D);
-
-            return std::exp(v0/sigma2*(1.0-std::exp(-D*t))/(1.0-G*std::exp(-D*t))
-                    *(g-D) + kappa*theta/sigma2*((g-D)*t
-                    -2.0*std::log((1.0-G*std::exp(-D*t))/(1.0-G))));
+        // TODO: better criteria when to use the Taylor series.
+        //       and do we still need the Taylor expansion?
+        //       and should we use the Taylor series for ln(chf) instead?
+        if (model_->sigma() > 1e-4 || model_->kappa() < 1e-6) {
+            return std::exp(lnChF(z, t));
         }
         else {
+            const Real kappa = model_->kappa();
+            const Real sigma = model_->sigma();
+            const Real theta = model_->theta();
+            const Real rho   = model_->rho();
+            const Real v0    = model_->v0();
+
+            const Real sigma2 = sigma*sigma;
+
             const Real kt = kappa*t;
             const Real ekt = std::exp(kt);
             const Real e2kt = std::exp(2*kt);
@@ -504,8 +672,41 @@ namespace QuantLib {
     }
 
     std::complex<Real> AnalyticHestonEngine::lnChF(
-        const std::complex<Real>& z, Time T) const {
-        return std::log(chF(z, T));
+        const std::complex<Real>& z, Time t) const {
+
+        const Real kappa = model_->kappa();
+        const Real sigma = model_->sigma();
+        const Real theta = model_->theta();
+        const Real rho   = model_->rho();
+        const Real v0    = model_->v0();
+
+        const Real sigma2 = sigma*sigma;
+
+        const std::complex<Real> g
+            = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
+
+        const std::complex<Real> D = std::sqrt(
+            g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
+
+        // reduced cancelation errors, see. L. Andersen and M. Lake
+        std::complex<Real> r(g-D);
+        if (g.real()*D.real() + g.imag()*D.imag() > 0.0) {
+            r = -sigma2*z*std::complex<Real>(z.real(), z.imag()+1)/(g+D);
+        }
+
+        std::complex<Real> y;
+        if (D.real() != 0.0 || D.imag() != 0.0) {
+            y = expm1(-D*t)/(2.0*D);
+        }
+        else
+            y = -0.5*t;
+
+        const std::complex<Real> A
+            = kappa*theta/sigma2*(r*t - 2.0*log1p(-r*y));
+        const std::complex<Real> B
+            = z*std::complex<Real>(z.real(), z.imag()+1)*y/(1.0-r*y);
+
+        return A+v0*B;
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
@@ -556,11 +757,13 @@ namespace QuantLib {
         AnalyticHestonEngine::optimalControlVariate(
         Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho) {
 
-        if (t > 0.1 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.055) {
+        if (t > 0.1 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.15
+                && ((kappa- 0.5*rho*sigma)*(v0 + t*kappa*theta)
+                    + kappa*theta*std::log(4*(1-rho*rho)))/(sigma*sigma) < 1.0) {
             return AsymptoticChF;
         }
         else {
-            return AndersenPiterbargOptCV;
+            return AngledContour;
         }
     }
 
@@ -620,6 +823,7 @@ namespace QuantLib {
           case AndersenPiterbarg:
           case AndersenPiterbargOptCV:
           case AsymptoticChF:
+          case AngledContour:
           case OptimalCV: {
             const Real c_inf =
                 std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
@@ -633,17 +837,26 @@ namespace QuantLib {
                 return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
             };
 
-            AP_Helper cvHelper(term, fwdPrice, strikePrice,
-                (cpxLog == OptimalCV)
-                    ? optimalControlVariate(term, v0, kappa, theta, sigma, rho)
-                    : cpxLog,
-                enginePtr
+            const ComplexLogFormula finalLog = (cpxLog == OptimalCV)
+                ? optimalControlVariate(term, v0, kappa, theta, sigma, rho)
+                : cpxLog;
+
+            Real alpha = -0.5;
+            if (cpxLog == OptimalCV && finalLog == AngledContour) {
+                AnalyticHestonEngine::OptimalAlpha optimalAlpha(term, enginePtr);
+                alpha = optimalAlpha(strikePrice);
+                evaluations += optimalAlpha.numberOfEvaluations();
+            }
+
+            const AP_Helper cvHelper(
+                term, fwdPrice, strikePrice, finalLog, enginePtr, alpha
             );
 
             const Real cvValue = cvHelper.controlVariateValue();
 
             const Real h_cv = integration.calculate(c_inf, cvHelper, uM)
-                * std::sqrt(strikePrice * fwdPrice)/M_PI;
+                  * fwdPrice/M_PI;
+
             evaluations += integration.numberOfEvaluations();
 
             switch (type.optionType())
@@ -678,10 +891,11 @@ namespace QuantLib {
 
         const ext::shared_ptr<HestonProcess>& process = model_->process();
 
-        const Real riskFreeDiscount = process->riskFreeRate()->discount(
-                                            arguments_.exercise->lastDate());
-        const Real dividendDiscount = process->dividendYield()->discount(
-                                            arguments_.exercise->lastDate());
+        const DiscountFactor dr = process->riskFreeRate()->discount(
+            arguments_.exercise->lastDate());
+        const DiscountFactor dd = process->dividendYield()->discount(
+            arguments_.exercise->lastDate());
+        const DiscountFactor df = dr/dd;
 
         const Real spotPrice = process->s0()->value();
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
@@ -689,22 +903,100 @@ namespace QuantLib {
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
 
-        doCalculation(riskFreeDiscount,
-                      dividendDiscount,
-                      spotPrice,
-                      strikePrice,
-                      term,
-                      model_->kappa(),
-                      model_->theta(),
-                      model_->sigma(),
-                      model_->v0(),
-                      model_->rho(),
-                      *payoff,
-                      *integration_,
-                      cpxLog_,
-                      this,
-                      results_.value,
-                      evaluations_);
+        const Real kappa = model_->kappa();
+        const Real sigma = model_->sigma();
+        const Real theta = model_->theta();
+        const Real rho   = model_->rho();
+        const Real v0    = model_->v0();
+
+        evaluations_ = 0;
+
+        switch(cpxLog_) {
+          case Gatheral:
+          case BranchCorrection: {
+            const Real c_inf = std::min(0.2, std::max(0.0001,
+                std::sqrt(1.0-rho*rho)/sigma))*(v0 + kappa*theta*term);
+
+            const Real p1 = integration_->calculate(c_inf,
+                Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, this,
+                          cpxLog_, term, strikePrice, df, 1))/M_PI;
+            evaluations_ += integration_->numberOfEvaluations();
+
+            const Real p2 = integration_->calculate(c_inf,
+                Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, this,
+                          cpxLog_, term, strikePrice, df, 2))/M_PI;
+            evaluations_ += integration_->numberOfEvaluations();
+
+            switch (payoff->optionType())
+            {
+              case Option::Call:
+                results_.value = spotPrice*dd*(p1+0.5)
+                               - strikePrice*dr*(p2+0.5);
+                break;
+              case Option::Put:
+                results_.value = spotPrice*dd*(p1-0.5)
+                               - strikePrice*dr*(p2-0.5);
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
+          }
+          break;
+          case AndersenPiterbarg:
+          case AndersenPiterbargOptCV:
+          case AsymptoticChF:
+          case AngledContour:
+          case OptimalCV: {
+            const Real c_inf =
+                std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
+
+            const Real fwdPrice = spotPrice / df;
+
+            const Real epsilon = andersenPiterbargEpsilon_
+                *M_PI/(std::sqrt(strikePrice*fwdPrice)*dr);
+
+            const ext::function<Real()> uM = [&](){
+                return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+            };
+
+            const ComplexLogFormula finalLog = (cpxLog_ == OptimalCV)
+                ? optimalControlVariate(term, v0, kappa, theta, sigma, rho)
+                : cpxLog_;
+
+            Real alpha = -0.5;
+            if (cpxLog_ == OptimalCV && finalLog == AngledContour) {
+                AnalyticHestonEngine::OptimalAlpha optimalAlpha(term, this);
+                alpha = optimalAlpha(strikePrice);
+                evaluations_ += optimalAlpha.numberOfEvaluations();
+            }
+
+            const AP_Helper cvHelper(
+                term, fwdPrice, strikePrice, finalLog, this, alpha
+            );
+
+            const Real cvValue = cvHelper.controlVariateValue();
+
+            const Real h_cv = integration_->calculate(c_inf, cvHelper, uM)
+                  * fwdPrice/M_PI;
+
+            evaluations_ += integration_->numberOfEvaluations();
+
+            switch (payoff->optionType())
+            {
+              case Option::Call:
+                results_.value = (cvValue + h_cv)*dr;
+                break;
+              case Option::Put:
+                results_.value = (cvValue + h_cv - (fwdPrice - strikePrice))*dr;
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
+          }
+          break;
+          default:
+            QL_FAIL("unknown complex log formula");
+        }
     }
 
 
@@ -872,10 +1164,15 @@ namespace QuantLib {
         const Real uMax = Brent().solve(u_Max(c_inf, epsilon),
             QL_EPSILON*uMaxGuess, uMaxGuess, uMaxStep);
 
-        const Real uHatMax = Brent().solve(uHat_Max(0.5*v0*t, epsilon),
-            QL_EPSILON*std::sqrt(uMaxGuess),
-            std::sqrt(uMaxGuess), 0.1*std::sqrt(uMaxGuess));
+        try {
+            const Real uHatMaxGuess = std::sqrt(-std::log(epsilon)/(0.5*v0*t));
+            const Real uHatMax = Brent().solve(uHat_Max(0.5*v0*t, epsilon),
+                QL_EPSILON*uHatMaxGuess, uHatMaxGuess, 0.001*uHatMaxGuess);
 
-        return std::max(uMax, uHatMax);
+            return std::max(uMax, uHatMax);
+        }
+        catch (const Error&) {
+            return uMax;
+        }
     }
 }
