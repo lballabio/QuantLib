@@ -24,6 +24,8 @@
 #ifndef quantlib_nulldeleter_hpp
 #define quantlib_nulldeleter_hpp
 
+#include <ql/qldefines.hpp>
+
 namespace QuantLib {
 struct null_deleter {
     template <typename T> void operator()(T *) const noexcept {}
