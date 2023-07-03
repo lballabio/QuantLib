@@ -134,15 +134,15 @@ namespace QuantLib {
             constexpr Real DIST = 4.5;
             constexpr Real MAX_ERROR = 5*QL_EPSILON;
 
-            constexpr Real z_inf = std::log(0.01*QL_MAX_REAL) + std::log(100.0);
+            const Real z_inf = std::log(0.01*QL_MAX_REAL) + std::log(100.0);
             QL_REQUIRE(z.real() < z_inf, "argument error " << z);
 
-            constexpr Real z_asym = 2.0 - 1.035*std::log(MAX_ERROR);
+            const Real z_asym = 2.0 - 1.035*std::log(MAX_ERROR);
 
             using boost::math::sign;
             const Real abs_z = std::abs(z);
 
-            const auto match = [](
+            const auto match = [MAX_ERROR](
                 const std::complex<Real>& z1, const std::complex<Real>& z2)
                 -> bool {
                     const std::complex<Real> d = z1 - z2;
