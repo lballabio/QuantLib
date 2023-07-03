@@ -238,7 +238,7 @@ void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
 }
 
 void ScheduleTest::testFirstDateWithEomAdjustment() {
-    BOOST_TEST_MESSAGE("Testing schedule with first date and EOM adjustments ...");
+    BOOST_TEST_MESSAGE("Testing schedule with first date and EOM adjustments...");
 
     Schedule schedule = MakeSchedule()
                             .from(Date(10, August, 1996))
@@ -262,7 +262,7 @@ void ScheduleTest::testFirstDateWithEomAdjustment() {
 }
 
 void ScheduleTest::testNextToLastWithEomAdjustment() {
-    BOOST_TEST_MESSAGE("Testing schedule with next to last date and EOM adjustments ...");
+    BOOST_TEST_MESSAGE("Testing schedule with next to last date and EOM adjustments...");
 
     Schedule schedule = MakeSchedule()
                             .from(Date(10, August, 1996))
