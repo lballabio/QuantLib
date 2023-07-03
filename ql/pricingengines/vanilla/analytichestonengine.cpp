@@ -132,38 +132,11 @@ namespace QuantLib {
     // helper class for integration
     class AnalyticHestonEngine::Fj_Helper {
     public:
-      Fj_Helper(const VanillaOption::arguments& arguments,
-                const ext::shared_ptr<HestonModel>& model,
+      Fj_Helper(Real kappa, Real theta, Real sigma, Real v0,
+                Real s0, Real rho,
                 const AnalyticHestonEngine* engine,
                 ComplexLogFormula cpxLog,
-                Time term,
-                Real ratio,
-                Size j);
-
-      Fj_Helper(Real kappa,
-                Real theta,
-                Real sigma,
-                Real v0,
-                Real s0,
-                Real rho,
-                const AnalyticHestonEngine* engine,
-                ComplexLogFormula cpxLog,
-                Time term,
-                Real strike,
-                Real ratio,
-                Size j);
-
-      Fj_Helper(Real kappa,
-                Real theta,
-                Real sigma,
-                Real v0,
-                Real s0,
-                Real rho,
-                ComplexLogFormula cpxLog,
-                Time term,
-                Real strike,
-                Real ratio,
-                Size j);
+                Time term, Real strike, Real ratio, Size j);
 
       Real operator()(Real phi) const;
 
@@ -187,36 +160,11 @@ namespace QuantLib {
     };
 
 
-    AnalyticHestonEngine::Fj_Helper::Fj_Helper(
-        const VanillaOption::arguments& arguments,
-        const ext::shared_ptr<HestonModel>& model,
-        const AnalyticHestonEngine* const engine,
-        ComplexLogFormula cpxLog,
-        Time term, Real ratio, Size j)
-        : j_ (j), //arg_(arguments),
-        kappa_(model->kappa()), theta_(model->theta()),
-        sigma_(model->sigma()), v0_(model->v0()),
-        cpxLog_(cpxLog), term_(term),
-        x_(std::log(model->process()->s0()->value())),
-        sx_(std::log(ext::dynamic_pointer_cast<StrikedTypePayoff>
-        (arguments.payoff)->strike())),
-        dd_(x_-std::log(ratio)),
-        sigma2_(sigma_*sigma_),
-        rsigma_(model->rho()*sigma_),
-        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : Real(0))),
-        b_(0), g_km1_(0),
-        engine_(engine)
-    {
-    }
-
     AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta,
         Real sigma, Real v0, Real s0, Real rho,
         const AnalyticHestonEngine* const engine,
         ComplexLogFormula cpxLog,
-        Time term,
-        Real strike,
-        Real ratio,
-        Size j)
+        Time term, Real strike, Real ratio, Size j)
         :
         j_(j),
         kappa_(kappa),
@@ -236,23 +184,6 @@ namespace QuantLib {
         engine_(engine)
     {
     }
-
-    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa,
-                                               Real theta,
-                                               Real sigma,
-                                               Real v0,
-                                               Real s0,
-                                               Real rho,
-                                               ComplexLogFormula cpxLog,
-                                               Time term,
-                                               Real strike,
-                                               Real ratio,
-                                               Size j)
-    : j_(j), kappa_(kappa), theta_(theta), sigma_(sigma), v0_(v0), cpxLog_(cpxLog), term_(term),
-      x_(std::log(s0)), sx_(std::log(strike)), dd_(x_ - std::log(ratio)), sigma2_(sigma_ * sigma_),
-      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : Real(0))), b_(0), g_km1_(0),
-      engine_(nullptr) {}
-
 
     Real AnalyticHestonEngine::Fj_Helper::operator()(Real phi) const
     {
@@ -392,8 +323,8 @@ namespace QuantLib {
         //       chose the interval (alpha_min, -1) or (0, alpha_max), which
         //       gives the lowest minimum?
 
-        constexpr int bits(0.4*std::numeric_limits<Real>::digits);
-        constexpr Real eps = 1.0/std::pow(2, bits);
+        constexpr int bits(int(0.4*std::numeric_limits<Real>::digits));
+        const Real eps = std::pow(2, -bits);
 
         const auto cm = [this](Real k) -> Real { return M(k) - t_; };
 

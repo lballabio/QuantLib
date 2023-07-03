@@ -235,6 +235,8 @@ namespace QuantLib {
             const AnalyticHestonEngine* const enginePtr);
 
         Real operator()(Real strike) const;
+        //std::pair<Real, Real> alphaGreaterZero(Real strike) const;
+        //std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
 
         Size numberOfEvaluations() const;
       private:
