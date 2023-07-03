@@ -1009,6 +1009,7 @@
     <ClInclude Include="ql\math\distributions\poissondistribution.hpp" />
     <ClInclude Include="ql\math\distributions\studenttdistribution.hpp" />
     <ClInclude Include="ql\math\errorfunction.hpp" />
+    <ClInclude Include="ql\math\expm1.hpp" />
     <ClInclude Include="ql\math\factorial.hpp" />
     <ClInclude Include="ql\math\fastfouriertransform.hpp" />
     <ClInclude Include="ql\math\functional.hpp" />
@@ -2260,6 +2261,7 @@
     <ClCompile Include="ql\math\distributions\normaldistribution.cpp" />
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp" />
     <ClCompile Include="ql\math\errorfunction.cpp" />
+    <ClCompile Include="ql\math\expm1.cpp" />
     <ClCompile Include="ql\math\factorial.cpp" />
     <ClCompile Include="ql\math\incompletegamma.cpp" />
     <ClCompile Include="ql\math\integrals\discreteintegrals.cpp" />

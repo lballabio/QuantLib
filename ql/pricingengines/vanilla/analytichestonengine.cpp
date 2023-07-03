@@ -878,30 +878,19 @@ namespace QuantLib {
         }
     }
 
-    void AnalyticHestonEngine::calculate() const
-    {
-        // this is a european option pricer
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European option");
+    Real AnalyticHestonEngine::priceVanillaPayoff(
+        const ext::shared_ptr<PlainVanillaPayoff>& payoff, Time maturity) const {
 
-        // plain vanilla
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non plain vanilla payoff given");
+        Real value;
 
         const ext::shared_ptr<HestonProcess>& process = model_->process();
-
-        const DiscountFactor dr = process->riskFreeRate()->discount(
-            arguments_.exercise->lastDate());
-        const DiscountFactor dd = process->dividendYield()->discount(
-            arguments_.exercise->lastDate());
+        const DiscountFactor dr = process->riskFreeRate()->discount(maturity);
+        const DiscountFactor dd = process->dividendYield()->discount(maturity);
         const DiscountFactor df = dr/dd;
 
+        const Real strikePrice = payoff->strike();
         const Real spotPrice = process->s0()->value();
         QL_REQUIRE(spotPrice > 0.0, "negative or null underlying given");
-
-        const Real strikePrice = payoff->strike();
-        const Real term = process->time(arguments_.exercise->lastDate());
 
         const Real kappa = model_->kappa();
         const Real sigma = model_->sigma();
@@ -915,26 +904,26 @@ namespace QuantLib {
           case Gatheral:
           case BranchCorrection: {
             const Real c_inf = std::min(0.2, std::max(0.0001,
-                std::sqrt(1.0-rho*rho)/sigma))*(v0 + kappa*theta*term);
+                std::sqrt(1.0-rho*rho)/sigma))*(v0 + kappa*theta*maturity);
 
             const Real p1 = integration_->calculate(c_inf,
                 Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, this,
-                          cpxLog_, term, strikePrice, df, 1))/M_PI;
+                          cpxLog_, maturity, strikePrice, df, 1))/M_PI;
             evaluations_ += integration_->numberOfEvaluations();
 
             const Real p2 = integration_->calculate(c_inf,
                 Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, this,
-                          cpxLog_, term, strikePrice, df, 2))/M_PI;
+                          cpxLog_, maturity, strikePrice, df, 2))/M_PI;
             evaluations_ += integration_->numberOfEvaluations();
 
             switch (payoff->optionType())
             {
               case Option::Call:
-                results_.value = spotPrice*dd*(p1+0.5)
+                value = spotPrice*dd*(p1+0.5)
                                - strikePrice*dr*(p2+0.5);
                 break;
               case Option::Put:
-                results_.value = spotPrice*dd*(p1-0.5)
+                value = spotPrice*dd*(p1-0.5)
                                - strikePrice*dr*(p2-0.5);
                 break;
               default:
@@ -948,7 +937,7 @@ namespace QuantLib {
           case AngledContour:
           case OptimalCV: {
             const Real c_inf =
-                std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
+                std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*maturity)/sigma;
 
             const Real fwdPrice = spotPrice / df;
 
@@ -956,22 +945,23 @@ namespace QuantLib {
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*dr);
 
             const ext::function<Real()> uM = [&](){
-                return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+                return Integration::andersenPiterbargIntegrationLimit(
+                    c_inf, epsilon, v0, maturity);
             };
 
             const ComplexLogFormula finalLog = (cpxLog_ == OptimalCV)
-                ? optimalControlVariate(term, v0, kappa, theta, sigma, rho)
+                ? optimalControlVariate(maturity, v0, kappa, theta, sigma, rho)
                 : cpxLog_;
 
             Real alpha = -0.5;
             if (cpxLog_ == OptimalCV && finalLog == AngledContour) {
-                AnalyticHestonEngine::OptimalAlpha optimalAlpha(term, this);
+                AnalyticHestonEngine::OptimalAlpha optimalAlpha(maturity, this);
                 alpha = optimalAlpha(strikePrice);
                 evaluations_ += optimalAlpha.numberOfEvaluations();
             }
 
             const AP_Helper cvHelper(
-                term, fwdPrice, strikePrice, finalLog, this, alpha
+                 maturity, fwdPrice, strikePrice, finalLog, this, alpha
             );
 
             const Real cvValue = cvHelper.controlVariateValue();
@@ -984,10 +974,10 @@ namespace QuantLib {
             switch (payoff->optionType())
             {
               case Option::Call:
-                results_.value = (cvValue + h_cv)*dr;
+                value = (cvValue + h_cv)*dr;
                 break;
               case Option::Put:
-                results_.value = (cvValue + h_cv - (fwdPrice - strikePrice))*dr;
+                value = (cvValue + h_cv - (fwdPrice - strikePrice))*dr;
                 break;
               default:
                 QL_FAIL("unknown option type");
@@ -997,6 +987,25 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown complex log formula");
         }
+
+        return value;
+    }
+
+    void AnalyticHestonEngine::calculate() const
+    {
+        // this is a european option pricer
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "not an European option");
+
+        // plain vanilla
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non plain vanilla payoff given");
+
+        results_.value = priceVanillaPayoff(
+             payoff,
+             model_->process()->time(arguments_.exercise->lastDate())
+        );
     }
 
 

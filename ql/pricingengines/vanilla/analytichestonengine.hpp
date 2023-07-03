@@ -141,6 +141,9 @@ namespace QuantLib {
         void calculate() const override;
         Size numberOfEvaluations() const;
 
+        Real priceVanillaPayoff(
+                const ext::shared_ptr<PlainVanillaPayoff>& payoff, Time maturity) const;
+
         static void doCalculation(Real riskFreeDiscount,
                                   Real dividendDiscount,
                                   Real spotPrice,

@@ -975,6 +975,9 @@
     <ClInclude Include="ql\math\errorfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\expm1.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\factorial.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -4819,6 +4822,9 @@
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\errorfunction.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\expm1.cpp">
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\factorial.cpp">
