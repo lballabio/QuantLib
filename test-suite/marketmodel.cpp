@@ -4457,28 +4457,24 @@ void MarketModelTest::testStochVolForwardsAndOptionlets() {
                               Real rho = 0.0;
                               Real v1 = v0*volCoeff*volCoeff;
 
-
-
-
                               ext::shared_ptr<StrikedTypePayoff> payoff(
                                               new PlainVanillaPayoff(Option::Call, forwardStrikes[i]));
 
-
-
-                              Real trueValue =0.0;
-                              Size evaluations =0;
-
-                              AnalyticHestonEngine::doCalculation(
-                                  1.0, // no discounting
-                                  1.0, // no discounting
-                                  todaysForwards[i] + displacement,
-                                  todaysForwards[i] + displacement, rateTimes[i], kappa, theta,
-                                  sigma, v1, rho, *payoff,
-                                  AnalyticHestonEngine::Integration::gaussLaguerre(),
-                                  //                                             AnalyticHestonEngine::Integration::gaussLobatto(1e-8,
-                                  //                                             1e-8),
-                                  AnalyticHestonEngine::Gatheral, nullptr, trueValue, evaluations);
-
+                              Real trueValue = AnalyticHestonEngine(
+                                  ext::make_shared<HestonModel>(
+                                      ext::make_shared<HestonProcess>(
+                                          Handle<YieldTermStructure>(flatRate(0.0, dayCounter)),
+                                          Handle<YieldTermStructure>(flatRate(0.0, dayCounter)),
+                                          Handle<Quote>(ext::make_shared<SimpleQuote>(todaysForwards[i] + displacement)),
+                                          v1, kappa, theta, sigma, rho
+                                      )
+                                  ),
+                                  AnalyticHestonEngine::Gatheral,
+                                  AnalyticHestonEngine::Integration::gaussLaguerre(128)
+                              ).priceVanillaPayoff(
+                                  ext::make_shared<PlainVanillaPayoff>(payoff->optionType(), todaysForwards[i] + displacement),
+                                  rateTimes[i]
+                              );
 
                               trueValue *= accruals[i] * todaysDiscounts[i + 1];
 

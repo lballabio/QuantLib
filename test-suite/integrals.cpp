@@ -537,8 +537,6 @@ void IntegralTest::testExponentialIntegral() {
         if (diff > tol || std::isnan(diff)
             || (std::abs(ref.real()) < tol && std::abs(ei.real()) > tol)
             || (std::abs(ref.imag()) < tol && std::abs(ei.imag()) > tol)) {
-            std::cout << std::setprecision(18)
-                    <<  ei << " " << ref << std::endl;
             integrals_test::reportSiCiFail("Ei", z, ei, ref, diff, tol);
         }
 

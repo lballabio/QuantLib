@@ -134,32 +134,20 @@ namespace QuantLib {
                              ComplexLogFormula cpxLog, const Integration& itg,
                              Real andersenPiterbargEpsilon = 1e-8);
 
+        void calculate() const override;
+
         // normalized characteristic function
         std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
         std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
 
-        void calculate() const override;
         Size numberOfEvaluations() const;
 
         Real priceVanillaPayoff(
-                const ext::shared_ptr<PlainVanillaPayoff>& payoff, Time maturity) const;
+           const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+           const Date& maturity) const;
 
-        static void doCalculation(Real riskFreeDiscount,
-                                  Real dividendDiscount,
-                                  Real spotPrice,
-                                  Real strikePrice,
-                                  Real term,
-                                  Real kappa,
-                                  Real theta,
-                                  Real sigma,
-                                  Real v0,
-                                  Real rho,
-                                  const TypePayoff& type,
-                                  const Integration& integration,
-                                  ComplexLogFormula cpxLog,
-                                  const AnalyticHestonEngine* enginePtr,
-                                  Real& value,
-                                  Size& evaluations);
+        Real priceVanillaPayoff(
+           const ext::shared_ptr<PlainVanillaPayoff>& payoff, Time maturity) const;
 
         static ComplexLogFormula optimalControlVariate(
              Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho);
@@ -173,6 +161,11 @@ namespace QuantLib {
 
       private:
         class Fj_Helper;
+
+        Real priceVanillaPayoff(
+           const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+           const Time maturity, Real fwd) const;
+
 
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
@@ -188,8 +181,8 @@ namespace QuantLib {
         static Integration gaussChebyshev   (Size integrationOrder = 128);
         static Integration gaussChebyshev2nd(Size integrationOrder = 128);
 
-        // for an adaptive integration algorithm Gatheral's version has to
-        // be used.Be aware: using a too large number for maxEvaluations might
+        // Gatheral's version has to be used for an adaptive integration
+        // algorithm .Be aware: using a too large number for maxEvaluations might
         // result in a stack overflow as the these integrations are based on
         // recursive algorithms.
         static Integration gaussLobatto(Real relTolerance, Real absTolerance,

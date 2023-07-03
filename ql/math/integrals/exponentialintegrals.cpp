@@ -142,7 +142,7 @@ namespace QuantLib {
             using boost::math::sign;
             const Real abs_z = std::abs(z);
 
-            const auto match = [MAX_ERROR](
+            const auto match = [](
                 const std::complex<Real>& z1, const std::complex<Real>& z2)
                 -> bool {
                     const std::complex<Real> d = z1 - z2;
