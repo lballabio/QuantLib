@@ -41,8 +41,7 @@
       "name": "linux-base",
       "hidden": true,
       "generator": "Unix Makefiles",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}",
+      "binaryDir": "${sourceDir}/build/${presetName}",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
