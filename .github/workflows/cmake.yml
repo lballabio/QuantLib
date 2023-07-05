@@ -49,7 +49,7 @@ jobs:
         cmake --preset linux-ci-build-with-nonstandard-options -L
         cd build/linux-ci-build-with-nonstandard-options
         cmake --build . --verbose
-        cmake --build . --target install
+        sudo cmake --build . --target install
     - name: Test
       run: |
         quantlib-test-suite --log_level=message
