@@ -4,11 +4,7 @@
     {
       "name": "windows-base",
       "hidden": true,
-      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "cl.exe"
-      },
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -17,6 +13,14 @@
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
+      }
+    },
+    {
+      "name": "windows-msvc-base",
+      "hidden": true,
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
@@ -40,7 +44,6 @@
     {
       "name": "linux-base",
       "hidden": true,
-      "generator": "Unix Makefiles",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "condition": {
         "type": "equals",
@@ -81,6 +84,11 @@
       "generator": "Ninja"
     },
     {
+      "name": "make",
+      "hidden": true,
+      "generator": "Unix Makefiles"
+    },
+    {
       "name": "release",
       "hidden": true,
       "cacheVariables": {
@@ -105,6 +113,7 @@
       "name": "linux-clang-debug",
       "inherits": [
         "linux-clang-base",
+        "make",
         "debug"
       ]
     },
@@ -112,6 +121,7 @@
       "name": "linux-clang-release",
       "inherits": [
         "linux-clang-base",
+        "make",
         "release"
       ]
     },
@@ -119,6 +129,7 @@
       "name": "linux-clang-relwithdebinfo",
       "inherits": [
         "linux-clang-base",
+        "make",
         "relwithdebinfo"
       ]
     },
@@ -126,6 +137,7 @@
       "name": "linux-gcc-debug",
       "inherits": [
         "linux-gcc-base",
+        "make",
         "debug"
       ]
     },
@@ -133,6 +145,7 @@
       "name": "linux-gcc-release",
       "inherits": [
         "linux-gcc-base",
+        "make",
         "release"
       ]
     },
@@ -140,6 +153,7 @@
       "name": "linux-gcc-relwithdebinfo",
       "inherits": [
         "linux-gcc-base",
+        "make",
         "relwithdebinfo"
       ]
     },
@@ -186,51 +200,10 @@
       ]
     },
     {
-      "name": "windows-clang-release",
-      "inherits": [
-        "windows-clang-base",
-        "release"
-      ]
-    },
-    {
-      "name": "windows-clang-debug",
-      "inherits": [
-        "windows-clang-base",
-        "debug"
-      ]
-    },
-    {
-      "name": "windows-clang-relwithdebinfo",
-      "inherits": [
-        "windows-clang-base",
-        "relwithdebinfo"
-      ]
-    },
-    {
-      "name": "windows-msvc-release",
-      "inherits": [
-        "windows-base",
-        "release"
-      ]
-    },
-    {
-      "name": "windows-msvc-debug",
-      "inherits": [
-        "windows-base",
-        "debug"
-      ]
-    },
-    {
-      "name": "windows-msvc-relwithdebinfo",
-      "inherits": [
-        "windows-base",
-        "relwithdebinfo"
-      ]
-    },
-    {
       "name": "linux-gcc-debug-with-clang-tidy",
       "inherits": [
         "linux-gcc-base",
+        "make",
         "debug"
       ],
       "cacheVariables": {
@@ -239,9 +212,58 @@
       }
     },
     {
+      "name": "windows-clang-release",
+      "inherits": [
+        "windows-clang-base",
+        "ninja",
+        "release"
+      ]
+    },
+    {
+      "name": "windows-clang-debug",
+      "inherits": [
+        "windows-clang-base",
+        "ninja",
+        "debug"
+      ]
+    },
+    {
+      "name": "windows-clang-relwithdebinfo",
+      "inherits": [
+        "windows-clang-base",
+        "ninja",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "windows-msvc-release",
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "release"
+      ]
+    },
+    {
+      "name": "windows-msvc-debug",
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "debug"
+      ]
+    },
+    {
+      "name": "windows-msvc-relwithdebinfo",
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "relwithdebinfo"
+      ]
+    },
+    {
       "name": "linux-ci-build-with-clang-tidy",
       "inherits": [
         "linux-gcc-base",
+        "make",
         "debug"
       ],
       "cacheVariables": {
@@ -278,7 +300,8 @@
     {
       "name": "windows-ci-build-with-nonstandard-options",
       "inherits": [
-        "windows-base",
+        "windows-msvc-base",
+        "ninja",
         "release"
       ],
       "cacheVariables": {
