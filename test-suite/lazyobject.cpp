@@ -31,12 +31,12 @@ namespace lazy_object_test {
     class TearDown {
         bool alwaysForward;
       public:
-        TearDown() : alwaysForward(LazyObjectSettings::instance().forwardsAllNotifications()) {}
+        TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
         ~TearDown() {
             if (alwaysForward)
-                LazyObjectSettings::instance().alwaysForwardNotifications();
+                LazyObject::Defaults::instance().alwaysForwardNotifications();
             else
-                LazyObjectSettings::instance().forwardFirstNotificationOnly();
+                LazyObject::Defaults::instance().forwardFirstNotificationOnly();
         }
     };
 
@@ -48,7 +48,7 @@ void LazyObjectTest::testDiscardingNotifications() {
 
     lazy_object_test::TearDown teardown;
 
-    LazyObjectSettings::instance().alwaysForwardNotifications();
+    LazyObject::Defaults::instance().alwaysForwardNotifications();
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -82,7 +82,7 @@ void LazyObjectTest::testDiscardingNotificationsByDefault() {
 
     lazy_object_test::TearDown teardown;
 
-    LazyObjectSettings::instance().forwardFirstNotificationOnly();
+    LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -114,7 +114,7 @@ void LazyObjectTest::testForwardingNotificationsByDefault() {
 
     lazy_object_test::TearDown teardown;
 
-    LazyObjectSettings::instance().alwaysForwardNotifications();
+    LazyObject::Defaults::instance().alwaysForwardNotifications();
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -139,7 +139,7 @@ void LazyObjectTest::testForwardingNotifications() {
 
     lazy_object_test::TearDown teardown;
 
-    LazyObjectSettings::instance().forwardFirstNotificationOnly();
+    LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -166,7 +166,7 @@ void LazyObjectTest::testNotificationLoop() {
 
     lazy_object_test::TearDown teardown;
 
-    LazyObjectSettings::instance().alwaysForwardNotifications();
+    LazyObject::Defaults::instance().alwaysForwardNotifications();
 
     auto q = ext::make_shared<SimpleQuote>(0.0);
     auto s1 = ext::make_shared<Stock>(Handle<Quote>(q));

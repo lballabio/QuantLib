@@ -106,7 +106,7 @@ namespace QuantLib {
             Although not always correct, this behavior is a lot faster
             and thus is the current default.  The default can be
             changed at compile time, or at at run time by calling
-            `LazyObjectSettings::instance().alwaysForwardNotifications()`;
+            `LazyObject::Defaults::instance().alwaysForwardNotifications()`;
             the run-time change won't affect lazy objects already created.
         */
         void forwardFirstNotificationOnly();
@@ -116,7 +116,7 @@ namespace QuantLib {
             Although safer, this behavior is a lot slower and thus
             usually not the default.  The default can be changed at
             compile time, or at run-time by calling
-            `LazyObjectSettings::instance().alwaysForwardNotifications()`;
+            `LazyObject::Defaults::instance().alwaysForwardNotifications()`;
             the run-time change won't affect lazy objects already
             created.
         */
@@ -125,7 +125,7 @@ namespace QuantLib {
 
       protected:
         mutable bool calculated_ = false, frozen_ = false, alwaysForward_;
-       private:
+      private:
         bool updating_ = false;
         class UpdateChecker {  // NOLINT(cppcoreguidelines-special-member-functions)
             LazyObject* subject_;
@@ -137,13 +137,15 @@ namespace QuantLib {
                 subject_->updating_ = false;
             }
         };
+      public:
+        class Defaults;
     };
 
     //! Per-session settings for the LazyObject class
-    class LazyObjectSettings : public Singleton<LazyObjectSettings> {
-        friend class Singleton<LazyObjectSettings>;
+    class LazyObject::Defaults : public Singleton<LazyObject::Defaults> {
+        friend class Singleton<LazyObject::Defaults>;
       private:
-        LazyObjectSettings() = default;
+        Defaults() = default;
 
       public:
         /*! by default, lazy objects created after calling this method
@@ -179,7 +181,7 @@ namespace QuantLib {
     // inline definitions
 
     inline LazyObject::LazyObject()
-    : alwaysForward_(LazyObjectSettings::instance().forwardsAllNotifications()) {}
+    : alwaysForward_(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
 
     inline void LazyObject::update() {
         if (updating_) {
