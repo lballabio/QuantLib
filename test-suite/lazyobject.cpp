@@ -164,6 +164,10 @@ void LazyObjectTest::testNotificationLoop() {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects manage recursive notifications...");
 
+    lazy_object_test::TearDown teardown;
+
+    LazyObjectSettings::instance().alwaysForwardNotifications();
+
     auto q = ext::make_shared<SimpleQuote>(0.0);
     auto s1 = ext::make_shared<Stock>(Handle<Quote>(q));
     auto s2 = ext::make_shared<Stock>(Handle<Quote>());

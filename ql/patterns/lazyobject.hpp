@@ -103,14 +103,22 @@ namespace QuantLib {
             After recalculation, this object would again forward the first notification
             received.
 
-            The behaviour is not always correct though and should only be enabled in
-            appropriate configurations.  In if doubt, do not use it.
+            Although not always correct, this behavior is a lot faster
+            and thus is the current default.  The default can be
+            changed at compile time, or at at run time by calling
+            `LazyObjectSettings::instance().alwaysForwardNotifications()`;
+            the run-time change won't affect lazy objects already created.
         */
         void forwardFirstNotificationOnly();
 
         /*! This method causes the object to forward all notifications received.
-            The behaviour is already the default, unless changed by calling
-            LazyObjectSettings::forwardFirstNotificationOnly().
+
+            Although safer, this behavior is a lot slower and thus
+            usually not the default.  The default can be changed at
+            compile time, or at run-time by calling
+            `LazyObjectSettings::instance().alwaysForwardNotifications()`;
+            the run-time change won't affect lazy objects already
+            created.
         */
         void alwaysForwardNotifications();
         //@}
@@ -161,7 +169,7 @@ namespace QuantLib {
         }
 
       private:
-        bool forwardsAllNotifications_ = true;
+        bool forwardsAllNotifications_ = false;
     };
 
     // inline definitions
