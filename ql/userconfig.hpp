@@ -90,6 +90,13 @@
 //#    define QL_THROW_IN_CYCLES
 #endif
 
+/* Undefine this if you want lazy objects to forward all notifications
+   instead of just the first.  Disabling this option is safer in some
+   cases but can be a lot slower. */
+#ifndef QL_FASTER_LAZY_OBJECTS
+#    define QL_FASTER_LAZY_OBJECTS
+#endif
+
 /* Define this to use std::any instead of boost::any. */
 #ifndef QL_USE_STD_ANY
 //#    define QL_USE_STD_ANY

@@ -169,7 +169,11 @@ namespace QuantLib {
         }
 
       private:
+        #ifdef QL_FASTER_LAZY_OBJECTS
         bool forwardsAllNotifications_ = false;
+        #else
+        bool forwardsAllNotifications_ = true;
+        #endif
     };
 
     // inline definitions

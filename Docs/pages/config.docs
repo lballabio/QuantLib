@@ -109,6 +109,18 @@
     cause existing code to throw.
 
     \code
+    #define QL_FASTER_LAZY_OBJECTS
+    \endcode
+    If defined (the default), lazy objects will forward the first
+    notification received, and discard the others until recalculated;
+    the rationale is that observers were already notified, and don't
+    need further notifications until they recalculate, at which point
+    this object would be recalculated too.  After recalculation, this
+    object would again forward the first notification received.
+    Although not always correct, this behavior is a lot faster and
+    thus is the current default.
+
+    \code
     #define QL_USE_STD_SHARED_PTR
     \endcode
     If defined, `std::shared_ptr` and related classes and functions are
