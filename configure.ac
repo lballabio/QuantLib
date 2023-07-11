@@ -360,6 +360,30 @@ if test "$ql_throw_in_cycles" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_throw_in_cycles])
 
+AC_MSG_CHECKING([whether to reduce the number of notifications from lazy objects])
+AC_ARG_ENABLE([faster-lazy-objects],
+              AS_HELP_STRING([--enable-faster-lazy-objects],
+                             [If enabled, lazy objects will forward
+                              the first notification received, and
+                              discard the others until recalculated;
+                              the rationale is that observers were
+                              already notified, and don't need further
+                              notifications until they recalculate, at
+                              which point this object would be
+                              recalculated too.  After recalculation,
+                              this object would again forward the
+                              first notification received.  Although
+                              not always correct, this behavior is a
+                              lot faster and thus is the current
+                              default.]),
+              [ql_faster_lazy_objects=$enableval],
+              [ql_faster_lazy_objects=yes])
+if test "$ql_faster_lazy_objects" = "yes" ; then
+   AC_DEFINE([QL_FASTER_LAZY_OBJECTS],[1],
+             [Define this if you want lazy objects to forward fewer notifications.])
+fi
+AC_MSG_RESULT([$ql_faster_lazy_objects])
+
 AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
 AC_ARG_ENABLE([std-any],
               AS_HELP_STRING([--enable-std-any],

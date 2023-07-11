@@ -26,9 +26,29 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using ext::shared_ptr;
 
+namespace lazy_object_test {
+
+    class TearDown {
+        bool alwaysForward;
+      public:
+        TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
+        ~TearDown() {
+            if (alwaysForward)
+                LazyObject::Defaults::instance().alwaysForwardNotifications();
+            else
+                LazyObject::Defaults::instance().forwardFirstNotificationOnly();
+        }
+    };
+
+}
+
 void LazyObjectTest::testDiscardingNotifications() {
 
-    BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first...");
+    BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first against default...");
+
+    lazy_object_test::TearDown teardown;
+
+    LazyObject::Defaults::instance().alwaysForwardNotifications();
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -53,10 +73,23 @@ void LazyObjectTest::testDiscardingNotifications() {
     q->setValue(3.0);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of change after recalculation");
+}
 
-    s->alwaysForwardNotifications();
 
-    f.lower();
+void LazyObjectTest::testDiscardingNotificationsByDefault() {
+
+    BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first by default...");
+
+    lazy_object_test::TearDown teardown;
+
+    LazyObject::Defaults::instance().forwardFirstNotificationOnly();
+
+    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+
+    Flag f;
+    f.registerWith(s);
+
     s->NPV();
     q->setValue(1.0);
     if (!f.isUp())
@@ -64,15 +97,24 @@ void LazyObjectTest::testDiscardingNotifications() {
 
     f.lower();
     q->setValue(2.0);
-    if (!f.isUp())
-        BOOST_FAIL("Observer was not notified of second change");
+    if (f.isUp())
+        BOOST_FAIL("Observer was notified of second change");
 
+    f.lower();
+    s->NPV();
+    q->setValue(3.0);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of change after recalculation");
 }
 
 
 void LazyObjectTest::testForwardingNotificationsByDefault() {
 
-    BOOST_TEST_MESSAGE("Testing that lazy objects forward all notifications by default...");
+    BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications by default...");
+
+    lazy_object_test::TearDown teardown;
+
+    LazyObject::Defaults::instance().alwaysForwardNotifications();
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
@@ -91,9 +133,40 @@ void LazyObjectTest::testForwardingNotificationsByDefault() {
         BOOST_FAIL("Observer was not notified of second change");
 }
 
+void LazyObjectTest::testForwardingNotifications() {
+
+    BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications against default...");
+
+    lazy_object_test::TearDown teardown;
+
+    LazyObject::Defaults::instance().forwardFirstNotificationOnly();
+
+    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+
+    Flag f;
+    f.registerWith(s);
+
+    s->alwaysForwardNotifications();
+
+    s->NPV();
+    q->setValue(1.0);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of change");
+
+    f.lower();
+    q->setValue(2.0);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of second change");
+}
+
 void LazyObjectTest::testNotificationLoop() {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects manage recursive notifications...");
+
+    lazy_object_test::TearDown teardown;
+
+    LazyObject::Defaults::instance().alwaysForwardNotifications();
 
     auto q = ext::make_shared<SimpleQuote>(0.0);
     auto s1 = ext::make_shared<Stock>(Handle<Quote>(q));
@@ -125,7 +198,9 @@ void LazyObjectTest::testNotificationLoop() {
 test_suite* LazyObjectTest::suite() {
     auto* suite = BOOST_TEST_SUITE("LazyObject tests");
     suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
+    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotificationsByDefault));
     suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotificationsByDefault));
+    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotifications));
     suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testNotificationLoop));
     return suite;
 }

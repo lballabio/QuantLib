@@ -137,7 +137,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-throwing-in-cycles
+            configureflags: --enable-throwing-in-cycles --disable-faster-lazy-objects
             tests: true
           - name: "Indexed coupons enabled"
             shortname: indexed
