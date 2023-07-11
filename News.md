@@ -1,7 +1,7 @@
 Changes for QuantLib 1.31:
 ==========================
 
-QuantLib 1.31 includes a record 64 pull requests from several contributors.
+QuantLib 1.31 includes a record 67 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -33,18 +33,27 @@ Portability
 Patterns
 --------
 
-- **Change of behavior:** the `LazyObject` class used to forward only
-  one notification after recalculating and to silently ignore the
-  others.  This is no longer true, since it could lead to objects not
-  being updated in some cases: all notifications are now forwarded.
-  This might cause a slow down in some cases.  Also, a new configure
-  option `--enable-throwing-in-cycles` (`QL_THROW_IN_CYCLES` in cmake
-  or `userconfig.hpp`) is optionally available; when enabled,
-  notifications cycles involving a lazy object will throw an
-  exception.  It is suggested to try enabling the option and removing
-  such loops, if any.  Thanks to Peter Caspers (@pcaspers) for the fix
-  and to Ralf Konrad (@ralfkonrad) and Jonathan Sweemer (@sweemer) for
-  feedback.
+- **Optional change of behavior:** by default, the `LazyObject` class
+  forwards only one notification after recalculating and silently
+  ignores the others.  In some edge cases, this could lead to objects
+  not being updated.  It's now possible to enable a different behavior
+  where all notifications are forwarded; the new behavior can be
+  chosen at compile time via the configure option
+  `--disable-faster-lazy-objects` (or disabling
+  `QL_FASTER_LAZY_OBJECTS` in cmake or `userconfig.hpp`) or at run
+  time by calling
+  `LazyObject::Defaults::instance().alwaysForwardNotifications()`.
+  This might cause a slow down, so you're invited to try it out and
+  report on the mailing list.  If there are no problems, the new
+  behavior might become the default in future releases.  Also, a new
+  configure option `--enable-throwing-in-cycles` (`QL_THROW_IN_CYCLES`
+  in cmake or `userconfig.hpp`) is optionally available; when both
+  this option and the new behavior are enabled, notifications cycles
+  involving a lazy object will throw an exception.  It is suggested to
+  try enabling the option and removing such loops, if any.  Thanks to
+  Peter Caspers (@pcaspers) for the change and to Ralf Konrad
+  (@ralfkonrad), Jonathan Sweemer (@sweemer) and GitHub user
+  @djkrystul for feedback.
 
 
 Date/time
@@ -126,6 +135,12 @@ Indexes
 
 Instruments
 -----------
+
+- Instruments now register automatically with the global evaluation
+  date and are notified when it changes.  This makes sense in general
+  (if the evaluation date changes, you probably want to recalculate)
+  and can also help avoid some edge cases when lazy objects only
+  forward their first notification (@lballabio).
 
 - Allowed passing a schedule without a regular tenor to callable
   fixed-rate bonds; thanks to Hristo Raykov (@HristoRaykov) for the

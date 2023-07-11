@@ -1,3 +1,147 @@
+commit 87482912656bc2c18b1f9ef62c3f456b7f38971a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Jul 2023 11:24:27 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 97 +++++++++++++++++++++++++++++++++++++++++++++++++
+ Docs/pages/history.docs | 35 +++++++++++-------
+ News.md                 | 35 +++++++++++-------
+ 3 files changed, 141 insertions(+), 26 deletions(-)
+
+commit d8fbe2889533c781effadc1876352af284671fe2
+Merge: e964a67c4 cea11f68f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Jul 2023 15:32:30 +0200
+
+    Register instruments with evaluation date (#1729)
+
+commit cea11f68f706bdb142ea6be9c2c09348e2a1714e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Jul 2023 09:41:18 +0200
+
+    Register instruments with evaluation date
+
+ QuantLib.vcxproj         |  1 +
+ QuantLib.vcxproj.filters |  1 +
+ ql/CMakeLists.txt        |  1 +
+ ql/Makefile.am           |  1 +
+ ql/instrument.cpp        | 49 ++++++++++++++++++++++++++++++++++++++++++++++++
+ ql/instrument.hpp        | 17 -----------------
+ 6 files changed, 53 insertions(+), 17 deletions(-)
+
+commit e964a67c40079889df18d6ddf676f5b47a2e4331
+Merge: 343ee92a3 7362bcca0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Jul 2023 09:39:32 +0200
+
+    Break ring of shared_ptr<Stock> dependencies (#1727)
+
+commit 7362bcca0124d87bdeccb6bd42c5af46c27a2766
+Author: Ralf Konrad <42419984+ralfkonrad@users.noreply.github.com>
+Date:   Wed, 12 Jul 2023 01:36:46 +0200
+
+    Removed fixed leak
+
+ .lsan.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 32a48ae6f6dbeb5b68953c0594b9a20910fa1f00
+Author: Ralf Konrad <42419984+ralfkonrad@users.noreply.github.com>
+Date:   Tue, 11 Jul 2023 21:27:16 +0200
+
+    Break ring of shared_ptr<Stock>
+
+ test-suite/lazyobject.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 343ee92a37f3ec405792c562949eed3200123e9e
+Merge: fb7d713e2 42f30b5cb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Jul 2023 11:27:17 +0200
+
+    Add compile-time and run-time switch for `LazyObject` notifications (#1724)
+
+commit 42f30b5cb83125f512dcf821a2d0a08cb72f2a71
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Jul 2023 19:01:49 +0200
+
+    Move settings to inner class
+    
+    Renamed to Default to avoid ambiguity with the top-level Settings
+    in the scope of derived classes.
+
+ ql/patterns/lazyobject.hpp | 16 +++++++++-------
+ test-suite/lazyobject.cpp  | 16 ++++++++--------
+ 2 files changed, 17 insertions(+), 15 deletions(-)
+
+commit c06444e782124b6e9ea12fd9e98225a9ca78a6f9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Jul 2023 12:31:59 +0200
+
+    Add compile-time switch
+
+ .github/workflows/linux-full-tests.yml |  2 +-
+ .github/workflows/linux-nondefault.yml |  2 +-
+ .github/workflows/linux.yml            |  2 +-
+ .github/workflows/macos-nondefault.yml |  2 +-
+ CMakeLists.txt                         |  1 +
+ CMakePresets.json                      |  2 ++
+ Docs/pages/config.docs                 | 12 ++++++++++++
+ configure.ac                           | 24 ++++++++++++++++++++++++
+ ql/config.hpp.cfg                      |  1 +
+ ql/patterns/lazyobject.hpp             |  4 ++++
+ ql/userconfig.hpp                      |  7 +++++++
+ 11 files changed, 55 insertions(+), 4 deletions(-)
+
+commit cd6fd124ecba3cdd3d7a1375da3378fc97394d90
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Jul 2023 12:10:39 +0200
+
+    Restore previous default
+
+ ql/instruments/compositeinstrument.cpp |  9 +++++++++
+ ql/instruments/floatfloatswaption.cpp  |  9 +++++++++
+ ql/instruments/nonstandardswaption.cpp | 10 ++++++++++
+ ql/instruments/swaption.cpp            |  9 +++++++++
+ ql/patterns/lazyobject.hpp             | 18 +++++++++++++-----
+ test-suite/lazyobject.cpp              |  4 ++++
+ 6 files changed, 54 insertions(+), 5 deletions(-)
+
+commit fe20798efa87014ea7584564208b0d3c094cf5cb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Jul 2023 11:11:30 +0200
+
+    Add back run-time settings for LazyObject
+
+ ql/patterns/lazyobject.hpp | 48 +++++++++++++++++++++++----
+ test-suite/lazyobject.cpp  | 81 +++++++++++++++++++++++++++++++++++++++++++---
+ test-suite/lazyobject.hpp  |  2 ++
+ 3 files changed, 120 insertions(+), 11 deletions(-)
+
+commit fb7d713e27d4ed6b28dd234f4d3ec0dee1b49d9a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.31 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 956ed6cdba813a8747e79433382be498b4bf95d0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 3 Jul 2023 17:30:53 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 3869 +++++++++++++++++++++++++----------------------
+ Contributors.txt        |    6 +
+ Docs/pages/history.docs |  143 +-
+ News.md                 |  267 ++--
+ 4 files changed, 2393 insertions(+), 1892 deletions(-)
+
 commit 0476dae92bec1db800c735ceef405945ec22fddd
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 3 Jul 2023 12:26:52 +0200
