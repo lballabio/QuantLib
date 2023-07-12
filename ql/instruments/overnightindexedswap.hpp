@@ -68,18 +68,50 @@ namespace QuantLib {
                              bool telescopicValueDates = false,
                              RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
+        OvernightIndexedSwap(Type type,
+                             Real nominal,
+                             const Schedule& fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDC,
+                             const Schedule& overnightSchedule,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             Spread spread = 0.0,
+                             Natural paymentLag = 0,
+                             BusinessDayConvention paymentAdjustment = Following,
+                             const Calendar& paymentCalendar = Calendar(),
+                             bool telescopicValueDates = false,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
+        OvernightIndexedSwap(Type type,
+                             std::vector<Real> nominals,
+                             const Schedule& fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDC,
+                             const Schedule& overnightSchedule,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             Spread spread = 0.0,
+                             Natural paymentLag = 0,
+                             BusinessDayConvention paymentAdjustment = Following,
+                             const Calendar& paymentCalendar = Calendar(),
+                             bool telescopicValueDates = false,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
         Real nominal() const;
         std::vector<Real> nominals() const { return nominals_; }
 
-        const Schedule& schedule() const { return schedule_; }
-        Frequency paymentFrequency() const { return schedule_.tenor().frequency(); }
+        Frequency paymentFrequency() const {
+            return std::max(fixedSchedule_.tenor().frequency(),
+                            overnightSchedule_.tenor().frequency());
+        }
 
+        const Schedule& fixedSchedule() const { return fixedSchedule_; }
         Rate fixedRate() const { return fixedRate_; }
         const DayCounter& fixedDayCount() const { return fixedDC_; }
 
+        const Schedule& overnightSchedule() const { return overnightSchedule_; }
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Spread spread() const { return spread_; }
 
@@ -103,11 +135,11 @@ namespace QuantLib {
         Type type_;
         std::vector<Real> nominals_;
 
-        Schedule schedule_;
-
+        Schedule fixedSchedule_;
         Rate fixedRate_;
         DayCounter fixedDC_;
 
+        Schedule overnightSchedule_;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         RateAveraging::Type averagingMethod_;
