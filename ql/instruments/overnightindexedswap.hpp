@@ -100,21 +100,16 @@ namespace QuantLib {
         Spread fairSpread() const;
         //@}
       private:
-        void initialize();
         Type type_;
         std::vector<Real> nominals_;
 
         Schedule schedule_;
-        Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
 
         Rate fixedRate_;
         DayCounter fixedDC_;
 
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
-        bool telescopicValueDates_;
         RateAveraging::Type averagingMethod_;
     };
 

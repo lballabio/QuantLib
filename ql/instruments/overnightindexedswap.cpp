@@ -65,30 +65,27 @@ namespace QuantLib {
                                                bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::move(nominals)), schedule_(schedule),
-      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
-        initialize();
-    }
-
-    void OvernightIndexedSwap::initialize() {
+      fixedRate_(fixedRate), fixedDC_(std::move(fixedDC)),
+      overnightIndex_(std::move(overnightIndex)), spread_(spread),
+      averagingMethod_(averagingMethod) {
         if (fixedDC_ == DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
         legs_[0] = FixedRateLeg(schedule_)
                        .withNotionals(nominals_)
                        .withCouponRates(fixedRate_, fixedDC_)
-                       .withPaymentLag(paymentLag_)
-                       .withPaymentAdjustment(paymentAdjustment_)
-                       .withPaymentCalendar(paymentCalendar_);
+                       .withPaymentLag(paymentLag)
+                       .withPaymentAdjustment(paymentAdjustment)
+                       .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() :
+                                                                      paymentCalendar);
 
         legs_[1] = OvernightLeg(schedule_, overnightIndex_)
                        .withNotionals(nominals_)
                        .withSpreads(spread_)
-                       .withTelescopicValueDates(telescopicValueDates_)
-                       .withPaymentLag(paymentLag_)
-                       .withPaymentAdjustment(paymentAdjustment_)
-                       .withPaymentCalendar(paymentCalendar_)
+                       .withTelescopicValueDates(telescopicValueDates)
+                       .withPaymentLag(paymentLag)
+                       .withPaymentAdjustment(paymentAdjustment)
+                       .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() :
+                                                                      paymentCalendar)
                        .withAveragingMethod(averagingMethod_);
 
         for (Size j = 0; j < 2; ++j) {
