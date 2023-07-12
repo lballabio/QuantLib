@@ -259,6 +259,7 @@ set(QL_SOURCES
     indexes/swap/jpyliborswap.cpp
     indexes/swap/usdliborswap.cpp
     indexes/swapindex.cpp
+    instrument.cpp
     instruments/asianoption.cpp
     instruments/assetswap.cpp
     instruments/averagetype.cpp
