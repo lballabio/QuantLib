@@ -126,23 +126,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Instrument::Instrument() : NPV_(Null<Real>()), errorEstimate_(Null<Real>()) {}
-
-    inline void Instrument::setPricingEngine(
-                                  const ext::shared_ptr<PricingEngine>& e) {
-        if (engine_ != nullptr)
-            unregisterWith(engine_);
-        engine_ = e;
-        if (engine_ != nullptr)
-            registerWith(engine_);
-        // trigger (lazy) recalculation and notify observers
-        update();
-    }
-
-    inline void Instrument::setupArguments(PricingEngine::arguments*) const {
-        QL_FAIL("Instrument::setupArguments() not implemented");
-    }
-
     inline void Instrument::calculate() const {
         if (!calculated_) {
             if (isExpired()) {

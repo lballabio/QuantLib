@@ -73,6 +73,7 @@ cpp_files = \
 	exchangerate.cpp \
 	exercise.cpp \
     index.cpp \
+    instrument.cpp \
     interestrate.cpp \
     money.cpp \
     optional.cpp \
