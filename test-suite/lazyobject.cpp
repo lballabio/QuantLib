@@ -193,6 +193,11 @@ void LazyObjectTest::testNotificationLoop() {
 
 #endif
 
+    // We have produced a ring of dependencies which we break here
+    // see https://github.com/lballabio/QuantLib/issues/1725
+    s1->unregisterWithAll();
+    s2->unregisterWithAll();
+    s3->unregisterWithAll();
 }
 
 test_suite* LazyObjectTest::suite() {
