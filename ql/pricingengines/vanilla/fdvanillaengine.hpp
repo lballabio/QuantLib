@@ -84,27 +84,6 @@ namespace QuantLib {
         static const Real safetyZoneFactor_;
     };
 
-    /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.27.
-    */
-    template <typename base, typename engine>
-    class QL_DEPRECATED FDEngineAdapter : public base, public engine {
-      public:
-        FDEngineAdapter(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps=100, Size gridPoints=100,
-             bool timeDependent = false)
-        : base(process, timeSteps, gridPoints,timeDependent) {
-            this->registerWith(process);
-        }
-      private:
-        using base::calculate;
-        void calculate() const override {
-            base::setupArguments(&(this->arguments_));
-            base::calculate(&(this->results_));
-        }
-    };
-
 }
 
 #endif

@@ -932,7 +932,6 @@ set(QL_SOURCES
 set(QL_HEADERS
     any.hpp
     auto_link.hpp
-    auto_ptr.hpp
     cashflow.hpp
     cashflows/averagebmacoupon.hpp
     cashflows/capflooredcoupon.hpp
@@ -1425,7 +1424,6 @@ set(QL_HEADERS
     math/functional.hpp
     math/generallinearleastsquares.hpp
     math/incompletegamma.hpp
-    math/initializers.hpp
     math/integrals/discreteintegrals.hpp
     math/integrals/exponentialintegrals.hpp
     math/integrals/filonintegral.hpp
@@ -1553,7 +1551,6 @@ set(QL_HEADERS
     math/statistics/statistics.hpp
     math/transformedgrid.hpp
     mathconstants.hpp
-    methods/finitedifferences/americancondition.hpp
     methods/finitedifferences/boundarycondition.hpp
     methods/finitedifferences/bsmoperator.hpp
     methods/finitedifferences/bsmtermoperator.hpp
@@ -1580,7 +1577,6 @@ set(QL_HEADERS
     methods/finitedifferences/meshers/uniform1dmesher.hpp
     methods/finitedifferences/meshers/uniformgridmesher.hpp
     methods/finitedifferences/mixedscheme.hpp
-    methods/finitedifferences/onefactoroperator.hpp
     methods/finitedifferences/operators/fdm2dblackscholesop.hpp
     methods/finitedifferences/operators/fdmbatesop.hpp
     methods/finitedifferences/operators/fdmblackscholesfwdop.hpp
@@ -1960,12 +1956,10 @@ set(QL_HEADERS
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdconditions.hpp
     pricingengines/vanilla/fddividendengine.hpp
-    pricingengines/vanilla/fddividendshoutengine.hpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp
     pricingengines/vanilla/fdhestonvanillaengine.hpp
     pricingengines/vanilla/fdmultiperiodengine.hpp
     pricingengines/vanilla/fdsabrvanillaengine.hpp
-    pricingengines/vanilla/fdshoutengine.hpp
     pricingengines/vanilla/fdsimplebsswingengine.hpp
     pricingengines/vanilla/fdstepconditionengine.hpp
     pricingengines/vanilla/fdvanillaengine.hpp
@@ -2207,7 +2201,6 @@ set(QL_HEADERS
     utilities/clone.hpp
     utilities/dataformatters.hpp
     utilities/dataparsers.hpp
-    utilities/disposable.hpp
     utilities/null.hpp
     utilities/null_deleter.hpp
     utilities/observablevalue.hpp
