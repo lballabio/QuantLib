@@ -169,8 +169,9 @@
       `distance_to` methods of the `step_iterator` class.
 
     Thanks go also to Jonathan Sweemer, Jose Garcia, Jake Heke, Eugene
-    Toder, Binrui Dong, the Xcelerit Dev Team, Ralf Konrad and Fredrik
-    Gerdin Börjesson for a number of smaller fixes and improvements.
+    Toder, Binrui Dong, the Xcelerit Dev Team, Ralf Konrad, Tom
+    Anderson and Fredrik Gerdin Börjesson for a number of smaller
+    fixes and improvements.
 
     <strong>Release 1.30 - April 19th, 2023</strong>
 

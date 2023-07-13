@@ -1,7 +1,7 @@
 Changes for QuantLib 1.31:
 ==========================
 
-QuantLib 1.31 includes a record 67 pull requests from several contributors.
+QuantLib 1.31 includes a record 68 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -224,5 +224,5 @@ Deprecated features
 **Thanks go also** to Jonathan Sweemer (@sweemer), Jose Garcia
 (@j053g), Jake Heke (@jakeheke75), Eugene Toder (@eltoder), Binrui
 Dong (@BrettDong), the Xcelerit Dev Team (@xcelerit-dev), Ralf Konrad
-(@ralfkonrad) and Fredrik Gerdin Börjesson (@gbfredrik) for a number
-of smaller fixes and improvements.
+(@ralfkonrad), Fredrik Gerdin Börjesson (@gbfredrik) and Tom Anderson
+(@tomwhoiscontrary) for a number of smaller fixes and improvements.
