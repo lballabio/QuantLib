@@ -1,13 +1,74 @@
-commit 87482912656bc2c18b1f9ef62c3f456b7f38971a
+commit 62661ecb9fa15ac98d9e9c37de87bba825d0247c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.31 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 2a020a2296b84d7070ee19222571b7ee9aca9ddc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Jul 2023 17:40:23 +0200
+
+    Avoid overloading processors in AppVeyor builds
+    
+    Projects already compile C++ files in parallel.
+    At times, building examples in parallel seems to overwhelm the
+    agent when linking.
+
+ .appveyor.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a32a18f191c53f70a9f3add413e75250f27f8120
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Jul 2023 17:16:31 +0200
+
+    Update news
+
+ Docs/pages/history.docs | 5 +++--
+ News.md                 | 6 +++---
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+commit 73bde3c8d379166debc2451f294843a4d4c4e4ee
+Merge: 5f5e5e87e 5a82d825d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Jul 2023 17:11:02 +0200
+
+    Initialise a vector of bool in a way which does not make GCC 13.1 irrationally upset (#1733)
+
+commit 5a82d825d5f29c15492095c716db9eac10989e37
+Author: Tom Anderson <twic@urchin.earth.li>
+Date:   Thu, 13 Jul 2023 14:12:35 +0100
+
+    Initialise a vector of bool in a way which does not make GCC 13.1 irrationally upset
+
+ test-suite/rangeaccrual.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5f5e5e87e62d60e402aacd598c183cd87c425961
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Jul 2023 15:56:02 +0200
+
+    Set version to 1.31rc2
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 80d351a118d4bb57fc34effc3ffd46a85729bebf
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 11 Jul 2023 11:24:27 +0200
 
     Update news and changelog
 
- ChangeLog.txt           | 97 +++++++++++++++++++++++++++++++++++++++++++++++++
- Docs/pages/history.docs | 35 +++++++++++-------
- News.md                 | 35 +++++++++++-------
- 3 files changed, 141 insertions(+), 26 deletions(-)
+ ChangeLog.txt           | 144 ++++++++++++++++++++++++++++++++++++++++++++++++
+ Docs/pages/history.docs |  40 +++++++++-----
+ News.md                 |  41 +++++++++-----
+ 3 files changed, 199 insertions(+), 26 deletions(-)
 
 commit d8fbe2889533c781effadc1876352af284671fe2
 Merge: e964a67c4 cea11f68f
