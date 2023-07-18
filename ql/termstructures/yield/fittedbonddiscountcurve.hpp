@@ -28,6 +28,7 @@
 
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/constraint.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
@@ -203,6 +204,8 @@ namespace QuantLib {
         Array l2() const;
         //! return optimization method being used
         ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
+        //! return constraint of the solution being used
+        Constraint constraint() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
@@ -213,7 +216,8 @@ namespace QuantLib {
                           ext::shared_ptr<OptimizationMethod>(),
                       Array l2 = Array(),
                       Real minCutoffTime = 0.0,
-                      Real maxCutoffTime = QL_MAX_REAL);
+                      Real maxCutoffTime = QL_MAX_REAL,
+                      Constraint constraint = NoConstraint{});
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve
@@ -253,6 +257,8 @@ namespace QuantLib {
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         // flat extrapolation of instantaneous forward before / after cutoff
         Real minCutoffTime_, maxCutoffTime_;
+        // constraint for the solution
+        Constraint constraint_;
     };
 
     // inline
@@ -321,6 +327,11 @@ namespace QuantLib {
     inline ext::shared_ptr<OptimizationMethod> 
     FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
         return optimizationMethod_;
+    }
+
+    inline Constraint
+    FittedBondDiscountCurve::FittingMethod::constraint() const {
+        return constraint_;
     }
 
     inline DiscountFactor FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
