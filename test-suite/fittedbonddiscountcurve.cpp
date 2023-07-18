@@ -196,9 +196,73 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 }
 
 
+void FittedBondDiscountCurveTest::testConstraint() {
+    BOOST_TEST_MESSAGE("Testing fitted bond curve with constraints...");
+
+    // market quote for bonds below
+    const Real quote = 90.0;
+
+    std::vector<ext::shared_ptr<FittedBondDiscountCurve>> curves;
+
+    // some - unrealistic - values
+    std::vector<std::pair<Date, Real>> dates_rates = {{Date(3, Feb, 2020), -0.01},
+                                                      {Date(12, Jun, 2020), -0.02},
+                                                      {Date(24, Nov, 2020), -0.03},
+                                                      {Date(21, Feb, 2022), -0.04}};
+
+    // set up bond helpers
+    std::vector<ext::shared_ptr<Bond>> bonds;
+    std::transform(
+        dates_rates.begin(), dates_rates.end(), std::back_inserter(bonds),
+        [](auto const& date_rate) {
+            return ext::make_shared<FixedRateBond>(
+                2, 100.0,
+                Schedule(Date(1, Feb, 2013), date_rate.first, 6 * Months, TARGET(), Following,
+                         Following, DateGeneration::Forward, false, Date(3, Aug, 2013)),
+                std::vector<Real>(1, date_rate.second), ActualActual(ActualActual::ISDA));
+        });
+
+    QuantLib::Date eval_date = Settings::instance().evaluationDate();
+    std::vector<ext::shared_ptr<BondHelper>> helpers;
+    std::transform(bonds.begin(), bonds.end(), std::back_inserter(helpers),
+                   [&quote](ext::shared_ptr<Bond> bond) {
+                       return ext::make_shared<BondHelper>(
+                           Handle<Quote>(ext::make_shared<SimpleQuote>(quote)), bond);
+                   });
+
+
+    // Build unconstrained curve.
+    NelsonSiegelFitting nelson_siegel;
+    auto orig_curve = ext::make_shared<FittedBondDiscountCurve>(eval_date, helpers,
+                                                                Actual365Fixed{}, nelson_siegel);
+
+    auto orig_sol = orig_curve->fitResults().solution();
+
+    // Build constrained curve: only positive values allowed.
+    NelsonSiegelFitting constrained_ns{Array{},     ext::shared_ptr<OptimizationMethod>{},
+                                       Array{},     0.0,
+                                       QL_MAX_REAL, PositiveConstraint{}};
+
+    // Initial guess must be within feasible region.
+    Array guess = {0.01, 0.01, 0.01, 0.01};
+    auto constrained_curve = ext::make_shared<FittedBondDiscountCurve>(
+        eval_date, helpers, Actual365Fixed{}, constrained_ns, 1E-10, 10000, guess);
+    auto constrained_sol = constrained_curve->fitResults().solution();
+
+    // At least one param of the unconstrained curve should be negative.
+    BOOST_ASSERT(
+        std::any_of(orig_sol.begin(), orig_sol.end(), [](auto param) { return param < 0; }));
+
+    // All params of the constrained curve should be positive.
+    BOOST_ASSERT(std::all_of(constrained_sol.begin(), constrained_sol.end(),
+                             [](auto param) { return param > 0; }));
+}
+
+
 test_suite* FittedBondDiscountCurveTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Fitted bond discount curve tests");
     suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testEvaluation));
     suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testFlatExtrapolation));
+    suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testConstraint));
     return suite;
 }
