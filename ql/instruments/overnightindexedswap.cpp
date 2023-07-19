@@ -37,17 +37,20 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates, 
+                                               bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::vector<Real>(1, nominal)),
-      paymentFrequency_(schedule.tenor().frequency()),
-      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
-
-        initialize(schedule);
-    }
+    : OvernightIndexedSwap(type,
+                           std::vector<Real>(1, nominal),
+                           schedule,
+                           fixedRate,
+                           fixedDC,
+                           overnightIndex,
+                           spread,
+                           paymentLag,
+                           paymentAdjustment,
+                           paymentCalendar,
+                           telescopicValueDates,
+                           averagingMethod) {}
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                                                std::vector<Real> nominals,
@@ -59,66 +62,116 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates, 
+                                               bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::move(nominals)),
-      paymentFrequency_(schedule.tenor().frequency()),
-      paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
+    : OvernightIndexedSwap(type,
+                           nominals,
+                           schedule,
+                           fixedRate,
+                           fixedDC,
+                           schedule,
+                           overnightIndex,
+                           spread,
+                           paymentLag,
+                           paymentAdjustment,
+                           paymentCalendar,
+                           telescopicValueDates,
+                           averagingMethod) {}
 
-        initialize(schedule);
-    }
+    OvernightIndexedSwap::OvernightIndexedSwap(Type type,
+                                               Real nominal,
+                                               const Schedule& fixedSchedule,
+                                               Rate fixedRate,
+                                               DayCounter fixedDC,
+                                               const Schedule& overnightSchedule,
+                                               ext::shared_ptr<OvernightIndex> overnightIndex,
+                                               Spread spread,
+                                               Natural paymentLag,
+                                               BusinessDayConvention paymentAdjustment,
+                                               const Calendar& paymentCalendar,
+                                               bool telescopicValueDates,
+                                               RateAveraging::Type averagingMethod)
+    : OvernightIndexedSwap(type,
+                           std::vector<Real>(1, nominal),
+                           fixedSchedule,
+                           fixedRate,
+                           fixedDC,
+                           overnightSchedule,
+                           overnightIndex,
+                           spread,
+                           paymentLag,
+                           paymentAdjustment,
+                           paymentCalendar,
+                           telescopicValueDates,
+                           averagingMethod) {}
 
-    void OvernightIndexedSwap::initialize(const Schedule& schedule) {
-        if (fixedDC_==DayCounter())
+    OvernightIndexedSwap::OvernightIndexedSwap(Type type,
+                                               std::vector<Real> nominals,
+                                               const Schedule& fixedSchedule,
+                                               Rate fixedRate,
+                                               DayCounter fixedDC,
+                                               const Schedule& overnightSchedule,
+                                               ext::shared_ptr<OvernightIndex> overnightIndex,
+                                               Spread spread,
+                                               Natural paymentLag,
+                                               BusinessDayConvention paymentAdjustment,
+                                               const Calendar& paymentCalendar,
+                                               bool telescopicValueDates,
+                                               RateAveraging::Type averagingMethod)
+    : Swap(2), type_(type), nominals_(std::move(nominals)), fixedSchedule_(fixedSchedule),
+      fixedRate_(fixedRate), fixedDC_(std::move(fixedDC)), overnightSchedule_(overnightSchedule),
+      overnightIndex_(std::move(overnightIndex)), spread_(spread),
+      averagingMethod_(averagingMethod) {
+        if (fixedDC_ == DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
-        legs_[0] = FixedRateLeg(schedule)
-            .withNotionals(nominals_)
-            .withCouponRates(fixedRate_, fixedDC_)
-            .withPaymentLag(paymentLag_)
-            .withPaymentAdjustment(paymentAdjustment_)
-            .withPaymentCalendar(paymentCalendar_);
+        legs_[0] = FixedRateLeg(fixedSchedule_)
+                       .withNotionals(nominals_)
+                       .withCouponRates(fixedRate_, fixedDC_)
+                       .withPaymentLag(paymentLag)
+                       .withPaymentAdjustment(paymentAdjustment)
+                       .withPaymentCalendar(paymentCalendar.empty() ? fixedSchedule_.calendar() :
+                                                                      paymentCalendar);
 
-		legs_[1] = OvernightLeg(schedule, overnightIndex_)
-            .withNotionals(nominals_)
-            .withSpreads(spread_)
-            .withTelescopicValueDates(telescopicValueDates_)
-            .withPaymentLag(paymentLag_)
-            .withPaymentAdjustment(paymentAdjustment_)
-            .withPaymentCalendar(paymentCalendar_)
-            .withAveragingMethod(averagingMethod_);
+        legs_[1] =
+            OvernightLeg(overnightSchedule_, overnightIndex_)
+                .withNotionals(nominals_)
+                .withSpreads(spread_)
+                .withTelescopicValueDates(telescopicValueDates)
+                .withPaymentLag(paymentLag)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withPaymentCalendar(paymentCalendar.empty() ? overnightSchedule_.calendar() :
+                                                               paymentCalendar)
+                .withAveragingMethod(averagingMethod_);
 
-        for (Size j=0; j<2; ++j) {
+        for (Size j = 0; j < 2; ++j) {
             for (auto& i : legs_[j])
                 registerWith(i);
         }
 
         switch (type_) {
-          case Payer:
-            payer_[0] = -1.0;
-            payer_[1] = +1.0;
-            break;
-          case Receiver:
-            payer_[0] = +1.0;
-            payer_[1] = -1.0;
-            break;
-          default:
-            QL_FAIL("Unknown overnight-swap type");
+            case Payer:
+                payer_[0] = -1.0;
+                payer_[1] = +1.0;
+                break;
+            case Receiver:
+                payer_[0] = +1.0;
+                payer_[1] = -1.0;
+                break;
+            default:
+                QL_FAIL("Unknown overnight-swap type");
         }
     }
 
     Real OvernightIndexedSwap::fairRate() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
-        return fixedRate_ - NPV_/(fixedLegBPS()/basisPoint);
+        return fixedRate_ - NPV_ / (fixedLegBPS() / basisPoint);
     }
 
     Spread OvernightIndexedSwap::fairSpread() const {
         static Spread basisPoint = 1.0e-4;
         calculate();
-        return spread_ - NPV_/(overnightLegBPS()/basisPoint);
+        return spread_ - NPV_ / (overnightLegBPS() / basisPoint);
     }
 
     Real OvernightIndexedSwap::fixedLegBPS() const {
