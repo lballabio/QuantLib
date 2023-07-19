@@ -39,11 +39,11 @@
 
 namespace QuantLib {
 
-    //! Parallel evolver for multiple arrays
-    /*! \ingroup findiff */
-
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
+    */
     template <typename array_type>
-    class StepConditionSet {
+    class [[deprecated("Use the new finite-differences framework instead")]] StepConditionSet {
         typedef ext::shared_ptr<StepCondition<array_type> > itemType;
         std::vector<itemType> stepConditions_;
       public:
@@ -70,21 +70,31 @@ namespace QuantLib {
         }
     };
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
+    */
     template <typename traits>
-    class ParallelEvolverTraits {
+    class [[deprecated("Use the new finite-differences framework instead")]] ParallelEvolverTraits {
       public:
         typedef std::vector<typename traits::array_type> array_type;
         typedef std::vector<typename traits::operator_type> operator_type;
         typedef std::vector<typename traits::bc_type> bc_type;
         typedef BoundaryConditionSet<typename traits::bc_set> bc_set;
+        QL_DEPRECATED_DISABLE_WARNING
         typedef StepConditionSet<typename traits::array_type> condition_type;
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
+    */
     template <class Evolver>
-    class ParallelEvolver  {
+    class [[deprecated("Use the new finite-differences framework instead")]] ParallelEvolver  {
       public:
         // typedefs
+        QL_DEPRECATED_DISABLE_WARNING
         typedef ParallelEvolverTraits<typename Evolver::traits> traits;
+        QL_DEPRECATED_ENABLE_WARNING
         typedef typename traits::operator_type operator_type;
         typedef typename traits::array_type array_type;
         typedef typename traits::bc_set bc_set;
