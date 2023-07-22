@@ -510,6 +510,7 @@ void OvernightIndexedSwapTest::test131BootstrapRegression() {
 
     std::vector<ext::shared_ptr<RateHelper>> helpers;
     helpers.push_back(ext::make_shared<OISRateHelper>(2, 1 * Weeks, Handle<Quote>(ext::make_shared<SimpleQuote>(0.070/100)), eonia));
+    helpers.push_back(ext::make_shared<DatedOISRateHelper>(Date(16, January, 2013), Date(13, February, 2013), Handle<Quote>(ext::make_shared<SimpleQuote>(0.046/100)), eonia));
 
     auto curve = PiecewiseYieldCurve<ForwardRate,BackwardFlat>(0, TARGET(), helpers, Actual365Fixed());
     BOOST_CHECK_NO_THROW(curve.nodes());
