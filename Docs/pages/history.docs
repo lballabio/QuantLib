@@ -17,7 +17,14 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.31 - July 2023</strong>
+    <strong>Release 1.31.1 - July 2023</strong>
+
+    QuantLib 1.31.1 is a bug-fix release for QuantLib 1.31.
+
+    It fixes a regression that could cause a segmentation fault when
+    bootstrapping an interest-rate curve using OIS rates.
+
+    <strong>Release 1.31 - July 18th, 2023</strong>
 
     PORTABILITY
     - **Future end of support:** as announced in the notes for the
