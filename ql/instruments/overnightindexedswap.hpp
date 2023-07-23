@@ -84,10 +84,10 @@ namespace QuantLib {
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> nominals,
-                             const Schedule& fixedSchedule,
+                             Schedule fixedSchedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
-                             const Schedule& overnightSchedule,
+                             Schedule overnightSchedule,
                              ext::shared_ptr<OvernightIndex> overnightIndex,
                              Spread spread = 0.0,
                              Natural paymentLag = 0,

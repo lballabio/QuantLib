@@ -100,8 +100,7 @@ namespace QuantLib {
             return found->second;
         }
         T& operator[](const Date& d) {
-            typename Container::iterator found =
-                values_.insert(std::pair<Date, T>(d, Null<T>())).first;
+            auto found = values_.insert(std::pair<Date, T>(d, Null<T>())).first;
             return found->second;
         }
         //@}
