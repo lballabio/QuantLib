@@ -43,8 +43,8 @@ namespace QuantLib {
                            std::vector<Real>(1, nominal),
                            schedule,
                            fixedRate,
-                           fixedDC,
-                           overnightIndex,
+                           std::move(fixedDC),
+                           std::move(overnightIndex),
                            spread,
                            paymentLag,
                            paymentAdjustment,
@@ -65,12 +65,12 @@ namespace QuantLib {
                                                bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
     : OvernightIndexedSwap(type,
-                           nominals,
+                           std::move(nominals),
                            schedule,
                            fixedRate,
-                           fixedDC,
+                           std::move(fixedDC),
                            schedule,
-                           overnightIndex,
+                           std::move(overnightIndex),
                            spread,
                            paymentLag,
                            paymentAdjustment,
@@ -95,9 +95,9 @@ namespace QuantLib {
                            std::vector<Real>(1, nominal),
                            fixedSchedule,
                            fixedRate,
-                           fixedDC,
+                           std::move(fixedDC),
                            overnightSchedule,
-                           overnightIndex,
+                           std::move(overnightIndex),
                            spread,
                            paymentLag,
                            paymentAdjustment,
@@ -107,10 +107,10 @@ namespace QuantLib {
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                                                std::vector<Real> nominals,
-                                               const Schedule& fixedSchedule,
+                                               Schedule fixedSchedule,
                                                Rate fixedRate,
                                                DayCounter fixedDC,
-                                               const Schedule& overnightSchedule,
+                                               Schedule overnightSchedule,
                                                ext::shared_ptr<OvernightIndex> overnightIndex,
                                                Spread spread,
                                                Natural paymentLag,
@@ -118,10 +118,10 @@ namespace QuantLib {
                                                const Calendar& paymentCalendar,
                                                bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::move(nominals)), fixedSchedule_(fixedSchedule),
-      fixedRate_(fixedRate), fixedDC_(std::move(fixedDC)), overnightSchedule_(overnightSchedule),
-      overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      averagingMethod_(averagingMethod) {
+    : Swap(2), type_(type), nominals_(std::move(nominals)),
+      fixedSchedule_(std::move(fixedSchedule)), fixedRate_(fixedRate), fixedDC_(std::move(fixedDC)),
+      overnightSchedule_(std::move(overnightSchedule)), overnightIndex_(std::move(overnightIndex)),
+      spread_(spread), averagingMethod_(averagingMethod) {
         if (fixedDC_ == DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
         legs_[0] = FixedRateLeg(fixedSchedule_)
