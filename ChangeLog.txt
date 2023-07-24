@@ -1,3 +1,68 @@
+commit 98bae5a726ad87113aceb815d180bda65b71beed
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 22:41:59 +0200
+
+    Set version to 1.31.1
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit e00d91410e9b7de58cb3698250f44170c89c2b04
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 22:24:51 +0200
+
+    Update news
+
+ Docs/pages/history.docs |   9 +-
+ News.md                 | 231 ++----------------------------------------------
+ 2 files changed, 15 insertions(+), 225 deletions(-)
+
+commit db507bff47da33842abea9646996f72eadabd9ce
+Merge: 38551644c 4eda1bb8b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 21:10:43 +0200
+
+    Avoid possible segfault when bootstrapping over OIS rates (#1738)
+
+commit 4eda1bb8b8dadcb7eba018844b31a59060b16b4b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 17:13:20 +0200
+
+    Fix possible circular notification
+
+ ql/termstructures/yield/oisratehelper.cpp | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+commit bb355ea1cb78fd7a73ef08710192bc96b7a7980e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 17:13:03 +0200
+
+    Update test
+
+ test-suite/overnightindexedswap.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 9fbffc09b1e416b0c863605dc6872788cda1f429
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 12:46:32 +0200
+
+    Add regression test case
+
+ test-suite/overnightindexedswap.cpp | 24 ++++++++++++++++++++----
+ test-suite/overnightindexedswap.hpp |  1 +
+ 2 files changed, 21 insertions(+), 4 deletions(-)
+
+commit 38551644cb8b9b6b794f443225e522296ce08331
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 17 Jul 2023 10:30:14 +0200
+
+    Update changelog
+
+ ChangeLog.txt | 71 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 66 insertions(+), 5 deletions(-)
+
 commit 62661ecb9fa15ac98d9e9c37de87bba825d0247c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 12 Jul 2021 09:46:54 +0200
