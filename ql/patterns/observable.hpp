@@ -294,17 +294,7 @@ namespace QuantLib {
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself.
-
-            \deprecated This method was introduced to work around incorrect behaviour caused by
-                        limiting notifications from LazyObject instances to the first notification.
-                        If you have an observer chain A -> B -> C where B is lazy and might
-                        therefore swallow notifications from C, the preferred way to ensure that all
-                        notifications from C reach A is to call alwaysForwardNotifications() on B
-                        instead of registering A with all observables of B.
-
-                        Deprecated in version 1.30.
         */
-        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
 
         Size unregisterWith(const ext::shared_ptr<Observable>&);
