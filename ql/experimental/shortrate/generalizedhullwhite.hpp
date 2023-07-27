@@ -79,10 +79,8 @@ namespace QuantLib {
             const std::vector<Date>& volstructure,
             const std::vector<Real>& speed,
             const std::vector<Real>& vol,
-            const ext::function<Real(Real)>& f =
-                                            ext::function<Real(Real)>(),
-            const ext::function<Real(Real)>& fInverse =
-                                            ext::function<Real(Real)>());
+            const ext::function<Real(Real)>& f = {},
+            const ext::function<Real(Real)>& fInverse = {});
 
         template <class SpeedInterpolationTraits,class VolInterpolationTraits>
         GeneralizedHullWhite(
@@ -93,10 +91,8 @@ namespace QuantLib {
             const std::vector<Real>& vol,
             const SpeedInterpolationTraits &speedtraits,
             const VolInterpolationTraits &voltraits,
-            const ext::function<Real(Real)>& f =
-                                            ext::function<Real(Real)>(),
-            const ext::function<Real(Real)>& fInverse =
-                                            ext::function<Real(Real)>()) :
+            const ext::function<Real(Real)>& f = {},
+            const ext::function<Real(Real)>& fInverse = {}) :
             OneFactorAffineModel(2), TermStructureConsistentModel(yieldtermStructure),
             speedstructure_(speedstructure), volstructure_(volstructure),
             a_(arguments_[0]), sigma_(arguments_[1]),
