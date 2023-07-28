@@ -131,7 +131,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     // skip expired additional dates
     std::vector<Date> additionalDates;
-    if (!(additionalDates_ == QL_NULL_FUNCTION))
+    if (additionalDates_)
         additionalDates = additionalDates_();
     firstAdditionalDate_ = 0;
     if (!additionalDates.empty()) {
@@ -276,7 +276,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
                 result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
                             ts_->instruments_[firstHelper_ + i]->impliedQuote();
             }
-            if (!(additionalErrors_ == QL_NULL_FUNCTION)) {
+            if (additionalErrors_) {
                 Array tmp = additionalErrors_();
                 result.resize(numberHelpers_ + tmp.size());
                 for (Size i = 0; i < tmp.size(); ++i) {
