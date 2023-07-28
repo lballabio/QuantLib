@@ -131,16 +131,16 @@
     \code
     #define QL_USE_STD_FUNCTION
     \endcode
-    If defined, `std::function`, `std::bind` and related classes and functions
-    are used instead of `boost::function` and `boost::bind`. If disabled (the
-    default) the Boost facilities are used.
+    If defined (the default), `std::function`, `std::bind` and related
+    classes and functions are used. If disabled, the corresponding
+    Boost facilities are used instead.
 
     \code
     #define QL_USE_STD_TUPLE
     \endcode
-    If defined, `std::tuple` and related classes and functions
-    are used instead of `boost::tuple`. If disabled (the
-    default) the Boost facilities are used.
+    If defined (the default), `std::tuple` and related classes and
+    functions are used. If disabled, the corresponding Boost
+    facilities are used instead..
 
     \code
     #define QL_USE_STD_ANY

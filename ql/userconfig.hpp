@@ -114,15 +114,15 @@
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Define this to use std::function and std::bind instead of
-   boost::function and boost::bind. */
+/* Undefine this to use boost::function and boost::bind instead of
+   std::function and std::bind. */
 #ifndef QL_USE_STD_FUNCTION
-//#    define QL_USE_STD_FUNCTION
+#    define QL_USE_STD_FUNCTION
 #endif
 
-/* Define this to use std::tuple instead of boost::tuple. */
+/* Undefine this to use boost::tuple instead of std::tuple. */
 #ifndef QL_USE_STD_TUPLE
-//#    define QL_USE_STD_TUPLE
+#    define QL_USE_STD_TUPLE
 #endif
 
 /* Define this to enable the implementation of Null as template functions. */
