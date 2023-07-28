@@ -96,9 +96,9 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;
     for (Size j = 0; j < ts_->instruments_.size(); ++j)
-        ts_->registerWith(ts_->instruments_[j]);
+        ts_->registerWithObservables(ts_->instruments_[j]);
     for (Size j = 0; j < additionalHelpers_.size(); ++j)
-        ts_->registerWith(additionalHelpers_[j]);
+        ts_->registerWithObservables(additionalHelpers_[j]);
 
     // do not initialize yet: instruments could be invalid here
     // but valid later when bootstrapping is actually required
