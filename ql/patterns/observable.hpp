@@ -79,7 +79,6 @@ namespace QuantLib {
         std::pair<iterator, bool> registerObserver(Observer*);
         Size unregisterObserver(Observer*);
         set_type observers_;
-        ObservableSettings& settings_;
     };
 
     //! global repository for run-time library settings
@@ -167,7 +166,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Observable::Observable() : settings_(ObservableSettings::instance()) {}
+    inline Observable::Observable() {}
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
@@ -179,8 +178,7 @@ namespace QuantLib {
         deferredObservers_.erase(o);
     }
 
-    inline Observable::Observable(const Observable&)
-    : settings_(ObservableSettings::instance()) {
+    inline Observable::Observable(const Observable&) {
         // the observer set is not copied; no observer asked to
         // register with this object
     }
@@ -207,8 +205,8 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (settings_.updatesDeferred())
-            settings_.unregisterDeferredObserver(o);
+        if (ObservableSettings::instance().updatesDeferred())
+            ObservableSettings::instance().unregisterDeferredObserver(o);
 
         return observers_.erase(o);
     }
@@ -411,7 +409,6 @@ namespace QuantLib {
         ext::shared_ptr<detail::Signal> sig_;
         set_type observers_;
         mutable std::recursive_mutex mutex_;
-        ObservableSettings& settings_;
     };
 
     //! global repository for run-time library settings
