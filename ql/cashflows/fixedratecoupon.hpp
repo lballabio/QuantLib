@@ -60,6 +60,15 @@ namespace QuantLib {
                         const Date& refPeriodEnd = Date(),
                         const Date& exCouponDate = Date());
         //@}
+        //! \name Observer interface
+        //@{
+        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+        allowsNotificationPassThrough() const override;
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const override;
+        //@}
         //! \name CashFlow interface
         //@{
         Real amount() const override;
@@ -77,6 +86,7 @@ namespace QuantLib {
         //@}
       private:
         InterestRate rate_;
+        mutable Real amount_;
     };
 
 
