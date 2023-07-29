@@ -59,7 +59,7 @@ namespace QuantLib {
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
-    class Observable { // NOLINT(cppcoreguidelines-special-member-functions)
+    class Observable {
         friend class Observer;
         friend class ObservableSettings;
       public:
@@ -67,6 +67,9 @@ namespace QuantLib {
         Observable();
         Observable(const Observable&);
         Observable& operator=(const Observable&);
+        // delete the move operations because the semantics are not yet clear
+        Observable(Observable&&) = delete;
+        Observable& operator=(Observable&&) = delete;
         virtual ~Observable() = default;
         /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
@@ -155,7 +158,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Observable::Observable() {}
+    inline Observable::Observable() = default;
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
