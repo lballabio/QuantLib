@@ -43,8 +43,7 @@ namespace QuantLib {
 
         \note inflation indices do not contain day counters or calendars.
     */
-    class InflationCoupon : public Coupon,
-                            public Observer {
+    class InflationCoupon : public Coupon {
     public:
       InflationCoupon(const Date& paymentDate,
                       Real nominal,
