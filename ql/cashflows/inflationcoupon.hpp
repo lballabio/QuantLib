@@ -85,9 +85,9 @@ namespace QuantLib {
       virtual Rate indexFixing() const;
       //@}
 
-      //! \name Observer interface
+      //! \name LazyObject interface
       //@{
-      void update() override { notifyObservers(); }
+      void performCalculations() const override;
       //@}
 
       //! \name Visitability
@@ -103,6 +103,7 @@ namespace QuantLib {
         Period observationLag_;
         DayCounter dayCounter_;
         Natural fixingDays_;
+        mutable Real rate_;
 
         //! makes sure you were given the correct type of pricer
         // this can also done in external pricer setter classes via
