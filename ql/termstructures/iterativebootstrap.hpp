@@ -146,7 +146,7 @@ namespace detail {
         n_ = ts_->instruments_.size();
         QL_REQUIRE(n_ > 0, "no bootstrap helpers given");
         for (Size j=0; j<n_; ++j)
-            ts_->registerWithObservables(ts_->instruments_[j]);
+            ts_->registerWith(ts_->instruments_[j]);
 
         // do not initialize yet: instruments could be invalid here
         // but valid later when bootstrapping is actually required

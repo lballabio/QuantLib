@@ -108,6 +108,8 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
+        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+        allowsNotificationPassThrough() const override;
         void update() override;
         //@}
         //! \name Visitability
@@ -195,6 +197,12 @@ namespace QuantLib {
         if (latestDate_ == Date())
             return pillarDate_;
         return latestDate_;
+    }
+
+    template <class TS>
+    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+    BootstrapHelper<TS>::allowsNotificationPassThrough() const {
+        return std::make_pair(true, std::set<ext::shared_ptr<Observable>>());
     }
 
     template <class TS>
