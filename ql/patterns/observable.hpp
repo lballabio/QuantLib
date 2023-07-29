@@ -148,6 +148,9 @@ namespace QuantLib {
           should be implemented in derived classes whenever applicable */
         virtual void deepUpdate();
 
+        virtual std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+        allowsNotificationPassThrough() const;
+
       private:
         set_type observables_;
     };
@@ -224,6 +227,15 @@ namespace QuantLib {
     inline std::pair<Observer::iterator, bool>
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
         if (h != nullptr) {
+            if (auto o = ext::dynamic_pointer_cast<Observer>(h)) {
+                auto p = o->allowsNotificationPassThrough();
+                if (p.first) {
+                    registerWithObservables(o);
+                    for (auto const& s : p.second)
+                        registerWith(s);
+                    return std::make_pair(observables_.end(), false);
+                }
+            }
             h->registerObserver(this);
             return observables_.insert(h);
         }
@@ -309,6 +321,10 @@ namespace QuantLib {
           this method ensures an update of such nested observers. It
           should be implemented in derived classes whenever applicable */
         virtual void deepUpdate();
+
+        virtual std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+        allowsNotificationPassThrough() const;
+
 
       private:
 
@@ -528,7 +544,15 @@ namespace QuantLib {
             proxy_.reset(new Proxy(this));
         }
 
-        if (h) {
+        if (h != nullptr) {
+            if (auto o = ext::dynamic_pointer_cast<Observer>(h)) {
+                auto p = o->allowsNotificationPassThrough() if (p.first) {
+                    registerWithObservables(o);
+                    for (auto const& s : p.second)
+                        registerWith(s);
+                    return std::make_pair(observables_.end(), false);
+                }
+            }
             h->registerObserver(proxy_);
             return observables_.insert(h);
         }
