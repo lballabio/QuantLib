@@ -151,9 +151,9 @@ namespace QuantLib {
 
       protected:
         /*! If set to true, registering with this instance is done by registering
-            with this instance observables. This is possible if all observables
-            are immutable after construction of this instance. If used for suitable
-            classes this can lead to smaller observation graphs. 
+            with the observables of this instance. This is possible if all observables
+            are immutable after construction of the instance. If used for suitable
+            classes (e.g. suitable cashflows) this can lead to smaller observation graphs. 
         */
         bool allowsNotificationPassThrough_ = false;
 
