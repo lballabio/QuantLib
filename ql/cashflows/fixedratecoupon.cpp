@@ -66,7 +66,7 @@ namespace QuantLib {
 
     std::pair<bool, std::set<ext::shared_ptr<Observable>>>
     FixedRateCoupon::allowsNotificationPassThrough() const {
-        return std::make_pair(true, {});
+        return std::make_pair(true, std::set<ext::shared_ptr<Observable>>());
     }
 
     void FixedRateCoupon::performCalculations() const {
