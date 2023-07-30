@@ -39,7 +39,8 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears(),
-                         underlying->exCouponDate()),
+                         underlying->exCouponDate(),
+                         underlying->pricer()),
       underlying_(underlying) {
 
         if (gearing_ > 0) {
@@ -71,8 +72,15 @@ namespace QuantLib {
         registerWith(underlying_);
     }
 
+    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+    CappedFlooredCoupon::allowsNotificationPassThrough() const {
+        return underlying_->allowsNotificationPassThrough();
+    }
+
     void CappedFlooredCoupon::setPricer(
                  const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+        QL_REQUIRE(!immutablePricer_,
+                   "CappedFlooredCoupon::setPricer() can not be called since pricer is immutable. Do not set pricer on ");
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
     }

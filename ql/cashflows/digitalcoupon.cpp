@@ -47,7 +47,9 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
-                         underlying->isInArrears()),
+                         underlying->isInArrears(),
+                         underlying->exCouponDate(),
+                         underlying->pricer()),
       underlying_(underlying), isCallATMIncluded_(isCallATMIncluded),
       isPutATMIncluded_(isPutATMIncluded),
 
@@ -215,6 +217,11 @@ namespace QuantLib {
             }
         }
         return putOptionRate;
+    }
+
+    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+    DigitalCoupon::allowsNotificationPassThrough() const {
+        return underlying_->allowsNotificationPassThrough();
     }
 
     void DigitalCoupon::deepUpdate() {

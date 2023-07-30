@@ -63,6 +63,9 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void deepUpdate() override;
+        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+        allowsNotificationPassThrough() const override;
+        //@}
         //@}
         //! \name LazyObject interface
         //@{
@@ -117,11 +120,12 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date())
+                  const Date& exCouponDate = Date(),
+                  const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr)
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             IborCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
-                       dayCounter, isInArrears, exCouponDate)), cap, floor) {}
+                       dayCounter, isInArrears, exCouponDate, pricer)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
@@ -149,11 +153,12 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date())
+                  const Date& exCouponDate = Date(),
+                  const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr)
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
-                      dayCounter, isInArrears, exCouponDate)), cap, floor) {}
+                      dayCounter, isInArrears, exCouponDate, pricer)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);

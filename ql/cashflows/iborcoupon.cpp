@@ -44,11 +44,12 @@ namespace QuantLib {
                            const Date& refPeriodEnd,
                            const DayCounter& dayCounter,
                            bool isInArrears,
-                           const Date& exCouponDate)
+                           const Date& exCouponDate,
+                           const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, iborIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, isInArrears, exCouponDate),
+                         dayCounter, isInArrears, exCouponDate, pricer),
       iborIndex_(iborIndex) {
         fixingDate_ = fixingDate();
     }
@@ -125,6 +126,8 @@ namespace QuantLib {
     }
 
     void IborCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+        QL_REQUIRE(!immutablePricer_,
+                   "IborCoupon::setPricer() can not be called since pricer is immutable.");
         cachedDataIsInitialized_ = false;
         FloatingRateCoupon::setPricer(pricer);
     }
@@ -150,8 +153,10 @@ namespace QuantLib {
         return usingAtParCoupons_;
     }
 
-    IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)) {
+    IborLeg::IborLeg(Schedule schedule,
+                     ext::shared_ptr<IborIndex> index,
+                     ext::shared_ptr<FloatingRateCouponPricer> pricer)
+    : schedule_(std::move(schedule)), index_(std::move(index)), pricer_(std::move(pricer)) {
         QL_REQUIRE(index_, "no index provided");
     }
 
@@ -267,20 +272,17 @@ namespace QuantLib {
     }
 
     IborLeg::operator Leg() const {
-
-        Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
-                         schedule_, notionals_, index_, paymentDayCounter_,
-                         paymentAdjustment_, fixingDays_, gearings_, spreads_,
-                         caps_, floors_, inArrears_, zeroPayments_, paymentLag_, paymentCalendar_, 
-			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_);
-
-        if (caps_.empty() && floors_.empty() && !inArrears_) {
-            ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(
+        if (pricer_ == nullptr && caps_.empty() && floors_.empty() && !inArrears_) {
+            pricer_ = ext::make_shared<BlackIborCouponPricer>(
                 Handle<OptionletVolatilityStructure>(),
                 BlackIborCouponPricer::TimingAdjustment::Black76,
                 Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_);
-            setCouponPricer(leg, pricer);
         }
+        Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
+            schedule_, notionals_, index_, paymentDayCounter_, paymentAdjustment_, fixingDays_,
+            gearings_, spreads_, caps_, floors_, inArrears_, zeroPayments_, paymentLag_,
+            paymentCalendar_, exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_,
+            exCouponEndOfMonth_, pricer_);
 
         return leg;
     }

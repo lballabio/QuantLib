@@ -52,7 +52,8 @@ namespace QuantLib {
                    const Date& refPeriodEnd = Date(),
                    const DayCounter& dayCounter = DayCounter(),
                    bool isInArrears = false,
-                   const Date& exCouponDate = Date());
+                   const Date& exCouponDate = Date(),
+                   const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
@@ -132,7 +133,9 @@ namespace QuantLib {
     //! helper class building a sequence of capped/floored ibor-rate coupons
     class IborLeg {
       public:
-        IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index);
+        IborLeg(Schedule schedule,
+                ext::shared_ptr<IborIndex> index,
+                ext::shared_ptr<FloatingRateCouponPricer> pricer = nullptr);
         IborLeg& withNotionals(Real notional);
         IborLeg& withNotionals(const std::vector<Real>& notionals);
         IborLeg& withPaymentDayCounter(const DayCounter&);
@@ -177,6 +180,7 @@ namespace QuantLib {
         BusinessDayConvention exCouponAdjustment_ = Unadjusted;
         bool exCouponEndOfMonth_ = false;
         ext::optional<bool> useIndexedCoupons_;
+        mutable ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 }

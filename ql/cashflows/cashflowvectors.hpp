@@ -54,6 +54,7 @@ namespace QuantLib {
 
     }
 
+    class FloatingRateCouponPricer;
 
     template <typename InterestRateIndexType,
               typename FloatingCouponType,
@@ -75,7 +76,8 @@ namespace QuantLib {
                     Period exCouponPeriod = Period(),
                     Calendar exCouponCalendar = Calendar(),
                     BusinessDayConvention exCouponAdjustment = Unadjusted,
-                    bool exCouponEndOfMonth = false) {
+                    bool exCouponEndOfMonth = false,
+                    const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr) {
 
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
@@ -150,7 +152,7 @@ namespace QuantLib {
                             detail::get(gearings, i, 1.0),
                             detail::get(spreads, i, 0.0),
                             refStart, refEnd,
-                            paymentDayCounter, isInArrears, exCouponDate)));
+                            paymentDayCounter, isInArrears, exCouponDate, pricer)));
                 else {
                     leg.push_back(ext::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(
@@ -165,7 +167,7 @@ namespace QuantLib {
                                detail::get(floors, i, Null<Rate>()),
                                refStart, refEnd,
                                paymentDayCounter,
-                               isInArrears, exCouponDate)));
+                               isInArrears, exCouponDate, pricer)));
                 }
             }
         }
@@ -195,7 +197,8 @@ namespace QuantLib {
                         bool isPutATMIncluded,
                         const std::vector<Rate>& putDigitalPayoffs,
                         const ext::shared_ptr<DigitalReplication>& replication,
-                        bool nakedOption = false) {
+                        bool nakedOption = false,
+                        const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr) {
         Size n = schedule.size()-1;
         QL_REQUIRE(!nominals.empty(), "no notional given");
         QL_REQUIRE(nominals.size() <= n,
@@ -251,7 +254,8 @@ namespace QuantLib {
                                        detail::get(gearings, i, 1.0),
                                        detail::get(spreads, i, 0.0),
                                        refStart, refEnd,
-                                       paymentDayCounter, isInArrears));
+                                       paymentDayCounter, isInArrears,
+                                       Date(), pricer));
                 leg.push_back(ext::shared_ptr<CashFlow>(new
                     DigitalCouponType(
                              underlying,

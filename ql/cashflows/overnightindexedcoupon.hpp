@@ -60,7 +60,8 @@ namespace QuantLib {
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
                     bool telescopicValueDates = false,
-                    RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                    RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                    const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -95,7 +96,8 @@ namespace QuantLib {
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
       public:
-        OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> overnightIndex);
+        OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> overnightIndex,
+                     ext::shared_ptr<FloatingRateCouponPricer> pricer = nullptr);
         OvernightLeg& withNotionals(Real notional);
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
@@ -121,6 +123,7 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         bool telescopicValueDates_ = false;
         RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 }

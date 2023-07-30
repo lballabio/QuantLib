@@ -91,13 +91,15 @@ namespace QuantLib {
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
                       const ext::shared_ptr<DigitalReplication>& replication =
-                        ext::shared_ptr<DigitalReplication>(),
+                          ext::shared_ptr<DigitalReplication>(),
                       bool nakedOption = false);
 
         //@}
         //! \name Obverver interface
         //@{
         void deepUpdate() override;
+        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
+        allowsNotificationPassThrough() const override;
         //@}
         //! \name LazyObject interface
         //@{
@@ -135,6 +137,8 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
 
         void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override {
+            QL_REQUIRE(!immutablePricer_,
+                       "setPricer() can not be called since pricer is immutable");
             if (pricer_ != nullptr)
                 unregisterWith(pricer_);
             pricer_ = pricer;

@@ -147,13 +147,14 @@ namespace QuantLib {
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
                     bool telescopicValueDates, 
-                    RateAveraging::Type averagingMethod)
+                    RateAveraging::Type averagingMethod,
+                    const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex ? overnightIndex->fixingDays() : 0,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, false) {
+                         dayCounter, false, Date(), pricer) {
 
         // value dates
         Date tmpEndDate = endDate;
@@ -217,17 +218,18 @@ namespace QuantLib {
         for (Size i=0; i<n_; ++i)
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
 
-        switch (averagingMethod) {
-            case RateAveraging::Simple:
-                setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
-                    new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
-                break;
-            case RateAveraging::Compound:
-                setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new OvernightIndexedCouponPricer));
-                break;
-            default:
-                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+        if (pricer_ == nullptr) {
+            switch (averagingMethod) {
+                case RateAveraging::Simple:
+                    pricer_ = ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(
+                        telescopicValueDates);
+                    break;
+                case RateAveraging::Compound:
+                    pricer_ = ext::make_shared<OvernightIndexedCouponPricer>();
+                    break;
+                default:
+                    QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+            }
         }
     }
 
@@ -269,8 +271,11 @@ namespace QuantLib {
         }
     }
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
-    : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()) {
+    OvernightLeg::OvernightLeg(const Schedule& schedule,
+                               ext::shared_ptr<OvernightIndex> i,
+                               ext::shared_ptr<FloatingRateCouponPricer> pricer)
+    : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()),
+      pricer_(std::move(pricer)) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
 
@@ -371,7 +376,8 @@ namespace QuantLib {
                                        refStart, refEnd,
                                        paymentDayCounter_,
                                        telescopicValueDates_, 
-                                       averagingMethod_)));
+                                       averagingMethod_,
+                                       pricer_)));
         }
         return cashflows;
     }

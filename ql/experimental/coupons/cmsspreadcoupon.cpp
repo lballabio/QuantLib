@@ -29,11 +29,12 @@ namespace QuantLib {
         const ext::shared_ptr<SwapSpreadIndex> &index, Real gearing,
         Spread spread, const Date &refPeriodStart,
         const Date &refPeriodEnd,
-        const DayCounter &dayCounter, bool isInArrears, const Date &exCouponDate)
+        const DayCounter &dayCounter, bool isInArrears, const Date &exCouponDate,
+        const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
         : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                              fixingDays, index, gearing, spread,
                              refPeriodStart, refPeriodEnd, dayCounter,
-                             isInArrears, exCouponDate),
+                             isInArrears, exCouponDate, pricer),
           index_(index) {}
 
     void CmsSpreadCoupon::accept(AcyclicVisitor &v) {
@@ -44,8 +45,11 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
-    CmsSpreadLeg::CmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> index)
-    : schedule_(std::move(schedule)), swapSpreadIndex_(std::move(index)) {
+    CmsSpreadLeg::CmsSpreadLeg(Schedule schedule,
+                               ext::shared_ptr<SwapSpreadIndex> index,
+                               ext::shared_ptr<FloatingRateCouponPricer> pricer)
+    : schedule_(std::move(schedule)), swapSpreadIndex_(std::move(index)),
+      pricer_(std::move(pricer)) {
         QL_REQUIRE(swapSpreadIndex_, "no index provided");
     }
 
@@ -136,10 +140,9 @@ namespace QuantLib {
     }
 
     CmsSpreadLeg::operator Leg() const {
-        return FloatingLeg<SwapSpreadIndex, CmsSpreadCoupon,
-                           CappedFlooredCmsSpreadCoupon>(
-            schedule_, notionals_, swapSpreadIndex_, paymentDayCounter_,
-            paymentAdjustment_, fixingDays_, gearings_, spreads_, caps_,
-            floors_, inArrears_, zeroPayments_);
+        return FloatingLeg<SwapSpreadIndex, CmsSpreadCoupon, CappedFlooredCmsSpreadCoupon>(
+            schedule_, notionals_, swapSpreadIndex_, paymentDayCounter_, paymentAdjustment_,
+            fixingDays_, gearings_, spreads_, caps_, floors_, inArrears_, zeroPayments_, 0,
+            Calendar(), Period(), Calendar(), Unadjusted, false, pricer_);
     }
 }

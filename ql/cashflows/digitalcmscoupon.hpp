@@ -59,7 +59,9 @@ namespace QuantLib {
     //! helper class building a sequence of digital ibor-rate coupons
     class DigitalCmsLeg {
       public:
-        DigitalCmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> index);
+        DigitalCmsLeg(Schedule schedule,
+                      ext::shared_ptr<SwapIndex> index,
+                      ext::shared_ptr<FloatingRateCouponPricer> pricer);
         DigitalCmsLeg& withNotionals(Real notional);
         DigitalCmsLeg& withNotionals(const std::vector<Real>& notionals);
         DigitalCmsLeg& withPaymentDayCounter(const DayCounter&);
@@ -107,6 +109,7 @@ namespace QuantLib {
         bool putATM_ = false;
         ext::shared_ptr<DigitalReplication> replication_;
         bool nakedOption_;
+        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 }

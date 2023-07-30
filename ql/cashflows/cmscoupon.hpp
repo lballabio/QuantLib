@@ -50,7 +50,8 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date());
+                  const Date& exCouponDate = Date(),
+                  const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
         //! \name Inspectors
         //@{
         const ext::shared_ptr<SwapIndex>& swapIndex() const {
@@ -69,7 +70,9 @@ namespace QuantLib {
     //! helper class building a sequence of capped/floored cms-rate coupons
     class CmsLeg {
       public:
-        CmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> swapIndex);
+        CmsLeg(Schedule schedule,
+               ext::shared_ptr<SwapIndex> swapIndex,
+               ext::shared_ptr<FloatingRateCouponPricer> pricer = nullptr);
         CmsLeg& withNotionals(Real notional);
         CmsLeg& withNotionals(const std::vector<Real>& notionals);
         CmsLeg& withPaymentDayCounter(const DayCounter&);
@@ -106,6 +109,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_ = Following;
         bool exCouponEndOfMonth_ = false;
+        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 }

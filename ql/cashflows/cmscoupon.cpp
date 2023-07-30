@@ -38,11 +38,12 @@ namespace QuantLib {
                          const Date& refPeriodEnd,
                          const DayCounter& dayCounter,
                          bool isInArrears,
-                         const Date& exCouponDate)
+                         const Date& exCouponDate,
+                         const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, swapIndex, gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, isInArrears, exCouponDate),
+                         dayCounter, isInArrears, exCouponDate, pricer),
       swapIndex_(swapIndex) {}
 
     void CmsCoupon::accept(AcyclicVisitor& v) {
@@ -54,8 +55,10 @@ namespace QuantLib {
     }
 
 
-    CmsLeg::CmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> swapIndex)
-    : schedule_(std::move(schedule)), swapIndex_(std::move(swapIndex)) {
+    CmsLeg::CmsLeg(Schedule schedule,
+                   ext::shared_ptr<SwapIndex> swapIndex,
+                   ext::shared_ptr<FloatingRateCouponPricer> pricer)
+    : schedule_(std::move(schedule)), swapIndex_(std::move(swapIndex)), pricer_(std::move(pricer)) {
         QL_REQUIRE(swapIndex_, "no index provided");
     }
 
@@ -158,7 +161,7 @@ namespace QuantLib {
                          caps_, floors_, inArrears_, zeroPayments_,
                          0, Calendar(),
                          exCouponPeriod_, exCouponCalendar_,
-                         exCouponAdjustment_, exCouponEndOfMonth_);
+                         exCouponAdjustment_, exCouponEndOfMonth_, pricer_);
    }
 
 }

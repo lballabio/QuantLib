@@ -51,8 +51,10 @@ namespace QuantLib {
     }
 
 
-    DigitalCmsLeg::DigitalCmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)) {}
+    DigitalCmsLeg::DigitalCmsLeg(Schedule schedule,
+                                 ext::shared_ptr<SwapIndex> index,
+                                 ext::shared_ptr<FloatingRateCouponPricer> pricer)
+    : schedule_(std::move(schedule)), index_(std::move(index)), pricer_(std::move(pricer)) {}
 
     DigitalCmsLeg& DigitalCmsLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);
@@ -199,7 +201,7 @@ namespace QuantLib {
                             callATM_, callPayoffs_,
                             putStrikes_, longPutOption_,
                             putATM_, putPayoffs_,
-                            replication_, nakedOption_);
+                            replication_, nakedOption_, pricer_);
     }
 
 }

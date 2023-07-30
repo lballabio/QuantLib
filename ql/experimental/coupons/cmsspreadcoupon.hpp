@@ -41,18 +41,19 @@ namespace QuantLib {
     class CmsSpreadCoupon : public FloatingRateCoupon {
       public:
         CmsSpreadCoupon(const Date& paymentDate,
-                  Real nominal,
-                  const Date& startDate,
-                  const Date& endDate,
-                  Natural fixingDays,
-                  const ext::shared_ptr<SwapSpreadIndex>& index,
-                  Real gearing = 1.0,
-                  Spread spread = 0.0,
-                  const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date(),
-                  const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false,
-                  const Date& exCouponDate = Date());
+                        Real nominal,
+                        const Date& startDate,
+                        const Date& endDate,
+                        Natural fixingDays,
+                        const ext::shared_ptr<SwapSpreadIndex>& index,
+                        Real gearing = 1.0,
+                        Spread spread = 0.0,
+                        const Date& refPeriodStart = Date(),
+                        const Date& refPeriodEnd = Date(),
+                        const DayCounter& dayCounter = DayCounter(),
+                        bool isInArrears = false,
+                        const Date& exCouponDate = Date(),
+                        const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
         //! \name Inspectors
         //@{
         const ext::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
@@ -84,11 +85,12 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false,
-                  const Date& exCouponDate = Date())
+                  const Date& exCouponDate = Date(),
+                  const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr)
         : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
-                      dayCounter, isInArrears, exCouponDate)), cap, floor) {}
+                            dayCounter, isInArrears, exCouponDate, pricer)), cap, floor) {}
 
         void accept(AcyclicVisitor& v) override {
             auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsSpreadCoupon>*>(&v);
@@ -102,7 +104,9 @@ namespace QuantLib {
     //! helper class building a sequence of capped/floored cms-spread-rate coupons
     class CmsSpreadLeg {
       public:
-        CmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> swapSpreadIndex);
+        CmsSpreadLeg(Schedule schedule,
+                     ext::shared_ptr<SwapSpreadIndex> swapSpreadIndex,
+                     ext::shared_ptr<FloatingRateCouponPricer> pricer = nullptr);
         CmsSpreadLeg& withNotionals(Real notional);
         CmsSpreadLeg& withNotionals(const std::vector<Real>& notionals);
         CmsSpreadLeg& withPaymentDayCounter(const DayCounter&);
@@ -131,6 +135,7 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         bool inArrears_ = false, zeroPayments_ = false;
+        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 
