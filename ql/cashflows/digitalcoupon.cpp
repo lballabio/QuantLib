@@ -219,11 +219,6 @@ namespace QuantLib {
         return putOptionRate;
     }
 
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    DigitalCoupon::allowsNotificationPassThrough() const {
-        return underlying_->allowsNotificationPassThrough();
-    }
-
     void DigitalCoupon::deepUpdate() {
         update();
         underlying_->deepUpdate();

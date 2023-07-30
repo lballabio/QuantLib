@@ -98,8 +98,6 @@ namespace QuantLib {
         //! \name Obverver interface
         //@{
         void deepUpdate() override;
-        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-        allowsNotificationPassThrough() const override;
         //@}
         //! \name LazyObject interface
         //@{
@@ -137,7 +135,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
 
         void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override {
-            QL_REQUIRE(!immutablePricer_,
+            QL_REQUIRE(!allowsNotificationPassThrough_,
                        "setPricer() can not be called since pricer is immutable");
             if (pricer_ != nullptr)
                 unregisterWith(pricer_);

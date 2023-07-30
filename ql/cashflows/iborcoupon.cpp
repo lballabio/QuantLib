@@ -126,7 +126,7 @@ namespace QuantLib {
     }
 
     void IborCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        QL_REQUIRE(!immutablePricer_,
+        QL_REQUIRE(!allowsNotificationPassThrough_,
                    "IborCoupon::setPricer() can not be called since pricer is immutable.");
         cachedDataIsInitialized_ = false;
         FloatingRateCoupon::setPricer(pricer);

@@ -53,11 +53,6 @@ namespace QuantLib {
     }
 
 
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    Observer::allowsNotificationPassThrough() const {
-        return std::make_pair(false, std::set<ext::shared_ptr<Observable>>());
-    }
-
     void Observable::notifyObservers() {
         if (!ObservableSettings::instance().updatesEnabled()) {
             // if updates are only deferred, flag this for later notification
@@ -140,11 +135,6 @@ namespace QuantLib {
             }
         };
 
-    }
-
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    Observer::allowsNotificationPassThrough() const {
-        return std::make_pair(false, std::set < ext::shared_ptr<Observable>());
     }
 
     void Observable::registerObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy) {

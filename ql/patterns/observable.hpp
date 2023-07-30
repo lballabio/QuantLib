@@ -145,11 +145,17 @@ namespace QuantLib {
         /*! This method allows to explicitly update the instance itself
           and nested observers. If notifications are disabled a call to
           this method ensures an update of such nested observers. It
-          should be implemented in derived classes whenever applicable */
+          should be implemented in derived classes whenever applicable. 
+        */
         virtual void deepUpdate();
 
-        virtual std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-        allowsNotificationPassThrough() const;
+      protected:
+        /*! If set to true, registering with this instance is done by registering
+            with this instance observables. This is possible if all observables
+            are immutable after construction of this instance. If used for suitable
+            classes this can lead to smaller observation graphs. 
+        */
+        bool allowsNotificationPassThrough_ = false;
 
       private:
         set_type observables_;
@@ -228,11 +234,8 @@ namespace QuantLib {
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
         if (h != nullptr) {
             if (auto o = ext::dynamic_pointer_cast<Observer>(h)) {
-                auto p = o->allowsNotificationPassThrough();
-                if (p.first) {
+                if (o->allowsNotificationPassThrough_) {
                     registerWithObservables(o);
-                    for (auto const& s : p.second)
-                        registerWith(s);
                     return std::make_pair(observables_.end(), false);
                 }
             }
@@ -322,9 +325,8 @@ namespace QuantLib {
           should be implemented in derived classes whenever applicable */
         virtual void deepUpdate();
 
-        virtual std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-        allowsNotificationPassThrough() const;
-
+      protected:
+        bool allowsNotificationPassThrough_ = false;
 
       private:
 
@@ -546,10 +548,8 @@ namespace QuantLib {
 
         if (h != nullptr) {
             if (auto o = ext::dynamic_pointer_cast<Observer>(h)) {
-                auto p = o->allowsNotificationPassThrough() if (p.first) {
+                if (o->allowsNotificationPassThrough_) {
                     registerWithObservables(o);
-                    for (auto const& s : p.second)
-                        registerWith(s);
                     return std::make_pair(observables_.end(), false);
                 }
             }

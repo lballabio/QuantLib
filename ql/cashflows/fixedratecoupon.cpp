@@ -40,7 +40,9 @@ namespace QuantLib {
                                      const Date& exCouponDate)
     : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
              refPeriodStart, refPeriodEnd, exCouponDate),
-      rate_(InterestRate(rate, dayCounter, Simple, Annual)) {}
+      rate_(InterestRate(rate, dayCounter, Simple, Annual)) {
+        allowsNotificationPassThrough_ = true;
+    }
 
     FixedRateCoupon::FixedRateCoupon(const Date& paymentDate,
                                      Real nominal,
@@ -50,23 +52,15 @@ namespace QuantLib {
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd,
                                      const Date& exCouponDate)
-    : Coupon(paymentDate,
-             nominal,
-             accrualStartDate,
-             accrualEndDate,
-             refPeriodStart,
-             refPeriodEnd,
-             exCouponDate),
-      rate_(std::move(interestRate)) {}
+    : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
+             refPeriodStart, refPeriodEnd, exCouponDate),
+      rate_(std::move(interestRate)) {
+        allowsNotificationPassThrough_ = true;
+    }
 
     Real FixedRateCoupon::amount() const {
         calculate();
         return amount_;
-    }
-
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    FixedRateCoupon::allowsNotificationPassThrough() const {
-        return std::make_pair(true, std::set<ext::shared_ptr<Observable>>());
     }
 
     void FixedRateCoupon::performCalculations() const {

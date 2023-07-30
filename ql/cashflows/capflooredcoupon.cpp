@@ -72,15 +72,10 @@ namespace QuantLib {
         registerWith(underlying_);
     }
 
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    CappedFlooredCoupon::allowsNotificationPassThrough() const {
-        return underlying_->allowsNotificationPassThrough();
-    }
-
     void CappedFlooredCoupon::setPricer(
                  const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        QL_REQUIRE(!immutablePricer_,
-                   "CappedFlooredCoupon::setPricer() can not be called since pricer is immutable. Do not set pricer on ");
+        QL_REQUIRE(!allowsNotificationPassThrough_,
+                   "CappedFlooredCoupon::setPricer() can not be called since pricer is immutable.");
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
     }

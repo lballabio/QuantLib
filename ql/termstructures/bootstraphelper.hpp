@@ -108,8 +108,6 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-        allowsNotificationPassThrough() const override;
         void update() override;
         //@}
         //! \name Visitability
@@ -152,13 +150,16 @@ namespace QuantLib {
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(Handle<Quote> quote)
     : quote_(std::move(quote)), termStructure_(nullptr) {
+        this->allowsNotificationPassThrough_ = true;
         registerWith(quote_);
     }
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(Real quote)
     : quote_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(quote)))),
-      termStructure_(nullptr) {}
+      termStructure_(nullptr) {
+        this->allowsNotificationPassThrough_ = true;
+    }
 
     template <class TS>
     void BootstrapHelper<TS>::setTermStructure(TS* t) {
@@ -197,12 +198,6 @@ namespace QuantLib {
         if (latestDate_ == Date())
             return pillarDate_;
         return latestDate_;
-    }
-
-    template <class TS>
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    BootstrapHelper<TS>::allowsNotificationPassThrough() const {
-        return std::make_pair(true, std::set<ext::shared_ptr<Observable>>());
     }
 
     template <class TS>

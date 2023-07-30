@@ -63,8 +63,6 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void deepUpdate() override;
-        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-        allowsNotificationPassThrough() const override;
         //@}
         //@}
         //! \name LazyObject interface

@@ -47,8 +47,7 @@ namespace QuantLib {
     : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate),
       index_(index), dayCounter_(std::move(dayCounter)),
       fixingDays_(fixingDays == Null<Natural>() ? (index ? index->fixingDays() : 0) : fixingDays),
-      gearing_(gearing), spread_(spread), isInArrears_(isInArrears), pricer_(pricer),
-      immutablePricer_(pricer != nullptr) {
+      gearing_(gearing), spread_(spread), isInArrears_(isInArrears), pricer_(pricer) {
         QL_REQUIRE(index_, "no index provided");
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
@@ -57,18 +56,15 @@ namespace QuantLib {
 
         registerWith(index_);
         registerWith(Settings::instance().evaluationDate());
-    }
-
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    FloatingRateCoupon::allowsNotificationPassThrough() const {
-        return std::make_pair(!immutablePricer_,
-                              immutablePricer_ ? std::set<ext::shared_ptr<Observable>>() :
-                                                 std::set<ext::shared_ptr<Observable>>({pricer_}));
+        if(pricer_ != nullptr)
+            registerWith(pricer_);
+        allowsNotificationPassThrough_ = pricer != nullptr;
     }
 
     void FloatingRateCoupon::setPricer(
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        QL_REQUIRE(!immutablePricer_, "setPricer() can not be called since pricer is immutable");
+        QL_REQUIRE(!allowsNotificationPassThrough_,
+                   "setPricer() can not be called since pricer is immutable");
         if (pricer_ != nullptr)
             unregisterWith(pricer_);
         pricer_ = pricer;

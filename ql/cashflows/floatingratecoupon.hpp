@@ -59,11 +59,6 @@ namespace QuantLib {
                            const Date& exCouponDate = Date(),
                            const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
-        //! \name Observer interface
-        //@{
-        std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-        allowsNotificationPassThrough() const override;
-        //@}
         //! \name LazyObject interface
         //@{
         void performCalculations() const override;
@@ -120,7 +115,6 @@ namespace QuantLib {
         Spread spread_;
         bool isInArrears_;
         ext::shared_ptr<FloatingRateCouponPricer> pricer_;
-        bool immutablePricer_;
         mutable Real rate_;
     };
 
