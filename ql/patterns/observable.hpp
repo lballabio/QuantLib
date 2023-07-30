@@ -155,7 +155,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Observable::Observable() {}
+    inline Observable::Observable() = default;
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
