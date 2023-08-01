@@ -42,10 +42,15 @@ jobs:
             tag: jammy
             cc: gcc
             cxx: g++
-            tests: true
           - name: "gcc 12.x"
             shortname: gcc12
             tag: lunar
+            cc: gcc
+            cxx: g++
+            tests: true
+          - name: "gcc 13.x"
+            shortname: gcc13
+            tag: mantic
             cc: gcc
             cxx: g++
             tests: true
@@ -94,10 +99,15 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
-            tests: true
           - name: "Clang 15"
             shortname: clang15
             tag: lunar
+            cc: clang
+            cxx: clang++
+            tests: true
+          - name: "Clang 16"
+            shortname: clang16
+            tag: mantic
             cc: clang
             cxx: clang++
             tests: true

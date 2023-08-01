@@ -50,6 +50,11 @@ jobs:
             tag: lunar
             cc: gcc
             cxx: g++
+          - name: "gcc 13.x"
+            shortname: gcc13
+            tag: mantic
+            cc: gcc
+            cxx: g++
           - name: "Clang 6 (Boost 1.72)"
             shortname: clang6
             tag: bionic
@@ -98,6 +103,11 @@ jobs:
           - name: "Clang 15"
             shortname: clang15
             tag: lunar
+            cc: clang
+            cxx: clang++
+          - name: "Clang 16"
+            shortname: clang16
+            tag: mantic
             cc: clang
             cxx: clang++
           - name: "C++14 mode"
