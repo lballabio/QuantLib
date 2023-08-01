@@ -272,17 +272,18 @@ namespace QuantLib {
     }
 
     IborLeg::operator Leg() const {
-        if (pricer_ == nullptr && caps_.empty() && floors_.empty() && !inArrears_) {
-            pricer_ = ext::make_shared<BlackIborCouponPricer>(
-                Handle<OptionletVolatilityStructure>(),
-                BlackIborCouponPricer::TimingAdjustment::Black76,
-                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_);
-        }
         Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
             schedule_, notionals_, index_, paymentDayCounter_, paymentAdjustment_, fixingDays_,
             gearings_, spreads_, caps_, floors_, inArrears_, zeroPayments_, paymentLag_,
             paymentCalendar_, exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_,
             exCouponEndOfMonth_, pricer_);
+        if (pricer_ == nullptr && caps_.empty() && floors_.empty() && !inArrears_) {
+            ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(
+                Handle<OptionletVolatilityStructure>(),
+                BlackIborCouponPricer::TimingAdjustment::Black76,
+                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_);
+            setCouponPricer(leg, pricer);
+        }
 
         return leg;
     }
