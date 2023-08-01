@@ -34,7 +34,7 @@ namespace QuantLib {
 
       private:
 
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             Impl(Constraint constraint,
                  const Array& parameterValues,

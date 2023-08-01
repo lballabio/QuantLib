@@ -49,8 +49,6 @@ using namespace boost::unit_test_framework;
 void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
     BOOST_TEST_MESSAGE("Testing density against option prices...");
 
-    SavedSettings backup;
-
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Settings::instance().evaluationDate();
 
@@ -120,8 +118,6 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
 
 void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Heston densities...");
-
-    SavedSettings backup;
 
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Settings::instance().evaluationDate();
@@ -287,8 +283,6 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for local volatility process to calculate "
                        "risk neutral densities...");
-
-    SavedSettings backup;
 
     const DayCounter dayCounter = Actual365Fixed();
     const Date todaysDate = Date(28, Dec, 2012);
@@ -562,8 +556,6 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
         "Testing probability density for a BSM process "
         "with strike dependent volatility vs local volatility...");
 
-    SavedSettings backup;
-
     const Date todaysDate = Date(3, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
 
@@ -737,7 +729,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
         const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
-            [&](Real _x) { return calculator->pdf(_x, t); }, std::max(QL_EPSILON, f0-ax), f0+ax) +
+            [&](Real _x) -> Real { return calculator->pdf(_x, t); }, std::max(QL_EPSILON, f0-ax), f0+ax) +
             calculator->massAtZero(t);
 
         if (std::fabs(calculated - 1.0) > tol) {

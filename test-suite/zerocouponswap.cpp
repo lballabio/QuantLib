@@ -42,8 +42,6 @@ namespace zerocouponswap_test {
         RelinkableHandle<YieldTermStructure> euriborHandle;
         ext::shared_ptr<PricingEngine> discountEngine;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         CommonVars() {

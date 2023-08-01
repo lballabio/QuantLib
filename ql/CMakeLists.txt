@@ -16,6 +16,7 @@ set(QL_SOURCES
     cashflows/digitaliborcoupon.cpp
     cashflows/dividend.cpp
     cashflows/duration.cpp
+    cashflows/equitycashflow.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
     cashflows/iborcoupon.cpp
@@ -236,6 +237,7 @@ set(QL_SOURCES
     indexes/bmaindex.cpp
     indexes/equityindex.cpp
     indexes/ibor/bibor.cpp
+    indexes/ibor/corra.cpp
     indexes/ibor/eonia.cpp
     indexes/ibor/estr.cpp
     indexes/ibor/euribor.cpp
@@ -257,6 +259,7 @@ set(QL_SOURCES
     indexes/swap/jpyliborswap.cpp
     indexes/swap/usdliborswap.cpp
     indexes/swapindex.cpp
+    instrument.cpp
     instruments/asianoption.cpp
     instruments/assetswap.cpp
     instruments/averagetype.cpp
@@ -644,6 +647,7 @@ set(QL_SOURCES
     models/volatility/constantestimator.cpp
     models/volatility/garch.cpp
     money.cpp
+    optional.cpp
     patterns/observable.cpp
     position.cpp
     prices.cpp
@@ -910,6 +914,7 @@ set(QL_SOURCES
     time/daycounters/simpledaycounter.cpp
     time/daycounters/thirty360.cpp
     time/daycounters/thirty365.cpp
+    time/daycounters/yearfractiontodate.cpp
     time/ecb.cpp
     time/frequency.cpp
     time/imm.cpp
@@ -925,8 +930,8 @@ set(QL_SOURCES
 )
 
 set(QL_HEADERS
+    any.hpp
     auto_link.hpp
-    auto_ptr.hpp
     cashflow.hpp
     cashflows/averagebmacoupon.hpp
     cashflows/capflooredcoupon.hpp
@@ -944,6 +949,7 @@ set(QL_HEADERS
     cashflows/digitaliborcoupon.hpp
     cashflows/dividend.hpp
     cashflows/duration.hpp
+    cashflows/equitycashflow.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
     cashflows/iborcoupon.hpp
@@ -1245,6 +1251,8 @@ set(QL_HEADERS
     indexes/ibor/cadlibor.hpp
     indexes/ibor/cdor.hpp
     indexes/ibor/chflibor.hpp
+    indexes/ibor/corra.hpp
+    indexes/ibor/destr.hpp
     indexes/ibor/dkklibor.hpp
     indexes/ibor/eonia.hpp
     indexes/ibor/estr.hpp
@@ -1264,6 +1272,7 @@ set(QL_HEADERS
     indexes/ibor/shibor.hpp
     indexes/ibor/sofr.hpp
     indexes/ibor/sonia.hpp
+    indexes/ibor/swestr.hpp
     indexes/ibor/thbfix.hpp
     indexes/ibor/tibor.hpp
     indexes/ibor/tona.hpp
@@ -1415,7 +1424,6 @@ set(QL_HEADERS
     math/functional.hpp
     math/generallinearleastsquares.hpp
     math/incompletegamma.hpp
-    math/initializers.hpp
     math/integrals/discreteintegrals.hpp
     math/integrals/exponentialintegrals.hpp
     math/integrals/filonintegral.hpp
@@ -1543,7 +1551,6 @@ set(QL_HEADERS
     math/statistics/statistics.hpp
     math/transformedgrid.hpp
     mathconstants.hpp
-    methods/finitedifferences/americancondition.hpp
     methods/finitedifferences/boundarycondition.hpp
     methods/finitedifferences/bsmoperator.hpp
     methods/finitedifferences/bsmtermoperator.hpp
@@ -1570,7 +1577,6 @@ set(QL_HEADERS
     methods/finitedifferences/meshers/uniform1dmesher.hpp
     methods/finitedifferences/meshers/uniformgridmesher.hpp
     methods/finitedifferences/mixedscheme.hpp
-    methods/finitedifferences/onefactoroperator.hpp
     methods/finitedifferences/operators/fdm2dblackscholesop.hpp
     methods/finitedifferences/operators/fdmbatesop.hpp
     methods/finitedifferences/operators/fdmblackscholesfwdop.hpp
@@ -1828,6 +1834,7 @@ set(QL_HEADERS
     money.hpp
     numericalmethod.hpp
     option.hpp
+    optional.hpp
     patterns/composite.hpp
     patterns/curiouslyrecurring.hpp
     patterns/lazyobject.hpp
@@ -1949,12 +1956,10 @@ set(QL_HEADERS
     pricingengines/vanilla/fdcevvanillaengine.hpp
     pricingengines/vanilla/fdconditions.hpp
     pricingengines/vanilla/fddividendengine.hpp
-    pricingengines/vanilla/fddividendshoutengine.hpp
     pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp
     pricingengines/vanilla/fdhestonvanillaengine.hpp
     pricingengines/vanilla/fdmultiperiodengine.hpp
     pricingengines/vanilla/fdsabrvanillaengine.hpp
-    pricingengines/vanilla/fdshoutengine.hpp
     pricingengines/vanilla/fdsimplebsswingengine.hpp
     pricingengines/vanilla/fdstepconditionengine.hpp
     pricingengines/vanilla/fdvanillaengine.hpp
@@ -2180,6 +2185,7 @@ set(QL_HEADERS
     time/daycounters/simpledaycounter.hpp
     time/daycounters/thirty360.hpp
     time/daycounters/thirty365.hpp
+    time/daycounters/yearfractiontodate.hpp
     time/ecb.hpp
     time/frequency.hpp
     time/imm.hpp
@@ -2195,7 +2201,6 @@ set(QL_HEADERS
     utilities/clone.hpp
     utilities/dataformatters.hpp
     utilities/dataparsers.hpp
-    utilities/disposable.hpp
     utilities/null.hpp
     utilities/null_deleter.hpp
     utilities/observablevalue.hpp

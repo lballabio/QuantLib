@@ -87,27 +87,21 @@ namespace QuantLib {
       initialValues_(solverDesc.mesher->layout()->size()),
       extrapolation_(std::vector<bool>(N, false)) {
 
-        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-
-        QL_REQUIRE(layout->dim().size() == N, "solver dim " << N
-                    << "does not fit to layout dim " << layout->size());
+        QL_REQUIRE(solverDesc.mesher->layout()->dim().size() == N, "solver dim " << N
+                    << "does not fit to layout dim " << solverDesc.mesher->layout()->size());
 
         for (Size i=0; i < N; ++i) {
-            x_[i].reserve(layout->dim()[i]);
+            x_[i].reserve(solverDesc.mesher->layout()->dim()[i]);
         }
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-             ++iter) {
-
+        for (const auto& iter : *solverDesc.mesher->layout()) {
             initialValues_[iter.index()] = solverDesc_.calculator
                                 ->avgInnerValue(iter, solverDesc.maturity);
 
             const std::vector<Size>& c = iter.coordinates();
             for (Size i=0; i < N; ++i) {
                 if ((std::accumulate(c.begin(), c.end(), 0UL) - c[i]) == 0U) {
-                    x_[i].push_back(mesher->location(iter, i));
+                    x_[i].push_back(solverDesc.mesher->location(iter, i));
                 }
             }
         }
@@ -125,12 +119,7 @@ namespace QuantLib {
                  .rollback(rhs, solverDesc_.maturity, 0.0,
                            solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout
-                                               = solverDesc_.mesher->layout();
-
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-             ++iter) {
+        for (const auto& iter : *solverDesc_.mesher->layout()) {
             setValue(*f_, iter.coordinates(), rhs[iter.index()]);
         }
 
@@ -146,14 +135,10 @@ namespace QuantLib {
 
         calculate();
         const Array& rhs = thetaCondition_->getValues();
-        const ext::shared_ptr<FdmLinearOpLayout> layout
-                                            = solverDesc_.mesher->layout();
 
         data_table f(x_);
 
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-             ++iter) {
+        for (const auto& iter : *solverDesc_.mesher->layout()) {
             setValue(f, iter.coordinates(), rhs[iter.index()]);
         }
 

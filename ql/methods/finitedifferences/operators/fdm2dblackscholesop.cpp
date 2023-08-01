@@ -69,12 +69,8 @@ namespace QuantLib {
         opY_.setTime(t1, t2);
 
         if (localVol1_ != nullptr) {
-            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-            const FdmLinearOpIterator endIter = layout->end();
-
-            Array vol1(layout->size()), vol2(layout->size());
-            for (FdmLinearOpIterator iter = layout->begin();
-                 iter!=endIter; ++iter) {
+            Array vol1(mesher_->layout()->size()), vol2(mesher_->layout()->size());
+            for (const auto& iter : *mesher_->layout()) {
                 const Size i = iter.index();
 
                 if (illegalLocalVolOverwrite_ < 0.0) {

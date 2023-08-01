@@ -78,9 +78,33 @@
 #endif
 
 /* Define this to enable a date resolution down to microseconds and
-   allow for accurate intraday pricing.*/
+   allow for accurate intraday pricing. */
 #ifndef QL_HIGH_RESOLUTION_DATE
 //#    define QL_HIGH_RESOLUTION_DATE
+#endif
+
+/* Define this if you want to throw an exception when a notification
+   loop is detected.  Enabling this option is recommended but might
+   cause existing code to throw. */
+#ifndef QL_THROW_IN_CYCLES
+//#    define QL_THROW_IN_CYCLES
+#endif
+
+/* Undefine this if you want lazy objects to forward all notifications
+   instead of just the first.  Disabling this option is safer in some
+   cases but can be a lot slower. */
+#ifndef QL_FASTER_LAZY_OBJECTS
+#    define QL_FASTER_LAZY_OBJECTS
+#endif
+
+/* Define this to use std::any instead of boost::any. */
+#ifndef QL_USE_STD_ANY
+//#    define QL_USE_STD_ANY
+#endif
+
+/* Define this to use std::optional instead of boost::optional. */
+#ifndef QL_USE_STD_OPTIONAL
+//#    define QL_USE_STD_OPTIONAL
 #endif
 
 /* Define this to use standard smart pointers instead of Boost ones.
@@ -90,15 +114,15 @@
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Define this to use std::function and std::bind instead of
-   boost::function and boost::bind. */
+/* Undefine this to use boost::function and boost::bind instead of
+   std::function and std::bind. */
 #ifndef QL_USE_STD_FUNCTION
-//#    define QL_USE_STD_FUNCTION
+#    define QL_USE_STD_FUNCTION
 #endif
 
-/* Define this to use std::tuple instead of boost::tuple. */
+/* Undefine this to use boost::tuple instead of std::tuple. */
 #ifndef QL_USE_STD_TUPLE
-//#    define QL_USE_STD_TUPLE
+#    define QL_USE_STD_TUPLE
 #endif
 
 /* Define this to enable the implementation of Null as template functions. */

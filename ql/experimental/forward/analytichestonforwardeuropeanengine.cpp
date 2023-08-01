@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/forward/analytichestonforwardeuropeanengine.hpp>
+#include <complex>
 #include <utility>
 
 namespace QuantLib {

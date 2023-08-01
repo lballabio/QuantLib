@@ -42,12 +42,8 @@ namespace QuantLib {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        Array v(layout->size());
-        for (FdmLinearOpIterator iter = layout->begin();
-            iter != endIter; ++iter) {
+        Array v(mesher_->layout()->size());
+        for (const auto& iter : *mesher_->layout()) {
             const Size i = iter.index();
 
             v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));

@@ -35,7 +35,7 @@ namespace QuantLib {
     */
     class Actual366 : public DayCounter {
       private:
-        class Impl : public DayCounter::Impl {
+        class Impl final : public DayCounter::Impl {
           private:
               bool includeLastDay_;
           public:
@@ -51,7 +51,8 @@ namespace QuantLib {
             }
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override {
-                return dayCount(d1,d2)/366.0;
+            	return (daysBetween(d1,d2)
+            			+ (includeLastDay_ ? 1.0 : 0.0))/366.0;
             }
         };
       public:

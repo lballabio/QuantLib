@@ -30,6 +30,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/option.hpp>
+#include <ql/optional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletvolatilitystructure.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
@@ -66,7 +67,7 @@ namespace QuantLib {
       public:
         explicit IborCouponPricer(
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-            boost::optional<bool> useIndexedCoupon = boost::none);
+            ext::optional<bool> useIndexedCoupon = ext::nullopt);
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
@@ -114,7 +115,7 @@ namespace QuantLib {
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
-            const boost::optional<bool> useIndexedCoupon = boost::none)
+            const ext::optional<bool> useIndexedCoupon = ext::nullopt)
         : IborCouponPricer(v, useIndexedCoupon), timingAdjustment_(timingAdjustment),
           correlation_(std::move(correlation)) {
             { // this additional scope seems required to avoid a misleading-indentation warning

@@ -108,9 +108,6 @@ namespace QuantLib {
     }
 
     // South-African rand
-    /* The ISO three-letter code is ZAR; the numeric code is 710.
-       It is divided into 100 cents.
-    */
     ZARCurrency::ZARCurrency() {
         static ext::shared_ptr<Data> zarData(
             new Data("South-African rand", "ZAR", 710, "R", "", 100, Rounding(), "%3% %1$.2f"));
@@ -123,4 +120,5 @@ namespace QuantLib {
             new Data("Zambian kwacha", "ZMW", 967, "ZMW", "", 100, Rounding(), "1$.2f %3%"));
         data_ = zmwData;
     }
+
 }

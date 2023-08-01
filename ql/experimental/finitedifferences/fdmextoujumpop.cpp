@@ -72,18 +72,12 @@ namespace QuantLib {
         integroPart_ = SparseMatrix(mesher_->layout()->size(),
                                     mesher_->layout()->size());
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
         Array yLoc(mesher_->layout()->dim()[1]);
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             yLoc[iter.coordinates()[1]] = mesher_->location(iter, 1);
         }
 
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-            ++iter) {
-
+        for (const auto& iter : *mesher_->layout()) {
             const Size diag = iter.index();
             integroPart_(diag, diag) -= lambda;
 
@@ -99,9 +93,9 @@ namespace QuantLib {
                                        yLoc.end()-1, ys) - yLoc.begin()-1;
 
                 const Real s = (ys-yLoc[l])/(yLoc[l+1]-yLoc[l]);
-                integroPart_(diag, layout->neighbourhood(iter, 1, l-yIndex))
+                integroPart_(diag, mesher_->layout()->neighbourhood(iter, 1, l-yIndex))
                     += weight*lambda*(1-s);
-                integroPart_(diag, layout->neighbourhood(iter, 1, l+1-yIndex))
+                integroPart_(diag, mesher_->layout()->neighbourhood(iter, 1, l+1-yIndex))
                     += weight*lambda*s;
             }
         }

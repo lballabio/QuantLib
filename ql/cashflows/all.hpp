@@ -17,6 +17,7 @@
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/dividend.hpp>
 #include <ql/cashflows/duration.hpp>
+#include <ql/cashflows/equitycashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>

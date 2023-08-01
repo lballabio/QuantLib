@@ -89,7 +89,7 @@ namespace QuantLib {
 
         for (Size j=0; j < maxIter_ && errors.back() >= relTol_; ++j) {
             h.emplace_back(maxIter_, 0.0);
-            Array w = A_(M_ == QL_NULL_FUNCTION ? v[j] : M_(v[j]));
+            Array w = A_(!M_ ? v[j] : M_(v[j]));
 
             for (Size i=0; i <= j; ++i) {
                 h[i][j] = DotProduct(w, v[i]);
@@ -138,7 +138,7 @@ namespace QuantLib {
         Array xm = std::inner_product(
             v.begin(), v.begin()+k, y.begin(), Array(x.size(), Real(0.0)));
 
-        xm = x + (M_ == QL_NULL_FUNCTION ? xm : M_(xm));
+        xm = x + (!M_ ? xm : M_(xm));
 
         GMRESResult result = { errors, xm };
         return result;

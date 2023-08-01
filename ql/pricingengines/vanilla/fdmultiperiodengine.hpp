@@ -33,8 +33,15 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDMultiPeriodEngine : public FDVanillaEngine {
+    class [[deprecated("Use the new finite-differences framework instead")]]
+    FDMultiPeriodEngine : public FDVanillaEngine {
+    QL_DEPRECATED_ENABLE_WARNING
       protected:
         typedef FiniteDifferenceModel<Scheme<TridiagonalOperator> > model_type;
 
@@ -45,12 +52,16 @@ namespace QuantLib {
         mutable std::vector<ext::shared_ptr<Event> > events_;
         mutable std::vector<Time> stoppingTimes_;
         Size timeStepPerPeriod_;
+        QL_DEPRECATED_DISABLE_WARNING
         mutable SampledCurve prices_;
+        QL_DEPRECATED_ENABLE_WARNING
 
         virtual void setupArguments(
                const PricingEngine::arguments* args,
                const std::vector<ext::shared_ptr<Event> >& schedule) const {
+            QL_DEPRECATED_DISABLE_WARNING
             FDVanillaEngine::setupArguments(args);
+            QL_DEPRECATED_ENABLE_WARNING
             events_ = schedule;
             stoppingTimes_.clear();
             Size n = schedule.size();
@@ -60,7 +71,9 @@ namespace QuantLib {
         }
 
         void setupArguments(const PricingEngine::arguments* a) const override {
+            QL_DEPRECATED_DISABLE_WARNING
             FDVanillaEngine::setupArguments(a);
+            QL_DEPRECATED_ENABLE_WARNING
             const auto* args = dynamic_cast<const OneAssetOption::arguments*>(a);
             QL_REQUIRE(args, "incorrect argument type");
             events_.clear();
@@ -73,7 +86,9 @@ namespace QuantLib {
         }
 
         virtual void calculate(PricingEngine::results*) const;
+        QL_DEPRECATED_DISABLE_WARNING
         mutable ext::shared_ptr<StandardStepCondition > stepCondition_;
+        QL_DEPRECATED_ENABLE_WARNING
         mutable ext::shared_ptr<model_type> model_;
         virtual void executeIntermediateStep(Size step) const = 0;
         virtual void initializeStepCondition() const;
@@ -85,6 +100,8 @@ namespace QuantLib {
 
 
     // template definitions
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     template <template <class> class Scheme>
     FDMultiPeriodEngine<Scheme>::FDMultiPeriodEngine(
@@ -196,6 +213,8 @@ namespace QuantLib {
         model_ = ext::shared_ptr<model_type>(
                               new model_type(finiteDifferenceOperator_,BCs_));
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

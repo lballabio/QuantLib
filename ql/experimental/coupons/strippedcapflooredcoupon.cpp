@@ -34,11 +34,15 @@ namespace QuantLib {
               underlying->referencePeriodEnd(), underlying->dayCounter(),
               underlying->isInArrears()),
           underlying_(underlying) {
-        registerWith(underlying);
+        registerWith(underlying_);
     }
 
-    Rate StrippedCappedFlooredCoupon::rate() const {
+    void StrippedCappedFlooredCoupon::deepUpdate() {
+        update();
+        underlying_->deepUpdate();
+    }
 
+    void StrippedCappedFlooredCoupon::performCalculations() const {
         QL_REQUIRE(underlying_->underlying()->pricer() != nullptr, "pricer not set");
         underlying_->underlying()->pricer()->initialize(*underlying_->underlying());
         Rate floorletRate = 0.0;
@@ -53,9 +57,14 @@ namespace QuantLib {
         // if the underlying is collared we return the value of the embedded
         // collar, otherwise the value of a long floor or a long cap respectively
 
-        return (underlying_->isFloored() && underlying_->isCapped())
-                   ? Real(floorletRate - capletRate)
-                   : Real(floorletRate + capletRate);
+        rate_ = (underlying_->isFloored() && underlying_->isCapped()) ?
+                    Real(floorletRate - capletRate) :
+                    Real(floorletRate + capletRate);
+    }
+
+    Rate StrippedCappedFlooredCoupon::rate() const {
+        calculate();
+        return rate_;
     }
 
     Rate StrippedCappedFlooredCoupon::convexityAdjustment() const {
@@ -75,8 +84,6 @@ namespace QuantLib {
     Rate StrippedCappedFlooredCoupon::effectiveFloor() const {
         return underlying_->effectiveFloor();
     }
-
-    void StrippedCappedFlooredCoupon::update() { notifyObservers(); }
 
     void StrippedCappedFlooredCoupon::accept(AcyclicVisitor &v) {
         underlying_->accept(v);

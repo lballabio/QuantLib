@@ -29,8 +29,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/iterator/reverse_iterator.hpp>
-#include <boost/type_traits.hpp>
+#include <iterator>
 #include <functional>
 #include <algorithm>
 #include <numeric>
@@ -38,6 +37,7 @@
 #include <initializer_list>
 #include <iomanip>
 #include <memory>
+#include <type_traits>
 
 namespace QuantLib {
 
@@ -69,6 +69,7 @@ namespace QuantLib {
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
+        ~Array() = default;
 
         Array& operator=(const Array&);
         Array& operator=(Array&&) noexcept;
@@ -121,8 +122,8 @@ namespace QuantLib {
         typedef Real value_type;
         typedef Real* iterator;
         typedef const Real* const_iterator;
-        typedef boost::reverse_iterator<iterator> reverse_iterator;
-        typedef boost::reverse_iterator<const_iterator> const_reverse_iterator;
+        typedef std::reverse_iterator<iterator> reverse_iterator;
+        typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
         //! \name Iterator access
         //@{
         const_iterator begin() const;
@@ -137,7 +138,7 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         void resize(Size n);
-        void swap(Array&);  // never throws
+        void swap(Array&) noexcept;
         //@}
 
       private:
@@ -271,7 +272,7 @@ namespace QuantLib {
 
     // utilities
     /*! \relates Array */
-    void swap(Array&, Array&);
+    void swap(Array&, Array&) noexcept;
 
     // format
     /*! \relates Array */
@@ -312,7 +313,7 @@ namespace QuantLib {
                                  std::unique_ptr<Real[]>& data_,
                                  Size& n_,
                                  I begin, I end,
-                                 const boost::true_type&) {
+                                 const std::true_type&) {
             // we got redirected here from a call like Array(3, 4)
             // because it matched the constructor below exactly with
             // ForwardIterator = int.  What we wanted was fill an
@@ -329,7 +330,7 @@ namespace QuantLib {
                                  std::unique_ptr<Real[]>& data_,
                                  Size& n_,
                                  I begin, I end,
-                                 const boost::false_type&) {
+                                 const std::false_type&) {
             // true iterators
             Size n = std::distance(begin, end);
             data_.reset(n ? new Real[n] : (Real*)nullptr);
@@ -344,7 +345,7 @@ namespace QuantLib {
 
     inline Array::Array(std::initializer_list<Real> init) {
         detail::_fill_array_(*this, data_, n_, init.begin(), init.end(),
-                             boost::false_type());
+                             std::false_type());
     }
 
     template <class ForwardIterator>
@@ -352,7 +353,7 @@ namespace QuantLib {
         // Unfortunately, calls such as Array(3, 4) match this constructor.
         // We have to detect integral types and dispatch.
         detail::_fill_array_(*this, data_, n_, begin, end,
-                             boost::is_integral<ForwardIterator>());
+                             std::is_integral<ForwardIterator>());
     }
 
     inline Array& Array::operator=(const Array& from) {
@@ -542,10 +543,9 @@ namespace QuantLib {
         }
     }
 
-    inline void Array::swap(Array& from) {
-        using std::swap;
+    inline void Array::swap(Array& from) noexcept {
         data_.swap(from.data_);
-        swap(n_,from.n_);
+        std::swap(n_, from.n_);
     }
 
     // dot product and norm
@@ -615,7 +615,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator+(Array&& v1, Array&& v2) {
+    inline Array operator+(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be added");
@@ -675,7 +675,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator-(Array&& v1, Array&& v2) {
+    inline Array operator-(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be subtracted");
@@ -735,7 +735,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator*(Array&& v1, Array&& v2) {
+    inline Array operator*(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
@@ -795,7 +795,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator/(Array&& v1, Array&& v2) {
+    inline Array operator/(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be divided");
@@ -900,7 +900,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline void swap(Array& v, Array& w) {
+    inline void swap(Array& v, Array& w) noexcept {
         v.swap(w);
     }
 

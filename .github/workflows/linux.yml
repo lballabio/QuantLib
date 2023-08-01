@@ -45,7 +45,7 @@ jobs:
             tests: true
           - name: "gcc 12.x"
             shortname: gcc12
-            tag: kinetic
+            tag: lunar
             cc: gcc
             cxx: g++
             tests: true
@@ -97,7 +97,7 @@ jobs:
             tests: true
           - name: "Clang 15"
             shortname: clang15
-            tag: kinetic
+            tag: lunar
             cc: clang
             cxx: clang++
             tests: true
@@ -132,6 +132,13 @@ jobs:
             cxx: g++
             configureflags: --enable-intraday
             tests: true
+          - name: "Throwing in cycles enabled"
+            shortname: cycles
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-throwing-in-cycles --disable-faster-lazy-objects
+            tests: true
           - name: "Indexed coupons enabled"
             shortname: indexed
             tag: rolling
@@ -139,12 +146,12 @@ jobs:
             cxx: g++
             configureflags: --enable-indexed-coupons
             tests: true
-          - name: "Standard Library classes enabled"
+          - name: "Standard Library classes enabled/disabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-std-classes
+            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-any --enable-std-optional
             tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe

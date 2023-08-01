@@ -57,7 +57,7 @@ namespace QuantLib {
     };
 
 
-    //! Genuine year-on-year US CPI (i.e. not a ratio of US CPI)
+    //! Quoted year-on-year US CPI (i.e. not a ratio of US CPI)
     class YYUSCPI : public YoYInflationIndex {
       public:
         explicit YYUSCPI(
@@ -67,7 +67,6 @@ namespace QuantLib {
                             USRegion(),
                             false,
                             interpolated,
-                            false,
                             Monthly,
                             Period(1, Months),
                             USDCurrency(),
@@ -75,8 +74,13 @@ namespace QuantLib {
     };
 
 
-    //! Fake year-on-year US CPI (i.e. a ratio of US CPI)
-    class YYUSCPIr : public YoYInflationIndex {
+    QL_DEPRECATED_DISABLE_WARNING
+
+    //! Year-on-year US CPI (i.e. a ratio of US CPI)
+    /*! \deprecated Pass the USCPI index to YoYInflationIndex instead.
+                    Deprecated in version 1.31.
+    */
+    class [[deprecated("Pass the USCPI index to YoYInflationIndex instead")]] YYUSCPIr : public YoYInflationIndex {
       public:
         explicit YYUSCPIr(
             bool interpolated,
@@ -92,6 +96,7 @@ namespace QuantLib {
                             ts) {}
     };
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

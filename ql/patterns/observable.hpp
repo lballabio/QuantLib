@@ -33,9 +33,22 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/patterns/singleton.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <boost/unordered_set.hpp>
-#include <unordered_set>
 #include <set>
+
+#if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
+
+namespace std {
+
+    template<typename T>
+    struct hash<boost::shared_ptr<T>> {
+        std::size_t operator()(const boost::shared_ptr<T>& ptr) const noexcept {
+            return std::hash<typename boost::shared_ptr<T>::element_type*>()(ptr.get());
+        }
+    };
+
+}
+
+#endif
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
@@ -54,6 +67,9 @@ namespace QuantLib {
         Observable();
         Observable(const Observable&);
         Observable& operator=(const Observable&);
+        // delete the move operations because the semantics are not yet clear
+        Observable(Observable&&) = delete;
+        Observable& operator=(Observable&&) = delete;
         virtual ~Observable() = default;
         /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
@@ -65,7 +81,6 @@ namespace QuantLib {
         std::pair<iterator, bool> registerObserver(Observer*);
         Size unregisterObserver(Observer*);
         set_type observers_;
-        ObservableSettings& settings_;
     };
 
     //! global repository for run-time library settings
@@ -85,7 +100,7 @@ namespace QuantLib {
       private:
         ObservableSettings() = default;
 
-        typedef std::unordered_set<Observer*> set_type;
+        typedef std::set<Observer*> set_type;
         typedef set_type::iterator iterator;
 
         void registerDeferredObservers(const Observable::set_type& observers);
@@ -98,19 +113,11 @@ namespace QuantLib {
 
     //! Object that gets notified when a given observable changes
     /*! \ingroup patterns */
-    class Observer {
+    class Observer { // NOLINT(cppcoreguidelines-special-member-functions)
+      private:
+        typedef std::set<ext::shared_ptr<Observable>> set_type;
       public:
-        /*! \deprecated Don't use `set_type`; it's not used in the public interface
-                        anyway.  Use `Observer::iterator` if you need to
-                        capture the return value from `registerWith`.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED  // to be moved to private section, not removed
-        typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
-
-        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() = default;
@@ -124,8 +131,10 @@ namespace QuantLib {
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
+            itself.
+        */
         void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -143,15 +152,13 @@ namespace QuantLib {
         virtual void deepUpdate();
 
       private:
-        QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
 
     // inline definitions
 
-    inline Observable::Observable() : settings_(ObservableSettings::instance()) {}
+    inline Observable::Observable() = default;
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
@@ -163,8 +170,7 @@ namespace QuantLib {
         deferredObservers_.erase(o);
     }
 
-    inline Observable::Observable(const Observable&)
-    : settings_(ObservableSettings::instance()) {
+    inline Observable::Observable(const Observable&) {
         // the observer set is not copied; no observer asked to
         // register with this object
     }
@@ -191,8 +197,8 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (settings_.updatesDeferred())
-            settings_.unregisterDeferredObserver(o);
+        if (ObservableSettings::instance().updatesDeferred())
+            ObservableSettings::instance().unregisterDeferredObserver(o);
 
         return observers_.erase(o);
     }
@@ -272,17 +278,10 @@ namespace QuantLib {
     class Observer : public ext::enable_shared_from_this<Observer> {
         friend class Observable;
         friend class ObservableSettings;
+      private:
+        typedef std::set<ext::shared_ptr<Observable>> set_type;
       public:
-        /*! \deprecated Don't use `set_type`; it's not used in the public interface
-                        anyway.  Use `Observer::iterator` if you need to capture
-                        the return value from `registerWith`.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED  // to be moved to private section, not removed
-        typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
-        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() {}
@@ -294,8 +293,10 @@ namespace QuantLib {
         registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
+            itself.
+        */
         void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -356,28 +357,22 @@ namespace QuantLib {
         ext::shared_ptr<Proxy> proxy_;
         mutable std::recursive_mutex mutex_;
 
-        QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
-	namespace detail {
-		class Signal;
-	}
+    namespace detail {
+        class Signal;
+    }
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
     class Observable {
         friend class Observer;
+        friend class ObservableSettings;
+      private:
+        typedef std::set<ext::shared_ptr<Observer::Proxy>> set_type;
       public:
-        /*! \deprecated Don't use `set_type`; it's not used in the public interface anyway.
-                        Deprecated in version 1.26.
-        */
-        QL_DEPRECATED  // to be moved to private section, not removed
-        typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
-        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observable();
@@ -394,14 +389,8 @@ namespace QuantLib {
             const ext::shared_ptr<Observer::Proxy>& proxy, bool disconnect);
 
         ext::shared_ptr<detail::Signal> sig_;
-
-        QL_DEPRECATED_DISABLE_WARNING
         set_type observers_;
-        QL_DEPRECATED_ENABLE_WARNING
-
         mutable std::recursive_mutex mutex_;
-
-        ObservableSettings& settings_;
     };
 
     //! global repository for run-time library settings
@@ -425,9 +414,7 @@ namespace QuantLib {
                          boost::owner_less<ext::weak_ptr<Observer::Proxy> > >
             set_type;
 
-        QL_DEPRECATED_DISABLE_WARNING
         void registerDeferredObservers(const Observable::set_type& observers);
-        QL_DEPRECATED_ENABLE_WARNING
         void unregisterDeferredObserver(const ext::shared_ptr<Observer::Proxy>& proxy);
 
         set_type deferredObservers_;
@@ -440,11 +427,9 @@ namespace QuantLib {
 
     // inline definitions
 
-    QL_DEPRECATED_DISABLE_WARNING
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         deferredObservers_.insert(observers.begin(), observers.end());
     }
-    QL_DEPRECATED_ENABLE_WARNING
 
     inline void ObservableSettings::unregisterDeferredObserver(
         const ext::shared_ptr<Observer::Proxy>& o) {

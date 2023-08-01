@@ -59,9 +59,6 @@ namespace bermudan_swaption_test {
 
         RelinkableHandle<YieldTermStructure> termStructure;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             startYears = 1;
@@ -318,7 +315,6 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
     BOOST_TEST_MESSAGE("Testing snap of exercise dates for discretized swaption...");
 
     Date today = Date(8, Jul, 2021);
-    SavedSettings backup;
     Settings::instance().evaluationDate() = today;
 
     RelinkableHandle<YieldTermStructure> termStructure;
@@ -381,7 +377,7 @@ test_suite* BermudanSwaptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testTreeEngineTimeSnapping));
 
-    if (speed == Slow) {
+    if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedG2Values));
     }
 

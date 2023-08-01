@@ -137,12 +137,12 @@ namespace QuantLib {
             std::string name() const override { return "US settlement"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class LiborImpactImpl : public SettlementImpl {
+        class LiborImpactImpl final : public SettlementImpl {
           public:
             std::string name() const override { return "US with Libor impact"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class NyseImpl : public Calendar::WesternImpl {
+        class NyseImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "New York stock exchange"; }
             bool isBusinessDay(const Date&) const override;
@@ -152,14 +152,19 @@ namespace QuantLib {
             std::string name() const override { return "US government bond market"; }
             bool isBusinessDay(const Date&) const override;
         };
-        class NercImpl : public Calendar::WesternImpl {
+        class SofrImpl final : public GovernmentBondImpl {
+          public:
+            std::string name() const override { return "SOFR fixing calendar"; }
+            bool isBusinessDay(const Date&) const override;
+        };
+        class NercImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override {
                 return "North American Energy Reliability Council";
             }
             bool isBusinessDay(const Date&) const override;
         };
-        class FederalReserveImpl : public Calendar::WesternImpl {
+        class FederalReserveImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Federal Reserve Bankwire System"; }
             bool isBusinessDay(const Date&) const override;
@@ -171,7 +176,8 @@ namespace QuantLib {
                       GovernmentBond, //!< government-bond calendar
                       NERC,           //!< off-peak days for NERC
                       LiborImpact,    //!< Libor impact calendar
-                      FederalReserve  //!< Federal Reserve Bankwire System
+                      FederalReserve, //!< Federal Reserve Bankwire System
+                      SOFR            //!< SOFR fixing calendar
         };
 
         explicit UnitedStates(Market market);

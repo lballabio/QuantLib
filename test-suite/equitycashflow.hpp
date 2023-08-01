@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,11 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_fd_american_condition_h
-#define quantlib_fd_american_condition_h
+#ifndef quantlib_test_equitycashflow_hpp
+#define quantlib_test_equitycashflow_hpp
 
-// Deprecated in version 1.27
-#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
+#include <boost/test/unit_test.hpp>
 
+class EquityCashFlowTest {
+  public:
+    static void testSimpleEquityCashFlow();
+    static void testQuantoCorrection();
+    static void testErrorWhenBaseDateAfterFixingDate();
+    static void testErrorWhenQuantoCurveHandleIsEmpty();
+    static void testErrorWhenEquityVolHandleIsEmpty();
+    static void testErrorWhenFXVolHandleIsEmpty();
+    static void testErrorWhenCorrelationHandleIsEmpty();
+    static void testErrorWhenInconsistentMarketDataReferenceDate();
+
+    static boost::unit_test_framework::test_suite* suite();
+};
 
 #endif

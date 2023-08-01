@@ -99,8 +99,8 @@ template <typename Model> class XABRCoeffHolder {
 };
 
 template <class I1, class I2, typename Model>
-class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
-                              public XABRCoeffHolder<Model> {
+class XABRInterpolationImpl final : public Interpolation::templateImpl<I1, I2>,
+                                    public XABRCoeffHolder<Model> {
   public:
     XABRInterpolationImpl(const I1& xBegin,
                           const I1& xEnd,
@@ -190,7 +190,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             do {
 
                 if (iterations > 0) {
-                    HaltonRsg::sample_type s = halton.nextSequence();
+                    const auto& s = halton.nextSequence();
                     Model().guess(guess, this->paramIsFixed_, this->forward_,
                                   this->t_, s.value, this->addParams_);
                     for (Size i = 0; i < this->paramIsFixed_.size(); ++i)

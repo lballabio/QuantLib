@@ -28,6 +28,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/handle.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
       public:
         DiscountingSwapEngine(
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
-            const boost::optional<bool>& includeSettlementDateFlows = boost::none,
+            const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
             Date settlementDate = Date(),
             Date npvDate = Date());
         void calculate() const override;
@@ -44,7 +45,7 @@ namespace QuantLib {
         }
       private:
         Handle<YieldTermStructure> discountCurve_;
-        boost::optional<bool> includeSettlementDateFlows_;
+        ext::optional<bool> includeSettlementDateFlows_;
         Date settlementDate_, npvDate_;
     };
 

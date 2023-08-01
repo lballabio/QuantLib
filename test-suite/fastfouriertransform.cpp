@@ -28,7 +28,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using namespace std;
 
 void FastFourierTransformTest::testSimple() {
     BOOST_TEST_MESSAGE("Testing complex direct FFT...");

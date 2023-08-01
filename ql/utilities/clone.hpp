@@ -50,14 +50,15 @@ namespace QuantLib {
         T& operator*() const;
         T* operator->() const;
         bool empty() const;
-        void swap(Clone<T>& t);
+        void swap(Clone<T>& t) noexcept;
+        ~Clone() = default;
       private:
         std::unique_ptr<T> ptr_;
     };
 
     /*! \relates Clone */
     template <class T>
-    void swap(Clone<T>&, Clone<T>&);
+    void swap(Clone<T>&, Clone<T>&) noexcept;
 
 
     // inline definitions
@@ -114,12 +115,12 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline void Clone<T>::swap(Clone<T>& t) {
+    inline void Clone<T>::swap(Clone<T>& t) noexcept {
         this->ptr_.swap(t.ptr_);
     }
 
     template <class T>
-    inline void swap(Clone<T>& t, Clone<T>& u) {
+    inline void swap(Clone<T>& t, Clone<T>& u) noexcept {
         t.swap(u);
     }
 

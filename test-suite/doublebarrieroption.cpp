@@ -389,8 +389,6 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
 
     using namespace double_barrier_option_test;
 
-    SavedSettings backup;
-
     DoubleBarrierFxOptionData values[] = {
 
         //            BarrierType, barr.1, barr.2, rebate,         type,    strike,          s,         q,         r,  t, vol25Put,    volAtm,vol25Call,      vol,    result,   tol
@@ -532,8 +530,6 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
     using namespace double_barrier_option_test;
 
-    SavedSettings backup;
-
     Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated
 
     // set up dates
@@ -636,12 +632,9 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
 }
 
-test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
+test_suite* DoubleBarrierOptionTest::suite(SpeedLevel) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
 
     return suite;
 }

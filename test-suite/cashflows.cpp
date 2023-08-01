@@ -34,18 +34,16 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
+#include <ql/optional.hpp>
 #include <ql/settings.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::none;
 
 void CashFlowsTest::testSettings() {
 
     BOOST_TEST_MESSAGE("Testing cash-flow settings...");
-
-    SavedSettings backup;
 
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
@@ -68,7 +66,7 @@ void CashFlowsTest::testSettings() {
     //         today's date
 
     Settings::instance().includeReferenceDateEvents() = false;
-    Settings::instance().includeTodaysCashFlows() = none;
+    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
     CHECK_INCLUSION(0, 0, false);
     CHECK_INCLUSION(0, 1, false);
@@ -101,7 +99,7 @@ void CashFlowsTest::testSettings() {
     //         today's date
 
     Settings::instance().includeReferenceDateEvents() = true;
-    Settings::instance().includeTodaysCashFlows() = none;
+    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
     CHECK_INCLUSION(0, 0, true);
     CHECK_INCLUSION(0, 1, false);
@@ -163,7 +161,7 @@ void CashFlowsTest::testSettings() {
     } while (false);
 
     // no override
-    Settings::instance().includeTodaysCashFlows() = none;
+    Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
     CHECK_NPV(false, 2.0);
     CHECK_NPV(true, 3.0);
@@ -178,8 +176,6 @@ void CashFlowsTest::testSettings() {
 
 void CashFlowsTest::testAccessViolation() {
     BOOST_TEST_MESSAGE("Testing dynamic cast of coupon in Black pricer...");
-
-    SavedSettings backup;
 
     Date todaysDate(7, April, 2010);
     Date settlementDate(9, April, 2010);
@@ -409,7 +405,7 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
                             .backwards();
     // same schedule, date based, with metadata
     Schedule schedule2(schedule.dates(), NullCalendar(), Unadjusted, Unadjusted,
-                       6 * Months, boost::none, schedule.endOfMonth(),
+                       6 * Months, ext::nullopt, schedule.endOfMonth(),
                        schedule.isRegular());
     // same schedule, date based, without metadata
     Schedule schedule3(schedule.dates());
@@ -508,8 +504,6 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 
 void CashFlowsTest::testFixedIborCouponWithoutForecastCurve() {
     BOOST_TEST_MESSAGE("Testing past ibor coupon without forecast curve...");
-
-    IndexHistoryCleaner cleaner;
 
     Date today = Settings::instance().evaluationDate();
 

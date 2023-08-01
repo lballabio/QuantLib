@@ -51,9 +51,6 @@ namespace curve_states_test {
         Spread displacement;
         std::vector<DiscountFactor> todaysDiscounts;
 
-        // cleanup
-        SavedSettings backup;
-
         CommonVars() {
             // Times
             calendar = NullCalendar();

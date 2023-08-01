@@ -39,7 +39,7 @@ namespace QuantLib {
         1. P.S. Hagan: "Methodology for Callable Swaps and Bermudan
            'Exercise into Swaptions'"
         2. P.J. Hunt, J.E. Kennedy: "Implied interest rate pricing
-           models", Finance Stochast. 2, 275–293 (1998)
+           models", Finance Stochast. 2, 275-293 (1998)
     
         \warning Currently a spread is not handled correctly; it
                  should be a minor exercise to account for this
@@ -67,6 +67,7 @@ namespace QuantLib {
           ext::shared_ptr<VanillaSwap> component(Size i) const;
           Array weights() const { return compute(lambda_); };
           Real& lambda() const { return lambda_; };
+          // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
           ext::shared_ptr<IrregularSwap> swap() const { return swap_; };
         private:
             ext::shared_ptr<IrregularSwap> swap_;

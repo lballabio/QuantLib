@@ -2331,16 +2331,16 @@ void InterpolationTest::testBSplines() {
     const BSpline bspline(p, knots.size()-p-2, knots);
 
     std::vector<ext::tuple<Natural, Real, Real>> referenceValues = {
-        {0, -0.95, 9.5238095238e-04},
-        {0, -0.01, 0.37337142857},
-        {0, 0.49, 0.84575238095},
-        {0, 1.21, 0.0},
-        {1, 1.49, 0.562987654321},
-        {1, 1.59, 0.490888888889},
-        {2, 1.99, 0.62429409171},
-        {3, 1.19, 0.0},
-        {3, 1.99, 0.12382936508},
-        {3, 3.59, 0.765914285714}
+        ext::make_tuple(0, -0.95, 9.5238095238e-04),
+        ext::make_tuple(0, -0.01, 0.37337142857),
+        ext::make_tuple(0, 0.49, 0.84575238095),
+        ext::make_tuple(0, 1.21, 0.0),
+        ext::make_tuple(1, 1.49, 0.562987654321),
+        ext::make_tuple(1, 1.59, 0.490888888889),
+        ext::make_tuple(2, 1.99, 0.62429409171),
+        ext::make_tuple(3, 1.19, 0.0),
+        ext::make_tuple(3, 1.99, 0.12382936508),
+        ext::make_tuple(3, 3.59, 0.765914285714)
     };
 
     const Real tol = 1e-10;

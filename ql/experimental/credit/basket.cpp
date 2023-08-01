@@ -22,6 +22,7 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/loss.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <algorithm>
 #include <numeric>
 #include <utility>
 

@@ -27,6 +27,7 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -127,9 +128,6 @@ namespace overnight_indexed_swap_test {
         BusinessDayConvention fixedSwapConvention;
         ext::shared_ptr<IborIndex> swapIndex;
         RelinkableHandle<YieldTermStructure> swapTermStructure;
-
-        // cleanup
-        SavedSettings backup;
 
         // utilities
         ext::shared_ptr<OvernightIndexedSwap>
@@ -441,8 +439,6 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
 
     using namespace overnight_indexed_swap_test;
 
-    SavedSettings backup;
-
     Datum data[] = {
         { 0,  1, Days,   0.0066   },
         { 2,  1, Weeks,  0.006445 },
@@ -504,6 +500,23 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
 }
 
 
+void OvernightIndexedSwapTest::test131BootstrapRegression() {
+    BOOST_TEST_MESSAGE("Testing 1.31 regression with OIS bootstrap...");
+
+    Date today(11, December, 2012);
+    Settings::instance().evaluationDate() = today;
+
+    auto eonia = ext::make_shared<Eonia>();
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    helpers.push_back(ext::make_shared<OISRateHelper>(2, 1 * Weeks, Handle<Quote>(ext::make_shared<SimpleQuote>(0.070/100)), eonia));
+    helpers.push_back(ext::make_shared<DatedOISRateHelper>(Date(16, January, 2013), Date(13, February, 2013), Handle<Quote>(ext::make_shared<SimpleQuote>(0.046/100)), eonia));
+
+    auto curve = PiecewiseYieldCurve<ForwardRate,BackwardFlat>(0, TARGET(), helpers, Actual365Fixed());
+    BOOST_CHECK_NO_THROW(curve.nodes());
+}
+
+
 test_suite* OvernightIndexedSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairRate));
@@ -511,11 +524,10 @@ test_suite* OvernightIndexedSwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testCachedValue));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrap));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapWithArithmeticAverage));
-    suite->add(QUANTLIB_TEST_CASE(
-        &OvernightIndexedSwapTest::testBootstrapWithTelescopicDates));
-    suite->add(QUANTLIB_TEST_CASE(
-        &OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAverage));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapWithTelescopicDates));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAverage));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testSeasonedSwaps));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapRegression));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::test131BootstrapRegression));
     return suite;
 }

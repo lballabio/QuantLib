@@ -86,6 +86,10 @@ namespace QuantLib {
                  const ext::shared_ptr<Exercise>& exercise,
                  Settlement::Type delivery = Settlement::Physical,
                  Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+        //! \name Observer interface
+        //@{
+        void deepUpdate() override;
+        //@}
         //! \name Instrument interface
         //@{
         bool isExpired() const override;

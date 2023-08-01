@@ -62,9 +62,6 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
     Settings::instance().evaluationDate() = today;
@@ -138,9 +135,6 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     using namespace short_rate_models_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -220,9 +214,6 @@ void ShortRateModelTest::testCachedHullWhite2() {
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
     Settings::instance().evaluationDate() = today;
@@ -300,9 +291,6 @@ void ShortRateModelTest::testSwaps() {
     BOOST_TEST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today = Settings::instance().evaluationDate();
     Calendar calendar = TARGET();
@@ -433,7 +421,6 @@ void ShortRateModelTest::testFuturesConvexityBias() {
 void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
     BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
 
-    SavedSettings backup;
     const Date today = Settings::instance().evaluationDate();
 
     const Rate rate = 0.1;
@@ -461,19 +448,15 @@ void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
     }
 }
 
-test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
+test_suite* ShortRateModelTest::suite(SpeedLevel) {
     auto* suite = BOOST_TEST_SUITE("Short-rate model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
-    suite->add(QUANTLIB_TEST_CASE(
-        &ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
+    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
 
     return suite;
 }

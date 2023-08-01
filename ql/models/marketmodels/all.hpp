@@ -6,7 +6,6 @@
 #include <ql/models/marketmodels/constrainedevolver.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/discounter.hpp>
-#include <ql/models/marketmodels/duffsdeviceinnerproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/forwardforwardmappings.hpp>

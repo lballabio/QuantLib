@@ -69,8 +69,6 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
     BOOST_TEST_MESSAGE("Testing fitted bond curve with flat extrapolation...");
 
-    SavedSettings savedSettings;
-
     Date asof(15, Jul, 2019);
     Settings::instance().evaluationDate() = asof;
 

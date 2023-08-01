@@ -15,13 +15,13 @@ jobs:
           - os: [macos-11]
             shortname: stdclasses-11
             cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
+            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional
           - os: [macos-12]
             shortname: default-12
           - os: [macos-12]
             shortname: stdclasses-12
             cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
+            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional
     steps:
     - uses: actions/checkout@v3
     - name: Setup
@@ -30,7 +30,7 @@ jobs:
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --enable-null-as-functions ${{ matrix.configureflags }}  CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
+        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --disable-faster-lazy-objects --enable-throwing-in-cycles --enable-null-as-functions ${{ matrix.configureflags }}  CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
         make -j 3
     - name: Run tests
       run: |

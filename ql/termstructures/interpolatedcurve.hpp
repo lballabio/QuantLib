@@ -39,6 +39,9 @@ namespace QuantLib {
     */
     template <class Interpolator>
     class InterpolatedCurve {
+      public:
+        ~InterpolatedCurve() = default;
+
       protected:
         //! \name Building
         //@{
@@ -47,9 +50,9 @@ namespace QuantLib {
                           const Interpolator& i = Interpolator())
         : times_(std::move(times)), data_(std::move(data)), interpolator_(i) {}
 
-        InterpolatedCurve(const std::vector<Time>& times,
+        InterpolatedCurve(std::vector<Time> times,
                           const Interpolator& i = Interpolator())
-        : times_(times), data_(times.size()), interpolator_(i) {}
+        : times_(std::move(times)), data_(times_.size()), interpolator_(i) {}
 
         InterpolatedCurve(Size n,
                           const Interpolator& i = Interpolator())
@@ -70,6 +73,22 @@ namespace QuantLib {
             times_ = c.times_;
             data_ = c.data_;
             interpolator_ = c.interpolator_;
+            setupInterpolation();
+            return *this;
+        }
+        //@}
+
+        //! \name Moving
+        //@{
+        InterpolatedCurve(InterpolatedCurve&& c) noexcept
+        : times_(std::move(c.times_)), data_(std::move(c.data_)), interpolator_(std::move(c.interpolator_)) {
+            setupInterpolation();
+        }
+
+        InterpolatedCurve& operator=(InterpolatedCurve&& c) noexcept {
+            times_ = std::move(c.times_);
+            data_ = std::move(c.data_);
+            interpolator_ = std::move(c.interpolator_);
             setupInterpolation();
             return *this;
         }

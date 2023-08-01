@@ -27,6 +27,7 @@
 
 #include <ql/event.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/optional.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -47,7 +48,7 @@ namespace QuantLib {
             Settings::includeTodaysCashflows in account
         */
         bool hasOccurred(const Date& refDate = Date(),
-                         boost::optional<bool> includeRefDate = boost::none) const override;
+                         ext::optional<bool> includeRefDate = ext::nullopt) const override;
         //@}
         //! \name CashFlow interface
         //@{

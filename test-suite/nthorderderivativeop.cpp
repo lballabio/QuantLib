@@ -251,10 +251,7 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid() {
 
     const SparseMatrix m = NthOrderDerivativeOp(1, 1, 2, mesher).toMatrix();
 
-    const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-    const FdmLinearOpIterator endIter = layout->end();
-
-    for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
         const Size i = iter.index();
         const Size ix = iter.coordinates()[1];
 
@@ -408,9 +405,7 @@ namespace {
             Array varianceValues(0.5*vv);
 
             ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-            FdmLinearOpIterator endIter = layout->end();
-            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-                ++iter) {
+            for (const auto& iter : *layout) {
                 if (   iter.coordinates()[0] == 0
                     || iter.coordinates()[0] == layout->dim()[0]-1) {
                     varianceValues[iter.index()] = 0.0;
@@ -611,14 +606,10 @@ namespace {
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
                 ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
-            const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-            const FdmLinearOpIterator endIter = layout->end();
-
-            for (FdmLinearOpIterator iter = layout->begin();
-                 iter!=endIter; ++iter) {
+            for (const auto& iter : *mesher->layout()) {
                 const Size idx = iter.index();
-                const Size idxm1 = layout->neighbourhood(iter,  0,-1);
-                const Size idxp1 = layout->neighbourhood(iter,  0, 1);
+                const Size idxm1 = mesher->layout()->neighbourhood(iter,  0,-1);
+                const Size idxp1 = mesher->layout()->neighbourhood(iter,  0, 1);
 
                 const Size nx = iter.coordinates()[0];
 
@@ -658,7 +649,7 @@ namespace {
             const std::vector<Real>& v =
                 mesher->getFdm1dMeshers()[1]->locations();
 
-            Matrix resultValues_(layout->dim()[1], layout->dim()[0]);
+            Matrix resultValues_(mesher->layout()->dim()[1], mesher->layout()->dim()[0]);
             std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 
             const ext::shared_ptr<BicubicSpline> interpolation =
@@ -716,8 +707,6 @@ namespace {
 void NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Heston model option pricing convergence with "
             "higher order finite difference operators...");
-
-    SavedSettings backup;
 
     const Array strikes = {50, 75, 90, 100, 110, 125, 150, 200};
 
@@ -785,8 +774,6 @@ void NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation() {
             "Testing Heston option pricing convergence with "
             "higher order FDM operators and Richardson Extrapolation...");
 
-    SavedSettings backup;
-
     const Real n1 = priceQuality(1.0/25);
     const Real n3
         = std::fabs(RichardsonExtrapolation(priceQuality, 1.0/25, 4.0)(2.0));
@@ -840,10 +827,8 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
     const ext::shared_ptr<FdmMesher> mc(
         ext::make_shared<FdmMesherComposite>(m1, m2));
 
-    const ext::shared_ptr<FdmLinearOpLayout> layout = mc->layout();
-
-    const Size n = layout->dim()[0];
-    const Size m = layout->dim()[1];
+    const Size n = mc->layout()->dim()[0];
+    const Size m = mc->layout()->dim()[1];
 
     SparseMatrix fm = FirstDerivativeOp(0, mc).toMatrix();
     SparseMatrix dm = NthOrderDerivativeOp(0, 1, 3, mc).toMatrix();

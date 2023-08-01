@@ -199,8 +199,6 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
     BOOST_TEST_MESSAGE("Testing implied volatility calculation via "
         "adaptive successive over-relaxation...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(12, July, 2017);
     Settings::instance().evaluationDate() = today;

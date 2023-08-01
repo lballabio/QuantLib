@@ -247,8 +247,6 @@ void DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical() {
     BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options "
             "against PDE Heston version...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual360();
     const Date todaysDate(30, Jan, 2023);
     const Date maturityDate = todaysDate + Period(1, Years);

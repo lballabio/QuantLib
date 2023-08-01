@@ -69,9 +69,6 @@ namespace bonds_test {
         Date today;
         Real faceAmount;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             calendar = TARGET();
@@ -1368,8 +1365,6 @@ void BondTest::testExCouponAustralianBond() {
 void BondTest::testBondFromScheduleWithDateVector()
 {
     BOOST_TEST_MESSAGE("Testing South African R2048 bond price using Schedule constructor with Date vector...");
-    SavedSettings backup;
-
     //When pricing bond from Yield To Maturity, use NullCalendar()
     Calendar calendar = NullCalendar();
 
@@ -1635,8 +1630,6 @@ void BondTest::testRiskyBondWithGivenDates() {
 
 void BondTest::testFixedRateBondWithArbitrarySchedule() {
     BOOST_TEST_MESSAGE("Testing fixed-rate bond with arbitrary schedule...");
-    SavedSettings backup;
-
     Calendar calendar = NullCalendar();
 
     Natural settlementDays = 3;
@@ -1679,7 +1672,6 @@ void BondTest::testThirty360BondWithSettlementOn31st(){
         "Testing Thirty/360 bond with settlement on 31st of the month...");
 
     // cusip 3130A0X70, data is from Bloomberg
-    SavedSettings backup;
     Settings::instance().evaluationDate() = Date(28, July, 2017);
 
     Date datedDate(13, February, 2014);

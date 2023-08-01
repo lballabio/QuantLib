@@ -49,7 +49,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using namespace std;
 
 
 namespace inflation_cpi_capfloor_test {
@@ -111,17 +110,13 @@ namespace inflation_cpi_capfloor_test {
         RelinkableHandle<ZeroInflationTermStructure> cpiUK;
         RelinkableHandle<ZeroInflationTermStructure> hcpi;
 
-        vector<Rate> cStrikesUK;
-        vector<Rate> fStrikesUK;
-        vector<Period> cfMaturitiesUK;
+        std::vector<Rate> cStrikesUK;
+        std::vector<Rate> fStrikesUK;
+        std::vector<Period> cfMaturitiesUK;
         ext::shared_ptr<Matrix> cPriceUK;
         ext::shared_ptr<Matrix> fPriceUK;
 
         ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFsurfUK;
-
-        // cleanup
-
-        SavedSettings backup;
 
         // setup
         CommonVars()

@@ -141,7 +141,7 @@ namespace QuantLib {
     */
     class G2::FittingParameter : public TermStructureFittingParameter {
       private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
           public:
             Impl(Handle<YieldTermStructure> termStructure,
                  Real a,

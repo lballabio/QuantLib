@@ -31,6 +31,7 @@
 
 #include <ql/cashflows/coupon.hpp>
 #include <ql/patterns/visitor.hpp>
+#include <ql/patterns/lazyobject.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/handle.hpp>
 
@@ -41,8 +42,7 @@ namespace QuantLib {
     class FloatingRateCouponPricer;
 
     //! base floating-rate coupon class
-    class FloatingRateCoupon : public Coupon,
-                               public Observer {
+    class FloatingRateCoupon : public Coupon, public LazyObject {
       public:
         FloatingRateCoupon(const Date& paymentDate,
                            Real nominal,
@@ -58,6 +58,10 @@ namespace QuantLib {
                            bool isInArrears = false,
                            const Date& exCouponDate = Date());
 
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const override;
+        //@}
         //! \name CashFlow interface
         //@{
         Real amount() const override { return rate() * accrualPeriod() * nominal(); }
@@ -93,11 +97,6 @@ namespace QuantLib {
         bool isInArrears() const { return isInArrears_; }
         //@}
 
-        //! \name Observer interface
-        //@{
-        void update() override { notifyObservers(); }
-        //@}
-
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
@@ -115,6 +114,7 @@ namespace QuantLib {
         Spread spread_;
         bool isInArrears_;
         ext::shared_ptr<FloatingRateCouponPricer> pricer_;
+        mutable Real rate_;
     };
 
     // inline definitions

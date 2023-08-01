@@ -135,7 +135,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">QuantLib-x64-mt-s</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-x64-mt</TargetName>
-  </PropertyGroup>  
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -517,6 +517,7 @@
     <ClInclude Include="ql\cashflows\digitaliborcoupon.hpp" />
     <ClInclude Include="ql\cashflows\dividend.hpp" />
     <ClInclude Include="ql\cashflows\duration.hpp" />
+    <ClInclude Include="ql\cashflows\equitycashflow.hpp" />
     <ClInclude Include="ql\cashflows\fixedratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\iborcoupon.hpp" />
@@ -833,6 +834,8 @@
     <ClInclude Include="ql\indexes\ibor\cadlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\cdor.hpp" />
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\corra.hpp" />
+    <ClInclude Include="ql\indexes\ibor\destr.hpp" />
     <ClInclude Include="ql\indexes\ibor\dkklibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\eonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\estr.hpp" />
@@ -852,6 +855,7 @@
     <ClInclude Include="ql\indexes\ibor\shibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\sofr.hpp" />
     <ClInclude Include="ql\indexes\ibor\sonia.hpp" />
+    <ClInclude Include="ql\indexes\ibor\swestr.hpp" />
     <ClInclude Include="ql\indexes\ibor\thbfix.hpp" />
     <ClInclude Include="ql\indexes\ibor\tibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\tona.hpp" />
@@ -1010,7 +1014,6 @@
     <ClInclude Include="ql\math\functional.hpp" />
     <ClInclude Include="ql\math\generallinearleastsquares.hpp" />
     <ClInclude Include="ql\math\incompletegamma.hpp" />
-    <ClInclude Include="ql\math\initializers.hpp" />
     <ClInclude Include="ql\math\integrals\all.hpp" />
     <ClInclude Include="ql\math\integrals\discreteintegrals.hpp" />
     <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp" />
@@ -1147,7 +1150,6 @@
     <ClInclude Include="ql\math\transformedgrid.hpp" />
     <ClInclude Include="ql\methods\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\all.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\americancondition.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\boundarycondition.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\bsmoperator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\bsmtermoperator.hpp" />
@@ -1175,7 +1177,6 @@
     <ClInclude Include="ql\methods\finitedifferences\meshers\uniform1dmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\uniformgridmesher.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\mixedscheme.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\onefactoroperator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdm2dblackscholesop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmbatesop.hpp" />
@@ -1591,12 +1592,10 @@
     <ClInclude Include="ql\pricingengines\vanilla\fdcirvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdconditions.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fddividendengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fddividendshoutengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdsabrvanillaengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdshoutengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdsimplebsswingengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdstepconditionengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdvanillaengine.hpp" />
@@ -1831,6 +1830,7 @@
     <ClInclude Include="ql\time\daycounters\simpledaycounter.hpp" />
     <ClInclude Include="ql\time\daycounters\thirty360.hpp" />
     <ClInclude Include="ql\time\daycounters\thirty365.hpp" />
+    <ClInclude Include="ql\time\daycounters\yearfractiontodate.hpp" />
     <ClInclude Include="ql\time\ecb.hpp" />
     <ClInclude Include="ql\time\frequency.hpp" />
     <ClInclude Include="ql\time\imm.hpp" />
@@ -1842,15 +1842,14 @@
     <ClInclude Include="ql\utilities\clone.hpp" />
     <ClInclude Include="ql\utilities\dataformatters.hpp" />
     <ClInclude Include="ql\utilities\dataparsers.hpp" />
-    <ClInclude Include="ql\utilities\disposable.hpp" />
     <ClInclude Include="ql\utilities\null.hpp" />
     <ClInclude Include="ql\utilities\null_deleter.hpp" />
     <ClInclude Include="ql\utilities\observablevalue.hpp" />
     <ClInclude Include="ql\utilities\steppingiterator.hpp" />
     <ClInclude Include="ql\utilities\tracing.hpp" />
     <ClInclude Include="ql\utilities\vectors.hpp" />
+    <ClInclude Include="ql\any.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
-    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />
@@ -1874,6 +1873,7 @@
     <ClInclude Include="ql\money.hpp" />
     <ClInclude Include="ql\numericalmethod.hpp" />
     <ClInclude Include="ql\option.hpp" />
+    <ClInclude Include="ql\optional.hpp" />
     <ClInclude Include="ql\payoff.hpp" />
     <ClInclude Include="ql\position.hpp" />
     <ClInclude Include="ql\prices.hpp" />
@@ -1911,6 +1911,7 @@
     <ClCompile Include="ql\cashflows\digitaliborcoupon.cpp" />
     <ClCompile Include="ql\cashflows\dividend.cpp" />
     <ClCompile Include="ql\cashflows\duration.cpp" />
+    <ClCompile Include="ql\cashflows\equitycashflow.cpp" />
     <ClCompile Include="ql\cashflows\fixedratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\iborcoupon.cpp" />
@@ -2124,6 +2125,7 @@
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
     <ClCompile Include="ql\indexes\equityindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
+    <ClCompile Include="ql\indexes\ibor\corra.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />
     <ClCompile Include="ql\indexes\ibor\estr.cpp" />
     <ClCompile Include="ql\indexes\ibor\euribor.cpp" />
@@ -2790,6 +2792,7 @@
     <ClCompile Include="ql\time\daycounters\simpledaycounter.cpp" />
     <ClCompile Include="ql\time\daycounters\thirty360.cpp" />
     <ClCompile Include="ql\time\daycounters\thirty365.cpp" />
+    <ClCompile Include="ql\time\daycounters\yearfractiontodate.cpp" />
     <ClCompile Include="ql\time\ecb.cpp" />
     <ClCompile Include="ql\time\frequency.cpp" />
     <ClCompile Include="ql\time\imm.cpp" />
@@ -2808,8 +2811,10 @@
     <ClCompile Include="ql\exchangerate.cpp" />
     <ClCompile Include="ql\exercise.cpp" />
     <ClCompile Include="ql\index.cpp" />
+    <ClCompile Include="ql\instrument.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\money.cpp" />
+    <ClCompile Include="ql\optional.cpp" />
     <ClCompile Include="ql\position.cpp" />
     <ClCompile Include="ql\prices.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />

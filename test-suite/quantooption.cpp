@@ -224,8 +224,6 @@ void QuantoOptionTest::testValues() {
 
     BOOST_TEST_MESSAGE("Testing quanto option values...");
 
-    SavedSettings backup;
-
     /* The data below are from
        from "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
     */
@@ -297,8 +295,6 @@ void QuantoOptionTest::testValues() {
 void QuantoOptionTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing quanto option greeks...");
-
-    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
@@ -497,8 +493,6 @@ void QuantoOptionTest::testForwardValues() {
 
     BOOST_TEST_MESSAGE("Testing quanto-forward option values...");
 
-    SavedSettings backup;
-
     QuantoForwardOptionData values[] = {
         //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol
         // reset=0.0, quanto (not-forward) options
@@ -573,8 +567,6 @@ void QuantoOptionTest::testForwardValues() {
 void QuantoOptionTest::testForwardGreeks() {
 
     BOOST_TEST_MESSAGE("Testing quanto-forward option greeks...");
-
-    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
@@ -786,8 +778,6 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
     BOOST_TEST_MESSAGE("Testing quanto-forward-performance option values...");
 
-    SavedSettings backup;
-
     QuantoForwardOptionData values[] = {
         //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol
         // reset=0.0, quanto-(not-forward)-performance options
@@ -865,8 +855,6 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 void QuantoOptionTest::testBarrierValues()  {
 
     BOOST_TEST_MESSAGE("Testing quanto-barrier option values...");
-
-    SavedSettings backup;
 
     QuantoBarrierOptionData values[] = {
          // TODO:  Bench results against an existing prop calculator
@@ -946,8 +934,6 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
 
     BOOST_TEST_MESSAGE("Testing quanto-double-barrier option values...");
 
-    SavedSettings backup;
-
     QuantoDoubleBarrierOptionData values[] = {
          // barrierType,           bar.lo, bar.hi, rebate,         type, spot,  strk,    q,   r,    T,  vol, fx rate, fx vol, corr, result, tol
         { DoubleBarrier::KnockOut,   50.0,  150.0,      0, Option::Call,  100, 100.0, 0.00, 0.1, 0.25, 0.15,    0.05,    0.2,  0.3,  3.4623, 1.0e-4},
@@ -1022,8 +1008,6 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
 void QuantoOptionTest::testFDMQuantoHelper()  {
 
     BOOST_TEST_MESSAGE("Testing FDM quanto helper...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual360();
     const Date today = Date(22, April, 2019);
@@ -1117,8 +1101,6 @@ void QuantoOptionTest::testFDMQuantoHelper()  {
 void QuantoOptionTest::testPDEOptionValues()  {
 
     BOOST_TEST_MESSAGE("Testing quanto-option values with PDEs...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual360();
     const Date today = Date(21, April, 2019);
@@ -1222,8 +1204,6 @@ void QuantoOptionTest::testPDEOptionValues()  {
 void QuantoOptionTest::testAmericanQuantoOption()  {
 
     BOOST_TEST_MESSAGE("Testing American quanto-option values with PDEs...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(21, April, 2019);

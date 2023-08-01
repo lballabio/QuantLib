@@ -39,19 +39,16 @@ namespace QuantLib {
       upper_    (new Real[mesher->layout()->size()]),
       mesher_(mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        std::vector<Size> newDim(layout->dim());
+        std::vector<Size> newDim(mesher->layout()->dim());
         std::iter_swap(newDim.begin(), newDim.begin()+direction_);
         std::vector<Size> newSpacing = FdmLinearOpLayout(newDim).spacing();
         std::iter_swap(newSpacing.begin(), newSpacing.begin()+direction_);
 
-        for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             const Size i = iter.index();
 
-            i0_[i] = layout->neighbourhood(iter, direction, -1);
-            i2_[i] = layout->neighbourhood(iter, direction,  1);
+            i0_[i] = mesher->layout()->neighbourhood(iter, direction, -1);
+            i2_[i] = mesher->layout()->neighbourhood(iter, direction,  1);
 
             const std::vector<Size>& coordinates = iter.coordinates();
             const Size newIndex =
@@ -80,8 +77,8 @@ namespace QuantLib {
         std::copy(m.upper_.get(), m.upper_.get() + len, upper_.get());
     }
 
-    void TripleBandLinearOp::swap(TripleBandLinearOp& m) {
-        std::swap(mesher_, m.mesher_);
+    void TripleBandLinearOp::swap(TripleBandLinearOp& m) noexcept {
+        mesher_.swap(m.mesher_);
         std::swap(direction_, m.direction_);
 
         i0_.swap(m.i0_); i2_.swap(m.i2_);
@@ -192,8 +189,7 @@ namespace QuantLib {
     }
 
     TripleBandLinearOp TripleBandLinearOp::multR(const Array& u) const {
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        const Size size = layout->size();
+        const Size size = mesher_->layout()->size();
         QL_REQUIRE(u.size() == size, "inconsistent size of rhs");
         TripleBandLinearOp retVal(direction_, mesher_);
 
@@ -226,9 +222,7 @@ namespace QuantLib {
     }
 
     Array TripleBandLinearOp::apply(const Array& r) const {
-        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
-
-        QL_REQUIRE(r.size() == index->size(), "inconsistent length of r");
+        QL_REQUIRE(r.size() == mesher_->layout()->size(), "inconsistent length of r");
 
         const Real* lptr = lower_.get();
         const Real* dptr = diag_.get();
@@ -238,7 +232,7 @@ namespace QuantLib {
 
         array_type retVal(r.size());
         //#pragma omp parallel for
-        for (Size i=0; i < index->size(); ++i) {
+        for (Size i=0; i < mesher_->layout()->size(); ++i) {
             retVal[i] = r[i0ptr[i]]*lptr[i]+r[i]*dptr[i]+r[i2ptr[i]]*uptr[i];
         }
 
@@ -246,8 +240,7 @@ namespace QuantLib {
     }
 
     SparseMatrix TripleBandLinearOp::toMatrix() const {
-        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
-        const Size n = index->size();
+        const Size n = mesher_->layout()->size();
 
         SparseMatrix retVal(n, n, 3*n);
         for (Size i=0; i < n; ++i) {
@@ -261,16 +254,14 @@ namespace QuantLib {
 
 
     Array TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-        QL_REQUIRE(r.size() == layout->size(), "inconsistent size of rhs");
+        QL_REQUIRE(r.size() == mesher_->layout()->size(), "inconsistent size of rhs");
 
 #ifdef QL_EXTRA_SAFETY_CHECKS
-        for (FdmLinearOpIterator iter = layout->begin();
-             iter!=layout->end(); ++iter) {
+        for (const auto& iter : *mesher_->layout()) {
             const std::vector<Size>& coordinates = iter.coordinates();
             QL_REQUIRE(   coordinates[direction_] != 0
                        || lower_[iter.index()] == 0,"removing non zero entry!");
-            QL_REQUIRE(   coordinates[direction_] != layout->dim()[direction_]-1
+            QL_REQUIRE(   coordinates[direction_] != mesher_->layout()->dim()[direction_]-1
                        || upper_[iter.index()] == 0,"removing non zero entry!");
         }
 #endif
@@ -289,7 +280,7 @@ namespace QuantLib {
         QL_REQUIRE(bet != 0.0, "division by zero");
         retVal[reverseIndex_[0]] = r[rim1]*bet;
 
-        for (Size j=1; j<=layout->size()-1; j++){
+        for (Size j=1; j<=mesher_->layout()->size()-1; j++){
             const Size ri = reverseIndex_[j];
             tmp[j] = a*uptr[rim1]*bet;
 
@@ -301,7 +292,7 @@ namespace QuantLib {
             rim1 = ri;
         }
         // cannot be j>=0 with Size j
-        for (Size j=layout->size()-2; j>0; --j)
+        for (Size j=mesher_->layout()->size()-2; j>0; --j)
             retVal[reverseIndex_[j]] -= tmp[j+1]*retVal[reverseIndex_[j+1]];
         retVal[reverseIndex_[0]] -= tmp[1]*retVal[reverseIndex_[1]];
 

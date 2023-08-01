@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.30-dev],
+AC_INIT([QuantLib], [1.32-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -285,6 +285,16 @@ AC_ARG_ENABLE([examples],
 AM_CONDITIONAL(AUTO_EXAMPLES, test "$ql_install_examples" != "no")
 AC_MSG_RESULT([$ql_install_examples])
 
+AC_MSG_CHECKING([whether to skip examples])
+AC_ARG_ENABLE([skip-examples],
+              AS_HELP_STRING([--enable-skip-examples],
+                             [If enabled, examples are not built.
+                              Disabled by default.]),
+              [ql_skip_examples=$enableval],
+              [ql_skip_examples=no])
+AM_CONDITIONAL(AUTO_SKIP_EXAMPLES, test "$ql_skip_examples" != "no")
+AC_MSG_RESULT([$ql_skip_examples])
+
 AC_MSG_CHECKING([whether to install the benchmark])
 AC_ARG_ENABLE([benchmark],
               AS_HELP_STRING([--enable-benchmark],
@@ -331,6 +341,80 @@ if test "$ql_use_intraday" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_intraday])
 
+AC_MSG_CHECKING([whether to throw exceptions for notification cycles])
+AC_ARG_ENABLE([throwing-in-cycles],
+              AS_HELP_STRING([--enable-throwing-in-cycles],
+                             [If enabled, lazy objects will raise an
+                              exception when they detect a
+                              notification cycle which would result in
+                              an infinite recursion loop. If disabled
+                              (the default), they will break the
+                              recursion without throwing.  Enabling
+                              this option is recommended but might
+                              cause existing code to throw.]),
+              [ql_throw_in_cycles=$enableval],
+              [ql_throw_in_cycles=no])
+if test "$ql_throw_in_cycles" = "yes" ; then
+   AC_DEFINE([QL_THROW_IN_CYCLES],[1],
+             [Define this if you want to throw an exception when a notification loop is detected.])
+fi
+AC_MSG_RESULT([$ql_throw_in_cycles])
+
+AC_MSG_CHECKING([whether to reduce the number of notifications from lazy objects])
+AC_ARG_ENABLE([faster-lazy-objects],
+              AS_HELP_STRING([--enable-faster-lazy-objects],
+                             [If enabled, lazy objects will forward
+                              the first notification received, and
+                              discard the others until recalculated;
+                              the rationale is that observers were
+                              already notified, and don't need further
+                              notifications until they recalculate, at
+                              which point this object would be
+                              recalculated too.  After recalculation,
+                              this object would again forward the
+                              first notification received.  Although
+                              not always correct, this behavior is a
+                              lot faster and thus is the current
+                              default.]),
+              [ql_faster_lazy_objects=$enableval],
+              [ql_faster_lazy_objects=yes])
+if test "$ql_faster_lazy_objects" = "yes" ; then
+   AC_DEFINE([QL_FASTER_LAZY_OBJECTS],[1],
+             [Define this if you want lazy objects to forward fewer notifications.])
+fi
+AC_MSG_RESULT([$ql_faster_lazy_objects])
+
+AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
+AC_ARG_ENABLE([std-any],
+              AS_HELP_STRING([--enable-std-any],
+                             [If enabled, std::any and related classes and
+                              functions will be used instead of boost::any.
+                              This requires C++17. If disabled (the default)
+                              the Boost facilities are used.]),
+              [ql_use_std_any=$enableval],
+              [ql_use_std_any=no])
+if test "$ql_use_std_any" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_ANY],[1],
+             [Define this if you want to use std::any.])
+fi
+AC_MSG_RESULT([$ql_use_std_any])
+
+AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
+AC_ARG_ENABLE([std-optional],
+              AS_HELP_STRING([--enable-std-optional],
+                             [If enabled, std::optional and related
+                              classes and functions will be used instead
+                              of boost::optional. This requires C++17.
+                              If disabled (the default) the Boost facilities
+                              are used.]),
+              [ql_use_std_optional=$enableval],
+              [ql_use_std_optional=no])
+if test "$ql_use_std_optional" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
+             [Define this if you want to use std::optional.])
+fi
+AC_MSG_RESULT([$ql_use_std_optional])
+
 AC_MSG_CHECKING([whether to enable standard smart pointers])
 AC_ARG_ENABLE([std-pointers],
               AS_HELP_STRING([--enable-std-pointers],
@@ -352,12 +436,12 @@ AC_MSG_RESULT([$ql_use_std_pointers])
 AC_MSG_CHECKING([whether to enable std::function])
 AC_ARG_ENABLE([std-function],
               AS_HELP_STRING([--enable-std-function],
-                             [If enabled, std::function and std::bind will be
-                              used instead of boost::function and boost::bind.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
+                             [If enabled (the default), std::function
+                              and std::bind will be used.  If
+                              disabled, the corresponding Boost
+                              classes will be used instead.]),
               [ql_use_std_function=$enableval],
-              [ql_use_std_function=no])
+              [ql_use_std_function=yes])
 if test "$ql_use_std_function" = "yes" ; then
    AC_DEFINE([QL_USE_STD_FUNCTION],[1],
              [Define this if you want to use std::function and std::bind.])
@@ -367,17 +451,17 @@ AC_MSG_RESULT([$ql_use_std_function])
 AC_MSG_CHECKING([whether to enable std::tuple])
 AC_ARG_ENABLE([std-tuple],
               AS_HELP_STRING([--enable-std-tuple],
-                             [If enabled, std::tuple and related functions
-                              will be used instead of boost::tuple.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
+                             [If enabled (the default), std::tuple and
+                              related functions will be used.  If
+                              disabled, the corresponding Boost
+                              facilities will be used instead.]),
               [ql_use_std_tuple=$enableval],
-              [ql_use_std_tuple=no])
+              [ql_use_std_tuple=yes])
 if test "$ql_use_std_tuple" = "yes" ; then
    AC_DEFINE([QL_USE_STD_TUPLE],[1],
              [Define this if you want to use std::tuple.])
 fi
-AC_MSG_RESULT([$ql_use_std_pointers])
+AC_MSG_RESULT([$ql_use_std_tuple])
 
 AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],

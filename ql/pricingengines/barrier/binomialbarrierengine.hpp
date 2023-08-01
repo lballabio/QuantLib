@@ -31,6 +31,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <type_traits>
 #include <utility>
 
 namespace QuantLib {
@@ -133,7 +134,7 @@ namespace QuantLib {
         // Note: this approach works only for CoxRossRubinstein lattices, so
         // is disabled if T is not a CoxRossRubinstein or derived from it.
         Size optimum_steps = timeSteps_;
-        if (boost::is_base_of<CoxRossRubinstein, T>::value && 
+        if (std::is_base_of<CoxRossRubinstein, T>::value &&
             maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
             Real divisor;
             if (s0 > arguments_.barrier)

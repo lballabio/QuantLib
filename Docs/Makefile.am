@@ -10,7 +10,7 @@ DOXYGEN_CUSTOM := quantlibextra.css quantlibheader.html quantlibfooter.html
 DOXYGEN_INPUT := $(shell find ${top_srcdir} -name *.hpp) \
                  $(wildcard pages/*.docs)
 
-BASEPATH = @abs_top_srcdir@
+BASEPATH = $(shell cd @abs_top_srcdir@ && pwd)
 
 .PHONY: docs docs-clean
 

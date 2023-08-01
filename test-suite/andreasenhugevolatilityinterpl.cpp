@@ -150,8 +150,6 @@ namespace andreasen_huge_volatility_interpl_test {
     void testAndreasenHugeVolatilityInterpolation(
         const CalibrationData& data, const CalibrationResults& expected) {
 
-        SavedSettings backup;
-
         const Handle<YieldTermStructure> rTS = data.rTS;
         const Handle<YieldTermStructure> qTS = data.qTS;
 
@@ -448,8 +446,6 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
 
     using namespace andreasen_huge_volatility_interpl_test;
 
-    SavedSettings backup;
-
     const CalibrationData data = AndreasenHugeExampleData();
 
     const DayCounter dc = data.rTS->dayCounter();
@@ -533,8 +529,6 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
         "Testing Andreasen-Huge volatility interpolation with "
         "a single option...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(4, January, 2018);
 
@@ -595,8 +589,6 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
         "arbitrage free prices...");
 
     using namespace andreasen_huge_volatility_interpl_test;
-
-    SavedSettings backup;
 
     CalibrationData data[] = { BorovkovaExampleData(), arbitrageData() };;
 
@@ -684,8 +676,6 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
     BOOST_TEST_MESSAGE(
         "Testing Barrier option pricing with Andreasen-Huge "
          "local volatility surface...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(4, January, 2018);
@@ -838,8 +828,6 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
 
     using namespace andreasen_huge_volatility_interpl_test;
 
-    SavedSettings backup;
-
     const std::pair<CalibrationData, std::vector<Real> > sd = sabrData();
     const CalibrationData& data = sd.first;
     const std::vector<Real>& parameter = sd.second;
@@ -915,8 +903,6 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
     BOOST_TEST_MESSAGE(
         "Testing that reference date of adapter surface moves along with "
         "evaluation date...");
-
-    SavedSettings backup;
 
     const Date today = Date(4, January, 2018);
     Settings::instance().evaluationDate() = today;
@@ -994,8 +980,6 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
 
     using namespace andreasen_huge_volatility_interpl_test;
 
-    SavedSettings backup;
-
     const Date ref(1, November, 2019);
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = ref;
@@ -1056,35 +1040,26 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
 test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testArbitrageFree));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testDifferentOptimizers));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AndreasenHugeVolatilityInterplTest::testFlatVolCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testArbitrageFree));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testDifferentOptimizers));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
+    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testFlatVolCalibration));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testLinearInterpolation));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates));
+    }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testLinearInterpolation));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing));
-        suite->add(QUANTLIB_TEST_CASE(
-            &AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates));
+        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing));
     }
+
     return suite;
 }
 

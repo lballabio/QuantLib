@@ -32,6 +32,7 @@ QL_TEST_SRCS = \
 	chooseroption.cpp \
 	cliquetoption.cpp \
 	cms.cpp \
+	cms_normal.cpp \
 	cmsspread.cpp \
 	commodityunitofmeasure.cpp \
 	compiledboostversion.cpp \
@@ -53,6 +54,7 @@ QL_TEST_SRCS = \
 	doublebarrieroption.cpp \
 	doublebinaryoption.cpp \
 	equityindex.cpp \
+	equitycashflow.cpp \
 	equitytotalreturnswap.cpp \
 	europeanoption.cpp \
 	everestoption.cpp \
@@ -201,6 +203,7 @@ QL_TEST_HDRS = \
 	chooseroption.hpp \
 	cliquetoption.hpp \
 	cms.hpp \
+	cms_normal.hpp \
 	cmsspread.hpp \
 	commodityunitofmeasure.hpp \
 	compiledboostversion.hpp \
@@ -222,6 +225,7 @@ QL_TEST_HDRS = \
 	doublebarrieroption.hpp \
 	doublebinaryoption.hpp \
 	equityindex.hpp \
+	equitycashflow.hpp \
 	equitytotalreturnswap.hpp \
 	europeanoption.hpp \
 	everestoption.hpp \

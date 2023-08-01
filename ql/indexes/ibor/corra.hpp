@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2018 StatPro Italia srl
+ Copyright (C) 2023 Aditya Narayan Das
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,20 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_auto_ptr_hpp
-#define quantlib_auto_ptr_hpp
+#ifndef quantlib_corra_hpp
+#define quantlib_corra_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/indexes/iborindex.hpp>
 
-#pragma message("Warning: the deprecated QL_UNIQUE_OR_AUTO_PTR macro is no longer used. Replace it with std::unique_ptr.")
-#pragma message("    For the time being, the QL_USE_STD_UNIQUE_PTR macro is set to 1.  However, do not check for it, since it will disappear in a future release.")
-#pragma message("    This file will also disappear in a future release; do not include it.")
-
-/*! \deprecated Use std::unique_ptr instead.
-                Deprecated in version 1.27
-*/
-#define QL_UNIQUE_OR_AUTO_PTR std::unique_ptr
+namespace QuantLib {
+    class Corra : public OvernightIndex {
+      public:
+        explicit Corra(const Handle<YieldTermStructure>& h = {});
+    };
+}
 
 
 #endif
-

@@ -82,8 +82,7 @@ namespace QuantLib {
     }
 
     std::vector<ext::function<Real(Real, Real)> >
-        GaussNonCentralChiSquaredPolynomial::moments =
-            std::vector<ext::function<Real(Real, Real)> >();
+    GaussNonCentralChiSquaredPolynomial::moments = {};
 
     GaussNonCentralChiSquaredPolynomial::GaussNonCentralChiSquaredPolynomial(
         Real nu, Real lambda)

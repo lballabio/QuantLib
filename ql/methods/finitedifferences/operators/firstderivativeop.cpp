@@ -30,10 +30,7 @@ namespace QuantLib {
                                 const ext::shared_ptr<FdmMesher>& mesher)
     : TripleBandLinearOp(direction, mesher) {
 
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-        const FdmLinearOpIterator endIter = layout->end();
-
-        for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
+        for (const auto& iter : *mesher->layout()) {
             const Size i = iter.index();
             const Real hm = mesher->dminus(iter, direction_);
             const Real hp = mesher->dplus(iter, direction_);
@@ -48,7 +45,7 @@ namespace QuantLib {
                 diag_[i]  = -(upper_[i] = 1/hp);
             }
             else if (   iter.coordinates()[direction_]
-                     == layout->dim()[direction]-1) {
+                     == mesher->layout()->dim()[direction]-1) {
                  // downwinding scheme
                 lower_[i] = -(diag_[i] = 1/hm);
                 upper_[i] = 0.0;

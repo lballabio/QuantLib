@@ -73,7 +73,7 @@ namespace QuantLib {
                 return (d >= 22 && d <= 28) && w == Monday && m == October;
             }
         }
-     
+
         bool isVeteransDayNoSaturday(Day d, Month m, Year y, Weekday w) {
             if (y <= 1970 || y >= 1978) {
                 // November 11th, adjusted, but no Saturday to Friday
@@ -90,22 +90,17 @@ namespace QuantLib {
                 && m == June && y >= 2022;
         }
     }
-    
+
     UnitedStates::UnitedStates(UnitedStates::Market market) {
-        // all calendar instances on the same market share the same
-        // implementation instance
-        static ext::shared_ptr<Calendar::Impl> settlementImpl(
-                                        new UnitedStates::SettlementImpl);
-        static ext::shared_ptr<Calendar::Impl> liborImpactImpl(
-                                        new UnitedStates::LiborImpactImpl);
-        static ext::shared_ptr<Calendar::Impl> nyseImpl(
-                                        new UnitedStates::NyseImpl);
-        static ext::shared_ptr<Calendar::Impl> governmentImpl(
-                                        new UnitedStates::GovernmentBondImpl);
-        static ext::shared_ptr<Calendar::Impl> nercImpl(
-                                        new UnitedStates::NercImpl);
-        static ext::shared_ptr<Calendar::Impl> federalReserveImpl(
-                                        new UnitedStates::FederalReserveImpl);
+        // all calendar instances on the same market share the same implementation instance
+        static auto settlementImpl = ext::make_shared<UnitedStates::SettlementImpl>();
+        static auto liborImpactImpl = ext::make_shared<UnitedStates::LiborImpactImpl>();
+        static auto nyseImpl = ext::make_shared<UnitedStates::NyseImpl>();
+        static auto governmentImpl = ext::make_shared<UnitedStates::GovernmentBondImpl>();
+        static auto nercImpl = ext::make_shared<UnitedStates::NercImpl>();
+        static auto federalReserveImpl = ext::make_shared<UnitedStates::FederalReserveImpl>();
+        static auto sofrImpl = ext::make_shared<UnitedStates::SofrImpl>();
+
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
@@ -118,6 +113,9 @@ namespace QuantLib {
             break;
           case GovernmentBond:
             impl_ = governmentImpl;
+            break;
+          case SOFR:
+            impl_ = sofrImpl;
             break;
           case NERC:
             impl_ = nercImpl;
@@ -282,8 +280,9 @@ namespace QuantLib {
                 && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
-            // Good Friday (2015 was half day due to NFP report)
-            || (dd == em-3 && y != 2015)
+            // Good Friday (2015, 2021, 2023 are half day due to NFP/SIFMA;
+            // see <https://www.sifma.org/resources/general/holiday-schedule/>)
+            || (dd == em-3 && y != 2015 && y != 2021 && y != 2023)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Juneteenth (Monday if Sunday or Friday if Saturday)
@@ -303,7 +302,7 @@ namespace QuantLib {
             || ((d == 25 || (d == 26 && w == Monday) ||
                  (d == 24 && w == Friday)) && m == December))
             return false;
-             
+
         // Special closings
         if (// President Bush's Funeral
             (y == 2018 && m == December && d == 5)
@@ -312,8 +311,16 @@ namespace QuantLib {
             // President Reagan's funeral
             || (y == 2004 && m == June && d == 11)
             ) return false;
-     
+
         return true;
+    }
+
+
+    bool UnitedStates::SofrImpl::isBusinessDay(const Date& date) const {
+        // Good Friday 2023 was only a half close for SIFMA but SOFR didn't fix
+        if (date == Date(7, April, 2023))
+            return false;
+        return GovernmentBondImpl::isBusinessDay(date);
     }
 
 
@@ -338,10 +345,10 @@ namespace QuantLib {
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
- 
- 
+
+
     bool UnitedStates::FederalReserveImpl::isBusinessDay(const Date& date) const {
-        // see https://www.frbservices.org/holidayschedules/ for details
+        // see https://www.frbservices.org/about/holiday-schedules for details
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();

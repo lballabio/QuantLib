@@ -21,6 +21,7 @@
 #include <ql/instruments/asianoption.hpp>
 #include <ql/time/date.hpp>
 #include <ql/settings.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {

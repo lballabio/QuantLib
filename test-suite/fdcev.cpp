@@ -127,8 +127,6 @@ void FdCevTest::testFdmCevOp() {
     BOOST_TEST_MESSAGE(
             "Testing FDM constant elasticity of variance (CEV) operator...");
 
-    SavedSettings backup;
-
     const Date today = Date(22, February, 2018);
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = today;

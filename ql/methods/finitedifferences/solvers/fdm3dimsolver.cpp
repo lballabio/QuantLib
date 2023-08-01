@@ -46,29 +46,24 @@ namespace QuantLib {
           Matrix(solverDesc.mesher->layout()->dim()[1], solverDesc.mesher->layout()->dim()[0])),
       interpolation_(solverDesc.mesher->layout()->dim()[2]) {
 
-        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        x_.reserve(solverDesc.mesher->layout()->dim()[0]);
+        y_.reserve(solverDesc.mesher->layout()->dim()[1]);
+        z_.reserve(solverDesc.mesher->layout()->dim()[2]);
 
-        x_.reserve(layout->dim()[0]);
-        y_.reserve(layout->dim()[1]);
-        z_.reserve(layout->dim()[2]);
-
-        const FdmLinearOpIterator endIter = layout->end();
-        for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-             ++iter) {
+        for (const auto& iter : *solverDesc.mesher->layout()) {
             initialValues_[iter.index()]
                = solverDesc.calculator->avgInnerValue(iter,
                                                       solverDesc.maturity);
 
 
             if ((iter.coordinates()[1] == 0U) && (iter.coordinates()[2] == 0U)) {
-                x_.push_back(mesher->location(iter, 0));
+                x_.push_back(solverDesc.mesher->location(iter, 0));
             }
             if ((iter.coordinates()[0] == 0U) && (iter.coordinates()[2] == 0U)) {
-                y_.push_back(mesher->location(iter, 1));
+                y_.push_back(solverDesc.mesher->location(iter, 1));
             }
             if ((iter.coordinates()[0] == 0U) && (iter.coordinates()[1] == 0U)) {
-                z_.push_back(mesher->location(iter, 2));
+                z_.push_back(solverDesc.mesher->location(iter, 2));
             }
         }
     }

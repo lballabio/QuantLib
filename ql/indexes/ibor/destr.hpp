@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,21 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_disposable_hpp
-#define quantlib_disposable_hpp
+/*! \file destr.hpp
+    \brief %DESTR index
+*/
 
-#include <ql/qldefines.hpp>
+#ifndef quantlib_destr_hpp
+#define quantlib_destr_hpp
+
+#include <ql/currencies/europe.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/calendars/denmark.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 
 namespace QuantLib {
 
-    // Deprecated in version 1.27
-    #pragma message("Warning: the deprecated Disposable<T> class is no longer used. Replace it with T.")
-    #pragma message("    This file will disappear in a future release; do not include it.")
-
-    template <class T>
-    using Disposable = T;
+    //! %Destr (Denmark Short-Term Rate) index.
+    class Destr : public OvernightIndex {
+      public:
+        explicit Destr(const Handle<YieldTermStructure>& h = {})
+        : OvernightIndex("DESTR", 0, DKKCurrency(), Denmark(), Actual360(), h) {}
+    };
 
 }
-
 
 #endif

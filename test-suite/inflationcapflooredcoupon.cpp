@@ -101,15 +101,11 @@ namespace inflation_capfloored_coupon_test {
         Date settlement;
         Period observationLag;
         DayCounter dc;
-        ext::shared_ptr<YYUKRPIr> iir;
+        ext::shared_ptr<YoYInflationIndex> iir;
 
         RelinkableHandle<YieldTermStructure> nominalTS;
         ext::shared_ptr<YoYInflationTermStructure> yoyTS;
         RelinkableHandle<YoYInflationTermStructure> hy;
-
-        // cleanup
-
-        SavedSettings backup;
 
         // setup
         CommonVars()
@@ -144,12 +140,13 @@ namespace inflation_capfloored_coupon_test {
                 198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
                 202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
                 207.3, -999.0, -999 };
+            auto rpi = ext::make_shared<UKRPI>();
+            for (Size i=0; i<rpiSchedule.size();i++) {
+                rpi->addFixing(rpiSchedule[i], fixData[i]);
+            }
             // link from yoy index to yoy TS
             bool interp = false;
-            iir = ext::make_shared<YYUKRPIr>(interp, hy);
-            for (Size i=0; i<rpiSchedule.size();i++) {
-                iir->addFixing(rpiSchedule[i], fixData[i]);
-            }
+            iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
 
             ext::shared_ptr<YieldTermStructure> nominalFF(
                         new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));

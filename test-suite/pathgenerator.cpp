@@ -145,8 +145,6 @@ void PathGeneratorTest::testPathGenerator() {
 
     BOOST_TEST_MESSAGE("Testing 1-D path generation against cached values...");
 
-    SavedSettings backup;
-
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
     Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
@@ -181,8 +179,6 @@ void PathGeneratorTest::testPathGenerator() {
 void PathGeneratorTest::testMultiPathGenerator() {
 
     BOOST_TEST_MESSAGE("Testing n-D path generation against cached values...");
-
-    SavedSettings backup;
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 

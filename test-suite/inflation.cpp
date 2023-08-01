@@ -97,9 +97,6 @@ namespace inflation_test {
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
 
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
     QL_DEPRECATED_DISABLE_WARNING
 
     EUHICP euhicp(true);
@@ -199,9 +196,6 @@ void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
 
     using namespace inflation_test;
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -587,9 +581,6 @@ void InflationTest::testSeasonalityCorrection() {
 
     using namespace inflation_test;
 
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
     Date evaluationDate(13, August, 2007);
@@ -686,9 +677,6 @@ void InflationTest::testSeasonalityCorrection() {
 void InflationTest::testZeroIndexFutureFixing() {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
     EUHICP euhicp;
 
     Date sample_date = Date(1,December,2013);
@@ -722,8 +710,6 @@ void InflationTest::testZeroIndexFutureFixing() {
 
 void InflationTest::testInterpolatedZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing interpolated zero-rate inflation curve...");
-
-    SavedSettings backup;
 
     Date today = Date(27, January, 2022);
     Settings::instance().evaluationDate() = today;
@@ -762,11 +748,8 @@ void InflationTest::testInterpolatedZeroTermStructure() {
 // year on year tests, index, termstructure, and swaps
 //===========================================================================================
 
-void InflationTest::testYYIndex() {
-    BOOST_TEST_MESSAGE("Testing year-on-year inflation indices...");
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
+void InflationTest::testQuotedYYIndex() {
+    BOOST_TEST_MESSAGE("Testing quoted year-on-year inflation indices...");
 
     YYEUHICP yyeuhicp(true);
     if (yyeuhicp.name() != "EU YY_HICP"
@@ -784,22 +767,6 @@ void InflationTest::testYYIndex() {
                     << yyeuhicp.availabilityLag() << ")");
     }
 
-    YYEUHICPr yyeuhicpr(true);
-    if (yyeuhicpr.name() != "EU YYR_HICP"
-        || yyeuhicpr.frequency() != Monthly
-        || yyeuhicpr.revised()
-        || !yyeuhicpr.interpolated()
-        || !yyeuhicpr.ratio()
-        || yyeuhicpr.availabilityLag() != 1*Months) {
-        BOOST_ERROR("wrong year-on-year EU HICPr data ("
-                    << yyeuhicpr.name() << ", "
-                    << yyeuhicpr.frequency() << ", "
-                    << yyeuhicpr.revised() << ", "
-                    << yyeuhicpr.interpolated() << ", "
-                    << yyeuhicpr.ratio() << ", "
-                    << yyeuhicpr.availabilityLag() << ")");
-    }
-
     YYUKRPI yyukrpi(false);
     if (yyukrpi.name() != "UK YY_RPI"
         || yyukrpi.frequency() != Monthly
@@ -815,8 +782,158 @@ void InflationTest::testYYIndex() {
                     << yyukrpi.ratio() << ", "
                     << yyukrpi.availabilityLag() << ")");
     }
+}
+
+
+void InflationTest::testRatioYYIndex() {
+    BOOST_TEST_MESSAGE("Testing ratio year-on-year inflation indices...");
+
+    auto euhicp = ext::make_shared<EUHICP>();
+    auto ukrpi = ext::make_shared<UKRPI>();
+
+    YoYInflationIndex yyeuhicpr(euhicp, true);
+    if (yyeuhicpr.name() != "EU YYR_HICP"
+        || yyeuhicpr.frequency() != Monthly
+        || yyeuhicpr.revised()
+        || !yyeuhicpr.interpolated()
+        || !yyeuhicpr.ratio()
+        || yyeuhicpr.availabilityLag() != 1*Months) {
+        BOOST_ERROR("wrong year-on-year EU HICPr data ("
+                    << yyeuhicpr.name() << ", "
+                    << yyeuhicpr.frequency() << ", "
+                    << yyeuhicpr.revised() << ", "
+                    << yyeuhicpr.interpolated() << ", "
+                    << yyeuhicpr.ratio() << ", "
+                    << yyeuhicpr.availabilityLag() << ")");
+    }
+
+    YoYInflationIndex yyukrpir(ukrpi, false);
+    if (yyukrpir.name() != "UK YYR_RPI"
+        || yyukrpir.frequency() != Monthly
+        || yyukrpir.revised()
+        || yyukrpir.interpolated()
+        || !yyukrpir.ratio()
+        || yyukrpir.availabilityLag() != 1*Months) {
+        BOOST_ERROR("wrong year-on-year UK RPIr data ("
+                    << yyukrpir.name() << ", "
+                    << yyukrpir.frequency() << ", "
+                    << yyukrpir.revised() << ", "
+                    << yyukrpir.interpolated() << ", "
+                    << yyukrpir.ratio() << ", "
+                    << yyukrpir.availabilityLag() << ")");
+    }
+
+
+    // Retrieval test.
+    //----------------
+    // make sure of the evaluation date
+    Date evaluationDate(13, August, 2007);
+    evaluationDate = UnitedKingdom().adjust(evaluationDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
+    // fixing data
+    Date from(1, January, 2005);
+    Date to(13, August, 2007);
+    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+    .withTenor(1*Months)
+    .withCalendar(UnitedKingdom())
+    .withConvention(ModifiedFollowing);
+
+    Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
+        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
+        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
+        198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
+        202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
+        207.3 };
+
+    for (Size i=0; i<LENGTH(fixData);i++) {
+        ukrpi->addFixing(rpiSchedule[i], fixData[i]);
+    }
+
+    auto iir = ext::make_shared<YoYInflationIndex>(ukrpi, false);
+    auto iirYES = ext::make_shared<YoYInflationIndex>(ukrpi, true);
+
+    Date todayMinusLag = evaluationDate - iir->availabilityLag();
+    std::pair<Date,Date> lim = inflationPeriod(todayMinusLag, iir->frequency());
+    todayMinusLag = lim.second + 1 - 2*Period(iir->frequency());
+
+    Real eps = 1.0e-8;
+
+    // Interpolation tests
+    //--------------------
+    // (no TS so can't forecast).
+    for (Size i=13; i<rpiSchedule.size();i++) {
+        std::pair<Date,Date> lim = inflationPeriod(rpiSchedule[i],
+                                                   iir->frequency());
+        std::pair<Date,Date> limBef = inflationPeriod(rpiSchedule[i-12],
+                                                      iir->frequency());
+        for (Date d=lim.first; d<=lim.second; d++) {
+            if (d < todayMinusLag) {
+                Rate expected = fixData[i]/fixData[i-12] - 1.0;
+                Rate calculated = iir->fixing(d);
+                BOOST_CHECK_MESSAGE(std::fabs(calculated - expected) < eps,
+                                    "Non-interpolated fixings not constant within a period: "
+                                    << calculated
+                                    << ", should be "
+                                    << expected);
+
+                Real dp= lim.second + 1- lim.first;
+                Real dpBef=limBef.second + 1 - limBef.first;
+                Real dl = d-lim.first;
+                // potentially does not work on 29th Feb
+                Real dlBef = NullCalendar().advance(d, -1*Years, ModifiedFollowing)
+                -limBef.first;
+
+                Real linearNow = fixData[i] + (fixData[i+1]-fixData[i])*dl/dp;
+                Real linearBef = fixData[i-12] + (fixData[i+1-12]-fixData[i-12])*dlBef/dpBef;
+                Rate expectedYES = linearNow / linearBef - 1.0;
+                Rate calculatedYES = iirYES->fixing(d);
+                BOOST_CHECK_MESSAGE(fabs(expectedYES-calculatedYES)<eps,
+                                    "Error in interpolated fixings: expect "<<expectedYES
+                                    <<" see " << calculatedYES
+                                    <<" flat " << calculated
+                                    <<", data: "<< fixData[i-12] <<", "<< fixData[i+1-12]
+                                    <<", "<<    fixData[i] <<", "<< fixData[i+1]
+                                    <<", fac: "<< dp <<", "<< dl
+                                    <<", "<< dpBef <<", "<< dlBef
+                                    <<", to: "<<linearNow<<", "<<linearBef
+                                    );
+            }
+        }
+    }
+}
+
+
+void InflationTest::testOldRatioYYIndex() {
+    BOOST_TEST_MESSAGE("Testing old-style ratio year-on-year inflation indices...");
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    YYEUHICPr yyeuhicpr(true);
+
+    QL_DEPRECATED_ENABLE_WARNING
+
+    if (yyeuhicpr.name() != "EU YYR_HICP"
+        || yyeuhicpr.frequency() != Monthly
+        || yyeuhicpr.revised()
+        || !yyeuhicpr.interpolated()
+        || !yyeuhicpr.ratio()
+        || yyeuhicpr.availabilityLag() != 1*Months) {
+        BOOST_ERROR("wrong year-on-year EU HICPr data ("
+                    << yyeuhicpr.name() << ", "
+                    << yyeuhicpr.frequency() << ", "
+                    << yyeuhicpr.revised() << ", "
+                    << yyeuhicpr.interpolated() << ", "
+                    << yyeuhicpr.ratio() << ", "
+                    << yyeuhicpr.availabilityLag() << ")");
+    }
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     YYUKRPIr yyukrpir(false);
+
+    QL_DEPRECATED_ENABLE_WARNING
+
     if (yyukrpir.name() != "UK YYR_RPI"
         || yyukrpir.frequency() != Monthly
         || yyukrpir.revised()
@@ -856,8 +973,14 @@ void InflationTest::testYYIndex() {
         207.3 };
 
     bool interp = false;
+
+    QL_DEPRECATED_DISABLE_WARNING
+
     ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp));
     ext::shared_ptr<YYUKRPIr> iirYES(new YYUKRPIr(true));
+
+    QL_DEPRECATED_ENABLE_WARNING
+
     for (Size i=0; i<LENGTH(fixData);i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
         iirYES->addFixing(rpiSchedule[i], fixData[i]);
@@ -911,7 +1034,6 @@ void InflationTest::testYYIndex() {
             }
         }
     }
-
 }
 
 
@@ -919,9 +1041,6 @@ void InflationTest::testYYTermStructure() {
     BOOST_TEST_MESSAGE("Testing year-on-year inflation term structure...");
 
     using namespace inflation_test;
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     // try the YY UK
     Calendar calendar = UnitedKingdom();
@@ -947,9 +1066,10 @@ void InflationTest::testYYTermStructure() {
 
     RelinkableHandle<YoYInflationTermStructure> hy;
     bool interp = false;
-    ext::shared_ptr<YYUKRPIr> iir(new YYUKRPIr(interp, hy));
+    auto rpi = ext::make_shared<UKRPI>();
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
     for (Size i=0; i<LENGTH(fixData); i++) {
-        iir->addFixing(rpiSchedule[i], fixData[i]);
+        rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 
 
@@ -1154,9 +1274,6 @@ void InflationTest::testPeriod() {
 void InflationTest::testCpiFlatInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI flat interpolation...");
 
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
-
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
     QL_DEPRECATED_DISABLE_WARNING
@@ -1202,9 +1319,6 @@ void InflationTest::testCpiFlatInterpolation() {
 
 void InflationTest::testCpiLinearInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI linear interpolation...");
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
@@ -1259,9 +1373,6 @@ void InflationTest::testCpiLinearInterpolation() {
 
 void InflationTest::testCpiAsIndexInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI as-index interpolation...");
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 
     Date today = Date(10, February, 2022);
     Settings::instance().evaluationDate() = today;
@@ -1352,7 +1463,9 @@ test_suite* InflationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndexFutureFixing));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testInterpolatedZeroTermStructure));
 
-    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYIndex));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testQuotedYYIndex));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testRatioYYIndex));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testOldRatioYYIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYTermStructure));
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testCpiFlatInterpolation));

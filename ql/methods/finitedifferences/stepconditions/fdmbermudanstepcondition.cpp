@@ -46,18 +46,13 @@ namespace QuantLib {
         if (std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t) 
               != exerciseTimes_.end()) {
             
-            ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-
-            QL_REQUIRE(layout->size() == a.size(),
+            QL_REQUIRE(mesher_->layout()->size() == a.size(),
                        "inconsistent array dimensions");
 
-            const FdmLinearOpIterator endIter = layout->end();
-
-            const Size dims = layout->dim().size();
+            const Size dims = mesher_->layout()->dim().size();
             Array locations(dims);
 
-            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-                ++iter) {
+            for (const auto& iter : *mesher_->layout()) {
                 for (Size i=0; i < dims; ++i)
                     locations[i] = mesher_->location(iter, i);
 

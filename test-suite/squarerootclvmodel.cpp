@@ -80,8 +80,6 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
     using namespace square_root_clv_model;
 
-    SavedSettings backup;
-
     const Date todaysDate(5, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
 
@@ -140,7 +138,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const ext::function<Real(Real)> f = [&](Real xi) {
+        const ext::function<Real(Real)> f = [&](Real xi) -> Real {
             return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
         };
 
@@ -163,8 +161,6 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
         "Testing mapping function of the square-root kernel process...");
 
     using namespace square_root_clv_model;
-
-    SavedSettings backup;
 
     const Date todaysDate(16, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
@@ -238,7 +234,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
 
             const CLVModelPayoff clvModelPayoff(optionType, strike, [&](Real x) { return g(t, x); });
 
-            const ext::function<Real(Real)> f = [&](Real xi) {
+            const ext::function<Real(Real)> f = [&](Real xi) -> Real {
                 return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
             };
 
@@ -450,8 +446,6 @@ void SquareRootCLVModelTest::testForwardSkew() {
         "Testing forward skew dynamics with square-root kernel process...");
 
     using namespace square_root_clv_model;
-
-    SavedSettings backup;
 
     const Date todaysDate(16, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;

@@ -27,11 +27,12 @@
 #ifndef quantlib_overnight_indexed_swap_hpp
 #define quantlib_overnight_indexed_swap_hpp
 
-#include <ql/instruments/swap.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
-#include <ql/time/daycounter.hpp>
+#include <ql/instruments/swap.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -67,17 +68,50 @@ namespace QuantLib {
                              bool telescopicValueDates = false,
                              RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
+        OvernightIndexedSwap(Type type,
+                             Real nominal,
+                             const Schedule& fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDC,
+                             const Schedule& overnightSchedule,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             Spread spread = 0.0,
+                             Natural paymentLag = 0,
+                             BusinessDayConvention paymentAdjustment = Following,
+                             const Calendar& paymentCalendar = Calendar(),
+                             bool telescopicValueDates = false,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
+        OvernightIndexedSwap(Type type,
+                             std::vector<Real> nominals,
+                             Schedule fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDC,
+                             Schedule overnightSchedule,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             Spread spread = 0.0,
+                             Natural paymentLag = 0,
+                             BusinessDayConvention paymentAdjustment = Following,
+                             const Calendar& paymentCalendar = Calendar(),
+                             bool telescopicValueDates = false,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
         Real nominal() const;
         std::vector<Real> nominals() const { return nominals_; }
 
-        Frequency paymentFrequency() const { return paymentFrequency_; }
+        Frequency paymentFrequency() const {
+            return std::max(fixedSchedule_.tenor().frequency(),
+                            overnightSchedule_.tenor().frequency());
+        }
 
+        const Schedule& fixedSchedule() const { return fixedSchedule_; }
         Rate fixedRate() const { return fixedRate_; }
         const DayCounter& fixedDayCount() const { return fixedDC_; }
 
+        const Schedule& overnightSchedule() const { return overnightSchedule_; }
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Spread spread() const { return spread_; }
 
@@ -98,23 +132,16 @@ namespace QuantLib {
         Spread fairSpread() const;
         //@}
       private:
-        void initialize(const Schedule& schedule);
         Type type_;
         std::vector<Real> nominals_;
 
-        Frequency paymentFrequency_;
-        Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
-
-        //Schedule schedule_;
-
+        Schedule fixedSchedule_;
         Rate fixedRate_;
         DayCounter fixedDC_;
 
+        Schedule overnightSchedule_;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
-        bool telescopicValueDates_;
         RateAveraging::Type averagingMethod_;
     };
 
@@ -122,7 +149,7 @@ namespace QuantLib {
     // inline
 
     inline Real OvernightIndexedSwap::nominal() const {
-        QL_REQUIRE(nominals_.size()==1, "varying nominals");
+        QL_REQUIRE(nominals_.size() == 1, "varying nominals");
         return nominals_[0];
     }
 

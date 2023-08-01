@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2018 Peter Caspers
+ Copyright (C) 2023 Jonathan Sweemer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,10 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_initializers_hpp
-#define quantlib_initializers_hpp
+#include <ql/optional.hpp>
 
-// Deprecated in version 1.27
-#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
+namespace QuantLib {
 
-#endif
+    namespace ext {
+
+        #if !defined(QL_USE_STD_OPTIONAL)
+        const boost::none_t& nullopt = boost::none;
+        #endif
+
+    }
+
+}
+

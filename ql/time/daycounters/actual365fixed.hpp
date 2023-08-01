@@ -49,7 +49,7 @@ namespace QuantLib {
         : DayCounter(implementation(c)) {}
 
       private:
-        class Impl : public DayCounter::Impl {
+        class Impl final : public DayCounter::Impl {
           public:
             std::string name() const override { return std::string("Actual/365 (Fixed)"); }
             Time
@@ -57,7 +57,7 @@ namespace QuantLib {
                 return daysBetween(d1,d2)/365.0;
             }
         };
-        class CA_Impl : public DayCounter::Impl {
+        class CA_Impl final : public DayCounter::Impl {
           public:
             std::string name() const override {
                 return std::string("Actual/365 (Fixed) Canadian Bond");
@@ -67,7 +67,7 @@ namespace QuantLib {
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd) const override;
         };
-        class NL_Impl : public DayCounter::Impl {
+        class NL_Impl final : public DayCounter::Impl {
           public:
             std::string name() const override { return std::string("Actual/365 (No Leap)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;

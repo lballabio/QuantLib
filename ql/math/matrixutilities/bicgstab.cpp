@@ -64,7 +64,7 @@ namespace QuantLib {
                p = r;
            }
 
-           pTld = (M_ == QL_NULL_FUNCTION ? p : M_(p));
+           pTld = (!M_ ? p : M_(p));
            v     = A_(pTld);
 
            alpha = rho/DotProduct(rTld, v);
@@ -75,7 +75,7 @@ namespace QuantLib {
               break;
            }
 
-           sTld = (M_ == QL_NULL_FUNCTION ? s : M_(s));
+           sTld = (!M_ ? s : M_(s));
            t = A_(sTld);
            omega = DotProduct(t,s)/DotProduct(t,t);
            x += alpha*pTld + omega*sTld;

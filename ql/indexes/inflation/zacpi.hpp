@@ -52,7 +52,7 @@ namespace QuantLib {
     };
 
 
-    //! Genuine year-on-year South African CPI (i.e. not a ratio of ZA CPI)
+    //! Quoted year-on-year South African CPI (i.e. not a ratio of ZA CPI)
     class YYZACPI : public YoYInflationIndex {
       public:
         explicit YYZACPI(
@@ -62,7 +62,6 @@ namespace QuantLib {
                             ZARegion(),
                             false,
                             interpolated,
-                            false,
                             Monthly,
                             Period(1, Months),
                             ZARCurrency(),
@@ -70,8 +69,13 @@ namespace QuantLib {
     };
 
 
-    //! Fake year-on-year South African CPI (i.e. a ratio of ZA CPI)
-    class YYZACPIr : public YoYInflationIndex {
+    QL_DEPRECATED_DISABLE_WARNING
+
+    //! Year-on-year South African CPI (i.e. a ratio of ZA CPI)
+    /*! \deprecated Pass the ZACPI index to YoYInflationIndex instead.
+                    Deprecated in version 1.31.
+    */
+    class [[deprecated("Pass the ZACPI index to YoYInflationIndex instead")]] YYZACPIr : public YoYInflationIndex {
       public:
         explicit YYZACPIr(
             bool interpolated,
@@ -87,6 +91,7 @@ namespace QuantLib {
                             ts) {}
     };
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

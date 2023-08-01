@@ -18,6 +18,7 @@
 */
 
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -53,7 +54,7 @@ namespace QuantLib {
         bool includeRefDatePayments =
             Settings::instance().includeReferenceDateEvents();
         if (referenceDate == Settings::instance().evaluationDate()) {
-            boost::optional<bool> includeTodaysPayments =
+            ext::optional<bool> includeTodaysPayments =
                 Settings::instance().includeTodaysCashFlows();
             if (includeTodaysPayments) // NOLINT(readability-implicit-bool-conversion)
                 includeRefDatePayments = *includeTodaysPayments;

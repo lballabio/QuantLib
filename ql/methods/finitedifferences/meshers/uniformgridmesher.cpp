@@ -48,9 +48,7 @@ namespace QuantLib {
     Array UniformGridMesher::locations(Size d) const {
         Array retVal(layout_->size());
 
-        const FdmLinearOpIterator endIter = layout_->end();
-        for (FdmLinearOpIterator iter = layout_->begin();
-            iter != endIter; ++iter) {
+        for (const auto& iter : *layout_) {
             retVal[iter.index()] = locations_[d][iter.coordinates()[d]];
         }
 

@@ -38,7 +38,6 @@
 #include <iostream>
 
 using namespace QuantLib;
-using namespace std;
 using namespace boost::unit_test_framework;
 
 #ifndef QL_PATCH_SOLARIS
@@ -72,7 +71,7 @@ namespace cdo_test {
         { 0.3,  5,  5, { 1713, 359, 136,  9 } }
     };
 
-    void check(int i, int j, const string& desc, Real found, Real expected,
+    void check(int i, int j, const std::string& desc, Real found, Real expected,
                Real bpTolerance, Real relativeTolerance) 
     {
         /* Uncomment to display the full show if your debugging:
@@ -100,8 +99,6 @@ void CdoTest::testHW(unsigned dataSet) {
 
     using namespace cdo_test;
 
-    SavedSettings backup;
-
     Size poolSize = 100;
     Real lambda = 0.01;
 
@@ -116,7 +113,7 @@ void CdoTest::testHW(unsigned dataSet) {
     Compounding cmp = Continuous; // Simple;
 
     Real recovery = 0.4;
-    vector<Real> nominals(poolSize, 100.0);
+    std::vector<Real> nominals(poolSize, 100.0);
     Real premium = 0.02;
     Period maxTerm (5, Years);
     Schedule schedule = MakeSchedule().from(Date (1, September, 2006))
@@ -134,23 +131,23 @@ void CdoTest::testHW(unsigned dataSet) {
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(lambda)));
-    vector<Handle<DefaultProbabilityTermStructure> > basket;
+    std::vector<Handle<DefaultProbabilityTermStructure> > basket;
     ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                new FlatHazardRate (asofDate,
                                    hazardRate,
                                    ActualActual(ActualActual::ISDA)));
     ext::shared_ptr<Pool> pool (new Pool());
-    vector<string> names;
+    std::vector<std::string> names;
     // probability key items
-    vector<Issuer> issuers;
-    vector<pair<DefaultProbKey,
+    std::vector<Issuer> issuers;
+    std::vector<std::pair<DefaultProbKey,
            Handle<DefaultProbabilityTermStructure> > > probabilities;
     probabilities.emplace_back(
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(0, Weeks), 10.),
         Handle<DefaultProbabilityTermStructure>(ptr));
 
     for (Size i=0; i<poolSize; ++i) {
-        ostringstream o;
+        std::ostringstream o;
         o << "issuer-" << i;
         names.push_back(o.str());
         basket.emplace_back(ptr);
@@ -338,7 +335,7 @@ void CdoTest::testHW(unsigned dataSet) {
         ext::shared_ptr<Basket> basketPtr (
             new Basket(asofDate, names, nominals, pool,
                 hwAttachment[j], hwDetachment[j]));
-        ostringstream trancheId;
+        std::ostringstream trancheId;
         trancheId << "[" << hwAttachment[j] << " , " << hwDetachment[j]
             << "]";
         SyntheticCDO cdoe(basketPtr, Protection::Seller,

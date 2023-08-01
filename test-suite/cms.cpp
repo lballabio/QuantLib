@@ -59,9 +59,6 @@ namespace cms_test {
         std::vector<ext::shared_ptr<CmsCouponPricer> > numericalPricers;
         std::vector<ext::shared_ptr<CmsCouponPricer> > analyticPricers;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
 
@@ -250,7 +247,7 @@ namespace cms_test {
 
 void CmsTest::testFairRate()  {
 
-    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons...");
+    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons (lognormal case)...");
 
     using namespace cms_test;
 
@@ -316,7 +313,7 @@ void CmsTest::testFairRate()  {
 
 void CmsTest::testCmsSwap() {
 
-    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps...");
+    BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps (lognormal case)...");
 
     using namespace cms_test;
 
@@ -379,7 +376,7 @@ void CmsTest::testCmsSwap() {
 
 void CmsTest::testParity() {
 
-    BOOST_TEST_MESSAGE("Testing put-call parity for capped-floored CMS coupons...");
+    BOOST_TEST_MESSAGE("Testing put-call parity for capped-floored CMS coupons (lognormal case)...");
 
     using namespace cms_test;
 

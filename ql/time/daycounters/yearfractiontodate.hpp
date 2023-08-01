@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Joseph Wang
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2023 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,11 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_fd_dividend_shout_engine_hpp
-#define quantlib_fd_dividend_shout_engine_hpp
+/*! \file yearfractiontodate.hpp
+    \brief "inverse" of a daycounter
+*/
 
-// Deprecated in version 1.27
-#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
+#ifndef quantlib_year_fraction_to_date_hpp
+#define quantlib_year_fraction_to_date_hpp
 
+#include <ql/time/daycounter.hpp>
+
+namespace QuantLib {
+
+    Date yearFractionToDate(
+        const DayCounter& dayCounter, const Date& referenceDate, Time t);
+
+}
 
 #endif

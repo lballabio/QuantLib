@@ -94,8 +94,6 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
 
     using namespace fd_heston_test;
 
-    SavedSettings backup;
-
     const Date today = Date(22, February, 2018);
     const DayCounter dc = Actual365Fixed();
     Settings::instance().evaluationDate() = today;
@@ -194,8 +192,6 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
     using namespace fd_heston_test;
-
-    SavedSettings backup;
 
     NewBarrierOptionData values[] = {
         /* The data below are from
@@ -345,8 +341,6 @@ void FdHestonTest::testFdmHestonBarrier() {
     BOOST_TEST_MESSAGE("Testing FDM with barrier option for Heston model vs "
                        "Black-Scholes model...");
 
-    SavedSettings backup;
-
     Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
     Handle<YieldTermStructure> rTS(flatRate(0.05, Actual365Fixed()));
@@ -397,8 +391,6 @@ void FdHestonTest::testFdmHestonBarrier() {
 void FdHestonTest::testFdmHestonAmerican() {
 
     BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
-
-    SavedSettings backup;
 
     Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
@@ -457,8 +449,6 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
        stochastic volatility, Samuli Ikonen, Jari Toivanen, 
        http://users.jyu.fi/~tene/papers/reportB12-05.pdf
     */
-    SavedSettings backup;
-
     Handle<YieldTermStructure> rTS(flatRate(0.10, Actual360()));
     Handle<YieldTermStructure> qTS(flatRate(0.0 , Actual360()));
 
@@ -500,9 +490,6 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
 void FdHestonTest::testFdmHestonBlackScholes() {
 
     BOOST_TEST_MESSAGE("Testing FDM Heston with Black Scholes model...");
-
-    SavedSettings backup;
-
 
     Settings::instance().evaluationDate() = Date(28, March, 2004);
     Date exerciseDate(26, June, 2004);
@@ -570,8 +557,6 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 void FdHestonTest::testFdmHestonEuropeanWithDividends() {
 
     BOOST_TEST_MESSAGE("Testing FDM with European option with dividends in Heston model...");
-
-    SavedSettings backup;
 
     Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
@@ -672,8 +657,6 @@ void FdHestonTest::testFdmHestonConvergence() {
     
     BOOST_TEST_MESSAGE("Testing FDM Heston convergence...");
 
-    SavedSettings backup;
-    
     HestonTestData values[] = {
         { 1.5   , 0.04  , 0.3   , -0.9   , 0.025 , 0.0   , 1.0 , 100 },
         { 3.0   , 0.12  , 0.04  , 0.6    , 0.01  , 0.04  , 1.0 , 100 },
@@ -748,8 +731,6 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 
     BOOST_TEST_MESSAGE("Testing FDM Heston intraday pricing ...");
 
-    SavedSettings backup;
-
     const Option::Type type(Option::Put);
     const Real underlying = 36;
     const Real strike = underlying;
@@ -809,8 +790,6 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
 
 void FdHestonTest::testMethodOfLinesAndCN() {
     BOOST_TEST_MESSAGE("Testing method of lines to solve Heston PDEs...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(21, February, 2018);
@@ -929,8 +908,6 @@ void FdHestonTest::testSpuriousOscillations() {
     BOOST_TEST_MESSAGE("Testing for spurious oscillations when "
             "solving the Heston PDEs...");
 
-    SavedSettings backup;
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(7, June, 2018);
 
@@ -1012,8 +989,6 @@ void FdHestonTest::testAmericanCallPutParity() {
     // A. Battauz, M. De Donno,m A. Sbuelz:
     // The put-call symmetry for American options in
     // the Heston stochastic volatility model
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(15, April, 2022);
@@ -1127,13 +1102,10 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testAmericanCallPutParity));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
         suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
-    }
-
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrierVsBlackScholes));
     }
 

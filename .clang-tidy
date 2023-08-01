@@ -5,9 +5,12 @@ Checks: >
           -bugprone-assignment-in-if-condition,
           -bugprone-branch-clone,
           -bugprone-easily-swappable-parameters,
+          -bugprone-empty-catch,
           -bugprone-implicit-widening-of-multiplication-result,
           -bugprone-macro-parentheses,
+          -bugprone-multiple-new-in-one-expression,
           -bugprone-narrowing-conversions,
+          -bugprone-non-zero-enum-to-bool-conversion,
           -bugprone-suspicious-include,
         clang-analyzer-*,
           -clang-analyzer-core.UndefinedBinaryOperatorResult,
@@ -34,10 +37,10 @@ Checks: >
           -cppcoreguidelines-pro-type-const-cast,
           -cppcoreguidelines-pro-type-member-init,
           -cppcoreguidelines-pro-type-vararg,
-          -cppcoreguidelines-special-member-functions,
         misc-*,
           -misc-confusable-identifiers,
           -misc-const-correctness,
+          -misc-include-cleaner,
           -misc-no-recursion,
           -misc-non-private-member-variables-in-classes,
           -misc-use-anonymous-namespace,
@@ -51,6 +54,8 @@ Checks: >
           -modernize-use-trailing-return-type,
           -modernize-use-using,
         performance-*,
+          -performance-avoid-endl,
+          -performance-enum-size,
         readability-*,
           -readability-braces-around-statements,
           -readability-const-return-type,
@@ -70,6 +75,8 @@ Checks: >
 HeaderFilterRegex: '.*'
 FormatStyle: file
 CheckOptions:
+  - key:   cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: 1
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
 ...

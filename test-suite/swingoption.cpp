@@ -77,8 +77,6 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
 
     BOOST_TEST_MESSAGE("Testing extended Ornstein-Uhlenbeck process...");
 
-    SavedSettings backup;
-
     const Real speed = 2.5;
     const Volatility vol = 0.70;
     const Real level = 1.43;
@@ -135,8 +133,6 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
 
     using namespace swing_option_test;
 
-    SavedSettings backup;
-
     Array x(2, 1.0);
     const Real beta = 100.0;
     const Real eta  = 1.0/0.4;
@@ -185,8 +181,6 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
     BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
 
     using namespace swing_option_test;
-
-    SavedSettings backup;
 
     ext::shared_ptr<ExtOUWithJumpsProcess> jumpProcess = createKlugeProcess();
 
@@ -246,8 +240,6 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
 void SwingOptionTest::testFdBSSwingOption() {
 
     BOOST_TEST_MESSAGE("Testing Black-Scholes vanilla swing option pricing...");
-
-    SavedSettings backup;
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
@@ -327,8 +319,6 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 
     using namespace swing_option_test;
-
-    SavedSettings backup;
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
@@ -484,8 +474,6 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
             " comparison to moment matching...");
 
     using namespace swing_option_test;
-
-    SavedSettings backup;
 
     Date settlementDate = Date(22, November, 2019);
     Settings::instance().evaluationDate() = settlementDate;

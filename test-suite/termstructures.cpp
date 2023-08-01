@@ -53,9 +53,6 @@ namespace term_structures_test {
         ext::shared_ptr<YieldTermStructure> termStructure;
         ext::shared_ptr<YieldTermStructure> dummyTermStructure;
 
-        // cleanup
-        SavedSettings backup;
-
         // setup
         CommonVars() {
             calendar = TARGET();
@@ -359,7 +356,6 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
 
     using namespace term_structures_test;
 
-    SavedSettings backup;
     Settings::instance().evaluationDate() = Date(10, Nov, 2017);
 
     // First curve

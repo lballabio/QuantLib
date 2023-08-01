@@ -98,10 +98,7 @@ namespace {
             if (iter != exerciseTimes_.end()) {
                 Size index = std::distance(exerciseTimes_.begin(), iter);
 
-               ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
-                const FdmLinearOpIterator endIter = layout->end();
-                for (FdmLinearOpIterator iter = layout->begin();
-                     iter != endIter; ++iter) {
+                for (const auto& iter : *mesher_->layout()) {
                     const Real s = std::exp(mesher_->location(iter, 0));
 
                     if (s > triggerLevels_[index]) {
@@ -249,16 +246,14 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
     FirstDerivativeOp map(2, mesher);
 
     Array r(mesher->layout()->size());
-    const FdmLinearOpIterator endIter = index->end();
-
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         r[iter.index()] =  std::sin(mesher->location(iter, 0))
                          + std::cos(mesher->location(iter, 2));
     }
 
     Array t = map.apply(r);
     const Real dz = (boundaries[2].second-boundaries[2].first)/(dim[2]-1);
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size z = iter.coordinates()[2];
 
         const Size z0 = (z > 0) ? z-1 : 1;
@@ -303,9 +298,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
     ext::shared_ptr<FdmMesher> mesher(
                             new UniformGridMesher(index, boundaries));
     Array r(mesher->layout()->size());
-    const FdmLinearOpIterator endIter = index->end();
-
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
         const Real z = mesher->location(iter, 2);
@@ -316,7 +309,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
     Array t = SecondDerivativeOp(0, mesher).apply(r);
 
     const Real tol = 5e-2;
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size i = iter.index();
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
@@ -334,7 +327,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
     }
 
     t = SecondDerivativeOp(1, mesher).apply(r);
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size i = iter.index();
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
@@ -352,7 +345,7 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
     }
 
     t = SecondDerivativeOp(2, mesher).apply(r);
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size i = iter.index();
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
@@ -385,9 +378,6 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
     const ext::shared_ptr<FdmMesher> meshers(
         new FdmMesherComposite(mesherX, mesherY, mesherZ));
 
-    const ext::shared_ptr<FdmLinearOpLayout> layout = meshers->layout();
-    const FdmLinearOpIterator endIter = layout->end();
-
     const Real tol = 1e-13;
     for (Size direction=0; direction < 3; ++direction) {
 
@@ -398,13 +388,12 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
 
         const Array gridPoints = meshers->locations(direction);
 
-        for (FdmLinearOpIterator iter=layout->begin();
-            iter != endIter; ++iter) {
+        for (const auto& iter : *meshers->layout()) {
 
             const Size c = iter.coordinates()[direction];
             const Size index   = iter.index();
-            const Size indexM1 = layout->neighbourhood(iter,direction,-1);
-            const Size indexP1 = layout->neighbourhood(iter,direction,+1);
+            const Size indexM1 = meshers->layout()->neighbourhood(iter,direction,-1);
+            const Size indexP1 = meshers->layout()->neighbourhood(iter,direction,+1);
 
             // test only if not on the boundary
             if (c == 0) {
@@ -412,8 +401,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[0] = 0.0;
                 twoPoints[1] = gridPoints.at(indexP1)-gridPoints.at(index);
 
-                const Array ndWeights1st = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
+                const Array ndWeights1st =
+                    NumericalDifferentiation({}, 1 , twoPoints).weights();
 
                 const Real beta1  = dfdx(index, index);
                 const Real gamma1 = dfdx(index, indexP1);
@@ -447,13 +436,13 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                             << "\n calculated gamma: " << gamma2);
                 }
             }
-            else if (c == layout->dim()[direction]-1) {
+            else if (c == meshers->layout()->dim()[direction]-1) {
                 Array twoPoints(2);
                 twoPoints[0] = gridPoints.at(indexM1)-gridPoints.at(index);
                 twoPoints[1] = 0.0;
 
-                const Array ndWeights1st = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
+                const Array ndWeights1st =
+                    NumericalDifferentiation({}, 1 , twoPoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -493,8 +482,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 threePoints[1] = 0.0;
                 threePoints[2] = gridPoints.at(indexP1)-gridPoints.at(index);
 
-                const Array ndWeights1st = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 1 , threePoints).weights();
+                const Array ndWeights1st =
+                    NumericalDifferentiation({}, 1 , threePoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -519,8 +508,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                             << gamma1 - ndWeights1st.at(2));
                 }
 
-                const Array ndWeights2nd = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 2 , threePoints).weights();
+                const Array ndWeights2nd =
+                    NumericalDifferentiation({}, 2 , threePoints).weights();
 
                 const Real alpha2 = d2fdx2(index, indexM1);
                 const Real beta2  = d2fdx2(index, index);
@@ -563,9 +552,8 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
         new UniformGridMesher(index, boundaries));
 
     Array r(mesher->layout()->size());
-    const FdmLinearOpIterator endIter = index->end();
 
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
         const Real z = mesher->location(iter, 2);
@@ -577,7 +565,7 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
     Array u = SecondOrderMixedDerivativeOp(1, 0, mesher).apply(r);
 
     const Real tol = 5e-2;
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size i = iter.index();
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
@@ -599,7 +587,7 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
     t = SecondOrderMixedDerivativeOp(0, 2, mesher).apply(r);
     u = SecondOrderMixedDerivativeOp(2, 0, mesher).apply(r);
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size i = iter.index();
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
@@ -621,7 +609,7 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
 
     t = SecondOrderMixedDerivativeOp(1, 2, mesher).apply(r);
     u = SecondOrderMixedDerivativeOp(2, 1, mesher).apply(r);
-    for (FdmLinearOpIterator iter = index->begin(); iter != endIter; ++iter) {
+    for (const auto& iter : *index) {
         const Size i = iter.index();
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
@@ -728,8 +716,6 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
-    SavedSettings backup;
-
     const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
@@ -754,9 +740,7 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
                                    new FdmHestonOp(mesher, hestonProcess));
 
     Array rhs(mesher->layout()->size());
-    const FdmLinearOpIterator endIter = mesher->layout()->end();
-    for (FdmLinearOpIterator iter = mesher->layout()->begin();
-         iter != endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
         rhs[iter.index()]=std::max(std::exp(mesher->location(iter,0))-100, 0.0);
     }
 
@@ -776,8 +760,7 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
             ret[i][j] = rhs[i+j*dim[0]];
 
     std::vector<Real> tx, ty;
-    for (FdmLinearOpIterator iter = mesher->layout()->begin();
-        iter != endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[1] == 0) {
                 tx.push_back(mesher->location(iter, 0));
             }
@@ -819,8 +802,6 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
     BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
-    SavedSettings backup;
-
     const std::vector<Size> dim = {200, 100};
 
     ext::shared_ptr<FdmLinearOpLayout> index(new FdmLinearOpLayout(dim));
@@ -846,9 +827,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 
     ext::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Put, 100.0));
     Array rhs(mesher->layout()->size());
-    const FdmLinearOpIterator endIter = mesher->layout()->end();
-    for (FdmLinearOpIterator iter = mesher->layout()->begin();
-        iter != endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
             rhs[iter.index()]
                 = payoff->operator ()(std::exp(mesher->location(iter, 0)));
     }
@@ -867,8 +846,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
             ret[i][j] = rhs[i+j*dim[0]];
 
     std::vector<Real> tx, ty;
-    for (FdmLinearOpIterator iter = mesher->layout()->begin();
-        iter != endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[1] == 0) {
                 tx.push_back(mesher->location(iter, 0));
             }
@@ -894,8 +872,6 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
 void FdmLinearOpTest::testFdmHestonExpress() {
 
     BOOST_TEST_MESSAGE("Testing FDM with express certificate in Heston model...");
-
-    SavedSettings backup;
 
     const std::vector<Size> dim = {200, 100};
 
@@ -1075,8 +1051,6 @@ namespace {
 void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     BOOST_TEST_MESSAGE("Testing FDM with Heston Hull-White model...");
 
-    SavedSettings backup;
-
     const Date today = Date(28, March, 2004);
     Settings::instance().evaluationDate() = today;
 
@@ -1104,9 +1078,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
                                  jointProcess->eta()));
 
     Array rhs(mesher->layout()->size());
-    const FdmLinearOpIterator endIter = mesher->layout()->end();
-    for (FdmLinearOpIterator iter = mesher->layout()->begin();
-        iter != endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
             rhs[iter.index()] = desc.calculator->avgInnerValue(iter, maturity);
     }
 
@@ -1117,8 +1089,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     hsModel.rollback(rhs, maturity, 0.0, desc.timeSteps);
 
     std::vector<Real> tx, ty, tr, y;
-    for (FdmLinearOpIterator iter = mesher->layout()->begin();
-        iter != endIter; ++iter) {
+    for (const auto& iter : *mesher->layout()) {
             if (iter.coordinates()[1] == 0 && iter.coordinates()[2] == 0) {
                 tx.push_back(mesher->location(iter, 0));
             }
@@ -1331,8 +1302,6 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     BOOST_TEST_MESSAGE("Testing Crank-Nicolson with initial implicit damping steps "
                        "for a digital option...");
 
-    SavedSettings backup;
-
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
@@ -1382,10 +1351,8 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
                                   new FdmLogInnerValue(payoff, mesher, 0));
 
     Array rhs(layout->size()), x(layout->size());
-    const FdmLinearOpIterator endIter = layout->end();
 
-    for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
-         ++iter) {
+    for (const auto& iter : *layout) {
         rhs[iter.index()] = calculator->avgInnerValue(iter, maturity);
         x[iter.index()] = mesher->location(iter, 0);
     }
@@ -1507,11 +1474,8 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
             ext::shared_ptr<Fdm1dMesher>(new Concentrating1dMesher(
                 -2, 1, 5, std::pair<Real, Real>(0.5, 0.1)))));
 
-    const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
-
     Array f(mesher->layout()->size());
-    for (FdmLinearOpIterator iter = layout->begin();
-        iter != layout->end(); ++iter) {
+    for (const auto& iter : *mesher->layout()) {
         const Real x = mesher->location(iter, 0);
         const Real y = mesher->location(iter, 1);
         const Real z = mesher->location(iter, 2);
@@ -1553,8 +1517,6 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
 void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a "
             "high interest rate scenario...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(11, February, 2018);
@@ -1618,8 +1580,6 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
 void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a low volatility and "
             "high discrete dividend scenario...");
-
-    SavedSettings backup;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(28, January, 2018);

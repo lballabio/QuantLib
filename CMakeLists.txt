@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 30)
+set(QUANTLIB_VERSION_MINOR 32)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01300000")
+set(PACKAGE_VERSION_HEX   "0x01320000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -47,10 +47,14 @@ option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
 option(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "Enable the thread-safe observer pattern" OFF)
 option(QL_ENABLE_TRACING "Tracing messages should be allowed" OFF)
+option(QL_ENABLE_DEFAULT_WARNING_LEVEL "Enable the default warning level to pass the ci pipeline" ON)
+option(QL_COMPILE_WARNING_AS_ERROR "Specify whether to treat warnings on compile as errors." OFF)
 option(QL_ERROR_FUNCTIONS "Error messages should include current function information" OFF)
 option(QL_ERROR_LINES "Error messages should include file and line information" OFF)
 option(QL_EXTRA_SAFETY_CHECKS "Extra safety checks should be performed" OFF)
 option(QL_HIGH_RESOLUTION_DATE "Enable date resolution down to microseconds" OFF)
+option(QL_THROW_IN_CYCLES "Throw an exception when a notification loop is detected" OFF)
+option(QL_FASTER_LAZY_OBJECTS "Cause lazy objects to forward just the first notification instead of every one" ON)
 option(QL_NULL_AS_FUNCTIONS "Enable the implementation of Null as template functions" OFF)
 option(QL_INSTALL_BENCHMARK "Install benchmark" ON)
 option(QL_INSTALL_EXAMPLES "Install examples" ON)
@@ -58,18 +62,75 @@ option(QL_INSTALL_TEST_SUITE "Install test suite" ON)
 option(QL_TAGGED_LAYOUT "Library names use layout tags" ${MSVC})
 option(QL_USE_CLANG_TIDY "Use clang-tidy when building" OFF)
 option(QL_USE_INDEXED_COUPON "Use indexed coupons instead of par coupons" OFF)
+option(QL_USE_STD_ANY "Use std::any instead of boost::any" OFF)
 option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
+option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" ON)
+option(QL_USE_STD_OPTIONAL "Use std::optional instead of boost::optional" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
-option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" OFF)
-option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" OFF)
+option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" ON)
 set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source directories to be added to the build (semicolon-separated)")
 set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
+# Require C++14 or higher
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 14)
+elseif(CMAKE_CXX_STANDARD LESS 14)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
+endif()
+if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
+if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS FALSE)
+endif()
+
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
-    set(QL_USE_STD_SHARED_PTR ON)
+    if (CMAKE_CXX_STANDARD GREATER_EQUAL 17)
+        set(QL_USE_STD_ANY ON)
+        set(QL_USE_STD_OPTIONAL ON)
+    endif()
     set(QL_USE_STD_FUNCTION ON)
+    set(QL_USE_STD_SHARED_PTR ON)
     set(QL_USE_STD_TUPLE ON)
+endif()
+
+if (CMAKE_CXX_STANDARD LESS 17)
+    if (QL_USE_STD_ANY)
+        message(FATAL_ERROR "QL_USE_STD_ANY requires at least C++17")
+    endif()
+    if (QL_USE_STD_OPTIONAL)
+        message(FATAL_ERROR "QL_USE_STD_OPTIONAL requires at least C++17")
+    endif()
+endif ()
+
+# Set the default warning level we use to pass the GitHub workflows
+if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
+    if (MSVC)
+        # warning level 3
+        # There are also specific warnings disabled for MSCV in cmake/Platform.cmake.
+        add_compile_options(-W3)
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        # lots of warnings
+        add_compile_options(-Wall -Wno-unknown-pragmas)
+    endif()
+endif()
+
+# Treat warnings on compile as errors
+if (QL_COMPILE_WARNING_AS_ERROR)
+    # all compiler warnings as errors
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+        # since v3.24 cmake can set all compiler warnings as errors itself
+        set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+    else()
+        # or set them manually
+        if (MSVC)
+            add_compile_options(-WX)
+        elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+            add_compile_options(-Werror)
+        endif()
+    endif()
 endif()
 
 if (QL_USE_CLANG_TIDY)
@@ -99,20 +160,6 @@ endif()
 # Boost static runtime ON for MSVC
 if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
     set(Boost_USE_STATIC_RUNTIME ${MSVC})
-endif()
-
-# Require C++14 or higher
-if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 14)
-elseif(CMAKE_CXX_STANDARD LESS 14)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
-endif()
-if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
-if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
-    set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()
 
 if (NOT DEFINED QL_BOOST_VERSION)
@@ -173,6 +220,15 @@ set(QL_VERSION ${PACKAGE_VERSION})
 set(QL_HEX_VERSION ${PACKAGE_VERSION_HEX})
 configure_file(ql/config.hpp.cfg ql/config.hpp @ONLY)
 configure_file(ql/qldefines.hpp.cfg ql/qldefines.hpp @ONLY)
+
+
+# Generate quantlib-config
+# Define the variables to be substituted in the input file
+set(prefix ${CMAKE_INSTALL_PREFIX})
+set(exec_prefix "\${prefix}")
+set(includedir "\${prefix}/include")
+set(libdir "\${exec_prefix}/lib")
+configure_file(quantlib-config.in quantlib-config @ONLY)
 
 include(Platform)
 
