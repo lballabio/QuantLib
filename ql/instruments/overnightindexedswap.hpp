@@ -53,7 +53,8 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> nominals,
@@ -66,7 +67,8 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
         OvernightIndexedSwap(Type type,
                              Real nominal,
@@ -80,7 +82,8 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> nominals,
@@ -94,7 +97,8 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
         //! \name Inspectors
         //@{

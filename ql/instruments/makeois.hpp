@@ -41,7 +41,8 @@ namespace QuantLib {
         MakeOIS(const Period& swapTenor,
                 const ext::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
-                const Period& fwdStart = 0*Days);
+                const Period& fwdStart = 0 * Days,
+                const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
         operator OvernightIndexedSwap() const;
         operator ext::shared_ptr<OvernightIndexedSwap>() const ;
@@ -103,6 +104,8 @@ namespace QuantLib {
 
         bool telescopicValueDates_ = false;
         RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+
+        mutable ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 }

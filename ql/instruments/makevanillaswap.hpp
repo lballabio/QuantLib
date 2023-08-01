@@ -41,7 +41,8 @@ namespace QuantLib {
         MakeVanillaSwap(const Period& swapTenor,
                         const ext::shared_ptr<IborIndex>& iborIndex,
                         Rate fixedRate = Null<Rate>(),
-                        const Period& forwardStart = 0*Days);
+                        const Period& forwardStart = 0 * Days,
+                        const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
 
         operator VanillaSwap() const;
         operator ext::shared_ptr<VanillaSwap>() const;
@@ -110,6 +111,8 @@ namespace QuantLib {
         ext::optional<bool> useIndexedCoupons_;
 
         ext::shared_ptr<PricingEngine> engine_;
+
+        mutable ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 }

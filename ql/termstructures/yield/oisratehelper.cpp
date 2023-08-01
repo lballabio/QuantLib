@@ -65,18 +65,31 @@ namespace QuantLib {
 
     void OISRateHelper::initializeDates() {
 
+        ext::shared_ptr<FloatingRateCouponPricer> pricer;
+        switch (averagingMethod) {
+            case RateAveraging::Simple:
+                pricer = ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(
+                    telescopicValueDates_);
+                break;
+            case RateAveraging::Compound:
+                pricer = ext::make_shared<OvernightIndexedCouponPricer>();
+                break;
+            default:
+                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+        }
+
         // input discount curve Handle might be empty now but it could
-        //    be assigned a curve later; use a RelinkableHandle here
-        MakeOIS tmp = MakeOIS(tenor_, overnightIndex_, 0.0, forwardStart_)
-            .withDiscountingTermStructure(discountRelinkableHandle_)
-            .withSettlementDays(settlementDays_)
-            .withTelescopicValueDates(telescopicValueDates_)
-            .withPaymentLag(paymentLag_)
-            .withPaymentAdjustment(paymentConvention_)
-            .withPaymentFrequency(paymentFrequency_)
-            .withPaymentCalendar(paymentCalendar_)
-            .withOvernightLegSpread(overnightSpread_)
-            .withAveragingMethod(averagingMethod_);
+        // be assigned a curve later; use a RelinkableHandle here
+        MakeOIS tmp = MakeOIS(tenor_, overnightIndex_, 0.0, forwardStart_, pricer)
+                          .withDiscountingTermStructure(discountRelinkableHandle_)
+                          .withSettlementDays(settlementDays_)
+                          .withTelescopicValueDates(telescopicValueDates_)
+                          .withPaymentLag(paymentLag_)
+                          .withPaymentAdjustment(paymentConvention_)
+                          .withPaymentFrequency(paymentFrequency_)
+                          .withPaymentCalendar(paymentCalendar_)
+                          .withOvernightLegSpread(overnightSpread_)
+                          .withAveragingMethod(averagingMethod_);
         if (endOfMonth_) {
             swap_ = tmp.withEndOfMonth(*endOfMonth_);
         } else {

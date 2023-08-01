@@ -820,7 +820,10 @@ namespace QuantLib {
         //    i.e. it can dinamically change
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
+        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_, ext::make_shared<BlackIborCouponPricer>(
+                Handle<OptionletVolatilityStructure>(),
+                BlackIborCouponPricer::TimingAdjustment::Black76,
+                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_)
             .withSettlementDays(settlementDays_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withFixedLegDayCount(fixedDayCount_)
@@ -863,7 +866,6 @@ namespace QuantLib {
         }
 
         latestDate_ = pillarDate_; // backward compatibility
-
     }
 
     void SwapRateHelper::setTermStructure(YieldTermStructure* t) {

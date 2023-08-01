@@ -40,7 +40,8 @@ namespace QuantLib {
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
                                      const ext::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
-                                     const Period& forwardStart)
+                                     const Period& forwardStart,
+                                     const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : swapTenor_(swapTenor), iborIndex_(index), fixedRate_(fixedRate), forwardStart_(forwardStart),
       settlementDays_(Null<Natural>()), fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
@@ -50,7 +51,9 @@ namespace QuantLib {
       floatConvention_(index->businessDayConvention()),
       floatTerminationDateConvention_(index->businessDayConvention()),
 
-      floatDayCount_(index->dayCounter()) {}
+      floatDayCount_(index->dayCounter()),
+
+      pricer_(pricer) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
         ext::shared_ptr<VanillaSwap> swap = *this;

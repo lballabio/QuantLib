@@ -77,7 +77,8 @@ namespace QuantLib {
                     Spread spread,
                     DayCounter floatingDayCount,
                     ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
-                    ext::optional<bool> useIndexedCoupons = ext::nullopt);
+                    ext::optional<bool> useIndexedCoupons = ext::nullopt,
+                    ext::shared_ptr<FloatingRateCouponPricer> pricer = nullptr);
         //! \name Inspectors
         //@{
         Type type() const;
