@@ -64,7 +64,6 @@ namespace QuantLib {
         //@{
         void deepUpdate() override;
         //@}
-        //@}
         //! \name LazyObject interface
         //@{
         void performCalculations() const override;
