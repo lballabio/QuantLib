@@ -40,7 +40,7 @@ namespace QuantLib {
                          underlying->dayCounter(),
                          underlying->isInArrears(),
                          underlying->exCouponDate(),
-                         underlying->pricer()),
+                         underlying->allowsNotificationPassThrough() ? underlying->pricer() : nullptr),
       underlying_(underlying) {
 
         if (gearing_ > 0) {

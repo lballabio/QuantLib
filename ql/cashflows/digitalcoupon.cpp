@@ -49,7 +49,7 @@ namespace QuantLib {
                          underlying->dayCounter(),
                          underlying->isInArrears(),
                          underlying->exCouponDate(),
-                         underlying->pricer()),
+                         underlying->allowsNotificationPassThrough() ? underlying->pricer() : nullptr),
       underlying_(underlying), isCallATMIncluded_(isCallATMIncluded),
       isPutATMIncluded_(isPutATMIncluded),
 

@@ -149,12 +149,14 @@ namespace QuantLib {
         */
         virtual void deepUpdate();
 
-      protected:
-        /*! If set to true, registering with this instance is done by registering
+        /*! If true, registering with this instance is done by registering
             with the observables of this instance. This is possible if all observables
             are immutable after construction of the instance. If used for suitable
             classes (e.g. suitable cashflows) this can lead to smaller observation graphs. 
         */
+        bool allowsNotificationPassThrough() const { return allowsNotificationPassThrough_; }
+
+      protected:
         bool allowsNotificationPassThrough_ = false;
 
       private:
@@ -324,6 +326,13 @@ namespace QuantLib {
           this method ensures an update of such nested observers. It
           should be implemented in derived classes whenever applicable */
         virtual void deepUpdate();
+
+        /*! If true, registering with this instance is done by registering
+            with the observables of this instance. This is possible if all observables
+            are immutable after construction of the instance. If used for suitable
+            classes (e.g. suitable cashflows) this can lead to smaller observation graphs. 
+        */
+        bool allowsNotificationPassThrough() const { return allowsNotificationPassThrough_; }
 
       protected:
         bool allowsNotificationPassThrough_ = false;
