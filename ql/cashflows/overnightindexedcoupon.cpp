@@ -21,7 +21,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/experimental/averageois/averageoiscouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -33,106 +32,87 @@ using std::vector;
 
 namespace QuantLib {
 
-    namespace {
+    void OvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+        coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
+        QL_ENSURE(coupon_, "wrong coupon type");
+    }
 
-        class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
-          public:
-            void initialize(const FloatingRateCoupon& coupon) override {
-                coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
-                QL_ENSURE(coupon_, "wrong coupon type");
-            }
+    Rate OvernightIndexedCouponPricer::averageRate(const Date& date) const {
 
-            Rate averageRate(const Date& date) const {
+        const Date today = Settings::instance().evaluationDate();
 
-                const Date today = Settings::instance().evaluationDate();
+        const ext::shared_ptr<OvernightIndex> index =
+            ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+        const auto& pastFixings = IndexManager::instance().getHistory(index->name());
 
-                const ext::shared_ptr<OvernightIndex> index =
-                    ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
-                const auto& pastFixings = IndexManager::instance().getHistory(index->name());
+        const vector<Date>& fixingDates = coupon_->fixingDates();
+        const vector<Date>& valueDates = coupon_->valueDates();
+        const vector<Time>& dt = coupon_->dt();
 
-                const vector<Date>& fixingDates = coupon_->fixingDates();
-                const vector<Date>& valueDates = coupon_->valueDates();
-                const vector<Time>& dt = coupon_->dt();
+        Size i = 0;
+        const size_t n =
+            std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
+        Real compoundFactor = 1.0;
 
-                Size i = 0;
-                const size_t n = std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
-                Real compoundFactor = 1.0;
+        // already fixed part
+        while (i < n && fixingDates[i] < today) {
+            // rate must have been fixed
+            const Rate fixing = pastFixings[fixingDates[i]];
+            QL_REQUIRE(fixing != Null<Real>(),
+                       "Missing " << index->name() << " fixing for " << fixingDates[i]);
+            Time span =
+                (date >= valueDates[i + 1] ? dt[i] :
+                                             index->dayCounter().yearFraction(valueDates[i], date));
+            compoundFactor *= (1.0 + fixing * span);
+            ++i;
+        }
 
-                // already fixed part
-                while (i < n && fixingDates[i] < today) {
-                    // rate must have been fixed
-                    const Rate fixing = pastFixings[fixingDates[i]];
-                    QL_REQUIRE(fixing != Null<Real>(),
-                               "Missing " << index->name() <<
-                               " fixing for " << fixingDates[i]);
-                    Time span = (date >= valueDates[i+1] ?
-                                 dt[i] :
-                                 index->dayCounter().yearFraction(valueDates[i], date));
+        // today is a border case
+        if (i < n && fixingDates[i] == today) {
+            // might have been fixed
+            try {
+                Rate fixing = pastFixings[fixingDates[i]];
+                if (fixing != Null<Real>()) {
+                    Time span = (date >= valueDates[i + 1] ?
+                                     dt[i] :
+                                     index->dayCounter().yearFraction(valueDates[i], date));
                     compoundFactor *= (1.0 + fixing * span);
                     ++i;
+                } else {
+                    ; // fall through and forecast
                 }
-
-                // today is a border case
-                if (i < n && fixingDates[i] == today) {
-                    // might have been fixed
-                    try {
-                        Rate fixing = pastFixings[fixingDates[i]];
-                        if (fixing != Null<Real>()) {
-                            Time span = (date >= valueDates[i+1] ?
-                                         dt[i] :
-                                         index->dayCounter().yearFraction(valueDates[i], date));
-                            compoundFactor *= (1.0 + fixing * span);
-                            ++i;
-                        } else {
-                            ;   // fall through and forecast
-                        }
-                    } catch (Error&) {
-                        ;       // fall through and forecast
-                    }
-                }
-
-                // forward part using telescopic property in order
-                // to avoid the evaluation of multiple forward fixings
-                if (i<n) {
-                    const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
-                    QL_REQUIRE(!curve.empty(),
-                               "null term structure set to this instance of " << index->name());
-
-                    const DiscountFactor startDiscount = curve->discount(valueDates[i]);
-                    if (valueDates[n] == date) {
-                        // full telescopic formula
-                        const DiscountFactor endDiscount = curve->discount(valueDates[n]);
-                        compoundFactor *= startDiscount / endDiscount;
-                    } else {
-                        // The last fixing is not used for its full period (the date is between its
-                        // start and end date).  We can use the telescopic formula until the previous
-                        // date, then we'll add the missing bit.
-                        const DiscountFactor endDiscount = curve->discount(valueDates[n-1]);
-                        compoundFactor *= startDiscount / endDiscount;
-
-                        Rate fixing = index->fixing(fixingDates[n-1]);
-                        Time span = index->dayCounter().yearFraction(valueDates[n-1], date);
-                        compoundFactor *= (1.0 + fixing * span);
-                    }
-                }
-
-                const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
-                return coupon_->gearing() * rate + coupon_->spread();
+            } catch (Error&) {
+                ; // fall through and forecast
             }
+        }
 
-            Rate swapletRate() const override {
-                return averageRate(coupon_->accrualEndDate());
+        // forward part using telescopic property in order
+        // to avoid the evaluation of multiple forward fixings
+        if (i < n) {
+            const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
+            QL_REQUIRE(!curve.empty(),
+                       "null term structure set to this instance of " << index->name());
+
+            const DiscountFactor startDiscount = curve->discount(valueDates[i]);
+            if (valueDates[n] == date) {
+                // full telescopic formula
+                const DiscountFactor endDiscount = curve->discount(valueDates[n]);
+                compoundFactor *= startDiscount / endDiscount;
+            } else {
+                // The last fixing is not used for its full period (the date is between its
+                // start and end date).  We can use the telescopic formula until the previous
+                // date, then we'll add the missing bit.
+                const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
+                compoundFactor *= startDiscount / endDiscount;
+
+                Rate fixing = index->fixing(fixingDates[n - 1]);
+                Time span = index->dayCounter().yearFraction(valueDates[n - 1], date);
+                compoundFactor *= (1.0 + fixing * span);
             }
+        }
 
-            Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
-            Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
-            Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
-            Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
-            Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
-
-          protected:
-            const OvernightIndexedCoupon* coupon_;
-        };
+        const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
+        return coupon_->gearing() * rate + coupon_->spread();
     }
 
     OvernightIndexedCoupon::OvernightIndexedCoupon(

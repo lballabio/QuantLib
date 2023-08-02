@@ -38,6 +38,7 @@ namespace QuantLib {
 
     class Schedule;
     class OvernightIndex;
+    class FloatingRateCouponPricer;
 
     //! Overnight indexed swap: fix vs compounded overnight rate
     class OvernightIndexedSwap : public Swap {

@@ -28,6 +28,7 @@
 #ifndef quantlib_overnight_indexed_coupon_hpp
 #define quantlib_overnight_indexed_coupon_hpp
 
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -126,6 +127,22 @@ namespace QuantLib {
         ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
+    class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+      public:
+        void initialize(const FloatingRateCoupon& coupon) override;
+
+        Rate averageRate(const Date& date) const;
+        Rate swapletRate() const override { return averageRate(coupon_->accrualEndDate()); }
+
+        Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
+        Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
+        Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
+        Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
+        Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
+
+      protected:
+        const OvernightIndexedCoupon* coupon_;
+    };
 }
 
 #endif
