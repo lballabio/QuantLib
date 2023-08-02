@@ -18,6 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/experimental/averageois/averageoiscouponpricer.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
@@ -66,7 +68,7 @@ namespace QuantLib {
     void OISRateHelper::initializeDates() {
 
         ext::shared_ptr<FloatingRateCouponPricer> pricer;
-        switch (averagingMethod) {
+        switch (averagingMethod_) {
             case RateAveraging::Simple:
                 pricer = ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(
                     telescopicValueDates_);
@@ -75,7 +77,7 @@ namespace QuantLib {
                 pricer = ext::make_shared<OvernightIndexedCouponPricer>();
                 break;
             default:
-                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
         }
 
         // input discount curve Handle might be empty now but it could

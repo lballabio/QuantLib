@@ -34,6 +34,7 @@
 namespace QuantLib {
 
     class IborIndex;
+    class FloatingRateCouponPricer;
 
     //! Plain-vanilla swap: fix vs floating leg
     /*! \ingroup instruments
@@ -78,7 +79,7 @@ namespace QuantLib {
                     DayCounter floatingDayCount,
                     ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
                     ext::optional<bool> useIndexedCoupons = ext::nullopt,
-                    ext::shared_ptr<FloatingRateCouponPricer> pricer = nullptr);
+                    const ext::shared_ptr<FloatingRateCouponPricer>& pricer = nullptr);
         //! \name Inspectors
         //@{
         Type type() const;

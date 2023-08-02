@@ -23,6 +23,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
@@ -820,21 +821,23 @@ namespace QuantLib {
         //    i.e. it can dinamically change
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_, ext::make_shared<BlackIborCouponPricer>(
-                Handle<OptionletVolatilityStructure>(),
-                BlackIborCouponPricer::TimingAdjustment::Black76,
-                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_)
-            .withSettlementDays(settlementDays_)
-            .withDiscountingTermStructure(discountRelinkableHandle_)
-            .withFixedLegDayCount(fixedDayCount_)
-            .withFixedLegTenor(Period(fixedFrequency_))
-            .withFixedLegConvention(fixedConvention_)
-            .withFixedLegTerminationDateConvention(fixedConvention_)
-            .withFixedLegCalendar(calendar_)
-            .withFixedLegEndOfMonth(endOfMonth_)
-            .withFloatingLegCalendar(calendar_)
-            .withFloatingLegEndOfMonth(endOfMonth_)
-            .withIndexedCoupons(useIndexedCoupons_);
+        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_,
+                                ext::make_shared<BlackIborCouponPricer>(
+                                    Handle<OptionletVolatilityStructure>(),
+                                    BlackIborCouponPricer::TimingAdjustment::Black76,
+                                    Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)),
+                                    useIndexedCoupons_))
+                    .withSettlementDays(settlementDays_)
+                    .withDiscountingTermStructure(discountRelinkableHandle_)
+                    .withFixedLegDayCount(fixedDayCount_)
+                    .withFixedLegTenor(Period(fixedFrequency_))
+                    .withFixedLegConvention(fixedConvention_)
+                    .withFixedLegTerminationDateConvention(fixedConvention_)
+                    .withFixedLegCalendar(calendar_)
+                    .withFixedLegEndOfMonth(endOfMonth_)
+                    .withFloatingLegCalendar(calendar_)
+                    .withFloatingLegEndOfMonth(endOfMonth_)
+                    .withIndexedCoupons(useIndexedCoupons_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();

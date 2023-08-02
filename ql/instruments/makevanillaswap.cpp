@@ -156,7 +156,7 @@ namespace QuantLib {
             VanillaSwap temp(type_, 100.00, fixedSchedule,
                              0.0, // fixed rate
                              fixedDayCount, floatSchedule, iborIndex_, floatSpread_, floatDayCount_,
-                             ext::nullopt, useIndexedCoupons_);
+                             ext::nullopt, useIndexedCoupons_, pricer_);
             if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                         iborIndex_->forwardingTermStructure();
@@ -175,7 +175,7 @@ namespace QuantLib {
 
         ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount, floatSchedule, iborIndex_,
-            floatSpread_, floatDayCount_, ext::nullopt, useIndexedCoupons_));
+            floatSpread_, floatDayCount_, ext::nullopt, useIndexedCoupons_, pricer_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
