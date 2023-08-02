@@ -164,12 +164,8 @@ int main(int, char* []) {
                 new BlackConstantVol(settlementDate, calendar,
                                      volatility, dayCounter)));
 
-
-        ext::shared_ptr<BlackScholesMertonProcess> stochasticProcess(
-                              new BlackScholesMertonProcess(underlyingH,
-                                                            flatDividendTS,
-                                                            flatTermStructure,
-                                                            flatVolTS));
+        auto stochasticProcess = ext::make_shared<BlackScholesMertonProcess>(
+            underlyingH, flatDividendTS, flatTermStructure, flatVolTS);
 
         Size timeSteps = 801;
 

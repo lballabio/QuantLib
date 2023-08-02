@@ -447,7 +447,7 @@ int main(int, char* []) {
          floatingRateBond.setPricingEngine(bondEngine);
 
          // Coupon pricers
-         ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer);
+         auto pricer = ext::make_shared<BlackIborCouponPricer>();
 
          // optionLet volatilities
          Volatility volatility = 0.0;

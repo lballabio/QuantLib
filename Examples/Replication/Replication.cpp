@@ -101,9 +101,8 @@ int main(int, char* []) {
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
-        ext::shared_ptr<BlackScholesProcess> bsProcess(
-                            new BlackScholesProcess(Handle<Quote>(underlying),
-                                                    flatRate, flatVol));
+        auto bsProcess = ext::make_shared<BlackScholesProcess>(
+            Handle<Quote>(underlying), flatRate, flatVol);
 
         ext::shared_ptr<PricingEngine> barrierEngine(
                                         new AnalyticBarrierEngine(bsProcess));
