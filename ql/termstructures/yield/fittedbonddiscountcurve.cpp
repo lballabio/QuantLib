@@ -126,7 +126,7 @@ namespace QuantLib {
         Constraint constraint)
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(std::move(l2)),
       calculateWeights_(weights.empty()), optimizationMethod_(std::move(optimizationMethod)),
-      minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime), constraint_(constraint) {}
+      minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime), constraint_(std::move(constraint)) {}
 
     void FittedBondDiscountCurve::FittingMethod::init() {
         // yield conventions

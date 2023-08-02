@@ -51,8 +51,7 @@ namespace QuantLib {
       public:
         ExponentialSplinesFitting(bool constrainAtZero = true,
                                   const Array& weights = Array(),
-                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                      ext::shared_ptr<OptimizationMethod>(),
+                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
                                   Real maxCutoffTime = QL_MAX_REAL,
@@ -72,7 +71,6 @@ namespace QuantLib {
                                   Real fixedKappa, 
                                   const Array& weights = Array(),
                                   Constraint constraint = NoConstraint{});
-
 
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
       private:
@@ -97,8 +95,7 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting(const Array& weights = Array(),
-                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                ext::shared_ptr<OptimizationMethod>(),
+                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                             const Array& l2 = Array(),
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL,
@@ -131,8 +128,7 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SvenssonFitting(const Array& weights = Array(),
-                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                            ext::shared_ptr<OptimizationMethod>(),
+                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                         const Array& l2 = Array(),
                         Real minCutoffTime = 0.0,
                         Real maxCutoffTime = QL_MAX_REAL,
@@ -174,8 +170,7 @@ namespace QuantLib {
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero = true,
                              const Array& weights = Array(),
-                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                 ext::shared_ptr<OptimizationMethod>(),
+                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                              const Array& l2 = Array(),
                              Real minCutoffTime = 0.0,
                              Real maxCutoffTime = QL_MAX_REAL,
@@ -216,8 +211,7 @@ namespace QuantLib {
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
-                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                    ext::shared_ptr<OptimizationMethod>(),
+                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                 const Array& l2 = Array(),
                                 Real minCutoffTime = 0.0,
                                 Real maxCutoffTime = QL_MAX_REAL,

@@ -205,15 +205,14 @@ namespace QuantLib {
         //! return optimization method being used
         ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
         //! return constraint of the solution being used
-        Constraint constraint() const;
+        const Constraint& constraint() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
         //! constructors
         FittingMethod(bool constrainAtZero = true,
                       const Array& weights = Array(),
-                      ext::shared_ptr<OptimizationMethod> optimizationMethod =
-                          ext::shared_ptr<OptimizationMethod>(),
+                      ext::shared_ptr<OptimizationMethod> optimizationMethod = {},
                       Array l2 = Array(),
                       Real minCutoffTime = 0.0,
                       Real maxCutoffTime = QL_MAX_REAL,
@@ -329,7 +328,7 @@ namespace QuantLib {
         return optimizationMethod_;
     }
 
-    inline Constraint
+    inline const Constraint&
     FittedBondDiscountCurve::FittingMethod::constraint() const {
         return constraint_;
     }
