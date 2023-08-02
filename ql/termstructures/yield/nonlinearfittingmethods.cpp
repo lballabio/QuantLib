@@ -317,8 +317,7 @@ namespace QuantLib {
     SpreadFittingMethod::SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
                                              Handle<YieldTermStructure> discountCurve,
                                              const Real minCutoffTime,
-                                             const Real maxCutoffTime,
-                                             Constraint constraint)
+                                             const Real maxCutoffTime)
     : FittedBondDiscountCurve::FittingMethod(
           method != nullptr ? method->constrainAtZero() : true,
           method != nullptr ? method->weights() : Array(),

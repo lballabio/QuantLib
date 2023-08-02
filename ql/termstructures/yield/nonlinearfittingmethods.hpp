@@ -240,8 +240,7 @@ namespace QuantLib {
         SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
                             Handle<YieldTermStructure> discountCurve,
                             Real minCutoffTime = 0.0,
-                            Real maxCutoffTime = QL_MAX_REAL,
-                            Constraint constraint = NoConstraint{});
+                            Real maxCutoffTime = QL_MAX_REAL);
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
     protected:
       void init() override;
