@@ -64,11 +64,6 @@ namespace QuantLib {
         return amount_;
     }
 
-    std::pair<bool, std::set<ext::shared_ptr<Observable>>>
-    FixedRateCoupon::allowsNotificationPassThrough() const {
-        return std::make_pair(true, {});
-    }
-
     void FixedRateCoupon::performCalculations() const {
         amount_ = nominal() * (rate_.compoundFactor(accrualStartDate_, accrualEndDate_,
                                                     refPeriodStart_, refPeriodEnd_) -
