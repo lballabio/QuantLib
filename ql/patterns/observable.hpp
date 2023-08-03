@@ -94,6 +94,12 @@ namespace QuantLib {
         bool updatesEnabled() const { return updatesEnabled_; }
         bool updatesDeferred() const { return updatesDeferred_; }
 
+        void resetStats() { numberOfRegisteredObservables_ = numberOfSentNotifications_ = 0; }
+        void incrementRegisteredObservables() { ++numberOfRegisteredObservables_; }
+        void incrementSentNotifications() { ++numberOfSentNotifications_; }
+        Size numberOfRegisteredObservables() const { return numberOfRegisteredObservables_; }
+        Size numberOfSentNotifications() const { return numberOfSentNotifications_; }
+
       private:
         ObservableSettings() = default;
 
@@ -106,6 +112,9 @@ namespace QuantLib {
         set_type deferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
+
+        Size numberOfRegisteredObservables_ = 0;
+        Size numberOfSentNotifications_ = 0;
     };
 
     //! Object that gets notified when a given observable changes
@@ -241,6 +250,7 @@ namespace QuantLib {
                     return std::make_pair(observables_.end(), false);
                 }
             }
+            ObservableSettings::instance().incrementRegisteredObservables();
             h->registerObserver(this);
             return observables_.insert(h);
         }

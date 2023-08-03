@@ -36,6 +36,7 @@ namespace QuantLib {
 
             for (auto* deferredObserver : deferredObservers_) {
                 try {
+                    ObservableSettings::instance().incrementSentNotifications();
                     deferredObserver->update();
                 } catch (std::exception& e) {
                     successful = false;
@@ -63,6 +64,7 @@ namespace QuantLib {
             std::string errMsg;
             for (auto* observer : observers_) {
                 try {
+                    ObservableSettings::instance().incrementSentNotifications();
                     observer->update();
                 } catch (std::exception& e) {
                     // quite a dilemma. If we don't catch the exception,
