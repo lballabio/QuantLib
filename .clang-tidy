@@ -47,7 +47,6 @@ Checks: >
         modernize-*,
           -modernize-avoid-c-arrays,
           -modernize-macro-to-enum,
-          -modernize-make-shared,
           -modernize-return-braced-init-list,
           -modernize-use-emplace,
           -modernize-use-trailing-return-type,
@@ -72,10 +71,14 @@ Checks: >
           -readability-suspicious-call-argument,
           -readability-use-anyofallof,
 HeaderFilterRegex: '.*'
-FormatStyle: file
+FormatStyle: none
 CheckOptions:
   - key:   cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
     value: 1
+  - key:   modernize-make-shared.MakeSmartPtrFunction
+    value: ext::make_shared
+  - key:   modernize-make-shared.MakeSmartPtrFunctionHeader
+    value: <ql/shared_ptr.hpp>
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
 ...

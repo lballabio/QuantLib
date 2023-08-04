@@ -1864,8 +1864,8 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
         = ext::make_shared<EuropeanExercise>(exerciseDate);
 
     const ext::shared_ptr<HestonProcess> mixingProcess
-        = ext::shared_ptr<HestonProcess>(new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
-                                                           HestonProcess::QuadraticExponentialMartingale));
+        = ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
+                                          HestonProcess::QuadraticExponentialMartingale);
     const ext::shared_ptr<HestonModel> mixingModel
         = ext::make_shared<HestonModel>(mixingProcess);
 
