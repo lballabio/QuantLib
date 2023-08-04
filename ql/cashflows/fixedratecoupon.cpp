@@ -38,9 +38,14 @@ namespace QuantLib {
                                      const Date& refPeriodStart,
                                      const Date& refPeriodEnd,
                                      const Date& exCouponDate)
-    : Coupon(paymentDate, nominal, accrualStartDate, accrualEndDate,
-             refPeriodStart, refPeriodEnd, exCouponDate),
-      rate_(InterestRate(rate, dayCounter, Simple, Annual)) {}
+    : FixedRateCoupon(paymentDate,
+                      nominal,
+                      InterestRate(rate, dayCounter, Simple, Annual),
+                      accrualStartDate,
+                      accrualEndDate,
+                      refPeriodStart,
+                      refPeriodEnd,
+                      exCouponDate) {}
 
     FixedRateCoupon::FixedRateCoupon(const Date& paymentDate,
                                      Real nominal,
@@ -57,17 +62,10 @@ namespace QuantLib {
              refPeriodStart,
              refPeriodEnd,
              exCouponDate),
-      rate_(std::move(interestRate)) {}
-
-    Real FixedRateCoupon::amount() const {
-        calculate();
-        return amount_;
-    }
-
-    void FixedRateCoupon::performCalculations() const {
-        amount_ = nominal() * (rate_.compoundFactor(accrualStartDate_, accrualEndDate_,
-                                                    refPeriodStart_, refPeriodEnd_) -
-                               1.0);
+      rate_(std::move(interestRate)) {
+        amount_ = Coupon::nominal() * (rate_.compoundFactor(accrualStartDate_, accrualEndDate_,
+                                                            refPeriodStart_, refPeriodEnd_) -
+                                       1.0);
     }
 
     Real FixedRateCoupon::accruedAmount(const Date& d) const {
