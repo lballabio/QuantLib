@@ -952,10 +952,9 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
             s1, dividendYield, riskFreeRate, vol1));
 
     basketOption.setPricingEngine(
-        ext::shared_ptr<Fd2dBlackScholesVanillaEngine>(
-            new Fd2dBlackScholesVanillaEngine(
+        ext::make_shared<Fd2dBlackScholesVanillaEngine>(
                 bs1, bs2, rho, 11, 11, 6, 0,
-                FdmSchemeDesc::Hundsdorfer(), true, 0.25)));
+                FdmSchemeDesc::Hundsdorfer(), true, 0.25));
 
     const Real tolerance = 0.01;
     const Real expected = 2.561;

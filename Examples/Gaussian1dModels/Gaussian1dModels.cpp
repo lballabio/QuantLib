@@ -503,7 +503,7 @@ int main(int argc, char *argv[]) {
         const Leg &leg1 = underlying4->leg(1);
         ext::shared_ptr<CmsCouponPricer> cmsPricer =
             ext::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
-        ext::shared_ptr<IborCouponPricer> iborPricer(new BlackIborCouponPricer);
+        auto iborPricer = ext::make_shared<BlackIborCouponPricer>();
 
         setCouponPricer(leg0, cmsPricer);
         setCouponPricer(leg1, iborPricer);

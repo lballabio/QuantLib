@@ -117,9 +117,8 @@ int main(int, char* []) {
                                      dayCounter)));
         ext::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
-        ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-                 new BlackScholesMertonProcess(underlyingH, flatDividendTS,
-                                               flatTermStructure, flatVolTS));
+        auto bsmProcess = ext::make_shared<BlackScholesMertonProcess>(
+                underlyingH, flatDividendTS, flatTermStructure, flatVolTS);
 
         // options
         VanillaOption europeanOption(payoff, europeanExercise);
