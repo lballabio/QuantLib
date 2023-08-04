@@ -160,8 +160,7 @@ namespace QuantLib {
     void Swap::deepUpdate() {
         for (auto& leg : legs_) {
             for (auto& k : leg) {
-                if (auto lazy = ext::dynamic_pointer_cast<LazyObject>(k))
-                    lazy->deepUpdate();
+                k->deepUpdate();
             }
         }
         update();

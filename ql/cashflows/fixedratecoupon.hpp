@@ -60,6 +60,10 @@ namespace QuantLib {
                         const Date& refPeriodEnd = Date(),
                         const Date& exCouponDate = Date());
         //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const override;
+        //@}
         //! \name CashFlow interface
         //@{
         Real amount() const override;
@@ -77,6 +81,7 @@ namespace QuantLib {
         //@}
       private:
         InterestRate rate_;
+        mutable Real amount_;
     };
 
 
