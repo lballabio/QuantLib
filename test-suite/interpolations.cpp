@@ -2440,7 +2440,7 @@ void InterpolationTest::testChebyshevInterpolation() {
 void InterpolationTest::testChebyshevInterpolationOnNodes() {
     BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on and around nodes...");
 
-    const Real tol = 10*QL_EPSILON;
+    constexpr double tol = 10*QL_EPSILON;
     const auto testFct = [](Real x) { return std::sin(x);};
 
     const Size nrNodes = 7;
@@ -2501,7 +2501,7 @@ void InterpolationTest::testChebyshevInterpolationUpdateY() {
     Array yd({6, 4, 5, 6});
     interp.updateY(yd);
 
-    const Real tol = 10*QL_EPSILON;
+    constexpr double tol = 10*QL_EPSILON;
 
     for (Size i=0; i < y.size(); ++i) {
         const Real expected = yd[i];

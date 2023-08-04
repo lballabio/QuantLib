@@ -1959,7 +1959,7 @@ void AmericanOptionTest::testBjerksundStenslandEuropeanGreeks() {
         );
         europeanOption.setPricingEngine(europeanEngine);
 
-        const Real tol = 1000*QL_EPSILON;
+        constexpr double tol = 1000*QL_EPSILON;
 
         BOOST_CHECK_CLOSE(europeanOption.NPV(), americanOption.NPV(), tol);
         BOOST_CHECK_CLOSE(europeanOption.delta(), americanOption.delta(), tol);
@@ -2225,7 +2225,7 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
     const Real expectedTheta = -4.22540293840206704;
 
     const auto report = [=](Real value, Real expectedValue, const std::string& name) {
-        const Real tol = 1e6*QL_EPSILON;
+        constexpr double tol = 1e6*QL_EPSILON;
         const Real error = std::abs(value-expectedValue);
         if (error > tol)
             REPORT_FAILURE(name, \
