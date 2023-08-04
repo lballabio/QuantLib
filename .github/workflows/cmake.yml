@@ -169,8 +169,6 @@ jobs:
           cmake-macos-ci-refs/heads/master
           cmake-macos-ci-
     - name: Compile
-      env:
-        CXXFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         mkdir build
         cd build
