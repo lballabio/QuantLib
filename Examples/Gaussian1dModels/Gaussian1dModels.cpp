@@ -51,7 +51,7 @@ using namespace QuantLib;
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void printBasket(
-    const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &basket) {
+    const std::vector<ext::shared_ptr<BlackCalibrationHelper>> &basket) {
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(20)
               << "Maturity" << std::setw(20) << "Nominal" << std::setw(14)
               << "Rate" << std::setw(12) << "Pay/Rec" << std::setw(14)
@@ -63,7 +63,7 @@ void printBasket(
                  "===================="
                  "==================" << std::endl;
     for (const auto& j : basket) {
-        ext::shared_ptr<SwaptionHelper> helper = ext::dynamic_pointer_cast<SwaptionHelper>(j);
+        auto helper = ext::dynamic_pointer_cast<SwaptionHelper>(j);
         Date endDate = helper->underlyingSwap()->fixedSchedule().dates().back();
         Real nominal = helper->underlyingSwap()->nominal();
         Real vol = helper->volatility()->value();
@@ -84,7 +84,7 @@ void printBasket(
 // helper function that prints the result of a model calibration to std::cout
 
 void printModelCalibration(
-    const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &basket,
+    const std::vector<ext::shared_ptr<BlackCalibrationHelper>> &basket,
     const Array &volatility) {
 
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(14)
@@ -99,8 +99,7 @@ void printModelCalibration(
                  "====================" << std::endl;
 
     for (Size j = 0; j < basket.size(); ++j) {
-        ext::shared_ptr<SwaptionHelper> helper =
-            ext::dynamic_pointer_cast<SwaptionHelper>(basket[j]);
+        auto helper = ext::dynamic_pointer_cast<SwaptionHelper>(basket[j]);
         Date expiry = helper->swaption()->exercise()->date(0);
         std::ostringstream expiryString;
         expiryString << expiry;
@@ -147,8 +146,7 @@ int main(int argc, char *argv[]) {
         Handle<YieldTermStructure> ytsOis(ext::make_shared<FlatForward>(
             0, TARGET(), oisQuote, Actual365Fixed()));
 
-        ext::shared_ptr<IborIndex> euribor6m =
-            ext::make_shared<Euribor>(6 * Months, yts6m);
+        auto euribor6m = ext::make_shared<Euribor>(6 * Months, yts6m);
 
         std::cout
             << "\nWe assume a multicurve setup, for simplicity with flat yield "
@@ -183,8 +181,7 @@ int main(int argc, char *argv[]) {
                                   ModifiedFollowing, DateGeneration::Forward,
                                   false);
 
-        ext::shared_ptr<NonstandardSwap> underlying =
-            ext::make_shared<NonstandardSwap>(VanillaSwap(
+        auto underlying = ext::make_shared<NonstandardSwap>(VanillaSwap(
                 Swap::Payer, 1.0, fixedSchedule, strike, Thirty360(Thirty360::BondBasis),
                 floatingSchedule, euribor6m, 0.00, Actual360()));
 
@@ -193,10 +190,8 @@ int main(int argc, char *argv[]) {
             exerciseDates.push_back(
                 TARGET().advance(fixedSchedule[i], -2 * Days));
 
-        ext::shared_ptr<Exercise> exercise =
-            ext::make_shared<BermudanExercise>(exerciseDates, false);
-        ext::shared_ptr<NonstandardSwaption> swaption =
-            ext::make_shared<NonstandardSwaption>(underlying, exercise);
+        auto exercise = ext::make_shared<BermudanExercise>(exerciseDates, false);
+        auto swaption = ext::make_shared<NonstandardSwaption>(underlying, exercise);
 
         std::cout
             << "\nThe model is a one factor Hull White model with piecewise "
@@ -218,13 +213,12 @@ int main(int argc, char *argv[]) {
                "\nwhere explicitly specified (e.g. in a swaption pricing "
                "engine)." << std::endl;
 
-        ext::shared_ptr<Gsr> gsr = ext::make_shared<Gsr>(
-            yts6m, stepDates, sigmas, reversion);
+        auto gsr = ext::make_shared<Gsr>(yts6m, stepDates, sigmas, reversion);
 
-        ext::shared_ptr<PricingEngine> swaptionEngine =
+        auto swaptionEngine =
             ext::make_shared<Gaussian1dSwaptionEngine>(gsr, 64, 7.0, true,
                                                          false, ytsOis);
-        ext::shared_ptr<PricingEngine> nonstandardSwaptionEngine =
+        auto nonstandardSwaptionEngine =
             ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
                 gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis);
 
@@ -239,11 +233,11 @@ int main(int argc, char *argv[]) {
 
         std::cout << "\nThe resulting basket looks as follows:" << std::endl;
 
-        ext::shared_ptr<SwapIndex> swapBase =
+        auto swapBase =
             ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, yts6m, ytsOis);
 
         
-        std::vector<ext::shared_ptr<BlackCalibrationHelper> > basket =
+        std::vector<ext::shared_ptr<BlackCalibrationHelper>> basket =
             swaption->calibrationBasket(swapBase, *swaptionVol,
                                         BasketGeneratingEngine::Naive);
         printBasket(basket);
@@ -346,12 +340,11 @@ int main(int argc, char *argv[]) {
         }
         std::vector<Real> strikes(nominalFixed.size(), strike);
 
-        ext::shared_ptr<NonstandardSwap> underlying2(new NonstandardSwap(
+        auto underlying2 = ext::make_shared<NonstandardSwap>(
             Swap::Payer, nominalFixed, nominalFloating, fixedSchedule,
             strikes, Thirty360(Thirty360::BondBasis), floatingSchedule, euribor6m, 1.0, 0.0,
-            Actual360()));
-        ext::shared_ptr<NonstandardSwaption> swaption2 =
-            ext::make_shared<NonstandardSwaption>(underlying2, exercise);
+            Actual360());
+        auto swaption2 = ext::make_shared<NonstandardSwaption>(underlying2, exercise);
 
         swaption2->setPricingEngine(nonstandardSwaptionEngine);
 
@@ -382,25 +375,21 @@ int main(int argc, char *argv[]) {
         std::vector<Real> nominalFloating2(nominalFloating.size(),
                                            0.0); // null the second leg
 
-        ext::shared_ptr<NonstandardSwap> underlying3(new NonstandardSwap(
+        auto underlying3 = ext::make_shared<NonstandardSwap>(
             Swap::Receiver, nominalFixed2, nominalFloating2,
             fixedSchedule, strikes, Thirty360(Thirty360::BondBasis), floatingSchedule, euribor6m,
             1.0, 0.0, Actual360(), false,
-            true)); // final capital exchange
+            true); // final capital exchange
 
-        ext::shared_ptr<RebatedExercise> exercise2 =
-            ext::make_shared<RebatedExercise>(*exercise, -1.0, 2, TARGET());
+        auto exercise2 = ext::make_shared<RebatedExercise>(*exercise, -1.0, 2, TARGET());
 
-        ext::shared_ptr<NonstandardSwaption> swaption3 =
-            ext::make_shared<NonstandardSwaption>(underlying3, exercise2);
+        auto swaption3 = ext::make_shared<NonstandardSwaption>(underlying3, exercise2);
 
-        ext::shared_ptr<SimpleQuote> oas0 =
-            ext::make_shared<SimpleQuote>(0.0);
-        ext::shared_ptr<SimpleQuote> oas100 =
-            ext::make_shared<SimpleQuote>(0.01);
+        auto oas0 = ext::make_shared<SimpleQuote>(0.0);
+        auto oas100 = ext::make_shared<SimpleQuote>(0.01);
         RelinkableHandle<Quote> oas(oas0);
 
-        ext::shared_ptr<PricingEngine> nonstandardSwaptionEngine2 =
+        auto nonstandardSwaptionEngine2 =
             ext::make_shared<Gaussian1dNonstandardSwaptionEngine>(
                 gsr, 64, 7.0, true, false, oas); // change discounting to 6m
 
@@ -477,17 +466,15 @@ int main(int argc, char *argv[]) {
                "\n6M swaption. The maturity is again 10 years and the option"
                "\nis exercisable on a yearly basis" << std::endl;
 
-        ext::shared_ptr<FloatFloatSwap> underlying4(new FloatFloatSwap(
+        auto underlying4 = ext::make_shared<FloatFloatSwap>(
                 Swap::Payer, 1.0, 1.0, fixedSchedule, swapBase,
                 Thirty360(Thirty360::BondBasis), floatingSchedule, euribor6m, Actual360(), false,
-                false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010));
+                false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010);
 
-        ext::shared_ptr<FloatFloatSwaption> swaption4 =
-            ext::make_shared<FloatFloatSwaption>(underlying4, exercise);
+        auto swaption4 = ext::make_shared<FloatFloatSwaption>(underlying4, exercise);
 
-        ext::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
-            floatSwaptionEngine(new Gaussian1dFloatFloatSwaptionEngine(
-                    gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true));
+        auto floatSwaptionEngine = ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
+                    gsr, 64, 7.0, true, false, Handle<Quote>(), ytsOis, true);
 
         swaption4->setPricingEngine(floatSwaptionEngine);
 
@@ -501,15 +488,13 @@ int main(int argc, char *argv[]) {
 
         const Leg &leg0 = underlying4->leg(0);
         const Leg &leg1 = underlying4->leg(1);
-        ext::shared_ptr<CmsCouponPricer> cmsPricer =
-            ext::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
+        auto cmsPricer = ext::make_shared<LinearTsrPricer>(swaptionVol, reversionQuote);
         auto iborPricer = ext::make_shared<BlackIborCouponPricer>();
 
         setCouponPricer(leg0, cmsPricer);
         setCouponPricer(leg1, iborPricer);
 
-        ext::shared_ptr<PricingEngine> swapPricer =
-            ext::make_shared<DiscountingSwapEngine>(ytsOis);
+        auto swapPricer = ext::make_shared<DiscountingSwapEngine>(ytsOis);
 
         underlying4->setPricingEngine(swapPricer);
 
@@ -574,17 +559,15 @@ int main(int argc, char *argv[]) {
         const std::vector<Date>& cmsFixingDates(markovStepDates);
         std::vector<Real> markovSigmas(markovStepDates.size() + 1, 0.01);
         std::vector<Period> tenors(cmsFixingDates.size(), 10 * Years);
-        ext::shared_ptr<MarkovFunctional> markov =
-            ext::make_shared<MarkovFunctional>(
+        auto markov = ext::make_shared<MarkovFunctional>(
                 yts6m, reversion, markovStepDates, markovSigmas, swaptionVol,
                 cmsFixingDates, tenors, swapBase,
                 MarkovFunctional::ModelSettings().withYGridPoints(16));
 
-        ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngineMarkov =
+        auto swaptionEngineMarkov =
             ext::make_shared<Gaussian1dSwaptionEngine>(markov, 8, 5.0, true,
                                                          false, ytsOis);
-        ext::shared_ptr<Gaussian1dFloatFloatSwaptionEngine>
-            floatEngineMarkov =
+        auto floatEngineMarkov =
                 ext::make_shared<Gaussian1dFloatFloatSwaptionEngine>(
                     markov, 16, 7.0, true, false, Handle<Quote>(), ytsOis,
                     true);
