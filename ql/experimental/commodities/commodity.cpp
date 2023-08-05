@@ -37,7 +37,7 @@ namespace QuantLib {
     void Commodity::addPricingError(PricingError::Level errorLevel,
                                     const std::string& error,
                                     const std::string& detail) const {
-        pricingErrors_.push_back(PricingError(errorLevel, error, detail));
+        pricingErrors_.emplace_back(errorLevel, error, detail);
     }
 
 

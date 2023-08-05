@@ -135,10 +135,9 @@ namespace QuantLib {
             ext::shared_ptr<StrikedTypePayoff> payoff(
                                             new PlainVanillaPayoff(type, *k));
             if ( k == strikes.begin() )
-                optionWeights.push_back(std::make_pair(payoff,slope));
+                optionWeights.emplace_back(payoff,slope);
             else
-                optionWeights.push_back(
-                                   std::make_pair(payoff, slope - prevSlope));
+                optionWeights.emplace_back(payoff, slope - prevSlope);
             prevSlope = slope;
         }
     }

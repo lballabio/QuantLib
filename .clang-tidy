@@ -48,7 +48,6 @@ Checks: >
           -modernize-avoid-c-arrays,
           -modernize-macro-to-enum,
           -modernize-return-braced-init-list,
-          -modernize-use-emplace,
           -modernize-use-trailing-return-type,
           -modernize-use-using,
         performance-*,
