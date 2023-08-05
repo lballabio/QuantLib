@@ -833,6 +833,8 @@ namespace QuantLib {
             .withFloatingLegEndOfMonth(endOfMonth_)
             .withIndexedCoupons(useIndexedCoupons_);
 
+        passThroughNotifications(*swap_, swap_->legs(), true);
+
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
 
