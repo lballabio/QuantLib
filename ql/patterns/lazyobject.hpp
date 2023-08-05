@@ -263,7 +263,7 @@ namespace QuantLib {
         }
     }
 
-    inline void LazyObject::isCalculated() const {
+    inline bool LazyObject::isCalculated() const {
         return calculated_;
     }
 }
