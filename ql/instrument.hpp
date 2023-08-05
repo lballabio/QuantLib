@@ -25,6 +25,7 @@
 #ifndef quantlib_instrument_hpp
 #define quantlib_instrument_hpp
 
+#include <ql/cashflow.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/utilities/null.hpp>
@@ -200,6 +201,21 @@ namespace QuantLib {
         return additionalResults_;
     }
 
+    //! Utility function to optimize the observability graph of an instrument
+    /*! This function unregisters the given instrument (e.g. a Swap) from the given cashflows and
+        instea registers with the observables of the cashflows. This is safe to do if
+        - the coupon pricers of the cashflows are set before the function is called and never
+          updated afterwards
+        - the cashflows are not themselves originatingnotifications, i.e. they only pass through
+          notifications from their observables (which is usually the case)
+        If unregisterCoupons is set to true, all given cashflows are in addition unregistered from
+        all their observables. This can be done
+        - if the coupons are not asked for results directly
+        - if deepUpdate() is called on the instrument before retrieving a result; to determine
+          whether the result might have changed, isCalculated() can be called on the instrument
+    */
+    void passThroughNotifications(Instrument& instrument,
+                                  const std::vector<Leg>& legs,
+                                  bool unregisterCoupons = false);
 }
-
 #endif
