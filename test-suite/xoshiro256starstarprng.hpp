@@ -18,7 +18,15 @@
 */
 
 
-#ifndef quantlib_xoshiro256starstarprng_hpp
-#define quantlib_xoshiro256starstarprng_hpp
+#ifndef quantlib_test_xoshiro256starstar_prng_hpp
+#define quantlib_test_xoshiro256starstar_prng_hpp
 
-#endif // quantlib_xoshiro256starstarprng_hpp
+#include <boost/test/unit_test.hpp>
+
+class Xoshiro256StarStarTest {
+  public:
+    static void testPRNG();
+    static boost::unit_test_framework::test_suite* suite();
+};
+
+#endif // quantlib_test_xoshiro256starstar_prng_hpp

@@ -18,3 +18,24 @@
 */
 
 #include "xoshiro256starstarprng.hpp"
+#include "utilities.hpp"
+#include <ql/math/randomnumbers/xoshiro256starstarprng.hpp>
+
+void Xoshiro256StarStarTest::testPRNG() {
+    BOOST_TEST_MESSAGE("Testing Xoshiro256StarStar");
+    auto random = QuantLib::Xoshiro256StarStar(1);
+    for (int i = 0; i < 100000; ++i) {
+        auto next = random.nextReal();
+        if (next < 0.0 && 1.0 < next) {
+            BOOST_ERROR("next not in range ");
+        }
+    }
+}
+
+boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
+    auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Test");
+
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testPRNG));
+
+    return suite;
+}
