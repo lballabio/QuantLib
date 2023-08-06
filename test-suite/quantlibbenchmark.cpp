@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2008, 2010, 2018 Klaus Spanderen
+ Copyright (C) 2006, 2008, 2010, 2018, 2023 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,7 +23,16 @@
 
  Measures the performance of a preselected set of numerically intensive
  test cases. The overall QuantLib Benchmark Index is given by the average
- performance in mflops.
+ performance in mflops. This benchmarks supports multiprocessing, e.g.
+
+ Single process benchmark:
+ ./quantlib-benchmark
+
+ Benchmark with 16 processes:
+ ./quantlib-benchmark --mp=16
+
+ Benchmark with one process per core
+ ./quantlib-benchmark --mp
 
  The number of floating point operations of a given test case was measured
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
@@ -50,6 +59,7 @@
                  19. MIPS R5000@150MHz      :   12.6 mflops
                  20. RISC-V on FPGA@25Mhz   :    2.4 mflops
                  21. Strong ARM@206Mhz      :    1.4 mflops
+                 22. SPARC v7@25MHz         :    0.78mflops
 
  Remarks: OS: Linux, static libs
   1. g++-6.3.0 -O3 -ffast-math -march=core-avx2
@@ -86,6 +96,7 @@
  19. gcc-4-7-4, -O2 on a SGI Indy
  20. gcc-9.2,   -O2 on RISC-V softcore on an Artix7 100T FPGA
  21. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 22. gcc-7.5.0, -O2 on a Sun SPARCstation IPC, FPU: Weitek 3170
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
@@ -93,22 +104,28 @@
 
 #include <ql/types.hpp>
 #include <ql/version.hpp>
+
+#define BOOST_TEST_NO_MAIN 1
 #include <boost/test/included/unit_test.hpp>
+
+#include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/process.hpp>
+
 #include <iomanip>
 #include <iostream>
-#include <list>
+#include <vector>
 #include <string>
 #include <utility>
 #include <chrono>
+#include <thread>
 
 /* PAPI code
 #include <stdio.h
 #include <papi.h>
 */
 
-/* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
-   for example) also #define _MSC_VER
-*/
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
@@ -135,22 +152,72 @@
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
 
-using namespace boost::unit_test_framework;
-
 
 namespace {
 
-    std::list<double> runTimes;
+    class Benchmark {
+      public:
+        typedef void (*fct_ptr)();
+        Benchmark(std::string name, fct_ptr f, double mflop)
+        : f_(f), name_(std::move(name)), mflop_(mflop) {}
+
+        fct_ptr getTestCase() const {
+            return f_;
+        }
+        double getMflop() const {
+            return mflop_;
+        }
+        std::string getName() const {
+            return name_;
+        }
+        void swap(Benchmark& other) {
+            std::swap(f_, other.f_);
+            std::swap(name_, other.name_);
+            std::swap(mflop_, other.mflop_);
+        }
+      private:
+        fct_ptr f_;
+        std::string name_;
+        double mflop_; // total number of mega floating
+                       // point operations (not per sec!)
+    };
+
+    std::vector<Benchmark> bm = {
+        Benchmark("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks, 518.31),
+        Benchmark("AsianOption::MCArithmeticAveragePrice", &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13),
+        Benchmark("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8),
+        Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
+        Benchmark("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80),
+        Benchmark("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46),
+        Benchmark("BatesModel::DAXCalibration", &BatesModelTest::testDAXCalibration, 1993.35),
+        Benchmark("ConvertibleBondTest::testBond", &ConvertibleBondTest::testBond, 159.85),
+        Benchmark("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87),
+        Benchmark("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks, 949.52),
+        Benchmark("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks, 1113.74),
+        Benchmark("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63),
+        Benchmark("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51),
+        Benchmark("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43),
+        Benchmark("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican, 234.21),
+        Benchmark("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19),
+        Benchmark("InterpolationTest::testSabrInterpolation", &InterpolationTest::testSabrInterpolation, 2266.06),
+        Benchmark("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77),
+        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
+        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
+        Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
+        Benchmark("RandomNumber::MersenneTwisterDescrepancy", &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98),
+        Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
+        Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
+    };
 
     /* PAPI code
     float real_time, proc_time, mflops;
     long_long lflop, flop=0;
     */
 
-    class TimedCase {
+    class TimedBenchmark {
       public:
         typedef void (*fct_ptr)();
-        explicit TimedCase(fct_ptr f) : f_(f) {}
+        explicit TimedBenchmark(fct_ptr f) : f_(f) {}
 
         void startMeasurement() const {
             /* PAPI code
@@ -167,126 +234,191 @@ namespace {
             */
         }
 
-        void operator()() const {
+        double operator()() const {
             startMeasurement();
             auto startTime = std::chrono::steady_clock::now();
             BOOST_CHECK(true); // to prevent no-assertion warning
             f_();
             auto stopTime = std::chrono::steady_clock::now();
             stopMeasurement();
-            runTimes.push_back(std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6);
+            return std::chrono::duration_cast<std::chrono::microseconds>(
+                 stopTime - startTime).count() * 1e-6;
         }
       private:
         fct_ptr f_;
     };
 
-    class Benchmark {
-      public:
-        typedef void (*fct_ptr)();
-        Benchmark(std::string name, fct_ptr f, double mflop)
-        : f_(f), name_(std::move(name)), mflop_(mflop) {}
+    void printResults(
+        unsigned nProc,
+        std::vector<std::pair<Benchmark, double> >& runTimes) {
 
-        test_case* getTestCase() const {
-            #if BOOST_VERSION >= 105900
-            return boost::unit_test::make_test_case(f_, name_,
-                                                    __FILE__, __LINE__);
-            #else
-            return boost::unit_test::make_test_case(
-                       boost::unit_test::callback0<>(f_), name_);
-            #endif
-        }
-        double getMflop() const {
-            return mflop_;
-        }
-        std::string getName() const {
-            return name_;
-        }
-      private:
-        TimedCase f_;
-        const std::string name_;
-        const double mflop_; // total number of mega floating
-                             // point operations (not per sec!)
-    };
+        const std::string header = "Benchmark Suite QuantLib "  QL_VERSION;
 
-    std::list<Benchmark> bm;
-
-    void printResults() {
-        std::string header = "Benchmark Suite "
-        "QuantLib " QL_VERSION;
-
-        std::cout << std::endl
-                  << std::string(56,'-') << std::endl;
+        std::cout << std::endl << std::string(58,'-') << std::endl;
         std::cout << header << std::endl;
-        std::cout << std::string(56,'-')
-                  << std::endl << std::endl;
+        std::cout << std::string(58,'-') << std::endl << std::endl;
+
+        std::sort(runTimes.begin(), runTimes.end(),
+            [](const auto& a, const auto& b) {
+                return a.first.getName() < b.first.getName();
+            }
+        );
+
+        std::vector<std::tuple<Benchmark, int, double> > aggTimes;
+        for (const auto& iter: runTimes) {
+            if (aggTimes.empty()
+                    || std::get<0>(aggTimes.back()).getName()
+                        != iter.first.getName()) {
+                aggTimes.push_back(std::make_tuple(iter.first, 1, iter.second));
+            }
+            else {
+                ++std::get<1>(aggTimes.back());
+                std::get<2>(aggTimes.back()) += iter.second;
+            }
+        }
 
         double sum=0;
-        std::list<double>::const_iterator iterT = runTimes.begin();
-        std::list<Benchmark>::const_iterator iterBM = bm.begin();
-
-        while (iterT != runTimes.end()) {
-            const double mflopsPerSec = iterBM->getMflop()/(*iterT);
-            std::cout << iterBM->getName()
-                      << std::string(42-iterBM->getName().length(),' ') << ":"
-                      << std::fixed << std::setw(6) << std::setprecision(1)
+        for (const auto& iterT: aggTimes) {
+            const double mflopsPerSec
+                = std::get<0>(iterT).getMflop() / std::get<2>(iterT)
+                    * (std::get<1>(iterT)*std::get<1>(iterT));
+            std::cout << std::get<0>(iterT).getName()
+                      << std::string(42-std::get<0>(iterT).getName().length(),' ')
+                      << ":" << std::fixed << std::setw(8) << std::setprecision(1)
                       << mflopsPerSec
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
-            ++iterT;
-            ++iterBM;
         }
-        std::cout << std::string(56,'-') << std::endl
+        std::cout << std::string(58,'-') << std::endl
                   << "QuantLib Benchmark Index                  :"
-                  << std::fixed << std::setw(6) << std::setprecision(1)
-                  << sum/runTimes.size()
+                  << std::fixed << std::setw(8) << std::setprecision(1)
+                  << sum/aggTimes.size()
                   << " mflops" << std::endl;
+    }
+
+    int worker(const char* exe, const std::vector<std::string>& args) {
+        return boost::process::system(exe, boost::process::args=args);
     }
 }
 
-test_suite* init_unit_test_suite(int, char*[]) {
-    bm.emplace_back("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks,
-                    518.31);
-    bm.emplace_back("AsianOption::MCArithmeticAveragePrice",
-                    &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13);
-    bm.emplace_back("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8);
-    bm.emplace_back("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04);
-    bm.emplace_back("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80);
-    bm.emplace_back("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46);
-    bm.emplace_back("BatesModel::DAXCalibration", &BatesModelTest::testDAXCalibration, 1993.35);
-    bm.emplace_back("ConvertibleBondTest::testBond", &ConvertibleBondTest::testBond, 159.85);
-    bm.emplace_back("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87);
-    bm.emplace_back("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks,
-                    949.52);
-    bm.emplace_back("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks,
-                    1113.74);
-    bm.emplace_back("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63);
-    bm.emplace_back("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51);
-    bm.emplace_back("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43);
-    bm.emplace_back("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican,
-                    234.21);
-    bm.emplace_back("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19);
-    bm.emplace_back("InterpolationTest::testSabrInterpolation",
-                    &InterpolationTest::testSabrInterpolation, 2266.06);
-    bm.emplace_back("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77);
-    bm.emplace_back("MarketModelCmsTest::testCmSwapsSwaptions",
-                    &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73);
-    bm.emplace_back("MarketModelSmmTest::testMultiSmmSwaptions",
-                    &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95);
-    bm.emplace_back("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98);
-    bm.emplace_back("RandomNumber::MersenneTwisterDescrepancy",
-                    &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98);
-    bm.emplace_back("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28);
-    bm.emplace_back("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73);
+int main(int argc, char* argv[] ) {
+    using namespace boost::interprocess;
 
-    auto* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
+    message_queue::size_type recvd_size;
+    unsigned priority, terminateId=-1;
 
-    for (std::list<Benchmark>::const_iterator iter = bm.begin();
-         iter != bm.end(); ++iter) {
-        test->add(iter->getTestCase());
+    typedef std::pair<unsigned, double> result_type;
+
+    const char* const testUnitIdQueueName = "test_unit_queue";
+    const char* const testResultQueueName = "test_result_queue";
+
+    const std::string clientModeStr = "--client_mode=true";
+    const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
+
+    unsigned nProc = 1;
+    std::vector<std::pair<Benchmark, double> > runTimes;
+
+    if (!clientMode) {
+        std::vector<std::string> workerArgs;
+
+        for (int i=1; i<argc; ++i) {
+            std::string arg = argv[i];
+            std::vector<std::string> tok;
+            boost::split(tok, arg, boost::is_any_of("="));
+
+            if (tok[0] == "--mp") {
+                nProc = (tok.size() == 2)
+                    ? boost::numeric_cast<unsigned>(std::stoul(tok[1]))
+                    : std::thread::hardware_concurrency();
+            }
+            else if (tok[0] == "--help" || tok[0] == "-?") {
+                std::cout
+                    << "'quantlib-benchmark' is QuantLib " QL_VERSION " CPU performance benchmark"
+                    << std::endl << std::endl
+                    << "Usage: ./quantlib-benchmark [OPTION]..."
+                    << std::endl << std::endl
+                    << "with the following options:"
+                    << std::endl
+                    << "--mp[=PROCESSES] \t parallel execution with PROCESSES processes"
+                    << std::endl
+                    << "-?, --help \t\t display this help and exit"
+                    << std::endl;
+                exit(0);
+            }
+            else {
+                std::cout << "quantlib-benchmark: unrecognized option '" << arg << "'."
+                    << std::endl
+                    << "Try 'quantlib-benchmark --help' for more information."
+                    << std::endl;
+                exit(0);
+            }
+        }
+
+        if (nProc == 1) {
+            std::for_each(bm.begin(), bm.end(),
+                [&runTimes](const Benchmark& iter) {
+                    runTimes.push_back(std::make_pair(
+                        iter, TimedBenchmark(iter.getTestCase())()));
+            });
+        }
+        else {
+            message_queue::remove(testUnitIdQueueName);
+            message_queue::remove(testResultQueueName);
+            struct queue_remove {
+                explicit queue_remove(const char* name) : name_(name) { }
+                ~queue_remove() { message_queue::remove(name_); }
+
+            private:
+                const char* const name_;
+            } remover1(testUnitIdQueueName),remover2(testResultQueueName);
+
+            message_queue mq(
+                open_or_create, testUnitIdQueueName,
+                nProc*bm.size(), sizeof(unsigned)
+            );
+            message_queue rq(
+                open_or_create, testResultQueueName, 16, sizeof(result_type));
+
+            workerArgs.push_back(clientModeStr);
+            std::vector<std::thread> threadGroup;
+            for (unsigned i = 0; i < nProc; ++i) {
+                threadGroup.emplace_back([&]() { worker(argv[0], workerArgs); });
+            }
+
+            for (unsigned i=0; i < nProc; ++i)
+                for (unsigned j=0; j < bm.size(); ++j)
+                    mq.send(&j, sizeof(unsigned), 0);
+
+            result_type r;
+            for (unsigned i = 0; i < nProc*bm.size(); ++i) {
+                rq.receive(&r, sizeof(result_type), recvd_size, priority);
+                runTimes.push_back(std::make_pair(bm[r.first], r.second));
+            }
+            for (unsigned i=0; i < nProc; ++i) {
+                mq.send(&terminateId, sizeof(unsigned), 0);
+            }
+            for (auto& thread: threadGroup) {
+                thread.join();
+            }
+        }
+
+        printResults(nProc, runTimes);
+    }
+    else {
+        message_queue mq(open_only, testUnitIdQueueName);
+        message_queue rq(open_only, testResultQueueName);
+
+        unsigned id=0;
+        mq.receive(&id, sizeof(unsigned), recvd_size, priority);
+
+        while (id != terminateId) {
+            result_type a(id, TimedBenchmark(bm[id].getTestCase())());
+            rq.send(&a, sizeof(result_type), 0);
+
+            mq.receive(&id, sizeof(unsigned), recvd_size, priority);
+        }
     }
 
-    test->add(QUANTLIB_TEST_CASE(printResults));
-
-    return test;
+    return 0;
 }
