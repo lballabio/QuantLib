@@ -105,13 +105,13 @@
 #include <ql/types.hpp>
 #include <ql/version.hpp>
 
-#define BOOST_TEST_NO_MAIN 1
-#include <boost/test/included/unit_test.hpp>
-
-#include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/process.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/numeric/conversion/cast.hpp>
-#include <boost/process.hpp>
+#include <boost/interprocess/ipc/message_queue.hpp>
+
+#define BOOST_TEST_NO_MAIN 1
+#include <boost/test/included/unit_test.hpp>
 
 #include <iomanip>
 #include <iostream>
@@ -119,19 +119,20 @@
 #include <string>
 #include <utility>
 #include <chrono>
-#include <thread>
 
 /* PAPI code
 #include <stdio.h
 #include <papi.h>
 */
 
+/* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
+   for example) also #define _MSC_VER
+*/
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 
 #include "utilities.hpp"
-
 #include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
@@ -281,7 +282,8 @@ namespace {
         for (const auto& iterT: aggTimes) {
             const double mflopsPerSec
                 = std::get<0>(iterT).getMflop() / std::get<2>(iterT)
-                    * (std::get<1>(iterT)*std::get<1>(iterT));
+                    * nProc * std::get<1>(iterT);
+
             std::cout << std::get<0>(iterT).getName()
                       << std::string(42-std::get<0>(iterT).getName().length(),' ')
                       << ":" << std::fixed << std::setw(8) << std::setprecision(1)
@@ -320,8 +322,6 @@ int main(int argc, char* argv[] ) {
     std::vector<std::pair<Benchmark, double> > runTimes;
 
     if (!clientMode) {
-        std::vector<std::string> workerArgs;
-
         for (int i=1; i<argc; ++i) {
             std::string arg = argv[i];
             std::vector<std::string> tok;
@@ -380,7 +380,7 @@ int main(int argc, char* argv[] ) {
             message_queue rq(
                 open_or_create, testResultQueueName, 16, sizeof(result_type));
 
-            workerArgs.push_back(clientModeStr);
+            const std::vector<std::string> workerArgs(1, clientModeStr);
             std::vector<std::thread> threadGroup;
             for (unsigned i = 0; i < nProc; ++i) {
                 threadGroup.emplace_back([&]() { worker(argv[0], workerArgs); });
