@@ -105,13 +105,16 @@
 #include <ql/types.hpp>
 #include <ql/version.hpp>
 
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #include <boost/process.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/numeric/conversion/cast.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
+#endif
 
 #define BOOST_TEST_NO_MAIN 1
 #include <boost/test/included/unit_test.hpp>
+
+#include <boost/algorithm/string.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <iomanip>
 #include <iostream>
@@ -119,6 +122,7 @@
 #include <string>
 #include <utility>
 #include <chrono>
+#include <thread>
 
 /* PAPI code
 #include <stdio.h
@@ -298,71 +302,79 @@ namespace {
                   << sum/aggTimes.size()
                   << " mflops" << std::endl;
     }
-
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
     int worker(const char* exe, const std::vector<std::string>& args) {
         return boost::process::system(exe, boost::process::args=args);
     }
+#endif
 }
 
 int main(int argc, char* argv[] ) {
-    using namespace boost::interprocess;
-
-    message_queue::size_type recvd_size;
-    unsigned priority, terminateId=-1;
-
-    typedef std::pair<unsigned, double> result_type;
-
-    const char* const testUnitIdQueueName = "test_unit_queue";
-    const char* const testResultQueueName = "test_result_queue";
-
     const std::string clientModeStr = "--client_mode=true";
-    const bool clientMode = (std::string(argv[argc-1]) == clientModeStr);
+    bool clientMode = false;
 
     unsigned nProc = 1;
     std::vector<std::pair<Benchmark, double> > runTimes;
 
-    if (!clientMode) {
-        for (int i=1; i<argc; ++i) {
-            std::string arg = argv[i];
-            std::vector<std::string> tok;
-            boost::split(tok, arg, boost::is_any_of("="));
+    for (int i=1; i<argc; ++i) {
+        std::string arg = argv[i];
+        std::vector<std::string> tok;
+        boost::split(tok, arg, boost::is_any_of("="));
 
-            if (tok[0] == "--mp") {
-                nProc = (tok.size() == 2)
-                    ? boost::numeric_cast<unsigned>(std::stoul(tok[1]))
-                    : std::thread::hardware_concurrency();
-            }
-            else if (tok[0] == "--help" || tok[0] == "-?") {
-                std::cout
-                    << "'quantlib-benchmark' is QuantLib " QL_VERSION " CPU performance benchmark"
-                    << std::endl << std::endl
-                    << "Usage: ./quantlib-benchmark [OPTION]..."
-                    << std::endl << std::endl
-                    << "with the following options:"
-                    << std::endl
-                    << "--mp[=PROCESSES] \t parallel execution with PROCESSES processes"
-                    << std::endl
-                    << "-?, --help \t\t display this help and exit"
-                    << std::endl;
-                exit(0);
-            }
-            else {
-                std::cout << "quantlib-benchmark: unrecognized option '" << arg << "'."
-                    << std::endl
-                    << "Try 'quantlib-benchmark --help' for more information."
-                    << std::endl;
-                exit(0);
-            }
+        if (tok[0] == "--mp") {
+            nProc = (tok.size() == 2)
+                ? boost::numeric_cast<unsigned>(std::stoul(tok[1]))
+                : std::thread::hardware_concurrency();
         }
-
-        if (nProc == 1) {
-            std::for_each(bm.begin(), bm.end(),
-                [&runTimes](const Benchmark& iter) {
-                    runTimes.push_back(std::make_pair(
-                        iter, TimedBenchmark(iter.getTestCase())()));
-            });
+        else if (arg == "--help" || arg == "-?") {
+            std::cout
+                << "'quantlib-benchmark' is QuantLib " QL_VERSION " CPU performance benchmark"
+                << std::endl << std::endl
+                << "Usage: ./quantlib-benchmark [OPTION]..."
+                << std::endl << std::endl
+                << "with the following options:"
+                << std::endl
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+                << "--mp[=PROCESSES] \t parallel execution with PROCESSES processes"
+                << std::endl
+#endif
+                << "-?, --help \t\t display this help and exit"
+                << std::endl;
+            return 0;
+        }
+        else if (arg == clientModeStr)  {
+            clientMode = true;
         }
         else {
+            std::cout << "quantlib-benchmark: unrecognized option '" << arg << "'."
+                << std::endl
+                << "Try 'quantlib-benchmark --help' for more information."
+                << std::endl;
+            return 0;
+        }
+    }
+
+    if (nProc == 1 && !clientMode) {
+        std::for_each(bm.begin(), bm.end(),
+            [&runTimes](const Benchmark& iter) {
+                runTimes.push_back(std::make_pair(
+                    iter, TimedBenchmark(iter.getTestCase())()));
+        });
+        printResults(nProc, runTimes);
+    }
+    else {
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+        using namespace boost::interprocess;
+
+        typedef std::pair<unsigned, double> result_type;
+
+        message_queue::size_type recvd_size;
+        unsigned priority, terminateId=-1;
+
+        const char* const testUnitIdQueueName = "test_unit_queue";
+        const char* const testResultQueueName = "test_result_queue";
+
+        if (!clientMode) {
             message_queue::remove(testUnitIdQueueName);
             message_queue::remove(testResultQueueName);
             struct queue_remove {
@@ -401,23 +413,26 @@ int main(int argc, char* argv[] ) {
             for (auto& thread: threadGroup) {
                 thread.join();
             }
+            printResults(nProc, runTimes);
         }
+        else {
+            message_queue mq(open_only, testUnitIdQueueName);
+            message_queue rq(open_only, testResultQueueName);
 
-        printResults(nProc, runTimes);
-    }
-    else {
-        message_queue mq(open_only, testUnitIdQueueName);
-        message_queue rq(open_only, testResultQueueName);
-
-        unsigned id=0;
-        mq.receive(&id, sizeof(unsigned), recvd_size, priority);
-
-        while (id != terminateId) {
-            result_type a(id, TimedBenchmark(bm[id].getTestCase())());
-            rq.send(&a, sizeof(result_type), 0);
-
+            unsigned id=0;
             mq.receive(&id, sizeof(unsigned), recvd_size, priority);
+
+            while (id != terminateId) {
+                result_type a(id, TimedBenchmark(bm[id].getTestCase())());
+                rq.send(&a, sizeof(result_type), 0);
+
+                mq.receive(&id, sizeof(unsigned), recvd_size, priority);
+            }
         }
+#else
+        std::cout << "Please compile QuantLib with option 'QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER'"
+                " to run the benchmarks in parallel" << std::endl;
+#endif
     }
 
     return 0;
