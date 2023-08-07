@@ -220,12 +220,8 @@ int main(int, char* []) {
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
         // Base Correlation model set up to test coherence with base LHP model
-        std::vector<Period> bcTenors;
-        bcTenors.emplace_back(1, Years);
-        bcTenors.emplace_back(5, Years);
-        std::vector<Real> bcLossPercentages;
-        bcLossPercentages.push_back(0.03);
-        bcLossPercentages.push_back(0.12);
+        std::vector<Period> bcTenors = {{1, Years}, {5, Years}};
+        std::vector<Real> bcLossPercentages = {0.03, 0.12};
         std::vector<std::vector<Handle<Quote>>> correls;
         // 
         std::vector<Handle<Quote>> corr1Y;

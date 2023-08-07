@@ -254,19 +254,23 @@ int main(int, char* []) {
 
         // Binomial method: Jarrow-Rudd
         method = "Binomial Jarrow-Rudd";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(bsmProcess, timeSteps));
+        auto jrEngine = ext::make_shared<BinomialVanillaEngine<JarrowRudd>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(jrEngine);
+        bermudanOption.setPricingEngine(jrEngine);
+        americanOption.setPricingEngine(jrEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
                   << std::setw(widths[2]) << std::left << bermudanOption.NPV()
                   << std::setw(widths[3]) << std::left << americanOption.NPV()
                   << std::endl;
+
+        // Binomial method: Cox-Ross-Rubinstein
         method = "Binomial Cox-Ross-Rubinstein";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(bsmProcess, timeSteps));
+        auto crrEngine = ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(crrEngine);
+        bermudanOption.setPricingEngine(crrEngine);
+        americanOption.setPricingEngine(crrEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
@@ -276,9 +280,10 @@ int main(int, char* []) {
 
         // Binomial method: Additive equiprobabilities
         method = "Additive equiprobabilities";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree>>(bsmProcess, timeSteps));
+        auto aeqpEngine = ext::make_shared<BinomialVanillaEngine<AdditiveEQPBinomialTree>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(aeqpEngine);
+        bermudanOption.setPricingEngine(aeqpEngine);
+        americanOption.setPricingEngine(aeqpEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
@@ -288,9 +293,10 @@ int main(int, char* []) {
 
         // Binomial method: Binomial Trigeorgis
         method = "Binomial Trigeorgis";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Trigeorgis>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Trigeorgis>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Trigeorgis>>(bsmProcess, timeSteps));
+        auto trigeorgisEngine = ext::make_shared<BinomialVanillaEngine<Trigeorgis>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(trigeorgisEngine);
+        bermudanOption.setPricingEngine(trigeorgisEngine);
+        americanOption.setPricingEngine(trigeorgisEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
@@ -300,9 +306,10 @@ int main(int, char* []) {
 
         // Binomial method: Binomial Tian
         method = "Binomial Tian";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Tian>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Tian>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Tian>>(bsmProcess, timeSteps));
+        auto tianEngine = ext::make_shared<BinomialVanillaEngine<Tian>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(tianEngine);
+        bermudanOption.setPricingEngine(tianEngine);
+        americanOption.setPricingEngine(tianEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
@@ -312,9 +319,10 @@ int main(int, char* []) {
 
         // Binomial method: Binomial Leisen-Reimer
         method = "Binomial Leisen-Reimer";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(bsmProcess, timeSteps));
+        auto lrEngine = ext::make_shared<BinomialVanillaEngine<LeisenReimer>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(lrEngine);
+        bermudanOption.setPricingEngine(lrEngine);
+        americanOption.setPricingEngine(lrEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
@@ -324,9 +332,10 @@ int main(int, char* []) {
 
         // Binomial method: Binomial Joshi
         method = "Binomial Joshi";
-        europeanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Joshi4>>(bsmProcess, timeSteps));
-        bermudanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Joshi4>>(bsmProcess, timeSteps));
-        americanOption.setPricingEngine(ext::make_shared<BinomialVanillaEngine<Joshi4>>(bsmProcess, timeSteps));
+        auto joshiEngine = ext::make_shared<BinomialVanillaEngine<Joshi4>>(bsmProcess, timeSteps);
+        europeanOption.setPricingEngine(joshiEngine);
+        bermudanOption.setPricingEngine(joshiEngine);
+        americanOption.setPricingEngine(joshiEngine);
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanOption.NPV()
