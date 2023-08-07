@@ -20,22 +20,45 @@
 #include "xoshiro256starstarprng.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/xoshiro256starstarprng.hpp>
+#include <numeric>
 
-void Xoshiro256StarStarTest::testPRNG() {
+using QuantLib::Real;
+using QuantLib::Xoshiro256StarStar;
+
+void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
     BOOST_TEST_MESSAGE("Testing Xoshiro256StarStar");
-    auto random = QuantLib::Xoshiro256StarStar(1);
-    for (int i = 0; i < 100000; ++i) {
+
+    auto random = Xoshiro256StarStar(1);
+    const auto iterations = 10000000;
+    auto randoms = std::vector<Real>();
+    randoms.reserve(iterations);
+    for (int j = 0; j < iterations; ++j) {
         auto next = random.nextReal();
-        if (next < 0.0 && 1.0 < next) {
-            BOOST_ERROR("next not in range ");
+        if (next < 0.0 || 1.0 < next) {
+            BOOST_ERROR("next not in range");
+            return;
         }
+        randoms.push_back(next);
+    }
+    auto mean = std::accumulate(randoms.begin(), randoms.end(), 0.0) / randoms.size();
+    auto meanError = std::fabs(0.5 - mean);
+    if (meanError > 0.005) {
+        BOOST_ERROR("Mean " << mean << " for seed 1 is not close to 0.5.");
+    }
+    std::vector<double> diff(randoms.size());
+    std::transform(randoms.begin(), randoms.end(), diff.begin(),
+                   [mean](double x) { return x - mean; });
+    auto stdDev = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0) / randoms.size();
+    auto stdDevError = std::fabs(1.0 / 12.0 - stdDev);
+    if (stdDevError > 0.00005) {
+        BOOST_ERROR("Standard deviation " << stdDev << " for seed 1 is not close to 1/12.");
     }
 }
 
 boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Test");
 
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testPRNG));
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal));
 
     return suite;
 }

@@ -29,22 +29,25 @@ namespace QuantLib {
         typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
             based on clock() */
-        explicit Xoshiro256StarStar(unsigned long seed = 0);
+        explicit Xoshiro256StarStar(unsigned long long seed = 0);
 
-        Xoshiro256StarStar(unsigned long s0, unsigned long s1, unsigned long s2, unsigned long s3);
+        Xoshiro256StarStar(unsigned long long s0,
+                           unsigned long long s1,
+                           unsigned long long s2,
+                           unsigned long long s3);
 
         /*! returns a sample with weight 1.0 containing a random number
             in the (0.0, 1.0) interval  */
         sample_type next() const { return {nextReal(), 1.0}; }
 
         //! return a random number in the (0.0, 1.0)-interval
-        Real nextReal() const { return (Real(nextInt64()) + 0.5) / max; }
+        Real nextReal() const { return (Real(nextInt64() >> 11) + 0.5) * 1.1102230246251565E-16; }
 
         //! return a random integer in the [0,0xffffffffffffffffUL]-interval
         unsigned long long nextInt64() const {
-            const uint64_t result = rotl(s[1] * 5, 7) * 9;
+            const unsigned long long result = rotl(s[1] * 5, 7) * 9;
 
-            const uint64_t t = s[1] << 17;
+            const unsigned long long t = s[1] << 17;
 
             s[2] ^= s[0];
             s[3] ^= s[1];
@@ -59,12 +62,15 @@ namespace QuantLib {
         }
 
       private:
-        static uint64_t rotl(uint64_t x, int k) { return (x << k) | (x >> (64 - k)); }
-        void
-        seedInitialization(unsigned long s0, unsigned long s1, unsigned long s2, unsigned long s3);
+        static unsigned long long rotl(unsigned long long x, int k) {
+            return (x << k) | (x >> (64 - k));
+        }
+        void seedInitialization(unsigned long long s0,
+                                unsigned long long s1,
+                                unsigned long long s2,
+                                unsigned long long s3);
 
-        const Real max = (Real)0xffffffffffffffffUL;
-        mutable uint64_t s[4];
+        mutable unsigned long long s[4];
     };
 }
 

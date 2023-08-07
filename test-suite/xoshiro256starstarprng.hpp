@@ -25,7 +25,7 @@
 
 class Xoshiro256StarStarTest {
   public:
-    static void testPRNG();
+    static void testMeanAndStdDevOfNextReal();
     static boost::unit_test_framework::test_suite* suite();
 };
 
