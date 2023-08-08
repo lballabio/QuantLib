@@ -247,8 +247,7 @@ namespace QuantLib {
             const Real strike = payoff->strike();
             strikes.insert(strike);
 
-            calibrationSet_.push_back(
-                std::make_pair(ext::make_shared<VanillaOption>(payoff, exercise), i.second));
+            calibrationSet_.emplace_back(ext::make_shared<VanillaOption>(payoff, exercise), i.second);
 
             registerWith(i.second);
         }
