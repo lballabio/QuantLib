@@ -17,18 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "xoshiro256starstarprng.hpp"
+#include "xoshiro256starstarrng.hpp"
 #include "utilities.hpp"
-#include <ql/math/randomnumbers/xoshiro256starstarprng.hpp>
+#include <ql/math/randomnumbers/xoshiro256starstarrng.hpp>
 #include <numeric>
 
 using QuantLib::Real;
-using QuantLib::Xoshiro256StarStar;
+using QuantLib::Xoshiro256StarStarRng;
 
-void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
+void Xoshiro256StarStarRngTest::testMeanAndStdDevOfNextReal() {
     BOOST_TEST_MESSAGE("Testing Xoshiro256StarStar");
 
-    auto random = Xoshiro256StarStar(1);
+    auto random = Xoshiro256StarStarRng(1);
     const auto iterations = 10000000;
     auto randoms = std::vector<Real>();
     randoms.reserve(iterations);
@@ -55,10 +55,10 @@ void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
     }
 }
 
-boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
+boost::unit_test_framework::test_suite* Xoshiro256StarStarRngTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Test");
 
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal));
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarRngTest::testMeanAndStdDevOfNextReal));
 
     return suite;
 }

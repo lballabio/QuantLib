@@ -18,17 +18,17 @@
 */
 
 #include <ql/math/randomnumbers/seedgenerator.hpp>
-#include <ql/math/randomnumbers/xoshiro256starstarprng.hpp>
+#include <ql/math/randomnumbers/xoshiro256starstarrng.hpp>
 
 namespace QuantLib {
 
-    Xoshiro256StarStar::Xoshiro256StarStar(unsigned long long seed)
-    : Xoshiro256StarStar(seed, seed, seed, seed) {}
+    Xoshiro256StarStarRng::Xoshiro256StarStarRng(unsigned long long seed)
+    : Xoshiro256StarStarRng(seed, seed, seed, seed) {}
 
-    Xoshiro256StarStar::Xoshiro256StarStar(unsigned long long s0,
-                                           unsigned long long s1,
-                                           unsigned long long s2,
-                                           unsigned long long s3) {
+    Xoshiro256StarStarRng::Xoshiro256StarStarRng(unsigned long long s0,
+                                                 unsigned long long s1,
+                                                 unsigned long long s2,
+                                                 unsigned long long s3) {
         seedInitialization(s0, s1, s2, s3);
 
         // using a seed needs some warm up
@@ -37,10 +37,10 @@ namespace QuantLib {
         }
     }
 
-    void Xoshiro256StarStar::seedInitialization(unsigned long long s0,
-                                                unsigned long long s1,
-                                                unsigned long long s2,
-                                                unsigned long long s3) {
+    void Xoshiro256StarStarRng::seedInitialization(unsigned long long s0,
+                                                   unsigned long long s1,
+                                                   unsigned long long s2,
+                                                   unsigned long long s3) {
         if (s0 == 0 && s1 == 0 && s2 == 0 && s3 == 0) {
             s[0] = SeedGenerator::instance().get();
             s[1] = SeedGenerator::instance().get();
