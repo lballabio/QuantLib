@@ -882,6 +882,9 @@
     <ClInclude Include="ql\instruments\quantovanillaoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\simplifynotificationgraph.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\stickyratchet.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -4731,6 +4734,9 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\quantovanillaoption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\simplifynotificationgraph.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\stickyratchet.cpp">
