@@ -46,7 +46,7 @@ namespace QuantLib {
                                   const Date& startDate,
                                   const Date& endDate) {
         Key k = hash(rate.source(), rate.target());
-        data_[k].push_front(Entry(rate,startDate,endDate));
+        data_[k].emplace_front(rate,startDate,endDate);
     }
 
     ExchangeRate ExchangeRateManager::lookup(const Currency& source,

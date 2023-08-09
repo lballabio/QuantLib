@@ -81,9 +81,9 @@ namespace QuantLib {
                     const Real v0Center = std::log(v0);
 
                     cPoints = {
-                        {lowerBound, lowerBoundDensity, false},
-                        {v0Center, v0Density, true},
-                        {upperBound, upperBoundDensity, false}
+                        ext::make_tuple(lowerBound, lowerBoundDensity, false),
+                        ext::make_tuple(v0Center, v0Density, true),
+                        ext::make_tuple(upperBound, upperBoundDensity, false)
                     };
 
                     return ext::make_shared<Concentrating1dMesher>(
@@ -95,9 +95,9 @@ namespace QuantLib {
                       const Real v0Center = v0;
 
                       cPoints = {
-                          {lowerBound, lowerBoundDensity, false},
-                          {v0Center, v0Density, true},
-                          {upperBound, upperBoundDensity, false}
+                          ext::make_tuple(lowerBound, lowerBoundDensity, false),
+                          ext::make_tuple(v0Center, v0Density, true),
+                          ext::make_tuple(upperBound, upperBoundDensity, false)
                       };
 
                       return ext::make_shared<Concentrating1dMesher>(
@@ -109,9 +109,9 @@ namespace QuantLib {
                     const Real v0Center = v0;
 
                     cPoints = {
-                        {lowerBound, lowerBoundDensity, false},
-                        {v0Center, v0Density, true},
-                        {upperBound, upperBoundDensity, false}
+                        ext::make_tuple(lowerBound, lowerBoundDensity, false),
+                        ext::make_tuple(v0Center, v0Density, true),
+                        ext::make_tuple(upperBound, upperBoundDensity, false)
                     };
 
                     return ext::make_shared<Concentrating1dMesher>(

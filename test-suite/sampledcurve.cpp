@@ -33,6 +33,8 @@ namespace sampled_curve_test {
     };
 }
 
+QL_DEPRECATED_DISABLE_WARNING
+
 void SampledCurveTest::testConstruction() {
 
     BOOST_TEST_MESSAGE("Testing sampled curve construction...");
@@ -81,6 +83,8 @@ void SampledCurveTest::testConstruction() {
         }
     }
 }
+
+QL_DEPRECATED_ENABLE_WARNING
 
 test_suite* SampledCurveTest::suite() {
     auto* suite = BOOST_TEST_SUITE("sampled curve tests");

@@ -81,16 +81,14 @@ int main(int, char* []) {
         Settings::instance().evaluationDate() = repoSettlementDate;
 
         RelinkableHandle<YieldTermStructure> bondCurve;
-        bondCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
-                                       new FlatForward(repoSettlementDate,
+        bondCurve.linkTo(ext::make_shared<FlatForward>(repoSettlementDate,
                                                        .01, // dummy rate
                                                        bondDayCountConvention,
                                                        Compounded,
-                                                       bondCouponFrequency)));
+                                                       bondCouponFrequency));
 
         /*
-        ext::shared_ptr<FixedRateBond> bond(
-                       new FixedRateBond(faceAmount,
+        auto bond = ext::make_shared<FixedRateBond>(faceAmount,
                                          bondIssueDate,
                                          bondDatedDate,
                                          bondMaturityDate,
@@ -102,7 +100,7 @@ int main(int, char* []) {
                                          bondBusinessDayConvention,
                                          bondBusinessDayConvention,
                                          bondRedemption,
-                                         bondCurve));
+                                         bondCurve);
         */
 
         Schedule bondSchedule(bondDatedDate, bondMaturityDate,
@@ -110,38 +108,34 @@ int main(int, char* []) {
                               bondCalendar,bondBusinessDayConvention,
                               bondBusinessDayConvention,
                               DateGeneration::Backward,false);
-        ext::shared_ptr<FixedRateBond> bond(
-                       new FixedRateBond(bondSettlementDays,
+        auto bond = ext::make_shared<FixedRateBond>(bondSettlementDays,
                                          faceAmount,
                                          bondSchedule,
                                          std::vector<Rate>(1,bondCoupon),
                                          bondDayCountConvention,
                                          bondBusinessDayConvention,
                                          bondRedemption,
-                                         bondIssueDate));
-        bond->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                       new DiscountingBondEngine(bondCurve)));
+                                         bondIssueDate);
+        bond->setPricingEngine(ext::make_shared<DiscountingBondEngine>(bondCurve));
 
-        bondCurve.linkTo(ext::shared_ptr<YieldTermStructure> (
-                   new FlatForward(repoSettlementDate,
+        bondCurve.linkTo(ext::make_shared<FlatForward>(repoSettlementDate,
                                    bond->yield(bondCleanPrice,
                                                bondDayCountConvention,
                                                Compounded,
                                                bondCouponFrequency),
                                    bondDayCountConvention,
                                    Compounded,
-                                   bondCouponFrequency)));
+                                   bondCouponFrequency));
 
         Position::Type fwdType = Position::Long;
         double dummyStrike = 91.5745;
 
         RelinkableHandle<YieldTermStructure> repoCurve;
-        repoCurve.linkTo(ext::shared_ptr<YieldTermStructure> (
-                                       new FlatForward(repoSettlementDate,
+        repoCurve.linkTo(ext::make_shared<FlatForward>(repoSettlementDate,
                                                        repoRate,
                                                        repoDayCountConvention,
                                                        repoCompounding,
-                                                       repoCompoundFreq)));
+                                                       repoCompoundFreq));
 
 
         BondForward bondFwd(repoSettlementDate, repoDeliveryDate, fwdType, dummyStrike,

@@ -36,13 +36,17 @@ namespace QuantLib {
     }
 
     Real IndexedCashFlow::amount() const {
+        calculate();
+        return amount_;
+    }
+
+    void IndexedCashFlow::performCalculations() const {
         Real I0 = baseFixing();
         Real I1 = indexFixing();
 
         if (growthOnly_)
-            return notional_ * (I1 / I0 - 1.0);
+            amount_ = notional_ * (I1 / I0 - 1.0);
         else
-            return notional_ * (I1 / I0);
+            amount_ = notional_ * (I1 / I0);
     }
-
 }

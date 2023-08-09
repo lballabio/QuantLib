@@ -60,7 +60,7 @@ int main(int, char* []) {
         std::vector<std::string> names;
         for(Size i=0; i<hazardRates.size(); i++)
             names.push_back(std::string("Acme") + std::to_string(i));
-        std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
+        std::vector<Handle<DefaultProbabilityTermStructure>> defTS;
         defTS.reserve(hazardRates.size());
         for (Real& hazardRate : hazardRates)
             defTS.emplace_back(
@@ -75,7 +75,7 @@ int main(int, char* []) {
             issuers.emplace_back(curves);
         }
 
-        ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
+        auto thePool = ext::make_shared<Pool>();
         for(Size i=0; i<hazardRates.size(); i++)
             thePool->add(names[i], issuers[i], NorthAmericaCorpDefaultKey(
                     EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -84,10 +84,10 @@ int main(int, char* []) {
             NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
         // Recoveries are irrelevant in this example but must be given as the 
         //   lib stands.
-        std::vector<ext::shared_ptr<RecoveryRateModel> > rrModels(
+        std::vector<ext::shared_ptr<RecoveryRateModel>> rrModels(
             hazardRates.size(), ext::make_shared<ConstantRecoveryModel>(
             ConstantRecoveryModel(0.5, SeniorSec)));
-        ext::shared_ptr<Basket> theBskt = ext::make_shared<Basket>(
+        auto theBskt = ext::make_shared<Basket>(
             todaysDate, names, std::vector<Real>(hazardRates.size(), 100.), 
             thePool);
         /* --------------------------------------------------------------
@@ -95,16 +95,15 @@ int main(int, char* []) {
         -------------------------------------------------------------- */
         // Latent model factors, corresponds to the first entry in Table1 of the
         //   publication mentioned. It is a single factor model
-        std::vector<std::vector<Real> > fctrsWeights(hazardRates.size(), 
+        std::vector<std::vector<Real>> fctrsWeights(hazardRates.size(),
             std::vector<Real>(1, std::sqrt(0.1)));
         // --- Default Latent models -------------------------------------
         #ifndef QL_PATCH_SOLARIS
         // Gaussian integrable joint default model:
-        ext::shared_ptr<GaussianDefProbLM> lmG(new 
-            GaussianDefProbLM(fctrsWeights, 
+        auto lmG = ext::make_shared<GaussianDefProbLM>(fctrsWeights,
             LatentModelIntegrationType::GaussianQuadrature,
 			GaussianCopulaPolicy::initTraits() // otherwise gcc screams
-			));
+			);
         #endif
         // Define StudentT copula
         // this is as far as we can be from the Gaussian, 2 T_3 factors:
@@ -112,10 +111,9 @@ int main(int, char* []) {
         TCopulaPolicy::initTraits iniT;
         iniT.tOrders = ordersT;
         // StudentT integrable joint default model:
-        ext::shared_ptr<TDefProbLM> lmT(new TDefProbLM(fctrsWeights, 
+        auto lmT = ext::make_shared<TDefProbLM>(fctrsWeights,
             // LatentModelIntegrationType::GaussianQuadrature,
-            LatentModelIntegrationType::Trapezoid,
-            iniT));
+            LatentModelIntegrationType::Trapezoid, iniT);
 
         // --- Default Loss models ----------------------------------------
         // Gaussian random joint default model:
@@ -123,14 +121,12 @@ int main(int, char* []) {
         // Size numCoresUsed = 4;
         #ifndef QL_PATCH_SOLARIS
         // Sobol, many cores
-        ext::shared_ptr<DefaultLossModel> rdlmG(
-            ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy> >(lmG, 
-                std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
+        auto rdlmG = ext::make_shared<RandomDefaultLM<GaussianCopulaPolicy>>(lmG,
+            std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL);
         #endif
         // StudentT random joint default model:
-        ext::shared_ptr<DefaultLossModel> rdlmT(
-            ext::make_shared<RandomDefaultLM<TCopulaPolicy> >(lmT, 
-            std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL));
+        auto rdlmT = ext::make_shared<RandomDefaultLM<TCopulaPolicy>>(lmT,
+            std::vector<Real>(), numSimulations, 1.e-6, 2863311530UL);
 
         /* --------------------------------------------------------------
                         DUMP SOME RESULTS
@@ -179,7 +175,7 @@ int main(int, char* []) {
 
         Date correlDate = TARGET().advance(
             Settings::instance().evaluationDate(), Period(12, Months));
-        std::vector<std::vector<Real> > correlsGlm, correlsTlm, correlsGrand, 
+        std::vector<std::vector<Real>> correlsGlm, correlsTlm, correlsGrand,
             correlsTrand;
         //
         lmT->resetBasket(theBskt);

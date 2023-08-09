@@ -399,9 +399,6 @@
     <ClInclude Include="ql\methods\finitedifferences\all.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\americancondition.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\boundarycondition.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
@@ -439,9 +436,6 @@
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\mixedscheme.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\onefactoroperator.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operatortraits.hpp">
@@ -988,9 +982,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\incompletegamma.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\math\initializers.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\interpolation.hpp">
@@ -2241,9 +2232,6 @@
     <ClInclude Include="ql\utilities\dataparsers.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
-    <ClInclude Include="ql\utilities\disposable.hpp">
-      <Filter>utilities</Filter>
-    </ClInclude>
     <ClInclude Include="ql\utilities\null.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
@@ -2514,13 +2502,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\fddividendengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fddividendshoutengine.hpp">
-      <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp">
-      <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fdshoutengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\fdstepconditionengine.hpp">
@@ -3743,7 +3725,6 @@
     </ClCompile>
     <ClInclude Include="ql\any.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
-    <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
     <ClInclude Include="ql\compounding.hpp" />
     <ClInclude Include="ql\config.ansi.hpp" />

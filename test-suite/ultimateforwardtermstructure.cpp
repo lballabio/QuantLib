@@ -72,9 +72,9 @@ namespace ultimate_forward_term_structure_test {
             fixedFrequency = Annual;
             floatingTenor = 6 * Months;
 
-            index = ext::shared_ptr<IborIndex>(
-                new IborIndex("FTK_IDX", floatingTenor, settlementDays, ccy, calendar,
-                              businessConvention, false, dayCount, ftkCurveHandle));
+            index = ext::make_shared<IborIndex>(
+                "FTK_IDX", floatingTenor, settlementDays, ccy, calendar,
+                              businessConvention, false, dayCount, ftkCurveHandle);
 
             /* Data source: https://fred.stlouisfed.org/
                Note that these rates are used as a proxy.

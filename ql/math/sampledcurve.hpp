@@ -30,9 +30,10 @@
 
 namespace QuantLib {
 
-    //! This class contains a sampled curve.
-    /*! Initially the class will contain one indexed curve */
-    class SampledCurve {
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
+    */
+    class [[deprecated("Use the new finite-differences framework instead")]] SampledCurve {
       public:
         SampledCurve(Size gridSize = 0);
         SampledCurve(const Array &grid);
@@ -82,7 +83,9 @@ namespace QuantLib {
 
         //! \name utilities
         //@{
+        QL_DEPRECATED_DISABLE_WARNING
         void swap(SampledCurve&) noexcept;
+        QL_DEPRECATED_ENABLE_WARNING
         void setLogGrid(Real min, Real max) {
             setGrid(BoundedLogGrid(min, max, size()-1));
         }
@@ -133,6 +136,7 @@ namespace QuantLib {
 #pragma GCC diagnostic pop
 #endif
 
+        QL_DEPRECATED_DISABLE_WARNING
         template <class T>
         inline const SampledCurve& transform(T x) {
             std::transform(values_.begin(), values_.end(),
@@ -146,19 +150,30 @@ namespace QuantLib {
                            grid_.begin(), x);
             return *this;
         }
+        QL_DEPRECATED_ENABLE_WARNING
         //@}
       private:
         Array grid_;
         Array values_;
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     /* \relates SampledCurve */
     void swap(SampledCurve&, SampledCurve&) noexcept;
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
+    */
+    [[deprecated("Use the new finite-differences framework instead")]]
     typedef SampledCurve SampledCurveSet;
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 
     // inline definitions
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     inline SampledCurve::SampledCurve(Size gridSize)
     : grid_(gridSize), values_(gridSize) {}
@@ -229,6 +244,9 @@ namespace QuantLib {
             << a.values() << " ]";
         return out;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 

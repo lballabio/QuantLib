@@ -28,7 +28,7 @@ using ext::shared_ptr;
 
 namespace lazy_object_test {
 
-    class TearDown {
+    class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
         bool alwaysForward;
       public:
         TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}

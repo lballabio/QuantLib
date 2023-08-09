@@ -326,7 +326,7 @@ namespace QuantLib {
 
             // Perform the task indicated by kase.
 
-            switch (kase) {
+            switch (kase) { // NOLINT(bugprone-switch-missing-default-case)
 
                 // Deflate negligible s(p).
 

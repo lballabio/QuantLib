@@ -476,9 +476,9 @@ void BatesModelTest::testDAXCalibration() {
     //check pricing of derived engines
     std::vector<ext::shared_ptr<PricingEngine> > pricingEngines;
     
-    process = ext::shared_ptr<BatesProcess>(
-        new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
-                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1));
+    process = ext::make_shared<BatesProcess>(
+        riskFreeTS, dividendTS, s0, v0, 
+                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1);
 
     pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDetJumpEngine(
@@ -524,5 +524,3 @@ test_suite* BatesModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testDAXCalibration));
     return suite;
 }
-
-

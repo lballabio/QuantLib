@@ -202,8 +202,7 @@ namespace cms_test {
             bool isAtmCalibrated = false;
 
             SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SabrSwaptionVolatilityCube>(new
-                    SabrSwaptionVolatilityCube(atmVol,
+                ext::make_shared<SabrSwaptionVolatilityCube>(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,
@@ -213,7 +212,7 @@ namespace cms_test {
                                      vegaWeightedSmileFit,
                                      guess,
                                      isParameterFixed,
-                                     isAtmCalibrated)));
+                                     isAtmCalibrated));
             SabrVolCube1->enableExtrapolation();
 
             yieldCurveModels = {GFunctionFactory::Standard,

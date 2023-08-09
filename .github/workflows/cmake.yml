@@ -47,8 +47,9 @@ jobs:
     - name: Compile
       run: |
         cmake --preset linux-ci-build-with-nonstandard-options -L
-        cmake --build --preset linux-ci-build-with-nonstandard-options --verbose
-        sudo cmake --build --preset linux-ci-build-with-nonstandard-options --target install
+        cd build/linux-ci-build-with-nonstandard-options
+        cmake --build . --verbose
+        sudo cmake --build . --target install
     - name: Test
       run: |
         quantlib-test-suite --log_level=message
@@ -146,8 +147,9 @@ jobs:
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake --preset windows-ci-build-with-nonstandard-options -L
-        cmake --build --preset windows-ci-build-with-nonstandard-options --verbose
-        cmake --build --preset windows-ci-build-with-nonstandard-options --target install
+        cd build/windows-ci-build-with-nonstandard-options
+        cmake --build . --verbose
+        cmake --build . --target install
     - name: Test
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
@@ -167,8 +169,6 @@ jobs:
           cmake-macos-ci-refs/heads/master
           cmake-macos-ci-
     - name: Compile
-      env:
-        CXXFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         mkdir build
         cd build
