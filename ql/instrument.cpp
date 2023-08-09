@@ -46,18 +46,4 @@ namespace QuantLib {
         QL_FAIL("Instrument::setupArguments() not implemented");
     }
 
-    void passThroughNotifications(Instrument& instrument,
-                                  const std::vector<Leg>& legs,
-                                  bool unregisterCoupons) {
-        for (const auto& leg : legs) {
-            for (auto const& coupon : leg) {
-                instrument.unregisterWith(coupon);
-                instrument.registerWithObservables(coupon);
-                if (unregisterCoupons) {
-                    coupon->unregisterWithAll();
-                }
-            }
-        }
-    }
-
 }

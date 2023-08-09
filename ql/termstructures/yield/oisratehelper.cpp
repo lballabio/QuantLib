@@ -19,6 +19,7 @@
 */
 
 #include <ql/instruments/makeois.hpp>
+#include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/utilities/null_deleter.hpp>
@@ -83,7 +84,7 @@ namespace QuantLib {
             swap_ = tmp;
         }
 
-        passThroughNotifications(*swap_, swap_->legs(), true);
+        simplifyNotificationGraph(*swap_, true);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
