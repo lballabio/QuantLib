@@ -331,7 +331,7 @@ namespace QuantLib {
             const Real kp_2pi = k(2*M_PI, 1);
 
             alpha_max = Brent().solve(
-                cm, eps_, 0.5*(kp_ + kp_2pi), (1+1e-12)*kp_, kp_2pi
+                cm, eps_, 0.5*(kp_ + kp_2pi), (1+1e-8)*kp_, (1-1e-8)*kp_2pi
             ) - 1.0;
         }
         else if (adx < 0.0) {
@@ -339,19 +339,19 @@ namespace QuantLib {
             if (t_ < tCut) {
                 const Real kp_pi = k(M_PI, 1);
                 alpha_max = Brent().solve(
-                    cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
+                    cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-8)*kp_, (1-1e-8)*kp_pi
                 ) - 1.0;
             }
             else {
                 alpha_max = Brent().solve(
-                    cm, eps_, 0.5*(1.0 + kp_), 1 + 1e-12, (1-1e-12)*kp_
+                    cm, eps_, 0.5*(1.0 + kp_), 1 + 1e-8, (1-1e-8)*kp_
                 ) - 1.0;
             }
         }
         else { // adx == 0.0
             const Real kp_pi = k(M_PI, 1);
             alpha_max = Brent().solve(
-                cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
+                cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-8)*kp_, (1-1e-8)*kp_pi
             ) - 1.0;
         }
 
@@ -367,7 +367,7 @@ namespace QuantLib {
         const Real km_2pi = k(2*M_PI, -1);
 
         const Real alpha_min = Brent().solve(
-            cm, eps_, 0.5*(km_2pi + km_), km_2pi, (1+1e-12)*km_
+            cm, eps_, 0.5*(km_2pi + km_), (1-1e-8)*km_2pi, (1+1e-8)*km_
         ) - 1.0;
 
         QL_REQUIRE(alpha_min <= -1.0,
@@ -381,7 +381,6 @@ namespace QuantLib {
         //       is present anyhow. Shouldn't we check both intervals and
         //       chose the interval (alpha_min, -1) or (0, alpha_max), which
         //       gives the lowest minimum?
-
         const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
         const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
 

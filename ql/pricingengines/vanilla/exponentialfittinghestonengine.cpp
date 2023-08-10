@@ -249,11 +249,12 @@ namespace QuantLib {
                  : AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho);
 
         Real alpha = -0.5;
+//        TODO: here optimal alpha please
         if (cv_ == OptimalCV && analyticCV == AnalyticHestonEngine::AngledContour) {
             const ext::shared_ptr<AnalyticHestonEngine> helper =
                  ext::make_shared<AnalyticHestonEngine>(model_.currentLink(), 2);
             AnalyticHestonEngine::OptimalAlpha optimalAlpha(t, helper.get());
-            alpha = optimalAlpha(strike);
+            alpha = -0.5;//optimalAlpha(strike);
         }
 
         const AnalyticHestonEngine::AP_Helper helper(
