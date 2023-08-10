@@ -20,8 +20,8 @@
 /*
  Examples:
   1. Start with 12 worker processes
-     ./quantlib-test-suite --nProc=12 --log_level=message --report_level=short
-                           --build_info=yes
+    ./quantlib-test-suite --log_level=message --report_level=short
+                           --build_info=yes -- --nProc=12
   2. If parameter "--nProc" is omitted then the number
      of worker processes will be equal to the number of CPU cores.
  */
