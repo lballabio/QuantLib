@@ -131,14 +131,14 @@ namespace andreasen_huge_volatility_interpl_test {
 
                     const Volatility impliedVol = i[j];
 
-                    calibrationSet.push_back(std::make_pair(
+                    calibrationSet.emplace_back(
                         ext::make_shared<VanillaOption>(
                             ext::make_shared<PlainVanillaPayoff>(
                                 (strike < spot->value())? Option::Put
                                                         : Option::Call,
                                 strike),
                             ext::make_shared<EuropeanExercise>(maturity)),
-                        ext::make_shared<SimpleQuote>(impliedVol))
+                        ext::make_shared<SimpleQuote>(impliedVol)
                     );
                 }
             }
@@ -295,12 +295,12 @@ namespace andreasen_huge_volatility_interpl_test {
 
                 if (std::fabs(mn) < 3.71*vol) {
 
-                    calibrationSet.push_back(std::make_pair(
+                    calibrationSet.emplace_back(
                         ext::make_shared<VanillaOption>(
                             ext::make_shared<PlainVanillaPayoff>(
                                 Option::Call, strike),
                             ext::make_shared<EuropeanExercise>(maturityDate)),
-                        ext::make_shared<SimpleQuote>(vol)));
+                        ext::make_shared<SimpleQuote>(vol));
                 }
             }
         }
@@ -331,12 +331,12 @@ namespace andreasen_huge_volatility_interpl_test {
             const Date maturityDate = today + Period(maturities[i], Months);
             const Volatility vol = vols[i];
 
-            calibrationSet.push_back(std::make_pair(
+            calibrationSet.emplace_back(
                 ext::make_shared<VanillaOption>(
                     ext::make_shared<PlainVanillaPayoff>(
                         Option::Call, strike),
                     ext::make_shared<EuropeanExercise>(maturityDate)),
-                ext::make_shared<SimpleQuote>(vol)));
+                ext::make_shared<SimpleQuote>(vol));
         }
 
         return { spot, rTS, qTS, calibrationSet };
@@ -542,11 +542,11 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
     const Date maturity = today + Period(1, Years);
     Handle<Quote> spot(ext::make_shared<SimpleQuote>(strike));
 
-    calibrationSet.push_back(std::make_pair(
+    calibrationSet.emplace_back(
         ext::make_shared<VanillaOption>(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
             ext::make_shared<EuropeanExercise>(maturity)),
-        ext::make_shared<SimpleQuote>(vol)));
+        ext::make_shared<SimpleQuote>(vol));
 
     const AndreasenHugeVolatilityInterpl::InterpolationType interpl[] = {
         AndreasenHugeVolatilityInterpl::Linear,
@@ -713,12 +713,12 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
             const Real mn = std::log(spot->value()/strike)/std::sqrt(t);
 
             if (std::fabs(mn) < 3.07*vol) {
-                calibrationSet.push_back(std::make_pair(
+                calibrationSet.emplace_back(
                     ext::make_shared<VanillaOption>(
                         ext::make_shared<PlainVanillaPayoff>(
                             Option::Call, strike),
                         ext::make_shared<EuropeanExercise>(maturityDate)),
-                    ext::make_shared<SimpleQuote>(vol)));
+                    ext::make_shared<SimpleQuote>(vol));
             }
         }
     }
@@ -799,12 +799,12 @@ namespace andreasen_huge_volatility_interpl_test {
         for (Real strike : strikes) {
             const Volatility vol = sabrVolatility(strike, forward, maturity, alpha, beta, nu, rho);
 
-            calibrationSet.push_back(std::make_pair(
+            calibrationSet.emplace_back(
                 ext::make_shared<VanillaOption>(
                     ext::make_shared<PlainVanillaPayoff>(
                         Option::Call, strike),
                     ext::make_shared<EuropeanExercise>(maturityDate)),
-                ext::make_shared<SimpleQuote>(vol)));
+                ext::make_shared<SimpleQuote>(vol));
         }
 
         const Handle<YieldTermStructure> rTS(flatRate(today, forward, dc));
@@ -1019,7 +1019,7 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
                               (strike>fwd)? Option::Call : Option::Put, strike),
                           exercise);
 
-                calibrationSet.push_back(std::make_pair(option, vol));
+                calibrationSet.emplace_back(option, vol);
             }
         }
     }

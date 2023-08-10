@@ -190,7 +190,7 @@ class XABRInterpolationImpl final : public Interpolation::templateImpl<I1, I2>,
             do {
 
                 if (iterations > 0) {
-                    HaltonRsg::sample_type s = halton.nextSequence();
+                    const auto& s = halton.nextSequence();
                     Model().guess(guess, this->paramIsFixed_, this->forward_,
                                   this->t_, s.value, this->addParams_);
                     for (Size i = 0; i < this->paramIsFixed_.size(); ++i)

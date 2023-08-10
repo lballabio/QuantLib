@@ -725,9 +725,9 @@ namespace {
             const Real upperBoundDensity = 100;
             const Real lowerBoundDensity = 1.0;
             cPoints = {
-                {lowerBound, lowerBoundDensity, false},
-                {v0Center, v0Density, true},
-                {upperBound, upperBoundDensity, false}
+                ext::make_tuple(lowerBound, lowerBoundDensity, false),
+                ext::make_tuple(v0Center, v0Density, true),
+                ext::make_tuple(upperBound, upperBoundDensity, false)
             };
           }
         break;
@@ -740,8 +740,8 @@ namespace {
             const Real v0Density = 0.1;
             const Real lowerBoundDensity = 0.0001;
             cPoints = {
-                {lowerBound, lowerBoundDensity, false},
-                {v0Center, v0Density, true}
+                ext::make_tuple(lowerBound, lowerBoundDensity, false),
+                ext::make_tuple(v0Center, v0Density, true)
             };
           }
         break;
@@ -754,8 +754,8 @@ namespace {
             const Real v0Density = 1.0;
             const Real lowerBoundDensity = 0.005;
             cPoints = {
-                {lowerBound, lowerBoundDensity, false},
-                {v0Center, v0Density, true}
+                ext::make_tuple(lowerBound, lowerBoundDensity, false),
+                ext::make_tuple(v0Center, v0Density, true)
             };
           }
         break;
@@ -1076,9 +1076,11 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
     const Real lowerBound = rnd.stationary_invcdf(0.01);
 
     const Real beta = 10.0;
-    std::vector<ext::tuple<Real, Real, bool>> critPoints = {{lowerBound, beta, true},
-                                                            {v0, beta/100, true},
-                                                            {upperBound, beta, true}};
+    std::vector<ext::tuple<Real, Real, bool>> critPoints = {
+        ext::make_tuple(lowerBound, beta, true),
+        ext::make_tuple(v0, beta/100, true),
+        ext::make_tuple(upperBound, beta, true)
+    };
     const ext::shared_ptr<Fdm1dMesher> varianceMesher(
 		ext::make_shared<Concentrating1dMesher>(lowerBound, upperBound, vGrid, critPoints));
 
@@ -1862,8 +1864,8 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
         = ext::make_shared<EuropeanExercise>(exerciseDate);
 
     const ext::shared_ptr<HestonProcess> mixingProcess
-        = ext::shared_ptr<HestonProcess>(new HestonProcess(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
-                                                           HestonProcess::QuadraticExponentialMartingale));
+        = ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma * 10, rho,
+                                          HestonProcess::QuadraticExponentialMartingale);
     const ext::shared_ptr<HestonModel> mixingModel
         = ext::make_shared<HestonModel>(mixingProcess);
 

@@ -11,6 +11,8 @@ jobs:
             shortname: default-11
           - os: [macos-12]
             shortname: default-12
+          - os: [macos-13]
+            shortname: default-13
     steps:
     - uses: actions/checkout@v3
     - name: Setup
@@ -24,10 +26,13 @@ jobs:
           macos-ci-build-${{ matrix.shortname }}-${{ github.ref }}
           macos-ci-build-${{ matrix.shortname }}-refs/heads/master
           macos-ci-build-${{ matrix.shortname }}-
+    - name: Compiler version
+      run: |
+        clang --version
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared ${{ matrix.configureflags }} CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
+        ./configure --disable-shared ${{ matrix.configureflags }} CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror ${{ matrix.cxxflags }}"
         make -j 3
     - name: Run tests
       run: |

@@ -512,7 +512,7 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
         - sig*sig/(4*alpha)*(1-std::exp(-2*alpha*t))
         - lambda/beta*std::log((eta-std::exp(-beta*t))/(eta-1.0));
 
-    shape->push_back(Shape::value_type(t, ps));
+    shape->emplace_back(t, ps);
 
     const Real expected =
         RichardsonExtrapolation(

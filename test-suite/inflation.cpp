@@ -1278,8 +1278,8 @@ void InflationTest::testCpiFlatInterpolation() {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
-    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
+    auto testIndex1 = ext::make_shared<UKRPI>(false);
+    auto testIndex2 = ext::make_shared<UKRPI>(true);
 
     QL_DEPRECATED_ENABLE_WARNING
 
@@ -1324,8 +1324,8 @@ void InflationTest::testCpiLinearInterpolation() {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
-    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
+    auto testIndex1 = ext::make_shared<UKRPI>(false);
+    auto testIndex2 = ext::make_shared<UKRPI>(true);
 
     QL_DEPRECATED_ENABLE_WARNING
 
@@ -1386,8 +1386,8 @@ void InflationTest::testCpiAsIndexInterpolation() {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false, mock_curve));
-    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true, mock_curve));
+    auto testIndex1 = ext::make_shared<UKRPI>(false, mock_curve);
+    auto testIndex2 = ext::make_shared<UKRPI>(true, mock_curve);
 
     QL_DEPRECATED_ENABLE_WARNING
 

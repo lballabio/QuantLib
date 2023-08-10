@@ -124,7 +124,7 @@ namespace QuantLib {
                    localisation_ << " required.");
 
         for (Size i=0; i<n; ++i){
-            ts_->registerWith(ts_->instruments_[i]);
+            ts_->registerWithObservables(ts_->instruments_[i]);
         }
     }
 

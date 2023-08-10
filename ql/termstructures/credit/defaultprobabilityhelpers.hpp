@@ -112,6 +112,7 @@ namespace QuantLib {
                   bool rebatesAccrual = true,
                   CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
         void setTermStructure(DefaultProbabilityTermStructure*) override;
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
         ext::shared_ptr<CreditDefaultSwap> swap() const {
             return swap_;
         }

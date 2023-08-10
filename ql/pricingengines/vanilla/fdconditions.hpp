@@ -17,50 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdconditions.hpp
-    \brief Finite-difference templates to generate engines
-*/
-
 #ifndef quantlib_fd_conditions_hpp
 #define quantlib_fd_conditions_hpp
 
-#include <ql/methods/finitedifferences/fdtypedefs.hpp>
-#include <ql/methods/finitedifferences/shoutcondition.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/interestrate.hpp>
-
-namespace QuantLib {
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.27.
-    */
-    template <typename baseEngine>
-    class QL_DEPRECATED FDShoutCondition : public baseEngine {
-      public:
-        FDShoutCondition(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps = 100, Size gridPoints = 100,
-             bool timeDependent = false)
-        : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
-      protected:
-        void initializeStepCondition() const override {
-            Time residualTime = baseEngine::getResidualTime();
-            Rate riskFreeRate = baseEngine::process_->riskFreeRate()
-                ->zeroRate(residualTime, Continuous);
-
-            baseEngine::stepCondition_ =
-                ext::shared_ptr<StandardStepCondition>(
-                     new ShoutCondition(baseEngine::intrinsicValues_.values(),
-                                        residualTime,
-                                        riskFreeRate));
-        }
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-}
+// Deprecated in version 1.32
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

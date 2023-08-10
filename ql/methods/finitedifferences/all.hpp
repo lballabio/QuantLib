@@ -18,8 +18,6 @@
 #include <ql/methods/finitedifferences/parallelevolver.hpp>
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/methods/finitedifferences/pdebsm.hpp>
-#include <ql/methods/finitedifferences/pdeshortrate.hpp>
-#include <ql/methods/finitedifferences/shoutcondition.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/methods/finitedifferences/trbdf2.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>

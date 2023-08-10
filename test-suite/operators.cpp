@@ -195,7 +195,7 @@ void OperatorTest::testBSMOperatorConsistency() {
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
-    BSMTermOperator op2(grid, stochProcess, residualTime);
+    PdeOperator<PdeBSM> op2(grid, stochProcess, residualTime);
 
     Real tolerance = 1.0e-6;
 

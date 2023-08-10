@@ -94,15 +94,14 @@ namespace QuantLib {
         //@{
         //! returns the (possibly null) datum corresponding to the given date
         T operator[](const Date& d) const {
-            if (values_.find(d) != values_.end())
-                return values_[d];
-            else
+            typename Container::const_iterator found = values_.find(d);
+            if (found == values_.cend())
                 return Null<T>();
+            return found->second;
         }
         T& operator[](const Date& d) {
-            if (values_.find(d) == values_.end())
-                values_[d] = Null<T>();
-            return values_[d];
+            auto found = values_.insert(std::pair<Date, T>(d, Null<T>())).first;
+            return found->second;
         }
         //@}
 

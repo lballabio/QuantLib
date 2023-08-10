@@ -38,14 +38,12 @@
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for BSM one asset options
-    /*! The name is a misnomer as this is a base class for any finite
-        difference scheme.  Its main job is to handle grid layout.
-
-        \ingroup vanillaengines
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
     */
-    class FDVanillaEngine {
+    class [[deprecated("Use the new finite-differences framework instead")]] FDVanillaEngine {
       public:
+        QL_DEPRECATED_DISABLE_WARNING
         FDVanillaEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
                         Size timeSteps,
                         Size gridPoints,
@@ -55,6 +53,7 @@ namespace QuantLib {
         virtual ~FDVanillaEngine() = default;
         // accessors
         const Array& grid() const { return intrinsicValues_.grid(); }
+        QL_DEPRECATED_ENABLE_WARNING
       protected:
         // methods
         virtual void setupArguments(const PricingEngine::arguments*) const;
@@ -71,7 +70,9 @@ namespace QuantLib {
         mutable Date exerciseDate_;
         mutable ext::shared_ptr<Payoff> payoff_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
+        QL_DEPRECATED_DISABLE_WARNING
         mutable SampledCurve intrinsicValues_;
+        QL_DEPRECATED_ENABLE_WARNING
         typedef BoundaryCondition<TridiagonalOperator> bc_type;
         mutable std::vector<ext::shared_ptr<bc_type> > BCs_;
         // temporaries
@@ -82,27 +83,6 @@ namespace QuantLib {
         Size safeGridPoints(Size gridPoints,
                             Time residualTime) const;
         static const Real safetyZoneFactor_;
-    };
-
-    /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.27.
-    */
-    template <typename base, typename engine>
-    class QL_DEPRECATED FDEngineAdapter : public base, public engine {
-      public:
-        FDEngineAdapter(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps=100, Size gridPoints=100,
-             bool timeDependent = false)
-        : base(process, timeSteps, gridPoints,timeDependent) {
-            this->registerWith(process);
-        }
-      private:
-        using base::calculate;
-        void calculate() const override {
-            base::setupArguments(&(this->arguments_));
-            base::calculate(&(this->results_));
-        }
     };
 
 }

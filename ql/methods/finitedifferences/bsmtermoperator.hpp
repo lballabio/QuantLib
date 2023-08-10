@@ -31,11 +31,10 @@
 
 namespace QuantLib {
 
-    //! Black-Scholes-Merton differential operator
-    /*! \ingroup findiff
-
-        \test coefficients are tested against constant BSM operator
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.32.
     */
+    [[deprecated("Use the new finite-differences framework instead")]]
     typedef PdeOperator<PdeBSM> BSMTermOperator;
 }
 

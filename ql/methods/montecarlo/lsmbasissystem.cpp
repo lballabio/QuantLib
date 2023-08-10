@@ -164,7 +164,7 @@ namespace QuantLib {
         VF_A ret;
         // 0-th order term
         VF_R term(dim, pathBasis[0]);
-        ret.push_back(MultiDimFct(term));
+        ret.emplace_back(MultiDimFct(term));
         // start with all 0 tuple
         VV tuples(1, std::vector<Size>(dim));
         // add multi-factor terms
@@ -175,7 +175,7 @@ namespace QuantLib {
             for (auto& tuple : tuples) {
                 for(Size k=0; k<dim; ++k)
                     term[k] = pathBasis[tuple[k]];
-                ret.push_back(MultiDimFct(term));
+                ret.emplace_back(MultiDimFct(term));
             }
         }
         return ret;

@@ -401,8 +401,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[0] = 0.0;
                 twoPoints[1] = gridPoints.at(indexP1)-gridPoints.at(index);
 
-                const Array ndWeights1st = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
+                const Array ndWeights1st =
+                    NumericalDifferentiation({}, 1 , twoPoints).weights();
 
                 const Real beta1  = dfdx(index, index);
                 const Real gamma1 = dfdx(index, indexP1);
@@ -441,8 +441,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 twoPoints[0] = gridPoints.at(indexM1)-gridPoints.at(index);
                 twoPoints[1] = 0.0;
 
-                const Array ndWeights1st = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 1 , twoPoints).weights();
+                const Array ndWeights1st =
+                    NumericalDifferentiation({}, 1 , twoPoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -482,8 +482,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                 threePoints[1] = 0.0;
                 threePoints[2] = gridPoints.at(indexP1)-gridPoints.at(index);
 
-                const Array ndWeights1st = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 1 , threePoints).weights();
+                const Array ndWeights1st =
+                    NumericalDifferentiation({}, 1 , threePoints).weights();
 
                 const Real alpha1 = dfdx(index, indexM1);
                 const Real beta1  = dfdx(index, index);
@@ -508,8 +508,8 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
                             << gamma1 - ndWeights1st.at(2));
                 }
 
-                const Array ndWeights2nd = NumericalDifferentiation(
-                    ext::function<Real(Real)>(), 2 , threePoints).weights();
+                const Array ndWeights2nd =
+                    NumericalDifferentiation({}, 2 , threePoints).weights();
 
                 const Real alpha2 = d2fdx2(index, indexM1);
                 const Real beta2  = d2fdx2(index, index);

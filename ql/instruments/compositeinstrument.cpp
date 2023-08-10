@@ -26,6 +26,15 @@ namespace QuantLib {
         components_.emplace_back(instrument, multiplier);
         registerWith(instrument);
         update();
+        // When we ask for the NPV of an expired composite, the
+        // components are not recalculated and thus wouldn't forward
+        // later notifications according to the default behavior of
+        // LazyObject instances.  This means that even if the
+        // evaluation date changes so that the composite is no longer
+        // expired, the instrument wouldn't be notified and thus it
+        // wouldn't recalculate.  To avoid this, we override the
+        // default behavior of the components.
+        instrument->alwaysForwardNotifications();
     }
 
     void CompositeInstrument::subtract(

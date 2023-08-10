@@ -42,8 +42,7 @@ namespace QuantLib {
         growthOnly = false means i(T)/i(0), which is a bond-type setting.
         growthOnly = true means i(T)/i(0) - 1, which is a swap-type setting.
     */
-    class IndexedCashFlow : public CashFlow,
-                            public Observer {
+    class IndexedCashFlow : public CashFlow {
       public:
         IndexedCashFlow(Real notional,
                         ext::shared_ptr<Index> index,
@@ -70,15 +69,16 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-        //! \name Observer interface
+        //! \name LazyObject interface
         //@{
-        void update() override { notifyObservers(); }
+        void performCalculations() const override;
         //@}
       private:
         Real notional_;
         ext::shared_ptr<Index> index_;
         Date baseDate_, fixingDate_, paymentDate_;
         bool growthOnly_;
+        mutable Real amount_;
     };
 
 

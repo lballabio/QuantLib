@@ -112,8 +112,7 @@ namespace QuantLib {
     SwapIndex::clone(const Handle<YieldTermStructure>& forwarding) const {
 
         if (exogenousDiscount_)
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
+            return ext::make_shared<SwapIndex>(familyName(),
                           tenor(),
                           fixingDays(),
                           currency(),
@@ -122,10 +121,9 @@ namespace QuantLib {
                           fixedLegConvention(),
                           dayCounter(),
                           iborIndex_->clone(forwarding),
-                          discount_));
+                          discount_);
         else
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
+            return ext::make_shared<SwapIndex>(familyName(),
                           tenor(),
                           fixingDays(),
                           currency(),
@@ -133,14 +131,13 @@ namespace QuantLib {
                           fixedLegTenor(),
                           fixedLegConvention(),
                           dayCounter(),
-                          iborIndex_->clone(forwarding)));
+                          iborIndex_->clone(forwarding));
     }
 
     ext::shared_ptr<SwapIndex>
     SwapIndex::clone(const Handle<YieldTermStructure>& forwarding,
                      const Handle<YieldTermStructure>& discounting) const {
-        return ext::shared_ptr<SwapIndex>(new
-             SwapIndex(familyName(),
+        return ext::make_shared<SwapIndex>(familyName(),
                        tenor(),
                        fixingDays(),
                        currency(),
@@ -149,15 +146,14 @@ namespace QuantLib {
                        fixedLegConvention(),
                        dayCounter(),
                        iborIndex_->clone(forwarding),
-                       discounting));
+                       discounting);
     }
 
     ext::shared_ptr<SwapIndex>
     SwapIndex::clone(const Period& tenor) const {
 
         if (exogenousDiscount_)
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
+            return ext::make_shared<SwapIndex>(familyName(),
                           tenor,
                           fixingDays(),
                           currency(),
@@ -166,10 +162,9 @@ namespace QuantLib {
                           fixedLegConvention(),
                           dayCounter(),
                           iborIndex(),
-                          discountingTermStructure()));
+                          discountingTermStructure());
         else
-            return ext::shared_ptr<SwapIndex>(new
-                SwapIndex(familyName(),
+            return ext::make_shared<SwapIndex>(familyName(),
                           tenor,
                           fixingDays(),
                           currency(),
@@ -177,7 +172,7 @@ namespace QuantLib {
                           fixedLegTenor(),
                           fixedLegConvention(),
                           dayCounter(),
-                          iborIndex()));
+                          iborIndex());
 
     }
 

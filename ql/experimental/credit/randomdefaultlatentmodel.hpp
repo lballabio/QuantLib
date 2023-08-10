@@ -613,7 +613,7 @@ namespace QuantLib {
         lowerPercentile = rankLosses[r];
         upperPercentile = rankLosses[s];
 
-        return {quantileValue, lowerPercentile, upperPercentile};
+        return ext::make_tuple(quantileValue, lowerPercentile, upperPercentile);
     }
 
 

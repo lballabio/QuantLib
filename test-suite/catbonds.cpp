@@ -406,7 +406,7 @@ void CatBondTest::testCatBondInDoomScenario() {
                  DateGeneration::Backward, false);
 
     ext::shared_ptr<std::vector<std::pair<Date, Real> > > events(new std::vector<std::pair<Date, Real> >());
-    events->push_back(std::pair<Date, Real>(Date(30,November,2004), 1000));
+    events->emplace_back(Date(30,November,2004), 1000);
     ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
         events, 
         Date(30,November,2004), Date(30,November,2008)));
@@ -471,7 +471,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYears() {
                  DateGeneration::Backward, false);
 
     ext::shared_ptr<std::vector<std::pair<Date, Real> > > events(new std::vector<std::pair<Date, Real> >());
-    events->push_back(std::pair<Date, Real>(Date(30,November,2008), 1000));
+    events->emplace_back(Date(30,November,2008), 1000);
     ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
         events, 
         Date(30,November,2004), Date(30,November,2044)));
@@ -554,7 +554,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYearsProportional() {
                  DateGeneration::Backward, false);
 
     ext::shared_ptr<std::vector<std::pair<Date, Real> > > events(new std::vector<std::pair<Date, Real> >());
-    events->push_back(std::pair<Date, Real>(Date(30,November,2008), 1000));
+    events->emplace_back(Date(30,November,2008), 1000);
     ext::shared_ptr<CatRisk> doomCatRisk(new EventSet(
         events, 
         Date(30,November,2004), Date(30,November,2044)));

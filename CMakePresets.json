@@ -1,99 +1,273 @@
 {
-  "version": 2,
+  "version": 3,
   "configurePresets": [
     {
-      "name": "linux-clang-debug",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
+      "name": "windows-base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "windows-msvc-base",
+      "hidden": true,
+      "inherits": "windows-base",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "cl.exe"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-msvc-x64"
+        }
+      }
+    },
+    {
+      "name": "windows-clang-base",
+      "hidden": true,
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang-cl.exe"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-clang-x64"
+        }
+      }
+    },
+    {
+      "name": "linux-base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
+        },
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "linux-gcc-x64",
+          "hostOS": [
+            "Linux"
+          ]
+        }
+      }
+    },
+    {
+      "name": "linux-gcc-base",
+      "hidden": true,
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "linux-clang-base",
+      "hidden": true,
+      "inherits": "linux-base",
+      "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang++"
       }
+    },
+    {
+      "name": "ninja",
+      "hidden": true,
+      "generator": "Ninja"
+    },
+    {
+      "name": "make",
+      "hidden": true,
+      "generator": "Unix Makefiles"
+    },
+    {
+      "name": "_release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "_debug",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "_relwithdebinfo",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "linux-clang-debug",
+      "inherits": [
+        "linux-clang-base",
+        "make",
+        "_debug"
+      ]
     },
     {
       "name": "linux-clang-release",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_COMPILER": "clang++"
-      }
+      "inherits": [
+        "linux-clang-base",
+        "make",
+        "_release"
+      ]
+    },
+    {
+      "name": "linux-clang-relwithdebinfo",
+      "inherits": [
+        "linux-clang-base",
+        "make",
+        "_relwithdebinfo"
+      ]
     },
     {
       "name": "linux-gcc-debug",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_COMPILER": "g++"
-      }
+      "inherits": [
+        "linux-gcc-base",
+        "make",
+        "_debug"
+      ]
     },
     {
       "name": "linux-gcc-release",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_COMPILER": "g++"
-      }
+      "inherits": [
+        "linux-gcc-base",
+        "make",
+        "_release"
+      ]
     },
     {
-      "name": "windows-clang-x64",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang-cl",
-        "CMAKE_C_COMPILER": "clang-cl"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-clang-x64",
-          "hostOS": [
-            "Windows"
-          ]
-        }
-      }
+      "name": "linux-gcc-relwithdebinfo",
+      "inherits": [
+        "linux-gcc-base",
+        "make",
+        "_relwithdebinfo"
+      ]
     },
     {
-      "name": "windows-msvc-x64",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Ninja",
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-msvc-x64",
-          "hostOS": [
-            "Windows"
-          ]
-        }
-      }
+      "name": "linux-clang-ninja-debug",
+      "inherits": [
+        "linux-clang-debug",
+        "ninja"
+      ]
+    },
+    {
+      "name": "linux-clang-ninja-release",
+      "inherits": [
+        "linux-clang-release",
+        "ninja"
+      ]
+    },
+    {
+      "name": "linux-clang-ninja-relwithdebinfo",
+      "inherits": [
+        "linux-clang-relwithdebinfo",
+        "ninja"
+      ]
+    },
+    {
+      "name": "linux-gcc-ninja-debug",
+      "inherits": [
+        "linux-gcc-debug",
+        "ninja"
+      ]
+    },
+    {
+      "name": "linux-gcc-ninja-release",
+      "inherits": [
+        "linux-gcc-release",
+        "ninja"
+      ]
+    },
+    {
+      "name": "linux-gcc-ninja-relwithdebinfo",
+      "inherits": [
+        "linux-gcc-relwithdebinfo",
+        "ninja"
+      ]
     },
     {
       "name": "linux-gcc-debug-with-clang-tidy",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
+      "inherits": [
+        "linux-gcc-base",
+        "make",
+        "_debug"
+      ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_COMPILER": "g++",
         "QL_CLANG_TIDY_OPTIONS": "-warnings-as-errors=*",
         "QL_USE_CLANG_TIDY": "ON"
       }
     },
     {
+      "name": "windows-clang-release",
+      "inherits": [
+        "windows-clang-base",
+        "ninja",
+        "_release"
+      ]
+    },
+    {
+      "name": "windows-clang-debug",
+      "inherits": [
+        "windows-clang-base",
+        "ninja",
+        "_debug"
+      ]
+    },
+    {
+      "name": "windows-clang-relwithdebinfo",
+      "inherits": [
+        "windows-clang-base",
+        "ninja",
+        "_relwithdebinfo"
+      ]
+    },
+    {
+      "name": "windows-msvc-release",
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "_release"
+      ]
+    },
+    {
+      "name": "windows-msvc-debug",
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "_debug"
+      ]
+    },
+    {
+      "name": "windows-msvc-relwithdebinfo",
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "_relwithdebinfo"
+      ]
+    },
+    {
       "name": "linux-ci-build-with-clang-tidy",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
+      "inherits": [
+        "linux-gcc-base",
+        "make",
+        "_debug"
+      ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_UNITY_BUILD": "ON",
         "QL_CLANG_TIDY": "clang-tidy-15",
         "QL_CLANG_TIDY_OPTIONS": "-quiet;-fix",
@@ -103,110 +277,56 @@
     },
     {
       "name": "linux-ci-build-with-nonstandard-options",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Ninja",
+      "inherits": [
+        "linux-gcc-base",
+        "ninja",
+        "_release"
+      ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
         "BUILD_SHARED_LIBS": false,
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_CXX_STANDARD": "17",
         "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
         "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_FASTER_LAZY_OBJECTS": "OFF",
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
+        "QL_USE_STD_ANY": "ON",
+        "QL_USE_STD_OPTIONAL": "ON",
+        "QL_USE_STD_FUNCTION": "OFF",
+        "QL_USE_STD_TUPLE": "OFF",
         "QL_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
     {
       "name": "windows-ci-build-with-nonstandard-options",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Ninja",
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
+      "inherits": [
+        "windows-msvc-base",
+        "ninja",
+        "_release"
+      ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_STANDARD": "17",
         "CMAKE_UNITY_BUILD": "ON",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
         "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_FASTER_LAZY_OBJECTS": "OFF",
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
+        "QL_USE_STD_ANY": "ON",
+        "QL_USE_STD_OPTIONAL": "ON",
+        "QL_USE_STD_FUNCTION": "OFF",
+        "QL_USE_STD_TUPLE": "OFF",
         "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "windows-msvc-x64",
-          "hostOS": [
-            "Windows"
-          ]
-        }
       }
-    }
-  ],
-  "buildPresets": [
-    {
-      "name": "linux-clang-debug",
-      "configurePreset": "linux-clang-debug"
-    },
-    {
-      "name": "linux-clang-release",
-      "configurePreset": "linux-clang-release"
-    },
-    {
-      "name": "linux-gcc-debug",
-      "configurePreset": "linux-gcc-debug"
-    },
-    {
-      "name": "linux-gcc-release",
-      "configurePreset": "linux-gcc-release"
-    },
-    {
-      "name": "linux-gcc-debug-with-clang-tidy",
-      "configurePreset": "linux-gcc-debug-with-clang-tidy"
-    },
-    {
-      "name": "windows-clang-x64-debug",
-      "configurePreset": "windows-clang-x64",
-      "configuration": "Debug"
-    },
-    {
-      "name": "windows-clang-x64-release",
-      "configurePreset": "windows-clang-x64",
-      "configuration": "Release"
-    },
-    {
-      "name": "windows-msvc-x64-debug",
-      "configurePreset": "windows-msvc-x64",
-      "configuration": "Debug"
-    },
-    {
-      "name": "windows-msvc-x64-release",
-      "configurePreset": "windows-msvc-x64",
-      "configuration": "Release"
-    },
-    {
-      "name": "linux-ci-build-with-clang-tidy",
-      "configurePreset": "linux-ci-build-with-clang-tidy"
-    },
-    {
-      "name": "linux-ci-build-with-nonstandard-options",
-      "configurePreset": "linux-ci-build-with-nonstandard-options"
-    },
-    {
-      "name": "windows-ci-build-with-nonstandard-options",
-      "configurePreset": "windows-ci-build-with-nonstandard-options",
-      "configuration": "Release"
     }
   ]
 }

@@ -493,10 +493,10 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     // Create the CDS spread helpers.
     vector<ext::shared_ptr<DefaultProbabilityHelper> > instruments;
     for (map<Period, Rate>::const_iterator it = cdsSpreads.begin(); it != cdsSpreads.end(); ++it) {
-        instruments.push_back(ext::shared_ptr<SpreadCdsHelper>(
-            new SpreadCdsHelper(it->second, it->first, settlementDays, calendar,
+        instruments.push_back(ext::make_shared<SpreadCdsHelper>(
+            it->second, it->first, settlementDays, calendar,
                                 frequency, paymentConvention, rule, dayCounter, recoveryRate, usdYts, true, true, Date(),
-                                lastPeriodDayCounter)));
+                                lastPeriodDayCounter));
     }
 
     // Create the default curve with the default IterativeBootstrap.

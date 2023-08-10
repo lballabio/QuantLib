@@ -42,10 +42,15 @@ jobs:
             tag: jammy
             cc: gcc
             cxx: g++
-            tests: true
           - name: "gcc 12.x"
             shortname: gcc12
             tag: lunar
+            cc: gcc
+            cxx: g++
+            tests: true
+          - name: "gcc 13.x"
+            shortname: gcc13
+            tag: mantic
             cc: gcc
             cxx: g++
             tests: true
@@ -94,10 +99,15 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
-            tests: true
           - name: "Clang 15"
             shortname: clang15
             tag: lunar
+            cc: clang
+            cxx: clang++
+            tests: true
+          - name: "Clang 16"
+            shortname: clang16
+            tag: mantic
             cc: clang
             cxx: clang++
             tests: true
@@ -137,7 +147,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-throwing-in-cycles
+            configureflags: --enable-throwing-in-cycles --disable-faster-lazy-objects
             tests: true
           - name: "Indexed coupons enabled"
             shortname: indexed
@@ -146,12 +156,12 @@ jobs:
             cxx: g++
             configureflags: --enable-indexed-coupons
             tests: true
-          - name: "Standard Library classes enabled"
+          - name: "Standard Library classes enabled/disabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-std-classes --enable-std-any --enable-std-optional
+            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-any --enable-std-optional
             tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
