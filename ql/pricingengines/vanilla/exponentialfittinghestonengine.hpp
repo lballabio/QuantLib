@@ -60,6 +60,8 @@ namespace QuantLib {
             AsymptoticChF,
             // angled contour shift integral
             AngledContour,
+            // angled contour shift integral w/o control variate
+            AngledContourNoCV,
             // auto selection of best control variate algorithm from above
             OptimalCV
         };

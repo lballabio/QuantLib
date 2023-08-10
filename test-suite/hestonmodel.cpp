@@ -1871,6 +1871,13 @@ void HestonModelTest::testAllIntegrationMethods() {
         AnalyticHestonEngine::AngledContour,
         false, expected, tol, 128,
         "Angled contour shift integral");
+
+    // Angled contour shift integral w/o control variate
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::gaussLaguerre(192),
+        AnalyticHestonEngine::AngledContourNoCV,
+        false, expected, tol, 192,
+        "Angled contour shift integral without control variate");
 }
 
 namespace {
@@ -3393,8 +3400,8 @@ void HestonModelTest::testOptimalAlphaKmin() {
 
     const Real strike = 100;
 
-    const Real alphaStar
-        = AnalyticHestonEngine::OptimalAlpha(1.0, engine.get())(strike);
+    const Real alphaStar = AnalyticHestonEngine::OptimalAlpha(1.0, engine.get())
+                               .alphaSmallerMinusOne(strike).first;
 
     BOOST_CHECK_SMALL(alphaStar+3.71, 0.0051);
 
@@ -3451,28 +3458,32 @@ void HestonModelTest::testOptimalAlphaKmax() {
     auto model = ext::make_shared<HestonModel>(
         ext::make_shared<HestonProcess>(yTS, yTS, spot,  .1, 1.2, 0.2, 0.2, -0.8));
     auto engine = ext::make_shared<AnalyticHestonEngine>(model);
-    Real alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())(strike);
+    Real alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
+            .alphaGreaterZero(strike).first;
     BOOST_CHECK_SMALL(alphaStar - 3.22615, 1e-4);
 
     // case 2: kappa - sigma*rho < 0, T < t_cut
     model = ext::make_shared<HestonModel>(
         ext::make_shared<HestonProcess>(yTS, yTS, spot, 0.1, 1.2, 0.2, 1.5, 0.9));
     engine = ext::make_shared<AnalyticHestonEngine>(model);
-    alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())(strike);
+    alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
+            .alphaGreaterZero(strike).first;
     BOOST_CHECK_SMALL(alphaStar - 0.31137, 1e-4);
 
     // case 3: kappa - sigma*rho < 0, T >= t_cut
     model = ext::make_shared<HestonModel>(
         ext::make_shared<HestonProcess>(yTS, yTS, spot, 0.1, 1.2, 0.2, 2.25, 0.9));
     engine = ext::make_shared<AnalyticHestonEngine>(model);
-    alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())(strike);
+    alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
+            .alphaGreaterZero(strike).first;
     BOOST_CHECK_SMALL(alphaStar - 0.11940, 1e-4);
 
     // case 4: kappa - sigma*rho == 0
     model = ext::make_shared<HestonModel>(
         ext::make_shared<HestonProcess>(yTS, yTS, spot, 0.1, 1.0, 0.2, 2.0, 0.5));
     engine = ext::make_shared<AnalyticHestonEngine>(model);
-    alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())(strike);
+    alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
+            .alphaGreaterZero(strike).first;
     BOOST_CHECK_SMALL(alphaStar - 0.28006, 1e-4);
 }
 

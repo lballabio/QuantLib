@@ -109,8 +109,10 @@ namespace QuantLib {
             // Gatheral form with asymptotic expansion of the characteristic function as control variate
             // https://hpcquantlib.wordpress.com/2020/08/30/a-novel-control-variate-for-the-heston-model
             AsymptoticChF,
-            // angled contour shift integral
+            // angled contour shift integral with control variate
             AngledContour,
+            // angled contour shift integral w/o control variate
+            AngledContourNoCV,
             // auto selection of best control variate algorithm from above
             OptimalCV
         };
@@ -173,6 +175,7 @@ namespace QuantLib {
         const Real andersenPiterbargEpsilon_;
     };
 
+
     class AnalyticHestonEngine::Integration {
       public:
         // non adaptive integration algorithms based on Gaussian quadrature
@@ -186,7 +189,8 @@ namespace QuantLib {
         // result in a stack overflow as the these integrations are based on
         // recursive algorithms.
         static Integration gaussLobatto(Real relTolerance, Real absTolerance,
-                                        Size maxEvaluations = 1000);
+                                        Size maxEvaluations = 1000,
+                                        bool useConvergenceEstimate = false);
 
         // usually these routines have a poor convergence behavior.
         static Integration gaussKronrod(Real absTolerance,
@@ -228,28 +232,6 @@ namespace QuantLib {
         const ext::shared_ptr<GaussianQuadrature> gaussianQuadrature_;
     };
 
-    class AnalyticHestonEngine::OptimalAlpha {
-      public:
-        OptimalAlpha(
-            const Time t,
-            const AnalyticHestonEngine* const enginePtr);
-
-        Real operator()(Real strike) const;
-        //std::pair<Real, Real> alphaGreaterZero(Real strike) const;
-        //std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
-
-        Size numberOfEvaluations() const;
-      private:
-        Real M(Real k) const;
-        Real k(Real x, Integer sgn) const;
-        Real findMinima(Real lower, Real upper, Real strike, int bits) const;
-
-        const Real t_, fwd_, kappa_, theta_, sigma_, rho_;
-        const AnalyticHestonEngine* const enginePtr_;
-        Real km_, kp_;
-        mutable Size evaluations_;
-    };
-
     class AnalyticHestonEngine::AP_Helper {
       public:
         AP_Helper(Time term, Real fwd, Real strike,
@@ -270,6 +252,33 @@ namespace QuantLib {
         std::complex<Real> phi_, psi_;
     };
 
+
+    class AnalyticHestonEngine::OptimalAlpha {
+      public:
+        OptimalAlpha(
+            const Time t,
+            const AnalyticHestonEngine* const enginePtr);
+
+        Real operator()(Real strike) const;
+        std::pair<Real, Real> alphaGreaterZero(Real strike) const;
+        std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
+
+        Size numberOfEvaluations() const;
+        Real M(Real k) const;
+        Real k(Real x, Integer sgn) const;
+
+      private:
+        std::pair<Real, Real> findMinima(Real lower, Real upper, Real strike) const;
+
+        const Real t_, fwd_, kappa_, theta_, sigma_, rho_;
+
+        const int bits_;
+        const Real eps_;
+
+        const AnalyticHestonEngine* const enginePtr_;
+        Real km_, kp_;
+        mutable Size evaluations_;
+    };
 
 
     inline std::complex<Real> AnalyticHestonEngine::addOnTerm(

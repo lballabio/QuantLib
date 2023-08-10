@@ -244,10 +244,20 @@ namespace QuantLib {
                          AnalyticHestonEngine::AsymptoticChF
                  : (cv_ == AngledContour)?
                          AnalyticHestonEngine::AngledContour
+                 : (cv_ == AngledContourNoCV)?
+                         AnalyticHestonEngine::AngledContourNoCV
                  : AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho);
 
+        Real alpha = -0.5;
+        if (cv_ == OptimalCV && analyticCV == AnalyticHestonEngine::AngledContour) {
+            const ext::shared_ptr<AnalyticHestonEngine> helper =
+                 ext::make_shared<AnalyticHestonEngine>(model_.currentLink(), 2);
+            AnalyticHestonEngine::OptimalAlpha optimalAlpha(t, helper.get());
+            alpha = optimalAlpha(strike);
+        }
+
         const AnalyticHestonEngine::AP_Helper helper(
-            t, fwd, strike, analyticCV, analyticEngine_.get());
+            t, fwd, strike, analyticCV, analyticEngine_.get(), alpha);
 
         const Real vAvg = (1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta;
 

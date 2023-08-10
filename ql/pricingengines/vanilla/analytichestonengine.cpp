@@ -306,15 +306,74 @@ namespace QuantLib {
         const Time t,
         const AnalyticHestonEngine* const enginePtr)
     : t_(t),
-      fwd_(enginePtr->model_->process()->s0()->value()),
+      fwd_(enginePtr->model_->process()->s0()->value()
+              * enginePtr->model_->process()->dividendYield()->discount(t)
+              / enginePtr->model_->process()->riskFreeRate()->discount(t)),
       kappa_(enginePtr->model_->kappa()),
       theta_(enginePtr->model_->theta()),
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
+      bits_(int(0.4*std::numeric_limits<Real>::digits)),
+      eps_(std::pow(2, -bits_)),
       enginePtr_(enginePtr),
       evaluations_(0) {
         km_ = k(0.0, -1);
         kp_ = k(0.0,  1);
+    }
+
+    std::pair<Real, Real>
+    AnalyticHestonEngine::OptimalAlpha::alphaGreaterZero(Real strike) const {
+        const auto cm = [this](Real k) -> Real { return M(k) - t_; };
+
+        Real alpha_max;
+        const Real adx = kappa_ - sigma_*rho_;
+        if (adx > 0.0) {
+            const Real kp_2pi = k(2*M_PI, 1);
+
+            alpha_max = Brent().solve(
+                cm, eps_, 0.5*(kp_ + kp_2pi), (1+1e-12)*kp_, kp_2pi
+            ) - 1.0;
+        }
+        else if (adx < 0.0) {
+            const Time tCut = -2/(kappa_ - sigma_*rho_*kp_);
+            if (t_ < tCut) {
+                const Real kp_pi = k(M_PI, 1);
+                alpha_max = Brent().solve(
+                    cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
+                ) - 1.0;
+            }
+            else {
+                alpha_max = Brent().solve(
+                    cm, eps_, 0.5*(1.0 + kp_), 1 + 1e-12, (1-1e-12)*kp_
+                ) - 1.0;
+            }
+        }
+        else { // adx == 0.0
+            const Real kp_pi = k(M_PI, 1);
+            alpha_max = Brent().solve(
+                cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
+            ) - 1.0;
+        }
+
+        QL_REQUIRE(alpha_max >= 0.0, "alpha max must be larger than zero");
+
+        return findMinima(0.0, 0.99*alpha_max, strike);
+    }
+
+    std::pair<Real, Real>
+    AnalyticHestonEngine::OptimalAlpha::alphaSmallerMinusOne(Real strike) const {
+        const auto cm = [this](Real k) -> Real { return M(k) - t_; };
+
+        const Real km_2pi = k(2*M_PI, -1);
+
+        const Real alpha_min = Brent().solve(
+            cm, eps_, 0.5*(km_2pi + km_), km_2pi, (1+1e-12)*km_
+        ) - 1.0;
+
+        QL_REQUIRE(alpha_min <= -1.0,
+            "alpha min must be smaller than minus one");
+
+        return findMinima(-1 + 0.99*(alpha_min + 1.0), -1.0, strike);
     }
 
     Real AnalyticHestonEngine::OptimalAlpha::operator()(Real strike) const {
@@ -323,73 +382,30 @@ namespace QuantLib {
         //       chose the interval (alpha_min, -1) or (0, alpha_max), which
         //       gives the lowest minimum?
 
-        constexpr int bits(int(0.4*std::numeric_limits<Real>::digits));
-        const Real eps = std::pow(2, -bits);
+        const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
+        const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
 
-        const auto cm = [this](Real k) -> Real { return M(k) - t_; };
-
-        if (fwd_ >= strike) {
-            const Real km_2pi = k(2*M_PI, -1);
-
-            const Real alpha_min = Brent().solve(
-                cm, eps, 0.5*(km_2pi + km_), km_2pi, (1+1e-12)*km_
-            ) - 1.0;
-
-            QL_REQUIRE(alpha_min <= -1.0,
-                "alpha min must be smaller than minus one");
-
-            return std::min(
-                -1.001, findMinima(-1 + 0.99*(alpha_min + 1.0), -1.0, strike, bits)
-            );
+        if (minusOne.second < greaterZero.second) {
+            return minusOne.first;
         }
         else {
-            Real alpha_max;
-            const Real adx = kappa_ - sigma_*rho_;
-            if (adx > 0.0) {
-                const Real kp_2pi = k(2*M_PI, 1);
-
-                alpha_max = Brent().solve(
-                    cm, eps, 0.5*(kp_ + kp_2pi), (1+1e-12)*kp_, kp_2pi
-                ) - 1.0;
-            }
-            else if (adx < 0.0) {
-                const Time tCut = -2/(kappa_ - sigma_*rho_*kp_);
-                if (t_ < tCut) {
-                    const Real kp_pi = k(M_PI, 1);
-                    alpha_max = Brent().solve(
-                        cm, eps, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
-                    ) - 1.0;
-                }
-                else {
-                    alpha_max = Brent().solve(
-                        cm, eps, 0.5*(1.0 + kp_), 1 + 1e-12, (1-1e-12)*kp_
-                    ) - 1.0;
-                }
-            }
-            else { // adx == 0.0
-                const Real kp_pi = k(M_PI, 1);
-                alpha_max = Brent().solve(
-                    cm, eps, 0.5*(kp_ + kp_pi), (1+1e-12)*kp_, kp_pi
-                ) - 1.0;
-            }
-
-            QL_REQUIRE(alpha_max >= 0.0, "alpha max must be larger than zero");
-
-            return std::max(
-                1e-3, findMinima(0.0, 0.99*alpha_max, strike, bits)
-            );
-
+            return greaterZero.first;
         }
 
-        return -0.5;
+//        if (fwd_ >= strike) {
+//            return std::min(-1.001, alphaSmallerMinusOne(strike).first);
+//        }
+//        else {
+//            return std::max(1e-3, alphaGreaterZero(strike).first);
+//        }
     }
 
     Size AnalyticHestonEngine::OptimalAlpha::numberOfEvaluations() const {
         return evaluations_;
     }
 
-    Real AnalyticHestonEngine::OptimalAlpha::findMinima(
-        Real lower, Real upper, Real strike, int bits) const {
+    std::pair<Real, Real> AnalyticHestonEngine::OptimalAlpha::findMinima(
+        Real lower, Real upper, Real strike) const {
         const Real freq = std::log(fwd_/strike);
 
         return boost::math::tools::brent_find_minima(
@@ -402,8 +418,8 @@ namespace QuantLib {
                 return std::log(enginePtr_->chF(z, t_).real())
                     - std::log(alpha*(alpha+1)) + alpha*freq;
             },
-            lower, upper, bits
-        ).first;
+            lower, upper, bits_
+        );
     }
 
     Real AnalyticHestonEngine::OptimalAlpha::M(Real k) const {
@@ -419,6 +435,12 @@ namespace QuantLib {
 
             return 2/D_imag
                 * ( ((beta>0.0)? M_PI : 0.0) - std::atan(D_imag/beta) );
+
+//            TODO: check if equal
+//            const auto D = std::sqrt(std::complex<Real>(beta*beta - sigma_*sigma_*(k*(k-1))));
+//
+//            return 2/std::abs(D)
+//                * ( ((beta>0.0)? M_PI : 0.0) - std::atan(std::abs(D)/beta) );
         }
     }
 
@@ -473,6 +495,7 @@ namespace QuantLib {
                           /(sigma*sigma);
             break;
           case AngledContour:
+          case AngledContourNoCV:
             {
                 vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
                           /(kappa*term) + theta;
@@ -498,14 +521,15 @@ namespace QuantLib {
         std::complex<Real> phiBS;
         constexpr std::complex<Real> i(0, 1);
 
-        if (cpxLog_ == AngledContour) {
+        if (cpxLog_ == AngledContour || cpxLog_ == AngledContourNoCV) {
             const std::complex<Real> h_u(u, u*tanPhi_ - alpha_);
             const std::complex<Real> hPrime(h_u-i);
 
-            phiBS = std::exp(
-                -0.5*vAvg_*term_*(hPrime*hPrime +
-                        std::complex<Real>(-hPrime.imag(), hPrime.real()))
-            );
+            phiBS = (cpxLog_ == AngledContour)
+                ? std::exp(
+                    -0.5*vAvg_*term_*(hPrime*hPrime +
+                            std::complex<Real>(-hPrime.imag(), hPrime.real())))
+                : 0.0;
 
             return std::exp(-u*tanPhi_*freq_)
                     *(std::exp(std::complex<Real>(0.0, u*freq_))
@@ -552,6 +576,12 @@ namespace QuantLib {
                 (std::exp(psi_)*(
                       -2.0*Ci(-0.5*phiFreq)*std::sin(0.5*phiFreq)
                        +std::cos(0.5*phiFreq)*(M_PI+2.0*Si(0.5*phiFreq)))).real();
+        }
+        else if (cpxLog_ == AngledContourNoCV) {
+            return     ((alpha_ <=  0.0)? fwd_ : 0.0)
+                  -    ((alpha_ <= -1.0)? strike_ : 0.0)
+                  -0.5*((alpha_ ==  0.0)? fwd_ :0.0)
+                  +0.5*((alpha_ == -1.0)? strike_: 0.0);
         }
         else
             QL_FAIL("unknown control variate");
@@ -619,7 +649,7 @@ namespace QuantLib {
         const std::complex<Real> D = std::sqrt(
             g*g + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
 
-        // reduced cancelation errors, see. L. Andersen and M. Lake
+        // reduce cancelation errors, see. L. Andersen and M. Lake
         std::complex<Real> r(g-D);
         if (g.real()*D.real() + g.imag()*D.imag() > 0.0) {
             r = -sigma2*z*std::complex<Real>(z.real(), z.imag()+1)/(g+D);
@@ -784,6 +814,7 @@ namespace QuantLib {
           case AndersenPiterbargOptCV:
           case AsymptoticChF:
           case AngledContour:
+          case AngledContourNoCV:
           case OptimalCV: {
             const Real c_inf =
                 std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*maturity)/sigma;
@@ -864,15 +895,14 @@ namespace QuantLib {
     : intAlgo_(intAlgo), gaussianQuadrature_(std::move(gaussianQuadrature)) {}
 
     AnalyticHestonEngine::Integration
-    AnalyticHestonEngine::Integration::gaussLobatto(Real relTolerance,
-                                                    Real absTolerance,
-                                                    Size maxEvaluations) {
-        return Integration(GaussLobatto,
+    AnalyticHestonEngine::Integration::gaussLobatto(
+       Real relTolerance, Real absTolerance, Size maxEvaluations, bool useConvergenceEstimate) {
+       return Integration(GaussLobatto,
                            ext::shared_ptr<Integrator>(
                                new GaussLobattoIntegral(maxEvaluations,
                                                         absTolerance,
                                                         relTolerance,
-                                                        false)));
+                                                        useConvergenceEstimate)));
     }
 
     AnalyticHestonEngine::Integration
