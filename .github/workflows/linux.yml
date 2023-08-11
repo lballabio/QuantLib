@@ -37,7 +37,7 @@ jobs:
             tag: hirsute
             cc: gcc
             cxx: g++
-          - name: "gcc 11.x"
+          - name: "gcc 11.x (Boost 1.82)"
             shortname: gcc11
             tag: jammy
             cc: gcc
@@ -94,7 +94,7 @@ jobs:
             tag: impish
             cc: clang
             cxx: clang++
-          - name: "Clang 14"
+          - name: "Clang 14 (Boost 1.82)"
             shortname: clang14
             tag: jammy
             cc: clang
