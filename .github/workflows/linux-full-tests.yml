@@ -176,6 +176,12 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-openmp
+          - name: "Parallel unit-test runner"
+            shortname: paralleltests
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-parallel-unit-test-runner
           - name: "Null as function template"
             shortname: nullfunctions
             tag: rolling
