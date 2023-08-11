@@ -102,7 +102,7 @@ QuantLib is
     Copyright (C) 2012 Simon Shakeshaft
     Copyright (C) 2012 Édouard Tallent
     Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
-    Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018 Peter Caspers
+    Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2023 Peter Caspers
 
     Copyright (C) 2013 BGC Partners L.P.
     Copyright (C) 2013 Chris Higgs
