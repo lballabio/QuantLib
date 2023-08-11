@@ -20,8 +20,8 @@
 /*
  Examples:
   1. Start with 12 worker processes
-     ./quantlib-test-suite --nProc=12 --log_level=message --report_level=short
-                           --build_info=yes
+    ./quantlib-test-suite --log_level=message --report_level=short
+                           --build_info=yes -- --nProc=12
   2. If parameter "--nProc" is omitted then the number
      of worker processes will be equal to the number of CPU cores.
  */
@@ -29,6 +29,7 @@
 
 #ifndef quantlib_parallel_test_runner_hpp
 #define quantlib_parallel_test_runner_hpp
+
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
@@ -39,14 +40,14 @@
 #undef VERSION
 #endif
 
+#include <boost/process.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
 
 #define BOOST_TEST_NO_MAIN 1
 #include <boost/test/included/unit_test.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/process.hpp>
 
 #include <map>
 #include <list>

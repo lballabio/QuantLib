@@ -190,7 +190,7 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
-            moreflags: -lrt
+            tests: true
           - name: "Null as function template"
             shortname: nullfunctions
             tag: rolling
@@ -231,4 +231,4 @@ jobs:
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
         make install
-        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}
+        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`
