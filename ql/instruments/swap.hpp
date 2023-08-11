@@ -76,6 +76,7 @@ namespace QuantLib {
         //! \name Additional interface
         //@{
         Size numberOfLegs() const;
+        const std::vector<Leg>& legs() const;
         virtual Date startDate() const;
         virtual Date maturityDate() const;
         Real legBPS(Size j) const {
