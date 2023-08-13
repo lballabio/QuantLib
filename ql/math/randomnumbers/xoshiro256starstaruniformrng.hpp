@@ -32,18 +32,18 @@ namespace QuantLib {
         explicit Xoshiro256StarStarUniformRng(unsigned long long seed = 0);
 
         Xoshiro256StarStarUniformRng(unsigned long long s0,
-                              unsigned long long s1,
-                              unsigned long long s2,
-                              unsigned long long s3);
+                                     unsigned long long s1,
+                                     unsigned long long s2,
+                                     unsigned long long s3);
 
         /*! returns a sample with weight 1.0 containing a random number
             in the (0.0, 1.0) interval  */
         sample_type next() const { return {nextReal(), 1.0}; }
 
         //! return a random number in the (0.0, 1.0)-interval
-        Real nextReal() const { return (Real(nextInt64() >> 11) + 0.5) * 1.1102230246251565E-16; }
+        Real nextReal() const { return (Real(nextInt64() >> 11) + 0.5) * (1.0 / (1ULL << 53)); }
 
-        //! return a random integer in the [0,0xffffffffffffffffUL]-interval
+        //! return a random integer in the [0,0xffffffffffffffffULL]-interval
         unsigned long long nextInt64() const {
             const unsigned long long result = rotl(s[1] * 5, 7) * 9;
 
@@ -68,7 +68,7 @@ namespace QuantLib {
         void seedInitialization(unsigned long long s0,
                                 unsigned long long s1,
                                 unsigned long long s2,
-                                unsigned long long s3);
+                                unsigned long long s3) const;
 
         mutable unsigned long long s[4];
     };

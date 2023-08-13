@@ -26,7 +26,7 @@ using QuantLib::Real;
 using QuantLib::Xoshiro256StarStarUniformRng;
 
 void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
-    BOOST_TEST_MESSAGE("Testing Xoshiro256StarStar");
+    BOOST_TEST_MESSAGE("Testing Xoshiro256StarStarUniformRng");
 
     auto random = Xoshiro256StarStarUniformRng(1);
     const auto iterations = 10000000;
@@ -34,9 +34,8 @@ void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
     randoms.reserve(iterations);
     for (int j = 0; j < iterations; ++j) {
         auto next = random.nextReal();
-        if (next < 0.0 || 1.0 < next) {
-            BOOST_ERROR("next not in range");
-            return;
+        if (next <= 0.0 || 1.0 <= next) {
+            BOOST_FAIL("next " << next << " not in range");
         }
         randoms.push_back(next);
     }
@@ -56,7 +55,7 @@ void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
 }
 
 boost::unit_test_framework::test_suite* Xoshiro256StarStarUniformRngTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Test");
+    auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStarUniformRng Test");
 
     suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal));
 
