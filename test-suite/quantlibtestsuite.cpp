@@ -203,7 +203,7 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
-#include "xoshiro256starstarrng.hpp"
+#include "xoshiro256starstaruniformrng.hpp"
 #include "zabr.hpp"
 #include "zerocouponswap.hpp"
 #include <chrono>
@@ -479,7 +479,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
-    test->add(Xoshiro256StarStarRngTest::suite());
+    test->add(Xoshiro256StarStarUniformRngTest::suite());
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes

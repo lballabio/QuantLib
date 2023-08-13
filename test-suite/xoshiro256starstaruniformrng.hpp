@@ -18,15 +18,15 @@
 */
 
 
-#ifndef quantlib_test_xoshiro256starstar_prng_hpp
-#define quantlib_test_xoshiro256starstar_prng_hpp
+#ifndef quantlib_test_xoshiro256starstar_uniform_rng_hpp
+#define quantlib_test_xoshiro256starstar_uniform_rng_hpp
 
 #include <boost/test/unit_test.hpp>
 
-class Xoshiro256StarStarRngTest {
+class Xoshiro256StarStarUniformRngTest {
   public:
     static void testMeanAndStdDevOfNextReal();
     static boost::unit_test_framework::test_suite* suite();
 };
 
-#endif // quantlib_test_xoshiro256starstar_prng_hpp
+#endif // quantlib_test_xoshiro256starstar_uniform_rng_hpp

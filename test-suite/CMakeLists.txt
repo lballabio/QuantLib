@@ -166,7 +166,7 @@ set(QL_TEST_SOURCES
     varianceswaps.cpp
     volatilitymodels.cpp
     vpp.cpp
-        xoshiro256starstarrng.cpp
+    xoshiro256starstaruniformrng.cpp
     zabr.cpp
     zerocouponswap.cpp
 )
@@ -341,7 +341,7 @@ set(QL_TEST_HEADERS
     varianceswaps.hpp
     volatilitymodels.hpp
     vpp.hpp
-        xoshiro256starstarrng.hpp
+    xoshiro256starstaruniformrng.hpp
     zabr.hpp
     zerocouponswap.hpp
 )

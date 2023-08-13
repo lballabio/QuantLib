@@ -17,21 +17,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_xoshiro256starstar_rng_hpp
-#define quantlib_xoshiro256starstar_rng_hpp
+#ifndef quantlib_xoshiro256starstar_uniform_rng_hpp
+#define quantlib_xoshiro256starstar_uniform_rng_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <ql/types.hpp>
 
 namespace QuantLib {
-    class Xoshiro256StarStarRng {
+    class Xoshiro256StarStarUniformRng {
       public:
         typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
             based on clock() */
-        explicit Xoshiro256StarStarRng(unsigned long long seed = 0);
+        explicit Xoshiro256StarStarUniformRng(unsigned long long seed = 0);
 
-        Xoshiro256StarStarRng(unsigned long long s0,
+        Xoshiro256StarStarUniformRng(unsigned long long s0,
                               unsigned long long s1,
                               unsigned long long s2,
                               unsigned long long s3);
@@ -74,4 +74,4 @@ namespace QuantLib {
     };
 }
 
-#endif // quantlib_xoshiro256starstar_rng_hpp
+#endif // quantlib_xoshiro256starstar_uniform_rng_hpp

@@ -17,18 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "xoshiro256starstarrng.hpp"
+#include "xoshiro256starstaruniformrng.hpp"
 #include "utilities.hpp"
-#include <ql/math/randomnumbers/xoshiro256starstarrng.hpp>
+#include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
 
 using QuantLib::Real;
-using QuantLib::Xoshiro256StarStarRng;
+using QuantLib::Xoshiro256StarStarUniformRng;
 
-void Xoshiro256StarStarRngTest::testMeanAndStdDevOfNextReal() {
+void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
     BOOST_TEST_MESSAGE("Testing Xoshiro256StarStar");
 
-    auto random = Xoshiro256StarStarRng(1);
+    auto random = Xoshiro256StarStarUniformRng(1);
     const auto iterations = 10000000;
     auto randoms = std::vector<Real>();
     randoms.reserve(iterations);
@@ -55,10 +55,10 @@ void Xoshiro256StarStarRngTest::testMeanAndStdDevOfNextReal() {
     }
 }
 
-boost::unit_test_framework::test_suite* Xoshiro256StarStarRngTest::suite() {
+boost::unit_test_framework::test_suite* Xoshiro256StarStarUniformRngTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Test");
 
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarRngTest::testMeanAndStdDevOfNextReal));
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal));
 
     return suite;
 }
