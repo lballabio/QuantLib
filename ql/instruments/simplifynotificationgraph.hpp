@@ -53,13 +53,13 @@ namespace QuantLib {
     */
     void simplifyNotificationGraph(Instrument& instrument,
                                    const Leg& leg,
-                                   const bool unregisterCoupons = false);
+                                   bool unregisterCoupons = false);
 
     //! Utility function to opimize the observability graph of a swap
-    void simplifyNotificationGraph(Swap& swap, const bool unregisterCoupons = false);
+    void simplifyNotificationGraph(Swap& swap, bool unregisterCoupons = false);
 
     //! Utility function to opimize the observability graph of a bond
-    void simplifyNotificationGraph(Bond& bond, const bool unregisterCoupons = false);
+    void simplifyNotificationGraph(Bond& bond, bool unregisterCoupons = false);
 
 }
 

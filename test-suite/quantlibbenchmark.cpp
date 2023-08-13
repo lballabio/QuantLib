@@ -274,7 +274,7 @@ namespace {
             if (aggTimes.empty()
                     || std::get<0>(aggTimes.back()).getName()
                         != iter.first.getName()) {
-                aggTimes.push_back(std::make_tuple(iter.first, 1, iter.second));
+                aggTimes.emplace_back(iter.first, 1, iter.second);
             }
             else {
                 ++std::get<1>(aggTimes.back());
@@ -357,8 +357,8 @@ int main(int argc, char* argv[] ) {
     if (nProc == 1 && !clientMode) {
         std::for_each(bm.begin(), bm.end(),
             [&runTimes](const Benchmark& iter) {
-                runTimes.push_back(std::make_pair(
-                    iter, TimedBenchmark(iter.getTestCase())()));
+                runTimes.emplace_back(
+                    iter, TimedBenchmark(iter.getTestCase())());
         });
         printResults(nProc, runTimes);
     }
