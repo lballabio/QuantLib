@@ -22,14 +22,19 @@
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
 
+extern "C" {
+#include "xoshiro256starstar.c"
+}
+
 using QuantLib::Real;
 using QuantLib::Xoshiro256StarStarUniformRng;
 
 void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
-    BOOST_TEST_MESSAGE("Testing Xoshiro256StarStarUniformRng");
+    BOOST_TEST_MESSAGE(
+        "Testing Xoshiro256StarStarUniformRng::nextReal() for mean=0.5 and stddev=1/12");
 
     auto random = Xoshiro256StarStarUniformRng(1);
-    const auto iterations = 10000000;
+    const auto iterations = 10'000'000;
     auto randoms = std::vector<Real>();
     randoms.reserve(iterations);
     for (int j = 0; j < iterations; ++j) {
@@ -54,10 +59,44 @@ void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
     }
 }
 
+void Xoshiro256StarStarUniformRngTest::testAgainstReferenceImplementationInC() {
+    BOOST_TEST_MESSAGE(
+        "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C");
+
+    // some random initial seed
+    static const unsigned long long s0 = 10108360646465513120ULL;
+    static const unsigned long long s1 = 4416403493985791904ULL;
+    static const unsigned long long s2 = 7597776674045431742ULL;
+    static const unsigned long long s3 = 6431387443075032236ULL;
+
+    // simulate the warmup in our implementation
+    // by burning the first 1,000 random numbers in the reference implementation
+    s[0] = s0;
+    s[1] = s1;
+    s[2] = s2;
+    s[3] = s3;
+    for (int i = 0; i < 1'000; ++i) {
+        next();
+    }
+
+    auto rng = Xoshiro256StarStarUniformRng(s0, s1, s2, s3);
+    for (auto i = 0; i < 1'000; i++) {
+        auto nextReferenceCImplementation = next();
+        auto nextOurs = rng.nextInt64();
+        if (nextReferenceCImplementation != nextOurs) {
+            BOOST_FAIL("Xoshiro256StarStarUniformRng test failed at index "
+                       << i << " (expected: " << nextReferenceCImplementation
+                       << "ULL, ours: " << nextOurs << "ULL)");
+        }
+    }
+}
+
 boost::unit_test_framework::test_suite* Xoshiro256StarStarUniformRngTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStarUniformRng Test");
 
     suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal));
+    suite->add(QUANTLIB_TEST_CASE(
+        &Xoshiro256StarStarUniformRngTest::testAgainstReferenceImplementationInC));
 
     return suite;
 }

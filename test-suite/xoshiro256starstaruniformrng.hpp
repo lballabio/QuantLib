@@ -26,6 +26,7 @@
 class Xoshiro256StarStarUniformRngTest {
   public:
     static void testMeanAndStdDevOfNextReal();
+    static void testAgainstReferenceImplementationInC();
     static boost::unit_test_framework::test_suite* suite();
 };
 
