@@ -51,7 +51,7 @@ namespace QuantLib {
                 s1_ = SeedGenerator::instance().get();
                 s2_ = SeedGenerator::instance().get();
                 s3_ = SeedGenerator::instance().get();
-            } while (s0_ != 0 || s1_ != 0 || s2_ != 0 || s3_ != 0);
+            } while (s0_ == 0 || s1_ == 0 || s2_ == 0 || s3_ == 0);
         }
     }
 }
