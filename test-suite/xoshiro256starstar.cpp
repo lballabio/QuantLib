@@ -109,11 +109,44 @@ void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
     }
 }
 
+void Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances() {
+    BOOST_TEST_MESSAGE(
+        "Testing Xoshiro256StarStarUniformRng for absence of interaction between instances");
+
+    auto seed = 16880566536755896171ULL;
+    Xoshiro256StarStarUniformRng rng(seed);
+    for (auto i = 0; i < 999; ++i)
+        rng.nextInt64();
+    auto referenceValue = rng.nextInt64();
+
+    // sequential use
+    Xoshiro256StarStarUniformRng rng1(seed), rng2(seed);
+    for (auto i = 0; i < 1'000; i++)
+        rng1.nextInt64();
+    for (auto i = 0; i < 999; i++)
+        rng2.nextInt64();
+    if (referenceValue != rng2.nextInt64())
+        BOOST_FAIL("Detected interaction between Xoshiro256StarStarUniformRng instances during "
+                   "sequential computation");
+
+    // parallel use
+    Xoshiro256StarStarUniformRng rng3(seed), rng4(seed);
+    for (auto i = 0; i < 999; i++) {
+        rng3.nextInt64();
+        rng4.nextInt64();
+    }
+    if (referenceValue != rng3.nextInt64() || referenceValue != rng4.nextInt64())
+        BOOST_FAIL("Detected interaction between Xoshiro256StarStarUniformRng instances during "
+                   "parallel computation");
+}
+
 boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Tests");
 
     suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal));
     suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAgainstReferenceImplementationInC));
+    suite->add(
+        QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances));
 
     return suite;
 }

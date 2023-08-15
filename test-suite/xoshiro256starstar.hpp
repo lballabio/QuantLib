@@ -27,6 +27,7 @@ class Xoshiro256StarStarTest {
   public:
     static void testMeanAndStdDevOfNextReal();
     static void testAgainstReferenceImplementationInC();
+    static void testAbsenceOfInteractionBetweenInstances();
     static boost::unit_test_framework::test_suite* suite();
 };
 
