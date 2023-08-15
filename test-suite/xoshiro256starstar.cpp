@@ -42,12 +42,12 @@ extern "C" {
 #elif defined(__clang__)
     _Pragma("clang diagnostic pop")
 #endif
-// clang-format on
+    // clang-format on
 
-using QuantLib::Real;
+    using QuantLib::Real;
 using QuantLib::Xoshiro256StarStarUniformRng;
 
-void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
+void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
     BOOST_TEST_MESSAGE(
         "Testing Xoshiro256StarStarUniformRng::nextReal() for mean=0.5 and stddev=1/12");
 
@@ -77,7 +77,7 @@ void Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal() {
     }
 }
 
-void Xoshiro256StarStarUniformRngTest::testAgainstReferenceImplementationInC() {
+void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
     BOOST_TEST_MESSAGE(
         "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C");
 
@@ -99,22 +99,21 @@ void Xoshiro256StarStarUniformRngTest::testAgainstReferenceImplementationInC() {
 
     auto rng = Xoshiro256StarStarUniformRng(s0, s1, s2, s3);
     for (auto i = 0; i < 1'000; i++) {
-        auto nextReferenceCImplementation = next();
+        auto nextRefImpl = next();
         auto nextOurs = rng.nextInt64();
-        if (nextReferenceCImplementation != nextOurs) {
-            BOOST_FAIL("Xoshiro256StarStarUniformRng test failed at index "
-                       << i << " (expected: " << nextReferenceCImplementation
+        if (nextRefImpl != nextOurs) {
+            BOOST_FAIL("Test failed at index "
+                       << i << " (expected from reference implementation: " << nextRefImpl
                        << "ULL, ours: " << nextOurs << "ULL)");
         }
     }
 }
 
-boost::unit_test_framework::test_suite* Xoshiro256StarStarUniformRngTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStarUniformRng Test");
+boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
+    auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarUniformRngTest::testMeanAndStdDevOfNextReal));
-    suite->add(QUANTLIB_TEST_CASE(
-        &Xoshiro256StarStarUniformRngTest::testAgainstReferenceImplementationInC));
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal));
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAgainstReferenceImplementationInC));
 
     return suite;
 }

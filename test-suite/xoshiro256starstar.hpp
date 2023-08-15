@@ -23,7 +23,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-class Xoshiro256StarStarUniformRngTest {
+class Xoshiro256StarStarTest {
   public:
     static void testMeanAndStdDevOfNextReal();
     static void testAgainstReferenceImplementationInC();
