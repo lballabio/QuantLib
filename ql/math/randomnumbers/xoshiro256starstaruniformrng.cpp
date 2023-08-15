@@ -41,17 +41,17 @@ namespace QuantLib {
                                                           unsigned long long s1,
                                                           unsigned long long s2,
                                                           unsigned long long s3) const {
-        s_[0] = s0;
-        s_[1] = s1;
-        s_[2] = s2;
-        s_[3] = s3;
-        if (s_[0] == 0 && s_[1] == 0 && s_[2] == 0 && s_[3] == 0) {
+        s0_ = s0;
+        s1_ = s1;
+        s2_ = s2;
+        s3_ = s3;
+        if (s0_ == 0 && s1_ == 0 && s2_ == 0 && s3_ == 0) {
             do {
-                s_[0] = SeedGenerator::instance().get();
-                s_[1] = SeedGenerator::instance().get();
-                s_[2] = SeedGenerator::instance().get();
-                s_[3] = SeedGenerator::instance().get();
-            } while (s_[0] == 0 && s_[1] == 0 && s_[2] == 0 && s_[3] == 0);
+                s0_ = SeedGenerator::instance().get();
+                s1_ = SeedGenerator::instance().get();
+                s2_ = SeedGenerator::instance().get();
+                s3_ = SeedGenerator::instance().get();
+            } while (s0_ != 0 || s1_ != 0 || s2_ != 0 || s3_ != 0);
         }
     }
 }
