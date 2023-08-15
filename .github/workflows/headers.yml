@@ -1,0 +1,24 @@
+name: Compile single headers
+on: [push, pull_request]
+jobs:
+  headers:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: |
+        sudo apt update
+        sudo apt install -y libboost-dev ccache
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: single-headers-${{ github.ref }}
+        restore-keys: |
+          single-headers-${{ github.ref }}
+          single-headers-refs/heads/master
+          single-headers-
+    - name: Check
+      env:
+        CXX: ccache g++
+      run: |
+        ./tools/check_all_headers.sh

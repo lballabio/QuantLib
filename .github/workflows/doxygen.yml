@@ -1,0 +1,21 @@
+name: Check doc generation
+on: [push, pull_request]
+jobs:
+  docs:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+      run: |
+        brew update
+        brew install automake boost doxygen graphviz
+        ./autogen.sh
+        ./configure
+    - name: Doxygen version
+      run: |
+        doxygen --version
+    - name: Check
+      run: |
+        make docs
