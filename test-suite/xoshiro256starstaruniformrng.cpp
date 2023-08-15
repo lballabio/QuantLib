@@ -22,9 +22,27 @@
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
 
+// we do not want to change the original xoshiro256starstar.c implementation. Therefore, we suppress
+// any warnings from this file.
+// clang-format off
+#if defined(__GNUC__)
+    _Pragma("GCC diagnostic push")
+    _Pragma("GCC diagnostic ignored \"-Wsign-compare\"")
+#elif defined(__clang__)
+    _Pragma("clang diagnostic push")
+    _Pragma("clang diagnostic ignored \"-Wsign-compare\"")
+#endif
+
 extern "C" {
 #include "xoshiro256starstar.c"
 }
+
+#if defined(__GNUC__)
+    _Pragma("GCC diagnostic pop")
+#elif defined(__clang__)
+    _Pragma("clang diagnostic pop")
+#endif
+// clang-format on
 
 using QuantLib::Real;
 using QuantLib::Xoshiro256StarStarUniformRng;
