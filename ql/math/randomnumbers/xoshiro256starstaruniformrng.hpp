@@ -45,18 +45,18 @@ namespace QuantLib {
 
         //! return a random integer in the [0,0xffffffffffffffffULL]-interval
         unsigned long long nextInt64() const {
-            const unsigned long long result = rotl(s[1] * 5, 7) * 9;
+            const unsigned long long result = rotl(s_[1] * 5, 7) * 9;
 
-            const unsigned long long t = s[1] << 17;
+            const unsigned long long t = s_[1] << 17;
 
-            s[2] ^= s[0];
-            s[3] ^= s[1];
-            s[1] ^= s[2];
-            s[0] ^= s[3];
+            s_[2] ^= s_[0];
+            s_[3] ^= s_[1];
+            s_[1] ^= s_[2];
+            s_[0] ^= s_[3];
 
-            s[2] ^= t;
+            s_[2] ^= t;
 
-            s[3] = rotl(s[3], 45);
+            s_[3] = rotl(s_[3], 45);
 
             return result;
         }
@@ -70,7 +70,7 @@ namespace QuantLib {
                                 unsigned long long s2,
                                 unsigned long long s3) const;
 
-        mutable unsigned long long s[4];
+        mutable unsigned long long s_[4];
     };
 }
 
