@@ -57,6 +57,7 @@ this_include_HEADERS = \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
+    simplifynotificationgraph.hpp \
     stickyratchet.hpp \
     stock.hpp \
     swap.hpp \
@@ -119,6 +120,7 @@ cpp_files = \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
+    simplifynotificationgraph.cpp \
     stickyratchet.cpp \
     stock.cpp \
     swap.cpp \

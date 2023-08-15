@@ -947,6 +947,7 @@
     <ClInclude Include="ql\instruments\quantobarrieroption.hpp" />
     <ClInclude Include="ql\instruments\quantoforwardvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\quantovanillaoption.hpp" />
+    <ClInclude Include="ql\instruments\simplifynotificationgraph.hpp" />
     <ClInclude Include="ql\instruments\stickyratchet.hpp" />
     <ClInclude Include="ql\instruments\stock.hpp" />
     <ClInclude Include="ql\instruments\swap.hpp" />
@@ -2205,6 +2206,7 @@
     <ClCompile Include="ql\instruments\quantobarrieroption.cpp" />
     <ClCompile Include="ql\instruments\quantoforwardvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\quantovanillaoption.cpp" />
+    <ClCompile Include="ql\instruments\simplifynotificationgraph.cpp" />
     <ClCompile Include="ql\instruments\stickyratchet.cpp" />
     <ClCompile Include="ql\instruments\stock.cpp" />
     <ClCompile Include="ql\instruments\swap.cpp" />
