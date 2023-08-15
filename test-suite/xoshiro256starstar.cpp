@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "xoshiro256starstaruniformrng.hpp"
+#include "xoshiro256starstar.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>

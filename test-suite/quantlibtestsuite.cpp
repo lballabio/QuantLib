@@ -203,7 +203,7 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
-#include "xoshiro256starstaruniformrng.hpp"
+#include "xoshiro256starstar.hpp"
 #include "zabr.hpp"
 #include "zerocouponswap.hpp"
 #include <chrono>

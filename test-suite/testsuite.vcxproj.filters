@@ -449,7 +449,7 @@
     <ClCompile Include="vpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xoshiro256starstaruniformrng.cpp">
+    <ClCompile Include="xoshiro256starstar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="quantlibtestsuite.cpp" />
@@ -968,7 +968,7 @@
     <ClInclude Include="vpp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xoshiro256starstaruniformrng.hpp">
+    <ClInclude Include="xoshiro256starstar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="binaryoption.hpp">
