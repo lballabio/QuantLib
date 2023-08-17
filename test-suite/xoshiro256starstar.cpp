@@ -82,10 +82,10 @@ void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
         "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C");
 
     // some random initial seed
-    static const unsigned long long s0 = 10108360646465513120ULL;
-    static const unsigned long long s1 = 4416403493985791904ULL;
-    static const unsigned long long s2 = 7597776674045431742ULL;
-    static const unsigned long long s3 = 6431387443075032236ULL;
+    static const auto s0 = 10108360646465513120ULL;
+    static const auto s1 = 4416403493985791904ULL;
+    static const auto s2 = 7597776674045431742ULL;
+    static const auto s3 = 6431387443075032236ULL;
 
     // simulate the warmup in our implementation
     // by burning the first 1,000 random numbers in the reference implementation

@@ -38,6 +38,7 @@ See <http://creativecommons.org/publicdomain/zero/1.0/>. */
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <ql/types.hpp>
+#include <stdint.h>
 
 namespace QuantLib {
 
@@ -58,12 +59,9 @@ namespace QuantLib {
         typedef Sample<Real> sample_type;
 
         /*! if the given seed is 0, a random seed will be chosen based on clock() */
-        explicit Xoshiro256StarStarUniformRng(unsigned long long seed = 0);
+        explicit Xoshiro256StarStarUniformRng(uint64_t seed = 0);
 
-        Xoshiro256StarStarUniformRng(unsigned long long s0,
-                                     unsigned long long s1,
-                                     unsigned long long s2,
-                                     unsigned long long s3);
+        Xoshiro256StarStarUniformRng(uint64_t s0, uint64_t s1, uint64_t s2, uint64_t s3);
 
         /*! returns a sample with weight 1.0 containing a random number
             in the (0.0, 1.0) interval  */
@@ -73,10 +71,10 @@ namespace QuantLib {
         Real nextReal() const { return (Real(nextInt64() >> 11) + 0.5) * (1.0 / Real(1ULL << 53)); }
 
         //! return a random integer in the [0,0xffffffffffffffffULL]-interval
-        unsigned long long nextInt64() const {
-            const unsigned long long result = rotl(s1_ * 5, 7) * 9;
+        uint64_t nextInt64() const {
+            const auto result = rotl(s1_ * 5, 7) * 9;
 
-            const unsigned long long t = s1_ << 17;
+            const auto t = s1_ << 17;
 
             s2_ ^= s0_;
             s3_ ^= s1_;
@@ -91,15 +89,10 @@ namespace QuantLib {
         }
 
       private:
-        static unsigned long long rotl(unsigned long long x, int k) {
-            return (x << k) | (x >> (64 - k));
-        }
-        void seedInitialization(unsigned long long s0,
-                                unsigned long long s1,
-                                unsigned long long s2,
-                                unsigned long long s3) const;
+        static uint64_t rotl(uint64_t x, int32_t k) { return (x << k) | (x >> (64 - k)); }
+        void seedInitialization() const;
 
-        mutable unsigned long long s0_, s1_, s2_, s3_;
+        mutable uint64_t s0_, s1_, s2_, s3_;
     };
 }
 

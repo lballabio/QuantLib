@@ -22,29 +22,23 @@
 
 namespace QuantLib {
 
-    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(unsigned long long seed)
+    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t seed)
     : Xoshiro256StarStarUniformRng(seed, seed, seed, seed) {}
 
-    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(unsigned long long s0,
-                                                               unsigned long long s1,
-                                                               unsigned long long s2,
-                                                               unsigned long long s3) {
-        seedInitialization(s0, s1, s2, s3);
+    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t s0,
+                                                               uint64_t s1,
+                                                               uint64_t s2,
+                                                               uint64_t s3)
+    : s0_(s0), s1_(s1), s2_(s2), s3_(s3) {
+        seedInitialization();
 
         // using a seed s0 == s1 == s2 == s3 needs some warm up
-        for (int i = 0; i < 1000; ++i) {
+        for (auto i = 0; i < 1'000; ++i) {
             nextInt64();
         }
     }
 
-    void Xoshiro256StarStarUniformRng::seedInitialization(unsigned long long s0,
-                                                          unsigned long long s1,
-                                                          unsigned long long s2,
-                                                          unsigned long long s3) const {
-        s0_ = s0;
-        s1_ = s1;
-        s2_ = s2;
-        s3_ = s3;
+    void Xoshiro256StarStarUniformRng::seedInitialization() const {
         if (s0_ == 0 && s1_ == 0 && s2_ == 0 && s3_ == 0) {
             do {
                 s0_ = SeedGenerator::instance().get();
