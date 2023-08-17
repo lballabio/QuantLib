@@ -32,7 +32,9 @@ namespace QuantLib {
     : s0_(s0), s1_(s1), s2_(s2), s3_(s3) {
         seedInitialization();
 
-        // using a seed s0 == s1 == s2 == s3 needs some warm up
+        // We call nextInt64() 1,000 times as the first random numbers
+        // might be "close" to the given seeds.
+        // See https://github.com/lballabio/QuantLib/pull/1769/files#r1296997133 */
         for (auto i = 0; i < 1'000; ++i) {
             nextInt64();
         }
