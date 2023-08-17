@@ -34,7 +34,7 @@ namespace QuantLib {
 
         // We call nextInt64() 1,000 times as the first random numbers
         // might be "close" to the given seeds.
-        // See https://github.com/lballabio/QuantLib/pull/1769/files#r1296997133 */
+        // See https://github.com/lballabio/QuantLib/pull/1769#discussion_r1296997133
         for (auto i = 0; i < 1'000; ++i) {
             nextInt64();
         }

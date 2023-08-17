@@ -61,13 +61,13 @@ namespace QuantLib {
         /*! If the given seed is 0, a random seed will be chosen based on clock().
          * The constructor itself calls nextInt64() 1,000 times as the first random numbers
          * might be "close" to the given seed.
-         * See https://github.com/lballabio/QuantLib/pull/1769/files#r1296997133 */
+         * See https://github.com/lballabio/QuantLib/pull/1769#discussion_r1296997133 */
         explicit Xoshiro256StarStarUniformRng(uint64_t seed = 0);
 
         /*! If the given seeds are all 0, a random seed will be chosen based on clock().
          * The constructor itself calls nextInt64() 1,000 times as the first random numbers
          * might be "close" to the given seeds.
-         * See https://github.com/lballabio/QuantLib/pull/1769/files#r1296997133 */
+         * See https://github.com/lballabio/QuantLib/pull/1769#discussion_r1296997133 */
         Xoshiro256StarStarUniformRng(uint64_t s0, uint64_t s1, uint64_t s2, uint64_t s3);
 
         /*! returns a sample with weight 1.0 containing a random number
