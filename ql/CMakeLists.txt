@@ -428,6 +428,7 @@ set(QL_SOURCES
     math/randomnumbers/seedgenerator.cpp
     math/randomnumbers/sobolbrownianbridgersg.cpp
     math/randomnumbers/sobolrsg.cpp
+    math/randomnumbers/splitmix64.cpp
     math/randomnumbers/stochasticcollocationinvcdf.cpp
     math/randomnumbers/xoshiro256starstaruniformrng.cpp
     math/richardsonextrapolation.cpp
@@ -1530,6 +1531,7 @@ set(QL_HEADERS
     math/randomnumbers/seedgenerator.hpp
     math/randomnumbers/sobolbrownianbridgersg.hpp
     math/randomnumbers/sobolrsg.hpp
+    math/randomnumbers/splitmix64.hpp
     math/randomnumbers/stochasticcollocationinvcdf.hpp
     math/randomnumbers/xoshiro256starstaruniformrng.hpp
     math/richardsonextrapolation.hpp

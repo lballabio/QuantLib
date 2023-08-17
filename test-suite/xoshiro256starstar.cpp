@@ -19,6 +19,7 @@
 
 #include "xoshiro256starstar.hpp"
 #include "utilities.hpp"
+#include <ql/math/randomnumbers/splitmix64.hpp>
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
 
@@ -153,6 +154,7 @@ extern "C" {
 // clang-format on
 
 using QuantLib::Real;
+using QuantLib::SplitMix64;
 using QuantLib::Xoshiro256StarStarUniformRng;
 
 void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
@@ -190,29 +192,37 @@ void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
         "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C");
 
     // some random initial seed
-    static const auto s0 = 10108360646465513120ULL;
-    static const auto s1 = 4416403493985791904ULL;
-    static const auto s2 = 7597776674045431742ULL;
-    static const auto s3 = 6431387443075032236ULL;
+    static const auto seed = 10108360646465513120ULL;
+    SplitMix64 splitMix64(seed);
 
-    // simulate the warmup in our implementation
-    // by burning the first 1,000 random numbers in the reference implementation
+    static const auto s0 = splitMix64.next();
+    static const auto s1 = splitMix64.next();
+    static const auto s2 = splitMix64.next();
+    static const auto s3 = splitMix64.next();
+
     s[0] = s0;
     s[1] = s1;
     s[2] = s2;
     s[3] = s3;
-    for (auto i = 0; i < 1'000; ++i) {
-        next();
-    }
 
-    auto rng = Xoshiro256StarStarUniformRng(s0, s1, s2, s3);
+    auto rngFromSeed = Xoshiro256StarStarUniformRng(seed);
+    auto rngFroms0s1s2s3 = Xoshiro256StarStarUniformRng(s0, s1, s2, s3);
     for (auto i = 0; i < 1'000; i++) {
         auto nextRefImpl = next();
-        auto nextOurs = rng.nextInt64();
-        if (nextRefImpl != nextOurs) {
+        auto nextFromSeed = rngFromSeed.nextInt64();
+        auto nextFroms0s1s2s3 = rngFroms0s1s2s3.nextInt64();
+        if (nextRefImpl != nextFromSeed) {
             BOOST_FAIL("Test failed at index "
                        << i << " (expected from reference implementation: " << nextRefImpl
-                       << "ULL, ours: " << nextOurs << "ULL)");
+                       << "ULL, from Xoshiro256StarStarUniformRng(" << seed
+                       << "ULL): " << nextFromSeed << "ULL)");
+        }
+        if (nextFroms0s1s2s3 != nextFromSeed) {
+            BOOST_FAIL("Test failed at index " << i << " (from Xoshiro256StarStarUniformRng("
+                                               << seed << "): " << nextFroms0s1s2s3
+                                               << "ULL, from Xoshiro256StarStarUniformRng(" << s0
+                                               << "ULL, " << s1 << "ULL, " << s2 << "ULL, " << s3
+                                               << "ULL): " << nextFromSeed << "ULL)");
         }
     }
 }

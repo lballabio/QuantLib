@@ -1272,6 +1272,9 @@
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\splitmix64.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
@@ -4950,6 +4953,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\splitmix64.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp">

@@ -58,20 +58,16 @@ namespace QuantLib {
       public:
         typedef Sample<Real> sample_type;
 
-        /*! If the given seed is 0, a random seed will be chosen based on clock().
-         * The constructor itself calls nextInt64() 1,000 times as the first random numbers
-         * might be "close" to the given seed.
-         * See https://github.com/lballabio/QuantLib/pull/1769#discussion_r1296997133 */
+        /*! If the given seed is 0, a random seed will be chosen based on clock(). */
         explicit Xoshiro256StarStarUniformRng(uint64_t seed = 0);
 
-        /*! If the given seeds are all 0, a random seed will be chosen based on clock().
-         * The constructor itself calls nextInt64() 1,000 times as the first random numbers
-         * might be "close" to the given seeds.
-         * See https://github.com/lballabio/QuantLib/pull/1769#discussion_r1296997133 */
+        /*! Make sure that s0, s1, s2 and s3 are chosen randomly.
+         * Otherwise, the results of the first random numbers might not be well distributed.
+         * Especially s0 = s1 = s2 = s3 = 0 does not work and will always return 0. */
         Xoshiro256StarStarUniformRng(uint64_t s0, uint64_t s1, uint64_t s2, uint64_t s3);
 
         /*! returns a sample with weight 1.0 containing a random number
-            in the (0.0, 1.0) interval  */
+         * in the (0.0, 1.0) interval */
         sample_type next() const { return {nextReal(), 1.0}; }
 
         //! return a random number in the (0.0, 1.0)-interval
@@ -97,8 +93,6 @@ namespace QuantLib {
 
       private:
         static uint64_t rotl(uint64_t x, int32_t k) { return (x << k) | (x >> (64 - k)); }
-        void seedInitialization() const;
-
         mutable uint64_t s0_, s1_, s2_, s3_;
     };
 }

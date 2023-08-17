@@ -19,23 +19,7 @@
 
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 #include <ql/math/randomnumbers/splitmix64.hpp>
-#include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 
 namespace QuantLib {
-
-    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t seed) {
-        SplitMix64 splitMix64(seed != 0 ? seed : SeedGenerator::instance().get());
-        do {
-            s0_ = splitMix64.next();
-            s1_ = splitMix64.next();
-            s2_ = splitMix64.next();
-            s3_ = splitMix64.next();
-        } while (s0_ == 0 && s1_ == 0 && s2_ == 0 && s3_ == 0);
-    }
-
-    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t s0,
-                                                               uint64_t s1,
-                                                               uint64_t s2,
-                                                               uint64_t s3)
-    : s0_(s0), s1_(s1), s2_(s2), s3_(s3) {}
+    SplitMix64::SplitMix64(uint64_t x) : x_(x) {}
 }
