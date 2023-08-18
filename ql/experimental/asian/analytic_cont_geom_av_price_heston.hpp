@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analytic_cont_geom_av_price.hpp
+/*! \file analytic_cont_geom_av_price_heston.hpp
     \brief Analytic engine for continuous geometric average price Asian
            in the Heston model
 */
