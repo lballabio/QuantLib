@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file energycommodity.hpp
-    \brief Energy commodity
+/*! \file unitofmeasureconversion.hpp
+    \brief Unit of measure conversion
 */
 
 #ifndef quantlib_unit_of_measure_conversion_hpp
