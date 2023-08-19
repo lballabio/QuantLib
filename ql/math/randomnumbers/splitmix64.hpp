@@ -41,7 +41,7 @@ See <http://creativecommons.org/publicdomain/zero/1.0/>. */
 namespace QuantLib {
     class SplitMix64 {
       public:
-        SplitMix64(uint64_t x);
+        explicit SplitMix64(uint64_t x) : x_(x) {}
         uint64_t next() const {
             auto z = (x_ += 0x9e3779b97f4a7c15);
             z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;

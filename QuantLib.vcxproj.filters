@@ -4955,9 +4955,6 @@
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
-    <ClCompile Include="ql\math\randomnumbers\splitmix64.cpp">
-      <Filter>math\randomnumbers</Filter>
-    </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>

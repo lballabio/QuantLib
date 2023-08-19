@@ -39,7 +39,6 @@ cpp_files = \
 	seedgenerator.cpp \
 	sobolbrownianbridgersg.cpp \
 	sobolrsg.cpp \
-	splitmix64.cpp \
 	stochasticcollocationinvcdf.cpp \
 	xoshiro256starstaruniformrng.cpp
 

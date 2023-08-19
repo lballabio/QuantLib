@@ -428,7 +428,6 @@ set(QL_SOURCES
     math/randomnumbers/seedgenerator.cpp
     math/randomnumbers/sobolbrownianbridgersg.cpp
     math/randomnumbers/sobolrsg.cpp
-    math/randomnumbers/splitmix64.cpp
     math/randomnumbers/stochasticcollocationinvcdf.cpp
     math/randomnumbers/xoshiro256starstaruniformrng.cpp
     math/richardsonextrapolation.cpp

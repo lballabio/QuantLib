@@ -2317,7 +2317,6 @@
     <ClCompile Include="ql\math\randomnumbers\seedgenerator.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolbrownianbridgersg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
-    <ClCompile Include="ql\math\randomnumbers\splitmix64.cpp" />
     <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp" />
     <ClCompile Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.cpp" />
     <ClCompile Include="ql\math\richardsonextrapolation.cpp" />
