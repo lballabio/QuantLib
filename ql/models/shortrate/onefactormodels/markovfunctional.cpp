@@ -190,16 +190,14 @@ namespace QuantLib {
                             done = false;
                             break;
                         } else {
-                            UpRounding rounder(0);
-                            makeSwaptionCalibrationPoint(
-                                *j,
-                                Period(
-                                    static_cast<Integer>(rounder(
-                                        (swapIndexBase_->dayCounter()
-                                             .yearFraction(*j, numeraireKnown) -
-                                         0.5 / 365) *
-                                        12.0)),
-                                    Months));
+                            Period tenor = swapIndexBase_->fixedLegTenor();
+                            for (std::vector<Date>::const_reverse_iterator u =
+                                     i->second.paymentDates_.rbegin();
+                                 (u != i->second.paymentDates_.rend()) && (*u > numeraireKnown);
+                                 ++u) {
+                                tenor += swapIndexBase_->fixedLegTenor();
+                            }
+                            makeSwaptionCalibrationPoint(*j, tenor);
                             done = false;
                             break;
                         }
