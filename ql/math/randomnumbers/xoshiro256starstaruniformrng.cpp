@@ -24,8 +24,8 @@
 namespace QuantLib {
 
     Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t seed) {
-        SplitMix64 splitMix64(seed != 0 ? seed : SeedGenerator::instance().get());
         do {
+            SplitMix64 splitMix64(seed != 0 ? seed : SeedGenerator::instance().get());
             s0_ = splitMix64.next();
             s1_ = splitMix64.next();
             s2_ = splitMix64.next();
