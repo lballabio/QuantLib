@@ -173,33 +173,22 @@ namespace QuantLib {
                 if (i->second.paymentDates_.back() > numeraireDate_) {
                     numeraireDate_ = i->second.paymentDates_.back();
                     numeraireKnown = i->second.paymentDates_.back();
-                    if (i != calibrationPoints_.rbegin()) {
-                        done = false;
-                    }
+                    done = i == calibrationPoints_.rbegin();
                 }
-                // Inlining this into the loop condition causes
-                // a bogus compilation error wih g++ 4.0.1 on Mac OS X
-                std::vector<Date>::const_reverse_iterator rend =
-                    i->second.paymentDates_.rend();
-                for (std::vector<Date>::const_reverse_iterator j =
-                         i->second.paymentDates_.rbegin();
-                     j != rend && done; ++j) {
+                for (auto j = i->second.paymentDates_.rbegin();
+                     j != i->second.paymentDates_.rend() && done; ++j) {
                     if (*j < numeraireKnown) {
                         if (capletCalibrated_) {
                             makeCapletCalibrationPoint(*j);
                             done = false;
                             break;
                         } else {
-                            UpRounding rounder(0);
-                            makeSwaptionCalibrationPoint(
-                                *j,
-                                Period(
-                                    static_cast<Integer>(rounder(
-                                        (swapIndexBase_->dayCounter()
-                                             .yearFraction(*j, numeraireKnown) -
-                                         0.5 / 365) *
-                                        12.0)),
-                                    Months));
+                            Size months = std::max(
+                                1, static_cast<Integer>(((numeraireKnown - *j) / 365.25) * 12.0));
+                            while (underlyingSwap(swapIndexBase_, *j, months * Months)
+                                       ->maturityDate() < numeraireKnown)
+                                ++months;
+                            makeSwaptionCalibrationPoint(*j, months * Months);
                             done = false;
                             break;
                         }
