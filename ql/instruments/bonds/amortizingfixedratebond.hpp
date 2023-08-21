@@ -79,6 +79,17 @@ namespace QuantLib {
                                 BusinessDayConvention exCouponConvention = Unadjusted,
                                 bool exCouponEndOfMonth = false);
 
+        AmortizingFixedRateBond(
+                          Natural settlementDays,
+                          const std::vector<Real>& notionals,
+                          const std::vector<Real>& redemptions,
+                          const Schedule& schedule,
+                          const std::vector<Rate>& coupons,
+                          const DayCounter& accrualDayCounter,
+                          BusinessDayConvention paymentConvention = Following,
+                          const Date& issueDate = Date(),
+                          Natural paymentLag = Null<Natural>());
+
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:

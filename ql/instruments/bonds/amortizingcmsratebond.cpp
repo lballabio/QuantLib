@@ -61,4 +61,41 @@ namespace QuantLib {
         registerWith(index);
     }
 
+    AmortizingCmsRateBond::AmortizingCmsRateBond(
+                                    Natural settlementDays,
+                                    const std::vector<Real>& notionals,
+                                    const std::vector<Real>& redemptions,
+                                    const Schedule& schedule,
+                                    const ext::shared_ptr<SwapIndex>& index,
+                                    const DayCounter& paymentDayCounter,
+                                    BusinessDayConvention paymentConvention,
+                                    Natural fixingDays,
+                                    const std::vector<Real>& gearings,
+                                    const std::vector<Spread>& spreads,
+                                    const std::vector<Rate>& caps,
+                                    const std::vector<Rate>& floors,
+                                    bool inArrears,
+                                    const Date& issueDate)
+    : Bond(settlementDays, schedule.calendar(), issueDate) {
+
+        maturityDate_ = schedule.endDate();
+
+        cashflows_ = CmsLeg(schedule, index)
+            .withNotionals(notionals)
+            .withPaymentDayCounter(paymentDayCounter)
+            .withPaymentAdjustment(paymentConvention)
+            .withFixingDays(fixingDays)
+            .withGearings(gearings)
+            .withSpreads(spreads)
+            .withCaps(caps)
+            .withFloors(floors)
+            .inArrears(inArrears);
+
+        addRedemptionsToCashflows(redemptions);
+
+        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+
+        registerWith(index);
+    }
+
 }

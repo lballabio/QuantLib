@@ -69,4 +69,51 @@ namespace QuantLib {
         registerWith(index);
     }
 
+
+   AmortizingFloatingRateBond::AmortizingFloatingRateBond(
+                                    Natural settlementDays,
+                                    const std::vector<Real>& notionals,
+                                    const std::vector<Real>& redemptions,
+                                    const Schedule& schedule,
+                                    const ext::shared_ptr<IborIndex>& index,
+                                    const DayCounter& paymentDayCounter,
+                                    BusinessDayConvention paymentConvention,
+                                    Natural fixingDays, Natural paymentLag,
+                                    const std::vector<Real>& gearings,
+                                    const std::vector<Spread>& spreads,
+                                    const std::vector<Rate>& caps,
+                                    const std::vector<Rate>& floors,
+                                    bool inArrears,
+                                    const Date& issueDate,
+                                    const Period& exCouponPeriod,
+                                    const Calendar& exCouponCalendar,
+                                    const BusinessDayConvention exCouponConvention,
+                                    bool exCouponEndOfMonth)
+    : Bond(settlementDays, schedule.calendar(), issueDate) {
+
+        maturityDate_ = schedule.endDate();
+
+        cashflows_ = IborLeg(schedule, index)
+            .withNotionals(notionals)
+            .withPaymentDayCounter(paymentDayCounter)
+            .withPaymentAdjustment(paymentConvention)
+            .withFixingDays(fixingDays)
+            .withPaymentLag(paymentLag)
+            .withGearings(gearings)
+            .withSpreads(spreads)
+            .withCaps(caps)
+            .withFloors(floors)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth)
+            .inArrears(inArrears);
+
+        addRedemptionsToCashflows(redemptions);
+
+        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+
+        registerWith(index);
+    }
+
 }
