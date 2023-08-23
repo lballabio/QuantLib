@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file 
+/*! \file flatextrapolation2d.hpp
 \brief abstract base classes for 2-D flat extrapolations
 */
 

@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file commoditypricinghelpers.hpp
-    \brief Commodity pricing helpers
+/*! \file paymentterm.hpp
+    \brief Payment term
 */
 
 #ifndef quantlib_payment_term_hpp

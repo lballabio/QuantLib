@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analytichestonengine.hpp
+/*! \file hestonexpansionengine.hpp
     \brief analytic Heston expansion engine
 */
 

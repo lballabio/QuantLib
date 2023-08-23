@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmhullwhiteop.hpp
-    \brief FDM operator for the Hull-White interest rate model
+/*! \file fdmg2op.hpp
+    \brief FDM G2 operator
 */
 
 #ifndef quantlib_fdm_g2_op_hpp

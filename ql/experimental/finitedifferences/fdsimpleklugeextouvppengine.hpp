@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdsimpleextoujumpswingengine.hpp
+/*! \file fdsimpleklugeextouvppengine.hpp
     \brief Finite Differences engine for simple vpp options
 */
 
