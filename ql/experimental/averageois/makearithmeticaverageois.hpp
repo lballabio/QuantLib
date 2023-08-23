@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file makeois.hpp
+/*! \file makearithmeticaverageois.hpp
     \brief Helper class to instantiate overnight indexed swaps.
 */
 
