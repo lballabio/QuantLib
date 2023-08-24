@@ -2,7 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
-#include <ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
@@ -11,7 +10,6 @@
 #include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/complexchooseroption.hpp>
-#include <ql/experimental/exoticoptions/compoundoption.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>

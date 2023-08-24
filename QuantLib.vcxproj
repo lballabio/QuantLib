@@ -910,6 +910,7 @@
     <ClInclude Include="ql\instruments\claim.hpp" />
     <ClInclude Include="ql\instruments\cliquetoption.hpp" />
     <ClInclude Include="ql\instruments\compositeinstrument.hpp" />
+    <ClInclude Include="ql\instruments\compoundoption.hpp" />
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp" />
@@ -1529,6 +1530,7 @@
     <ClInclude Include="ql\pricingengines\credit\midpointcdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\all.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.hpp" />
+    <ClInclude Include="ql\pricingengines\exotic\analyticcompoundoptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticeuropeanmargrabeengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\all.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardengine.hpp" />
@@ -2018,7 +2020,6 @@
     <ClCompile Include="ql\experimental\credit\riskyassetswapoption.cpp" />
     <ClCompile Include="ql\experimental\credit\syntheticcdo.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp" />
@@ -2027,7 +2028,6 @@
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\complexchooseroption.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\compoundoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp" />
@@ -2172,6 +2172,7 @@
     <ClCompile Include="ql\instruments\claim.cpp" />
     <ClCompile Include="ql\instruments\cliquetoption.cpp" />
     <ClCompile Include="ql\instruments\compositeinstrument.cpp" />
+    <ClCompile Include="ql\instruments\compoundoption.cpp" />
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp" />
@@ -2586,6 +2587,7 @@
     <ClCompile Include="ql\pricingengines\credit\isdacdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\midpointcdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.cpp" />
+    <ClCompile Include="ql\pricingengines\exotic\analyticcompoundoptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticeuropeanmargrabeengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp" />

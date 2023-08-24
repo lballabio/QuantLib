@@ -20,6 +20,7 @@ this_include_HEADERS = \
     claim.hpp \
     cliquetoption.hpp \
     compositeinstrument.hpp \
+    compoundoption.hpp \
     cpicapfloor.hpp \
     cpiswap.hpp \
     creditdefaultswap.hpp \
@@ -86,6 +87,7 @@ cpp_files = \
     claim.cpp \
     cliquetoption.cpp \
     compositeinstrument.cpp \
+    compoundoption.cpp \
     cpicapfloor.cpp \
     cpiswap.cpp \
     creditdefaultswap.cpp \

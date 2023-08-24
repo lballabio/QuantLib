@@ -37,7 +37,6 @@ this_include_HEADERS = \
 
 cpp_files = \
     analyticcomplexchooserengine.cpp \
-    analyticcompoundoptionengine.cpp \
     analyticholderextensibleoptionengine.cpp \
     analyticpartialtimebarrieroptionengine.cpp \
     analyticpdfhestonengine.cpp \
@@ -46,7 +45,6 @@ cpp_files = \
     analytictwoassetcorrelationengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
     complexchooseroption.cpp \
-    compoundoption.cpp \
     continuousarithmeticasianlevyengine.cpp \
     continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
@@ -92,7 +90,9 @@ all.hpp: Makefile.am
 	for i in $(filter-out all.hpp \
 	                      margrabeoption.hpp \
 	                      analyticamericanmargrabeengine.hpp \
-	                      analyticeuropeanmargrabeengine.hpp, $(this_include_HEADERS)); do \
+	                      analyticeuropeanmargrabeengine.hpp \
+	                      compoundoption.hpp \
+	                      analyticcompoundoptionengine.hpp, $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \
 	done
 	echo >> ${srcdir}/$@
