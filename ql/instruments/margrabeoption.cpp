@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/margrabeoption.hpp>
+#include <ql/instruments/margrabeoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
@@ -54,7 +54,6 @@ namespace QuantLib {
     }
 
     void MargrabeOption::setupArguments(PricingEngine::arguments* args) const {
-
         MultiAssetOption::setupArguments(args);
 
         auto* moreArgs = dynamic_cast<MargrabeOption::arguments*>(args);
@@ -65,7 +64,6 @@ namespace QuantLib {
     }
 
     void MargrabeOption::arguments::validate() const {
-
         MultiAssetOption::arguments::validate();
 
         QL_REQUIRE(Q1 != Null<Integer>(), "unspecified quantity for asset 1");

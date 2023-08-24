@@ -187,6 +187,9 @@
     <Filter Include="pricingengines\basket">
       <UniqueIdentifier>{4b67a796-2576-42be-89cc-b751a07e3973}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pricingengines\exotic">
+      <UniqueIdentifier>{50c1f3c8-4281-11ee-be56-0242ac120002}</UniqueIdentifier>
+    </Filter>
     <Filter Include="pricingengines\forward">
       <UniqueIdentifier>{25671919-a7a3-4197-943c-23a5df4e8146}</UniqueIdentifier>
     </Filter>
@@ -856,6 +859,9 @@
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\makeyoyinflationcapfloor.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\margrabeoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\multiassetoption.hpp">
@@ -2417,6 +2423,15 @@
     </ClInclude>
     <ClInclude Include="ql\pricingengines\basket\stulzengine.hpp">
       <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\exotic\all.hpp">
+      <Filter>pricingengines\exotic</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.hpp">
+      <Filter>pricingengines\exotic</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\exotic\analyticeuropeanmargrabeengine.hpp">
+      <Filter>pricingengines\exotic</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\forward\all.hpp">
       <Filter>pricingengines\forward</Filter>
@@ -4712,6 +4727,9 @@
     <ClCompile Include="ql\instruments\makeyoyinflationcapfloor.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\margrabeoption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\multiassetoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -5813,6 +5831,12 @@
     <ClCompile Include="ql\pricingengines\cliquet\mcperformanceengine.cpp">
       <Filter>pricingengines\cliquet</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.cpp">
+      <Filter>pricingengines\exotic</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\exotic\analyticeuropeanmargrabeengine.cpp">
+      <Filter>pricingengines\exotic</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfixedlookback.cpp">
       <Filter>pricingengines\lookback</Filter>
     </ClCompile>
@@ -6212,13 +6236,7 @@
     <ClCompile Include="ql\experimental\fx\deltavolquote.cpp">
       <Filter>experimental\fx</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\analyticeuropeanmargrabeengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp">
@@ -6261,9 +6279,6 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\margrabeoption.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\mceverestengine.cpp">

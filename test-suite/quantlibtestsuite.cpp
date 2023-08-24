@@ -428,6 +428,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite(speed));
     test->add(LowDiscrepancyTest::suite());
+    test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
     test->add(MarketModelCmsTest::suite(speed));
     test->add(MarketModelSmmTest::suite(speed));
@@ -510,7 +511,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
-    test->add(MargrabeOptionTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NormalCLVModelTest::experimental(speed));
     test->add(NthToDefaultTest::suite(speed));

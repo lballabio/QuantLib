@@ -123,10 +123,8 @@ set(QL_SOURCES
     experimental/credit/riskyassetswap.cpp
     experimental/credit/riskyassetswapoption.cpp
     experimental/credit/syntheticcdo.cpp
-    experimental/exoticoptions/analyticamericanmargrabeengine.cpp
     experimental/exoticoptions/analyticcomplexchooserengine.cpp
     experimental/exoticoptions/analyticcompoundoptionengine.cpp
-    experimental/exoticoptions/analyticeuropeanmargrabeengine.cpp
     experimental/exoticoptions/analyticholderextensibleoptionengine.cpp
     experimental/exoticoptions/analyticpartialtimebarrieroptionengine.cpp
     experimental/exoticoptions/analyticpdfhestonengine.cpp
@@ -142,7 +140,6 @@ set(QL_SOURCES
     experimental/exoticoptions/himalayaoption.cpp
     experimental/exoticoptions/holderextensibleoption.cpp
     experimental/exoticoptions/kirkspreadoptionengine.cpp
-    experimental/exoticoptions/margrabeoption.cpp
     experimental/exoticoptions/mceverestengine.cpp
     experimental/exoticoptions/mchimalayaengine.cpp
     experimental/exoticoptions/mcpagodaengine.cpp
@@ -308,6 +305,7 @@ set(QL_SOURCES
     instruments/makeswaption.cpp
     instruments/makevanillaswap.cpp
     instruments/makeyoyinflationcapfloor.cpp
+    instruments/margrabeoption.cpp
     instruments/multiassetoption.cpp
     instruments/nonstandardswap.cpp
     instruments/nonstandardswaption.cpp
@@ -700,6 +698,8 @@ set(QL_SOURCES
     pricingengines/credit/integralcdsengine.cpp
     pricingengines/credit/isdacdsengine.cpp
     pricingengines/credit/midpointcdsengine.cpp
+    pricingengines/exotic/analyticamericanmargrabeengine.cpp
+    pricingengines/exotic/analyticeuropeanmargrabeengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
     pricingengines/greeks.cpp
@@ -1352,6 +1352,7 @@ set(QL_HEADERS
     instruments/makeswaption.hpp
     instruments/makevanillaswap.hpp
     instruments/makeyoyinflationcapfloor.hpp
+    instruments/margrabeoption.hpp
     instruments/multiassetoption.hpp
     instruments/nonstandardswap.hpp
     instruments/nonstandardswaption.hpp
@@ -1898,6 +1899,8 @@ set(QL_HEADERS
     pricingengines/credit/integralcdsengine.hpp
     pricingengines/credit/isdacdsengine.hpp
     pricingengines/credit/midpointcdsengine.hpp
+    pricingengines/exotic/analyticamericanmargrabeengine.hpp
+    pricingengines/exotic/analyticeuropeanmargrabeengine.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp
     pricingengines/forward/mcforwardeuropeanbsengine.hpp
@@ -2308,6 +2311,7 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/pricingengines/capfloor/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/cliquet/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/credit/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/pricingengines/exotic/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/forward/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/inflation/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/lookback/all.hpp
