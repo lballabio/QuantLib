@@ -47,6 +47,7 @@ this_include_HEADERS = \
     makeswaption.hpp \
     makevanillaswap.hpp \
     makeyoyinflationcapfloor.hpp \
+    margrabeoption.hpp \
     multiassetoption.hpp \
     nonstandardswap.hpp \
     nonstandardswaption.hpp \
@@ -110,6 +111,7 @@ cpp_files = \
     makeswaption.cpp \
     makevanillaswap.cpp \
     makeyoyinflationcapfloor.cpp \
+    margrabeoption.cpp \
     multiassetoption.cpp \
     nonstandardswap.cpp \
     nonstandardswaption.cpp \

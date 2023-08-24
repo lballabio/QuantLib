@@ -42,6 +42,7 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
+#include <ql/instruments/margrabeoption.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
 #include <ql/instruments/nonstandardswaption.hpp>

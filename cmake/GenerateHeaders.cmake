@@ -49,6 +49,13 @@ function(generate_dir_headers source_dir binary_dir)
         list(FILTER children_hpp EXCLUDE REGEX "amortizingcmsratebond.hpp")
     endif ()
 
+    # Same for some headers in experimental/exoticoptions
+    if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "exoticoptions")
+        list(FILTER children_hpp EXCLUDE REGEX "margrabeoption.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "analyticamericanmargrabeengine.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "analyticeuropeanmargrabeengine.hpp")
+    endif ()
+
     list(FILTER children_hpp EXCLUDE REGEX "riskybond.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "composite.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "lexicographicalview.hpp")
