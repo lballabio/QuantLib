@@ -124,7 +124,6 @@ set(QL_SOURCES
     experimental/credit/riskyassetswapoption.cpp
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticcomplexchooserengine.cpp
-    experimental/exoticoptions/analyticcompoundoptionengine.cpp
     experimental/exoticoptions/analyticholderextensibleoptionengine.cpp
     experimental/exoticoptions/analyticpartialtimebarrieroptionengine.cpp
     experimental/exoticoptions/analyticpdfhestonengine.cpp
@@ -133,7 +132,6 @@ set(QL_SOURCES
     experimental/exoticoptions/analytictwoassetcorrelationengine.cpp
     experimental/exoticoptions/analyticwriterextensibleoptionengine.cpp
     experimental/exoticoptions/complexchooseroption.cpp
-    experimental/exoticoptions/compoundoption.cpp
     experimental/exoticoptions/continuousarithmeticasianlevyengine.cpp
     experimental/exoticoptions/continuousarithmeticasianvecerengine.cpp
     experimental/exoticoptions/everestoption.cpp
@@ -280,6 +278,7 @@ set(QL_SOURCES
     instruments/claim.cpp
     instruments/cliquetoption.cpp
     instruments/compositeinstrument.cpp
+    instruments/compoundoption.cpp
     instruments/cpicapfloor.cpp
     instruments/cpiswap.cpp
     instruments/creditdefaultswap.cpp
@@ -699,6 +698,7 @@ set(QL_SOURCES
     pricingengines/credit/isdacdsengine.cpp
     pricingengines/credit/midpointcdsengine.cpp
     pricingengines/exotic/analyticamericanmargrabeengine.cpp
+    pricingengines/exotic/analyticcompoundoptionengine.cpp
     pricingengines/exotic/analyticeuropeanmargrabeengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
@@ -1325,6 +1325,7 @@ set(QL_HEADERS
     instruments/claim.hpp
     instruments/cliquetoption.hpp
     instruments/compositeinstrument.hpp
+    instruments/compoundoption.hpp
     instruments/cpicapfloor.hpp
     instruments/cpiswap.hpp
     instruments/creditdefaultswap.hpp
@@ -1900,6 +1901,7 @@ set(QL_HEADERS
     pricingengines/credit/isdacdsengine.hpp
     pricingengines/credit/midpointcdsengine.hpp
     pricingengines/exotic/analyticamericanmargrabeengine.hpp
+    pricingengines/exotic/analyticcompoundoptionengine.hpp
     pricingengines/exotic/analyticeuropeanmargrabeengine.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp

@@ -2,5 +2,6 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/pricingengines/exotic/analyticamericanmargrabeengine.hpp>
+#include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
 #include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp>
 

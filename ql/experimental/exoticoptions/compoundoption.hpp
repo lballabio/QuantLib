@@ -17,50 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file compoundoption.hpp
-    \brief Compound option on a single asset
-*/
+// Deprecated in version 1.32
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/compoundoption.hpp> instead.")
 
-#ifndef quantlib_compound_option_hpp
-#define quantlib_compound_option_hpp
-
-#include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/payoffs.hpp>
-#include <ql/exercise.hpp>
-
-namespace QuantLib {
-
-    //! %Compound option on a single asset.
-    /*! \ingroup instruments */
-    class CompoundOption : public OneAssetOption {
-      public:
-        class arguments;
-        class engine;
-        // Mother is the compound Option.
-        // Daughter is the option which plays the role of the underlying.
-        CompoundOption(const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
-                       const ext::shared_ptr<Exercise>& motherExercise,
-                       ext::shared_ptr<StrikedTypePayoff> daughterPayoff,
-                       ext::shared_ptr<Exercise> daughterExercise);
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      private:
-        ext::shared_ptr<StrikedTypePayoff> daughterPayoff_;
-        ext::shared_ptr<Exercise> daughterExercise_;
-    };
-
-    class CompoundOption::arguments : public OneAssetOption::arguments {
-      public:
-        ext::shared_ptr<StrikedTypePayoff> daughterPayoff;
-        ext::shared_ptr<Exercise> daughterExercise;
-        void validate() const override;
-    };
-
-    //! %Compound-option %engine base class
-    class CompoundOption::engine
-        : public GenericEngine<CompoundOption::arguments,
-                               CompoundOption::results> {};
-
-}
-
-#endif
+#include <ql/instruments/compoundoption.hpp>

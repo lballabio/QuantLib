@@ -807,6 +807,9 @@
     <ClInclude Include="ql\instruments\compositeinstrument.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\compoundoption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2428,6 +2431,9 @@
       <Filter>pricingengines\exotic</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.hpp">
+      <Filter>pricingengines\exotic</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\exotic\analyticcompoundoptionengine.hpp">
       <Filter>pricingengines\exotic</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\exotic\analyticeuropeanmargrabeengine.hpp">
@@ -4679,6 +4685,9 @@
     <ClCompile Include="ql\instruments\compositeinstrument.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\compoundoption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -5834,6 +5843,9 @@
     <ClCompile Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.cpp">
       <Filter>pricingengines\exotic</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\exotic\analyticcompoundoptionengine.cpp">
+      <Filter>pricingengines\exotic</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\exotic\analyticeuropeanmargrabeengine.cpp">
       <Filter>pricingengines\exotic</Filter>
     </ClCompile>
@@ -6601,12 +6613,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\compoundoption.cpp">
-      <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp">
       <Filter>experimental\inflation</Filter>

@@ -378,6 +378,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(CmsNormalTest::suite());
+    test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
@@ -498,7 +499,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CmsSpreadTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompiledBoostVersionTest::suite());
-    test->add(CompoundOptionTest::suite());
     test->add(CreditRiskPlusTest::suite());
     test->add(DoubleBarrierOptionTest::suite(speed));
     test->add(DoubleBinaryOptionTest::suite());

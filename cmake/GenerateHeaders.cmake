@@ -54,6 +54,8 @@ function(generate_dir_headers source_dir binary_dir)
         list(FILTER children_hpp EXCLUDE REGEX "margrabeoption.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "analyticamericanmargrabeengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "analyticeuropeanmargrabeengine.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "compoundoption.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "analyticcompoundoptionengine.hpp")
     endif ()
 
     list(FILTER children_hpp EXCLUDE REGEX "riskybond.hpp")

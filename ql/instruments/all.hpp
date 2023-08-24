@@ -15,6 +15,7 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
+#include <ql/instruments/compoundoption.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
