@@ -14,6 +14,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/claim.hpp>
 #include <ql/instruments/cliquetoption.hpp>
+#include <ql/instruments/complexchooseroption.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
 #include <ql/instruments/compoundoption.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
@@ -54,6 +55,7 @@
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>
+#include <ql/instruments/simplechooseroption.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/instruments/stickyratchet.hpp>
 #include <ql/instruments/stock.hpp>

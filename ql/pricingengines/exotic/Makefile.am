@@ -5,13 +5,17 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	analyticamericanmargrabeengine.hpp \
+    analyticcomplexchooserengine.hpp \
 	analyticcompoundoptionengine.hpp \
-	analyticeuropeanmargrabeengine.hpp
+	analyticeuropeanmargrabeengine.hpp \
+    analyticsimplechooserengine.hpp
 
 cpp_files = \
 	analyticamericanmargrabeengine.cpp \
+    analyticcomplexchooserengine.cpp \
 	analyticcompoundoptionengine.cpp \
-	analyticeuropeanmargrabeengine.cpp
+	analyticeuropeanmargrabeengine.cpp \
+    analyticsimplechooserengine.cpp
 
 if UNITY_BUILD
 

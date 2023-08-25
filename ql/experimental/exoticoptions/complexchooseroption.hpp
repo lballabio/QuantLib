@@ -17,52 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file complexchooseroption.hpp
-    \brief Complex chooser option
-*/
+// Deprecated in version 1.32
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/complexchooseroption.hpp> instead.")
 
-#ifndef quantlib_complex_chooser_option_hpp
-#define quantlib_complex_chooser_option_hpp
-
-#include <ql/instruments/oneassetoption.hpp>
-
-namespace QuantLib{
-
-    class GeneralizedBlackScholesProcess;
-
-    class ComplexChooserOption : public OneAssetOption {
-      public:
-        class arguments;
-        class engine;
-        ComplexChooserOption(Date choosingDate,
-                             Real strikeCall,
-                             Real strikePut,
-                             const ext::shared_ptr<Exercise>& exerciseCall,
-                             const ext::shared_ptr<Exercise>& exercisePut);
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      protected:
-        Date choosingDate_;
-        Real strikeCall_;
-        Real strikePut_;
-        const ext::shared_ptr<Exercise>& exerciseCall_;
-        const ext::shared_ptr<Exercise>& exercisePut_;
-    };
-
-    class ComplexChooserOption::arguments : public OneAssetOption::arguments {
-      public:
-        void validate() const override;
-        Date choosingDate;
-        Real strikeCall;
-        Real strikePut;
-        ext::shared_ptr<Exercise> exerciseCall;
-        ext::shared_ptr<Exercise> exercisePut;
-    };
-
-    class ComplexChooserOption::engine
-        : public GenericEngine<ComplexChooserOption::arguments,
-                               ComplexChooserOption::results> {};
-
-}
-
-#endif
+#include <ql/instruments/complexchooseroption.hpp>
