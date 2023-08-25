@@ -19,6 +19,7 @@ this_include_HEADERS = \
     capfloor.hpp \
     claim.hpp \
     cliquetoption.hpp \
+    complexchooseroption.hpp \
     compositeinstrument.hpp \
     compoundoption.hpp \
     cpicapfloor.hpp \
@@ -59,6 +60,7 @@ this_include_HEADERS = \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
+    simplechooseroption.hpp \
     simplifynotificationgraph.hpp \
     stickyratchet.hpp \
     stock.hpp \
@@ -86,6 +88,7 @@ cpp_files = \
     capfloor.cpp \
     claim.cpp \
     cliquetoption.cpp \
+    complexchooseroption.cpp \
     compositeinstrument.cpp \
     compoundoption.cpp \
     cpicapfloor.cpp \
@@ -124,6 +127,7 @@ cpp_files = \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
+    simplechooseroption.cpp \
     simplifynotificationgraph.cpp \
     stickyratchet.cpp \
     stock.cpp \

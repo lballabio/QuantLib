@@ -36,15 +36,12 @@ this_include_HEADERS = \
     writerextensibleoption.hpp
 
 cpp_files = \
-    analyticcomplexchooserengine.cpp \
     analyticholderextensibleoptionengine.cpp \
     analyticpartialtimebarrieroptionengine.cpp \
     analyticpdfhestonengine.cpp \
-    analyticsimplechooserengine.cpp \
     analytictwoassetbarrierengine.cpp \
     analytictwoassetcorrelationengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
-    complexchooseroption.cpp \
     continuousarithmeticasianlevyengine.cpp \
     continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
@@ -56,7 +53,6 @@ cpp_files = \
     mcpagodaengine.cpp \
     pagodaoption.cpp \
     partialtimebarrieroption.cpp \
-    simplechooseroption.cpp \
     twoassetbarrieroption.cpp \
     twoassetcorrelationoption.cpp \
     writerextensibleoption.cpp
@@ -92,7 +88,11 @@ all.hpp: Makefile.am
 	                      analyticamericanmargrabeengine.hpp \
 	                      analyticeuropeanmargrabeengine.hpp \
 	                      compoundoption.hpp \
-	                      analyticcompoundoptionengine.hpp, $(this_include_HEADERS)); do \
+	                      analyticcompoundoptionengine.hpp \
+	                      simplechooseroption.hpp \
+	                      analyticsimplechooserengine.hpp \
+	                      complexchooseroption.hpp \
+	                      analyticcomplexchooserengine.hpp, $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \
 	done
 	echo >> ${srcdir}/$@

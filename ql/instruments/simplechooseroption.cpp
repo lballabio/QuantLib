@@ -17,23 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/simplechooseroption.hpp>
+#include <ql/instruments/simplechooseroption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
-    SimpleChooserOption::SimpleChooserOption(
-                                  Date choosingDate,
-                                  Real strike,
-                                  const ext::shared_ptr<Exercise>& exercise)
-    : OneAssetOption(ext::shared_ptr<Payoff>(
-                                new PlainVanillaPayoff(Option::Call, strike)),
+    SimpleChooserOption::SimpleChooserOption(Date choosingDate,
+                                             Real strike,
+                                             const ext::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
                      exercise),
       choosingDate_(choosingDate) {}
 
-    void SimpleChooserOption::setupArguments(
-                                    PricingEngine::arguments* args) const {
+    void SimpleChooserOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
         auto* moreArgs = dynamic_cast<SimpleChooserOption::arguments*>(args);
         QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
