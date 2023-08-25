@@ -17,40 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticeuropeanmargrabeengine.hpp
-    \brief Analytic engine for European Margrabe option
-*/
+// Deprecated in version 1.32
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp> instead.")
 
-#ifndef quantlib_analytic_european_margrabe_engine_hpp
-#define quantlib_analytic_european_margrabe_engine_hpp
-
-#include <ql/experimental/exoticoptions/margrabeoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-
-namespace QuantLib {
-
-    //! Analytic engine for European Margrabe option
-    /*! This class implements formulae from
-        "The Value of an Option to Exchange One Asset for Another",
-        W. Margrabe,
-        Journal of Finance, 33 (March 1978), 177-186.
-
-        \test the correctness of the returned value is tested by
-              reproducing results available in literature.
-    */
-    class AnalyticEuropeanMargrabeEngine : public MargrabeOption::engine {
-      public:
-        AnalyticEuropeanMargrabeEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
-                                       ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
-                                       Real correlation);
-        void calculate() const override;
-
-      private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process1_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process2_;
-        Real rho_;
-    };
-
-}
-
-#endif
+#include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp>

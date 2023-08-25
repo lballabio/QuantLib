@@ -1,5 +1,5 @@
 
-SUBDIRS = asian barrier basket bond capfloor cliquet credit \
+SUBDIRS = asian barrier basket bond capfloor cliquet credit exotic \
           forward inflation lookback quanto swap swaption vanilla
 
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
@@ -56,6 +56,7 @@ libPricingEngines_la_LIBADD = \
     capfloor/libCapFloorEngines.la \
     cliquet/libCliquetEngines.la \
     credit/libCreditEngines.la \
+    exotic/libExoticEngines.la \
     forward/libForwardEngines.la \
     inflation/libInflationEngines.la \
     lookback/libLookbackEngines.la \

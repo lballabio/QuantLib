@@ -17,46 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticcomplexchooserengine.hpp
-    \brief Analytic engine for complex chooser option
-*/
+// Deprecated in version 1.32
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp> instead.")
 
-#ifndef quantlib_analytic_complex_chooser_engine_hpp
-#define quantlib_analytic_complex_chooser_engine_hpp
-
-#include <ql/experimental/exoticoptions/complexchooseroption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/pricingengines/blackscholescalculator.hpp>
-
-namespace QuantLib {
-
-    class AnalyticComplexChooserEngine : public ComplexChooserOption::engine {
-      public:
-        explicit AnalyticComplexChooserEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
-        void calculate() const override;
-
-      private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        Real strike(Option::Type optionType) const;
-        Time choosingTime() const;
-        Time putMaturity() const;
-        Time callMaturity() const;
-        Volatility volatility(Time t) const;
-
-        Rate dividendYield(Time t) const;
-        DiscountFactor dividendDiscount(Time t) const;
-
-        Rate riskFreeRate(Time t) const;
-        DiscountFactor riskFreeDiscount(Time t) const;
-
-        BlackScholesCalculator bsCalculator(Real spot,
-                                            Option::Type optionType) const;
-        Real CriticalValueChooser() const;
-        Real ComplexChooser() const;
-    };
-
-}
-
-
-#endif
+#include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp>
