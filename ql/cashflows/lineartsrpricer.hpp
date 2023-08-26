@@ -233,10 +233,12 @@ namespace QuantLib {
         Real gearing_, spread_;
 
         Period swapTenor_;
-        Real spreadLegValue_, swapRateValue_, couponDiscountRatio_, annuity_;
+        Real spreadLegValue_, swapRateValue_, couponDiscountRatio_, discountCurvePaymentDiscount_,
+            annuity_;
 
         ext::shared_ptr<SwapIndex> swapIndex_;
         ext::shared_ptr<VanillaSwap> swap_;
+        ext::shared_ptr<OvernightIndexedSwap> onSwap_;
         ext::shared_ptr<SmileSection> smileSection_;
 
         Settings settings_;
