@@ -147,7 +147,7 @@ namespace QuantLib {
             swapTenor_ = swapIndex_->tenor();
 
             Leg swapFixedLeg;
-            if(auto on = boost::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIndex_)) {
+            if(auto on = ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIndex_)) {
                 onSwap_ = on->underlyingSwap(fixingDate_);
                 swapRateValue_ = onSwap_->fairRate();
                 annuity_ = 1.0E4 * std::fabs(onSwap_->fixedLegBPS());
