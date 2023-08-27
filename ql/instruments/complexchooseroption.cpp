@@ -20,6 +20,7 @@
 #include <ql/instruments/complexchooseroption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -28,14 +29,14 @@ namespace QuantLib {
         Real strikeCall,
         Real strikePut,
         const ext::shared_ptr<Exercise>& exerciseCall,
-        const ext::shared_ptr<Exercise>& exercisePut)
+        ext::shared_ptr<Exercise>  exercisePut)
     : OneAssetOption(ext::make_shared<PlainVanillaPayoff>(Option::Call, strikeCall),
                      exerciseCall),
       choosingDate_(choosingDate),
       strikeCall_(strikeCall),
       strikePut_(strikePut),
       exerciseCall_(exerciseCall),
-      exercisePut_(exercisePut) {}
+      exercisePut_(std::move(exercisePut)) {}
 
     void ComplexChooserOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
