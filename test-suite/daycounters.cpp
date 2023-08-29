@@ -1031,7 +1031,7 @@ void DayCounterTest::testActual365_Canadian() {
 void DayCounterTest::testIntraday() {
 #ifdef QL_HIGH_RESOLUTION_DATE
 
-    BOOST_TEST_MESSAGE("Testing intraday behavior of day counter ...");
+    BOOST_TEST_MESSAGE("Testing intraday behavior of day counter...");
 
     const Date d1(12, February, 2015);
     const Date d2(14, February, 2015, 12, 34, 17, 1, 230298);
@@ -1058,6 +1058,8 @@ void DayCounterTest::testIntraday() {
 }
 
 void DayCounterTest::testActualActualOutOfScheduleRange() {
+    BOOST_TEST_MESSAGE("Testing usage of actual/actual out of schedule...");
+
     Date today = Date(10, November, 2020);
     Date temp = Settings::instance().evaluationDate();
     Settings::instance().evaluationDate() = today;
@@ -1327,12 +1329,9 @@ test_suite* DayCounterTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualIsma));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &DayCounterTest::testActualActualWithSemiannualSchedule));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &DayCounterTest::testActualActualWithAnnualSchedule));
-    suite->add(QUANTLIB_TEST_CASE(
-                              &DayCounterTest::testActualActualWithSchedule));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSemiannualSchedule));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithAnnualSchedule));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSchedule));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testOne));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
