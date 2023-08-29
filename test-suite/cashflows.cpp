@@ -45,8 +45,6 @@ void CashFlowsTest::testSettings() {
 
     BOOST_TEST_MESSAGE("Testing cash-flow settings...");
 
-    SavedSettings backup;
-
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
@@ -178,8 +176,6 @@ void CashFlowsTest::testSettings() {
 
 void CashFlowsTest::testAccessViolation() {
     BOOST_TEST_MESSAGE("Testing dynamic cast of coupon in Black pricer...");
-
-    SavedSettings backup;
 
     Date todaysDate(7, April, 2010);
     Date settlementDate(9, April, 2010);
@@ -508,8 +504,6 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 
 void CashFlowsTest::testFixedIborCouponWithoutForecastCurve() {
     BOOST_TEST_MESSAGE("Testing past ibor coupon without forecast curve...");
-
-    IndexHistoryCleaner cleaner;
 
     Date today = Settings::instance().evaluationDate();
 

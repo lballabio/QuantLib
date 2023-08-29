@@ -44,7 +44,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2010, 2012-2014 only:)
+        (data available for 2004-2010, 2012-2014, 2019-2023 only:)
         <ul>
         <li>Chinese New Year</li>
         <li>Hari Raya Haji</li>
@@ -58,7 +58,7 @@ namespace QuantLib {
     */
     class Singapore : public Calendar {
       private:
-        class SgxImpl : public Calendar::WesternImpl {
+        class SgxImpl final : public Calendar::WesternImpl {
           public:
             std::string name() const override { return "Singapore exchange"; }
             bool isBusinessDay(const Date&) const override;

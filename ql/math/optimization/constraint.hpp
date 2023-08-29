@@ -78,7 +78,7 @@ namespace QuantLib {
     //! No constraint
     class NoConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             bool test(const Array&) const override { return true; }
         };
@@ -91,7 +91,7 @@ namespace QuantLib {
     //! %Constraint imposing positivity to all arguments
     class PositiveConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             bool test(const Array& params) const override {
                 return std::all_of(params.begin(), params.end(), [](Real p) { return p > 0.0; });
@@ -113,7 +113,7 @@ namespace QuantLib {
     //! %Constraint imposing all arguments to be in [low,high]
     class BoundaryConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             Impl(Real low, Real high)
             : low_(low), high_(high) {}
@@ -139,7 +139,7 @@ namespace QuantLib {
     //! %Constraint enforcing both given sub-constraints
     class CompositeConstraint : public Constraint {
       private:
-        class Impl : public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             Impl(Constraint c1, Constraint c2) : c1_(std::move(c1)), c2_(std::move(c2)) {}
             bool test(const Array& params) const override {
@@ -176,7 +176,7 @@ namespace QuantLib {
     //! %Constraint imposing i-th argument to be in [low_i,high_i] for all i
     class NonhomogeneousBoundaryConstraint: public Constraint {
       private:
-        class Impl: public Constraint::Impl {
+        class Impl final : public Constraint::Impl {
           public:
             Impl(Array low, Array high) : low_(std::move(low)), high_(std::move(high)) {
                 QL_ENSURE(low_.size()==high_.size(),

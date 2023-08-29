@@ -248,8 +248,7 @@ namespace QuantLib {
                                floatConvention_, floatConvention_,
                                DateGeneration::Forward, false);
 
-        asw_ = ext::shared_ptr<RiskyAssetSwap>(
-                                      new RiskyAssetSwap(true,
+        asw_ = ext::make_shared<RiskyAssetSwap>(true,
                                                          100.0,
                                                          fixedSchedule,
                                                          floatSchedule,
@@ -258,7 +257,7 @@ namespace QuantLib {
                                                          0.01,
                                                          recoveryRate_,
                                                          yieldTS_,
-                                                         probability_));
+                                                         probability_);
     }
 
 }

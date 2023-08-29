@@ -61,8 +61,6 @@ void BatesModelTest::testAnalyticVsBlack() {
 
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Black formula...");
 
-    SavedSettings backup;
-
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
 
@@ -173,8 +171,6 @@ void BatesModelTest::testAnalyticVsBlack() {
 void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
 
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
-
-    SavedSettings backup;
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
@@ -302,8 +298,6 @@ void BatesModelTest::testAnalyticVsMCPricing() {
 
     using namespace bates_model_test;
 
-    SavedSettings backup;
-
     Date settlementDate(30, March, 2007);
     Settings::instance().evaluationDate() = settlementDate;
 
@@ -382,8 +376,6 @@ void BatesModelTest::testDAXCalibration() {
              "Testing Bates model calibration using DAX volatility data...");
 
     using namespace bates_model_test;
-
-    SavedSettings backup;
 
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -484,9 +476,9 @@ void BatesModelTest::testDAXCalibration() {
     //check pricing of derived engines
     std::vector<ext::shared_ptr<PricingEngine> > pricingEngines;
     
-    process = ext::shared_ptr<BatesProcess>(
-        new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
-                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1));
+    process = ext::make_shared<BatesProcess>(
+        riskFreeTS, dividendTS, s0, v0, 
+                         kappa, theta, sigma, rho, 1.0, -0.1, 0.1);
 
     pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDetJumpEngine(
@@ -532,5 +524,3 @@ test_suite* BatesModelTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testDAXCalibration));
     return suite;
 }
-
-

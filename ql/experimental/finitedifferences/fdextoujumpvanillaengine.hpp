@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdsimplebsswingengine.hpp
+/*! \file fdextoujumpvanillaengine.hpp
     \brief Finite Differences Ornstein Uhlenbeck plus exponential jumps engine 
            for vanilla options
 */

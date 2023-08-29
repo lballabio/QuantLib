@@ -37,15 +37,20 @@ jobs:
             tag: hirsute
             cc: gcc
             cxx: g++
-          - name: "gcc 11.x"
+          - name: "gcc 11.x (Boost 1.82)"
             shortname: gcc11
             tag: jammy
             cc: gcc
             cxx: g++
-            tests: true
           - name: "gcc 12.x"
             shortname: gcc12
             tag: lunar
+            cc: gcc
+            cxx: g++
+            tests: true
+          - name: "gcc 13.x"
+            shortname: gcc13
+            tag: mantic
             cc: gcc
             cxx: g++
             tests: true
@@ -89,15 +94,20 @@ jobs:
             tag: impish
             cc: clang
             cxx: clang++
-          - name: "Clang 14"
+          - name: "Clang 14 (Boost 1.82)"
             shortname: clang14
             tag: jammy
             cc: clang
             cxx: clang++
-            tests: true
           - name: "Clang 15"
             shortname: clang15
             tag: lunar
+            cc: clang
+            cxx: clang++
+            tests: true
+          - name: "Clang 16"
+            shortname: clang16
+            tag: mantic
             cc: clang
             cxx: clang++
             tests: true
@@ -132,6 +142,13 @@ jobs:
             cxx: g++
             configureflags: --enable-intraday
             tests: true
+          - name: "Throwing in cycles enabled"
+            shortname: cycles
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-throwing-in-cycles --disable-faster-lazy-objects
+            tests: true
           - name: "Indexed coupons enabled"
             shortname: indexed
             tag: rolling
@@ -139,12 +156,12 @@ jobs:
             cxx: g++
             configureflags: --enable-indexed-coupons
             tests: true
-          - name: "Standard Library classes enabled"
+          - name: "Standard Library classes enabled/disabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-std-classes --enable-std-any --enable-std-optional
+            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-any --enable-std-optional
             tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
@@ -173,7 +190,7 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
-            moreflags: -lrt
+            tests: true
           - name: "Null as function template"
             shortname: nullfunctions
             tag: rolling
@@ -214,4 +231,4 @@ jobs:
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
         make install
-        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}
+        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`

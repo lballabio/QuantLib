@@ -284,8 +284,6 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
 
     using namespace inflation_volatility_test;
 
-    SavedSettings backup;
-
     setup();
 
     // first get the price surface set up
@@ -373,8 +371,6 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
                        "to YoY inflation term structure...");
 
     using namespace inflation_volatility_test;
-
-    SavedSettings backup;
 
     setup();
 

@@ -17,40 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file pdeshortrate.hpp
-    \brief adapter to short rate
-*/
-
 #ifndef quantlib_pdeshortrate_hpp
 #define quantlib_pdeshortrate_hpp
 
-#include <ql/methods/finitedifferences/pde.hpp>
-#include <ql/models/shortrate/onefactormodel.hpp>
-#include <ql/stochasticprocess.hpp>
-#include <utility>
-
-namespace QuantLib {
-
-    /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.27.
-    */
-    class QL_DEPRECATED PdeShortRate : public PdeSecondOrderParabolic {
-      public:
-        typedef ext::shared_ptr<OneFactorModel::ShortRateDynamics>
-                                                                argument_type;
-        typedef TransformedGrid grid_type;
-        PdeShortRate(argument_type d) : dynamics_(std::move(d)) {}
-        Real diffusion(Time t, Real x) const override {
-            return dynamics_->process()->diffusion(t, x);
-        }
-        Real drift(Time t, Real x) const override { return dynamics_->process()->drift(t, x); }
-        Real discount(Time t, Real x) const override { return dynamics_->shortRate(t, x); }
-
-      private:
-        const argument_type dynamics_;
-    };
-
-}
+// Deprecated in version 1.32
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

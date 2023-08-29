@@ -20,9 +20,9 @@
 #include "margrabeoption.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/experimental/exoticoptions/margrabeoption.hpp>
-#include <ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp>
-#include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
+#include <ql/instruments/margrabeoption.hpp>
+#include <ql/pricingengines/exotic/analyticamericanmargrabeengine.hpp>
+#include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
@@ -287,8 +287,6 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
 void MargrabeOptionTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing analytic European exchange option greeks...");
-
-    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta1"]  = 1.0e-5;

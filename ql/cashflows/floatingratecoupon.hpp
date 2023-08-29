@@ -42,7 +42,7 @@ namespace QuantLib {
     class FloatingRateCouponPricer;
 
     //! base floating-rate coupon class
-    class FloatingRateCoupon : public Coupon, public LazyObject {
+    class FloatingRateCoupon : public Coupon {
       public:
         FloatingRateCoupon(const Date& paymentDate,
                            Real nominal,

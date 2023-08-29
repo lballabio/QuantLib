@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file floatingratecoupon.hpp
+/*! \file inflationcoupon.hpp
  \brief Coupon paying a variable index-based rate
  */
 
@@ -43,8 +43,7 @@ namespace QuantLib {
 
         \note inflation indices do not contain day counters or calendars.
     */
-    class InflationCoupon : public Coupon,
-                            public Observer {
+    class InflationCoupon : public Coupon {
     public:
       InflationCoupon(const Date& paymentDate,
                       Real nominal,
@@ -85,9 +84,9 @@ namespace QuantLib {
       virtual Rate indexFixing() const;
       //@}
 
-      //! \name Observer interface
+      //! \name LazyObject interface
       //@{
-      void update() override { notifyObservers(); }
+      void performCalculations() const override;
       //@}
 
       //! \name Visitability
@@ -103,6 +102,7 @@ namespace QuantLib {
         Period observationLag_;
         DayCounter dayCounter_;
         Natural fixingDays_;
+        mutable Real rate_;
 
         //! makes sure you were given the correct type of pricer
         // this can also done in external pricer setter classes via

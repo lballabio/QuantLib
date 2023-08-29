@@ -1202,7 +1202,7 @@ void DayCounterTest::testAct36525() {
 
 
 void DayCounterTest::testActualConsistency() {
-    BOOST_TEST_MESSAGE("Testing consistency between different actual day-counter...");
+    BOOST_TEST_MESSAGE("Testing consistency between different actual day-counters...");
 
     const std::vector<Date> todayDates = {
             Date(12, January, 2022)

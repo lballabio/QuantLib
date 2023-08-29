@@ -81,12 +81,12 @@ namespace QuantLib {
         swapRateTarg_ = targSwap->fairRate();
         swapRateFinl_ = finlSwap->fairRate();
         SwaptionCashFlows cfs(
-            ext::shared_ptr<Swaption>(new Swaption(
-                baseSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
+            ext::make_shared<Swaption>(
+                baseSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate))),
             volTS.discountCurve_);
         SwaptionCashFlows cf2(
-            ext::shared_ptr<Swaption>(new Swaption(
-                targSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)))),
+            ext::make_shared<Swaption>(
+                targSwap, ext::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate))),
             volTS.discountCurve_);
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)

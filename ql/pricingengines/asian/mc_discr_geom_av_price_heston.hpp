@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mc_discr_arith_av_price_heston.hpp
+/*! \file mc_discr_geom_av_price_heston.hpp
     \brief Heston MC engine for discrete geometric average price Asian
 */
 

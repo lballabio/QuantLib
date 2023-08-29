@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp>
+#include <ql/pricingengines/exotic/analyticamericanmargrabeengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>

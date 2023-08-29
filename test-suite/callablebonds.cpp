@@ -52,8 +52,6 @@ namespace {
         RelinkableHandle<YieldTermStructure> termStructure;
         RelinkableHandle<ShortRateModel> model;
 
-        SavedSettings backup;
-
         Date issueDate() const {
             // ensure that we're in mid-coupon
             return calendar.adjust(today - 100*Days);
@@ -580,7 +578,6 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
 
     auto today = Date(18, May, 2021);
 
-    SavedSettings backup;
     Settings::instance().evaluationDate() = today;
 
     auto calendar = UnitedStates(UnitedStates::FederalReserve);

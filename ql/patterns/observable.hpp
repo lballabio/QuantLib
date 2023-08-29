@@ -33,7 +33,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/patterns/singleton.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <unordered_set>
 #include <set>
 
 #if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
@@ -60,7 +59,7 @@ namespace QuantLib {
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */
-    class Observable { // NOLINT(cppcoreguidelines-special-member-functions)
+    class Observable {
         friend class Observer;
         friend class ObservableSettings;
       public:
@@ -68,6 +67,9 @@ namespace QuantLib {
         Observable();
         Observable(const Observable&);
         Observable& operator=(const Observable&);
+        // delete the move operations because the semantics are not yet clear
+        Observable(Observable&&) = delete;
+        Observable& operator=(Observable&&) = delete;
         virtual ~Observable() = default;
         /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
@@ -79,7 +81,6 @@ namespace QuantLib {
         std::pair<iterator, bool> registerObserver(Observer*);
         Size unregisterObserver(Observer*);
         set_type observers_;
-        ObservableSettings& settings_;
     };
 
     //! global repository for run-time library settings
@@ -99,7 +100,7 @@ namespace QuantLib {
       private:
         ObservableSettings() = default;
 
-        typedef std::unordered_set<Observer*> set_type;
+        typedef std::set<Observer*> set_type;
         typedef set_type::iterator iterator;
 
         void registerDeferredObservers(const Observable::set_type& observers);
@@ -114,7 +115,7 @@ namespace QuantLib {
     /*! \ingroup patterns */
     class Observer { // NOLINT(cppcoreguidelines-special-member-functions)
       private:
-        typedef std::unordered_set<ext::shared_ptr<Observable>> set_type;
+        typedef std::set<ext::shared_ptr<Observable>> set_type;
       public:
         typedef set_type::iterator iterator;
 
@@ -131,15 +132,7 @@ namespace QuantLib {
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself.
-
-            \deprecated This method was introduced to work around incorrect behaviour
-                        caused by limiting notifications from LazyObject instances to
-                        the first notification. The default behaviour of LazyObject was
-                        changed to forward all notifications so that a call to this
-                        method should no longer be necessary.
-                        Deprecated in version 1.30.
         */
-        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
 
         Size unregisterWith(const ext::shared_ptr<Observable>&);
@@ -165,7 +158,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Observable::Observable() : settings_(ObservableSettings::instance()) {}
+    inline Observable::Observable() = default;
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
@@ -177,8 +170,7 @@ namespace QuantLib {
         deferredObservers_.erase(o);
     }
 
-    inline Observable::Observable(const Observable&)
-    : settings_(ObservableSettings::instance()) {
+    inline Observable::Observable(const Observable&) {
         // the observer set is not copied; no observer asked to
         // register with this object
     }
@@ -205,8 +197,8 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (settings_.updatesDeferred())
-            settings_.unregisterDeferredObserver(o);
+        if (ObservableSettings::instance().updatesDeferred())
+            ObservableSettings::instance().unregisterDeferredObserver(o);
 
         return observers_.erase(o);
     }
@@ -287,7 +279,7 @@ namespace QuantLib {
         friend class Observable;
         friend class ObservableSettings;
       private:
-        typedef std::unordered_set<ext::shared_ptr<Observable>> set_type;
+        typedef std::set<ext::shared_ptr<Observable>> set_type;
       public:
         typedef set_type::iterator iterator;
 
@@ -302,15 +294,7 @@ namespace QuantLib {
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself.
-
-            \deprecated This method was introduced to work around incorrect behaviour
-                        caused by limiting notifications from LazyObject instances to
-                        the first notification. The default behaviour of LazyObject was
-                        changed to forward all notifications so that a call to this
-                        method should no longer be necessary.
-                        Deprecated in version 1.30.
         */
-        [[deprecated("no longer necessary")]]
         void registerWithObservables(const ext::shared_ptr<Observer>&);
 
         Size unregisterWith(const ext::shared_ptr<Observable>&);
@@ -386,7 +370,7 @@ namespace QuantLib {
         friend class Observer;
         friend class ObservableSettings;
       private:
-        typedef std::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
+        typedef std::set<ext::shared_ptr<Observer::Proxy>> set_type;
       public:
         typedef set_type::iterator iterator;
 
@@ -407,7 +391,6 @@ namespace QuantLib {
         ext::shared_ptr<detail::Signal> sig_;
         set_type observers_;
         mutable std::recursive_mutex mutex_;
-        ObservableSettings& settings_;
     };
 
     //! global repository for run-time library settings

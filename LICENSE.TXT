@@ -102,7 +102,7 @@ QuantLib is
     Copyright (C) 2012 Simon Shakeshaft
     Copyright (C) 2012 Édouard Tallent
     Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
-    Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018 Peter Caspers
+    Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2023 Peter Caspers
 
     Copyright (C) 2013 BGC Partners L.P.
     Copyright (C) 2013 Chris Higgs
@@ -159,9 +159,11 @@ QuantLib is
     Copyright (C) 2021, 2022 Ralf Konrad Eckel
     Copyright (C) 2021, 2022, 2023 Skandinaviska Enskilda Banken AB (publ)
 
-    Copyright (C) 2022 Jonghee Lee
     Copyright (C) 2022, 2023 Ignacio Anguita
+    Copyright (C) 2022, 2023 Jonghee Lee
 
+    Copyright (C) 2023 Aditya Narayan Das
+    Copyright (C) 2023 Andrea Pellegatta
     Copyright (C) 2023 Jonathan Sweemer
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo

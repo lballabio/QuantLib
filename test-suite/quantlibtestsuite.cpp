@@ -375,9 +375,11 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapFloorTest::suite());
     test->add(CapFlooredCouponTest::suite());
     test->add(CashFlowsTest::suite());
+    test->add(ChooserOptionTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(CmsNormalTest::suite());
+    test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
@@ -391,7 +393,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite(speed));
-    test->add(DividendOptionTest::suite());
+    test->add(DividendOptionTest::suite(speed));
     test->add(EquityIndexTest::suite());
     test->add(EquityCashFlowTest::suite());
     test->add(EquityTotalReturnSwapTest::suite());
@@ -428,6 +430,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite(speed));
     test->add(LowDiscrepancyTest::suite());
+    test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
     test->add(MarketModelCmsTest::suite(speed));
     test->add(MarketModelSmmTest::suite(speed));
@@ -493,11 +496,9 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CatBondTest::suite());
     test->add(CdoTest::suite(speed));
     test->add(CdsOptionTest::suite());
-    test->add(ChooserOptionTest::suite());
     test->add(CmsSpreadTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompiledBoostVersionTest::suite());
-    test->add(CompoundOptionTest::suite());
     test->add(CreditRiskPlusTest::suite());
     test->add(DoubleBarrierOptionTest::suite(speed));
     test->add(DoubleBinaryOptionTest::suite());
@@ -510,7 +511,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
-    test->add(MargrabeOptionTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NormalCLVModelTest::experimental(speed));
     test->add(NthToDefaultTest::suite(speed));

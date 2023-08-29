@@ -84,8 +84,7 @@ public:
         DiscountFactor qDiscount = 1.0;
         Real forward = s0_*qDiscount/rDiscount;
         Real stdDev = std::sqrt(sigma_*sigma_*maturity_);
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                                             new PlainVanillaPayoff(payoff_));
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(payoff_);
         BlackCalculator black(payoff,forward,stdDev,rDiscount);
         std::cout << "Option value: " << black.value() << std::endl;
 
@@ -226,8 +225,7 @@ Real ReplicationPathPricer::operator()(const Path& path) const {
     DiscountFactor qDiscount = std::exp(-stockDividendYield*maturity_);
     Real forward = stock*qDiscount/rDiscount;
     Real stdDev = std::sqrt(sigma_*sigma_*maturity_);
-    ext::shared_ptr<StrikedTypePayoff> payoff(
-                                       new PlainVanillaPayoff(type_,strike_));
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(type_,strike_);
     BlackCalculator black(payoff,forward,stdDev,rDiscount);
     // sell the option, cash in its premium
     money_account += black.value();
@@ -303,19 +301,15 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     Date today = Date::todaysDate();
     DayCounter dayCount = Actual365Fixed();
     Handle<Quote> stateVariable(
-                          ext::shared_ptr<Quote>(new SimpleQuote(s0_)));
+                          ext::make_shared<SimpleQuote>(s0_));
     Handle<YieldTermStructure> riskFreeRate(
-                          ext::shared_ptr<YieldTermStructure>(
-                                      new FlatForward(today, r_, dayCount)));
+                          ext::make_shared<FlatForward>(today, r_, dayCount));
     Handle<YieldTermStructure> dividendYield(
-                          ext::shared_ptr<YieldTermStructure>(
-                                      new FlatForward(today, 0.0, dayCount)));
+                          ext::make_shared<FlatForward>(today, 0.0, dayCount));
     Handle<BlackVolTermStructure> volatility(
-                          ext::shared_ptr<BlackVolTermStructure>(
-                               new BlackConstantVol(today, calendar, sigma_, dayCount)));
-    ext::shared_ptr<StochasticProcess1D> diffusion(
-                   new BlackScholesMertonProcess(stateVariable, dividendYield,
-                                                 riskFreeRate, volatility));
+                          ext::make_shared<BlackConstantVol>(today, calendar, sigma_, dayCount));
+    auto diffusion = ext::make_shared<BlackScholesMertonProcess>(
+                          stateVariable, dividendYield, riskFreeRate, volatility);
 
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
@@ -326,16 +320,16 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     bool brownianBridge = false;
 
     typedef SingleVariate<PseudoRandom>::path_generator_type generator_type;
-    ext::shared_ptr<generator_type> myPathGenerator(new
-        generator_type(diffusion, maturity_, nTimeSteps,
-                       rsg, brownianBridge));
+    auto myPathGenerator = ext::make_shared<generator_type>(
+                       diffusion, maturity_, nTimeSteps,
+                       rsg, brownianBridge);
 
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its
     // value() method
-    ext::shared_ptr<PathPricer<Path> > myPathPricer(new
-        ReplicationPathPricer(payoff_.optionType(), payoff_.strike(),
-                              r_, maturity_, sigma_));
+    auto myPathPricer = ext::make_shared<ReplicationPathPricer>(
+                              payoff_.optionType(), payoff_.strike(),
+                              r_, maturity_, sigma_);
 
     // a statistics accumulator for the path-dependant Profit&Loss values
     Statistics statisticsAccumulator;

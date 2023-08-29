@@ -29,6 +29,7 @@
 #include <ql/math/array.hpp>
 #include <ql/utilities/steppingiterator.hpp>
 #include <initializer_list>
+#include <iterator>
 
 namespace QuantLib {
 
@@ -79,18 +80,18 @@ namespace QuantLib {
 
         typedef Real* iterator;
         typedef const Real* const_iterator;
-        typedef boost::reverse_iterator<iterator> reverse_iterator;
-        typedef boost::reverse_iterator<const_iterator> const_reverse_iterator;
+        typedef std::reverse_iterator<iterator> reverse_iterator;
+        typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef Real* row_iterator;
         typedef const Real* const_row_iterator;
-        typedef boost::reverse_iterator<row_iterator> reverse_row_iterator;
-        typedef boost::reverse_iterator<const_row_iterator>
+        typedef std::reverse_iterator<row_iterator> reverse_row_iterator;
+        typedef std::reverse_iterator<const_row_iterator>
                                                 const_reverse_row_iterator;
         typedef step_iterator<iterator> column_iterator;
         typedef step_iterator<const_iterator> const_column_iterator;
-        typedef boost::reverse_iterator<column_iterator>
+        typedef std::reverse_iterator<column_iterator>
                                                    reverse_column_iterator;
-        typedef boost::reverse_iterator<const_column_iterator>
+        typedef std::reverse_iterator<const_column_iterator>
                                              const_reverse_column_iterator;
         //! \name Iterator access
         //@{

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bilinearinterpolation.hpp
+/*! \file backwardflatlinearinterpolation.hpp
     \brief backflat interpolation in first component, linear in second component
 */
 

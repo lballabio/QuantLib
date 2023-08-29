@@ -5,9 +5,11 @@ Checks: >
           -bugprone-assignment-in-if-condition,
           -bugprone-branch-clone,
           -bugprone-easily-swappable-parameters,
+          -bugprone-empty-catch,
           -bugprone-implicit-widening-of-multiplication-result,
           -bugprone-macro-parentheses,
           -bugprone-narrowing-conversions,
+          -bugprone-non-zero-enum-to-bool-conversion,
           -bugprone-suspicious-include,
         clang-analyzer-*,
           -clang-analyzer-core.UndefinedBinaryOperatorResult,
@@ -37,6 +39,7 @@ Checks: >
         misc-*,
           -misc-confusable-identifiers,
           -misc-const-correctness,
+          -misc-include-cleaner,
           -misc-no-recursion,
           -misc-non-private-member-variables-in-classes,
           -misc-use-anonymous-namespace,
@@ -44,12 +47,12 @@ Checks: >
         modernize-*,
           -modernize-avoid-c-arrays,
           -modernize-macro-to-enum,
-          -modernize-make-shared,
           -modernize-return-braced-init-list,
-          -modernize-use-emplace,
           -modernize-use-trailing-return-type,
           -modernize-use-using,
         performance-*,
+          -performance-avoid-endl,
+          -performance-enum-size,
         readability-*,
           -readability-braces-around-statements,
           -readability-const-return-type,
@@ -67,10 +70,14 @@ Checks: >
           -readability-suspicious-call-argument,
           -readability-use-anyofallof,
 HeaderFilterRegex: '.*'
-FormatStyle: file
+FormatStyle: none
 CheckOptions:
   - key:   cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
     value: 1
+  - key:   modernize-make-shared.MakeSmartPtrFunction
+    value: ext::make_shared
+  - key:   modernize-make-shared.MakeSmartPtrFunctionHeader
+    value: <ql/shared_ptr.hpp>
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
 ...

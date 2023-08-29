@@ -103,8 +103,6 @@ void NthToDefaultTest::testGauss() {
 
     using namespace nth_to_default_test;
 
-    SavedSettings backup;
-
     /*************************
      * Tolerances
      */
@@ -247,8 +245,6 @@ void NthToDefaultTest::testStudent() {
                        "with Student copula...");
 
     using namespace nth_to_default_test;
-
-    SavedSettings backup;
 
     /*************************
      * Tolerances

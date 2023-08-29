@@ -23,7 +23,6 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	any.hpp \
 	auto_link.hpp \
-	auto_ptr.hpp \
 	cashflow.hpp \
 	compounding.hpp \
 	config.hpp \
@@ -73,6 +72,7 @@ cpp_files = \
 	exchangerate.cpp \
 	exercise.cpp \
     index.cpp \
+    instrument.cpp \
     interestrate.cpp \
     money.cpp \
     optional.cpp \
@@ -151,7 +151,6 @@ quantlib.hpp: Makefile.am
 	for i in $(this_include_HEADERS); do \
 		case $$i in \
 			auto_link.hpp)     continue;; \
-			auto_ptr.hpp)      continue;; \
 			config.hpp)        continue;; \
 			mathconstants.hpp) continue;; \
 			qldefines.hpp)     continue;; \

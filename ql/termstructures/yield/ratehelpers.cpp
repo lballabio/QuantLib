@@ -27,6 +27,7 @@
 #include <ql/currency.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
@@ -832,6 +833,8 @@ namespace QuantLib {
             .withFloatingLegCalendar(calendar_)
             .withFloatingLegEndOfMonth(endOfMonth_)
             .withIndexedCoupons(useIndexedCoupons_);
+
+        simplifyNotificationGraph(*swap_, true);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();

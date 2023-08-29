@@ -53,8 +53,6 @@ void CreditDefaultSwapTest::testCachedValue() {
 
     BOOST_TEST_MESSAGE("Testing credit-default swap against cached values...");
 
-    SavedSettings backup;
-
     // Initialize curves
     Settings::instance().evaluationDate() = Date(9,June,2006);
     Date today = Settings::instance().evaluationDate();
@@ -167,8 +165,6 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
 
     BOOST_TEST_MESSAGE(
         "Testing credit-default swap against cached market values...");
-
-    SavedSettings backup;
 
     Settings::instance().evaluationDate() = Date(9,June,2006);
     Date evalDate = Settings::instance().evaluationDate();
@@ -315,8 +311,6 @@ void CreditDefaultSwapTest::testImpliedHazardRate() {
 
     BOOST_TEST_MESSAGE("Testing implied hazard-rate for credit-default swaps...");
 
-    SavedSettings backup;
-
     // Initialize curves
     Calendar calendar = TARGET();
     Date today = calendar.adjust(Date::todaysDate());
@@ -423,8 +417,6 @@ void CreditDefaultSwapTest::testFairSpread() {
     BOOST_TEST_MESSAGE(
         "Testing fair-spread calculation for credit-default swaps...");
 
-    SavedSettings backup;
-
     // Initialize curves
     Calendar calendar = TARGET();
     Date today = calendar.adjust(Date::todaysDate());
@@ -487,8 +479,6 @@ void CreditDefaultSwapTest::testFairUpfront() {
 
     BOOST_TEST_MESSAGE(
         "Testing fair-upfront calculation for credit-default swaps...");
-
-    SavedSettings backup;
 
     // Initialize curves
     Calendar calendar = TARGET();
@@ -578,8 +568,6 @@ void CreditDefaultSwapTest::testIsdaEngine() {
         "Testing ISDA engine calculations for credit-default swaps...");
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
-
-    SavedSettings backup;
 
     Date tradeDate(21, May, 2009);
     Settings::instance().evaluationDate() = tradeDate;
@@ -734,8 +722,6 @@ void CreditDefaultSwapTest::testAccrualRebateAmounts() {
 
     BOOST_TEST_MESSAGE("Testing accrual rebate amounts on credit default swaps...");
 
-    SavedSettings backup;
-
     // The accrual values are taken from various test results on the ISDA CDS model website
     // https://www.cdsmodel.com/cdsmodel/documentation.html.
 
@@ -771,8 +757,6 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
 {
     BOOST_TEST_MESSAGE(
         "Testing ISDA engine calculations for a single credit-default swap record (reconciliation)...");
-
-    SavedSettings backup;
 
     Date tradeDate(26, July, 2021);
     Settings::instance().evaluationDate() = tradeDate;
@@ -877,8 +861,6 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
 {
     BOOST_TEST_MESSAGE(
         "Testing ISDA engine calculations for a single credit-default swap with issue date in the past...");
-
-    SavedSettings backup;
 
     Date valueDate(26, July, 2021);
     Settings::instance().evaluationDate() = valueDate;

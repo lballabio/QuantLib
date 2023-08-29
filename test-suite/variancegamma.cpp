@@ -78,8 +78,6 @@ void VarianceGammaTest::testVarianceGamma() {
 
     BOOST_TEST_MESSAGE("Testing variance-gamma model for European options...");
 
-    SavedSettings backup;
-
     VarianceGammaProcessData processes[] = {
     //    spot,    q,    r,sigma,   nu, theta
         { 6000, 0.00, 0.05, 0.20, 0.05, -0.50 },
@@ -212,8 +210,6 @@ void VarianceGammaTest::testSingularityAtZero() {
 
     BOOST_TEST_MESSAGE(
         "Testing variance-gamma model integration around zero...");
-
-    SavedSettings backup;
 
     Real stock = 100;
     Real strike = 98;

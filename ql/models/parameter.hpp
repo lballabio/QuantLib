@@ -70,7 +70,7 @@ namespace QuantLib {
     //! Standard constant parameter \f$ a(t) = a \f$
     class ConstantParameter : public Parameter {
       private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
           public:
             Real value(const Array& params, Time) const override { return params[0]; }
         };
@@ -98,7 +98,7 @@ namespace QuantLib {
     //! %Parameter which is always zero \f$ a(t) = 0 \f$
     class NullParameter : public Parameter {
       private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
           public:
             Real value(const Array&, Time) const override { return 0.0; }
         };
@@ -118,7 +118,7 @@ namespace QuantLib {
     */
     class PiecewiseConstantParameter : public Parameter {
       private:
-        class Impl : public Parameter::Impl {
+        class Impl final : public Parameter::Impl {
           public:
             explicit Impl(std::vector<Time> times) : times_(std::move(times)) {}
 

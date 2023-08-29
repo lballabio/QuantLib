@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Joseph Wang
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,11 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_fd_dividend_shout_engine_hpp
-#define quantlib_fd_dividend_shout_engine_hpp
+/*! \file swestr.hpp
+    \brief %SWESTR index
+*/
 
-// Deprecated in version 1.27
-#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
+#ifndef quantlib_swestr_hpp
+#define quantlib_swestr_hpp
 
+#include <ql/currencies/europe.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/calendars/sweden.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+
+namespace QuantLib {
+
+    //! %Swestr (Swedish krona Short Term Rate) index.
+    class Swestr : public OvernightIndex {
+      public:
+        explicit Swestr(const Handle<YieldTermStructure>& h = {})
+        : OvernightIndex("SWESTR", 0, SEKCurrency(), Sweden(), Actual360(), h) {}
+    };
+
+}
 
 #endif

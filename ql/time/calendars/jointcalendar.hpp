@@ -54,7 +54,7 @@ namespace QuantLib {
     */
     class JointCalendar : public Calendar {
       private:
-        class Impl : public Calendar::Impl {
+        class Impl final : public Calendar::Impl {
           public:
             Impl(const Calendar&, const Calendar&,
                  JointCalendarRule);

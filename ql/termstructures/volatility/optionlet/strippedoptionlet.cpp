@@ -69,7 +69,7 @@ namespace QuantLib {
         checkInputs();
 
         for (Size i = 0; i < nOptionletDates_; ++i)
-            optionletVolatilities_.push_back(vector<Volatility>(strikes[i].size()));
+            optionletVolatilities_.emplace_back(strikes[i].size());
 
         registerWith(Settings::instance().evaluationDate());
         registerWithMarketData();

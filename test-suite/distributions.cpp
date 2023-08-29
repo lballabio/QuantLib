@@ -594,18 +594,18 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
     Natural n = 10000;  // for this value, the distribution should be
                         // close to a bivariate normal distribution.
 
-	for (Real rho = -1.0; rho < 1.01; rho += 0.25) {
-		BivariateCumulativeStudentDistribution T(n, rho);
-		BivariateCumulativeNormalDistribution N(rho);
+    for (Real rho = -1.0; rho < 1.01; rho += 0.25) {
+        BivariateCumulativeStudentDistribution T(n, rho);
+        BivariateCumulativeNormalDistribution N(rho);
 
         Real avgDiff = 0.0;
         Size m = 0;
-		Real tolerance = 4.0e-5;
-		for (Real x = -10; x < 10.1; x += 0.25) {
-			for (Real y = -10; y < 10.1; y += 0.25) {
+        Real tolerance = 4.0e-5;
+        for (Real x = -10; x < 10.1; x += 0.5) {
+            for (Real y = -10; y < 10.1; y += 0.5) {
                 Real calculated = T(x, y);
                 Real expected = N(x, y);
-				Real diff = std::fabs(calculated - expected);
+                Real diff = std::fabs(calculated - expected);
                 if (diff > tolerance)
                     BOOST_ERROR("Failed to reproduce limit value:" <<
                                 "\n    rho: " << rho <<
@@ -614,11 +614,11 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
                                 "\n    calculated: " << calculated <<
                                 "\n    expected:   " << expected);
                 
-				avgDiff += diff;
-				++m;
-			}
-		}
-		avgDiff /= m;
+                avgDiff += diff;
+                ++m;
+            }
+        }
+        avgDiff /= m;
         if (avgDiff > 3.0e-6)
             BOOST_ERROR("Failed to reproduce average limit value:" <<
                         "\n    rho: " << rho <<
@@ -741,7 +741,7 @@ void DistributionTest::testSankaranApproximation() {
     }
 }
 
-test_suite* DistributionTest::suite(SpeedLevel speed) {
+test_suite* DistributionTest::suite(SpeedLevel) {
     auto* suite = BOOST_TEST_SUITE("Distribution tests");
 
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
@@ -752,10 +752,7 @@ test_suite* DistributionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudent));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testInvCDFviaStochasticCollocation));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testSankaranApproximation));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudentVsBivariate));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudentVsBivariate));
 
     return suite;
 }

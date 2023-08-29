@@ -5,6 +5,7 @@
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
+  Copyright (C) 2023 Andrea Pellegatta
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -184,10 +185,10 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = ext::make_shared<CreditDefaultSwap>(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_));
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_);
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
@@ -229,9 +230,8 @@ namespace QuantLib {
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),
       upfrontSettlementDays_(upfrontSettlementDays),
-      runningSpread_(runningSpread) {
-        UpfrontCdsHelper::initializeDates();
-    }
+      upfrontDate_(upfrontDate()),
+      runningSpread_(runningSpread) {}
 
     UpfrontCdsHelper::UpfrontCdsHelper(
                               Rate upfrontSpread,
@@ -257,23 +257,25 @@ namespace QuantLib {
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),
       upfrontSettlementDays_(upfrontSettlementDays),
-      runningSpread_(runningSpread) {
-        UpfrontCdsHelper::initializeDates();
+      upfrontDate_(upfrontDate()),
+      runningSpread_(runningSpread) {}
+
+    Date UpfrontCdsHelper::upfrontDate() {
+        return calendar_.advance(evaluationDate_, upfrontSettlementDays_, Days, paymentConvention_);
     }
 
     void UpfrontCdsHelper::initializeDates() {
-        upfrontDate_ = calendar_.advance(evaluationDate_,
-                                         upfrontSettlementDays_, Days,
-                                         paymentConvention_);
+        CdsHelper::initializeDates();
+        upfrontDate_ = upfrontDate();
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
+        swap_ = ext::make_shared<CreditDefaultSwap>(
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
             ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_,
-            evaluationDate_));
+            evaluationDate_);
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:

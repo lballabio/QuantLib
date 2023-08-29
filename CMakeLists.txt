@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 31)
+set(QUANTLIB_VERSION_MINOR 32)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01310000")
+set(PACKAGE_VERSION_HEX   "0x01320000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -53,6 +53,8 @@ option(QL_ERROR_FUNCTIONS "Error messages should include current function inform
 option(QL_ERROR_LINES "Error messages should include file and line information" OFF)
 option(QL_EXTRA_SAFETY_CHECKS "Extra safety checks should be performed" OFF)
 option(QL_HIGH_RESOLUTION_DATE "Enable date resolution down to microseconds" OFF)
+option(QL_THROW_IN_CYCLES "Throw an exception when a notification loop is detected" OFF)
+option(QL_FASTER_LAZY_OBJECTS "Cause lazy objects to forward just the first notification instead of every one" ON)
 option(QL_NULL_AS_FUNCTIONS "Enable the implementation of Null as template functions" OFF)
 option(QL_INSTALL_BENCHMARK "Install benchmark" ON)
 option(QL_INSTALL_EXAMPLES "Install examples" ON)
@@ -62,10 +64,10 @@ option(QL_USE_CLANG_TIDY "Use clang-tidy when building" OFF)
 option(QL_USE_INDEXED_COUPON "Use indexed coupons instead of par coupons" OFF)
 option(QL_USE_STD_ANY "Use std::any instead of boost::any" OFF)
 option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
-option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" OFF)
+option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" ON)
 option(QL_USE_STD_OPTIONAL "Use std::optional instead of boost::optional" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
-option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" OFF)
+option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" ON)
 set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source directories to be added to the build (semicolon-separated)")
 set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
@@ -218,6 +220,15 @@ set(QL_VERSION ${PACKAGE_VERSION})
 set(QL_HEX_VERSION ${PACKAGE_VERSION_HEX})
 configure_file(ql/config.hpp.cfg ql/config.hpp @ONLY)
 configure_file(ql/qldefines.hpp.cfg ql/qldefines.hpp @ONLY)
+
+
+# Generate quantlib-config
+# Define the variables to be substituted in the input file
+set(prefix ${CMAKE_INSTALL_PREFIX})
+set(exec_prefix "\${prefix}")
+set(includedir "\${prefix}/include")
+set(libdir "\${exec_prefix}/lib")
+configure_file(quantlib-config.in quantlib-config @ONLY)
 
 include(Platform)
 

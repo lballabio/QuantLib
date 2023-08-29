@@ -176,16 +176,6 @@
 #define QL_MAX_REAL            ((std::numeric_limits<QL_REAL>::max)())
 #define QL_MIN_POSITIVE_REAL   ((std::numeric_limits<QL_REAL>::min)())
 #define QL_EPSILON             ((std::numeric_limits<QL_REAL>::epsilon)())
-/*! \def QL_NULL_INTEGER
-    \deprecated Don't use this macro.
-                Deprecated in version 1.27.
-*/
-#define QL_NULL_INTEGER        ((std::numeric_limits<int>::max)())
-/*! \def QL_NULL_REAL
-    \deprecated Don't use this macro.
-                Deprecated in version 1.27.
-*/
-#define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
 /*! @} */
 
 /*! @}  */
@@ -227,22 +217,5 @@
 #    define QL_DEPRECATED_ENABLE_WARNING
 #endif
 // clang-format on
-
-/*! \deprecated Use the noexcept keyword instead.
-                Deprecated in version 1.27.
-*/
-#define QL_NOEXCEPT noexcept
-
-/*! \deprecated Use the constexpr keyword instead.
-                Deprecated in version 1.27.
-*/
-#define QL_CONSTEXPR constexpr
-
-/*! \deprecated Do not check; always use std::unique_ptr.
-                Deprecated in version 1.27
-*/
-#ifndef QL_USE_STD_UNIQUE_PTR
-#define QL_USE_STD_UNIQUE_PTR 1
-#endif
 
 #endif

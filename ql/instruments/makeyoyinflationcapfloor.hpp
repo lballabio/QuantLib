@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file makecapfloor.hpp
+/*! \file makeyoyinflationcapfloor.hpp
  \brief Helper class to instantiate standard yoy inflation cap/floor.
  */
 

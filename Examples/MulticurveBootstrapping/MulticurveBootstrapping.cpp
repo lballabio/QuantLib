@@ -87,9 +87,9 @@ int main(int, char* []) {
         *********************/
 
         DayCounter termStructureDayCounter = Actual365Fixed();
-        std::vector<ext::shared_ptr<RateHelper> > eoniaInstruments;
+        std::vector<ext::shared_ptr<RateHelper>> eoniaInstruments;
 
-        ext::shared_ptr<Eonia> eonia(new Eonia);
+        auto eonia = ext::make_shared<Eonia>();
 
         // a SimpleQuote instance stores a value which can be manually changed;
         // other Quote subclasses could read the value from a database
@@ -191,10 +191,8 @@ int main(int, char* []) {
 
         // curve
 
-        ext::shared_ptr<YieldTermStructure> eoniaTermStructure(
-            new PiecewiseYieldCurve<Discount, Cubic>(
-                todaysDate, eoniaInstruments,
-                termStructureDayCounter) );
+        auto eoniaTermStructure = ext::make_shared<PiecewiseYieldCurve<Discount, Cubic>>(
+                todaysDate, eoniaInstruments, termStructureDayCounter);
 
         eoniaTermStructure->enableExtrapolation();
 
@@ -207,9 +205,9 @@ int main(int, char* []) {
         **    EURIBOR 6M CURVE   **
         ***************************/
 
-        std::vector<ext::shared_ptr<RateHelper> > euribor6MInstruments;
+        std::vector<ext::shared_ptr<RateHelper>> euribor6MInstruments;
 
-        ext::shared_ptr<IborIndex> euribor6M(new Euribor6M);
+        auto euribor6M = ext::make_shared<Euribor6M>();
 
         // deposits
 
@@ -298,11 +296,10 @@ int main(int, char* []) {
         // The tolerance is passed in an explicit bootstrap object. Depending on
         // the bootstrap algorithm, it's possible to pass other parameters.
         double tolerance = 1.0e-15;
-        ext::shared_ptr<YieldTermStructure> euribor6MTermStructure(
-            new PiecewiseYieldCurve<Discount, Cubic>(
+        auto euribor6MTermStructure = ext::make_shared<PiecewiseYieldCurve<Discount, Cubic>>(
                 settlementDate, euribor6MInstruments,
                 termStructureDayCounter,
-                PiecewiseYieldCurve<Discount, Cubic>::bootstrap_type(tolerance)));
+                PiecewiseYieldCurve<Discount, Cubic>::bootstrap_type(tolerance));
 
         // This curve will be used for forward-rate forecasting
 
@@ -325,8 +322,7 @@ int main(int, char* []) {
 
         // floating leg
         Frequency floatingLegFrequency = Semiannual;
-        ext::shared_ptr<IborIndex> euriborIndex(
-                                     new Euribor6M(forecastingTermStructure));
+        auto euriborIndex = ext::make_shared<Euribor6M>(forecastingTermStructure);
         Spread spread = 0.0;
 
         Integer lengthInYears = 5;
@@ -407,8 +403,7 @@ int main(int, char* []) {
         Rate fairRate;
         Spread fairSpread;
 
-        ext::shared_ptr<PricingEngine> swapEngine(
-                         new DiscountingSwapEngine(discountingTermStructure));
+        auto swapEngine = ext::make_shared<DiscountingSwapEngine>(discountingTermStructure);
 
         spot5YearSwap.setPricingEngine(swapEngine);
         oneYearForward5YearSwap.setPricingEngine(swapEngine);
@@ -450,7 +445,7 @@ int main(int, char* []) {
                   << io::rate(fairRate);
         std::cout << std::endl;
 
-        // now let's say that the 5-years swap rate goes up to 0.009%.
+        // now let's say that the 5-years swap rate goes up to 0.90%.
         // A smarter market element--say, connected to a data source-- would
         // notice the change itself. Since we're using SimpleQuotes,
         // we'll have to change the value manually--which forces us to
@@ -459,8 +454,7 @@ int main(int, char* []) {
         // value contained in the Quote triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
-        ext::shared_ptr<SimpleQuote> fiveYearsRate =
-            ext::dynamic_pointer_cast<SimpleQuote>(s5yRate);
+        auto fiveYearsRate = ext::dynamic_pointer_cast<SimpleQuote>(s5yRate);
         fiveYearsRate->setValue(0.0090);
 
         std::cout << dblrule << std::endl;

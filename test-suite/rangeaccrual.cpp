@@ -103,9 +103,6 @@ namespace range_accrual_test {
         Real priceTolerance;
 
 
-        // cleanup
-        SavedSettings backup;
-
         void createYieldCurve() {
 
             // Yield Curve
@@ -571,7 +568,7 @@ namespace range_accrual_test {
                                          observationsConvention,
                                          DateGeneration::Forward, false);
             // Range accrual pricers properties
-            byCallSpread = {true, false};
+            byCallSpread = std::vector<bool>({true, false});
 
             std::vector<Rate> strikes;
 

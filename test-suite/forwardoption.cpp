@@ -353,8 +353,6 @@ void ForwardOptionTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing forward option greeks...");
 
-    SavedSettings backup;
-
     testForwardGreeks<ForwardVanillaEngine>();
 }
 
@@ -362,8 +360,6 @@ void ForwardOptionTest::testGreeks() {
 void ForwardOptionTest::testPerformanceGreeks() {
 
     BOOST_TEST_MESSAGE("Testing forward performance option greeks...");
-
-    SavedSettings backup;
 
     testForwardGreeks<ForwardPerformanceVanillaEngine>();
 }
@@ -384,7 +380,6 @@ void ForwardOptionTest::testGreeksInitialization() {
    BOOST_TEST_MESSAGE("Testing forward option greeks initialization...");
 
    DayCounter dc = Actual360();
-   SavedSettings backup;
    Date today = Settings::instance().evaluationDate();
 
    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -504,7 +499,6 @@ void ForwardOptionTest::testMCPrices() {
    Real s = 100;
 
    DayCounter dc = Actual360();
-   SavedSettings backup;
    Date today = Settings::instance().evaluationDate();
 
    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
@@ -602,7 +596,6 @@ void ForwardOptionTest::testHestonMCPrices() {
        Real rho = -0.93;
 
        DayCounter dc = Actual360();
-       SavedSettings backup;
        Date today = Settings::instance().evaluationDate();
 
        Date exDate = today + 1 * Years;
@@ -753,7 +746,6 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
        Real rho = -0.5;
 
        DayCounter dc = Actual360();
-       SavedSettings backup;
        Date today = Settings::instance().evaluationDate();
 
        Date exDate = today + 1 * Years;

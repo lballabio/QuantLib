@@ -46,6 +46,10 @@ namespace QuantLib {
         namespace placeholders {
             using namespace std::placeholders;     // NOLINT(misc-unused-using-decls)
         }
+        /*! \deprecated To check if a function is empty, use it in a bool context
+                        instead of comparing it to QL_NULL_FUNCTION.
+                        Deprecated in version 1.32.
+        */
         #define QL_NULL_FUNCTION nullptr
         #else
         using boost::function;                     // NOLINT(misc-unused-using-decls)
@@ -67,6 +71,10 @@ namespace QuantLib {
             using ::_9;                            // NOLINT(misc-unused-using-decls)
             #endif
         }
+        /*! \deprecated To check if a function is empty, use it in a bool context
+                        instead of comparing it to QL_NULL_FUNCTION.
+                        Deprecated in version 1.32.
+        */
         #define QL_NULL_FUNCTION 0
         #endif
 

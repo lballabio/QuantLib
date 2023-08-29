@@ -20,10 +20,10 @@
 #include "chooseroption.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/experimental/exoticoptions/simplechooseroption.hpp>
-#include <ql/experimental/exoticoptions/complexchooseroption.hpp>
-#include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
-#include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
+#include <ql/instruments/simplechooseroption.hpp>
+#include <ql/instruments/complexchooseroption.hpp>
+#include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp>
+#include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

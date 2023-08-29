@@ -106,8 +106,6 @@ namespace libor_market_model_process_test {
 void LiborMarketModelProcessTest::testInitialisation() {
     BOOST_TEST_MESSAGE("Testing caplet LMM process initialisation...");
 
-    SavedSettings backup;
-
     DayCounter dayCounter = Actual360();
     RelinkableHandle<YieldTermStructure> termStructure(
         flatRate(Date::todaysDate(), 0.04, dayCounter));
@@ -150,8 +148,6 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
     BOOST_TEST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
 
     using namespace libor_market_model_process_test;
-
-    SavedSettings backup;
 
     Real tolerance = 1e-10;
     Volatility lambdaExpected[]= {14.3010297550, 19.3821411939, 15.9816590141,
@@ -199,8 +195,6 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     BOOST_TEST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
 
     using namespace libor_market_model_process_test;
-
-    SavedSettings backup;
 
     /* factor loadings are taken from Hull & White article
        plus extra normalisation to get orthogonal eigenvectors

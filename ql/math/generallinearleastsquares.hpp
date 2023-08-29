@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file linearleastsquaresregression.hpp
+/*! \file generallinearleastsquares.hpp
     \brief general linear least square regression
 */
 

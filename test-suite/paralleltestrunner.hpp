@@ -20,8 +20,8 @@
 /*
  Examples:
   1. Start with 12 worker processes
-     ./quantlib-test-suite --nProc=12 --log_level=message --report_level=short
-                           --build_info=yes
+    ./quantlib-test-suite --log_level=message --report_level=short
+                           --build_info=yes -- --nProc=12
   2. If parameter "--nProc" is omitted then the number
      of worker processes will be equal to the number of CPU cores.
  */
@@ -29,6 +29,7 @@
 
 #ifndef quantlib_parallel_test_runner_hpp
 #define quantlib_parallel_test_runner_hpp
+
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
@@ -39,13 +40,14 @@
 #undef VERSION
 #endif
 
+#include <boost/process.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
 
 #define BOOST_TEST_NO_MAIN 1
 #include <boost/test/included/unit_test.hpp>
-#include <boost/algorithm/string.hpp>
 
 #include <map>
 #include <list>
@@ -55,18 +57,18 @@
 #include <chrono>
 #include <string>
 #include <cstring>
-#include <cstdlib>
 #include <thread>
 #include <limits>
 
 using boost::unit_test::test_results;
 using namespace boost::interprocess;
 using namespace boost::unit_test_framework;
+namespace bp = boost::process;
 
 
 namespace {
-    int worker(const std::string& cmd) {
-        return system(cmd.c_str());
+    int worker(const char* exe, const std::vector<std::string>& args) {
+        return bp::system(exe, bp::args=args);
     }
 
     counter_t test_enabled(test_unit_id id) {
@@ -173,7 +175,7 @@ test_suite* init_unit_test_suite(int, char* []);
 
 int main( int argc, char* argv[] )
 {
-    typedef QuantLib::Time Time;
+    using QuantLib::Time;
 
     const char* const profileFileName = ".unit_test_profile.txt";
     const char* const testUnitIdQueueName = "test_unit_queue";
@@ -206,9 +208,7 @@ int main( int argc, char* argv[] )
 
             auto nProc = std::thread::hardware_concurrency();
 
-            std::stringstream cmd;
-            cmd << "\"" << argv[0] << "\" ";
-
+            std::vector<std::string> workerArgs;
             std::vector<char*> localArgs(1, argv[0]);
 
             for( int i = 1; i < argc; ++i ) {
@@ -217,16 +217,17 @@ int main( int argc, char* argv[] )
                 // check for number of processes
                 std::vector<std::string> tok;
                 boost::split(tok, arg, boost::is_any_of("="));
-                if (tok.size() == 2 && tok[0] == "--nProc") {
+                if (tok[0] == "--nProc" && tok.size() == 2) {
                     nProc = std::stoul(tok[1]);
                 }
-                else if (arg != "--build_info=yes") {
-                    cmd << arg << " ";
+                else if (tok[0] != "--build_info") {
+                    if (tok[0] != "--run_test")
+                        workerArgs.push_back(argv[i]);
                     localArgs.push_back(argv[i]);
                 }
             }
 
-            cmd << clientModeStr;
+            workerArgs.push_back(clientModeStr);
 
             framework::init(init_unit_test_suite,
                             localArgs.size(), &localArgs[0]);
@@ -263,8 +264,8 @@ int main( int argc, char* argv[] )
 
             // fork worker processes
             std::vector<std::thread> threadGroup;
-            for (unsigned i=0; i < nProc; ++i) {
-                threadGroup.emplace_back([&]() { worker(cmd.str()); });
+            for (unsigned i = 0; i < nProc; ++i) {
+                threadGroup.emplace_back([&]() { worker(argv[0], workerArgs); });
             }
 
             struct mutex_remove {

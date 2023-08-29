@@ -52,7 +52,7 @@ namespace QuantLib {
     */
     class Ukraine : public Calendar {
       private:
-        class UseImpl : public Calendar::OrthodoxImpl {
+        class UseImpl final : public Calendar::OrthodoxImpl {
           public:
             std::string name() const override { return "Ukrainian stock exchange"; }
             bool isBusinessDay(const Date&) const override;

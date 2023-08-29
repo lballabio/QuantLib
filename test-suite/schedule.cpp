@@ -24,6 +24,7 @@
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <map>
 #include <vector>
@@ -96,28 +97,12 @@ void ScheduleTest::testEndDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(7);
-    // The end date is adjusted, so it should also be moved to the end
-    // of the month.
     expected[0] = Date(30,September,2009);
     expected[1] = Date(31,March,2010);
     expected[2] = Date(30,September,2010);
     expected[3] = Date(31,March,2011);
     expected[4] = Date(30,September,2011);
     expected[5] = Date(30,March,2012);
-    expected[6] = Date(29,June,2012);
-
-    check_dates(s, expected);
-
-    // now with unadjusted termination date...
-    s = MakeSchedule().from(Date(30,September,2009))
-                      .to(Date(15,June,2012))
-                      .withCalendar(Japan())
-                      .withTenor(6*Months)
-                      .withConvention(Following)
-                      .withTerminationDateConvention(Unadjusted)
-                      .forwards()
-                      .endOfMonth();
-    // ...which should leave it alone.
     expected[6] = Date(15,June,2012);
 
     check_dates(s, expected);
@@ -139,7 +124,7 @@ void ScheduleTest::testDatesPastEndDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(3);
-    expected[0] = Date(31,March,2013);
+    expected[0] = Date(28,March,2013);
     expected[1] = Date(31,March,2014);
     // March 31st 2015, coming from the EOM adjustment of March 28th,
     // should be discarded as past the end date.
@@ -167,7 +152,7 @@ void ScheduleTest::testDatesSameAsEndDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(3);
-    expected[0] = Date(31,March,2013);
+    expected[0] = Date(28,March,2013);
     expected[1] = Date(31,March,2014);
     // March 31st 2015, coming from the EOM adjustment of March 28th,
     // should be discarded as the same as the end date.
@@ -243,10 +228,85 @@ void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
                       .backwards()
                       .endOfMonth();
 
-    std::vector<Date> expected(3);
-    expected[0] = Date(30,August,1996);
-    expected[1] = Date(28,February,1997);
-    expected[2] = Date(29,August,1997);
+    std::vector<Date> expected(4);
+    expected[0] = Date(22, August, 1996);
+    expected[1] = Date(30,August,1996);
+    expected[2] = Date(28,February,1997);
+    expected[3] = Date(2,September,1997);
+
+    check_dates(s, expected);
+}
+
+void ScheduleTest::testFirstDateWithEomAdjustment() {
+    BOOST_TEST_MESSAGE("Testing schedule with first date and EOM adjustments...");
+
+    Schedule schedule = MakeSchedule()
+                            .from(Date(10, August, 1996))
+                            .to(Date(10, August, 1998))
+                            .withFirstDate(Date(28, February, 1997))
+                            .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                            .withTenor(6 * Months)
+                            .withConvention(Following)
+                            .withTerminationDateConvention(Following)
+                            .forwards()
+                            .endOfMonth();
+
+    std::vector<Date> expected(5);
+    expected[0] = Date(12, August, 1996);
+    expected[1] = Date(28, February, 1997);
+    expected[2] = Date(29, August, 1997);
+    expected[3] = Date(27, February, 1998);
+    expected[4] = Date(10, August, 1998);
+
+    check_dates(schedule, expected);
+}
+
+void ScheduleTest::testNextToLastWithEomAdjustment() {
+    BOOST_TEST_MESSAGE("Testing schedule with next to last date and EOM adjustments...");
+
+    Schedule schedule = MakeSchedule()
+                            .from(Date(10, August, 1996))
+                            .to(Date(10, August, 1998))
+                            .withNextToLastDate(Date(28, February, 1998))
+                            .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                            .withTenor(6 * Months)
+                            .withConvention(Following)
+                            .withTerminationDateConvention(Following)
+                            .backwards()
+                            .endOfMonth();
+
+    std::vector<Date> expected(6);
+    expected[0] = Date(12, August, 1996);
+    expected[1] = Date(30, August, 1996);
+    expected[2] = Date(28, February, 1997);
+    expected[3] = Date(29, August, 1997);
+    expected[4] = Date(27, February, 1998);
+    expected[5] = Date(10, August, 1998);
+
+    check_dates(schedule, expected);
+}
+
+void ScheduleTest::testEffectiveDateWithEomAdjustment() {
+    BOOST_TEST_MESSAGE(
+        "Testing forward schedule with EOM adjustment and effective date and first date in the same month...");
+
+    Schedule s =
+        MakeSchedule().from(Date(16,January,2023))
+                      .to(Date(16,March,2023))
+                      .withFirstDate(Date(31,January,2023))
+                      .withCalendar(NullCalendar())
+                      .withTenor(1*Months)
+                      .withConvention(Unadjusted)
+                      .withTerminationDateConvention(Unadjusted)
+                      .forwards()
+                      .endOfMonth();
+
+    std::vector<Date> expected(4);
+    // check that the effective date is not moved at the end of the month
+    expected[0] = Date(16,January,2023);
+    expected[1] = Date(31,January,2023);
+    expected[2] = Date(28,February,2023);
+    expected[3] = Date(16,March,2023);
 
     check_dates(s, expected);
 }
@@ -1058,7 +1118,7 @@ void ScheduleTest::testTruncation() {
     expected[11] = Date(29, March, 2019);
     expected[12] = Date(30, September, 2019);
     expected[13] = Date(31, March, 2020);
-    expected[14] = Date(30, June, 2020);
+    expected[14] = Date(15, June, 2020);
     check_dates(t, expected);
     BOOST_CHECK(t.isRegular().front() == false);
 
@@ -1069,7 +1129,7 @@ void ScheduleTest::testTruncation() {
     expected[1] = Date(29, March, 2019);
     expected[2] = Date(30, September, 2019);
     expected[3] = Date(31, March, 2020);
-    expected[4] = Date(30, June, 2020);
+    expected[4] = Date(15, June, 2020);
     check_dates(t, expected);
     BOOST_CHECK(t.isRegular().front() == true);
 }
@@ -1088,6 +1148,9 @@ test_suite* ScheduleTest::suite() {
         &ScheduleTest::testBackwardDatesWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(
         &ScheduleTest::testDoubleFirstDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFirstDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testNextToLastWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testEffectiveDateWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015Convention));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015ConventionGrid));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDSConventionGrid));

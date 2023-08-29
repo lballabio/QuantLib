@@ -28,8 +28,6 @@ using namespace boost::unit_test_framework;
 void SettingsTest::testNotificationsOnDateChange() {
     BOOST_TEST_MESSAGE("Testing notifications on evaluation-date change...");
 
-    SavedSettings rollback;
-
 #ifdef QL_HIGH_RESOLUTION_DATE
 
     Date d1(11, February, 2021, 9, 17, 0);

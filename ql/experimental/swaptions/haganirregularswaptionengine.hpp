@@ -67,6 +67,7 @@ namespace QuantLib {
           ext::shared_ptr<VanillaSwap> component(Size i) const;
           Array weights() const { return compute(lambda_); };
           Real& lambda() const { return lambda_; };
+          // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
           ext::shared_ptr<IrregularSwap> swap() const { return swap_; };
         private:
             ext::shared_ptr<IrregularSwap> swap_;

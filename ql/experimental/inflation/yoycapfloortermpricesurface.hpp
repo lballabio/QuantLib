@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file yoyoptionlethelpers.hpp
+/*! \file yoycapfloortermpricesurface.hpp
     \brief yoy inflation cap and floor term-price structure
 */
 

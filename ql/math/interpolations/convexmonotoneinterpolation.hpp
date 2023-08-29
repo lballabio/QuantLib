@@ -171,7 +171,7 @@ namespace QuantLib {
 
         //the first value in the y-vector is ignored.
         template <class I1, class I2>
-        class ConvexMonotoneImpl : public Interpolation::templateImpl<I1, I2> {
+        class ConvexMonotoneImpl final : public Interpolation::templateImpl<I1, I2> {
             typedef std::map<Real, ext::shared_ptr<SectionHelper> >
                                                                    helper_map;
           public:

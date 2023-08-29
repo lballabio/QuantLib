@@ -178,8 +178,6 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     BOOST_TEST_MESSAGE(
        "Testing analytic continuous geometric average-price Asian greeks...");
 
-    SavedSettings backup;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -1323,8 +1321,6 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
     BOOST_TEST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
-    SavedSettings backup;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -1863,8 +1859,6 @@ void AsianOptionTest::testAllFixingsInThePast() {
     }
 
     // also check with the evaluation date on last fixing
-
-    SavedSettings backup;
 
     Settings::instance().evaluationDate() = fixingDates.back();
 

@@ -107,10 +107,6 @@ namespace inflation_capfloored_coupon_test {
         ext::shared_ptr<YoYInflationTermStructure> yoyTS;
         RelinkableHandle<YoYInflationTermStructure> hy;
 
-        // cleanup
-
-        SavedSettings backup;
-
         // setup
         CommonVars()
         : nominals(1,1000000) {

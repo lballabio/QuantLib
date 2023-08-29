@@ -63,8 +63,6 @@ namespace crosscurrencyratehelpers_test {
 
         std::vector<XccyTestDatum> basisData;
 
-        // cleanup
-        SavedSettings backup;
         // utilities
 
         ext::shared_ptr<RateHelper>

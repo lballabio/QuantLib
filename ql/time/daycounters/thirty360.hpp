@@ -94,27 +94,27 @@ namespace QuantLib {
                 return dayCount(d1,d2)/360.0;
             }
         };
-        class US_Impl : public Thirty360_Impl {
+        class US_Impl final : public Thirty360_Impl {
           public:
             std::string name() const override { return std::string("30/360 (US)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
-        class ISMA_Impl : public Thirty360_Impl {
+        class ISMA_Impl final : public Thirty360_Impl {
           public:
             std::string name() const override { return std::string("30/360 (Bond Basis)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
-        class EU_Impl : public Thirty360_Impl {
+        class EU_Impl final : public Thirty360_Impl {
           public:
             std::string name() const override { return std::string("30E/360 (Eurobond Basis)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
-        class IT_Impl : public Thirty360_Impl {
+        class IT_Impl final : public Thirty360_Impl {
           public:
             std::string name() const override { return std::string("30/360 (Italian)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
-        class ISDA_Impl : public Thirty360_Impl {
+        class ISDA_Impl final : public Thirty360_Impl {
           public:
             explicit ISDA_Impl(const Date& terminationDate)
             : terminationDate_(terminationDate) {}
@@ -123,7 +123,7 @@ namespace QuantLib {
           private:
             Date terminationDate_;
         };
-        class NASD_Impl : public Thirty360_Impl {
+        class NASD_Impl final : public Thirty360_Impl {
           public:
             std::string name() const override { return std::string("30/360 (NASD)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;

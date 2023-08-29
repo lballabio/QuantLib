@@ -87,11 +87,6 @@ namespace inflation_cpi_bond_test {
         RelinkableHandle<YieldTermStructure> yTS;
         RelinkableHandle<ZeroInflationTermStructure> cpiTS;
 
-        // cleanup
-
-        SavedSettings backup;
-        IndexHistoryCleaner cleaner;
-
         // setup
         CommonVars() {
             // usual setup
@@ -171,7 +166,7 @@ namespace inflation_cpi_bond_test {
 
 
 void InflationCPIBondTest::testCleanPrice() {
-    IndexManager::instance().clearHistories();
+    BOOST_TEST_MESSAGE("Checking cached pricers for CPI bond...");
 
     using namespace inflation_cpi_bond_test;
   
@@ -204,13 +199,21 @@ void InflationCPIBondTest::testCleanPrice() {
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
 
-    ext::shared_ptr<DiscountingBondEngine> engine(
-                                 new DiscountingBondEngine(common.yTS));
+    auto engine = ext::make_shared<DiscountingBondEngine>(common.yTS);
     bond.setPricingEngine(engine);
 
-    Real storedPrice = 383.01816406;
-    Real calculated = bond.cleanPrice();
+    Real storedPrice = 384.71666770;
+    Real calculated = bond.dirtyPrice();
     Real tolerance = 1.0e-8;
+    if (std::fabs(calculated-storedPrice) > tolerance) {
+        BOOST_FAIL("failed to reproduce expected CPI-bond dirty price"
+                   << std::fixed << std::setprecision(12)
+                   << "\n  expected:   " << storedPrice
+                   << "\n  calculated: " << calculated);
+    }
+
+    storedPrice = 383.04297558;
+    calculated = bond.cleanPrice();
     if (std::fabs(calculated-storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
                    << std::fixed << std::setprecision(12)
@@ -221,7 +224,7 @@ void InflationCPIBondTest::testCleanPrice() {
 
 
 void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
-    IndexManager::instance().clearHistories();
+    BOOST_TEST_MESSAGE("Checking CPI leg with or without explicit base CPI fixing...");
 
     using namespace inflation_cpi_bond_test;
 
@@ -292,7 +295,7 @@ void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
                    << "\n clean npv of leg with explicit baseCPI: " << cleanPriceWithBaseCPI);
     }
     // Compare to expected price
-    Real storedPrice = 383.01816406;
+    Real storedPrice = 383.04297558;
     if (std::fabs(cleanPriceWithBaseDate - storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
                    << std::fixed << std::setprecision(12) << "\n  expected:   " << storedPrice

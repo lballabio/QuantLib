@@ -17,9 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file capfloor.hpp
- \brief inflation cap and floor class, just year-on-year variety for now
- */
+/*! \file inflationcapfloor.hpp
+    \brief inflation cap and floor class, just year-on-year variety for now
+*/
 
 #ifndef quantlib_instruments_inflationcapfloor_hpp
 #define quantlib_instruments_inflationcapfloor_hpp

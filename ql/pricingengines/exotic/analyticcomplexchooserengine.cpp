@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp>
+#include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <utility>
 
@@ -36,45 +36,42 @@ namespace QuantLib {
     }
 
     void AnalyticComplexChooserEngine::calculate() const {
-        results_.value = ComplexChooser();
-    }
-
-    Real AnalyticComplexChooserEngine::ComplexChooser() const{
         Real S = process_->x0();
         Real b;
         Real v;
         Real Xc = arguments_.strikeCall;
         Real Xp = arguments_.strikePut;
         Time T = choosingTime();
-        Time Tc = callMaturity()-choosingTime();
-        Time Tp = putMaturity()-choosingTime();
+        Time Tc = callMaturity() - T;
+        Time Tp = putMaturity() - T;
 
-        Real i = CriticalValueChooser();
+        Real i = criticalValue();
 
-        b = riskFreeRate(choosingTime()) - dividendYield(choosingTime());
+        b = riskFreeRate(T) - dividendYield(T);
         v = volatility(T);
         Real d1 = (log(S / i) + (b + pow(v, 2) / 2)*T) / (v*sqrt(T));
         Real d2 = d1 - v*sqrt(T);
 
-        b = riskFreeRate(callMaturity()) - dividendYield(callMaturity());
+        b = riskFreeRate(T + Tc) - dividendYield(T + Tc);
         v = volatility(Tc);
         Real y1 = (log(S / Xc) + (b + pow(v, 2) / 2)*Tc) / (v*sqrt(Tc));
 
-        b = riskFreeRate(putMaturity()) - dividendYield(putMaturity());
+        b = riskFreeRate(T + Tp) - dividendYield(T + Tp);
         v = volatility(Tp);
         Real y2 = (log(S / Xp) + (b + pow(v, 2) / 2)*Tp) / (v*sqrt(Tp));
 
         Real rho1 = sqrt(T / Tc);
         Real rho2 = sqrt(T / Tp);
-        b = riskFreeRate(callMaturity()) - dividendYield(callMaturity());
-        Real r = riskFreeRate(callMaturity());
+        b = riskFreeRate(T + Tc) - dividendYield(T + Tc);
+        Real r = riskFreeRate(T + Tc);
         Real ComplexChooser = S * exp((b - r)*Tc) *  BivariateCumulativeNormalDistributionDr78(rho1)(d1, y1)
             - Xc * exp(-r*Tc)*BivariateCumulativeNormalDistributionDr78(rho1)(d2, y1 - v * sqrt(Tc)) ;
-        b = riskFreeRate(putMaturity()) - dividendYield(putMaturity());
-        r = riskFreeRate(putMaturity());
-        ComplexChooser-= S * exp((b - r)*Tp) * BivariateCumulativeNormalDistributionDr78(rho2)(-d1, -y2);
-        ComplexChooser+= Xp * exp(-r*Tp) * BivariateCumulativeNormalDistributionDr78(rho2)(-d2, -y2 + v * sqrt(Tp));
-        return ComplexChooser;
+        b = riskFreeRate(T + Tp) - dividendYield(T + Tp);
+        r = riskFreeRate(T + Tp);
+        ComplexChooser -= S * exp((b - r)*Tp) * BivariateCumulativeNormalDistributionDr78(rho2)(-d1, -y2);
+        ComplexChooser += Xp * exp(-r*Tp) * BivariateCumulativeNormalDistributionDr78(rho2)(-d2, -y2 + v * sqrt(Tp));
+
+        results_.value = ComplexChooser;
     }
 
     BlackScholesCalculator AnalyticComplexChooserEngine::bsCalculator(
@@ -82,20 +79,21 @@ namespace QuantLib {
         Real vol;
         DiscountFactor growth;
         DiscountFactor discount;
+        Time T = choosingTime();
 
-        //payoff
+        // payoff
         ext::shared_ptr<PlainVanillaPayoff > vanillaPayoff;
         if (optionType == Option::Call){
             //TC-T
-            Time t=callMaturity()-choosingTime()-choosingTime();
+            Time t=callMaturity()-2*T;
             vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                           Option::Call, strike(Option::Call));
-            //QuantLib requires sigma * sqrt(T) rather than just sigma/volatility
+            //QuantLib requires sigma * sqrt(t) rather than just sigma/volatility
             vol = volatility(t) * std::sqrt(t);
             growth = dividendDiscount(t);
             discount = riskFreeDiscount(t);
         } else{
-            Time t=putMaturity()-choosingTime()-choosingTime();
+            Time t=putMaturity()-2*T;
             vanillaPayoff = ext::make_shared<PlainVanillaPayoff>(
                                             Option::Put, strike(Option::Put));
             vol = volatility(t) * std::sqrt(t);
@@ -107,7 +105,7 @@ namespace QuantLib {
         return bs;
     }
 
-    Real AnalyticComplexChooserEngine::CriticalValueChooser() const{
+    Real AnalyticComplexChooserEngine::criticalValue() const{
         Real Sv = process_->x0();
 
         BlackScholesCalculator bs=bsCalculator(Sv,Option::Call);

@@ -8,7 +8,7 @@ configuration: Release
 version: ci.{build}
 
 build:
-  parallel: true
+  parallel: false
   project: QuantLib.sln
   verbosity: normal
 
