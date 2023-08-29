@@ -47,20 +47,6 @@ namespace QuantLib {
                  NPV and therefore affect the fair-rate and
                  fair-spread calculation. This might not be what you
                  want.
-
-        \test
-        - the correctness of the returned value is tested by checking
-          that the price of a swap paying the fair fixed rate is null.
-        - the correctness of the returned value is tested by checking
-          that the price of a swap receiving the fair floating-rate
-          spread is null.
-        - the correctness of the returned value is tested by checking
-          that the price of a swap decreases with the paid fixed rate.
-        - the correctness of the returned value is tested by checking
-          that the price of a swap increases with the received
-          floating-rate spread.
-        - the correctness of the returned value is tested by checking
-          it against a known good value.
     */
     class FixedVsFloatingSwap : public Swap {
       public:
