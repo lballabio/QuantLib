@@ -266,6 +266,7 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 #endif
 
 void ObservableTest::testDeepUpdate() {
+    BOOST_TEST_MESSAGE("Testing deep update of observers...");
 
     RestoreUpdates guard;
 

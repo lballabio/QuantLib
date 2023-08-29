@@ -478,7 +478,9 @@ test_suite* DateTest::suite(SpeedLevel speed) {
     #ifndef QL_PATCH_SOLARIS
     suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
     #endif
+    #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
+    #endif
     suite->add(QUANTLIB_TEST_CASE(&DateTest::canHash));
 
     return suite;
