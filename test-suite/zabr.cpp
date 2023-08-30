@@ -26,6 +26,7 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 void ZabrTest::testConsistency() {
+    BOOST_TEST_MESSAGE("Testing the consistency of ZABR interpolation...");
 
     Real tol = 1E-4;
 

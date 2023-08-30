@@ -516,6 +516,138 @@ void OvernightIndexedSwapTest::test131BootstrapRegression() {
     BOOST_CHECK_NO_THROW(curve.nodes());
 }
 
+void OvernightIndexedSwapTest::testConstructorsAndNominals() {
+    BOOST_TEST_MESSAGE("Testing different constructors for OIS...");
+
+    using namespace overnight_indexed_swap_test;
+
+    CommonVars vars;
+
+    Date spot = vars.calendar.advance(vars.today, 2*Days);
+    Real nominal = 100000.0;
+
+    // constant notional, same schedule
+
+    Schedule schedule = MakeSchedule()
+        .from(spot)
+        .to(vars.calendar.advance(spot, 2*Years))
+        .withCalendar(vars.calendar)
+        .withFrequency(Annual);
+
+    auto ois_1 = OvernightIndexedSwap(Swap::Payer,
+                                      nominal,
+                                      schedule,
+                                      0.03,
+                                      Actual360(),
+                                      vars.eoniaIndex);
+
+    BOOST_CHECK_EQUAL(ois_1.fixedSchedule().tenor(), 1*Years);
+    BOOST_CHECK_EQUAL(ois_1.overnightSchedule().tenor(), 1*Years);
+    BOOST_CHECK_EQUAL(ois_1.paymentFrequency(), Annual);
+
+    BOOST_CHECK_EQUAL(ois_1.nominal(), nominal);
+
+    BOOST_CHECK_EQUAL(ois_1.nominals().size(), Size(1));
+    BOOST_CHECK_EQUAL(ois_1.nominals()[0], nominal);
+
+    BOOST_CHECK_EQUAL(ois_1.fixedNominals().size(), Size(1));
+    BOOST_CHECK_EQUAL(ois_1.fixedNominals()[0], nominal);
+
+    BOOST_CHECK_EQUAL(ois_1.overnightNominals().size(), Size(1));
+    BOOST_CHECK_EQUAL(ois_1.overnightNominals()[0], nominal);
+
+    // amortizing notionals, same schedule
+
+    auto ois_2 = OvernightIndexedSwap(Swap::Payer,
+                                      { nominal, nominal/2 },
+                                      schedule,
+                                      0.03,
+                                      Actual360(),
+                                      vars.eoniaIndex);
+
+    BOOST_CHECK_EQUAL(ois_2.fixedSchedule().tenor(), 1*Years);
+    BOOST_CHECK_EQUAL(ois_2.overnightSchedule().tenor(), 1*Years);
+    BOOST_CHECK_EQUAL(ois_2.paymentFrequency(), Annual);
+
+    BOOST_CHECK_EXCEPTION(ois_2.nominal(), Error,
+                          ExpectedErrorMessage("varying nominal"));
+
+    BOOST_CHECK_EQUAL(ois_2.nominals().size(), Size(2));
+    BOOST_CHECK_EQUAL(ois_2.nominals()[0], nominal);
+    BOOST_CHECK_EQUAL(ois_2.nominals()[1], nominal/2);
+
+    BOOST_CHECK_EQUAL(ois_2.fixedNominals().size(), Size(2));
+    BOOST_CHECK_EQUAL(ois_2.fixedNominals()[0], nominal);
+    BOOST_CHECK_EQUAL(ois_2.fixedNominals()[1], nominal/2);
+
+    BOOST_CHECK_EQUAL(ois_2.overnightNominals().size(), Size(2));
+    BOOST_CHECK_EQUAL(ois_2.overnightNominals()[0], nominal);
+    BOOST_CHECK_EQUAL(ois_2.overnightNominals()[1], nominal/2);
+
+    // constant notional, different schedules
+
+    Schedule fixedSchedule = schedule;
+    Schedule overnightSchedule = MakeSchedule()
+        .from(spot)
+        .to(vars.calendar.advance(spot, 2*Years))
+        .withCalendar(vars.calendar)
+        .withFrequency(Semiannual);
+
+    auto ois_3 = OvernightIndexedSwap(Swap::Payer,
+                                      nominal,
+                                      fixedSchedule,
+                                      0.03,
+                                      Actual360(),
+                                      overnightSchedule,
+                                      vars.eoniaIndex);
+
+    BOOST_CHECK_EQUAL(ois_3.fixedSchedule().tenor(), 1*Years);
+    BOOST_CHECK_EQUAL(ois_3.overnightSchedule().tenor(), 6*Months);
+    BOOST_CHECK_EQUAL(ois_3.paymentFrequency(), Semiannual);
+
+    BOOST_CHECK_EQUAL(ois_3.nominal(), nominal);
+
+    BOOST_CHECK_EQUAL(ois_3.nominals().size(), Size(1));
+    BOOST_CHECK_EQUAL(ois_3.nominals()[0], nominal);
+
+    BOOST_CHECK_EQUAL(ois_3.fixedNominals().size(), Size(1));
+    BOOST_CHECK_EQUAL(ois_3.fixedNominals()[0], nominal);
+
+    BOOST_CHECK_EQUAL(ois_3.overnightNominals().size(), Size(1));
+    BOOST_CHECK_EQUAL(ois_3.overnightNominals()[0], nominal);
+
+    // amortizing notionals, different schedules
+
+    auto ois_4 = OvernightIndexedSwap(Swap::Payer,
+                                      { nominal, nominal/2 },
+                                      fixedSchedule,
+                                      0.03,
+                                      Actual360(),
+                                      { nominal, nominal, nominal/2, nominal/2 },
+                                      overnightSchedule,
+                                      vars.eoniaIndex);
+
+    BOOST_CHECK_EQUAL(ois_4.fixedSchedule().tenor(), 1*Years);
+    BOOST_CHECK_EQUAL(ois_4.overnightSchedule().tenor(), 6*Months);
+    BOOST_CHECK_EQUAL(ois_4.paymentFrequency(), Semiannual);
+
+    BOOST_CHECK_EXCEPTION(ois_4.nominal(), Error,
+                          ExpectedErrorMessage("varying nominals"));
+
+    BOOST_CHECK_EXCEPTION(ois_4.nominals(), Error,
+                          ExpectedErrorMessage("different nominals"));
+
+    BOOST_CHECK_EQUAL(ois_4.fixedNominals().size(), Size(2));
+    BOOST_CHECK_EQUAL(ois_4.fixedNominals()[0], nominal);
+    BOOST_CHECK_EQUAL(ois_4.fixedNominals()[1], nominal/2);
+
+    BOOST_CHECK_EQUAL(ois_4.overnightNominals().size(), Size(4));
+    BOOST_CHECK_EQUAL(ois_4.overnightNominals()[0], nominal);
+    BOOST_CHECK_EQUAL(ois_4.overnightNominals()[1], nominal);
+    BOOST_CHECK_EQUAL(ois_4.overnightNominals()[2], nominal/2);
+    BOOST_CHECK_EQUAL(ois_4.overnightNominals()[3], nominal/2);
+}
+
 
 test_suite* OvernightIndexedSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
@@ -529,5 +661,6 @@ test_suite* OvernightIndexedSwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testSeasonedSwaps));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapRegression));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::test131BootstrapRegression));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testConstructorsAndNominals));
     return suite;
 }

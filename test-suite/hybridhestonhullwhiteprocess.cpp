@@ -1347,6 +1347,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
 }
 
 void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
+    BOOST_TEST_MESSAGE("Testing the H1-HW approximation engine...");
 
     /*
      * Example taken from Lech Aleksander Grzelak,

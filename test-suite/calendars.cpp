@@ -3635,7 +3635,9 @@ test_suite* CalendarTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
 
+    #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
+    #endif
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDayLists));
 
     return suite;

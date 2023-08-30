@@ -729,7 +729,7 @@ void FdHestonTest::testFdmHestonConvergence() {
 void FdHestonTest::testFdmHestonIntradayPricing() {
 #ifdef QL_HIGH_RESOLUTION_DATE
 
-    BOOST_TEST_MESSAGE("Testing FDM Heston intraday pricing ...");
+    BOOST_TEST_MESSAGE("Testing FDM Heston intraday pricing...");
 
     const Option::Type type(Option::Put);
     const Real underlying = 36;
@@ -1098,7 +1098,9 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonEuropeanWithDividends));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIntradayPricing));
+    #ifdef QL_HIGH_RESOLUTION_DATE
+        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIntradayPricing));
+    #endif
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testAmericanCallPutParity));
