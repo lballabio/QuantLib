@@ -53,7 +53,7 @@ namespace QuantLib {
                            averagingMethod) {}
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
-                                               std::vector<Real> nominals,
+                                               const std::vector<Real>& nominals,
                                                const Schedule& schedule,
                                                Rate fixedRate,
                                                DayCounter fixedDC,
@@ -65,10 +65,11 @@ namespace QuantLib {
                                                bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
     : OvernightIndexedSwap(type,
-                           std::move(nominals),
+                           nominals,
                            schedule,
                            fixedRate,
                            std::move(fixedDC),
+                           nominals,
                            schedule,
                            std::move(overnightIndex),
                            spread,
@@ -96,6 +97,7 @@ namespace QuantLib {
                            fixedSchedule,
                            fixedRate,
                            std::move(fixedDC),
+                           std::vector<Real>(1, nominal),
                            overnightSchedule,
                            std::move(overnightIndex),
                            spread,
@@ -106,10 +108,11 @@ namespace QuantLib {
                            averagingMethod) {}
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
-                                               std::vector<Real> nominals,
+                                               std::vector<Real> fixedNominals,
                                                Schedule fixedSchedule,
                                                Rate fixedRate,
                                                DayCounter fixedDC,
+                                               std::vector<Real> overnightNominals,
                                                Schedule overnightSchedule,
                                                ext::shared_ptr<OvernightIndex> overnightIndex,
                                                Spread spread,
@@ -118,14 +121,14 @@ namespace QuantLib {
                                                const Calendar& paymentCalendar,
                                                bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::move(nominals)),
+    : Swap(2), type_(type), fixedNominals_(std::move(fixedNominals)),
       fixedSchedule_(std::move(fixedSchedule)), fixedRate_(fixedRate), fixedDC_(std::move(fixedDC)),
-      overnightSchedule_(std::move(overnightSchedule)), overnightIndex_(std::move(overnightIndex)),
-      spread_(spread), averagingMethod_(averagingMethod) {
+      overnightNominals_(std::move(overnightNominals)), overnightSchedule_(std::move(overnightSchedule)),
+      overnightIndex_(std::move(overnightIndex)), spread_(spread), averagingMethod_(averagingMethod) {
         if (fixedDC_ == DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
         legs_[0] = FixedRateLeg(fixedSchedule_)
-                       .withNotionals(nominals_)
+                       .withNotionals(fixedNominals_)
                        .withCouponRates(fixedRate_, fixedDC_)
                        .withPaymentLag(paymentLag)
                        .withPaymentAdjustment(paymentAdjustment)
@@ -134,7 +137,7 @@ namespace QuantLib {
 
         legs_[1] =
             OvernightLeg(overnightSchedule_, overnightIndex_)
-                .withNotionals(nominals_)
+                .withNotionals(overnightNominals_)
                 .withSpreads(spread_)
                 .withTelescopicValueDates(telescopicValueDates)
                 .withPaymentLag(paymentLag)
@@ -159,6 +162,25 @@ namespace QuantLib {
                 break;
             default:
                 QL_FAIL("Unknown overnight-swap type");
+        }
+
+        // These bools tell us if we can support the old methods nominal() and nominals().
+        // There might be false negatives (i.e., if we pass constant vectors of different lengths
+        // as fixedNominals and floatingNominals) but we're going to assume that whoever uses the
+        // constructor with two vectors is mostly going to use the new methods instead.
+        sameNominals_ = std::equal(fixedNominals_.begin(), fixedNominals_.end(),
+                                   overnightNominals_.begin(), overnightNominals_.end());
+        if (!sameNominals_) {
+            constantNominals_ = false;
+        } else {
+            constantNominals_ = true;
+            Real front = fixedNominals_[0];
+            for (auto x : fixedNominals_) {
+                if (x != front) {
+                    constantNominals_ = false;
+                    break;
+                }
+            }
         }
     }
 
@@ -196,6 +218,16 @@ namespace QuantLib {
         calculate();
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];
+    }
+
+    Real OvernightIndexedSwap::nominal() const {
+        QL_REQUIRE(constantNominals_, "varying nominals");
+        return fixedNominals_[0];
+    }
+
+    const std::vector<Real>& OvernightIndexedSwap::nominals() const {
+        QL_REQUIRE(sameNominals_, "different nominals on fixed and floating leg");
+        return fixedNominals_;
     }
 
 }
