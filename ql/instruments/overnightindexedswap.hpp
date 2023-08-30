@@ -56,7 +56,7 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         OvernightIndexedSwap(Type type,
-                             std::vector<Real> nominals,
+                             const std::vector<Real>& nominals,
                              const Schedule& schedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
@@ -83,10 +83,11 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         OvernightIndexedSwap(Type type,
-                             std::vector<Real> nominals,
+                             std::vector<Real> fixedNominals,
                              Schedule fixedSchedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
+                             std::vector<Real> overnightNominals,
                              Schedule overnightSchedule,
                              ext::shared_ptr<OvernightIndex> overnightIndex,
                              Spread spread = 0.0,
@@ -99,18 +100,23 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
+
+        /*! This throws if the nominal is not constant across coupons. */
         Real nominal() const;
-        std::vector<Real> nominals() const { return nominals_; }
+        /*! This throws if the nominals are not the same for the two legs. */
+        const std::vector<Real>& nominals() const;
 
         Frequency paymentFrequency() const {
             return std::max(fixedSchedule_.tenor().frequency(),
                             overnightSchedule_.tenor().frequency());
         }
 
+        const std::vector<Real>& fixedNominals() const { return fixedNominals_; }
         const Schedule& fixedSchedule() const { return fixedSchedule_; }
         Rate fixedRate() const { return fixedRate_; }
         const DayCounter& fixedDayCount() const { return fixedDC_; }
 
+        const std::vector<Real>& overnightNominals() const { return overnightNominals_; }
         const Schedule& overnightSchedule() const { return overnightSchedule_; }
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Spread spread() const { return spread_; }
@@ -133,25 +139,20 @@ namespace QuantLib {
         //@}
       private:
         Type type_;
-        std::vector<Real> nominals_;
 
+        std::vector<Real> fixedNominals_;
         Schedule fixedSchedule_;
         Rate fixedRate_;
         DayCounter fixedDC_;
 
+        std::vector<Real> overnightNominals_;
         Schedule overnightSchedule_;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         RateAveraging::Type averagingMethod_;
+
+        bool constantNominals_, sameNominals_;
     };
-
-
-    // inline
-
-    inline Real OvernightIndexedSwap::nominal() const {
-        QL_REQUIRE(nominals_.size() == 1, "varying nominals");
-        return nominals_[0];
-    }
 
 }
 
