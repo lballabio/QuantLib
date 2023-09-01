@@ -84,23 +84,29 @@ namespace QuantLib {
         return spanningTimeIndexMaturity_;
     }
 
-    bool IborCoupon::hasFixed() const {
-        Date today = QuantLib::Settings::instance().evaluationDate();
+    bool IborCoupon::hasFixed(Date refDate) const {
+        if (refDate == Date()) {
+            refDate = QuantLib::Settings::instance().evaluationDate();
+        }
 
-        if (fixingDate_ > today) {
+        if (fixingDate_ > refDate) {
             return false;
-        } else if (fixingDate_ < today) {
+        } else if (fixingDate_ < refDate) {
             return true;
         } else {
-            // fixingDate_ == today
-            if (QuantLib::Settings::instance().enforcesTodaysHistoricFixings()) {
-                return true;
-            } else {
-                try {
-                    return index_->pastFixing(fixingDate_) != Null<Real>();
-                } catch (const Error&) {
-                    return false; // fall through and forecast
+            // fixingDate_ == refDate
+            if (refDate == QuantLib::Settings::instance().evaluationDate()) {
+                if (QuantLib::Settings::instance().enforcesTodaysHistoricFixings()) {
+                    return true;
+                } else {
+                    try {
+                        return index_->pastFixing(fixingDate_) != Null<Real>();
+                    } catch (const Error&) {
+                        return false; // fall through and forecast
+                    }
                 }
+            } else {
+                return false;
             }
         }
     }
