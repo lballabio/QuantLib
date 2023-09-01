@@ -57,6 +57,7 @@ namespace QuantLib {
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
         //@}
+        bool hasFixed() const;
         //! \name FloatingRateCoupon interface
         //@{
         // implemented in order to manage the case of par coupon
