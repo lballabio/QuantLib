@@ -586,7 +586,7 @@ void OvernightIndexedSwapTest::testConstructorsAndNominals() {
 
     // constant notional, different schedules
 
-    Schedule fixedSchedule = schedule;
+    const Schedule& fixedSchedule = schedule;
     Schedule overnightSchedule = MakeSchedule()
         .from(spot)
         .to(vars.calendar.advance(spot, 2*Years))
