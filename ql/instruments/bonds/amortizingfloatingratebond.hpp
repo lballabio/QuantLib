@@ -34,9 +34,9 @@ namespace QuantLib {
     //! amortizing floating-rate bond (possibly capped and/or floored)
     class AmortizingFloatingRateBond : public Bond {
       public:
+        
         AmortizingFloatingRateBond(Natural settlementDays,
                                    const std::vector<Real>& notional,
-                                   const std::vector<Real>& redemptions,
                                    const Schedule& schedule,
                                    const ext::shared_ptr<IborIndex>& index,
                                    const DayCounter& accrualDayCounter,
@@ -52,26 +52,8 @@ namespace QuantLib {
                                    const Period& exCouponPeriod = Period(),
                                    const Calendar& exCouponCalendar = Calendar(),
                                    BusinessDayConvention exCouponConvention = Unadjusted,
-                                   bool exCouponEndOfMonth = false);
-
-
-      AmortizingFloatingRateBond(Natural settlementDays,
-                                   const std::vector<Real>& notional,
-                                   const Schedule& schedule,
-                                   const ext::shared_ptr<IborIndex>& index,
-                                   const DayCounter& accrualDayCounter,
-                                   BusinessDayConvention paymentConvention = Following,
-                                   Natural fixingDays = Null<Natural>(),
-                                   const std::vector<Real>& gearings = { 1.0 },
-                                   const std::vector<Spread>& spreads = { 0.0 },
-                                   const std::vector<Rate>& caps = {},
-                                   const std::vector<Rate>& floors = {},
-                                   bool inArrears = false,
-                                   const Date& issueDate = Date(),
-                                   const Period& exCouponPeriod = Period(),
-                                   const Calendar& exCouponCalendar = Calendar(),
-                                   BusinessDayConvention exCouponConvention = Unadjusted,
-                                   bool exCouponEndOfMonth = false);
+                                   bool exCouponEndOfMonth = false,
+                                   const std::vector<Real>& redemptions = { 100.0 });
   };
   
 }
