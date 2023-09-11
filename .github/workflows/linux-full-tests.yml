@@ -190,7 +190,7 @@ jobs:
             configureflags: --enable-null-as-functions
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:

@@ -29,7 +29,7 @@ jobs:
             cxxflags: "-std=c++17"
             configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional --enable-std-any
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
       run: |
         brew install automake boost
