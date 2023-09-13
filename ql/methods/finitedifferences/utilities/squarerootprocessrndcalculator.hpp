@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmrndcalculator.hpp
+/*! \file squarerootprocessrndcalculator.hpp
     \brief risk neutral terminal density calculator for the square root process
 */
 

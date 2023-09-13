@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analyticsimplechooserengine.hpp>
+#include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <utility>
@@ -43,8 +43,7 @@ namespace QuantLib {
                    "Risk-free rate and volatility must"
                    "have the same day counter");
         Real spot = process_->stateVariable()->value();
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        auto payoff = ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         Real strike = payoff->strike();
         Volatility volatility = process_->blackVolatility()->blackVol(

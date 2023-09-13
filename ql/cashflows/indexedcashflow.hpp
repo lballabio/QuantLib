@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file simplecashflow.hpp
+/*! \file indexedcashflow.hpp
  \brief Cash flow dependent on an index ratio (NOT a coupon, i.e. no accruals)
  */
 

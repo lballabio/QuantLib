@@ -19,8 +19,8 @@
 
 #include "compoundoption.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/compoundoption.hpp>
-#include <ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp>
+#include <ql/instruments/compoundoption.hpp>
+#include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/time/calendars/target.hpp>

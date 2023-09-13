@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file eonia.hpp
-    \brief %Eonia index
+/*! \file sonia.hpp
+    \brief %Sonia index
 */
 
 #ifndef quantlib_sonia_hpp

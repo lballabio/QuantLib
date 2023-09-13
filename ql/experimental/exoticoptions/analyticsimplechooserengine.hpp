@@ -17,32 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticsimplechooserengine.hpp
-    \brief Analytic engine for simple chooser option
-*/
+// Deprecated in version 1.32
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp> instead.")
 
-#ifndef quantlib_analytic_simple_chooser_engine_hpp
-#define quantlib_analytic_simple_chooser_engine_hpp
-
-#include <ql/experimental/exoticoptions/simplechooseroption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-
-namespace QuantLib {
-
-    //! Pricing engine for European Simple Chooser option
-    /*! This class implements a Simple Chooser Option
-        option, with European exercise.
-    */
-    class AnalyticSimpleChooserEngine : public SimpleChooserOption::engine {
-      public:
-        explicit AnalyticSimpleChooserEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
-        void calculate() const override;
-
-      private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-    };
-
-}
-
-#endif
+#include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp>

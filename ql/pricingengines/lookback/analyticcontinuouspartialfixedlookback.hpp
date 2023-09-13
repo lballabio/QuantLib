@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticcontinuousfixedlookback.hpp
+/*! \file analyticcontinuouspartialfixedlookback.hpp
     \brief Analytic engine for continuous fixed-strike lookback
 */
 

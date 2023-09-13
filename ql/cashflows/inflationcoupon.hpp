@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file floatingratecoupon.hpp
+/*! \file inflationcoupon.hpp
  \brief Coupon paying a variable index-based rate
  */
 
