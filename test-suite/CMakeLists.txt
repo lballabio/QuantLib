@@ -126,6 +126,7 @@ set(QL_TEST_SOURCES
     period.cpp
     piecewiseyieldcurve.cpp
     piecewisezerospreadedtermstructure.cpp
+    quantlibglobalfixture.cpp
     quantlibtestsuite.cpp
     quantooption.cpp
     quotes.cpp
@@ -140,6 +141,7 @@ set(QL_TEST_SOURCES
     shortratemodels.cpp
     sofrfutures.cpp
     solvers.cpp
+    speedlevel.cpp
     spreadoption.cpp
     squarerootclvmodel.cpp
     stats.cpp
@@ -171,7 +173,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    americanoption.hpp
     amortizingbond.hpp
     andreasenhugevolatilityinterpl.hpp
     array.hpp
@@ -257,7 +258,6 @@ set(QL_TEST_HEADERS
     inflationcpicapfloor.hpp
     inflationcpiswap.hpp
     inflationvolatility.hpp
-    instruments.hpp
     integrals.hpp
     interestrates.hpp
     interpolations.hpp
@@ -299,6 +299,7 @@ set(QL_TEST_HEADERS
     period.hpp
     piecewiseyieldcurve.hpp
     piecewisezerospreadedtermstructure.hpp
+    quantlibglobalfixture.hpp
     quantooption.hpp
     quotes.hpp
     rangeaccrual.hpp
@@ -329,6 +330,7 @@ set(QL_TEST_HEADERS
     timegrid.hpp
     timeseries.hpp
     tqreigendecomposition.hpp
+    toplevelfixture.hpp
     tracing.hpp
     transformedgrid.hpp
     twoassetbarrieroption.hpp
@@ -347,7 +349,7 @@ set(QL_TEST_HEADERS
 set(QL_BENCHMARK_SOURCES
     quantlibbenchmark.cpp
     
-    americanoption.cpp                  americanoption.hpp
+#    americanoption.cpp
     asianoptions.cpp                    asianoptions.hpp
     barrieroption.cpp                   barrieroption.hpp
     basketoption.cpp                    basketoption.hpp

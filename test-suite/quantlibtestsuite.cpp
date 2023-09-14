@@ -36,12 +36,8 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "utilities.hpp"
-#include "speedlevel.hpp"
-
-#include "americanoption.hpp"
-#include "andreasenhugevolatilityinterpl.hpp"
 #include "amortizingbond.hpp"
+#include "andreasenhugevolatilityinterpl.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
 #include "assetswap.hpp"
@@ -55,8 +51,8 @@
 #include "binaryoption.hpp"
 #include "blackdeltacalculator.hpp"
 #include "blackformula.hpp"
-#include "bonds.hpp"
 #include "bondforward.hpp"
+#include "bonds.hpp"
 #include "brownianbridge.hpp"
 #include "businessdayconventions.hpp"
 #include "calendars.hpp"
@@ -91,26 +87,26 @@
 #include "dividendoption.hpp"
 #include "doublebarrieroption.hpp"
 #include "doublebinaryoption.hpp"
+#include "equitycashflow.hpp"
+#include "equityindex.hpp"
+#include "equitytotalreturnswap.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
-#include "equityindex.hpp"
-#include "equitycashflow.hpp"
-#include "equitytotalreturnswap.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
 #include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
-#include "fdheston.hpp"
-#include "fdcir.hpp"
-#include "fdmlinearop.hpp"
 #include "fdcev.hpp"
+#include "fdcir.hpp"
+#include "fdheston.hpp"
+#include "fdmlinearop.hpp"
 #include "fdsabr.hpp"
 #include "fittedbonddiscountcurve.hpp"
 #include "forwardoption.hpp"
 #include "forwardrateagreement.hpp"
 #include "functions.hpp"
-#include "gaussianquadratures.hpp"
 #include "garch.hpp"
+#include "gaussianquadratures.hpp"
 #include "gjrgarchmodel.hpp"
 #include "gsr.hpp"
 #include "hestonmodel.hpp"
@@ -125,7 +121,6 @@
 #include "inflationcpicapfloor.hpp"
 #include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
-#include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
 #include "interpolations.hpp"
@@ -138,11 +133,11 @@
 #include "lowdiscrepancysequences.hpp"
 #include "margrabeoption.hpp"
 #include "marketmodel.hpp"
+#include "marketmodel_cms.hpp"
+#include "marketmodel_smm.hpp"
 #include "marketmodel_smmcapletalphacalibration.hpp"
 #include "marketmodel_smmcapletcalibration.hpp"
 #include "marketmodel_smmcaplethomocalibration.hpp"
-#include "marketmodel_smm.hpp"
-#include "marketmodel_cms.hpp"
 #include "markovfunctional.hpp"
 #include "matrices.hpp"
 #include "mclongstaffschwartzengine.hpp"
@@ -179,9 +174,9 @@
 #include "shortratemodels.hpp"
 #include "sofrfutures.hpp"
 #include "solvers.hpp"
+#include "speedlevel.hpp"
 #include "spreadoption.hpp"
 #include "squarerootclvmodel.hpp"
-#include "swingoption.hpp"
 #include "stats.hpp"
 #include "subperiodcoupons.hpp"
 #include "svivolatility.hpp"
@@ -190,6 +185,7 @@
 #include "swaption.hpp"
 #include "swaptionvolatilitycube.hpp"
 #include "swaptionvolatilitymatrix.hpp"
+#include "swingoption.hpp"
 #include "termstructures.hpp"
 #include "timegrid.hpp"
 #include "timeseries.hpp"
@@ -199,6 +195,7 @@
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
 #include "ultimateforwardtermstructure.hpp"
+#include "utilities.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
@@ -206,38 +203,13 @@
 #include "vpp.hpp"
 #include "zabr.hpp"
 #include "zerocouponswap.hpp"
-
-#include <iostream>
-#include <iomanip>
 #include <chrono>
+#include <iomanip>
+#include <iostream>
 
 using namespace boost::unit_test_framework;
 
 namespace {
-
-    decltype(std::chrono::steady_clock::now()) start;
-
-    void startTimer() {
-        start = std::chrono::steady_clock::now();
-    }
-
-    void stopTimer() {
-        auto stop = std::chrono::steady_clock::now();
-
-        double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() * 1e-3;
-        int hours = int(seconds/3600);
-        seconds -= hours * 3600;
-        int minutes = int(seconds/60);
-        seconds -= minutes * 60;
-
-        std::cout << "\nTests completed in ";
-        if (hours > 0)
-            std::cout << hours << " h ";
-        if (hours > 0 || minutes > 0)
-            std::cout << minutes << " m ";
-        std::cout << std::fixed << std::setprecision(0)
-                  << seconds << " s\n" << std::endl;
-    }
 
     void configure(QuantLib::Date evaluationDate) {
         /* if needed, a subset of the lines below can be
@@ -352,9 +324,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     BOOST_TEST_MESSAGE(rule);
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(QUANTLIB_TEST_CASE(startTimer));
+//    test->add(QUANTLIB_TEST_CASE(startTimer));
 
-    test->add(AmericanOptionTest::suite(speed));
     test->add(AmortizingBondTest::suite());
     test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
@@ -421,7 +392,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
     test->add(InflationCPIBondTest::suite());
-    test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite(speed));
@@ -533,7 +503,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LiborMarketModelTest::suite(speed));
     test->add(LiborMarketModelProcessTest::suite(speed));
 
-    test->add(QUANTLIB_TEST_CASE(stopTimer));
+//    test->add(QUANTLIB_TEST_CASE(stopTimer));
 
     return test;
 }

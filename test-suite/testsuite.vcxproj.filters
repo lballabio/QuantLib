@@ -335,6 +335,9 @@
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="quantlibglobalfixture.cpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClCompile Include="quantooption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -369,6 +372,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="solvers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="speedlevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="spreadoption.cpp">
@@ -518,9 +524,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="americanoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="amortizingbond.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -725,9 +728,6 @@
     <ClInclude Include="inflationvolatility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="instruments.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="integrals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -845,6 +845,9 @@
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="quantlibglobalfixture.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="quantooption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -921,6 +924,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tqreigendecomposition.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="toplevelfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tracing.hpp">

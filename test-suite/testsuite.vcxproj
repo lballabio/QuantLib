@@ -763,6 +763,7 @@
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
+    <ClInclude Include="quantlibglobalfixture.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
@@ -776,6 +777,7 @@
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="solvers.cpp" />
+    <ClCompile Include="speedlevel.cpp" />
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
@@ -807,7 +809,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="americanoption.hpp" />
     <ClInclude Include="amortizingbond.hpp" />
     <ClInclude Include="andreasenhugevolatilityinterpl.hpp" />
     <ClInclude Include="array.hpp" />
@@ -893,7 +894,6 @@
     <ClInclude Include="inflationcpicapfloor.hpp" />
     <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />
-    <ClInclude Include="instruments.hpp" />
     <ClInclude Include="integrals.hpp" />
     <ClInclude Include="interestrates.hpp" />
     <ClInclude Include="interpolations.hpp" />
@@ -935,6 +935,7 @@
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
+    <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="quantooption.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />
@@ -965,6 +966,7 @@
     <ClInclude Include="timegrid.hpp" />
     <ClInclude Include="timeseries.hpp" />
     <ClInclude Include="tqreigendecomposition.hpp" />
+    <ClInclude Include="toplevelfixture.hpp" />
     <ClInclude Include="tracing.hpp" />
     <ClInclude Include="transformedgrid.hpp" />
     <ClInclude Include="twoassetbarrieroption.hpp" />

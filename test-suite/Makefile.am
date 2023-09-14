@@ -128,6 +128,7 @@ QL_TEST_SRCS = \
 	period.cpp \
 	piecewiseyieldcurve.cpp \
 	piecewisezerospreadedtermstructure.cpp \
+	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	quotes.cpp \
 	rangeaccrual.cpp \
@@ -141,6 +142,7 @@ QL_TEST_SRCS = \
 	shortratemodels.cpp \
 	sofrfutures.cpp \
 	solvers.cpp \
+	speedlevel.cpp \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
@@ -172,7 +174,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	speedlevel.hpp \
-	americanoption.hpp \
 	amortizingbond.hpp \
 	andreasenhugevolatilityinterpl.hpp \
 	array.hpp \
@@ -258,7 +259,6 @@ QL_TEST_HDRS = \
 	inflationcpicapfloor.hpp \
 	inflationcpiswap.hpp \
 	inflationvolatility.hpp \
-	instruments.hpp \
 	integrals.hpp \
 	interestrates.hpp \
 	interpolations.hpp \
@@ -299,6 +299,7 @@ QL_TEST_HDRS = \
 	period.hpp \
 	piecewiseyieldcurve.hpp \
 	piecewisezerospreadedtermstructure.hpp \
+	quantlibglobalfixture.hpp \
 	quantooption.hpp \
 	quotes.hpp \
 	rangeaccrual.hpp \
@@ -329,6 +330,7 @@ QL_TEST_HDRS = \
 	timeseries.hpp \
 	transformedgrid.hpp \
 	tqreigendecomposition.hpp \
+    toplevelfixture.hpp \
 	tracing.hpp \
 	twoassetbarrieroption.hpp \
 	twoassetcorrelationoption.hpp \
@@ -346,7 +348,6 @@ QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 
 QL_BENCHMARK_SRCS = \
 	quantlibbenchmark.cpp \
-	americanoption.cpp \
 	asianoptions.cpp \
 	barrieroption.cpp \
 	doublebarrieroption.cpp \
@@ -369,7 +370,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	americanoption.hpp \
 	asianoptions.hpp \
 	barrieroption.hpp \
 	doublebarrieroption.hpp \
