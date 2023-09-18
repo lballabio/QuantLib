@@ -40,11 +40,18 @@ namespace QuantLib {
                                              ext::shared_ptr<IborIndex> iborIndex,
                                              Spread spread,
                                              DayCounter floatingDayCount,
-                                             ext::optional<BusinessDayConvention> paymentConvention)
+                                             ext::optional<BusinessDayConvention> paymentConvention,
+                                             Natural paymentLag,
+                                             const Calendar& paymentCalendar)
     : Swap(2), type_(type), fixedNominals_(std::move(fixedNominals)), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       floatingNominals_(std::move(floatingNominals)), floatingSchedule_(std::move(floatingSchedule)),
       iborIndex_(std::move(iborIndex)), spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
+
+        QL_REQUIRE(iborIndex_, "null floating index provided");
+
+        if (fixedDayCount_ == DayCounter())
+            fixedDayCount_ = iborIndex_->dayCounter();
 
         if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
@@ -54,7 +61,11 @@ namespace QuantLib {
         legs_[0] = FixedRateLeg(fixedSchedule_)
             .withNotionals(fixedNominals_)
             .withCouponRates(fixedRate_, fixedDayCount_)
-            .withPaymentAdjustment(paymentConvention_);
+            .withPaymentAdjustment(paymentConvention_)
+            .withPaymentLag(paymentLag)
+            .withPaymentCalendar(paymentCalendar.empty() ?
+                                 fixedSchedule_.calendar() :
+                                 paymentCalendar);
 
         // legs_[1] to be built by derived class constructor
 
