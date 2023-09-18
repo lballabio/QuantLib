@@ -54,11 +54,12 @@ namespace QuantLib {
         class results;
         class engine;
         FixedVsFloatingSwap(Type type,
-                            Real nominal,
+                            std::vector<Real> fixedNominals,
                             Schedule fixedSchedule,
                             Rate fixedRate,
                             DayCounter fixedDayCount,
-                            Schedule floatSchedule,
+                            std::vector<Real> floatingNominals,
+                            Schedule floatingSchedule,
                             ext::shared_ptr<IborIndex> iborIndex,
                             Spread spread,
                             DayCounter floatingDayCount,
@@ -66,12 +67,18 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Type type() const;
-        Real nominal() const;
 
+        /*! This throws if the nominal is not constant across coupons. */
+        Real nominal() const;
+        /*! This throws if the nominals are not the same for the two legs. */
+        const std::vector<Real>& nominals() const;
+
+        const std::vector<Real>& fixedNominals() const;
         const Schedule& fixedSchedule() const;
         Rate fixedRate() const;
         const DayCounter& fixedDayCount() const;
 
+        const std::vector<Real>& floatingNominals() const;
         const Schedule& floatingSchedule() const;
         const ext::shared_ptr<IborIndex>& iborIndex() const;
         Spread spread() const;
@@ -101,10 +108,11 @@ namespace QuantLib {
         void setupExpired() const override;
         virtual void setupFloatingArguments(arguments* args) const = 0;
         Type type_;
-        Real nominal_;
+        std::vector<Real> fixedNominals_;
         Schedule fixedSchedule_;
         Rate fixedRate_;
         DayCounter fixedDayCount_;
+        std::vector<Real> floatingNominals_;
         Schedule floatingSchedule_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Spread spread_;
@@ -113,6 +121,8 @@ namespace QuantLib {
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
+
+        bool constantNominals_, sameNominals_;
     };
 
 
@@ -123,8 +133,10 @@ namespace QuantLib {
         Type type = Receiver;
         Real nominal;
 
+        std::vector<Real> fixedNominals;
         std::vector<Date> fixedResetDates;
         std::vector<Date> fixedPayDates;
+        std::vector<Real> floatingNominals;
         std::vector<Time> floatingAccrualTimes;
         std::vector<Date> floatingResetDates;
         std::vector<Date> floatingFixingDates;
@@ -155,7 +167,17 @@ namespace QuantLib {
     }
 
     inline Real FixedVsFloatingSwap::nominal() const {
-        return nominal_;
+        QL_REQUIRE(constantNominals_, "nominal is not constant");
+        return fixedNominals_[0];
+    }
+
+    inline const std::vector<Real>& FixedVsFloatingSwap::nominals() const {
+        QL_REQUIRE(sameNominals_, "different nominals on fixed and floating leg");
+        return fixedNominals_;
+    }
+
+    inline const std::vector<Real>& FixedVsFloatingSwap::fixedNominals() const {
+        return fixedNominals_;
     }
 
     inline const Schedule& FixedVsFloatingSwap::fixedSchedule() const {
@@ -168,6 +190,10 @@ namespace QuantLib {
 
     inline const DayCounter& FixedVsFloatingSwap::fixedDayCount() const {
         return fixedDayCount_;
+    }
+
+    inline const std::vector<Real>& FixedVsFloatingSwap::floatingNominals() const {
+        return floatingNominals_;
     }
 
     inline const Schedule& FixedVsFloatingSwap::floatingSchedule() const {

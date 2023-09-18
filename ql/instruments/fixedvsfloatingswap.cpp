@@ -31,19 +31,20 @@
 namespace QuantLib {
 
     FixedVsFloatingSwap::FixedVsFloatingSwap(Type type,
-                                             Real nominal,
+                                             std::vector<Real> fixedNominals,
                                              Schedule fixedSchedule,
                                              Rate fixedRate,
                                              DayCounter fixedDayCount,
-                                             Schedule floatSchedule,
+                                             std::vector<Real> floatingNominals,
+                                             Schedule floatingSchedule,
                                              ext::shared_ptr<IborIndex> iborIndex,
                                              Spread spread,
                                              DayCounter floatingDayCount,
                                              ext::optional<BusinessDayConvention> paymentConvention)
-    : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
+    : Swap(2), type_(type), fixedNominals_(std::move(fixedNominals)), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
-      floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),
-      spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
+      floatingNominals_(std::move(floatingNominals)), floatingSchedule_(std::move(floatingSchedule)),
+      iborIndex_(std::move(iborIndex)), spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
 
         if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
@@ -51,7 +52,7 @@ namespace QuantLib {
             paymentConvention_ = floatingSchedule_.businessDayConvention();
 
         legs_[0] = FixedRateLeg(fixedSchedule_)
-            .withNotionals(nominal_)
+            .withNotionals(fixedNominals_)
             .withCouponRates(fixedRate_, fixedDayCount_)
             .withPaymentAdjustment(paymentConvention_);
 
@@ -69,6 +70,26 @@ namespace QuantLib {
           default:
             QL_FAIL("Unknown vanilla-swap type");
         }
+
+
+        // These bools tell us if we can support the old methods nominal() and nominals().
+        // There might be false negatives (i.e., if we pass constant vectors of different lengths
+        // as fixedNominals and floatingNominals) but we're going to assume that whoever uses the
+        // constructor with two vectors is mostly going to use the new methods instead.
+        sameNominals_ = std::equal(fixedNominals_.begin(), fixedNominals_.end(),
+                                   floatingNominals_.begin(), floatingNominals_.end());
+        if (!sameNominals_) {
+            constantNominals_ = false;
+        } else {
+            constantNominals_ = true;
+            Real front = fixedNominals_[0];
+            for (auto x : fixedNominals_) {
+                if (x != front) {
+                    constantNominals_ = false;
+                    break;
+                }
+            }
+        }
     }
 
     void FixedVsFloatingSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -81,13 +102,17 @@ namespace QuantLib {
             return;
 
         arguments->type = type_;
-        arguments->nominal = nominal_;
+
+        if (constantNominals_)
+            arguments->nominal = nominal();
+        else
+            arguments->nominal = Null<Real>();
 
         const Leg& fixedCoupons = fixedLeg();
         Size n = fixedCoupons.size();
 
         arguments->fixedResetDates = arguments->fixedPayDates = std::vector<Date>(n);
-        arguments->fixedCoupons = std::vector<Real>(n);
+        arguments->fixedNominals = arguments->fixedCoupons = std::vector<Real>(n);
 
         for (Size i=0; i<n; ++i) {
             auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
@@ -95,6 +120,7 @@ namespace QuantLib {
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
             arguments->fixedCoupons[i] = coupon->amount();
+            arguments->fixedNominals[i] = coupon->nominal();
         }
 
         setupFloatingArguments(arguments);
@@ -171,13 +197,18 @@ namespace QuantLib {
 
     void FixedVsFloatingSwap::arguments::validate() const {
         Swap::arguments::validate();
-        QL_REQUIRE(nominal != Null<Real>(), "nominal null or not set");
+        QL_REQUIRE(fixedNominals.size() == fixedPayDates.size(),
+                   "number of fixed nominals different from "
+                   "number of fixed payment dates");
         QL_REQUIRE(fixedResetDates.size() == fixedPayDates.size(),
                    "number of fixed start dates different from "
                    "number of fixed payment dates");
         QL_REQUIRE(fixedPayDates.size() == fixedCoupons.size(),
                    "number of fixed payment dates different from "
                    "number of fixed coupon amounts");
+        QL_REQUIRE(floatingNominals.size() == floatingPayDates.size(),
+                   "number of floating nominals different from "
+                   "number of floating payment dates");
         QL_REQUIRE(floatingResetDates.size() == floatingPayDates.size(),
                    "number of floating start dates different from "
                    "number of floating payment dates");

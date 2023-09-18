@@ -38,12 +38,12 @@ namespace QuantLib {
                              DayCounter floatingDayCount,
                              ext::optional<BusinessDayConvention> paymentConvention,
                              ext::optional<bool> useIndexedCoupons)
-    : FixedVsFloatingSwap(type, nominal, std::move(fixedSchedule), fixedRate, std::move(fixedDayCount),
-                          std::move(floatSchedule), std::move(index), spread, std::move(floatingDayCount),
+    : FixedVsFloatingSwap(type, {nominal}, std::move(fixedSchedule), fixedRate, std::move(fixedDayCount),
+                          {nominal}, std::move(floatSchedule), std::move(index), spread, std::move(floatingDayCount),
                           paymentConvention) {
 
         legs_[1] = IborLeg(floatingSchedule(), iborIndex())
-            .withNotionals(this->nominal())
+            .withNotionals(this->floatingNominals())
             .withPaymentDayCounter(this->floatingDayCount())
             .withPaymentAdjustment(this->paymentConvention())
             .withSpreads(this->spread())
@@ -59,13 +59,14 @@ namespace QuantLib {
         args->floatingResetDates = args->floatingPayDates = args->floatingFixingDates = std::vector<Date>(n);
         args->floatingAccrualTimes = std::vector<Time>(n);
         args->floatingSpreads = std::vector<Spread>(n);
-        args->floatingCoupons = std::vector<Real>(n);
+        args->floatingCoupons = args->floatingNominals = std::vector<Real>(n);
 
         for (Size i=0; i<n; ++i) {
             auto coupon = ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
 
             args->floatingResetDates[i] = coupon->accrualStartDate();
             args->floatingPayDates[i] = coupon->date();
+            args->floatingNominals[i] = coupon->nominal();
 
             args->floatingFixingDates[i] = coupon->fixingDate();
             args->floatingAccrualTimes[i] = coupon->accrualPeriod();

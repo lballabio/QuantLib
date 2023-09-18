@@ -29,6 +29,9 @@ namespace QuantLib {
                    "cash settled (ParYieldCurve) swaptions not priced with "
                    "Gaussian1dSwaptionEngine");
 
+        QL_REQUIRE(arguments_.nominal != Null<Real>(),
+                   "non-constant nominals are not supported yet");
+
         Date settlement = model_->termStructure()->referenceDate();
 
         if (arguments_.exercise->dates().back() <=
