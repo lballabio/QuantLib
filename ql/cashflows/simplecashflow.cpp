@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 
 namespace QuantLib {

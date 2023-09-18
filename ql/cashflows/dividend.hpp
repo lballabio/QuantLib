@@ -26,6 +26,7 @@
 #define quantlib_dividend_hpp
 
 #include <ql/cashflow.hpp>
+#include <ql/errors.hpp>
 #include <ql/utilities/null.hpp>
 #include <vector>
 

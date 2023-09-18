@@ -20,6 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>

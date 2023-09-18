@@ -29,7 +29,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_observable_hpp
 #define quantlib_observable_hpp
 
-#include <ql/errors.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
@@ -88,14 +87,11 @@ namespace QuantLib {
         friend class Singleton<ObservableSettings>;
         friend class Observable;
       public:
-        void disableUpdates(bool deferred=false) {
-            updatesEnabled_  = false;
-            updatesDeferred_ = deferred;
-        }
+        void disableUpdates(bool deferred=false);
         void enableUpdates();
 
-        bool updatesEnabled() const { return updatesEnabled_; }
-        bool updatesDeferred() const { return updatesDeferred_; }
+        bool updatesEnabled() const;
+        bool updatesDeferred() const;
 
       private:
         ObservableSettings() = default;
@@ -154,109 +150,6 @@ namespace QuantLib {
       private:
         set_type observables_;
     };
-
-
-    // inline definitions
-
-    inline Observable::Observable() = default;
-
-    inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
-        if (updatesDeferred()) {
-            deferredObservers_.insert(observers.begin(), observers.end());
-        }
-    }
-
-    inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
-        deferredObservers_.erase(o);
-    }
-
-    inline Observable::Observable(const Observable&) {
-        // the observer set is not copied; no observer asked to
-        // register with this object
-    }
-
-    /*! \warning notification is sent before the copy constructor has
-                 a chance of actually change the data
-                 members. Therefore, observers whose update() method
-                 tries to use their observables will not see the
-                 updated values. It is suggested that the update()
-                 method just raise a flag in order to trigger
-                 a later recalculation.
-    */
-    inline Observable& Observable::operator=(const Observable& o) {
-        // as above, the observer set is not copied. Moreover,
-        // observers of this object must be notified of the change
-        if (&o != this)
-            notifyObservers();
-        return *this;
-    }
-
-    inline std::pair<Observable::iterator, bool>
-    Observable::registerObserver(Observer* o) {
-        return observers_.insert(o);
-    }
-
-    inline Size Observable::unregisterObserver(Observer* o) {
-        if (ObservableSettings::instance().updatesDeferred())
-            ObservableSettings::instance().unregisterDeferredObserver(o);
-
-        return observers_.erase(o);
-    }
-
-
-    inline Observer::Observer(const Observer& o)
-    : observables_(o.observables_) {
-        for (const auto& observable : observables_)
-            observable->registerObserver(this);
-    }
-
-    inline Observer& Observer::operator=(const Observer& o) {
-        for (const auto& observable : observables_)
-            observable->unregisterObserver(this);
-        observables_ = o.observables_;
-        for (const auto& observable : observables_)
-            observable->registerObserver(this);
-        return *this;
-    }
-
-    inline Observer::~Observer() {
-        for (const auto& observable : observables_)
-            observable->unregisterObserver(this);
-    }
-
-    inline std::pair<Observer::iterator, bool>
-    Observer::registerWith(const ext::shared_ptr<Observable>& h) {
-        if (h != nullptr) {
-            h->registerObserver(this);
-            return observables_.insert(h);
-        }
-        return std::make_pair(observables_.end(), false);
-    }
-
-    inline void
-    Observer::registerWithObservables(const ext::shared_ptr<Observer> &o) {
-        if (o != nullptr) {
-            for (const auto& observable : o->observables_)
-                registerWith(observable);
-        }
-    }
-
-    inline
-    Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
-        if (h != nullptr)
-            h->unregisterObserver(this);
-        return observables_.erase(h);
-    }
-
-    inline void Observer::unregisterWithAll() {
-        for (const auto& observable : observables_)
-            observable->unregisterObserver(this);
-        observables_.clear();
-    }
-
-    inline void Observer::deepUpdate() {
-        update();
-    }
 
 }
 

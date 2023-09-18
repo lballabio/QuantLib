@@ -20,10 +20,16 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 
 #include <ql/patterns/observable.hpp>
+#include <ql/errors.hpp>
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
 namespace QuantLib {
+
+    void ObservableSettings::disableUpdates(bool deferred) {
+        updatesEnabled_ = false;
+        updatesDeferred_ = deferred;
+    }
 
     void ObservableSettings::enableUpdates() {
         updatesEnabled_  = true;
@@ -52,6 +58,8 @@ namespace QuantLib {
         }
     }
 
+    bool ObservableSettings::updatesEnabled() const { return updatesEnabled_; }
+    bool ObservableSettings::updatesDeferred() const { return updatesDeferred_; }
 
     void Observable::notifyObservers() {
         if (!ObservableSettings::instance().updatesEnabled()) {
@@ -83,6 +91,103 @@ namespace QuantLib {
         }
     }
 
+    Observable::Observable() = default;
+
+    void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
+        if (updatesDeferred()) {
+            deferredObservers_.insert(observers.begin(), observers.end());
+        }
+    }
+
+    void ObservableSettings::unregisterDeferredObserver(Observer* o) {
+        deferredObservers_.erase(o);
+    }
+
+    Observable::Observable(const Observable&) {
+        // the observer set is not copied; no observer asked to
+        // register with this object
+    }
+
+    /*! \warning notification is sent before the copy constructor has
+                 a chance of actually change the data
+                 members. Therefore, observers whose update() method
+                 tries to use their observables will not see the
+                 updated values. It is suggested that the update()
+                 method just raise a flag in order to trigger
+                 a later recalculation.
+    */
+    Observable& Observable::operator=(const Observable& o) {
+        // as above, the observer set is not copied. Moreover,
+        // observers of this object must be notified of the change
+        if (&o != this)
+            notifyObservers();
+        return *this;
+    }
+
+    std::pair<Observable::iterator, bool>
+    Observable::registerObserver(Observer* o) {
+        return observers_.insert(o);
+    }
+
+    Size Observable::unregisterObserver(Observer* o) {
+        if (ObservableSettings::instance().updatesDeferred())
+            ObservableSettings::instance().unregisterDeferredObserver(o);
+
+        return observers_.erase(o);
+    }
+
+
+    Observer::Observer(const Observer& o)
+    : observables_(o.observables_) {
+        for (const auto& observable : observables_)
+            observable->registerObserver(this);
+    }
+
+    Observer& Observer::operator=(const Observer& o) {
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
+        observables_ = o.observables_;
+        for (const auto& observable : observables_)
+            observable->registerObserver(this);
+        return *this;
+    }
+
+    Observer::~Observer() {
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
+    }
+
+    std::pair<Observer::iterator, bool>
+    Observer::registerWith(const ext::shared_ptr<Observable>& h) {
+        if (h != nullptr) {
+            h->registerObserver(this);
+            return observables_.insert(h);
+        }
+        return std::make_pair(observables_.end(), false);
+    }
+
+    void Observer::registerWithObservables(const ext::shared_ptr<Observer>& o) {
+        if (o != nullptr) {
+            for (const auto& observable : o->observables_)
+                registerWith(observable);
+        }
+    }
+
+    Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
+        if (h != nullptr)
+            h->unregisterObserver(this);
+        return observables_.erase(h);
+    }
+
+    void Observer::unregisterWithAll() {
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
+        observables_.clear();
+    }
+
+    void Observer::deepUpdate() {
+        update();
+    }
 }
 
 #else

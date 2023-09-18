@@ -25,6 +25,7 @@
 #ifndef quantlib_instrument_hpp
 #define quantlib_instrument_hpp
 
+#include <ql/errors.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/utilities/null.hpp>
