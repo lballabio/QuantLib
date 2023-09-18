@@ -25,14 +25,15 @@
 
 namespace QuantLib {
 
-    AmortizingFloatingRateBond::AmortizingFloatingRateBond(
+
+   AmortizingFloatingRateBond::AmortizingFloatingRateBond(
                                     Natural settlementDays,
                                     const std::vector<Real>& notionals,
                                     const Schedule& schedule,
                                     const ext::shared_ptr<IborIndex>& index,
                                     const DayCounter& paymentDayCounter,
                                     BusinessDayConvention paymentConvention,
-                                    Natural fixingDays,
+                                    Natural fixingDays, Natural paymentLag,
                                     const std::vector<Real>& gearings,
                                     const std::vector<Spread>& spreads,
                                     const std::vector<Rate>& caps,
@@ -42,7 +43,8 @@ namespace QuantLib {
                                     const Period& exCouponPeriod,
                                     const Calendar& exCouponCalendar,
                                     const BusinessDayConvention exCouponConvention,
-                                    bool exCouponEndOfMonth)
+                                    bool exCouponEndOfMonth,
+                                    const std::vector<Real>& redemptions)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();
@@ -52,6 +54,7 @@ namespace QuantLib {
             .withPaymentDayCounter(paymentDayCounter)
             .withPaymentAdjustment(paymentConvention)
             .withFixingDays(fixingDays)
+            .withPaymentLag(paymentLag)
             .withGearings(gearings)
             .withSpreads(spreads)
             .withCaps(caps)
@@ -62,7 +65,7 @@ namespace QuantLib {
                                 exCouponEndOfMonth)
             .inArrears(inArrears);
 
-        addRedemptionsToCashflows();
+        addRedemptionsToCashflows(redemptions);
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
 

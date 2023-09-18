@@ -34,7 +34,7 @@ namespace QuantLib {
     //! amortizing fixed-rate bond
     class AmortizingFixedRateBond : public Bond {
       public:
-        AmortizingFixedRateBond(Natural settlementDays,
+      AmortizingFixedRateBond(Natural settlementDays,
                                 const std::vector<Real>& notionals,
                                 const Schedule& schedule,
                                 const std::vector<Rate>& coupons,
@@ -44,7 +44,10 @@ namespace QuantLib {
                                 const Period& exCouponPeriod = Period(),
                                 const Calendar& exCouponCalendar = Calendar(),
                                 BusinessDayConvention exCouponConvention = Unadjusted,
-                                bool exCouponEndOfMonth = false);
+                                bool exCouponEndOfMonth = false,
+                                const std::vector<Real>& redemptions = { 100.0 },
+                                Natural PaymentLag = 0);
+
 
         /*! \deprecated Use the other constructor after calling sinkingSchedule
                         and sinkingNotionals to generate the required parameters.
@@ -79,6 +82,7 @@ namespace QuantLib {
                                 BusinessDayConvention exCouponConvention = Unadjusted,
                                 bool exCouponEndOfMonth = false);
 
+ 
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:
