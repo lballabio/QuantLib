@@ -375,6 +375,7 @@ set(QL_SOURCES
     math/integrals/kronrodintegral.cpp
     math/integrals/segmentintegral.cpp
     math/interpolations/chebyshevinterpolation.cpp    
+    math/interpolations/cubicinterpolation.cpp
     math/matrix.cpp
     math/matrixutilities/basisincompleteordered.cpp
     math/matrixutilities/bicgstab.cpp
