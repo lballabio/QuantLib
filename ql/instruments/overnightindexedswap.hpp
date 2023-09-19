@@ -28,7 +28,7 @@
 #define quantlib_overnight_indexed_swap_hpp
 
 #include <ql/cashflows/rateaveraging.hpp>
-#include <ql/instruments/swap.hpp>
+#include <ql/instruments/fixedvsfloatingswap.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
@@ -36,11 +36,10 @@
 
 namespace QuantLib {
 
-    class Schedule;
     class OvernightIndex;
 
     //! Overnight indexed swap: fix vs compounded overnight rate
-    class OvernightIndexedSwap : public Swap {
+    class OvernightIndexedSwap : public FixedVsFloatingSwap {
       public:
         OvernightIndexedSwap(Type type,
                              Real nominal,
@@ -87,9 +86,9 @@ namespace QuantLib {
                              Schedule fixedSchedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
-                             std::vector<Real> overnightNominals,
-                             Schedule overnightSchedule,
-                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             const std::vector<Real>& overnightNominals,
+                             const Schedule& overnightSchedule,
+                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              Spread spread = 0.0,
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
@@ -99,59 +98,29 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Type type() const { return type_; }
-
-        /*! This throws if the nominal is not constant across coupons. */
-        Real nominal() const;
-        /*! This throws if the nominals are not the same for the two legs. */
-        const std::vector<Real>& nominals() const;
-
         Frequency paymentFrequency() const {
-            return std::max(fixedSchedule_.tenor().frequency(),
-                            overnightSchedule_.tenor().frequency());
+            return std::max(fixedSchedule().tenor().frequency(),
+                            floatingSchedule().tenor().frequency());
         }
 
-        const std::vector<Real>& fixedNominals() const { return fixedNominals_; }
-        const Schedule& fixedSchedule() const { return fixedSchedule_; }
-        Rate fixedRate() const { return fixedRate_; }
-        const DayCounter& fixedDayCount() const { return fixedDC_; }
-
-        const std::vector<Real>& overnightNominals() const { return overnightNominals_; }
-        const Schedule& overnightSchedule() const { return overnightSchedule_; }
+        const std::vector<Real>& overnightNominals() const { return floatingNominals(); }
+        const Schedule& overnightSchedule() const { return floatingSchedule(); }
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
-        Spread spread() const { return spread_; }
-
-        const Leg& fixedLeg() const { return legs_[0]; }
-        const Leg& overnightLeg() const { return legs_[1]; }
+        const Leg& overnightLeg() const { return floatingLeg(); }
 
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         //@}
 
         //! \name Results
         //@{
-        Real fixedLegBPS() const;
-        Real fixedLegNPV() const;
-        Real fairRate() const;
-
-        Real overnightLegBPS() const;
-        Real overnightLegNPV() const;
-        Spread fairSpread() const;
+        Real overnightLegBPS() const { return floatingLegBPS(); }
+        Real overnightLegNPV() const { return floatingLegNPV(); }
         //@}
       private:
-        Type type_;
+        void setupFloatingArguments(arguments* args) const override;
 
-        std::vector<Real> fixedNominals_;
-        Schedule fixedSchedule_;
-        Rate fixedRate_;
-        DayCounter fixedDC_;
-
-        std::vector<Real> overnightNominals_;
-        Schedule overnightSchedule_;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
-        Spread spread_;
         RateAveraging::Type averagingMethod_;
-
-        bool constantNominals_, sameNominals_;
     };
 
 }

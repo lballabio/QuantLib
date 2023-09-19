@@ -87,10 +87,7 @@ namespace QuantLib {
     CapletVarianceCurve::smileSectionImpl(Time t) const {
         // dummy strike
         Volatility atmVol = blackCurve_.blackVol(t, 0.05, true);
-        return ext::shared_ptr<SmileSection>(new
-            FlatSmileSection(t,
-                             atmVol,
-                             dayCounter()));
+        return ext::make_shared<FlatSmileSection>(t, atmVol, dayCounter());
     }
 
     inline
