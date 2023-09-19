@@ -51,6 +51,7 @@
 #define quantlib_noarb_sabr
 
 #include <ql/qldefines.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 

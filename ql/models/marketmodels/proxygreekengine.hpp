@@ -26,6 +26,7 @@
 
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/utilities/clone.hpp>
+#include <ql/shared_ptr.hpp>
 #include <valarray>
 
 namespace QuantLib {

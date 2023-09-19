@@ -28,6 +28,7 @@
 
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+#include <ql/shared_ptr.hpp>
 #include <memory>
 
 namespace QuantLib {

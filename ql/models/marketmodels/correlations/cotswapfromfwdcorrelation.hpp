@@ -22,6 +22,7 @@
 #define quantlib_fra_time_dep_corr_struct_hpp
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {

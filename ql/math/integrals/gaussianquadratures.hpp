@@ -28,6 +28,7 @@
 #include <ql/math/array.hpp>
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
     class GaussianOrthogonalPolynomial;

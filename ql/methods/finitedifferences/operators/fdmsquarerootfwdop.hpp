@@ -26,6 +26,7 @@
 #define quantlib_fdm_square_root_fwd_op_hpp
 
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
     class FdmMesher;

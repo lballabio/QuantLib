@@ -20,6 +20,7 @@
 #ifndef quantlib_math_multidimintegrator_hpp
 #define quantlib_math_multidimintegrator_hpp
 
+#include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>

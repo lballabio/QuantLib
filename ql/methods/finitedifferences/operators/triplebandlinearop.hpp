@@ -27,7 +27,9 @@
 #ifndef quantlib_triple_band_linear_op_hpp
 #define quantlib_triple_band_linear_op_hpp
 
+#include <ql/errors.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+#include <ql/shared_ptr.hpp>
 #include <memory>
 
 namespace QuantLib {

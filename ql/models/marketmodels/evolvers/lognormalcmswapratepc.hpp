@@ -25,6 +25,7 @@
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
 #include <ql/models/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 

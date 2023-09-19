@@ -26,6 +26,7 @@
 #define quantlib_day_counter_hpp
 
 #include <ql/errors.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/date.hpp>
 #include <utility>
 

@@ -26,6 +26,7 @@
 #define quantlib_optimization_constraint_h
 
 #include <ql/math/array.hpp>
+#include <ql/shared_ptr.hpp>
 #include <algorithm>
 #include <utility>
 

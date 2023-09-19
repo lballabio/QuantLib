@@ -25,6 +25,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/abcdmathfunction.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
     
