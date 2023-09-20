@@ -44,8 +44,6 @@
 #include <limits>
 #include <utility>
 
-#include <iostream>
-
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
 #endif
@@ -590,6 +588,8 @@ namespace QuantLib {
                       .value();
         }
         else if (cpxLog_ == AsymptoticChF) {
+            QL_REQUIRE(alpha_ == -0.5, "alpha must be equal to -0.5");
+
             const std::complex<Real> phiFreq(phi_.real(), phi_.imag() + freq_);
 
             using namespace ExponentialIntegral;
@@ -701,7 +701,8 @@ namespace QuantLib {
       cpxLog_     (Gatheral),
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))),
-      andersenPiterbargEpsilon_(Null<Real>()) {
+      andersenPiterbargEpsilon_(Null<Real>()),
+      alpha_(-0.5) {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
@@ -714,21 +715,24 @@ namespace QuantLib {
       cpxLog_(Gatheral),
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))),
-      andersenPiterbargEpsilon_(Null<Real>()) {
+      andersenPiterbargEpsilon_(Null<Real>()),
+      alpha_(-0.5) {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
                               const ext::shared_ptr<HestonModel>& model,
                               ComplexLogFormula cpxLog,
                               const Integration& integration,
-                              const Real andersenPiterbargEpsilon)
+                              Real andersenPiterbargEpsilon,
+                              Real alpha)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       evaluations_(0),
       cpxLog_(cpxLog),
       integration_(new Integration(integration)),
-      andersenPiterbargEpsilon_(andersenPiterbargEpsilon) {
+      andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
+      alpha_(alpha) {
         QL_REQUIRE(   cpxLog_ != BranchCorrection
                    || !integration.isAdaptiveIntegration(),
                    "Branch correction does not work in conjunction "
@@ -852,15 +856,8 @@ namespace QuantLib {
                 ? optimalControlVariate(maturity, v0, kappa, theta, sigma, rho)
                 : cpxLog_;
 
-            Real alpha = -0.5;
-            if (cpxLog_ == OptimalCV && finalLog == AngledContour) {
-                AnalyticHestonEngine::OptimalAlpha optimalAlpha(maturity, this);
-                alpha = optimalAlpha(strike);
-                evaluations_ += optimalAlpha.numberOfEvaluations();
-            }
-
             const AP_Helper cvHelper(
-                 maturity, fwd, strike, finalLog, this, alpha
+                 maturity, fwd, strike, finalLog, this, alpha_
             );
 
             const Real cvValue = cvHelper.controlVariateValue();

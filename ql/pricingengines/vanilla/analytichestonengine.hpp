@@ -134,7 +134,8 @@ namespace QuantLib {
         // over the Fourier integration algorithm
         AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                              ComplexLogFormula cpxLog, const Integration& itg,
-                             Real andersenPiterbargEpsilon = 1e-20);
+                             Real andersenPiterbargEpsilon = 1e-25,
+                             Real alpha = -0.5);
 
         void calculate() const override;
 
@@ -172,7 +173,7 @@ namespace QuantLib {
         mutable Size evaluations_;
         const ComplexLogFormula cpxLog_;
         const ext::shared_ptr<Integration> integration_;
-        const Real andersenPiterbargEpsilon_;
+        const Real andersenPiterbargEpsilon_, alpha_;
     };
 
 
