@@ -313,7 +313,7 @@ namespace QuantLib {
       theta_(enginePtr->model_->theta()),
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
-      bits_(int(0.4*std::numeric_limits<Real>::digits)),
+      bits_(int(0.5*std::numeric_limits<Real>::digits)),
       eps_(std::pow(2, -bits_)),
       enginePtr_(enginePtr),
       evaluations_(0) {
@@ -321,8 +321,8 @@ namespace QuantLib {
         kp_ = k(0.0,  1);
     }
 
-    std::pair<Real, Real>
-    AnalyticHestonEngine::OptimalAlpha::alphaGreaterZero(Real strike) const {
+    Real AnalyticHestonEngine::OptimalAlpha::alphaMax(Real strike) const {
+        const Real eps = 1e-8;
         const auto cm = [this](Real k) -> Real { return M(k) - t_; };
 
         Real alpha_max;
@@ -331,7 +331,7 @@ namespace QuantLib {
             const Real kp_2pi = k(2*M_PI, 1);
 
             alpha_max = Brent().solve(
-                cm, eps_, 0.5*(kp_ + kp_2pi), (1+1e-8)*kp_, (1-1e-8)*kp_2pi
+                cm, eps_, 0.5*(kp_ + kp_2pi), (1+eps)*kp_, (1-eps)*kp_2pi
             ) - 1.0;
         }
         else if (adx < 0.0) {
@@ -339,29 +339,36 @@ namespace QuantLib {
             if (t_ < tCut) {
                 const Real kp_pi = k(M_PI, 1);
                 alpha_max = Brent().solve(
-                    cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-8)*kp_, (1-1e-8)*kp_pi
+                    cm, eps_, 0.5*(kp_ + kp_pi), (1+eps)*kp_, (1-eps)*kp_pi
                 ) - 1.0;
             }
             else {
                 alpha_max = Brent().solve(
-                    cm, eps_, 0.5*(1.0 + kp_), 1 + 1e-8, (1-1e-8)*kp_
+                    cm, eps_, 0.5*(1.0 + kp_),
+                    1 + eps, (1-eps)*kp_
                 ) - 1.0;
             }
         }
         else { // adx == 0.0
             const Real kp_pi = k(M_PI, 1);
             alpha_max = Brent().solve(
-                cm, eps_, 0.5*(kp_ + kp_pi), (1+1e-8)*kp_, (1-1e-8)*kp_pi
+                cm, eps_, 0.5*(kp_ + kp_pi), (1+eps)*kp_, (1-eps)*kp_pi
             ) - 1.0;
         }
 
         QL_REQUIRE(alpha_max >= 0.0, "alpha max must be larger than zero");
 
-        return findMinima(0.0, 0.99*alpha_max, strike);
+        return alpha_max;
     }
 
     std::pair<Real, Real>
-    AnalyticHestonEngine::OptimalAlpha::alphaSmallerMinusOne(Real strike) const {
+    AnalyticHestonEngine::OptimalAlpha::alphaGreaterZero(Real strike) const {
+        const Real alpha_max = alphaMax(strike);
+
+        return findMinima(eps_, std::max(2*eps_, (1.0-1e-6)*alpha_max), strike);
+    }
+
+    Real AnalyticHestonEngine::OptimalAlpha::alphaMin(Real strike) const {
         const auto cm = [this](Real k) -> Real { return M(k) - t_; };
 
         const Real km_2pi = k(2*M_PI, -1);
@@ -370,10 +377,19 @@ namespace QuantLib {
             cm, eps_, 0.5*(km_2pi + km_), (1-1e-8)*km_2pi, (1+1e-8)*km_
         ) - 1.0;
 
-        QL_REQUIRE(alpha_min <= -1.0,
-            "alpha min must be smaller than minus one");
+        QL_REQUIRE(alpha_min <= -1.0, "alpha min must be smaller than minus one");
 
-        return findMinima(-1 + 0.99*(alpha_min + 1.0), -1.0, strike);
+        return alpha_min;
+    }
+
+    std::pair<Real, Real>
+    AnalyticHestonEngine::OptimalAlpha::alphaSmallerMinusOne(Real strike) const {
+        const Real alpha_min = alphaMin(strike);
+
+        return findMinima(
+            std::min(-1.0-1e-6, -1.0 + (1.0-1e-6)*(alpha_min + 1.0)),
+            -1.0 - eps_, strike
+        );
     }
 
     Real AnalyticHestonEngine::OptimalAlpha::operator()(Real strike) const {
@@ -381,22 +397,28 @@ namespace QuantLib {
         //       is present anyhow. Shouldn't we check both intervals and
         //       chose the interval (alpha_min, -1) or (0, alpha_max), which
         //       gives the lowest minimum?
-        const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
-        const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
 
-        if (minusOne.second < greaterZero.second) {
-            return minusOne.first;
+        try {
+            const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
+            const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
+
+            if (minusOne.second < greaterZero.second) {
+                return minusOne.first;
+            }
+            else {
+                return greaterZero.first;
+            }
+//            if (fwd_ >= strike) {
+//                return std::min(-1-1e-6, alphaSmallerMinusOne(strike).first);
+//            }
+//            else {
+//                return std::max(1e-6, alphaGreaterZero(strike).first);
+//            }
         }
-        else {
-            return greaterZero.first;
+        catch (const Error& e) {
+            return -0.5;
         }
 
-//        if (fwd_ >= strike) {
-//            return std::min(-1.001, alphaSmallerMinusOne(strike).first);
-//        }
-//        else {
-//            return std::max(1e-3, alphaGreaterZero(strike).first);
-//        }
     }
 
     Size AnalyticHestonEngine::OptimalAlpha::numberOfEvaluations() const {
@@ -414,7 +436,7 @@ namespace QuantLib {
                 // TODO: do we need to add the control variate here?
                 // follow chapter 3.2 in
                 // Optimal Fourier inversion in semianalytical option pricing
-                return std::log(enginePtr_->chF(z, t_).real())
+                return enginePtr_->lnChF(z, t_).real()
                     - std::log(alpha*(alpha+1)) + alpha*freq;
             },
             lower, upper, bits_
@@ -555,7 +577,7 @@ namespace QuantLib {
             QL_FAIL("unknown control variate");
         }
 
-        return (std::exp(std::complex<Real>(0.0, u*freq_))
+        return (std::exp(std::complex<Real> (0.0, u*freq_))
             * (phiBS - enginePtr_->chF(zPrime, term_)) / (z*zPrime)
             ).real()*s_alpha_;
     }
@@ -588,14 +610,12 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticHestonEngine::chF(
         const std::complex<Real>& z, Time t) const {
-
-        // TODO: better criteria when to use the Taylor series.
-        //       and do we still need the Taylor expansion?
-        //       and should we use the Taylor series for ln(chf) instead?
-        if (model_->sigma() > 1e-4 || model_->kappa() < 1e-6) {
+        if (model_->sigma() > 1e-6 || model_->kappa() < 1e-8) {
             return std::exp(lnChF(z, t));
         }
         else {
+
+            // ToDo: expansion in lnChF and then exp(...)
             const Real kappa = model_->kappa();
             const Real sigma = model_->sigma();
             const Real theta = model_->theta();
@@ -612,12 +632,14 @@ namespace QuantLib {
 
             return std::exp(-(((theta - v0 + ekt*((-1 + kt)*theta + v0))
                     *z*zpi)/ekt)/(2.*kappa))
+
                 + (std::exp(-(kt) - ((theta - v0 + ekt
                     *((-1 + kt)*theta + v0))*z*zpi)
                 /(2.*ekt*kappa))*rho*(2*theta + kt*theta -
                     v0 - kt*v0 + ekt*((-2 + kt)*theta + v0))
                 *(1.0 - std::complex<Real>(-z.imag(),z.real()))*z*z)
                     /(2.*kappa*kappa)*sigma
+
                    + (std::exp(-2*kt - ((theta - v0 + ekt
                 *((-1 + kt)*theta + v0))*z*zpi)/(2.*ekt*kappa))*z*z*zpi
                 *(-2*rho2*squared(2*theta + kt*theta - v0 -
@@ -717,9 +739,9 @@ namespace QuantLib {
         AnalyticHestonEngine::optimalControlVariate(
         Time t, Real v0, Real kappa, Real theta, Real sigma, Real rho) {
 
-        if (t > 0.1 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.15
+        if (t > 0.15 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.15
                 && ((kappa- 0.5*rho*sigma)*(v0 + t*kappa*theta)
-                    + kappa*theta*std::log(4*(1-rho*rho)))/(sigma*sigma) < 1.0) {
+                    + kappa*theta*std::log(4*(1-rho*rho)))/(sigma*sigma) < 0.5) {
             return AsymptoticChF;
         }
         else {

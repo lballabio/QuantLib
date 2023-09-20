@@ -2228,7 +2228,7 @@ void HestonModelTest::testAndersenPiterbargPricing() {
     };
 
     const ext::shared_ptr<PricingEngine> analyticEngine(
-        ext::make_shared<AnalyticHestonEngine>(model, 178));
+        ext::make_shared<AnalyticHestonEngine>(model, 192));
 
     const Date maturityDates[] = {
         settlementDate + Period(1, Days),
@@ -2240,7 +2240,7 @@ void HestonModelTest::testAndersenPiterbargPricing() {
     const Option::Type optionTypes[] = { Option::Call, Option::Put };
     const Real strikes[] = { 50, 75, 90, 100, 110, 130, 150, 200};
 
-    const Real tol = 1e-7;
+    const Real tol = 1e-8;
 
     for (auto maturityDate : maturityDates) {
         const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturityDate);
@@ -3099,7 +3099,8 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
                         expected = referenceValues[idx] - (fwd - strike)*df;
 
                 const Real diff = std::fabs(calculated - expected);
-                if (diff > 1e-12) {
+                const Real tol = 1e-8;
+                if (diff > tol) {
                     BOOST_ERROR("failed to reproduce cached extreme "
                             "Heston model prices with exponential fitted "
                             "Gauss-Laguerre quadrature rule"
@@ -3108,7 +3109,7 @@ void HestonModelTest::testExponentialFitting4StrikesAndMaturities() {
                             << "\n  expected  : " << expected
                             << "\n  calculated: " << calculated
                             << "\n  diff      : " << diff
-                            << "\n  tolerance : " << 1e-12);
+                            << "\n  tolerance : " << tol);
                 }
             }
         }

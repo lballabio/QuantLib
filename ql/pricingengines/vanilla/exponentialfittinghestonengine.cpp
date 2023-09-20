@@ -23,8 +23,12 @@
 #include <ql/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
+
+#include <iostream>
 
 namespace QuantLib {
 
@@ -185,12 +189,13 @@ namespace QuantLib {
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
         ControlVariate cv,
-        Real scaling)
+        Real scaling, Real alpha)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       cv_(cv),
       scaling_(scaling),
+      alpha_(alpha),
       analyticEngine_(ext::make_shared<AnalyticHestonEngine>(model, 1)) {
 
         if (moneyness_.empty()) {
@@ -248,28 +253,20 @@ namespace QuantLib {
                          AnalyticHestonEngine::AngledContourNoCV
                  : AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho);
 
-        Real alpha = -0.5;
-//        TODO: here optimal alpha please
-        if (cv_ == OptimalCV && analyticCV == AnalyticHestonEngine::AngledContour) {
-            const ext::shared_ptr<AnalyticHestonEngine> helper =
-                 ext::make_shared<AnalyticHestonEngine>(model_.currentLink(), 2);
-            AnalyticHestonEngine::OptimalAlpha optimalAlpha(t, helper.get());
-            alpha = -0.5;//optimalAlpha(strike);
-        }
-
         const AnalyticHestonEngine::AP_Helper helper(
-            t, fwd, strike, analyticCV, analyticEngine_.get(), alpha);
+            t, fwd, strike, analyticCV, analyticEngine_.get(), alpha_);
 
         const Real vAvg = (1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta;
 
         const Real scalingFactor = (scaling_ == Null<Real>())
             ? (analyticCV != AnalyticHestonEngine::AsymptoticChF)
-                    ? std::max(0.01, std::min(100.0, 0.25/std::sqrt(0.5*vAvg*t)))
-                    : Real(1.0)
+                    ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*t)))
+                    : Real(1.2) // TODO: depends on oder of polynom
             : scaling_;
 
         Size n;
         Real u;
+        // TODO freq lower bound depends on order of polynom
         if (std::fabs(freq) < 0.1) {
             n = 0;
             u = scalingFactor;

@@ -69,13 +69,14 @@ namespace QuantLib {
         explicit ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
             ControlVariate cv = OptimalCV,
-            Real scaling = Null<Real>());
+            Real scaling = Null<Real>(),
+            Real alpha = -0.5);
 
         void calculate() const override;
 
       private:
         const ControlVariate cv_;
-        const Real scaling_;
+        const Real scaling_, alpha_;
         const ext::shared_ptr<AnalyticHestonEngine> analyticEngine_;
 
         static std::vector<Real> moneyness_;

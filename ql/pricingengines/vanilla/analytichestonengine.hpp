@@ -134,7 +134,7 @@ namespace QuantLib {
         // over the Fourier integration algorithm
         AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                              ComplexLogFormula cpxLog, const Integration& itg,
-                             Real andersenPiterbargEpsilon = 1e-8);
+                             Real andersenPiterbargEpsilon = 1e-20);
 
         void calculate() const override;
 
@@ -263,9 +263,13 @@ namespace QuantLib {
         std::pair<Real, Real> alphaGreaterZero(Real strike) const;
         std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
 
+
+
         Size numberOfEvaluations() const;
         Real M(Real k) const;
         Real k(Real x, Integer sgn) const;
+        Real alphaMin(Real strike) const;
+        Real alphaMax(Real strike) const;
 
       private:
         std::pair<Real, Real> findMinima(Real lower, Real upper, Real strike) const;
