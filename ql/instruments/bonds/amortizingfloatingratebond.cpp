@@ -25,15 +25,14 @@
 
 namespace QuantLib {
 
-
-   AmortizingFloatingRateBond::AmortizingFloatingRateBond(
+    AmortizingFloatingRateBond::AmortizingFloatingRateBond(
                                     Natural settlementDays,
                                     const std::vector<Real>& notionals,
                                     const Schedule& schedule,
                                     const ext::shared_ptr<IborIndex>& index,
                                     const DayCounter& paymentDayCounter,
                                     BusinessDayConvention paymentConvention,
-                                    Natural fixingDays, Natural paymentLag,
+                                    Natural fixingDays,
                                     const std::vector<Real>& gearings,
                                     const std::vector<Spread>& spreads,
                                     const std::vector<Rate>& caps,
@@ -44,7 +43,8 @@ namespace QuantLib {
                                     const Calendar& exCouponCalendar,
                                     const BusinessDayConvention exCouponConvention,
                                     bool exCouponEndOfMonth,
-                                    const std::vector<Real>& redemptions)
+                                    const std::vector<Real>& redemptions,
+                                    Natural paymentLag)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();

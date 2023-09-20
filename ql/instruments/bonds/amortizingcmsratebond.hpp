@@ -50,7 +50,7 @@ namespace QuantLib {
                     const Date& issueDate = Date(),
                     const std::vector<Real>& redemptions = { 100.0 });
     };
-    
+
 }
 
 #endif

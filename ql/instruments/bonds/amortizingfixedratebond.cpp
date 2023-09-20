@@ -92,7 +92,7 @@ namespace QuantLib {
         addRedemptionsToCashflows();
     }
 
-  
+
     AmortizingFixedRateBond::AmortizingFixedRateBond(
                                       Natural settlementDays,
                                       const std::vector<Real>& notionals,
