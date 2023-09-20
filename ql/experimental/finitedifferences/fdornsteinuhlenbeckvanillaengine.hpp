@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdblackscholesvanillaengine.hpp
-    \brief Finite-Differences Black Scholes vanilla option engine
+/*! \file fdornsteinuhlenbeckvanillaengine.hpp
+    \brief Finite-Differences Ornstein Uhlenbeck vanilla option engine
 */
 
 #ifndef quantlib_fd_ornstein_uhlenbeck_vanilla_engine_hpp

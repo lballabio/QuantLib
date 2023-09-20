@@ -1,0 +1,42 @@
+name: Build quantlib-devenv Docker images
+on:
+  workflow_dispatch:
+    inputs:
+      boostVersion:
+        description: 'Boost version'
+        required: true
+env:
+  ROLLING: lunar
+jobs:
+  docker-images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag: [lunar, mantic]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build CI images
+      working-directory: dockerfiles
+      run: |
+        docker build -f ci.Dockerfile \
+                     --build-arg tag=${{ matrix.tag }} \
+                     --build-arg boost_version=${{ github.event.inputs.boostVersion }} \
+                     --build-arg boost_dir=boost_$(echo "${{ github.event.inputs.boostVersion }}" | sed "s/\./_/g") \
+                     -t ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }} .
+        docker tag ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }} ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}-${{ github.event.inputs.boostVersion }}
+        if test "${{ matrix.tag }}" = "$ROLLING" ; then
+            docker tag ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }} ghcr.io/lballabio/quantlib-devenv:rolling
+        fi
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_PAT }}
+    - name: Push Docker images
+      run: |
+        docker push ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}-${{ github.event.inputs.boostVersion }}
+        docker push ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
+        if test "${{ matrix.tag }}" = "$ROLLING" ; then
+            docker push ghcr.io/lballabio/quantlib-devenv:rolling
+        fi

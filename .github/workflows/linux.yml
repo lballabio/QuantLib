@@ -37,7 +37,7 @@ jobs:
             tag: hirsute
             cc: gcc
             cxx: g++
-          - name: "gcc 11.x"
+          - name: "gcc 11.x (Boost 1.82)"
             shortname: gcc11
             tag: jammy
             cc: gcc
@@ -94,7 +94,7 @@ jobs:
             tag: impish
             cc: clang
             cxx: clang++
-          - name: "Clang 14"
+          - name: "Clang 14 (Boost 1.82)"
             shortname: clang14
             tag: jammy
             cc: clang
@@ -190,7 +190,7 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
-            moreflags: -lrt
+            tests: true
           - name: "Null as function template"
             shortname: nullfunctions
             tag: rolling
@@ -231,4 +231,4 @@ jobs:
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
         make install
-        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}
+        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`

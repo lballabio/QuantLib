@@ -141,6 +141,8 @@ namespace QuantLib {
 
     Size Swap::numberOfLegs() const { return legs_.size(); }
 
+    const std::vector<Leg>& Swap::legs() const { return legs_; }
+
     Date Swap::startDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
         Date d = CashFlows::startDate(legs_[0]);

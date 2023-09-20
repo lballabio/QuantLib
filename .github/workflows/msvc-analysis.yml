@@ -20,21 +20,21 @@ jobs:
 
       - name: Setup
         run: |
-          $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
+          $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.83.0/binaries/boost_1_83_0-msvc-14.3-64.exe"
           (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-          Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
+          Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
 
       - name: Configure CMake
         env:
-          BOOST_ROOT: C:\local\boost-1.75.0
+          BOOST_ROOT: C:\local\boost
         run: cmake -B ${{ env.build }} -DQL_USE_STD_CLASSES=ON
 
-      - name: Initialize MSVC Code Analysis
+      - name: Run MSVC Code Analysis
         uses: microsoft/msvc-code-analysis-action@v0.1.1
         # Provide a unique ID to access the sarif output path
         id: run-analysis
         env:
-          CAExcludePath: C:\local\boost-1.75.0
+          CAExcludePath: C:\local\boost
         with:
           cmakeBuildDirectory: ${{ env.build }}
           buildConfiguration: Release

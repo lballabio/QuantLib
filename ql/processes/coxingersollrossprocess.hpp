@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file coxingersollross.hpp
+/*! \file coxingersollrossprocess.hpp
     \brief CoxIngersollRoss process
 */
 

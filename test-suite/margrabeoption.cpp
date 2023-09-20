@@ -20,9 +20,9 @@
 #include "margrabeoption.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/experimental/exoticoptions/margrabeoption.hpp>
-#include <ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp>
-#include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
+#include <ql/instruments/margrabeoption.hpp>
+#include <ql/pricingengines/exotic/analyticamericanmargrabeengine.hpp>
+#include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

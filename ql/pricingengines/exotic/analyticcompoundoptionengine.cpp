@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp>
+#include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <utility>

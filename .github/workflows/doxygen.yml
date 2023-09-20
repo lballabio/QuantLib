@@ -19,3 +19,11 @@ jobs:
     - name: Check
       run: |
         make docs
+
+  header-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check
+      run: |
+        ./tools/check_all_header_docs.sh

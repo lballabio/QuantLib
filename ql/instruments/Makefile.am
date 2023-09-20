@@ -19,7 +19,9 @@ this_include_HEADERS = \
     capfloor.hpp \
     claim.hpp \
     cliquetoption.hpp \
+    complexchooseroption.hpp \
     compositeinstrument.hpp \
+    compoundoption.hpp \
     cpicapfloor.hpp \
     cpiswap.hpp \
     creditdefaultswap.hpp \
@@ -31,6 +33,7 @@ this_include_HEADERS = \
     equitytotalreturnswap.hpp \
     europeanoption.hpp \
     fixedratebondforward.hpp \
+    fixedvsfloatingswap.hpp \
     floatfloatswap.hpp \
     floatfloatswaption.hpp \
     forward.hpp \
@@ -47,6 +50,7 @@ this_include_HEADERS = \
     makeswaption.hpp \
     makevanillaswap.hpp \
     makeyoyinflationcapfloor.hpp \
+    margrabeoption.hpp \
     multiassetoption.hpp \
     nonstandardswap.hpp \
     nonstandardswaption.hpp \
@@ -57,6 +61,8 @@ this_include_HEADERS = \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
+    simplechooseroption.hpp \
+    simplifynotificationgraph.hpp \
     stickyratchet.hpp \
     stock.hpp \
     swap.hpp \
@@ -83,7 +89,9 @@ cpp_files = \
     capfloor.cpp \
     claim.cpp \
     cliquetoption.cpp \
+    complexchooseroption.cpp \
     compositeinstrument.cpp \
+    compoundoption.cpp \
     cpicapfloor.cpp \
     cpiswap.cpp \
     creditdefaultswap.cpp \
@@ -93,6 +101,7 @@ cpp_files = \
     doublebarriertype.cpp \
     equitytotalreturnswap.cpp \
     europeanoption.cpp \
+    fixedvsfloatingswap.cpp \
     floatfloatswap.cpp \
     floatfloatswaption.cpp \
     forward.cpp \
@@ -109,6 +118,7 @@ cpp_files = \
     makeswaption.cpp \
     makevanillaswap.cpp \
     makeyoyinflationcapfloor.cpp \
+    margrabeoption.cpp \
     multiassetoption.cpp \
     nonstandardswap.cpp \
     nonstandardswaption.cpp \
@@ -119,6 +129,8 @@ cpp_files = \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
+    simplechooseroption.cpp \
+    simplifynotificationgraph.cpp \
     stickyratchet.cpp \
     stock.cpp \
     swap.cpp \

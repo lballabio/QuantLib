@@ -14,7 +14,9 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/claim.hpp>
 #include <ql/instruments/cliquetoption.hpp>
+#include <ql/instruments/complexchooseroption.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
+#include <ql/instruments/compoundoption.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
@@ -26,6 +28,7 @@
 #include <ql/instruments/equitytotalreturnswap.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
+#include <ql/instruments/fixedvsfloatingswap.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/instruments/floatfloatswaption.hpp>
 #include <ql/instruments/forward.hpp>
@@ -42,6 +45,7 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/makeyoyinflationcapfloor.hpp>
+#include <ql/instruments/margrabeoption.hpp>
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/nonstandardswap.hpp>
 #include <ql/instruments/nonstandardswaption.hpp>
@@ -52,6 +56,8 @@
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>
+#include <ql/instruments/simplechooseroption.hpp>
+#include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/instruments/stickyratchet.hpp>
 #include <ql/instruments/stock.hpp>
 #include <ql/instruments/swap.hpp>
