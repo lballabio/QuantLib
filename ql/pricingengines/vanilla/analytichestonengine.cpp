@@ -391,11 +391,6 @@ namespace QuantLib {
     }
 
     Real AnalyticHestonEngine::OptimalAlpha::operator()(Real strike) const {
-        // TODO: we are using control variates, hence cancellation
-        //       is present anyhow. Shouldn't we check both intervals and
-        //       chose the interval (alpha_min, -1) or (0, alpha_max), which
-        //       gives the lowest minimum?
-
         try {
             const std::pair<Real, Real> minusOne = alphaSmallerMinusOne(strike);
             const std::pair<Real, Real> greaterZero = alphaGreaterZero(strike);
@@ -413,7 +408,7 @@ namespace QuantLib {
 //                return std::max(1e-6, alphaGreaterZero(strike).first);
 //            }
         }
-        catch (const Error& e) {
+        catch (const Error&) {
             return -0.5;
         }
 

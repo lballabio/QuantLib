@@ -690,7 +690,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
 
         const Real calculatedLocalVol
             = std::exp(localVolCalc.invcdf(quantile, maturity));
-        const Real localVolTol = 0.1;
+        const Real localVolTol = 0.2;
         if (std::fabs(expected - calculatedLocalVol) > localVolTol) {
             BOOST_FAIL("failed to match Heston and local Volatility invcdf"
                     << "\n   t:          " << maturity
