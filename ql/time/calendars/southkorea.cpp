@@ -205,6 +205,7 @@ namespace QuantLib {
             || (d == 14 && m == August && y == 2015)
             // Special temporary holiday
             || (d == 17 && m == August && y == 2020)
+            || (d == 2 && m == October && y == 2023)
 
             // Harvest Moon Day
             || ((d == 27 || d == 28 || d == 29) && m == September && y == 2004)
