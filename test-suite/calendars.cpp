@@ -1721,6 +1721,7 @@ void CalendarTest::testSouthKoreanSettlement() {
     expectedHol.emplace_back(28, September, 2023);
     expectedHol.emplace_back(29, September, 2023);
     // expectedHol.emplace_back(30, September, 2023);    // Saturday
+    expectedHol.emplace_back(2, October, 2023);
     expectedHol.emplace_back(3, October, 2023);
     expectedHol.emplace_back(9, October, 2023);
     expectedHol.emplace_back(25, December, 2023);
@@ -2467,6 +2468,7 @@ void CalendarTest::testKoreaStockExchange() {
     expectedHol.emplace_back(28, September, 2023);
     expectedHol.emplace_back(29, September, 2023);
     // expectedHol.emplace_back(30, September, 2023);    // Saturday
+    expectedHol.emplace_back(2, October, 2023);
     expectedHol.emplace_back(3, October, 2023);
     expectedHol.emplace_back(9, October, 2023);
     expectedHol.emplace_back(25, December, 2023);
