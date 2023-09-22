@@ -25,6 +25,7 @@
 #ifndef quantlib_optimization_constraint_h
 #define quantlib_optimization_constraint_h
 
+#include <ql/errors.hpp>
 #include <ql/math/array.hpp>
 #include <ql/shared_ptr.hpp>
 #include <algorithm>

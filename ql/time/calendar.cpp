@@ -295,4 +295,76 @@ namespace QuantLib {
        }
        return result;
     }
+
+    bool Calendar::empty() const {
+        return !impl_;
+    }
+
+    std::string Calendar::name() const {
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+        return impl_->name();
+    }
+
+    const std::set<Date>& Calendar::addedHolidays() const {
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+
+        return impl_->addedHolidays;
+    }
+
+    const std::set<Date>& Calendar::removedHolidays() const {
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+
+        return impl_->removedHolidays;
+    }
+
+    bool Calendar::isBusinessDay(const Date& d) const {
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
+        if (!impl_->addedHolidays.empty() &&
+            impl_->addedHolidays.find(_d) != impl_->addedHolidays.end())
+            return false;
+
+        if (!impl_->removedHolidays.empty() &&
+            impl_->removedHolidays.find(_d) != impl_->removedHolidays.end())
+            return true;
+
+        return impl_->isBusinessDay(_d);
+    }
+
+    bool Calendar::isEndOfMonth(const Date& d) const {
+        return (d.month() != adjust(d+1).month());
+    }
+
+    Date Calendar::endOfMonth(const Date& d) const {
+        return adjust(Date::endOfMonth(d), Preceding);
+    }
+
+    bool Calendar::isHoliday(const Date& d) const {
+        return !isBusinessDay(d);
+    }
+
+    bool Calendar::isWeekend(Weekday w) const {
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+        return impl_->isWeekend(w);
+    }
+
+    bool operator==(const Calendar& c1, const Calendar& c2) {
+        return (c1.empty() && c2.empty())
+            || (!c1.empty() && !c2.empty() && c1.name() == c2.name());
+    }
+
+    bool operator!=(const Calendar& c1, const Calendar& c2) {
+        return !(c1 == c2);
+    }
+
+    std::ostream& operator<<(std::ostream& out, const Calendar &c) {
+        return out << c.name();
+    }
+
 }

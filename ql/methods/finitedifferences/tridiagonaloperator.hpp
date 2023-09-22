@@ -26,6 +26,7 @@
 #ifndef quantlib_tridiagonal_operator_hpp
 #define quantlib_tridiagonal_operator_hpp
 
+#include <ql/errors.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/shared_ptr.hpp>

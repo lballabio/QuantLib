@@ -340,6 +340,7 @@ set(QL_SOURCES
     legacy/libormarketmodels/lmlinexpvolmodel.cpp
     legacy/libormarketmodels/lmvolmodel.cpp
     math/abcdmathfunction.cpp
+    math/array.cpp
     math/bernsteinpolynomial.cpp
     math/beta.cpp
     math/bspline.cpp

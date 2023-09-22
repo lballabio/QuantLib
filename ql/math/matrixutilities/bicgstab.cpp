@@ -23,6 +23,7 @@
 */
 
 
+#include <ql/errors.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <utility>
 

@@ -29,6 +29,7 @@
 #ifndef quantlib_bond_hpp
 #define quantlib_bond_hpp
 
+#include <ql/errors.hpp>
 #include <ql/instrument.hpp>
 
 #include <ql/time/calendar.hpp>

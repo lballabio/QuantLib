@@ -19,6 +19,8 @@
 
 #include <ql/experimental/commodities/paymentterm.hpp>
 
+#include <ostream>
+
 namespace QuantLib {
 
     std::map<std::string, ext::shared_ptr<PaymentTerm::Data> >

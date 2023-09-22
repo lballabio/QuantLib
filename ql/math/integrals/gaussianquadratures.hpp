@@ -25,6 +25,7 @@
 #ifndef quantlib_gaussian_quadratures_hpp
 #define quantlib_gaussian_quadratures_hpp
 
+#include <ql/errors.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>

@@ -26,6 +26,8 @@
 #ifndef quantlib_swap_hpp
 #define quantlib_swap_hpp
 
+#include <ql/errors.hpp>
+#include <ql/instrument.hpp>
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
 #include <iosfwd>

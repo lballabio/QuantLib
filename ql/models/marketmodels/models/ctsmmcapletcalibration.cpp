@@ -27,6 +27,7 @@
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <iomanip>
 #include <utility>
 
 namespace QuantLib {

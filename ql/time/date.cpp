@@ -1003,4 +1003,83 @@ namespace QuantLib {
         }
 #endif
     }
+
+#ifndef QL_HIGH_RESOLUTION_DATE
+
+    Weekday Date::weekday() const {
+        Integer w = serialNumber_ % 7;
+        return Weekday(w == 0 ? 7 : w);
+    }
+
+    Day Date::dayOfMonth() const {
+        return dayOfYear() - monthOffset(month(),isLeap(year()));
+    }
+
+    Day Date::dayOfYear() const {
+        return serialNumber_ - yearOffset(year());
+    }
+
+    Date::serial_type Date::serialNumber() const {
+        return serialNumber_;
+    }
+
+    Date Date::operator+(Date::serial_type days) const {
+        return Date(serialNumber_+days);
+    }
+
+    Date Date::operator-(Date::serial_type days) const {
+        return Date(serialNumber_-days);
+    }
+
+    Date Date::operator+(const Period& p) const {
+        return advance(*this,p.length(),p.units());
+    }
+
+    Date Date::operator-(const Period& p) const {
+        return advance(*this,-p.length(),p.units());
+    }
+
+    Date Date::endOfMonth(const Date& d) {
+        Month m = d.month();
+        Year y = d.year();
+        return {monthLength(m, isLeap(y)), m, y};
+    }
+
+    bool Date::isEndOfMonth(const Date& d) {
+       return (d.dayOfMonth() == monthLength(d.month(), isLeap(d.year())));
+    }
+
+    Date::serial_type operator-(const Date& d1, const Date& d2) {
+        return d1.serialNumber()-d2.serialNumber();
+    }
+
+    Time daysBetween(const Date& d1, const Date& d2) {
+        return Time(d2-d1);
+    }
+
+    bool operator==(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() == d2.serialNumber());
+    }
+
+    bool operator!=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() != d2.serialNumber());
+    }
+
+    bool operator<(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() < d2.serialNumber());
+    }
+
+    bool operator<=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() <= d2.serialNumber());
+    }
+
+    bool operator>(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() > d2.serialNumber());
+    }
+
+    bool operator>=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() >= d2.serialNumber());
+    }
+#endif
+    
 }

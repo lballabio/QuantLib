@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/sum.hpp>

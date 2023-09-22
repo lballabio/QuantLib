@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/instrument.hpp>
 #include <ql/settings.hpp>
 
@@ -44,6 +45,76 @@ namespace QuantLib {
 
     void Instrument::setupArguments(PricingEngine::arguments*) const {
         QL_FAIL("Instrument::setupArguments() not implemented");
+    }
+
+    void Instrument::calculate() const {
+        if (!calculated_) {
+            if (isExpired()) {
+                setupExpired();
+                calculated_ = true;
+            } else {
+                LazyObject::calculate();
+            }
+        }
+    }
+
+    void Instrument::setupExpired() const {
+        NPV_ = errorEstimate_ = 0.0;
+        valuationDate_ = Date();
+        additionalResults_.clear();
+    }
+
+    void Instrument::performCalculations() const {
+        QL_REQUIRE(engine_, "null pricing engine");
+        engine_->reset();
+        setupArguments(engine_->getArguments());
+        engine_->getArguments()->validate();
+        engine_->calculate();
+        fetchResults(engine_->getResults());
+    }
+
+    void Instrument::fetchResults(
+                                      const PricingEngine::results* r) const {
+        const auto* results = dynamic_cast<const Instrument::results*>(r);
+        QL_ENSURE(results != nullptr, "no results returned from pricing engine");
+
+        NPV_ = results->value;
+        errorEstimate_ = results->errorEstimate;
+        valuationDate_ = results->valuationDate;
+
+        additionalResults_ = results->additionalResults;
+    }
+
+    Real Instrument::NPV() const {
+        calculate();
+        QL_REQUIRE(NPV_ != Null<Real>(), "NPV not provided");
+        return NPV_;
+    }
+
+    Real Instrument::errorEstimate() const {
+        calculate();
+        QL_REQUIRE(errorEstimate_ != Null<Real>(),
+                   "error estimate not provided");
+        return errorEstimate_;
+    }
+
+    const Date& Instrument::valuationDate() const {
+        calculate();
+        QL_REQUIRE(valuationDate_ != Date(),
+                   "valuation date not provided");
+        return valuationDate_;
+    }
+
+    const std::map<std::string, ext::any>&
+    Instrument::additionalResults() const {
+        calculate();
+        return additionalResults_;
+    }
+    
+    void Instrument::results::reset() {
+        value = errorEstimate = Null<Real>();
+        valuationDate = Date();
+        additionalResults.clear();
     }
 
 }
