@@ -57,6 +57,8 @@ namespace QuantLib {
           Real> {};
 
     IncrementalStatistics::IncrementalStatistics() {
+        acc_ = nullptr;
+        downsideAcc_ = nullptr;
         reset();
     }
 
