@@ -19,29 +19,68 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
-#include <iomanip>
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/count.hpp>
+#include <boost/accumulators/statistics/sum.hpp>
+#include <boost/accumulators/statistics/min.hpp>
+#include <boost/accumulators/statistics/max.hpp>
+#include <boost/accumulators/statistics/weighted_mean.hpp>
+#include <boost/accumulators/statistics/weighted_variance.hpp>
+#include <boost/accumulators/statistics/weighted_skewness.hpp>
+#include <boost/accumulators/statistics/weighted_kurtosis.hpp>
+#include <boost/accumulators/statistics/weighted_moment.hpp>
 
 namespace QuantLib {
+
+    class IncrementalStatistics::accumulator_set
+    : public boost::accumulators::accumulator_set<
+          Real,
+          boost::accumulators::stats<boost::accumulators::tag::count,
+                                     boost::accumulators::tag::min,
+                                     boost::accumulators::tag::max,
+                                     boost::accumulators::tag::weighted_mean,
+                                     boost::accumulators::tag::weighted_variance,
+                                     boost::accumulators::tag::weighted_skewness,
+                                     boost::accumulators::tag::weighted_kurtosis,
+                                     boost::accumulators::tag::sum_of_weights>,
+          Real> {};
+
+    class IncrementalStatistics::downside_accumulator_set
+    : public boost::accumulators::accumulator_set<
+          Real,
+          boost::accumulators::stats<boost::accumulators::tag::count,
+                                     boost::accumulators::tag::weighted_moment<2>,
+                                     boost::accumulators::tag::sum_of_weights>,
+          Real> {};
 
     IncrementalStatistics::IncrementalStatistics() {
         reset();
     }
 
+    IncrementalStatistics::~IncrementalStatistics() {
+        if (acc_)
+            delete acc_;
+        if (downsideAcc_)
+            delete downsideAcc_;
+    }
+
     Size IncrementalStatistics::samples() const {
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::count>(acc_);
+            boost::accumulators::tag::count>(*acc_);
     }
 
     Real IncrementalStatistics::weightSum() const {
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::sum_of_weights>(acc_);
+            boost::accumulators::tag::sum_of_weights>(*acc_);
     }
 
     Real IncrementalStatistics::mean() const {
         QL_REQUIRE(weightSum() > 0.0, "sampleWeight_= 0, unsufficient");
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::weighted_mean>(acc_);
+            boost::accumulators::tag::weighted_mean>(*acc_);
     }
 
     Real IncrementalStatistics::variance() const {
@@ -50,7 +89,7 @@ namespace QuantLib {
         Real n = static_cast<Real>(samples());
         return n / (n - 1.0) *
                boost::accumulators::extract_result<
-                   boost::accumulators::tag::weighted_variance>(acc_);
+                   boost::accumulators::tag::weighted_variance>(*acc_);
     }
 
     Real IncrementalStatistics::standardDeviation() const {
@@ -68,20 +107,20 @@ namespace QuantLib {
         Real r2 = (n - 1.0) / (n - 2.0);
         return std::sqrt(r1 * r2) * 
                boost::accumulators::extract_result<
-                   boost::accumulators::tag::weighted_skewness>(acc_);
+                   boost::accumulators::tag::weighted_skewness>(*acc_);
     }
 
     Real IncrementalStatistics::kurtosis() const {
         QL_REQUIRE(samples() > 3,
                    "sample number <= 3, unsufficient");
         boost::accumulators::extract_result<
-            boost::accumulators::tag::weighted_kurtosis>(acc_);
+            boost::accumulators::tag::weighted_kurtosis>(*acc_);
         Real n = static_cast<Real>(samples());
         Real r1 = (n - 1.0) / (n - 2.0);
         Real r2 = (n + 1.0) / (n - 3.0);
         Real r3 = (n - 1.0) / (n - 3.0);
         return ((3.0 + boost::accumulators::extract_result<
-                           boost::accumulators::tag::weighted_kurtosis>(acc_)) *
+                           boost::accumulators::tag::weighted_kurtosis>(*acc_)) *
                     r2 -
                 3.0 * r3) *
                r1;
@@ -90,23 +129,23 @@ namespace QuantLib {
     Real IncrementalStatistics::min() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::min>(acc_);
+            boost::accumulators::tag::min>(*acc_);
     }
 
     Real IncrementalStatistics::max() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::max>(acc_);
+            boost::accumulators::tag::max>(*acc_);
     }
 
     Size IncrementalStatistics::downsideSamples() const {
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::count>(downsideAcc_);
+            boost::accumulators::tag::count>(*downsideAcc_);
     }
 
     Real IncrementalStatistics::downsideWeightSum() const {
         return boost::accumulators::extract_result<
-            boost::accumulators::tag::sum_of_weights>(downsideAcc_);
+            boost::accumulators::tag::sum_of_weights>(*downsideAcc_);
     }
 
     Real IncrementalStatistics::downsideVariance() const {
@@ -116,7 +155,7 @@ namespace QuantLib {
         Real r1 = n / (n - 1.0);
         return r1 *
                boost::accumulators::extract_result<
-                   boost::accumulators::tag::moment<2> >(downsideAcc_);
+                   boost::accumulators::tag::moment<2> >(*downsideAcc_);
     }
 
     Real IncrementalStatistics::downsideDeviation() const {
@@ -126,14 +165,18 @@ namespace QuantLib {
     void IncrementalStatistics::add(Real value, Real valueWeight) {
         QL_REQUIRE(valueWeight >= 0.0, "negative weight (" << valueWeight
                                                            << ") not allowed");
-        acc_(value, boost::accumulators::weight = valueWeight);
+        (*acc_)(value, boost::accumulators::weight = valueWeight);
         if(value < 0.0)
-            downsideAcc_(value, boost::accumulators::weight = valueWeight);
+            (*downsideAcc_)(value, boost::accumulators::weight = valueWeight);
     }
 
     void IncrementalStatistics::reset() {
-        acc_ = accumulator_set();
-        downsideAcc_ = downside_accumulator_set();
+        if (acc_)
+            delete acc_;
+        if (downsideAcc_)
+            delete downsideAcc_;
+        acc_ = new accumulator_set;
+        downsideAcc_ = new downside_accumulator_set;
     }
 
 }

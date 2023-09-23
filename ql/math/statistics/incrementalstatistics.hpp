@@ -29,18 +29,6 @@
 #define quantlib_incremental_statistics_hpp
 
 #include <ql/utilities/null.hpp>
-#include <ql/errors.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/count.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-#include <boost/accumulators/statistics/min.hpp>
-#include <boost/accumulators/statistics/max.hpp>
-#include <boost/accumulators/statistics/weighted_mean.hpp>
-#include <boost/accumulators/statistics/weighted_variance.hpp>
-#include <boost/accumulators/statistics/weighted_skewness.hpp>
-#include <boost/accumulators/statistics/weighted_kurtosis.hpp>
-#include <boost/accumulators/statistics/weighted_moment.hpp>
 
 namespace QuantLib {
 
@@ -54,6 +42,7 @@ namespace QuantLib {
       public:
         typedef Real value_type;
         IncrementalStatistics();
+        ~IncrementalStatistics();
         //! \name Inspectors
         //@{
         //! number of samples collected
@@ -149,25 +138,10 @@ namespace QuantLib {
         void reset();
         //@}
      private:
-       typedef boost::accumulators::accumulator_set<
-           Real,
-           boost::accumulators::stats<
-               boost::accumulators::tag::count, boost::accumulators::tag::min,
-               boost::accumulators::tag::max,
-               boost::accumulators::tag::weighted_mean,
-               boost::accumulators::tag::weighted_variance,
-               boost::accumulators::tag::weighted_skewness,
-               boost::accumulators::tag::weighted_kurtosis,
-               boost::accumulators::tag::sum_of_weights>,
-           Real> accumulator_set;
-        accumulator_set acc_;
-        typedef boost::accumulators::accumulator_set<
-            Real, boost::accumulators::stats<
-                      boost::accumulators::tag::count,
-                      boost::accumulators::tag::weighted_moment<2>,
-                      boost::accumulators::tag::sum_of_weights>,
-            Real> downside_accumulator_set;
-        downside_accumulator_set downsideAcc_;
+        class accumulator_set;
+        class downside_accumulator_set;
+        accumulator_set* acc_;
+        downside_accumulator_set* downsideAcc_;
     };
 
 }
