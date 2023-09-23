@@ -4841,6 +4841,9 @@
     <ClCompile Include="ql\math\abcdmathfunction.cpp">
       <Filter>math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\array.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\bernsteinpolynomial.cpp">
       <Filter>math</Filter>
     </ClCompile>
@@ -7161,6 +7164,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp">
       <Filter>pricingengines\asian</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\interpolations\cubicinterpolation.cpp">
+      <Filter>math\interpolations</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\interpolations\chebyshevinterpolation.cpp">
       <Filter>math\interpolations</Filter>

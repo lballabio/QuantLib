@@ -2237,6 +2237,7 @@
     <ClCompile Include="ql\legacy\libormarketmodels\lmlinexpvolmodel.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lmvolmodel.cpp" />
     <ClCompile Include="ql\math\abcdmathfunction.cpp" />
+    <ClCompile Include="ql\math\array.cpp" />
     <ClCompile Include="ql\math\bernsteinpolynomial.cpp" />
     <ClCompile Include="ql\math\beta.cpp" />
     <ClCompile Include="ql\math\bspline.cpp" />
@@ -2271,6 +2272,7 @@
     <ClCompile Include="ql\math\integrals\integral.cpp" />
     <ClCompile Include="ql\math\integrals\kronrodintegral.cpp" />
     <ClCompile Include="ql\math\integrals\segmentintegral.cpp" />
+    <ClCompile Include="ql\math\interpolations\cubicinterpolation.cpp" />
     <ClCompile Include="ql\math\interpolations\chebyshevinterpolation.cpp" />
     <ClCompile Include="ql\math\matrix.cpp" />
     <ClCompile Include="ql\math\matrixutilities\basisincompleteordered.cpp" />
