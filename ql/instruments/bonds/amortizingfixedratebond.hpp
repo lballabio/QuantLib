@@ -44,7 +44,9 @@ namespace QuantLib {
                                 const Period& exCouponPeriod = Period(),
                                 const Calendar& exCouponCalendar = Calendar(),
                                 BusinessDayConvention exCouponConvention = Unadjusted,
-                                bool exCouponEndOfMonth = false);
+                                bool exCouponEndOfMonth = false,
+                                const std::vector<Real>& redemptions = { 100.0 },
+                                Natural paymentLag = 0);
 
         /*! \deprecated Use the other constructor after calling sinkingSchedule
                         and sinkingNotionals to generate the required parameters.

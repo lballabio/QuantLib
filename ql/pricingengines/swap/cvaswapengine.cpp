@@ -115,6 +115,9 @@ namespace QuantLib {
     QL_REQUIRE(!swaptionletEngine_.empty(),
                  "no swap option engine set");
 
+    QL_REQUIRE(arguments_.nominal != Null<Real>(),
+               "non-constant nominals are not supported yet");
+
     Date priceDate = defaultTS_->referenceDate();
 
     Real cumOptVal = 0., 

@@ -71,6 +71,9 @@ namespace QuantLib {
                    "non zero spread (" << arguments_.swap->spread()
                                        << ") not allowed"); // PC
 
+        QL_REQUIRE(arguments_.nominal != Null<Real>(),
+                   "non-constant nominals are not supported yet");
+
         Date referenceDate;
         DayCounter dayCounter;
 

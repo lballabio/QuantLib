@@ -218,6 +218,9 @@ namespace QuantLib {
     Real G2::swaption(const Swaption::arguments& arguments,
                       Rate fixedRate, Real range, Size intervals) const {
 
+        QL_REQUIRE(arguments.nominal != Null<Real>(),
+                   "non-constant nominals are not supported yet");
+
         Date settlement = termStructure()->referenceDate();
         DayCounter dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
@@ -238,7 +241,7 @@ namespace QuantLib {
         Real upper = function.mux() + range*function.sigmax();
         Real lower = function.mux() - range*function.sigmax();
         SegmentIntegral integrator(intervals);
-        return arguments.nominal*w*termStructure()->discount(start)*
+        return arguments.nominal * w * termStructure()->discount(start) *
             integrator(function, lower, upper);
     }
 

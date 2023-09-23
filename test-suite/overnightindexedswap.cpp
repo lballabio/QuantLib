@@ -570,7 +570,7 @@ void OvernightIndexedSwapTest::testConstructorsAndNominals() {
     BOOST_CHECK_EQUAL(ois_2.paymentFrequency(), Annual);
 
     BOOST_CHECK_EXCEPTION(ois_2.nominal(), Error,
-                          ExpectedErrorMessage("varying nominal"));
+                          ExpectedErrorMessage("nominal is not constant"));
 
     BOOST_CHECK_EQUAL(ois_2.nominals().size(), Size(2));
     BOOST_CHECK_EQUAL(ois_2.nominals()[0], nominal);
@@ -632,7 +632,7 @@ void OvernightIndexedSwapTest::testConstructorsAndNominals() {
     BOOST_CHECK_EQUAL(ois_4.paymentFrequency(), Semiannual);
 
     BOOST_CHECK_EXCEPTION(ois_4.nominal(), Error,
-                          ExpectedErrorMessage("varying nominals"));
+                          ExpectedErrorMessage("nominal is not constant"));
 
     BOOST_CHECK_EXCEPTION(ois_4.nominals(), Error,
                           ExpectedErrorMessage("different nominals"));
