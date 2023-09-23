@@ -22,6 +22,7 @@
 #ifndef quantlib_pathwise_accounting_engine_hpp
 #define quantlib_pathwise_accounting_engine_hpp
 
+#include <ql/shared_ptr.hpp>
 #include <ql/models/marketmodels/pathwisemultiproduct.hpp>
 #include <ql/models/marketmodels/pathwisediscounter.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>

@@ -25,6 +25,7 @@
 #define quantlib_historical_rates_analysis_hpp
 
 #include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/date.hpp>
 
 namespace QuantLib {

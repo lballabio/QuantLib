@@ -24,6 +24,7 @@
 #ifndef quantlib_isotropic_random_walk_hpp
 #define quantlib_isotropic_random_walk_hpp
 
+#include <ql/errors.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/mathconstants.hpp>
