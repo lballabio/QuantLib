@@ -40,6 +40,7 @@ this_include_HEADERS = \
 
 cpp_files = \
 	abcdmathfunction.cpp \
+	array.cpp \
 	bernsteinpolynomial.cpp \
 	beta.cpp \
 	bspline.cpp \

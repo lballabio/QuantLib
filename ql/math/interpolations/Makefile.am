@@ -26,7 +26,8 @@ this_include_HEADERS = \
 	xabrinterpolation.hpp
 
 cpp_files = \
-	chebyshevinterpolation.cpp
+	chebyshevinterpolation.cpp \
+	cubicinterpolation.cpp
 
 if UNITY_BUILD
 
