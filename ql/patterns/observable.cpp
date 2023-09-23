@@ -447,7 +447,6 @@ namespace QuantLib {
         }
     }
 
-    inline
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
 
