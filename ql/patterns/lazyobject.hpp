@@ -24,6 +24,7 @@
 #ifndef quantlib_lazy_object_h
 #define quantlib_lazy_object_h
 
+#include <ql/errors.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/shared_ptr.hpp>
 
