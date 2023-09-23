@@ -243,7 +243,7 @@ namespace QuantLib {
 
     }
 
-    Observer::Proxy::update() const {
+    void Observer::Proxy::update() const {
         std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (active_) {
             // c++17 is required if used with std::shared_ptr<T>
