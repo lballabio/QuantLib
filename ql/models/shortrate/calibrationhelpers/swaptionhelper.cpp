@@ -191,7 +191,16 @@ namespace QuantLib {
 
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
+#if defined(__GNUC__) && (__GNUC__ >= 12)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
         swaption_ = ext::make_shared<Swaption>(swap_, exercise);
+
+#if defined(__GNUC__) && (__GNUC__ >= 12)
+#pragma GCC diagnostic pop
+#endif
 
         BlackCalibrationHelper::performCalculations();
 

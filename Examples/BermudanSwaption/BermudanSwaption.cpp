@@ -171,6 +171,12 @@ int main(int, char* []) {
             Size j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
             Size k = i*numCols + j;
             auto vol = ext::make_shared<SimpleQuote>(swaptionVols[k]);
+
+#if defined(__GNUC__) && (__GNUC__ >= 12)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
             swaptions.push_back(ext::make_shared<SwaptionHelper>(
                                swaptionMaturities[i],
                                Period(swapLengths[j], Years),
@@ -180,6 +186,11 @@ int main(int, char* []) {
                                indexSixMonths->dayCounter(),
                                indexSixMonths->dayCounter(),
                                rhTermStructure));
+
+#if defined(__GNUC__) && (__GNUC__ >= 12)
+#pragma GCC diagnostic pop
+#endif
+
             swaptions.back()->addTimesTo(times);
         }
 
