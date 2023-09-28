@@ -20,7 +20,6 @@
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
-#include <ql/math/randomnumbers/splitmix64.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 

@@ -19,7 +19,6 @@
 
 #include "xoshiro256starstar.hpp"
 #include "utilities.hpp"
-#include <ql/math/randomnumbers/splitmix64.hpp>
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
 
@@ -154,12 +153,11 @@ extern "C" {
 // clang-format on
 
 using QuantLib::Real;
-using QuantLib::SplitMix64;
 using QuantLib::Xoshiro256StarStarUniformRng;
 
 void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
     BOOST_TEST_MESSAGE(
-        "Testing Xoshiro256StarStarUniformRng::nextReal() for mean=0.5 and stddev=1/12");
+        "Testing Xoshiro256StarStarUniformRng::nextReal() for mean=0.5 and stddev=1/12...");
 
     auto random = Xoshiro256StarStarUniformRng(1);
     const auto iterations = 10'000'000;
@@ -189,16 +187,15 @@ void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
 
 void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
     BOOST_TEST_MESSAGE(
-        "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C");
-
+        "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C...");
+    
     // some random initial seed
     static const auto seed = 10108360646465513120ULL;
-    SplitMix64 splitMix64(seed);
 
-    static const auto s0 = splitMix64.next();
-    static const auto s1 = splitMix64.next();
-    static const auto s2 = splitMix64.next();
-    static const auto s3 = splitMix64.next();
+    static const auto s0 = 18274946675476036270ULL;
+    static const auto s1 = 6043068446171522962ULL;
+    static const auto s2 = 96311065249897859ULL;
+    static const auto s3 = 16504445955133574805ULL;
 
     s[0] = s0;
     s[1] = s1;
@@ -229,7 +226,7 @@ void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
 
 void Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances() {
     BOOST_TEST_MESSAGE(
-        "Testing Xoshiro256StarStarUniformRng for absence of interaction between instances");
+        "Testing Xoshiro256StarStarUniformRng for absence of interaction between instances...");
 
     auto seed = 16880566536755896171ULL;
     Xoshiro256StarStarUniformRng rng(seed);
@@ -263,8 +260,7 @@ boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal));
     suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAgainstReferenceImplementationInC));
-    suite->add(
-        QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances));
+    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances));
 
     return suite;
 }

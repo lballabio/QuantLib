@@ -23,7 +23,6 @@ this_include_HEADERS = \
 	seedgenerator.hpp \
 	sobolbrownianbridgersg.hpp \
 	sobolrsg.hpp \
-	splitmix64.hpp \
 	stochasticcollocationinvcdf.hpp \
 	xoshiro256starstaruniformrng.hpp
 

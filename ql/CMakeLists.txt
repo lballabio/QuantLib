@@ -1536,7 +1536,6 @@ set(QL_HEADERS
     math/randomnumbers/seedgenerator.hpp
     math/randomnumbers/sobolbrownianbridgersg.hpp
     math/randomnumbers/sobolrsg.hpp
-    math/randomnumbers/splitmix64.hpp
     math/randomnumbers/stochasticcollocationinvcdf.hpp
     math/randomnumbers/xoshiro256starstaruniformrng.hpp
     math/richardsonextrapolation.hpp

@@ -1129,7 +1129,6 @@
     <ClInclude Include="ql\math\randomnumbers\seedgenerator.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolbrownianbridgersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
-    <ClInclude Include="ql\math\randomnumbers\splitmix64.hpp" />
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
     <ClInclude Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.hpp" />
     <ClInclude Include="ql\math\richardsonextrapolation.hpp" />

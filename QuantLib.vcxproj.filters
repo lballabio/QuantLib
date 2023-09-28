@@ -1290,9 +1290,6 @@
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\randomnumbers\splitmix64.hpp">
-      <Filter>math\randomnumbers</Filter>
-    </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>

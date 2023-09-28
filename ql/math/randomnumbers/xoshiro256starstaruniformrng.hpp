@@ -97,4 +97,4 @@ namespace QuantLib {
     };
 }
 
-#endif // quantlib_xoshiro256starstar_uniform_rng_hpp
+#endif
