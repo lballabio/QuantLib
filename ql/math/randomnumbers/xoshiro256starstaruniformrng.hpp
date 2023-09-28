@@ -38,33 +38,32 @@ See <http://creativecommons.org/publicdomain/zero/1.0/>. */
 
 #include <ql/methods/montecarlo/sample.hpp>
 #include <ql/types.hpp>
-#include <stdint.h>
+#include <cstdint>
 
 namespace QuantLib {
 
     //! Uniform random number generator
     /*! xoshiro256** random number generator of period 2**256-1
-     *
-     * For more details see
-     *     https://prng.di.unimi.it/
-     * and its reference implementation
-     *     https://prng.di.unimi.it/xoshiro256starstar.c
-     *
-     * \test the correctness of the returned values is tested by checking them
-     * against the reference implementation in c.
-     * */
 
+        For more details see
+            https://prng.di.unimi.it/
+        and its reference implementation
+            https://prng.di.unimi.it/xoshiro256starstar.c
+
+        \test the correctness of the returned values is tested by checking them
+               against the reference implementation in c.
+    */
     class Xoshiro256StarStarUniformRng {
       public:
         typedef Sample<Real> sample_type;
 
         /*! If the given seed is 0, a random seed will be chosen based on clock(). */
-        explicit Xoshiro256StarStarUniformRng(uint64_t seed = 0);
+        explicit Xoshiro256StarStarUniformRng(std::uint64_t seed = 0);
 
         /*! Make sure that s0, s1, s2 and s3 are chosen randomly.
          * Otherwise, the results of the first random numbers might not be well distributed.
          * Especially s0 = s1 = s2 = s3 = 0 does not work and will always return 0. */
-        Xoshiro256StarStarUniformRng(uint64_t s0, uint64_t s1, uint64_t s2, uint64_t s3);
+        Xoshiro256StarStarUniformRng(std::uint64_t s0, std::uint64_t s1, std::uint64_t s2, std::uint64_t s3);
 
         /*! returns a sample with weight 1.0 containing a random number
          * in the (0.0, 1.0) interval */
@@ -74,7 +73,7 @@ namespace QuantLib {
         Real nextReal() const { return (Real(nextInt64() >> 11) + 0.5) * (1.0 / Real(1ULL << 53)); }
 
         //! return a random integer in the [0,0xffffffffffffffffULL]-interval
-        uint64_t nextInt64() const {
+        std::uint64_t nextInt64() const {
             const auto result = rotl(s1_ * 5, 7) * 9;
 
             const auto t = s1_ << 17;
@@ -92,9 +91,10 @@ namespace QuantLib {
         }
 
       private:
-        static uint64_t rotl(uint64_t x, int32_t k) { return (x << k) | (x >> (64 - k)); }
-        mutable uint64_t s0_, s1_, s2_, s3_;
+        static std::uint64_t rotl(std::uint64_t x, std::int32_t k) { return (x << k) | (x >> (64 - k)); }
+        mutable std::uint64_t s0_, s1_, s2_, s3_;
     };
+
 }
 
 #endif

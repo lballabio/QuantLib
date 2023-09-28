@@ -38,8 +38,8 @@ namespace QuantLib {
         */
         class SplitMix64 {
           public:
-            explicit SplitMix64(uint64_t x) : x_(x) {}
-            uint64_t next() const {
+            explicit SplitMix64(std::uint64_t x) : x_(x) {}
+            std::uint64_t next() const {
                 auto z = (x_ += 0x9e3779b97f4a7c15);
                 z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
                 z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
@@ -47,11 +47,11 @@ namespace QuantLib {
             };
 
           private:
-            mutable uint64_t x_;
+            mutable std::uint64_t x_;
         };
     }
 
-    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t seed) {
+    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(std::uint64_t seed) {
         SplitMix64 splitMix64(seed != 0 ? seed : SeedGenerator::instance().get());
         s0_ = splitMix64.next();
         s1_ = splitMix64.next();
@@ -59,10 +59,10 @@ namespace QuantLib {
         s3_ = splitMix64.next();
     }
 
-    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(uint64_t s0,
-                                                               uint64_t s1,
-                                                               uint64_t s2,
-                                                               uint64_t s3)
+    Xoshiro256StarStarUniformRng::Xoshiro256StarStarUniformRng(std::uint64_t s0,
+                                                               std::uint64_t s1,
+                                                               std::uint64_t s2,
+                                                               std::uint64_t s3)
     : s0_(s0), s1_(s1), s2_(s2), s3_(s3) {}
 
 }
