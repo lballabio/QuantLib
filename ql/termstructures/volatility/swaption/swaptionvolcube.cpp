@@ -76,7 +76,6 @@ namespace QuantLib {
                    swapIndexBase_->tenor() << ")");
 
         registerWithVolatilitySpread();
-        cachedReferenceDate_ = referenceDate();
     }
 
     void SwaptionVolatilityCube::registerWithVolatilitySpread()
