@@ -74,13 +74,14 @@ namespace QuantLib {
         mutable std::vector<Date> optionDates_;
         mutable std::vector<Time> optionTimes_;
         mutable Interpolation optionInterpolator_;
+        mutable std::vector<Real> optionDatesAsReal_;
         mutable std::vector<Time> optionInterpolatorTimes_;
         mutable std::vector<Real> optionInterpolatorDatesAsReal_;
 
         Size nSwapTenors_;
         std::vector<Period> swapTenors_;
         mutable std::vector<Time> swapLengths_;
-        mutable Date evaluationDate_;
+        mutable Date cachedReferenceDate_;
       private:
         void checkOptionTenors() const;
         void checkOptionDates(const Date& reference) const;

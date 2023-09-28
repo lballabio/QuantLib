@@ -36,6 +36,7 @@ namespace QuantLib {
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
       optionTimes_(nOptionTenors_),
+      optionDatesAsReal_(nOptionTenors_),
       optionInterpolatorTimes_(nOptionTenors_  + 1),
       optionInterpolatorDatesAsReal_(nOptionTenors_ + 1),
       nSwapTenors_(swapTenors.size()),
@@ -43,7 +44,6 @@ namespace QuantLib {
       swapLengths_(nSwapTenors_) {
 
         checkOptionTenors();
-        evaluationDate_ = Settings::instance().evaluationDate();
         initializeOptionDatesAndTimes();
 
         checkSwapTenors();
@@ -54,8 +54,7 @@ namespace QuantLib {
                                                  optionInterpolatorDatesAsReal_.begin());
         optionInterpolator_.update();
         optionInterpolator_.enableExtrapolation();
-
-        registerWith(Settings::instance().evaluationDate());
+        cachedReferenceDate_ = referenceDate();
     }
 
     SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
@@ -70,6 +69,7 @@ namespace QuantLib {
       optionTenors_(optionTenors),
       optionDates_(nOptionTenors_),
       optionTimes_(nOptionTenors_),
+      optionDatesAsReal_(nOptionTenors_),
       optionInterpolatorTimes_(nOptionTenors_  + 1),
       optionInterpolatorDatesAsReal_(nOptionTenors_ + 1),
       nSwapTenors_(swapTenors.size()),
@@ -101,6 +101,7 @@ namespace QuantLib {
       optionTenors_(nOptionTenors_),
       optionDates_(optionDates),
       optionTimes_(nOptionTenors_),
+      optionDatesAsReal_(nOptionTenors_),
       optionInterpolatorTimes_(nOptionTenors_  + 1),
       optionInterpolatorDatesAsReal_(nOptionTenors_ + 1),
       nSwapTenors_(swapTenors.size()),
@@ -155,10 +156,10 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::initializeOptionDatesAndTimes() const {
-        optionInterpolatorDatesAsReal_[0] = static_cast<Real>(evaluationDate_.serialNumber());
+        optionInterpolatorDatesAsReal_[0] = static_cast<Real>(referenceDate().serialNumber());
         for (Size i=0; i<nOptionTenors_; ++i) {
             optionDates_[i] = optionDateFromTenor(optionTenors_[i]);
-            optionInterpolatorDatesAsReal_[i + 1] =
+            optionDatesAsReal_[i] = optionInterpolatorDatesAsReal_[i + 1] =
                 static_cast<Real>(optionDates_[i].serialNumber());
         }
         initializeOptionTimes();
@@ -179,9 +180,8 @@ namespace QuantLib {
     void SwaptionVolatilityDiscrete::performCalculations() const {
         // recalculate dates if necessary...
         if (moving_) {
-            Date d = Settings::instance().evaluationDate();
-            if (evaluationDate_ != d) {
-                evaluationDate_ = d;
+            if (cachedReferenceDate_ != referenceDate()) {
+                cachedReferenceDate_ = referenceDate();
                 initializeOptionDatesAndTimes();
                 initializeSwapLengths();
                 optionInterpolator_.update();
