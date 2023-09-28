@@ -23,7 +23,8 @@ this_include_HEADERS = \
 	seedgenerator.hpp \
 	sobolbrownianbridgersg.hpp \
 	sobolrsg.hpp \
-	stochasticcollocationinvcdf.hpp
+	stochasticcollocationinvcdf.hpp \
+	xoshiro256starstaruniformrng.hpp
 
 cpp_files = \
     faurersg.cpp \
@@ -37,7 +38,8 @@ cpp_files = \
 	seedgenerator.cpp \
 	sobolbrownianbridgersg.cpp \
 	sobolrsg.cpp \
-	stochasticcollocationinvcdf.cpp
+	stochasticcollocationinvcdf.cpp \
+	xoshiro256starstaruniformrng.cpp
 
 if UNITY_BUILD
 
