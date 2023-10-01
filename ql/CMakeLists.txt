@@ -2366,6 +2366,24 @@ set_target_properties(ql_library PROPERTIES
     VERSION ${QUANTLIB_VERSION}
     SOVERSION ${QUANTLIB_VERSION_MAJOR})
 
+target_precompile_headers(ql_library
+  PUBLIC
+    <ql/any.hpp>
+    <ql/errors.hpp>
+    <ql/index.hpp>
+    <ql/indexes/indexmanager.hpp>
+    <ql/instrument.hpp>
+    <ql/indexes/interestrateindex.hpp>
+    <ql/math/array.hpp>
+    <ql/math/statistics/incrementalstatistics.hpp>
+    <ql/math/interpolations/cubicinterpolation.hpp>
+    <ql/math/matrix.hpp>
+    <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+    <ql/patterns/observable.hpp>
+    <ql/qldefines.hpp>
+    <ql/termstructure.hpp>
+)
+
 target_compile_definitions(ql_library PRIVATE
     QL_COMPILATION)
 
