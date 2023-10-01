@@ -46,7 +46,7 @@ namespace QuantLib {
                              const Schedule& schedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
-                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              Spread spread = 0.0,
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
