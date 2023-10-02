@@ -264,18 +264,8 @@ void BermudanSwaptionTest::testCachedG2Values() {
             exerciseDates.push_back(ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate());
         }
 
-#if defined(__GNUC__) && (__GNUC__ >= 12)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Warray-bounds"
-#endif
-
         swaptions.push_back(ext::make_shared<Swaption>(swap,
             ext::make_shared<BermudanExercise>(exerciseDates)));
-
-#if defined(__GNUC__) && (__GNUC__ >= 12)
-#pragma GCC diagnostic pop
-#endif
-
     }
 
     const Real a=0.1, sigma=0.01, b=0.2, eta=0.013, rho=-0.5;
@@ -355,16 +345,7 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
         auto callDate = initialCallDate + i * Days;
         if (calendar.isBusinessDay(callDate)) {
 
-#if defined(__GNUC__) && (__GNUC__ >= 12)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Warray-bounds"
-#endif
-
             auto bermudanSwaption = makeBermudanSwaption(callDate);
-
-#if defined(__GNUC__) && (__GNUC__ >= 12)
-#pragma GCC diagnostic pop
-#endif
 
             auto model = ext::make_shared<HullWhite>(termStructure);
 

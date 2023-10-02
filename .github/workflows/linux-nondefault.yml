@@ -139,7 +139,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
-            cxxflags: "-std=c++17"
+            cxxflags: "-std=c++17 -Wno-array-bounds"
             configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-any --enable-std-optional
           - name: "OpenMP enabled"
             shortname: openmp
