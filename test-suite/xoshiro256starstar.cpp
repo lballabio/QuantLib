@@ -170,16 +170,16 @@ void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
         }
         randoms.push_back(next);
     }
-    auto mean = std::accumulate(randoms.begin(), randoms.end(), 0.0) / randoms.size();
-    auto meanError = std::fabs(0.5 - mean);
+    Real mean = std::accumulate(randoms.begin(), randoms.end(), Real(0.0)) / randoms.size();
+    Real meanError = std::fabs(0.5 - mean);
     if (meanError > 0.005) {
         BOOST_ERROR("Mean " << mean << " for seed 1 is not close to 0.5.");
     }
-    std::vector<double> diff(randoms.size());
+    std::vector<Real> diff(randoms.size());
     std::transform(randoms.begin(), randoms.end(), diff.begin(),
-                   [mean](double x) { return x - mean; });
-    auto stdDev = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0) / randoms.size();
-    auto stdDevError = std::fabs(1.0 / 12.0 - stdDev);
+                   [mean](Real x) -> Real { return x - mean; });
+    Real stdDev = std::inner_product(diff.begin(), diff.end(), diff.begin(), Real(0.0)) / randoms.size();
+    Real stdDevError = std::fabs(1.0 / 12.0 - stdDev);
     if (stdDevError > 0.00005) {
         BOOST_ERROR("Standard deviation " << stdDev << " for seed 1 is not close to 1/12.");
     }
