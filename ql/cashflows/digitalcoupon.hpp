@@ -90,7 +90,7 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      const ext::shared_ptr<DigitalReplication>& replication = {},
+                      ext::shared_ptr<DigitalReplication> replication = {},
                       bool nakedOption = false);
 
         //@}

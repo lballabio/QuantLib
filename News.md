@@ -134,6 +134,10 @@ Deprecated features
     `ql/pricingengines/vanilla/fdshoutengine.hpp` and
     `ql/utilities/disposable.hpp`.
 
+- Deprecated the overload of the `withReplication` method in the
+  `DigitalIborLeg`, `DigitalCmsLeg` and `DigitalCmsSpreadLeg` classes
+  that takes no arguments; use the other overload instead.
+
 - Deprecated the `StandardFiniteDifferenceModel`,
   `StandardSystemFiniteDifferenceModel` and `StandardStepCondition`
   typedefs; define your own typedefs if needed.
