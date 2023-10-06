@@ -185,6 +185,11 @@ namespace QuantLib {
         return *this;
     }
 
+    DigitalCmsLeg& DigitalCmsLeg::withReplication() {
+        replication_ = ext::make_shared<DigitalReplication>();
+        return *this;
+    }
+
     DigitalCmsLeg& DigitalCmsLeg::withNakedOption(bool nakedOption) {
         nakedOption_ = nakedOption;
         return *this;
