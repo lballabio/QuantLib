@@ -401,7 +401,7 @@ namespace QuantLib {
       public:
         void disableUpdates(bool deferred=false) {
             std::lock_guard<std::mutex> lock(mutex_);
-            updatesType_ = (deferred) ? UpdatesDeferred : 0;
+            updatesType_ = (deferred) ? UpdatesDeferred : UpdatesDisabled;
         }
         void enableUpdates();
 
@@ -420,7 +420,7 @@ namespace QuantLib {
         set_type deferredObservers_;
         mutable std::mutex mutex_;
 
-        enum UpdateType { UpdatesEnabled = 1, UpdatesDeferred = 2} ;
+        enum UpdateType { UpdatesDisabled = 0, UpdatesEnabled = 1, UpdatesDeferred = 2} ;
         std::atomic<int> updatesType_;
     };
 
