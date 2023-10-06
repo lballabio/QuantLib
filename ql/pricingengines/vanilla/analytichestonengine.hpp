@@ -202,13 +202,15 @@ namespace QuantLib {
                                      Size maxEvaluations = 1000);
         static Integration discreteSimpson(Size evaluation = 1000);
         static Integration discreteTrapezoid(Size evaluation = 1000);
+        static Integration expSinh(Real relTolerance = 1e-8);
 
         static Real andersenPiterbargIntegrationLimit(
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
                        const ext::function<Real(Real)>& f,
-                       const ext::function<Real()>& maxBound = {}) const;
+                       const ext::function<Real()>& maxBound = {},
+                       Real scaling = 1.0) const;
 
         Real calculate(Real c_inf,
                        const ext::function<Real(Real)>& f,
@@ -222,7 +224,8 @@ namespace QuantLib {
             { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
               DiscreteTrapezoid, DiscreteSimpson,
               GaussLaguerre, GaussLegendre,
-              GaussChebyshev, GaussChebyshev2nd };
+              GaussChebyshev, GaussChebyshev2nd,
+              ExpSinh};
 
         Integration(Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> quadrature);
 

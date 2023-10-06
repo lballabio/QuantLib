@@ -31,6 +31,7 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/expsinhintegral.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/expm1.hpp>
 #include <ql/math/functional.hpp>
@@ -426,9 +427,6 @@ namespace QuantLib {
             [freq, this](Real alpha) -> Real {
                 ++evaluations_;
                 const std::complex<Real> z(0, -(alpha+1));
-                // TODO: do we need to add the control variate here?
-                // follow chapter 3.2 in
-                // Optimal Fourier inversion in semianalytical option pricing
                 return enginePtr_->lnChF(z, t_).real()
                     - std::log(alpha*(alpha+1)) + alpha*freq;
             },
@@ -449,12 +447,6 @@ namespace QuantLib {
 
             return 2/D_imag
                 * ( ((beta>0.0)? M_PI : 0.0) - std::atan(D_imag/beta) );
-
-//            TODO: check if equal
-//            const auto D = std::sqrt(std::complex<Real>(beta*beta - sigma_*sigma_*(k*(k-1))));
-//
-//            return 2/std::abs(D)
-//                * ( ((beta>0.0)? M_PI : 0.0) - std::atan(std::abs(D)/beta) );
         }
     }
 
@@ -857,8 +849,13 @@ namespace QuantLib {
 
             const Real cvValue = cvHelper.controlVariateValue();
 
+            const Real vAvg = (1-std::exp(-kappa*maturity))*(v0-theta)/(kappa*maturity) + theta;
+
+            const Real scalingFactor
+                = std::max(0.001, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*maturity)));
+
             const Real h_cv =
-                fwd/M_PI*integration_->calculate(c_inf, cvHelper, uM);
+                fwd/M_PI*integration_->calculate(c_inf, cvHelper, uM, scalingFactor);
 
             evaluations_ += integration_->numberOfEvaluations();
 
@@ -988,6 +985,13 @@ namespace QuantLib {
                 new DiscreteTrapezoidIntegrator(evaluations)));
     }
 
+    AnalyticHestonEngine::Integration
+    AnalyticHestonEngine::Integration::expSinh(Real relTolerance) {
+        return Integration(
+            ExpSinh, ext::shared_ptr<Integrator>(
+                new ExpSinhIntegral(relTolerance)));
+    }
+
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
         if (integrator_ != nullptr) {
             return integrator_->numberOfEvaluations();
@@ -1002,13 +1006,15 @@ namespace QuantLib {
         return intAlgo_ == GaussLobatto
             || intAlgo_ == GaussKronrod
             || intAlgo_ == Simpson
-            || intAlgo_ == Trapezoid;
+            || intAlgo_ == Trapezoid
+            || intAlgo_ == ExpSinh;
     }
 
     Real AnalyticHestonEngine::Integration::calculate(
         Real c_inf,
         const ext::function<Real(Real)>& f,
-        const ext::function<Real()>& maxBound) const {
+        const ext::function<Real()>& maxBound,
+        const Real scaling) const {
 
         Real retVal;
 
@@ -1020,6 +1026,11 @@ namespace QuantLib {
           case GaussChebyshev:
           case GaussChebyshev2nd:
             retVal = (*gaussianQuadrature_)(integrand1(c_inf, f));
+            break;
+          case ExpSinh:
+            retVal = scaling*(*integrator_)(
+                    [scaling, f](Real x) -> Real { return f(scaling*x);},
+                0.0, boost::math::tools::max_value<Real>());
             break;
           case Simpson:
           case Trapezoid:

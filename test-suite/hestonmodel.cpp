@@ -1878,6 +1878,16 @@ void HestonModelTest::testAllIntegrationMethods() {
         AnalyticHestonEngine::AngledContourNoCV,
         false, expected, tol, 192,
         "Angled contour shift integral without control variate");
+
+#ifdef QL_BOOST_HAS_EXP_SINH
+    // Angled contour shift integral with expSinh
+    reportOnIntegrationMethodTest(option, model,
+        AnalyticHestonEngine::Integration::expSinh(),
+        AnalyticHestonEngine::AngledContour,
+        true, expected, 1e-8, Null<Size>(),
+        "exp-sinh integration with angled contour shift integral");
+#endif
+
 }
 
 namespace {

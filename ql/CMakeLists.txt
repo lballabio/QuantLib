@@ -1437,6 +1437,7 @@ set(QL_HEADERS
     math/incompletegamma.hpp
     math/integrals/discreteintegrals.hpp
     math/integrals/exponentialintegrals.hpp
+    math/integrals/expsinhintegral.hpp
     math/integrals/filonintegral.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp

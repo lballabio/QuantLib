@@ -44,11 +44,14 @@ namespace QuantLib {
             // start from the coarsest trapezoid...
             Size N = 1;
             Real I = (f(a)+f(b))*(b-a)/2.0, newI;
+            increaseNumberOfEvaluations(2);
+
             Real adjI = I, newAdjI;
             // ...and refine it
             Size i = 1;
             do {
                 newI = Default::integrate(f,a,b,I,N);
+                increaseNumberOfEvaluations(N);
                 N *= 2;
                 newAdjI = (4.0*newI-I)/3.0;
                 // good enough? Also, don't run away immediately

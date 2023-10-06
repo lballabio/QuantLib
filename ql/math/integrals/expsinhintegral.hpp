@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2021 Klaus Spanderen
+ Copyright (C) 2023 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,44 +17,55 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tanhsinhintegral.hpp
+/*! \file expsinhintegral.hpp
 */
 
-#ifndef quantlib_tanh_sinh_integral_hpp
-#define quantlib_tanh_sinh_integral_hpp
+#ifndef quantlib_exp_sinh_integral_hpp
+#define quantlib_exp_sinh_integral_hpp
 
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/math/integrals/integral.hpp>
 
 #if BOOST_VERSION >= 106900
-#define QL_BOOST_HAS_TANH_SINH
+#define QL_BOOST_HAS_EXP_SINH
 
-#include <boost/math/quadrature/tanh_sinh.hpp>
+#include <boost/math/quadrature/exp_sinh.hpp>
 #include <limits>
 
 namespace QuantLib {
-    /*! The tanh-sinh quadrature routine provided by boost is a rapidly convergent
+    /*! The exp-sinh quadrature routine provided by boost is a rapidly convergent
         numerical integration scheme for holomorphic integrands. The tolerance
         is used against the error estimate for the L1 norm of the integral.
     */
-    class TanhSinhIntegral : public Integrator {
+    class ExpSinhIntegral : public Integrator {
       public:
-        TanhSinhIntegral(
+        ExpSinhIntegral(
             Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
-            Size maxRefinements = 15,
-            Real minComplement = std::numeric_limits<Real>::min() * 4
+            Size maxRefinements = 9
             )
       : Integrator(QL_MAX_REAL, Null<Size>()),
         relTolerance_(relTolerance),
-        tanh_sinh_(maxRefinements, minComplement) {}
+        exp_sinh_(maxRefinements) {}
+
+        // For half-infinite interval [0, \inf), the exp-sinh quadrature is provided by
+        Real integrate(const ext::function<Real(Real)>& f) const {
+            setNumberOfEvaluations(0);
+            Real error;
+            Real value = exp_sinh_.integrate(
+               [this, &f](Real x) -> Real { increaseNumberOfEvaluations(1); return f(x); },
+               relTolerance_, &error);
+            setAbsoluteError(error);
+
+            return value;
+        }
 
       protected:
         Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
         const override {
             Real error;
-            Real value = tanh_sinh_.integrate(
-                [this, f](Real x)-> Real {
+            Real value = exp_sinh_.integrate(
+                [this, &f](Real x) -> Real {
                     increaseNumberOfEvaluations(1);
                     return f(x);
                 },
@@ -66,7 +77,7 @@ namespace QuantLib {
 
       private:
         const Real relTolerance_;
-        mutable boost::math::quadrature::tanh_sinh<Real> tanh_sinh_;
+        mutable boost::math::quadrature::exp_sinh<Real> exp_sinh_;
     };
 }
 
