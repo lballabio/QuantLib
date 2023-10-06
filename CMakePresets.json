@@ -79,6 +79,20 @@
       }
     },
     {
+      "name": "apple-m1-base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "architecture": {
+          "value": "arm64",
+          "strategy": "external"
+      },
+      "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Darwin"
+      }
+    },
+    {
       "name": "ninja",
       "hidden": true,
       "generator": "Ninja"
@@ -326,6 +340,23 @@
         "QL_USE_STD_TUPLE": "OFF",
         "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+    {
+      "name": "apple-m1-ninja-debug",
+      "description": "Apple M1 preset",
+      "inherits": [
+          "apple-m1-base",
+          "ninja",
+          "_debug"
+      ],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": false,
+        "QL_BUILD_EXAMPLES": false,
+        "QL_BUILD_TEST_SUITE": true,
+        "QL_BUILD_BENCHMARK": false,
+        "QL_ENABLE_SESSIONS": true,
+        "QL_USE_STD_SHARED_PTR": "ON"
       }
     }
   ]
