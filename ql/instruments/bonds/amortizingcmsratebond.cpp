@@ -38,7 +38,8 @@ namespace QuantLib {
                                     const std::vector<Rate>& caps,
                                     const std::vector<Rate>& floors,
                                     bool inArrears,
-                                    const Date& issueDate)
+                                    const Date& issueDate,
+                                    const std::vector<Real>& redemptions)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();
@@ -54,7 +55,7 @@ namespace QuantLib {
             .withFloors(floors)
             .inArrears(inArrears);
 
-        addRedemptionsToCashflows();
+        addRedemptionsToCashflows(redemptions);
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
 

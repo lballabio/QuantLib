@@ -167,6 +167,7 @@ QL_TEST_SRCS = \
 	varianceswaps.cpp \
 	volatilitymodels.cpp \
 	vpp.cpp \
+	xoshiro256starstar.cpp \
 	zabr.cpp \
 	zerocouponswap.cpp
 
@@ -339,6 +340,7 @@ QL_TEST_HDRS = \
 	varianceswaps.hpp \
 	volatilitymodels.hpp \
 	vpp.hpp \
+	xoshiro256starstar.hpp \
 	zabr.hpp \
 	zerocouponswap.hpp
 

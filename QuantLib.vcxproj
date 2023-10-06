@@ -1131,6 +1131,7 @@
     <ClInclude Include="ql\math\randomnumbers\sobolbrownianbridgersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.hpp" />
     <ClInclude Include="ql\math\richardsonextrapolation.hpp" />
     <ClInclude Include="ql\math\rounding.hpp" />
     <ClInclude Include="ql\math\sampledcurve.hpp" />
@@ -2325,6 +2326,7 @@
     <ClCompile Include="ql\math\randomnumbers\sobolbrownianbridgersg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.cpp" />
     <ClCompile Include="ql\math\richardsonextrapolation.cpp" />
     <ClCompile Include="ql\math\rounding.cpp" />
     <ClCompile Include="ql\math\sampledcurve.cpp" />

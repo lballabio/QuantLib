@@ -100,7 +100,8 @@ namespace QuantLib {
                                               Compounding comp,
                                               Frequency freq,
                                               bool extrapolate) const {
-        if (d==referenceDate()) {
+        Time t = timeFromReference(d);
+        if (t == 0) {
             Real compound = 1.0/discount(dt, extrapolate);
             // t has been calculated with a possibly different daycounter
             // but the difference should not matter for very small times
@@ -108,7 +109,7 @@ namespace QuantLib {
                                              dayCounter, comp, freq,
                                              dt);
         }
-        Real compound = 1.0/discount(d, extrapolate);
+        Real compound = 1.0/discount(t, extrapolate);
         return InterestRate::impliedRate(compound,
                                          dayCounter, comp, freq,
                                          referenceDate(), d);

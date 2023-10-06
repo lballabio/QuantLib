@@ -28,7 +28,6 @@
 #include <ql/time/schedule.hpp>
 #include <utility>
 
-
 namespace QuantLib {
 
     SwaptionHelper::SwaptionHelper(const Period& maturity,

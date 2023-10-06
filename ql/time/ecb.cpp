@@ -30,48 +30,65 @@ using std::string;
 
 namespace QuantLib {
 
-    static std::set<Date> knownDateSet;
+    namespace detail {
+        static std::set<Date> ecbKnownDateSet = {
+            Date(38371), Date(38391), Date(38420), Date(38455), Date(38483), Date(38511),
+            Date(38546), Date(38574), Date(38602), Date(38637), Date(38665),
+            Date(38692), // 2005
+            Date(38735), Date(38756), Date(38784), Date(38819), Date(38847), Date(38883),
+            Date(38910), Date(38938), Date(38966), Date(39001), Date(39029),
+            Date(39064), // 2006
+            Date(39099), Date(39127), Date(39155), Date(39190), Date(39217), Date(39246),
+            Date(39274), Date(39302), Date(39337), Date(39365), Date(39400),
+            Date(39428), // 2007
+            Date(39463), Date(39491), Date(39519), Date(39554), Date(39582), Date(39610),
+            Date(39638), Date(39673), Date(39701), Date(39729), Date(39764),
+            Date(39792), // 2008
+            Date(39834), Date(39855), Date(39883), Date(39911), Date(39946), Date(39974),
+            Date(40002), Date(40037), Date(40065), Date(40100), Date(40128),
+            Date(40155), // 2009
+            Date(40198), Date(40219), Date(40247), Date(40282), Date(40310), Date(40345),
+            Date(40373), Date(40401), Date(40429), Date(40464), Date(40492),
+            Date(40520), // 2010
+            Date(40562), Date(40583), Date(40611), Date(40646), Date(40674), Date(40709),
+            Date(40737), Date(40765), Date(40800), Date(40828), Date(40856),
+            Date(40891), // 2011
+                         // http://www.ecb.europa.eu/press/pr/date/2011/html/pr110520.en.html
+            Date(40926), Date(40954), Date(40982), Date(41010), Date(41038), Date(41073),
+            Date(41101), Date(41129), Date(41164), Date(41192), Date(41227),
+            Date(41255), // 2012
+            Date(41290), Date(41318), Date(41346), Date(41374), Date(41402), Date(41437),
+            Date(41465), Date(41493), Date(41528), Date(41556), Date(41591),
+            Date(41619), // 2013
+                         // http://www.ecb.europa.eu/press/pr/date/2013/html/pr130610.en.html
+            Date(41654), Date(41682), Date(41710), Date(41738), Date(41773), Date(41801),
+            Date(41829), Date(41864), Date(41892), Date(41920), Date(41955),
+            Date(41983), // 2014
+                         // http://www.ecb.europa.eu/press/pr/date/2014/html/pr140717_1.en.html
+            Date(42032), Date(42074), Date(42116), Date(42165), Date(42207), Date(42256),
+            Date(42305),
+            Date(42347), // 2015
+                         // https://www.ecb.europa.eu/press/pr/date/2015/html/pr150622.en.html
+            Date(42396), Date(42445), Date(42487), Date(42529), Date(42578), Date(42627),
+            Date(42669),
+            Date(42718), // 2016
+                         // https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
+            Date(42760), Date(42809), Date(42858), Date(42900), Date(42942), Date(42991),
+            Date(43040),
+            Date(43089) // 2017
+        };
+    }
 
     const std::set<Date>& ECB::knownDates() {
-
-        // one-off inizialization
-        static const Date::serial_type knownDatesArray[] = {
-              38371, 38391, 38420, 38455, 38483, 38511, 38546, 38574, 38602, 38637, 38665, 38692 // 2005
-            , 38735, 38756, 38784, 38819, 38847, 38883, 38910, 38938, 38966, 39001, 39029, 39064 // 2006
-            , 39099, 39127, 39155, 39190, 39217, 39246, 39274, 39302, 39337, 39365, 39400, 39428 // 2007
-            , 39463, 39491, 39519, 39554, 39582, 39610, 39638, 39673, 39701, 39729, 39764, 39792 // 2008
-            , 39834, 39855, 39883, 39911, 39946, 39974, 40002, 40037, 40065, 40100, 40128, 40155 // 2009
-            , 40198, 40219, 40247, 40282, 40310, 40345, 40373, 40401, 40429, 40464, 40492, 40520 // 2010
-            , 40562, 40583, 40611, 40646, 40674, 40709, 40737, 40765, 40800, 40828, 40856, 40891 // 2011
-            // http://www.ecb.europa.eu/press/pr/date/2011/html/pr110520.en.html
-            , 40926, 40954, 40982, 41010, 41038, 41073, 41101, 41129, 41164, 41192, 41227, 41255 // 2012
-            , 41290, 41318, 41346, 41374, 41402, 41437, 41465, 41493, 41528, 41556, 41591, 41619 // 2013
-            // http://www.ecb.europa.eu/press/pr/date/2013/html/pr130610.en.html
-            , 41654, 41682, 41710, 41738, 41773, 41801, 41829, 41864, 41892, 41920, 41955, 41983 // 2014
-            // http://www.ecb.europa.eu/press/pr/date/2014/html/pr140717_1.en.html
-            , 42032, 42074, 42116, 42165, 42207, 42256, 42305, 42347// 2015
-            // https://www.ecb.europa.eu/press/pr/date/2015/html/pr150622.en.html
-            , 42396, 42445, 42487, 42529, 42578, 42627, 42669, 42718 // 2016
-            // https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
-            , 42760, 42809, 42858, 42900, 42942, 42991, 43040, 43089 //2017
-        };
-        if (knownDateSet.empty()) {
-            Size n = sizeof(knownDatesArray)/sizeof(Date::serial_type);
-            for (Size i=0; i<n; ++i)
-                knownDateSet.insert(Date(knownDatesArray[i]));
-        }
-
-        return knownDateSet;
+        return detail::ecbKnownDateSet;
     }
 
     void ECB::addDate(const Date& d) {
-        knownDates(); // just to ensure inizialization
-        knownDateSet.insert(d);
+        detail::ecbKnownDateSet.insert(d);
     }
 
     void ECB::removeDate(const Date& d) {
-        knownDates(); // just to ensure inizialization
-        knownDateSet.erase(d);
+        detail::ecbKnownDateSet.erase(d);
     }
 
     Date ECB::date(const string& ecbCode,
@@ -177,8 +194,8 @@ namespace QuantLib {
 
         auto i = std::upper_bound(knownDates().begin(), knownDates().end(), d);
 
-        QL_REQUIRE(i!=knownDates().end(),
-                   "ECB dates after " << *(--knownDates().end()) << " are unknown");
+        QL_REQUIRE(i != knownDates().end(),
+                   "ECB dates after " << *knownDates().rbegin() << " are unknown");
         return *i;
     }
 
@@ -189,8 +206,8 @@ namespace QuantLib {
 
         auto i = std::upper_bound(knownDates().begin(), knownDates().end(), d);
 
-        QL_REQUIRE(i!=knownDates().end(),
-                   "ECB dates after " << *knownDates().end() << " are unknown");
+        QL_REQUIRE(i != knownDates().end(),
+                   "ECB dates after " << *knownDates().rbegin() << " are unknown");
         return std::vector<Date>(i, knownDates().end());
     }
 

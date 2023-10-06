@@ -170,7 +170,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
 
         for (Size k=0; k<size; ++k) {
             Real expected = 0;
-            if (k>2*t) {
+            if (static_cast<Real>(k) > 2 * t) {
                 const Real T = fixingTimes[k];
                 expected=(a*(T-t)+d)*std::exp(-b*(T-t)) + c;
             }

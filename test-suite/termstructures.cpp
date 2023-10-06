@@ -416,6 +416,26 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     }
 }
 
+
+void TermStructureTest::testNullTimeToReference() {
+    BOOST_TEST_MESSAGE("Testing zero-rate calculation for null time-to-reference...");
+
+    Rate rate = 0.02;
+    auto dayCount = Thirty360(Thirty360::BondBasis);
+    auto curve = FlatForward(Date(30, August, 2023), rate, dayCount);
+
+    // the time between August 30th and 31st is null for the 30/360 day count convention
+    Rate expected = rate;
+    Rate calculated = curve.zeroRate(Date(31, August, 2023), dayCount, Continuous);
+    Real tolerance = 1.0e-10;
+
+    if (std::fabs(calculated - expected) > tolerance)
+        BOOST_ERROR("unable to reproduce zero yield rate from curve\n"
+                    << std::fixed << std::setprecision(10)
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
+}
+
 test_suite* TermStructureTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Term structure tests");
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
@@ -425,12 +445,10 @@ test_suite* TermStructureTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreadedObs));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreaded));
     suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreadedObs));
-    suite->add(QUANTLIB_TEST_CASE(
-                         &TermStructureTest::testCreateWithNullUnderlying));
-    suite->add(QUANTLIB_TEST_CASE(
-                             &TermStructureTest::testLinkToNullUnderlying));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &TermStructureTest::testCompositeZeroYieldStructures));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testCreateWithNullUnderlying));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testLinkToNullUnderlying));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testCompositeZeroYieldStructures));
+    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testNullTimeToReference));
     return suite;
 }
 
