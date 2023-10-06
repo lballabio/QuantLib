@@ -180,8 +180,10 @@ namespace QuantLib {
                 std::lock_guard<std::mutex> sLock(ObservableSettings::instance().mutex_);
                 updatesEnabled = ObservableSettings::instance().updatesEnabled();
 
-                if (ObservableSettings::instance().updatesDeferred())
+                if (ObservableSettings::instance().updatesDeferred()) {
+                    std::lock_guard<std::recursive_mutex> lock(mutex_);
                     ObservableSettings::instance().registerDeferredObservers(observers_);
+                }
             }
 
             if (updatesEnabled)
