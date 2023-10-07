@@ -353,7 +353,6 @@
       "cacheVariables": {
         "BUILD_SHARED_LIBS": false,
         "QL_BUILD_EXAMPLES": false,
-        "QL_BUILD_TEST_SUITE": true,
         "QL_BUILD_BENCHMARK": false,
         "QL_ENABLE_SESSIONS": true,
         "QL_USE_STD_SHARED_PTR": "ON"
