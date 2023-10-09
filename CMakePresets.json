@@ -79,7 +79,7 @@
       }
     },
     {
-      "name": "apple-m1-base",
+      "name": "apple-arm64-base",
       "hidden": true,
       "binaryDir": "${sourceDir}/build/${presetName}",
       "architecture": {
@@ -343,28 +343,28 @@
       }
     },
     {
-      "name": "apple-m1-ninja-debug",
-      "description": "Apple M1 preset",
+      "name": "apple-arm64-ninja-debug",
+      "description": "Apple M series preset Debug",
       "inherits": [
-          "apple-m1-base",
+          "apple-arm64-base",
           "ninja",
           "_debug"
       ]
     },
     {
-      "name": "apple-m1-ninja-release",
-      "description": "Apple M1 preset",
+      "name": "apple-arm64-ninja-release",
+      "description": "Apple M series preset Release",
       "inherits": [
-          "apple-m1-base",
+          "apple-arm64-base",
           "ninja",
           "_release"
       ]
     },
     {
-      "name": "apple-m1-ninja-relwithdebinfo",
-      "description": "Apple M1 preset",
+      "name": "apple-arm64-ninja-relwithdebinfo",
+      "description": "Apple M series preset RelWithDebInfo",
       "inherits": [
-          "apple-m1-base",
+          "apple-arm64-base",
           "ninja",
           "_relwithdebinfo"
       ]
