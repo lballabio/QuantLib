@@ -349,14 +349,25 @@
           "apple-m1-base",
           "ninja",
           "_debug"
-      ],
-      "cacheVariables": {
-        "BUILD_SHARED_LIBS": false,
-        "QL_BUILD_EXAMPLES": false,
-        "QL_BUILD_BENCHMARK": false,
-        "QL_ENABLE_SESSIONS": true,
-        "QL_USE_STD_SHARED_PTR": "ON"
-      }
+      ]
+    },
+    {
+      "name": "apple-m1-ninja-release",
+      "description": "Apple M1 preset",
+      "inherits": [
+          "apple-m1-base",
+          "ninja",
+          "_release"
+      ]
+    },
+    {
+      "name": "apple-m1-ninja-relwithdebinfo",
+      "description": "Apple M1 preset",
+      "inherits": [
+          "apple-m1-base",
+          "ninja",
+          "_relwithdebinfo"
+      ]
     }
   ]
 }
