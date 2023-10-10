@@ -42,8 +42,7 @@ namespace QuantLib {
       public:
         ExpSinhIntegral(
             Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
-            Size maxRefinements = 9
-            )
+            Size maxRefinements = 9)
       : Integrator(QL_MAX_REAL, Null<Size>()),
         relTolerance_(relTolerance),
         exp_sinh_(maxRefinements) {}
@@ -85,16 +84,17 @@ namespace QuantLib {
 
 namespace QuantLib {
 
-    class TanhSinhIntegral : public Integrator {
+    class ExpSinhIntegral : public Integrator {
       public:
-        TanhSinhIntegral(Real relTolerance = 0, Size maxRefinements = 0, Real minComplement = 0)
+        ExpSinhIntegral( Real relTolerance = 0, Size maxRefinements = 0)
         : Integrator(Null<Real>(), Null<Size>()) {
-            QL_FAIL("boost version 1.69 or higher is required in order to use TanhSinhIntegral");
+            QL_FAIL("boost version 1.69 or higher is required in order to use ExpSinhIntegral");
         }
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
-        const override { return 0.0; }
+        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override {
+            QL_FAIL("boost version 1.69 or higher is required in order to use ExpSinhIntegral");
+        }
     };
 
 }

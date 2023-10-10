@@ -82,8 +82,9 @@ namespace QuantLib {
         }
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
-        const override { return 0.0; }
+        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override {
+            QL_FAIL("boost version 1.69 or higher is required in order to use TanhSinhIntegral");
+        }
     };
 
 }
