@@ -23,6 +23,7 @@
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
