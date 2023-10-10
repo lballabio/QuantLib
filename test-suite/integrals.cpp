@@ -155,6 +155,7 @@ void IntegralTest::testTanhSinh() {
 void IntegralTest::testExpSinh() {
     BOOST_TEST_MESSAGE("Testing exp-sinh integration...");
 
+#ifdef QL_BOOST_HAS_EXP_SINH
     using namespace integrals_test;
 
     const ExpSinhIntegral integrator;
@@ -165,6 +166,7 @@ void IntegralTest::testExpSinh() {
     testSingle(integrator,
         "f(x) = x*e^(-x)", [](Real x) { return x*std::exp(-x); },
         0.0, boost::math::tools::max_value<Real>(), 1.0);
+#endif
 }
 
 void IntegralTest::testGaussLegendreIntegrator() {
