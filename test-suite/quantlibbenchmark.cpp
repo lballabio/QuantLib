@@ -137,7 +137,7 @@
 #endif
 
 #include "utilities.hpp"
-#include "americanoption.hpp"
+//#include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
@@ -188,7 +188,7 @@ namespace {
     };
 
     std::vector<Benchmark> bm = {
-        Benchmark("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks, 518.31),
+//        Benchmark("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks, 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13),
         Benchmark("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8),
         Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
