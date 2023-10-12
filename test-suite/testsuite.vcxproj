@@ -804,6 +804,7 @@
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
     <ClCompile Include="vpp.cpp" />
+    <ClCompile Include="xoshiro256starstar.cpp" />
     <ClCompile Include="zabr.cpp" />
     <ClCompile Include="zerocouponswap.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
@@ -978,6 +979,7 @@
     <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
     <ClInclude Include="vpp.hpp" />
+    <ClInclude Include="xoshiro256starstar.hpp" />
     <ClInclude Include="zabr.hpp" />
     <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>

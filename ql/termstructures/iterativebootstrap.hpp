@@ -99,7 +99,8 @@ namespace detail {
                            Real maxFactor = 2.0,
                            Real minFactor = 2.0,
                            bool dontThrow = false,
-                           Size dontThrowSteps = 10);
+                           Size dontThrowSteps = 10,
+                           Size maxEvaluations = MAX_FUNCTION_EVALUATIONS);
         void setup(Curve* ts);
         void calculate() const;
       private:
@@ -132,12 +133,15 @@ namespace detail {
                                                   Real maxFactor,
                                                   Real minFactor,
                                                   bool dontThrow,
-                                                  Size dontThrowSteps)
+                                                  Size dontThrowSteps,
+                                                  Size maxEvaluations)
     : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue), maxAttempts_(maxAttempts),
       maxFactor_(maxFactor), minFactor_(minFactor), dontThrow_(dontThrow),
       dontThrowSteps_(dontThrowSteps), ts_(nullptr), loopRequired_(Interpolator::global) {
         QL_REQUIRE(maxFactor_ >= 1.0, "Expected that maxFactor would be at least 1.0 but got " << maxFactor_);
         QL_REQUIRE(minFactor_ >= 1.0, "Expected that minFactor would be at least 1.0 but got " << minFactor_);
+        firstSolver_.setMaxEvaluations(maxEvaluations);
+        solver_.setMaxEvaluations(maxEvaluations);
     }
 
     template <class Curve>

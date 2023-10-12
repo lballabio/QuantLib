@@ -76,8 +76,6 @@ namespace QuantLib {
                    swapIndexBase_->tenor() << ")");
 
         registerWithVolatilitySpread();
-        registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
     }
 
     void SwaptionVolatilityCube::registerWithVolatilitySpread()

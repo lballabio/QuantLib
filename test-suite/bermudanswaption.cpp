@@ -263,6 +263,7 @@ void BermudanSwaptionTest::testCachedG2Values() {
         for (const auto& i : swap->fixedLeg()) {
             exerciseDates.push_back(ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate());
         }
+
         swaptions.push_back(ext::make_shared<Swaption>(swap,
             ext::make_shared<BermudanExercise>(exerciseDates)));
     }
@@ -343,6 +344,7 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
 
         auto callDate = initialCallDate + i * Days;
         if (calendar.isBusinessDay(callDate)) {
+
             auto bermudanSwaption = makeBermudanSwaption(callDate);
 
             auto model = ext::make_shared<HullWhite>(termStructure);

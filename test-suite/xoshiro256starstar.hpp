@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2023 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,29 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_term_structures_hpp
-#define quantlib_test_term_structures_hpp
+
+#ifndef quantlib_test_xoshiro256starstar_hpp
+#define quantlib_test_xoshiro256starstar_hpp
 
 #include <boost/test/unit_test.hpp>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class TermStructureTest {
+class Xoshiro256StarStarTest {
   public:
-    static void testReferenceChange();
-    static void testImplied();
-    static void testImpliedObs();
-    static void testFSpreaded();
-    static void testFSpreadedObs();
-    static void testZSpreaded();
-    static void testZSpreadedObs();
-    static void testCreateWithNullUnderlying();
-    static void testLinkToNullUnderlying();
-    static void testCompositeZeroYieldStructures();
-    static void testNullTimeToReference();
+    static void testMeanAndStdDevOfNextReal();
+    static void testAgainstReferenceImplementationInC();
+    static void testAbsenceOfInteractionBetweenInstances();
     static boost::unit_test_framework::test_suite* suite();
 };
 
-
-#endif
+#endif // quantlib_test_xoshiro256starstar_hpp

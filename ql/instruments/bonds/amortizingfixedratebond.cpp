@@ -35,7 +35,9 @@ namespace QuantLib {
                                       const Period& exCouponPeriod,
                                       const Calendar& exCouponCalendar,
                                       const BusinessDayConvention exCouponConvention,
-                                      bool exCouponEndOfMonth)
+                                      bool exCouponEndOfMonth,
+                                      const std::vector<Real>& redemptions,
+                                      Natural paymentLag)
     : Bond(settlementDays, schedule.calendar(), issueDate),
       frequency_(schedule.tenor().frequency()),
       dayCounter_(accrualDayCounter) {
@@ -49,9 +51,10 @@ namespace QuantLib {
             .withExCouponPeriod(exCouponPeriod,
                                 exCouponCalendar,
                                 exCouponConvention,
-                                exCouponEndOfMonth);
+                                exCouponEndOfMonth)
+            .withPaymentLag(paymentLag);
 
-        addRedemptionsToCashflows();
+        addRedemptionsToCashflows(redemptions);
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
     }
@@ -88,6 +91,7 @@ namespace QuantLib {
 
         addRedemptionsToCashflows();
     }
+
 
     AmortizingFixedRateBond::AmortizingFixedRateBond(
                                       Natural settlementDays,

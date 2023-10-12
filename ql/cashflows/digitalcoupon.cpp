@@ -34,7 +34,7 @@ namespace QuantLib {
                                  Position::Type putPosition,
                                  bool isPutATMIncluded,
                                  Rate putDigitalPayoff,
-                                 const ext::shared_ptr<DigitalReplication>& replication,
+                                 ext::shared_ptr<DigitalReplication> replication,
                                  const bool nakedOption)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
@@ -49,15 +49,16 @@ namespace QuantLib {
                          underlying->dayCounter(),
                          underlying->isInArrears()),
       underlying_(underlying), isCallATMIncluded_(isCallATMIncluded),
-      isPutATMIncluded_(isPutATMIncluded),
+      isPutATMIncluded_(isPutATMIncluded), nakedOption_(nakedOption) {
 
-      callLeftEps_(replication->gap() / 2.), callRightEps_(replication->gap() / 2.),
-      putLeftEps_(replication->gap() / 2.), putRightEps_(replication->gap() / 2.),
-
-      replicationType_(replication->replicationType()), nakedOption_(nakedOption) {
-
+        if (replication == nullptr)
+            replication = ext::make_shared<DigitalReplication>();
+        
         QL_REQUIRE(replication->gap()>0.0, "Non positive epsilon not allowed");
 
+        callLeftEps_ = callRightEps_ = putLeftEps_ = putRightEps_ = replication->gap() / 2;
+        replicationType_ = replication->replicationType();
+        
         if (putStrike == Null<Rate>()) {
             QL_REQUIRE(putDigitalPayoff == Null<Rate>(),
             "Put Cash rate non allowed if put strike is null");
