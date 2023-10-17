@@ -123,7 +123,7 @@ namespace QuantLib {
                                                RateAveraging::Type averagingMethod)
     : FixedVsFloatingSwap(type, std::move(fixedNominals), std::move(fixedSchedule), fixedRate, std::move(fixedDC),
                           overnightNominals, overnightSchedule, overnightIndex,
-                          spread, DayCounter(), ext::nullopt),
+                          spread, DayCounter(), ext::nullopt, paymentLag, paymentCalendar),
       overnightIndex_(overnightIndex), averagingMethod_(averagingMethod) {
 
         legs_[1] =
