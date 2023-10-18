@@ -351,7 +351,7 @@ set(QL_TEST_HEADERS
 set(QL_BENCHMARK_SOURCES
     quantlibbenchmark.cpp
     
-#    americanoption.cpp
+    americanoption.cpp
     asianoptions.cpp                    asianoptions.hpp
     barrieroption.cpp                   barrieroption.hpp
     basketoption.cpp                    basketoption.hpp
@@ -367,10 +367,11 @@ set(QL_BENCHMARK_SOURCES
     lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp
     marketmodel_cms.cpp                 marketmodel_cms.hpp
     marketmodel_smm.cpp                 marketmodel_smm.hpp
+    quantlibglobalfixture.cpp           quantlibglobalfixture.hpp
     quantooption.cpp                    quantooption.hpp
     riskstats.cpp                       riskstats.hpp
     shortratemodels.cpp                 shortratemodels.hpp
-
+    speedlevel.cpp                      speedlevel.hpp
     utilities.cpp                       utilities.hpp
                                         swaptionvolstructuresutilities.hpp
 )
