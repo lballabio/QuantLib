@@ -147,15 +147,16 @@ BOOST_AUTO_TEST_CASE(testYield) {
                                     bond, calculated, bondDayCount, n, frequencie);
                                 if (std::fabs(price - price2) / price > tolerance) {
                                     BOOST_ERROR("\nyield recalculation failed:"
-                                                "\n    issue:     "
-                                                << issue << "\n    maturity:  " << maturity
-                                                << "\n    coupon:    " << io::rate(coupon)
-                                                << "\n    frequency: " << frequencie
-                                                << "\n    yield:   " << io::rate(m)
-                                                << (n == Compounded ? " compounded" : " continuous")
-                                                << std::setprecision(7) << "\n    clean price:   "
-                                                << price << "\n    yield': " << io::rate(calculated)
-                                                << "\n    clean price': " << price2);
+                                                "\n    issue:        " << issue <<
+                                                "\n    maturity:     " << maturity <<
+                                                "\n    coupon:       " << io::rate(coupon) <<
+                                                "\n    frequency:    " << frequencie <<
+                                                "\n    yield:        " << io::rate(m) <<
+                                                    (n == Compounded ? " compounded" : " continuous") <<
+                                                std::setprecision(7) <<
+                                                "\n    clean price:  " << price <<
+                                                "\n    yield':       " << io::rate(calculated) <<
+                                                "\n    clean price': " << price2);
                                 }
                             }
 
@@ -171,15 +172,16 @@ BOOST_AUTO_TEST_CASE(testYield) {
                                     bond, calculated, bondDayCount, n, frequencie);
                                 if (std::fabs(price - price2) / price > tolerance) {
                                     BOOST_ERROR("\nyield recalculation failed:"
-                                                "\n    issue:     "
-                                                << issue << "\n    maturity:  " << maturity
-                                                << "\n    coupon:    " << io::rate(coupon)
-                                                << "\n    frequency: " << frequencie
-                                                << "\n    yield:   " << io::rate(m)
-                                                << (n == Compounded ? " compounded" : " continuous")
-                                                << std::setprecision(7) << "\n    dirty price:   "
-                                                << price << "\n    yield': " << io::rate(calculated)
-                                                << "\n    dirty price': " << price2);
+                                                "\n    issue:        " << issue <<
+                                                "\n    maturity:     " << maturity <<
+                                                "\n    coupon:       " << io::rate(coupon) <<
+                                                "\n    frequency:    " << frequencie <<
+                                                "\n    yield:        " << io::rate(m) <<
+                                                    (n == Compounded ? " compounded" : " continuous") <<
+                                                std::setprecision(7) <<
+                                                "\n    dirty price:  " << price <<
+                                                "\n    yield':       " << io::rate(calculated) <<
+                                                "\n    dirty price': " << price2);
                                 }
                             }
                         }
@@ -233,14 +235,15 @@ BOOST_AUTO_TEST_CASE(testAtmRate) {
 
                     if (std::fabs(coupon - calculated) > tolerance) {
                         BOOST_ERROR("\natm rate recalculation failed:"
-                                    "\n today:           "
-                                    << vars.today << "\n settlement date: " << bond.settlementDate()
-                                    << "\n issue:           " << issue << "\n maturity:        "
-                                    << maturity << "\n coupon:          " << io::rate(coupon)
-                                    << "\n frequency:       " << frequencie
-                                    << "\n clean price:     " << price
-                                    << "\n dirty price:     " << price + bond.accruedAmount()
-                                    << "\n atm rate:        " << io::rate(calculated));
+                                    "\n today:           " << vars.today <<
+                                    "\n settlement date: " << bond.settlementDate() <<
+                                    "\n issue:           " << issue <<
+                                    "\n maturity:        " << maturity <<
+                                    "\n coupon:          " << io::rate(coupon) <<
+                                    "\n frequency:       " << frequencie <<
+                                    "\n clean price:     " << price <<
+                                    "\n dirty price:     " << price + bond.accruedAmount() <<
+                                    "\n atm rate:        " << io::rate(calculated));
                     }
                 }
             }
@@ -305,16 +308,16 @@ BOOST_AUTO_TEST_CASE(testZspread) {
                                     bond, *discountCurve, calculated, bondDayCount, n, frequencie);
                                 if (std::fabs(price - price2) / price > tolerance) {
                                     BOOST_ERROR("\nZ-spread recalculation failed:"
-                                                "\n    issue:     "
-                                                << issue << "\n    maturity:  " << maturity
-                                                << "\n    coupon:    " << io::rate(coupon)
-                                                << "\n    frequency: " << frequencie
-                                                << "\n    Z-spread:  " << io::rate(spread)
-                                                << (n == Compounded ? " compounded" : " continuous")
-                                                << std::setprecision(7)
-                                                << "\n    price:     " << price
-                                                << "\n    Z-spread': " << io::rate(calculated)
-                                                << "\n    price':    " << price2);
+                                                "\n    issue:     " << issue <<
+                                                "\n    maturity:  " << maturity <<
+                                                "\n    coupon:    " << io::rate(coupon) <<
+                                                "\n    frequency: " << frequencie <<
+                                                "\n    Z-spread:  " << io::rate(spread) <<
+                                                    (n == Compounded ? " compounded" : " continuous") <<
+                                                std::setprecision(7) <<
+                                                "\n    price:     " << price <<
+                                                "\n    Z-spread': " << io::rate(calculated) <<
+                                                "\n    price':    " << price2);
                                 }
                             }
                         }
@@ -375,27 +378,31 @@ BOOST_AUTO_TEST_CASE(testTheoretical) {
                     Real calculatedPrice = bond.cleanPrice();
 
                     if (std::fabs(price - calculatedPrice) > tolerance) {
-                        BOOST_ERROR("price calculation failed:"
-                                    << "\n    issue:     " << issue << "\n    maturity:  "
-                                    << maturity << "\n    coupon:    " << io::rate(coupon)
-                                    << "\n    frequency: " << frequencie
-                                    << "\n    yield:  " << io::rate(m) << std::setprecision(7)
-                                    << "\n    expected:    " << price
-                                    << "\n    calculated': " << calculatedPrice
-                                    << "\n    error':      " << price - calculatedPrice);
+                        BOOST_ERROR("price calculation failed:" <<
+                                    "\n    issue:       " << issue <<
+                                    "\n    maturity:    " << maturity <<
+                                    "\n    coupon:      " << io::rate(coupon) <<
+                                    "\n    frequency:   " << frequencie <<
+                                    "\n    yield:       " << io::rate(m) <<
+                                    std::setprecision(7) <<
+                                    "\n    expected:    " << price <<
+                                    "\n    calculated': " << calculatedPrice <<
+                                    "\n    error':      " << price - calculatedPrice);
                     }
 
                     Rate calculatedYield = BondFunctions::yield(
                         bond, calculatedPrice, bondDayCount, Continuous, frequencie,
                         bond.settlementDate(), tolerance, maxEvaluations);
                     if (std::fabs(m - calculatedYield) > tolerance) {
-                        BOOST_ERROR("yield calculation failed:"
-                                    << "\n    issue:     " << issue << "\n    maturity:  "
-                                    << maturity << "\n    coupon:    " << io::rate(coupon)
-                                    << "\n    frequency: " << frequencie
-                                    << "\n    yield:  " << io::rate(m) << std::setprecision(7)
-                                    << "\n    price:  " << price
-                                    << "\n    yield': " << io::rate(calculatedYield));
+                        BOOST_ERROR("yield calculation failed:" <<
+                                    "\n    issue:     " << issue <<
+                                    "\n    maturity:  " << maturity <<
+                                    "\n    coupon:    " << io::rate(coupon) <<
+                                    "\n    frequency: " << frequencie <<
+                                    "\n    yield:     " << io::rate(m) <<
+                                    std::setprecision(7) <<
+                                    "\n    price:     " << price <<
+                                    "\n    yield':    " << io::rate(calculatedYield));
                     }
                 }
             }
