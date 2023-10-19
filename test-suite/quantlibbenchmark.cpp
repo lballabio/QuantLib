@@ -156,11 +156,10 @@
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
 
+
 namespace QuantLibTest {
     namespace AmericanOptionTest {
-        struct testFdAmericanGreeks : public BOOST_AUTO_TEST_CASE_FIXTURE {
-            void test_method();
-        };
+        struct testFdAmericanGreeks: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
 
@@ -168,11 +167,10 @@ namespace {
 
     class Benchmark {
       public:
-        typedef std::function<void(void)> fct_ptr;
-        Benchmark(std::string name, fct_ptr f, double mflop)
-        : f_(std::move(f)), name_(std::move(name)), mflop_(mflop) {}
+        Benchmark(std::string name, std::function<void(void)> f, double mflop)
+        : f_(f), name_(std::move(name)), mflop_(mflop) {}
 
-        fct_ptr getTestCase() const {
+        std::function<void(void)> getTestCase() const {
             return f_;
         }
         double getMflop() const {
@@ -187,7 +185,7 @@ namespace {
             std::swap(mflop_, other.mflop_);
         }
       private:
-        fct_ptr f_;
+        std::function<void(void)> f_;
         std::string name_;
         double mflop_; // total number of mega floating
                        // point operations (not per sec!)
@@ -227,8 +225,7 @@ namespace {
 
     class TimedBenchmark {
       public:
-        typedef std::function<void(void)> fct_ptr;
-        explicit TimedBenchmark(fct_ptr f) : f_(std::move(f)) {}
+        explicit TimedBenchmark(std::function<void(void)> f) : f_(f) {}
 
         void startMeasurement() const {
             /* PAPI code
@@ -256,7 +253,7 @@ namespace {
                  stopTime - startTime).count() * 1e-6;
         }
       private:
-        fct_ptr f_;
+        std::function<void(void)> f_;
     };
 
     void printResults(
