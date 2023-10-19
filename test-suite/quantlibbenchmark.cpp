@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
@@ -157,14 +156,21 @@
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
 
+namespace QuantLibTest {
+    namespace AmericanOptionTest {
+        struct testFdAmericanGreeks : public BOOST_AUTO_TEST_CASE_FIXTURE {
+            void test_method();
+        };
+    }
+}
 
 namespace {
 
     class Benchmark {
       public:
-        typedef void (*fct_ptr)();
+        typedef std::function<void(void)> fct_ptr;
         Benchmark(std::string name, fct_ptr f, double mflop)
-        : f_(f), name_(std::move(name)), mflop_(mflop) {}
+        : f_(std::move(f)), name_(std::move(name)), mflop_(mflop) {}
 
         fct_ptr getTestCase() const {
             return f_;
@@ -188,7 +194,7 @@ namespace {
     };
 
     std::vector<Benchmark> bm = {
-        Benchmark("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks, 518.31),
+        Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13),
         Benchmark("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8),
         Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
@@ -221,8 +227,8 @@ namespace {
 
     class TimedBenchmark {
       public:
-        typedef void (*fct_ptr)();
-        explicit TimedBenchmark(fct_ptr f) : f_(f) {}
+        typedef std::function<void(void)> fct_ptr;
+        explicit TimedBenchmark(fct_ptr f) : f_(std::move(f)) {}
 
         void startMeasurement() const {
             /* PAPI code
