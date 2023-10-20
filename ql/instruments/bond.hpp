@@ -194,9 +194,9 @@ namespace QuantLib {
         /*! The default bond settlement date is used for calculation. */
         Real settlementValue(Real cleanPrice) const;
 
-        //! yield given a (clean) price and settlement date
+        //! yield given a price and settlement date
         /*! The default bond settlement is used if no date is given. */
-        Rate yield(Real cleanPrice,
+        Rate yield(Real price,
                    const DayCounter& dc,
                    Compounding comp,
                    Frequency freq,
