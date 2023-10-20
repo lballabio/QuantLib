@@ -78,28 +78,6 @@ namespace QuantLib {
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        CPICapFloor(Option::Type type,
-                    Real nominal,
-                    const Date& startDate, // start date of contract (only)
-                    Real baseCPI,
-                    const Date& maturity, // this is pre-adjustment!
-                    Calendar fixCalendar,
-                    BusinessDayConvention fixConvention,
-                    Calendar payCalendar,
-                    BusinessDayConvention payConvention,
-                    Rate strike,
-                    const Handle<ZeroInflationIndex>& infIndex,
-                    const Period& observationLag,
-                    CPI::InterpolationType observationInterpolation = CPI::AsIndex);
-
-        QL_DEPRECATED_DISABLE_WARNING
-        ~CPICapFloor() override = default;
-        QL_DEPRECATED_ENABLE_WARNING
-
         //! \name Inspectors
         //@{
         Option::Type type() const { return type_; }
@@ -111,16 +89,6 @@ namespace QuantLib {
         const ext::shared_ptr<ZeroInflationIndex>& index() const { return index_; }
         Period observationLag() const { return observationLag_; }
         //@}
-
-        /*! \deprecated Use the `index` method instead.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        Handle<ZeroInflationIndex> inflationIndex() const {
-            QL_DEPRECATED_DISABLE_WARNING
-            return infIndex_;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
 
         //! \name Instrument interface
         //@{
@@ -142,22 +110,11 @@ namespace QuantLib {
         ext::shared_ptr<ZeroInflationIndex> index_;
         Period observationLag_;
         CPI::InterpolationType observationInterpolation_;
-
-        /*! \deprecated Use the `index_` data member instead.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        Handle<ZeroInflationIndex> infIndex_;
     };
 
 
     class CPICapFloor::arguments : public virtual PricingEngine::arguments {
       public:
-        QL_DEPRECATED_DISABLE_WARNING
-        arguments() = default;
-        ~arguments() override = default;
-        QL_DEPRECATED_ENABLE_WARNING
-
         Option::Type type;
         Real nominal;
         Date startDate, fixDate, payDate;
@@ -169,12 +126,6 @@ namespace QuantLib {
         ext::shared_ptr<ZeroInflationIndex> index;
         Period observationLag;
         CPI::InterpolationType observationInterpolation;
-
-        /*! \deprecated Use the `index` data member instead.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        Handle<ZeroInflationIndex> infIndex;
 
         void validate() const override;
     };
