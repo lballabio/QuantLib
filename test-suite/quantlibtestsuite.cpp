@@ -36,10 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "amortizingbond.hpp"
-#include "andreasenhugevolatilityinterpl.hpp"
-#include "array.hpp"
-#include "asianoptions.hpp"
 #include "assetswap.hpp"
 #include "autocovariances.hpp"
 #include "barrieroption.hpp"
@@ -325,12 +321,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     BOOST_TEST_MESSAGE(rule);
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-//    test->add(QUANTLIB_TEST_CASE(startTimer));
-
-    test->add(AmortizingBondTest::suite());
-    test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
-    test->add(ArrayTest::suite());
-    test->add(AsianOptionTest::suite(speed));
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(AutocovariancesTest::suite());
     test->add(BarrierOptionTest::suite());
@@ -458,7 +448,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(AsianOptionTest::experimental(speed));
     test->add(BasismodelsTest::suite());
     test->add(BasisSwapRateHelpersTest::suite());
     test->add(BarrierOptionTest::experimental());
@@ -504,8 +493,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     // tests for deprecated classes
     test->add(LiborMarketModelTest::suite(speed));
     test->add(LiborMarketModelProcessTest::suite(speed));
-
-//    test->add(QUANTLIB_TEST_CASE(stopTimer));
 
     return test;
 }

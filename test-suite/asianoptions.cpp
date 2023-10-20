@@ -22,7 +22,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "asianoptions.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -89,10 +90,63 @@ namespace {
             QL_FAIL("unknown averaging");
     }
 
+    struct DiscreteAverageData {
+        Option::Type type;
+        Real underlying;
+        Real strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Time first;
+        Time length;
+        Size fixings;
+        Volatility volatility;
+        bool controlVariate;
+        Real result;
+    };
+
+    struct ContinuousAverageData {
+        Option::Type type;
+        Real spot;
+        Real currentAverage;
+        Real strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Volatility volatility;
+        Natural length;
+        Natural elapsed;
+        Real result;
+    };
+
+    struct DiscreteAverageDataTermStructure {
+        Option::Type type;
+        Real underlying;
+        Real strike;
+        Rate b;
+        Rate riskFreeRate;
+        Time first; // t1
+        Time expiry;
+        Size fixings;
+        Volatility volatility;
+        std::string slope;
+        Real result;
+    };
+
+    struct VecerData {
+        Real spot;
+        Rate riskFreeRate;
+        Volatility volatility;
+        Real strike;
+        Natural length;
+        Real result;
+        Real tolerance;
+    };
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture)
 
-void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
+BOOST_AUTO_TEST_SUITE(AsianOptionTest)
+
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePrice) {
 
     BOOST_TEST_MESSAGE(
              "Testing analytic continuous geometric average-price Asians...");
@@ -172,8 +226,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
 }
 
-
-void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePriceGreeks) {
 
     BOOST_TEST_MESSAGE(
        "Testing analytic continuous geometric average-price Asian greeks...");
@@ -316,8 +369,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     }
 }
 
-
-void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePrice) {
 
     BOOST_TEST_MESSAGE(
                "Testing analytic discrete geometric average-price Asians...");
@@ -379,7 +431,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     }
 }
 
-void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrike) {
 
     BOOST_TEST_MESSAGE(
               "Testing analytic discrete geometric average-strike Asians...");
@@ -438,8 +490,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike() {
     }
 }
 
-
-void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
+BOOST_AUTO_TEST_CASE(testMCDiscreteGeometricAveragePrice) {
 
     BOOST_TEST_MESSAGE(
             "Testing Monte Carlo discrete geometric average-price Asians...");
@@ -508,7 +559,6 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     }
 }
 
-
 void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine>& engine,
                                              const Real tol[]) {
 
@@ -571,7 +621,7 @@ void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-    
+
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, 1.0, 0.0,
                        std::vector<Date>(), payoff, europeanExercise, spot->value(),
@@ -581,44 +631,7 @@ void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine
     }
 }
 
-
-void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston() {
-
-    BOOST_TEST_MESSAGE("Testing analytic discrete geometric average-price Asians under Heston...");
-
-    // 30-day options need wider tolerance due to uncertainty around what "weekly
-    // fixing" dates mean over a 30-day month!
-    Real tol[] =     {3.0e-2, 2.0e-2, 2.0e-2, 2.0e-2, 3.0e-2, 4.0e-2, 8.0e-2, 1.0e-2,
-                      2.0e-2, 3.0e-2, 3.0e-2, 4.0e-2, 2.0e-2, 1.0e-2, 1.0e-2, 2.0e-2,
-                      3.0e-2, 4.0e-2};
-
-    DayCounter dc = Actual365Fixed();
-    Date today = Settings::instance().evaluationDate();
-
-    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-
-    Real v0 = 0.09;
-    Real kappa = 1.15;
-    Real theta = 0.0348;
-    Real sigma = 0.39;
-    Real rho = -0.64;
-
-    ext::shared_ptr<HestonProcess> hestonProcess(new
-        HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
-            spot, v0, kappa, theta, sigma, rho));
-
-    ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> engine(new
-        AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
-
-    testDiscreteGeometricAveragePriceHeston(engine, tol);
-}
-
-
-void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
+BOOST_AUTO_TEST_CASE(testMCDiscreteGeometricAveragePriceHeston, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing MC discrete geometric average-price Asians under Heston...");
 
@@ -657,179 +670,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
     testDiscreteGeometricAveragePriceHeston(engine, tol);
 }
 
-
-void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
-
-    BOOST_TEST_MESSAGE("Testing Analytic vs MC for seasoned discrete geometric Asians under Heston...");
-
-    // 30-day options need wider tolerance due to uncertainty around what "weekly
-    // fixing" dates mean over a 30-day month!
-
-    int days[] =           {30, 90, 180, 360, 720};
-    Real strikes[] =       {90, 100, 110};
-
-    Real tol[3][5][2] = {{{
-                              0.04, // strike=90, days=30, k=0
-                              0.04, // strike=90, days=30, k=1
-                          },
-                          {
-                              0.04, // strike=90, days=90, k=0
-                              0.04, // strike=90, days=90, k=1
-                          },
-                          {
-                              0.04, // strike=90, days=180, k=0
-                              0.04, // strike=90, days=180, k=1
-                          },
-                          {
-                              0.05, // strike=90, days=360, k=0
-                              0.04, // strike=90, days=360, k=1
-                          },
-                          {
-                              0.04, // strike=90, days=720, k=0
-                              0.04, // strike=90, days=720, k=1
-                          }},
-
-                         {{
-                              0.04, // strike=100, days=30, k=0
-                              0.04, // strike=100, days=30, k=1
-                          },
-                          {
-                              0.04, // strike=100, days=90, k=0
-                              0.04, // strike=100, days=90, k=1
-                          },
-                          {
-                              0.04, // strike=100, days=180, k=0
-                              0.04, // strike=100, days=180, k=1
-                          },
-                          {
-                              0.06, // strike=100, days=360, k=0
-                              0.06, // strike=100, days=360, k=1
-                          },
-                          {
-                              0.06, // strike=100, days=720, k=0
-                              0.05, // strike=100, days=720, k=1
-                          }},
-
-                         {{
-                              0.04, // strike=110, days=30, k=0
-                              0.04, // strike=110, days=30, k=1
-                          },
-                          {
-                              0.04, // strike=110, days=90, k=0
-                              0.04, // strike=110, days=90, k=1
-                          },
-                          {
-                              0.04, // strike=110, days=180, k=0
-                              0.04, // strike=110, days=180, k=1
-                          },
-                          {
-                              0.05, // strike=110, days=360, k=0
-                              0.04, // strike=110, days=360, k=1
-                          },
-                          {
-                              0.06, // strike=110, days=720, k=0
-                              0.05, // strike=110, days=720, k=1
-                          }}};
-
-    DayCounter dc = Actual365Fixed();
-    Date today = Settings::instance().evaluationDate();
-
-    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-
-    Real v0 = 0.09;
-    Real kappa = 1.15;
-    Real theta = 0.0348;
-    Real sigma = 0.39;
-    Real rho = -0.64;
-
-    ext::shared_ptr<HestonProcess> hestonProcess(new
-        HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
-            spot, v0, kappa, theta, sigma, rho));
-
-    ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> analyticEngine(new
-        AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
-
-    ext::shared_ptr<PricingEngine> mcEngine =
-        MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(8191)
-        .withSeed(43);
-
-    Option::Type type(Option::Call);
-    Average::Type averageType = Average::Geometric;
-
-    for (Size strike_index = 0; strike_index < LENGTH(strikes); strike_index++) {
-
-        for (Size day_index = 0; day_index < LENGTH(days); day_index++) {
-
-            for (Size k=0; k<2; k++) {
-
-                Size futureFixings = int(std::floor(days[day_index] / 30.0));
-                std::vector<Date> fixingDates(futureFixings);
-                Date expiryDate = today + days[day_index] * Days;
-
-                for (int i=futureFixings-1; i>=0; i--) {
-                    fixingDates[i] = expiryDate - i * 30;
-                }
-
-                ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strikes[strike_index]));
-
-                Real runningAccumulator = 1.0;
-                Size pastFixingsCount = 0;
-                if (k == 0) {
-                    runningAccumulator = 100.0;
-                    pastFixingsCount = 1;
-                } else {
-                    runningAccumulator = 95.0 * 100.0 * 105.0;
-                    pastFixingsCount = 3;
-                }
-
-                DiscreteAveragingAsianOption option(averageType, runningAccumulator, pastFixingsCount,
-                                                    fixingDates, payoff, europeanExercise);
-
-                option.setPricingEngine(analyticEngine);
-                Real analyticPrice = option.NPV();
-
-                option.setPricingEngine(mcEngine);
-                Real mcPrice = option.NPV();
-
-                auto tolerance = tol[strike_index][day_index][k];
-
-                if (std::fabs(analyticPrice-mcPrice) > tolerance) {
-                    REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
-                               std::vector<Date>(), payoff, europeanExercise, spot->value(),
-                               qRate->value(), rRate->value(), today,
-                               std::sqrt(v0), analyticPrice, mcPrice, tolerance);
-                }
-            }
-        }
-    }
-}
-
-namespace {
-
-    struct DiscreteAverageData {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Time first;
-        Time length;
-        Size fixings;
-        Volatility volatility;
-        bool controlVariate;
-        Real result;
-    };
-
-}
-
-
-void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
+BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE(
            "Testing Monte Carlo discrete arithmetic average-price Asians...");
@@ -990,8 +831,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     }
 }
 
-
-void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
+BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePriceHeston, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE(
            "Testing Monte Carlo discrete arithmetic average-price Asians in Heston model...");
@@ -1183,8 +1023,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 }
 
 
-
-void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
+BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAverageStrike) {
 
     BOOST_TEST_MESSAGE(
           "Testing Monte Carlo discrete arithmetic average-strike Asians...");
@@ -1317,7 +1156,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAverageStrike() {
     }
 }
 
-void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceGreeks) {
 
     BOOST_TEST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
@@ -1465,8 +1304,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     }
 }
 
-
-void AsianOptionTest::testPastFixings() {
+BOOST_AUTO_TEST_CASE(testPastFixings) {
 
     BOOST_TEST_MESSAGE("Testing use of past fixings in Asian options...");
 
@@ -1634,7 +1472,7 @@ void AsianOptionTest::testPastFixings() {
 
 }
 
-void AsianOptionTest::testPastFixingsModelDependency() {
+BOOST_AUTO_TEST_CASE(testPastFixingsModelDependency) {
 
     BOOST_TEST_MESSAGE(
         "Testing use of past fixings in Asian options where model dependency is flagged...");
@@ -1759,8 +1597,7 @@ void AsianOptionTest::testPastFixingsModelDependency() {
     }
 }
 
-
-void AsianOptionTest::testAllFixingsInThePast() {
+BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
 
     BOOST_TEST_MESSAGE(
         "Testing Asian options with all fixing dates in the past...");
@@ -1893,355 +1730,7 @@ void AsianOptionTest::testAllFixingsInThePast() {
     }
 }
 
-namespace {
-
-    struct ContinuousAverageData {
-        Option::Type type;
-        Real spot;
-        Real currentAverage;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Volatility volatility;
-        Natural length;
-        Natural elapsed;
-        Real result;
-    };
-
-}
-
-void AsianOptionTest::testLevyEngine() {
-
-    BOOST_TEST_MESSAGE("Testing Levy engine for Asians options...");
-
-    // data from Haug, "Option Pricing Formulas", p.99-100
-    ContinuousAverageData cases[] = {
-      { Option::Call, 6.80, 6.80, 6.90, 0.09, 0.07, 0.14, 180, 0, 0.0944 },
-      { Option::Put,  6.80, 6.80, 6.90, 0.09, 0.07, 0.14, 180, 0, 0.2237 },
-      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 0, 7.0544 },
-      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 90, 5.6731 },
-      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 180, 5.0806 },
-      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 0, 10.1213 },
-      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 90, 6.9705 },
-      { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 180, 5.1411 },
-      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 0, 3.7845 },
-      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 90, 1.9964 },
-      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 180, 0.6722 },
-      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 0, 7.5038 },
-      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 90, 4.0687 },
-      { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 180, 1.4222 },
-      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 0, 1.6729 },
-      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 90, 0.3565 },
-      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 180, 0.0004 },
-      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 0, 5.4071 },
-      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 90, 2.1359 },
-      { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 180, 0.1552 }
-    };
-
-    DayCounter dc = Actual360();
-    Date today = Settings::instance().evaluationDate();
-
-    for (auto& l : cases) {
-
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(l.spot));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, l.dividendYield, dc);
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, l.riskFreeRate, dc);
-        ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, l.volatility, dc);
-
-        Average::Type averageType = Average::Arithmetic;
-        ext::shared_ptr<Quote> average(new SimpleQuote(l.currentAverage));
-
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(l.type, l.strike));
-
-        Date startDate = today - l.elapsed;
-        Date maturity = startDate + l.length;
-
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
-
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
-                                      Handle<YieldTermStructure>(qTS),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
-
-        ext::shared_ptr<PricingEngine> engine(
-            new ContinuousArithmeticAsianLevyEngine(
-                     stochProcess, Handle<Quote>(average), startDate));
-
-        ContinuousAveragingAsianOption option(averageType,
-                                              payoff, exercise);
-        option.setPricingEngine(engine);
-
-        Real calculated = option.NPV();
-        Real expected = l.result;
-        Real tolerance = 1.0e-4;
-        Real error = std::fabs(expected-calculated);
-        if (error > tolerance) {
-            BOOST_ERROR(
-                "Asian option with Levy engine:"
-                << "\n    spot:            " << l.spot << "\n    current average: "
-                << l.currentAverage << "\n    strike:          " << l.strike
-                << "\n    dividend yield:  " << l.dividendYield << "\n    risk-free rate:  "
-                << l.riskFreeRate << "\n    volatility:      " << l.volatility
-                << "\n    reference date:  " << today << "\n    length:          " << l.length
-                << "\n    elapsed:         " << l.elapsed << "\n    expected value:  " << expected
-                << "\n    calculated:      " << calculated << "\n    error:           " << error);
-        }
-    }
-}
-
-namespace {
-
-    struct VecerData {
-        Real spot;
-        Rate riskFreeRate;
-        Volatility volatility;
-        Real strike;
-        Natural length;
-        Real result;
-        Real tolerance;
-    };
-
-}
-
-void AsianOptionTest::testVecerEngine() {
-    BOOST_TEST_MESSAGE("Testing Vecer engine for Asian options...");
-
-    VecerData cases[] = {
-        { 1.9, 0.05,   0.5,  2.0, 1, 0.193174, 1.0e-5 },
-        { 2.0, 0.05,   0.5,  2.0, 1, 0.246416, 1.0e-5 },
-        { 2.1, 0.05,   0.5,  2.0, 1, 0.306220, 1.0e-4 },
-        { 2.0, 0.02,   0.1,  2.0, 1, 0.055986, 2.0e-4 },
-        { 2.0, 0.18,   0.3,  2.0, 1, 0.218388, 1.0e-4 },
-        { 2.0, 0.0125, 0.25, 2.0, 2, 0.172269, 1.0e-4 },
-        { 2.0, 0.05,   0.5,  2.0, 2, 0.350095, 2.0e-4 }
-    };
-
-    Date today = Settings::instance().evaluationDate();
-    DayCounter dayCounter = Actual360();
-
-    Option::Type type = Option::Call;
-    Handle<YieldTermStructure> q(flatRate(today, 0.0, dayCounter));
-
-    Size timeSteps = 200;
-    Size assetSteps = 200;
-
-    for (auto& i : cases) {
-        Handle<Quote> u(ext::make_shared<SimpleQuote>(i.spot));
-        Handle<YieldTermStructure> r(flatRate(today, i.riskFreeRate, dayCounter));
-        Handle<BlackVolTermStructure> sigma(flatVol(today, i.volatility, dayCounter));
-        ext::shared_ptr<BlackScholesMertonProcess> process =
-            ext::make_shared<BlackScholesMertonProcess>(u, q, r, sigma);
-
-        Date maturity = today + i.length * 360;
-        ext::shared_ptr<Exercise> exercise =
-            ext::make_shared<EuropeanExercise>(maturity);
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::make_shared<PlainVanillaPayoff>(type, i.strike);
-        Handle<Quote> average(ext::make_shared<SimpleQuote>(0.0));
-
-        ContinuousAveragingAsianOption option(Average::Arithmetic,
-                                              payoff, exercise);
-        option.setPricingEngine(
-            ext::make_shared<ContinuousArithmeticAsianVecerEngine>(
-                process,average,today,timeSteps,assetSteps,-1.0,1.0));
-
-        Real calculated = option.NPV();
-        Real error = std::fabs(calculated - i.result);
-        if (error > i.tolerance)
-            BOOST_ERROR("Failed to reproduce expected NPV"
-                        << "\n    calculated: " << calculated << "\n    expected:   " << i.result
-                        << "\n    expected:   " << i.result << "\n    error:      " << error
-                        << "\n    tolerance:  " << i.tolerance);
-    }
-}
-
-void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston() {
-
-    BOOST_TEST_MESSAGE("Testing analytic continuous geometric Asians under Heston...");
-
-    // data from "Pricing of Geometric Asian Options under Heston's Stochastic
-    // Volatility Model", Kim & Wee, Quantitative Finance, 14:10, 1795-1809, 2011
-
-    // 73, 348 and 1095 are 0.2, 1.5 and 3.0 years respectively in Actual365Fixed
-    Time days[] =    {73, 73, 73, 73, 73, 548, 548, 548, 548, 548, 1095, 1095, 1095, 1095, 1095};
-    Real strikes[] = {90.0, 95.0, 100.0, 105.0, 110.0, 90.0, 95.0, 100.0, 105.0, 110.0, 90.0, 95.0,
-                      100.0, 105.0, 110.0};
-
-    // Prices from Table 1 (params obey Feller condition)
-    Real prices[] =  {10.6571, 6.5871, 3.4478, 1.4552, 0.4724, 16.5030, 13.7625, 11.3374, 9.2245,
-                      7.4122, 20.5102, 18.3060, 16.2895, 14.4531, 12.7882};
-
-    // Prices from Table 4 (params do not obey Feller condition)
-    Real prices_2[] =  {10.6425, 6.4362, 3.1578, 1.1936, 0.3609, 14.9955, 11.6707, 8.7767, 6.3818,
-                        4.5118, 18.1219, 15.2009, 12.5707, 10.2539, 8.2611};
-
-    // 0.2 and 3.0 match to 1e-4. Unfortunatly 1.5 corresponds to 547.5 days, 547 and 548
-    // bound the expected answer but are both out by ~5e-3
-    Real tolerance = 1.0e-2;
-
-    DayCounter dc = Actual365Fixed();
-    Date today = Settings::instance().evaluationDate();
-    Option::Type type(Option::Call);
-    Average::Type averageType = Average::Geometric;
-
-    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-
-    Real v0 = 0.09;
-    Real kappa = 1.15;
-    Real theta = 0.348;
-    Real sigma = 0.39;
-    Real rho = -0.64;
-
-    ext::shared_ptr<HestonProcess> hestonProcess(new
-        HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
-            spot, v0, kappa, theta, sigma, rho));
-
-    ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine(new
-        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess));
-
-    for (Size i=0; i<LENGTH(strikes); i++) {
-        Real strike = strikes[i];
-        Time day = days[i];
-        Real expected = prices[i];
-
-        Date expiryDate = today + day*Days;
-
-        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
-
-        ContinuousAveragingAsianOption option(averageType, payoff, europeanExercise);
-        option.setPricingEngine(engine);
-
-        Real calculated = option.NPV();
-    
-        if (std::fabs(calculated-expected) > tolerance) {
-            REPORT_FAILURE("value", averageType, 1.0, 0.0,
-                       std::vector<Date>(), payoff, europeanExercise, spot->value(),
-                       qRate->value(), rRate->value(), today,
-                       std::sqrt(v0), expected, calculated, tolerance);
-        }
-    }
-
-    Real v0_2 = 0.09;
-    Real kappa_2 = 2.0;
-    Real theta_2 = 0.09;
-    Real sigma_2 = 1.0;
-    Real rho_2 = -0.3;
-
-    ext::shared_ptr<HestonProcess> hestonProcess_2(new
-        HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
-            spot, v0_2, kappa_2, theta_2, sigma_2, rho_2));
-
-    ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine_2(new
-        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess_2));
-
-    for (Size i=0; i<LENGTH(strikes); i++) {
-        Real strike = strikes[i];
-        Time day = days[i];
-        Real expected = prices_2[i];
-
-        Date expiryDate = today + day*Days;
-
-        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
-
-        ContinuousAveragingAsianOption option(averageType, payoff, europeanExercise);
-        option.setPricingEngine(engine_2);
-
-        Real calculated = option.NPV();
-    
-        if (std::fabs(calculated-expected) > tolerance) {
-            REPORT_FAILURE("value", averageType, 1.0, 0.0,
-                       std::vector<Date>(), payoff, europeanExercise, spot->value(),
-                       qRate->value(), rRate->value(), today,
-                       std::sqrt(v0), expected, calculated, tolerance);
-        }
-    }
-
-    // Also test the continuous data from the authors' subsequent paper
-
-    // data from "A Recursive Method for Discretely Monitored Geometric Asian Option
-    // Prices", Kim, Kim, Kim & Wee, Bull. Korean Math. Soc. 53, 733-749, 2016
-
-    // 73, 348 and 1095 are 0.2, 1.5 and 3.0 years respectively in Actual365Fixed
-    Time days_3[] =    {30, 91, 182, 365, 730, 1095, 30, 91, 182, 365, 730, 1095, 30,
-                        91, 182, 365, 730, 1095};
-    Real strikes_3[] = {90, 90, 90, 90, 90, 90, 100, 100, 100, 100, 100, 100, 110,
-                        110, 110, 110, 110, 110};
-
-    // 30-day options need wider tolerance due to the day-bracket issue discussed above
-    Real tol_3[] =     {2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 2.0e-2, 1.0e-2,
-                        1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2,
-                        1.0e-2, 1.0e-2};
-
-    // Prices from Tables 1, 2 and 3
-    Real prices_3[] =  {10.1513, 10.8175, 11.8664, 13.5931, 16.0988, 17.9475, 2.0472,
-                        3.5735, 5.0588, 7.1132, 9.9139, 11.9959, 0.0350, 0.4869,
-                        1.3376, 2.8569, 5.2804, 7.2682};
-
-    // Note that although these parameters look similar to the first set above, theta
-    // is a factor of 10 smaller. I guess there is a mis-transcription somewhere!
-    Real v0_3 = 0.09;
-    Real kappa_3 = 1.15;
-    Real theta_3 = 0.0348;
-    Real sigma_3 = 0.39;
-    Real rho_3 = -0.64;
-
-    ext::shared_ptr<HestonProcess> hestonProcess_3(new
-        HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
-            spot, v0_3, kappa_3, theta_3, sigma_3, rho_3));
-
-    ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine_3(new
-        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess_3));
-
-    for (Size i=0; i<LENGTH(strikes_3); i++) {
-        Real strike = strikes_3[i];
-        Time day = days_3[i];
-        Real expected = prices_3[i];
-        Real tolerance = tol_3[i];
-
-        Date expiryDate = today + day*Days;
-
-        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
-
-        ContinuousAveragingAsianOption option(averageType, payoff, europeanExercise);
-        option.setPricingEngine(engine_3);
-
-        Real calculated = option.NPV();
-    
-        if (std::fabs(calculated-expected) > tolerance) {
-            REPORT_FAILURE("value", averageType, 1.0, 0.0,
-                       std::vector<Date>(), payoff, europeanExercise, spot->value(),
-                       qRate->value(), rRate->value(), today,
-                       std::sqrt(v0), expected, calculated, tolerance);
-        }
-    }
-
-}
-
-namespace {
-    struct DiscreteAverageDataTermStructure {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate b;
-        Rate riskFreeRate;
-        Time first; // t1
-        Time expiry;
-        Size fixings;
-        Volatility volatility;
-        std::string slope;
-        Real result;
-    };
-}
-
-void AsianOptionTest::testTurnbullWakemanAsianEngine() {
+BOOST_AUTO_TEST_CASE(testTurnbullWakemanAsianEngine) {
 
     BOOST_TEST_MESSAGE("Testing Turnbull-Wakeman engine for discrete-time arithmetic average-rate "
                        "Asians options with term structure support...");
@@ -2419,40 +1908,497 @@ void AsianOptionTest::testTurnbullWakemanAsianEngine() {
     }
 }
 
-test_suite* AsianOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Asian option tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testPastFixings));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAllFixingsInThePast));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testTurnbullWakemanAsianEngine));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testPastFixingsModelDependency));
+BOOST_AUTO_TEST_SUITE(AsianOptionExperimentalTest)
 
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
+BOOST_AUTO_TEST_CASE(testLevyEngine) {
+
+    BOOST_TEST_MESSAGE("Testing Levy engine for Asians options...");
+
+    // data from Haug, "Option Pricing Formulas", p.99-100
+    ContinuousAverageData cases[] = {
+        { Option::Call, 6.80, 6.80, 6.90, 0.09, 0.07, 0.14, 180, 0, 0.0944 },
+        { Option::Put,  6.80, 6.80, 6.90, 0.09, 0.07, 0.14, 180, 0, 0.2237 },
+        { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 0, 7.0544 },
+        { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 90, 5.6731 },
+        { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.15, 270, 180, 5.0806 },
+        { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 0, 10.1213 },
+        { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 90, 6.9705 },
+        { Option::Call, 100.0, 100.0, 95.0, 0.05, 0.1, 0.35, 270, 180, 5.1411 },
+        { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 0, 3.7845 },
+        { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 90, 1.9964 },
+        { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.15, 270, 180, 0.6722 },
+        { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 0, 7.5038 },
+        { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 90, 4.0687 },
+        { Option::Call, 100.0, 100.0, 100.0, 0.05, 0.1, 0.35, 270, 180, 1.4222 },
+        { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 0, 1.6729 },
+        { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 90, 0.3565 },
+        { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.15, 270, 180, 0.0004 },
+        { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 0, 5.4071 },
+        { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 90, 2.1359 },
+        { Option::Call, 100.0, 100.0, 105.0, 0.05, 0.1, 0.35, 270, 180, 0.1552 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    for (auto& l : cases) {
+
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(l.spot));
+        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, l.dividendYield, dc);
+        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, l.riskFreeRate, dc);
+        ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, l.volatility, dc);
+
+        Average::Type averageType = Average::Arithmetic;
+        ext::shared_ptr<Quote> average(new SimpleQuote(l.currentAverage));
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(l.type, l.strike));
+
+        Date startDate = today - l.elapsed;
+        Date maturity = startDate + l.length;
+
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
+
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+                                                                BlackScholesMertonProcess(Handle<Quote>(spot),
+                                                                                          Handle<YieldTermStructure>(qTS),
+                                                                                          Handle<YieldTermStructure>(rTS),
+                                                                                          Handle<BlackVolTermStructure>(volTS)));
+
+        ext::shared_ptr<PricingEngine> engine(
+            new ContinuousArithmeticAsianLevyEngine(
+                stochProcess, Handle<Quote>(average), startDate));
+
+        ContinuousAveragingAsianOption option(averageType,
+                                              payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real expected = l.result;
+        Real tolerance = 1.0e-4;
+        Real error = std::fabs(expected-calculated);
+        if (error > tolerance) {
+            BOOST_ERROR(
+                "Asian option with Levy engine:"
+                << "\n    spot:            " << l.spot << "\n    current average: "
+                << l.currentAverage << "\n    strike:          " << l.strike
+                << "\n    dividend yield:  " << l.dividendYield << "\n    risk-free rate:  "
+                << l.riskFreeRate << "\n    volatility:      " << l.volatility
+                << "\n    reference date:  " << today << "\n    length:          " << l.length
+                << "\n    elapsed:         " << l.elapsed << "\n    expected value:  " << expected
+                << "\n    calculated:      " << calculated << "\n    error:           " << error);
+        }
     }
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
-    }
-
-    return suite;
 }
 
-test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Asian option experimental tests");
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
+BOOST_AUTO_TEST_CASE(testVecerEngine) {
+    BOOST_TEST_MESSAGE("Testing Vecer engine for Asian options...");
 
-    return suite;
+    VecerData cases[] = {
+        { 1.9, 0.05,   0.5,  2.0, 1, 0.193174, 1.0e-5 },
+        { 2.0, 0.05,   0.5,  2.0, 1, 0.246416, 1.0e-5 },
+        { 2.1, 0.05,   0.5,  2.0, 1, 0.306220, 1.0e-4 },
+        { 2.0, 0.02,   0.1,  2.0, 1, 0.055986, 2.0e-4 },
+        { 2.0, 0.18,   0.3,  2.0, 1, 0.218388, 1.0e-4 },
+        { 2.0, 0.0125, 0.25, 2.0, 2, 0.172269, 1.0e-4 },
+        { 2.0, 0.05,   0.5,  2.0, 2, 0.350095, 2.0e-4 }
+    };
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dayCounter = Actual360();
+
+    Option::Type type = Option::Call;
+    Handle<YieldTermStructure> q(flatRate(today, 0.0, dayCounter));
+
+    Size timeSteps = 200;
+    Size assetSteps = 200;
+
+    for (auto& i : cases) {
+        Handle<Quote> u(ext::make_shared<SimpleQuote>(i.spot));
+        Handle<YieldTermStructure> r(flatRate(today, i.riskFreeRate, dayCounter));
+        Handle<BlackVolTermStructure> sigma(flatVol(today, i.volatility, dayCounter));
+        ext::shared_ptr<BlackScholesMertonProcess> process =
+            ext::make_shared<BlackScholesMertonProcess>(u, q, r, sigma);
+
+        Date maturity = today + i.length * 360;
+        ext::shared_ptr<Exercise> exercise =
+            ext::make_shared<EuropeanExercise>(maturity);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::make_shared<PlainVanillaPayoff>(type, i.strike);
+        Handle<Quote> average(ext::make_shared<SimpleQuote>(0.0));
+
+        ContinuousAveragingAsianOption option(Average::Arithmetic,
+                                              payoff, exercise);
+        option.setPricingEngine(
+            ext::make_shared<ContinuousArithmeticAsianVecerEngine>(
+                process,average,today,timeSteps,assetSteps,-1.0,1.0));
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - i.result);
+        if (error > i.tolerance)
+            BOOST_ERROR("Failed to reproduce expected NPV"
+                        << "\n    calculated: " << calculated << "\n    expected:   " << i.result
+                        << "\n    expected:   " << i.result << "\n    error:      " << error
+                        << "\n    tolerance:  " << i.tolerance);
+    }
 }
+
+BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePriceHeston) {
+
+    BOOST_TEST_MESSAGE("Testing analytic continuous geometric Asians under Heston...");
+
+    // data from "Pricing of Geometric Asian Options under Heston's Stochastic
+    // Volatility Model", Kim & Wee, Quantitative Finance, 14:10, 1795-1809, 2011
+
+    // 73, 348 and 1095 are 0.2, 1.5 and 3.0 years respectively in Actual365Fixed
+    Time days[] =    {73, 73, 73, 73, 73, 548, 548, 548, 548, 548, 1095, 1095, 1095, 1095, 1095};
+    Real strikes[] = {90.0, 95.0, 100.0, 105.0, 110.0, 90.0, 95.0, 100.0, 105.0, 110.0, 90.0, 95.0,
+                      100.0, 105.0, 110.0};
+
+    // Prices from Table 1 (params obey Feller condition)
+    Real prices[] =  {10.6571, 6.5871, 3.4478, 1.4552, 0.4724, 16.5030, 13.7625, 11.3374, 9.2245,
+                     7.4122, 20.5102, 18.3060, 16.2895, 14.4531, 12.7882};
+
+    // Prices from Table 4 (params do not obey Feller condition)
+    Real prices_2[] =  {10.6425, 6.4362, 3.1578, 1.1936, 0.3609, 14.9955, 11.6707, 8.7767, 6.3818,
+                       4.5118, 18.1219, 15.2009, 12.5707, 10.2539, 8.2611};
+
+    // 0.2 and 3.0 match to 1e-4. Unfortunatly 1.5 corresponds to 547.5 days, 547 and 548
+    // bound the expected answer but are both out by ~5e-3
+    Real tolerance = 1.0e-2;
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+    Option::Type type(Option::Call);
+    Average::Type averageType = Average::Geometric;
+
+    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    Real v0 = 0.09;
+    Real kappa = 1.15;
+    Real theta = 0.348;
+    Real sigma = 0.39;
+    Real rho = -0.64;
+
+    ext::shared_ptr<HestonProcess> hestonProcess(new
+                                                 HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
+                                                               spot, v0, kappa, theta, sigma, rho));
+
+    ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine(new
+                                                                                     AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess));
+
+    for (Size i=0; i<LENGTH(strikes); i++) {
+        Real strike = strikes[i];
+        Time day = days[i];
+        Real expected = prices[i];
+
+        Date expiryDate = today + day*Days;
+
+        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+
+        ContinuousAveragingAsianOption option(averageType, payoff, europeanExercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, 1.0, 0.0,
+                           std::vector<Date>(), payoff, europeanExercise, spot->value(),
+                           qRate->value(), rRate->value(), today,
+                           std::sqrt(v0), expected, calculated, tolerance);
+        }
+    }
+
+    Real v0_2 = 0.09;
+    Real kappa_2 = 2.0;
+    Real theta_2 = 0.09;
+    Real sigma_2 = 1.0;
+    Real rho_2 = -0.3;
+
+    ext::shared_ptr<HestonProcess> hestonProcess_2(new
+                                                   HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
+                                                                 spot, v0_2, kappa_2, theta_2, sigma_2, rho_2));
+
+    ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine_2(new
+                                                                                       AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess_2));
+
+    for (Size i=0; i<LENGTH(strikes); i++) {
+        Real strike = strikes[i];
+        Time day = days[i];
+        Real expected = prices_2[i];
+
+        Date expiryDate = today + day*Days;
+
+        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+
+        ContinuousAveragingAsianOption option(averageType, payoff, europeanExercise);
+        option.setPricingEngine(engine_2);
+
+        Real calculated = option.NPV();
+
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, 1.0, 0.0,
+                           std::vector<Date>(), payoff, europeanExercise, spot->value(),
+                           qRate->value(), rRate->value(), today,
+                           std::sqrt(v0), expected, calculated, tolerance);
+        }
+    }
+
+    // Also test the continuous data from the authors' subsequent paper
+
+    // data from "A Recursive Method for Discretely Monitored Geometric Asian Option
+    // Prices", Kim, Kim, Kim & Wee, Bull. Korean Math. Soc. 53, 733-749, 2016
+
+    // 73, 348 and 1095 are 0.2, 1.5 and 3.0 years respectively in Actual365Fixed
+    Time days_3[] =    {30, 91, 182, 365, 730, 1095, 30, 91, 182, 365, 730, 1095, 30,
+                     91, 182, 365, 730, 1095};
+    Real strikes_3[] = {90, 90, 90, 90, 90, 90, 100, 100, 100, 100, 100, 100, 110,
+                        110, 110, 110, 110, 110};
+
+    // 30-day options need wider tolerance due to the day-bracket issue discussed above
+    Real tol_3[] =     {2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 2.0e-2, 1.0e-2,
+                    1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2,
+                    1.0e-2, 1.0e-2};
+
+    // Prices from Tables 1, 2 and 3
+    Real prices_3[] =  {10.1513, 10.8175, 11.8664, 13.5931, 16.0988, 17.9475, 2.0472,
+                       3.5735, 5.0588, 7.1132, 9.9139, 11.9959, 0.0350, 0.4869,
+                       1.3376, 2.8569, 5.2804, 7.2682};
+
+    // Note that although these parameters look similar to the first set above, theta
+    // is a factor of 10 smaller. I guess there is a mis-transcription somewhere!
+    Real v0_3 = 0.09;
+    Real kappa_3 = 1.15;
+    Real theta_3 = 0.0348;
+    Real sigma_3 = 0.39;
+    Real rho_3 = -0.64;
+
+    ext::shared_ptr<HestonProcess> hestonProcess_3(new
+                                                   HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
+                                                                 spot, v0_3, kappa_3, theta_3, sigma_3, rho_3));
+
+    ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine_3(new
+                                                                                       AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess_3));
+
+    for (Size i=0; i<LENGTH(strikes_3); i++) {
+        Real strike = strikes_3[i];
+        Time day = days_3[i];
+        Real expected = prices_3[i];
+        Real tolerance = tol_3[i];
+
+        Date expiryDate = today + day*Days;
+
+        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+
+        ContinuousAveragingAsianOption option(averageType, payoff, europeanExercise);
+        option.setPricingEngine(engine_3);
+
+        Real calculated = option.NPV();
+
+        if (std::fabs(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, 1.0, 0.0,
+                           std::vector<Date>(), payoff, europeanExercise, spot->value(),
+                           qRate->value(), rRate->value(), today,
+                           std::sqrt(v0), expected, calculated, tolerance);
+        }
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceHeston) {
+
+    BOOST_TEST_MESSAGE("Testing analytic discrete geometric average-price Asians under Heston...");
+
+    // 30-day options need wider tolerance due to uncertainty around what "weekly
+    // fixing" dates mean over a 30-day month!
+    Real tol[] =     {3.0e-2, 2.0e-2, 2.0e-2, 2.0e-2, 3.0e-2, 4.0e-2, 8.0e-2, 1.0e-2,
+                  2.0e-2, 3.0e-2, 3.0e-2, 4.0e-2, 2.0e-2, 1.0e-2, 1.0e-2, 2.0e-2,
+                  3.0e-2, 4.0e-2};
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+
+    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    Real v0 = 0.09;
+    Real kappa = 1.15;
+    Real theta = 0.0348;
+    Real sigma = 0.39;
+    Real rho = -0.64;
+
+    ext::shared_ptr<HestonProcess> hestonProcess(new
+                                                 HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
+                                                               spot, v0, kappa, theta, sigma, rho));
+
+    ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> engine(new
+                                                                                   AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
+
+    AsianOptionTest::testDiscreteGeometricAveragePriceHeston(engine, tol);
+}
+
+BOOST_AUTO_TEST_CASE(testDiscreteGeometricAveragePriceHestonPastFixings) {
+
+    BOOST_TEST_MESSAGE("Testing Analytic vs MC for seasoned discrete geometric Asians under Heston...");
+
+    // 30-day options need wider tolerance due to uncertainty around what "weekly
+    // fixing" dates mean over a 30-day month!
+
+    int days[] =           {30, 90, 180, 360, 720};
+    Real strikes[] =       {90, 100, 110};
+
+    Real tol[3][5][2] = {{{
+                              0.04, // strike=90, days=30, k=0
+                              0.04, // strike=90, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=90, k=0
+                              0.04, // strike=90, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=180, k=0
+                              0.04, // strike=90, days=180, k=1
+                          },
+                          {
+                              0.05, // strike=90, days=360, k=0
+                              0.04, // strike=90, days=360, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=720, k=0
+                              0.04, // strike=90, days=720, k=1
+                          }},
+
+                         {{
+                              0.04, // strike=100, days=30, k=0
+                              0.04, // strike=100, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=100, days=90, k=0
+                              0.04, // strike=100, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=100, days=180, k=0
+                              0.04, // strike=100, days=180, k=1
+                          },
+                          {
+                              0.06, // strike=100, days=360, k=0
+                              0.06, // strike=100, days=360, k=1
+                          },
+                          {
+                              0.06, // strike=100, days=720, k=0
+                              0.05, // strike=100, days=720, k=1
+                          }},
+
+                         {{
+                              0.04, // strike=110, days=30, k=0
+                              0.04, // strike=110, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=110, days=90, k=0
+                              0.04, // strike=110, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=110, days=180, k=0
+                              0.04, // strike=110, days=180, k=1
+                          },
+                          {
+                              0.05, // strike=110, days=360, k=0
+                              0.04, // strike=110, days=360, k=1
+                          },
+                          {
+                              0.06, // strike=110, days=720, k=0
+                              0.05, // strike=110, days=720, k=1
+                          }}};
+
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+
+    Handle<Quote> spot(ext::shared_ptr<Quote>(new SimpleQuote(100)));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    Real v0 = 0.09;
+    Real kappa = 1.15;
+    Real theta = 0.0348;
+    Real sigma = 0.39;
+    Real rho = -0.64;
+
+    ext::shared_ptr<HestonProcess> hestonProcess(new
+                                                 HestonProcess(Handle<YieldTermStructure>(rTS), Handle<YieldTermStructure>(qTS),
+                                                               spot, v0, kappa, theta, sigma, rho));
+
+    ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> analyticEngine(new
+                                                                                           AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
+
+    ext::shared_ptr<PricingEngine> mcEngine =
+        MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
+            .withSamples(8191)
+            .withSeed(43);
+
+    Option::Type type(Option::Call);
+    Average::Type averageType = Average::Geometric;
+
+    for (Size strike_index = 0; strike_index < LENGTH(strikes); strike_index++) {
+
+        for (Size day_index = 0; day_index < LENGTH(days); day_index++) {
+
+            for (Size k=0; k<2; k++) {
+
+                Size futureFixings = int(std::floor(days[day_index] / 30.0));
+                std::vector<Date> fixingDates(futureFixings);
+                Date expiryDate = today + days[day_index] * Days;
+
+                for (int i=futureFixings-1; i>=0; i--) {
+                    fixingDates[i] = expiryDate - i * 30;
+                }
+
+                ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strikes[strike_index]));
+
+                Real runningAccumulator = 1.0;
+                Size pastFixingsCount = 0;
+                if (k == 0) {
+                    runningAccumulator = 100.0;
+                    pastFixingsCount = 1;
+                } else {
+                    runningAccumulator = 95.0 * 100.0 * 105.0;
+                    pastFixingsCount = 3;
+                }
+
+                DiscreteAveragingAsianOption option(averageType, runningAccumulator, pastFixingsCount,
+                                                    fixingDates, payoff, europeanExercise);
+
+                option.setPricingEngine(analyticEngine);
+                Real analyticPrice = option.NPV();
+
+                option.setPricingEngine(mcEngine);
+                Real mcPrice = option.NPV();
+
+                auto tolerance = tol[strike_index][day_index][k];
+
+                if (std::fabs(analyticPrice-mcPrice) > tolerance) {
+                    REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
+                                   std::vector<Date>(), payoff, europeanExercise, spot->value(),
+                                   qRate->value(), rRate->value(), today,
+                                   std::sqrt(v0), analyticPrice, mcPrice, tolerance);
+                }
+            }
+        }
+    }
+}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

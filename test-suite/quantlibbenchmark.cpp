@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
@@ -160,6 +159,9 @@
 namespace QuantLibTest {
     namespace AmericanOptionTest {
         struct testFdAmericanGreeks: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+    namespace AsianOptionTest {
+        struct testMCDiscreteArithmeticAveragePrice: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
 
@@ -193,7 +195,7 @@ namespace {
 
     std::vector<Benchmark> bm = {
         Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
-        Benchmark("AsianOption::MCArithmeticAveragePrice", &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13),
+        Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
         Benchmark("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8),
         Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
         Benchmark("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80),

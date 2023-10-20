@@ -810,10 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="amortizingbond.hpp" />
-    <ClInclude Include="andreasenhugevolatilityinterpl.hpp" />
-    <ClInclude Include="array.hpp" />
-    <ClInclude Include="asianoptions.hpp" />
     <ClInclude Include="assetswap.hpp" />
     <ClInclude Include="autocovariances.hpp" />
     <ClInclude Include="barrieroption.hpp" />

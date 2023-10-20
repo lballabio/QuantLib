@@ -174,10 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    amortizingbond.hpp
-    andreasenhugevolatilityinterpl.hpp
-    array.hpp
-    asianoptions.hpp
     assetswap.hpp
     autocovariances.hpp
     barrieroption.hpp
@@ -352,7 +348,7 @@ set(QL_BENCHMARK_SOURCES
     quantlibbenchmark.cpp
     
     americanoption.cpp
-    asianoptions.cpp                    asianoptions.hpp
+    asianoptions.cpp
     barrieroption.cpp                   barrieroption.hpp
     basketoption.cpp                    basketoption.hpp
     batesmodel.cpp                      batesmodel.hpp

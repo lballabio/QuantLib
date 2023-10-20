@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "andreasenhugevolatilityinterpl.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
@@ -341,10 +342,56 @@ namespace andreasen_huge_volatility_interpl_test {
 
         return { spot, rTS, qTS, calibrationSet };
     }
+
+    std::pair<CalibrationData, std::vector<Real> > sabrData() {
+
+        const DayCounter dc = Actual365Fixed();
+        const Date today = Date(4, January, 2018);
+
+        const Real alpha = 0.15;
+        const Real beta = 0.8;
+        const Real nu = 0.5;
+        const Real rho = -0.48;
+        const Real forward = 0.03;
+        const Size maturityInYears = 20;
+
+        const Date maturityDate = today + Period(maturityInYears, Years);
+        const Time maturity = dc.yearFraction(today, maturityDate);
+
+        AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
+
+        const Real strikes[] = { 0.02, 0.025, 0.03, 0.035, 0.04, 0.05, 0.06 };
+
+        for (Real strike : strikes) {
+            const Volatility vol = sabrVolatility(strike, forward, maturity, alpha, beta, nu, rho);
+
+            calibrationSet.emplace_back(
+                ext::make_shared<VanillaOption>(
+                    ext::make_shared<PlainVanillaPayoff>(
+                        Option::Call, strike),
+                    ext::make_shared<EuropeanExercise>(maturityDate)),
+                ext::make_shared<SimpleQuote>(vol));
+        }
+
+        const Handle<YieldTermStructure> rTS(flatRate(today, forward, dc));
+        const Handle<YieldTermStructure> qTS(flatRate(today, forward, dc));
+
+        Handle<Quote> spot(ext::make_shared<SimpleQuote>(forward));
+
+        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
+
+        std::vector<Real> parameter = { alpha, beta, nu, rho, forward, maturity };
+
+        return std::make_pair(data, parameter);
+    }
 }
 
 
-void AndreasenHugeVolatilityInterplTest::testAndreasenHugePut() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AndreasenHugeVolatilityInterplTest)
+
+BOOST_AUTO_TEST_CASE(testAndreasenHugePut, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Put calibration...");
@@ -363,7 +410,7 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugePut() {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall() {
+BOOST_AUTO_TEST_CASE(testAndreasenHugeCall, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Call calibration...");
@@ -382,7 +429,7 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall() {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut() {
+BOOST_AUTO_TEST_CASE(testAndreasenHugeCallPut, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with instantaneous "
@@ -402,7 +449,7 @@ void AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut() {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-void AndreasenHugeVolatilityInterplTest::testLinearInterpolation() {
+BOOST_AUTO_TEST_CASE(testLinearInterpolation, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with linear interpolation...");
 
@@ -420,7 +467,7 @@ void AndreasenHugeVolatilityInterplTest::testLinearInterpolation() {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-void AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation() {
+BOOST_AUTO_TEST_CASE(testPiecewiseConstantInterpolation, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with piecewise constant interpolation...");
 
@@ -438,7 +485,7 @@ void AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation() {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
+BOOST_AUTO_TEST_CASE(testTimeDependentInterestRates, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation with "
@@ -524,7 +571,7 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
     testAndreasenHugeVolatilityInterpolation(irData, expected);
 }
 
-void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
+BOOST_AUTO_TEST_CASE(testSingleOptionCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation with "
         "a single option...");
@@ -583,7 +630,7 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
         }
 }
 
-void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
+BOOST_AUTO_TEST_CASE(testArbitrageFree) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation gives "
         "arbitrage free prices...");
@@ -672,7 +719,7 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
     }
 }
 
-void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
+BOOST_AUTO_TEST_CASE(testBarrierOptionPricing, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE(
         "Testing Barrier option pricing with Andreasen-Huge "
          "local volatility surface...");
@@ -776,51 +823,7 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
     }
 }
 
-namespace andreasen_huge_volatility_interpl_test {
-    std::pair<CalibrationData, std::vector<Real> > sabrData() {
-
-        const DayCounter dc = Actual365Fixed();
-        const Date today = Date(4, January, 2018);
-
-        const Real alpha = 0.15;
-        const Real beta = 0.8;
-        const Real nu = 0.5;
-        const Real rho = -0.48;
-        const Real forward = 0.03;
-        const Size maturityInYears = 20;
-
-        const Date maturityDate = today + Period(maturityInYears, Years);
-        const Time maturity = dc.yearFraction(today, maturityDate);
-
-        AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
-
-        const Real strikes[] = { 0.02, 0.025, 0.03, 0.035, 0.04, 0.05, 0.06 };
-
-        for (Real strike : strikes) {
-            const Volatility vol = sabrVolatility(strike, forward, maturity, alpha, beta, nu, rho);
-
-            calibrationSet.emplace_back(
-                ext::make_shared<VanillaOption>(
-                    ext::make_shared<PlainVanillaPayoff>(
-                        Option::Call, strike),
-                    ext::make_shared<EuropeanExercise>(maturityDate)),
-                ext::make_shared<SimpleQuote>(vol));
-        }
-
-        const Handle<YieldTermStructure> rTS(flatRate(today, forward, dc));
-        const Handle<YieldTermStructure> qTS(flatRate(today, forward, dc));
-
-        Handle<Quote> spot(ext::make_shared<SimpleQuote>(forward));
-
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
-
-        std::vector<Real> parameter = { alpha, beta, nu, rho, forward, maturity };
-
-        return std::make_pair(data, parameter);
-    }
-}
-
-void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
+BOOST_AUTO_TEST_CASE(testPeterAndFabiensExample) {
     BOOST_TEST_MESSAGE(
         "Testing Peter's and Fabien's SABR example...");
 
@@ -868,7 +871,7 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
     }
 }
 
-void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
+BOOST_AUTO_TEST_CASE(testDifferentOptimizers) {
     BOOST_TEST_MESSAGE(
         "Testing different optimizer for Andreasen-Huge "
         "volatility interpolation...");
@@ -899,7 +902,7 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
     }
 }
 
-void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
+BOOST_AUTO_TEST_CASE(testMovingReferenceDate) {
     BOOST_TEST_MESSAGE(
         "Testing that reference date of adapter surface moves along with "
         "evaluation date...");
@@ -974,7 +977,7 @@ void AndreasenHugeVolatilityInterplTest::testMovingReferenceDate() {
                 << "\n    tolerance           : " << tol);
 }
 
-void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
+BOOST_AUTO_TEST_CASE(testFlatVolCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with flat volatility surface...");
 
@@ -1036,30 +1039,6 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
     testAndreasenHugeVolatilityInterpolation(flatVolData, expected);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));
-    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testArbitrageFree));
-    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample));
-    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testDifferentOptimizers));
-    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testMovingReferenceDate));
-    suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testFlatVolCalibration));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugePut));
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugeCall));
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testAndreasenHugeCallPut));
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testLinearInterpolation));
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation));
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates));
-    }
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

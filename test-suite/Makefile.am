@@ -175,10 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	speedlevel.hpp \
-	amortizingbond.hpp \
-	andreasenhugevolatilityinterpl.hpp \
-	array.hpp \
-	asianoptions.hpp \
 	assetswap.hpp \
 	autocovariances.hpp \
 	barrieroption.hpp \
@@ -375,7 +371,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	asianoptions.hpp \
 	barrieroption.hpp \
 	doublebarrieroption.hpp \
 	basketoption.hpp \

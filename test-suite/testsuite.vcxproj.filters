@@ -527,18 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="amortizingbond.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="andreasenhugevolatilityinterpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="array.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="asianoptions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="assetswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
