@@ -1,7 +1,7 @@
 Changes for QuantLib 1.32:
 ==========================
 
-QuantLib 1.32 includes 30 pull requests from several contributors.
+QuantLib 1.32 includes 34 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -172,5 +172,7 @@ Deprecated features
 
 **Thanks go also** to Jonathan Sweemer (@sweemer), Ralf Konrad
 (@ralfkonrad), Klaus Spanderen (@klausspanderen), Peter Caspers
-(@pcaspers), Tom Anderson (@tomwhoiscontrary) and Fredrik Gerdin
-Börjesson (@gbfredrik) for a number of smaller fixes and improvements.
+(@pcaspers), Tom Anderson (@tomwhoiscontrary), Fredrik Gerdin
+Börjesson (@gbfredrik), Guillaume Horel (@thrasibule) and the XAD team
+(@auto-differentiation-dev) for a number of smaller fixes and
+improvements.

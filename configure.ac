@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.32-rc],
+AC_INIT([QuantLib], [1.32],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -212,13 +212,12 @@ AC_MSG_RESULT([$ql_belt_and_braces])
 AC_MSG_CHECKING([whether to enable sessions])
 AC_ARG_ENABLE([sessions],
               AS_HELP_STRING([--enable-sessions],
-                             [If enabled, singletons will return different
-                              instances for different sessions. You will
-                              have to provide and link with the library
-                              a sessionId() function in namespace QuantLib,
-                              returning a different session id for each
-                              session. This also implies thread-safe
-                              Singleton initialization.]),
+                             [If enabled, singletons will return
+                              different instances for different
+                              threads; in particular, this means that
+                              the evaluation date, the stored index
+                              fixings and any other settings will be
+                              per-thread. Undefined by default.]),
               [ql_use_sessions=$enableval],
               [ql_use_sessions=no])
 if test "$ql_use_sessions" = "yes" ; then

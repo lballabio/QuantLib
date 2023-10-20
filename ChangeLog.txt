@@ -1,3 +1,142 @@
+commit ab65963d73e2f194253e1267bfec4dd606083e48
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.32 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit ac90bef266f29990b5709681a06dd7030c4f5fdb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Oct 2023 11:17:32 +0200
+
+    Update news
+
+ Docs/pages/history.docs | 7 ++++---
+ News.md                 | 8 +++++---
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+
+commit 6c22cad48d028ac55be72c5dc7bb169fe87eeb7b
+Merge: d02ef2471 ebef37553
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 17 Oct 2023 23:23:26 +0200
+
+    apply the paymentLag and paymentCalendar to the fixed leg (#1812)
+
+commit d02ef2471e06680250ba8840bf4cd0f3fadd8f8f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Oct 2023 09:17:31 +0200
+
+    Update documentation for configuration flag
+
+ Docs/pages/config.docs |  1 -
+ configure.ac           | 13 ++++++-------
+ ql/userconfig.hpp      |  7 +++----
+ 3 files changed, 9 insertions(+), 12 deletions(-)
+
+commit ebef37553632ab8ee8cc08a9534151e367a077d7
+Author: Guillaume Horel <guillaume.horel@gmail.com>
+Date:   Thu, 12 Oct 2023 15:43:36 -0400
+
+    apply the paymentLag and paymentCalendar to the fixed leg
+
+ ql/instruments/overnightindexedswap.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 82f71c2b2a644c7206706be93a7bf252f8829220
+Merge: 79561ae4c 88205db80
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 6 Oct 2023 16:50:06 +0200
+
+    fix past-end iterator dereference, clean up (#1806)
+
+commit 88205db8044668af1b62bc54b37ef2ae4bded7b2
+Author: Peter Caspers <peter.caspers@acadia.inc>
+Date:   Fri, 6 Oct 2023 15:28:47 +0200
+
+    fix past-end iterator dereference, clean up
+
+ ql/time/ecb.cpp | 93 ++++++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 55 insertions(+), 38 deletions(-)
+
+commit 79561ae4c71ac3c4e39d401cc1fc8bf05f77b38c
+Merge: 6f3046752 0a6c999ea
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 6 Oct 2023 08:39:21 +0200
+
+    Avoid internal compiler error on VC++17 (#1805)
+
+commit 0a6c999eaa5ccc1ff1d2e97ece52c285739d0a7a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 5 Oct 2023 11:37:56 +0200
+
+    Avoid internal compiler error on VC++17
+    
+    It doesn't seem to like fancy default arguments.
+
+ News.md                                            |  4 ++
+ ql/cashflows/digitalcmscoupon.cpp                  |  5 ++
+ ql/cashflows/digitalcmscoupon.hpp                  | 12 ++--
+ ql/cashflows/digitalcoupon.cpp                     | 15 ++---
+ ql/cashflows/digitalcoupon.hpp                     |  2 +-
+ ql/cashflows/digitaliborcoupon.cpp                 |  5 ++
+ ql/cashflows/digitaliborcoupon.hpp                 | 12 ++--
+ ql/experimental/coupons/digitalcmsspreadcoupon.cpp |  5 ++
+ ql/experimental/coupons/digitalcmsspreadcoupon.hpp | 12 ++--
+ test-suite/digitalcoupon.cpp                       | 64 ++++++----------------
+ 10 files changed, 65 insertions(+), 71 deletions(-)
+
+commit 6f3046752c018544f6d022a3e437aaf5fe273462
+Merge: 2d161c53c bc12e98e4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 5 Oct 2023 15:25:46 +0200
+
+    Fix double/Real consistency for maintaining AAD compatibility (#1803)
+
+commit bc12e98e4fa3f387f1b4b50920b3570324f49a26
+Author: Auto Differentiation Dev Team <dev@auto-differentiation.com>
+Date:   Thu, 5 Oct 2023 10:40:47 +0100
+
+    Fixing warning for integer/double comparison
+
+ test-suite/libormarketmodel.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5ddeb72157283def81642952912e2552844c7265
+Author: Auto Differentiation Dev Team <dev@auto-differentiation.com>
+Date:   Thu, 5 Oct 2023 10:40:15 +0100
+
+    Fixing double/Real consistency, maintaining AAD compatibility
+
+ test-suite/xoshiro256starstar.cpp | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit 2d161c53c46f87815b1265c9f566c2b867786b62
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.32-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit dd94abe5439bcdec6c949b69b5fb5c6edbdcc9d1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:18:57 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 3892 ++++++++++++++++-------------------------------
+ Contributors.txt        |    1 +
+ Docs/pages/history.docs |  124 +-
+ News.md                 |  175 ++-
+ 4 files changed, 1633 insertions(+), 2559 deletions(-)
+
 commit c13293b9ec69b94d44c04cea224bb16479160364
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 3 Oct 2023 14:36:39 +0200

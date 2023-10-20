@@ -350,6 +350,7 @@ QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 
 QL_BENCHMARK_SRCS = \
 	quantlibbenchmark.cpp \
+	americanoption.cpp \
 	asianoptions.cpp \
 	barrieroption.cpp \
 	doublebarrieroption.cpp \
@@ -366,9 +367,11 @@ QL_BENCHMARK_SRCS = \
 	lowdiscrepancysequences.cpp \
 	marketmodel_cms.cpp \
 	marketmodel_smm.cpp \
+	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	riskstats.cpp \
 	shortratemodels.cpp \
+	speedlevel.cpp \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
@@ -388,9 +391,11 @@ QL_BENCHMARK_HDRS = \
 	lowdiscrepancysequences.hpp \
 	marketmodel_cms.hpp \
 	marketmodel_smm.hpp \
+	quantlibglobalfixture.hpp \
 	quantooption.hpp \
 	riskstats.hpp \
 	shortratemodels.hpp \
+	speedlevel.hpp \
 	utilities.hpp
 
 QL_BENCHMARKS = ${QL_BENCHMARK_SRCS} ${QL_BENCHMARK_HDRS}

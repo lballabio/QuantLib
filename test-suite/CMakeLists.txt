@@ -367,11 +367,11 @@ set(QL_BENCHMARK_SOURCES
     lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp
     marketmodel_cms.cpp                 marketmodel_cms.hpp
     marketmodel_smm.cpp                 marketmodel_smm.hpp
-    quantlibglobalfixture.cpp           quantlibglobalfixture.hpp
     quantooption.cpp                    quantooption.hpp
+    quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
     riskstats.cpp                       riskstats.hpp
     shortratemodels.cpp                 shortratemodels.hpp
-    speedlevel.cpp                      speedlevel.hpp
+	speedlevel.cpp						speedlevel.hpp
     utilities.cpp                       utilities.hpp
                                         swaptionvolstructuresutilities.hpp
 )
