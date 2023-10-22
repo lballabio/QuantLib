@@ -74,7 +74,7 @@ namespace QuantLib {
                     Calendar payCalendar,
                     BusinessDayConvention payConvention,
                     Rate strike,
-                    const ext::shared_ptr<ZeroInflationIndex>& inflationIndex,
+                    ext::shared_ptr<ZeroInflationIndex>  inflationIndex,
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 
