@@ -44,13 +44,13 @@ namespace QuantLib {
                              Calendar payCalendar,
                              BusinessDayConvention payConvention,
                              Rate strike,
-                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             ext::shared_ptr<ZeroInflationIndex>  index,
                              const Period& observationLag,
                              CPI::InterpolationType observationInterpolation)
     : type_(type), nominal_(nominal), startDate_(startDate), baseCPI_(baseCPI), maturity_(maturity),
       fixCalendar_(std::move(fixCalendar)), fixConvention_(fixConvention),
       payCalendar_(std::move(payCalendar)), payConvention_(payConvention), strike_(strike),
-      index_(index), observationLag_(observationLag),
+      index_(std::move(index)), observationLag_(observationLag),
       observationInterpolation_(observationInterpolation) {
         QL_REQUIRE(index_, "no inflation index passed");
         QL_REQUIRE(fixCalendar_ != Calendar(), "no fixing calendar passed");
