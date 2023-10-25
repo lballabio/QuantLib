@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bonds.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="brownianbridge.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

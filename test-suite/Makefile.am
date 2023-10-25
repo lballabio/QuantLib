@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	bonds.hpp \
 	brownianbridge.hpp \
 	businessdayconventions.hpp \
 	calendars.hpp \
