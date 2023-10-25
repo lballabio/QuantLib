@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bermudanswaption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="blackdeltacalculator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

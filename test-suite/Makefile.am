@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	binaryoption.hpp \
-	bermudanswaption.hpp \
 	blackdeltacalculator.hpp \
 	blackformula.hpp \
 	bondforward.hpp \

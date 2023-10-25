@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    bermudanswaption.hpp
     binaryoption.hpp
     blackdeltacalculator.hpp
     blackformula.hpp
