@@ -336,7 +336,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="quantlibglobalfixture.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClCompile Include="quantooption.cpp">
       <Filter>Source Files</Filter>

@@ -54,6 +54,30 @@ namespace bates_model_test {
         return sse;
     }
 
+    struct HestonModelData {
+        const char* const name;
+        Real v0;
+        Real kappa;
+        Real theta;
+        Real sigma;
+        Real rho;
+        Real r;
+        Real q;
+    };
+
+    HestonModelData hestonModels[] = {
+        // ADI finite difference schemes for option pricing in the
+        // Heston model with correlation, K.J. in t'Hout and S. Foulon,
+        {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
+        // Efficient numerical methods for pricing American options under
+        // stochastic volatility, Samuli Ikonen and Jari Toivanen,
+        {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
+        // Not-so-complex logarithms in the Heston model,
+        // Christian Kahl and Peter Jäckel
+        {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
+        // self defined test cases
+        {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
+    };
 }
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
@@ -267,33 +291,6 @@ BOOST_AUTO_TEST_CASE(testAnalyticAndMcVsJumpDiffusion) {
     }
 }
 
-namespace bates_model_test {
-    struct HestonModelData {
-        const char* const name;
-        Real v0;
-        Real kappa;
-        Real theta;
-        Real sigma;
-        Real rho;
-        Real r;
-        Real q;
-    };
-    
-    HestonModelData hestonModels[] = {
-        // ADI finite difference schemes for option pricing in the 
-        // Heston model with correlation, K.J. in t'Hout and S. Foulon,
-        {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
-        // Efficient numerical methods for pricing American options under 
-        // stochastic volatility, Samuli Ikonen and Jari Toivanen,
-        {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
-        // Not-so-complex logarithms in the Heston model, 
-        // Christian Kahl and Peter Jäckel
-        {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
-        // self defined test cases
-        {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
-    };
-}
-
 BOOST_AUTO_TEST_CASE(testAnalyticVsMCPricing) {
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
                        "engine...");
@@ -377,7 +374,7 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
 
-    using namespace ::bates_model_test;
+    using namespace bates_model_test;
 
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
