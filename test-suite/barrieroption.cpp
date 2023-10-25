@@ -173,7 +173,7 @@ namespace barrier_option_test {
         BOOST_FAIL("exception expected");      \
     }                                          \
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BarrierOptionTest)
 

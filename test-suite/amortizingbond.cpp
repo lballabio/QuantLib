@@ -31,7 +31,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(AmortizingBondTest)
 

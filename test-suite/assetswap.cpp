@@ -113,7 +113,7 @@ namespace asset_swap_test {
 }
 
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture) // fails with QL_USE_INDEXED_COUPON
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture) // fails with QL_USE_INDEXED_COUPON
 
 BOOST_AUTO_TEST_SUITE(AssetSwapTest)
 
