@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "assetswap.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/assetswap.hpp>
@@ -112,7 +112,12 @@ namespace asset_swap_test {
 
 }
 
-void AssetSwapTest::testConsistency() {
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture) // fails with QL_USE_INDEXED_COUPON
+
+BOOST_AUTO_TEST_SUITE(AssetSwapTest)
+
+BOOST_AUTO_TEST_CASE(testConsistency) {
     BOOST_TEST_MESSAGE(
                  "Testing consistency between fair price and fair spread...");
 
@@ -499,7 +504,7 @@ void AssetSwapTest::testConsistency() {
 
 }
 
-void AssetSwapTest::testImpliedValue() {
+BOOST_AUTO_TEST_CASE(testImpliedValue) {
 
     BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
                        " price with null spread...");
@@ -867,7 +872,7 @@ void AssetSwapTest::testImpliedValue() {
 }
 
 
-void AssetSwapTest::testMarketASWSpread() {
+BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
 
     BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
                        " and par asset swap...");
@@ -1307,7 +1312,7 @@ void AssetSwapTest::testMarketASWSpread() {
 }
 
 
-void AssetSwapTest::testZSpread() {
+BOOST_AUTO_TEST_CASE(testZSpread) {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
@@ -1629,7 +1634,7 @@ void AssetSwapTest::testZSpread() {
 }
 
 
-void AssetSwapTest::testGenericBondImplied() {
+BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
 
     BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
                        " asset-swap fair price with null spread...");
@@ -2019,8 +2024,7 @@ void AssetSwapTest::testGenericBondImplied() {
     }
 }
 
-
-void AssetSwapTest::testMASWWithGenericBond() {
+BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
                        "with generic bond...");
@@ -2495,7 +2499,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
 }
 
 
-void AssetSwapTest::testZSpreadWithGenericBond() {
+BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
@@ -2861,8 +2865,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     }
 }
 
-
-void AssetSwapTest::testSpecializedBondVsGenericBond() {
+BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
                        " against equivalent generic bond...");
@@ -3423,7 +3426,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 }
 
 
-void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
+BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
 
     BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
                        " bond against equivalent generic bond...");
@@ -4252,20 +4255,6 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* AssetSwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("AssetSwap tests");
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testImpliedValue));
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMarketASWSpread));
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testZSpread));
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testGenericBondImplied));
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMASWWithGenericBond));
-    suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testZSpreadWithGenericBond));
-    suite->add(QUANTLIB_TEST_CASE(
-                           &AssetSwapTest::testSpecializedBondVsGenericBond));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

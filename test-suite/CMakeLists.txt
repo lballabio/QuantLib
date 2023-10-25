@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    assetswap.hpp
     autocovariances.hpp
     barrieroption.hpp
     basismodels.hpp

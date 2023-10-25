@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	speedlevel.hpp \
-	assetswap.hpp \
 	autocovariances.hpp \
 	barrieroption.hpp \
 	binaryoption.hpp \
