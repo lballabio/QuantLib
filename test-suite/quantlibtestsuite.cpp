@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "calendars.hpp"
 #include "callablebonds.hpp"
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
@@ -200,7 +199,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
     test->add(CapFlooredCouponTest::suite());
     test->add(CashFlowsTest::suite());

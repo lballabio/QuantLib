@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    calendars.hpp
     callablebonds.hpp
     capfloor.hpp
     capflooredcoupon.hpp
@@ -337,7 +336,7 @@ set(QL_BENCHMARK_SOURCES
     barrieroption.cpp
     basketoption.cpp
     batesmodel.cpp
-        convertiblebonds.cpp                convertiblebonds.hpp
+    convertiblebonds.cpp                convertiblebonds.hpp
     digitaloption.cpp                   digitaloption.hpp
     dividendoption.cpp                  dividendoption.hpp
     europeanoption.cpp                  europeanoption.hpp
