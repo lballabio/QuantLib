@@ -355,10 +355,7 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	barrieroption.hpp \
 	doublebarrieroption.hpp \
-	basketoption.hpp \
-	batesmodel.hpp \
 	convertiblebonds.hpp \
 	digitaloption.hpp \
 	dividendoption.hpp \
