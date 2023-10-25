@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "array.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/array.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -32,7 +32,11 @@ namespace array_test {
     };
 }
 
-void ArrayTest::testConstruction() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, QuantLib::TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ArrayTest)
+
+BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing array construction...");
 
@@ -117,7 +121,7 @@ void ArrayTest::testConstruction() {
     }
 }
 
-void ArrayTest::testArrayFunctions() {
+BOOST_AUTO_TEST_CASE(testArrayFunctions) {
 
     BOOST_TEST_MESSAGE("Testing array functions...");
 
@@ -178,7 +182,7 @@ void ArrayTest::testArrayFunctions() {
     }
 }
 
-void ArrayTest::testArrayResize() {
+BOOST_AUTO_TEST_CASE(testArrayResize) {
     BOOST_TEST_MESSAGE("Testing array resize...");
 
     Array a(10,1.0,1.0);
@@ -213,7 +217,7 @@ void ArrayTest::testArrayResize() {
         QL_CHECK_CLOSE(actual[i], expected[i], 100 * QL_EPSILON);   \
     }                                                               \
 
-void ArrayTest::testArrayOperators() {
+BOOST_AUTO_TEST_CASE(testArrayOperators) {
     BOOST_TEST_MESSAGE("Testing array operators...");
 
     auto get_array = []() {
@@ -327,12 +331,7 @@ void ArrayTest::testArrayOperators() {
     QL_CHECK_CLOSE_ARRAY(real_rvalue_quotient, scalar_quotient_2);
 }
 
-test_suite* ArrayTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("array tests");
-    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testConstruction));
-    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayFunctions));
-    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayResize));
-    suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayOperators));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
 
