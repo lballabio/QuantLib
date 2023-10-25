@@ -989,9 +989,6 @@
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basisswapratehelpers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="crosscurrencyratehelpers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

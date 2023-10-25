@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	binaryoption.hpp \
-	basisswapratehelpers.hpp \
 	basketoption.hpp \
 	batesmodel.hpp \
 	bermudanswaption.hpp \
