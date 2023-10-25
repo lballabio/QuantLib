@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="blackdeltacalculator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="blackformula.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

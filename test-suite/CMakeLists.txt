@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    blackdeltacalculator.hpp
     blackformula.hpp
     bondforward.hpp
     bonds.hpp

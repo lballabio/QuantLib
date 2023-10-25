@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "blackdeltacalculator.hpp"
 #include "blackformula.hpp"
 #include "bondforward.hpp"
 #include "bonds.hpp"
@@ -327,7 +326,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for experimental classes
     test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(BlackDeltaCalculatorTest::suite());
     test->add(CallableBondTest::suite());
     test->add(CatBondTest::suite());
     test->add(CdoTest::suite(speed));
