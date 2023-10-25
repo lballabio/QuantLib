@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	binaryoption.hpp \
 	blackdeltacalculator.hpp \
 	blackformula.hpp \
 	bondforward.hpp \

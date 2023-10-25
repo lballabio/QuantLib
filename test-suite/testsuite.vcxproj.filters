@@ -947,9 +947,6 @@
     <ClInclude Include="xoshiro256starstar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="binaryoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="businessdayconventions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
