@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "basismodels.hpp"
 #include "basisswapratehelpers.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
@@ -336,7 +335,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(BasismodelsTest::suite());
     test->add(BasisSwapRateHelpersTest::suite());
     test->add(DoubleBarrierOptionTest::experimental(speed));
     test->add(BlackDeltaCalculatorTest::suite());

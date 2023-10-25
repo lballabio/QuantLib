@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    basismodels.hpp
     basisswapratehelpers.hpp
     basketoption.hpp
     batesmodel.hpp
