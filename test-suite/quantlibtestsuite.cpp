@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "autocovariances.hpp"
 #include "barrieroption.hpp"
 #include "basismodels.hpp"
 #include "basisswapratehelpers.hpp"
@@ -214,7 +213,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(AutocovariancesTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite(speed));
     test->add(BatesModelTest::suite());

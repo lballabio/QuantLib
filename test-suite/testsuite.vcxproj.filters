@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="autocovariances.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="barrieroption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

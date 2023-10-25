@@ -174,8 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	speedlevel.hpp \
-	autocovariances.hpp \
 	barrieroption.hpp \
 	binaryoption.hpp \
 	basismodels.hpp \
@@ -309,6 +307,7 @@ QL_TEST_HDRS = \
 	shortratemodels.hpp \
 	sofrfutures.hpp \
 	solvers.hpp \
+	speedlevel.hpp \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
