@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
     <ClInclude Include="binaryoption.hpp" />
     <ClInclude Include="blackdeltacalculator.hpp" />

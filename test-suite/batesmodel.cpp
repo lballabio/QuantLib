@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "batesmodel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/target.hpp>
 #include <ql/processes/batesprocess.hpp>
@@ -56,8 +56,11 @@ namespace bates_model_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BatesModelTest::testAnalyticVsBlack() {
+BOOST_AUTO_TEST_SUITE(BatesModelTest)
+
+BOOST_AUTO_TEST_CASE(testAnalyticVsBlack) {
 
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Black formula...");
 
@@ -167,8 +170,7 @@ void BatesModelTest::testAnalyticVsBlack() {
     }
 }
 
-
-void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
+BOOST_AUTO_TEST_CASE(testAnalyticAndMcVsJumpDiffusion) {
 
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
 
@@ -292,7 +294,7 @@ namespace bates_model_test {
     };
 }
 
-void BatesModelTest::testAnalyticVsMCPricing() {
+BOOST_AUTO_TEST_CASE(testAnalyticVsMCPricing) {
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
                        "engine...");
 
@@ -365,7 +367,7 @@ void BatesModelTest::testAnalyticVsMCPricing() {
     }
 }
 
-void BatesModelTest::testDAXCalibration() {
+BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
        with Stochstic Volatility: Applications of Fourier Transform
@@ -375,7 +377,7 @@ void BatesModelTest::testDAXCalibration() {
     BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
 
-    using namespace bates_model_test;
+    using namespace ::bates_model_test;
 
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -516,11 +518,6 @@ void BatesModelTest::testDAXCalibration() {
     }
 }
 
-test_suite* BatesModelTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Bates model tests");
-    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
-    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticAndMcVsJumpDiffusion));
-    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsMCPricing));
-    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testDAXCalibration));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    batesmodel.hpp
     bermudanswaption.hpp
     binaryoption.hpp
     blackdeltacalculator.hpp
@@ -345,8 +344,8 @@ set(QL_BENCHMARK_SOURCES
     asianoptions.cpp
     barrieroption.cpp
     basketoption.cpp
-    batesmodel.cpp                      batesmodel.hpp
-    convertiblebonds.cpp                convertiblebonds.hpp
+    batesmodel.cpp
+        convertiblebonds.cpp                convertiblebonds.hpp
     digitaloption.cpp                   digitaloption.hpp
     dividendoption.cpp                  dividendoption.hpp
     europeanoption.cpp                  europeanoption.hpp
