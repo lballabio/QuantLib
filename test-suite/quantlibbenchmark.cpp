@@ -170,7 +170,7 @@ namespace {
     class Benchmark {
       public:
         Benchmark(std::string name, std::function<void(void)> f, double mflop)
-        : f_(f), name_(std::move(name)), mflop_(mflop) {}
+        : f_(std::move(f)), name_(std::move(name)), mflop_(mflop) {}
 
         std::function<void(void)> getTestCase() const {
             return f_;
@@ -227,7 +227,7 @@ namespace {
 
     class TimedBenchmark {
       public:
-        explicit TimedBenchmark(std::function<void(void)> f) : f_(f) {}
+        explicit TimedBenchmark(std::function<void(void)> f) : f_(std::move(f)) {}
 
         void startMeasurement() const {
             /* PAPI code
