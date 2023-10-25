@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    brownianbridge.hpp
     businessdayconventions.hpp
     calendars.hpp
     callablebonds.hpp

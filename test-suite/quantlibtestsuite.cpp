@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "brownianbridge.hpp"
 #include "businessdayconventions.hpp"
 #include "calendars.hpp"
 #include "callablebonds.hpp"
@@ -202,7 +201,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(BrownianBridgeTest::suite());
     test->add(BusinessDayConventionTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
