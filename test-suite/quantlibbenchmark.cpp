@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "barrieroption.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
 #include "convertiblebonds.hpp"
@@ -162,6 +161,9 @@ namespace QuantLibTest {
     }
     namespace AsianOptionTest {
         struct testMCDiscreteArithmeticAveragePrice: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+    namespace BarrierOptionTest {
+        struct testBabsiriValues: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
 
@@ -196,7 +198,7 @@ namespace {
     std::vector<Benchmark> bm = {
         Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
-        Benchmark("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8),
+        Benchmark("BarrierOption::BabsiriValues", std::bind(&QuantLibTest::BarrierOptionTest::testBabsiriValues::test_method, QuantLibTest::BarrierOptionTest::testBabsiriValues()), 880.8),
         Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
         Benchmark("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80),
         Benchmark("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46),

@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    barrieroption.hpp
     basismodels.hpp
     basisswapratehelpers.hpp
     basketoption.hpp
@@ -347,7 +346,7 @@ set(QL_BENCHMARK_SOURCES
     
     americanoption.cpp
     asianoptions.cpp
-    barrieroption.cpp                   barrieroption.hpp
+    barrieroption.cpp
     basketoption.cpp                    basketoption.hpp
     batesmodel.cpp                      batesmodel.hpp
     convertiblebonds.cpp                convertiblebonds.hpp

@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "barrieroption.hpp"
 #include "basismodels.hpp"
 #include "basisswapratehelpers.hpp"
 #include "basketoption.hpp"
@@ -213,7 +212,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite(speed));
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite(speed));
@@ -340,7 +338,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     // tests for experimental classes
     test->add(BasismodelsTest::suite());
     test->add(BasisSwapRateHelpersTest::suite());
-    test->add(BarrierOptionTest::experimental());
     test->add(DoubleBarrierOptionTest::experimental(speed));
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CallableBondTest::suite());
