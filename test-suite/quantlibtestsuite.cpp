@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "basketoption.hpp"
 #include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
 #include "binaryoption.hpp"
@@ -210,7 +209,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(BasketOptionTest::suite(speed));
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite(speed));
     test->add(BinaryOptionTest::suite());

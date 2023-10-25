@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "basketoption.hpp"
 #include "batesmodel.hpp"
 #include "convertiblebonds.hpp"
 #include "digitaloption.hpp"
@@ -164,6 +163,11 @@ namespace QuantLibTest {
     }
     namespace BarrierOptionTest {
         struct testBabsiriValues: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+    namespace BasketOptionTest {
+        struct testEuroTwoValues: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+        struct testTavellaValues: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+        struct testOddSamples: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
 
@@ -199,9 +203,9 @@ namespace {
         Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
         Benchmark("BarrierOption::BabsiriValues", std::bind(&QuantLibTest::BarrierOptionTest::testBabsiriValues::test_method, QuantLibTest::BarrierOptionTest::testBabsiriValues()), 880.8),
-        Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
-        Benchmark("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80),
-        Benchmark("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46),
+        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testEuroTwoValues::test_method, QuantLibTest::BasketOptionTest::testEuroTwoValues()), 340.04),
+        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testTavellaValues::test_method, QuantLibTest::BasketOptionTest::testTavellaValues()), 933.80),
+        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testOddSamples::test_method, QuantLibTest::BasketOptionTest::testOddSamples()), 642.46),
         Benchmark("BatesModel::DAXCalibration", &BatesModelTest::testDAXCalibration, 1993.35),
         Benchmark("ConvertibleBondTest::testBond", &ConvertibleBondTest::testBond, 159.85),
         Benchmark("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87),
