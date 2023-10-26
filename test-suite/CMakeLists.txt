@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    cdo.hpp
     cdsoption.hpp
     chooseroption.hpp
     cliquetoption.hpp
