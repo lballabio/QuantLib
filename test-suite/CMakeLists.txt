@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    compoundoption.hpp
     convertiblebonds.hpp
     covariance.hpp
     creditdefaultswap.hpp

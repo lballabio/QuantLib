@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "compoundoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/compoundoption.hpp>
 #include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
@@ -78,8 +78,11 @@ namespace compound_option_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CompoundOptionTest::testPutCallParity(){
+BOOST_AUTO_TEST_SUITE(CompoundOptionTest)
+
+BOOST_AUTO_TEST_CASE(testPutCallParity){
 
     BOOST_TEST_MESSAGE("Testing compound-option put-call parity...");
 
@@ -195,7 +198,7 @@ void CompoundOptionTest::testPutCallParity(){
     }
 }
 
-void CompoundOptionTest::testValues(){
+BOOST_AUTO_TEST_CASE(testValues){
 
     BOOST_TEST_MESSAGE("Testing compound-option values and greeks...");
 
@@ -345,14 +348,6 @@ void CompoundOptionTest::testValues(){
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CompoundOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Compound option tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&CompoundOptionTest::testValues));
-    suite->add(QUANTLIB_TEST_CASE(&CompoundOptionTest::testPutCallParity));
-
-    return suite;
-}
-
-
+BOOST_AUTO_TEST_SUITE_END()
