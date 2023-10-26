@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "cms.hpp"
 #include "cms_normal.hpp"
 #include "cmsspread.hpp"
 #include "commodityunitofmeasure.hpp"
@@ -190,7 +189,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(CmsTest::suite());
     test->add(CmsNormalTest::suite());
     test->add(CompoundOptionTest::suite());
     test->add(ConvertibleBondTest::suite());

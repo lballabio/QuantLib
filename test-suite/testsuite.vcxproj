@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cms.hpp" />
     <ClInclude Include="cms_normal.hpp" />
     <ClInclude Include="cmsspread.hpp" />
     <ClInclude Include="commodityunitofmeasure.hpp" />
