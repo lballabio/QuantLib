@@ -908,9 +908,6 @@
     <ClInclude Include="zerocouponswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="currency.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="svivolatility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

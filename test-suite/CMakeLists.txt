@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    currency.hpp
     curvestates.hpp
     dates.hpp
     daycounters.hpp
