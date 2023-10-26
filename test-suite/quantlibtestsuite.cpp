@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "cdsoption.hpp"
 #include "chooseroption.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
@@ -305,7 +304,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for experimental classes
     test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(CdsOptionTest::suite());
     test->add(CmsSpreadTest::suite());
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompiledBoostVersionTest::suite());
