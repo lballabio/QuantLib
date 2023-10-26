@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	compiledboostversion.hpp \
 	compoundoption.hpp \
 	convertiblebonds.hpp \
 	covariance.hpp \
