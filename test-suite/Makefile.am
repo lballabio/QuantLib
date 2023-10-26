@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	covariance.hpp \
 	creditdefaultswap.hpp \
 	creditriskplus.hpp \
 	crosscurrencyratehelpers.hpp \

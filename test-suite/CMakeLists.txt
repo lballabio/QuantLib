@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    covariance.hpp
     creditdefaultswap.hpp
     creditriskplus.hpp
     crosscurrencyratehelpers.hpp
