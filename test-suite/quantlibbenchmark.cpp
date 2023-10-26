@@ -158,22 +158,28 @@ namespace QuantLibTest {
         struct testFdAmericanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
     namespace AsianOptionTest {
         struct testMCDiscreteArithmeticAveragePrice:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
     namespace BarrierOptionTest {
         struct testBabsiriValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
     namespace BasketOptionTest {
         struct testEuroTwoValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
         struct testTavellaValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
         struct testOddSamples:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
     namespace BatesModelTest {
         struct testDAXCalibration:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
