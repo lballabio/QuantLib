@@ -185,7 +185,7 @@ namespace QuantLib {
         return *this;
     }
 
-    SubPeriodsLeg& SubPeriodsLeg::withPaymentLag(Natural lag) {
+    SubPeriodsLeg& SubPeriodsLeg::withPaymentLag(Integer lag) {
         paymentLag_ = lag;
         return *this;
     }

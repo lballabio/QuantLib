@@ -52,7 +52,7 @@ namespace QuantLib {
                                    BusinessDayConvention exCouponConvention = Unadjusted,
                                    bool exCouponEndOfMonth = false,
                                    const std::vector<Real>& redemptions = { 100.0 },
-                                   Natural paymentLag = 0);
+                                   Integer paymentLag = 0);
     };
   
 }

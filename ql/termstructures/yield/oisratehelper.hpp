@@ -41,7 +41,7 @@ namespace QuantLib {
                       // exogenous discounting curve
                       Handle<YieldTermStructure> discountingCurve = {},
                       bool telescopicValueDates = false,
-                      Natural paymentLag = 0,
+                      Integer paymentLag = 0,
                       BusinessDayConvention paymentConvention = Following,
                       Frequency paymentFrequency = Annual,
                       Calendar paymentCalendar = Calendar(),
@@ -80,7 +80,7 @@ namespace QuantLib {
       bool telescopicValueDates_;
       RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
 
-      Natural paymentLag_;
+      Integer paymentLag_;
       BusinessDayConvention paymentConvention_;
       Frequency paymentFrequency_;
       Calendar paymentCalendar_;
@@ -101,7 +101,7 @@ namespace QuantLib {
                            Handle<YieldTermStructure> discountingCurve = {},
                            bool telescopicValueDates = false,
                            RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                           Natural paymentLag = 0,
+                           Integer paymentLag = 0,
                            BusinessDayConvention paymentConvention = Following,
                            Frequency paymentFrequency = Annual,
                            const Calendar& paymentCalendar = Calendar(),

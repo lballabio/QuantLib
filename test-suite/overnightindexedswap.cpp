@@ -136,7 +136,7 @@ namespace overnight_indexed_swap_test {
                  Spread spread,
                  bool telescopicValueDates,
                  Date effectiveDate = Null<Date>(),
-                 Natural paymentLag = 0,
+                 Integer paymentLag = 0,
                  RateAveraging::Type averagingMethod = RateAveraging::Compound) {
             return MakeOIS(length, eoniaIndex, fixedRate, 0 * Days)
                 .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
@@ -303,7 +303,7 @@ namespace overnight_indexed_swap_test {
 
     CommonVars vars;
 
-    Natural paymentLag = 2;
+    Integer paymentLag = 2;
 
     std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
 

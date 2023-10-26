@@ -37,7 +37,7 @@ namespace QuantLib {
                                       const BusinessDayConvention exCouponConvention,
                                       bool exCouponEndOfMonth,
                                       const std::vector<Real>& redemptions,
-                                      Natural paymentLag)
+                                      Integer paymentLag)
     : Bond(settlementDays, schedule.calendar(), issueDate),
       frequency_(schedule.tenor().frequency()),
       dayCounter_(accrualDayCounter) {

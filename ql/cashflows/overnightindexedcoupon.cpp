@@ -300,7 +300,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withPaymentLag(Natural lag) {
+    OvernightLeg& OvernightLeg::withPaymentLag(Integer lag) {
         paymentLag_ = lag;
         return *this;
     }

@@ -70,7 +70,7 @@ namespace QuantLib {
                     const std::vector<Rate>& floors,
                     bool isInArrears,
                     bool isZero,
-                    Natural paymentLag = 0,
+                    Integer paymentLag = 0,
                     Calendar paymentCalendar = Calendar(),
                     Period exCouponPeriod = Period(),
                     Calendar exCouponCalendar = Calendar(),
