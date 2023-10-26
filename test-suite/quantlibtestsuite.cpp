@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "commodityunitofmeasure.hpp"
 #include "compiledboostversion.hpp"
 #include "compoundoption.hpp"
 #include "convertiblebonds.hpp"
@@ -295,7 +294,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for experimental classes
     test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompiledBoostVersionTest::suite());
     test->add(CreditRiskPlusTest::suite());
     test->add(DoubleBarrierOptionTest::suite(speed));

@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	commodityunitofmeasure.hpp \
 	compiledboostversion.hpp \
 	compoundoption.hpp \
 	convertiblebonds.hpp \
