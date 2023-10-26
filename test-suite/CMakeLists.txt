@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    convertiblebonds.hpp
     covariance.hpp
     creditdefaultswap.hpp
     creditriskplus.hpp
@@ -321,7 +320,7 @@ set(QL_BENCHMARK_SOURCES
     barrieroption.cpp
     basketoption.cpp
     batesmodel.cpp
-    convertiblebonds.cpp                convertiblebonds.hpp
+    convertiblebonds.cpp
     digitaloption.cpp                   digitaloption.hpp
     dividendoption.cpp                  dividendoption.hpp
     europeanoption.cpp                  europeanoption.hpp

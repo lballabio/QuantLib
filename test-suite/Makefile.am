@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	convertiblebonds.hpp \
 	covariance.hpp \
 	creditdefaultswap.hpp \
 	creditriskplus.hpp \
@@ -341,7 +340,6 @@ QL_BENCHMARK_SRCS = \
 
 QL_BENCHMARK_HDRS = \
 	doublebarrieroption.hpp \
-	convertiblebonds.hpp \
 	digitaloption.hpp \
 	dividendoption.hpp \
 	europeanoption.hpp \
