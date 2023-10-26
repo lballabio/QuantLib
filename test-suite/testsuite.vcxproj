@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="creditriskplus.hpp" />
     <ClInclude Include="currency.hpp" />
     <ClInclude Include="curvestates.hpp" />
     <ClInclude Include="dates.hpp" />

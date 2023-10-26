@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "creditriskplus.hpp"
 #include "currency.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
@@ -283,7 +282,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for experimental classes
     test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(CreditRiskPlusTest::suite());
     test->add(DoubleBarrierOptionTest::suite(speed));
     test->add(DoubleBinaryOptionTest::suite());
     test->add(EuropeanOptionTest::experimental());
