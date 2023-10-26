@@ -44,7 +44,7 @@ namespace QuantLib {
                                     const BusinessDayConvention exCouponConvention,
                                     bool exCouponEndOfMonth,
                                     const std::vector<Real>& redemptions,
-                                    Natural paymentLag)
+                                    Integer paymentLag)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();

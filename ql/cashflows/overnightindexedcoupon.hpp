@@ -101,7 +101,7 @@ namespace QuantLib {
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
         OvernightLeg& withPaymentAdjustment(BusinessDayConvention);
         OvernightLeg& withPaymentCalendar(const Calendar&);
-        OvernightLeg& withPaymentLag(Natural lag);
+        OvernightLeg& withPaymentLag(Integer lag);
         OvernightLeg& withGearings(Real gearing);
         OvernightLeg& withGearings(const std::vector<Real>& gearings);
         OvernightLeg& withSpreads(Spread spread);
@@ -116,7 +116,7 @@ namespace QuantLib {
         DayCounter paymentDayCounter_;
         Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_ = Following;
-        Natural paymentLag_ = 0;
+        Integer paymentLag_ = 0;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         bool telescopicValueDates_ = false;
