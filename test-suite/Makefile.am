@@ -176,7 +176,6 @@ QL_TEST_SRCS = \
 QL_TEST_HDRS = \
 	creditdefaultswap.hpp \
 	creditriskplus.hpp \
-	crosscurrencyratehelpers.hpp \
 	currency.hpp \
 	curvestates.hpp \
 	dates.hpp \

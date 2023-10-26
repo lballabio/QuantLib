@@ -812,7 +812,6 @@
   <ItemGroup>
     <ClInclude Include="creditdefaultswap.hpp" />
     <ClInclude Include="creditriskplus.hpp" />
-    <ClInclude Include="crosscurrencyratehelpers.hpp" />
     <ClInclude Include="currency.hpp" />
     <ClInclude Include="curvestates.hpp" />
     <ClInclude Include="dates.hpp" />

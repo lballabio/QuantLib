@@ -176,7 +176,6 @@ set(QL_TEST_SOURCES
 set(QL_TEST_HEADERS
     creditdefaultswap.hpp
     creditriskplus.hpp
-    crosscurrencyratehelpers.hpp
     currency.hpp
     curvestates.hpp
     dates.hpp
