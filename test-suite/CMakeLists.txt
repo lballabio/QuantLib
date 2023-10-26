@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    cliquetoption.hpp
     cms.hpp
     cms_normal.hpp
     cmsspread.hpp
