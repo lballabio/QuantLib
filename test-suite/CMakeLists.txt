@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    cmsspread.hpp
     commodityunitofmeasure.hpp
     compiledboostversion.hpp
     compoundoption.hpp
