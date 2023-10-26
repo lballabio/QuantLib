@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="creditdefaultswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="creditriskplus.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
