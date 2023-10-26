@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="callablebonds.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="capfloor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

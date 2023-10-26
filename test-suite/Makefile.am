@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	callablebonds.hpp \
 	capfloor.hpp \
 	capflooredcoupon.hpp \
 	cashflows.hpp \

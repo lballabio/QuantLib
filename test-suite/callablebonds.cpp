@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "callablebonds.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/treecallablebondengine.hpp>
@@ -94,7 +94,11 @@ namespace {
 
 }
 
-void CallableBondTest::testInterplay() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CallableBondExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testInterplay) {
 
     BOOST_TEST_MESSAGE("Testing interplay of callability and puttability for callable bonds...");
 
@@ -220,8 +224,7 @@ void CallableBondTest::testInterplay() {
             << "    difference:     " << bond.settlementValue()-expected);
 }
 
-
-void CallableBondTest::testConsistency() {
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing consistency of callable bonds...");
 
@@ -297,8 +300,7 @@ void CallableBondTest::testConsistency() {
             << " (should be higher)");
 }
 
-
-void CallableBondTest::testObservability() {
+BOOST_AUTO_TEST_CASE(testObservability) {
 
     BOOST_TEST_MESSAGE("Testing observability of callable bonds...");
 
@@ -357,7 +359,7 @@ void CallableBondTest::testObservability() {
 
 }
 
-void CallableBondTest::testDegenerate() {
+BOOST_AUTO_TEST_CASE(testDegenerate) {
 
     BOOST_TEST_MESSAGE("Repricing bonds using degenerate callable bonds...");
 
@@ -470,7 +472,7 @@ void CallableBondTest::testDegenerate() {
             << "    expected:   " << couponBond.cleanPrice());
 }
 
-void CallableBondTest::testCached() {
+BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE("Testing callable-bond value against cached values...");
 
@@ -569,7 +571,7 @@ void CallableBondTest::testCached() {
 
 }
 
-void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
+BOOST_AUTO_TEST_CASE(testSnappingExerciseDate2ClosestCouponDate) {
 
     BOOST_TEST_MESSAGE("Testing snap of callability dates to the closest coupon date...");
 
@@ -671,8 +673,7 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     }
 }
 
-
-void CallableBondTest::testBlackEngine() {
+BOOST_AUTO_TEST_CASE(testBlackEngine) {
 
     BOOST_TEST_MESSAGE("Testing Black engine for European callable bonds...");
 
@@ -711,8 +712,7 @@ void CallableBondTest::testBlackEngine() {
             << "    difference:     " << calculated - expected);
 }
 
-
-void CallableBondTest::testImpliedVol() {
+BOOST_AUTO_TEST_CASE(testImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing implied-volatility calculation for callable bonds...");
 
@@ -807,7 +807,7 @@ void CallableBondTest::testImpliedVol() {
             << "    difference:     " << bond.NPV() - targetNPV);
 }
 
-void CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule() {
+BOOST_AUTO_TEST_CASE(testCallableFixedRateBondWithArbitrarySchedule) {
     BOOST_TEST_MESSAGE("Testing callable fixed-rate bond with arbitrary schedule...");
 
     Globals vars;
@@ -848,17 +848,6 @@ void CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule() {
     BOOST_CHECK_NO_THROW(callableBond.cleanPrice());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CallableBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Callable-bond tests");
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testInterplay));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testDegenerate));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCached));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testBlackEngine));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testImpliedVol));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

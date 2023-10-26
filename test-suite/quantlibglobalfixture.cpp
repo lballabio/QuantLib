@@ -36,8 +36,11 @@
 #  include <ql/auto_link.hpp>
 #endif
 
+#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #define BOOST_TEST_NO_MAIN
 #define BOOST_TEST_ALTERNATIVE_INIT_API
+#endif
+
 #include "quantlibglobalfixture.hpp"
 #include "speedlevel.hpp"
 #include <iostream>

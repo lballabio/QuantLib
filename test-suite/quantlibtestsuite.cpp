@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "callablebonds.hpp"
 #include "capfloor.hpp"
 #include "capflooredcoupon.hpp"
 #include "cashflows.hpp"
@@ -314,7 +313,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for experimental classes
     test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(CallableBondTest::suite());
     test->add(CatBondTest::suite());
     test->add(CdoTest::suite(speed));
     test->add(CdsOptionTest::suite());
