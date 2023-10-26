@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    cashflows.hpp
     catbonds.hpp
     cdo.hpp
     cdsoption.hpp

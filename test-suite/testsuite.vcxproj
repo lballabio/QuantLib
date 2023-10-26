@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cashflows.hpp" />
     <ClInclude Include="catbonds.hpp" />
     <ClInclude Include="cdo.hpp" />
     <ClInclude Include="cdsoption.hpp" />
