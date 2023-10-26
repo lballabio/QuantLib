@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	curvestates.hpp \
 	dates.hpp \
 	daycounters.hpp \
 	defaultprobabilitycurves.hpp \

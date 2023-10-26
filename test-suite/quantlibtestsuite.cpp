@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
 #include "defaultprobabilitycurves.hpp"
@@ -179,7 +178,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(CurveStatesTest::suite());
     test->add(DateTest::suite(speed));
     test->add(DayCounterTest::suite());
     test->add(DefaultProbabilityCurveTest::suite());
