@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="chooseroption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cliquetoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

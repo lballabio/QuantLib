@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	chooseroption.hpp \
 	cliquetoption.hpp \
 	cms.hpp \
 	cms_normal.hpp \
