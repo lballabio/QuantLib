@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cms_normal.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cmsspread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
