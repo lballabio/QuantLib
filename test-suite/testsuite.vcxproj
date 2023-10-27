@@ -763,7 +763,7 @@
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
-    <ClInclude Include="quantlibglobalfixture.cpp" />
+    <ClCompile Include="quantlibglobalfixture.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />

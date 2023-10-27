@@ -335,9 +335,9 @@
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="quantlibglobalfixture.cpp">
+    <ClCompile Include="quantlibglobalfixture.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClCompile Include="quantooption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
