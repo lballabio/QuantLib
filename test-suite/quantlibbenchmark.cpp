@@ -193,6 +193,9 @@ namespace QuantLibTest {
     }
 
     namespace DividendOptionTest {
+        struct testFdEuropeanGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
         struct testFdAmericanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
@@ -236,8 +239,8 @@ namespace {
         Benchmark("BatesModel::DAXCalibration", std::bind(&QuantLibTest::BatesModelTest::testDAXCalibration::test_method, QuantLibTest::BatesModelTest::testDAXCalibration()), 1993.35),
         Benchmark("ConvertibleBondTest::testBond", std::bind(&QuantLibTest::ConvertibleBondTest::testBond::test_method, QuantLibTest::ConvertibleBondTest::testBond()), 159.85),
         Benchmark("DigitalOption::MCCashAtHit", std::bind(&QuantLibTest::DigitalOptionTest::testMCCashAtHit::test_method, QuantLibTest::DigitalOptionTest::testMCCashAtHit()), 995.87),
-        Benchmark("DividendOption::FdEuropeanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdAmericanGreeks()), 949.52),
-        Benchmark("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks, 1113.74),
+        Benchmark("DividendOption::FdEuropeanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdEuropeanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdEuropeanGreeks()), 949.52),
+        Benchmark("DividendOption::FdAmericanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdAmericanGreeks()), 1113.74),
         Benchmark("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63),
         Benchmark("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51),
         Benchmark("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43),

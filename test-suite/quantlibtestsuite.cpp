@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "doublebinaryoption.hpp"
 #include "equitycashflow.hpp"
 #include "equityindex.hpp"
 #include "equitytotalreturnswap.hpp"
@@ -262,9 +261,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(DoubleBarrierOptionTest::suite(speed));
-    test->add(DoubleBinaryOptionTest::suite());
     test->add(EuropeanOptionTest::experimental());
     test->add(EverestOptionTest::suite());
     test->add(ExtendedTreesTest::suite());

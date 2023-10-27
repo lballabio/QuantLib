@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="doublebinaryoption.hpp" />
     <ClInclude Include="equityindex.hpp" />
     <ClInclude Include="equitycashflow.hpp" />
     <ClInclude Include="equitytotalreturnswap.hpp" />

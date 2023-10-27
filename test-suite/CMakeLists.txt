@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    doublebinaryoption.hpp
     equityindex.hpp
     equitycashflow.hpp
     equitytotalreturnswap.hpp
