@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "blackdeltacalculator.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/experimental/fx/deltavolquote.hpp>
@@ -61,8 +61,11 @@ namespace black_delta_calculator_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BlackDeltaCalculatorTest::testDeltaValues(){
+BOOST_AUTO_TEST_SUITE(BlackDeltaCalculatorExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testDeltaValues){
 
     BOOST_TEST_MESSAGE("Testing delta calculator values...");
 
@@ -147,7 +150,7 @@ void BlackDeltaCalculatorTest::testDeltaValues(){
     }
 }
 
-void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
+BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
 
     BOOST_TEST_MESSAGE("Testing premium-adjusted delta price consistency...");
 
@@ -312,7 +315,7 @@ void BlackDeltaCalculatorTest::testDeltaPriceConsistency() {
     }
 }
 
-void BlackDeltaCalculatorTest::testPutCallParity(){
+BOOST_AUTO_TEST_CASE(testPutCallParity){
 
     BOOST_TEST_MESSAGE("Testing put-call parity for deltas...");
 
@@ -517,7 +520,7 @@ void BlackDeltaCalculatorTest::testPutCallParity(){
     }
 }
 
-void BlackDeltaCalculatorTest::testAtmCalcs(){
+BOOST_AUTO_TEST_CASE(testAtmCalcs){
 
     BOOST_TEST_MESSAGE("Testing delta-neutral ATM quotations...");
 
@@ -679,17 +682,7 @@ void BlackDeltaCalculatorTest::testAtmCalcs(){
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* BlackDeltaCalculatorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Black delta calculator tests");
-    suite->add(QUANTLIB_TEST_CASE(&BlackDeltaCalculatorTest::testDeltaValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                       &BlackDeltaCalculatorTest::testDeltaPriceConsistency));
-    suite->add(QUANTLIB_TEST_CASE(
-                       &BlackDeltaCalculatorTest::testPutCallParity));
-    suite->add(QUANTLIB_TEST_CASE(&BlackDeltaCalculatorTest::testAtmCalcs));
-
-    return suite;
-}

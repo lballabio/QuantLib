@@ -336,7 +336,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="quantlibglobalfixture.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClCompile Include="quantooption.cpp">
       <Filter>Source Files</Filter>
@@ -527,99 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="assetswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="autocovariances.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="barrieroption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="basketoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="batesmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bermudanswaption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="blackdeltacalculator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="blackformula.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bonds.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="brownianbridge.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="calendars.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="callablebonds.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="capfloor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="capflooredcoupon.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cashflows.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="catbonds.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cdo.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cdsoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="chooseroption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cliquetoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cms.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cms_normal.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cmsspread.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="commodityunitofmeasure.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="compiledboostversion.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="compoundoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="convertiblebonds.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="covariance.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="creditdefaultswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="creditriskplus.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="curvestates.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dates.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -965,12 +872,6 @@
     <ClInclude Include="xoshiro256starstar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="binaryoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="businessdayconventions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="zabr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -986,9 +887,6 @@
     <ClInclude Include="normalclvmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basismodels.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fdcev.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1001,22 +899,10 @@
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basisswapratehelpers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="crosscurrencyratehelpers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="subperiodcoupons.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="zerocouponswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="currency.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="bondforward.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="svivolatility.hpp">

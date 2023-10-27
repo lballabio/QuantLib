@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "covariance.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
@@ -39,8 +39,11 @@ namespace covariance_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CovarianceTest::testRankReduction() {
+BOOST_AUTO_TEST_SUITE(CovarianceTest)
+
+BOOST_AUTO_TEST_CASE(testRankReduction) {
 
     BOOST_TEST_MESSAGE("Testing matrix rank reduction salvaging algorithms...");
 
@@ -98,7 +101,7 @@ void CovarianceTest::testRankReduction() {
             << "salvaged matrix:\n" << goodCov);
 }
 
-void CovarianceTest::testSalvagingMatrix() {
+BOOST_AUTO_TEST_CASE(testSalvagingMatrix) {
 
     BOOST_TEST_MESSAGE("Testing positive semi-definiteness salvaging "
                        "algorithms...");
@@ -155,7 +158,7 @@ void CovarianceTest::testSalvagingMatrix() {
             << "salvaged matrix:\n" << goodCov);
 }
 
-void CovarianceTest::testCovariance() {
+BOOST_AUTO_TEST_CASE(testCovariance) {
 
     BOOST_TEST_MESSAGE("Testing covariance and correlation calculations...");
 
@@ -264,17 +267,8 @@ void CovarianceTest::testCovariance() {
             }
         }
     }
-
-
-
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CovarianceTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Covariance and correlation tests");
-    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testCovariance));
-    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
-    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testRankReduction));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

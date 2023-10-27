@@ -1,23 +1,3 @@
-/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-
-/*
- Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
-
- This file is part of QuantLib, a free-software/open-source library
- for financial quantitative analysts and developers - http://quantlib.org/
-
- QuantLib is free software: you can redistribute it and/or modify it
- under the terms of the QuantLib license.  You should have received a
- copy of the license along with this program; if not, please email
- <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
-
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the license for more details.
-*/
-
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
@@ -36,44 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "assetswap.hpp"
-#include "autocovariances.hpp"
-#include "barrieroption.hpp"
-#include "basismodels.hpp"
-#include "basisswapratehelpers.hpp"
-#include "basketoption.hpp"
-#include "batesmodel.hpp"
-#include "bermudanswaption.hpp"
-#include "binaryoption.hpp"
-#include "blackdeltacalculator.hpp"
-#include "blackformula.hpp"
-#include "bondforward.hpp"
-#include "bonds.hpp"
-#include "brownianbridge.hpp"
-#include "businessdayconventions.hpp"
-#include "calendars.hpp"
-#include "callablebonds.hpp"
-#include "capfloor.hpp"
-#include "capflooredcoupon.hpp"
-#include "cashflows.hpp"
-#include "catbonds.hpp"
-#include "cdo.hpp"
-#include "cdsoption.hpp"
-#include "chooseroption.hpp"
-#include "cliquetoption.hpp"
-#include "cms.hpp"
-#include "cms_normal.hpp"
-#include "cmsspread.hpp"
-#include "commodityunitofmeasure.hpp"
-#include "compiledboostversion.hpp"
-#include "compoundoption.hpp"
-#include "convertiblebonds.hpp"
-#include "covariance.hpp"
-#include "creditdefaultswap.hpp"
-#include "creditriskplus.hpp"
-#include "crosscurrencyratehelpers.hpp"
-#include "currency.hpp"
-#include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
 #include "defaultprobabilitycurves.hpp"
@@ -206,51 +148,6 @@
 
 using namespace boost::unit_test_framework;
 
-namespace {
-
-    void configure(QuantLib::Date evaluationDate) {
-        /* if needed, a subset of the lines below can be
-           uncommented and/or changed to run the test suite with a
-           different configuration. In the future, we'll need a
-           mechanism that doesn't force us to recompile (possibly a
-           couple of command-line flags for the test suite?)
-        */
-
-        // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        // QuantLib::Settings::instance().includeTodaysCashFlows() = ext::nullopt;
-
-        QuantLib::Settings::instance().evaluationDate() = evaluationDate;
-    }
-
-}
-
-QuantLib::Date evaluation_date(int argc, char** argv) {
-    /*! Dead simple parser:
-        - passing --date=YYYY-MM-DD causes the test suite to run on
-          that date;
-        - passing --date=today causes it to run on today's date;
-        - passing nothing causes it to run on a known date for which
-          there should be no date-dependent errors as far as we know.
-
-        Dates that should eventually be checked include:
-        - 2015-08-29 causes three tests to fail;
-        - 2016-02-29 causes two tests to fail.
-    */
-
-    QuantLib::Date knownGoodDefault =
-        QuantLib::Date(16, QuantLib::September, 2015);
-
-    for (int i=1; i<argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--date=today")
-            return QuantLib::Date::todaysDate();
-        else if (arg.substr(0, 7) == "--date=")
-            return QuantLib::DateParser::parseISO(arg.substr(7));
-    }
-    return knownGoodDefault;
-}
-
-
 SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
         - passing --slow causes all tests to be run;
@@ -276,79 +173,11 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     int argc = boost::unit_test::framework::master_test_suite().argc;
     char **argv = boost::unit_test::framework::master_test_suite().argv;
-    configure(evaluation_date(argc, argv));
     SpeedLevel speed = speed_level(argc, argv);
 
-    const QuantLib::Settings& settings = QuantLib::Settings::instance();
-    std::ostringstream header;
-    header <<
-        " Testing "
-        "QuantLib " QL_VERSION
-        "\n  QL_EXTRA_SAFETY_CHECKS "
-        #ifdef QL_EXTRA_SAFETY_CHECKS
-        "  defined"
-        #else
-        "undefined"
-        #endif
-        "\n  QL_USE_INDEXED_COUPON "
-        #ifdef QL_USE_INDEXED_COUPON
-        "   defined"
-        #else
-        " undefined"
-        #endif
-        "\n"
-           << "evaluation date is " << settings.evaluationDate() << ",\n"
-           << (settings.includeReferenceDateEvents()
-               ? "reference date events are included,\n"
-               : "reference date events are excluded,\n")
-           << (settings.includeTodaysCashFlows()
-               ? (*settings.includeTodaysCashFlows()
-                    ? "today's cashflows are included,\n"
-                    : "today's cashflows are excluded,\n")
-               : "")
-           << (settings.enforcesTodaysHistoricFixings()
-               ? "today's historic fixings are enforced."
-               : "today's historic fixings are not enforced.")
-           << "\nRunning "
-           << (speed == Faster ? "faster" :
-               (speed == Fast ?   "fast" : "all"))
-           << " tests.";
-
-    std::string rule = std::string(41, '=');
-
-    BOOST_TEST_MESSAGE(rule);
-    BOOST_TEST_MESSAGE(header.str());
-    BOOST_TEST_MESSAGE(rule);
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
-    test->add(AutocovariancesTest::suite());
-    test->add(BarrierOptionTest::suite());
-    test->add(BasketOptionTest::suite(speed));
-    test->add(BatesModelTest::suite());
-    test->add(BermudanSwaptionTest::suite(speed));
-    test->add(BinaryOptionTest::suite());
-    test->add(BlackFormulaTest::suite());
-    test->add(BondTest::suite());
-    test->add(BondForwardTest::suite());
-    test->add(BrownianBridgeTest::suite());
-    test->add(BusinessDayConventionTest::suite());
-    test->add(CalendarTest::suite());
-    test->add(CapFloorTest::suite());
-    test->add(CapFlooredCouponTest::suite());
-    test->add(CashFlowsTest::suite());
-    test->add(ChooserOptionTest::suite());
-    test->add(CliquetOptionTest::suite());
-    test->add(CmsTest::suite());
-    test->add(CmsNormalTest::suite());
-    test->add(CompoundOptionTest::suite());
-    test->add(ConvertibleBondTest::suite());
-    test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
-    test->add(CreditDefaultSwapTest::suite());
-    test->add(CrossCurrencyRateHelpersTest::suite());
-    test->add(CurrencyTest::suite());
-    test->add(CurveStatesTest::suite());
     test->add(DateTest::suite(speed));
     test->add(DayCounterTest::suite());
     test->add(DefaultProbabilityCurveTest::suite());
@@ -448,19 +277,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(BasismodelsTest::suite());
-    test->add(BasisSwapRateHelpersTest::suite());
-    test->add(BarrierOptionTest::experimental());
     test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(BlackDeltaCalculatorTest::suite());
-    test->add(CallableBondTest::suite());
-    test->add(CatBondTest::suite());
-    test->add(CdoTest::suite(speed));
-    test->add(CdsOptionTest::suite());
-    test->add(CmsSpreadTest::suite());
-    test->add(CommodityUnitOfMeasureTest::suite());
-    test->add(CompiledBoostVersionTest::suite());
-    test->add(CreditRiskPlusTest::suite());
     test->add(DoubleBarrierOptionTest::suite(speed));
     test->add(DoubleBinaryOptionTest::suite());
     test->add(EuropeanOptionTest::experimental());

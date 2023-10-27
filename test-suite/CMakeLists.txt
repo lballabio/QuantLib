@@ -174,44 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    assetswap.hpp
-    autocovariances.hpp
-    barrieroption.hpp
-    basismodels.hpp
-    basisswapratehelpers.hpp
-    basketoption.hpp
-    batesmodel.hpp
-    bermudanswaption.hpp
-    binaryoption.hpp
-    blackdeltacalculator.hpp
-    blackformula.hpp
-    bondforward.hpp
-    bonds.hpp
-    brownianbridge.hpp
-    businessdayconventions.hpp
-    calendars.hpp
-    callablebonds.hpp
-    capfloor.hpp
-    capflooredcoupon.hpp
-    cashflows.hpp
-    catbonds.hpp
-    cdo.hpp
-    cdsoption.hpp
-    chooseroption.hpp
-    cliquetoption.hpp
-    cms.hpp
-    cms_normal.hpp
-    cmsspread.hpp
-    commodityunitofmeasure.hpp
-    compiledboostversion.hpp
-    compoundoption.hpp
-    convertiblebonds.hpp
-    covariance.hpp
-    creditdefaultswap.hpp
-    creditriskplus.hpp
-    crosscurrencyratehelpers.hpp
-    currency.hpp
-    curvestates.hpp
     dates.hpp
     daycounters.hpp
     defaultprobabilitycurves.hpp
@@ -349,10 +311,10 @@ set(QL_BENCHMARK_SOURCES
     
     americanoption.cpp
     asianoptions.cpp
-    barrieroption.cpp                   barrieroption.hpp
-    basketoption.cpp                    basketoption.hpp
-    batesmodel.cpp                      batesmodel.hpp
-    convertiblebonds.cpp                convertiblebonds.hpp
+    barrieroption.cpp
+    basketoption.cpp
+    batesmodel.cpp
+    convertiblebonds.cpp
     digitaloption.cpp                   digitaloption.hpp
     dividendoption.cpp                  dividendoption.hpp
     europeanoption.cpp                  europeanoption.hpp

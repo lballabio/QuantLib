@@ -174,45 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	speedlevel.hpp \
-	assetswap.hpp \
-	autocovariances.hpp \
-	barrieroption.hpp \
-	binaryoption.hpp \
-	basismodels.hpp \
-	basisswapratehelpers.hpp \
-	basketoption.hpp \
-	batesmodel.hpp \
-	bermudanswaption.hpp \
-	blackdeltacalculator.hpp \
-	blackformula.hpp \
-	bondforward.hpp \
-	bonds.hpp \
-	brownianbridge.hpp \
-	businessdayconventions.hpp \
-	calendars.hpp \
-	callablebonds.hpp \
-	capfloor.hpp \
-	capflooredcoupon.hpp \
-	cashflows.hpp \
-	catbonds.hpp \
-	cdo.hpp \
-	cdsoption.hpp \
-	chooseroption.hpp \
-	cliquetoption.hpp \
-	cms.hpp \
-	cms_normal.hpp \
-	cmsspread.hpp \
-	commodityunitofmeasure.hpp \
-	compiledboostversion.hpp \
-	compoundoption.hpp \
-	convertiblebonds.hpp \
-	covariance.hpp \
-	creditdefaultswap.hpp \
-	creditriskplus.hpp \
-	crosscurrencyratehelpers.hpp \
-	currency.hpp \
-	curvestates.hpp \
 	dates.hpp \
 	daycounters.hpp \
 	defaultprobabilitycurves.hpp \
@@ -310,6 +271,7 @@ QL_TEST_HDRS = \
 	shortratemodels.hpp \
 	sofrfutures.hpp \
 	solvers.hpp \
+	speedlevel.hpp \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
@@ -371,11 +333,7 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	barrieroption.hpp \
 	doublebarrieroption.hpp \
-	basketoption.hpp \
-	batesmodel.hpp \
-	convertiblebonds.hpp \
 	digitaloption.hpp \
 	dividendoption.hpp \
 	europeanoption.hpp \

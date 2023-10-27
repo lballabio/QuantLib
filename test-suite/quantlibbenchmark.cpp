@@ -137,10 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "barrieroption.hpp"
-#include "basketoption.hpp"
-#include "batesmodel.hpp"
-#include "convertiblebonds.hpp"
 #include "digitaloption.hpp"
 #include "dividendoption.hpp"
 #include "europeanoption.hpp"
@@ -158,10 +154,39 @@
 
 namespace QuantLibTest {
     namespace AmericanOptionTest {
-        struct testFdAmericanGreeks: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+        struct testFdAmericanGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
     namespace AsianOptionTest {
-        struct testMCDiscreteArithmeticAveragePrice: public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+        struct testMCDiscreteArithmeticAveragePrice:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace BarrierOptionTest {
+        struct testBabsiriValues:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace BasketOptionTest {
+        struct testEuroTwoValues:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testTavellaValues:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testOddSamples:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace BatesModelTest {
+        struct testDAXCalibration:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace ConvertibleBondTest {
+        struct testBond:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
 
@@ -170,7 +195,7 @@ namespace {
     class Benchmark {
       public:
         Benchmark(std::string name, std::function<void(void)> f, double mflop)
-        : f_(f), name_(std::move(name)), mflop_(mflop) {}
+        : f_(std::move(f)), name_(std::move(name)), mflop_(mflop) {}
 
         std::function<void(void)> getTestCase() const {
             return f_;
@@ -196,12 +221,12 @@ namespace {
     std::vector<Benchmark> bm = {
         Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
-        Benchmark("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8),
-        Benchmark("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04),
-        Benchmark("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80),
-        Benchmark("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46),
-        Benchmark("BatesModel::DAXCalibration", &BatesModelTest::testDAXCalibration, 1993.35),
-        Benchmark("ConvertibleBondTest::testBond", &ConvertibleBondTest::testBond, 159.85),
+        Benchmark("BarrierOption::BabsiriValues", std::bind(&QuantLibTest::BarrierOptionTest::testBabsiriValues::test_method, QuantLibTest::BarrierOptionTest::testBabsiriValues()), 880.8),
+        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testEuroTwoValues::test_method, QuantLibTest::BasketOptionTest::testEuroTwoValues()), 340.04),
+        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testTavellaValues::test_method, QuantLibTest::BasketOptionTest::testTavellaValues()), 933.80),
+        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testOddSamples::test_method, QuantLibTest::BasketOptionTest::testOddSamples()), 642.46),
+        Benchmark("BatesModel::DAXCalibration", std::bind(&QuantLibTest::BatesModelTest::testDAXCalibration::test_method, QuantLibTest::BatesModelTest::testDAXCalibration()), 1993.35),
+        Benchmark("ConvertibleBondTest::testBond", std::bind(&QuantLibTest::ConvertibleBondTest::testBond::test_method, QuantLibTest::ConvertibleBondTest::testBond()), 159.85),
         Benchmark("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87),
         Benchmark("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks, 949.52),
         Benchmark("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks, 1113.74),
@@ -227,7 +252,7 @@ namespace {
 
     class TimedBenchmark {
       public:
-        explicit TimedBenchmark(std::function<void(void)> f) : f_(f) {}
+        explicit TimedBenchmark(std::function<void(void)> f) : f_(std::move(f)) {}
 
         void startMeasurement() const {
             /* PAPI code

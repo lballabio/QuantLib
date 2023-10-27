@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "businessdayconventions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendars/southafrica.hpp>
@@ -46,7 +46,11 @@ namespace business_day_conventions_test {
 
 }
 
-void BusinessDayConventionTest::testConventions() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BusinessDayConventionTest)
+
+BOOST_AUTO_TEST_CASE(testConventions) {
 
     BOOST_TEST_MESSAGE("Testing business day conventions...");
 
@@ -122,11 +126,6 @@ void BusinessDayConventionTest::testConventions() {
     }
 }
 
-test_suite* BusinessDayConventionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Business day convention tests");
-    suite->add(QUANTLIB_TEST_CASE(&BusinessDayConventionTest::testConventions));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
-
-
+BOOST_AUTO_TEST_SUITE_END()

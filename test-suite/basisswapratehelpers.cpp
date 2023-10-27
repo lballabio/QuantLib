@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "basisswapratehelpers.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -210,39 +210,34 @@ namespace basisswapratehelpers_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BasisSwapRateHelpersTest::testIborIborBaseCurveBootstrap() {
+BOOST_AUTO_TEST_SUITE(BasisSwapRateHelpersExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testIborIborBaseCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (base curve bootstrap)...");
 
     basisswapratehelpers_test::testIborIborBootstrap(true);
 }
 
-void BasisSwapRateHelpersTest::testIborIborOtherCurveBootstrap() {
+BOOST_AUTO_TEST_CASE(testIborIborOtherCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (other curve bootstrap)...");
 
     basisswapratehelpers_test::testIborIborBootstrap(false);
 }
 
-void BasisSwapRateHelpersTest::testOvernightIborBootstrap() {
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrap) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers...");
 
     basisswapratehelpers_test::testOvernightIborBootstrap(false);
 }
 
-void BasisSwapRateHelpersTest::testOvernightIborBootstrapWithDiscountCurve() {
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithDiscountCurve) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with external discount curve...");
 
     basisswapratehelpers_test::testOvernightIborBootstrap(true);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* BasisSwapRateHelpersTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Basis swap rate helpers tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&BasisSwapRateHelpersTest::testIborIborBaseCurveBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(&BasisSwapRateHelpersTest::testIborIborOtherCurveBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(&BasisSwapRateHelpersTest::testOvernightIborBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(&BasisSwapRateHelpersTest::testOvernightIborBootstrapWithDiscountCurve));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

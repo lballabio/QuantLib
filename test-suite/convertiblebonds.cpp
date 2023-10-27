@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "convertiblebonds.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/bonds/convertiblebonds.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
@@ -102,8 +102,11 @@ namespace convertible_bonds_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void ConvertibleBondTest::testBond() {
+BOOST_AUTO_TEST_SUITE(ConvertibleBondTest)
+
+BOOST_AUTO_TEST_CASE(testBond) {
 
     /* when deeply out-of-the-money, the value of the convertible bond
        should equal that of the underlying plain-vanilla bond. */
@@ -292,7 +295,7 @@ void ConvertibleBondTest::testBond() {
     }
 }
 
-void ConvertibleBondTest::testOption() {
+BOOST_AUTO_TEST_CASE(testOption) {
 
     /* a zero-coupon convertible bond with no credit spread is
        equivalent to a call option. */
@@ -354,7 +357,7 @@ void ConvertibleBondTest::testOption() {
     }
 }
 
-void ConvertibleBondTest::testRegression() {
+BOOST_AUTO_TEST_CASE(testRegression) {
 
     BOOST_TEST_MESSAGE(
        "Testing fixed-coupon convertible bond in known regression case...");
@@ -444,13 +447,6 @@ void ConvertibleBondTest::testRegression() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* ConvertibleBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Convertible bond tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&ConvertibleBondTest::testBond));
-    suite->add(QUANTLIB_TEST_CASE(&ConvertibleBondTest::testOption));
-    suite->add(QUANTLIB_TEST_CASE(&ConvertibleBondTest::testRegression));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
