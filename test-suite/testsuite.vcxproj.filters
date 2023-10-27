@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="doublebarrieroption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="doublebinaryoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

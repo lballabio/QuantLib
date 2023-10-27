@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "doublebarrieroption.hpp"
 #include "doublebinaryoption.hpp"
 #include "equitycashflow.hpp"
 #include "equityindex.hpp"
