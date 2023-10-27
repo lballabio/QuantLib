@@ -22,7 +22,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "distributions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
@@ -206,9 +206,24 @@ namespace distributions_test {
         Real result;
     };
 
+    class InverseNonCentralChiSquared {
+      public:
+        InverseNonCentralChiSquared(Real df, Real ncp)
+        : dist_(df, ncp) {}
+
+        Real operator()(Real x) const {
+            return boost::math::quantile(dist_, x);
+        }
+      private:
+        const boost::math::non_central_chi_squared_distribution<Real> dist_;
+    };
 }
 
-void DistributionTest::testNormal() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DistributionTest)
+
+BOOST_AUTO_TEST_CASE(testNormal) {
 
     BOOST_TEST_MESSAGE("Testing normal distributions...");
 
@@ -298,7 +313,7 @@ void DistributionTest::testNormal() {
     }
 }
 
-void DistributionTest::testBivariate() {
+BOOST_AUTO_TEST_CASE(testBivariate) {
 
     BOOST_TEST_MESSAGE("Testing bivariate cumulative normal distribution...");
 
@@ -323,8 +338,7 @@ void DistributionTest::testBivariate() {
                                                         "West 2004", 1.0e-8);
 }
 
-
-void DistributionTest::testPoisson() {
+BOOST_AUTO_TEST_CASE(testPoisson) {
 
     BOOST_TEST_MESSAGE("Testing Poisson distribution...");
 
@@ -361,7 +375,7 @@ void DistributionTest::testPoisson() {
     }
 }
 
-void DistributionTest::testCumulativePoisson() {
+BOOST_AUTO_TEST_CASE(testCumulativePoisson) {
 
     BOOST_TEST_MESSAGE("Testing cumulative Poisson distribution...");
 
@@ -397,7 +411,7 @@ void DistributionTest::testCumulativePoisson() {
     }
 }
 
-void DistributionTest::testInverseCumulativePoisson() {
+BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
 
     BOOST_TEST_MESSAGE("Testing inverse cumulative Poisson distribution...");
 
@@ -428,8 +442,7 @@ void DistributionTest::testInverseCumulativePoisson() {
     }
 }
 
-
-void DistributionTest::testBivariateCumulativeStudent() {
+BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
     BOOST_TEST_MESSAGE(
         "Testing bivariate cumulative Student t distribution...");
 
@@ -587,7 +600,7 @@ void DistributionTest::testBivariateCumulativeStudent() {
     }
 }
 
-void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
+BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudentVsBivariate) {
     BOOST_TEST_MESSAGE(
         "Testing bivariate cumulative Student t distribution for large N...");
 
@@ -625,23 +638,8 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
                         "\n    average error: " << avgDiff);
     }
 }
-    
 
-namespace distributions_test {
-    class InverseNonCentralChiSquared {
-      public:
-        InverseNonCentralChiSquared(Real df, Real ncp)
-        : dist_(df, ncp) {}
-
-        Real operator()(Real x) const {
-            return boost::math::quantile(dist_, x);
-        }
-      private:
-        const boost::math::non_central_chi_squared_distribution<Real> dist_;
-    };
-}
-
-void DistributionTest::testInvCDFviaStochasticCollocation() {
+BOOST_AUTO_TEST_CASE(testInvCDFviaStochasticCollocation) {
     BOOST_TEST_MESSAGE(
         "Testing inverse CDF based on stochastic collocation...");
 
@@ -708,7 +706,7 @@ void DistributionTest::testInvCDFviaStochasticCollocation() {
     }
 }
 
-void DistributionTest::testSankaranApproximation() {
+BOOST_AUTO_TEST_CASE(testSankaranApproximation) {
     BOOST_TEST_MESSAGE("Testing Sankaran approximation for the "
                        "non-central cumulative chi-square distribution...");
 
@@ -741,19 +739,6 @@ void DistributionTest::testSankaranApproximation() {
     }
 }
 
-test_suite* DistributionTest::suite(SpeedLevel) {
-    auto* suite = BOOST_TEST_SUITE("Distribution tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testPoisson));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testCumulativePoisson));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testInverseCumulativePoisson));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudent));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testInvCDFviaStochasticCollocation));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testSankaranApproximation));
-    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudentVsBivariate));
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

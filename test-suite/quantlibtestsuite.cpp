@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "distributions.hpp"
 #include "dividendoption.hpp"
 #include "doublebarrieroption.hpp"
 #include "doublebinaryoption.hpp"
@@ -173,7 +172,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(DistributionTest::suite(speed));
     test->add(DividendOptionTest::suite(speed));
     test->add(EquityIndexTest::suite());
     test->add(EquityCashFlowTest::suite());

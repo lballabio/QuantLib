@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	distributions.hpp \
 	dividendoption.hpp \
 	doublebarrieroption.hpp \
 	doublebinaryoption.hpp \
