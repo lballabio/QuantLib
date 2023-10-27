@@ -16,7 +16,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "daycounters.hpp"
 #include "defaultprobabilitycurves.hpp"
 #include "digitalcoupon.hpp"
 #include "digitaloption.hpp"
@@ -177,7 +176,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(DayCounterTest::suite());
     test->add(DefaultProbabilityCurveTest::suite());
     test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());

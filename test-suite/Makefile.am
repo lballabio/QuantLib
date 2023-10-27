@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	daycounters.hpp \
 	defaultprobabilitycurves.hpp \
 	digitalcoupon.hpp \
 	digitaloption.hpp \

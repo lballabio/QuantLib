@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="daycounters.hpp" />
     <ClInclude Include="defaultprobabilitycurves.hpp" />
     <ClInclude Include="digitalcoupon.hpp" />
     <ClInclude Include="digitaloption.hpp" />

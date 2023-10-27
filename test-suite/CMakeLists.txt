@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    daycounters.hpp
     defaultprobabilitycurves.hpp
     digitalcoupon.hpp
     digitaloption.hpp
