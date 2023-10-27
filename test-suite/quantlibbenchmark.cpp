@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "digitaloption.hpp"
 #include "dividendoption.hpp"
 #include "europeanoption.hpp"
 #include "fdheston.hpp"
@@ -188,6 +187,11 @@ namespace QuantLibTest {
         struct testBond:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace DigitalOptionTest {
+        struct testMCCashAtHit:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -227,7 +231,7 @@ namespace {
         Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testOddSamples::test_method, QuantLibTest::BasketOptionTest::testOddSamples()), 642.46),
         Benchmark("BatesModel::DAXCalibration", std::bind(&QuantLibTest::BatesModelTest::testDAXCalibration::test_method, QuantLibTest::BatesModelTest::testDAXCalibration()), 1993.35),
         Benchmark("ConvertibleBondTest::testBond", std::bind(&QuantLibTest::ConvertibleBondTest::testBond::test_method, QuantLibTest::ConvertibleBondTest::testBond()), 159.85),
-        Benchmark("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87),
+        Benchmark("DigitalOption::MCCashAtHit", std::bind(&QuantLibTest::DigitalOptionTest::testMCCashAtHit::test_method, QuantLibTest::DigitalOptionTest::testMCCashAtHit()), 995.87),
         Benchmark("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks, 949.52),
         Benchmark("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks, 1113.74),
         Benchmark("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63),

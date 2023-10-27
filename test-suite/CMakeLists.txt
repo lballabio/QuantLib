@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    digitaloption.hpp
     distributions.hpp
     dividendoption.hpp
     doublebarrieroption.hpp
@@ -311,7 +310,7 @@ set(QL_BENCHMARK_SOURCES
     basketoption.cpp
     batesmodel.cpp
     convertiblebonds.cpp
-    digitaloption.cpp                   digitaloption.hpp
+    digitaloption.cpp
     dividendoption.cpp                  dividendoption.hpp
     europeanoption.cpp                  europeanoption.hpp
     fdheston.cpp                        fdheston.hpp
