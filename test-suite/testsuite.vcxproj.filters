@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dates.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="daycounters.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
