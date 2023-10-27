@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_SUITE(CdoExperimentalTest)
 
 #ifndef QL_PATCH_SOLARIS
 
-BOOST_AUTO_TEST_CASE(testHW) {
+BOOST_AUTO_TEST_CASE(testHW, *precondition(if_speed(Slow))) {
 
     for (int dataSet{0}; dataSet < 5; dataSet++) {
 
