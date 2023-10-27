@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    digitalcoupon.hpp
     digitaloption.hpp
     distributions.hpp
     dividendoption.hpp
