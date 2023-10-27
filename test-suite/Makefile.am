@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	dividendoption.hpp \
 	doublebarrieroption.hpp \
 	doublebinaryoption.hpp \
 	equityindex.hpp \
@@ -327,8 +326,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	digitaloption.hpp \
-	dividendoption.hpp \
 	europeanoption.hpp \
 	fdheston.hpp \
 	hestonmodel.hpp \

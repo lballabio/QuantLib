@@ -20,7 +20,8 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-#include "dividendoption.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
@@ -56,7 +57,11 @@ using namespace boost::unit_test_framework;
 
 // tests
 
-void DividendOptionTest::testEuropeanValues() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DividendOptionTest)
+
+BOOST_AUTO_TEST_CASE(testEuropeanValues) {
 
     BOOST_TEST_MESSAGE(
               "Testing dividend European option values with no dividends...");
@@ -169,7 +174,7 @@ void DividendOptionTest::testEuropeanValues() {
 // Reference pg. 253 - Hull - Options, Futures, and Other Derivatives 5th ed
 // Exercise 12.8
 
-void DividendOptionTest::testEuropeanKnownValue() {
+BOOST_AUTO_TEST_CASE(testEuropeanKnownValue) {
 
     BOOST_TEST_MESSAGE("Testing dividend European option against known value...");
 
@@ -245,8 +250,7 @@ void DividendOptionTest::testEuropeanKnownValue() {
     }
 }
 
-
-void DividendOptionTest::testEuropeanStartLimit() {
+BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 
     BOOST_TEST_MESSAGE(
        "Testing dividend European option with a dividend on today's date...");
@@ -340,7 +344,7 @@ void DividendOptionTest::testEuropeanStartLimit() {
     }
 }
 
-void DividendOptionTest::testEuropeanEndLimit() {
+BOOST_AUTO_TEST_CASE(testEuropeanEndLimit) {
 
     BOOST_TEST_MESSAGE(
               "Testing dividend European option values with end limits...");
@@ -436,8 +440,7 @@ void DividendOptionTest::testEuropeanEndLimit() {
     }
 }
 
-
-void DividendOptionTest::testOldEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testOldEuropeanGreeks) {
 
     BOOST_TEST_MESSAGE("Testing old-style dividend European option greeks...");
 
@@ -571,7 +574,7 @@ void DividendOptionTest::testOldEuropeanGreeks() {
     }
 }
 
-void DividendOptionTest::testEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testEuropeanGreeks) {
 
     BOOST_TEST_MESSAGE("Testing dividend European option greeks...");
 
@@ -703,8 +706,7 @@ void DividendOptionTest::testEuropeanGreeks() {
     }
 }
 
-
-void DividendOptionTest::testFdEuropeanValues() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanValues) {
 
     BOOST_TEST_MESSAGE(
               "Testing finite-difference dividend European option values...");
@@ -946,8 +948,7 @@ namespace {
 
 }
 
-
-void DividendOptionTest::testFdEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanGreeks, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing finite-differences dividend European option greeks...");
 
     Date today = Date::todaysDate();
@@ -962,7 +963,7 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     }
 }
 
-void DividendOptionTest::testFdAmericanGreeks() {
+BOOST_AUTO_TEST_CASE(testFdAmericanGreeks) {
     BOOST_TEST_MESSAGE(
              "Testing finite-differences dividend American option greeks...");
 
@@ -1054,8 +1055,7 @@ namespace {
 
 }
 
-
-void DividendOptionTest::testFdEuropeanDegenerate() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanDegenerate) {
 
     BOOST_TEST_MESSAGE(
          "Testing degenerate finite-differences dividend European option...");
@@ -1070,7 +1070,7 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
-void DividendOptionTest::testFdAmericanDegenerate() {
+BOOST_AUTO_TEST_CASE(testFdAmericanDegenerate) {
 
     BOOST_TEST_MESSAGE(
          "Testing degenerate finite-differences dividend American option...");
@@ -1183,8 +1183,7 @@ namespace {
     }
 }
 
-
-void DividendOptionTest::testFdEuropeanWithDividendToday() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanWithDividendToday) {
 
     BOOST_TEST_MESSAGE(
          "Testing finite-differences dividend European option with dividend on today's date...");
@@ -1199,7 +1198,7 @@ void DividendOptionTest::testFdEuropeanWithDividendToday() {
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
-void DividendOptionTest::testFdAmericanWithDividendToday() {
+BOOST_AUTO_TEST_CASE(testFdAmericanWithDividendToday) {
 
     BOOST_TEST_MESSAGE(
          "Testing finite-differences dividend American option with dividend on today's date...");
@@ -1213,8 +1212,7 @@ void DividendOptionTest::testFdAmericanWithDividendToday() {
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
 }
 
-
-void DividendOptionTest::testEscrowedDividendModel() {
+BOOST_AUTO_TEST_CASE(testEscrowedDividendModel) {
     BOOST_TEST_MESSAGE("Testing finite-difference European engine "
                        "with the escrowed dividend model...");
 
@@ -1320,27 +1318,6 @@ void DividendOptionTest::testEscrowedDividendModel() {
     }
 }
 
-test_suite* DividendOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Dividend European option tests");
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
-    // Doesn't quite work.  Need to use discounted values
-    //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testOldEuropeanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanWithDividendToday));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanWithDividendToday));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEscrowedDividendModel));
+BOOST_AUTO_TEST_SUITE_END()
 
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
