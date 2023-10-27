@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "defaultprobabilitycurves.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
@@ -48,7 +48,11 @@ using std::map;
 using std::vector;
 using std::string;
 
-void DefaultProbabilityCurveTest::testDefaultProbability() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DefaultProbabilityCurveTest)
+
+BOOST_AUTO_TEST_CASE(testDefaultProbability) {
 
     BOOST_TEST_MESSAGE("Testing default-probability structure...");
 
@@ -111,8 +115,7 @@ void DefaultProbabilityCurveTest::testDefaultProbability() {
     }
 }
 
-
-void DefaultProbabilityCurveTest::testFlatHazardRate() {
+BOOST_AUTO_TEST_CASE(testFlatHazardRate) {
 
     BOOST_TEST_MESSAGE("Testing flat hazard rate...");
 
@@ -317,31 +320,31 @@ namespace {
 
 }
 
-void DefaultProbabilityCurveTest::testFlatHazardConsistency() {
+BOOST_AUTO_TEST_CASE(testFlatHazardConsistency) {
     BOOST_TEST_MESSAGE("Testing piecewise-flat hazard-rate consistency...");
     testBootstrapFromSpread<HazardRate,BackwardFlat>();
     testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 }
 
-void DefaultProbabilityCurveTest::testFlatDensityConsistency() {
+BOOST_AUTO_TEST_CASE(testFlatDensityConsistency) {
     BOOST_TEST_MESSAGE("Testing piecewise-flat default-density consistency...");
     testBootstrapFromSpread<DefaultDensity,BackwardFlat>();
     testBootstrapFromUpfront<DefaultDensity,BackwardFlat>();
 }
 
-void DefaultProbabilityCurveTest::testLinearDensityConsistency() {
+BOOST_AUTO_TEST_CASE(testLinearDensityConsistency) {
     BOOST_TEST_MESSAGE("Testing piecewise-linear default-density consistency...");
     testBootstrapFromSpread<DefaultDensity,Linear>();
     testBootstrapFromUpfront<DefaultDensity,Linear>();
 }
 
-void DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency() {
+BOOST_AUTO_TEST_CASE(testLogLinearSurvivalConsistency) {
     BOOST_TEST_MESSAGE("Testing log-linear survival-probability consistency...");
     testBootstrapFromSpread<SurvivalProbability,LogLinear>();
     testBootstrapFromUpfront<SurvivalProbability,LogLinear>();
 }
 
-void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
+BOOST_AUTO_TEST_CASE(testSingleInstrumentBootstrap) {
     BOOST_TEST_MESSAGE("Testing single-instrument curve bootstrap...");
 
     Calendar calendar = TARGET();
@@ -377,7 +380,7 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     defaultCurve.recalculate();
 }
 
-void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
+BOOST_AUTO_TEST_CASE(testUpfrontBootstrap) {
     BOOST_TEST_MESSAGE("Testing bootstrap on upfront quotes...");
 
     // Setting this to false would prevent the upfront from being used.
@@ -400,7 +403,8 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
    retries, the default curve building fails. Allowing retries, it expands the min survival probability bounds but 
    still fails. We set dontThrow to true in IterativeBootstrap to use a fall back curve.
 */
-void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
+
+BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
 
     BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
 
@@ -526,26 +530,6 @@ void DefaultProbabilityCurveTest::testIterativeBootstrapRetries() {
     BOOST_CHECK_NO_THROW(dpts->survivalProbability(testDate));
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* DefaultProbabilityCurveTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Default-probability curve tests");
-    suite->add(QUANTLIB_TEST_CASE(
-                       &DefaultProbabilityCurveTest::testDefaultProbability));
-    suite->add(QUANTLIB_TEST_CASE(
-                           &DefaultProbabilityCurveTest::testFlatHazardRate));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &DefaultProbabilityCurveTest::testFlatHazardConsistency));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &DefaultProbabilityCurveTest::testFlatDensityConsistency));
-    suite->add(QUANTLIB_TEST_CASE(
-                 &DefaultProbabilityCurveTest::testLinearDensityConsistency));
-    suite->add(QUANTLIB_TEST_CASE(
-             &DefaultProbabilityCurveTest::testLogLinearSurvivalConsistency));
-    suite->add(QUANTLIB_TEST_CASE(
-                &DefaultProbabilityCurveTest::testSingleInstrumentBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(
-                         &DefaultProbabilityCurveTest::testUpfrontBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(
-                &DefaultProbabilityCurveTest::testIterativeBootstrapRetries));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
