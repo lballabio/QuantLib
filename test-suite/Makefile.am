@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	equityindex.hpp \
-	equitycashflow.hpp \
 	equitytotalreturnswap.hpp \
 	europeanoption.hpp \
 	everestoption.hpp \

@@ -175,7 +175,6 @@ set(QL_TEST_SOURCES
 
 set(QL_TEST_HEADERS
     equityindex.hpp
-    equitycashflow.hpp
     equitytotalreturnswap.hpp
     europeanoption.hpp
     everestoption.hpp

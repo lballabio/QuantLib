@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "equitycashflow.hpp"
 #include "equityindex.hpp"
 #include "equitytotalreturnswap.hpp"
 #include "europeanoption.hpp"
@@ -190,7 +189,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(CPISwapTest::suite());
     test->add(EquityIndexTest::suite());
-    test->add(EquityCashFlowTest::suite());
     test->add(EquityTotalReturnSwapTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
