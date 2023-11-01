@@ -65,14 +65,14 @@
 #include <chrono>
 #include <thread>
 
-
 /* initialize PAPI on Linux
   sudo sysctl -w kernel.perf_event_paranoid=0
   export PAPI_EVENTS="PAPI_TOT_INS,PAPI_FP_OPS,PAPI_FP_INS"
   export PAPI_REPORT=1
 */
-//#include <papi.h>
 
+
+// #include <papi.h>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -83,118 +83,7 @@
 
 #include "utilities.hpp"
 
-namespace QuantLibTests {
 
-    namespace AmericanOptionTests {
-        struct testFdAmericanGreeks:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace AsianOptionTests {
-        struct testMCDiscreteArithmeticAveragePrice:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace BarrierOptionTests {
-        struct testBabsiriValues:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace BasketOptionTests {
-        struct testEuroTwoValues:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-
-        struct testTavellaValues:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-
-        struct testOddSamples:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace BatesModelTests {
-        struct testDAXCalibration:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace ConvertibleBondTests {
-        struct testBond:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace DigitalOptionTests {
-        struct testMCCashAtHit:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace DividendOptionTests {
-        struct testFdEuropeanGreeks:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-
-        struct testFdAmericanGreeks:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace EuropeanOptionTests {
-        struct testMcEngines:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-
-        struct testImpliedVol:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-
-        struct testFdEngines:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace FdHestonTests {
-        struct testFdmHestonAmerican:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace HestonModelTests {
-        struct testDAXCalibration:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace InterpolationTests {
-        struct testSabrInterpolation:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace JumpDiffusionTests {
-        struct testGreeks:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace LowDiscrepancyTests {
-        struct testMersenneTwisterDiscrepancy:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace MarketModelCmsTests {
-        struct testMultiStepCmSwapsAndSwaptions:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace MarketModelSmmTests {
-        struct testMultiStepCoterminalSwapsAndSwaptions:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace QuantoOptionTests {
-        struct testForwardGreeks:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace RiskStatisticsTests {
-        struct testResults:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-
-    namespace ShortRateModelTests {
-        struct testSwaps:
-            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
-    }
-}
 
 namespace {
 
@@ -224,46 +113,83 @@ namespace {
                        // point operations (not per sec!)
     };
 
-    std::vector<Benchmark> bm = {
-        Benchmark("AmericanOption::FdAmericanGreeks", [] { QuantLibTests::AmericanOptionTests::testFdAmericanGreeks().test_method(); }, 518.31),
-        Benchmark("AsianOption::MCArithmeticAveragePrice", [] { QuantLibTests::AsianOptionTests::testMCDiscreteArithmeticAveragePrice().test_method(); }, 5186.13),
-        Benchmark("BarrierOption::BabsiriValues", [] { QuantLibTests::BarrierOptionTests::testBabsiriValues().test_method(); }, 880.8),
-        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testEuroTwoValues().test_method(); }, 340.04),
-        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testTavellaValues().test_method(); }, 933.80),
-        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testOddSamples().test_method(); }, 642.46),
-        Benchmark("BatesModel::DAXCalibration", [] { QuantLibTests::BatesModelTests::testDAXCalibration().test_method(); }, 1993.35),
-        Benchmark("ConvertibleBondTest::testBond", [] { QuantLibTests::ConvertibleBondTests::testBond().test_method(); }, 159.85),
-        Benchmark("DigitalOption::MCCashAtHit", [] { QuantLibTests::DigitalOptionTests::testMCCashAtHit().test_method(); }, 995.87),
-        Benchmark("DividendOption::FdEuropeanGreeks", [] { QuantLibTests::DividendOptionTests::testFdEuropeanGreeks().test_method(); }, 949.52),
-        Benchmark("DividendOption::FdAmericanGreeks", [] { QuantLibTests::DividendOptionTests::testFdAmericanGreeks().test_method(); }, 1113.74),
-        Benchmark("EuropeanOption::FdMcEngines", [] { QuantLibTests::EuropeanOptionTests::testMcEngines().test_method(); }, 1988.63),
-        Benchmark("EuropeanOption::ImpliedVol", [] { QuantLibTests::EuropeanOptionTests::testImpliedVol().test_method(); }, 131.51),
-        Benchmark("EuropeanOption::FdEngines", [] { QuantLibTests::EuropeanOptionTests::testFdEngines().test_method(); }, 148.43),
-        Benchmark("FdHestonTest::testFdmHestonAmerican", [] { QuantLibTests::FdHestonTests::testFdmHestonAmerican().test_method(); }, 234.21),
-        Benchmark("HestonModel::DAXCalibration", [] { QuantLibTests::HestonModelTests::testDAXCalibration().test_method(); }, 555.19),
-        Benchmark("InterpolationTest::testSabrInterpolation", [] { QuantLibTests::InterpolationTests::testSabrInterpolation().test_method(); }, 295.63),
-        Benchmark("JumpDiffusion::Greeks", [] { QuantLibTests::JumpDiffusionTests::testGreeks().test_method(); }, 433.77),
-        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", [] { QuantLibTests::MarketModelCmsTests::testMultiStepCmSwapsAndSwaptions().test_method(); }, 11497.73),
-        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", [] { QuantLibTests::MarketModelSmmTests::testMultiStepCoterminalSwapsAndSwaptions().test_method(); }, 11244.95),
-        Benchmark("QuantoOption::ForwardGreeks", [] { QuantLibTests::QuantoOptionTests::testForwardGreeks().test_method(); }, 90.98),
-        Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTests::LowDiscrepancyTests::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
-        Benchmark("RiskStatistics::Results", [] { QuantLibTests::RiskStatisticsTests::testResults().test_method(); }, 300.28),
-        Benchmark("ShortRateModel::Swaps", [] { QuantLibTests::ShortRateModelTests::testSwaps().test_method(); }, 454.73)
+    std::vector<Benchmark> bm;
+
+    // A helper class to push benchmark objects into bm before main() starts
+    // Every time the constructor is called, a test is pushed into bm
+    struct AddBenchmark {
+        AddBenchmark() {}
+        template<class CALLABLE>
+        AddBenchmark(CALLABLE && body, const char* name, double cost) {
+            bm.push_back( Benchmark(name, std::move(body), cost) );
+        }
     };
 
+}
+
+#define QL_BENCHMARK_DECLARE(test_fixture, test_name, num_iters, cost)   \
+    namespace QuantLibTests {                                        \
+    namespace test_fixture {                                         \
+        struct test_name : public BOOST_AUTO_TEST_CASE_FIXTURE {     \
+            void test_method();                                      \
+        };                                                           \
+    }}                                                               \
+    \
+    namespace {             \
+        /* Declare unique global variable and push benchmark into bm */ \
+        AddBenchmark test_fixture##_##test_name( \
+                [] { for(int i=0; i<num_iters; i++) QuantLibTests::test_fixture::test_name().test_method(); }, \
+                #test_fixture "::" #test_name,                                  \
+                cost);                                             \
+    }
+
+
+
+QL_BENCHMARK_DECLARE(BatesModelTests, testDAXCalibration, 1, 1163.36);
+QL_BENCHMARK_DECLARE(HestonModelTests, testDAXCalibration, 1, 852.86);
+QL_BENCHMARK_DECLARE(FdHestonTests, testFdmHestonAmerican, 1, 183.52);
+QL_BENCHMARK_DECLARE(AmericanOptionTests, testFdAmericanGreeks, 1, 774.82);
+QL_BENCHMARK_DECLARE(EuropeanOptionTests, testImpliedVol, 1, 91.69);
+QL_BENCHMARK_DECLARE(HestonSLVModelTests, testMonteCarloCalibration, 1, 2395.90);
+QL_BENCHMARK_DECLARE(HestonSLVModelTests, testBarrierPricingViaHestonLocalVol, 1, 734.21);
+QL_BENCHMARK_DECLARE(MCLongstaffSchwartzEngineTests, testAmericanOption, 1, 1540.91);
+QL_BENCHMARK_DECLARE(VarianceGammaTests, testVarianceGamma, 1, 69.25);
+QL_BENCHMARK_DECLARE(ConvertibleBondTests, testBond, 1, 83.19);
+QL_BENCHMARK_DECLARE(AndreasenHugeVolatilityInterplTests, testArbitrageFree, 1, 672.74);
+QL_BENCHMARK_DECLARE(ShortRateModelTests, testSwaps, 1, 75.51);
+QL_BENCHMARK_DECLARE(MarketModelCmsTests, testMultiStepCmSwapsAndSwaptions, 1, 10016.22);
+QL_BENCHMARK_DECLARE(MarketModelSmmTests, testMultiStepCoterminalSwapsAndSwaptions, 1, 9332.63);
+QL_BENCHMARK_DECLARE(BermudanSwaptionTests, testCachedG2Values, 1, 2189.44);
+QL_BENCHMARK_DECLARE(PiecewiseYieldCurveTests, testConvexMonotoneForwardConsistency, 10, 229.33);
+QL_BENCHMARK_DECLARE(OvernightIndexedSwapTests, testBootstrapWithArithmeticAverage, 10, 1084.21);
+QL_BENCHMARK_DECLARE(MarkovFunctionalTests, testCalibrationTwoInstrumentSets, 1, 1743.69);
+QL_BENCHMARK_DECLARE(ShortRateModelTests, testCachedHullWhite2, 100, 220.91);
+QL_BENCHMARK_DECLARE(SwaptionVolatilityCubeTests, testSpreadedCube, 10, 336.87);
+QL_BENCHMARK_DECLARE(ZabrTests, testConsistency, 1, 11913.76);
+QL_BENCHMARK_DECLARE(CmsSpreadTests, testCouponPricing, 1, 1184.0);
+QL_BENCHMARK_DECLARE(CreditDefaultSwapTests, testImpliedHazardRate, 1000, 227.2);
+QL_BENCHMARK_DECLARE(SwingOptionTests, testExtOUJumpSwingOption, 1, 4329.34);
+QL_BENCHMARK_DECLARE(VppTests, testVPPPricing, 1, 3994.80);
+QL_BENCHMARK_DECLARE(RiskStatisticsTests, testResults, 1, 208.13);
+QL_BENCHMARK_DECLARE(LowDiscrepancyTests, testMersenneTwisterDiscrepancy, 1, 487.65);
+QL_BENCHMARK_DECLARE(FdmLinearOpTests, testFdmMesherIntegral, 100, 4.2);
+QL_BENCHMARK_DECLARE(LinearLeastSquaresRegressionTests, testMultiDimRegression, 1, 81.78);
+
+
+namespace {
     class TimedBenchmark {
       public:
         TimedBenchmark(std::function<void(void)> f, std::string  name)
         : f_(std::move(f)), name_(std::move(name)) {}
 
         void startMeasurement() const {
-            //QL_REQUIRE(PAPI_hl_region_begin(name_.c_str()) == PAPI_OK,
-            //    "could not initialize PAPI");
+//            QL_REQUIRE(PAPI_hl_region_begin(name_.c_str()) == PAPI_OK,
+//                "could not initialize PAPI");
         }
 
         void stopMeasurement() const {
-            //QL_REQUIRE(PAPI_hl_region_end(name_.c_str()) == PAPI_OK,
-            //    "could not stop PAPI");
+//            QL_REQUIRE(PAPI_hl_region_end(name_.c_str()) == PAPI_OK,
+//                "could not stop PAPI");
         }
 
         double operator()() const {
@@ -287,9 +213,9 @@ namespace {
 
         const std::string header = "Benchmark Suite QuantLib "  QL_VERSION;
 
-        std::cout << std::endl << std::string(58,'-') << std::endl;
+        std::cout << std::endl << std::string(78,'-') << std::endl;
         std::cout << header << std::endl;
-        std::cout << std::string(58,'-') << std::endl << std::endl;
+        std::cout << std::string(78,'-') << std::endl << std::endl;
 
         std::sort(runTimes.begin(), runTimes.end(),
             [](const auto& a, const auto& b) {
@@ -317,15 +243,15 @@ namespace {
                     * nProc * std::get<1>(iterT);
 
             std::cout << std::get<0>(iterT).getName()
-                      << std::string(42-std::get<0>(iterT).getName().length(),' ')
+                      << std::string(62-std::get<0>(iterT).getName().length(),' ')
                       << ":" << std::fixed << std::setw(8) << std::setprecision(1)
                       << mflopsPerSec
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
         }
-        std::cout << std::string(58,'-') << std::endl
-                  << "QuantLib Benchmark Index                  :"
+        std::cout << std::string(78,'-') << std::endl
+                  << "QuantLib Benchmark Index" << std::string(38,' ') << ":"
                   << std::fixed << std::setw(8) << std::setprecision(1)
                   << sum/aggTimes.size()
                   << " mflops" << std::endl;

@@ -185,30 +185,37 @@ set(QL_TEST_HEADERS
 
 set(QL_BENCHMARK_SOURCES
     quantlibbenchmark.cpp
-
-    americanoption.cpp
-    asianoptions.cpp
-    barrieroption.cpp
-    basketoption.cpp
-    batesmodel.cpp
-    convertiblebonds.cpp
-    digitaloption.cpp
-    dividendoption.cpp
-    europeanoption.cpp
-    fdheston.cpp
-    hestonmodel.cpp
-    interpolations.cpp
-    jumpdiffusion.cpp
-    lowdiscrepancysequences.cpp
-    marketmodel_cms.cpp
-    marketmodel_smm.cpp
+    americanoption.cpp                  
+    andreasenhugevolatilityinterpl.cpp  
+    batesmodel.cpp                      
+    bermudanswaption.cpp                
+    cdo.cpp                             
+    cmsspread.cpp                       
+    convertiblebonds.cpp                
+    creditdefaultswap.cpp               
+    europeanoption.cpp                  
+    fdheston.cpp                        
+    fdmlinearop.cpp                     
+    hestonmodel.cpp                     
+    hestonslvmodel.cpp                  
+    linearleastsquaresregression.cpp   
+    lowdiscrepancysequences.cpp         
+    marketmodel_cms.cpp                 
+    marketmodel_smm.cpp                 
+    markovfunctional.cpp                
+    mclongstaffschwartzengine.cpp       
+    overnightindexedswap.cpp            
+    piecewiseyieldcurve.cpp             
+    riskstats.cpp                       
+    shortratemodels.cpp                 
+    swaptionvolatilitycube.cpp          
+    swingoption.cpp                     
     preconditions.cpp                   preconditions.hpp
-    quantooption.cpp
     quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
-    riskstats.cpp
-    shortratemodels.cpp
     utilities.cpp                       utilities.hpp
-                                        swaptionvolstructuresutilities.hpp
+    variancegamma.cpp                   
+    vpp.cpp                            
+    zabr.cpp                           
 )
 
 if (QL_BUILD_TEST_SUITE)
@@ -228,7 +235,7 @@ if (QL_BUILD_TEST_SUITE)
     add_test(NAME quantlib_test_suite COMMAND ql_test_suite --log_level=message)
 endif()
 
-IF (QL_BUILD_BENCHMARK)
+if (QL_BUILD_BENCHMARK)
     add_executable(ql_benchmark ${QL_BENCHMARK_SOURCES})
     set_target_properties(ql_benchmark PROPERTIES OUTPUT_NAME "quantlib-benchmark")
     set_source_files_properties(quantlibbenchmark.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION true)
