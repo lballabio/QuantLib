@@ -70,7 +70,7 @@ option(QL_USE_STD_OPTIONAL "Use std::optional instead of boost::optional" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
 option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" ON)
 set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source directories to be added to the build (semicolon-separated)")
-set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
+set(QL_EXTRA_LINK_LIBRARIES "-lpapi" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
 # Require C++14 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)

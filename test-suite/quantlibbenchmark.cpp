@@ -40,7 +40,7 @@
  Example results can be found at https://openbenchmarking.org/test/pts/quantlib
 
  This benchmark is derived from quantlibtestsuite.cpp. Please see the
-  copyrights therein.
+ copyrights therein.
 */
 
 #include <ql/types.hpp>
@@ -72,7 +72,6 @@
   export PAPI_REPORT=1
 */
 //#include <papi.h>
-
 
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
