@@ -881,9 +881,6 @@
     <ClInclude Include="svivolatility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="equityindex.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="equitytotalreturnswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	equityindex.hpp \
 	equitytotalreturnswap.hpp \
 	europeanoption.hpp \
 	everestoption.hpp \
