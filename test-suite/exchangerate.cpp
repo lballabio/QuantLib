@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "exchangerate.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/exchangerate.hpp>
 #include <ql/currencies/europe.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void ExchangeRateTest::testDirect() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ExchangeRateTest)
+
+BOOST_AUTO_TEST_CASE(testDirect) {
 
     BOOST_TEST_MESSAGE("Testing direct exchange rates...");
 
@@ -60,7 +64,7 @@ void ExchangeRateTest::testDirect() {
     }
 }
 
-void ExchangeRateTest::testDerived() {
+BOOST_AUTO_TEST_CASE(testDerived) {
 
     BOOST_TEST_MESSAGE("Testing derived exchange rates...");
 
@@ -95,7 +99,7 @@ void ExchangeRateTest::testDerived() {
     }
 }
 
-void ExchangeRateTest::testDirectLookup() {
+BOOST_AUTO_TEST_CASE(testDirectLookup) {
 
     BOOST_TEST_MESSAGE("Testing lookup of direct exchange rates...");
 
@@ -165,7 +169,7 @@ void ExchangeRateTest::testDirectLookup() {
     }
 }
 
-void ExchangeRateTest::testTriangulatedLookup() {
+BOOST_AUTO_TEST_CASE(testTriangulatedLookup) {
 
     BOOST_TEST_MESSAGE("Testing lookup of triangulated exchange rates...");
 
@@ -231,7 +235,7 @@ void ExchangeRateTest::testTriangulatedLookup() {
     }
 }
 
-void ExchangeRateTest::testSmartLookup() {
+BOOST_AUTO_TEST_CASE(testSmartLookup) {
 
     BOOST_TEST_MESSAGE("Testing lookup of derived exchange rates...");
 
@@ -374,13 +378,6 @@ void ExchangeRateTest::testSmartLookup() {
     }
 }
 
-test_suite* ExchangeRateTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Exchange-rate tests");
-    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDirect));
-    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDerived));
-    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testDirectLookup));
-    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testTriangulatedLookup));
-    suite->add(QUANTLIB_TEST_CASE(&ExchangeRateTest::testSmartLookup));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

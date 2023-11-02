@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "exchangerate.hpp"
 #include "extendedtrees.hpp"
 #include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
@@ -184,7 +183,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(ExchangeRateTest::suite());
     test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite(speed));

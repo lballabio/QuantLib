@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="exchangerate.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="extendedtrees.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
