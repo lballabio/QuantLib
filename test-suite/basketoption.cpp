@@ -37,6 +37,7 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <boost/test/data/test_case.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -93,6 +94,9 @@ using namespace boost::unit_test_framework;
 
 
 namespace {
+
+    auto from = data::make ({0, 5, 11, 17, 23});
+    auto to = data::make ({5, 11, 17, 23, 29});
 
     enum BasketType { MinBasket, MaxBasket, SpreadBasket };
 
@@ -741,85 +745,92 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testOneDAmericanValues) {
-    std::size_t from{0}, to{5};
+struct sliceOne     { static const int from{0}, to{5}; };
+struct sliceTwo     { static const int from{5}, to{11}; };
+struct sliceThree   { static const int from{11}, to{17}; };
+struct sliceFour    { static const int from{17}, to{23}; };
+struct sliceFive    { static const int from{23}, to{29}; };
 
-    for (int iter{0}; iter < 5; iter++) {
+using slices = boost::mpl::vector<sliceOne, sliceTwo, sliceThree, sliceFour, sliceFive>;
 
-        BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
-                           "from " << from << " to " << to - 1 << "...");
+BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
+    const int from = T::from;
+    const int to = T::to;
 
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
 
-        ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
 
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
+                       "from " << from << " to " << to - 1 << "...");
 
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
-        ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-        ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
+    ext::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
 
-        Size requiredSamples = 10000;
-        Size timeSteps = 52;
-        BigNatural seed = 0;
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
-        ext::shared_ptr<StochasticProcess1D> stochProcess1(new
-            BlackScholesMertonProcess(Handle<Quote>(spot1),
-                                      Handle<YieldTermStructure>(qTS),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS1)));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-        std::vector<ext::shared_ptr<StochasticProcess1D>> procs = {stochProcess1};
+    ext::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
-        Matrix correlation(1, 1, 1.0);
+    Size requiredSamples = 10000;
+    Size timeSteps = 52;
+    BigNatural seed = 0;
 
-        ext::shared_ptr<StochasticProcessArray> process(
-            new StochasticProcessArray(procs, correlation));
+    ext::shared_ptr<StochasticProcess1D> stochProcess1(new
+        BlackScholesMertonProcess(Handle<Quote>(spot1),
+                                  Handle<YieldTermStructure>(qTS),
+                                  Handle<YieldTermStructure>(rTS),
+                                  Handle<BlackVolTermStructure>(volTS1)));
 
-        ext::shared_ptr<PricingEngine> mcLSMCEngine =
-            MakeMCAmericanBasketEngine<>(process)
-                .withSteps(timeSteps)
-                .withAntitheticVariate()
-                .withSamples(requiredSamples)
-                .withCalibrationSamples(requiredSamples / 4)
-                .withSeed(seed);
+    std::vector<ext::shared_ptr<StochasticProcess1D>> procs = {stochProcess1};
 
-        for (Size i = from; i < to; i++) {
-            ext::shared_ptr<PlainVanillaPayoff> payoff(
-                new PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
+    Matrix correlation(1, 1, 1.0);
 
-            Date exDate = today + timeToDays(oneDataValues[i].t);
-            ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
+    ext::shared_ptr<StochasticProcessArray> process(
+        new StochasticProcessArray(procs, correlation));
 
-            spot1 ->setValue(oneDataValues[i].s);
-            vol1  ->setValue(oneDataValues[i].v);
-            rRate ->setValue(oneDataValues[i].r);
-            qRate ->setValue(oneDataValues[i].q);
+    ext::shared_ptr<PricingEngine> mcLSMCEngine =
+        MakeMCAmericanBasketEngine<>(process)
+            .withSteps(timeSteps)
+            .withAntitheticVariate()
+            .withSamples(requiredSamples)
+            .withCalibrationSamples(requiredSamples / 4)
+            .withSeed(seed);
 
-            BasketOption basketOption( // process,
-                basketTypeToPayoff(MaxBasket, payoff), exercise);
-            basketOption.setPricingEngine(mcLSMCEngine);
+    for (Size i = from; i < to; i++) {
+        ext::shared_ptr<PlainVanillaPayoff> payoff(
+            new PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
 
-            Real calculated = basketOption.NPV();
-            Real expected = oneDataValues[i].result;
-            // Real errorEstimate = basketOption.errorEstimate();
-            Real relError = relativeError(calculated, expected, oneDataValues[i].s);
-            // Real error = std::fabs(calculated-expected);
+        Date exDate = today + timeToDays(oneDataValues[i].t);
+        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
-            if (relError > oneDataValues[i].tol) {
-                BOOST_FAIL("expected value: " << oneDataValues[i].result << "\n"
-                                              << "calculated:     " << calculated);
-            }
+        spot1 ->setValue(oneDataValues[i].s);
+        vol1  ->setValue(oneDataValues[i].v);
+        rRate ->setValue(oneDataValues[i].r);
+        qRate ->setValue(oneDataValues[i].q);
+
+        BasketOption basketOption( // process,
+            basketTypeToPayoff(MaxBasket, payoff), exercise);
+        basketOption.setPricingEngine(mcLSMCEngine);
+
+        Real calculated = basketOption.NPV();
+        Real expected = oneDataValues[i].result;
+        // Real errorEstimate = basketOption.errorEstimate();
+        Real relError = relativeError(calculated, expected, oneDataValues[i].s);
+        // Real error = std::fabs(calculated-expected);
+
+        if (relError > oneDataValues[i].tol) {
+            BOOST_FAIL("expected value: " << oneDataValues[i].result << "\n"
+                                          << "calculated:     " << calculated);
         }
-        from = to; to += 6;
     }
 }
 
-/* This unit test is a a regression test to check for a crash in
+/* This unit test is a regression test to check for a crash in
    monte carlo if the required sample is odd.  The crash occurred
    because the samples array size was off by one when antithetic
    paths were added.
