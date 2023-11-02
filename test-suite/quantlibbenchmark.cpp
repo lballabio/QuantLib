@@ -239,6 +239,7 @@ namespace {
                        // point operations (not per sec!)
     };
 
+#ifndef UNITY_BUILD
     std::vector<Benchmark> bm = {
         Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
@@ -265,6 +266,34 @@ namespace {
         Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
         Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
     };
+#elif
+    std::vector<Benchmark> bm = {
+        Benchmark("AmericanOption::FdAmericanGreeks", &QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, 518.31),
+        Benchmark("AsianOption::MCArithmeticAveragePrice", &QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, 5186.13),
+        Benchmark("BarrierOption::BabsiriValues", &QuantLibTest::BarrierOptionTest::testBabsiriValues::test_method, 880.8),
+        Benchmark("BasketOption::EuroTwoValues", &QuantLibTest::BasketOptionTest::testEuroTwoValues::test_method, 340.04),
+        Benchmark("BasketOption::TavellaValues", &QuantLibTest::BasketOptionTest::testTavellaValues::test_method, 933.80),
+        Benchmark("BasketOption::OddSamples", &QuantLibTest::BasketOptionTest::testOddSamples::test_method, 642.46),
+        Benchmark("BatesModel::DAXCalibration", &QuantLibTest::BatesModelTest::testDAXCalibration::test_method, 1993.35),
+        Benchmark("ConvertibleBondTest::testBond", &QuantLibTest::ConvertibleBondTest::testBond::test_method, 159.85),
+        Benchmark("DigitalOption::MCCashAtHit", &QuantLibTest::DigitalOptionTest::testMCCashAtHit::test_method, 995.87),
+        Benchmark("DividendOption::FdEuropeanGreeks", &QuantLibTest::DividendOptionTest::testFdEuropeanGreeks::test_method, 949.52),
+        Benchmark("DividendOption::FdAmericanGreeks", &QuantLibTest::DividendOptionTest::testFdAmericanGreeks::test_method, 1113.74),
+        Benchmark("EuropeanOption::FdMcEngines", &QuantLibTest::EuropeanOptionTest::testMcEngines::test_method, 1988.63),
+        Benchmark("EuropeanOption::ImpliedVol", &QuantLibTest::EuropeanOptionTest::testImpliedVol::test_method, 131.51),
+        Benchmark("EuropeanOption::FdEngines", &QuantLibTest::EuropeanOptionTest::testFdEngines::test_method, 148.43),
+        Benchmark("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican, 234.21),
+        Benchmark("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19),
+        Benchmark("InterpolationTest::testSabrInterpolation", &InterpolationTest::testSabrInterpolation, 2266.06),
+        Benchmark("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77),
+        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
+        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
+        Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
+        Benchmark("RandomNumber::MersenneTwisterDescrepancy", &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98),
+        Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
+        Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
+    };
+#endif
 
     /* PAPI code
     float real_time, proc_time, mflops;
