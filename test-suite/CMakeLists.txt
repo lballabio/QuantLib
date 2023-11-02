@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    extensibleoptions.hpp
     fastfouriertransform.hpp
     fdcev.hpp
     fdcir.hpp

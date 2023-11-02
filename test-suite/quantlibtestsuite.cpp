@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "extensibleoptions.hpp"
 #include "fastfouriertransform.hpp"
 #include "fdcev.hpp"
 #include "fdcir.hpp"
@@ -269,7 +268,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(ExtensibleOptionsTest::suite());
     test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
     test->add(HimalayaOptionTest::suite());

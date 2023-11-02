@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="extensibleoptions.hpp" />
     <ClInclude Include="fdcev.hpp" />
     <ClInclude Include="fdsabr.hpp" />
     <ClInclude Include="fittedbonddiscountcurve.hpp" />
