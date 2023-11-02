@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "fastfouriertransform.hpp"
 #include "fdcev.hpp"
 #include "fdcir.hpp"
 #include "fdheston.hpp"
@@ -181,7 +180,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite(speed));
     test->add(FdCevTest::suite(speed));

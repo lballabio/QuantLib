@@ -530,9 +530,6 @@
     <ClInclude Include="functions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fastfouriertransform.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fdheston.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

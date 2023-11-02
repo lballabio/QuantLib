@@ -814,7 +814,6 @@
     <ClInclude Include="fdsabr.hpp" />
     <ClInclude Include="fittedbonddiscountcurve.hpp" />
     <ClInclude Include="functions.hpp" />
-    <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdcir.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />

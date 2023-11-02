@@ -148,7 +148,7 @@
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
 
-
+#ifndef UNITY_BUILD
 namespace QuantLibTest {
     namespace AmericanOptionTest {
         struct testFdAmericanGreeks:
@@ -210,6 +210,7 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
+#endif
 
 namespace {
 

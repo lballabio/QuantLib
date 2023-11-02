@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	fastfouriertransform.hpp \
 	fdheston.hpp \
 	fdcir.hpp \
 	fdmlinearop.hpp \
