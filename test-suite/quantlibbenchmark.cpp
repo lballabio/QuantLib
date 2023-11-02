@@ -296,7 +296,7 @@ int main(int argc, char* argv[] ) {
             else if (tok[1] == "XL")
                 nSize = 20;
             else
-                QL_FAIL("uknown benchmark size, Should be one out of S, M, L or XL");
+                QL_FAIL("unknown benchmark size, Should be one out of S, M, L or XL");
         }
         else if (arg == "--help" || arg == "-?") {
             std::cout
