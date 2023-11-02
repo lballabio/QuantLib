@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="extendedtrees.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="extensibleoptions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

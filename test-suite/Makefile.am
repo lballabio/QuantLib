@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	extendedtrees.hpp \
 	extensibleoptions.hpp \
 	fastfouriertransform.hpp \
 	fdheston.hpp \
