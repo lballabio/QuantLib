@@ -208,8 +208,11 @@ namespace {
     };
 
     void printResults(
-        unsigned nProc,
+        unsigned nProc, unsigned nSize,
         std::vector<std::pair<Benchmark, double> >& runTimes) {
+
+        QL_REQUIRE(runTimes.size() == nProc*nSize*bm.size(),
+            "inconsistent number of results");
 
         const std::string header = "Benchmark Suite QuantLib "  QL_VERSION;
 
@@ -268,6 +271,7 @@ int main(int argc, char* argv[] ) {
     bool clientMode = false;
 
     unsigned nProc = 1;
+    unsigned nSize = 1;
     std::vector<std::pair<Benchmark, double> > runTimes;
 
     for (int i=1; i<argc; ++i) {
@@ -279,6 +283,20 @@ int main(int argc, char* argv[] ) {
             nProc = (tok.size() == 2)
                 ? boost::numeric_cast<unsigned>(std::stoul(tok[1]))
                 : std::thread::hardware_concurrency();
+        }
+        else if (tok[0] == "--size") {
+            QL_REQUIRE(tok.size() == 2,
+                "benchmark size is not given. Should be one out of S, M, L or XL, default is S");
+            if (tok[1] == "S")
+                nSize = 1;
+            else if (tok[1] == "M")
+                nSize = 3;
+            else if (tok[1] == "L")
+                nSize = 5;
+            else if (tok[1] == "XL")
+                nSize = 20;
+            else
+                QL_FAIL("uknown benchmark size, Should be one out of S, M, L or XL");
         }
         else if (arg == "--help" || arg == "-?") {
             std::cout
@@ -292,6 +310,8 @@ int main(int argc, char* argv[] ) {
                 << "--mp[=PROCESSES] \t parallel execution with PROCESSES processes"
                 << std::endl
 #endif
+                << "--size=S|M|L|XL \t size of the benchmark"
+                << std::endl
                 << "-?, --help \t\t display this help and exit"
                 << std::endl;
             return 0;
@@ -309,12 +329,13 @@ int main(int argc, char* argv[] ) {
     }
 
     if (nProc == 1 && !clientMode) {
-        std::for_each(bm.begin(), bm.end(),
-            [&runTimes](const Benchmark& iter) {
-                runTimes.emplace_back(
-                    iter, TimedBenchmark(iter.getTestCase(), iter.getName())());
-        });
-        printResults(nProc, runTimes);
+        for (unsigned i=0; i < nSize; ++i)
+            std::for_each(bm.begin(), bm.end(),
+                [&runTimes](const Benchmark& iter) {
+                    runTimes.emplace_back(
+                        iter, TimedBenchmark(iter.getTestCase(), iter.getName())());
+            });
+        printResults(nProc, nSize, runTimes);
     }
     else {
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
@@ -341,10 +362,10 @@ int main(int argc, char* argv[] ) {
 
             message_queue mq(
                 open_or_create, testUnitIdQueueName,
-                nProc*bm.size(), sizeof(unsigned)
+                nProc*nSize*bm.size(), sizeof(unsigned)
             );
             message_queue rq(
-                open_or_create, testResultQueueName, std::min(16u, nProc), sizeof(result_type));
+                open_or_create, testResultQueueName, std::max(16u, nProc), sizeof(result_type));
 
             const std::vector<std::string> workerArgs(1, clientModeStr);
             std::vector<std::thread> threadGroup;
@@ -352,12 +373,13 @@ int main(int argc, char* argv[] ) {
                 threadGroup.emplace_back([&]() { worker(argv[0], workerArgs); });
             }
 
-            for (unsigned i=0; i < nProc; ++i)
-                for (unsigned j=0; j < bm.size(); ++j)
+            for (unsigned i=0; i < nProc*nSize; ++i)
+                for (unsigned j=0; j < bm.size(); ++j) {
                     mq.send(&j, sizeof(unsigned), 0);
+                }
 
             result_type r;
-            for (unsigned i = 0; i < nProc*bm.size(); ++i) {
+            for (unsigned i = 0; i < nProc*nSize*bm.size(); ++i) {
                 rq.receive(&r, sizeof(result_type), recvd_size, priority);
                 runTimes.push_back(std::make_pair(bm[r.first], r.second));
             }
@@ -367,7 +389,7 @@ int main(int argc, char* argv[] ) {
             for (auto& thread: threadGroup) {
                 thread.join();
             }
-            printResults(nProc, runTimes);
+            printResults(nProc, nSize, runTimes);
         }
         else {
             message_queue mq(open_only, testUnitIdQueueName);
