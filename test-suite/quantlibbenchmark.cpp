@@ -148,7 +148,7 @@
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
 
-#ifndef UNITY_BUILD
+#ifndef CMAKE_UNITY_BUILD
 namespace QuantLibTest {
     namespace AmericanOptionTest {
         struct testFdAmericanGreeks:
@@ -240,7 +240,7 @@ namespace {
                        // point operations (not per sec!)
     };
 
-#ifndef UNITY_BUILD
+#ifndef CMAKE_UNITY_BUILD
     std::vector<Benchmark> bm = {
         Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
         Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
