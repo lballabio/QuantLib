@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    everestoption.hpp
     exchangerate.hpp
     extendedtrees.hpp
     extensibleoptions.hpp

@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="everestoption.hpp" />
     <ClInclude Include="exchangerate.hpp" />
     <ClInclude Include="extendedtrees.hpp" />
     <ClInclude Include="extensibleoptions.hpp" />
