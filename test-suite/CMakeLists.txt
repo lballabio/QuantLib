@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    europeanoption.hpp
     everestoption.hpp
     exchangerate.hpp
     extendedtrees.hpp
@@ -305,7 +304,7 @@ set(QL_BENCHMARK_SOURCES
     convertiblebonds.cpp
     digitaloption.cpp
     dividendoption.cpp
-    europeanoption.cpp                  europeanoption.hpp
+    europeanoption.cpp
     fdheston.cpp                        fdheston.hpp
     hestonmodel.cpp                     hestonmodel.hpp
     interpolations.cpp                  interpolations.hpp

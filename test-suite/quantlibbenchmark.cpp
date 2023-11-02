@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "europeanoption.hpp"
 #include "fdheston.hpp"
 #include "hestonmodel.hpp"
 #include "interpolations.hpp"
@@ -199,6 +198,17 @@ namespace QuantLibTest {
         struct testFdAmericanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace EuropeanOptionTest {
+        struct testMcEngines:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testImpliedVol:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testFdEngines:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -241,9 +251,9 @@ namespace {
         Benchmark("DigitalOption::MCCashAtHit", std::bind(&QuantLibTest::DigitalOptionTest::testMCCashAtHit::test_method, QuantLibTest::DigitalOptionTest::testMCCashAtHit()), 995.87),
         Benchmark("DividendOption::FdEuropeanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdEuropeanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdEuropeanGreeks()), 949.52),
         Benchmark("DividendOption::FdAmericanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdAmericanGreeks()), 1113.74),
-        Benchmark("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63),
-        Benchmark("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51),
-        Benchmark("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43),
+        Benchmark("EuropeanOption::FdMcEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testMcEngines::test_method, QuantLibTest::EuropeanOptionTest::testMcEngines()), 1988.63),
+        Benchmark("EuropeanOption::ImpliedVol", std::bind(&QuantLibTest::EuropeanOptionTest::testImpliedVol::test_method, QuantLibTest::EuropeanOptionTest::testImpliedVol()), 131.51),
+        Benchmark("EuropeanOption::FdEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testFdEngines::test_method, QuantLibTest::EuropeanOptionTest::testFdEngines()), 148.43),
         Benchmark("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican, 234.21),
         Benchmark("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19),
         Benchmark("InterpolationTest::testSabrInterpolation", &InterpolationTest::testSabrInterpolation, 2266.06),

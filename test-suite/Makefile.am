@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	europeanoption.hpp \
 	everestoption.hpp \
 	exchangerate.hpp \
 	extendedtrees.hpp \
@@ -321,7 +320,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	europeanoption.hpp \
 	fdheston.hpp \
 	hestonmodel.hpp \
 	interpolations.hpp \
