@@ -37,7 +37,6 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/test/data/test_case.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -94,9 +93,6 @@ using namespace boost::unit_test_framework;
 
 
 namespace {
-
-    auto from = data::make ({0, 5, 11, 17, 23});
-    auto to = data::make ({5, 11, 17, 23, 29});
 
     enum BasketType { MinBasket, MaxBasket, SpreadBasket };
 
