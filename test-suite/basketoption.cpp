@@ -753,8 +753,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
     const int from = T::from;
     const int to = T::to;
 
-
-
     BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
                        "from " << from << " to " << to - 1 << "...");
 
