@@ -186,28 +186,37 @@ QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 QL_BENCHMARK_SRCS = \
 	quantlibbenchmark.cpp \
 	americanoption.cpp \
-	asianoptions.cpp \
-	barrieroption.cpp \
-	doublebarrieroption.cpp \
-	basketoption.cpp \
+	andreasenhugevolatilityinterpl.cpp \
 	batesmodel.cpp \
+	bermudanswaption.cpp \
+	cdo.cpp \
+	cmsspread.cpp \
 	convertiblebonds.cpp \
-	digitaloption.cpp \
-	dividendoption.cpp \
+	creditdefaultswap.cpp \
 	europeanoption.cpp \
 	fdheston.cpp \
+	fdmlinearop.cpp \
 	hestonmodel.cpp \
-	interpolations.cpp \
-	jumpdiffusion.cpp \
+	hestonslvmodel.cpp \
+	linearleastsquaresregression.cpp \
 	lowdiscrepancysequences.cpp \
 	marketmodel_cms.cpp \
 	marketmodel_smm.cpp \
 	preconditions.cpp \
 	quantlibglobalfixture.cpp \
 	quantooption.cpp \
+	markovfunctional.cpp \
+	mclongstaffschwartzengine.cpp \
+	overnightindexedswap.cpp \
+	piecewiseyieldcurve.cpp \
 	riskstats.cpp \
 	shortratemodels.cpp \
-	utilities.cpp
+	swaptionvolatilitycube.cpp \
+	swingoption.cpp \
+	utilities.cpp \
+	variancegamma.cpp \
+	vpp.cpp \
+	zabr.cpp
 
 QL_BENCHMARK_HDRS = \
 	quantlibglobalfixture.hpp \

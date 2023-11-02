@@ -344,7 +344,7 @@ int main(int argc, char* argv[] ) {
                 nProc*bm.size(), sizeof(unsigned)
             );
             message_queue rq(
-                open_or_create, testResultQueueName, 16, sizeof(result_type));
+                open_or_create, testResultQueueName, std::min(16u, nProc), sizeof(result_type));
 
             const std::vector<std::string> workerArgs(1, clientModeStr);
             std::vector<std::thread> threadGroup;
