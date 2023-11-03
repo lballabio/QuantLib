@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
 	fdheston.hpp \
 	fdcir.hpp \
 	fdmlinearop.hpp \
-	fdcev.hpp \
 	fdsabr.hpp \
 	fittedbonddiscountcurve.hpp \
 	forwardoption.hpp \

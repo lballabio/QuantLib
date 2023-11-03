@@ -842,9 +842,6 @@
     <ClInclude Include="normalclvmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fdcev.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fdsabr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

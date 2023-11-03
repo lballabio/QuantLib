@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "fdcev.hpp"
 #include "fdcir.hpp"
 #include "fdheston.hpp"
 #include "fdmlinearop.hpp"
@@ -182,7 +181,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CPISwapTest::suite());
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite(speed));
-    test->add(FdCevTest::suite(speed));
     test->add(FdCIRTest::suite(speed));
     test->add(FdSabrTest::suite(speed));
     test->add(FittedBondDiscountCurveTest::suite());
