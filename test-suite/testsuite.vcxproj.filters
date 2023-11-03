@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gsr.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="hestonmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "gsr.hpp"
 #include "hestonmodel.hpp"
 #include "hestonslvmodel.hpp"
 #include "himalayaoption.hpp"
@@ -168,7 +167,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(GsrTest::suite());
     test->add(HestonModelTest::suite(speed));
     test->add(HestonSLVModelTest::suite(speed));
     test->add(HybridHestonHullWhiteProcessTest::suite(speed));

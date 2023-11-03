@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    gsr.hpp
     hestonmodel.hpp
     hestonslvmodel.hpp
     himalayaoption.hpp
