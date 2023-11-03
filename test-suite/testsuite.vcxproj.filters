@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gaussianquadratures.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gjrgarchmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
