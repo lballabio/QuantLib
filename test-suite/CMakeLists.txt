@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    fdmlinearop.hpp
     fdsabr.hpp
     fittedbonddiscountcurve.hpp
     forwardoption.hpp
