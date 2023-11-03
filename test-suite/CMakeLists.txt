@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    fdcir.hpp
     fdheston.hpp
     fdmlinearop.hpp
     fdsabr.hpp

@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
 	fdheston.hpp \
-	fdcir.hpp \
 	fdmlinearop.hpp \
 	fdsabr.hpp \
 	fittedbonddiscountcurve.hpp \
