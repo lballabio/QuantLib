@@ -833,9 +833,6 @@
     <ClInclude Include="normalclvmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fdsabr.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fittedbonddiscountcurve.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

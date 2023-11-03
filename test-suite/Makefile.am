@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	fdsabr.hpp \
 	fittedbonddiscountcurve.hpp \
 	forwardoption.hpp \
 	forwardrateagreement.hpp \
