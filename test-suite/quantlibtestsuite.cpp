@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "functions.hpp"
 #include "garch.hpp"
 #include "gaussianquadratures.hpp"
 #include "gjrgarchmodel.hpp"
@@ -172,7 +171,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(GJRGARCHModelTest::suite(speed));
