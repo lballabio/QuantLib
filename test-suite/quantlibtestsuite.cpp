@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "garch.hpp"
 #include "gaussianquadratures.hpp"
 #include "gjrgarchmodel.hpp"
 #include "gsr.hpp"

@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />
     <ClInclude Include="gsr.hpp" />

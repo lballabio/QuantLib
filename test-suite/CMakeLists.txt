@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    garch.hpp
     gaussianquadratures.hpp
     gjrgarchmodel.hpp
     gsr.hpp

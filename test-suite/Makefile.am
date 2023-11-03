@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	garch.hpp \
 	gaussianquadratures.hpp \
 	gjrgarchmodel.hpp \
 	gsr.hpp \
