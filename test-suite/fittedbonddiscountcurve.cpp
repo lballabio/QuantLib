@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "fittedbonddiscountcurve.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
@@ -33,7 +33,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void FittedBondDiscountCurveTest::testEvaluation() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FittedBondDiscountCurveTest)
+
+BOOST_AUTO_TEST_CASE(testEvaluation) {
 
     BOOST_TEST_MESSAGE("Testing that fitted bond curves work as evaluators...");
 
@@ -65,7 +69,7 @@ void FittedBondDiscountCurveTest::testEvaluation() {
     BOOST_CHECK_NO_THROW(curve.discount(3.0));
 }
 
-void FittedBondDiscountCurveTest::testFlatExtrapolation() {
+BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     BOOST_TEST_MESSAGE("Testing fitted bond curve with flat extrapolation...");
 
@@ -193,10 +197,6 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* FittedBondDiscountCurveTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Fitted bond discount curve tests");
-    suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testEvaluation));
-    suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testFlatExtrapolation));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
