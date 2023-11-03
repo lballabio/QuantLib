@@ -18,7 +18,6 @@
 */
 
 #include "toplevelfixture.hpp"
-#include "fdheston.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>

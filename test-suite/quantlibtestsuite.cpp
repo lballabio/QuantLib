@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "fdheston.hpp"
 #include "fdmlinearop.hpp"
 #include "fdsabr.hpp"
 #include "fittedbonddiscountcurve.hpp"
@@ -178,7 +177,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite(speed));
     test->add(FdSabrTest::suite(speed));
     test->add(FittedBondDiscountCurveTest::suite());

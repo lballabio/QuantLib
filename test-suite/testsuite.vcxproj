@@ -813,7 +813,6 @@
     <ClInclude Include="fdsabr.hpp" />
     <ClInclude Include="fittedbonddiscountcurve.hpp" />
     <ClInclude Include="functions.hpp" />
-    <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />
     <ClInclude Include="forwardoption.hpp" />
     <ClInclude Include="forwardrateagreement.hpp" />

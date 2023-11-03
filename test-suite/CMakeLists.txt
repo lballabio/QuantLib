@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    fdheston.hpp
     fdmlinearop.hpp
     fdsabr.hpp
     fittedbonddiscountcurve.hpp
@@ -298,8 +297,8 @@ set(QL_BENCHMARK_SOURCES
     digitaloption.cpp
     dividendoption.cpp
     europeanoption.cpp
-    fdheston.cpp                        fdheston.hpp
-    hestonmodel.cpp                     hestonmodel.hpp
+    fdheston.cpp
+        hestonmodel.cpp                     hestonmodel.hpp
     interpolations.cpp                  interpolations.hpp
     jumpdiffusion.cpp                   jumpdiffusion.hpp
     lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp

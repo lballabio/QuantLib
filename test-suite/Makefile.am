@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	fdheston.hpp \
 	fdmlinearop.hpp \
 	fdsabr.hpp \
 	fittedbonddiscountcurve.hpp \
@@ -313,7 +312,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	fdheston.hpp \
 	hestonmodel.hpp \
 	interpolations.hpp \
 	jumpdiffusion.hpp \

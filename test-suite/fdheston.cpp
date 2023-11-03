@@ -18,9 +18,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "fdheston.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-
 #include <ql/math/functional.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -44,7 +44,7 @@
 #include <ql/tuple.hpp>
 
 using namespace QuantLib;
-using boost::unit_test_framework::test_suite;
+using namespace boost::unit_test_framework;
 
 
 namespace fd_heston_test {
@@ -89,7 +89,23 @@ namespace fd_heston_test {
     };
 }
 
-void FdHestonTest::testFdmHestonVarianceMesher() {
+namespace {
+    struct HestonTestData {
+        Real kappa;
+        Real theta;
+        Real sigma;
+        Real rho;
+        Real r;
+        Real q;
+        Real T;
+        Real K;
+    };
+}
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FdHestonTest)
+
+BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");
 
     using namespace fd_heston_test;
@@ -187,7 +203,7 @@ void FdHestonTest::testFdmHestonVarianceMesher() {
     }
 }
 
-void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
+BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
@@ -336,7 +352,7 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
     }
 }
 
-void FdHestonTest::testFdmHestonBarrier() {
+BOOST_AUTO_TEST_CASE(testFdmHestonBarrier) {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option for Heston model vs "
                        "Black-Scholes model...");
@@ -388,7 +404,7 @@ void FdHestonTest::testFdmHestonBarrier() {
     }
 }
 
-void FdHestonTest::testFdmHestonAmerican() {
+BOOST_AUTO_TEST_CASE(testFdmHestonAmerican) {
 
     BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
@@ -439,8 +455,7 @@ void FdHestonTest::testFdmHestonAmerican() {
     }
 }
 
-
-void FdHestonTest::testFdmHestonIkonenToivanen() {
+BOOST_AUTO_TEST_CASE(testFdmHestonIkonenToivanen) {
 
     BOOST_TEST_MESSAGE("Testing FDM Heston for Ikonen and Toivanen tests...");
 
@@ -487,7 +502,7 @@ void FdHestonTest::testFdmHestonIkonenToivanen() {
     }
 }
 
-void FdHestonTest::testFdmHestonBlackScholes() {
+BOOST_AUTO_TEST_CASE(testFdmHestonBlackScholes) {
 
     BOOST_TEST_MESSAGE("Testing FDM Heston with Black Scholes model...");
 
@@ -552,9 +567,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
     }
 }
 
-
-
-void FdHestonTest::testFdmHestonEuropeanWithDividends() {
+BOOST_AUTO_TEST_CASE(testFdmHestonEuropeanWithDividends) {
 
     BOOST_TEST_MESSAGE("Testing FDM with European option with dividends in Heston model...");
 
@@ -635,20 +648,7 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     }
 }
 
-namespace {
-    struct HestonTestData {
-        Real kappa;
-        Real theta;
-        Real sigma;
-        Real rho;
-        Real r;
-        Real q;
-        Real T;
-        Real K;
-    };    
-}
-
-void FdHestonTest::testFdmHestonConvergence() {
+BOOST_AUTO_TEST_CASE(testFdmHestonConvergence, *precondition(if_speed(Fast))) {
 
     /* convergence tests based on 
        ADI finite difference schemes for option pricing in the
@@ -726,8 +726,8 @@ void FdHestonTest::testFdmHestonConvergence() {
     }
 }
 
-void FdHestonTest::testFdmHestonIntradayPricing() {
 #ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(testFdmHestonIntradayPricing) {
 
     BOOST_TEST_MESSAGE("Testing FDM Heston intraday pricing...");
 
@@ -785,10 +785,10 @@ void FdHestonTest::testFdmHestonIntradayPricing() {
                         << "\n   calculated: "<<  gammaCalculated);
         }
     }
-#endif
 }
+#endif
 
-void FdHestonTest::testMethodOfLinesAndCN() {
+BOOST_AUTO_TEST_CASE(testMethodOfLinesAndCN) {
     BOOST_TEST_MESSAGE("Testing method of lines to solve Heston PDEs...");
 
     const DayCounter dc = Actual365Fixed();
@@ -904,7 +904,7 @@ void FdHestonTest::testMethodOfLinesAndCN() {
     }
 }
 
-void FdHestonTest::testSpuriousOscillations() {
+BOOST_AUTO_TEST_CASE(testSpuriousOscillations) {
     BOOST_TEST_MESSAGE("Testing for spurious oscillations when "
             "solving the Heston PDEs...");
 
@@ -981,8 +981,7 @@ void FdHestonTest::testSpuriousOscillations() {
     }
 }
 
-
-void FdHestonTest::testAmericanCallPutParity() {
+BOOST_AUTO_TEST_CASE(testAmericanCallPutParity) {
     BOOST_TEST_MESSAGE("Testing call/put parity for American options "
                        "under the Heston model...");
 
@@ -1090,27 +1089,6 @@ void FdHestonTest::testAmericanCallPutParity() {
     }
 }
 
-test_suite* FdHestonTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonVarianceMesher));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonAmerican));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIkonenToivanen));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonEuropeanWithDividends));
-    #ifdef QL_HIGH_RESOLUTION_DATE
-        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonIntradayPricing));
-    #endif
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testAmericanCallPutParity));
-    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBlackScholes));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonConvergence));
-        suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrierVsBlackScholes));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
