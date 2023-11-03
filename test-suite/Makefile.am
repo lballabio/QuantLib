@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	forwardrateagreement.hpp \
 	functions.hpp \
 	garch.hpp \
 	gaussianquadratures.hpp \

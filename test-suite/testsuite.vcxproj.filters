@@ -530,9 +530,6 @@
     <ClInclude Include="functions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="forwardrateagreement.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="garch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    forwardrateagreement.hpp
     functions.hpp
     garch.hpp
     gaussianquadratures.hpp
