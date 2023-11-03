@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gjrgarchmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gsr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

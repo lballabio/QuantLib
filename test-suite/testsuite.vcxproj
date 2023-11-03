@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gjrgarchmodel.hpp" />
     <ClInclude Include="gsr.hpp" />
     <ClInclude Include="hestonmodel.hpp" />
     <ClInclude Include="hestonslvmodel.hpp" />

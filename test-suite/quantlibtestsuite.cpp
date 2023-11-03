@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "gjrgarchmodel.hpp"
 #include "gsr.hpp"
 #include "hestonmodel.hpp"
 #include "hestonslvmodel.hpp"
@@ -169,9 +168,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(GARCHTest::suite());
-    test->add(GaussianQuadraturesTest::suite());
-    test->add(GJRGARCHModelTest::suite(speed));
     test->add(GsrTest::suite());
     test->add(HestonModelTest::suite(speed));
     test->add(HestonSLVModelTest::suite(speed));
@@ -246,7 +242,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());

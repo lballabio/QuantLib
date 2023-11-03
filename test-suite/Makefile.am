@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	gjrgarchmodel.hpp \
 	gsr.hpp \
 	hestonmodel.hpp \
 	hestonslvmodel.hpp \
