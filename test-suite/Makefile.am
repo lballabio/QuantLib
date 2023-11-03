@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	hestonmodel.hpp \
 	hestonslvmodel.hpp \
 	himalayaoption.hpp \
 	hybridhestonhullwhiteprocess.hpp \
@@ -302,7 +301,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	hestonmodel.hpp \
 	interpolations.hpp \
 	jumpdiffusion.hpp \
 	lowdiscrepancysequences.hpp \

@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    hestonmodel.hpp
     hestonslvmodel.hpp
     himalayaoption.hpp
     hybridhestonhullwhiteprocess.hpp
@@ -288,7 +287,7 @@ set(QL_BENCHMARK_SOURCES
     dividendoption.cpp
     europeanoption.cpp
     fdheston.cpp
-        hestonmodel.cpp                     hestonmodel.hpp
+    hestonmodel.cpp
     interpolations.cpp                  interpolations.hpp
     jumpdiffusion.cpp                   jumpdiffusion.hpp
     lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp

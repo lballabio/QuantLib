@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "hestonmodel.hpp"
 #include "interpolations.hpp"
 #include "jumpdiffusion.hpp"
 #include "marketmodel_smm.hpp"
@@ -212,6 +211,11 @@ namespace QuantLibTest {
         struct testFdmHestonAmerican:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace HestonModelTest {
+        struct testDAXCalibration:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -258,7 +262,7 @@ namespace {
         Benchmark("EuropeanOption::ImpliedVol", std::bind(&QuantLibTest::EuropeanOptionTest::testImpliedVol::test_method, QuantLibTest::EuropeanOptionTest::testImpliedVol()), 131.51),
         Benchmark("EuropeanOption::FdEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testFdEngines::test_method, QuantLibTest::EuropeanOptionTest::testFdEngines()), 148.43),
         Benchmark("FdHestonTest::testFdmHestonAmerican", std::bind(&QuantLibTest::FdHestonTest::testFdmHestonAmerican::test_method, QuantLibTest::FdHestonTest::testFdmHestonAmerican()), 234.21),
-        Benchmark("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19),
+        Benchmark("HestonModel::DAXCalibration", std::bind(&QuantLibTest::HestonModelTest::testDAXCalibration::test_method, QuantLibTest::HestonModelTest::testDAXCalibration()), 555.19),
         Benchmark("InterpolationTest::testSabrInterpolation", &InterpolationTest::testSabrInterpolation, 2266.06),
         Benchmark("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77),
         Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
