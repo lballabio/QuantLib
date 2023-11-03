@@ -811,7 +811,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functions.hpp" />
-    <ClInclude Include="forwardoption.hpp" />
     <ClInclude Include="forwardrateagreement.hpp" />
     <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
