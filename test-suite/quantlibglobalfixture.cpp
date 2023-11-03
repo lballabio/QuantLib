@@ -25,6 +25,7 @@
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #include "paralleltestrunner.hpp"
+#define BOOST_TEST_NO_MAIN 1
 #else
 #include <boost/test/unit_test.hpp>
 #endif
@@ -35,6 +36,7 @@
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
+
 
 #include "quantlibglobalfixture.hpp"
 #include "speedlevel.hpp"

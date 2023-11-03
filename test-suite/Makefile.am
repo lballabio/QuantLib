@@ -174,24 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	dates.hpp \
-	daycounters.hpp \
-	defaultprobabilitycurves.hpp \
-	digitalcoupon.hpp \
-	digitaloption.hpp \
-	distributions.hpp \
-	dividendoption.hpp \
-	doublebarrieroption.hpp \
-	doublebinaryoption.hpp \
-	equityindex.hpp \
-	equitycashflow.hpp \
-	equitytotalreturnswap.hpp \
-	europeanoption.hpp \
-	everestoption.hpp \
-	exchangerate.hpp \
-	extendedtrees.hpp \
-	extensibleoptions.hpp \
-	fastfouriertransform.hpp \
 	fdheston.hpp \
 	fdcir.hpp \
 	fdmlinearop.hpp \
@@ -333,10 +315,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	doublebarrieroption.hpp \
-	digitaloption.hpp \
-	dividendoption.hpp \
-	europeanoption.hpp \
 	fdheston.hpp \
 	hestonmodel.hpp \
 	interpolations.hpp \

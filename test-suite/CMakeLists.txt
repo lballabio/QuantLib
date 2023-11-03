@@ -174,24 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    dates.hpp
-    daycounters.hpp
-    defaultprobabilitycurves.hpp
-    digitalcoupon.hpp
-    digitaloption.hpp
-    distributions.hpp
-    dividendoption.hpp
-    doublebarrieroption.hpp
-    doublebinaryoption.hpp
-    equityindex.hpp
-    equitycashflow.hpp
-    equitytotalreturnswap.hpp
-    europeanoption.hpp
-    everestoption.hpp
-    exchangerate.hpp
-    extendedtrees.hpp
-    extensibleoptions.hpp
-    fastfouriertransform.hpp
     fdcev.hpp
     fdcir.hpp
     fdheston.hpp
@@ -315,9 +297,9 @@ set(QL_BENCHMARK_SOURCES
     basketoption.cpp
     batesmodel.cpp
     convertiblebonds.cpp
-    digitaloption.cpp                   digitaloption.hpp
-    dividendoption.cpp                  dividendoption.hpp
-    europeanoption.cpp                  europeanoption.hpp
+    digitaloption.cpp
+    dividendoption.cpp
+    europeanoption.cpp
     fdheston.cpp                        fdheston.hpp
     hestonmodel.cpp                     hestonmodel.hpp
     interpolations.cpp                  interpolations.hpp

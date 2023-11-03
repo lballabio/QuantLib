@@ -1,3 +1,23 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
@@ -16,24 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "dates.hpp"
-#include "daycounters.hpp"
-#include "defaultprobabilitycurves.hpp"
-#include "digitalcoupon.hpp"
-#include "digitaloption.hpp"
-#include "distributions.hpp"
-#include "dividendoption.hpp"
-#include "doublebarrieroption.hpp"
-#include "doublebinaryoption.hpp"
-#include "equitycashflow.hpp"
-#include "equityindex.hpp"
-#include "equitytotalreturnswap.hpp"
-#include "europeanoption.hpp"
-#include "everestoption.hpp"
-#include "exchangerate.hpp"
-#include "extendedtrees.hpp"
-#include "extensibleoptions.hpp"
-#include "fastfouriertransform.hpp"
 #include "fdcev.hpp"
 #include "fdcir.hpp"
 #include "fdheston.hpp"
@@ -178,19 +180,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(DateTest::suite(speed));
-    test->add(DayCounterTest::suite());
-    test->add(DefaultProbabilityCurveTest::suite());
-    test->add(DigitalCouponTest::suite()); // might fail with QL_USE_INDEXED_COUPON
-    test->add(DigitalOptionTest::suite());
-    test->add(DistributionTest::suite(speed));
-    test->add(DividendOptionTest::suite(speed));
-    test->add(EquityIndexTest::suite());
-    test->add(EquityCashFlowTest::suite());
-    test->add(EquityTotalReturnSwapTest::suite());
-    test->add(EuropeanOptionTest::suite());
-    test->add(ExchangeRateTest::suite());
-    test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite(speed));
     test->add(FdmLinearOpTest::suite(speed));
     test->add(FdCevTest::suite(speed));
@@ -277,13 +266,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(DoubleBarrierOptionTest::experimental(speed));
-    test->add(DoubleBarrierOptionTest::suite(speed));
-    test->add(DoubleBinaryOptionTest::suite());
-    test->add(EuropeanOptionTest::experimental());
-    test->add(EverestOptionTest::suite());
-    test->add(ExtendedTreesTest::suite());
-    test->add(ExtensibleOptionsTest::suite());
     test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
     test->add(HimalayaOptionTest::suite());

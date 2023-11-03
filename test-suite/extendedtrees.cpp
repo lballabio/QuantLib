@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "extendedtrees.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/europeanoption.hpp>
@@ -230,8 +230,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void ExtendedTreesTest::testJRBinomialEngines() {
+BOOST_AUTO_TEST_SUITE(ExtendedTreesExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testJRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent JR binomial European engines "
                        "against analytic results...");
@@ -248,7 +251,7 @@ void ExtendedTreesTest::testJRBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-void ExtendedTreesTest::testCRRBinomialEngines() {
+BOOST_AUTO_TEST_CASE(testCRRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent CRR binomial European engines "
                        "against analytic results...");
@@ -265,7 +268,7 @@ void ExtendedTreesTest::testCRRBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-void ExtendedTreesTest::testEQPBinomialEngines() {
+BOOST_AUTO_TEST_CASE(testEQPBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent EQP binomial European engines "
                        "against analytic results...");
@@ -282,7 +285,7 @@ void ExtendedTreesTest::testEQPBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-void ExtendedTreesTest::testTGEOBinomialEngines() {
+BOOST_AUTO_TEST_CASE(testTGEOBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent TGEO binomial European engines "
                        "against analytic results...");
@@ -299,7 +302,7 @@ void ExtendedTreesTest::testTGEOBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-void ExtendedTreesTest::testTIANBinomialEngines() {
+BOOST_AUTO_TEST_CASE(testTIANBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent TIAN binomial European engines "
                        "against analytic results...");
@@ -316,7 +319,7 @@ void ExtendedTreesTest::testTIANBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-void ExtendedTreesTest::testLRBinomialEngines() {
+BOOST_AUTO_TEST_CASE(testLRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent LR binomial European engines "
                        "against analytic results...");
@@ -333,7 +336,7 @@ void ExtendedTreesTest::testLRBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-void ExtendedTreesTest::testJOSHIBinomialEngines() {
+BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent Joshi binomial European engines "
                        "against analytic results...");
@@ -350,17 +353,6 @@ void ExtendedTreesTest::testJOSHIBinomialEngines() {
     testEngineConsistency(engine, steps, relativeTol);
 }
 
-test_suite* ExtendedTreesTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("European option extended trees tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testJRBinomialEngines));
-    suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testCRRBinomialEngines));
-    suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testEQPBinomialEngines));
-    suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testTGEOBinomialEngines));
-    suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testTIANBinomialEngines));
-    suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testLRBinomialEngines));
-    suite->add(QUANTLIB_TEST_CASE(
-                               &ExtendedTreesTest::testJOSHIBinomialEngines));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

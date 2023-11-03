@@ -21,7 +21,7 @@
 */
 
 
-#include "daycounters.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -111,8 +111,11 @@ namespace day_counters_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void DayCounterTest::testActualActual() {
+BOOST_AUTO_TEST_SUITE(DayCounterTest)
+
+BOOST_AUTO_TEST_CASE(testActualActual) {
 
     BOOST_TEST_MESSAGE("Testing actual/actual day counters...");
 
@@ -222,7 +225,7 @@ void DayCounterTest::testActualActual() {
     }
 }
 
-void DayCounterTest::testActualActualIsma()
+BOOST_AUTO_TEST_CASE(testActualActualIsma)
 {
     BOOST_TEST_MESSAGE("Testing actual/actual (ISMA) with odd last period...");
 
@@ -337,7 +340,7 @@ void DayCounterTest::testActualActualIsma()
     }
 }
 
-void DayCounterTest::testActualActualWithSemiannualSchedule() {
+BOOST_AUTO_TEST_CASE(testActualActualWithSemiannualSchedule) {
 
     BOOST_TEST_MESSAGE("Testing actual/actual with schedule "
                        "for undefined semiannual reference periods...");
@@ -454,8 +457,7 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
     }
 }
 
-
-void DayCounterTest::testActualActualWithAnnualSchedule(){
+BOOST_AUTO_TEST_CASE(testActualActualWithAnnualSchedule){
 
     BOOST_TEST_MESSAGE("Testing actual/actual with schedule "
                        "for undefined annual reference periods...");
@@ -497,7 +499,7 @@ void DayCounterTest::testActualActualWithAnnualSchedule(){
     }
 }
 
-void DayCounterTest::testActualActualWithSchedule() {
+BOOST_AUTO_TEST_CASE(testActualActualWithSchedule) {
 
     BOOST_TEST_MESSAGE("Testing actual/actual day counter with schedule...");
 
@@ -649,7 +651,7 @@ void DayCounterTest::testActualActualWithSchedule() {
     }
 }
 
-void DayCounterTest::testSimple() {
+BOOST_AUTO_TEST_CASE(testSimple) {
 
     BOOST_TEST_MESSAGE("Testing simple day counter...");
 
@@ -675,7 +677,7 @@ void DayCounterTest::testSimple() {
     }
 }
 
-void DayCounterTest::testOne() {
+BOOST_AUTO_TEST_CASE(testOne) {
 
     BOOST_TEST_MESSAGE("Testing 1/1 day counter...");
 
@@ -701,7 +703,7 @@ void DayCounterTest::testOne() {
     }
 }
 
-void DayCounterTest::testBusiness252() {
+BOOST_AUTO_TEST_CASE(testBusiness252) {
 
     BOOST_TEST_MESSAGE("Testing business/252 day counter...");
 
@@ -769,7 +771,7 @@ void DayCounterTest::testBusiness252() {
     }
 }
 
-void DayCounterTest::testThirty365() {
+BOOST_AUTO_TEST_CASE(testThirty365) {
 
     BOOST_TEST_MESSAGE("Testing 30/365 day counter...");
 
@@ -793,7 +795,7 @@ void DayCounterTest::testThirty365() {
     }
 }
 
-void DayCounterTest::testThirty360_BondBasis() {
+BOOST_AUTO_TEST_CASE(testThirty360_BondBasis) {
 
     BOOST_TEST_MESSAGE("Testing 30/360 day counter (Bond Basis)...");
 
@@ -847,7 +849,7 @@ void DayCounterTest::testThirty360_BondBasis() {
     }
 }
 
-void DayCounterTest::testThirty360_EurobondBasis() {
+BOOST_AUTO_TEST_CASE(testThirty360_EurobondBasis) {
 
     BOOST_TEST_MESSAGE("Testing 30/360 day counter (Eurobond Basis)...");
 
@@ -907,8 +909,7 @@ void DayCounterTest::testThirty360_EurobondBasis() {
     }
 }
 
-
-void DayCounterTest::testThirty360_ISDA() {
+BOOST_AUTO_TEST_CASE(testThirty360_ISDA) {
 
     BOOST_TEST_MESSAGE("Testing 30/360 day counter (ISDA)...");
 
@@ -999,8 +1000,7 @@ void DayCounterTest::testThirty360_ISDA() {
     }
 }
 
-
-void DayCounterTest::testActual365_Canadian() {
+BOOST_AUTO_TEST_CASE(testActual365_Canadian) {
 
     BOOST_TEST_MESSAGE("Testing that Actual/365 (Canadian) throws when needed...");
 
@@ -1027,9 +1027,8 @@ void DayCounterTest::testActual365_Canadian() {
     }
 }
 
-
-void DayCounterTest::testIntraday() {
 #ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(testIntraday) {
 
     BOOST_TEST_MESSAGE("Testing intraday behavior of day counter...");
 
@@ -1054,10 +1053,10 @@ void DayCounterTest::testIntraday() {
             std::fabs(dc.yearFraction(d2, d1) + expected) < tol,
             "can not reproduce result for day counter " << dc.name());
     }
-#endif
 }
+#endif
 
-void DayCounterTest::testActualActualOutOfScheduleRange() {
+BOOST_AUTO_TEST_CASE(testActualActualOutOfScheduleRange) {
     BOOST_TEST_MESSAGE("Testing usage of actual/actual out of schedule...");
 
     Date today = Date(10, November, 2020);
@@ -1091,8 +1090,7 @@ void DayCounterTest::testActualActualOutOfScheduleRange() {
     Settings::instance().evaluationDate() = temp;
 }
 
-
-void DayCounterTest::testAct366() {
+BOOST_AUTO_TEST_CASE(testAct366) {
 
     BOOST_TEST_MESSAGE("Testing Act/366 day counter...");
 
@@ -1147,7 +1145,7 @@ void DayCounterTest::testAct366() {
     }
 }
 
-void DayCounterTest::testAct36525() {
+BOOST_AUTO_TEST_CASE(testAct36525) {
 
     BOOST_TEST_MESSAGE("Testing Act/365.25 day counter...");
 
@@ -1202,8 +1200,7 @@ void DayCounterTest::testAct36525() {
     }
 }
 
-
-void DayCounterTest::testActualConsistency() {
+BOOST_AUTO_TEST_CASE(testActualConsistency) {
     BOOST_TEST_MESSAGE("Testing consistency between different actual day-counters...");
 
     const std::vector<Date> todayDates = {
@@ -1251,8 +1248,7 @@ void DayCounterTest::testActualConsistency() {
         }
 }
 
-
-void DayCounterTest::testYearFraction2DateBulk() {
+BOOST_AUTO_TEST_CASE(testYearFraction2DateBulk) {
     BOOST_TEST_MESSAGE("Testing bulk dates for YearFractionToDate ...");
 
     const auto dayCounters = std::vector<DayCounter>{
@@ -1304,7 +1300,7 @@ void DayCounterTest::testYearFraction2DateBulk() {
         }
 }
 
-void DayCounterTest::testYearFraction2DateRounding() {
+BOOST_AUTO_TEST_CASE(testYearFraction2DateRounding) {
     BOOST_TEST_MESSAGE("Testing YearFractionToDate rounding to closer date...");
 
     const std::vector<DayCounter> dayCounters
@@ -1323,33 +1319,6 @@ void DayCounterTest::testYearFraction2DateRounding() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* DayCounterTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Day counter tests");
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualIsma));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSemiannualSchedule));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithAnnualSchedule));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualWithSchedule));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testSimple));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testOne));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testBusiness252));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty365));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_BondBasis));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_ISDA));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActual365_Canadian));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualOutOfScheduleRange));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct366));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct36525));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateBulk));
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testYearFraction2DateRounding));
-
-#ifdef QL_HIGH_RESOLUTION_DATE
-    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
-#endif
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

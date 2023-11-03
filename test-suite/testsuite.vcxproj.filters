@@ -335,9 +335,9 @@
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="quantlibglobalfixture.cpp">
+    <ClCompile Include="quantlibglobalfixture.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClCompile Include="quantooption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -527,52 +527,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dates.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="daycounters.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="defaultprobabilitycurves.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="digitalcoupon.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="digitaloption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="distributions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dividendoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="doublebarrieroption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="doublebinaryoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="europeanoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="everestoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="exchangerate.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="extendedtrees.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="extensibleoptions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="functions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fastfouriertransform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fdheston.hpp">
@@ -906,15 +861,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="svivolatility.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="equityindex.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="equitytotalreturnswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="equitycashflow.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

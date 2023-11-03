@@ -763,7 +763,7 @@
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
-    <ClInclude Include="quantlibglobalfixture.cpp" />
+    <ClCompile Include="quantlibglobalfixture.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
     <ClCompile Include="rangeaccrual.cpp" />
@@ -810,28 +810,10 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dates.hpp" />
-    <ClInclude Include="daycounters.hpp" />
-    <ClInclude Include="defaultprobabilitycurves.hpp" />
-    <ClInclude Include="digitalcoupon.hpp" />
-    <ClInclude Include="digitaloption.hpp" />
-    <ClInclude Include="distributions.hpp" />
-    <ClInclude Include="dividendoption.hpp" />
-    <ClInclude Include="doublebarrieroption.hpp" />
-    <ClInclude Include="doublebinaryoption.hpp" />
-    <ClInclude Include="equityindex.hpp" />
-    <ClInclude Include="equitycashflow.hpp" />
-    <ClInclude Include="equitytotalreturnswap.hpp" />
-    <ClInclude Include="europeanoption.hpp" />
-    <ClInclude Include="everestoption.hpp" />
-    <ClInclude Include="exchangerate.hpp" />
-    <ClInclude Include="extendedtrees.hpp" />
-    <ClInclude Include="extensibleoptions.hpp" />
     <ClInclude Include="fdcev.hpp" />
     <ClInclude Include="fdsabr.hpp" />
     <ClInclude Include="fittedbonddiscountcurve.hpp" />
     <ClInclude Include="functions.hpp" />
-    <ClInclude Include="fastfouriertransform.hpp" />
     <ClInclude Include="fdheston.hpp" />
     <ClInclude Include="fdcir.hpp" />
     <ClInclude Include="fdmlinearop.hpp" />

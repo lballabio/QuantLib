@@ -137,9 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "digitaloption.hpp"
-#include "dividendoption.hpp"
-#include "europeanoption.hpp"
 #include "fdheston.hpp"
 #include "hestonmodel.hpp"
 #include "interpolations.hpp"
@@ -150,7 +147,6 @@
 #include "quantooption.hpp"
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
-
 
 namespace QuantLibTest {
     namespace AmericanOptionTest {
@@ -186,6 +182,30 @@ namespace QuantLibTest {
 
     namespace ConvertibleBondTest {
         struct testBond:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace DigitalOptionTest {
+        struct testMCCashAtHit:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace DividendOptionTest {
+        struct testFdEuropeanGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testFdAmericanGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace EuropeanOptionTest {
+        struct testMcEngines:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testImpliedVol:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+
+        struct testFdEngines:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
@@ -227,12 +247,12 @@ namespace {
         Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testOddSamples::test_method, QuantLibTest::BasketOptionTest::testOddSamples()), 642.46),
         Benchmark("BatesModel::DAXCalibration", std::bind(&QuantLibTest::BatesModelTest::testDAXCalibration::test_method, QuantLibTest::BatesModelTest::testDAXCalibration()), 1993.35),
         Benchmark("ConvertibleBondTest::testBond", std::bind(&QuantLibTest::ConvertibleBondTest::testBond::test_method, QuantLibTest::ConvertibleBondTest::testBond()), 159.85),
-        Benchmark("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87),
-        Benchmark("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks, 949.52),
-        Benchmark("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks, 1113.74),
-        Benchmark("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63),
-        Benchmark("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51),
-        Benchmark("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43),
+        Benchmark("DigitalOption::MCCashAtHit", std::bind(&QuantLibTest::DigitalOptionTest::testMCCashAtHit::test_method, QuantLibTest::DigitalOptionTest::testMCCashAtHit()), 995.87),
+        Benchmark("DividendOption::FdEuropeanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdEuropeanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdEuropeanGreeks()), 949.52),
+        Benchmark("DividendOption::FdAmericanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdAmericanGreeks()), 1113.74),
+        Benchmark("EuropeanOption::FdMcEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testMcEngines::test_method, QuantLibTest::EuropeanOptionTest::testMcEngines()), 1988.63),
+        Benchmark("EuropeanOption::ImpliedVol", std::bind(&QuantLibTest::EuropeanOptionTest::testImpliedVol::test_method, QuantLibTest::EuropeanOptionTest::testImpliedVol()), 131.51),
+        Benchmark("EuropeanOption::FdEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testFdEngines::test_method, QuantLibTest::EuropeanOptionTest::testFdEngines()), 148.43),
         Benchmark("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican, 234.21),
         Benchmark("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19),
         Benchmark("InterpolationTest::testSabrInterpolation", &InterpolationTest::testSabrInterpolation, 2266.06),

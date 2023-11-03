@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "equitycashflow.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/equitycashflow.hpp>
 #include <ql/indexes/equityindex.hpp>
@@ -165,7 +165,11 @@ namespace equitycashflow_test {
     }
 }
 
-void EquityCashFlowTest::testSimpleEquityCashFlow() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EquityCashFlowTest)
+
+BOOST_AUTO_TEST_CASE(testSimpleEquityCashFlow) {
     BOOST_TEST_MESSAGE("Testing simple equity cash flow...");
 
     using namespace equitycashflow_test;
@@ -191,7 +195,7 @@ void EquityCashFlowTest::testSimpleEquityCashFlow() {
                     << "    index end:    " << indexEnd << "\n");
 }
 
-void EquityCashFlowTest::testQuantoCorrection() {
+BOOST_AUTO_TEST_CASE(testQuantoCorrection) {
     BOOST_TEST_MESSAGE("Testing quanto correction...");
 
     using namespace equitycashflow_test;
@@ -204,7 +208,7 @@ void EquityCashFlowTest::testQuantoCorrection() {
     checkQuantoCorrection(false, true);
 }
 
-void EquityCashFlowTest::testErrorWhenBaseDateAfterFixingDate() {
+BOOST_AUTO_TEST_CASE(testErrorWhenBaseDateAfterFixingDate) {
     BOOST_TEST_MESSAGE("Testing error when base date after fixing date...");
 
     using namespace equitycashflow_test;
@@ -219,7 +223,7 @@ void EquityCashFlowTest::testErrorWhenBaseDateAfterFixingDate() {
     checkRaisedError(cf, "Fixing date cannot fall before base date.");
 }
 
-void EquityCashFlowTest::testErrorWhenQuantoCurveHandleIsEmpty() {
+BOOST_AUTO_TEST_CASE(testErrorWhenQuantoCurveHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when quanto currency curve handle is empty...");
 
     using namespace equitycashflow_test;
@@ -233,7 +237,7 @@ void EquityCashFlowTest::testErrorWhenQuantoCurveHandleIsEmpty() {
     checkRaisedError(cf, "Quanto currency term structure handle cannot be empty.");
 }
 
-void EquityCashFlowTest::testErrorWhenEquityVolHandleIsEmpty() {
+BOOST_AUTO_TEST_CASE(testErrorWhenEquityVolHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when equity vol handle is empty...");
 
     using namespace equitycashflow_test;
@@ -247,7 +251,7 @@ void EquityCashFlowTest::testErrorWhenEquityVolHandleIsEmpty() {
     checkRaisedError(cf, "Equity volatility term structure handle cannot be empty.");
 }
 
-void EquityCashFlowTest::testErrorWhenFXVolHandleIsEmpty() {
+BOOST_AUTO_TEST_CASE(testErrorWhenFXVolHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when FX vol handle is empty...");
 
     using namespace equitycashflow_test;
@@ -261,7 +265,7 @@ void EquityCashFlowTest::testErrorWhenFXVolHandleIsEmpty() {
     checkRaisedError(cf, "FX volatility term structure handle cannot be empty.");
 }
 
-void EquityCashFlowTest::testErrorWhenCorrelationHandleIsEmpty() {
+BOOST_AUTO_TEST_CASE(testErrorWhenCorrelationHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when correlation handle is empty...");
 
     using namespace equitycashflow_test;
@@ -275,7 +279,7 @@ void EquityCashFlowTest::testErrorWhenCorrelationHandleIsEmpty() {
     checkRaisedError(cf, "Correlation handle cannot be empty.");
 }
 
-void EquityCashFlowTest::testErrorWhenInconsistentMarketDataReferenceDate() {
+BOOST_AUTO_TEST_CASE(testErrorWhenInconsistentMarketDataReferenceDate) {
     BOOST_TEST_MESSAGE("Testing error when market data reference dates are inconsistent...");
 
     using namespace equitycashflow_test;
@@ -291,18 +295,6 @@ void EquityCashFlowTest::testErrorWhenInconsistentMarketDataReferenceDate() {
             "reference date.");
 }
 
-test_suite* EquityCashFlowTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Equity cash flow tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testSimpleEquityCashFlow));
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testQuantoCorrection));
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenBaseDateAfterFixingDate));
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenQuantoCurveHandleIsEmpty));
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenEquityVolHandleIsEmpty));
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenFXVolHandleIsEmpty));
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenCorrelationHandleIsEmpty));
-    suite->add(
-        QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenInconsistentMarketDataReferenceDate));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "fastfouriertransform.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/fastfouriertransform.hpp>
 #include <ql/math/array.hpp>
@@ -29,7 +29,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void FastFourierTransformTest::testSimple() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FastFourierTransformTest)
+
+BOOST_AUTO_TEST_CASE(testSimple) {
     BOOST_TEST_MESSAGE("Testing complex direct FFT...");
     typedef std::complex<Real> cx;
     cx a[] = { cx(0,0), cx(1,1), cx(3,3), cx(4,4),
@@ -51,7 +55,7 @@ void FastFourierTransformTest::testSimple() {
     }
 }
 
-void FastFourierTransformTest::testInverse() {
+BOOST_AUTO_TEST_CASE(testInverse) {
     BOOST_TEST_MESSAGE("Testing convolution via inverse FFT...");
     Array x(3);
     x[0] = 1;
@@ -101,12 +105,6 @@ void FastFourierTransformTest::testInverse() {
 
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* FastFourierTransformTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("fast fourier transform tests");
-    suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testSimple));
-    suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testInverse));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
