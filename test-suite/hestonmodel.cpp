@@ -1141,10 +1141,10 @@ void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
     const Real expected = option.NPV();
 
     option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-         new AnalyticPTDHestonEngine(model)));
+         new AnalyticPTDHestonEngine(model, 192)));
 
     const Real calculatedGatheral = option.NPV();
-    if (std::fabs(calculatedGatheral-expected) > 1e-12) {
+    if (std::fabs(calculatedGatheral-expected) > 1e-7) {
         BOOST_ERROR("failed to reproduce Heston prices with Gatheral ChF"
                    << "\n    calculated: " << calculatedGatheral
                    << "\n    expected:   " << expected);
@@ -1154,10 +1154,10 @@ void HestonModelTest::testAnalyticPiecewiseTimeDependent() {
          new AnalyticPTDHestonEngine(
              model,
              AnalyticPTDHestonEngine::AndersenPiterbarg,
-             AnalyticPTDHestonEngine::Integration::gaussLaguerre(164))));
+             AnalyticPTDHestonEngine::Integration::gaussLobatto(1e-12,  Null<Real>(), 100000))));
     const Real calculatedAndersenPiterbarg = option.NPV();
 
-    if (std::fabs(calculatedAndersenPiterbarg-expected) > 1e-8) {
+    if (std::fabs(calculatedAndersenPiterbarg-expected) > 1e-9) {
         BOOST_ERROR("failed to reproduce Heston prices Andersen-Piterbarg"
                    << "\n    calculated: " << calculatedAndersenPiterbarg
                    << "\n    expected:   " << expected);

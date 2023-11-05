@@ -685,7 +685,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       evaluations_(0),
-      cpxLog_     (Gatheral),
+      cpxLog_     (AngledContour),
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))),
       andersenPiterbargEpsilon_(Null<Real>()),
@@ -699,10 +699,10 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       evaluations_(0),
-      cpxLog_(Gatheral),
+      cpxLog_(AngledContour),
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))),
-      andersenPiterbargEpsilon_(Null<Real>()),
+      andersenPiterbargEpsilon_(1e-30),
       alpha_(-0.5) {
     }
 
@@ -851,8 +851,9 @@ namespace QuantLib {
 
             const Real vAvg = (1-std::exp(-kappa*maturity))*(v0-theta)/(kappa*maturity) + theta;
 
-            const Real scalingFactor
-                = std::max(0.001, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*maturity)));
+            const Real scalingFactor = (cpxLog_ != OptimalCV && cpxLog_ != AsymptoticChF)
+                ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*maturity)))
+                : Real(1.2);
 
             const Real h_cv =
                 fwd/M_PI*integration_->calculate(c_inf, cvHelper, uM, scalingFactor);
@@ -1020,6 +1021,8 @@ namespace QuantLib {
 
         switch(intAlgo_) {
           case GaussLaguerre:
+//            retVal = scaling*(*gaussianQuadrature_)(
+//                    [scaling, f](Real x) -> Real { return f(scaling*x);});
             retVal = (*gaussianQuadrature_)(f);
             break;
           case GaussLegendre:
@@ -1029,8 +1032,8 @@ namespace QuantLib {
             break;
           case ExpSinh:
             retVal = scaling*(*integrator_)(
-                    [scaling, f](Real x) -> Real { return f(scaling*x);},
-                0.0, boost::math::tools::max_value<Real>());
+                [scaling, f](Real x) -> Real { return f(scaling*x);},
+                0.0, std::numeric_limits<Real>::max());
             break;
           case Simpson:
           case Trapezoid:
