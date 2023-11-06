@@ -40,7 +40,7 @@ namespace QuantLib {
     */
     class ExpSinhIntegral : public Integrator {
       public:
-        ExpSinhIntegral(
+        explicit ExpSinhIntegral(
             Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
             Size maxRefinements = 9)
       : Integrator(QL_MAX_REAL, Null<Size>()),
@@ -86,7 +86,7 @@ namespace QuantLib {
 
     class ExpSinhIntegral : public Integrator {
       public:
-        ExpSinhIntegral( Real relTolerance = 0, Size maxRefinements = 0)
+        explicit ExpSinhIntegral( Real relTolerance = 0, Size maxRefinements = 0)
         : Integrator(Null<Real>(), Null<Size>()) {
             QL_FAIL("boost version 1.69 or higher is required in order to use ExpSinhIntegral");
         }
