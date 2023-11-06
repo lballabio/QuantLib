@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    himalayaoption.hpp
     hybridhestonhullwhiteprocess.hpp
     indexes.hpp
     inflation.hpp

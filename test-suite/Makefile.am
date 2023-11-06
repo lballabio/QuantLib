@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	himalayaoption.hpp \
 	hybridhestonhullwhiteprocess.hpp \
 	indexes.hpp \
 	inflation.hpp \

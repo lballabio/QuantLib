@@ -23,11 +23,7 @@
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
 
-#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#include "paralleltestrunner.hpp"
-#else
-#include <boost/test/included/unit_test.hpp>
-#endif
+#include <boost/test/unit_test.hpp>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -36,7 +32,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "himalayaoption.hpp"
 #include "hybridhestonhullwhiteprocess.hpp"
 #include "indexes.hpp"
 #include "inflation.hpp"
@@ -236,7 +231,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
     test->add(NoArbSabrTest::suite());
