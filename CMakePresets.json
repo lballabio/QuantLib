@@ -216,9 +216,7 @@
     {
       "name": "linux-gcc-debug-with-clang-tidy",
       "inherits": [
-        "linux-gcc-base",
-        "make",
-        "_debug"
+        "linux-gcc-debug"
       ],
       "cacheVariables": {
         "QL_CLANG_TIDY_OPTIONS": "-warnings-as-errors=*",
@@ -276,9 +274,7 @@
     {
       "name": "linux-ci-build-with-clang-tidy",
       "inherits": [
-        "linux-gcc-base",
-        "make",
-        "_debug"
+        "linux-gcc-debug"
       ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
@@ -292,9 +288,7 @@
     {
       "name": "linux-ci-build-with-nonstandard-options",
       "inherits": [
-        "linux-gcc-base",
-        "ninja",
-        "_release"
+        "linux-gcc-ninja-release"
       ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
@@ -319,9 +313,7 @@
     {
       "name": "windows-ci-build-with-nonstandard-options",
       "inherits": [
-        "windows-msvc-base",
-        "ninja",
-        "_release"
+        "windows-msvc-release"
       ],
       "cacheVariables": {
         "CMAKE_CXX_STANDARD": "17",
