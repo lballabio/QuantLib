@@ -176,7 +176,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withPaymentLag(Natural lag) {
+    MakeOIS& MakeOIS::withPaymentLag(Integer lag) {
         paymentLag_ = lag;
         return *this;
     }

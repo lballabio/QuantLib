@@ -156,7 +156,7 @@ namespace QuantLib {
         return *this;
     }
 
-    FixedRateLeg& FixedRateLeg::withPaymentLag(Natural lag) {
+    FixedRateLeg& FixedRateLeg::withPaymentLag(Integer lag) {
         paymentLag_ = lag;
         return *this;
     }

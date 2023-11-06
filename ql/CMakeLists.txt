@@ -989,9 +989,6 @@ set(QL_HEADERS
     event.hpp
     exchangerate.hpp
     exercise.hpp
-    experimental/amortizingbonds/amortizingcmsratebond.hpp
-    experimental/amortizingbonds/amortizingfixedratebond.hpp
-    experimental/amortizingbonds/amortizingfloatingratebond.hpp
     experimental/asian/analytic_cont_geom_av_price_heston.hpp
     experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/arithmeticaverageois.hpp
@@ -2238,7 +2235,6 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/cashflows/all.hpp
     ${PROJECT_BINARY_DIR}/ql/currencies/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/all.hpp
-    ${PROJECT_BINARY_DIR}/ql/experimental/amortizingbonds/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/asian/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/averageois/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/barrieroption/all.hpp

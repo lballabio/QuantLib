@@ -135,9 +135,10 @@
       `ql/pricingengines/vanilla/fdconditions.hpp` and
       `ql/models/marketmodels/duffsdeviceinnerproduct.hpp`.
 
-    Thanks go also to Jonathan Sweemer, Ralf Konrad, Klaus
-    Spanderen, Peter Caspers, Tom Anderson and Fredrik Gerdin
-    Börjesson for a number of smaller fixes and improvements.
+    Thanks go also to Jonathan Sweemer, Ralf Konrad, Klaus Spanderen,
+    Peter Caspers, Tom Anderson, Fredrik Gerdin Börjesson, Guillaume
+    Horel and the XAD team for a number of smaller fixes and
+    improvements.
 
     <strong>Release 1.31.1 - July 24th, 2023</strong>
 

@@ -41,7 +41,7 @@ namespace QuantLib {
                                              Spread spread,
                                              DayCounter floatingDayCount,
                                              ext::optional<BusinessDayConvention> paymentConvention,
-                                             Natural paymentLag,
+                                             Integer paymentLag,
                                              const Calendar& paymentCalendar)
     : Swap(2), type_(type), fixedNominals_(std::move(fixedNominals)), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),

@@ -41,15 +41,8 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube2.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "swaptionvolcube1a.hpp")
 
-    # The ql/experimental/amortizingbonds have been moved to ql/instruments/bonds
+    # These headers were moved to another location.
     # Therefore, we can ignore them as they only contain a warning and the new includes.
-    if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "amortizingbonds")
-        list(FILTER children_hpp EXCLUDE REGEX "amortizingfixedratebond.hpp")
-        list(FILTER children_hpp EXCLUDE REGEX "amortizingfloatingratebond.hpp")
-        list(FILTER children_hpp EXCLUDE REGEX "amortizingcmsratebond.hpp")
-    endif ()
-
-    # Same for some headers in experimental/exoticoptions
     if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "exoticoptions")
         list(FILTER children_hpp EXCLUDE REGEX "margrabeoption.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "analyticamericanmargrabeengine.hpp")

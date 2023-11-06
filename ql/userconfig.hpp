@@ -60,10 +60,9 @@
 #endif
 
 /* Define this to have singletons return different instances for
-   different sessions. You will have to provide and link with the
-   library a sessionId() function in namespace QuantLib, returning a
-   different session id for each session.
-   This also implies thread-safe Singleton initialization.
+   different threads; in particular, this means that the evaluation
+   date, the stored index fixings and any other settings will be
+   per-thread.
 */
 #ifndef QL_ENABLE_SESSIONS
 //#   define QL_ENABLE_SESSIONS

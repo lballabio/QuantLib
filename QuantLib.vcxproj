@@ -543,10 +543,6 @@
     <ClInclude Include="ql\currencies\exchangeratemanager.hpp" />
     <ClInclude Include="ql\currencies\oceania.hpp" />
     <ClInclude Include="ql\experimental\all.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\all.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\experimental\asian\all.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp" />
