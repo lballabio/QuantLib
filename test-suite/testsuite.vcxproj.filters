@@ -797,9 +797,6 @@
     <ClInclude Include="zabr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hestonslvmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="riskneutraldensitycalculator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

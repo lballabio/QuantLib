@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    hestonslvmodel.hpp
     himalayaoption.hpp
     hybridhestonhullwhiteprocess.hpp
     indexes.hpp
