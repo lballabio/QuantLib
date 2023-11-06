@@ -310,8 +310,7 @@ namespace QuantLib {
       theta_(enginePtr->model_->theta()),
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
-      bits_(int(0.5*std::numeric_limits<Real>::digits)),
-      eps_(std::pow(2, -bits_)),
+      eps_(std::pow(2, -int(0.5*std::numeric_limits<Real>::digits))),
       enginePtr_(enginePtr),
       evaluations_(0) {
         km_ = k(0.0, -1);
@@ -422,7 +421,7 @@ namespace QuantLib {
                 return enginePtr_->lnChF(z, t_).real()
                     - std::log(alpha*(alpha+1)) + alpha*freq;
             },
-            lower, upper, bits_
+            lower, upper, int(0.5*std::numeric_limits<Real>::digits)
         );
     }
 
@@ -1011,8 +1010,6 @@ namespace QuantLib {
 
         switch(intAlgo_) {
           case GaussLaguerre:
-//            retVal = scaling*(*gaussianQuadrature_)(
-//                    [scaling, f](Real x) -> Real { return f(scaling*x);});
             retVal = (*gaussianQuadrature_)(f);
             break;
           case GaussLegendre:

@@ -267,8 +267,6 @@ namespace QuantLib {
         std::pair<Real, Real> alphaGreaterZero(Real strike) const;
         std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
 
-
-
         Size numberOfEvaluations() const;
         Real M(Real k) const;
         Real k(Real x, Integer sgn) const;
@@ -280,7 +278,6 @@ namespace QuantLib {
 
         const Real t_, fwd_, kappa_, theta_, sigma_, rho_;
 
-        const int bits_;
         const Real eps_;
 
         const AnalyticHestonEngine* const enginePtr_;
