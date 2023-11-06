@@ -28,8 +28,6 @@
 
 #include <boost/math/special_functions/sign.hpp>
 #include <cmath>
-#include <iostream>
-#include <iomanip>
 
 namespace QuantLib {
     namespace exponential_integrals_helper {

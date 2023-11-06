@@ -49,8 +49,6 @@
 #pragma warning(disable: 4180)
 #endif
 
-#include <iostream>
-
 namespace QuantLib {
 
     namespace {

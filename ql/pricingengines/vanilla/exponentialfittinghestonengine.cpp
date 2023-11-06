@@ -28,8 +28,6 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
     namespace {
