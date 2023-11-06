@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hybridhestonhullwhiteprocess.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="indexes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

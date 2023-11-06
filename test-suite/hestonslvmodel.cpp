@@ -554,103 +554,103 @@ namespace {
     };
 
 
-    void lsvCalibrationTest(const HestonSLVTestCase& testCase) {
-        const Date todaysDate(2, June, 2015);
-        Settings::instance().evaluationDate() = todaysDate;
-        const Date finalDate(2, June, 2020);
-
-        const DayCounter dc = Actual365Fixed();
-
-        const Real s0 = 100;
-        const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
-
-        const Rate r = testCase.hestonParams.r;
-        const Rate q = testCase.hestonParams.q;
-
-        const Real kappa = testCase.hestonParams.kappa;
-        const Real theta = testCase.hestonParams.theta;
-        const Real rho   = testCase.hestonParams.rho;
-        const Real sigma = testCase.hestonParams.sigma;
-        const Real v0    = testCase.hestonParams.v0;
-        const Volatility lv = 0.3;
-
-        const Handle<YieldTermStructure> rTS(flatRate(r, dc));
-        const Handle<YieldTermStructure> qTS(flatRate(q, dc));
-
-        const ext::shared_ptr<HestonProcess> hestonProcess(
-            ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
-
-        const Handle<HestonModel> hestonModel(
-            ext::make_shared<HestonModel>(hestonProcess));
-
-        const Handle<LocalVolTermStructure> localVol(
-            ext::make_shared<LocalConstantVol>(todaysDate, lv, dc));
-
-        const HestonSLVFDMModel slvModel(
-            localVol, hestonModel, finalDate, testCase.fdmParams);
-
-        // this includes a calibration of the leverage function!
-        ext::shared_ptr<LocalVolTermStructure>
-            l = slvModel.leverageFunction();
-
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-            ext::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
-                                                             Handle<BlackVolTermStructure>(flatVol(lv, dc))));
-
-        const ext::shared_ptr<PricingEngine> analyticEngine(
-            ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
-
-        const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
-        const Size times[] = { 3, 6, 9, 12, 24, 36, 60 };
-
-        for (unsigned long time : times) {
-            const Date expiry = todaysDate + Period(time, Months);
-            const ext::shared_ptr<Exercise> exercise(
-                ext::make_shared<EuropeanExercise>(expiry));
-
-            const ext::shared_ptr<PricingEngine> slvEngine(
-                (time <= 3) ?
-                    ext::make_shared<FdHestonVanillaEngine>(
-                        hestonModel.currentLink(), Size(std::max(101.0, 51 * time / 12.0)), 401,
-                        101, 0, FdmSchemeDesc::ModifiedCraigSneyd(), l) :
-                    ext::make_shared<FdHestonVanillaEngine>(
-                        hestonModel.currentLink(), Size(std::max(51.0, 51 * time / 12.0)), 201, 101,
-                        0, FdmSchemeDesc::ModifiedCraigSneyd(), l));
-
-            for (Real strike : strikes) {
-                const ext::shared_ptr<StrikedTypePayoff> payoff(
-                    ext::make_shared<PlainVanillaPayoff>((strike > s0) ? Option::Call : Option::Put,
-                                                         strike));
-
-                VanillaOption option(payoff, exercise);
-
-                option.setPricingEngine(slvEngine);
-                const Real calculated = option.NPV();
-
-                option.setPricingEngine(analyticEngine);
-                const Real expected = option.NPV();
-                const Real vega = option.vega();
-
-                const ext::shared_ptr<GeneralizedBlackScholesProcess> bp(
-                    ext::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
-                                                                     Handle<BlackVolTermStructure>(flatVol(lv,
-                                                                                                           dc))));
-
-                const Real tol = 0.001;//testCase.eps;
-                if (std::fabs((calculated-expected)/vega) > tol) {
-                    BOOST_FAIL("failed to reproduce round trip vola "
-                               << "\n   strike         " << strike << "\n   time           " << time
-                               << "\n   expected NPV   " << expected << "\n   calculated NPV "
-                               << calculated << "\n   vega           " << vega << std::fixed
-                               << std::setprecision(5)
-                               << "\n   calculated:    " << lv + (calculated - expected) / vega
-                               << "\n   expected:      " << lv << "\n   diff  (in bp)  "
-                               << (calculated - expected) / vega * 1e4
-                               << "\n   tolerance:     " << tol);
-                }
-            }
-        }
-    }
+//    void lsvCalibrationTest(const HestonSLVTestCase& testCase) {
+//        const Date todaysDate(2, June, 2015);
+//        Settings::instance().evaluationDate() = todaysDate;
+//        const Date finalDate(2, June, 2020);
+//
+//        const DayCounter dc = Actual365Fixed();
+//
+//        const Real s0 = 100;
+//        const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
+//
+//        const Rate r = testCase.hestonParams.r;
+//        const Rate q = testCase.hestonParams.q;
+//
+//        const Real kappa = testCase.hestonParams.kappa;
+//        const Real theta = testCase.hestonParams.theta;
+//        const Real rho   = testCase.hestonParams.rho;
+//        const Real sigma = testCase.hestonParams.sigma;
+//        const Real v0    = testCase.hestonParams.v0;
+//        const Volatility lv = 0.3;
+//
+//        const Handle<YieldTermStructure> rTS(flatRate(r, dc));
+//        const Handle<YieldTermStructure> qTS(flatRate(q, dc));
+//
+//        const ext::shared_ptr<HestonProcess> hestonProcess(
+//            ext::make_shared<HestonProcess>(rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+//
+//        const Handle<HestonModel> hestonModel(
+//            ext::make_shared<HestonModel>(hestonProcess));
+//
+//        const Handle<LocalVolTermStructure> localVol(
+//            ext::make_shared<LocalConstantVol>(todaysDate, lv, dc));
+//
+//        const HestonSLVFDMModel slvModel(
+//            localVol, hestonModel, finalDate, testCase.fdmParams);
+//
+//        // this includes a calibration of the leverage function!
+//        ext::shared_ptr<LocalVolTermStructure>
+//            l = slvModel.leverageFunction();
+//
+//        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+//            ext::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
+//                                                             Handle<BlackVolTermStructure>(flatVol(lv, dc))));
+//
+//        const ext::shared_ptr<PricingEngine> analyticEngine(
+//            ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
+//
+//        const Real strikes[] = { 50, 75, 80, 90, 100, 110, 125, 150 };
+//        const Size times[] = { 3, 6, 9, 12, 24, 36, 60 };
+//
+//        for (unsigned long time : times) {
+//            const Date expiry = todaysDate + Period(time, Months);
+//            const ext::shared_ptr<Exercise> exercise(
+//                ext::make_shared<EuropeanExercise>(expiry));
+//
+//            const ext::shared_ptr<PricingEngine> slvEngine(
+//                (time <= 3) ?
+//                    ext::make_shared<FdHestonVanillaEngine>(
+//                        hestonModel.currentLink(), Size(std::max(101.0, 51 * time / 12.0)), 401,
+//                        101, 0, FdmSchemeDesc::ModifiedCraigSneyd(), l) :
+//                    ext::make_shared<FdHestonVanillaEngine>(
+//                        hestonModel.currentLink(), Size(std::max(51.0, 51 * time / 12.0)), 201, 101,
+//                        0, FdmSchemeDesc::ModifiedCraigSneyd(), l));
+//
+//            for (Real strike : strikes) {
+//                const ext::shared_ptr<StrikedTypePayoff> payoff(
+//                    ext::make_shared<PlainVanillaPayoff>((strike > s0) ? Option::Call : Option::Put,
+//                                                         strike));
+//
+//                VanillaOption option(payoff, exercise);
+//
+//                option.setPricingEngine(slvEngine);
+//                const Real calculated = option.NPV();
+//
+//                option.setPricingEngine(analyticEngine);
+//                const Real expected = option.NPV();
+//                const Real vega = option.vega();
+//
+//                const ext::shared_ptr<GeneralizedBlackScholesProcess> bp(
+//                    ext::make_shared<GeneralizedBlackScholesProcess>(spot, qTS, rTS,
+//                                                                     Handle<BlackVolTermStructure>(flatVol(lv,
+//                                                                                                           dc))));
+//
+//                const Real tol = 0.001;//testCase.eps;
+//                if (std::fabs((calculated-expected)/vega) > tol) {
+//                    BOOST_FAIL("failed to reproduce round trip vola "
+//                               << "\n   strike         " << strike << "\n   time           " << time
+//                               << "\n   expected NPV   " << expected << "\n   calculated NPV "
+//                               << calculated << "\n   vega           " << vega << std::fixed
+//                               << std::setprecision(5)
+//                               << "\n   calculated:    " << lv + (calculated - expected) / vega
+//                               << "\n   expected:      " << lv << "\n   diff  (in bp)  "
+//                               << (calculated - expected) / vega * 1e4
+//                               << "\n   tolerance:     " << tol);
+//                }
+//            }
+//        }
+//    }
 
     ext::shared_ptr<LocalVolTermStructure> getFixedLocalVolFromHeston(
         const ext::shared_ptr<HestonModel>& hestonModel,

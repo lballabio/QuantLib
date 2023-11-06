@@ -23,7 +23,7 @@
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -32,7 +32,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "hybridhestonhullwhiteprocess.hpp"
 #include "indexes.hpp"
 #include "inflation.hpp"
 #include "inflationcapfloor.hpp"
@@ -160,7 +159,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(HybridHestonHullWhiteProcessTest::suite(speed));
     test->add(IndexTest::suite());
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
