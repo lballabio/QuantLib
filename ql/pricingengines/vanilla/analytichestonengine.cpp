@@ -400,12 +400,6 @@ namespace QuantLib {
             else {
                 return greaterZero.first;
             }
-//            if (fwd_ >= strike) {
-//                return std::min(-1-1e-6, alphaSmallerMinusOne(strike).first);
-//            }
-//            else {
-//                return std::max(1e-6, alphaGreaterZero(strike).first);
-//            }
         }
         catch (const Error&) {
             return -0.5;
@@ -599,8 +593,6 @@ namespace QuantLib {
             return std::exp(lnChF(z, t));
         }
         else {
-
-            // ToDo: expansion in lnChF and then exp(...)
             const Real kappa = model_->kappa();
             const Real sigma = model_->sigma();
             const Real theta = model_->theta();
