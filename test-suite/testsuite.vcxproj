@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="integrals.hpp" />
     <ClInclude Include="interestrates.hpp" />
     <ClInclude Include="interpolations.hpp" />
     <ClInclude Include="jumpdiffusion.hpp" />

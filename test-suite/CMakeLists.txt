@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    integrals.hpp
     interestrates.hpp
     interpolations.hpp
     jumpdiffusion.hpp
