@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    interpolations.hpp
     jumpdiffusion.hpp
     lazyobject.hpp
     libormarketmodel.hpp
@@ -275,8 +274,8 @@ set(QL_BENCHMARK_SOURCES
     europeanoption.cpp
     fdheston.cpp
     hestonmodel.cpp
-    interpolations.cpp                  interpolations.hpp
-    jumpdiffusion.cpp                   jumpdiffusion.hpp
+    interpolations.cpp
+        jumpdiffusion.cpp                   jumpdiffusion.hpp
     lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp
     marketmodel_cms.cpp                 marketmodel_cms.hpp
     marketmodel_smm.cpp                 marketmodel_smm.hpp

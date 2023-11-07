@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "interpolations.hpp"
 #include "jumpdiffusion.hpp"
 #include "lazyobject.hpp"
 #include "libormarketmodel.hpp"
@@ -152,7 +151,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(InterpolationTest::suite(speed));
     test->add(JumpDiffusionTest::suite());
     test->add(LazyObjectTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
