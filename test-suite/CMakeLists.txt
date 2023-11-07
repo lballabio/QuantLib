@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    libormarketmodelprocess.hpp
     linearleastsquaresregression.hpp
     lookbackoptions.hpp
     lowdiscrepancysequences.hpp

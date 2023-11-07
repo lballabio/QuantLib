@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "libormarketmodelprocess.hpp"
 #include "linearleastsquaresregression.hpp"
 #include "lookbackoptions.hpp"
 #include "lowdiscrepancysequences.hpp"
@@ -225,10 +224,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite(speed));
     test->add(ZabrTest::suite(speed));
-
-    // tests for deprecated classes
-    test->add(LiborMarketModelTest::suite(speed));
-    test->add(LiborMarketModelProcessTest::suite(speed));
 
     return test;
 }

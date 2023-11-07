@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="libormarketmodelprocess.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="linearleastsquaresregression.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
