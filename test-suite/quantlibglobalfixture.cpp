@@ -19,6 +19,10 @@
 */
 
 #include "quantlibglobalfixture.hpp"
+#include <ql/types.hpp>
+#include <ql/settings.hpp>
+#include <ql/utilities/dataparsers.hpp>
+#include <ql/version.hpp>
 #include <iostream>
 #include <iomanip>
 

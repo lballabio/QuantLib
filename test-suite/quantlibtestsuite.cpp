@@ -23,7 +23,11 @@
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
 
+#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#include "paralleltestrunner.hpp"
+#else
 #include <boost/test/included/unit_test.hpp>
+#endif
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
