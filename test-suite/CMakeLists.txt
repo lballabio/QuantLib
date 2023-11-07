@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    inflationcapfloor.hpp
     inflationcapflooredcoupon.hpp
     inflationcpibond.hpp
     inflationcpicapfloor.hpp

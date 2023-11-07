@@ -20,7 +20,6 @@
  */
 
 #include "inflationcapflooredcoupon.hpp"
-#include "inflationcapfloor.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
