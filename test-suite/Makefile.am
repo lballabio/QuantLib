@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	margrabeoption.hpp \
 	marketmodel.hpp \
 	marketmodel_cms.hpp \
 	marketmodel_smm.hpp \

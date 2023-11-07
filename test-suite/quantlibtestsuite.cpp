@@ -34,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "margrabeoption.hpp"
 #include "marketmodel.hpp"
 #include "marketmodel_cms.hpp"
 #include "marketmodel_smm.hpp"
@@ -138,7 +137,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
     test->add(MarketModelCmsTest::suite(speed));
     test->add(MarketModelSmmTest::suite(speed));
