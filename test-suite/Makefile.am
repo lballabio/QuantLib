@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	linearleastsquaresregression.hpp \
 	lookbackoptions.hpp \
 	lowdiscrepancysequences.hpp \
 	margrabeoption.hpp \

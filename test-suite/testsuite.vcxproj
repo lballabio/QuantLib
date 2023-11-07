@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="linearleastsquaresregression.hpp" />
     <ClInclude Include="lookbackoptions.hpp" />
     <ClInclude Include="lowdiscrepancysequences.hpp" />
     <ClInclude Include="margrabeoption.hpp" />
