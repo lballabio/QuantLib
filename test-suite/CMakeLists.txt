@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    inflationcpibond.hpp
     inflationcpicapfloor.hpp
     inflationcpiswap.hpp
     inflationvolatility.hpp

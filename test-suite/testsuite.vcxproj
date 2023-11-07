@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inflationcpibond.hpp" />
     <ClInclude Include="inflationcpicapfloor.hpp" />
     <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />
