@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "inflationcpicapfloor.hpp"
 #include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
 #include "integrals.hpp"
@@ -223,7 +222,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NormalCLVModelTest::experimental(speed));
