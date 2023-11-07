@@ -761,9 +761,6 @@
     <ClInclude Include="swingoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inflationcpiswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vpp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

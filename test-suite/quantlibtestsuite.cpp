@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -156,7 +155,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(CPISwapTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite(speed));
