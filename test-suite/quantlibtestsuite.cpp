@@ -32,7 +32,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "indexes.hpp"
 #include "inflation.hpp"
 #include "inflationcapfloor.hpp"
 #include "inflationcapflooredcoupon.hpp"
@@ -159,7 +158,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(CPISwapTest::suite());
-    test->add(IndexTest::suite());
     test->add(InflationTest::suite());
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());

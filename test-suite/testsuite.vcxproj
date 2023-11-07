@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="indexes.hpp" />
     <ClInclude Include="inflation.hpp" />
     <ClInclude Include="inflationcapfloor.hpp" />
     <ClInclude Include="inflationcapflooredcoupon.hpp" />
