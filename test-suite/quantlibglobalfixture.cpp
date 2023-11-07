@@ -125,7 +125,7 @@ QuantLibGlobalFixture::QuantLibGlobalFixture() {
 QuantLibGlobalFixture::~QuantLibGlobalFixture(){
     stop = std::chrono::steady_clock::now();
 
-    double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(start - stop).count() * 1e-3;
+    double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() * 1e-3;
     int hours = int (seconds/3600);
     seconds -= hours * 3600;
     int minutes = int(seconds/60);

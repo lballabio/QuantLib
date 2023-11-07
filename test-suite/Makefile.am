@@ -287,7 +287,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	jumpdiffusion.hpp \
 	lowdiscrepancysequences.hpp \
 	marketmodel_cms.hpp \
 	marketmodel_smm.hpp \

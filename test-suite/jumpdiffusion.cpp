@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "jumpdiffusion.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/europeanoption.hpp>
@@ -94,8 +94,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void JumpDiffusionTest::testMerton76() {
+BOOST_AUTO_TEST_SUITE(JumpDiffusionTest)
+
+BOOST_AUTO_TEST_CASE(testMerton76) {
 
     BOOST_TEST_MESSAGE("Testing Merton 76 jump-diffusion model "
                        "for European options...");
@@ -338,7 +341,7 @@ void JumpDiffusionTest::testMerton76() {
     }
 }
 
-void JumpDiffusionTest::testGreeks() {
+BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing jump-diffusion option greeks...");
 
@@ -519,10 +522,6 @@ void JumpDiffusionTest::testGreeks() {
     } // type loop
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* JumpDiffusionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Jump-diffusion tests");
-    suite->add(QUANTLIB_TEST_CASE(&JumpDiffusionTest::testMerton76));
-    suite->add(QUANTLIB_TEST_CASE(&JumpDiffusionTest::testGreeks));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
