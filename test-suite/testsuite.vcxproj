@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lazyobject.hpp" />
     <ClInclude Include="libormarketmodel.hpp" />
     <ClInclude Include="libormarketmodelprocess.hpp" />
     <ClInclude Include="linearleastsquaresregression.hpp" />

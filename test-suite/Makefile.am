@@ -174,8 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	jumpdiffusion.hpp \
-	lazyobject.hpp \
 	libormarketmodel.hpp \
 	libormarketmodelprocess.hpp \
 	linearleastsquaresregression.hpp \
