@@ -17,26 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "libormarketmodel.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/optionlet/capletvariancecurve.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-
 #include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
-
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
-
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
-
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/legacy/libormarketmodels/lmexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
@@ -106,8 +102,11 @@ namespace libor_market_model_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void LiborMarketModelTest::testSimpleCovarianceModels() {
+BOOST_AUTO_TEST_SUITE(LiborMarketModelTest)
+
+BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
     BOOST_TEST_MESSAGE("Testing simple covariance models...");
 
     using namespace libor_market_model_test;
@@ -183,8 +182,7 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
     }
 }
 
-
-void LiborMarketModelTest::testCapletPricing() {
+BOOST_AUTO_TEST_CASE(testCapletPricing) {
     BOOST_TEST_MESSAGE("Testing caplet pricing...");
 
     using namespace libor_market_model_test;
@@ -234,7 +232,7 @@ void LiborMarketModelTest::testCapletPricing() {
                     << "\n    expected:   " << expected);
 }
 
-void LiborMarketModelTest::testCalibration() {
+BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
 
     using namespace libor_market_model_test;
@@ -338,7 +336,7 @@ void LiborMarketModelTest::testCalibration() {
                     << "\n    expected : smaller than  " << tolerance);
 }
 
-void LiborMarketModelTest::testSwaptionPricing() {
+BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
     BOOST_TEST_MESSAGE("Testing forward swap and swaption pricing...");
 
     using namespace libor_market_model_test;
@@ -473,19 +471,6 @@ void LiborMarketModelTest::testSwaptionPricing() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* LiborMarketModelTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Libor market model tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-                          &LiborMarketModelTest::testSimpleCovarianceModels));
-    suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCapletPricing));
-    suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testSwaptionPricing));
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&LiborMarketModelTest::testCalibration));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "libormarketmodel.hpp"
 #include "libormarketmodelprocess.hpp"
 #include "linearleastsquaresregression.hpp"
 #include "lookbackoptions.hpp"
