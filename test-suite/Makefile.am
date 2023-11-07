@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	inflationcapflooredcoupon.hpp \
 	inflationcpibond.hpp \
 	inflationcpicapfloor.hpp \
 	inflationcpiswap.hpp \

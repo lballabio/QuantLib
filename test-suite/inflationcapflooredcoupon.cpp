@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include "inflationcapflooredcoupon.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
@@ -364,9 +364,11 @@ namespace inflation_capfloored_coupon_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
+BOOST_AUTO_TEST_SUITE(InflationCapFlooredCouponTest)
 
-void InflationCapFlooredCouponTest::testDecomposition() {
+BOOST_AUTO_TEST_CASE(testDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
 
@@ -683,8 +685,7 @@ void InflationCapFlooredCouponTest::testDecomposition() {
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
-
-void InflationCapFlooredCouponTest::testInstrumentEquality() {
+BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
 
     BOOST_TEST_MESSAGE("Testing inflation capped/floored coupon against"
                        " inflation capfloor instrument...");
@@ -786,13 +787,6 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-
-test_suite* InflationCapFlooredCouponTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("YoY inflation capped and floored coupon tests");
-    suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testDecomposition));
-    suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testInstrumentEquality));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
