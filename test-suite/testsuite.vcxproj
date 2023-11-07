@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lookbackoptions.hpp" />
     <ClInclude Include="lowdiscrepancysequences.hpp" />
     <ClInclude Include="margrabeoption.hpp" />
     <ClInclude Include="marketmodel.hpp" />

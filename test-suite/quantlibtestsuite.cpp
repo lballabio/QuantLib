@@ -36,7 +36,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "lookbackoptions.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "margrabeoption.hpp"
 #include "marketmodel.hpp"
@@ -146,7 +145,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(LookbackOptionTest::suite(speed));
     test->add(LowDiscrepancyTest::suite());
     test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
