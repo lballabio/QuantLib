@@ -174,43 +174,43 @@
     {
       "name": "linux-clang-ninja-debug",
       "inherits": [
-        "linux-clang-debug",
-        "ninja"
+        "ninja",
+        "linux-clang-debug"
       ]
     },
     {
       "name": "linux-clang-ninja-release",
       "inherits": [
-        "linux-clang-release",
-        "ninja"
+        "ninja",
+        "linux-clang-release"
       ]
     },
     {
       "name": "linux-clang-ninja-relwithdebinfo",
       "inherits": [
-        "linux-clang-relwithdebinfo",
-        "ninja"
+        "ninja",
+        "linux-clang-relwithdebinfo"
       ]
     },
     {
       "name": "linux-gcc-ninja-debug",
       "inherits": [
-        "linux-gcc-debug",
-        "ninja"
+        "ninja",
+        "linux-gcc-debug"
       ]
     },
     {
       "name": "linux-gcc-ninja-release",
       "inherits": [
-        "linux-gcc-release",
-        "ninja"
+        "ninja",
+        "linux-gcc-release"
       ]
     },
     {
       "name": "linux-gcc-ninja-relwithdebinfo",
       "inherits": [
-        "linux-gcc-relwithdebinfo",
-        "ninja"
+        "ninja",
+        "linux-gcc-relwithdebinfo"
       ]
     },
     {
