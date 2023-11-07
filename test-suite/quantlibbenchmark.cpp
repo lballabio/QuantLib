@@ -139,7 +139,6 @@
 #include "utilities.hpp"
 #include "marketmodel_smm.hpp"
 #include "marketmodel_cms.hpp"
-#include "lowdiscrepancysequences.hpp"
 #include "quantooption.hpp"
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
@@ -224,6 +223,11 @@ namespace QuantLibTest {
         struct testGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace LowDiscrepancyTest {
+        struct testMersenneTwisterDiscrepancy:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -276,7 +280,7 @@ namespace {
         Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
         Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
         Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
-        Benchmark("RandomNumber::MersenneTwisterDescrepancy", &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98),
+        Benchmark("RandomNumber::MersenneTwisterDescrepancy", std::bind(&QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy::test_method, QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy()), 951.98),
         Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
         Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
     };

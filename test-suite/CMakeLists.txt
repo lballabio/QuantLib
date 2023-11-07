@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    lowdiscrepancysequences.hpp
     margrabeoption.hpp
     marketmodel.hpp
     marketmodel_cms.hpp
@@ -269,8 +268,8 @@ set(QL_BENCHMARK_SOURCES
     fdheston.cpp
     hestonmodel.cpp
     interpolations.cpp
-        jumpdiffusion.cpp
-        lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp
+    jumpdiffusion.cpp
+    lowdiscrepancysequences.cpp
     marketmodel_cms.cpp                 marketmodel_cms.hpp
     marketmodel_smm.cpp                 marketmodel_smm.hpp
     quantooption.cpp                    quantooption.hpp

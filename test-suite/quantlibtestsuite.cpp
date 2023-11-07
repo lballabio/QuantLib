@@ -18,10 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/types.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <ql/version.hpp>
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #include "paralleltestrunner.hpp"
@@ -36,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "lowdiscrepancysequences.hpp"
 #include "margrabeoption.hpp"
 #include "marketmodel.hpp"
 #include "marketmodel_cms.hpp"
@@ -101,7 +98,6 @@
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
 #include "ultimateforwardtermstructure.hpp"
-#include "utilities.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
@@ -110,9 +106,6 @@
 #include "xoshiro256starstar.hpp"
 #include "zabr.hpp"
 #include "zerocouponswap.hpp"
-#include <chrono>
-#include <iomanip>
-#include <iostream>
 
 using namespace boost::unit_test_framework;
 
@@ -145,7 +138,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(LowDiscrepancyTest::suite());
     test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
     test->add(MarketModelCmsTest::suite(speed));

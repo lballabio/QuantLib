@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lowdiscrepancysequences.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="margrabeoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
