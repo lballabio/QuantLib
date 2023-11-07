@@ -17,9 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include "hybridhestonhullwhiteprocess.hpp"
-
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -56,7 +56,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(HybridHestonHullWhiteProcessTest)
+
+BOOST_AUTO_TEST_CASE(testBsmHullWhiteEngine) {
     BOOST_TEST_MESSAGE("Testing European option pricing for a BSM process"
                        " with one-factor Hull-White model...");
 
@@ -150,7 +154,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine() {
    }
 }
 
-void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
+BOOST_AUTO_TEST_CASE(testCompareBsmHWandHestonHW) {
     BOOST_TEST_MESSAGE("Comparing European option pricing for a BSM process"
                        " with one-factor Hull-White model...");
 
@@ -241,7 +245,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
+BOOST_AUTO_TEST_CASE(testZeroBondPricing) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo zero bond pricing...");
 
     DayCounter dc = Actual360();
@@ -356,7 +360,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
+BOOST_AUTO_TEST_CASE(testMcVanillaPricing) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo vanilla option pricing...");
 
     DayCounter dc = Actual360();
@@ -442,8 +446,7 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     }
 }
 
-
-void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
+BOOST_AUTO_TEST_CASE(testMcPureHestonPricing) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo Heston option pricing...");
 
     DayCounter dc = Actual360();
@@ -525,8 +528,7 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
     }
 }
 
-
-void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
+BOOST_AUTO_TEST_CASE(testAnalyticHestonHullWhitePricing) {
     BOOST_TEST_MESSAGE("Testing analytic Heston Hull-White option pricing...");
 
     DayCounter dc = Actual360();
@@ -609,7 +611,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
+BOOST_AUTO_TEST_CASE(testCallableEquityPricing) {
     BOOST_TEST_MESSAGE("Testing the pricing of a callable equity product...");
 
     /*
@@ -720,7 +722,7 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
+BOOST_AUTO_TEST_CASE(testDiscretizationError) {
     BOOST_TEST_MESSAGE("Testing the discretization error of the "
                        "Heston Hull-White process...");
 
@@ -805,7 +807,7 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
+BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteEngine, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing the FDM Heston Hull-White engine...");
 
     const Date today = Date(28, March, 2004);
@@ -973,7 +975,7 @@ namespace hybrid_heston_hullwhite_process_test {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
+BOOST_AUTO_TEST_CASE(testBsmHullWhitePricing) {
     BOOST_TEST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
 
     using namespace hybrid_heston_hullwhite_process_test;
@@ -1059,7 +1061,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
+BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing spatial convergence speed of Heston engine...");
 
     using namespace hybrid_heston_hullwhite_process_test;
@@ -1145,8 +1147,7 @@ namespace hybrid_heston_hullwhite_process_test {
     };
 }
 
-
-void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
+BOOST_AUTO_TEST_CASE(testHestonHullWhiteCalibration, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing the Heston Hull-White calibration...");
 
     using namespace hybrid_heston_hullwhite_process_test;
@@ -1346,7 +1347,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     }
 }
 
-void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
+BOOST_AUTO_TEST_CASE(testH1HWPricingEngine) {
     BOOST_TEST_MESSAGE("Testing the H1-HW approximation engine...");
 
     /*
@@ -1427,41 +1428,6 @@ void HybridHestonHullWhiteProcessTest::testH1HWPricingEngine() {
     }
 }
 
-test_suite* HybridHestonHullWhiteProcessTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Hybrid Heston-HullWhite tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testBsmHullWhiteEngine));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testZeroBondPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testMcVanillaPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testMcPureHestonPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-      &HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testCallableEquityPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testDiscretizationError));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testH1HWPricingEngine));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError));
-        suite->add(QUANTLIB_TEST_CASE(
-            &HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine));
-    }
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

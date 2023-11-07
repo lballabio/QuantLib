@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "interestrates.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/interestrate.hpp>
 #include <ql/math/rounding.hpp>
@@ -44,8 +44,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void InterestRateTest::testConversions() {
+BOOST_AUTO_TEST_SUITE(InterestRateTest)
+
+BOOST_AUTO_TEST_CASE(testConversions) {
     BOOST_TEST_MESSAGE("Testing interest-rate conversions...");
 
     InterestRateData cases[] = {
@@ -190,9 +193,6 @@ void InterestRateTest::testConversions() {
     }
 }
 
-test_suite* InterestRateTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Interest Rate tests");
-    suite->add(QUANTLIB_TEST_CASE(&InterestRateTest::testConversions));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

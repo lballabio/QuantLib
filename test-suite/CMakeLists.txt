@@ -174,41 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    fdcev.hpp
-    fdcir.hpp
-    fdheston.hpp
-    fdmlinearop.hpp
-    fdsabr.hpp
-    fittedbonddiscountcurve.hpp
-    forwardoption.hpp
-    forwardrateagreement.hpp
-    functions.hpp
-    garch.hpp
-    gaussianquadratures.hpp
-    gjrgarchmodel.hpp
-    gsr.hpp
-    hestonmodel.hpp
-    hestonslvmodel.hpp
-    himalayaoption.hpp
-    hybridhestonhullwhiteprocess.hpp
-    indexes.hpp
-    inflation.hpp
-    inflationcapfloor.hpp
-    inflationcapflooredcoupon.hpp
-    inflationcpibond.hpp
-    inflationcpicapfloor.hpp
-    inflationcpiswap.hpp
-    inflationvolatility.hpp
-    integrals.hpp
-    interestrates.hpp
-    interpolations.hpp
-    jumpdiffusion.hpp
-    lazyobject.hpp
-    libormarketmodel.hpp
-    libormarketmodelprocess.hpp
-    linearleastsquaresregression.hpp
-    lookbackoptions.hpp
-    lowdiscrepancysequences.hpp
     margrabeoption.hpp
     marketmodel.hpp
     marketmodel_cms.hpp
@@ -300,11 +265,11 @@ set(QL_BENCHMARK_SOURCES
     digitaloption.cpp
     dividendoption.cpp
     europeanoption.cpp
-    fdheston.cpp                        fdheston.hpp
-    hestonmodel.cpp                     hestonmodel.hpp
-    interpolations.cpp                  interpolations.hpp
-    jumpdiffusion.cpp                   jumpdiffusion.hpp
-    lowdiscrepancysequences.cpp         lowdiscrepancysequences.hpp
+    fdheston.cpp
+    hestonmodel.cpp
+    interpolations.cpp
+    jumpdiffusion.cpp
+    lowdiscrepancysequences.cpp
     marketmodel_cms.cpp                 marketmodel_cms.hpp
     marketmodel_smm.cpp                 marketmodel_smm.hpp
     quantooption.cpp                    quantooption.hpp
@@ -351,6 +316,7 @@ endif()
 IF (QL_BUILD_BENCHMARK)
     add_executable(ql_benchmark ${QL_BENCHMARK_SOURCES})
     set_target_properties(ql_benchmark PROPERTIES OUTPUT_NAME "quantlib-benchmark")
+    set_source_files_properties(quantlibbenchmark.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION true)
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "lazyobject.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/stock.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -42,7 +42,11 @@ namespace lazy_object_test {
 
 }
 
-void LazyObjectTest::testDiscardingNotifications() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(LazyObjectTest)
+
+BOOST_AUTO_TEST_CASE(testDiscardingNotifications) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first against default...");
 
@@ -75,8 +79,7 @@ void LazyObjectTest::testDiscardingNotifications() {
         BOOST_FAIL("Observer was not notified of change after recalculation");
 }
 
-
-void LazyObjectTest::testDiscardingNotificationsByDefault() {
+BOOST_AUTO_TEST_CASE(testDiscardingNotificationsByDefault) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first by default...");
 
@@ -107,8 +110,7 @@ void LazyObjectTest::testDiscardingNotificationsByDefault() {
         BOOST_FAIL("Observer was not notified of change after recalculation");
 }
 
-
-void LazyObjectTest::testForwardingNotificationsByDefault() {
+BOOST_AUTO_TEST_CASE(testForwardingNotificationsByDefault) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications by default...");
 
@@ -133,7 +135,7 @@ void LazyObjectTest::testForwardingNotificationsByDefault() {
         BOOST_FAIL("Observer was not notified of second change");
 }
 
-void LazyObjectTest::testForwardingNotifications() {
+BOOST_AUTO_TEST_CASE(testForwardingNotifications) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications against default...");
 
@@ -160,7 +162,7 @@ void LazyObjectTest::testForwardingNotifications() {
         BOOST_FAIL("Observer was not notified of second change");
 }
 
-void LazyObjectTest::testNotificationLoop() {
+BOOST_AUTO_TEST_CASE(testNotificationLoop) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects manage recursive notifications...");
 
@@ -200,12 +202,6 @@ void LazyObjectTest::testNotificationLoop() {
     s3->unregisterWithAll();
 }
 
-test_suite* LazyObjectTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("LazyObject tests");
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotificationsByDefault));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotificationsByDefault));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotifications));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testNotificationLoop));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

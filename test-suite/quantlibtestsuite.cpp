@@ -18,10 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/types.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <ql/version.hpp>
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #include "paralleltestrunner.hpp"
@@ -36,41 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "fdcev.hpp"
-#include "fdcir.hpp"
-#include "fdheston.hpp"
-#include "fdmlinearop.hpp"
-#include "fdsabr.hpp"
-#include "fittedbonddiscountcurve.hpp"
-#include "forwardoption.hpp"
-#include "forwardrateagreement.hpp"
-#include "functions.hpp"
-#include "garch.hpp"
-#include "gaussianquadratures.hpp"
-#include "gjrgarchmodel.hpp"
-#include "gsr.hpp"
-#include "hestonmodel.hpp"
-#include "hestonslvmodel.hpp"
-#include "himalayaoption.hpp"
-#include "hybridhestonhullwhiteprocess.hpp"
-#include "indexes.hpp"
-#include "inflation.hpp"
-#include "inflationcapfloor.hpp"
-#include "inflationcapflooredcoupon.hpp"
-#include "inflationcpibond.hpp"
-#include "inflationcpicapfloor.hpp"
-#include "inflationcpiswap.hpp"
-#include "inflationvolatility.hpp"
-#include "integrals.hpp"
-#include "interestrates.hpp"
-#include "interpolations.hpp"
-#include "jumpdiffusion.hpp"
-#include "lazyobject.hpp"
-#include "libormarketmodel.hpp"
-#include "libormarketmodelprocess.hpp"
-#include "linearleastsquaresregression.hpp"
-#include "lookbackoptions.hpp"
-#include "lowdiscrepancysequences.hpp"
 #include "margrabeoption.hpp"
 #include "marketmodel.hpp"
 #include "marketmodel_cms.hpp"
@@ -135,7 +98,6 @@
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
 #include "ultimateforwardtermstructure.hpp"
-#include "utilities.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
@@ -144,9 +106,6 @@
 #include "xoshiro256starstar.hpp"
 #include "zabr.hpp"
 #include "zerocouponswap.hpp"
-#include <chrono>
-#include <iomanip>
-#include <iostream>
 
 using namespace boost::unit_test_framework;
 
@@ -179,36 +138,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(CPISwapTest::suite());
-    test->add(FdHestonTest::suite(speed));
-    test->add(FdmLinearOpTest::suite(speed));
-    test->add(FdCevTest::suite(speed));
-    test->add(FdCIRTest::suite(speed));
-    test->add(FdSabrTest::suite(speed));
-    test->add(FittedBondDiscountCurveTest::suite());
-    test->add(ForwardOptionTest::suite(speed));
-    test->add(ForwardRateAgreementTest::suite());
-    test->add(FunctionsTest::suite());
-    test->add(GARCHTest::suite());
-    test->add(GaussianQuadraturesTest::suite());
-    test->add(GJRGARCHModelTest::suite(speed));
-    test->add(GsrTest::suite());
-    test->add(HestonModelTest::suite(speed));
-    test->add(HestonSLVModelTest::suite(speed));
-    test->add(HybridHestonHullWhiteProcessTest::suite(speed));
-    test->add(IndexTest::suite());
-    test->add(InflationTest::suite());
-    test->add(InflationCapFloorTest::suite());
-    test->add(InflationCapFlooredCouponTest::suite());
-    test->add(InflationCPIBondTest::suite());
-    test->add(IntegralTest::suite());
-    test->add(InterestRateTest::suite());
-    test->add(InterpolationTest::suite(speed));
-    test->add(JumpDiffusionTest::suite());
-    test->add(LazyObjectTest::suite());
-    test->add(LinearLeastSquaresRegressionTest::suite());
-    test->add(LookbackOptionTest::suite(speed));
-    test->add(LowDiscrepancyTest::suite());
     test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
     test->add(MarketModelCmsTest::suite(speed));
@@ -266,11 +195,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(GaussianQuadraturesTest::experimental());
-    test->add(HestonModelTest::experimental());
-    test->add(HimalayaOptionTest::suite());
-    test->add(InflationCPICapFloorTest::suite());
-    test->add(InflationVolTest::suite());
     test->add(NoArbSabrTest::suite());
     test->add(NormalCLVModelTest::experimental(speed));
     test->add(NthToDefaultTest::suite(speed));
@@ -288,10 +212,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite(speed));
     test->add(ZabrTest::suite(speed));
-
-    // tests for deprecated classes
-    test->add(LiborMarketModelTest::suite(speed));
-    test->add(LiborMarketModelProcessTest::suite(speed));
 
     return test;
 }

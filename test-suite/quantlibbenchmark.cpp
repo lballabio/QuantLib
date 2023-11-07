@@ -137,13 +137,8 @@
 #endif
 
 #include "utilities.hpp"
-#include "fdheston.hpp"
-#include "hestonmodel.hpp"
-#include "interpolations.hpp"
-#include "jumpdiffusion.hpp"
 #include "marketmodel_smm.hpp"
 #include "marketmodel_cms.hpp"
-#include "lowdiscrepancysequences.hpp"
 #include "quantooption.hpp"
 #include "riskstats.hpp"
 #include "shortratemodels.hpp"
@@ -208,6 +203,31 @@ namespace QuantLibTest {
         struct testFdEngines:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace FdHestonTest {
+        struct testFdmHestonAmerican:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace HestonModelTest {
+        struct testDAXCalibration:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace InterpolationTest {
+        struct testSabrInterpolation:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace JumpDiffusionTest {
+        struct testGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace LowDiscrepancyTest {
+        struct testMersenneTwisterDiscrepancy:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -253,14 +273,14 @@ namespace {
         Benchmark("EuropeanOption::FdMcEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testMcEngines::test_method, QuantLibTest::EuropeanOptionTest::testMcEngines()), 1988.63),
         Benchmark("EuropeanOption::ImpliedVol", std::bind(&QuantLibTest::EuropeanOptionTest::testImpliedVol::test_method, QuantLibTest::EuropeanOptionTest::testImpliedVol()), 131.51),
         Benchmark("EuropeanOption::FdEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testFdEngines::test_method, QuantLibTest::EuropeanOptionTest::testFdEngines()), 148.43),
-        Benchmark("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican, 234.21),
-        Benchmark("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19),
-        Benchmark("InterpolationTest::testSabrInterpolation", &InterpolationTest::testSabrInterpolation, 2266.06),
-        Benchmark("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77),
+        Benchmark("FdHestonTest::testFdmHestonAmerican", std::bind(&QuantLibTest::FdHestonTest::testFdmHestonAmerican::test_method, QuantLibTest::FdHestonTest::testFdmHestonAmerican()), 234.21),
+        Benchmark("HestonModel::DAXCalibration", std::bind(&QuantLibTest::HestonModelTest::testDAXCalibration::test_method, QuantLibTest::HestonModelTest::testDAXCalibration()), 555.19),
+        Benchmark("InterpolationTest::testSabrInterpolation", std::bind(&QuantLibTest::InterpolationTest::testSabrInterpolation::test_method, QuantLibTest::InterpolationTest::testSabrInterpolation()), 2266.06),
+        Benchmark("JumpDiffusion::Greeks", std::bind(&QuantLibTest::JumpDiffusionTest::testGreeks::test_method, QuantLibTest::JumpDiffusionTest::testGreeks()), 433.77),
         Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
         Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
         Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
-        Benchmark("RandomNumber::MersenneTwisterDescrepancy", &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98),
+        Benchmark("RandomNumber::MersenneTwisterDescrepancy", std::bind(&QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy::test_method, QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy()), 951.98),
         Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
         Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
     };

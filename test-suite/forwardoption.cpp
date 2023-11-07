@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "forwardoption.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
@@ -75,133 +76,6 @@ namespace {
         Real tol;        // tolerance
     };
 
-}
-
-
-void ForwardOptionTest::testValues() {
-
-    BOOST_TEST_MESSAGE("Testing forward option values...");
-
-    /* The data below are from
-       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
-    */
-    ForwardOptionData values[] = {
-        //  type, moneyness, spot,  div, rate,start,   t,  vol, result, tol
-        // "Option pricing formulas", pag. 37
-        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 4.4064, 1.0e-4 },
-        // "Option pricing formulas", VBA code
-        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 8.2971, 1.0e-4 }
-    };
-
-    DayCounter dc = Actual360();
-    Date today = Settings::instance().evaluationDate();
-
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
-
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-         new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                       Handle<YieldTermStructure>(qTS),
-                                       Handle<YieldTermStructure>(rTS),
-                                       Handle<BlackVolTermStructure>(volTS)));
-
-    ext::shared_ptr<PricingEngine> engine(
-              new ForwardVanillaEngine<AnalyticEuropeanEngine>(stochProcess));
-
-    for (auto& value : values) {
-
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
-        Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + timeToDays(value.start);
-
-        spot->setValue(value.s);
-        qRate->setValue(value.q);
-        rRate->setValue(value.r);
-        vol->setValue(value.v);
-
-        ForwardVanillaOption option(value.moneyness, reset, payoff, exercise);
-        option.setPricingEngine(engine);
-
-        Real calculated = option.NPV();
-        Real error = std::fabs(calculated - value.result);
-        Real tolerance = 1e-4;
-        if (error>tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today, value.v,
-                           value.moneyness, reset, value.result, calculated, error, tolerance);
-        }
-    }
-}
-
-
-void ForwardOptionTest::testPerformanceValues() {
-
-    BOOST_TEST_MESSAGE("Testing forward performance option values...");
-
-    /* The data below are the performance equivalent of the
-       forward options tested above and taken from
-       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
-    */
-    ForwardOptionData values[] = {
-        //  type, moneyness, spot,  div, rate,start, maturity,  vol,                       result, tol
-        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 4.4064/60*std::exp(-0.04*0.25), 1.0e-4 },
-        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 8.2971/60*std::exp(-0.04*0.25), 1.0e-4 }
-    };
-
-    DayCounter dc = Actual360();
-    Date today = Settings::instance().evaluationDate();
-
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
-
-    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-         new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                       Handle<YieldTermStructure>(qTS),
-                                       Handle<YieldTermStructure>(rTS),
-                                       Handle<BlackVolTermStructure>(volTS)));
-
-    ext::shared_ptr<PricingEngine> engine(
-        new ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine>(
-                                                               stochProcess));
-
-    for (auto& value : values) {
-
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
-        Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + timeToDays(value.start);
-
-        spot->setValue(value.s);
-        qRate->setValue(value.q);
-        rRate->setValue(value.r);
-        vol->setValue(value.v);
-
-        ForwardVanillaOption option(value.moneyness, reset, payoff, exercise);
-        option.setPricingEngine(engine);
-
-        Real calculated = option.NPV();
-        Real error = std::fabs(calculated - value.result);
-        Real tolerance = 1e-4;
-        if (error>tolerance) {
-            REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today, value.v,
-                           value.moneyness, reset, value.result, calculated, error, tolerance);
-        }
-    }
-}
-
-
-namespace {
-
     template <template <class> class Engine>
     void testForwardGreeks() {
 
@@ -234,10 +108,10 @@ namespace {
         Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+            new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
         ext::shared_ptr<PricingEngine> engine(
-                            new Engine<AnalyticEuropeanEngine>(stochProcess));
+            new Engine<AnalyticEuropeanEngine>(stochProcess));
 
         for (auto& type : types) {
             for (Real& moneynes : moneyness) {
@@ -345,19 +219,140 @@ namespace {
             }
         }
     }
-
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void ForwardOptionTest::testGreeks() {
+BOOST_AUTO_TEST_SUITE(ForwardOptionTest)
+
+BOOST_AUTO_TEST_CASE(testValues) {
+
+    BOOST_TEST_MESSAGE("Testing forward option values...");
+
+    /* The data below are from
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+    */
+    ForwardOptionData values[] = {
+        //  type, moneyness, spot,  div, rate,start,   t,  vol, result, tol
+        // "Option pricing formulas", pag. 37
+        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 4.4064, 1.0e-4 },
+        // "Option pricing formulas", VBA code
+        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 8.2971, 1.0e-4 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
+
+    ext::shared_ptr<PricingEngine> engine(
+              new ForwardVanillaEngine<AnalyticEuropeanEngine>(stochProcess));
+
+    for (auto& value : values) {
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        Date reset = today + timeToDays(value.start);
+
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        ForwardVanillaOption option(value.moneyness, reset, payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - value.result);
+        Real tolerance = 1e-4;
+        if (error>tolerance) {
+            REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today, value.v,
+                           value.moneyness, reset, value.result, calculated, error, tolerance);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPerformanceValues) {
+
+    BOOST_TEST_MESSAGE("Testing forward performance option values...");
+
+    /* The data below are the performance equivalent of the
+       forward options tested above and taken from
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+    */
+    ForwardOptionData values[] = {
+        //  type, moneyness, spot,  div, rate,start, maturity,  vol,                       result, tol
+        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 4.4064/60*std::exp(-0.04*0.25), 1.0e-4 },
+        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 8.2971/60*std::exp(-0.04*0.25), 1.0e-4 }
+    };
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+         new BlackScholesMertonProcess(Handle<Quote>(spot),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
+                                       Handle<BlackVolTermStructure>(volTS)));
+
+    ext::shared_ptr<PricingEngine> engine(
+        new ForwardPerformanceVanillaEngine<AnalyticEuropeanEngine>(
+                                                               stochProcess));
+
+    for (auto& value : values) {
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        Date reset = today + timeToDays(value.start);
+
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
+
+        ForwardVanillaOption option(value.moneyness, reset, payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real error = std::fabs(calculated - value.result);
+        Real tolerance = 1e-4;
+        if (error>tolerance) {
+            REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today, value.v,
+                           value.moneyness, reset, value.result, calculated, error, tolerance);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing forward option greeks...");
 
     testForwardGreeks<ForwardVanillaEngine>();
 }
 
-
-void ForwardOptionTest::testPerformanceGreeks() {
+BOOST_AUTO_TEST_CASE(testPerformanceGreeks) {
 
     BOOST_TEST_MESSAGE("Testing forward performance option greeks...");
 
@@ -375,8 +370,7 @@ public:
     {}
 };
 
-
-void ForwardOptionTest::testGreeksInitialization() {
+BOOST_AUTO_TEST_CASE(testGreeksInitialization) {
    BOOST_TEST_MESSAGE("Testing forward option greeks initialization...");
 
    DayCounter dc = Actual360();
@@ -483,8 +477,7 @@ void ForwardOptionTest::testGreeksInitialization() {
    }
 }
 
-
-void ForwardOptionTest::testMCPrices() {
+BOOST_AUTO_TEST_CASE(testMCPrices) {
    BOOST_TEST_MESSAGE("Testing forward option MC prices...");
 
    Real tol[] = {0.002, 0.001, 0.0006, 5e-4, 5e-4};
@@ -548,8 +541,7 @@ void ForwardOptionTest::testMCPrices() {
    }
 }
 
-
-void ForwardOptionTest::testHestonMCPrices() {
+BOOST_AUTO_TEST_CASE(testHestonMCPrices) {
    BOOST_TEST_MESSAGE("Testing forward option Heston MC prices...");
 
    Option::Type optionTypes[] = { Option::Call, Option::Put };
@@ -710,8 +702,7 @@ void ForwardOptionTest::testHestonMCPrices() {
    }
 }
 
-
-void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
+BOOST_AUTO_TEST_CASE(testHestonAnalyticalVsMCPrices, *precondition(if_speed(Fast))) {
    BOOST_TEST_MESSAGE("Testing Heston analytic vs MC prices...");
 
    Option::Type optionTypes[] = { Option::Call, Option::Put };
@@ -812,22 +803,6 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
    }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* ForwardOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Forward option tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeksInitialization));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testMCPrices));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonMCPrices));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonAnalyticalVsMCPrices));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "libormarketmodelprocess.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/timegrid.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
@@ -102,8 +103,11 @@ namespace libor_market_model_process_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture) // tests for deprecated classes
 
-void LiborMarketModelProcessTest::testInitialisation() {
+BOOST_AUTO_TEST_SUITE(LiborMarketModelProcessTest)
+
+BOOST_AUTO_TEST_CASE(testInitialisation) {
     BOOST_TEST_MESSAGE("Testing caplet LMM process initialisation...");
 
     DayCounter dayCounter = Actual360();
@@ -144,7 +148,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
     }
 }
 
-void LiborMarketModelProcessTest::testLambdaBootstrapping() {
+BOOST_AUTO_TEST_CASE(testLambdaBootstrapping) {
     BOOST_TEST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
 
     using namespace libor_market_model_process_test;
@@ -191,7 +195,7 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
     }
 }
 
-void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
+BOOST_AUTO_TEST_CASE(testMonteCarloCapletPricing, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
 
     using namespace libor_market_model_process_test;
@@ -325,19 +329,6 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     }
 }
 
-test_suite* LiborMarketModelProcessTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Libor market model process tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-         &LiborMarketModelProcessTest::testInitialisation));
-    suite->add(QUANTLIB_TEST_CASE(
-         &LiborMarketModelProcessTest::testLambdaBootstrapping));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &LiborMarketModelProcessTest::testMonteCarloCapletPricing));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

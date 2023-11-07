@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "linearleastsquaresregression.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void LinearLeastSquaresRegressionTest::testRegression() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(LinearLeastSquaresRegressionTest)
+
+BOOST_AUTO_TEST_CASE(testRegression) {
 
     BOOST_TEST_MESSAGE("Testing linear least-squares regression...");
 
@@ -113,7 +117,7 @@ namespace linear_least_square_regression_test {
 
 }
 
-void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
+BOOST_AUTO_TEST_CASE(testMultiDimRegression) {
 
     BOOST_TEST_MESSAGE(
         "Testing multi-dimensional linear least-squares regression...");
@@ -185,7 +189,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     }
 }
 
-void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
+BOOST_AUTO_TEST_CASE(test1dLinearRegression) {
 
     BOOST_TEST_MESSAGE("Testing 1D simple linear least-squares regression...");
 
@@ -243,15 +247,6 @@ void LinearLeastSquaresRegressionTest::test1dLinearRegression() {
     }    
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* LinearLeastSquaresRegressionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("linear least squares regression tests");
-    suite->add(QUANTLIB_TEST_CASE(
-        &LinearLeastSquaresRegressionTest::testRegression));
-    suite->add(QUANTLIB_TEST_CASE(
-        &LinearLeastSquaresRegressionTest::testMultiDimRegression));
-    suite->add(QUANTLIB_TEST_CASE(
-        &LinearLeastSquaresRegressionTest::test1dLinearRegression));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

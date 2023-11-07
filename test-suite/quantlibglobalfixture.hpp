@@ -1,5 +1,6 @@
 #ifndef quantlib_global_fixture_hpp
 #define quantlib_global_fixture_hpp
+
 #include "speedlevel.hpp"
 #include <chrono>
 

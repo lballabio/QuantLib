@@ -527,90 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="functions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdheston.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdcir.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdmlinearop.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="forwardoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="forwardrateagreement.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="garch.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gaussianquadratures.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gjrgarchmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gsr.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hestonmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="himalayaoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hybridhestonhullwhiteprocess.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="indexes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inflation.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inflationcapfloor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inflationcapflooredcoupon.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inflationvolatility.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="integrals.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="interestrates.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="interpolations.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="jumpdiffusion.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lazyobject.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="libormarketmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="libormarketmodelprocess.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="linearleastsquaresregression.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lookbackoptions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lowdiscrepancysequences.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="margrabeoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -812,15 +728,6 @@
     <ClInclude Include="swingoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inflationcpibond.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inflationcpicapfloor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inflationcpiswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vpp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -830,9 +737,6 @@
     <ClInclude Include="zabr.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hestonslvmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="riskneutraldensitycalculator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -840,15 +744,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="normalclvmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdcev.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdsabr.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fittedbonddiscountcurve.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ultimateforwardtermstructure.hpp">

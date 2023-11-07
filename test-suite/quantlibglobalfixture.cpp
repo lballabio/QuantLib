@@ -18,31 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include "quantlibglobalfixture.hpp"
 #include <ql/types.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/version.hpp>
-
-#ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#include "paralleltestrunner.hpp"
-#define BOOST_TEST_NO_MAIN 1
-#else
-#include <boost/test/unit_test.hpp>
-#endif
-
-/* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
-   for example) also #define _MSC_VER
-*/
-#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
-#  include <ql/auto_link.hpp>
-#endif
-
-
-#include "quantlibglobalfixture.hpp"
-#include "speedlevel.hpp"
 #include <iostream>
 #include <iomanip>
-#include <chrono>
 
 using namespace boost::unit_test;
 
@@ -143,7 +125,7 @@ QuantLibGlobalFixture::QuantLibGlobalFixture() {
 QuantLibGlobalFixture::~QuantLibGlobalFixture(){
     stop = std::chrono::steady_clock::now();
 
-    double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(start - stop).count() * 1e-3;
+    double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() * 1e-3;
     int hours = int (seconds/3600);
     seconds -= hours * 3600;
     int minutes = int(seconds/60);
