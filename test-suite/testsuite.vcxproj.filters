@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="interestrates.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="interpolations.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

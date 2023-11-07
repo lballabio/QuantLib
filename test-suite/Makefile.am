@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	interestrates.hpp \
 	interpolations.hpp \
 	jumpdiffusion.hpp \
 	lazyobject.hpp \

@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    interestrates.hpp
     interpolations.hpp
     jumpdiffusion.hpp
     lazyobject.hpp
