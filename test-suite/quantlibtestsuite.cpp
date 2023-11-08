@@ -34,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "overnightindexedswap.hpp"
 #include "pagodaoption.hpp"
 #include "partialtimebarrieroption.hpp"
 #include "pathgenerator.hpp"
@@ -115,7 +114,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(OvernightIndexedSwapTest::suite());
     test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());

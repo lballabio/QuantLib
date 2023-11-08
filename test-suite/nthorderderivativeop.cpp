@@ -793,7 +793,7 @@ BOOST_AUTO_TEST_CASE(testHigherOrderAndRichardsonExtrapolation) {
     }
 }
 
-void NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid() {
+BOOST_AUTO_TEST_CASE(testCompareFirstDerivativeOpNonUniformGrid) {
     BOOST_TEST_MESSAGE(
         "Testing with FirstDerivativeOp on a non-uniform grid...");
 

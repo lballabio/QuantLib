@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="overnightindexedswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="pagodaoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

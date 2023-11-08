@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	overnightindexedswap.hpp \
 	pagodaoption.hpp \
 	partialtimebarrieroption.hpp \
 	pathgenerator.hpp \
