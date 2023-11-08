@@ -3376,9 +3376,6 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaWithDividendsVsCached));
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
-    }
-
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
     }
 

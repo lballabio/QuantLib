@@ -1054,9 +1054,6 @@ test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
         suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testLinearInterpolation));
         suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testPiecewiseConstantInterpolation));
         suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates));
-    }
-
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing));
     }
 
