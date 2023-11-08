@@ -174,6 +174,7 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
+    marketmodel.hpp
     pagodaoption.hpp
     paralleltestrunner.hpp
     partialtimebarrieroption.hpp

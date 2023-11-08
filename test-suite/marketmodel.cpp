@@ -22,8 +22,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
-#include "toplevelfixture.hpp"
+#include "marketmodel.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
@@ -118,10 +117,6 @@ using std::fabs;
 using std::sqrt;
 
 namespace market_model_test {
-
-    enum MarketModelType { ExponentialCorrelationFlatVolatility,
-                           ExponentialCorrelationAbcdVolatility/*, CalibratedMM*/
-    };
 
     Date todaysDate, startDate, endDate;
     Schedule dates;
@@ -281,11 +276,11 @@ namespace market_model_test {
     }
 
 
-    std::string marketModelTypeToString(MarketModelType type) {
+    std::string marketModelTypeToString(MarketModelTest::MarketModelType type) {
         switch (type) {
-          case ExponentialCorrelationFlatVolatility:
+          case MarketModelTest::ExponentialCorrelationFlatVolatility:
               return "Exp. Corr. Flat Vol.";
-          case ExponentialCorrelationAbcdVolatility:
+          case MarketModelTest::ExponentialCorrelationAbcdVolatility:
               return "Exp. Corr. Abcd Vol.";
               //case CalibratedMM:
               //    return "CalibratedMarketModel";
@@ -298,7 +293,7 @@ namespace market_model_test {
         bool logNormal,
         const EvolutionDescription& evolution,
         Size numberOfFactors,
-        MarketModelType marketModelType,
+        MarketModelTest::MarketModelType marketModelType,
         Spread forwardBump = 0.0,
         Volatility volBump = 0.0) {
 
@@ -332,7 +327,7 @@ namespace market_model_test {
                 TimeHomogeneousForwardCorrelation(correlations,
                 evolution.rateTimes()));
             switch (marketModelType) {
-        case ExponentialCorrelationFlatVolatility:
+        case MarketModelTest::ExponentialCorrelationFlatVolatility:
             return ext::shared_ptr<MarketModel>(new
                 FlatVol(bumpedVols,
                 corr,
@@ -340,7 +335,7 @@ namespace market_model_test {
                 numberOfFactors,
                 bumpedForwards,
                 std::vector<Spread>(bumpedForwards.size(), displacement)));
-        case ExponentialCorrelationAbcdVolatility:
+        case MarketModelTest::ExponentialCorrelationAbcdVolatility:
             return ext::shared_ptr<MarketModel>(new
                 AbcdVol(0.0,0.0,1.0,1.0,
                 bumpedVols,
@@ -702,11 +697,8 @@ namespace market_model_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(MarketModelTest)
-
-BOOST_AUTO_TEST_CASE(testOneStepForwardsAndOptionlets) {
+void MarketModelTest::testOneStepForwardsAndOptionlets() {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "one-step forwards and optionlets "
@@ -793,7 +785,7 @@ BOOST_AUTO_TEST_CASE(testOneStepForwardsAndOptionlets) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testOneStepNormalForwardsAndOptionlets) {
+void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "one-step forwards and optionlets "
@@ -879,7 +871,8 @@ BOOST_AUTO_TEST_CASE(testOneStepNormalForwardsAndOptionlets) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testInverseFloater) {
+void MarketModelTest::testInverseFloater() 
+{
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "inverse floater "
@@ -1030,10 +1023,10 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
 
                                    const EvolutionDescription& evolution = product.evolution();
 
-                                   MarketModelType marketModels[] = {
+                                   MarketModelTest::MarketModelType marketModels[] = {
                                        // CalibratedMM,
-                                           ExponentialCorrelationFlatVolatility,
-                                           ExponentialCorrelationAbcdVolatility };
+                                           MarketModelTest::ExponentialCorrelationFlatVolatility,
+                                           MarketModelTest::ExponentialCorrelationAbcdVolatility };
                                    for (auto& j : marketModels) {
 
                                        Size testedFactors[] = {4, 8, todaysForwards.size()};
@@ -1228,7 +1221,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 
                                         EvolutionDescription evolution = productClone.evolution();
                                         Size factors = todaysForwards.size();
-                                        MarketModelType marketModelType = ExponentialCorrelationFlatVolatility;
+                                        MarketModelTest::MarketModelType marketModelType = MarketModelTest::ExponentialCorrelationFlatVolatility;
                                         ext::shared_ptr<MarketModel> marketModel =
                                             makeMarketModel(logNormal, evolution, factors, marketModelType);
                                         for (Size i=0; i<todaysForwards.size(); ++i) {
@@ -1248,7 +1241,8 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
                                         }
 }
 
-BOOST_AUTO_TEST_CASE(testAllMultiStepProducts, *precondition(if_speed(Slow))) {
+
+void MarketModelTest::testAllMultiStepProducts() {
     std::string testDescription = "all multi-step products ";
 
     using namespace market_model_test;
@@ -1266,7 +1260,8 @@ BOOST_AUTO_TEST_CASE(testAllMultiStepProducts, *precondition(if_speed(Slow))) {
         testDescription);
 }
 
-BOOST_AUTO_TEST_CASE(testPeriodAdapter) {
+
+void MarketModelTest::testPeriodAdapter() {
 
     BOOST_TEST_MESSAGE("Testing period-adaptation routines in LIBOR market model...");
 
@@ -1419,8 +1414,7 @@ BOOST_AUTO_TEST_CASE(testPeriodAdapter) {
         }
     }
 }
-
-BOOST_AUTO_TEST_CASE(testCallableSwapNaif, *precondition(if_speed(Slow))) {
+void MarketModelTest::testCallableSwapNaif() {
 
     BOOST_TEST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
 
@@ -1575,7 +1569,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapNaif, *precondition(if_speed(Slow))) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testCallableSwapLS, *precondition(if_speed(Slow))) {
+void MarketModelTest::testCallableSwapLS() {
 
     BOOST_TEST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
 
@@ -1736,51 +1730,10 @@ BOOST_AUTO_TEST_CASE(testCallableSwapLS, *precondition(if_speed(Slow))) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE(CallableSwapAnderson, *precondition(if_speed(Slow)))
-
-namespace mmt = market_model_test;
-struct sliceOne {
-    static const mmt::MarketModelType marketModelType{mmt::ExponentialCorrelationFlatVolatility}; static Size testedFactor;
-};
-struct sliceTwo {
-    static const mmt::MarketModelType marketModelType{mmt::ExponentialCorrelationFlatVolatility}; static Size testedFactor;
-};
-struct sliceThree {
-    sliceThree() {
-        testedFactor = mmt::todaysForwards.size();
-    }
-    static const mmt::MarketModelType marketModelType{mmt::ExponentialCorrelationFlatVolatility}; static Size testedFactor;
-};
-struct sliceFour {
-    static const mmt::MarketModelType marketModelType{mmt::ExponentialCorrelationAbcdVolatility}; static Size testedFactor;
-};
-struct sliceFive {
-    static const mmt::MarketModelType marketModelType{mmt::ExponentialCorrelationAbcdVolatility}; static Size testedFactor;
-};
-struct sliceSix {
-    sliceSix() {
-        testedFactor = mmt::todaysForwards.size();
-    }
-    static const mmt::MarketModelType marketModelType{mmt::ExponentialCorrelationAbcdVolatility}; static Size testedFactor;
-};
-
-Size sliceOne::testedFactor = 4;
-Size sliceTwo::testedFactor = 8;
-Size sliceThree::testedFactor = 0;
-Size sliceFour::testedFactor = 4;
-Size sliceFive::testedFactor = 8;
-Size sliceSix::testedFactor = 0;
-
-using slices = boost::mpl::vector<sliceOne, sliceTwo, sliceThree, sliceFour, sliceFive, sliceSix>;
-
-BOOST_AUTO_TEST_CASE_TEMPLATE(testCallableSwapAnderson, T, slices) {
+void MarketModelTest::testCallableSwapAnderson(
+    MarketModelType marketModelType, Size testedFactor) {
 
     using namespace market_model_test;
-
-    setup();
-
-    MarketModelType marketModelType = T::marketModelType;
-    Size testedFactor = T::testedFactor;
 
     BOOST_TEST_MESSAGE("Pricing callable swap with Anderson exercise "
                        "strategy in a LIBOR market model for test factor "
@@ -1940,9 +1893,9 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testCallableSwapAnderson, T, slices) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_CASE(testGreeks, *precondition(if_speed(Fast))) {
+
+void MarketModelTest::testGreeks() {
 
     BOOST_TEST_MESSAGE("Testing caplet greeks in a lognormal forward rate market model using partial proxy simulation...");
 
@@ -2157,7 +2110,9 @@ BOOST_AUTO_TEST_CASE(testGreeks, *precondition(if_speed(Fast))) {
 
 // pathwise deltas
 
-BOOST_AUTO_TEST_CASE(testPathwiseGreeks) {
+
+void MarketModelTest::testPathwiseGreeks()
+{
 
     BOOST_TEST_MESSAGE("Testing caplet deltas in a lognormal forward rate market model using pathwise method...");
 
@@ -2395,7 +2350,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseGreeks) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
+void MarketModelTest::testPathwiseVegas()
+{
 
     BOOST_TEST_MESSAGE(
         "Testing pathwise vegas in a lognormal forward rate market model...");
@@ -3542,7 +3498,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
 
 }
 
-BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
+void MarketModelTest::testPathwiseMarketVegas()
+{
 
     BOOST_TEST_MESSAGE("Testing pathwise market vegas in a lognormal forward rate market model...");
 
@@ -4204,7 +4161,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
 
 //--------------------- Volatility tests ---------------------
 
-BOOST_AUTO_TEST_CASE(testAbcdVolatilityIntegration) {
+void MarketModelTest::testAbcdVolatilityIntegration() {
 
     BOOST_TEST_MESSAGE("Testing Abcd-volatility integration...");
 
@@ -4259,7 +4216,7 @@ BOOST_AUTO_TEST_CASE(testAbcdVolatilityIntegration) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testAbcdVolatilityCompare) {
+void MarketModelTest::testAbcdVolatilityCompare() {
 
     BOOST_TEST_MESSAGE("Testing different implementations of Abcd-volatility...");
 
@@ -4309,7 +4266,7 @@ BOOST_AUTO_TEST_CASE(testAbcdVolatilityCompare) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testAbcdVolatilityFit) {
+void MarketModelTest::testAbcdVolatilityFit() {
 
     BOOST_TEST_MESSAGE("Testing Abcd-volatility fit...");
 
@@ -4361,8 +4318,7 @@ BOOST_AUTO_TEST_CASE(testAbcdVolatilityFit) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-BOOST_AUTO_TEST_CASE(testStochVolForwardsAndOptionlets) {
+void MarketModelTest::testStochVolForwardsAndOptionlets() {
 
     BOOST_TEST_MESSAGE(
         "Testing exact repricing of "
@@ -4563,7 +4519,7 @@ BOOST_AUTO_TEST_CASE(testStochVolForwardsAndOptionlets) {
 
 //--------------------- Other tests ---------------------
 
-BOOST_AUTO_TEST_CASE(testDriftCalculator) {
+void MarketModelTest::testDriftCalculator() {
 
     // Test full factor drift equivalence between compute() and
     // computeReduced()
@@ -4619,7 +4575,7 @@ BOOST_AUTO_TEST_CASE(testDriftCalculator) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testIsInSubset) {
+void MarketModelTest::testIsInSubset() {
 
     // Performance test for isInSubset function (temporary)
 
@@ -4644,7 +4600,8 @@ BOOST_AUTO_TEST_CASE(testIsInSubset) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testAbcdDegenerateCases) {
+
+void MarketModelTest::testAbcdDegenerateCases() {
     BOOST_TEST_MESSAGE("Testing abcd degenerate cases...");
 
     AbcdFunction f1(0.0,0.0,1.0E-15,1.0);
@@ -4663,7 +4620,7 @@ BOOST_AUTO_TEST_CASE(testAbcdDegenerateCases) {
         << "error is " << std::fabs(cov2 - 1.0));
 }
 
-BOOST_AUTO_TEST_CASE(testCovariance) {
+void MarketModelTest::testCovariance() {
     BOOST_TEST_MESSAGE("Testing market models covariance...");
 
     const Size n = 10;
@@ -4748,6 +4705,66 @@ BOOST_AUTO_TEST_CASE(testCovariance) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+// --- Call the desired tests
+test_suite* MarketModelTest::suite(SpeedLevel speed) {
+    auto* suite = BOOST_TEST_SUITE("Market-model tests");
 
-BOOST_AUTO_TEST_SUITE_END()
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testInverseFloater));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseMarketVegas));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseGreeks));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testStochVolForwardsAndOptionlets));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPeriodAdapter));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testIsInSubset));
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdDegenerateCases));
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCovariance));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testGreeks));
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
+    }
+
+    if (speed == Slow) {
+        using namespace market_model_test;
+
+        setup();
+
+        // unrolled to get different test names
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationFlatVolatility, 4);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationFlatVolatility, 8);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationFlatVolatility, todaysForwards.size());
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, 4);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, 8);
+        }));
+        suite->add(QUANTLIB_TEST_CASE([=](){
+            MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, todaysForwards.size());
+        }));
+
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    }
+
+    return suite;
+}

@@ -527,6 +527,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+     <ClInclude Include="marketmodel.hpp">
+       <Filter>Header Files</Filter>
+     </ClInclude>
     <ClInclude Include="pagodaoption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
