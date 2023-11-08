@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    mclongstaffschwartzengine.hpp
     mersennetwister.hpp
     money.hpp
     noarbsabr.hpp

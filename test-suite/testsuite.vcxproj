@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mclongstaffschwartzengine.hpp" />
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />
     <ClInclude Include="noarbsabr.hpp" />

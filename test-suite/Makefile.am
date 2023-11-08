@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	mclongstaffschwartzengine.hpp \
 	mersennetwister.hpp \
 	money.hpp \
 	noarbsabr.hpp \

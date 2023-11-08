@@ -19,7 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "mclongstaffschwartzengine.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
@@ -120,8 +121,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void MCLongstaffSchwartzEngineTest::testAmericanOption() {
+BOOST_AUTO_TEST_SUITE(MCLongstaffSchwartzEngineTest)
+
+BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
     // most of the example taken from the EquityOption.cpp
@@ -222,7 +226,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     }
 }
 
-void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
+BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
 
     // reference values taken from
     // "Monte Carlo Methods in Financial Engineering",
@@ -307,15 +311,6 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     }
 }
 
-test_suite* MCLongstaffSchwartzEngineTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanOption));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
