@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="noarbsabr.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="nthtodefault.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
