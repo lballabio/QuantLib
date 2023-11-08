@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mersennetwister.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="money.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

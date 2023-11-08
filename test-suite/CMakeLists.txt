@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    mersennetwister.hpp
     money.hpp
     noarbsabr.hpp
     normalclvmodel.hpp
