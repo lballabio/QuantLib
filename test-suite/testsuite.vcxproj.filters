@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="optimizers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="optionletstripper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

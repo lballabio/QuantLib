@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	optimizers.hpp \
 	optionletstripper.hpp \
 	overnightindexedcoupon.hpp \
 	overnightindexedswap.hpp \
