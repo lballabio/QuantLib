@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    marketmodel.hpp
     marketmodel_cms.hpp
     marketmodel_smm.hpp
     marketmodel_smmcapletalphacalibration.hpp
