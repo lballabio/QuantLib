@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    observable.hpp
     ode.hpp
     operators.hpp
     optimizers.hpp

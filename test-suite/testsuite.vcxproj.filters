@@ -692,9 +692,6 @@
     <ClInclude Include="riskneutraldensitycalculator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="observable.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
