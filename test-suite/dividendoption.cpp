@@ -344,6 +344,7 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
     }
 }
 
+// Doesn't quite work.  Need to use discounted values
 //BOOST_AUTO_TEST_CASE(testEuropeanEndLimit) {
 //
 //    BOOST_TEST_MESSAGE(
