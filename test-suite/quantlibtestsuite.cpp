@@ -18,9 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/settings.hpp>
-#include <ql/utilities/dataparsers.hpp>
-
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #include "paralleltestrunner.hpp"
 #else
@@ -34,20 +31,13 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
 
 using namespace boost::unit_test_framework;
 
 test_suite* init_unit_test_suite(int, char* []) {
 
-    int argc = boost::unit_test::framework::master_test_suite().argc;
-    char **argv = boost::unit_test::framework::master_test_suite().argv;
-    SpeedLevel speed = speed_level(argc, argv);
-
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
-
-    test->add(MarketModelTest::suite(speed));
 
     return test;
 }

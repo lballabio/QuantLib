@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-    marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
