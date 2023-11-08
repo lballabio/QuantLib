@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "catbonds.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/experimental/catbonds/catbond.hpp>
@@ -54,9 +54,28 @@ namespace catbonds_test {
 
     Date eventsStart(1, January, 2011);
     Date eventsEnd(31, December, 2014);
+
+    struct CommonVars {
+        // common data
+        Calendar calendar;
+        Date today;
+        Real faceAmount;
+
+        // setup
+        CommonVars() {
+            calendar = TARGET();
+            today = calendar.adjust(Date::todaysDate());
+            Settings::instance().evaluationDate() = today;
+            faceAmount = 1000000.0;
+        }
+    };
 }
 
-void CatBondTest::testEventSetForWholeYears() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CatBondExperimentaltest)
+
+BOOST_AUTO_TEST_CASE(testEventSetForWholeYears) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for periods of whole years...");
 
     using namespace catbonds_test;
@@ -89,8 +108,7 @@ void CatBondTest::testEventSetForWholeYears() {
     BOOST_REQUIRE(!simulation->nextPath(path));
 }
 
-
-void CatBondTest::testEventSetForIrregularPeriods() {
+BOOST_AUTO_TEST_CASE(testEventSetForIrregularPeriods) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for irregular periods...");
 
     using namespace catbonds_test;
@@ -115,8 +133,7 @@ void CatBondTest::testEventSetForIrregularPeriods() {
     BOOST_REQUIRE(!simulation->nextPath(path));
 }
 
-
-void CatBondTest::testEventSetForNoEvents () {
+BOOST_AUTO_TEST_CASE(testEventSetForNoEvents) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly when there are no simulated events...");
 
     using namespace catbonds_test;
@@ -138,7 +155,7 @@ void CatBondTest::testEventSetForNoEvents () {
     BOOST_REQUIRE(!simulation->nextPath(path));
 }
 
-void CatBondTest::testBetaRisk() {
+BOOST_AUTO_TEST_CASE(testBetaRisk) {
     BOOST_TEST_MESSAGE("Testing that beta risk gives correct terminal distribution...");
 
     const size_t PATHS = 1000000;
@@ -187,25 +204,7 @@ void CatBondTest::testBetaRisk() {
     #endif
 }
 
-namespace catbonds_test {
-
-    struct CommonVars {
-        // common data
-        Calendar calendar;
-        Date today;
-        Real faceAmount;
-
-        // setup
-        CommonVars() {
-            calendar = TARGET();
-            today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            faceAmount = 1000000.0;
-        }
-    };
-}
-
-void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
+BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond against risk-free floating-rate bond...");
 
     using namespace catbonds_test;
@@ -373,9 +372,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     }
 }
 
-
-
-void CatBondTest::testCatBondInDoomScenario() {
+BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom scenario (certain default)...");
 
     using namespace catbonds_test;
@@ -439,8 +436,7 @@ void CatBondTest::testCatBondInDoomScenario() {
     QL_CHECK_CLOSE(Real(1.0), expectedLoss, tolerance);
 }
 
-
-void CatBondTest::testCatBondWithDoomOnceInTenYears() {
+BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario...");
 
     using namespace catbonds_test;
@@ -523,7 +519,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYears() {
     BOOST_CHECK_LT(riskFreeYield, yield);
 }
 
-void CatBondTest::testCatBondWithDoomOnceInTenYearsProportional() {
+BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario with proportional notional reduction...");
 
     using namespace catbonds_test;
@@ -604,8 +600,7 @@ void CatBondTest::testCatBondWithDoomOnceInTenYearsProportional() {
     BOOST_CHECK_LT(riskFreeYield, yield);
 }
 
-
-void CatBondTest::testCatBondWithGeneratedEventsProportional() {
+BOOST_AUTO_TEST_CASE(testCatBondWithGeneratedEventsProportional) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a generated scenario with proportional notional reduction...");
 
     using namespace catbonds_test;
@@ -682,17 +677,6 @@ void CatBondTest::testCatBondWithGeneratedEventsProportional() {
     BOOST_CHECK_LT(riskFreeYield, yield);
 }
 
-test_suite* CatBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("CatBond tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForWholeYears));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForIrregularPeriods));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForNoEvents));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testBetaRisk));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testRiskFreeAgainstFloatingRateBond));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testCatBondInDoomScenario));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testCatBondWithDoomOnceInTenYears));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testCatBondWithDoomOnceInTenYearsProportional));
-    suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testCatBondWithGeneratedEventsProportional));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

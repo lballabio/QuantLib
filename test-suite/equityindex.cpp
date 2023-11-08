@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "equityindex.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/equityindex.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -65,7 +65,11 @@ namespace equityindex_test {
     };
 }
 
-void EquityIndexTest::testTodaysFixing() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EquityIndexTest)
+
+BOOST_AUTO_TEST_CASE(testTodaysFixing) {
     BOOST_TEST_MESSAGE("Testing today's fixing...");
 
     using namespace equityindex_test;
@@ -90,7 +94,7 @@ void EquityIndexTest::testTodaysFixing() {
                     << "    expected forecast:    " << spot << "\n");
 }
 
-void EquityIndexTest::testTodaysFixingWithSpotAsProxy() {
+BOOST_AUTO_TEST_CASE(testTodaysFixingWithSpotAsProxy) {
     BOOST_TEST_MESSAGE("Testing today's fixing with spot as proxy...");
 
     using namespace equityindex_test;
@@ -107,7 +111,7 @@ void EquityIndexTest::testTodaysFixingWithSpotAsProxy() {
                     << "    expected fixing:    " << spot << "\n");
 }
 
-void EquityIndexTest::testFixingForecast() {
+BOOST_AUTO_TEST_CASE(testFixingForecast) {
     BOOST_TEST_MESSAGE("Testing fixing forecast...");
 
     using namespace equityindex_test;
@@ -128,7 +132,7 @@ void EquityIndexTest::testFixingForecast() {
                     << "    expected forecast:    " << expectedForecast << "\n");
 }
 
-void EquityIndexTest::testFixingForecastWithoutDividend() {
+BOOST_AUTO_TEST_CASE(testFixingForecastWithoutDividend) {
     BOOST_TEST_MESSAGE("Testing fixing forecast without dividend...");
 
     using namespace equityindex_test;
@@ -151,7 +155,7 @@ void EquityIndexTest::testFixingForecastWithoutDividend() {
                     << "    expected forecast:    " << expectedForecast << "\n");
 }
 
-void EquityIndexTest::testFixingForecastWithoutSpot() {
+BOOST_AUTO_TEST_CASE(testFixingForecastWithoutSpot) {
     BOOST_TEST_MESSAGE("Testing fixing forecast without spot handle...");
 
     using namespace equityindex_test;
@@ -175,7 +179,7 @@ void EquityIndexTest::testFixingForecastWithoutSpot() {
                     << "    expected forecast:    " << expectedForecast << "\n");
 }
 
-void EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing() {
+BOOST_AUTO_TEST_CASE(testFixingForecastWithoutSpotAndHistoricalFixing) {
     BOOST_TEST_MESSAGE("Testing fixing forecast without spot handle and historical fixing...");
 
     using namespace equityindex_test;
@@ -193,7 +197,7 @@ void EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing() {
             "Cannot forecast equity index, missing both spot and historical index"));
 }
 
-void EquityIndexTest::testSpotChange() {
+BOOST_AUTO_TEST_CASE(testSpotChange) {
     BOOST_TEST_MESSAGE("Testing spot change...");
 
     using namespace equityindex_test;
@@ -217,7 +221,7 @@ void EquityIndexTest::testSpotChange() {
                     << "    expected spot:    " << vars.spot->value() << "\n");
 }
 
-void EquityIndexTest::testErrorWhenInvalidFixingDate() {
+BOOST_AUTO_TEST_CASE(testErrorWhenInvalidFixingDate) {
     BOOST_TEST_MESSAGE("Testing error when invalid fixing date is used...");
 
     using namespace equityindex_test;
@@ -229,7 +233,7 @@ void EquityIndexTest::testErrorWhenInvalidFixingDate() {
         ExpectedErrorMessage("Fixing date January 1st, 2023 is not valid"));
 }
 
-void EquityIndexTest::testErrorWhenFixingMissing() {
+BOOST_AUTO_TEST_CASE(testErrorWhenFixingMissing) {
     BOOST_TEST_MESSAGE("Testing error when required fixing is missing...");
 
     using namespace equityindex_test;
@@ -241,7 +245,7 @@ void EquityIndexTest::testErrorWhenFixingMissing() {
         ExpectedErrorMessage("Missing eqIndex fixing for January 2nd, 2023"));
 }
 
-void EquityIndexTest::testErrorWhenInterestHandleMissing() {
+BOOST_AUTO_TEST_CASE(testErrorWhenInterestHandleMissing) {
     BOOST_TEST_MESSAGE("Testing error when interest handle is missing...");
 
     using namespace equityindex_test;
@@ -259,7 +263,7 @@ void EquityIndexTest::testErrorWhenInterestHandleMissing() {
                               "null interest rate term structure set to this instance of eqIndex"));
 }
 
-void EquityIndexTest::testFixingObservability() {
+BOOST_AUTO_TEST_CASE(testFixingObservability) {
     BOOST_TEST_MESSAGE("Testing observability of index fixings...");
 
     using namespace equityindex_test;
@@ -281,7 +285,7 @@ void EquityIndexTest::testFixingObservability() {
         BOOST_FAIL("Observer was not notified of added equity index fixing");
 }
 
-void EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay() {
+BOOST_AUTO_TEST_CASE(testNoErrorIfTodayIsNotBusinessDay) {
     BOOST_TEST_MESSAGE("Testing that no error is thrown if today is not a business day...");
 
     using namespace equityindex_test;
@@ -299,22 +303,6 @@ void EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay() {
     BOOST_REQUIRE_NO_THROW(vars.equityIndex->fixing(forecastedDate));
 }
 
-test_suite* EquityIndexTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Equity index tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testTodaysFixing));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testTodaysFixingWithSpotAsProxy));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecast));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutDividend));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutSpot));
-    suite->add(
-        QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testSpotChange));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInvalidFixingDate));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenFixingMissing));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInterestHandleMissing));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingObservability));
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

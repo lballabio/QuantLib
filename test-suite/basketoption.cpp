@@ -19,7 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "basketoption.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -167,10 +168,53 @@ namespace {
         Real amValue;
     };
 
+    BasketOptionOneData oneDataValues[] = {
+        //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
+        { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
+        { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
+        { Option::Put, 100.00,  90.00,   0.0, 0.06,   0.5, 0.4,  14.9187, 1e-2 },
+        { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },
+        { Option::Put, 100.00, 100.00,   0.0, 0.06,   0.5, 0.4,  9.9458, 1e-2 },
+        { Option::Put, 100.00, 105.00,   0.0, 0.06,   0.5, 0.4,  8.0281, 1e-2 },
+        { Option::Put, 100.00, 110.00,   0.0, 0.06,   0.5, 0.4,  6.4352, 1e-2 },
+        { Option::Put, 100.00, 115.00,   0.0, 0.06,   0.5, 0.4,  5.1265, 1e-2 },
+        { Option::Put, 100.00, 120.00,   0.0, 0.06,   0.5, 0.4,  4.0611, 1e-2 },
+
+        // Longstaff Schwartz 1D example
+        // use constant and three Laguerre polynomials
+        // 100,000 paths and 50 timesteps per year
+        { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.2,  4.478, 1e-2 },
+        { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.2,  4.840, 1e-2 },
+        { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.4,  7.101, 1e-2 },
+        { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.4,  8.508, 1e-2 },
+
+        { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.2,  3.250, 1e-2 },
+        { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.2,  3.745, 1e-2 },
+        { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.4,  6.148, 1e-2 },
+        { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.4,  7.670, 1e-2 },
+
+        { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.2,  2.314, 1e-2 },
+        { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.2,  2.885, 1e-2 },
+        { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.4,  5.312, 1e-2 },
+        { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.4,  6.920, 1e-2 },
+
+        { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.2,  1.617, 1e-2 },
+        { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.2,  2.212, 1e-2 },
+        { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.4,  4.582, 1e-2 },
+        { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.4,  6.248, 1e-2 },
+
+        { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.2,  1.110, 1e-2 },
+        { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.2,  1.690, 1e-2 },
+        { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.4,  3.948, 1e-2 },
+        { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.4,  5.647, 1e-2 }
+    };
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BasketOptionTest::testEuroTwoValues() {
+BOOST_AUTO_TEST_SUITE(BasketOptionTest)
+
+BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
 
     BOOST_TEST_MESSAGE("Testing two-asset European basket options...");
 
@@ -377,7 +421,7 @@ void BasketOptionTest::testEuroTwoValues() {
     }
 }
 
-void BasketOptionTest::testBarraquandThreeValues() {
+BOOST_AUTO_TEST_CASE(testBarraquandThreeValues, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE("Testing three-asset basket options "
                        "against Barraquand's values...");
@@ -580,7 +624,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
     }
 }
 
-void BasketOptionTest::testTavellaValues() {
+BOOST_AUTO_TEST_CASE(testTavellaValues) {
 
     BOOST_TEST_MESSAGE("Testing three-asset American basket options "
                        "against Tavella's values...");
@@ -697,53 +741,22 @@ void BasketOptionTest::testTavellaValues() {
     }
 }
 
-namespace {
-    BasketOptionOneData oneDataValues[] = {
-        //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
-        { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
-        { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
-        { Option::Put, 100.00,  90.00,   0.0, 0.06,   0.5, 0.4,  14.9187, 1e-2 },
-        { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },
-        { Option::Put, 100.00, 100.00,   0.0, 0.06,   0.5, 0.4,  9.9458, 1e-2 },
-        { Option::Put, 100.00, 105.00,   0.0, 0.06,   0.5, 0.4,  8.0281, 1e-2 },
-        { Option::Put, 100.00, 110.00,   0.0, 0.06,   0.5, 0.4,  6.4352, 1e-2 },
-        { Option::Put, 100.00, 115.00,   0.0, 0.06,   0.5, 0.4,  5.1265, 1e-2 },
-        { Option::Put, 100.00, 120.00,   0.0, 0.06,   0.5, 0.4,  4.0611, 1e-2 },
+BOOST_AUTO_TEST_SUITE(BasketOptionAmericanTest, *precondition(if_speed(Fast)))
 
-        // Longstaff Schwartz 1D example
-        // use constant and three Laguerre polynomials
-        // 100,000 paths and 50 timesteps per year
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.2,  4.478, 1e-2 },
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.2,  4.840, 1e-2 },
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.4,  7.101, 1e-2 },
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.4,  8.508, 1e-2 },
+struct sliceOne     { static const int from{0}, to{5}; };
+struct sliceTwo     { static const int from{5}, to{11}; };
+struct sliceThree   { static const int from{11}, to{17}; };
+struct sliceFour    { static const int from{17}, to{23}; };
+struct sliceFive    { static const int from{23}, to{29}; };
 
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.2,  3.250, 1e-2 },
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.2,  3.745, 1e-2 },
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.4,  6.148, 1e-2 },
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.4,  7.670, 1e-2 },
+using slices = boost::mpl::vector<sliceOne, sliceTwo, sliceThree, sliceFour, sliceFive>;
 
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.2,  2.314, 1e-2 },
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.2,  2.885, 1e-2 },
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.4,  5.312, 1e-2 },
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.4,  6.920, 1e-2 },
-
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.2,  1.617, 1e-2 },
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.2,  2.212, 1e-2 },
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.4,  4.582, 1e-2 },
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.4,  6.248, 1e-2 },
-
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.2,  1.110, 1e-2 },
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.2,  1.690, 1e-2 },
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.4,  3.948, 1e-2 },
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.4,  5.647, 1e-2 }
-    };
-}
-
-void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) {
+BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
+    const int from = T::from;
+    const int to = T::to;
 
     BOOST_TEST_MESSAGE("Testing basket American options against 1-D case "
-                       "from " << from << " to " << to-1 <<  "...");
+                       "from " << from << " to " << to - 1 << "...");
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -769,37 +782,35 @@ void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) 
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS1)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1};
+    std::vector<ext::shared_ptr<StochasticProcess1D>> procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 
     ext::shared_ptr<StochasticProcessArray> process(
-                               new StochasticProcessArray(procs,correlation));
+        new StochasticProcessArray(procs, correlation));
 
     ext::shared_ptr<PricingEngine> mcLSMCEngine =
         MakeMCAmericanBasketEngine<>(process)
-        .withSteps(timeSteps)
-        .withAntitheticVariate()
-        .withSamples(requiredSamples)
-        .withCalibrationSamples(requiredSamples/4)
-        .withSeed(seed);
+            .withSteps(timeSteps)
+            .withAntitheticVariate()
+            .withSamples(requiredSamples)
+            .withCalibrationSamples(requiredSamples / 4)
+            .withSeed(seed);
 
-    for (Size i=from; i<to; i++) {
-        ext::shared_ptr<PlainVanillaPayoff> payoff(new
-            PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
+    for (Size i = from; i < to; i++) {
+        ext::shared_ptr<PlainVanillaPayoff> payoff(
+            new PlainVanillaPayoff(oneDataValues[i].type, oneDataValues[i].strike));
 
         Date exDate = today + timeToDays(oneDataValues[i].t);
-        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today,
-                                                                  exDate));
+        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
         spot1 ->setValue(oneDataValues[i].s);
         vol1  ->setValue(oneDataValues[i].v);
         rRate ->setValue(oneDataValues[i].r);
         qRate ->setValue(oneDataValues[i].q);
 
-        BasketOption basketOption(// process,
-                                  basketTypeToPayoff(MaxBasket, payoff),
-                                  exercise);
+        BasketOption basketOption( // process,
+            basketTypeToPayoff(MaxBasket, payoff), exercise);
         basketOption.setPricingEngine(mcLSMCEngine);
 
         Real calculated = basketOption.NPV();
@@ -810,18 +821,20 @@ void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) 
 
         if (relError > oneDataValues[i].tol) {
             BOOST_FAIL("expected value: " << oneDataValues[i].result << "\n"
-                       << "calculated:     " << calculated);
+                                          << "calculated:     " << calculated);
         }
-
     }
 }
 
-/* This unit test is a a regression test to check for a crash in
+BOOST_AUTO_TEST_SUITE_END()
+
+/* This unit test is a regression test to check for a crash in
    monte carlo if the required sample is odd.  The crash occurred
    because the samples array size was off by one when antithetic
    paths were added.
 */
-void BasketOptionTest::testOddSamples() {
+
+BOOST_AUTO_TEST_CASE(testOddSamples) {
 
     BOOST_TEST_MESSAGE("Testing antithetic engine using odd sample number...");
 
@@ -902,7 +915,7 @@ void BasketOptionTest::testOddSamples() {
     }
 }
 
-void BasketOptionTest::testLocalVolatilitySpreadOption() {
+BOOST_AUTO_TEST_CASE(testLocalVolatilitySpreadOption, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing 2D local-volatility spread-option pricing...");
 
@@ -968,7 +981,7 @@ void BasketOptionTest::testLocalVolatilitySpreadOption() {
     }
 }
 
-void BasketOptionTest::test2DPDEGreeks() {
+BOOST_AUTO_TEST_CASE(test2DPDEGreeks) {
 
     BOOST_TEST_MESSAGE("Testing Greeks of two-dimensional PDE engine...");
 
@@ -1043,28 +1056,6 @@ void BasketOptionTest::test2DPDEGreeks() {
     }
 }
 
-test_suite* BasketOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Basket option tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
-    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
-
-    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
-    suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testLocalVolatilitySpreadOption));
-        // unrolled to get different test names
-        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 0,  5); }));
-        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 5, 11); }));
-        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(11, 17); }));
-        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(17, 23); }));
-        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(23, 29); }));
-    }
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

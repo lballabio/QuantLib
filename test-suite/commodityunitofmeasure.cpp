@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "commodityunitofmeasure.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
 #include <ql/experimental/commodities/petroleumunitsofmeasure.hpp>
@@ -25,7 +25,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CommodityUnitOfMeasureTest::testDirect() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CommodityUnitOfMeasureExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testDirect) {
 
     BOOST_TEST_MESSAGE("Testing direct commodity unit of measure conversions...");
 
@@ -133,9 +137,6 @@ void CommodityUnitOfMeasureTest::testDirect() {
      }
 }
 
-test_suite* CommodityUnitOfMeasureTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Commodity Unit Of Measure tests");
-    suite->add(QUANTLIB_TEST_CASE(&CommodityUnitOfMeasureTest::testDirect));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

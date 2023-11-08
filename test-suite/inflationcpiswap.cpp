@@ -17,8 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include "utilities.hpp"
-#include "inflationcpiswap.hpp"
+#include "toplevelfixture.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -248,9 +247,11 @@ namespace inflation_cpi_swap_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
+BOOST_AUTO_TEST_SUITE(CPISwapTest)
 
-void CPISwapTest::consistency() {
+BOOST_AUTO_TEST_CASE(consistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against inflation term structure...");
 
     using namespace inflation_cpi_swap_test;
@@ -363,8 +364,7 @@ void CPISwapTest::consistency() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
-
-void CPISwapTest::zciisconsistency() {
+BOOST_AUTO_TEST_CASE(zciisconsistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
 
     using namespace inflation_cpi_swap_test;
@@ -420,8 +420,7 @@ void CPISwapTest::zciisconsistency() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
-
-void CPISwapTest::cpibondconsistency() {
+BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against CPI bond...");
 
     using namespace inflation_cpi_swap_test;
@@ -513,14 +512,6 @@ void CPISwapTest::cpibondconsistency() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CPISwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("CPISwap tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::consistency));
-    suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::zciisconsistency));
-    suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::cpibondconsistency));
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

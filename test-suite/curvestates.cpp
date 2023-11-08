@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "curvestates.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
@@ -112,27 +112,31 @@ namespace curve_states_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CurveStatesTest::testLMMCurveState() {
+BOOST_AUTO_TEST_SUITE(CurveStatesTest)
 
-    BOOST_TEST_MESSAGE("Testing Libor-market-model curve state...");
+// Comment/uncomment the desired test case.
 
-    using namespace curve_states_test;
+//BOOST_AUTO_TEST_CASE(testLMMCurveState) {
+//
+//    BOOST_TEST_MESSAGE("Testing Libor-market-model curve state...");
+//
+//    using namespace curve_states_test;
+//
+//    CommonVars vars;
+//}
 
-    CommonVars vars;
-}
+//BOOST_AUTO_TEST_CASE(testCoterminalSwapCurveState) {
+//
+//    BOOST_TEST_MESSAGE("Testing coterminal-swap-market-model curve state...");
+//
+//    using namespace curve_states_test;
+//
+//    CommonVars vars;
+//}
 
-void CurveStatesTest::testCoterminalSwapCurveState() {
-
-    BOOST_TEST_MESSAGE("Testing coterminal-swap-market-model curve state...");
-
-    using namespace curve_states_test;
-
-    CommonVars vars;
-}
-
-
-void CurveStatesTest::testCMSwapCurveState() {
+BOOST_AUTO_TEST_CASE(testCMSwapCurveState) {
 
     BOOST_TEST_MESSAGE("Testing constant-maturity-swap-market-model curve state...");
 
@@ -195,11 +199,6 @@ void CurveStatesTest::testCMSwapCurveState() {
     }*/
 }
 
-// --- Call the desired tests
-test_suite* CurveStatesTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Curve States tests");
-    //suite->add(QUANTLIB_TEST_CASE(&CurveStatesTest::testLMMCurveState));
-    //suite->add(QUANTLIB_TEST_CASE(&CurveStatesTest::testCoterminalSwapCurveState));
-    suite->add(QUANTLIB_TEST_CASE(&CurveStatesTest::testCMSwapCurveState));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

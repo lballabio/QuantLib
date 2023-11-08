@@ -19,7 +19,7 @@
 */
 
 
-#include "inflationcpicapfloor.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
@@ -46,10 +46,8 @@
 
 #include <iostream>
 
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
 
 namespace inflation_cpi_capfloor_test {
     struct Datum {
@@ -309,9 +307,11 @@ namespace inflation_cpi_capfloor_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
+BOOST_AUTO_TEST_SUITE(InflationCPICapFloorExperimentalTest)
 
-void InflationCPICapFloorTest::cpicapfloorpricesurface() {
+BOOST_AUTO_TEST_CASE(cpicapfloorpricesurface) {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor against price surface...");
     
     using namespace inflation_cpi_capfloor_test;
@@ -379,8 +379,7 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
-
-void InflationCPICapFloorTest::cpicapfloorpricer() {
+BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor pricer...");
     
     using namespace inflation_cpi_capfloor_test;
@@ -444,15 +443,6 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-
-test_suite* InflationCPICapFloorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("CPIswaption tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&InflationCPICapFloorTest::cpicapfloorpricesurface));
-    suite->add(QUANTLIB_TEST_CASE(&InflationCPICapFloorTest::cpicapfloorpricer));
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

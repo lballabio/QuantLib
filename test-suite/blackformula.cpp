@@ -21,7 +21,7 @@
 */
 
 
-#include "blackformula.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
 #include <cmath>
@@ -29,8 +29,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BlackFormulaTest::testBachelierImpliedVol(){
+BOOST_AUTO_TEST_SUITE(BlackFormulaTest)
+
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
 
 
     BOOST_TEST_MESSAGE("Testing Bachelier implied vol...");
@@ -58,7 +61,7 @@ void BlackFormulaTest::testBachelierImpliedVol(){
     }
 }
 
-void BlackFormulaTest::testChambersImpliedVol() {
+BOOST_AUTO_TEST_CASE(testChambersImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing Chambers-Nawalkha implied vol approximation...");
 
@@ -107,7 +110,7 @@ void BlackFormulaTest::testChambersImpliedVol() {
     }
 }
 
-void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
+BOOST_AUTO_TEST_CASE(testRadoicicStefanicaImpliedVol) {
 
     BOOST_TEST_MESSAGE(
         "Testing Radoicic-Stefanica implied vol approximation...");
@@ -154,7 +157,7 @@ void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
     }
 }
 
-void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
+BOOST_AUTO_TEST_CASE(testRadoicicStefanicaLowerBound) {
 
     BOOST_TEST_MESSAGE("Testing Radoicic-Stefanica lower bound...");
 
@@ -195,7 +198,7 @@ void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
     }
 }
 
-void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
+BOOST_AUTO_TEST_CASE(testImpliedVolAdaptiveSuccessiveOverRelaxation) {
     BOOST_TEST_MESSAGE("Testing implied volatility calculation via "
         "adaptive successive over-relaxation...");
 
@@ -302,7 +305,7 @@ void assertBlackFormulaForwardDerivative(
     }
 }
 
-void BlackFormulaTest::testBlackFormulaForwardDerivative() {
+BOOST_AUTO_TEST_CASE(testBlackFormulaForwardDerivative) {
 
     BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula...");
 
@@ -317,7 +320,7 @@ void BlackFormulaTest::testBlackFormulaForwardDerivative() {
     assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
-void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroStrike() {
+BOOST_AUTO_TEST_CASE(testBlackFormulaForwardDerivativeWithZeroStrike) {
 
     BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula "
         "with zero strike...");
@@ -329,7 +332,7 @@ void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroStrike() {
     assertBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
-void BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroVolatility() {
+BOOST_AUTO_TEST_CASE(testBlackFormulaForwardDerivativeWithZeroVolatility) {
 
     BOOST_TEST_MESSAGE("Testing forward derivative of the Black formula "
         "with zero volatility...");
@@ -392,7 +395,7 @@ void assertBachelierBlackFormulaForwardDerivative(
     }
 }
 
-void BlackFormulaTest::testBachelierBlackFormulaForwardDerivative() {
+BOOST_AUTO_TEST_CASE(testBachelierBlackFormulaForwardDerivative) {
 
     BOOST_TEST_MESSAGE("Testing forward derivative of the "
         "Bachelier Black formula...");
@@ -412,7 +415,7 @@ void BlackFormulaTest::testBachelierBlackFormulaForwardDerivative() {
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
-void BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatility() {
+BOOST_AUTO_TEST_CASE(testBachelierBlackFormulaForwardDerivativeWithZeroVolatility) {
 
     BOOST_TEST_MESSAGE("Testing forward derivative of the Bachelier Black formula "
         "with zero volatility...");
@@ -432,29 +435,6 @@ void BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatil
     assertBachelierBlackFormulaForwardDerivative(Option::Put, strikes, vol);
 }
 
-test_suite* BlackFormulaTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Black formula tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testBachelierImpliedVol));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testChambersImpliedVol));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testRadoicicStefanicaImpliedVol));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testRadoicicStefanicaLowerBound));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testBlackFormulaForwardDerivative));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testBlackFormulaForwardDerivativeWithZeroVolatility));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testBachelierBlackFormulaForwardDerivative));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatility));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

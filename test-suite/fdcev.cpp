@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "fdcev.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -45,7 +45,11 @@ namespace {
     };
 }
 
-void FdCevTest::testLocalMartingale() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FdCevTest)
+
+BOOST_AUTO_TEST_CASE(testLocalMartingale) {
     BOOST_TEST_MESSAGE(
         "Testing local martingale property of CEV process with PDF...");
 
@@ -123,7 +127,7 @@ void FdCevTest::testLocalMartingale() {
     }
 }
 
-void FdCevTest::testFdmCevOp() {
+BOOST_AUTO_TEST_CASE(testFdmCevOp) {
     BOOST_TEST_MESSAGE(
             "Testing FDM constant elasticity of variance (CEV) operator...");
 
@@ -201,13 +205,6 @@ void FdCevTest::testFdmCevOp() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* FdCevTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Finite Difference CEV tests");
-
-
-    suite->add(QUANTLIB_TEST_CASE(&FdCevTest::testLocalMartingale));
-    suite->add(QUANTLIB_TEST_CASE(&FdCevTest::testFdmCevOp));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

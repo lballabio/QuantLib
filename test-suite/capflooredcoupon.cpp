@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "capflooredcoupon.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
@@ -185,8 +185,11 @@ namespace capfloored_coupon_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CapFlooredCouponTest::testLargeRates() {
+BOOST_AUTO_TEST_SUITE(CapFlooredCouponTest)
+
+BOOST_AUTO_TEST_CASE(testLargeRates) {
 
     BOOST_TEST_MESSAGE("Testing degenerate collared coupon...");
 
@@ -232,7 +235,7 @@ void CapFlooredCouponTest::testLargeRates() {
    }
 }
 
-void CapFlooredCouponTest::testDecomposition() {
+BOOST_AUTO_TEST_CASE(testDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
 
@@ -544,10 +547,7 @@ void CapFlooredCouponTest::testDecomposition() {
     }
 }
 
-test_suite* CapFlooredCouponTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Capped and floored coupon tests");
-    suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testLargeRates));
-    suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testDecomposition));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
 

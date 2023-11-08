@@ -17,9 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "cmsspread.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
@@ -92,7 +91,11 @@ struct TestData {
 };
 } // namespace
 
-void CmsSpreadTest::testFixings() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CmsSpreadExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testFixings) {
     BOOST_TEST_MESSAGE("Testing fixings of cms spread indices...");
 
     TestData d;
@@ -185,7 +188,7 @@ Real mcReferenceValue(const ext::shared_ptr<CmsCoupon>& cpn1,
 } // mcReferenceValue
 } // namespace
 
-void CmsSpreadTest::testCouponPricing() {
+BOOST_AUTO_TEST_CASE(testCouponPricing) {
     BOOST_TEST_MESSAGE("Testing pricing of cms spread coupons...");
 
     TestData d;
@@ -344,9 +347,6 @@ void CmsSpreadTest::testCouponPricing() {
                       tol);
 }
 
-test_suite* CmsSpreadTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("CmsSpreadTest");
-    suite->add(QUANTLIB_TEST_CASE(&CmsSpreadTest::testFixings));
-    suite->add(QUANTLIB_TEST_CASE(&CmsSpreadTest::testCouponPricing));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

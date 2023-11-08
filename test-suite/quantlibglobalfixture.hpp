@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Cristina Duminuco
- Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,26 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_digitalcoupon_hpp
-#define quantlib_test_digitalcoupon_hpp
+#ifndef quantlib_global_fixture_hpp
+#define quantlib_global_fixture_hpp
 
-#include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
+#include <chrono>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class DigitalCouponTest {
+class QuantLibGlobalFixture {
   public:
-    static void testAssetOrNothing();
-    static void testAssetOrNothingDeepInTheMoney();
-    static void testAssetOrNothingDeepOutTheMoney();
-    static void testCashOrNothing();
-    static void testCashOrNothingDeepInTheMoney();
-    static void testCashOrNothingDeepOutTheMoney();
-    static void testCallPutParity();
-    static void testReplicationType();
-    static boost::unit_test_framework::test_suite* suite();
-};
+    QuantLibGlobalFixture();
+    ~QuantLibGlobalFixture();
+    static SpeedLevel get_speed ();
+    SpeedLevel speed_level (int argc, char **argv);
 
+  private:
+    static SpeedLevel speed;
+    decltype(std::chrono::steady_clock::now()) start;
+    decltype(std::chrono::steady_clock::now()) stop;
+};
 
 #endif

@@ -19,9 +19,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "fdmlinearop.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -133,7 +133,145 @@ namespace {
 
 }
 
-void FdmLinearOpTest::testFdmLinearOpLayout() {
+namespace {
+
+    ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
+        Time maturity) {
+
+        DayCounter dc = Actual365Fixed();
+        const Date today = Settings::instance().evaluationDate();
+        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+        std::vector<Date> dates;
+        std::vector<Rate> rates, divRates;
+
+        for (Size i=0; i <= 25; ++i) {
+            dates.push_back(today+Period(i, Years));
+            rates.push_back(0.05);
+            divRates.push_back(0.02);
+        }
+
+        const Handle<YieldTermStructure> rTS(
+            ext::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
+        const Handle<YieldTermStructure> qTS(
+            ext::shared_ptr<YieldTermStructure>(
+                new ZeroCurve(dates, divRates, dc)));
+
+        const Real v0 = 0.04;
+        ext::shared_ptr<HestonProcess> hestonProcess(
+            new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
+
+        ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
+            new HullWhiteForwardProcess(rTS, 0.00883, 0.01));
+        hwFwdProcess->setForwardMeasureTime(maturity);
+
+        const Real equityShortRateCorr = -0.7;
+
+        return ext::make_shared<HybridHestonHullWhiteProcess>(
+            hestonProcess, hwFwdProcess,
+            equityShortRateCorr);
+    }
+
+    FdmSolverDesc createSolverDesc(
+        const std::vector<Size>& dim,
+        const ext::shared_ptr<HybridHestonHullWhiteProcess>& process) {
+
+        const Time maturity
+            = process->hullWhiteProcess()->getForwardMeasureTime();
+
+        ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+
+        std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d = {
+            ext::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])),
+            ext::shared_ptr<Fdm1dMesher>(
+                new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
+                                            maturity)),
+            ext::shared_ptr<Fdm1dMesher>(
+                new Uniform1dMesher(-0.15, 0.15, dim[2]))
+        };
+
+        const ext::shared_ptr<FdmMesher> mesher(
+            new FdmMesherComposite(mesher1d));
+
+        const FdmBoundaryConditionSet boundaries;
+
+        std::list<std::vector<Time> > stoppingTimes;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
+
+        ext::shared_ptr<FdmStepConditionComposite> conditions(
+            new FdmStepConditionComposite(
+                std::list<std::vector<Time> >(),
+                FdmStepConditionComposite::Conditions()));
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+            new PlainVanillaPayoff(Option::Call, 160.0));
+
+        ext::shared_ptr<FdmInnerValueCalculator> calculator(
+            new FdmLogInnerValue(payoff, mesher, 0));
+
+        const Size tGrid = 100;
+        const Size dampingSteps = 0;
+
+        FdmSolverDesc desc = { mesher, boundaries,
+                              conditions, calculator,
+                              maturity, tGrid, dampingSteps };
+
+        return desc;
+    }
+
+    Array axpy(const boost::numeric::ublas::compressed_matrix<Real>& A,
+               const Array& x) {
+
+        boost::numeric::ublas::vector<Real> tmpX(x.size()), y(x.size());
+        std::copy(x.begin(), x.end(), tmpX.begin());
+        boost::numeric::ublas::axpy_prod(A, tmpX, y);
+
+        return Array(y.begin(), y.end());
+    }
+
+    boost::numeric::ublas::compressed_matrix<Real> createTestMatrix(
+        Size n, Size m, Real theta) {
+
+        boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
+
+        for (Size i=0; i < n; ++i) {
+            for (Size j=0; j < m; ++j) {
+                const Size k = i*m+j;
+                a(k,k)=1.0;
+
+                if (i > 0 && j > 0 && i <n-1 && j < m-1) {
+                    const Size im1 = i-1;
+                    const Size ip1 = i+1;
+                    const Size jm1 = j-1;
+                    const Size jp1 = j+1;
+                    const Real delta = theta/((ip1-im1)*(jp1-jm1));
+
+                    a(k,im1*m+jm1) =  delta;
+                    a(k,im1*m+jp1) = -delta;
+                    a(k,ip1*m+jm1) = -delta;
+                    a(k,ip1*m+jp1) =  delta;
+                }
+            }
+        }
+        return a;
+    }
+
+    Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
+        Size retVal = 0;
+        for (SparseMatrix::const_iterator1 i1 = m.begin1();
+             i1 != m.end1(); ++i1) {
+            retVal+=std::distance(i1.begin(), i1.end());
+        }
+        return retVal;
+    }
+}
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FdmLinearOpTest)
+
+BOOST_AUTO_TEST_CASE(testFdmLinearOpLayout) {
 
     BOOST_TEST_MESSAGE("Testing indexing of a linear operator...");
 
@@ -204,7 +342,7 @@ void FdmLinearOpTest::testFdmLinearOpLayout() {
     }
 }
 
-void FdmLinearOpTest::testUniformGridMesher() {
+BOOST_AUTO_TEST_CASE(testUniformGridMesher) {
 
     BOOST_TEST_MESSAGE("Testing uniform grid mesher...");
 
@@ -230,7 +368,7 @@ void FdmLinearOpTest::testUniformGridMesher() {
     }
 }
 
-void FdmLinearOpTest::testFirstDerivativesMapApply() {
+BOOST_AUTO_TEST_CASE(testFirstDerivativesMapApply) {
 
     BOOST_TEST_MESSAGE("Testing application of first-derivatives map...");
 
@@ -281,11 +419,9 @@ void FdmLinearOpTest::testFirstDerivativesMapApply() {
                         << "\n    expected:   " << expected);
         }
     }
-
-
 }
 
-void FdmLinearOpTest::testSecondDerivativesMapApply() {
+BOOST_AUTO_TEST_CASE(testSecondDerivativesMapApply) {
 
     BOOST_TEST_MESSAGE("Testing application of second-derivatives map...");
 
@@ -361,11 +497,9 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
                 << "\n  found at " << x << " " << y << " " << z);
         }
     }
-
-
 }
 
-void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
+BOOST_AUTO_TEST_CASE(testDerivativeWeightsOnNonUniformGrids) {
     BOOST_TEST_MESSAGE("Testing finite differences coefficients...");
 
     const ext::shared_ptr<Fdm1dMesher> mesherX(
@@ -537,7 +671,7 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
     }
 }
 
-void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
+BOOST_AUTO_TEST_CASE(testSecondOrderMixedDerivativesMapApply) {
 
     BOOST_TEST_MESSAGE(
         "Testing application of second-order mixed-derivatives map...");
@@ -628,11 +762,9 @@ void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
                 << "\n  value    " << std::fabs(t[i]-u[i]));
         }
     }
-
-
 }
 
-void FdmLinearOpTest::testTripleBandMapSolve() {
+BOOST_AUTO_TEST_CASE(testTripleBandMapSolve) {
 
     BOOST_TEST_MESSAGE("Testing triple-band map solution...");
 
@@ -711,8 +843,7 @@ void FdmLinearOpTest::testTripleBandMapSolve() {
     }
 }
 
-
-void FdmLinearOpTest::testFdmHestonBarrier() {
+BOOST_AUTO_TEST_CASE(testFdmHestonBarrier) {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
 
@@ -798,7 +929,7 @@ void FdmLinearOpTest::testFdmHestonBarrier() {
     }
 }
 
-void FdmLinearOpTest::testFdmHestonAmerican() {
+BOOST_AUTO_TEST_CASE(testFdmHestonAmerican) {
 
     BOOST_TEST_MESSAGE("Testing FDM with American option in Heston model...");
 
@@ -869,7 +1000,7 @@ void FdmLinearOpTest::testFdmHestonAmerican() {
     }
 }
 
-void FdmLinearOpTest::testFdmHestonExpress() {
+BOOST_AUTO_TEST_CASE(testFdmHestonExpress) {
 
     BOOST_TEST_MESSAGE("Testing FDM with express certificate in Heston model...");
 
@@ -959,96 +1090,7 @@ void FdmLinearOpTest::testFdmHestonExpress() {
     }
 }
 
-
-namespace {
-
-    ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
-        Time maturity) {
-
-        DayCounter dc = Actual365Fixed();
-        const Date today = Settings::instance().evaluationDate();
-        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
-
-        std::vector<Date> dates;
-        std::vector<Rate> rates, divRates;
-
-        for (Size i=0; i <= 25; ++i) {
-            dates.push_back(today+Period(i, Years));
-            rates.push_back(0.05);
-            divRates.push_back(0.02);
-        }
-
-        const Handle<YieldTermStructure> rTS(
-           ext::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
-        const Handle<YieldTermStructure> qTS(
-           ext::shared_ptr<YieldTermStructure>(
-                                              new ZeroCurve(dates, divRates, dc)));
-
-        const Real v0 = 0.04;
-        ext::shared_ptr<HestonProcess> hestonProcess(
-            new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
-
-        ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
-                            new HullWhiteForwardProcess(rTS, 0.00883, 0.01));
-        hwFwdProcess->setForwardMeasureTime(maturity);
-
-        const Real equityShortRateCorr = -0.7;
-
-        return ext::make_shared<HybridHestonHullWhiteProcess>(
-                hestonProcess, hwFwdProcess,
-                                                 equityShortRateCorr);
-    }
-
-    FdmSolverDesc createSolverDesc(
-        const std::vector<Size>& dim,
-        const ext::shared_ptr<HybridHestonHullWhiteProcess>& process) {
-
-        const Time maturity
-                    = process->hullWhiteProcess()->getForwardMeasureTime();
-
-        ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
-
-        std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d = {
-            ext::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])),
-            ext::shared_ptr<Fdm1dMesher>(
-                new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
-                                            maturity)),
-            ext::shared_ptr<Fdm1dMesher>(
-                new Uniform1dMesher(-0.15, 0.15, dim[2]))
-        };
-
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(mesher1d));
-
-        const FdmBoundaryConditionSet boundaries;
-
-        std::list<std::vector<Time> > stoppingTimes;
-        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
-
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
-            new FdmStepConditionComposite(
-                                     std::list<std::vector<Time> >(),
-                                     FdmStepConditionComposite::Conditions()));
-
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                                  new PlainVanillaPayoff(Option::Call, 160.0));
-
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                       new FdmLogInnerValue(payoff, mesher, 0));
-
-        const Size tGrid = 100;
-        const Size dampingSteps = 0;
-
-        FdmSolverDesc desc = { mesher, boundaries,
-                               conditions, calculator,
-                               maturity, tGrid, dampingSteps };
-
-        return desc;
-    }
-}
-
-void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
+BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteOp, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing FDM with Heston Hull-White model...");
 
     const Date today = Date(28, March, 2004);
@@ -1164,47 +1206,7 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     }
 }
 
-namespace {
-    Array axpy(const boost::numeric::ublas::compressed_matrix<Real>& A,
-               const Array& x) {
-        
-        boost::numeric::ublas::vector<Real> tmpX(x.size()), y(x.size());
-        std::copy(x.begin(), x.end(), tmpX.begin());
-        boost::numeric::ublas::axpy_prod(A, tmpX, y);
-
-        return Array(y.begin(), y.end());
-    }
-
-    boost::numeric::ublas::compressed_matrix<Real> createTestMatrix(
-        Size n, Size m, Real theta) {
-
-        boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
-
-        for (Size i=0; i < n; ++i) {
-            for (Size j=0; j < m; ++j) {
-                const Size k = i*m+j;
-                a(k,k)=1.0;
-
-                if (i > 0 && j > 0 && i <n-1 && j < m-1) {
-                    const Size im1 = i-1;
-                    const Size ip1 = i+1;
-                    const Size jm1 = j-1;
-                    const Size jp1 = j+1;
-                    const Real delta = theta/((ip1-im1)*(jp1-jm1));
-
-                    a(k,im1*m+jm1) =  delta;
-                    a(k,im1*m+jp1) = -delta;
-                    a(k,ip1*m+jm1) = -delta;
-                    a(k,ip1*m+jp1) =  delta;
-                }
-            }
-        }
-
-        return a;
-    }
-}
-
-void FdmLinearOpTest::testBiCGstab() {
+BOOST_AUTO_TEST_CASE(testBiCGstab) {
     BOOST_TEST_MESSAGE(
         "Testing bi-conjugated gradient stabilized algorithm...");
 
@@ -1241,7 +1243,7 @@ void FdmLinearOpTest::testBiCGstab() {
     }
 }
 
-void FdmLinearOpTest::testGMRES() {
+BOOST_AUTO_TEST_CASE(testGMRES) {
     BOOST_TEST_MESSAGE("Testing GMRES algorithm...");
 
     const Size n=41, m=21;
@@ -1297,7 +1299,7 @@ void FdmLinearOpTest::testGMRES() {
     }
 }
 
-void FdmLinearOpTest::testCrankNicolsonWithDamping() {
+BOOST_AUTO_TEST_CASE(testCrankNicolsonWithDamping) {
 
     BOOST_TEST_MESSAGE("Testing Crank-Nicolson with initial implicit damping steps "
                        "for a digital option...");
@@ -1385,7 +1387,7 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
     }
 }
 
-void FdmLinearOpTest::testSpareMatrixReference() {
+BOOST_AUTO_TEST_CASE(testSpareMatrixReference) {
     BOOST_TEST_MESSAGE("Testing SparseMatrixReference type...");
 
     const Size rows    = 10;
@@ -1428,20 +1430,7 @@ void FdmLinearOpTest::testSpareMatrixReference() {
     }
 }
 
-namespace {
-
-    Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
-        Size retVal = 0;
-        for (SparseMatrix::const_iterator1 i1 = m.begin1();
-            i1 != m.end1(); ++i1) {
-            retVal+=std::distance(i1.begin(), i1.end());
-        }
-        return retVal;
-    }
-
-}
-
-void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
+BOOST_AUTO_TEST_CASE(testSparseMatrixZeroAssignment) {
     BOOST_TEST_MESSAGE("Testing assignment to zero in sparse matrix...");
 
     SparseMatrix m(5,5);
@@ -1462,7 +1451,7 @@ void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
     }
 }
 
-void FdmLinearOpTest::testFdmMesherIntegral() {
+BOOST_AUTO_TEST_CASE(testFdmMesherIntegral) {
     BOOST_TEST_MESSAGE("Testing integrals over meshers functions...");
 
     const ext::shared_ptr<FdmMesherComposite> mesher(
@@ -1514,7 +1503,7 @@ void FdmLinearOpTest::testFdmMesherIntegral() {
     }
 }
 
-void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
+BOOST_AUTO_TEST_CASE(testHighInterestRateBlackScholesMesher) {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a "
             "high interest rate scenario...");
 
@@ -1577,7 +1566,7 @@ void FdmLinearOpTest::testHighInterestRateBlackScholesMesher() {
     }
 }
 
-void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() {
+BOOST_AUTO_TEST_CASE(testLowVolatilityHighDiscreteDividendBlackScholesMesher) {
     BOOST_TEST_MESSAGE("Testing Black-Scholes mesher in a low volatility and "
             "high discrete dividend scenario...");
 
@@ -1651,31 +1640,6 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
     }
 }
 
-test_suite* FdmLinearOpTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("linear operator tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmLinearOpLayout));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testUniformGridMesher));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFirstDerivativesMapApply));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondDerivativesMapApply));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testTripleBandMapSolve));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonBarrier));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonAmerican));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testGMRES));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmMesherIntegral));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testHighInterestRateBlackScholesMesher));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

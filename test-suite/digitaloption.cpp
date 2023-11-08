@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "digitaloption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
@@ -72,8 +72,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void DigitalOptionTest::testCashOrNothingEuropeanValues() {
+BOOST_AUTO_TEST_SUITE(DigitalOptionTest)
+
+BOOST_AUTO_TEST_CASE(testCashOrNothingEuropeanValues) {
 
     BOOST_TEST_MESSAGE("Testing European cash-or-nothing digital option...");
 
@@ -127,7 +130,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     }
 }
 
-void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
+BOOST_AUTO_TEST_CASE(testAssetOrNothingEuropeanValues) {
 
     BOOST_TEST_MESSAGE("Testing European asset-or-nothing digital option...");
 
@@ -181,7 +184,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
     }
 }
 
-void DigitalOptionTest::testGapEuropeanValues() {
+BOOST_AUTO_TEST_CASE(testGapEuropeanValues) {
 
     BOOST_TEST_MESSAGE("Testing European gap digital option...");
 
@@ -234,7 +237,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
     }
 }
 
-void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
+BOOST_AUTO_TEST_CASE(testCashAtHitOrNothingAmericanValues) {
 
     BOOST_TEST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
                        "digital option...");
@@ -301,7 +304,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     }
 }
 
-void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
+BOOST_AUTO_TEST_CASE(testAssetAtHitOrNothingAmericanValues) {
 
     BOOST_TEST_MESSAGE("Testing American asset-(at-hit)-or-nothing "
                        "digital option...");
@@ -366,7 +369,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     }
 }
 
-void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
+BOOST_AUTO_TEST_CASE(testCashAtExpiryOrNothingAmericanValues) {
 
     BOOST_TEST_MESSAGE("Testing American cash-(at-expiry)-or-nothing "
                        "digital option...");
@@ -434,7 +437,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     }
 }
 
-void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
+BOOST_AUTO_TEST_CASE(testAssetAtExpiryOrNothingAmericanValues) {
 
     BOOST_TEST_MESSAGE("Testing American asset-(at-expiry)-or-nothing "
                        "digital option...");
@@ -506,7 +509,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
     }
 }
 
-void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
+BOOST_AUTO_TEST_CASE(testCashAtHitOrNothingAmericanGreeks) {
 
     BOOST_TEST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
                        "digital option greeks...");
@@ -661,8 +664,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     }
 }
 
-
-void DigitalOptionTest::testMCCashAtHit() {
+BOOST_AUTO_TEST_CASE(testMCCashAtHit) {
 
     BOOST_TEST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
                        "American engine...");
@@ -728,25 +730,6 @@ void DigitalOptionTest::testMCCashAtHit() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* DigitalOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Digital option tests");
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testCashOrNothingEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testAssetOrNothingEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DigitalOptionTest::testGapEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testCashAtHitOrNothingAmericanValues));
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testAssetAtHitOrNothingAmericanValues));
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues));
-    suite->add(QUANTLIB_TEST_CASE(
-               &DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DigitalOptionTest::testMCCashAtHit));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

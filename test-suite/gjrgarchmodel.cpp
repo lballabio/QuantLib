@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "gjrgarchmodel.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -40,7 +41,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void GJRGARCHModelTest::testEngines() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(GJRGARCHModelTest)
+
+BOOST_AUTO_TEST_CASE(testEngines, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE(
        "Testing Monte Carlo GJR-GARCH engine against "
        "analytic GJR-GARCH engine...");
@@ -192,8 +197,7 @@ void GJRGARCHModelTest::testEngines() {
     }
 }
 
-
-void GJRGARCHModelTest::testDAXCalibration() {
+BOOST_AUTO_TEST_CASE(testDAXCalibration, *precondition(if_speed(Fast))) {
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
        with Stochstic Volatility: Applications of Fourier Transform
@@ -301,16 +305,6 @@ void GJRGARCHModelTest::testDAXCalibration() {
     }
 }
 
-test_suite* GJRGARCHModelTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
-    }
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testEngines));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

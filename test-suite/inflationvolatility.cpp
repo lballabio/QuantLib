@@ -17,30 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include "inflationvolatility.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/inflation/interpolatedyoyinflationcurve.hpp>
-
 #include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
-
 #include <ql/experimental/inflation/yoycapfloortermpricesurface.hpp>
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/experimental/inflation/yoyoptionletstripper.hpp>
-
 #include <ql/experimental/inflation/kinterpolatedyoyoptionletvolatilitysurface.hpp>
 #include <ql/experimental/inflation/interpolatedyoyoptionletstripper.hpp>
-
 #include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 
 #include <iostream>
 
+using namespace QuantLib;
+using namespace boost::unit_test;
 
 // local namespace for data
 //*************************************************************************
@@ -276,9 +273,11 @@ namespace inflation_volatility_test {
 
 //***************************************************************************
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
+BOOST_AUTO_TEST_SUITE(InflationVolExperimentalTest)
 
-void InflationVolTest::testYoYPriceSurfaceToVol() {
+BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     BOOST_TEST_MESSAGE("Testing conversion from YoY price surface "
                        "to YoY volatility surface...");
 
@@ -363,10 +362,7 @@ void InflationVolTest::testYoYPriceSurfaceToVol() {
     reset();
 }
 
-
-
-
-void InflationVolTest::testYoYPriceSurfaceToATM() {
+BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToATM) {
     BOOST_TEST_MESSAGE("Testing conversion from YoY cap-floor surface "
                        "to YoY inflation term structure...");
 
@@ -407,14 +403,6 @@ void InflationVolTest::testYoYPriceSurfaceToATM() {
     reset();
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-boost::unit_test_framework::test_suite* InflationVolTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("yoyOptionletStripper (yoy inflation vol) tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToATM));
-    suite->add(QUANTLIB_TEST_CASE(&InflationVolTest::testYoYPriceSurfaceToVol));
-
-    return suite;
-}
-
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "lowdiscrepancysequences.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/statistics/discrepancystatistics.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
@@ -44,12 +44,16 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-void LowDiscrepancyTest::testSeedGenerator() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(LowDiscrepancyTest)
+
+BOOST_AUTO_TEST_CASE(testSeedGenerator) {
     BOOST_TEST_MESSAGE("Testing random-seed generator...");
     SeedGenerator::instance().get();
 }
 
-void LowDiscrepancyTest::testPolynomialsModuloTwo() {
+BOOST_AUTO_TEST_CASE(testPolynomialsModuloTwo) {
 
     BOOST_TEST_MESSAGE("Testing " << PPMT_MAX_DIM <<
                        " primitive polynomials modulo two...");
@@ -82,7 +86,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
 }
 
-void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
+BOOST_AUTO_TEST_CASE(testRandomizedLowDiscrepancySequence) {
 
     BOOST_TEST_MESSAGE("Testing randomized low-discrepancy sequences up to "
                        "dimension " << PPMT_MAX_DIM << "...");
@@ -165,18 +169,15 @@ namespace
     }
 }
 
+BOOST_AUTO_TEST_CASE(testRandomizedLattices){
 
-void LowDiscrepancyTest::testRandomizedLattices()
-{
     testRandomizedLatticeRule(LatticeRule::A, "A");
     testRandomizedLatticeRule(LatticeRule::B, "B");
     testRandomizedLatticeRule(LatticeRule::C, "C");
     testRandomizedLatticeRule(LatticeRule::D, "D");
-
 }
 
-
-void LowDiscrepancyTest::testSobol() {
+BOOST_AUTO_TEST_CASE(testSobol) {
 
     BOOST_TEST_MESSAGE("Testing Sobol sequences up to dimension "
                        << PPMT_MAX_DIM << "...");
@@ -260,7 +261,7 @@ void LowDiscrepancyTest::testSobol() {
     }
 }
 
-void LowDiscrepancyTest::testFaure() {
+BOOST_AUTO_TEST_CASE(testFaure) {
 
     BOOST_TEST_MESSAGE("Testing Faure sequences...");
 
@@ -409,7 +410,7 @@ void LowDiscrepancyTest::testFaure() {
     }
 }
 
-void LowDiscrepancyTest::testHalton() {
+BOOST_AUTO_TEST_CASE(testHalton) {
 
     BOOST_TEST_MESSAGE("Testing Halton sequences...");
 
@@ -883,8 +884,7 @@ namespace {
 
 }
 
-
-void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testMersenneTwisterDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Mersenne-twister discrepancy...");
 
@@ -901,7 +901,7 @@ void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
                              "DiscrMersenneTwis");
 }
 
-void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testPlainHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing plain Halton discrepancy...");
 
@@ -917,7 +917,7 @@ void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
                              "DiscrPlain_Halton");
 }
 
-void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testRandomStartHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing random-start Halton discrepancy...");
 
@@ -933,7 +933,7 @@ void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
                              "DiscrRStartHalton");
 }
 
-void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testRandomShiftHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing random-shift Halton discrepancy...");
 
@@ -949,7 +949,7 @@ void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
                              "DiscrRShiftHalton");
 }
 
-void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testRandomStartRandomShiftHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing random-start, random-shift Halton discrepancy...");
 
@@ -965,7 +965,7 @@ void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
                              "DiscrRStRShHalton");
 }
 
-void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testJackelSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Jaeckel-Sobol discrepancy...");
 
@@ -981,7 +981,7 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
                              "DiscrJackel_Sobol");
 }
 
-void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testSobolLevitanSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Levitan-Sobol discrepancy...");
 
@@ -997,7 +997,7 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
                              "DiscrSobLev_Sobol");
 }
 
-void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testSobolLevitanLemieuxSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Levitan-Lemieux-Sobol discrepancy...");
 
@@ -1013,7 +1013,7 @@ void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
                              "DiscrSobLevLem_Sobol");
 }
 
-void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testUnitSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing unit Sobol discrepancy...");
 
@@ -1026,8 +1026,7 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
                              "Discr__Unit_Sobol");
 }
 
-
-void LowDiscrepancyTest::testSobolSkipping() {
+BOOST_AUTO_TEST_CASE(testSobolSkipping) {
 
     BOOST_TEST_MESSAGE("Testing Sobol sequence skipping...");
 
@@ -1070,47 +1069,6 @@ void LowDiscrepancyTest::testSobolSkipping() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* LowDiscrepancyTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomizedLattices));
-
-
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testSeedGenerator));
-
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testPolynomialsModuloTwo));
-
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testSobol));
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testHalton));
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testFaure));
-
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testPlainHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomStartHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-        &LowDiscrepancyTest::testUnitSobolDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testJackelSobolDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy));
-
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testSobolSkipping));
-
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomizedLowDiscrepancySequence));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

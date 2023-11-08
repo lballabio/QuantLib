@@ -20,7 +20,8 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-#include "dividendoption.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
@@ -56,7 +57,11 @@ using namespace boost::unit_test_framework;
 
 // tests
 
-void DividendOptionTest::testEuropeanValues() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DividendOptionTest)
+
+BOOST_AUTO_TEST_CASE(testEuropeanValues) {
 
     BOOST_TEST_MESSAGE(
               "Testing dividend European option values with no dividends...");
@@ -169,7 +174,7 @@ void DividendOptionTest::testEuropeanValues() {
 // Reference pg. 253 - Hull - Options, Futures, and Other Derivatives 5th ed
 // Exercise 12.8
 
-void DividendOptionTest::testEuropeanKnownValue() {
+BOOST_AUTO_TEST_CASE(testEuropeanKnownValue) {
 
     BOOST_TEST_MESSAGE("Testing dividend European option against known value...");
 
@@ -245,8 +250,7 @@ void DividendOptionTest::testEuropeanKnownValue() {
     }
 }
 
-
-void DividendOptionTest::testEuropeanStartLimit() {
+BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 
     BOOST_TEST_MESSAGE(
        "Testing dividend European option with a dividend on today's date...");
@@ -340,104 +344,104 @@ void DividendOptionTest::testEuropeanStartLimit() {
     }
 }
 
-void DividendOptionTest::testEuropeanEndLimit() {
+// Doesn't quite work.  Need to use discounted values
+//BOOST_AUTO_TEST_CASE(testEuropeanEndLimit) {
+//
+//    BOOST_TEST_MESSAGE(
+//              "Testing dividend European option values with end limits...");
+//
+//    Real tolerance = 1.0e-5;
+//    Real dividendValue = 10.0;
+//
+//    Option::Type types[] = { Option::Call, Option::Put };
+//    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+//    Real underlyings[] = { 100.0 };
+//    Rate qRates[] = { 0.00, 0.10, 0.30 };
+//    Rate rRates[] = { 0.01, 0.05, 0.15 };
+//    Integer lengths[] = { 1, 2 };
+//    Volatility vols[] = { 0.05, 0.20, 0.70 };
+//
+//    DayCounter dc = Actual360();
+//    Date today = Date::todaysDate();
+//    Settings::instance().evaluationDate() = today;
+//
+//    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+//    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+//    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+//    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+//    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+//    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+//    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+//
+//    for (auto& type : types) {
+//        for (Real strike : strikes) {
+//            for (int length : lengths) {
+//                Date exDate = today + length * Years;
+//                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+//
+//                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+//                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+//
+//                std::vector<Date> dividendDates = {exercise->lastDate()};
+//                std::vector<Real> dividends = {dividendValue};
+//
+//                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+//
+//                ext::shared_ptr<StrikedTypePayoff> refPayoff(
+//                    new PlainVanillaPayoff(type, strike + dividendValue));
+//
+//                ext::shared_ptr<PricingEngine> ref_engine(new AnalyticEuropeanEngine(stochProcess));
+//
+//                VanillaOption ref_option(refPayoff, exercise);
+//                ref_option.setPricingEngine(ref_engine);
+//
+//                QL_DEPRECATED_DISABLE_WARNING
+//                ext::shared_ptr<PricingEngine> engine1(
+//                    new AnalyticDividendEuropeanEngine(stochProcess));
+//
+//                DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
+//                QL_DEPRECATED_ENABLE_WARNING
+//                option1.setPricingEngine(engine1);
+//
+//                auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
+//                    stochProcess, DividendVector(dividendDates, dividends));
+//
+//                VanillaOption option2(payoff, exercise);
+//                option2.setPricingEngine(engine2);
+//
+//                for (Real u : underlyings) {
+//                    for (Real m : qRates) {
+//                        for (Real n : rRates) {
+//                            for (Real v : vols) {
+//                                Rate q = m, r = n;
+//                                spot->setValue(u);
+//                                qRate->setValue(q);
+//                                rRate->setValue(r);
+//                                vol->setValue(v);
+//
+//                                Real expected = ref_option.NPV();
+//                                Real calculated = option1.NPV();
+//                                Real error = std::fabs(calculated - expected);
+//                                if (error > tolerance) {
+//                                    REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
+//                                                   expected, calculated, error, tolerance);
+//                                }
+//                                calculated = option2.NPV();
+//                                error = std::fabs(calculated - expected);
+//                                if (error > tolerance) {
+//                                    REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
+//                                                   expected, calculated, error, tolerance);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
-    BOOST_TEST_MESSAGE(
-              "Testing dividend European option values with end limits...");
-
-    Real tolerance = 1.0e-5;
-    Real dividendValue = 10.0;
-
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.00, 0.10, 0.30 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Integer lengths[] = { 1, 2 };
-    Volatility vols[] = { 0.05, 0.20, 0.70 };
-
-    DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
-
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
-
-    for (auto& type : types) {
-        for (Real strike : strikes) {
-            for (int length : lengths) {
-                Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
-
-                std::vector<Date> dividendDates = {exercise->lastDate()};
-                std::vector<Real> dividends = {dividendValue};
-
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
-
-                ext::shared_ptr<StrikedTypePayoff> refPayoff(
-                    new PlainVanillaPayoff(type, strike + dividendValue));
-
-                ext::shared_ptr<PricingEngine> ref_engine(new AnalyticEuropeanEngine(stochProcess));
-
-                VanillaOption ref_option(refPayoff, exercise);
-                ref_option.setPricingEngine(ref_engine);
-
-                QL_DEPRECATED_DISABLE_WARNING
-                ext::shared_ptr<PricingEngine> engine1(
-                    new AnalyticDividendEuropeanEngine(stochProcess));
-
-                DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
-                QL_DEPRECATED_ENABLE_WARNING
-                option1.setPricingEngine(engine1);
-
-                auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
-                    stochProcess, DividendVector(dividendDates, dividends));
-
-                VanillaOption option2(payoff, exercise);
-                option2.setPricingEngine(engine2);
-
-                for (Real u : underlyings) {
-                    for (Real m : qRates) {
-                        for (Real n : rRates) {
-                            for (Real v : vols) {
-                                Rate q = m, r = n;
-                                spot->setValue(u);
-                                qRate->setValue(q);
-                                rRate->setValue(r);
-                                vol->setValue(v);
-
-                                Real expected = ref_option.NPV();
-                                Real calculated = option1.NPV();
-                                Real error = std::fabs(calculated - expected);
-                                if (error > tolerance) {
-                                    REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
-                                                   expected, calculated, error, tolerance);
-                                }
-                                calculated = option2.NPV();
-                                error = std::fabs(calculated - expected);
-                                if (error > tolerance) {
-                                    REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
-                                                   expected, calculated, error, tolerance);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-void DividendOptionTest::testOldEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testOldEuropeanGreeks) {
 
     BOOST_TEST_MESSAGE("Testing old-style dividend European option greeks...");
 
@@ -571,7 +575,7 @@ void DividendOptionTest::testOldEuropeanGreeks() {
     }
 }
 
-void DividendOptionTest::testEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testEuropeanGreeks) {
 
     BOOST_TEST_MESSAGE("Testing dividend European option greeks...");
 
@@ -703,8 +707,7 @@ void DividendOptionTest::testEuropeanGreeks() {
     }
 }
 
-
-void DividendOptionTest::testFdEuropeanValues() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanValues) {
 
     BOOST_TEST_MESSAGE(
               "Testing finite-difference dividend European option values...");
@@ -946,8 +949,7 @@ namespace {
 
 }
 
-
-void DividendOptionTest::testFdEuropeanGreeks() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanGreeks, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing finite-differences dividend European option greeks...");
 
     Date today = Date::todaysDate();
@@ -962,7 +964,7 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     }
 }
 
-void DividendOptionTest::testFdAmericanGreeks() {
+BOOST_AUTO_TEST_CASE(testFdAmericanGreeks) {
     BOOST_TEST_MESSAGE(
              "Testing finite-differences dividend American option greeks...");
 
@@ -1054,8 +1056,7 @@ namespace {
 
 }
 
-
-void DividendOptionTest::testFdEuropeanDegenerate() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanDegenerate) {
 
     BOOST_TEST_MESSAGE(
          "Testing degenerate finite-differences dividend European option...");
@@ -1070,7 +1071,7 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
     testFdDegenerate(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
-void DividendOptionTest::testFdAmericanDegenerate() {
+BOOST_AUTO_TEST_CASE(testFdAmericanDegenerate) {
 
     BOOST_TEST_MESSAGE(
          "Testing degenerate finite-differences dividend American option...");
@@ -1183,8 +1184,7 @@ namespace {
     }
 }
 
-
-void DividendOptionTest::testFdEuropeanWithDividendToday() {
+BOOST_AUTO_TEST_CASE(testFdEuropeanWithDividendToday) {
 
     BOOST_TEST_MESSAGE(
          "Testing finite-differences dividend European option with dividend on today's date...");
@@ -1199,7 +1199,7 @@ void DividendOptionTest::testFdEuropeanWithDividendToday() {
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Escrowed);
 }
 
-void DividendOptionTest::testFdAmericanWithDividendToday() {
+BOOST_AUTO_TEST_CASE(testFdAmericanWithDividendToday) {
 
     BOOST_TEST_MESSAGE(
          "Testing finite-differences dividend American option with dividend on today's date...");
@@ -1213,8 +1213,7 @@ void DividendOptionTest::testFdAmericanWithDividendToday() {
     testFdDividendAtTZero(today,exercise,FdBlackScholesVanillaEngine::Spot);
 }
 
-
-void DividendOptionTest::testEscrowedDividendModel() {
+BOOST_AUTO_TEST_CASE(testEscrowedDividendModel) {
     BOOST_TEST_MESSAGE("Testing finite-difference European engine "
                        "with the escrowed dividend model...");
 
@@ -1320,27 +1319,6 @@ void DividendOptionTest::testEscrowedDividendModel() {
     }
 }
 
-test_suite* DividendOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Dividend European option tests");
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
-    // Doesn't quite work.  Need to use discounted values
-    //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testOldEuropeanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanValues));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanDegenerate));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanDegenerate));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanWithDividendToday));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdAmericanWithDividendToday));
-    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEscrowedDividendModel));
+BOOST_AUTO_TEST_SUITE_END()
 
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testFdEuropeanGreeks));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
