@@ -244,9 +244,6 @@
     <Filter Include="experimental">
       <UniqueIdentifier>{4eadb3fc-a4ce-4e0c-bfe5-f23777a30a8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="experimental\amortizingbonds">
-      <UniqueIdentifier>{101d6cdd-3e77-48cd-8bec-c84a252324f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="experimental\averageois">
       <UniqueIdentifier>{33f1be16-e858-4cfe-ba9c-483609826221}</UniqueIdentifier>
     </Filter>
@@ -3605,18 +3602,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\commodities\unitofmeasureconversionmanager.hpp">
       <Filter>experimental\commodities</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\all.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\averageois\all.hpp">
       <Filter>experimental\averageois</Filter>

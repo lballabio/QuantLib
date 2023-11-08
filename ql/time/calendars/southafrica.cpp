@@ -78,6 +78,8 @@ namespace QuantLib {
             || (d == 1 && m == November && y == 2021)
             // one-shot: In lieu of Christmas falling on Sunday in 2022
             || (d == 27 && m == December && y == 2022)
+            // one-shot: Special holiday to celebrate winning of Rugby World Cup 2023
+            || (d == 15 && m == December && y == 2023)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;

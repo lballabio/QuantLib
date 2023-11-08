@@ -781,30 +781,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVol) {
             << "    calculated price: " << bond.cleanPrice() << "\n"
             << "    expected:         " << targetPrice.amount() << "\n"
             << "    difference:       " << bond.cleanPrice() - targetPrice.amount());
-
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    Real targetNPV = 7850.0;
-    volatility = bond.impliedVolatility(targetNPV,
-                                        vars.termStructure,
-                                        1e-8,  // accuracy
-                                        200,   // max evaluations
-                                        1e-4,  // min vol
-                                        1.0);  // max vol
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
-
-    if (std::fabs(bond.NPV() - targetNPV) > 1.0e-4)
-        BOOST_ERROR(
-            "failed to reproduce target NPV with implied volatility:\n"
-            << std::setprecision(5)
-            << "    calculated NPV: " << bond.NPV() << "\n"
-            << "    expected:       " << targetNPV << "\n"
-            << "    difference:     " << bond.NPV() - targetNPV);
 }
 
 BOOST_AUTO_TEST_CASE(testCallableFixedRateBondWithArbitrarySchedule) {

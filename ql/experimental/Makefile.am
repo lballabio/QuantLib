@@ -1,5 +1,5 @@
 
-SUBDIRS = amortizingbonds asian averageois barrieroption basismodels \
+SUBDIRS = asian averageois barrieroption basismodels \
           callablebonds catbonds commodities coupons credit \
           exoticoptions finitedifferences forward fx inflation lattices \
           math mcbasket models processes risk shortrate swaptions \

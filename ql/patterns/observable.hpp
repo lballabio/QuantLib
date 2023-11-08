@@ -262,7 +262,9 @@ namespace QuantLib {
 
 #else
 
+#ifndef QL_USE_STD_SHARED_PTR
 #include <boost/smart_ptr/owner_less.hpp>
+#endif
 #include <atomic>
 #include <mutex>
 #include <set>
@@ -401,7 +403,7 @@ namespace QuantLib {
       public:
         void disableUpdates(bool deferred=false) {
             std::lock_guard<std::mutex> lock(mutex_);
-            updatesType_ = (deferred) ? UpdatesDeferred : 0;
+            updatesType_ = (deferred) ? UpdatesDeferred : UpdatesDisabled;
         }
         void enableUpdates();
 
@@ -410,9 +412,15 @@ namespace QuantLib {
       private:
         ObservableSettings() : updatesType_(UpdatesEnabled) {}
 
+#if defined(QL_USE_STD_SHARED_PTR)
+        typedef std::set<ext::weak_ptr<Observer::Proxy>,
+                         std::owner_less<ext::weak_ptr<Observer::Proxy> > >
+            set_type;
+#else
         typedef std::set<ext::weak_ptr<Observer::Proxy>,
                          boost::owner_less<ext::weak_ptr<Observer::Proxy> > >
             set_type;
+#endif
 
         void registerDeferredObservers(const Observable::set_type& observers);
         void unregisterDeferredObserver(const ext::shared_ptr<Observer::Proxy>& proxy);
@@ -420,7 +428,7 @@ namespace QuantLib {
         set_type deferredObservers_;
         mutable std::mutex mutex_;
 
-        enum UpdateType { UpdatesEnabled = 1, UpdatesDeferred = 2} ;
+        enum UpdateType { UpdatesDisabled = 0, UpdatesEnabled = 1, UpdatesDeferred = 2} ;
         std::atomic<int> updatesType_;
     };
 

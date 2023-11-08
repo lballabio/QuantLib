@@ -46,40 +46,7 @@ namespace QuantLib {
                                 BusinessDayConvention exCouponConvention = Unadjusted,
                                 bool exCouponEndOfMonth = false,
                                 const std::vector<Real>& redemptions = { 100.0 },
-                                Natural paymentLag = 0);
-
-        /*! \deprecated Use the other constructor after calling sinkingSchedule
-                        and sinkingNotionals to generate the required parameters.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        AmortizingFixedRateBond(Natural settlementDays,
-                                const Calendar& calendar,
-                                Real faceAmount,
-                                const Date& startDate,
-                                const Period& bondTenor,
-                                const Frequency& sinkingFrequency,
-                                Rate coupon,
-                                const DayCounter& accrualDayCounter,
-                                BusinessDayConvention paymentConvention = Following,
-                                const Date& issueDate = Date());
-
-        /*! \deprecated Build a FixedRateLeg instead and use it
-                        to create an instance of the base Bond class.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        AmortizingFixedRateBond(Natural settlementDays,
-                                const std::vector<Real>& notionals,
-                                const Schedule& schedule,
-                                const std::vector<InterestRate>& coupons,
-                                BusinessDayConvention paymentConvention = Following,
-                                const Date& issueDate = Date(),
-                                const Calendar& paymentCalendar = Calendar(),
-                                const Period& exCouponPeriod = Period(),
-                                const Calendar& exCouponCalendar = Calendar(),
-                                BusinessDayConvention exCouponConvention = Unadjusted,
-                                bool exCouponEndOfMonth = false);
+                                Integer paymentLag = 0);
 
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }

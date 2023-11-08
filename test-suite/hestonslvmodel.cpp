@@ -1969,7 +1969,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloVsFdmPricing, *precondition(if_speed(Fast))) 
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Monte-Carlo Calibration...");
 

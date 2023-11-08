@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.32],
+AC_INIT([QuantLib], [1.33-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -528,7 +528,6 @@ AC_CONFIG_FILES([
     ql/cashflows/Makefile
     ql/currencies/Makefile
     ql/experimental/Makefile
-    ql/experimental/amortizingbonds/Makefile
     ql/experimental/asian/Makefile
     ql/experimental/averageois/Makefile
     ql/experimental/barrieroption/Makefile

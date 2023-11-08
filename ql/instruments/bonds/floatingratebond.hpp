@@ -59,36 +59,6 @@ namespace QuantLib {
                          const Calendar& exCouponCalendar = Calendar(),
                          BusinessDayConvention exCouponConvention = Unadjusted,
                          bool exCouponEndOfMonth = false);
-        
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        FloatingRateBond(Natural settlementDays,
-                         Real faceAmount,
-                         const Date& startDate,
-                         const Date& maturityDate,
-                         Frequency couponFrequency,
-                         const Calendar& calendar,
-                         const ext::shared_ptr<IborIndex>& iborIndex,
-                         const DayCounter& accrualDayCounter,
-                         BusinessDayConvention accrualConvention = Following,
-                         BusinessDayConvention paymentConvention = Following,
-                         Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings = { 1.0 },
-                         const std::vector<Spread>& spreads = { 0.0 },
-                         const std::vector<Rate>& caps = {},
-                         const std::vector<Rate>& floors = {},
-                         bool inArrears = false,
-                         Real redemption = 100.0,
-                         const Date& issueDate = Date(),
-                         const Date& stubDate = Date(),
-                         DateGeneration::Rule rule = DateGeneration::Backward,
-                         bool endOfMonth = false,
-                         const Period& exCouponPeriod = Period(),
-                         const Calendar& exCouponCalendar = Calendar(),
-                         BusinessDayConvention exCouponConvention = Unadjusted,
-                         bool exCouponEndOfMonth = false);
     };
 
 }

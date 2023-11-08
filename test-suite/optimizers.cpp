@@ -42,7 +42,10 @@ using std::cos;
 
 namespace {
 
-    struct NamedOptimizationMethod;
+    struct NamedOptimizationMethod {
+        ext::shared_ptr<OptimizationMethod> optimizationMethod;
+        std::string name;
+    };
 
     std::vector<ext::shared_ptr<CostFunction> > costFunctions_;
     std::vector<ext::shared_ptr<Constraint> > constraints_;
@@ -138,11 +141,6 @@ namespace {
             QL_FAIL("unknown OptimizationMethod type");
         }
     }
-
-    struct NamedOptimizationMethod {
-        ext::shared_ptr<OptimizationMethod> optimizationMethod;
-        std::string name;
-    };
 
 
     ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(

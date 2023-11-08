@@ -811,7 +811,7 @@ BOOST_AUTO_TEST_CASE(testFdAmerican) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testKahlJaeckelCase, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testKahlJaeckelCase, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
           "Testing MC and FD Heston engines for the Kahl-Jaeckel example...");
 

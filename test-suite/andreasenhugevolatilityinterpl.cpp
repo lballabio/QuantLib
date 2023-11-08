@@ -719,7 +719,7 @@ BOOST_AUTO_TEST_CASE(testArbitrageFree) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBarrierOptionPricing, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testBarrierOptionPricing, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Barrier option pricing with Andreasen-Huge "
          "local volatility surface...");

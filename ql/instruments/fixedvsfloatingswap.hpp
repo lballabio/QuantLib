@@ -64,7 +64,7 @@ namespace QuantLib {
                             Spread spread,
                             DayCounter floatingDayCount,
                             ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
-                            Natural paymentLag = 0,
+                            Integer paymentLag = 0,
                             const Calendar& paymentCalendar = Calendar());
         //! \name Inspectors
         //@{
