@@ -34,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
 #include "observable.hpp"
 #include "ode.hpp"
@@ -167,7 +166,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(NthToDefaultTest::suite(speed));
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());

@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    nthtodefault.hpp
     numericaldifferentiation.hpp
     observable.hpp
     ode.hpp

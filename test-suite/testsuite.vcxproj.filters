@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="nthtodefault.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="numericaldifferentiation.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
