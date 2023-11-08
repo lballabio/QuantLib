@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    marketmodel_smmcaplethomocalibration.hpp
     markovfunctional.hpp
     matrices.hpp
     mclongstaffschwartzengine.hpp

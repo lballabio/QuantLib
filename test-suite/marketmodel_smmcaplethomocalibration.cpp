@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "marketmodel_smmcaplethomocalibration.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 
 #include <ql/math/optimization/spherecylinder.hpp>
@@ -221,9 +221,11 @@ namespace market_model_smm_caplet_homo_calibration_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
+BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletHomoCalibrationTest)
 
-void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
+BOOST_AUTO_TEST_CASE(testFunction) {
 
     BOOST_TEST_MESSAGE("Testing max homogeneity caplet calibration "
                        "in a lognormal coterminal swap market model...");
@@ -350,18 +352,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
    // for (Size i=0; i < newSwapMM.numberOfRates(); ++i)
      //      BOOST_TEST_MESSAGE("swap MM time dependent vols: "<< i << std::fixed <<
        //               std::setprecision(6) << Array(newSwapMM.timeDependentVolatility(i)));
-
-
-
-
-
-
 }
 
-
-
-void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
-{
+BOOST_AUTO_TEST_CASE(testPeriodFunction) {
 
     BOOST_TEST_MESSAGE("Testing max homogeneity periodic caplet calibration "
                        "in a lognormal coterminal swap market model...");
@@ -520,16 +513,9 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
                         "\n error:     " << error <<
                         "\n tolerance: " << swapTolerance);
     }
-
-
-
-
-
-
 }
 
-
-void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
+BOOST_AUTO_TEST_CASE(testSphereCylinder) {
 
     BOOST_TEST_MESSAGE("Testing sphere-cylinder optimization...");
 
@@ -623,18 +609,6 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-// --- Call the desired tests
-test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
-
-    suite->add(QUANTLIB_TEST_CASE(
-                     &MarketModelSmmCapletHomoCalibrationTest::testFunction));
-    suite->add(QUANTLIB_TEST_CASE(
-               &MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
-
-    suite->add(QUANTLIB_TEST_CASE(
-               &MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

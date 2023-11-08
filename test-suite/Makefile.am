@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	marketmodel_smmcaplethomocalibration.hpp \
 	markovfunctional.hpp \
 	matrices.hpp \
 	mclongstaffschwartzengine.hpp \
