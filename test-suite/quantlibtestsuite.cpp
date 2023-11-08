@@ -34,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "operators.hpp"
 #include "optimizers.hpp"
 #include "optionletstripper.hpp"
 #include "overnightindexedcoupon.hpp"
@@ -119,7 +118,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite(speed));
     test->add(OptionletStripperTest::suite());
     test->add(OvernightIndexedCouponTest::suite());

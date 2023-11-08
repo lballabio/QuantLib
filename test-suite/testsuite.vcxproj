@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="operators.hpp" />
     <ClInclude Include="optimizers.hpp" />
     <ClInclude Include="optionletstripper.hpp" />
     <ClInclude Include="overnightindexedcoupon.hpp" />

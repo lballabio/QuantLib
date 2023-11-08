@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    operators.hpp
     optimizers.hpp
     optionletstripper.hpp
     overnightindexedcoupon.hpp
