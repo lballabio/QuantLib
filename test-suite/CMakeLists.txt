@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    marketmodel_smm.hpp
     marketmodel_smmcapletalphacalibration.hpp
     marketmodel_smmcapletcalibration.hpp
     marketmodel_smmcaplethomocalibration.hpp
@@ -268,7 +267,7 @@ set(QL_BENCHMARK_SOURCES
     jumpdiffusion.cpp
     lowdiscrepancysequences.cpp
     marketmodel_cms.cpp
-    marketmodel_smm.cpp                 marketmodel_smm.hpp
+    marketmodel_smm.cpp
     quantooption.cpp                    quantooption.hpp
     quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
     riskstats.cpp                       riskstats.hpp

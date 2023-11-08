@@ -137,10 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "marketmodel_smm.hpp"
-#include "marketmodel_cms.hpp"
-#include "quantooption.hpp"
-#include "riskstats.hpp"
 #include "shortratemodels.hpp"
 
 namespace QuantLibTest {
@@ -234,6 +230,11 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
+    namespace MarketModelSmmTest {
+        struct testMultiStepCoterminalSwapsAndSwaptions:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
 }
 
 namespace {
@@ -283,8 +284,8 @@ namespace {
         Benchmark("HestonModel::DAXCalibration", [] { QuantLibTest::HestonModelTest::testDAXCalibration().test_method(); }, 555.19),
         Benchmark("InterpolationTest::testSabrInterpolation", [] { QuantLibTest::InterpolationTest::testSabrInterpolation().test_method(); }, 2266.06),
         Benchmark("JumpDiffusion::Greeks", [] { QuantLibTest::JumpDiffusionTest::testGreeks().test_method(); }, 433.77),
-        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", [] { QuantLibTest::MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions().test_method(), 11497.73),
-        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
+        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", [] { QuantLibTest::MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions().test_method(); }, 11497.73),
+        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", [] { QuantLibTest::MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions().test_method(); }, 11244.95),
         Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
         Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
         Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
