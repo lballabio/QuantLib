@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	ode.hpp \
 	operators.hpp \
 	optimizers.hpp \
 	optionletstripper.hpp \

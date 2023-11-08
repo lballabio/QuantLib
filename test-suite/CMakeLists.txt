@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    ode.hpp
     operators.hpp
     optimizers.hpp
     optionletstripper.hpp

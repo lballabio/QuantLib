@@ -18,12 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "ode.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/matrixutilities/expm.hpp>
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <complex>
-
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -64,7 +63,11 @@ namespace {
 
 }
 
-void OdeTest::testAdaptiveRungeKutta() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OdeTest)
+
+BOOST_AUTO_TEST_CASE(testAdaptiveRungeKutta) {
 
     BOOST_TEST_MESSAGE("Testing adaptive Runge Kutta...");
 
@@ -142,7 +145,7 @@ namespace {
     }
 }
 
-void OdeTest::testMatrixExponential() {
+BOOST_AUTO_TEST_CASE(testMatrixExponential) {
     BOOST_TEST_MESSAGE("Testing matrix exponential based on ode...");
 
     // Reference results are taken from
@@ -191,7 +194,7 @@ void OdeTest::testMatrixExponential() {
     }
 }
 
-void OdeTest::testMatrixExponentialOfZero() {
+BOOST_AUTO_TEST_CASE(testMatrixExponentialOfZero) {
     BOOST_TEST_MESSAGE("Testing matrix exponential of a zero matrix "
                        "based on ode...");
 
@@ -212,10 +215,6 @@ void OdeTest::testMatrixExponentialOfZero() {
     }
 }
 
-test_suite* OdeTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("ode tests");
-    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testAdaptiveRungeKutta));
-    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponential));
-    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponentialOfZero));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
