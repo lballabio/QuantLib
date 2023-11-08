@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    overnightindexedcoupon.hpp
     overnightindexedswap.hpp
     pagodaoption.hpp
     paralleltestrunner.hpp

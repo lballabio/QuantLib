@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="overnightindexedcoupon.hpp" />
     <ClInclude Include="overnightindexedswap.hpp" />
     <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
