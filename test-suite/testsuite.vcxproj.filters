@@ -704,9 +704,6 @@
     <ClInclude Include="observable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="normalclvmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

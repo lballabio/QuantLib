@@ -34,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "normalclvmodel.hpp"
 #include "nthorderderivativeop.hpp"
 #include "nthtodefault.hpp"
 #include "numericaldifferentiation.hpp"
@@ -170,7 +169,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(NormalCLVModelTest::experimental(speed));
     test->add(NthToDefaultTest::suite(speed));
     test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());

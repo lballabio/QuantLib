@@ -174,7 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    normalclvmodel.hpp
     nthorderderivativeop.hpp
     nthtodefault.hpp
     numericaldifferentiation.hpp
