@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="marketmodel_smmcapletcalibration.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="marketmodel_smmcaplethomocalibration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
