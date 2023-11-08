@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "money.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/money.hpp>
 #include <ql/currencies/europe.hpp>
@@ -27,7 +27,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void MoneyTest::testNone() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MoneyTest)
+
+BOOST_AUTO_TEST_CASE(testNone) {
 
     BOOST_TEST_MESSAGE("Testing money arithmetic without conversions...");
 
@@ -50,8 +54,7 @@ void MoneyTest::testNone() {
     }
 }
 
-
-void MoneyTest::testBaseCurrency() {
+BOOST_AUTO_TEST_CASE(testBaseCurrency) {
 
     BOOST_TEST_MESSAGE("Testing money arithmetic with conversion "
                        "to base currency...");
@@ -88,8 +91,7 @@ void MoneyTest::testBaseCurrency() {
     }
 }
 
-
-void MoneyTest::testAutomated() {
+BOOST_AUTO_TEST_CASE(testAutomated) {
 
     BOOST_TEST_MESSAGE("Testing money arithmetic with automated conversion...");
 
@@ -124,11 +126,6 @@ void MoneyTest::testAutomated() {
     }
 }
 
-test_suite* MoneyTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Money tests");
-    suite->add(QUANTLIB_TEST_CASE(&MoneyTest::testNone));
-    suite->add(QUANTLIB_TEST_CASE(&MoneyTest::testBaseCurrency));
-    suite->add(QUANTLIB_TEST_CASE(&MoneyTest::testAutomated));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

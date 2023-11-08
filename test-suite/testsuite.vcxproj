@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="money.hpp" />
     <ClInclude Include="noarbsabr.hpp" />
     <ClInclude Include="normalclvmodel.hpp" />
     <ClInclude Include="nthtodefault.hpp" />

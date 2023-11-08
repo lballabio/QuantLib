@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	money.hpp \
 	noarbsabr.hpp \
 	normalclvmodel.hpp \
 	nthorderderivativeop.hpp \

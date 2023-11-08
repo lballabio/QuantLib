@@ -34,7 +34,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "money.hpp"
 #include "noarbsabr.hpp"
 #include "normalclvmodel.hpp"
 #include "nthorderderivativeop.hpp"
@@ -127,7 +126,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(MoneyTest::suite());
     test->add(NumericalDifferentiationTest::suite());
     test->add(NthOrderDerivativeOpTest::suite(speed));
     test->add(ObservableTest::suite());
