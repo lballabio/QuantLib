@@ -527,12 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="markovfunctional.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrices.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mclongstaffschwartzengine.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

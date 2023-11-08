@@ -810,8 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="markovfunctional.hpp" />
-    <ClInclude Include="matrices.hpp" />
     <ClInclude Include="mclongstaffschwartzengine.hpp" />
     <ClInclude Include="mersennetwister.hpp" />
     <ClInclude Include="money.hpp" />

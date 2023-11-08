@@ -174,8 +174,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    markovfunctional.hpp
-    matrices.hpp
     mclongstaffschwartzengine.hpp
     mersennetwister.hpp
     money.hpp
