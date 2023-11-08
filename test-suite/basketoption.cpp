@@ -741,6 +741,8 @@ BOOST_AUTO_TEST_CASE(testTavellaValues) {
     }
 }
 
+BOOST_AUTO_TEST_SUITE(BasketOptionAmericanTest, *precondition(if_speed(Fast)))
+
 struct sliceOne     { static const int from{0}, to{5}; };
 struct sliceTwo     { static const int from{5}, to{11}; };
 struct sliceThree   { static const int from{11}, to{17}; };
@@ -823,6 +825,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testOneDAmericanValues, T, slices) {
         }
     }
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 /* This unit test is a regression test to check for a crash in
    monte carlo if the required sample is odd.  The crash occurred
