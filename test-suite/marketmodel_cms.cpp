@@ -20,7 +20,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "marketmodel_cms.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
@@ -424,8 +425,11 @@ namespace market_model_cms_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
+BOOST_AUTO_TEST_SUITE(MarketModelCmsTest)
+
+BOOST_AUTO_TEST_CASE(testMultiStepCmSwapsAndSwaptions, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step constant maturity swaps and swaptions "
@@ -520,16 +524,6 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-// --- Call the desired tests
-test_suite* MarketModelCmsTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("CMS Market-model tests");
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-                      &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

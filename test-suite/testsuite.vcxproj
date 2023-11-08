@@ -810,7 +810,6 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="marketmodel_cms.hpp" />
     <ClInclude Include="marketmodel_smm.hpp" />
     <ClInclude Include="marketmodel_smmcapletalphacalibration.hpp" />
     <ClInclude Include="marketmodel_smmcapletcalibration.hpp" />

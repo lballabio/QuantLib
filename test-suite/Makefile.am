@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	marketmodel_cms.hpp \
 	marketmodel_smm.hpp \
 	marketmodel_smmcapletalphacalibration.hpp \
 	marketmodel_smmcapletcalibration.hpp \
@@ -278,7 +277,6 @@ QL_BENCHMARK_SRCS = \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	marketmodel_cms.hpp \
 	marketmodel_smm.hpp \
 	quantlibglobalfixture.hpp \
 	quantooption.hpp \
