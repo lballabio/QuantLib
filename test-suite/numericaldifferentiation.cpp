@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "numericaldifferentiation.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 
 #include <ql/math/matrix.hpp>
@@ -66,7 +66,11 @@ namespace {
     }
 }
 
-void NumericalDifferentiationTest::testTabulatedCentralScheme() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NumericalDifferentiationTest)
+
+BOOST_AUTO_TEST_CASE(testTabulatedCentralScheme) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the central scheme...");
     const ext::function<Real(Real)> f;
@@ -96,7 +100,7 @@ void NumericalDifferentiationTest::testTabulatedCentralScheme() {
         {-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5});
 }
 
-void NumericalDifferentiationTest::testTabulatedBackwardScheme() {
+BOOST_AUTO_TEST_CASE(testTabulatedBackwardScheme) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the backward scheme...");
     const ext::function<Real(Real)> f;
@@ -122,8 +126,7 @@ void NumericalDifferentiationTest::testTabulatedBackwardScheme() {
         {0.0, -0.5, -1.0, -1.5});
 }
 
-
-void NumericalDifferentiationTest::testTabulatedForwardScheme() {
+BOOST_AUTO_TEST_CASE(testTabulatedForwardScheme) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the Forward scheme...");
     const ext::function<Real(Real)> f;
@@ -149,8 +152,7 @@ void NumericalDifferentiationTest::testTabulatedForwardScheme() {
         {0.0, 0.5, 1.0, 1.5});
 }
 
-
-void NumericalDifferentiationTest::testIrregularSchemeFirstOrder() {
+BOOST_AUTO_TEST_CASE(testIrregularSchemeFirstOrder) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "of first order using an irregular scheme...");
     const ext::function<Real(Real)> f;
@@ -169,7 +171,7 @@ void NumericalDifferentiationTest::testIrregularSchemeFirstOrder() {
         { alpha, beta, gamma });
 }
 
-void NumericalDifferentiationTest::testIrregularSchemeSecondOrder() {
+BOOST_AUTO_TEST_CASE(testIrregularSchemeSecondOrder) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "of second order using an irregular scheme...");
     const ext::function<Real(Real)> f;
@@ -188,8 +190,7 @@ void NumericalDifferentiationTest::testIrregularSchemeSecondOrder() {
         {alpha, beta, gamma});
 }
 
-
-void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
+BOOST_AUTO_TEST_CASE(testDerivativesOfSineFunction) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation"
                        " of sin function...");
 
@@ -272,7 +273,7 @@ namespace {
     }
 }
 
-void NumericalDifferentiationTest::testCoefficientBasedOnVandermonde() {
+BOOST_AUTO_TEST_CASE(testCoefficientBasedOnVandermonde) {
     BOOST_TEST_MESSAGE("Testing coefficients from numerical differentiation"
                        " by comparison with results from"
                        " Vandermonde matrix inversion...");
@@ -299,27 +300,6 @@ void NumericalDifferentiationTest::testCoefficientBasedOnVandermonde() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* NumericalDifferentiationTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("NumericalDifferentiation tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testTabulatedCentralScheme));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testTabulatedBackwardScheme));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testTabulatedForwardScheme));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testIrregularSchemeFirstOrder));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testIrregularSchemeSecondOrder));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testDerivativesOfSineFunction));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NumericalDifferentiationTest::testCoefficientBasedOnVandermonde));
-
-    return suite;
-}
-
-
+BOOST_AUTO_TEST_SUITE_END()

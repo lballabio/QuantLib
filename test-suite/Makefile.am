@@ -174,7 +174,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	numericaldifferentiation.hpp \
 	observable.hpp \
 	ode.hpp \
 	operators.hpp \
