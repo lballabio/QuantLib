@@ -56,8 +56,8 @@ QuantLib::Date evaluation_date(int argc, char** argv) {
 
     Dates that should eventually be checked include:
         - 2015-08-29 causes three tests to fail;
-    - 2016-02-29 causes two tests to fail.
-                         */
+        - 2016-02-29 causes two tests to fail.
+    */
 
     QuantLib::Date knownGoodDefault =
         QuantLib::Date(16, QuantLib::September, 2015);
