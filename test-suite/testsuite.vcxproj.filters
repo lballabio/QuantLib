@@ -527,9 +527,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="optionletstripper.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="overnightindexedcoupon.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
