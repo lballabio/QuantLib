@@ -70,7 +70,8 @@ namespace QuantLib {
         }
 
         Time DetermineYearFraction(const FuturesRateHelperDates& dates, const DayCounter& dayCounter) {
-            return dayCounter.yearFraction(dates.earliestDate_, dates.maturityDate_);
+            return dayCounter.yearFraction(dates.earliestDate_, dates.maturityDate_,
+                                           dates.earliestDate_, dates.maturityDate_);
         }
 
         FuturesRateHelperDates InitializeDates(const Date& iborStartDate,
