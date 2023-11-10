@@ -117,9 +117,10 @@ namespace QuantLib {
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         explicit SobolRsg(Size dimensionality,
                           unsigned long seed = 0,
-                          DirectionIntegers directionIntegers = Jaeckel);
+                          DirectionIntegers directionIntegers = Jaeckel,
+                          bool useGrayCode = true);
         /*! skip to the n-th sample in the low-discrepancy sequence */
-        void skipTo(std::uint_least32_t n);
+        const std::vector<std::uint_least32_t>& skipTo(std::uint_least32_t n) const;
         const std::vector<std::uint_least32_t>& nextInt32Sequence() const;
 
         const SobolRsg::sample_type& nextSequence() const {
@@ -140,6 +141,7 @@ namespace QuantLib {
         mutable sample_type sequence_;
         mutable std::vector<std::uint_least32_t> integerSequence_;
         std::vector<std::vector<std::uint_least32_t>> directionIntegers_;
+        bool useGrayCode_;
     };
 
 }

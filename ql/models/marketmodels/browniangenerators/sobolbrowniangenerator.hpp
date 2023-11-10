@@ -24,6 +24,7 @@
 #include <ql/models/marketmodels/browniangenerator.hpp>
 #include <ql/math/randomnumbers/inversecumulativersg.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/randomnumbers/burley2020sobolrsg.hpp>
 #include <ql/methods/montecarlo/brownianbridge.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <vector>
@@ -34,7 +35,7 @@ namespace QuantLib {
     /*! Incremental Brownian generator using a Sobol generator,
         inverse-cumulative Gaussian method, and Brownian bridging.
     */
-    class SobolBrownianGenerator : public BrownianGenerator {
+    class SobolBrownianGeneratorBase : public BrownianGenerator {
       public:
         enum Ordering {
             Factors,  /*!< The variates with the best quality will be
@@ -46,13 +47,10 @@ namespace QuantLib {
                            most important factors and the largest
                            steps. */
         };
-        SobolBrownianGenerator(
+        SobolBrownianGeneratorBase(
                            Size factors,
                            Size steps,
-                           Ordering ordering,
-                           unsigned long seed = 0,
-                           SobolRsg::DirectionIntegers directionIntegers
-                                                        = SobolRsg::Jaeckel);
+                           Ordering ordering);
 
         Real nextPath() override;
         Real nextStep(std::vector<Real>&) override;
@@ -65,15 +63,30 @@ namespace QuantLib {
         std::vector<std::vector<Real> > transform(
                               const std::vector<std::vector<Real> >& variates);
 
+      protected:
+        virtual const SobolRsg::sample_type& nextSequence() = 0;
+
       private:
         Size factors_, steps_;
         Ordering ordering_;
-        InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> generator_;
         BrownianBridge bridge_;
         // work variables
         Size lastStep_ = 0;
         std::vector<std::vector<Size> > orderedIndices_;
         std::vector<std::vector<Real> > bridgedVariates_;
+    };
+
+    class SobolBrownianGenerator : public SobolBrownianGeneratorBase {
+      public:
+        SobolBrownianGenerator(Size factors,
+                               Size steps,
+                               Ordering ordering,
+                               unsigned long seed = 0,
+                               SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel);
+
+      private:
+        const SobolRsg::sample_type& nextSequence() override;
+        InverseCumulativeRsg<SobolRsg, InverseCumulativeNormal> generator_;
     };
 
     class SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
@@ -89,6 +102,37 @@ namespace QuantLib {
         SobolBrownianGenerator::Ordering ordering_;
         unsigned long seed_;
         SobolRsg::DirectionIntegers integers_;
+    };
+
+    class Burley2020SobolBrownianGenerator : public SobolBrownianGeneratorBase {
+      public:
+        Burley2020SobolBrownianGenerator(
+            Size factors,
+            Size steps,
+            Ordering ordering,
+            unsigned long seed = 42,
+            SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel,
+            unsigned long scrambleSeed = 43);
+
+      private:
+        const Burley2020SobolRsg::sample_type& nextSequence() override;
+        InverseCumulativeRsg<Burley2020SobolRsg, InverseCumulativeNormal> generator_;
+    };
+
+    class Burley2020SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
+      public:
+        Burley2020SobolBrownianGeneratorFactory(
+            SobolBrownianGenerator::Ordering ordering,
+            unsigned long seed = 42,
+            SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel,
+            unsigned long scrambleSeed = 43);
+        ext::shared_ptr<BrownianGenerator> create(Size factors, Size steps) const override;
+
+      private:
+        SobolBrownianGenerator::Ordering ordering_;
+        unsigned long seed_;
+        SobolRsg::DirectionIntegers integers_;
+        unsigned long scrambleSeed_;
     };
 
 }

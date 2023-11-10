@@ -1236,6 +1236,9 @@
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\burley2020sobolrsg.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
@@ -4957,6 +4960,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\tqreigendecomposition.cpp">
       <Filter>math\matrixutilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\burley2020sobolrsg.cpp">
+      <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\faurersg.cpp">
       <Filter>math\randomnumbers</Filter>
