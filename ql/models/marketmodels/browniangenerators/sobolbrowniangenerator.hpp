@@ -91,11 +91,10 @@ namespace QuantLib {
 
     class SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
       public:
-        SobolBrownianGeneratorFactory(
-                           SobolBrownianGenerator::Ordering ordering,
-                           unsigned long seed = 0,
-                           SobolRsg::DirectionIntegers directionIntegers
-                                                         = SobolRsg::Jaeckel);
+        explicit SobolBrownianGeneratorFactory(
+            SobolBrownianGenerator::Ordering ordering,
+            unsigned long seed = 0,
+            SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel);
         ext::shared_ptr<BrownianGenerator> create(Size factors, Size steps) const override;
 
       private:
@@ -121,7 +120,7 @@ namespace QuantLib {
 
     class Burley2020SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
       public:
-        Burley2020SobolBrownianGeneratorFactory(
+        explicit Burley2020SobolBrownianGeneratorFactory(
             SobolBrownianGenerator::Ordering ordering,
             unsigned long seed = 42,
             SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel,
