@@ -74,12 +74,12 @@ namespace QuantLib {
             119u, 247u, 15u,  143u, 79u,  207u, 47u,  175u, 111u, 239u, 31u,  159u, 95u,  223u,
             63u,  191u, 127u, 255u};
 
-        std::uint32_t reverseBits(std::uint32_t x) {
+        inline std::uint32_t reverseBits(std::uint32_t x) {
             return (bitReverseTable[x & 0xff] << 24) | (bitReverseTable[(x >> 8) & 0xff] << 16) |
                    (bitReverseTable[(x >> 16) & 0xff] << 8) | (bitReverseTable[(x >> 24) & 0xff]);
         }
 
-        std::uint32_t laine_karras_permutation(std::uint32_t x, std::uint32_t seed) {
+        inline std::uint32_t laine_karras_permutation(std::uint32_t x, std::uint32_t seed) {
             x += seed;
             x ^= x * 0x6c50b47cu;
             x ^= x * 0xb82f1e52u;
@@ -88,7 +88,7 @@ namespace QuantLib {
             return x;
         }
 
-        std::uint32_t nested_uniform_scramble(std::uint32_t x, std::uint32_t seed) {
+        inline std::uint32_t nested_uniform_scramble(std::uint32_t x, std::uint32_t seed) {
             x = reverseBits(x);
             x = laine_karras_permutation(x, seed);
             x = reverseBits(x);
@@ -96,18 +96,30 @@ namespace QuantLib {
         }
 
         // the results depend a lot on the details of the hash_combine() function that is used
-        // we use the 64bit version of hash_combine() as it is implemented here:
+        // we use hash_combine() calling hash(), hash_mix() as implemented here:
         // https://github.com/boostorg/container_hash/blob/boost-1.83.0/include/boost/container_hash/hash.hpp#L560
+        // https://github.com/boostorg/container_hash/blob/boost-1.83.0/include/boost/container_hash/hash.hpp#L115
         // https://github.com/boostorg/container_hash/blob/boost-1.83.0/include/boost/container_hash/detail/hash_mix.hpp#L67
 
-        void local_hash_combine(std::uint64_t& x, const uint64_t v) {
+        inline std::uint64_t local_hash_mix(std::uint64_t x) {
             const std::uint64_t m = 0xe9846af9b1a615d;
-            x += 0x9e3779b9 + std::hash<std::uint64_t>()(v);
             x ^= x >> 32;
             x *= m;
             x ^= x >> 32;
             x *= m;
             x ^= x >> 28;
+            return x;
+        }
+
+        inline std::uint64_t local_hash(const std::uint64_t v) {
+            std::uint64_t seed = 0;
+            seed = (v >> 32) + local_hash_mix(seed);
+            seed = (v & 0xFFFFFFFF) + local_hash_mix(seed);
+            return seed;
+        }
+
+        inline std::uint64_t local_hash_combine(std::uint64_t x, const uint64_t v) {
+            return local_hash_mix(x + 0x9e3779b9 + local_hash(v));
         }
     }
 
@@ -119,7 +131,7 @@ namespace QuantLib {
         do {
             std::uint64_t seed = group4Seeds_[group++];
             for (Size g = 0; g < 4 && i < dimensionality_; ++g, ++i) {
-                local_hash_combine(seed, g);
+                seed = local_hash_combine(seed, g);
                 integerSequence_[i] =
                     nested_uniform_scramble(integerSequence_[i], static_cast<std::uint32_t>(seed));
             }
