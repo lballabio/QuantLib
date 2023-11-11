@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include "speedlevel.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/statistics/discrepancystatistics.hpp>
@@ -1070,8 +1071,7 @@ BOOST_AUTO_TEST_CASE(testSobolSkipping) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals) {
-
+BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing High Dimensional Integrals");
 
     /* We are running "Integration test 1, results for high dimensions" (Figure 9) from:
@@ -1096,7 +1096,7 @@ BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals) {
 
     BOOST_TEST_MESSAGE("dimension,Sobol(Gray),Sobol(Seq),Burley2020");
 
-    std::vector<Size> dimension = {1000,2000,5000};
+    std::vector<Size> dimension = {1000, 2000, 5000};
     std::vector<std::vector<Real>> expectedOrderOfError = {
         {-3.0, -3.0, -4.5}, {-2.5, -2.5, -4.0}, {-2.0, -2.0, -4.0}};
 
@@ -1115,11 +1115,12 @@ BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals) {
             I3 += integrand(c1, s3.nextSequence().value) / static_cast<double>(N);
         }
 
-        Real errOrder1 = std::log10(std::abs(I1-1.0));
-        Real errOrder2 = std::log10(std::abs(I2-1.0));
-        Real errOrder3 = std::log10(std::abs(I3-1.0));
+        Real errOrder1 = std::log10(std::abs(I1 - 1.0));
+        Real errOrder2 = std::log10(std::abs(I2 - 1.0));
+        Real errOrder3 = std::log10(std::abs(I3 - 1.0));
 
-        BOOST_TEST_MESSAGE(dimension[d] << "," << errOrder1 << "," << errOrder2 << "," << errOrder3);
+        BOOST_TEST_MESSAGE(dimension[d] << "," << errOrder1 << "," << errOrder2 << ","
+                                        << errOrder3);
 
         BOOST_CHECK_MESSAGE(errOrder1 < expectedOrderOfError[d][0],
                             "order of error for dimension " + std::to_string(dimension[d]) + " is" +
