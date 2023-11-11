@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file burley2020scrambling.hpp
+/*! \file burley2020sobolrsg.hpp
     \brief scrambled Sobol sequence following Burley, 2020
 */
 
