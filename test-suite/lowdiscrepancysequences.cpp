@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include <ql/math/statistics/discrepancystatistics.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/math/randomnumbers/burley2020sobolrsg.hpp>
 #include <ql/math/randomnumbers/faurersg.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
