@@ -19,6 +19,7 @@
 
 #include <ql/math/randomnumbers/burley2020sobolrsg.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
@@ -136,7 +137,8 @@ namespace QuantLib {
                     nested_uniform_scramble(integerSequence_[i], static_cast<std::uint32_t>(seed));
             }
         } while (i < dimensionality_);
-        ++nextSequenceCounter_;
+        QL_REQUIRE(++nextSequenceCounter_ != 0,
+                   "Burley2020SobolRsg::nextIn32Sequence(): period exceeded");
         return integerSequence_;
     }
 
