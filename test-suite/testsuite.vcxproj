@@ -812,7 +812,6 @@
   <ItemGroup>
     <ClInclude Include="marketmodel.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
-    <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
