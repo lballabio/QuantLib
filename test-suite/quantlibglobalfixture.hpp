@@ -29,7 +29,6 @@ class QuantLibGlobalFixture {  // NOLINT(cppcoreguidelines-special-member-functi
     QuantLibGlobalFixture();
     ~QuantLibGlobalFixture();
     static SpeedLevel get_speed ();
-    SpeedLevel speed_level (int argc, char **argv);
 
   private:
     static SpeedLevel speed;

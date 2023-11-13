@@ -36,5 +36,6 @@ struct if_speed {
     boost::test_tools::assertion_result operator()(boost::unit_test::test_unit_id);
 };
 
-#endif
+SpeedLevel speed_level (int argc, char **argv);
 
+#endif
