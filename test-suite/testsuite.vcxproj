@@ -811,7 +811,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="marketmodel.hpp" />
-    <ClInclude Include="pathgenerator.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="period.hpp" />
     <ClInclude Include="piecewiseyieldcurve.hpp" />

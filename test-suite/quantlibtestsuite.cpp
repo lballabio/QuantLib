@@ -35,7 +35,6 @@
 #endif
 
 #include "marketmodel.hpp"
-#include "pathgenerator.hpp"
 #include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
 #include "piecewisezerospreadedtermstructure.hpp"
@@ -93,7 +92,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
     test->add(PiecewiseZeroSpreadedTermStructureTest::suite());
