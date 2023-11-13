@@ -24,7 +24,7 @@
 #include "speedlevel.hpp"
 #include <chrono>
 
-class QuantLibGlobalFixture {
+class QuantLibGlobalFixture {  // NOLINT(cppcoreguidelines-special-member-functions)
   public:
     QuantLibGlobalFixture();
     ~QuantLibGlobalFixture();
