@@ -35,7 +35,6 @@
 #endif
 
 #include "marketmodel.hpp"
-#include "pagodaoption.hpp"
 #include "partialtimebarrieroption.hpp"
 #include "pathgenerator.hpp"
 #include "period.hpp"
@@ -152,7 +151,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(PagodaOptionTest::suite());
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());
     test->add(RiskNeutralDensityCalculatorTest::experimental(speed));

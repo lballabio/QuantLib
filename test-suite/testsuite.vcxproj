@@ -811,7 +811,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="marketmodel.hpp" />
-    <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
     <ClInclude Include="pathgenerator.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
