@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
     marketmodel.hpp \
-	partialtimebarrieroption.hpp \
 	pathgenerator.hpp \
 	period.hpp \
 	piecewiseyieldcurve.hpp \
