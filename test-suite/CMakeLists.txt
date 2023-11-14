@@ -176,7 +176,6 @@ set(QL_TEST_SOURCES
 set(QL_TEST_HEADERS
     marketmodel.hpp
     paralleltestrunner.hpp
-    piecewiseyieldcurve.hpp
     piecewisezerospreadedtermstructure.hpp
     quantlibglobalfixture.hpp
     quantooption.hpp

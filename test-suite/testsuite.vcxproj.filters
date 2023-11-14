@@ -533,9 +533,6 @@
     <ClInclude Include="paralleltestrunner.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="piecewiseyieldcurve.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

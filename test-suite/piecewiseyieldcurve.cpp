@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "piecewiseyieldcurve.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/indexes/bmaindex.hpp>
@@ -651,25 +651,39 @@ namespace piecewise_yield_curve_test {
 
 }
 
+namespace {
+    namespace tt = boost::test_tools;
 
-void PiecewiseYieldCurveTest::testLogCubicDiscountConsistency() {
-
-    BOOST_TEST_MESSAGE(
-        "Testing consistency of piecewise-log-cubic discount curve...");
-
-    using namespace piecewise_yield_curve_test;
-
-    CommonVars vars;
-
-    testCurveConsistency<Discount,LogCubic,IterativeBootstrap>(
-        vars,
-        MonotonicLogCubic());
-    testBMACurveConsistency<Discount,LogCubic,IterativeBootstrap>(
-        vars,
-        MonotonicLogCubic());
+    struct usingAtParCoupons {
+        tt::assertion_result operator()(test_unit_id) {
+            return tt::assertion_result(IborCoupon::Settings::instance().usingAtParCoupons());
+        }
+    };
 }
 
-void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PiecewiseYieldCurveTest)
+
+//Unstable
+//BOOST_AUTO_TEST_CASE(testLogCubicDiscountConsistency) {
+//
+//    BOOST_TEST_MESSAGE(
+//        "Testing consistency of piecewise-log-cubic discount curve...");
+//
+//    using namespace piecewise_yield_curve_test;
+//
+//    CommonVars vars;
+//
+//    testCurveConsistency<Discount,LogCubic,IterativeBootstrap>(
+//        vars,
+//        MonotonicLogCubic());
+//    testBMACurveConsistency<Discount,LogCubic,IterativeBootstrap>(
+//        vars,
+//        MonotonicLogCubic());
+//}
+
+BOOST_AUTO_TEST_CASE(testLogLinearDiscountConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
@@ -682,7 +696,7 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     testBMACurveConsistency<Discount,LogLinear,IterativeBootstrap>(vars);
 }
 
-void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
+BOOST_AUTO_TEST_CASE(testLinearDiscountConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
@@ -695,7 +709,7 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     testBMACurveConsistency<Discount,Linear,IterativeBootstrap>(vars);
 }
 
-void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
+BOOST_AUTO_TEST_CASE(testLinearZeroConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
@@ -708,7 +722,7 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     testBMACurveConsistency<ZeroYield,Linear,IterativeBootstrap>(vars);
 }
 
-void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
+BOOST_AUTO_TEST_CASE(testSplineZeroConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic zero-yield curve...");
@@ -729,7 +743,7 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
                          CubicInterpolation::SecondDerivative, 0.0));
 }
 
-void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
+BOOST_AUTO_TEST_CASE(testLinearForwardConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
@@ -742,7 +756,7 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     testBMACurveConsistency<ForwardRate,Linear,IterativeBootstrap>(vars);
 }
 
-void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
+BOOST_AUTO_TEST_CASE(testFlatForwardConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
@@ -755,28 +769,29 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     testBMACurveConsistency<ForwardRate,BackwardFlat,IterativeBootstrap>(vars);
 }
 
-void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
+//Unstable
+//BOOST_AUTO_TEST_CASE(testSplineForwardConsistency) {
+//
+//    BOOST_TEST_MESSAGE(
+//        "Testing consistency of piecewise-cubic forward-rate curve...");
+//
+//    using namespace piecewise_yield_curve_test;
+//
+//    CommonVars vars;
+//
+//    testCurveConsistency<ForwardRate,Cubic,IterativeBootstrap>(
+//                   vars,
+//                   Cubic(CubicInterpolation::Spline, true,
+//                         CubicInterpolation::SecondDerivative, 0.0,
+//                         CubicInterpolation::SecondDerivative, 0.0));
+//    testBMACurveConsistency<ForwardRate,Cubic,IterativeBootstrap>(
+//                   vars,
+//                   Cubic(CubicInterpolation::Spline, true,
+//                         CubicInterpolation::SecondDerivative, 0.0,
+//                         CubicInterpolation::SecondDerivative, 0.0));
+//}
 
-    BOOST_TEST_MESSAGE(
-        "Testing consistency of piecewise-cubic forward-rate curve...");
-
-    using namespace piecewise_yield_curve_test;
-
-    CommonVars vars;
-
-    testCurveConsistency<ForwardRate,Cubic,IterativeBootstrap>(
-                   vars,
-                   Cubic(CubicInterpolation::Spline, true,
-                         CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0));
-    testBMACurveConsistency<ForwardRate,Cubic,IterativeBootstrap>(
-                   vars,
-                   Cubic(CubicInterpolation::Spline, true,
-                         CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0));
-}
-
-void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
+BOOST_AUTO_TEST_CASE(testConvexMonotoneForwardConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of convex monotone forward-rate curve...");
 
@@ -789,8 +804,7 @@ void PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency() {
                             IterativeBootstrap>(vars);
 }
 
-
-void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
+BOOST_AUTO_TEST_CASE(testLocalBootstrapConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of local-bootstrap algorithm...");
 
@@ -803,7 +817,7 @@ void PiecewiseYieldCurveTest::testLocalBootstrapConsistency() {
                                               vars, ConvexMonotone(), 1.0e-7);
 }
 
-void PiecewiseYieldCurveTest::testParFraRegression() {
+BOOST_AUTO_TEST_CASE(testParFraRegression) {
     BOOST_TEST_MESSAGE("Testing regression for at-par FRA...");
 
     using namespace piecewise_yield_curve_test;
@@ -843,7 +857,7 @@ void PiecewiseYieldCurveTest::testParFraRegression() {
     }
 }
 
-void PiecewiseYieldCurveTest::testObservability() {
+BOOST_AUTO_TEST_CASE(testObservability) {
 
     BOOST_TEST_MESSAGE("Testing observability of piecewise yield curve...");
 
@@ -890,8 +904,7 @@ void PiecewiseYieldCurveTest::testObservability() {
                    " without an intervening recalculation");
 }
 
-
-void PiecewiseYieldCurveTest::testLiborFixing() {
+BOOST_AUTO_TEST_CASE(testLiborFixing) {
 
     BOOST_TEST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
@@ -979,7 +992,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     }
 }
 
-void PiecewiseYieldCurveTest::testJpyLibor() {
+BOOST_AUTO_TEST_CASE(testJpyLibor) {
     BOOST_TEST_MESSAGE(
         "Testing bootstrap over JPY LIBOR swaps...");
 
@@ -1052,7 +1065,7 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     }
 }
 
-void PiecewiseYieldCurveTest::testDefaultInstantiation() {
+BOOST_AUTO_TEST_CASE(testDefaultInstantiation) {
 
     BOOST_TEST_MESSAGE("Testing instantiation of curves without passing an interpolator...");
 
@@ -1072,7 +1085,7 @@ void PiecewiseYieldCurveTest::testDefaultInstantiation() {
     PiecewiseYieldCurve<ForwardRate, ConvexMonotone> convex(vars.settlement, vars.instruments, Actual360());
 }
 
-void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
+BOOST_AUTO_TEST_CASE(testSwapRateHelperLastRelevantDate) {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
     Settings::instance().evaluationDate() = Date(22, Dec, 2016);
@@ -1093,7 +1106,7 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
 
-void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
+BOOST_AUTO_TEST_CASE(testSwapRateHelperSpotDate) {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper spot date...");
 
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
@@ -1124,7 +1137,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
     //                 "calculated:         " << calculated);
 }
 
-void PiecewiseYieldCurveTest::testBadPreviousCurve() {
+// This regression test didn't work with indexed coupons anyway.
+BOOST_AUTO_TEST_CASE(testBadPreviousCurve, *precondition(usingAtParCoupons())) {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
 
     using namespace piecewise_yield_curve_test;
@@ -1188,7 +1202,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     }
 }
 
-void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
+BOOST_AUTO_TEST_CASE(testConstructionWithExplicitBootstrap) {
 
     BOOST_TEST_MESSAGE("Testing that construction with an explicit bootstrap succeeds...");
 
@@ -1215,7 +1229,7 @@ void PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap() {
     BOOST_CHECK_NO_THROW(yts->discount(1.0, true));
 }
 
-void PiecewiseYieldCurveTest::testLargeRates() {
+BOOST_AUTO_TEST_CASE(testLargeRates) {
     BOOST_TEST_MESSAGE("Testing bootstrap with large input rates...");
 
     using namespace piecewise_yield_curve_test;
@@ -1285,7 +1299,7 @@ namespace piecewise_yield_curve_test {
     };
 }
 
-void PiecewiseYieldCurveTest::testGlobalBootstrap() {
+BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
 
     BOOST_TEST_MESSAGE("Testing global bootstrap...");
 
@@ -1372,7 +1386,7 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
    IterativeBootstrap with no retries, the yield curve building fails. Allowing retries, it expands the min and max 
    bounds and passes.
 */
-void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
+BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
 
     BOOST_TEST_MESSAGE("Testing iterative bootstrap with retries...");
 
@@ -1474,51 +1488,6 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     QL_CHECK_SMALL(calcFwd - expFwd, 1e-10);
 }
 
-test_suite* PiecewiseYieldCurveTest::suite() {
+BOOST_AUTO_TEST_SUITE_END()
 
-    auto* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
-
-    // unstable
-    // suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLinearDiscountConsistency));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLinearZeroConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testSplineZeroConsistency));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLinearForwardConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testFlatForwardConsistency));
-    // unstable
-    // suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testSplineForwardConsistency));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLocalBootstrapConsistency));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testParFraRegression));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDefaultInstantiation));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
-
-    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
-        // This regression test didn't work with indexed coupons anyway.
-        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testBadPreviousCurve));
-    }
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
-
-    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
-        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
-    }
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
