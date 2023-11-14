@@ -1107,6 +1107,7 @@
     <ClInclude Include="ql\math\quadratic.hpp" />
     <ClInclude Include="ql\math\randomnumbers\all.hpp" />
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\burley2020sobolrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\faurersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\haltonrsg.hpp" />
@@ -2308,6 +2309,7 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\primenumbers.cpp" />
     <ClCompile Include="ql\math\quadratic.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\burley2020sobolrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\faurersg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\haltonrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\knuthuniformrng.cpp" />
