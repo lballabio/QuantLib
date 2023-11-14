@@ -536,9 +536,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="quantooption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="quotes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -177,7 +177,6 @@ set(QL_TEST_HEADERS
     marketmodel.hpp
     paralleltestrunner.hpp
     quantlibglobalfixture.hpp
-    quantooption.hpp
     quotes.hpp
     rangeaccrual.hpp
     riskneutraldensitycalculator.hpp
@@ -243,8 +242,8 @@ set(QL_BENCHMARK_SOURCES
     lowdiscrepancysequences.cpp
     marketmodel_cms.cpp
     marketmodel_smm.cpp
-    quantooption.cpp                    quantooption.hpp
-    quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
+    quantooption.cpp
+        quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
     riskstats.cpp                       riskstats.hpp
     shortratemodels.cpp                 shortratemodels.hpp
 	speedlevel.cpp						speedlevel.hpp

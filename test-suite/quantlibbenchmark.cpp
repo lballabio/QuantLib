@@ -235,6 +235,10 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
+    namespace QuantoOptionTest {
+        struct testForwardGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -286,9 +290,9 @@ namespace {
         Benchmark("JumpDiffusion::Greeks", [] { QuantLibTest::JumpDiffusionTest::testGreeks().test_method(); }, 433.77),
         Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", [] { QuantLibTest::MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions().test_method(); }, 11497.73),
         Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", [] { QuantLibTest::MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions().test_method(); }, 11244.95),
-        Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
+        Benchmark("QuantoOption::ForwardGreeks", [] { QuantLibTest::QuantoOptionTest::testForwardGreeks().test_method(); }, 90.98),
         Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
-        Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
+        Benchmark("RiskStatistics::Results", [] { QuantLibTest::RisktestResults, 300.28),
         Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
     };
 

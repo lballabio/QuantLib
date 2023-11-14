@@ -35,7 +35,6 @@
 #endif
 
 #include "marketmodel.hpp"
-#include "quantooption.hpp"
 #include "quotes.hpp"
 #include "rangeaccrual.hpp"
 #include "riskneutraldensitycalculator.hpp"
@@ -89,7 +88,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RangeAccrualTest::suite());
     test->add(RiskStatisticsTest::suite());
@@ -121,7 +119,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(QuantoOptionTest::experimental());
     test->add(RiskNeutralDensityCalculatorTest::experimental(speed));
     test->add(SpreadOptionTest::suite());
     test->add(SquareRootCLVModelTest::experimental());

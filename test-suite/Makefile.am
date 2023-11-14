@@ -176,7 +176,6 @@ QL_TEST_SRCS = \
 QL_TEST_HDRS = \
     marketmodel.hpp \
 	quantlibglobalfixture.hpp \
-	quantooption.hpp \
 	quotes.hpp \
 	rangeaccrual.hpp \
 	riskneutraldensitycalculator.hpp \
