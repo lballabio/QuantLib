@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
     marketmodel.hpp \
-	piecewisezerospreadedtermstructure.hpp \
 	quantlibglobalfixture.hpp \
 	quantooption.hpp \
 	quotes.hpp \
