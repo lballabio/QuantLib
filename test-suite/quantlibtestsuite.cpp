@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "squarerootclvmodel.hpp"
 #include "stats.hpp"
 #include "subperiodcoupons.hpp"
 #include "svivolatility.hpp"
@@ -95,7 +94,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(SquareRootCLVModelTest::experimental());
     test->add(SviVolatilityTest::experimental());
     test->add(SwingOptionTest::suite(speed));
     test->add(TwoAssetBarrierOptionTest::suite());
