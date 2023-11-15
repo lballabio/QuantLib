@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	rngtraits.hpp \
 	rounding.hpp \
 	sampledcurve.hpp \
 	schedule.hpp \

@@ -539,9 +539,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rngtraits.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rounding.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
