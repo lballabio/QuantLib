@@ -539,9 +539,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sampledcurve.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="schedule.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
