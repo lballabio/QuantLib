@@ -137,7 +137,6 @@
 #endif
 
 #include "utilities.hpp"
-#include "shortratemodels.hpp"
 
 namespace QuantLibTest {
     namespace AmericanOptionTest {
@@ -244,6 +243,11 @@ namespace QuantLibTest {
         struct testResults:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace ShortRateModelTest {
+        struct testSwaps:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -298,7 +302,7 @@ namespace {
         Benchmark("QuantoOption::ForwardGreeks", [] { QuantLibTest::QuantoOptionTest::testForwardGreeks().test_method(); }, 90.98),
         Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
         Benchmark("RiskStatistics::Results", [] { QuantLibTest::RiskStatisticsTest::testResults().test_method(); }, 300.28),
-        Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
+        Benchmark("ShortRateModel::Swaps", [] { QuantLibTest::ShortRateModelTest::testSwaps().test_method(); }, 454.73)
     };
 
     /* PAPI code
