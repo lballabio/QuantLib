@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	schedule.hpp \
 	settings.hpp \
 	shortratemodels.hpp \
 	sofrfutures.hpp \
