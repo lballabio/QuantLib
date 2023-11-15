@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	riskneutraldensitycalculator.hpp \
 	riskstats.hpp \
 	rngtraits.hpp \
 	rounding.hpp \

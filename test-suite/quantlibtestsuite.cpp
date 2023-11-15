@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "riskneutraldensitycalculator.hpp"
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
 #include "rounding.hpp"
@@ -115,7 +114,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(RiskNeutralDensityCalculatorTest::experimental(speed));
     test->add(SpreadOptionTest::suite());
     test->add(SquareRootCLVModelTest::experimental());
     test->add(SviVolatilityTest::experimental());
