@@ -178,7 +178,6 @@ set(QL_TEST_HEADERS
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp
-    rounding.hpp
     sampledcurve.hpp
     schedule.hpp
     settings.hpp

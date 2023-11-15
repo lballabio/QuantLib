@@ -814,7 +814,6 @@
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
-    <ClInclude Include="rounding.hpp" />
     <ClInclude Include="sampledcurve.hpp" />
     <ClInclude Include="schedule.hpp" />
     <ClInclude Include="settings.hpp" />
