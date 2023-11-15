@@ -539,9 +539,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rangeaccrual.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="riskstats.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

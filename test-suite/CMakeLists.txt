@@ -178,7 +178,6 @@ set(QL_TEST_HEADERS
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp
-    rangeaccrual.hpp
     riskneutraldensitycalculator.hpp
     riskstats.hpp
     rngtraits.hpp

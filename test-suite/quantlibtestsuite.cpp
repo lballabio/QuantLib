@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "rangeaccrual.hpp"
 #include "riskneutraldensitycalculator.hpp"
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
@@ -87,7 +86,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(RangeAccrualTest::suite());
     test->add(RiskStatisticsTest::suite());
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
