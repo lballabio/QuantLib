@@ -539,9 +539,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="spreadoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="squarerootclvmodel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
