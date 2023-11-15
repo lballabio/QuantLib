@@ -178,7 +178,6 @@ set(QL_TEST_HEADERS
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp
-    riskstats.hpp
     rngtraits.hpp
     rounding.hpp
     sampledcurve.hpp
@@ -242,7 +241,7 @@ set(QL_BENCHMARK_SOURCES
     preconditions.cpp                   preconditions.hpp
     quantooption.cpp
     quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
-    riskstats.cpp                       riskstats.hpp
+    riskstats.cpp
     shortratemodels.cpp                 shortratemodels.hpp
     utilities.cpp                       utilities.hpp
                                         swaptionvolstructuresutilities.hpp

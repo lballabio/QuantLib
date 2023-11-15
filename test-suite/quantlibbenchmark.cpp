@@ -239,6 +239,11 @@ namespace QuantLibTest {
         struct testForwardGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
+
+    namespace RiskStatisticsTest {
+        struct testResults:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
 }
 
 namespace {
@@ -292,7 +297,7 @@ namespace {
         Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", [] { QuantLibTest::MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions().test_method(); }, 11244.95),
         Benchmark("QuantoOption::ForwardGreeks", [] { QuantLibTest::QuantoOptionTest::testForwardGreeks().test_method(); }, 90.98),
         Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
-        Benchmark("RiskStatistics::Results", [] { QuantLibTest::RisktestResults, 300.28),
+        Benchmark("RiskStatistics::Results", [] { QuantLibTest::RiskStatisticsTest::testResults().test_method(); }, 300.28),
         Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
     };
 

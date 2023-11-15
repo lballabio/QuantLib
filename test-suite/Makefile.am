@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	riskstats.hpp \
 	rngtraits.hpp \
 	rounding.hpp \
 	sampledcurve.hpp \
@@ -248,7 +247,6 @@ QL_BENCHMARK_SRCS = \
 
 QL_BENCHMARK_HDRS = \
 	quantlibglobalfixture.hpp \
-	riskstats.hpp \
 	shortratemodels.hpp \
 	preconditions.hpp \
 	utilities.hpp
