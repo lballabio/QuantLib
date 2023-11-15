@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "solvers.hpp"
 #include "spreadoption.hpp"
 #include "squarerootclvmodel.hpp"
 #include "stats.hpp"
@@ -77,7 +76,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SubPeriodsCouponTest::suite());
     test->add(SwapTest::suite());

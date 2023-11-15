@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	solvers.hpp \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
