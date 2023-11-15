@@ -20,8 +20,8 @@
 #ifndef quantlib_test_short_rate_models_hpp
 #define quantlib_test_short_rate_models_hpp
 
+#include "preconditions.hpp"
 #include <boost/test/unit_test.hpp>
-#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */

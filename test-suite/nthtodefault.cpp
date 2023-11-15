@@ -17,22 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/credit/nthtodefault.hpp>
+#include <ql/currencies/europe.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
-#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/integralntdengine.hpp>
+#include <ql/experimental/credit/nthtodefault.hpp>
 #include <ql/experimental/credit/pool.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/currencies/europe.hpp>
 #include <iostream>
 #include <string>
 

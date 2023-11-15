@@ -17,34 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/volatility/optionlet/capletvariancecurve.hpp>
+#include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
+#include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
+#include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>
+#include <ql/legacy/libormarketmodels/liborforwardmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmexpcorrmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmfixedvolmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
-#include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
-#include <ql/legacy/libormarketmodels/lmexpcorrmodel.hpp>
-#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
-#include <ql/legacy/libormarketmodels/lmfixedvolmodel.hpp>
-#include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
-#include <ql/legacy/libormarketmodels/liborforwardmodel.hpp>
-#include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>
-#include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
-
+#include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/optionlet/capletvariancecurve.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/quotes/simplequote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

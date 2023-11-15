@@ -763,6 +763,7 @@
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
+    <ClCompile Include="preconditions.cpp" />
     <ClCompile Include="quantlibglobalfixture.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
@@ -777,7 +778,6 @@
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="solvers.cpp" />
-    <ClCompile Include="speedlevel.cpp" />
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
@@ -812,6 +812,7 @@
   <ItemGroup>
     <ClInclude Include="marketmodel.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
+    <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="quotes.hpp" />
     <ClInclude Include="rangeaccrual.hpp" />
@@ -825,7 +826,6 @@
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="sofrfutures.hpp" />
     <ClInclude Include="solvers.hpp" />
-    <ClInclude Include="speedlevel.hpp" />
     <ClInclude Include="spreadoption.hpp" />
     <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />

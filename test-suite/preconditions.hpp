@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_speed_level_hpp
-#define quantlib_test_speed_level_hpp
+#ifndef quantlib_test_preconditions_hpp
+#define quantlib_test_preconditions_hpp
 
 #include <boost/test/unit_test.hpp>
 
@@ -36,6 +36,8 @@ struct if_speed {
     boost::test_tools::assertion_result operator()(boost::unit_test::test_unit_id);
 };
 
-SpeedLevel speed_level (int argc, char **argv);
+struct usingAtParCoupons {
+    boost::test_tools::assertion_result operator()(boost::unit_test::test_unit_id);
+};
 
-#endif
+#endif //quantlib_test_preconditions_hpp

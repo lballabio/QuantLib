@@ -35,6 +35,7 @@
 #endif
 
 #include "marketmodel.hpp"
+#include "quantlibglobalfixture.hpp"
 #include "quotes.hpp"
 #include "rangeaccrual.hpp"
 #include "riskneutraldensitycalculator.hpp"
@@ -47,7 +48,6 @@
 #include "shortratemodels.hpp"
 #include "sofrfutures.hpp"
 #include "solvers.hpp"
-#include "speedlevel.hpp"
 #include "spreadoption.hpp"
 #include "squarerootclvmodel.hpp"
 #include "stats.hpp"

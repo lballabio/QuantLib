@@ -17,9 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "quantlibglobalfixture.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 
+using namespace QuantLib;
 namespace utf = boost::unit_test;
 namespace tt = boost::test_tools;
 
@@ -31,22 +33,7 @@ tt::assertion_result if_speed::operator()(utf::test_unit_id) {
     return level;
 }
 
-SpeedLevel speed_level(int argc, char** argv) {
-    /*! Again, dead simple parser:
-        - passing --slow causes all tests to be run;
-        - passing --fast causes most tests to be run, except the slowest;
-        - passing --faster causes only the faster tests to be run;
-        - passing nothing is the same as --slow
-    */
-
-    for (int i=1; i<argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--slow")
-            return Slow;
-        else if (arg == "--fast")
-            return Fast;
-        else if (arg == "--faster")
-            return Faster;
-    }
-    return Slow;
+tt::assertion_result usingAtParCoupons::operator()(boost::unit_test::test_unit_id) {
+    return tt::assertion_result(IborCoupon::Settings::instance().usingAtParCoupons());
 }
+

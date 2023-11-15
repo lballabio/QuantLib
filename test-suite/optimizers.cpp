@@ -21,19 +21,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
-#include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/optimization/bfgs.hpp>
+#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/goldstein.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/steepestdescent.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

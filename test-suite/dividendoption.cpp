@@ -20,7 +20,7 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/dividendvanillaoption.hpp>

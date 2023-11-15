@@ -18,31 +18,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
-#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/suowangdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

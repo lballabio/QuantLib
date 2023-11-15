@@ -128,6 +128,7 @@ QL_TEST_SRCS = \
 	period.cpp \
 	piecewiseyieldcurve.cpp \
 	piecewisezerospreadedtermstructure.cpp \
+	preconditions.cpp \
 	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	quotes.cpp \
@@ -142,7 +143,6 @@ QL_TEST_SRCS = \
 	shortratemodels.cpp \
 	sofrfutures.cpp \
 	solvers.cpp \
-	speedlevel.cpp \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
@@ -175,6 +175,7 @@ QL_TEST_SRCS = \
 
 QL_TEST_HDRS = \
     marketmodel.hpp \
+    preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	quotes.hpp \
 	rangeaccrual.hpp \
@@ -188,7 +189,6 @@ QL_TEST_HDRS = \
 	shortratemodels.hpp \
 	sofrfutures.hpp \
 	solvers.hpp \
-	speedlevel.hpp \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
@@ -242,11 +242,11 @@ QL_BENCHMARK_SRCS = \
 	lowdiscrepancysequences.cpp \
 	marketmodel_cms.cpp \
 	marketmodel_smm.cpp \
+	preconditions.cpp \
 	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	riskstats.cpp \
 	shortratemodels.cpp \
-	speedlevel.cpp \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
@@ -254,7 +254,7 @@ QL_BENCHMARK_HDRS = \
 	quantooption.hpp \
 	riskstats.hpp \
 	shortratemodels.hpp \
-	speedlevel.hpp \
+	preconditions.hpp \
 	utilities.hpp
 
 QL_BENCHMARKS = ${QL_BENCHMARK_SRCS} ${QL_BENCHMARK_HDRS}

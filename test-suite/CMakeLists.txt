@@ -126,6 +126,7 @@ set(QL_TEST_SOURCES
     period.cpp
     piecewiseyieldcurve.cpp
     piecewisezerospreadedtermstructure.cpp
+    preconditions.cpp
     quantlibglobalfixture.cpp
     quantlibtestsuite.cpp
     quantooption.cpp
@@ -141,7 +142,6 @@ set(QL_TEST_SOURCES
     shortratemodels.cpp
     sofrfutures.cpp
     solvers.cpp
-    speedlevel.cpp
     spreadoption.cpp
     squarerootclvmodel.cpp
     stats.cpp
@@ -176,6 +176,7 @@ set(QL_TEST_SOURCES
 set(QL_TEST_HEADERS
     marketmodel.hpp
     paralleltestrunner.hpp
+    preconditions.hpp
     quantlibglobalfixture.hpp
     quotes.hpp
     rangeaccrual.hpp
@@ -189,7 +190,6 @@ set(QL_TEST_HEADERS
     shortratemodels.hpp
     sofrfutures.hpp
     solvers.hpp
-    speedlevel.hpp
     spreadoption.hpp
     squarerootclvmodel.hpp
     stats.hpp
@@ -242,11 +242,11 @@ set(QL_BENCHMARK_SOURCES
     lowdiscrepancysequences.cpp
     marketmodel_cms.cpp
     marketmodel_smm.cpp
+    preconditions.cpp                   preconditions.hpp
     quantooption.cpp
-        quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
+    quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
     riskstats.cpp                       riskstats.hpp
     shortratemodels.cpp                 shortratemodels.hpp
-	speedlevel.cpp						speedlevel.hpp
     utilities.cpp                       utilities.hpp
                                         swaptionvolstructuresutilities.hpp
 )

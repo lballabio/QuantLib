@@ -335,6 +335,9 @@
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="preconditions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="quantlibglobalfixture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -372,9 +375,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="solvers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="speedlevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="spreadoption.cpp">
@@ -533,6 +533,9 @@
     <ClInclude Include="paralleltestrunner.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="preconditions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -567,9 +570,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="solvers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="speedlevel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="spreadoption.hpp">

@@ -17,15 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
 #include <ql/functional.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -35,6 +34,7 @@
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
