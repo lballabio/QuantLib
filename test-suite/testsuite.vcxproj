@@ -814,7 +814,6 @@
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
-    <ClInclude Include="settings.hpp" />
     <ClInclude Include="shortratemodels.hpp" />
     <ClInclude Include="sofrfutures.hpp" />
     <ClInclude Include="solvers.hpp" />

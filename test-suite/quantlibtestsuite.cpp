@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "settings.hpp"
 #include "shortratemodels.hpp"
 #include "sofrfutures.hpp"
 #include "solvers.hpp"
@@ -80,7 +79,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(SettingsTest::suite());
     test->add(ShortRateModelTest::suite(speed)); // fails with QL_USE_INDEXED_COUPON
     test->add(SofrFuturesTest::suite());
     test->add(Solver1DTest::suite());
