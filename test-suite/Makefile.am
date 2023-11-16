@@ -177,7 +177,6 @@ QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	svivolatility.hpp \
 	swap.hpp \
 	swapforwardmappings.hpp \
 	swaption.hpp \
