@@ -178,7 +178,6 @@ set(QL_TEST_HEADERS
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp
-    stats.hpp
     subperiodcoupons.hpp
     svivolatility.hpp
     swap.hpp

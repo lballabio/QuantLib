@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "stats.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/statistics/statistics.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
@@ -113,21 +113,6 @@ namespace {
                        << "    calculated: " << calculated << "\n"
                        << "    expected:   " << expected);
     }
-
-}
-
-
-void StatisticsTest::testStatistics() {
-
-    BOOST_TEST_MESSAGE("Testing statistics...");
-
-    check<IncrementalStatistics>(
-        std::string("IncrementalStatistics"));
-    check<Statistics>(std::string("Statistics"));
-}
-
-
-namespace {
 
     template <class S>
     void checkSequence(const std::string& name, Size dimension) {
@@ -234,21 +219,6 @@ namespace {
         }
     }
 
-}
-
-
-void StatisticsTest::testSequenceStatistics() {
-
-    BOOST_TEST_MESSAGE("Testing sequence statistics...");
-
-    checkSequence<IncrementalStatistics>(
-        std::string("IncrementalStatistics"),5);
-    checkSequence<Statistics>(std::string("Statistics"),5);
-}
-
-
-namespace {
-
     template <class S>
     void checkConvergence(const std::string& name) {
 
@@ -267,9 +237,9 @@ namespace {
         Size calculatedSize = stats.convergenceTable().size();
         if (calculatedSize != expectedSize1)
             BOOST_FAIL("ConvergenceStatistics<" << name << ">: "
-                       << "\nwrong convergence-table size"
-                       << "\n    calculated: " << calculatedSize
-                       << "\n    expected:   " << expectedSize1);
+                                                << "\nwrong convergence-table size"
+                                                << "\n    calculated: " << calculatedSize
+                                                << "\n    expected:   " << expectedSize1);
 
         const Real expectedValue1 = 4.0;
         const Real tolerance = 1.0e-9;
@@ -313,11 +283,31 @@ namespace {
                        << "\n    calculated: " << calculatedSamples
                        << "\n    expected:   " << expectedSampleSize2);
     }
-
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void StatisticsTest::testConvergenceStatistics() {
+BOOST_AUTO_TEST_SUITE(StatisticsTest)
+
+BOOST_AUTO_TEST_CASE(testStatistics) {
+
+    BOOST_TEST_MESSAGE("Testing statistics...");
+
+    check<IncrementalStatistics>(
+        std::string("IncrementalStatistics"));
+    check<Statistics>(std::string("Statistics"));
+}
+
+BOOST_AUTO_TEST_CASE(testSequenceStatistics) {
+
+    BOOST_TEST_MESSAGE("Testing sequence statistics...");
+
+    checkSequence<IncrementalStatistics>(
+        std::string("IncrementalStatistics"),5);
+    checkSequence<Statistics>(std::string("Statistics"),5);
+}
+
+BOOST_AUTO_TEST_CASE(testConvergenceStatistics) {
 
     BOOST_TEST_MESSAGE("Testing convergence statistics...");
 
@@ -333,7 +323,7 @@ void StatisticsTest::testConvergenceStatistics() {
                     << ") can not be reproduced against cached result ("       \
                     << expected << ")");
 
-void StatisticsTest::testIncrementalStatistics() {
+BOOST_AUTO_TEST_CASE(testIncrementalStatistics) {
 
     BOOST_TEST_MESSAGE("Testing incremental statistics...");
 
@@ -389,11 +379,6 @@ void StatisticsTest::testIncrementalStatistics() {
                                  << tol);
 }
 
-test_suite* StatisticsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Statistics tests");
-    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testStatistics));
-    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testSequenceStatistics));
-    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testConvergenceStatistics));
-    suite->add(QUANTLIB_TEST_CASE(&StatisticsTest::testIncrementalStatistics));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
