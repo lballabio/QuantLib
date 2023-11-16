@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "rangeaccrual.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -586,7 +586,12 @@ namespace range_accrual_test {
 
 //******************************************************************************************//
 //******************************************************************************************//
-void RangeAccrualTest::testInfiniteRange()  {
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(RangeAccrualTest)
+
+BOOST_AUTO_TEST_CASE(testInfiniteRange)  {
 
     BOOST_TEST_MESSAGE("Testing infinite range accrual floaters...");
 
@@ -640,7 +645,7 @@ void RangeAccrualTest::testInfiniteRange()  {
     }
 }
 
-void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
+BOOST_AUTO_TEST_CASE(testPriceMonotonicityWithRespectToLowerStrike) {
 
     BOOST_TEST_MESSAGE(
             "Testing price monotonicity with respect to the lower strike...");
@@ -697,8 +702,7 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike() {
     }
 }
 
-
-void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
+BOOST_AUTO_TEST_CASE(testPriceMonotonicityWithRespectToUpperStrike) {
 
     BOOST_TEST_MESSAGE(
             "Testing price monotonicity with respect to the upper strike...");
@@ -754,15 +758,6 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
         }
     }
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* RangeAccrualTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Range Accrual tests");
-    suite->add(QUANTLIB_TEST_CASE(&RangeAccrualTest::testInfiniteRange));
-    suite->add(QUANTLIB_TEST_CASE(
-           &RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-           &RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

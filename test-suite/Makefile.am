@@ -128,6 +128,7 @@ QL_TEST_SRCS = \
 	period.cpp \
 	piecewiseyieldcurve.cpp \
 	piecewisezerospreadedtermstructure.cpp \
+	preconditions.cpp \
 	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	quotes.cpp \
@@ -142,7 +143,6 @@ QL_TEST_SRCS = \
 	shortratemodels.cpp \
 	sofrfutures.cpp \
 	solvers.cpp \
-	speedlevel.cpp \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
@@ -174,51 +174,9 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-	margrabeoption.hpp \
-	marketmodel.hpp \
-	marketmodel_cms.hpp \
-	marketmodel_smm.hpp \
-	marketmodel_smmcapletalphacalibration.hpp \
-	marketmodel_smmcapletcalibration.hpp \
-	marketmodel_smmcaplethomocalibration.hpp \
-	markovfunctional.hpp \
-	matrices.hpp \
-	mclongstaffschwartzengine.hpp \
-	mersennetwister.hpp \
-	money.hpp \
-	noarbsabr.hpp \
-	normalclvmodel.hpp \
-	nthorderderivativeop.hpp \
-	nthtodefault.hpp \
-	numericaldifferentiation.hpp \
-	observable.hpp \
-	ode.hpp \
-	operators.hpp \
-	optimizers.hpp \
-	optionletstripper.hpp \
-	overnightindexedcoupon.hpp \
-	overnightindexedswap.hpp \
-	pagodaoption.hpp \
-	partialtimebarrieroption.hpp \
-	pathgenerator.hpp \
-	period.hpp \
-	piecewiseyieldcurve.hpp \
-	piecewisezerospreadedtermstructure.hpp \
+    marketmodel.hpp \
+    preconditions.hpp \
 	quantlibglobalfixture.hpp \
-	quantooption.hpp \
-	quotes.hpp \
-	rangeaccrual.hpp \
-	riskneutraldensitycalculator.hpp \
-	riskstats.hpp \
-	rngtraits.hpp \
-	rounding.hpp \
-	sampledcurve.hpp \
-	schedule.hpp \
-	settings.hpp \
-	shortratemodels.hpp \
-	sofrfutures.hpp \
-	solvers.hpp \
-	speedlevel.hpp \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
@@ -272,21 +230,16 @@ QL_BENCHMARK_SRCS = \
 	lowdiscrepancysequences.cpp \
 	marketmodel_cms.cpp \
 	marketmodel_smm.cpp \
+	preconditions.cpp \
 	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	riskstats.cpp \
 	shortratemodels.cpp \
-	speedlevel.cpp \
 	utilities.cpp
 
 QL_BENCHMARK_HDRS = \
-	marketmodel_cms.hpp \
-	marketmodel_smm.hpp \
 	quantlibglobalfixture.hpp \
-	quantooption.hpp \
-	riskstats.hpp \
-	shortratemodels.hpp \
-	speedlevel.hpp \
+	preconditions.hpp \
 	utilities.hpp
 
 QL_BENCHMARKS = ${QL_BENCHMARK_SRCS} ${QL_BENCHMARK_HDRS}

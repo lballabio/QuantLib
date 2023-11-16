@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "rounding.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/rounding.hpp>
 #include <ql/math/comparison.hpp>
@@ -63,8 +63,11 @@ namespace rounding_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void RoundingTest::testClosest() {
+BOOST_AUTO_TEST_SUITE(RoundingTest)
+
+BOOST_AUTO_TEST_CASE(testClosest) {
 
     BOOST_TEST_MESSAGE("Testing closest decimal rounding...");
 
@@ -83,7 +86,7 @@ void RoundingTest::testClosest() {
     }
 }
 
-void RoundingTest::testUp() {
+BOOST_AUTO_TEST_CASE(testUp) {
 
     BOOST_TEST_MESSAGE("Testing upward decimal rounding...");
 
@@ -102,7 +105,7 @@ void RoundingTest::testUp() {
     }
 }
 
-void RoundingTest::testDown() {
+BOOST_AUTO_TEST_CASE(testDown) {
 
     BOOST_TEST_MESSAGE("Testing downward decimal rounding...");
 
@@ -121,7 +124,7 @@ void RoundingTest::testDown() {
     }
 }
 
-void RoundingTest::testFloor() {
+BOOST_AUTO_TEST_CASE(testFloor) {
 
     BOOST_TEST_MESSAGE("Testing floor decimal rounding...");
 
@@ -140,7 +143,7 @@ void RoundingTest::testFloor() {
     }
 }
 
-void RoundingTest::testCeiling() {
+BOOST_AUTO_TEST_CASE(testCeiling) {
 
     BOOST_TEST_MESSAGE("Testing ceiling decimal rounding...");
 
@@ -159,14 +162,6 @@ void RoundingTest::testCeiling() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* RoundingTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Rounding tests");
-    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testClosest));
-    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testUp));
-    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testDown));
-    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testFloor));
-    suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testCeiling));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

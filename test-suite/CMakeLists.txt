@@ -126,6 +126,7 @@ set(QL_TEST_SOURCES
     period.cpp
     piecewiseyieldcurve.cpp
     piecewisezerospreadedtermstructure.cpp
+    preconditions.cpp
     quantlibglobalfixture.cpp
     quantlibtestsuite.cpp
     quantooption.cpp
@@ -141,7 +142,6 @@ set(QL_TEST_SOURCES
     shortratemodels.cpp
     sofrfutures.cpp
     solvers.cpp
-    speedlevel.cpp
     spreadoption.cpp
     squarerootclvmodel.cpp
     stats.cpp
@@ -174,52 +174,10 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    margrabeoption.hpp
     marketmodel.hpp
-    marketmodel_cms.hpp
-    marketmodel_smm.hpp
-    marketmodel_smmcapletalphacalibration.hpp
-    marketmodel_smmcapletcalibration.hpp
-    marketmodel_smmcaplethomocalibration.hpp
-    markovfunctional.hpp
-    matrices.hpp
-    mclongstaffschwartzengine.hpp
-    mersennetwister.hpp
-    money.hpp
-    noarbsabr.hpp
-    normalclvmodel.hpp
-    nthorderderivativeop.hpp
-    nthtodefault.hpp
-    numericaldifferentiation.hpp
-    observable.hpp
-    ode.hpp
-    operators.hpp
-    optimizers.hpp
-    optionletstripper.hpp
-    overnightindexedcoupon.hpp
-    overnightindexedswap.hpp
-    pagodaoption.hpp
     paralleltestrunner.hpp
-    partialtimebarrieroption.hpp
-    pathgenerator.hpp
-    period.hpp
-    piecewiseyieldcurve.hpp
-    piecewisezerospreadedtermstructure.hpp
+    preconditions.hpp
     quantlibglobalfixture.hpp
-    quantooption.hpp
-    quotes.hpp
-    rangeaccrual.hpp
-    riskneutraldensitycalculator.hpp
-    riskstats.hpp
-    rngtraits.hpp
-    rounding.hpp
-    sampledcurve.hpp
-    schedule.hpp
-    settings.hpp
-    shortratemodels.hpp
-    sofrfutures.hpp
-    solvers.hpp
-    speedlevel.hpp
     spreadoption.hpp
     squarerootclvmodel.hpp
     stats.hpp
@@ -270,13 +228,13 @@ set(QL_BENCHMARK_SOURCES
     interpolations.cpp
     jumpdiffusion.cpp
     lowdiscrepancysequences.cpp
-    marketmodel_cms.cpp                 marketmodel_cms.hpp
-    marketmodel_smm.cpp                 marketmodel_smm.hpp
-    quantooption.cpp                    quantooption.hpp
+    marketmodel_cms.cpp
+    marketmodel_smm.cpp
+    preconditions.cpp                   preconditions.hpp
+    quantooption.cpp
     quantlibglobalfixture.cpp			quantlibglobalfixture.hpp
-    riskstats.cpp                       riskstats.hpp
-    shortratemodels.cpp                 shortratemodels.hpp
-	speedlevel.cpp						speedlevel.hpp
+    riskstats.cpp
+    shortratemodels.cpp
     utilities.cpp                       utilities.hpp
                                         swaptionvolstructuresutilities.hpp
 )

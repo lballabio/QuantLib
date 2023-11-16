@@ -21,18 +21,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "optimizers.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
-#include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/optimization/bfgs.hpp>
+#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/goldstein.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/steepestdescent.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -261,8 +262,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void OptimizersTest::test() {
+BOOST_AUTO_TEST_SUITE(OptimizersTest)
+
+BOOST_AUTO_TEST_CASE(test) {
     BOOST_TEST_MESSAGE("Testing optimizers...");
 
     setup();
@@ -343,8 +347,7 @@ void OptimizersTest::test() {
     }
 }
 
-
-void OptimizersTest::nestedOptimizationTest() {
+BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
     BOOST_TEST_MESSAGE("Testing nested optimizations...");
     OptimizationBasedCostFunction optimizationBasedCostFunction;
     NoConstraint constraint;
@@ -432,7 +435,7 @@ namespace {
     };
 }
 
-void OptimizersTest::testDifferentialEvolution() {
+BOOST_AUTO_TEST_CASE(testDifferentialEvolution, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing differential evolution...");
 
     /* Note:
@@ -541,17 +544,6 @@ void OptimizersTest::testDifferentialEvolution() {
     }
 }
 
-test_suite* OptimizersTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Optimizers tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
-    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &OptimizersTest::testDifferentialEvolution));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
