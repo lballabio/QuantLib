@@ -814,16 +814,6 @@
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
-    <ClInclude Include="spreadoption.hpp" />
-    <ClInclude Include="squarerootclvmodel.hpp" />
-    <ClInclude Include="stats.hpp" />
-    <ClInclude Include="subperiodcoupons.hpp" />
-    <ClInclude Include="svivolatility.hpp" />
-    <ClInclude Include="swap.hpp" />
-    <ClInclude Include="swapforwardmappings.hpp" />
-    <ClInclude Include="swaption.hpp" />
-    <ClInclude Include="swaptionvolatilitycube.hpp" />
-    <ClInclude Include="swaptionvolatilitymatrix.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="swingoption.hpp" />
     <ClInclude Include="termstructures.hpp" />

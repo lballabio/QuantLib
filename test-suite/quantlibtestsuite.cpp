@@ -36,16 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "spreadoption.hpp"
-#include "squarerootclvmodel.hpp"
-#include "stats.hpp"
-#include "subperiodcoupons.hpp"
-#include "svivolatility.hpp"
-#include "swap.hpp"
-#include "swapforwardmappings.hpp"
-#include "swaption.hpp"
-#include "swaptionvolatilitycube.hpp"
-#include "swaptionvolatilitymatrix.hpp"
 #include "swingoption.hpp"
 #include "termstructures.hpp"
 #include "timegrid.hpp"
@@ -76,13 +66,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(StatisticsTest::suite());
-    test->add(SubPeriodsCouponTest::suite());
-    test->add(SwapTest::suite());
-    test->add(SwapForwardMappingsTest::suite());
-    test->add(SwaptionTest::suite(speed));
-    test->add(SwaptionVolatilityCubeTest::suite());
-    test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
     test->add(TimeGridTest::suite());
     test->add(TimeSeriesTest::suite());
@@ -96,9 +79,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(SpreadOptionTest::suite());
-    test->add(SquareRootCLVModelTest::experimental());
-    test->add(SviVolatilityTest::experimental());
     test->add(SwingOptionTest::suite(speed));
     test->add(TwoAssetBarrierOptionTest::suite());
     test->add(TwoAssetCorrelationOptionTest::suite());

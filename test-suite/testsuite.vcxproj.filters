@@ -539,30 +539,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="spreadoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="squarerootclvmodel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stats.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swapforwardmappings.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swaption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swaptionvolatilitycube.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="swaptionvolatilitymatrix.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="swaptionvolstructuresutilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -623,13 +599,7 @@
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="subperiodcoupons.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="zerocouponswap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="svivolatility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

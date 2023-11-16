@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swap.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -95,8 +95,11 @@ namespace swap_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void SwapTest::testFairRate() {
+BOOST_AUTO_TEST_SUITE(SwapTest)
+
+BOOST_AUTO_TEST_CASE(testFairRate) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
 
@@ -122,7 +125,7 @@ void SwapTest::testFairRate() {
     }
 }
 
-void SwapTest::testFairSpread() {
+BOOST_AUTO_TEST_CASE(testFairSpread) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of "
                        "fair floating spread...");
@@ -149,7 +152,7 @@ void SwapTest::testFairSpread() {
     }
 }
 
-void SwapTest::testRateDependency() {
+BOOST_AUTO_TEST_CASE(testRateDependency) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
 
@@ -184,7 +187,7 @@ void SwapTest::testRateDependency() {
     }
 }
 
-void SwapTest::testSpreadDependency() {
+BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
@@ -220,7 +223,7 @@ void SwapTest::testSpreadDependency() {
     }
 }
 
-void SwapTest::testInArrears() {
+BOOST_AUTO_TEST_CASE(testInArrears) {
 
     BOOST_TEST_MESSAGE("Testing in-arrears swap calculation...");
 
@@ -288,7 +291,7 @@ void SwapTest::testInArrears() {
                     << "    calculated: " << swap.NPV());
 }
 
-void SwapTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation against cached value...");
 
@@ -321,7 +324,7 @@ void SwapTest::testCachedValue() {
                     << "    expected:   " << cachedNPV);
 }
 
-void SwapTest::testThirdWednesdayAdjustment() {
+BOOST_AUTO_TEST_CASE(testThirdWednesdayAdjustment) {
 
     BOOST_TEST_MESSAGE("Testing third-Wednesday adjustment...");
 
@@ -340,15 +343,6 @@ void SwapTest::testThirdWednesdayAdjustment() {
     }
 }
 
-test_suite* SwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Swap tests");
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairRate));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairSpread));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testRateDependency));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testSpreadDependency));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testInArrears));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testThirdWednesdayAdjustment));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()
