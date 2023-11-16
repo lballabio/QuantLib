@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "swaption.hpp"
 #include "swaptionvolatilitycube.hpp"
 #include "swaptionvolatilitymatrix.hpp"
 #include "swingoption.hpp"
@@ -69,7 +68,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(SwaptionTest::suite(speed));
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
