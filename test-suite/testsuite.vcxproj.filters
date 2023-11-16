@@ -539,9 +539,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="swapforwardmappings.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="swaption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

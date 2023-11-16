@@ -178,7 +178,6 @@ set(QL_TEST_HEADERS
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp
-        swapforwardmappings.hpp
     swaption.hpp
     swaptionvolatilitycube.hpp
     swaptionvolatilitymatrix.hpp
