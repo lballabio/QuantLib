@@ -814,7 +814,6 @@
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
-    <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
     <ClInclude Include="swaption.hpp" />
     <ClInclude Include="swaptionvolatilitycube.hpp" />
