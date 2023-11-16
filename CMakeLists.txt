@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 3.22.0)
+cmake_minimum_required(VERSION 3.15.0)
 
 # For MSVC RUNTIME LIBRARY, need CMP0091=NEW and cmake 3.15+
 cmake_policy(SET CMP0091 NEW)
-
-include(CMakeDependentOption)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
@@ -44,7 +42,7 @@ set(QL_INSTALL_CMAKEDIR "lib/cmake/${PACKAGE_NAME}" CACHE STRING
 option(QL_BUILD_BENCHMARK "Build benchmark" ON)
 option(QL_BUILD_EXAMPLES "Build examples" ON)
 option(QL_BUILD_TEST_SUITE "Build test suite" ON)
-cmake_dependent_option(QL_BUILD_FUZZ_TEST_SUITE "Build fuzz test suite" OFF "'${CMAKE_CXX_COMPILER_ID}' MATCHES 'Clang'"  OFF)
+option(QL_BUILD_FUZZ_TEST_SUITE "Build fuzz test suite" OFF) 
 option(QL_ENABLE_OPENMP "Detect and use OpenMP" OFF)
 option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner" OFF)
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
@@ -272,7 +270,7 @@ if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
     add_subdirectory(test-suite)
 endif()
 
-if (QL_BUILD_FUZZ_TEST_SUITE)
+if ('${CMAKE_CXX_COMPILER_ID}' MATCHES 'Clang' AND  QL_BUILD_FUZZ_TEST_SUITE)
     add_subdirectory(fuzz-test-suite)
 endif()
 
