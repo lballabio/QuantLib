@@ -614,9 +614,6 @@
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="subperiodcoupons.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="zerocouponswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
