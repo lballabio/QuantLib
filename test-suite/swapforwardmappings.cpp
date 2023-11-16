@@ -166,18 +166,18 @@ namespace {
         return stats;
     }
 
-    MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
-        const std::vector<Time>& rateTimes, Real strike ){
-            std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
-            std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
-            for (auto& payoff : payoffs) {
-                payoff = ext::shared_ptr<StrikedTypePayoff>(
-                    new PlainVanillaPayoff(Option::Call, strike));
-            }
-            return MultiStepCoterminalSwaptions (rateTimes,
-                paymentTimes, payoffs);
-
-    }
+//    MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
+//        const std::vector<Time>& rateTimes, Real strike ){
+//            std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
+//            std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
+//            for (auto& payoff : payoffs) {
+//                payoff = ext::shared_ptr<StrikedTypePayoff>(
+//                    new PlainVanillaPayoff(Option::Call, strike));
+//            }
+//            return MultiStepCoterminalSwaptions (rateTimes,
+//                paymentTimes, payoffs);
+//
+//    }
 
 }
 
