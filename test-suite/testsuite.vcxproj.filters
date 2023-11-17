@@ -542,9 +542,6 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="termstructures.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="timegrid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
