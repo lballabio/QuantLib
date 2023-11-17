@@ -179,8 +179,7 @@ QL_TEST_HDRS = \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
     toplevelfixture.hpp \
-	utilities.hpp \
-	zerocouponswap.hpp
+	utilities.hpp
 
 QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 

@@ -817,7 +817,6 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
     <ClInclude Include="utilities.hpp" />
-    <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib.vcxproj">
