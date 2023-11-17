@@ -2263,7 +2263,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //    }
 //}
 
-BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing double no touch pricing with SLV and mixing...");
 
