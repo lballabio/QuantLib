@@ -545,9 +545,6 @@
     <ClInclude Include="toplevelfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="transformedgrid.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="twoassetbarrieroption.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

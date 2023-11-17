@@ -178,7 +178,6 @@ QL_TEST_HDRS = \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
-	transformedgrid.hpp \
     toplevelfixture.hpp \
 	twoassetbarrieroption.hpp \
 	twoassetcorrelationoption.hpp \
