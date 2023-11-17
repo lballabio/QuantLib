@@ -545,9 +545,6 @@
     <ClInclude Include="toplevelfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="twoassetcorrelationoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
