@@ -542,9 +542,6 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="timeseries.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tqreigendecomposition.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
 #include "transformedgrid.hpp"
