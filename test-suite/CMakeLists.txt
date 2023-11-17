@@ -179,7 +179,6 @@ set(QL_TEST_HEADERS
     preconditions.hpp
     quantlibglobalfixture.hpp
     swaptionvolstructuresutilities.hpp
-    timegrid.hpp
     timeseries.hpp
     tqreigendecomposition.hpp
     toplevelfixture.hpp

@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "timegrid.hpp"
 #include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
 #include "tracing.hpp"
@@ -64,7 +63,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(TimeGridTest::suite());
     test->add(TimeSeriesTest::suite());
     test->add(TqrEigenDecompositionTest::suite());
     test->add(TracingTest::suite());
