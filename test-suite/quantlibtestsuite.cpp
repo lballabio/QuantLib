@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "volatilitymodels.hpp"
 #include "vpp.hpp"
 #include "xoshiro256starstar.hpp"
 #include "zabr.hpp"
@@ -54,7 +53,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(MarketModelTest::suite(speed));
 
-    test->add(VolatilityModelsTest::suite());
     test->add(Xoshiro256StarStarTest::suite());
     test->add(ZeroCouponSwapTest::suite());
 

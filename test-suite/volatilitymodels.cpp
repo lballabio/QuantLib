@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "volatilitymodels.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/volatilitymodel.hpp>
 #include <ql/models/volatility/constantestimator.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void VolatilityModelsTest::testConstruction() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VolatilityModelsTest)
+
+BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing volatility model construction...");
 
@@ -45,9 +49,6 @@ void VolatilityModelsTest::testConstruction() {
     sv.begin();
 }
 
-test_suite* VolatilityModelsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("volatility models tests");
-    suite->add(QUANTLIB_TEST_CASE(&VolatilityModelsTest::testConstruction));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

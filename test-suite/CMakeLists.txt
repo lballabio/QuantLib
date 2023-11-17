@@ -181,7 +181,6 @@ set(QL_TEST_HEADERS
     swaptionvolstructuresutilities.hpp
     toplevelfixture.hpp
     utilities.hpp
-    volatilitymodels.hpp
     vpp.hpp
     xoshiro256starstar.hpp
     zabr.hpp
