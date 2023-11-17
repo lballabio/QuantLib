@@ -584,9 +584,6 @@
     <ClInclude Include="volatilitymodels.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="swingoption.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vpp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

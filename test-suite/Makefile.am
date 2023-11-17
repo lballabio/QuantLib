@@ -178,7 +178,6 @@ QL_TEST_HDRS = \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
-	swingoption.hpp \
 	termstructures.hpp \
 	timegrid.hpp \
 	timeseries.hpp \
