@@ -180,7 +180,6 @@ QL_TEST_HDRS = \
 	swaptionvolstructuresutilities.hpp \
 	transformedgrid.hpp \
     toplevelfixture.hpp \
-	tracing.hpp \
 	twoassetbarrieroption.hpp \
 	twoassetcorrelationoption.hpp \
 	ultimateforwardtermstructure.hpp \

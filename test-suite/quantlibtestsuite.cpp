@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "tracing.hpp"
 #include "transformedgrid.hpp"
 #include "twoassetbarrieroption.hpp"
 #include "twoassetcorrelationoption.hpp"
@@ -61,7 +60,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
     test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());

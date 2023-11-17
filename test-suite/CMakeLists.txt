@@ -180,7 +180,6 @@ set(QL_TEST_HEADERS
     quantlibglobalfixture.hpp
     swaptionvolstructuresutilities.hpp
     toplevelfixture.hpp
-    tracing.hpp
     transformedgrid.hpp
     twoassetbarrieroption.hpp
     twoassetcorrelationoption.hpp
