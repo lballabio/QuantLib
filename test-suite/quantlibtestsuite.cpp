@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
@@ -62,7 +61,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(VarianceGammaTest::suite());
     test->add(VarianceOptionTest::suite());
     test->add(VPPTest::suite(speed));
     test->add(ZabrTest::suite(speed));
