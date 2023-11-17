@@ -179,7 +179,6 @@ QL_TEST_HDRS = \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
     toplevelfixture.hpp \
-	ultimateforwardtermstructure.hpp \
 	utilities.hpp \
 	variancegamma.hpp \
 	varianceoption.hpp \

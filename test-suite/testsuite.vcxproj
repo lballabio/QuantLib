@@ -816,7 +816,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
-    <ClInclude Include="ultimateforwardtermstructure.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="variancegamma.hpp" />
     <ClInclude Include="varianceoption.hpp" />

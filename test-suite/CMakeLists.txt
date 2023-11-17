@@ -180,8 +180,7 @@ set(QL_TEST_HEADERS
     quantlibglobalfixture.hpp
     swaptionvolstructuresutilities.hpp
     toplevelfixture.hpp
-    ultimateforwardtermstructure.hpp
-    utilities.hpp
+        utilities.hpp
     variancegamma.hpp
     varianceoption.hpp
     varianceswaps.hpp

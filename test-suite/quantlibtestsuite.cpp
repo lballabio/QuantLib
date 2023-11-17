@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "ultimateforwardtermstructure.hpp"
 #include "variancegamma.hpp"
 #include "varianceoption.hpp"
 #include "varianceswaps.hpp"
@@ -57,7 +56,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
     test->add(Xoshiro256StarStarTest::suite());
