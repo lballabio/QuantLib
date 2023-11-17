@@ -815,7 +815,6 @@
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
-    <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
     <ClInclude Include="tracing.hpp" />
     <ClInclude Include="transformedgrid.hpp" />
