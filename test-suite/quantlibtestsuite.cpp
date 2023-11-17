@@ -36,24 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "swingoption.hpp"
-#include "termstructures.hpp"
-#include "timegrid.hpp"
-#include "timeseries.hpp"
-#include "tqreigendecomposition.hpp"
-#include "tracing.hpp"
-#include "transformedgrid.hpp"
-#include "twoassetbarrieroption.hpp"
-#include "twoassetcorrelationoption.hpp"
-#include "ultimateforwardtermstructure.hpp"
-#include "variancegamma.hpp"
-#include "varianceoption.hpp"
-#include "varianceswaps.hpp"
-#include "volatilitymodels.hpp"
-#include "vpp.hpp"
-#include "xoshiro256starstar.hpp"
-#include "zabr.hpp"
-#include "zerocouponswap.hpp"
 
 using namespace boost::unit_test_framework;
 
@@ -66,26 +48,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(TermStructureTest::suite());
-    test->add(TimeGridTest::suite());
-    test->add(TimeSeriesTest::suite());
-    test->add(TqrEigenDecompositionTest::suite());
-    test->add(TracingTest::suite());
-    test->add(TransformedGridTest::suite());
-    test->add(UltimateForwardTermStructureTest::suite());
-    test->add(VarianceSwapTest::suite());
-    test->add(VolatilityModelsTest::suite());
-    test->add(Xoshiro256StarStarTest::suite());
-    test->add(ZeroCouponSwapTest::suite());
-
-    // tests for experimental classes
-    test->add(SwingOptionTest::suite(speed));
-    test->add(TwoAssetBarrierOptionTest::suite());
-    test->add(TwoAssetCorrelationOptionTest::suite());
-    test->add(VarianceGammaTest::suite());
-    test->add(VarianceOptionTest::suite());
-    test->add(VPPTest::suite(speed));
-    test->add(ZabrTest::suite(speed));
 
     return test;
 }

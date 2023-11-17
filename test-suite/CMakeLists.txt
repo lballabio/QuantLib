@@ -179,26 +179,8 @@ set(QL_TEST_HEADERS
     preconditions.hpp
     quantlibglobalfixture.hpp
     swaptionvolstructuresutilities.hpp
-    swingoption.hpp
-    termstructures.hpp
-    timegrid.hpp
-    timeseries.hpp
-    tqreigendecomposition.hpp
     toplevelfixture.hpp
-    tracing.hpp
-    transformedgrid.hpp
-    twoassetbarrieroption.hpp
-    twoassetcorrelationoption.hpp
-    ultimateforwardtermstructure.hpp
     utilities.hpp
-    variancegamma.hpp
-    varianceoption.hpp
-    varianceswaps.hpp
-    volatilitymodels.hpp
-    vpp.hpp
-    xoshiro256starstar.hpp
-    zabr.hpp
-    zerocouponswap.hpp
 )
 
 set(QL_BENCHMARK_SOURCES

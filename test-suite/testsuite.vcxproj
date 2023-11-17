@@ -815,26 +815,8 @@
     <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
-    <ClInclude Include="swingoption.hpp" />
-    <ClInclude Include="termstructures.hpp" />
-    <ClInclude Include="timegrid.hpp" />
-    <ClInclude Include="timeseries.hpp" />
-    <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
-    <ClInclude Include="tracing.hpp" />
-    <ClInclude Include="transformedgrid.hpp" />
-    <ClInclude Include="twoassetbarrieroption.hpp" />
-    <ClInclude Include="twoassetcorrelationoption.hpp" />
-    <ClInclude Include="ultimateforwardtermstructure.hpp" />
     <ClInclude Include="utilities.hpp" />
-    <ClInclude Include="variancegamma.hpp" />
-    <ClInclude Include="varianceoption.hpp" />
-    <ClInclude Include="varianceswaps.hpp" />
-    <ClInclude Include="volatilitymodels.hpp" />
-    <ClInclude Include="vpp.hpp" />
-    <ClInclude Include="xoshiro256starstar.hpp" />
-    <ClInclude Include="zabr.hpp" />
-    <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib.vcxproj">

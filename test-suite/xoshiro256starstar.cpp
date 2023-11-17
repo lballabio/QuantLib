@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "xoshiro256starstar.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
@@ -152,10 +152,14 @@ extern "C" {
 // NOLINTEND
 // clang-format on
 
-using QuantLib::Real;
+using namespace QuantLib;
 using QuantLib::Xoshiro256StarStarUniformRng;
 
-void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(Xoshiro256StarStarTest)
+
+BOOST_AUTO_TEST_CASE(testMeanAndStdDevOfNextReal) {
     BOOST_TEST_MESSAGE(
         "Testing Xoshiro256StarStarUniformRng::nextReal() for mean=0.5 and stddev=1/12...");
 
@@ -185,7 +189,7 @@ void Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal() {
     }
 }
 
-void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
+BOOST_AUTO_TEST_CASE(testAgainstReferenceImplementationInC) {
     BOOST_TEST_MESSAGE(
         "Testing Xoshiro256StarStarUniformRng::nextInt64() against reference implementation in C...");
     
@@ -224,7 +228,7 @@ void Xoshiro256StarStarTest::testAgainstReferenceImplementationInC() {
     }
 }
 
-void Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances() {
+BOOST_AUTO_TEST_CASE(testAbsenceOfInteractionBetweenInstances) {
     BOOST_TEST_MESSAGE(
         "Testing Xoshiro256StarStarUniformRng for absence of interaction between instances...");
 
@@ -255,12 +259,6 @@ void Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances() {
                    "parallel computation");
 }
 
-boost::unit_test_framework::test_suite* Xoshiro256StarStarTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Xoshiro256StarStar Tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testMeanAndStdDevOfNextReal));
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAgainstReferenceImplementationInC));
-    suite->add(QUANTLIB_TEST_CASE(&Xoshiro256StarStarTest::testAbsenceOfInteractionBetweenInstances));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

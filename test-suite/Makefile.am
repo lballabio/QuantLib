@@ -178,26 +178,8 @@ QL_TEST_HDRS = \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
-	swingoption.hpp \
-	termstructures.hpp \
-	timegrid.hpp \
-	timeseries.hpp \
-	transformedgrid.hpp \
-	tqreigendecomposition.hpp \
     toplevelfixture.hpp \
-	tracing.hpp \
-	twoassetbarrieroption.hpp \
-	twoassetcorrelationoption.hpp \
-	ultimateforwardtermstructure.hpp \
-	utilities.hpp \
-	variancegamma.hpp \
-	varianceoption.hpp \
-	varianceswaps.hpp \
-	volatilitymodels.hpp \
-	vpp.hpp \
-	xoshiro256starstar.hpp \
-	zabr.hpp \
-	zerocouponswap.hpp
+	utilities.hpp
 
 QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 
