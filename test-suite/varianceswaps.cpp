@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "varianceswaps.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -93,8 +93,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void VarianceSwapTest::testReplicatingVarianceSwap() {
+BOOST_AUTO_TEST_SUITE(VarianceSwapTest)
+
+BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
 
     BOOST_TEST_MESSAGE("Testing variance swap with replicating cost engine...");
 
@@ -215,8 +218,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
     }
 }
 
-
-void VarianceSwapTest::testMCVarianceSwap() {
+BOOST_AUTO_TEST_CASE(testMCVarianceSwap) {
 
     BOOST_TEST_MESSAGE("Testing variance swap with Monte Carlo engine...");
 
@@ -290,12 +292,6 @@ void VarianceSwapTest::testMCVarianceSwap() {
     }
 }
 
-test_suite* VarianceSwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Variance swap tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-                             &VarianceSwapTest::testReplicatingVarianceSwap));
-    suite->add(QUANTLIB_TEST_CASE(&VarianceSwapTest::testMCVarianceSwap));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

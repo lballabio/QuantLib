@@ -817,7 +817,6 @@
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
     <ClInclude Include="utilities.hpp" />
-    <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
     <ClInclude Include="vpp.hpp" />
     <ClInclude Include="xoshiro256starstar.hpp" />

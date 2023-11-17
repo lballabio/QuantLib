@@ -548,9 +548,6 @@
     <ClInclude Include="utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="varianceswaps.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="volatilitymodels.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

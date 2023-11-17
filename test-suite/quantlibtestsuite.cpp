@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
 #include "xoshiro256starstar.hpp"
@@ -54,7 +53,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(MarketModelTest::suite(speed));
-    test->add(VarianceSwapTest::suite());
+
     test->add(VolatilityModelsTest::suite());
     test->add(Xoshiro256StarStarTest::suite());
     test->add(ZeroCouponSwapTest::suite());
