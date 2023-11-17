@@ -180,7 +180,6 @@ QL_TEST_HDRS = \
 	swaptionvolstructuresutilities.hpp \
     toplevelfixture.hpp \
 	utilities.hpp \
-	zabr.hpp \
 	zerocouponswap.hpp
 
 QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}

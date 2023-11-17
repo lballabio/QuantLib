@@ -36,7 +36,6 @@
 
 #include "marketmodel.hpp"
 #include "quantlibglobalfixture.hpp"
-#include "zabr.hpp"
 #include "zerocouponswap.hpp"
 
 using namespace boost::unit_test_framework;
@@ -52,9 +51,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarketModelTest::suite(speed));
 
     test->add(ZeroCouponSwapTest::suite());
-
-    // tests for experimental classes
-    test->add(ZabrTest::suite(speed));
 
     return test;
 }

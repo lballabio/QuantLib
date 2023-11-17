@@ -548,9 +548,6 @@
     <ClInclude Include="utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="zabr.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="zerocouponswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
