@@ -548,9 +548,6 @@
     <ClInclude Include="utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vpp.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xoshiro256starstar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -181,8 +181,7 @@ set(QL_TEST_HEADERS
     swaptionvolstructuresutilities.hpp
     toplevelfixture.hpp
     utilities.hpp
-    vpp.hpp
-    xoshiro256starstar.hpp
+        xoshiro256starstar.hpp
     zabr.hpp
     zerocouponswap.hpp
 )
