@@ -180,7 +180,6 @@ QL_TEST_HDRS = \
 	swaptionvolstructuresutilities.hpp \
     toplevelfixture.hpp \
 	utilities.hpp \
-	varianceoption.hpp \
 	varianceswaps.hpp \
 	volatilitymodels.hpp \
 	vpp.hpp \

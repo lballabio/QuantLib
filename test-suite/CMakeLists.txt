@@ -181,7 +181,6 @@ set(QL_TEST_HEADERS
     swaptionvolstructuresutilities.hpp
     toplevelfixture.hpp
     utilities.hpp
-    varianceoption.hpp
     varianceswaps.hpp
     volatilitymodels.hpp
     vpp.hpp
