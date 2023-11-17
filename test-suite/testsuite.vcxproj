@@ -816,7 +816,6 @@
     <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
-    <ClInclude Include="twoassetbarrieroption.hpp" />
     <ClInclude Include="twoassetcorrelationoption.hpp" />
     <ClInclude Include="ultimateforwardtermstructure.hpp" />
     <ClInclude Include="utilities.hpp" />

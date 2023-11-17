@@ -179,7 +179,6 @@ QL_TEST_HDRS = \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
     toplevelfixture.hpp \
-	twoassetbarrieroption.hpp \
 	twoassetcorrelationoption.hpp \
 	ultimateforwardtermstructure.hpp \
 	utilities.hpp \

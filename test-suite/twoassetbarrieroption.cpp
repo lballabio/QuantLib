@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "twoassetbarrieroption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
@@ -48,8 +48,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void TwoAssetBarrierOptionTest::testHaugValues() {
+BOOST_AUTO_TEST_SUITE(TwoAssetBarrierOptionExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing two-asset barrier options against Haug's values...");
 
@@ -139,8 +142,6 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
     }
 }
 
-test_suite* TwoAssetBarrierOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Two-asset barrier option tests");
-    suite->add(QUANTLIB_TEST_CASE(&TwoAssetBarrierOptionTest::testHaugValues));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
