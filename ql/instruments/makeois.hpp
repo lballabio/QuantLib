@@ -54,8 +54,12 @@ namespace QuantLib {
         MakeOIS& withEffectiveDate(const Date&);
         MakeOIS& withTerminationDate(const Date&);
         MakeOIS& withRule(DateGeneration::Rule r);
+        MakeOIS& withFixedLegRule(DateGeneration::Rule r);
+        MakeOIS& withOvernightLegRule(DateGeneration::Rule r);
 
         MakeOIS& withPaymentFrequency(Frequency f);
+        MakeOIS& withFixedLegPaymentFrequency(Frequency f);
+        MakeOIS& withOvernightLegPaymentFrequency(Frequency f);
         MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
         MakeOIS& withPaymentLag(Integer lag);
         MakeOIS& withPaymentCalendar(const Calendar& cal);
@@ -85,12 +89,14 @@ namespace QuantLib {
         Date effectiveDate_, terminationDate_;
         Calendar calendar_;
 
-        Frequency paymentFrequency_ = Annual;
+        Frequency fixedPaymentFrequency_ = Annual;
+        Frequency overnightPaymentFrequency_ = Annual;
         Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_ = Following;
         Integer paymentLag_ = 0;
 
-        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        DateGeneration::Rule fixedRule_ = DateGeneration::Backward;
+        DateGeneration::Rule overnightRule_ = DateGeneration::Backward;
         bool endOfMonth_ = false, isDefaultEOM_ = true;
 
         Swap::Type type_ = Swap::Payer;

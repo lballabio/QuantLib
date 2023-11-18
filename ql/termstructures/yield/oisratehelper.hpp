@@ -50,7 +50,8 @@ namespace QuantLib {
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      ext::optional<bool> endOfMonth = ext::nullopt);
+                      ext::optional<bool> endOfMonth = ext::nullopt,
+                      ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -88,6 +89,7 @@ namespace QuantLib {
       Spread overnightSpread_;
       RateAveraging::Type averagingMethod_;
       ext::optional<bool> endOfMonth_;
+      ext::optional<Frequency> fixedPaymentFrequency_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
@@ -107,7 +109,8 @@ namespace QuantLib {
                            const Calendar& paymentCalendar = Calendar(),
                            const Period& forwardStart = 0 * Days,
                            Spread overnightSpread = 0.0,
-                           ext::optional<bool> endOfMonth = ext::nullopt);
+                           ext::optional<bool> endOfMonth = ext::nullopt,
+                           ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

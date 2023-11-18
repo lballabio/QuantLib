@@ -23,6 +23,7 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
@@ -77,20 +78,48 @@ namespace QuantLib {
                 endDate = startDate + swapTenor_;
         }
 
-        Schedule schedule(startDate, endDate,
-                          Period(paymentFrequency_),
-                          calendar_,
-                          ModifiedFollowing,
-                          ModifiedFollowing,
-                          rule_,
-                          usedEndOfMonth);
+        Frequency fixedPaymentFrequency, overnightPaymentFrequency;
+        DateGeneration::Rule fixedRule, overnightRule;
+        if (fixedPaymentFrequency_ == Once || fixedRule_ == DateGeneration::Zero) {
+            fixedPaymentFrequency = Once;
+            fixedRule = DateGeneration::Zero;
+        } else {
+            fixedPaymentFrequency = fixedPaymentFrequency_;
+            fixedRule = fixedRule_;
+        }
+        if (overnightPaymentFrequency_ == Once || overnightRule_ == DateGeneration::Zero) {
+            overnightPaymentFrequency = Once;
+            overnightRule = DateGeneration::Zero;
+        } else {
+            overnightPaymentFrequency = overnightPaymentFrequency_;
+            overnightRule = overnightRule_;
+        }
+
+        Schedule fixedSchedule(startDate, endDate,
+                               Period(fixedPaymentFrequency),
+                               calendar_,
+                               ModifiedFollowing,
+                               ModifiedFollowing,
+                               fixedRule,
+                               usedEndOfMonth);
+        ext::optional<Schedule> overnightSchedule;
+        if (fixedPaymentFrequency != overnightPaymentFrequency || fixedRule != overnightRule) {
+            overnightSchedule.emplace(startDate, endDate,
+                                      Period(overnightPaymentFrequency),
+                                      calendar_,
+                                      ModifiedFollowing,
+                                      ModifiedFollowing,
+                                      overnightRule,
+                                      usedEndOfMonth);
+        }
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
             OvernightIndexedSwap temp(type_, nominal_,
-                                      schedule,
+                                      fixedSchedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
+                                      overnightSchedule ? *overnightSchedule : fixedSchedule,
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
                                       paymentCalendar_, telescopicValueDates_);
@@ -112,8 +141,9 @@ namespace QuantLib {
 
         ext::shared_ptr<OvernightIndexedSwap> ois(new
             OvernightIndexedSwap(type_, nominal_,
-                                 schedule,
+                                 fixedSchedule,
                                  usedFixedRate, fixedDayCount_,
+                                 overnightSchedule ? *overnightSchedule : fixedSchedule,
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
                                  paymentCalendar_, telescopicValueDates_, 
@@ -165,9 +195,16 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::withPaymentFrequency(Frequency f) {
-        paymentFrequency_ = f;
-        if (paymentFrequency_==Once)
-            rule_ = DateGeneration::Zero;
+        return withFixedLegPaymentFrequency(f).withOvernightLegPaymentFrequency(f);
+    }
+
+    MakeOIS& MakeOIS::withFixedLegPaymentFrequency(Frequency f) {
+        fixedPaymentFrequency_ = f;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withOvernightLegPaymentFrequency(Frequency f) {
+        overnightPaymentFrequency_ = f;
         return *this;
     }
 
@@ -187,9 +224,16 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::withRule(DateGeneration::Rule r) {
-        rule_ = r;
-        if (r==DateGeneration::Zero)
-            paymentFrequency_ = Once;
+        return withFixedLegRule(r).withOvernightLegRule(r);
+    }
+
+    MakeOIS& MakeOIS::withFixedLegRule(DateGeneration::Rule r) {
+        fixedRule_ = r;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withOvernightLegRule(DateGeneration::Rule r) {
+        overnightRule_ = r;
         return *this;
     }
 
