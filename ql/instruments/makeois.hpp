@@ -63,6 +63,8 @@ namespace QuantLib {
         MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
         MakeOIS& withPaymentLag(Integer lag);
         MakeOIS& withPaymentCalendar(const Calendar& cal);
+        MakeOIS& withFixedLegCalendar(const Calendar& cal);
+        MakeOIS& withOvernightLegCalendar(const Calendar& cal);
 
         MakeOIS& withEndOfMonth(bool flag = true);
 
@@ -87,7 +89,7 @@ namespace QuantLib {
 
         Natural settlementDays_ = 2;
         Date effectiveDate_, terminationDate_;
-        Calendar calendar_;
+        Calendar fixedCalendar_, overnightCalendar_;
 
         Frequency fixedPaymentFrequency_ = Annual;
         Frequency overnightPaymentFrequency_ = Annual;

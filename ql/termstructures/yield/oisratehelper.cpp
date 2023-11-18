@@ -43,14 +43,15 @@ namespace QuantLib {
                                  Date customPillarDate,
                                  RateAveraging::Type averagingMethod,
                                  ext::optional<bool> endOfMonth,
-                                 ext::optional<Frequency> fixedPaymentFrequency)
+                                 ext::optional<Frequency> fixedPaymentFrequency,
+                                 Calendar fixedCalendar)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays), tenor_(tenor),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
       forwardStart_(forwardStart), overnightSpread_(overnightSpread),
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
-      fixedPaymentFrequency_(fixedPaymentFrequency) {
+      fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)) {
 
         overnightIndex_ =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
@@ -85,6 +86,9 @@ namespace QuantLib {
         }
         if (fixedPaymentFrequency_) {
             tmp.withFixedLegPaymentFrequency(*fixedPaymentFrequency_);
+        }
+        if (!fixedCalendar_.empty()) {
+            tmp.withFixedLegCalendar(fixedCalendar_);
         }
         swap_ = tmp;
 
@@ -167,7 +171,8 @@ namespace QuantLib {
                                            const Period& forwardStart,
                                            Spread overnightSpread,
                                            ext::optional<bool> endOfMonth,
-                                           ext::optional<Frequency> fixedPaymentFrequency)
+                                           ext::optional<Frequency> fixedPaymentFrequency,
+                                           const Calendar& fixedCalendar)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
       telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
@@ -199,6 +204,9 @@ namespace QuantLib {
         }
         if (fixedPaymentFrequency) {
             tmp.withFixedLegPaymentFrequency(*fixedPaymentFrequency);
+        }
+        if (!fixedCalendar.empty()) {
+            tmp.withFixedLegCalendar(fixedCalendar);
         }
         swap_ = tmp;
 

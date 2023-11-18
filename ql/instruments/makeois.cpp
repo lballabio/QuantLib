@@ -34,9 +34,8 @@ namespace QuantLib {
                      const Period& forwardStart)
     : swapTenor_(swapTenor), overnightIndex_(overnightIndex), fixedRate_(fixedRate),
       forwardStart_(forwardStart),
-
-      calendar_(overnightIndex->fixingCalendar()),
-
+      fixedCalendar_(overnightIndex->fixingCalendar()),
+      overnightCalendar_(overnightIndex->fixingCalendar()),
       fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
@@ -53,27 +52,27 @@ namespace QuantLib {
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day
             // then move to the next business day
-            refDate = calendar_.adjust(refDate);
-            Date spotDate = calendar_.advance(refDate,
-                                              settlementDays_*Days);
+            refDate = overnightCalendar_.adjust(refDate);
+            Date spotDate = overnightCalendar_.advance(refDate,
+                                                       settlementDays_*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
-                startDate = calendar_.adjust(startDate, Preceding);
+                startDate = overnightCalendar_.adjust(startDate, Preceding);
             else
-                startDate = calendar_.adjust(startDate, Following);
+                startDate = overnightCalendar_.adjust(startDate, Following);
         }
 
         // OIS end of month default
         bool usedEndOfMonth =
-            isDefaultEOM_ ? calendar_.isEndOfMonth(startDate) : endOfMonth_;
+            isDefaultEOM_ ? overnightCalendar_.isEndOfMonth(startDate) : endOfMonth_;
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
             if (usedEndOfMonth)
-                endDate = calendar_.advance(startDate,
-                                            swapTenor_,
-                                            ModifiedFollowing,
-                                            usedEndOfMonth);
+                endDate = overnightCalendar_.advance(startDate,
+                                                     swapTenor_,
+                                                     ModifiedFollowing,
+                                                     usedEndOfMonth);
             else
                 endDate = startDate + swapTenor_;
         }
@@ -97,16 +96,17 @@ namespace QuantLib {
 
         Schedule fixedSchedule(startDate, endDate,
                                Period(fixedPaymentFrequency),
-                               calendar_,
+                               fixedCalendar_,
                                ModifiedFollowing,
                                ModifiedFollowing,
                                fixedRule,
                                usedEndOfMonth);
         ext::optional<Schedule> overnightSchedule;
-        if (fixedPaymentFrequency != overnightPaymentFrequency || fixedRule != overnightRule) {
+        if (fixedPaymentFrequency != overnightPaymentFrequency || fixedRule != overnightRule ||
+            fixedCalendar_ != overnightCalendar_) {
             overnightSchedule.emplace(startDate, endDate,
                                       Period(overnightPaymentFrequency),
-                                      calendar_,
+                                      overnightCalendar_,
                                       ModifiedFollowing,
                                       ModifiedFollowing,
                                       overnightRule,
@@ -220,6 +220,16 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withPaymentCalendar(const Calendar& cal) {
         paymentCalendar_ = cal;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withFixedLegCalendar(const Calendar& cal) {
+        fixedCalendar_ = cal;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withOvernightLegCalendar(const Calendar& cal) {
+        overnightCalendar_ = cal;
         return *this;
     }
 
