@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "himalayaoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>
 #include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void HimalayaOptionTest::testCached() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(HimalayaOptionTest)
+
+BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE("Testing Himalaya option against cached values...");
 
@@ -125,10 +129,6 @@ void HimalayaOptionTest::testCached() {
                    << "    expected:         " << tolerance);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* HimalayaOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Himalaya-option tests");
-    suite->add(QUANTLIB_TEST_CASE(&HimalayaOptionTest::testCached));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

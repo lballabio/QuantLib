@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include "inflationcapfloor.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
@@ -267,9 +267,11 @@ namespace inflation_capfloor_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
+BOOST_AUTO_TEST_SUITE(InflationCapFloorTest)
 
-void InflationCapFloorTest::testConsistency() {
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing consistency between yoy inflation cap,"
                        " floor and collar...");
@@ -390,7 +392,8 @@ void InflationCapFloorTest::testConsistency() {
 // (actually in arrears with a lag of a few months) thus the first optionlet
 // is relevant.  Hence we can do a parity test without a special definition
 // of the YoY cap/floor instrument.
-void InflationCapFloorTest::testParity() {
+
+BOOST_AUTO_TEST_CASE(testParity) {
 
     BOOST_TEST_MESSAGE("Testing yoy inflation cap/floor parity...");
 
@@ -456,10 +459,7 @@ void InflationCapFloorTest::testParity() {
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
-
-
-
-void InflationCapFloorTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing Black yoy inflation cap/floor price"
                        " against cached values...");
@@ -533,13 +533,6 @@ void InflationCapFloorTest::testCachedValue() {
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* InflationCapFloorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Inflation (year-on-year) Cap and floor tests");
-    suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testParity));
-    suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testCachedValue));
-    return suite;
-}
-
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "basismodels.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/compounding.hpp>
@@ -224,19 +224,22 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BasismodelsTest::testSwaptioncfsContCompSpread() {
+BOOST_AUTO_TEST_SUITE(BasismodelsExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testSwaptioncfsContCompSpread) {
     BOOST_TEST_MESSAGE(
         "Testing deterministic tenor basis model with continuous compounded spreads...");
     testSwaptioncfs(true);
 }
 
-void BasismodelsTest::testSwaptioncfsSimpleCompSpread() {
+BOOST_AUTO_TEST_CASE(testSwaptioncfsSimpleCompSpread) {
     BOOST_TEST_MESSAGE("Testing deterministic tenor basis model with simple compounded spreads...");
     testSwaptioncfs(false);
 }
 
-void BasismodelsTest::testTenoroptionletvts() {
+BOOST_AUTO_TEST_CASE(testTenoroptionletvts) {
     BOOST_TEST_MESSAGE("Testing volatility transformation for caplets/floorlets...");
     // market data and floating rate index
     Real spread = 0.01;
@@ -320,7 +323,7 @@ void BasismodelsTest::testTenoroptionletvts() {
     }
 }
 
-void BasismodelsTest::testTenorswaptionvts() {
+BOOST_AUTO_TEST_CASE(testTenorswaptionvts) {
     BOOST_TEST_MESSAGE("Testing volatility transformation for swaptions...");
     // market data and floating rate index
     Real spread = 0.01;
@@ -397,12 +400,6 @@ void BasismodelsTest::testTenorswaptionvts() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* BasismodelsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Basismodels tests");
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsContCompSpread));
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsSimpleCompSpread));
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenoroptionletvts));
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenorswaptionvts));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

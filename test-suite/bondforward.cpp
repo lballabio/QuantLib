@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "bondforward.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -64,7 +64,11 @@ namespace bond_forward_test {
     }
 }
 
-void BondForwardTest::testFuturesPriceReplication() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BondForwardTest)
+
+BOOST_AUTO_TEST_CASE(testFuturesPriceReplication) {
     BOOST_TEST_MESSAGE("Testing futures price replication...");
 
     using namespace bond_forward_test;
@@ -94,7 +98,7 @@ void BondForwardTest::testFuturesPriceReplication() {
                     << "    expected:    " << expectedFuturesPrice << "\n");
 }
 
-void BondForwardTest::testCleanForwardPriceReplication() {
+BOOST_AUTO_TEST_CASE(testCleanForwardPriceReplication) {
     BOOST_TEST_MESSAGE("Testing clean forward price replication...");
 
     using namespace bond_forward_test;
@@ -123,7 +127,7 @@ void BondForwardTest::testCleanForwardPriceReplication() {
                     << "    expected:    " << expectedFwdCleanPrice << "\n");
 }
 
-void BondForwardTest::testThatForwardValueIsEqualToSpotValueIfNoIncome() {
+BOOST_AUTO_TEST_CASE(testThatForwardValueIsEqualToSpotValueIfNoIncome) {
     BOOST_TEST_MESSAGE(
         "Testing that forward value is equal to spot value if no income...");
 
@@ -153,12 +157,6 @@ void BondForwardTest::testThatForwardValueIsEqualToSpotValueIfNoIncome() {
                     << "    underlying bond:    " << underlyingDirtyPrice << "\n");
 }
 
-test_suite* BondForwardTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Bond forward tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::testFuturesPriceReplication));
-    suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::testCleanForwardPriceReplication));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BondForwardTest::testThatForwardValueIsEqualToSpotValueIfNoIncome));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

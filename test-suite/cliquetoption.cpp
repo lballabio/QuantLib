@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "cliquetoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
@@ -50,8 +50,11 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CliquetOptionTest::testValues() {
+BOOST_AUTO_TEST_SUITE(CliquetOptionTest)
+
+BOOST_AUTO_TEST_CASE(testValues) {
 
     BOOST_TEST_MESSAGE("Testing Cliquet option values...");
 
@@ -252,20 +255,17 @@ namespace {
 
 }
 
-
-void CliquetOptionTest::testGreeks() {
+BOOST_AUTO_TEST_CASE(testGreeks) {
     BOOST_TEST_MESSAGE("Testing Cliquet option greeks...");
     testOptionGreeks<AnalyticCliquetEngine>();
 }
 
-
-void CliquetOptionTest::testPerformanceGreeks() {
+BOOST_AUTO_TEST_CASE(testPerformanceGreeks) {
     BOOST_TEST_MESSAGE("Testing performance option greeks...");
     testOptionGreeks<AnalyticPerformanceEngine>();
 }
 
-
-void CliquetOptionTest::testMcPerformance() {
+BOOST_AUTO_TEST_CASE(testMcPerformance) {
     BOOST_TEST_MESSAGE(
         "Testing Monte Carlo performance engine against analytic results...");
 
@@ -354,13 +354,6 @@ void CliquetOptionTest::testMcPerformance() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CliquetOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cliquet option tests");
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testValues));
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testMcPerformance));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

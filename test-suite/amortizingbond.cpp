@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "amortizingbond.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/bonds/amortizingfixedratebond.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
@@ -31,7 +31,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void AmortizingBondTest::testAmortizingFixedRateBond() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AmortizingBondTest)
+
+BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBond) {
     BOOST_TEST_MESSAGE("Testing amortizing fixed rate bond...");
 
     /*
@@ -93,7 +97,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
     }
 }
 
-void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
+BOOST_AUTO_TEST_CASE(testBrazilianAmortizingFixedRateBond) {
     BOOST_TEST_MESSAGE("Testing Brazilian amortizing fixed rate bond...");
 
     /*
@@ -213,7 +217,7 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 
 }
 
-void AmortizingBondTest::testAmortizingFixedRateBondWithDrawDown() {
+BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBondWithDrawDown) {
     BOOST_TEST_MESSAGE("Testing amortizing fixed rate bond with draw-down...");
 
     Date issueDate = Date(19, May, 2012);
@@ -273,10 +277,6 @@ void AmortizingBondTest::testAmortizingFixedRateBondWithDrawDown() {
 
 }
 
-test_suite* AmortizingBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Amortizing Bond tests");
-    suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testAmortizingFixedRateBond));
-    suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testBrazilianAmortizingFixedRateBond));
-    suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testAmortizingFixedRateBondWithDrawDown));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

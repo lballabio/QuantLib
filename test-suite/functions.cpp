@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "functions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/comparison.hpp>
 #include <ql/math/factorial.hpp>
@@ -32,7 +32,11 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-void FunctionsTest::testFactorial() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FunctionsTest)
+
+BOOST_AUTO_TEST_CASE(testFactorial) {
 
     BOOST_TEST_MESSAGE("Testing factorial numbers...");
 
@@ -54,7 +58,7 @@ void FunctionsTest::testFactorial() {
     }
 }
 
-void FunctionsTest::testGammaFunction() {
+BOOST_AUTO_TEST_CASE(testGammaFunction) {
 
     BOOST_TEST_MESSAGE("Testing Gamma function...");
 
@@ -79,7 +83,7 @@ void FunctionsTest::testGammaFunction() {
     }
 }
 
-void FunctionsTest::testGammaValues() {
+BOOST_AUTO_TEST_CASE(testGammaValues) {
 
     BOOST_TEST_MESSAGE("Testing Gamma values...");
 
@@ -114,7 +118,7 @@ void FunctionsTest::testGammaValues() {
     }
 }
 
-void FunctionsTest::testModifiedBesselFunctions() {
+BOOST_AUTO_TEST_CASE(testModifiedBesselFunctions) {
     BOOST_TEST_MESSAGE("Testing modified Bessel function of first and second kind...");
 
     /* reference values are computed with R and the additional package Bessel
@@ -228,7 +232,7 @@ void FunctionsTest::testModifiedBesselFunctions() {
     }
 }
 
-void FunctionsTest::testWeightedModifiedBesselFunctions() {
+BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
     BOOST_TEST_MESSAGE("Testing weighted modified Bessel functions...");
     for (Real nu = -5.0; nu <= 5.0; nu += 0.5) {
         for (Real x = 0.1; x <= 15.0; x += 0.5) {
@@ -291,7 +295,7 @@ void FunctionsTest::testWeightedModifiedBesselFunctions() {
     }
 }
 
-void FunctionsTest::testExpm1() {
+BOOST_AUTO_TEST_CASE(testExpm1) {
     BOOST_TEST_MESSAGE("Testing complex valued expm1...");
 
     const std::complex<Real> z = std::complex<Real>(1.2, 0.5);
@@ -305,7 +309,7 @@ void FunctionsTest::testExpm1() {
     BOOST_CHECK_CLOSE_FRACTION(calculated.imag(), expected.imag(), tol);
 }
 
-void FunctionsTest::testLog1p() {
+BOOST_AUTO_TEST_CASE(testLog1p) {
     BOOST_TEST_MESSAGE("Testing complex valued log1p...");
 
     const std::complex<Real> z = std::complex<Real>(1.2, 0.57);
@@ -319,16 +323,6 @@ void FunctionsTest::testLog1p() {
     BOOST_CHECK_CLOSE_FRACTION(calculated.imag(), expected.imag(), tol);
 }
 
-test_suite* FunctionsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Factorial tests");
-    suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testFactorial));
-    suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaFunction));
-    suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &FunctionsTest::testModifiedBesselFunctions));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &FunctionsTest::testWeightedModifiedBesselFunctions));
-    suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testExpm1));
-    suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testLog1p));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

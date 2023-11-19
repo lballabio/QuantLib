@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "binaryoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -88,8 +88,11 @@ namespace binary_option_test {
     };
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BinaryOptionTest::testCashOrNothingHaugValues() {
+BOOST_AUTO_TEST_SUITE(BinaryOptionTest)
+
+BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing cash-or-nothing barrier options against Haug's values...");
 
@@ -188,7 +191,7 @@ void BinaryOptionTest::testCashOrNothingHaugValues() {
     }
 }
 
-void BinaryOptionTest::testAssetOrNothingHaugValues() {
+BOOST_AUTO_TEST_CASE(testAssetOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing asset-or-nothing barrier options against Haug's values...");
 
@@ -269,9 +272,6 @@ void BinaryOptionTest::testAssetOrNothingHaugValues() {
     }
 }
 
-test_suite* BinaryOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Binary");
-    suite->add(QUANTLIB_TEST_CASE(&BinaryOptionTest::testCashOrNothingHaugValues));
-    suite->add(QUANTLIB_TEST_CASE(&BinaryOptionTest::testAssetOrNothingHaugValues));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

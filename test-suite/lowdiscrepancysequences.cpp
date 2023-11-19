@@ -18,10 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "lowdiscrepancysequences.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/statistics/discrepancystatistics.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/math/randomnumbers/burley2020sobolrsg.hpp>
 #include <ql/math/randomnumbers/faurersg.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
@@ -44,12 +46,16 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-void LowDiscrepancyTest::testSeedGenerator() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(LowDiscrepancyTest)
+
+BOOST_AUTO_TEST_CASE(testSeedGenerator) {
     BOOST_TEST_MESSAGE("Testing random-seed generator...");
     SeedGenerator::instance().get();
 }
 
-void LowDiscrepancyTest::testPolynomialsModuloTwo() {
+BOOST_AUTO_TEST_CASE(testPolynomialsModuloTwo) {
 
     BOOST_TEST_MESSAGE("Testing " << PPMT_MAX_DIM <<
                        " primitive polynomials modulo two...");
@@ -82,7 +88,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
 }
 
-void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
+BOOST_AUTO_TEST_CASE(testRandomizedLowDiscrepancySequence) {
 
     BOOST_TEST_MESSAGE("Testing randomized low-discrepancy sequences up to "
                        "dimension " << PPMT_MAX_DIM << "...");
@@ -165,18 +171,15 @@ namespace
     }
 }
 
+BOOST_AUTO_TEST_CASE(testRandomizedLattices){
 
-void LowDiscrepancyTest::testRandomizedLattices()
-{
     testRandomizedLatticeRule(LatticeRule::A, "A");
     testRandomizedLatticeRule(LatticeRule::B, "B");
     testRandomizedLatticeRule(LatticeRule::C, "C");
     testRandomizedLatticeRule(LatticeRule::D, "D");
-
 }
 
-
-void LowDiscrepancyTest::testSobol() {
+BOOST_AUTO_TEST_CASE(testSobol) {
 
     BOOST_TEST_MESSAGE("Testing Sobol sequences up to dimension "
                        << PPMT_MAX_DIM << "...");
@@ -260,7 +263,7 @@ void LowDiscrepancyTest::testSobol() {
     }
 }
 
-void LowDiscrepancyTest::testFaure() {
+BOOST_AUTO_TEST_CASE(testFaure) {
 
     BOOST_TEST_MESSAGE("Testing Faure sequences...");
 
@@ -409,7 +412,7 @@ void LowDiscrepancyTest::testFaure() {
     }
 }
 
-void LowDiscrepancyTest::testHalton() {
+BOOST_AUTO_TEST_CASE(testHalton) {
 
     BOOST_TEST_MESSAGE("Testing Halton sequences...");
 
@@ -883,8 +886,7 @@ namespace {
 
 }
 
-
-void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testMersenneTwisterDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Mersenne-twister discrepancy...");
 
@@ -901,7 +903,7 @@ void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
                              "DiscrMersenneTwis");
 }
 
-void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testPlainHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing plain Halton discrepancy...");
 
@@ -917,7 +919,7 @@ void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
                              "DiscrPlain_Halton");
 }
 
-void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testRandomStartHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing random-start Halton discrepancy...");
 
@@ -933,7 +935,7 @@ void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
                              "DiscrRStartHalton");
 }
 
-void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testRandomShiftHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing random-shift Halton discrepancy...");
 
@@ -949,7 +951,7 @@ void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
                              "DiscrRShiftHalton");
 }
 
-void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testRandomStartRandomShiftHaltonDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing random-start, random-shift Halton discrepancy...");
 
@@ -965,7 +967,7 @@ void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
                              "DiscrRStRShHalton");
 }
 
-void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testJackelSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Jaeckel-Sobol discrepancy...");
 
@@ -981,7 +983,7 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
                              "DiscrJackel_Sobol");
 }
 
-void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testSobolLevitanSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Levitan-Sobol discrepancy...");
 
@@ -997,7 +999,7 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
                              "DiscrSobLev_Sobol");
 }
 
-void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testSobolLevitanLemieuxSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing Levitan-Lemieux-Sobol discrepancy...");
 
@@ -1013,7 +1015,7 @@ void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
                              "DiscrSobLevLem_Sobol");
 }
 
-void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
+BOOST_AUTO_TEST_CASE(testUnitSobolDiscrepancy) {
 
     BOOST_TEST_MESSAGE("Testing unit Sobol discrepancy...");
 
@@ -1026,8 +1028,7 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
                              "Discr__Unit_Sobol");
 }
 
-
-void LowDiscrepancyTest::testSobolSkipping() {
+BOOST_AUTO_TEST_CASE(testSobolSkipping) {
 
     BOOST_TEST_MESSAGE("Testing Sobol sequence skipping...");
 
@@ -1070,47 +1071,73 @@ void LowDiscrepancyTest::testSobolSkipping() {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))) {
+    BOOST_TEST_MESSAGE("Testing High Dimensional Integrals");
 
-test_suite* LowDiscrepancyTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+    /* We are running "Integration test 1, results for high dimensions" (Figure 9) from:
 
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomizedLattices));
+       Sobol, Asotsky, Kreinin, Kucherenko: Construction and Comparison of High-Dimensional Sobol’
+       Generators, available at https://www.broda.co.uk/doc/HD_SobolGenerator.pdf
 
+       We check the error of Kuo1 (using Gray code and sequential numbers) roughly against what
+       their graph suggests. In addition we check the error of the Burley2020-scrambled version of
+       Kuo1 against what we experimentally find - the error turns out to be more than one order
+       better than the unscrambled version. */
 
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testSeedGenerator));
+    auto integrand = [](const std::vector<Real>& c, const std::vector<Real>& x) {
+        Real p = 1.0;
+        for (Size i = 0; i < c.size(); ++i) {
+            p *= 1.0 + c[i] * (x[i] - 0.5);
+        }
+        return p;
+    };
 
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testPolynomialsModuloTwo));
+    Size N = 30031;
 
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testSobol));
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testHalton));
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testFaure));
+    BOOST_TEST_MESSAGE("dimension,Sobol(Gray),Sobol(Seq),Burley2020");
 
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testPlainHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomStartHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-        &LowDiscrepancyTest::testUnitSobolDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testJackelSobolDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy));
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy));
+    std::vector<Size> dimension = {1000, 2000, 5000};
+    std::vector<std::vector<Real>> expectedOrderOfError = {
+        {-3.0, -3.0, -4.5}, {-2.5, -2.5, -4.0}, {-2.0, -2.0, -4.0}};
 
-    suite->add(QUANTLIB_TEST_CASE(&LowDiscrepancyTest::testSobolSkipping));
+    for (Size d = 0; d < dimension.size(); ++d) {
 
-    suite->add(QUANTLIB_TEST_CASE(
-           &LowDiscrepancyTest::testRandomizedLowDiscrepancySequence));
+        std::vector<Real> c1(dimension[d], 0.01);
 
-    return suite;
+        SobolRsg s1(dimension[d], 42, SobolRsg::DirectionIntegers::Kuo, true);
+        SobolRsg s2(dimension[d], 42, SobolRsg::DirectionIntegers::Kuo, false);
+        Burley2020SobolRsg s3(dimension[d], 42, SobolRsg::DirectionIntegers::Kuo, 43);
+
+        Real I1 = 0.0, I2 = 0.0, I3 = 0.0;
+        for (Size i = 0; i < N; ++i) {
+            I1 += integrand(c1, s1.nextSequence().value) / static_cast<double>(N);
+            I2 += integrand(c1, s2.nextSequence().value) / static_cast<double>(N);
+            I3 += integrand(c1, s3.nextSequence().value) / static_cast<double>(N);
+        }
+
+        Real errOrder1 = std::log10(std::abs(I1 - 1.0));
+        Real errOrder2 = std::log10(std::abs(I2 - 1.0));
+        Real errOrder3 = std::log10(std::abs(I3 - 1.0));
+
+        BOOST_TEST_MESSAGE(dimension[d] << "," << errOrder1 << "," << errOrder2 << ","
+                                        << errOrder3);
+
+        BOOST_CHECK_MESSAGE(errOrder1 < expectedOrderOfError[d][0],
+                            "order of error for dimension " + std::to_string(dimension[d]) + " is" +
+                                std::to_string(errOrder1) + " expected " +
+                                std::to_string(expectedOrderOfError[d][0]));
+        BOOST_CHECK_MESSAGE(errOrder2 < expectedOrderOfError[d][1],
+                            "order of error for dimension " + std::to_string(dimension[d]) + " is" +
+                                std::to_string(errOrder2) + " expected " +
+                                std::to_string(expectedOrderOfError[d][1]));
+        BOOST_CHECK_MESSAGE(errOrder3 < expectedOrderOfError[d][2],
+                            "order of error for dimension " + std::to_string(dimension[d]) + " is" +
+                                std::to_string(errOrder3) + " expected " +
+                                std::to_string(expectedOrderOfError[d][2]));
+    }
 }
+
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

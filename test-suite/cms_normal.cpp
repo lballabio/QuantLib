@@ -21,7 +21,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "cms_normal.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/swap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -270,8 +270,11 @@ namespace cms_normal_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CmsNormalTest::testFairRate()  {
+BOOST_AUTO_TEST_SUITE(CmsNormalTest)
+
+BOOST_AUTO_TEST_CASE(testFairRate)  {
 
     BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons (normal case)...");
 
@@ -336,7 +339,7 @@ void CmsNormalTest::testFairRate()  {
     }
 }
 
-void CmsNormalTest::testCmsSwap() {
+BOOST_AUTO_TEST_CASE(testCmsSwap) {
 
     BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps (normal case)...");
 
@@ -398,7 +401,7 @@ void CmsNormalTest::testCmsSwap() {
 
 }
 
-void CmsNormalTest::testParity() {
+BOOST_AUTO_TEST_CASE(testParity) {
 
     BOOST_TEST_MESSAGE("Testing put-call parity for capped-floored CMS coupons (normal case)...");
 
@@ -500,10 +503,6 @@ void CmsNormalTest::testParity() {
     }
 }
 
-test_suite* CmsNormalTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cms normal tests");
-    suite->add(QUANTLIB_TEST_CASE(&CmsNormalTest::testFairRate));
-    suite->add(QUANTLIB_TEST_CASE(&CmsNormalTest::testCmsSwap));
-    suite->add(QUANTLIB_TEST_CASE(&CmsNormalTest::testParity));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

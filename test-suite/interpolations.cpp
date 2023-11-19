@@ -22,7 +22,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "interpolations.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 #include <ql/math/bspline.hpp>
@@ -199,6 +200,38 @@ namespace {
         }
     }
 
+    struct NotThrown {};
+
+    Integer sign(Real y1, Real y2) {
+        return y1 == y2 ? 0 :
+               y1 < y2 ?  1 :
+                          -1 ;
+    }
+
+    class GF {
+      public:
+        GF(Real exponent, Real factor)
+        : exponent_(exponent), factor_(factor) {}
+
+        Real operator()(Real h) const {
+            return M_PI + factor_*std::pow(h, exponent_)
+                   + std::pow(factor_*h, exponent_ + 1);
+        }
+      private:
+        const Real exponent_, factor_;
+    };
+
+    Real limCos(Real h) {
+        return -std::cos(h);
+    }
+
+    Real f(Real h) {
+        return std::pow( 1.0 + h, 1/h);
+    }
+
+    Real lagrangeTestFct(Real x) {
+        return std::fabs(x) + 0.5*x - x*x;
+    }
 }
 
 
@@ -206,7 +239,11 @@ namespace {
    SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
    http://math.lanl.gov/~mac/papers/numerics/H83.pdf
 */
-void InterpolationTest::testSplineErrorOnGaussianValues() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(InterpolationTest)
+
+BOOST_AUTO_TEST_CASE(testSplineErrorOnGaussianValues) {
 
     BOOST_TEST_MESSAGE("Testing spline approximation on Gaussian data sets...");
 
@@ -271,7 +308,8 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
    SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
    http://math.lanl.gov/~mac/papers/numerics/H83.pdf
 */
-void InterpolationTest::testSplineOnGaussianValues() {
+
+BOOST_AUTO_TEST_CASE(testSplineOnGaussianValues) {
 
     BOOST_TEST_MESSAGE("Testing spline interpolation on a Gaussian data set...");
 
@@ -340,7 +378,8 @@ void InterpolationTest::testSplineOnGaussianValues() {
    SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
    http://math.lanl.gov/~mac/papers/numerics/H83.pdf
 */
-void InterpolationTest::testSplineOnRPN15AValues() {
+
+BOOST_AUTO_TEST_CASE(testSplineOnRPN15AValues) {
 
     BOOST_TEST_MESSAGE("Testing spline interpolation on RPN15A data set...");
 
@@ -490,7 +529,8 @@ void InterpolationTest::testSplineOnRPN15AValues() {
    Applied Linear Algebra and Numerical Analysis AMATH 352 Lecture Notes
    http://www.amath.washington.edu/courses/352-winter-2002/spline_note.pdf
 */
-void InterpolationTest::testSplineOnGenericValues() {
+
+BOOST_AUTO_TEST_CASE(testSplineOnGenericValues) {
 
     BOOST_TEST_MESSAGE("Testing spline interpolation on generic values...");
 
@@ -566,8 +606,7 @@ void InterpolationTest::testSplineOnGenericValues() {
     }
 }
 
-
-void InterpolationTest::testSimmetricEndConditions() {
+BOOST_AUTO_TEST_CASE(testSimmetricEndConditions) {
 
     BOOST_TEST_MESSAGE("Testing symmetry of spline interpolation "
                        "end-conditions...");
@@ -601,8 +640,7 @@ void InterpolationTest::testSimmetricEndConditions() {
     checkSymmetry("MC not-a-knot spline", f, x[0]);
 }
 
-
-void InterpolationTest::testDerivativeEndConditions() {
+BOOST_AUTO_TEST_CASE(testDerivativeEndConditions) {
 
     BOOST_TEST_MESSAGE("Testing derivative end-conditions "
                        "for spline interpolation...");
@@ -727,7 +765,8 @@ void InterpolationTest::testDerivativeEndConditions() {
    Hermite Interpolation"
    Mathematics Of Computation, v. 52, n. 186, April 1989, pp. 471-494.
 */
-void InterpolationTest::testNonRestrictiveHymanFilter() {
+
+BOOST_AUTO_TEST_CASE(testNonRestrictiveHymanFilter) {
 
     BOOST_TEST_MESSAGE("Testing non-restrictive Hyman filter...");
 
@@ -790,7 +829,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 }
 
-void InterpolationTest::testMultiSpline() {
+BOOST_AUTO_TEST_CASE(testMultiSpline) {
     BOOST_TEST_MESSAGE("Testing N-dimensional cubic spline...");
 
     std::vector<Size> dim(5);
@@ -890,13 +929,7 @@ void InterpolationTest::testMultiSpline() {
     }
 }
 
-namespace {
-
-    struct NotThrown {};
-
-}
-
-void InterpolationTest::testAsFunctor() {
+BOOST_AUTO_TEST_CASE(testAsFunctor) {
 
     BOOST_TEST_MESSAGE("Testing use of interpolations as functors...");
 
@@ -940,18 +973,7 @@ void InterpolationTest::testAsFunctor() {
     }
 }
 
-
-namespace {
-
-    Integer sign(Real y1, Real y2) {
-        return y1 == y2 ? 0 :
-               y1 < y2 ?  1 :
-                         -1 ;
-    }
-
-}
-
-void InterpolationTest::testFritschButland() {
+BOOST_AUTO_TEST_CASE(testFritschButland) {
 
     BOOST_TEST_MESSAGE("Testing Fritsch-Butland interpolation...");
 
@@ -986,8 +1008,7 @@ void InterpolationTest::testFritschButland() {
     }
 }
 
-
-void InterpolationTest::testBackwardFlat() {
+BOOST_AUTO_TEST_CASE(testBackwardFlat) {
 
     BOOST_TEST_MESSAGE("Testing backward-flat interpolation...");
 
@@ -1105,7 +1126,7 @@ void InterpolationTest::testBackwardFlat() {
 
 }
 
-void InterpolationTest::testForwardFlat() {
+BOOST_AUTO_TEST_CASE(testForwardFlat) {
 
     BOOST_TEST_MESSAGE("Testing forward-flat interpolation...");
 
@@ -1222,7 +1243,7 @@ void InterpolationTest::testForwardFlat() {
     }
 }
 
-void InterpolationTest::testSabrInterpolation(){
+BOOST_AUTO_TEST_CASE(testSabrInterpolation){
 
     BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
 
@@ -1382,8 +1403,7 @@ void InterpolationTest::testSabrInterpolation(){
     }
 }
 
-
-void InterpolationTest::testKernelInterpolation() {
+BOOST_AUTO_TEST_CASE(testKernelInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing kernel 1D interpolation...");
 
@@ -1482,8 +1502,7 @@ void InterpolationTest::testKernelInterpolation() {
     }
 }
 
-
-void InterpolationTest::testKernelInterpolation2D(){
+BOOST_AUTO_TEST_CASE(testKernelInterpolation2D){
 
     // No test values known from the literature.
     // Testing for consistency of input output data
@@ -1605,8 +1624,7 @@ void InterpolationTest::testKernelInterpolation2D(){
     }
 }
 
-
-void InterpolationTest::testBicubicDerivatives() {
+BOOST_AUTO_TEST_CASE(testBicubicDerivatives) {
     BOOST_TEST_MESSAGE("Testing bicubic spline derivatives...");
 
     std::vector<Real> x(100), y(100);
@@ -1649,8 +1667,7 @@ void InterpolationTest::testBicubicDerivatives() {
     }
 }
 
-
-void InterpolationTest::testBicubicUpdate() {
+BOOST_AUTO_TEST_CASE(testBicubicUpdate) {
     BOOST_TEST_MESSAGE("Testing that bicubic splines actually update...");
 
     Size N=6;
@@ -1678,27 +1695,7 @@ void InterpolationTest::testBicubicUpdate() {
     }
 }
 
-
-namespace {
-    class GF {
-      public:
-        GF(Real exponent, Real factor)
-        : exponent_(exponent), factor_(factor) {}
-
-        Real operator()(Real h) const {
-            return M_PI + factor_*std::pow(h, exponent_)
-                + std::pow(factor_*h, exponent_ + 1);
-        }
-      private:
-        const Real exponent_, factor_;
-    };
-
-    Real limCos(Real h) {
-        return -std::cos(h);
-    }
-}
-
-void InterpolationTest::testUnknownRichardsonExtrapolation() {
+BOOST_AUTO_TEST_CASE(testUnknownRichardsonExtrapolation) {
     BOOST_TEST_MESSAGE("Testing Richardson extrapolation with "
             "unknown order of convergence...");
 
@@ -1744,14 +1741,7 @@ void InterpolationTest::testUnknownRichardsonExtrapolation() {
                 " with unknown order of convergence");
 }
 
-
-namespace {
-    Real f(Real h) {
-        return std::pow( 1.0 + h, 1/h);
-    }
-}
-
-void InterpolationTest::testRichardsonExtrapolation() {
+BOOST_AUTO_TEST_CASE(testRichardsonExtrapolation) {
     BOOST_TEST_MESSAGE("Testing Richardson extrapolation...");
 
     /* example taken from
@@ -1789,7 +1779,7 @@ void InterpolationTest::testRichardsonExtrapolation() {
     }
 }
 
-void InterpolationTest::testNoArbSabrInterpolation(){
+BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation, *precondition(if_speed(Fast))){
 
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
@@ -1964,8 +1954,7 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
 }
 
-
-void InterpolationTest::testSabrSingleCases() {
+BOOST_AUTO_TEST_CASE(testSabrSingleCases) {
 
     BOOST_TEST_MESSAGE("Testing Sabr calibration single cases...");
 
@@ -1991,7 +1980,7 @@ void InterpolationTest::testSabrSingleCases() {
 
 }
 
-void InterpolationTest::testTransformations() {
+BOOST_AUTO_TEST_CASE(testTransformations) {
 
     BOOST_TEST_MESSAGE("Testing Sabr and no-arbitrage Sabr transformation functions...");
 
@@ -2065,7 +2054,7 @@ void InterpolationTest::testTransformations() {
     }
 }
 
-void InterpolationTest::testFlochKennedySabrIsSmoothAroundATM() {
+BOOST_AUTO_TEST_CASE(testFlochKennedySabrIsSmoothAroundATM) {
     BOOST_TEST_MESSAGE("Testing that Andersen SABR formula is smooth "
                        "close to the ATM level...");
 
@@ -2109,7 +2098,7 @@ void InterpolationTest::testFlochKennedySabrIsSmoothAroundATM() {
     }
 }
 
-void InterpolationTest::testLeFlochKennedySabrExample() {
+BOOST_AUTO_TEST_CASE(testLeFlochKennedySabrExample) {
     BOOST_TEST_MESSAGE("Testing Le Floc'h Kennedy SABR Example...");
 
     /*
@@ -2145,13 +2134,7 @@ void InterpolationTest::testLeFlochKennedySabrExample() {
     }
 }
 
-namespace {
-    Real lagrangeTestFct(Real x) {
-        return std::fabs(x) + 0.5*x - x*x;
-    }
-}
-
-void InterpolationTest::testLagrangeInterpolation() {
+BOOST_AUTO_TEST_CASE(testLagrangeInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing Lagrange interpolation...");
 
@@ -2206,7 +2189,7 @@ void InterpolationTest::testLagrangeInterpolation() {
     }
 }
 
-void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
+BOOST_AUTO_TEST_CASE(testLagrangeInterpolationAtSupportPoint) {
     BOOST_TEST_MESSAGE(
         "Testing Lagrange interpolation at supporting points...");
 
@@ -2237,7 +2220,7 @@ void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
     }
 }
 
-void InterpolationTest::testLagrangeInterpolationDerivative() {
+BOOST_AUTO_TEST_CASE(testLagrangeInterpolationDerivative) {
     BOOST_TEST_MESSAGE(
         "Testing Lagrange interpolation derivatives...");
 
@@ -2267,7 +2250,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
     }
 }
 
-void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
+BOOST_AUTO_TEST_CASE(testLagrangeInterpolationOnChebyshevPoints) {
     BOOST_TEST_MESSAGE(
         "Testing Lagrange interpolation on Chebyshev nodes...");
 
@@ -2319,7 +2302,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     }
 }
 
-void InterpolationTest::testBSplines() {
+BOOST_AUTO_TEST_CASE(testBSplines) {
     BOOST_TEST_MESSAGE("Testing B-Splines...");
 
     // reference values have been generate with the R package splines2
@@ -2364,7 +2347,7 @@ void InterpolationTest::testBSplines() {
     }
 }
 
-void InterpolationTest::testBackwardFlatOnSinglePoint() {
+BOOST_AUTO_TEST_CASE(testBackwardFlatOnSinglePoint) {
     BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
                        "single point...");
     const std::vector<Real> knots(1, 1.0), values(1, 2.5);
@@ -2397,7 +2380,7 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
     }
 }
 
-void InterpolationTest::testChebyshevInterpolation() {
+BOOST_AUTO_TEST_CASE(testChebyshevInterpolation) {
     BOOST_TEST_MESSAGE("Testing Chebyshev interpolation...");
 
     const auto fcts =
@@ -2437,7 +2420,7 @@ void InterpolationTest::testChebyshevInterpolation() {
     }
 }
 
-void InterpolationTest::testChebyshevInterpolationOnNodes() {
+BOOST_AUTO_TEST_CASE(testChebyshevInterpolationOnNodes) {
     BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on and around nodes...");
 
     constexpr double tol = 10*QL_EPSILON;
@@ -2492,7 +2475,7 @@ void InterpolationTest::testChebyshevInterpolationOnNodes() {
     }
 }
 
-void InterpolationTest::testChebyshevInterpolationUpdateY() {
+BOOST_AUTO_TEST_CASE(testChebyshevInterpolationUpdateY) {
     BOOST_TEST_MESSAGE("Testing Y update for Chebyshev interpolation...");
 
     Array y({1, 4, 7, 4});
@@ -2520,45 +2503,6 @@ void InterpolationTest::testChebyshevInterpolationUpdateY() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* InterpolationTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Interpolation tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSimmetricEndConditions));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testDerivativeEndConditions));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNonRestrictiveHymanFilter));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnRPN15AValues));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnGaussianValues));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineErrorOnGaussianValues));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testMultiSpline));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testAsFunctor));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFritschButland));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFlochKennedySabrIsSmoothAroundATM));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLeFlochKennedySabrExample));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation2D));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testUnknownRichardsonExtrapolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testRichardsonExtrapolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrSingleCases));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testTransformations));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationAtSupportPoint));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationDerivative));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationOnNodes));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationUpdateY));
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

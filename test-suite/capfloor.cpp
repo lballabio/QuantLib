@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "capfloor.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
@@ -145,8 +145,11 @@ namespace capfloor_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void CapFloorTest::testVega() {
+BOOST_AUTO_TEST_SUITE(CapFloorTest)
+
+BOOST_AUTO_TEST_CASE(testVega) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor vega...");
 
@@ -197,7 +200,7 @@ void CapFloorTest::testVega() {
     }
 }
 
-void CapFloorTest::testStrikeDependency() {
+BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor dependency on strike...");
 
@@ -252,7 +255,7 @@ void CapFloorTest::testStrikeDependency() {
     }
 }
 
-void CapFloorTest::testConsistency() {
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing consistency between cap, floor and collar...");
 
@@ -359,7 +362,7 @@ void CapFloorTest::testConsistency() {
     }
 }
 
-void CapFloorTest::testParity() {
+BOOST_AUTO_TEST_CASE(testParity) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor parity...");
 
@@ -404,7 +407,7 @@ void CapFloorTest::testParity() {
     }
 }
 
-void CapFloorTest::testATMRate() {
+BOOST_AUTO_TEST_CASE(testATMRate) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor ATM rate...");
 
@@ -462,8 +465,7 @@ void CapFloorTest::testATMRate() {
     }
 }
 
-
-void CapFloorTest::testImpliedVolatility() {
+BOOST_AUTO_TEST_CASE(testImpliedVolatility) {
 
     BOOST_TEST_MESSAGE("Testing implied term volatility for cap and floor...");
 
@@ -548,7 +550,7 @@ void CapFloorTest::testImpliedVolatility() {
     }
 }
 
-void CapFloorTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price against cached values...");
 
@@ -594,7 +596,7 @@ void CapFloorTest::testCachedValue() {
             << "    expected:   " << cachedFloorNPV);
 }
 
-void CapFloorTest::testCachedValueFromOptionLets() {
+BOOST_AUTO_TEST_CASE(testCachedValueFromOptionLets) {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
 
@@ -663,7 +665,7 @@ void CapFloorTest::testCachedValueFromOptionLets() {
             << "    expected:   " << cachedFloorNPV);
 }
 
-void CapFloorTest::testOptionLetsDelta() {
+BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
 
     BOOST_TEST_MESSAGE("Testing Black caplet/floorlet delta coefficients against finite difference values...");
 
@@ -786,7 +788,7 @@ void CapFloorTest::testOptionLetsDelta() {
 
 }
 
-void CapFloorTest::testBachelierOptionLetsDelta() {
+BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier caplet/floorlet delta coefficients against finite difference values...");
 
@@ -912,18 +914,6 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
 
 }
 
-test_suite* CapFloorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cap and floor tests");
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testParity));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testVega));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testATMRate));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testImpliedVolatility));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValueFromOptionLets));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testOptionLetsDelta));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testBachelierOptionLetsDelta));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

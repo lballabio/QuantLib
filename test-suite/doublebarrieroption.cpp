@@ -18,7 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "doublebarrieroption.hpp"
+#include "speedlevel.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -143,8 +144,11 @@ namespace double_barrier_option_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void DoubleBarrierOptionTest::testEuropeanHaugValues() {
+BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTest)
+
+BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing double barrier european options against Haug's values...");
 
@@ -383,7 +387,11 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
     }
 }
 
-void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
 
@@ -525,7 +533,7 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
     }
 }
 
-void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
+BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing MC double-barrier options against analytical values...");
 
     using namespace double_barrier_option_test;
@@ -632,20 +640,6 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
 }
 
-test_suite* DoubleBarrierOptionTest::suite(SpeedLevel) {
-    auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
+BOOST_AUTO_TEST_SUITE_END()
 
-    return suite;
-}
-
-test_suite* DoubleBarrierOptionTest::experimental(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "brownianbridge.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/methods/montecarlo/brownianbridge.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
@@ -58,8 +58,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void BrownianBridgeTest::testVariates() {
+BOOST_AUTO_TEST_SUITE(BrownianBridgeTest)
+
+BOOST_AUTO_TEST_CASE(testVariates) {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge variates...");
 
     std::vector<Time> times = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 5.0};
@@ -163,8 +166,7 @@ void BrownianBridgeTest::testVariates() {
     }
 }
 
-
-void BrownianBridgeTest::testPathGeneration() {
+BOOST_AUTO_TEST_CASE(testPathGeneration) {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge path generation...");
 
     std::vector<Time> times = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 5.0, 7.0, 9.0, 10.0};
@@ -244,10 +246,6 @@ void BrownianBridgeTest::testPathGeneration() {
     }
 }
 
-test_suite* BrownianBridgeTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Brownian bridge tests");
-    suite->add(QUANTLIB_TEST_CASE(&BrownianBridgeTest::testVariates));
-    suite->add(QUANTLIB_TEST_CASE(&BrownianBridgeTest::testPathGeneration));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

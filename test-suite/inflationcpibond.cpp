@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "inflationcpibond.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
@@ -164,8 +164,11 @@ namespace inflation_cpi_bond_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void InflationCPIBondTest::testCleanPrice() {
+BOOST_AUTO_TEST_SUITE(InflationCPIBondTest)
+
+BOOST_AUTO_TEST_CASE(testCleanPrice) {
     BOOST_TEST_MESSAGE("Checking cached pricers for CPI bond...");
 
     using namespace inflation_cpi_bond_test;
@@ -222,8 +225,7 @@ void InflationCPIBondTest::testCleanPrice() {
     }
 }
 
-
-void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
+BOOST_AUTO_TEST_CASE(testCPILegWithoutBaseCPI) {
     BOOST_TEST_MESSAGE("Checking CPI leg with or without explicit base CPI fixing...");
 
     using namespace inflation_cpi_bond_test;
@@ -303,11 +305,6 @@ void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
     }
 }
 
-test_suite* InflationCPIBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("CPI bond tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCleanPrice));
-    suite->add(QUANTLIB_TEST_CASE(&InflationCPIBondTest::testCPILegWithoutBaseCPI));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "chooseroption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/simplechooseroption.hpp>
@@ -49,8 +49,11 @@ using namespace boost::unit_test_framework;
         << "\n" \
         << "    tolerance:        " << tolerance);
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
+BOOST_AUTO_TEST_SUITE(ChooserOptionTest)
+
+BOOST_AUTO_TEST_CASE(testAnalyticSimpleChooserEngine){
 
     BOOST_TEST_MESSAGE("Testing analytic simple chooser option...");
 
@@ -101,8 +104,7 @@ void ChooserOptionTest::testAnalyticSimpleChooserEngine(){
 
 }
 
-
-void ChooserOptionTest::testAnalyticComplexChooserEngine(){
+BOOST_AUTO_TEST_CASE(testAnalyticComplexChooserEngine){
     BOOST_TEST_MESSAGE("Testing analytic complex chooser option...");
 
     /* The example below is from
@@ -156,13 +158,6 @@ void ChooserOptionTest::testAnalyticComplexChooserEngine(){
     }
 }
 
-test_suite* ChooserOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Chooser option tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &ChooserOptionTest::testAnalyticSimpleChooserEngine));
-    suite->add(QUANTLIB_TEST_CASE(
-        &ChooserOptionTest::testAnalyticComplexChooserEngine));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

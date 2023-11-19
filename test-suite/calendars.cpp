@@ -26,7 +26,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "calendars.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/errors.hpp>
 #include <ql/time/calendar.hpp>
@@ -49,7 +49,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CalendarTest::testModifiedCalendars() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CalendarTest)
+
+BOOST_AUTO_TEST_CASE(testModifiedCalendars) {
 
     BOOST_TEST_MESSAGE("Testing calendar modification...");
 
@@ -109,8 +113,7 @@ void CalendarTest::testModifiedCalendars() {
         BOOST_FAIL(d2 << " still a holiday");
 }
 
-
-void CalendarTest::testJointCalendars() {
+BOOST_AUTO_TEST_CASE(testJointCalendars) {
 
     BOOST_TEST_MESSAGE("Testing joint calendars...");
 
@@ -185,7 +188,7 @@ void CalendarTest::testJointCalendars() {
     }
 }
 
-void CalendarTest::testUSSettlement() {
+BOOST_AUTO_TEST_CASE(testUSSettlement) {
     BOOST_TEST_MESSAGE("Testing US settlement holiday list...");
 
     std::vector<Date> expectedHol;
@@ -244,7 +247,7 @@ void CalendarTest::testUSSettlement() {
     }
 }
 
-void CalendarTest::testUSGovernmentBondMarket() {
+BOOST_AUTO_TEST_CASE(testUSGovernmentBondMarket) {
     BOOST_TEST_MESSAGE("Testing US government bond market holiday list...");
 
     std::vector<Date> expectedHol;
@@ -274,7 +277,7 @@ void CalendarTest::testUSGovernmentBondMarket() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUSNewYorkStockExchange() {
+BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
     BOOST_TEST_MESSAGE("Testing New York Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -370,8 +373,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
     }
 }
 
-
-void CalendarTest::testSOFR() {
+BOOST_AUTO_TEST_CASE(testSOFR) {
     BOOST_TEST_MESSAGE("Testing extra non-fixing day for SOFR...");
 
     auto fedCalendar = UnitedStates(UnitedStates::GovernmentBond);
@@ -385,8 +387,7 @@ void CalendarTest::testSOFR() {
         BOOST_ERROR(testDate << " should not be a fixing date for " << sofr.name());
 }
 
-
-void CalendarTest::testTARGET() {
+BOOST_AUTO_TEST_CASE(testTARGET) {
     BOOST_TEST_MESSAGE("Testing TARGET holiday list...");
 
     std::vector<Date> expectedHol;
@@ -448,7 +449,7 @@ void CalendarTest::testTARGET() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testGermanyFrankfurt() {
+BOOST_AUTO_TEST_CASE(testGermanyFrankfurt) {
     BOOST_TEST_MESSAGE("Testing Frankfurt Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -478,7 +479,7 @@ void CalendarTest::testGermanyFrankfurt() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testGermanyEurex() {
+BOOST_AUTO_TEST_CASE(testGermanyEurex) {
     BOOST_TEST_MESSAGE("Testing Eurex holiday list...");
 
     std::vector<Date> expectedHol;
@@ -510,7 +511,7 @@ void CalendarTest::testGermanyEurex() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testGermanyXetra() {
+BOOST_AUTO_TEST_CASE(testGermanyXetra) {
     BOOST_TEST_MESSAGE("Testing Xetra holiday list...");
 
     std::vector<Date> expectedHol;
@@ -540,7 +541,7 @@ void CalendarTest::testGermanyXetra() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUKSettlement() {
+BOOST_AUTO_TEST_CASE(testUKSettlement) {
     BOOST_TEST_MESSAGE("Testing UK settlement holiday list...");
 
     std::vector<Date> expectedHol;
@@ -593,7 +594,7 @@ void CalendarTest::testUKSettlement() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUKExchange() {
+BOOST_AUTO_TEST_CASE(testUKExchange) {
     BOOST_TEST_MESSAGE("Testing London Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -646,7 +647,7 @@ void CalendarTest::testUKExchange() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUKMetals() {
+BOOST_AUTO_TEST_CASE(testUKMetals) {
     BOOST_TEST_MESSAGE("Testing London Metals Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -699,7 +700,7 @@ void CalendarTest::testUKMetals() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testItalyExchange() {
+BOOST_AUTO_TEST_CASE(testItalyExchange) {
     BOOST_TEST_MESSAGE("Testing Milan Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -742,7 +743,7 @@ void CalendarTest::testItalyExchange() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testRussia() {
+BOOST_AUTO_TEST_CASE(testRussia) {
     BOOST_TEST_MESSAGE("Testing Russia holiday list...");
 
     std::vector<Date> expectedHol;
@@ -1343,7 +1344,7 @@ void CalendarTest::testRussia() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testBrazil() {
+BOOST_AUTO_TEST_CASE(testBrazil) {
     BOOST_TEST_MESSAGE("Testing Brazil holiday list...");
 
     std::vector<Date> expectedHol;
@@ -1386,7 +1387,7 @@ void CalendarTest::testBrazil() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testDenmark() {
+BOOST_AUTO_TEST_CASE(testDenmark) {
 
     BOOST_TEST_MESSAGE("Testing Denmark holiday list...");
 
@@ -1446,7 +1447,7 @@ void CalendarTest::testDenmark() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testSouthKoreanSettlement() {
+BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
     BOOST_TEST_MESSAGE("Testing South-Korean settlement holiday list...");
 
     std::vector<Date> expectedHol;
@@ -2172,7 +2173,7 @@ void CalendarTest::testSouthKoreanSettlement() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testKoreaStockExchange() {
+BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
     BOOST_TEST_MESSAGE("Testing Korea Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -2947,7 +2948,7 @@ void CalendarTest::testKoreaStockExchange() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testChinaSSE() {
+BOOST_AUTO_TEST_CASE(testChinaSSE) {
     BOOST_TEST_MESSAGE("Testing China Shanghai Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -3159,7 +3160,7 @@ void CalendarTest::testChinaSSE() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testChinaIB() {
+BOOST_AUTO_TEST_CASE(testChinaIB) {
     BOOST_TEST_MESSAGE("Testing China Inter Bank working weekends list...");
 
     std::vector<Date> expectedWorkingWeekEnds;
@@ -3268,7 +3269,7 @@ void CalendarTest::testChinaIB() {
                                  << " calculated working weekends");
 }
 
-void CalendarTest::testEndOfMonth() {
+BOOST_AUTO_TEST_CASE(testEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
 
     Calendar c = TARGET(); // any calendar would be OK
@@ -3289,7 +3290,7 @@ void CalendarTest::testEndOfMonth() {
     }
 }
 
-void CalendarTest::testBusinessDaysBetween() {
+BOOST_AUTO_TEST_CASE(testBusinessDaysBetween) {
 
     BOOST_TEST_MESSAGE("Testing calculation of business days between dates...");
 
@@ -3364,8 +3365,7 @@ void CalendarTest::testBusinessDaysBetween() {
     }
 }
 
-
-void CalendarTest::testBespokeCalendars() {
+BOOST_AUTO_TEST_CASE(testBespokeCalendars) {
 
     BOOST_TEST_MESSAGE("Testing bespoke calendars...");
 
@@ -3478,8 +3478,9 @@ void CalendarTest::testBespokeCalendars() {
         BOOST_ERROR(testDate4 << " (marked as holiday) not detected");
 }
 
-void CalendarTest::testIntradayAddHolidays() {
 #ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(testIntradayAddHolidays) {
+
     BOOST_TEST_MESSAGE("Testing addHolidays with enable-intraday...");
 
     // test cases taken from testModifiedCalendars
@@ -3565,11 +3566,10 @@ void CalendarTest::testIntradayAddHolidays() {
                           << " and different hours/min/secs");
     if (c1.isHoliday(d2Mock))
         BOOST_FAIL(d2Mock << " still a holiday and different hours/min/secs");
-
-#endif
 }
+#endif
 
-void CalendarTest::testDayLists() {
+BOOST_AUTO_TEST_CASE(testDayLists) {
 
     BOOST_TEST_MESSAGE("Testing holidayList and businessDaysList...");
     Calendar germany = Germany();
@@ -3599,48 +3599,6 @@ void CalendarTest::testDayLists() {
     }
 }
 
-test_suite* CalendarTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Calendar tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBrazil));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testRussia));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalyExchange));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKSettlement));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKExchange));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKMetals));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyFrankfurt));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyXetra));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyEurex));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testTARGET));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDenmark));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSSettlement));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSOFR));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testKoreaStockExchange));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaSSE));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaIB));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testModifiedCalendars));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testJointCalendars));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBespokeCalendars));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
-
-    #ifdef QL_HIGH_RESOLUTION_DATE
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
-    #endif
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDayLists));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

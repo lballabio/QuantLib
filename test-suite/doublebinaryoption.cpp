@@ -17,7 +17,7 @@ Copyright (C) 2015 Thema Consulting SA
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "doublebinaryoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -71,8 +71,11 @@ namespace {
     };
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void DoubleBinaryOptionTest::testHaugValues() {
+BOOST_AUTO_TEST_SUITE(DoubleBinaryOptionTest)
+
+BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options against Haug's values...");
 
@@ -243,7 +246,7 @@ void DoubleBinaryOptionTest::testHaugValues() {
     }
 } 
 
-void DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical() {
+BOOST_AUTO_TEST_CASE(testPdeDoubleBarrierWithAnalytical) {
     BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options "
             "against PDE Heston version...");
 
@@ -323,10 +326,6 @@ void DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* DoubleBinaryOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("DoubleBinary");
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBinaryOptionTest::testHaugValues));
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

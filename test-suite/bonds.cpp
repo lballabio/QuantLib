@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "bonds.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
@@ -91,7 +91,11 @@ namespace bonds_test {
 }
 
 
-void BondTest::testYield() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BondsTest)
+
+BOOST_AUTO_TEST_CASE(testYield) {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/yield calculation...");
 
@@ -191,7 +195,7 @@ void BondTest::testYield() {
     }
 }
 
-void BondTest::testAtmRate() {
+BOOST_AUTO_TEST_CASE(testAtmRate) {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/ATM rate calculation...");
 
@@ -251,7 +255,7 @@ void BondTest::testAtmRate() {
     }
 }
 
-void BondTest::testZspread() {
+BOOST_AUTO_TEST_CASE(testZspread) {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/z-spread calculation...");
 
@@ -330,9 +334,7 @@ void BondTest::testZspread() {
     }
 }
 
-
-
-void BondTest::testTheoretical() {
+BOOST_AUTO_TEST_CASE(testTheoretical) {
 
     BOOST_TEST_MESSAGE("Testing theoretical bond price/yield calculation...");
 
@@ -412,8 +414,7 @@ void BondTest::testTheoretical() {
     }
 }
 
-
-void BondTest::testCached() {
+BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE(
         "Testing bond price/yield calculation against cached values...");
@@ -685,9 +686,7 @@ void BondTest::testCached() {
     );
 }
 
-
-
-void BondTest::testCachedZero() {
+BOOST_AUTO_TEST_CASE(testCachedZero) {
 
     BOOST_TEST_MESSAGE("Testing zero-coupon bond prices against cached values...");
 
@@ -769,8 +768,7 @@ void BondTest::testCachedZero() {
     }
 }
 
-
-void BondTest::testCachedFixed() {
+BOOST_AUTO_TEST_CASE(testCachedFixed) {
 
     BOOST_TEST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
 
@@ -869,8 +867,7 @@ void BondTest::testCachedFixed() {
     }
 }
 
-
-void BondTest::testCachedFloating() {
+BOOST_AUTO_TEST_CASE(testCachedFloating) {
 
     BOOST_TEST_MESSAGE("Testing floating-rate bond prices against cached values...");
 
@@ -1011,7 +1008,7 @@ void BondTest::testCachedFloating() {
     }
 }
 
-void BondTest::testBrazilianCached() {
+BOOST_AUTO_TEST_CASE(testBrazilianCached) {
 
     BOOST_TEST_MESSAGE(
         "Testing Brazilian public bond prices against Andima cached values...");
@@ -1100,7 +1097,7 @@ void BondTest::testBrazilianCached() {
     }
 }
 
-void BondTest::testExCouponGilt() {
+BOOST_AUTO_TEST_CASE(testExCouponGilt) {
     BOOST_TEST_MESSAGE(
         "Testing ex-coupon UK Gilt price against market values...");
     /* UK Gilts have an exCouponDate 7 business days before the coupon
@@ -1228,8 +1225,7 @@ void BondTest::testExCouponGilt() {
     }
 }
 
-
-void BondTest::testExCouponAustralianBond() {
+BOOST_AUTO_TEST_CASE(testExCouponAustralianBond) {
     BOOST_TEST_MESSAGE(
         "Testing ex-coupon Australian bond price against market values...");
     /* Australian Government Bonds have an exCouponDate 7 calendar
@@ -1362,7 +1358,7 @@ void BondTest::testExCouponAustralianBond() {
 /// This requires the use of the Schedule to be constructed
 /// with a custom date vector
 /// </summary>
-void BondTest::testBondFromScheduleWithDateVector()
+BOOST_AUTO_TEST_CASE(testBondFromScheduleWithDateVector)
 {
     BOOST_TEST_MESSAGE("Testing South African R2048 bond price using Schedule constructor with Date vector...");
     //When pricing bond from Yield To Maturity, use NullCalendar()
@@ -1439,7 +1435,7 @@ void BondTest::testBondFromScheduleWithDateVector()
     }
 }
 
-void BondTest::testFixedBondWithGivenDates() {
+BOOST_AUTO_TEST_CASE(testFixedBondWithGivenDates) {
 
     BOOST_TEST_MESSAGE("Testing fixed-coupon bond built on schedule with given dates...");
 
@@ -1561,7 +1557,7 @@ void BondTest::testFixedBondWithGivenDates() {
     }
 }
 
-void BondTest::testRiskyBondWithGivenDates() {
+BOOST_AUTO_TEST_CASE(testRiskyBondWithGivenDates) {
 
     BOOST_TEST_MESSAGE("Testing risky bond engine...");
 
@@ -1627,8 +1623,7 @@ void BondTest::testRiskyBondWithGivenDates() {
     }
 }
 
-
-void BondTest::testFixedRateBondWithArbitrarySchedule() {
+BOOST_AUTO_TEST_CASE(testFixedRateBondWithArbitrarySchedule) {
     BOOST_TEST_MESSAGE("Testing fixed-rate bond with arbitrary schedule...");
     Calendar calendar = NullCalendar();
 
@@ -1666,8 +1661,7 @@ void BondTest::testFixedRateBondWithArbitrarySchedule() {
     BOOST_CHECK_NO_THROW(bond.cleanPrice());
 }
 
-
-void BondTest::testThirty360BondWithSettlementOn31st(){
+BOOST_AUTO_TEST_CASE(testThirty360BondWithSettlementOn31st){
     BOOST_TEST_MESSAGE(
         "Testing Thirty/360 bond with settlement on 31st of the month...");
 
@@ -1711,25 +1705,6 @@ void BondTest::testThirty360BondWithSettlementOn31st(){
     ASSERT_CLOSE("accrued", settlement, accrued, 0.7, 1e-6);
 }
 
-test_suite* BondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Bond tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testYield));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testAtmRate));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testZspread));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testTheoretical));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCached));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedZero));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFixed));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFloating));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testFixedBondWithGivenDates));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testRiskyBondWithGivenDates));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testFixedRateBondWithArbitrarySchedule));
-    suite->add(QUANTLIB_TEST_CASE(&BondTest::testThirty360BondWithSettlementOn31st));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "compiledboostversion.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 
 #include <ql/version.hpp>
@@ -27,7 +27,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CompiledBoostVersionTest::test() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CompiledBoostVersionExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(test) {
 
     BOOST_TEST_MESSAGE("Testing compiled boost version...");
 
@@ -35,10 +39,6 @@ void CompiledBoostVersionTest::test() {
     BOOST_CHECK(QuantLib::compiledBoostVersion() == BOOST_VERSION);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CompiledBoostVersionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Compiled boost version test");
-    suite->add(QUANTLIB_TEST_CASE(&CompiledBoostVersionTest::test));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -414,6 +414,7 @@ set(QL_SOURCES
     math/polynomialmathfunction.cpp
     math/primenumbers.cpp
     math/quadratic.cpp
+    math/randomnumbers/burley2020sobolrsg.cpp
     math/randomnumbers/faurersg.cpp
     math/randomnumbers/haltonrsg.cpp
     math/randomnumbers/knuthuniformrng.cpp
@@ -1518,6 +1519,7 @@ set(QL_HEADERS
     math/primenumbers.hpp
     math/quadratic.hpp
     math/randomnumbers/boxmullergaussianrng.hpp
+    math/randomnumbers/burley2020sobolrsg.hpp
     math/randomnumbers/centrallimitgaussianrng.hpp
     math/randomnumbers/faurersg.hpp
     math/randomnumbers/haltonrsg.hpp

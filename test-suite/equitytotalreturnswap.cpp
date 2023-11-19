@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "equitytotalreturnswap.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/equitytotalreturnswap.hpp>
 #include <ql/indexes/equityindex.hpp>
@@ -210,7 +210,11 @@ namespace equitytotalreturnswap_test {
     }
 }
 
-void EquityTotalReturnSwapTest::testFairMargin() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EquityTotalReturnSwapTest)
+
+BOOST_AUTO_TEST_CASE(testFairMargin) {
     BOOST_TEST_MESSAGE("Testing fair margin...");
 
     using namespace equitytotalreturnswap_test;
@@ -232,7 +236,7 @@ void EquityTotalReturnSwapTest::testFairMargin() {
                                -0.005, 1.0, 2);
 }
 
-void EquityTotalReturnSwapTest::testErrorWhenNegativeNominal() {
+BOOST_AUTO_TEST_CASE(testErrorWhenNegativeNominal) {
     BOOST_TEST_MESSAGE("Testing error when negative nominal...");
 
     using namespace equitytotalreturnswap_test;
@@ -246,7 +250,7 @@ void EquityTotalReturnSwapTest::testErrorWhenNegativeNominal() {
         ExpectedErrorMessage("Nominal cannot be negative"));
 }
 
-void EquityTotalReturnSwapTest::testErrorWhenNoPaymentCalendar() {
+BOOST_AUTO_TEST_CASE(testErrorWhenNoPaymentCalendar) {
     BOOST_TEST_MESSAGE("Testing error when payment calendar is missing...");
 
     using namespace equitytotalreturnswap_test;
@@ -261,7 +265,7 @@ void EquityTotalReturnSwapTest::testErrorWhenNoPaymentCalendar() {
         ExpectedErrorMessage("Calendar in schedule cannot be empty"));
 }
 
-void EquityTotalReturnSwapTest::testEquityLegNPV() {
+BOOST_AUTO_TEST_CASE(testEquityLegNPV) {
     BOOST_TEST_MESSAGE("Testing equity leg NPV replication...");
 
     using namespace equitytotalreturnswap_test;
@@ -287,7 +291,7 @@ void EquityTotalReturnSwapTest::testEquityLegNPV() {
                     << "    expected NPV:    " << expectedEquityLegNPV << "\n");
 }
 
-void EquityTotalReturnSwapTest::testTRSNPV() {
+BOOST_AUTO_TEST_CASE(testTRSNPV) {
     BOOST_TEST_MESSAGE("Testing TRS NPV...");
 
     using namespace equitytotalreturnswap_test;
@@ -308,14 +312,6 @@ void EquityTotalReturnSwapTest::testTRSNPV() {
                         -0.005, 1.0, 2);
 }
 
-test_suite* EquityTotalReturnSwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Equity total return swap tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::testFairMargin));
-    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::testErrorWhenNegativeNominal));
-    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::testErrorWhenNoPaymentCalendar));
-    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::testEquityLegNPV));
-    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::testTRSNPV));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

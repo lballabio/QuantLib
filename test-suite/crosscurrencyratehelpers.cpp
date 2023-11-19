@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "crosscurrencyratehelpers.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -323,8 +323,11 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
     }
 }
 
-void CrossCurrencyRateHelpersTest::
-    testConstNotionalBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTest)
+
+BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy) {
     BOOST_TEST_MESSAGE("Testing constant notional basis swaps with collateral in quote ccy and "
                        "basis in base ccy...");
 
@@ -335,7 +338,7 @@ void CrossCurrencyRateHelpersTest::
                                               isBasisOnFxBaseCurrencyLeg);
 }
 
-void CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy() {
+BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy) {
     BOOST_TEST_MESSAGE(
         "Testing constant notional basis swaps with collateral in base ccy and basis in quote ccy...");
 
@@ -346,7 +349,7 @@ void CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralInBa
                                               isBasisOnFxBaseCurrencyLeg);
 }
 
-void CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralAndBasisInBaseCcy() {
+BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralAndBasisInBaseCcy) {
     BOOST_TEST_MESSAGE(
         "Testing constant notional basis swaps with collateral and basis in base ccy...");
 
@@ -357,7 +360,7 @@ void CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralAndB
                                               isBasisOnFxBaseCurrencyLeg);
 }
 
-void CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralAndBasisInQuoteCcy() {
+BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralAndBasisInQuoteCcy) {
     BOOST_TEST_MESSAGE("Testing constant notional basis swaps with collateral and basis in quote ccy...");
 
     bool isFxBaseCurrencyCollateralCurrency = false;
@@ -367,8 +370,7 @@ void CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralAndB
                                               isBasisOnFxBaseCurrencyLeg);
 }
 
-void CrossCurrencyRateHelpersTest::
-    testResettingBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy() {
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy) {
     BOOST_TEST_MESSAGE(
         "Testing resetting basis swaps with collateral in quote ccy and basis in base ccy...");
 
@@ -380,8 +382,7 @@ void CrossCurrencyRateHelpersTest::
                                      isFxBaseCurrencyLegResettable);
 }
 
-void CrossCurrencyRateHelpersTest::
-    testResettingBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy() {
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy) {
     BOOST_TEST_MESSAGE(
         "Testing resetting basis swaps with collateral in base ccy and basis in quote ccy...");
 
@@ -393,7 +394,7 @@ void CrossCurrencyRateHelpersTest::
                                      isFxBaseCurrencyLegResettable);
 }
 
-void CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasisInBaseCcy() {
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithCollateralAndBasisInBaseCcy) {
     BOOST_TEST_MESSAGE("Testing resetting basis swaps with collateral and basis in base ccy...");
 
     bool isFxBaseCurrencyCollateralCurrency = true;
@@ -404,7 +405,7 @@ void CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasis
                                      isFxBaseCurrencyLegResettable);
 }
 
-void CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasisInQuoteCcy() {
+BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithCollateralAndBasisInQuoteCcy) {
     BOOST_TEST_MESSAGE("Testing resetting basis swaps with collateral and basis in quote ccy...");
 
     bool isFxBaseCurrencyCollateralCurrency = false;
@@ -415,7 +416,7 @@ void CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasis
                                      isFxBaseCurrencyLegResettable);
 }
 
-void CrossCurrencyRateHelpersTest::testExceptionWhenInstrumentTenorShorterThanIndexFrequency() {
+BOOST_AUTO_TEST_CASE(testExceptionWhenInstrumentTenorShorterThanIndexFrequency) {
     BOOST_TEST_MESSAGE(
         "Testing exception when instrument tenor is shorter than index frequency...");
 
@@ -432,32 +433,6 @@ void CrossCurrencyRateHelpersTest::testExceptionWhenInstrumentTenorShorterThanIn
         Error);
 }
 
-test_suite* CrossCurrencyRateHelpersTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cross currency rate helpers tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(
-        QUANTLIB_TEST_CASE(&CrossCurrencyRateHelpersTest::
-                               testConstNotionalBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy));
-    suite->add(
-        QUANTLIB_TEST_CASE(&CrossCurrencyRateHelpersTest::
-                               testConstNotionalBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy));
-    suite->add(QUANTLIB_TEST_CASE(
-        &CrossCurrencyRateHelpersTest::testConstNotionalBasisSwapsWithCollateralAndBasisInBaseCcy));
-    suite->add(QUANTLIB_TEST_CASE(&CrossCurrencyRateHelpersTest::
-                                      testConstNotionalBasisSwapsWithCollateralAndBasisInQuoteCcy));
-
-    suite->add(
-        QUANTLIB_TEST_CASE(&CrossCurrencyRateHelpersTest::
-                               testResettingBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy));
-    suite->add(
-        QUANTLIB_TEST_CASE(&CrossCurrencyRateHelpersTest::
-                               testResettingBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy));
-    suite->add(QUANTLIB_TEST_CASE(
-        &CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasisInBaseCcy));
-    suite->add(QUANTLIB_TEST_CASE(
-        &CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasisInQuoteCcy));
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &CrossCurrencyRateHelpersTest::testExceptionWhenInstrumentTenorShorterThanIndexFrequency));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
