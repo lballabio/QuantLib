@@ -431,7 +431,7 @@ int main(int argc, char* argv[] ) {
             mq.receive(&id, sizeof(unsigned), recvd_size, priority);
 
             while (id != terminateId) {
-                result_type a(id, TimedBenchmark(bm[id].getTestCase())());
+                result_type a(id, TimedBenchmark(bm[id].getTestCase(), bm[id].getName())());
                 rq.send(&a, sizeof(result_type), 0);
 
                 mq.receive(&id, sizeof(unsigned), recvd_size, priority);
