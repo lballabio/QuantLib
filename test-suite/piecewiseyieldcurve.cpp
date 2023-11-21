@@ -1276,10 +1276,16 @@ namespace piecewise_yield_curve_test {
     // functor returning additional dates used in the bootstrap
     struct additionalDates {
         std::vector<Date> operator()() {
-            Date settl = TARGET().advance(Settings::instance().evaluationDate(), 2 * Days);
+            Date today = Settings::instance().evaluationDate();
+            Calendar cal = TARGET();
+            Date settl = cal.advance(today, 2 * Days);
             std::vector<Date> dates;
             for (Size i = 0; i < 5; ++i)
-                dates.push_back(TARGET().advance(settl, (1 + i) * Months));
+                dates.push_back(cal.advance(settl, (1 + i) * Months));
+            // Add dates before the referenceDate and not in sorted order.
+            // These should be skipped by GlobalBootstrap::initialize().
+            dates.insert(dates.begin(), today - 1);
+            dates.push_back(today - 2);
             return dates;
         }
     };
