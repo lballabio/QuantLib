@@ -490,16 +490,14 @@ namespace QuantLib {
                         *(v0 + kappa*theta*term)
                   - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
                           /(sigma*sigma);
-            break;
           case AngledContour:
+            vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
+                      /(kappa*term) + theta;
           case AngledContourNoCV:
             {
-                vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
-                          /(kappa*term) + theta;
-
-                const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
-                tanPhi_ = std::tan(
-                     (r*freq_ < 0)? M_PI/12*boost::math::sign(freq_) : 0.0
+              const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
+              tanPhi_ = std::tan(
+                     (r*freq_ < 0.0)? M_PI/12*boost::math::sign(freq_) : 0.0
                 );
             }
             break;
@@ -515,18 +513,19 @@ namespace QuantLib {
                         == std::complex<Real>(0.0),
                    "only Heston model is supported");
 
-        std::complex<Real> phiBS;
         constexpr std::complex<Real> i(0, 1);
 
-        if (cpxLog_ == AngledContour || cpxLog_ == AngledContourNoCV) {
+        if (cpxLog_ == AngledContour || cpxLog_ == AngledContourNoCV || cpxLog_ == AsymptoticChF) {
             const std::complex<Real> h_u(u, u*tanPhi_ - alpha_);
             const std::complex<Real> hPrime(h_u-i);
 
-            phiBS = (cpxLog_ == AngledContour)
-                ? std::exp(
+            std::complex<Real> phiBS(0.0);
+            if (cpxLog_ == AngledContour)
+                phiBS = std::exp(
                     -0.5*vAvg_*term_*(hPrime*hPrime +
-                            std::complex<Real>(-hPrime.imag(), hPrime.real())))
-                : 0.0;
+                            std::complex<Real>(-hPrime.imag(), hPrime.real())));
+            else if (cpxLog_ == AsymptoticChF)
+                phiBS = std::exp(u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
 
             return std::exp(-u*tanPhi_*freq_)
                     *(std::exp(std::complex<Real>(0.0, u*freq_))
@@ -534,28 +533,20 @@ namespace QuantLib {
                       *(phiBS - enginePtr_->chF(hPrime, term_))/(h_u*hPrime)
                       ).real()*s_alpha_;
         }
-
-        const std::complex<Real> z(u, -alpha_);
-        const std::complex<Real> zPrime(u, -alpha_-1);
-
-        switch (cpxLog_) {
-          case AndersenPiterbarg:
-          case AndersenPiterbargOptCV:
-            phiBS = std::exp(
+        else if (cpxLog_ == AndersenPiterbarg || cpxLog_ == AndersenPiterbargOptCV) {
+            const std::complex<Real> z(u, -alpha_);
+            const std::complex<Real> zPrime(u, -alpha_-1);
+            const std::complex<Real> phiBS = std::exp(
                 -0.5*vAvg_*term_*(zPrime*zPrime +
                         std::complex<Real>(-zPrime.imag(), zPrime.real()))
             );
-            break;
-          case AsymptoticChF:
-            phiBS = std::exp(u*phi_ + psi_);
-            break;
-          default:
-            QL_FAIL("unknown control variate");
-        }
 
-        return (std::exp(std::complex<Real> (0.0, u*freq_))
-            * (phiBS - enginePtr_->chF(zPrime, term_)) / (z*zPrime)
-            ).real()*s_alpha_;
+            return (std::exp(std::complex<Real> (0.0, u*freq_))
+                * (phiBS - enginePtr_->chF(zPrime, term_)) / (z*zPrime)
+                ).real()*s_alpha_;
+        }
+        else
+            QL_FAIL("unknown control variate");
     }
 
     Real AnalyticHestonEngine::AP_Helper::controlVariateValue() const {

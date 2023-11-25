@@ -259,7 +259,7 @@ namespace QuantLib {
         const Real scalingFactor = (scaling_ == Null<Real>())
             ? (analyticCV != AnalyticHestonEngine::AsymptoticChF)
                     ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*t)))
-                    : Real(1.2)
+                    : Real(1.0)
             : scaling_;
 
         Size n;
