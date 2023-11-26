@@ -665,7 +665,7 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       evaluations_(0),
-      cpxLog_     (AngledContour),
+      cpxLog_     (OptimalCV),
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))),
       andersenPiterbargEpsilon_(Null<Real>()),
@@ -679,10 +679,10 @@ namespace QuantLib {
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       evaluations_(0),
-      cpxLog_(AngledContour),
+      cpxLog_(OptimalCV),
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))),
-      andersenPiterbargEpsilon_(1e-30),
+      andersenPiterbargEpsilon_(1e-40),
       alpha_(-0.5) {
     }
 
@@ -712,7 +712,7 @@ namespace QuantLib {
 
         if (t > 0.15 && (v0+t*kappa*theta)/sigma*std::sqrt(1-rho*rho) < 0.15
                 && ((kappa- 0.5*rho*sigma)*(v0 + t*kappa*theta)
-                    + kappa*theta*std::log(4*(1-rho*rho)))/(sigma*sigma) < 0.5) {
+                    + kappa*theta*std::log(4*(1-rho*rho)))/(sigma*sigma) < 0.1) {
             return AsymptoticChF;
         }
         else {
@@ -833,7 +833,7 @@ namespace QuantLib {
 
             const Real scalingFactor = (cpxLog_ != OptimalCV && cpxLog_ != AsymptoticChF)
                 ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*maturity)))
-                : Real(1.2);
+                : Real(1.0);
 
             const Real h_cv =
                 fwd/M_PI*integration_->calculate(c_inf, cvHelper, uM, scalingFactor);
