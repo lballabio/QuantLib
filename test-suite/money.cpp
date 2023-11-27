@@ -43,8 +43,11 @@ BOOST_AUTO_TEST_CASE(testNone) {
 
     Money::Settings::instance().conversionType() = Money::NoConversion;
 
-    Money calculated = m1*3.0 + 2.5*m2 - m3/5.0;
-    Decimal x = m1.value()*3.0 + 2.5*m2.value() - m3.value()/5.0;
+    Money calculated = m1*3.0 + 2.5*m2 - m3/5.0 + m1 * (m2 / m3);
+    Decimal x = m1.value() * 3.0
+        + 2.5 * m2.value()
+        - m3.value() / 5.0
+        + m1.value() * (m2.value() / m3.value());
     Money expected(x, EUR);
 
     if (calculated != expected) {
@@ -75,11 +78,13 @@ BOOST_AUTO_TEST_CASE(testBaseCurrency) {
     money_settings.conversionType() = Money::BaseCurrencyConversion;
     money_settings.baseCurrency() = EUR;
 
-    Money calculated = m1*3.0 + 2.5*m2 - m3/5.0;
+    Money calculated = m1*3.0 + 2.5*m2 - m3/5.0 + m1 * (m2/m3);
 
-    Rounding round = money_settings.baseCurrency().rounding();
-    Decimal x = round(m1.value()*3.0/eur_gbp.rate()) + 2.5*m2.value()
-              - round(m3.value()/(5.0*eur_usd.rate()));
+    const Rounding& round = money_settings.baseCurrency().rounding();
+    Decimal x = round(m1.value()*3.0/eur_gbp.rate())
+        + 2.5*m2.value()
+        - round(m3.value()/(5.0*eur_usd.rate()))
+        + round((m1.value()* (m2.value() / round(m3.value()/eur_usd.rate()))) / eur_gbp.rate()) ;
     Money expected(x, EUR);
 
     money_settings.conversionType() = Money::NoConversion;
@@ -110,11 +115,15 @@ BOOST_AUTO_TEST_CASE(testAutomated) {
     auto & money_settings = Money::Settings::instance();
     money_settings.conversionType() = Money::AutomatedConversion;
 
-    Money calculated = (m1*3.0 + 2.5*m2) - m3/5.0;
+    Money calculated = (m1*3.0 + 2.5*m2) - m3/5.0 + m1 * (m2/m3);
 
-    Rounding round = m1.currency().rounding();
-    Decimal x = m1.value()*3.0 + round(2.5*m2.value()*eur_gbp.rate())
-              - round((m3.value()/5.0)*eur_gbp.rate()/eur_usd.rate());
+    const Rounding& round1 = m1.currency().rounding();
+    const Rounding& round2 = m2.currency().rounding();
+    Decimal x = m1.value()*3.0
+        + round1(2.5*m2.value()*eur_gbp.rate())
+        - round1((m3.value()/5.0)*eur_gbp.rate()/eur_usd.rate())
+        + m1.value() * ( m2.value() / round2(m3.value()/eur_usd.rate()));
+
     Money expected(x, GBP);
 
     money_settings.conversionType() = Money::NoConversion;
