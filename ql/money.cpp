@@ -87,22 +87,7 @@ namespace QuantLib {
     }
 
     Money& Money::operator-=(const Money& m) {
-        const auto & conversion_type = Settings::instance().conversionType();
-        if (currency_ == m.currency_) {
-            value_ -= m.value_;
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            convertToBase(*this);
-            Money tmp = m;
-            convertToBase(tmp);
-            *this -= tmp;
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m;
-            convertTo(tmp, currency_);
-            *this -= tmp;
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
-        return *this;
+        return *this += (-m);
     }
 
     Decimal operator/(const Money& m1, const Money& m2) {
