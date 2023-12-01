@@ -141,6 +141,70 @@ BOOST_AUTO_TEST_CASE(testAutomated) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testComparisons) {
+
+    BOOST_TEST_MESSAGE("Testing money comparisons...");
+
+    for (const auto conversionType : {Money::AutomatedConversion, Money::NoConversion, Money::BaseCurrencyConversion}) {
+        ExchangeRateManager::instance().add(eur_usd);
+        ExchangeRateManager::instance().add(eur_gbp);
+        Money::Settings::instance().conversionType() = conversionType;
+        if (conversionType == Money::BaseCurrencyConversion)
+            Money::Settings::instance().baseCurrency() = EUR;
+
+        // equality
+        BOOST_CHECK_EQUAL(Money(123.45, EUR), Money(123.45, EUR));
+        if (conversionType != Money::NoConversion)
+            BOOST_CHECK_EQUAL(Money(1, EUR), Money(eur_usd.rate(), USD));
+
+        // unequal
+        BOOST_CHECK_NE(Money(1, EUR), Money(2, EUR));
+        if (conversionType != Money::NoConversion)
+            BOOST_CHECK_NE(Money(1, EUR), Money(100, USD));
+
+        // less than
+        BOOST_CHECK_LT(Money(1, EUR), Money(2, EUR));
+        if (conversionType != Money::NoConversion)
+            BOOST_CHECK_LT(Money(1, EUR), Money(100, USD));
+
+        // less or equal than
+        BOOST_CHECK_LE(Money(1, EUR), Money(2, EUR));
+        BOOST_CHECK_LE(Money(2, EUR), Money(2, EUR));
+        if (conversionType != Money::NoConversion)
+            BOOST_CHECK_LE(Money(1, EUR), Money(100, USD));
+
+        // greater than
+        BOOST_CHECK_GT(Money(2, EUR), Money(1, EUR));
+        if (conversionType != Money::NoConversion)
+            BOOST_CHECK_GT(Money(100, EUR), Money(1, USD));
+
+        // less or equal than
+        BOOST_CHECK_GE(Money(2, EUR), Money(1, EUR));
+        BOOST_CHECK_GE(Money(2, EUR), Money(2, EUR));
+        if (conversionType != Money::NoConversion)
+            BOOST_CHECK_GE(Money(100, EUR), Money(1, USD));
+
+        // close
+        BOOST_CHECK(close(Money(1, EUR), Money(1, EUR)));
+        BOOST_CHECK(close(Money(1+1e-15, EUR), Money(1, EUR)));
+        if (conversionType != Money::NoConversion){
+            BOOST_CHECK(close(Money(1, EUR), Money(eur_usd.rate(), USD)));
+            BOOST_CHECK(close(Money(1+1e-15, EUR), Money(eur_usd.rate(), USD)));
+        }
+
+        // close enough
+        BOOST_CHECK(close_enough(Money(1, EUR), Money(1, EUR)));
+        BOOST_CHECK(close_enough(Money(1+1e-15, EUR), Money(1, EUR)));
+        if (conversionType != Money::NoConversion){
+            BOOST_CHECK(close_enough(Money(1, EUR), Money(eur_usd.rate(), USD)));
+            BOOST_CHECK(close_enough(Money(1+1e-15, EUR), Money(eur_usd.rate(), USD)));
+        }
+
+        ExchangeRateManager::instance().clear();
+        Money::Settings::instance().conversionType() = Money::NoConversion;
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
