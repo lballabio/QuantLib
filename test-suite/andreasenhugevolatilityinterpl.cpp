@@ -410,7 +410,7 @@ BOOST_AUTO_TEST_CASE(testAndreasenHugePut, *precondition(if_speed(Fast))) {
     testAndreasenHugeVolatilityInterpolation(data, expected);
 }
 
-BOOST_AUTO_TEST_CASE(testAndreasenHugeCall, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testAndreasenHugeCall) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Call calibration...");
