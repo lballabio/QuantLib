@@ -134,6 +134,30 @@ namespace {
         testEquality(priceSeries[{(Day)2, (Month)2, (Year)2002}], {12, 22, 32, 42});
         testEquality(priceSeries[{(Day)3, (Month)3, (Year)2003}], {13, 23, 33, 43});
     }
+
+    [[maybe_unused]] void testIntervalPriceExtractValues() {
+        BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
+
+        const std::vector<Real> openValues =
+            IntervalPrice::extractValues(createSeries(), IntervalPrice::Open);
+        const std::vector<Real> expectedOpenValues{11, 12, 13};
+        BOOST_TEST(openValues == expectedOpenValues);
+
+        const std::vector<Real> closeValues =
+            IntervalPrice::extractValues(createSeries(), IntervalPrice::Close);
+        const std::vector<Real> expectedCloseValues{21, 22, 23};
+        BOOST_TEST(closeValues == expectedCloseValues);
+
+        const std::vector<Real> highValues =
+            IntervalPrice::extractValues(createSeries(), IntervalPrice::High);
+        const std::vector<Real> expectedHighValues{31, 32, 33};
+        BOOST_TEST(highValues == expectedHighValues);
+
+        const std::vector<Real> lowValues =
+            IntervalPrice::extractValues(createSeries(), IntervalPrice::Low);
+        const std::vector<Real> expectedLowValues{41, 42, 43};
+        BOOST_TEST(lowValues == expectedLowValues);
+    }
 } // namespace
 
 test_suite* priceTestSuite() {
@@ -143,5 +167,6 @@ test_suite* priceTestSuite() {
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceInspectors));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceModifiers));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceMakeSeries));
+    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceExtractValues));
     return suite;
 }
