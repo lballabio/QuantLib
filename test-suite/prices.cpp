@@ -29,7 +29,7 @@ using namespace boost::unit_test_framework;
 namespace {
     namespace tt = boost::test_tools;
 
-    [[maybe_unused]] void testMidEquivalent() {
+    void testMidEquivalent() {
         BOOST_TEST_MESSAGE("Testing midEquivalent()...");
 
         BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 4), tt::tolerance(1e-14));
@@ -55,7 +55,7 @@ namespace {
         BOOST_CHECK_THROW(midEquivalent(0, 0, 0, 0), QuantLib::Error);
     }
 
-    [[maybe_unused]] void testMidSafe() {
+    void testMidSafe() {
         BOOST_TEST_MESSAGE("Testing midSafe()...");
 
         BOOST_TEST(1.5 == midSafe(1, 2), tt::tolerance(1e-14));
@@ -65,7 +65,7 @@ namespace {
         BOOST_CHECK_THROW(midSafe(0, 2), QuantLib::Error);
     }
 
-    [[maybe_unused]] void testIntervalPriceInspectors() {
+    void testIntervalPriceInspectors() {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::<Inspectors>()...");
 
         const IntervalPrice p(1, 2, 3, 4);
@@ -89,7 +89,7 @@ namespace {
             BOOST_TEST(lhs.value(t) == rhs.value(t));
     }
 
-    [[maybe_unused]] void testIntervalPriceModifiers() {
+    void testIntervalPriceModifiers() {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::<Modifiers>()...");
 
         IntervalPrice p(1, 2, 3, 4);
@@ -124,7 +124,7 @@ namespace {
         return IntervalPrice::makeSeries(d, open, close, high, low);
     }
 
-    [[maybe_unused]] void testIntervalPriceMakeSeries() {
+    void testIntervalPriceMakeSeries() {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
 
         const TimeSeries<IntervalPrice> priceSeries = createSeries();
@@ -135,7 +135,7 @@ namespace {
         testEquality(priceSeries[{(Day)3, (Month)3, (Year)2003}], {13, 23, 33, 43});
     }
 
-    [[maybe_unused]] void testIntervalPriceExtractValues() {
+    void testIntervalPriceExtractValues() {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
 
         const std::vector<Real> openValues =
@@ -159,7 +159,7 @@ namespace {
         BOOST_TEST(lowValues == expectedLowValues);
     }
 
-    [[maybe_unused]] void testIntervalPriceExtractComponent() {
+    void testIntervalPriceExtractComponent() {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
 
         const TimeSeries<Real> openSeries =
