@@ -24,7 +24,38 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+namespace {
+    namespace tt = boost::test_tools;
+
+    [[maybe_unused]] void testMidEquivalent() {
+        BOOST_TEST_MESSAGE("Testing midEquivalent()...");
+
+        BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 4), tt::tolerance(1e-14));
+        BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 4), tt::tolerance(1e-14));
+        BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 0), tt::tolerance(1e-14));
+        BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 4), tt::tolerance(1e-14));
+
+        BOOST_TEST(1 == midEquivalent(1, 0, 3, 4));
+        BOOST_TEST(1 == midEquivalent(1, 0, 0, 4));
+        BOOST_TEST(1 == midEquivalent(1, 0, 3, 0));
+        BOOST_TEST(1 == midEquivalent(1, 0, 0, 4));
+
+        BOOST_TEST(2 == midEquivalent(0, 2, 3, 4));
+        BOOST_TEST(2 == midEquivalent(0, 2, 0, 4));
+        BOOST_TEST(2 == midEquivalent(0, 2, 3, 0));
+        BOOST_TEST(2 == midEquivalent(0, 2, 0, 4));
+
+        BOOST_TEST(3 == midEquivalent(0, 0, 3, 4));
+        BOOST_TEST(4 == midEquivalent(0, 0, 0, 4));
+        BOOST_TEST(3 == midEquivalent(0, 0, 3, 0));
+        BOOST_TEST(4 == midEquivalent(0, 0, 0, 4));
+
+        BOOST_CHECK_THROW(midEquivalent(0, 0, 0, 0), QuantLib::Error);
+    }
+} // namespace
+
 test_suite* priceTestSuite() {
     auto* suite = BOOST_TEST_SUITE("Prices tests");
+    suite->add(QUANTLIB_TEST_CASE(&testMidEquivalent));
     return suite;
 }

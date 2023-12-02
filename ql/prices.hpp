@@ -50,6 +50,7 @@ namespace QuantLib {
 
     /*! return the MidEquivalent price, i.e. the mid if available,
         or a suitable substitute if the proper mid is not available
+        \test different combinations are tested
     */
     Real midEquivalent(Real bid, Real ask, Real last, Real close);
 
