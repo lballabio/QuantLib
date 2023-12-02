@@ -110,9 +110,7 @@ namespace {
         testEquality(p, IntervalPrice(21, 22, 23, 24));
     }
 
-    [[maybe_unused]] void testIntervalPriceMakeSeries() {
-        BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
-
+    TimeSeries<IntervalPrice> createSeries() {
         std::vector<Date> d;
         d.emplace_back((Day)1, (Month)1, (Year)2001);
         d.emplace_back((Day)3, (Month)3, (Year)2003);
@@ -123,8 +121,13 @@ namespace {
         const std::vector<Real> high{31, 33, 32};
         const std::vector<Real> low{41, 43, 42};
 
-        const TimeSeries<IntervalPrice> priceSeries =
-            IntervalPrice::makeSeries(d, open, close, high, low);
+        return IntervalPrice::makeSeries(d, open, close, high, low);
+    }
+
+    [[maybe_unused]] void testIntervalPriceMakeSeries() {
+        BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
+
+        const TimeSeries<IntervalPrice> priceSeries = createSeries();
 
         BOOST_TEST(3u == priceSeries.size());
         testEquality(priceSeries[{(Day)1, (Month)1, (Year)2001}], {11, 21, 31, 41});
