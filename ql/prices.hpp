@@ -61,6 +61,8 @@ namespace QuantLib {
     Real midSafe(Real bid, Real ask);
 
     //! interval price
+    /*! \test Inspectors are tested.
+    */
     class IntervalPrice {
       public:
         enum Type { Open, Close, High, Low };

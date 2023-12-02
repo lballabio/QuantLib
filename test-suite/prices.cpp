@@ -62,11 +62,30 @@ namespace {
         BOOST_CHECK_THROW(midSafe(1, 0), QuantLib::Error);
         BOOST_CHECK_THROW(midSafe(0, 2), QuantLib::Error);
     }
+
+    [[maybe_unused]] void testIntervalPriceInspectors() {
+        BOOST_TEST_MESSAGE("Testing IntervalPrice::<Inspectors>()...");
+
+        const IntervalPrice p(1, 2, 3, 4);
+
+        BOOST_TEST(1 == p.open());
+        BOOST_TEST(1 == p.value(IntervalPrice::Open));
+
+        BOOST_TEST(2 == p.close());
+        BOOST_TEST(2 == p.value(IntervalPrice::Close));
+
+        BOOST_TEST(3 == p.high());
+        BOOST_TEST(3 == p.value(IntervalPrice::High));
+
+        BOOST_TEST(4 == p.low());
+        BOOST_TEST(4 == p.value(IntervalPrice::Low));
+    }
 } // namespace
 
 test_suite* priceTestSuite() {
     auto* suite = BOOST_TEST_SUITE("Prices tests");
     suite->add(QUANTLIB_TEST_CASE(&testMidEquivalent));
     suite->add(QUANTLIB_TEST_CASE(&testMidSafe));
+    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceInspectors));
     return suite;
 }
