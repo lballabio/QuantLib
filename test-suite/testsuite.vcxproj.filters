@@ -335,6 +335,9 @@
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="prices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="quantlibglobalfixture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -612,6 +615,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="piecewisezerospreadedtermstructure.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="prices.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="quantlibglobalfixture.hpp">
