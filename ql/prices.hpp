@@ -98,7 +98,7 @@ namespace QuantLib {
                                           IntervalPrice::Type);
         static TimeSeries<Real> extractComponent(
                                           const TimeSeries<IntervalPrice>&,
-                                          enum IntervalPrice::Type);
+                                          IntervalPrice::Type);
         //@}
       private:
         Real open_, close_, high_, low_;
