@@ -56,6 +56,7 @@ namespace QuantLib {
 
     /*! return the MidSafe price, i.e. the mid only if
         both bid and ask prices are available
+        \test different combinations are tested
     */
     Real midSafe(Real bid, Real ask);
 

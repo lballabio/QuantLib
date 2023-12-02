@@ -52,10 +52,21 @@ namespace {
 
         BOOST_CHECK_THROW(midEquivalent(0, 0, 0, 0), QuantLib::Error);
     }
+
+    [[maybe_unused]] void testMidSafe() {
+        BOOST_TEST_MESSAGE("Testing midSafe()...");
+
+        BOOST_TEST(1.5 == midSafe(1, 2), tt::tolerance(1e-14));
+
+        BOOST_CHECK_THROW(midSafe(0, 0), QuantLib::Error);
+        BOOST_CHECK_THROW(midSafe(1, 0), QuantLib::Error);
+        BOOST_CHECK_THROW(midSafe(0, 2), QuantLib::Error);
+    }
 } // namespace
 
 test_suite* priceTestSuite() {
     auto* suite = BOOST_TEST_SUITE("Prices tests");
     suite->add(QUANTLIB_TEST_CASE(&testMidEquivalent));
+    suite->add(QUANTLIB_TEST_CASE(&testMidSafe));
     return suite;
 }
