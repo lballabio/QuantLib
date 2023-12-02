@@ -61,7 +61,7 @@ namespace QuantLib {
     Real midSafe(Real bid, Real ask);
 
     //! interval price
-    /*! \test Inspectors are tested.
+    /*! \test Inspectors, and Modifiers are tested.
     */
     class IntervalPrice {
       public:

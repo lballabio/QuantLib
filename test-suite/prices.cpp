@@ -80,6 +80,34 @@ namespace {
         BOOST_TEST(4 == p.low());
         BOOST_TEST(4 == p.value(IntervalPrice::Low));
     }
+
+
+    void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
+        using T = IntervalPrice::Type;
+        for (const auto t : {T::Open, T::Close, T::High, T::Low})
+            BOOST_TEST(lhs.value(t) == rhs.value(t));
+    }
+
+    [[maybe_unused]] void testIntervalPriceModifiers() {
+        BOOST_TEST_MESSAGE("Testing IntervalPrice::<Modifiers>()...");
+
+        IntervalPrice p(1, 2, 3, 4);
+
+        p.setValue(11, IntervalPrice::Open);
+        testEquality(p, IntervalPrice(11, 2, 3, 4));
+
+        p.setValue(12, IntervalPrice::Close);
+        testEquality(p, IntervalPrice(11, 12, 3, 4));
+
+        p.setValue(13, IntervalPrice::High);
+        testEquality(p, IntervalPrice(11, 12, 13, 4));
+
+        p.setValue(14, IntervalPrice::Low);
+        testEquality(p, IntervalPrice(11, 12, 13, 14));
+
+        p.setValues(21, 22, 23, 24);
+        testEquality(p, IntervalPrice(21, 22, 23, 24));
+    }
 } // namespace
 
 test_suite* priceTestSuite() {
@@ -87,5 +115,6 @@ test_suite* priceTestSuite() {
     suite->add(QUANTLIB_TEST_CASE(&testMidEquivalent));
     suite->add(QUANTLIB_TEST_CASE(&testMidSafe));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceInspectors));
+    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceModifiers));
     return suite;
 }
