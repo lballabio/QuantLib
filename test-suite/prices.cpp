@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/prices.hpp>
 #include <ql/time/date.hpp>
+#include <array>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -81,7 +82,6 @@ namespace {
         BOOST_TEST(4 == p.low());
         BOOST_TEST(4 == p.value(IntervalPrice::Low));
     }
-
 
     void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
         using T = IntervalPrice::Type;
@@ -158,6 +158,51 @@ namespace {
         const std::vector<Real> expectedLowValues{41, 42, 43};
         BOOST_TEST(lowValues == expectedLowValues);
     }
+
+    [[maybe_unused]] void testIntervalPriceExtractComponent() {
+        BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
+
+        const TimeSeries<Real> openSeries =
+            IntervalPrice::extractComponent(createSeries(), IntervalPrice::Open);
+        const TimeSeries<Real> closeSeries =
+            IntervalPrice::extractComponent(createSeries(), IntervalPrice::Close);
+        const TimeSeries<Real> highSeries =
+            IntervalPrice::extractComponent(createSeries(), IntervalPrice::High);
+        const TimeSeries<Real> lowSeries =
+            IntervalPrice::extractComponent(createSeries(), IntervalPrice::Low);
+
+        for (const auto& series : {openSeries, closeSeries, highSeries, lowSeries})
+            BOOST_TEST(3u == series.size());
+
+        const std::array<Date, 3> expectedDates{Date{(Day)1, (Month)1, (Year)2001},
+                                                Date{(Day)2, (Month)2, (Year)2002},
+                                                Date{(Day)3, (Month)3, (Year)2003}};
+        auto expectedDate = expectedDates.begin();
+
+        const std::array<IntervalPrice, 3> expectedPrices{IntervalPrice{11, 21, 31, 41},
+                                                          IntervalPrice{12, 22, 32, 42},
+                                                          IntervalPrice{13, 23, 33, 43}};
+        auto expectedPrice = expectedPrices.begin();
+
+        for (auto openIt = openSeries.begin(), closeIt = closeSeries.begin(),
+                  highIt = highSeries.begin(), lowIt = lowSeries.begin();
+             openIt != openSeries.end();
+             ++openIt, ++closeIt, ++highIt, ++lowIt, ++expectedDate, ++expectedPrice) {
+            const Date openDate = openIt->first;
+            const Real openValue = openIt->second;
+            const Date closeDate = closeIt->first;
+            const Real closeValue = closeIt->second;
+            const Date highDate = highIt->first;
+            const Real highValue = highIt->second;
+            const Date lowDate = lowIt->first;
+            const Real lowValue = lowIt->second;
+
+            for (const Date& date : {openDate, closeDate, highDate, lowDate})
+                BOOST_TEST(date == *expectedDate);
+
+            testEquality(*expectedPrice, IntervalPrice(openValue, closeValue, highValue, lowValue));
+        }
+    }
 } // namespace
 
 test_suite* priceTestSuite() {
@@ -168,5 +213,6 @@ test_suite* priceTestSuite() {
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceModifiers));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceMakeSeries));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceExtractValues));
+    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceExtractComponent));
     return suite;
 }
