@@ -20,6 +20,7 @@
 #include "prices.hpp"
 #include "utilities.hpp"
 #include <ql/prices.hpp>
+#include <ql/time/date.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -108,6 +109,28 @@ namespace {
         p.setValues(21, 22, 23, 24);
         testEquality(p, IntervalPrice(21, 22, 23, 24));
     }
+
+    [[maybe_unused]] void testIntervalPriceMakeSeries() {
+        BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
+
+        std::vector<Date> d;
+        d.emplace_back((Day)1, (Month)1, (Year)2001);
+        d.emplace_back((Day)3, (Month)3, (Year)2003);
+        d.emplace_back((Day)2, (Month)2, (Year)2002);
+
+        const std::vector<Real> open{11, 13, 12};
+        const std::vector<Real> close{21, 23, 22};
+        const std::vector<Real> high{31, 33, 32};
+        const std::vector<Real> low{41, 43, 42};
+
+        const TimeSeries<IntervalPrice> priceSeries =
+            IntervalPrice::makeSeries(d, open, close, high, low);
+
+        BOOST_TEST(3u == priceSeries.size());
+        testEquality(priceSeries[{(Day)1, (Month)1, (Year)2001}], {11, 21, 31, 41});
+        testEquality(priceSeries[{(Day)2, (Month)2, (Year)2002}], {12, 22, 32, 42});
+        testEquality(priceSeries[{(Day)3, (Month)3, (Year)2003}], {13, 23, 33, 43});
+    }
 } // namespace
 
 test_suite* priceTestSuite() {
@@ -116,5 +139,6 @@ test_suite* priceTestSuite() {
     suite->add(QUANTLIB_TEST_CASE(&testMidSafe));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceInspectors));
     suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceModifiers));
+    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceMakeSeries));
     return suite;
 }
