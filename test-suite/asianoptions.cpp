@@ -22,28 +22,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
+#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/instruments/asianoption.hpp>
+#include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
-#include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
-#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
-#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
+#include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price_heston.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
-#include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
-#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
-#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
-#include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
-#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
 #include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 

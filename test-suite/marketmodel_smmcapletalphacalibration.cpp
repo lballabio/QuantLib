@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "marketmodel_smmcapletalphacalibration.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
@@ -211,8 +211,11 @@ namespace market_model_smm_caplet_alpha_calibration_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
+BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletAlphaCalibrationTest)
+
+BOOST_AUTO_TEST_CASE(testFunction) {
 
     BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
                        "in a lognormal coterminal swap market model...");
@@ -343,12 +346,6 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-// --- Call the desired tests
-test_suite* MarketModelSmmCapletAlphaCalibrationTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("SMM Caplet alpha calibration test");
-
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelSmmCapletAlphaCalibrationTest::testFunction));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

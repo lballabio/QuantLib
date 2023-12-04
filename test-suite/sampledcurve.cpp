@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "sampledcurve.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/sampledcurve.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -35,7 +35,11 @@ namespace sampled_curve_test {
 
 QL_DEPRECATED_DISABLE_WARNING
 
-void SampledCurveTest::testConstruction() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SampledCurveTest)
+
+BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing sampled curve construction...");
 
@@ -86,9 +90,6 @@ void SampledCurveTest::testConstruction() {
 
 QL_DEPRECATED_ENABLE_WARNING
 
-test_suite* SampledCurveTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("sampled curve tests");
-    suite->add(QUANTLIB_TEST_CASE(&SampledCurveTest::testConstruction));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

@@ -18,36 +18,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "marketmodel_smm.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
-#include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
-#include <ql/models/marketmodels/products/multiproductcomposite.hpp>
-#include <ql/models/marketmodels/accountingengine.hpp>
-#include <ql/models/marketmodels/utilities.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalcotswapratepc.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
-#include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
-#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
-#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
-#include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
-#include <ql/methods/montecarlo/genericlsregression.hpp>
-#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/daycounters/simpledaycounter.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/methods/montecarlo/genericlsregression.hpp>
+#include <ql/models/marketmodels/accountingengine.hpp>
+#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalcotswapratepc.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
+#include <ql/models/marketmodels/models/abcdvol.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/products/multiproductcomposite.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
+#include <ql/models/marketmodels/swapforwardmappings.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <sstream>
 
 using namespace QuantLib;
@@ -418,8 +419,11 @@ namespace market_model_smm_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
+BOOST_AUTO_TEST_SUITE(MarketModelSmmTest)
+
+BOOST_AUTO_TEST_CASE(testMultiStepCoterminalSwapsAndSwaptions, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step coterminal swaps and swaptions "
@@ -503,16 +507,6 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-// --- Call the desired tests
-test_suite* MarketModelSmmTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("SMM Market-model tests");
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

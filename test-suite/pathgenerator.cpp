@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "pathgenerator.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -140,8 +140,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void PathGeneratorTest::testPathGenerator() {
+BOOST_AUTO_TEST_SUITE(PathGeneratorTest)
+
+BOOST_AUTO_TEST_CASE(testPathGenerator) {
 
     BOOST_TEST_MESSAGE("Testing 1-D path generation against cached values...");
 
@@ -175,8 +178,7 @@ void PathGeneratorTest::testPathGenerator() {
                "square-root", false, 1.70608664108, 6.024200546031);
 }
 
-
-void PathGeneratorTest::testMultiPathGenerator() {
+BOOST_AUTO_TEST_CASE(testMultiPathGenerator) {
 
     BOOST_TEST_MESSAGE("Testing n-D path generation against cached values...");
 
@@ -285,11 +287,6 @@ void PathGeneratorTest::testMultiPathGenerator() {
     testMultiple(process, "square-root", result4, result4a);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* PathGeneratorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Path generation tests");
-    suite->add(QUANTLIB_TEST_CASE(&PathGeneratorTest::testPathGenerator));
-    suite->add(QUANTLIB_TEST_CASE(&PathGeneratorTest::testMultiPathGenerator));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

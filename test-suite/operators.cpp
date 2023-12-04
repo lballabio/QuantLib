@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "operators.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/dzero.hpp>
@@ -32,8 +32,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void OperatorTest::testTridiagonal() {
+BOOST_AUTO_TEST_SUITE(OperatorTest)
+
+BOOST_AUTO_TEST_CASE(testTridiagonal) {
 
     BOOST_TEST_MESSAGE("Testing tridiagonal operator...");
 
@@ -115,7 +118,7 @@ void OperatorTest::testTridiagonal() {
                    "\n                  tolerance: " << tolerance);
 }
 
-void OperatorTest::testConsistency() {
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing differential operators...");
 
@@ -162,7 +165,7 @@ void OperatorTest::testConsistency() {
     }
 }
 
-void OperatorTest::testBSMOperatorConsistency() {
+BOOST_AUTO_TEST_CASE(testBSMOperatorConsistency) {
     BOOST_TEST_MESSAGE("Testing consistency of BSM operators...");
 
     Array grid(10);
@@ -221,12 +224,6 @@ void OperatorTest::testBSMOperatorConsistency() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* OperatorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Operator tests");
-    suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testTridiagonal));
-    suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&OperatorTest::testBSMOperatorConsistency));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

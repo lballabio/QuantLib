@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "termstructures.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
@@ -115,7 +115,11 @@ namespace term_structures_test {
     Real sub(Real x, Real y) { return x - y; }
 }
 
-void TermStructureTest::testReferenceChange() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TermStructureTest)
+
+BOOST_AUTO_TEST_CASE(testReferenceChange) {
 
     BOOST_TEST_MESSAGE("Testing term structure against evaluation date change...");
 
@@ -151,8 +155,7 @@ void TermStructureTest::testReferenceChange() {
     }
 }
 
-
-void TermStructureTest::testImplied() {
+BOOST_AUTO_TEST_CASE(testImplied) {
 
     BOOST_TEST_MESSAGE("Testing consistency of implied term structure...");
 
@@ -180,7 +183,7 @@ void TermStructureTest::testImplied() {
             << "    expected:   " << discount);
 }
 
-void TermStructureTest::testImpliedObs() {
+BOOST_AUTO_TEST_CASE(testImpliedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of implied term structure...");
 
@@ -202,7 +205,7 @@ void TermStructureTest::testImpliedObs() {
         BOOST_ERROR("Observer was not notified of term structure change");
 }
 
-void TermStructureTest::testFSpreaded() {
+BOOST_AUTO_TEST_CASE(testFSpreaded) {
 
     BOOST_TEST_MESSAGE("Testing consistency of forward-spreaded term structure...");
 
@@ -232,7 +235,7 @@ void TermStructureTest::testFSpreaded() {
             << "    expected:   " << io::rate(forward));
 }
 
-void TermStructureTest::testFSpreadedObs() {
+BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of forward-spreaded "
                        "term structure...");
@@ -257,7 +260,7 @@ void TermStructureTest::testFSpreadedObs() {
         BOOST_ERROR("Observer was not notified of spread change");
 }
 
-void TermStructureTest::testZSpreaded() {
+BOOST_AUTO_TEST_CASE(testZSpreaded) {
 
     BOOST_TEST_MESSAGE("Testing consistency of zero-spreaded term structure...");
 
@@ -285,7 +288,7 @@ void TermStructureTest::testZSpreaded() {
             << "    expected:   " << io::rate(zero));
 }
 
-void TermStructureTest::testZSpreadedObs() {
+BOOST_AUTO_TEST_CASE(testZSpreadedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of zero-spreaded term structure...");
 
@@ -310,7 +313,7 @@ void TermStructureTest::testZSpreadedObs() {
         BOOST_ERROR("Observer was not notified of spread change");
 }
 
-void TermStructureTest::testCreateWithNullUnderlying() {
+BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
     BOOST_TEST_MESSAGE(
         "Testing that a zero-spreaded curve can be created with "
         "a null underlying curve...");
@@ -330,7 +333,7 @@ void TermStructureTest::testCreateWithNullUnderlying() {
     spreaded->referenceDate();
 }
 
-void TermStructureTest::testLinkToNullUnderlying() {
+BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
     BOOST_TEST_MESSAGE(
         "Testing that an underlying curve can be relinked to "
         "a null underlying curve...");
@@ -350,7 +353,7 @@ void TermStructureTest::testLinkToNullUnderlying() {
     underlying.linkTo(ext::shared_ptr<YieldTermStructure>());
 }
 
-void TermStructureTest::testCompositeZeroYieldStructures() {
+BOOST_AUTO_TEST_CASE(testCompositeZeroYieldStructures) {
     BOOST_TEST_MESSAGE(
         "Testing composite zero yield structures...");
 
@@ -416,8 +419,7 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     }
 }
 
-
-void TermStructureTest::testNullTimeToReference() {
+BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
     BOOST_TEST_MESSAGE("Testing zero-rate calculation for null time-to-reference...");
 
     Rate rate = 0.02;
@@ -436,19 +438,6 @@ void TermStructureTest::testNullTimeToReference() {
                     << "    expected:   " << expected);
 }
 
-test_suite* TermStructureTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Term structure tests");
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImplied));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImpliedObs));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreaded));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreadedObs));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreaded));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreadedObs));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testCreateWithNullUnderlying));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testLinkToNullUnderlying));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testCompositeZeroYieldStructures));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testNullTimeToReference));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

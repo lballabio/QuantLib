@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "spreadoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/kirkspreadoptionengine.hpp>
 #include <ql/exercise.hpp>
@@ -60,7 +60,11 @@ struct Case {
     Real theta;
 };
 
-void SpreadOptionTest::testKirkEngine() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SpreadOptionExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testKirkEngine) {
     BOOST_TEST_MESSAGE("Testing Kirk approximation for spread options...");
 
     /* The example data below are from "complete guide to option
@@ -163,11 +167,6 @@ void SpreadOptionTest::testKirkEngine() {
     }
 }
 
-test_suite* SpreadOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Spread option tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&SpreadOptionTest::testKirkEngine));
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

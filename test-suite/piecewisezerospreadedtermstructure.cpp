@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "piecewisezerospreadedtermstructure.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/yield/piecewisezerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -75,7 +75,11 @@ namespace piecewise_zero_spreaded_term_structure_test {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PiecewiseZeroSpreadedTermStructureTest)
+
+BOOST_AUTO_TEST_CASE(testFlatInterpolationLeft) {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation before the first spreaded date...");
 
@@ -113,7 +117,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
+BOOST_AUTO_TEST_CASE(testFlatInterpolationRight) {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation after the last spreaded date...");
 
@@ -152,7 +156,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpreads() {
+BOOST_AUTO_TEST_CASE(testLinearInterpolationMultipleSpreads) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation with more than two spreaded dates...");
 
@@ -197,7 +201,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpre
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
+BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
 
@@ -240,7 +244,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
+BOOST_AUTO_TEST_CASE(testForwardFlatInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing forward flat interpolation between two dates...");
 
@@ -278,7 +282,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
+BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing backward flat interpolation between two dates...");
 
@@ -320,7 +324,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
+BOOST_AUTO_TEST_CASE(testDefaultInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing default interpolation between two dates...");
 
@@ -358,7 +362,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
+BOOST_AUTO_TEST_CASE(testSetInterpolationFactory) {
 
     BOOST_TEST_MESSAGE("Testing factory constructor with additional parameters...");
 
@@ -408,7 +412,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
+BOOST_AUTO_TEST_CASE(testMaxDate) {
 
     BOOST_TEST_MESSAGE("Testing term structure max date...");
 
@@ -441,7 +445,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
+BOOST_AUTO_TEST_CASE(testQuoteChanging) {
 
     BOOST_TEST_MESSAGE("Testing quote update...");
 
@@ -491,26 +495,6 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 
 }
 
-test_suite* PiecewiseZeroSpreadedTermStructureTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Interpolated piecewise zero spreaded yield curve tests");
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpreads));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseZeroSpreadedTermStructureTest::testMaxDate));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()
