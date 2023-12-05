@@ -177,7 +177,6 @@ QL_TEST_SRCS = \
 QL_TEST_HDRS = \
     marketmodel.hpp \
     preconditions.hpp \
-		prices.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
     toplevelfixture.hpp \

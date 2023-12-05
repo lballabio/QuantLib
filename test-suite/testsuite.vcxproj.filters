@@ -539,9 +539,6 @@
     <ClInclude Include="preconditions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="prices.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="quantlibglobalfixture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -178,7 +178,6 @@ set(QL_TEST_HEADERS
     marketmodel.hpp
     paralleltestrunner.hpp
     preconditions.hpp
-    prices.hpp
     quantlibglobalfixture.hpp
     swaptionvolstructuresutilities.hpp
     toplevelfixture.hpp

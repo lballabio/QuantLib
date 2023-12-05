@@ -814,7 +814,6 @@
     <ClInclude Include="marketmodel.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
     <ClInclude Include="preconditions.hpp" />
-    <ClInclude Include="prices.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
