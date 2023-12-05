@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <algorithm>
 #include <ql/prices.hpp>
 #include <ql/errors.hpp>
 
@@ -135,10 +134,9 @@ namespace QuantLib {
                                            IntervalPrice::Type t)  {
         std::vector<Real> returnval;
         returnval.reserve(ts.size());
-        std::transform(ts.begin(), ts.end(), std::back_inserter(returnval),
-                       [t](const std::pair<Date, IntervalPrice>& date_price) -> Real {
-                           return date_price.second.value(t);
-                       });
+        for (const auto& i : ts) {
+            returnval.push_back(i.second.value(t));
+        }
         return returnval;
     }
 
