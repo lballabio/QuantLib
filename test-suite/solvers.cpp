@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "solvers.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/bisection.hpp>
@@ -168,58 +168,50 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void Solver1DTest::testBrent() {
+BOOST_AUTO_TEST_SUITE(Solver1DTest)
+
+BOOST_AUTO_TEST_CASE(testBrent) {
     BOOST_TEST_MESSAGE("Testing Brent solver...");
     test_solver(Brent(), "Brent", 1.0e-6);
 }
 
-void Solver1DTest::testBisection() {
+BOOST_AUTO_TEST_CASE(testBisection) {
     BOOST_TEST_MESSAGE("Testing bisection solver...");
     test_solver(Bisection(), "Bisection", 1.0e-6);
 }
 
-void Solver1DTest::testFalsePosition() {
+BOOST_AUTO_TEST_CASE(testFalsePosition) {
     BOOST_TEST_MESSAGE("Testing false-position solver...");
     test_solver(FalsePosition(), "FalsePosition", 1.0e-6);
 }
 
-void Solver1DTest::testNewton() {
+BOOST_AUTO_TEST_CASE(testNewton) {
     BOOST_TEST_MESSAGE("Testing Newton solver...");
     test_solver(Newton(), "Newton", 1.0e-12);
 }
 
-void Solver1DTest::testNewtonSafe() {
+BOOST_AUTO_TEST_CASE(testNewtonSafe) {
     BOOST_TEST_MESSAGE("Testing Newton-safe solver...");
     test_solver(NewtonSafe(), "NewtonSafe", 1.0e-9);
 }
 
-void Solver1DTest::testFiniteDifferenceNewtonSafe() {
+BOOST_AUTO_TEST_CASE(testFiniteDifferenceNewtonSafe) {
     BOOST_TEST_MESSAGE("Testing finite-difference Newton-safe solver...");
     test_solver(FiniteDifferenceNewtonSafe(), "FiniteDifferenceNewtonSafe", Null<Real>());
 }
 
-void Solver1DTest::testRidder() {
+BOOST_AUTO_TEST_CASE(testRidder) {
     BOOST_TEST_MESSAGE("Testing Ridder solver...");
     test_solver(Ridder(), "Ridder", 1.0e-6);
 }
 
-void Solver1DTest::testSecant() {
+BOOST_AUTO_TEST_CASE(testSecant) {
     BOOST_TEST_MESSAGE("Testing secant solver...");
     test_solver(Secant(), "Secant", 1.0e-6);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* Solver1DTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("1-D solver tests");
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testBrent));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testBisection));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testFalsePosition));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testNewton));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testNewtonSafe));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testFiniteDifferenceNewtonSafe));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testRidder));
-    suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testSecant));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

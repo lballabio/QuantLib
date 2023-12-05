@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "margrabeoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/margrabeoption.hpp>
@@ -117,7 +117,11 @@ namespace {
 
 }
 
-void MargrabeOptionTest::testEuroExchangeTwoAssets() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MargrabeOptionTest)
+
+BOOST_AUTO_TEST_CASE(testEuroExchangeTwoAssets) {
 
     BOOST_TEST_MESSAGE("Testing European one-asset-for-another option...");
 
@@ -284,7 +288,7 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
     }
 }
 
-void MargrabeOptionTest::testGreeks() {
+BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing analytic European exchange option greeks...");
 
@@ -444,7 +448,7 @@ void MargrabeOptionTest::testGreeks() {
     }
 }
 
-void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
+BOOST_AUTO_TEST_CASE(testAmericanExchangeTwoAssets) {
 
     BOOST_TEST_MESSAGE("Testing American one-asset-for-another option...");
 
@@ -547,13 +551,6 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
         }
     }
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* MargrabeOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Exchange option tests");
-    suite->add(
-        QUANTLIB_TEST_CASE(&MargrabeOptionTest::testEuroExchangeTwoAssets));
-    suite->add(
-        QUANTLIB_TEST_CASE(&MargrabeOptionTest::testAmericanExchangeTwoAssets));
-    suite->add(QUANTLIB_TEST_CASE(&MargrabeOptionTest::testGreeks));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

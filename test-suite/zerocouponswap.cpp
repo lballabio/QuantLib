@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "zerocouponswap.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/zerocouponswap.hpp>
 #include <ql/cashflows/subperiodcoupon.hpp>
@@ -190,7 +190,11 @@ namespace zerocouponswap_test {
     }
 }
 
-void ZeroCouponSwapTest::testInstrumentValuation() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ZeroCouponSwapTest)
+
+BOOST_AUTO_TEST_CASE(testInstrumentValuation) {
     BOOST_TEST_MESSAGE("Testing zero coupon swap valuation...");
     
     using namespace zerocouponswap_test;
@@ -206,7 +210,7 @@ void ZeroCouponSwapTest::testInstrumentValuation() {
     checkReplicationOfZeroCouponSwapNPV(Date(12, February, 2000), Date(12, February, 2020));
 }
 
-void ZeroCouponSwapTest::testFairFixedPayment() {
+BOOST_AUTO_TEST_CASE(testFairFixedPayment) {
     BOOST_TEST_MESSAGE("Testing fair fixed payment...");
     
     using namespace zerocouponswap_test;
@@ -220,7 +224,7 @@ void ZeroCouponSwapTest::testFairFixedPayment() {
                           Swap::Payer);
 }
 
-void ZeroCouponSwapTest::testFairFixedRate() {
+BOOST_AUTO_TEST_CASE(testFairFixedRate) {
     BOOST_TEST_MESSAGE("Testing fair fixed rate...");
 
     using namespace zerocouponswap_test;
@@ -233,7 +237,7 @@ void ZeroCouponSwapTest::testFairFixedRate() {
     checkFairFixedRate(Date(17, March, 2021), Date(12, February, 2041), Swap::Payer);
 }
 
-void ZeroCouponSwapTest::testFixedPaymentFromRate() {
+BOOST_AUTO_TEST_CASE(testFixedPaymentFromRate) {
     BOOST_TEST_MESSAGE("Testing fixed payment calculation from rate...");
 
     using namespace zerocouponswap_test;
@@ -259,7 +263,7 @@ void ZeroCouponSwapTest::testFixedPaymentFromRate() {
                     << "    end:    " << end << "\n");
 }
 
-void ZeroCouponSwapTest::testArgumentsValidation() {
+BOOST_AUTO_TEST_CASE(testArgumentsValidation) {
     BOOST_TEST_MESSAGE("Testing arguments validation...");
 
     using namespace zerocouponswap_test;
@@ -277,7 +281,7 @@ void ZeroCouponSwapTest::testArgumentsValidation() {
     BOOST_CHECK_THROW(vars.createZCSwap(end, start, 0.01), Error);
 }
 
-void ZeroCouponSwapTest::testExpectedCashFlowsInLegs() {
+BOOST_AUTO_TEST_CASE(testExpectedCashFlowsInLegs) {
     BOOST_TEST_MESSAGE("Testing expected cash flows in legs...");
 
     using namespace zerocouponswap_test;
@@ -313,15 +317,6 @@ void ZeroCouponSwapTest::testExpectedCashFlowsInLegs() {
                     << "    expected payment date:    " << paymentDate << "\n");
 }
 
-test_suite* ZeroCouponSwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Zero coupon swap tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testInstrumentValuation));
-    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFairFixedPayment));
-    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFairFixedRate));
-    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFixedPaymentFromRate));
-    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testArgumentsValidation));
-    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testExpectedCashFlowsInLegs));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

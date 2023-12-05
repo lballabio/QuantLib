@@ -17,21 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "nthtodefault.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/credit/nthtodefault.hpp>
+#include <ql/currencies/europe.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
-#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/integralntdengine.hpp>
+#include <ql/experimental/credit/nthtodefault.hpp>
 #include <ql/experimental/credit/pool.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/currencies/europe.hpp>
 #include <iostream>
 #include <string>
 
@@ -96,8 +97,13 @@ namespace nth_to_default_test {
 
 #endif
 
-void NthToDefaultTest::testGauss() {
-    #ifndef QL_PATCH_SOLARIS
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NthToDefaultExperimentalTest)
+
+#ifndef QL_PATCH_SOLARIS
+
+BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
 
@@ -235,12 +241,9 @@ void NthToDefaultTest::testGauss() {
                                  << absTolerance << " exceeded");
         }
     }
-    #endif
 }
+BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
 
-
-void NthToDefaultTest::testStudent() {
-    #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Student copula...");
 
@@ -381,16 +384,10 @@ void NthToDefaultTest::testStudent() {
                              << abs(diff) << "|" << hwDataDist[i].spread[3]);
     }
     //END
-    #endif
 }
 
-test_suite* NthToDefaultTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Nth-to-default tests");
-#ifndef QL_PATCH_SOLARIS
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
-        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testStudent));
-    }
-    #endif
-    return suite;
-}
+#endif
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

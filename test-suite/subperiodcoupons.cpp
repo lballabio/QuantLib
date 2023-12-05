@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "subperiodcoupons.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/subperiodcoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -264,7 +264,11 @@ void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
                     << "    averaging:    " << averaging << "\n");
 }
 
-void SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SubPeriodsCouponTest)
+
+BOOST_AUTO_TEST_CASE(testRegularSinglePeriodForwardStartingCoupon) {
     BOOST_TEST_MESSAGE("Testing regular single period forward starting coupon...");
 
     Date start(15, April, 2021);
@@ -276,7 +280,7 @@ void SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon() {
     testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
 }
 
-void SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing() {
+BOOST_AUTO_TEST_CASE(testRegularSinglePeriodCouponAfterFixing) {
     BOOST_TEST_MESSAGE("Testing regular single period coupon after fixing...");
 
     Date start(12, February, 2021);
@@ -288,7 +292,7 @@ void SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing() {
     testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
 }
 
-void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
+BOOST_AUTO_TEST_CASE(testIrregularSinglePeriodCouponAfterFixing) {
     BOOST_TEST_MESSAGE("Testing irregular single period coupon after fixing...");
 
     Date start(12, February, 2021);
@@ -300,7 +304,7 @@ void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
     testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 2);
 }
 
-void SubPeriodsCouponTest::testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods() {
+BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods) {
     BOOST_TEST_MESSAGE("Testing regular forward starting coupon with multiple compounded sub-periods...");
 
     Date start(15, April, 2021);
@@ -310,7 +314,7 @@ void SubPeriodsCouponTest::testRegularCompoundedForwardStartingCouponWithMultipl
     testMultipleCompoundedSubPeriodsCouponReplication(start, end, spread);
 }
 
-void SubPeriodsCouponTest::testRegularAveragedForwardStartingCouponWithMultipleSubPeriods() {
+BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeriods) {
     BOOST_TEST_MESSAGE("Testing regular forward starting coupon with multiple averaged sub-periods...");
 
     Date start(15, April, 2021);
@@ -320,7 +324,7 @@ void SubPeriodsCouponTest::testRegularAveragedForwardStartingCouponWithMultipleS
     testMultipleAveragedSubPeriodsCouponReplication(start, end, spread);
 }
 
-void SubPeriodsCouponTest::testExCouponCashFlow() {
+BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
     BOOST_TEST_MESSAGE("Testing ex-coupon cash flow...");
 
     using namespace subperiodcoupons_test;
@@ -343,7 +347,7 @@ void SubPeriodsCouponTest::testExCouponCashFlow() {
                     << "    end:    " << end << "\n");
 }
 
-void SubPeriodsCouponTest::testSubPeriodsLegCashFlows() {
+BOOST_AUTO_TEST_CASE(testSubPeriodsLegCashFlows) {
     BOOST_TEST_MESSAGE(
         "Testing sub-periods leg replication...");
 
@@ -351,7 +355,7 @@ void SubPeriodsCouponTest::testSubPeriodsLegCashFlows() {
     testSubPeriodsLegReplication(RateAveraging::Simple);
 }
 
-void SubPeriodsCouponTest::testSubPeriodsLegConsistencyChecks() {
+BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
     BOOST_TEST_MESSAGE("Testing sub-periods leg consistency checks...");
 
     using namespace subperiodcoupons_test;
@@ -385,21 +389,6 @@ void SubPeriodsCouponTest::testSubPeriodsLegConsistencyChecks() {
                       Error);
 }
 
-test_suite* SubPeriodsCouponTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Sub-period coupons tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(
-        QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon));
-    suite->add(QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing));
-    suite->add(
-        QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &SubPeriodsCouponTest::testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods));
-    suite->add(QUANTLIB_TEST_CASE(
-        &SubPeriodsCouponTest::testRegularAveragedForwardStartingCouponWithMultipleSubPeriods));
-    suite->add(QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testExCouponCashFlow));
-    suite->add(QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testSubPeriodsLegCashFlows));
-    suite->add(QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testSubPeriodsLegConsistencyChecks));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

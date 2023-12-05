@@ -17,29 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/optimization/bfgs.hpp>
 #include <ql/math/optimization/simplex.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/instruments/barrieroption.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugelocalvoladapter.hpp>
-#include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityadapter.hpp>
+#include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <cmath>
 
 using namespace QuantLib;

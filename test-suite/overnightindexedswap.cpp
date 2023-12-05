@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "overnightindexedswap.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 
 #include <ql/termstructures/yield/oisratehelper.hpp>
@@ -172,10 +172,86 @@ namespace overnight_indexed_swap_test {
         }
     };
 
+    void testBootstrap(bool telescopicValueDates,
+                       RateAveraging::Type averagingMethod,
+                       Real tolerance = 1.0e-8) {
+
+        CommonVars vars;
+
+        Natural paymentLag = 2;
+
+        std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
+
+        ext::shared_ptr<IborIndex> euribor3m(new Euribor3M);
+        ext::shared_ptr<Eonia> eonia(new Eonia);
+
+        for (auto& i : depositData) {
+            Real rate = 0.01 * i.rate;
+            ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+            ext::shared_ptr<Quote> quote (simple);
+            Period term = i.n * i.unit;
+            ext::shared_ptr<RateHelper> helper(new DepositRateHelper(
+                Handle<Quote>(quote), term, i.settlementDays, euribor3m->fixingCalendar(),
+                euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m->dayCounter()));
+
+            if (term <= 2*Days)
+                eoniaHelpers.push_back(helper);
+        }
+
+        for (auto& i : eoniaSwapData) {
+            Real rate = 0.01 * i.rate;
+            ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+            ext::shared_ptr<Quote> quote (simple);
+            Period term = i.n * i.unit;
+            ext::shared_ptr<RateHelper> helper(new
+                                               OISRateHelper(i.settlementDays,
+                                                             term,
+                                                             Handle<Quote>(quote),
+                                                             eonia,
+                                                             Handle<YieldTermStructure>(),
+                                                             telescopicValueDates,
+                                                             paymentLag,
+                                                             Following,
+                                                             Annual,
+                                                             Calendar(),
+                                                             0 * Days,
+                                                             0.0,
+                                                             Pillar::LastRelevantDate,
+                                                             Date(),
+                                                             averagingMethod));
+            eoniaHelpers.push_back(helper);
+        }
+
+        auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
+
+        vars.eoniaTermStructure.linkTo(eoniaTS);
+
+        // test curve consistency
+        for (auto& i : eoniaSwapData) {
+            Rate expected = i.rate / 100;
+            Period term = i.n * i.unit;
+            // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
+            ext::shared_ptr<OvernightIndexedSwap> swap =
+                vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
+            Rate calculated = swap->fairRate();
+            Rate error = std::fabs(expected-calculated);
+
+            if (error>tolerance)
+                BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
+                           "\n swap length:     " << term <<
+                           "\n quoted rate:     " << expected <<
+                           "\n calculated rate: " << calculated <<
+                           "\n error:           " << error <<
+                           "\n tolerance:       " << tolerance);
+        }
+    } // testBootstrap(telescopicValueDates)
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void OvernightIndexedSwapTest::testFairRate() {
+BOOST_AUTO_TEST_SUITE(OvernightIndexedSwapTest)
+
+BOOST_AUTO_TEST_CASE(testFairRate) {
 
     BOOST_TEST_MESSAGE("Testing Eonia-swap calculation of fair fixed rate...");
 
@@ -218,8 +294,7 @@ void OvernightIndexedSwapTest::testFairRate() {
     }
 }
 
-
-void OvernightIndexedSwapTest::testFairSpread() {
+BOOST_AUTO_TEST_CASE(testFairSpread) {
 
     BOOST_TEST_MESSAGE("Testing Eonia-swap calculation of "
                        "fair floating spread...");
@@ -264,7 +339,7 @@ void OvernightIndexedSwapTest::testFairSpread() {
     }
 }
 
-void OvernightIndexedSwapTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing Eonia-swap calculation against cached value...");
 
@@ -296,99 +371,23 @@ void OvernightIndexedSwapTest::testCachedValue() {
                     "\n tolerance:" << tolerance);
 }
 
-namespace overnight_indexed_swap_test {
-    void testBootstrap(bool telescopicValueDates,
-                       RateAveraging::Type averagingMethod,
-                       Real tolerance = 1.0e-8) {
-
-    CommonVars vars;
-
-    Integer paymentLag = 2;
-
-    std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
-
-    ext::shared_ptr<IborIndex> euribor3m(new Euribor3M);
-    ext::shared_ptr<Eonia> eonia(new Eonia);
-
-    for (auto& i : depositData) {
-        Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
-        ext::shared_ptr<Quote> quote (simple);
-        Period term = i.n * i.unit;
-        ext::shared_ptr<RateHelper> helper(new DepositRateHelper(
-            Handle<Quote>(quote), term, i.settlementDays, euribor3m->fixingCalendar(),
-            euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m->dayCounter()));
-
-        if (term <= 2*Days)
-            eoniaHelpers.push_back(helper);
-    }
-
-    for (auto& i : eoniaSwapData) {
-        Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
-        ext::shared_ptr<Quote> quote (simple);
-        Period term = i.n * i.unit;
-        ext::shared_ptr<RateHelper> helper(new
-                     OISRateHelper(i.settlementDays,
-                                   term,
-                                   Handle<Quote>(quote),
-                                   eonia,
-                                   Handle<YieldTermStructure>(),
-                                   telescopicValueDates,
-                                   paymentLag, 
-                                   Following, 
-                                   Annual, 
-                                   Calendar(), 
-                                   0 * Days, 
-                                   0.0, 
-                                   Pillar::LastRelevantDate, 
-                                   Date(), 
-                                   averagingMethod));
-        eoniaHelpers.push_back(helper);
-    }
-
-    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
-
-    vars.eoniaTermStructure.linkTo(eoniaTS);
-
-    // test curve consistency
-    for (auto& i : eoniaSwapData) {
-        Rate expected = i.rate / 100;
-        Period term = i.n * i.unit;
-        // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
-        ext::shared_ptr<OvernightIndexedSwap> swap =
-            vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
-        Rate calculated = swap->fairRate();
-        Rate error = std::fabs(expected-calculated);
-
-        if (error>tolerance)
-            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
-                        "\n swap length:     " << term <<
-                        "\n quoted rate:     " << expected <<
-                        "\n calculated rate: " << calculated <<
-                        "\n error:           " << error <<
-                        "\n tolerance:       " << tolerance);
-    }
-} // testBootstrap(telescopicValueDates)
-} // anonymous namespace
-
-void OvernightIndexedSwapTest::testBootstrap() {
+BOOST_AUTO_TEST_CASE(testBootstrap) {
     BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with daily compounded ON rates...");
     overnight_indexed_swap_test::testBootstrap(false, RateAveraging::Compound);
 }
 
-void OvernightIndexedSwapTest::testBootstrapWithArithmeticAverage() {
+BOOST_AUTO_TEST_CASE(testBootstrapWithArithmeticAverage) {
     BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with arithmetic average ON rates...");
     overnight_indexed_swap_test::testBootstrap(false, RateAveraging::Simple);
 }
 
-void OvernightIndexedSwapTest::testBootstrapWithTelescopicDates() {
+BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDates) {
     BOOST_TEST_MESSAGE(
         "Testing Eonia-swap curve building with telescopic value dates and DCON rates...");
     overnight_indexed_swap_test::testBootstrap(true, RateAveraging::Compound);
 }
 
-void OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAverage() {
+BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDatesAndArithmeticAverage) {
     BOOST_TEST_MESSAGE(
         "Testing Eonia-swap curve building with telescopic value dates and AAON rates...");
     // Given that we are using an approximation that omits
@@ -397,7 +396,7 @@ void OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAver
     overnight_indexed_swap_test::testBootstrap(true, RateAveraging::Simple, 1.0e-5);
 }
 
-void OvernightIndexedSwapTest::testSeasonedSwaps() {
+BOOST_AUTO_TEST_CASE(testSeasonedSwaps) {
 
     BOOST_TEST_MESSAGE("Testing seasoned Eonia-swap calculation...");
 
@@ -433,8 +432,7 @@ void OvernightIndexedSwapTest::testSeasonedSwaps() {
     }
 }
 
-
-void OvernightIndexedSwapTest::testBootstrapRegression() {
+BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
     BOOST_TEST_MESSAGE("Testing 1.16 regression with OIS bootstrap...");
 
     using namespace overnight_indexed_swap_test;
@@ -499,8 +497,7 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
 
-
-void OvernightIndexedSwapTest::test131BootstrapRegression() {
+BOOST_AUTO_TEST_CASE(test131BootstrapRegression) {
     BOOST_TEST_MESSAGE("Testing 1.31 regression with OIS bootstrap...");
 
     Date today(11, December, 2012);
@@ -516,7 +513,7 @@ void OvernightIndexedSwapTest::test131BootstrapRegression() {
     BOOST_CHECK_NO_THROW(curve.nodes());
 }
 
-void OvernightIndexedSwapTest::testConstructorsAndNominals() {
+BOOST_AUTO_TEST_CASE(testConstructorsAndNominals) {
     BOOST_TEST_MESSAGE("Testing different constructors for OIS...");
 
     using namespace overnight_indexed_swap_test;
@@ -648,19 +645,6 @@ void OvernightIndexedSwapTest::testConstructorsAndNominals() {
     BOOST_CHECK_EQUAL(ois_4.overnightNominals()[3], nominal/2);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* OvernightIndexedSwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Overnight-indexed swap tests");
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairRate));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testFairSpread));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrap));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapWithArithmeticAverage));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapWithTelescopicDates));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAverage));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testSeasonedSwaps));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testBootstrapRegression));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::test131BootstrapRegression));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedSwapTest::testConstructorsAndNominals));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

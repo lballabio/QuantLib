@@ -17,24 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/currencies/europe.hpp>
 #include <ql/experimental/credit/cdo.hpp>
-#include <ql/experimental/credit/pool.hpp>
+#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
+#include <ql/experimental/credit/homogeneouspooldef.hpp>
+#include <ql/experimental/credit/inhomogeneouspooldef.hpp>
 #include <ql/experimental/credit/integralcdoengine.hpp>
 #include <ql/experimental/credit/midpointcdoengine.hpp>
+#include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
-#include <ql/experimental/credit/inhomogeneouspooldef.hpp>
-#include <ql/experimental/credit/homogeneouspooldef.hpp>
-#include <ql/experimental/credit/gaussianlhplossmodel.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/currencies/europe.hpp>
 #include <boost/mpl/vector.hpp>
 #include <iomanip>
 #include <iostream>

@@ -18,7 +18,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "variancegamma.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -73,8 +73,11 @@ namespace {
     };
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void VarianceGammaTest::testVarianceGamma() {
+BOOST_AUTO_TEST_SUITE(VarianceGammaExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testVarianceGamma) {
 
     BOOST_TEST_MESSAGE("Testing variance-gamma model for European options...");
 
@@ -206,7 +209,7 @@ void VarianceGammaTest::testVarianceGamma() {
     }
 }
 
-void VarianceGammaTest::testSingularityAtZero() {
+BOOST_AUTO_TEST_CASE(testSingularityAtZero) {
 
     BOOST_TEST_MESSAGE(
         "Testing variance-gamma model integration around zero...");
@@ -245,11 +248,6 @@ void VarianceGammaTest::testSingularityAtZero() {
     option.NPV();
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* VarianceGammaTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Variance Gamma tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testVarianceGamma));
-    suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testSingularityAtZero));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

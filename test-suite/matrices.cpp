@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "matrices.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/math/moorepenroseinverse.hpp>
 #include <ql/math/matrix.hpp>
@@ -114,10 +114,27 @@ namespace matrices_test {
         M7[0][1] = 0.3; M7[0][2] = 0.2; M7[2][1] = 1.2;
     }
 
+    class MatrixMult {
+      public:
+        explicit MatrixMult(Matrix m) : m_(std::move(m)) {}
+        Array operator()(const Array& x) const {
+            return m_ * x;
+        }
+
+      private:
+        const Matrix m_;
+    };
+
+    Real norm2(const Array& x) {
+        return std::sqrt(DotProduct(x,x));
+    }
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void MatricesTest::testEigenvectors() {
+BOOST_AUTO_TEST_SUITE(MatricesTest)
+
+BOOST_AUTO_TEST_CASE(testEigenvectors) {
 
     BOOST_TEST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
 
@@ -157,7 +174,7 @@ void MatricesTest::testEigenvectors() {
     }
 }
 
-void MatricesTest::testSqrt() {
+BOOST_AUTO_TEST_CASE(testSqrt) {
 
     BOOST_TEST_MESSAGE("Testing matricial square root...");
 
@@ -179,7 +196,7 @@ void MatricesTest::testSqrt() {
     }
 }
 
-void MatricesTest::testHighamSqrt() {
+BOOST_AUTO_TEST_CASE(testHighamSqrt) {
     BOOST_TEST_MESSAGE("Testing Higham matricial square root...");
 
     using namespace matrices_test;
@@ -200,7 +217,7 @@ void MatricesTest::testHighamSqrt() {
     }
 }
 
-void MatricesTest::testSVD() {
+BOOST_AUTO_TEST_CASE(testSVD) {
 
     BOOST_TEST_MESSAGE("Testing singular value decomposition...");
 
@@ -246,7 +263,7 @@ void MatricesTest::testSVD() {
     }
 }
 
-void MatricesTest::testQRDecomposition() {
+BOOST_AUTO_TEST_CASE(testQRDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing QR decomposition...");
 
@@ -283,7 +300,7 @@ void MatricesTest::testQRDecomposition() {
     }
 }
 
-void MatricesTest::testQRSolve() {
+BOOST_AUTO_TEST_CASE(testQRSolve) {
 
     BOOST_TEST_MESSAGE("Testing QR solve...");
 
@@ -355,7 +372,7 @@ void MatricesTest::testQRSolve() {
     }
 }
 
-void MatricesTest::testInverse() {
+BOOST_AUTO_TEST_CASE(testInverse) {
 
     BOOST_TEST_MESSAGE("Testing LU inverse calculation...");
 
@@ -385,7 +402,7 @@ void MatricesTest::testInverse() {
     }
 }
 
-void MatricesTest::testDeterminant() {
+BOOST_AUTO_TEST_CASE(testDeterminant) {
 
     BOOST_TEST_MESSAGE("Testing LU determinant calculation...");
 
@@ -440,7 +457,7 @@ void MatricesTest::testDeterminant() {
     }
 }
 
-void MatricesTest::testOrthogonalProjection() {
+BOOST_AUTO_TEST_CASE(testOrthogonalProjection) {
     BOOST_TEST_MESSAGE("Testing orthogonal projections...");
 
     Size dimension = 1000;
@@ -506,7 +523,7 @@ void MatricesTest::testOrthogonalProjection() {
 
 }
 
-void MatricesTest::testCholeskyDecomposition() {
+BOOST_AUTO_TEST_CASE(testCholeskyDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing Cholesky Decomposition...");
 
@@ -577,7 +594,7 @@ void MatricesTest::testCholeskyDecomposition() {
     }
 }
 
-void MatricesTest::testMoorePenroseInverse() {
+BOOST_AUTO_TEST_CASE(testMoorePenroseInverse) {
 
     BOOST_TEST_MESSAGE("Testing Moore-Penrose inverse...");
 
@@ -626,25 +643,7 @@ void MatricesTest::testMoorePenroseInverse() {
 
 }
 
-
-namespace matrices_test {
-    class MatrixMult {
-      public:
-        explicit MatrixMult(Matrix m) : m_(std::move(m)) {}
-        Array operator()(const Array& x) const {
-            return m_ * x;
-        }
-
-      private:
-        const Matrix m_;
-    };
-
-    Real norm2(const Array& x) {
-        return std::sqrt(DotProduct(x,x));
-    }
-}
-
-void MatricesTest::testIterativeSolvers() {
+BOOST_AUTO_TEST_CASE(testIterativeSolvers) {
     BOOST_TEST_MESSAGE("Testing iterative solvers...");
 
     using namespace matrices_test;
@@ -703,7 +702,7 @@ void MatricesTest::testIterativeSolvers() {
     }
 }
 
-void MatricesTest::testInitializers() {
+BOOST_AUTO_TEST_CASE(testInitializers) {
     BOOST_TEST_MESSAGE("Testing matrix initializers...");
 
     Matrix m1 = {};
@@ -745,7 +744,7 @@ namespace {
 
 }
 
-void MatricesTest::testSparseMatrixMemory() {
+BOOST_AUTO_TEST_CASE(testSparseMatrixMemory) {
 
     BOOST_TEST_MESSAGE("Testing sparse matrix memory layout...");
 
@@ -808,7 +807,7 @@ void MatricesTest::testSparseMatrixMemory() {
         }                                                                   \
     }                                                                       \
 
-void MatricesTest::testOperators() {
+BOOST_AUTO_TEST_CASE(testOperators) {
 
     BOOST_TEST_MESSAGE("Testing matrix operators...");
 
@@ -866,24 +865,6 @@ void MatricesTest::testOperators() {
     QL_CHECK_CLOSE_MATRIX(rvalue_real_quotient, scalar_quotient);
 }
 
-test_suite* MatricesTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Matrix tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOrthogonalProjection));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testEigenvectors));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSqrt));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSVD));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testHighamSqrt));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRDecomposition));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRSolve));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSparseMatrixMemory));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testCholeskyDecomposition));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testIterativeSolvers));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInitializers));
-    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testOperators));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()
