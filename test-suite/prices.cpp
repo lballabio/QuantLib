@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "prices.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/prices.hpp>
 #include <ql/time/date.hpp>
@@ -26,10 +26,14 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PricesTest)
+
 namespace {
     namespace tt = boost::test_tools;
 
-    void testMidEquivalent() {
+    BOOST_AUTO_TEST_CASE(testMidEquivalent) {
         BOOST_TEST_MESSAGE("Testing midEquivalent()...");
 
         BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 4), tt::tolerance(1e-14));
@@ -55,7 +59,7 @@ namespace {
         BOOST_CHECK_THROW(midEquivalent(0, 0, 0, 0), QuantLib::Error);
     }
 
-    void testMidSafe() {
+    BOOST_AUTO_TEST_CASE(testMidSafe) {
         BOOST_TEST_MESSAGE("Testing midSafe()...");
 
         BOOST_TEST(1.5 == midSafe(1, 2), tt::tolerance(1e-14));
@@ -65,7 +69,7 @@ namespace {
         BOOST_CHECK_THROW(midSafe(0, 2), QuantLib::Error);
     }
 
-    void testIntervalPriceInspectors() {
+    BOOST_AUTO_TEST_CASE(testIntervalPriceInspectors) {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::<Inspectors>()...");
 
         const IntervalPrice p(1, 2, 3, 4);
@@ -83,13 +87,15 @@ namespace {
         BOOST_TEST(4 == p.value(IntervalPrice::Low));
     }
 
-    void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
-        using T = IntervalPrice::Type;
-        for (const auto t : {T::Open, T::Close, T::High, T::Low})
-            BOOST_TEST(lhs.value(t) == rhs.value(t));
+    namespace {
+        void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
+            using T = IntervalPrice::Type;
+            for (const auto t : {T::Open, T::Close, T::High, T::Low})
+                BOOST_TEST(lhs.value(t) == rhs.value(t));
+        }
     }
 
-    void testIntervalPriceModifiers() {
+    BOOST_AUTO_TEST_CASE(testIntervalPriceModifiers) {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::<Modifiers>()...");
 
         IntervalPrice p(1, 2, 3, 4);
@@ -110,21 +116,23 @@ namespace {
         testEquality(p, IntervalPrice(21, 22, 23, 24));
     }
 
-    TimeSeries<IntervalPrice> createSeries() {
-        std::vector<Date> d;
-        d.emplace_back((Day)1, (Month)1, (Year)2001);
-        d.emplace_back((Day)3, (Month)3, (Year)2003);
-        d.emplace_back((Day)2, (Month)2, (Year)2002);
+    namespace {
+        TimeSeries<IntervalPrice> createSeries() {
+            std::vector<Date> d;
+            d.emplace_back((Day)1, (Month)1, (Year)2001);
+            d.emplace_back((Day)3, (Month)3, (Year)2003);
+            d.emplace_back((Day)2, (Month)2, (Year)2002);
 
-        const std::vector<Real> open{11, 13, 12};
-        const std::vector<Real> close{21, 23, 22};
-        const std::vector<Real> high{31, 33, 32};
-        const std::vector<Real> low{41, 43, 42};
+            const std::vector<Real> open{11, 13, 12};
+            const std::vector<Real> close{21, 23, 22};
+            const std::vector<Real> high{31, 33, 32};
+            const std::vector<Real> low{41, 43, 42};
 
-        return IntervalPrice::makeSeries(d, open, close, high, low);
+            return IntervalPrice::makeSeries(d, open, close, high, low);
+        }
     }
 
-    void testIntervalPriceMakeSeries() {
+    BOOST_AUTO_TEST_CASE(testIntervalPriceMakeSeries) {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
 
         const TimeSeries<IntervalPrice> priceSeries = createSeries();
@@ -135,7 +143,7 @@ namespace {
         testEquality(priceSeries[{(Day)3, (Month)3, (Year)2003}], {13, 23, 33, 43});
     }
 
-    void testIntervalPriceExtractValues() {
+    BOOST_AUTO_TEST_CASE(testIntervalPriceExtractValues) {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
 
         const std::vector<Real> openValues =
@@ -159,7 +167,7 @@ namespace {
         BOOST_TEST(lowValues == expectedLowValues);
     }
 
-    void testIntervalPriceExtractComponent() {
+    BOOST_AUTO_TEST_CASE(testIntervalPriceExtractComponent) {
         BOOST_TEST_MESSAGE("Testing IntervalPrice::makeSeries()...");
 
         const TimeSeries<Real> openSeries =
@@ -205,14 +213,6 @@ namespace {
     }
 } // namespace
 
-test_suite* priceTestSuite() {
-    auto* suite = BOOST_TEST_SUITE("Prices tests");
-    suite->add(QUANTLIB_TEST_CASE(&testMidEquivalent));
-    suite->add(QUANTLIB_TEST_CASE(&testMidSafe));
-    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceInspectors));
-    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceModifiers));
-    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceMakeSeries));
-    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceExtractValues));
-    suite->add(QUANTLIB_TEST_CASE(&testIntervalPriceExtractComponent));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
