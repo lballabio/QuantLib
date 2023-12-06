@@ -44,23 +44,22 @@ namespace QuantLib {
             convertTo(m, base_currency);
         }
 
-        template< typename ReturnValue, typename CompareMonies, typename CompareValues >
-        ReturnValue compare(const Money& m1, const Money& m2,
-                            const CompareMonies compMonies, const CompareValues compValues) {
+        template< typename ReturnValue, typename Funtion >
+        ReturnValue apply(const Money& m1, const Money& m2, const Funtion f) {
             const auto & conversion_type =
                 Money::Settings::instance().conversionType();
             if (m1.currency() == m2.currency()) {
-                return compValues(m1.value(),m2.value());
+                return f(m1.value(), m2.value());
             } else if (conversion_type == Money::BaseCurrencyConversion) {
                 Money tmp1 = m1;
                 convertToBase(tmp1);
                 Money tmp2 = m2;
                 convertToBase(tmp2);
-                return compMonies(tmp1,tmp2);
+                return f(tmp1.value(), tmp2.value());
             } else if (conversion_type == Money::AutomatedConversion) {
                 Money tmp = m2;
                 convertTo(tmp, m1.currency());
-                return compMonies(m1,tmp);
+                return f(m1.value(), tmp.value());
             } else {
                 QL_FAIL("currency mismatch and no conversion specified");
             }
@@ -91,44 +90,38 @@ namespace QuantLib {
     }
 
     Decimal operator/(const Money& m1, const Money& m2) {
-        return compare<Decimal>(
+        return apply<Decimal>(
                     m1, m2,
-                    [](const Money& m1, const Money& m2) { return m1 / m2; },
                     [](const Real x, const Real y) { return x / y; });
     }
 
     bool operator==(const Money& m1, const Money& m2) {
-        return compare<bool>(
+        return apply<bool>(
                     m1, m2,
-                    [](const Money& m1, const Money& m2) { return m1 == m2; },
                     [](const Real x, const Real y) { return x == y; });
     }
 
     bool operator<(const Money& m1, const Money& m2) {
-        return compare<bool>(
+        return apply<bool>(
                     m1, m2,
-                    [](const Money& m1, const Money& m2) { return m1 < m2; },
                     [](const Real x, const Real y) { return x < y; });
     }
 
     bool operator<=(const Money& m1, const Money& m2) {
-        return compare<bool>(
+        return apply<bool>(
                     m1, m2,
-                    [](const Money& m1, const Money& m2) { return m1 <= m2; },
                     [](const Real x, const Real y) { return x <= y; });
     }
 
     bool close(const Money& m1, const Money& m2, Size n) {
-        return compare<bool>(
+        return apply<bool>(
                     m1, m2,
-                    [n](const Money& m1, const Money& m2) { return close(m1, m2, n); },
                     [n](const Real x, const Real y) { return close(x, y, n); });
     }
 
     bool close_enough(const Money& m1, const Money& m2, Size n) {
-        return compare<bool>(
+        return apply<bool>(
                     m1, m2,
-                    [n](const Money& m1, const Money& m2) { return close_enough(m1, m2, n); },
                     [n](const Real x, const Real y) { return close_enough(x, y, n); });
     }
 
