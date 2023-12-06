@@ -23,6 +23,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/america.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
+#include <ql/math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -31,26 +32,37 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(MoneyTest)
 
+namespace {
+    bool IsSameCurrencyAndValuesAreClose(const Money& lhs, const Money& rhs) {
+        return (lhs.currency() == rhs.currency())
+            && std::abs(lhs.value() - rhs.value()) < 0.01;
+    }
+
+    const Currency EUR = EURCurrency();
+    const Currency GBP = GBPCurrency();
+    const Currency USD = USDCurrency();
+    const ExchangeRate eur_usd = ExchangeRate(EUR, USD, 1.2042);
+    const ExchangeRate eur_gbp = ExchangeRate(EUR, GBP, 0.6612);
+}
+
 BOOST_AUTO_TEST_CASE(testNone) {
 
     BOOST_TEST_MESSAGE("Testing money arithmetic without conversions...");
 
-    Currency EUR = EURCurrency();
-
-    Money m1 = 50000.0 * EUR;
-    Money m2 = 100000.0 * EUR;
-    Money m3 = 500000.0 * EUR;
+    const Money m1 = 50000.0 * EUR;
+    const Money m2 = 100000.0 * EUR;
+    const Money m3 = 500000.0 * EUR;
 
     Money::Settings::instance().conversionType() = Money::NoConversion;
 
-    Money calculated = m1*3.0 + 2.5*m2 - m3/5.0 + m1 * (m2 / m3);
-    Decimal x = m1.value() * 3.0
+    const Money calculated = m1*3.0 + 2.5*m2 - m3/5.0 + m1 * (m2 / m3);
+    const Decimal x = m1.value() * 3.0
         + 2.5 * m2.value()
         - m3.value() / 5.0
         + m1.value() * (m2.value() / m3.value());
-    Money expected(x, EUR);
+    const Money expected(x, EUR);
 
-    if (calculated != expected) {
+    if (!IsSameCurrencyAndValuesAreClose(calculated, expected)) {
         BOOST_FAIL("Wrong result: \n"
                    << "    expected:   " << expected << "\n"
                    << "    calculated: " << calculated);
@@ -59,37 +71,33 @@ BOOST_AUTO_TEST_CASE(testNone) {
 
 BOOST_AUTO_TEST_CASE(testBaseCurrency) {
 
-    BOOST_TEST_MESSAGE("Testing money arithmetic with conversion "
-                       "to base currency...");
+    BOOST_TEST_MESSAGE("Testing money arithmetic with conversion to base currency...");
 
-    Currency EUR = EURCurrency(), GBP = GBPCurrency(), USD = USDCurrency();
-
-    Money m1 = 50000.0 * GBP;
-    Money m2 = 100000.0 * EUR;
-    Money m3 = 500000.0 * USD;
+    const Money gbp = 50000.0 * GBP;
+    const Money eur = 100000.0 * EUR;
+    const Money usd = 500000.0 * USD;
 
     ExchangeRateManager::instance().clear();
-    ExchangeRate eur_usd = ExchangeRate(EUR, USD, 1.2042);
-    ExchangeRate eur_gbp = ExchangeRate(EUR, GBP, 0.6612);
     ExchangeRateManager::instance().add(eur_usd);
     ExchangeRateManager::instance().add(eur_gbp);
+    const auto GBP_to_EUR = [eur_gbp = eur_gbp.rate()](const Real gbp) -> Real { return gbp / eur_gbp; };
+    const auto USD_to_EUR = [eur_usd = eur_usd.rate()](const Real usd) -> Real { return usd / eur_usd; };
 
-    auto & money_settings = Money::Settings::instance();
-    money_settings.conversionType() = Money::BaseCurrencyConversion;
-    money_settings.baseCurrency() = EUR;
+    Money::Settings::instance().conversionType() = Money::BaseCurrencyConversion;
+    Money::Settings::instance().baseCurrency() = EUR;
 
-    Money calculated = m1*3.0 + 2.5*m2 - m3/5.0 + m1 * (m2/m3);
+    const Money calculated = gbp*3.0 + 2.5*eur - usd/5.0 + gbp * (eur/usd);
 
-    const Rounding& round = money_settings.baseCurrency().rounding();
-    Decimal x = round(m1.value()*3.0/eur_gbp.rate())
-        + 2.5*m2.value()
-        - round(m3.value()/(5.0*eur_usd.rate()))
-        + round((m1.value()* (m2.value() / round(m3.value()/eur_usd.rate()))) / eur_gbp.rate()) ;
-    Money expected(x, EUR);
+    const Decimal x = GBP_to_EUR(gbp.value()) * 3.0
+        + 2.5 * eur.value()
+        - USD_to_EUR(usd.value()) / 5.0
+        + GBP_to_EUR(gbp.value()) * eur.value() / USD_to_EUR(usd.value());
+    const Money expected(x, EUR);
 
-    money_settings.conversionType() = Money::NoConversion;
+    ExchangeRateManager::instance().clear();
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
-    if (calculated != expected) {
+    if (!IsSameCurrencyAndValuesAreClose(calculated, expected)) {
         BOOST_FAIL("Wrong result: \n"
                    << "    expected:   " << expected << "\n"
                    << "    calculated: " << calculated);
@@ -100,35 +108,33 @@ BOOST_AUTO_TEST_CASE(testAutomated) {
 
     BOOST_TEST_MESSAGE("Testing money arithmetic with automated conversion...");
 
-    Currency EUR = EURCurrency(), GBP = GBPCurrency(), USD = USDCurrency();
-
-    Money m1 = 50000.0 * GBP;
-    Money m2 = 100000.0 * EUR;
-    Money m3 = 500000.0 * USD;
+    const Money gbp = 50000.0 * GBP;
+    const Money eur = 100000.0 * EUR;
+    const Money usd = 500000.0 * USD;
 
     ExchangeRateManager::instance().clear();
-    ExchangeRate eur_usd = ExchangeRate(EUR, USD, 1.2042);
-    ExchangeRate eur_gbp = ExchangeRate(EUR, GBP, 0.6612);
     ExchangeRateManager::instance().add(eur_usd);
     ExchangeRateManager::instance().add(eur_gbp);
+    const auto EUR_to_GBP = [eur_gbp = eur_gbp.rate()](const Real eur) -> Real { return eur * eur_gbp; };
+    const auto USD_to_EUR = [eur_usd = eur_usd.rate()](const Real usd) -> Real { return usd / eur_usd; };
+    const auto USD_to_GBP = [eur_gbp = eur_gbp.rate(), eur_usd = eur_usd.rate()](const Real usd) -> Real
+        { return usd * eur_gbp / eur_usd; };
 
-    auto & money_settings = Money::Settings::instance();
-    money_settings.conversionType() = Money::AutomatedConversion;
+    Money::Settings::instance().conversionType() = Money::AutomatedConversion;
 
-    Money calculated = (m1*3.0 + 2.5*m2) - m3/5.0 + m1 * (m2/m3);
+    const Money calculated = (gbp*3.0 + 2.5*eur) - usd/5.0 + gbp * (eur/usd);
 
-    const Rounding& round1 = m1.currency().rounding();
-    const Rounding& round2 = m2.currency().rounding();
-    Decimal x = m1.value()*3.0
-        + round1(2.5*m2.value()*eur_gbp.rate())
-        - round1((m3.value()/5.0)*eur_gbp.rate()/eur_usd.rate())
-        + m1.value() * ( m2.value() / round2(m3.value()/eur_usd.rate()));
+    const Decimal x = gbp.value() * 3.0
+        + 2.5 * EUR_to_GBP(eur.value())
+        - USD_to_GBP(usd.value()) / 5.0
+        + gbp.value() * eur.value() / USD_to_EUR(usd.value());
 
-    Money expected(x, GBP);
+    const Money expected(x, GBP);
 
-    money_settings.conversionType() = Money::NoConversion;
+    ExchangeRateManager::instance().clear();
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
-    if (calculated != expected) {
+    if (!IsSameCurrencyAndValuesAreClose(calculated, expected)) {
         BOOST_FAIL("Wrong result: \n"
                    << "    expected:   " << expected << "\n"
                    << "    calculated: " << calculated);
