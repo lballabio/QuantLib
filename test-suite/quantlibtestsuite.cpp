@@ -34,101 +34,10 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "margrabeoption.hpp"
 #include "marketmodel.hpp"
-#include "marketmodel_cms.hpp"
-#include "marketmodel_smm.hpp"
-#include "marketmodel_smmcapletalphacalibration.hpp"
-#include "marketmodel_smmcapletcalibration.hpp"
-#include "marketmodel_smmcaplethomocalibration.hpp"
-#include "markovfunctional.hpp"
-#include "matrices.hpp"
-#include "mclongstaffschwartzengine.hpp"
-#include "mersennetwister.hpp"
-#include "money.hpp"
-#include "noarbsabr.hpp"
-#include "normalclvmodel.hpp"
-#include "nthorderderivativeop.hpp"
-#include "nthtodefault.hpp"
-#include "numericaldifferentiation.hpp"
-#include "observable.hpp"
-#include "ode.hpp"
-#include "operators.hpp"
-#include "optimizers.hpp"
-#include "optionletstripper.hpp"
-#include "overnightindexedcoupon.hpp"
-#include "overnightindexedswap.hpp"
-#include "pagodaoption.hpp"
-#include "partialtimebarrieroption.hpp"
-#include "pathgenerator.hpp"
-#include "period.hpp"
-#include "piecewiseyieldcurve.hpp"
-#include "piecewisezerospreadedtermstructure.hpp"
-#include "quantooption.hpp"
-#include "quotes.hpp"
-#include "rangeaccrual.hpp"
-#include "riskneutraldensitycalculator.hpp"
-#include "riskstats.hpp"
-#include "rngtraits.hpp"
-#include "rounding.hpp"
-#include "sampledcurve.hpp"
-#include "schedule.hpp"
-#include "settings.hpp"
-#include "shortratemodels.hpp"
-#include "sofrfutures.hpp"
-#include "solvers.hpp"
-#include "speedlevel.hpp"
-#include "spreadoption.hpp"
-#include "squarerootclvmodel.hpp"
-#include "stats.hpp"
-#include "subperiodcoupons.hpp"
-#include "svivolatility.hpp"
-#include "swap.hpp"
-#include "swapforwardmappings.hpp"
-#include "swaption.hpp"
-#include "swaptionvolatilitycube.hpp"
-#include "swaptionvolatilitymatrix.hpp"
-#include "swingoption.hpp"
-#include "termstructures.hpp"
-#include "timegrid.hpp"
-#include "timeseries.hpp"
-#include "tqreigendecomposition.hpp"
-#include "tracing.hpp"
-#include "transformedgrid.hpp"
-#include "twoassetbarrieroption.hpp"
-#include "twoassetcorrelationoption.hpp"
-#include "ultimateforwardtermstructure.hpp"
-#include "variancegamma.hpp"
-#include "varianceoption.hpp"
-#include "varianceswaps.hpp"
-#include "volatilitymodels.hpp"
-#include "vpp.hpp"
-#include "xoshiro256starstar.hpp"
-#include "zabr.hpp"
-#include "zerocouponswap.hpp"
+#include "quantlibglobalfixture.hpp"
 
 using namespace boost::unit_test_framework;
-
-SpeedLevel speed_level(int argc, char** argv) {
-    /*! Again, dead simple parser:
-        - passing --slow causes all tests to be run;
-        - passing --fast causes most tests to be run, except the slowest;
-        - passing --faster causes only the faster tests to be run;
-        - passing nothing is the same as --slow
-    */
-
-    for (int i=1; i<argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--slow")
-            return Slow;
-        else if (arg == "--fast")
-            return Fast;
-        else if (arg == "--faster")
-            return Faster;
-    }
-    return Slow;
-}
-
 
 test_suite* init_unit_test_suite(int, char* []) {
 
@@ -138,80 +47,7 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     auto* test = BOOST_TEST_SUITE("QuantLib test suite");
 
-    test->add(MargrabeOptionTest::suite());
     test->add(MarketModelTest::suite(speed));
-    test->add(MarketModelCmsTest::suite(speed));
-    test->add(MarketModelSmmTest::suite(speed));
-    test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
-    test->add(MarketModelSmmCapletCalibrationTest::suite());
-    test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
-    test->add(MarkovFunctionalTest::suite(speed));
-    test->add(MatricesTest::suite());
-    test->add(MCLongstaffSchwartzEngineTest::suite(speed));
-    test->add(MersenneTwisterTest::suite());
-    test->add(MoneyTest::suite());
-    test->add(NumericalDifferentiationTest::suite());
-    test->add(NthOrderDerivativeOpTest::suite(speed));
-    test->add(ObservableTest::suite());
-    test->add(OdeTest::suite());
-    test->add(OperatorTest::suite());
-    test->add(OptimizersTest::suite(speed));
-    test->add(OptionletStripperTest::suite());
-    test->add(OvernightIndexedCouponTest::suite());
-    test->add(OvernightIndexedSwapTest::suite());
-    test->add(PathGeneratorTest::suite());
-    test->add(PeriodTest::suite());
-    test->add(PiecewiseYieldCurveTest::suite());
-    test->add(PiecewiseZeroSpreadedTermStructureTest::suite());
-    test->add(QuantoOptionTest::suite());
-    test->add(QuoteTest::suite());
-    test->add(RangeAccrualTest::suite());
-    test->add(RiskStatisticsTest::suite());
-    test->add(RngTraitsTest::suite());
-    test->add(RoundingTest::suite());
-    test->add(SampledCurveTest::suite());
-    test->add(ScheduleTest::suite());
-    test->add(SettingsTest::suite());
-    test->add(ShortRateModelTest::suite(speed)); // fails with QL_USE_INDEXED_COUPON
-    test->add(SofrFuturesTest::suite());
-    test->add(Solver1DTest::suite());
-    test->add(StatisticsTest::suite());
-    test->add(SubPeriodsCouponTest::suite());
-    test->add(SwapTest::suite());
-    test->add(SwapForwardMappingsTest::suite());
-    test->add(SwaptionTest::suite(speed));
-    test->add(SwaptionVolatilityCubeTest::suite());
-    test->add(SwaptionVolatilityMatrixTest::suite());
-    test->add(TermStructureTest::suite());
-    test->add(TimeGridTest::suite());
-    test->add(TimeSeriesTest::suite());
-    test->add(TqrEigenDecompositionTest::suite());
-    test->add(TracingTest::suite());
-    test->add(TransformedGridTest::suite());
-    test->add(UltimateForwardTermStructureTest::suite());
-    test->add(VarianceSwapTest::suite());
-    test->add(VolatilityModelsTest::suite());
-    test->add(Xoshiro256StarStarTest::suite());
-    test->add(ZeroCouponSwapTest::suite());
-
-    // tests for experimental classes
-    test->add(NoArbSabrTest::suite());
-    test->add(NormalCLVModelTest::experimental(speed));
-    test->add(NthToDefaultTest::suite(speed));
-    test->add(PagodaOptionTest::suite());
-    test->add(PartialTimeBarrierOptionTest::suite());
-    test->add(QuantoOptionTest::experimental());
-    test->add(RiskNeutralDensityCalculatorTest::experimental(speed));
-    test->add(SpreadOptionTest::suite());
-    test->add(SquareRootCLVModelTest::experimental());
-    test->add(SviVolatilityTest::experimental());
-    test->add(SwingOptionTest::suite(speed));
-    test->add(TwoAssetBarrierOptionTest::suite());
-    test->add(TwoAssetCorrelationOptionTest::suite());
-    test->add(VarianceGammaTest::suite());
-    test->add(VarianceOptionTest::suite());
-    test->add(VPPTest::suite(speed));
-    test->add(ZabrTest::suite(speed));
 
     return test;
 }

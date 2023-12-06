@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "observable.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
@@ -30,6 +30,14 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <chrono>
 #include <thread>
+
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+#include <atomic>
+#include <mutex>
+#include <thread>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <list>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -53,72 +61,7 @@ namespace {
         }
     };
 
-}
-
-void ObservableTest::testObservableSettings() {
-
-    BOOST_TEST_MESSAGE("Testing observable settings...");
-
-    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
-    UpdateCounter updateCounter;
-
-    updateCounter.registerWith(quote);
-    if (updateCounter.counter() != 0) {
-        BOOST_FAIL("update counter value is not zero");
-    }
-
-   quote->setValue(1.0);
-   if (updateCounter.counter() != 1) {
-       BOOST_FAIL("update counter value is not one");
-   }
-
-   ObservableSettings::instance().disableUpdates(false);
-   quote->setValue(2.0);
-   if (updateCounter.counter() != 1) {
-       BOOST_FAIL("update counter value is not one");
-   }
-   ObservableSettings::instance().enableUpdates();
-   if (updateCounter.counter() != 1) {
-       BOOST_FAIL("update counter value is not one");
-   }
-
-   ObservableSettings::instance().disableUpdates(true);
-   quote->setValue(3.0);
-   if (updateCounter.counter() != 1) {
-       BOOST_FAIL("update counter value is not one");
-   }
-   ObservableSettings::instance().enableUpdates();
-   if (updateCounter.counter() != 2) {
-       BOOST_FAIL("update counter value is not two");
-   }
-
-   UpdateCounter updateCounter2;
-   updateCounter2.registerWith(quote);
-   ObservableSettings::instance().disableUpdates(true);
-   for (Size i=0; i < 10; ++i) {
-       quote->setValue(Real(i));
-   }
-   if (updateCounter.counter() != 2) {
-       BOOST_FAIL("update counter value is not two");
-   }
-   ObservableSettings::instance().enableUpdates();
-   if (updateCounter.counter() != 3 || updateCounter2.counter() != 1) {
-       BOOST_FAIL("update counter values are not correct");
-   }
-}
-
-
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-
-#include <atomic>
-#include <mutex>
-#include <thread>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-
-#include <list>
-
-namespace {
-
     class MTUpdateCounter : public Observer {
       public:
         MTUpdateCounter() : counter_(0) {
@@ -180,9 +123,69 @@ namespace {
 
         std::list<ext::shared_ptr<MTUpdateCounter> > objList;
     };
+#endif
 }
 
-void ObservableTest::testAsyncGarbagCollector() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ObservableTest)
+
+BOOST_AUTO_TEST_CASE(testObservableSettings) {
+
+    BOOST_TEST_MESSAGE("Testing observable settings...");
+
+    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
+    UpdateCounter updateCounter;
+
+    updateCounter.registerWith(quote);
+    if (updateCounter.counter() != 0) {
+        BOOST_FAIL("update counter value is not zero");
+    }
+
+   quote->setValue(1.0);
+   if (updateCounter.counter() != 1) {
+       BOOST_FAIL("update counter value is not one");
+   }
+
+   ObservableSettings::instance().disableUpdates(false);
+   quote->setValue(2.0);
+   if (updateCounter.counter() != 1) {
+       BOOST_FAIL("update counter value is not one");
+   }
+   ObservableSettings::instance().enableUpdates();
+   if (updateCounter.counter() != 1) {
+       BOOST_FAIL("update counter value is not one");
+   }
+
+   ObservableSettings::instance().disableUpdates(true);
+   quote->setValue(3.0);
+   if (updateCounter.counter() != 1) {
+       BOOST_FAIL("update counter value is not one");
+   }
+   ObservableSettings::instance().enableUpdates();
+   if (updateCounter.counter() != 2) {
+       BOOST_FAIL("update counter value is not two");
+   }
+
+   UpdateCounter updateCounter2;
+   updateCounter2.registerWith(quote);
+   ObservableSettings::instance().disableUpdates(true);
+   for (Size i=0; i < 10; ++i) {
+       quote->setValue(Real(i));
+   }
+   if (updateCounter.counter() != 2) {
+       BOOST_FAIL("update counter value is not two");
+   }
+   ObservableSettings::instance().enableUpdates();
+   if (updateCounter.counter() != 3 || updateCounter2.counter() != 1) {
+       BOOST_FAIL("update counter values are not correct");
+   }
+}
+
+
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+
+BOOST_AUTO_TEST_CASE(testAsyncGarbagCollector) {
 
     BOOST_TEST_MESSAGE("Testing observer pattern with an asynchronous "
                        "garbage collector (JVM/.NET use case)...");
@@ -213,8 +216,7 @@ void ObservableTest::testAsyncGarbagCollector() {
     }
 }
 
-
-void ObservableTest::testMultiThreadingGlobalSettings() {
+BOOST_AUTO_TEST_CASE(testMultiThreadingGlobalSettings) {
 	BOOST_TEST_MESSAGE("Testing observer global settings in a "
 		               "multithreading environment...");
 	
@@ -265,7 +267,7 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 }
 #endif
 
-void ObservableTest::testDeepUpdate() {
+BOOST_AUTO_TEST_CASE(testDeepUpdate) {
     BOOST_TEST_MESSAGE("Testing deep update of observers...");
 
     RestoreUpdates guard;
@@ -311,14 +313,14 @@ namespace {
         };
 }
 
-void ObservableTest::testEmptyObserverList() {
+BOOST_AUTO_TEST_CASE(testEmptyObserverList) {
 	BOOST_TEST_MESSAGE("Testing unregisterWith call on empty observer...");
 
     const ext::shared_ptr<DummyObserver> dummyObserver=ext::make_shared<DummyObserver>();
     dummyObserver->unregisterWith(ext::make_shared<SimpleQuote>(10.0));
 }
 
-void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
+BOOST_AUTO_TEST_CASE(testAddAndDeleteObserverDuringNotifyObservers) {
     BOOST_TEST_MESSAGE("Testing addition and deletion of observers during notifyObserver...");
 
     const ext::shared_ptr<MersenneTwisterUniformRng> rng
@@ -395,22 +397,6 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* ObservableTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Observer tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testObservableSettings));
-
-#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testAsyncGarbagCollector));
-    suite->add(QUANTLIB_TEST_CASE(
-        &ObservableTest::testMultiThreadingGlobalSettings));
-#endif
-
-    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testDeepUpdate));
-    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testEmptyObserverList));
-    suite->add(QUANTLIB_TEST_CASE(
-        &ObservableTest::testAddAndDeleteObserverDuringNotifyObservers));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

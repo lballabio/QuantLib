@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "zabr.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/experimental/volatility/zabrsmilesection.hpp>
@@ -25,7 +26,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void ZabrTest::testConsistency() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ZabrExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testConsistency, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing the consistency of ZABR interpolation...");
 
     Real tol = 1E-4;
@@ -86,12 +91,6 @@ void ZabrTest::testConsistency() {
     }
 }
 
-test_suite *ZabrTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Zabr model tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&ZabrTest::testConsistency));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

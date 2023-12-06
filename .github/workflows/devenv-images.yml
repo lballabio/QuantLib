@@ -6,7 +6,7 @@ on:
         description: 'Boost version'
         required: true
 env:
-  ROLLING: lunar
+  ROLLING: mantic
 jobs:
   docker-images:
     runs-on: ubuntu-latest

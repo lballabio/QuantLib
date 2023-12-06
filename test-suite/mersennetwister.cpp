@@ -17,14 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "mersennetwister.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void MersenneTwisterTest::testValues() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MersenneTwisterTest)
+
+BOOST_AUTO_TEST_CASE(testValues) {
 
     BOOST_TEST_MESSAGE("Testing Mersenne twister...");
 
@@ -481,10 +485,6 @@ void MersenneTwisterTest::testValues() {
                    "during parallel computation");
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* MersenneTwisterTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Mersenne twister tests");
-    suite->add(QUANTLIB_TEST_CASE(&MersenneTwisterTest::testValues));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -22,7 +22,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swaption.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/instruments/swaption.hpp>
@@ -116,8 +117,11 @@ namespace swaption_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void SwaptionTest::testStrikeDependency() {
+BOOST_AUTO_TEST_SUITE(SwaptionTest)
+
+BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on strike...");
 
@@ -212,7 +216,7 @@ void SwaptionTest::testStrikeDependency() {
     }
 }
 
-void SwaptionTest::testSpreadDependency() {
+BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on spread...");
 
@@ -300,7 +304,7 @@ void SwaptionTest::testSpreadDependency() {
     }
 }
 
-void SwaptionTest::testSpreadTreatment() {
+BOOST_AUTO_TEST_CASE(testSpreadTreatment) {
 
     BOOST_TEST_MESSAGE("Testing swaption treatment of spread...");
 
@@ -363,7 +367,7 @@ void SwaptionTest::testSpreadTreatment() {
     }
 }
 
-void SwaptionTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing swaption value against cached value...");
 
@@ -398,7 +402,7 @@ void SwaptionTest::testCachedValue() {
                     "\nexpected:   " << cachedNPV);
 }
 
-void SwaptionTest::testVega() {
+BOOST_AUTO_TEST_CASE(testVega) {
 
     BOOST_TEST_MESSAGE("Testing swaption vega...");
 
@@ -467,9 +471,7 @@ void SwaptionTest::testVega() {
     }
 }
 
-
-
-void SwaptionTest::testCashSettledSwaptions() {
+BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
 
     BOOST_TEST_MESSAGE("Testing cash settled swaptions modified annuity...");
 
@@ -767,9 +769,7 @@ void SwaptionTest::testCashSettledSwaptions() {
     }
 }
 
-
-
-void SwaptionTest::testImpliedVolatility() {
+BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
@@ -979,35 +979,20 @@ void checkSwaptionDelta(bool useBachelierVol)
     }
 }
 
-void SwaptionTest::testSwaptionDeltaInBlackModel() {
+BOOST_AUTO_TEST_CASE(testSwaptionDeltaInBlackModel) {
 
     BOOST_TEST_MESSAGE("Testing swaption delta in Black model...");
 
     checkSwaptionDelta<BlackSwaptionEngine>(false);
 }
 
-void SwaptionTest::testSwaptionDeltaInBachelierModel() {
+BOOST_AUTO_TEST_CASE(testSwaptionDeltaInBachelierModel) {
 
     BOOST_TEST_MESSAGE("Testing swaption delta in Bachelier model...");
 
     checkSwaptionDelta<BachelierSwaptionEngine>(true);
 }
 
-test_suite* SwaptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Swaption tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testCashSettledSwaptions));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testStrikeDependency));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSpreadDependency));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSpreadTreatment));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testVega));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSwaptionDeltaInBlackModel));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testSwaptionDeltaInBachelierModel));   
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&SwaptionTest::testImpliedVolatility));
-    };
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

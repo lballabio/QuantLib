@@ -18,7 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "riskneutraldensitycalculator.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -46,7 +47,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(RiskNeutralDensityCalculatorExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testDensityAgainstOptionPrices) {
     BOOST_TEST_MESSAGE("Testing density against option prices...");
 
     const DayCounter dayCounter = Actual365Fixed();
@@ -116,7 +121,7 @@ void RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices() {
     }
 }
 
-void RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND() {
+BOOST_AUTO_TEST_CASE(testBSMagainstHestonRND) {
     BOOST_TEST_MESSAGE("Testing Black-Scholes-Merton and Heston densities...");
 
     const DayCounter dayCounter = Actual365Fixed();
@@ -279,7 +284,7 @@ namespace {
     }
 }
 
-void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
+BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "
                        "for local volatility process to calculate "
                        "risk neutral densities...");
@@ -460,7 +465,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
     }
 }
 
-void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
+BOOST_AUTO_TEST_CASE(testSquareRootProcessRND) {
     BOOST_TEST_MESSAGE("Testing probability density for a square root process...");
 
     struct SquareRootProcessParams {
@@ -551,7 +556,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
     }
 }
 
-void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
+BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing probability density for a BSM process "
         "with strike dependent volatility vs local volatility...");
@@ -703,7 +708,7 @@ void RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew() {
     }
 }
 
-void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
+BOOST_AUTO_TEST_CASE(testMassAtZeroCEVProcessRND) {
     BOOST_TEST_MESSAGE("Testing the mass at zero for a "
                        "constant elasticity of variance (CEV) process...");
 
@@ -742,7 +747,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
     }
 }
 
-void RiskNeutralDensityCalculatorTest::testCEVCDF() {
+BOOST_AUTO_TEST_CASE(testCEVCDF) {
     BOOST_TEST_MESSAGE("Testing CDF for a "
                        "constant elasticity of variance (CEV) process...");
 
@@ -776,27 +781,6 @@ void RiskNeutralDensityCalculatorTest::testCEVCDF() {
         }
     }
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* RiskNeutralDensityCalculatorTest::experimental(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Risk neutral density calculator tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testDensityAgainstOptionPrices));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testBSMagainstHestonRND));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testLocalVolatilityRND));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testSquareRootProcessRND));
-    suite->add(QUANTLIB_TEST_CASE(
-        &RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND));
-    suite->add(QUANTLIB_TEST_CASE(
-          &RiskNeutralDensityCalculatorTest::testCEVCDF));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &RiskNeutralDensityCalculatorTest::testBlackScholesWithSkew));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

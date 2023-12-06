@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "sofrfutures.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -41,8 +41,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void SofrFuturesTest::testBootstrap() {
+BOOST_AUTO_TEST_SUITE(SofrFuturesTest)
+
+BOOST_AUTO_TEST_CASE(testBootstrap) {
     BOOST_TEST_MESSAGE("Testing bootstrap over SOFR futures...");
 
     Date today = Date(26, October, 2018);
@@ -113,11 +116,6 @@ void SofrFuturesTest::testBootstrap() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* SofrFuturesTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("SOFR futures tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&SofrFuturesTest::testBootstrap));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
