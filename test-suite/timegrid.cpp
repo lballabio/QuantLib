@@ -56,6 +56,19 @@ BOOST_AUTO_TEST_CASE(testConstructorMandatorySteps)
         tg.begin(), tg.end(), expected_times.begin(), expected_times.end());
 }
 
+BOOST_AUTO_TEST_CASE(testConstructorAdditionalStepsAutomatically)
+{
+    BOOST_TEST_MESSAGE("Testing TimeGrid construction with time step length determined automatically...");
+
+    const TimeGrid tg{{0.0, 1.0, 2.0, 4.0}, 0};
+
+    // Time step length is determined by minimal adjacent distance in given times
+    const std::vector<Time> expected_times{0.0, 1.0, 2.0, 3.0, 4.0};
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(
+        tg.begin(), tg.end(), expected_times.begin(), expected_times.end());
+}
+
 BOOST_AUTO_TEST_CASE(testConstructorEvenSteps)
 {
     BOOST_TEST_MESSAGE("Testing TimeGrid construction with n evenly spaced points...");
@@ -87,6 +100,28 @@ BOOST_AUTO_TEST_CASE(testConstructorNegativeValuesInIterator)
     
     std::vector<Time> times = {-3.0, 1.0, 4.0, 5.0};
     BOOST_CHECK_THROW(const TimeGrid tg(times.begin(), times.end()), Error);
+}
+
+BOOST_AUTO_TEST_CASE(testIndex)
+{
+    BOOST_TEST_MESSAGE("Testing that the supplied time is very close to a time grid point...");
+
+    // will automatically insert additional point at t=0
+    const TimeGrid tg = {1.0, 2.0, 5.0};
+
+    BOOST_CHECK_THROW(tg.index(-2.0), Error);
+
+    BOOST_ASSERT(4u == tg.size());
+
+    BOOST_CHECK_THROW(tg.index(-0.1), Error);
+    BOOST_TEST(0 == tg.index(0.0));
+    BOOST_CHECK_THROW(tg.index(0.5), Error);
+    BOOST_TEST(1 == tg.index(1.0));
+    BOOST_CHECK_THROW(tg.index(1.1), Error);
+    BOOST_TEST(2 == tg.index(2.0));
+    BOOST_CHECK_THROW(tg.index(2.9), Error);
+    BOOST_TEST(3 == tg.index(5.0));
+    BOOST_CHECK_THROW(tg.index(5.1), Error);
 }
 
 BOOST_AUTO_TEST_CASE(testClosestIndex)
