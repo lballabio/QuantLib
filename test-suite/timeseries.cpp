@@ -149,8 +149,8 @@ BOOST_AUTO_TEST_CASE(testCustomContainer) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testLastDate) {
-    BOOST_TEST_MESSAGE("Testing last date of time series...");
+BOOST_AUTO_TEST_CASE(testInspectors) {
+    BOOST_TEST_MESSAGE("Testing inspectors of time series...");
 
     const std::vector<Date> dates = {Date(25, March, 2005),
                                      Date(29, March, 2005),
@@ -160,8 +160,10 @@ BOOST_AUTO_TEST_CASE(testLastDate) {
 
     const TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
 
-    // last date
+    BOOST_TEST(ts.firstDate() == Date(15, March, 2005));
     BOOST_TEST(ts.lastDate() == Date(29, March, 2005));
+    BOOST_TEST(ts.size() == 3);
+    BOOST_TEST(!ts.empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
