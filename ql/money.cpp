@@ -44,8 +44,8 @@ namespace QuantLib {
             convertTo(m, base_currency);
         }
 
-        template< typename ReturnValue, typename Funtion >
-        ReturnValue apply(const Money& m1, const Money& m2, const Funtion f) {
+        template< typename ReturnValue, typename Function >
+        ReturnValue apply(const Money& m1, const Money& m2, const Function f) {
             const auto & conversion_type =
                 Money::Settings::instance().conversionType();
             if (m1.currency() == m2.currency()) {
