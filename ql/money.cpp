@@ -22,8 +22,6 @@
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
 
-#include <boost/format.hpp>
-
 namespace QuantLib {
 
     namespace {
@@ -126,14 +124,8 @@ namespace QuantLib {
     }
 
     std::ostream& operator<<(std::ostream& out, const Money& m) {
-        boost::format fmt(m.currency().format());
-        fmt.exceptions(boost::io::all_error_bits ^
-                       boost::io::too_many_args_bit);
-        return out << fmt % m.rounded().value()
-                          % m.currency().code()
-                          % m.currency().symbol();
+        return out << m.rounded().value() << " " << m.currency().code();
     }
-
 
     const Money::ConversionType & Money::Settings::conversionType() const
     {
