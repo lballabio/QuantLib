@@ -39,22 +39,21 @@ namespace {
         BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 4), tt::tolerance(1e-14));
         BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 4), tt::tolerance(1e-14));
         BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 0), tt::tolerance(1e-14));
-        BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 4), tt::tolerance(1e-14));
+        BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 0), tt::tolerance(1e-14));
 
         BOOST_TEST(1 == midEquivalent(1, 0, 3, 4));
         BOOST_TEST(1 == midEquivalent(1, 0, 0, 4));
         BOOST_TEST(1 == midEquivalent(1, 0, 3, 0));
-        BOOST_TEST(1 == midEquivalent(1, 0, 0, 4));
+        BOOST_TEST(1 == midEquivalent(1, 0, 0, 0));
 
         BOOST_TEST(2 == midEquivalent(0, 2, 3, 4));
         BOOST_TEST(2 == midEquivalent(0, 2, 0, 4));
         BOOST_TEST(2 == midEquivalent(0, 2, 3, 0));
-        BOOST_TEST(2 == midEquivalent(0, 2, 0, 4));
+        BOOST_TEST(2 == midEquivalent(0, 2, 0, 0));
 
         BOOST_TEST(3 == midEquivalent(0, 0, 3, 4));
         BOOST_TEST(4 == midEquivalent(0, 0, 0, 4));
         BOOST_TEST(3 == midEquivalent(0, 0, 3, 0));
-        BOOST_TEST(4 == midEquivalent(0, 0, 0, 4));
 
         BOOST_CHECK_THROW(midEquivalent(0, 0, 0, 0), QuantLib::Error);
     }
