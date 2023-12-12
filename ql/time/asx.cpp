@@ -25,7 +25,9 @@
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/utility/string_view.hpp>
 #include <string>
+#include <cctype>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -57,15 +59,13 @@ namespace QuantLib {
         if (in.length() != 2)
             return false;
 
-        string str1("0123456789");
-        string::size_type loc = str1.find(in.substr(1,1), 0);
-        if (loc == string::npos)
+        // 2nd character of code needs to be digit
+        if (!std::isdigit(in[1]))
             return false;
 
-        if (mainCycle) str1 = "hmzuHMZU";
-        else           str1 = "fghjkmnquvxzFGHJKMNQUVXZ";
-        loc = str1.find(in.substr(0,1), 0);
-        return loc != string::npos;
+        // 1st character needs to represent the correct month
+        const boost::string_view validMonthCodes = mainCycle ? "hmuz" : "fghjkmnquvxz";
+        return validMonthCodes.contains(std::tolower(in[0]));
     }
 
     std::string ASX::code(const Date& date) {
