@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(testIteratingDefaultContainer) {
     {
         std::vector<Date> tsDates;
         std::transform(ts.begin(), ts.end(), std::back_inserter(tsDates),
-            [](const std::pair<Date, Real>& x) -> Date { return x.first; });
+            [](const std::pair<const Date, Real>& x) -> Date { return x.first; });
         const std::vector<Date> expected{dates[2], dates[0], dates[1]};
         BOOST_TEST(tsDates == expected);
     }
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(testIteratingDefaultContainer) {
     {
         std::vector<Real> tsValues;
         std::transform(ts.begin(), ts.end(), std::back_inserter(tsValues),
-            [](const std::pair<Date, Real>& x) -> Real { return x.second; });
+            [](const std::pair<const Date, Real>& x) -> Real { return x.second; });
         const std::vector<Real> expected{prices[2], prices[0], prices[1]};
         BOOST_TEST(tsValues == expected);
     }
