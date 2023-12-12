@@ -223,9 +223,10 @@ namespace QuantLib {
 
         Date exerciseDate = arguments_.exercise->date(0);
 
-        // the part of the swap preceding exerciseDate should be truncated
-        // to avoid taking into account unwanted cashflows
-        // for the moment we add a check avoiding this situation
+        // The part of the swap preceding exerciseDate should be truncated to avoid taking into
+        // account unwanted cashflows. For the moment we add a check avoiding this situation.
+        // Furthermore, we take a copy of the underlying swap. This avoids notifying the swaption
+        // when we set a pricing engine on the swap below.
         VanillaSwap swap = *arguments_.swap;
         const Leg& fixedLeg = swap.fixedLeg();
         ext::shared_ptr<FixedRateCoupon> firstCoupon =

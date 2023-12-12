@@ -121,6 +121,32 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SwaptionTest)
 
+BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
+
+    BOOST_TEST_MESSAGE("Testing swaption result caching in Black engine...");
+
+    using namespace swaption_test;
+
+    CommonVars vars;
+
+    Date exerciseDate = vars.calendar.advance(vars.today, 1 * Years);
+    Date startDate = vars.calendar.advance(exerciseDate, vars.settlementDays, Days);
+
+    ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(1 * Years, vars.index, 0.03)
+                                            .withEffectiveDate(startDate)
+                                            .withFixedLegTenor(1 * Years)
+                                            .withFixedLegDayCount(vars.fixedDayCount)
+                                            .withFloatingLegSpread(0.0)
+                                            .withType(Swap::Payer);
+    ext::shared_ptr<Swaption> swaption = vars.makeSwaption(swap, exerciseDate, 0.12);
+
+    BOOST_CHECK(!swaption->isCalculated());
+
+    swaption->NPV();
+
+    BOOST_CHECK(swaption->isCalculated());
+}
+
 BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on strike...");
