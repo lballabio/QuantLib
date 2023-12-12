@@ -166,6 +166,50 @@ BOOST_AUTO_TEST_CASE(testInspectors) {
     BOOST_TEST(!ts.empty());
 }
 
+BOOST_AUTO_TEST_CASE(testUtilities) {
+    BOOST_TEST_MESSAGE("Testing utilities of time series...");
+
+    const std::vector<Date> dates = {Date(25, March, 2005),
+                                     Date(29, March, 2005),
+                                     Date(15, March, 2005)};
+
+    const std::vector<Real> prices = {25, 23, 20};
+
+    // find: needs mutable TimeSeries object as it might insert
+    {
+        TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
+
+        BOOST_TEST(ts.find(Date(15, March, 2005))->first == Date(15, March, 2005));
+        BOOST_TEST(ts.find(Date(15, March, 2005))->second == 20);
+        BOOST_TEST(3 == ts.size());
+
+        BOOST_TEST(ts.find(Date(25, March, 2005))->first == Date(25, March, 2005));
+        BOOST_TEST(ts.find(Date(25, March, 2005))->second == 25);
+        BOOST_TEST(3 == ts.size());
+
+        BOOST_TEST(ts.find(Date(29, March, 2005))->first == Date(29, March, 2005));
+        BOOST_TEST(ts.find(Date(29, March, 2005))->second == 23);
+        BOOST_TEST(3 == ts.size());
+
+        BOOST_TEST(ts.find(Date(1, March, 2005))->first == Date(1, March, 2005));
+        BOOST_TEST(4 == ts.size());
+    }
+
+    const TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
+
+    // dates()
+    {
+        const std::vector<Date> expected{dates[2], dates[0], dates[1]};
+        BOOST_TEST(ts.dates() == expected);
+    }
+
+    // values()
+    {
+        const std::vector<Real> expected{prices[2], prices[0], prices[1]};
+        BOOST_TEST(ts.values() == expected);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
