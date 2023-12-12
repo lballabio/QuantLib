@@ -86,12 +86,10 @@ namespace {
         BOOST_TEST(4 == p.value(IntervalPrice::Low));
     }
 
-    namespace {
-        void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
-            using T = IntervalPrice::Type;
-            for (const auto t : {T::Open, T::Close, T::High, T::Low})
-                BOOST_TEST(lhs.value(t) == rhs.value(t));
-        }
+    void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
+        using T = IntervalPrice::Type;
+        for (const auto t : {T::Open, T::Close, T::High, T::Low})
+            BOOST_TEST(lhs.value(t) == rhs.value(t));
     }
 
     BOOST_AUTO_TEST_CASE(testIntervalPriceModifiers) {
@@ -115,20 +113,18 @@ namespace {
         testEquality(p, IntervalPrice(21, 22, 23, 24));
     }
 
-    namespace {
-        TimeSeries<IntervalPrice> createSeries() {
-            std::vector<Date> d;
-            d.emplace_back((Day)1, (Month)1, (Year)2001);
-            d.emplace_back((Day)3, (Month)3, (Year)2003);
-            d.emplace_back((Day)2, (Month)2, (Year)2002);
+    TimeSeries<IntervalPrice> createSeries() {
+        std::vector<Date> d;
+        d.emplace_back((Day)1, (Month)1, (Year)2001);
+        d.emplace_back((Day)3, (Month)3, (Year)2003);
+        d.emplace_back((Day)2, (Month)2, (Year)2002);
 
-            const std::vector<Real> open{11, 13, 12};
-            const std::vector<Real> close{21, 23, 22};
-            const std::vector<Real> high{31, 33, 32};
-            const std::vector<Real> low{41, 43, 42};
+        const std::vector<Real> open{11, 13, 12};
+        const std::vector<Real> close{21, 23, 22};
+        const std::vector<Real> high{31, 33, 32};
+        const std::vector<Real> low{41, 43, 42};
 
-            return IntervalPrice::makeSeries(d, open, close, high, low);
-        }
+        return IntervalPrice::makeSeries(d, open, close, high, low);
     }
 
     BOOST_AUTO_TEST_CASE(testIntervalPriceMakeSeries) {
