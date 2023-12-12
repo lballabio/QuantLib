@@ -84,9 +84,9 @@ namespace QuantLib {
             }
         }
 
-        bool isJuneteenth(Day d, Month m, Year y, Weekday w) {
+        bool isJuneteenth(Day d, Month m, Year y, Weekday w, bool moveToFriday = true) {
             // declared in 2021, but only observed by exchanges since 2022
-            return (d == 19 || (d == 20 && w == Monday) || (d == 18 && w == Friday))
+            return (d == 19 || (d == 20 && w == Monday) || ((d == 18 && w == Friday) && moveToFriday))
                 && m == June && y >= 2022;
         }
     }
@@ -363,8 +363,8 @@ namespace QuantLib {
             || isWashingtonBirthday(d, m, y, w)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
-            // Juneteenth (Monday if Sunday or Friday if Saturday)
-            || isJuneteenth(d, m, y, w)
+            // Juneteenth (Monday if Sunday)
+            || isJuneteenth(d, m, y, w, false)
             // Independence Day (Monday if Sunday)
             || ((d == 4 || (d == 5 && w == Monday)) && m == July)
             // Labor Day (first Monday in September)
