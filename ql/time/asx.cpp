@@ -95,38 +95,28 @@ namespace QuantLib {
         QL_REQUIRE(isASXcode(asxCode, false),
                    asxCode << " is not a valid ASX code");
 
-        Date referenceDate = (refDate != Date() ?
-                              refDate :
-                              Date(Settings::instance().evaluationDate()));
+        const Date referenceDate = (refDate != Date() ?
+                                    refDate :
+                                    Date(Settings::instance().evaluationDate()));
 
-        std::string code = to_upper_copy(asxCode);
-        std::string ms = code.substr(0,1);
-        QuantLib::Month m;
-        if (ms=="F")      m = January;
-        else if (ms=="G") m = February;
-        else if (ms=="H") m = March;
-        else if (ms=="J") m = April;
-        else if (ms=="K") m = May;
-        else if (ms=="M") m = June;
-        else if (ms=="N") m = July;
-        else if (ms=="Q") m = August;
-        else if (ms=="U") m = September;
-        else if (ms=="V") m = October;
-        else if (ms=="X") m = November;
-        else if (ms=="Z") m = December;
-        else QL_FAIL("invalid ASX month letter");
+        const char ms = std::toupper(asxCode.front());
+        const std::size_t idxZeroBased = All_MONTH_CODES.find(ms);
+        QL_ASSERT(idxZeroBased != All_MONTH_CODES.npos, "invalid ASX month letter. code: " + asxCode);
 
-        Year y = std::stoi(code.substr(1,1));
+        // QuantLib::Month is 1-based!
+        const QuantLib::Month m = static_cast<QuantLib::Month>(idxZeroBased + 1);
+
+        // convert 2nd char to year digit
+        Year y = static_cast<int>(asxCode[1]) - static_cast<int>('0');
+        QL_ASSERT((y>=0) && (y <= 9), "invalid ASX year digit. code: " + asxCode);
+
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
         if (y==0 && referenceDate.year()<=1909) y+=10;
-        Year referenceYear = (referenceDate.year() % 10);
+        const Year referenceYear = (referenceDate.year() % 10);
         y += referenceDate.year() - referenceYear;
         Date result = ASX::nextDate(Date(1, m, y), false);
-        if (result<referenceDate)
-            return ASX::nextDate(Date(1, m, y+10), false);
-
-        return result;
+        return (result >= referenceDate) ? result : ASX::nextDate(Date(1, m, y+10), false);
     }
 
     Date ASX::nextDate(const Date& date, bool mainCycle) {
