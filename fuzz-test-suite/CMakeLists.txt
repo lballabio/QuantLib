@@ -15,6 +15,13 @@ set_target_properties(DateParserFuzzer PROPERTIES
 )
 target_link_libraries(DateParserFuzzer ql_library ${QL_THREAD_LIBRARIES})
 
+add_executable(AmericanOptionFuzzer fuzzamericanoption.cpp)
+set_target_properties(AmericanOptionFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(AmericanOptionFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
 add_executable(AmortizedBondsFuzzer amortizedbondsfuzzer.cpp)
 set_target_properties(AmortizedBondsFuzzer PROPERTIES
     COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
