@@ -101,6 +101,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     ext::shared_ptr<BlackVolTermStructure> volTS = ext::shared_ptr<BlackVolTermStructure>(
         new BlackConstantVol(today, NullCalendar(), Handle<Quote>(vol), dc));
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new BlackScholesMertonProcess(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)));
+
     ext::shared_ptr<PricingEngine> engine(
         new BaroneAdesiWhaleyApproximationEngine(stochProcess));
 
@@ -114,10 +119,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
         qRate->setValue(value.q);
         rRate->setValue(value.r);
         vol->setValue(value.v);
-
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new BlackScholesMertonProcess(
-            Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
-            Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);
