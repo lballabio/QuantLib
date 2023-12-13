@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(asxDates) {
 
 
 BOOST_AUTO_TEST_CASE(asxDatesSpecific) {
-    BOOST_TEST_MESSAGE("Testing ASX funcionlity with specific dates...");
+    BOOST_TEST_MESSAGE("Testing ASX functionlity with specific dates...");
 
     // isASXdate
     {
