@@ -8,14 +8,16 @@ else()
     set(FUZZING_LINK_FLAGS "-fsanitize=fuzzer")
 endif()
 
-# Define the fuzz target
 add_executable(DateParserFuzzer dateparserfuzzer.cpp)
-
-# Apply the determined flags
 set_target_properties(DateParserFuzzer PROPERTIES
     COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
     LINK_FLAGS "${FUZZING_LINK_FLAGS}"
 )
-
-# Link QuantLib and any other necessary libraries
 target_link_libraries(DateParserFuzzer ql_library ${QL_THREAD_LIBRARIES})
+
+add_executable(AmortizedBondsFuzzer amortizedbondsfuzzer.cpp)
+set_target_properties(AmortizedBondsFuzzer PROPERTIES
+    COMPILE_FLAGS "${FUZZING_COMPILE_FLAGS}"
+    LINK_FLAGS "${FUZZING_LINK_FLAGS}"
+)
+target_link_libraries(AmortizedBondsFuzzer ql_library ${QL_THREAD_LIBRARIES})
