@@ -83,6 +83,23 @@ BOOST_AUTO_TEST_CASE(ecbDates) {
                    "unable to add an ECB date");
 }
 
+BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
+    BOOST_TEST_MESSAGE("Testing conversion of ECB codes to dates...");
+
+    const Date ref2000((Day)1, January, (Year)2000);
+    BOOST_TEST(ECB::date("JAN05", ref2000) == Date((Day)19, January,  (Year)2005));
+    BOOST_TEST(ECB::date("FEB06", ref2000) == Date((Day) 8, February, (Year)2006));
+    BOOST_TEST(ECB::date("MAR07", ref2000) == Date((Day)14, March,    (Year)2007));
+    BOOST_TEST(ECB::date("APR08", ref2000) == Date((Day)16, April,    (Year)2008));
+    BOOST_TEST(ECB::date("JUN09", ref2000) == Date((Day)10, June,     (Year)2009));
+    BOOST_TEST(ECB::date("JUL10") == Date((Day)14, July,      (Year)2010));
+    BOOST_TEST(ECB::date("AUG11") == Date((Day)10, August,    (Year)2011));
+    BOOST_TEST(ECB::date("SEP12") == Date((Day)12, September, (Year)2012));
+    BOOST_TEST(ECB::date("OCT13") == Date((Day) 9, October,   (Year)2013));
+    BOOST_TEST(ECB::date("NOV14") == Date((Day)12, November,  (Year)2014));
+    BOOST_TEST(ECB::date("DEC15") == Date((Day) 9, December,  (Year)2015));
+}
+
 BOOST_AUTO_TEST_CASE(immDates) {
     BOOST_TEST_MESSAGE("Testing IMM dates...");
 
