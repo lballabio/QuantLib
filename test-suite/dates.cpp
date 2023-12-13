@@ -45,46 +45,42 @@ BOOST_AUTO_TEST_SUITE(DateTest)
 BOOST_AUTO_TEST_CASE(ecbDates) {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
-    std::set<Date> knownDates = ECB::knownDates();
-    if (knownDates.empty())
-        BOOST_FAIL("empty EBC date vector");
+    const std::set<Date> knownDates = ECB::knownDates();
+    BOOST_TEST(!knownDates.empty(),
+                   "empty ECB date vector");
 
-    Size n = ECB::nextDates(Date::minDate()).size();
-    if (n != knownDates.size())
-        BOOST_FAIL("nextDates(minDate) returns "  << n <<
+    const Size n = ECB::nextDates(Date::minDate()).size();
+    BOOST_TEST(n == knownDates.size(),
+                   "nextDates(minDate) returns "  << n <<
                    " instead of " << knownDates.size() << " dates");
 
-    std::set<Date>::const_iterator i;
-    Date previousEcbDate = Date::minDate(),
-         currentEcbDate, ecbDateMinusOne;
-    for (i=knownDates.begin(); i!=knownDates.end(); ++i) {
+    Date previousEcbDate = Date::minDate();
+    for (const Date& currentEcbDate : knownDates) {
+        BOOST_TEST(ECB::isECBdate(currentEcbDate),
+                       currentEcbDate << " fails isECBdate check");
 
-        currentEcbDate = *i;
-        if (!ECB::isECBdate(currentEcbDate))
-            BOOST_FAIL(currentEcbDate << " fails isECBdate check");
+        const Date ecbDateMinusOne = currentEcbDate-1;
+        BOOST_TEST(!ECB::isECBdate(ecbDateMinusOne),
+                       ecbDateMinusOne << " fails isECBdate check");
 
-        ecbDateMinusOne = currentEcbDate-1;
-        if (ECB::isECBdate(ecbDateMinusOne))
-            BOOST_FAIL(ecbDateMinusOne << " fails isECBdate check");
-
-        if (ECB::nextDate(ecbDateMinusOne)!=currentEcbDate)
-            BOOST_FAIL("next EBC date following " << ecbDateMinusOne <<
+        BOOST_TEST(ECB::nextDate(ecbDateMinusOne)==currentEcbDate,
+                       "next ECB date following " << ecbDateMinusOne <<
                        " must be " << currentEcbDate);
 
-        if (ECB::nextDate(previousEcbDate)!=currentEcbDate)
-            BOOST_FAIL("next EBC date following " << previousEcbDate <<
+        BOOST_TEST(ECB::nextDate(previousEcbDate)==currentEcbDate,
+                       "next ECB date following " << previousEcbDate <<
                        " must be " << currentEcbDate);
 
         previousEcbDate = currentEcbDate;
     }
 
-    Date knownDate = *knownDates.begin();
+    const Date knownDate = *knownDates.begin();
     ECB::removeDate(knownDate);
-    if (ECB::isECBdate(knownDate))
-        BOOST_FAIL("unable to remove an EBC date");
+    BOOST_TEST(!ECB::isECBdate(knownDate),
+                   "unable to remove an ECB date");
     ECB::addDate(knownDate);
-    if (!ECB::isECBdate(knownDate))
-        BOOST_FAIL("unable to add an EBC date");
+    BOOST_TEST(ECB::isECBdate(knownDate),
+                   "unable to add an ECB date");
 }
 
 BOOST_AUTO_TEST_CASE(immDates) {
