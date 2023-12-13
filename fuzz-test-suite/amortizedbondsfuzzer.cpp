@@ -71,7 +71,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* Data, size_t Size) {
             // Assert invariants, these should always be true.
             assert(coupon > 0.0);
             assert(principal > 0.0);
-            assert(totalAmout > lastTotalAmount);
+            assert(totalAmount > lastTotalAmount);
             lastTotalAmount = totalAmount;
             _unused(lastTotalAmount);
         }
