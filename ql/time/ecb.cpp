@@ -22,13 +22,21 @@
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/utility/string_view.hpp>
 #include <algorithm>
+#include <array>
 #include <string>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
 
 namespace QuantLib {
+
+    namespace {
+        const std::array<boost::string_view, 12> MONTHS{
+            "JAN" ,"FEB" ,"MAR" ,"APR" ,"MAY" ,"JUN",
+            "JUL" ,"AUG" ,"SEP" ,"OCT" ,"NOV" ,"DEC"};
+    }
 
     namespace detail {
         static std::set<Date> ecbKnownDateSet = {
@@ -91,30 +99,31 @@ namespace QuantLib {
         detail::ecbKnownDateSet.erase(d);
     }
 
+    namespace {
+        int ToInteger(const char c) {
+            const int i = static_cast<int>(c) - static_cast<int>('0');
+            QL_ASSERT((i >= 0) && (i <= 9), "Character does not represent a digit. char: " << c);
+            return i;
+        }
+    }
+
     Date ECB::date(const string& ecbCode,
                    const Date& refDate) {
 
         QL_REQUIRE(isECBcode(ecbCode),
                    ecbCode << " is not a valid ECB code");
 
-        string code = to_upper_copy(ecbCode);
-        string monthString = code.substr(0, 3);
-        Month m;
-        if (monthString=="JAN")      m = January;
-        else if (monthString=="FEB") m = February;
-        else if (monthString=="MAR") m = March;
-        else if (monthString=="APR") m = April;
-        else if (monthString=="MAY") m = May;
-        else if (monthString=="JUN") m = June;
-        else if (monthString=="JUL") m = July;
-        else if (monthString=="AUG") m = August;
-        else if (monthString=="SEP") m = September;
-        else if (monthString=="OCT") m = October;
-        else if (monthString=="NOV") m = November;
-        else if (monthString=="DEC") m = December;
-        else QL_FAIL("not an ECB month (and it should have been)");
+        std::array<char, 3> upperMonthCode;
+        for (int i=0; i<3; ++i)
+            upperMonthCode[i] = std::toupper(ecbCode[i]);
+        const boost::string_view monthString(upperMonthCode.data(), 3);
+        const auto it = std::find(MONTHS.begin(), MONTHS.end(), monthString);
+        QL_ASSERT(it != MONTHS.end() ,"not an ECB month (and it should have been). code: " + ecbCode);
 
-        Year y = std::stoi(code.substr(3, 2));
+        // QuantLib::Month is 1-based!
+        const Month m = static_cast<QuantLib::Month>(std::distance(MONTHS.begin(), it) + 1);
+
+        Year y = ToInteger(ecbCode[3])*10 + ToInteger(ecbCode[4]);
         Date referenceDate = (refDate != Date() ?
                               refDate :
                               Date(Settings::instance().evaluationDate()));
