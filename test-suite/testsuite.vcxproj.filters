@@ -338,6 +338,9 @@
     <ClCompile Include="preconditions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="prices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="quantlibglobalfixture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
