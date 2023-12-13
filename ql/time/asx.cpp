@@ -29,9 +29,6 @@
 #include <string>
 #include <cctype>
 
-using boost::algorithm::to_upper_copy;
-using std::string;
-
 namespace QuantLib {
 
     namespace {
