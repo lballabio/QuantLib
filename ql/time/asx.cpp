@@ -34,6 +34,10 @@ using std::string;
 
 namespace QuantLib {
 
+    namespace {
+        const boost::string_view All_MONTH_CODES = "FGHJKMNQUVXZ";
+    }
+
     bool ASX::isASXdate(const Date& date, bool mainCycle) {
         if (date.weekday()!=Friday)
             return false;
@@ -64,63 +68,26 @@ namespace QuantLib {
             return false;
 
         // 1st character needs to represent the correct month
-        const boost::string_view validMonthCodes = mainCycle ? "hmuz" : "fghjkmnquvxz";
-        return validMonthCodes.contains(std::tolower(in[0]));
+        const boost::string_view validMonthCodes = mainCycle ? "HMUZ" : All_MONTH_CODES;
+        return validMonthCodes.contains(std::toupper(in[0]));
     }
 
     std::string ASX::code(const Date& date) {
         QL_REQUIRE(isASXdate(date, false),
                    date << " is not an ASX date");
 
-        std::ostringstream ASXcode;
-        unsigned int y = date.year() % 10;
-        switch(date.month()) {
-          case January:
-            ASXcode << 'F' << y;
-            break;
-          case February:
-            ASXcode << 'G' << y;
-            break;
-          case March:
-            ASXcode << 'H' << y;
-            break;
-          case April:
-            ASXcode << 'J' << y;
-            break;
-          case May:
-            ASXcode << 'K' << y;
-            break;
-          case June:
-            ASXcode << 'M' << y;
-            break;
-          case July:
-            ASXcode << 'N' << y;
-            break;
-          case August:
-            ASXcode << 'Q' << y;
-            break;
-          case September:
-            ASXcode << 'U' << y;
-            break;
-          case October:
-            ASXcode << 'V' << y;
-            break;
-          case November:
-            ASXcode << 'X' << y;
-            break;
-          case December:
-            ASXcode << 'Z' << y;
-            break;
-          default:
-            QL_FAIL("not an ASX month (and it should have been)");
-        }
+        // month() is 1-based!
+        const char monthCode = All_MONTH_CODES[date.month()-1];
+        const char yearDigit = static_cast<char>(static_cast<int>('0') + (date.year() % 10));
+        std::string code{monthCode, yearDigit};
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_ENSURE(isASXcode(ASXcode.str(), false),
-                  "the result " << ASXcode.str() <<
-                  " is an invalid ASX code");
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+            QL_ENSURE(isASXcode(code, false),
+                    "the result " << code <<
+                    " is an invalid ASX code");
         #endif
-        return ASXcode.str();
+
+        return code;
     }
 
     Date ASX::date(const std::string& asxCode,
