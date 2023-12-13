@@ -17,43 +17,45 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "nthorderderivativeop.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-
 #include <ql/math/comparison.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/operators/nthorderderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/nthorderderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
+#include <ql/quotes/simplequote.hpp>
 #include <boost/numeric/ublas/banded.hpp>
-#include <boost/numeric/ublas/operation_sparse.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-
+#include <boost/numeric/ublas/operation_sparse.hpp>
 #include <numeric>
 #include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void NthOrderDerivativeOpTest::testSparseMatrixApply() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NthOrderDerivativeOpTest)
+
+BOOST_AUTO_TEST_CASE(testSparseMatrixApply) {
     BOOST_TEST_MESSAGE("Testing sparse matrix apply...");
 
     SparseMatrix sm(5,7);
@@ -73,7 +75,7 @@ void NthOrderDerivativeOpTest::testSparseMatrixApply() {
     BOOST_CHECK(close_enough(y[4], 0.0));
 }
 
-void NthOrderDerivativeOpTest::testFirstOrder2PointsApply() {
+BOOST_AUTO_TEST_CASE(testFirstOrder2PointsApply) {
     BOOST_TEST_MESSAGE("Testing two points first order "
             "derivative operator apply on an uniform grid...");
 
@@ -90,7 +92,7 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsApply() {
         BOOST_CHECK(close_enough(y[i], 1/dx));
 }
 
-void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
+BOOST_AUTO_TEST_CASE(testFirstOrder3PointsOnUniformGrid) {
     BOOST_TEST_MESSAGE("Testing three points first order "
             "derivative operator on an uniform grid...");
 
@@ -126,7 +128,7 @@ void NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid() {
     BOOST_CHECK(close_enough(m(5,5), 3.0/2.0*ddx));
 }
 
-void NthOrderDerivativeOpTest::testFirstOrder5PointsOnUniformGrid() {
+BOOST_AUTO_TEST_CASE(testFirstOrder5PointsOnUniformGrid) {
     BOOST_TEST_MESSAGE("Testing five points first order "
             "derivative operator on an uniform grid...");
 
@@ -173,7 +175,7 @@ void NthOrderDerivativeOpTest::testFirstOrder5PointsOnUniformGrid() {
     BOOST_CHECK(close_enough(m(5,5), 25.0/12.0*ddx));
 }
 
-void NthOrderDerivativeOpTest::testFirstOrder2PointsOnUniformGrid() {
+BOOST_AUTO_TEST_CASE(testFirstOrder2PointsOnUniformGrid) {
     BOOST_TEST_MESSAGE("Testing two points first order "
             "derivative operator on an uniform grid...");
 
@@ -205,7 +207,7 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOnUniformGrid() {
     BOOST_CHECK(close_enough(m(3,3), ddx));
 }
 
-void NthOrderDerivativeOpTest::testFirstOrder4PointsOnUniformGrid() {
+BOOST_AUTO_TEST_CASE(testFirstOrder4PointsOnUniformGrid) {
     BOOST_TEST_MESSAGE("Testing four points first order "
             "derivative operator on an uniform grid...");
 
@@ -237,7 +239,7 @@ void NthOrderDerivativeOpTest::testFirstOrder4PointsOnUniformGrid() {
     BOOST_CHECK(close_enough(m(3,3), 11.0/6.0*ddx));
 }
 
-void NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid() {
+BOOST_AUTO_TEST_CASE(testFirstOrder2PointsOn2DimUniformGrid) {
     BOOST_TEST_MESSAGE("Testing two points first order "
             "derivative operator on a 2 dimensional uniform grid...");
 
@@ -277,7 +279,7 @@ void NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid() {
     }
 }
 
-void NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid() {
+BOOST_AUTO_TEST_CASE(testSecondOrder3PointsNonUniformGrid) {
     BOOST_TEST_MESSAGE("Testing three points second order "
             "derivative operator on a non-uniform grid...");
 
@@ -313,7 +315,7 @@ void NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid() {
     BOOST_CHECK(close_enough(m(3,3), 1.0/3.0));
 }
 
-void NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid() {
+BOOST_AUTO_TEST_CASE(testSecondOrder4PointsNonUniformGrid) {
     BOOST_TEST_MESSAGE("Testing four points second order "
             "derivative operator on a non-uniform grid...");
 
@@ -360,7 +362,7 @@ void NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid() {
     BOOST_CHECK(close_enough(m(4,4), 17.0/84.0));
 }
 
-void NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid() {
+BOOST_AUTO_TEST_CASE(testThirdOrder4PointsUniformGrid) {
     BOOST_TEST_MESSAGE("Testing four points third order "
             "derivative operator on a uniform grid...");
 
@@ -704,7 +706,7 @@ namespace {
     };
 }
 
-void NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing() {
+BOOST_AUTO_TEST_CASE(testHigherOrderHestonOptionPricing, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Heston model option pricing convergence with "
             "higher order finite difference operators...");
 
@@ -769,7 +771,7 @@ namespace {
     }
 }
 
-void NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation() {
+BOOST_AUTO_TEST_CASE(testHigherOrderAndRichardsonExtrapolation) {
     BOOST_TEST_MESSAGE(
             "Testing Heston option pricing convergence with "
             "higher order FDM operators and Richardson Extrapolation...");
@@ -788,7 +790,7 @@ void NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation() {
     }
 }
 
-void NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid() {
+BOOST_AUTO_TEST_CASE(testCompareFirstDerivativeOpNonUniformGrid) {
     BOOST_TEST_MESSAGE(
         "Testing with FirstDerivativeOp on a non-uniform grid...");
 
@@ -815,7 +817,7 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid() {
             BOOST_CHECK(std::fabs(fm(i, j)- dm(i, j)) < 1e-12);
 }
 
-void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
+BOOST_AUTO_TEST_CASE(testCompareFirstDerivativeOp2dUniformGrid) {
     BOOST_TEST_MESSAGE(
         "Testing with FirstDerivativeOp on a 2d uniform grid...");
 
@@ -848,7 +850,7 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
             BOOST_CHECK(std::fabs(Real(fm(i, j)) - Real(dm(i, j))) < 1e-12);
 }
 
-void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {
+BOOST_AUTO_TEST_CASE(testMixedSecondOrder9PointsOnUniformGrid) {
     BOOST_TEST_MESSAGE(
             "Testing nine points mixed second order "
             "derivative operator on a uniform grid...");
@@ -878,43 +880,6 @@ void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {
         }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* NthOrderDerivativeOpTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testSparseMatrixApply));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testFirstOrder2PointsApply));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testFirstOrder3PointsOnUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testFirstOrder5PointsOnUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testFirstOrder2PointsOnUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testFirstOrder4PointsOnUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testFirstOrder2PointsOn2DimUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testSecondOrder3PointsNonUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testSecondOrder4PointsNonUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

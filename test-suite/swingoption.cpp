@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swingoption.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
@@ -71,9 +72,44 @@ namespace swing_option_test {
         return ext::make_shared<ExtOUWithJumpsProcess>(
             ouProcess, x0[1], beta, jumpIntensity, eta);
     }
+
+    class SwingPdePricing {
+      public:
+        typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
+
+        SwingPdePricing(ext::shared_ptr<ExtOUWithJumpsProcess> process,
+                        ext::shared_ptr<VanillaOption> option,
+                        ext::shared_ptr<Shape> shape)
+        : process_(std::move(process)), option_(std::move(option)), shape_(std::move(shape)) {}
+
+        Real operator()(Real x) const {
+            const ext::shared_ptr<YieldTermStructure> rTS(
+                flatRate(0.0, Actual365Fixed()));
+
+            const Size gridX = 200;
+            const Size gridY = 100;
+            const Size gridT = 100;
+
+            option_->setPricingEngine(
+                ext::make_shared<FdExtOUJumpVanillaEngine>(
+                    process_, rTS,
+                    Size(gridT/x), Size(gridX/x), Size(gridY/x), shape_));
+
+            return option_->NPV();
+        }
+
+      private:
+        const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
+        const ext::shared_ptr<VanillaOption> option_;
+        const ext::shared_ptr<Shape> shape_;
+    };
 }
 
-void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SwingOptionExperimentalTest)
+
+BOOST_AUTO_TEST_CASE(testExtendedOrnsteinUhlenbeckProcess) {
 
     BOOST_TEST_MESSAGE("Testing extended Ornstein-Uhlenbeck process...");
 
@@ -125,9 +161,7 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
     }
 }
 
-
-
-void SwingOptionTest::testFdmExponentialJump1dMesher() {
+BOOST_AUTO_TEST_CASE(testFdmExponentialJump1dMesher) {
 
     BOOST_TEST_MESSAGE("Testing finite difference mesher for the Kluge model...");
 
@@ -176,7 +210,7 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
     }
 }
 
-void SwingOptionTest::testExtOUJumpVanillaEngine() {
+BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
 
@@ -237,7 +271,7 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
     }
 }
 
-void SwingOptionTest::testFdBSSwingOption() {
+BOOST_AUTO_TEST_CASE(testFdBSSwingOption) {
 
     BOOST_TEST_MESSAGE("Testing Black-Scholes vanilla swing option pricing...");
 
@@ -313,8 +347,7 @@ void SwingOptionTest::testFdBSSwingOption() {
     }
 }
 
-
-void SwingOptionTest::testExtOUJumpSwingOption() {
+BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 
@@ -436,40 +469,8 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
     }
 }
 
-namespace swing_option_test {
-    class SwingPdePricing {
-      public:
-        typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
 
-        SwingPdePricing(ext::shared_ptr<ExtOUWithJumpsProcess> process,
-                        ext::shared_ptr<VanillaOption> option,
-                        ext::shared_ptr<Shape> shape)
-        : process_(std::move(process)), option_(std::move(option)), shape_(std::move(shape)) {}
-
-        Real operator()(Real x) const {
-            const ext::shared_ptr<YieldTermStructure> rTS(
-                flatRate(0.0, Actual365Fixed()));
-
-            const Size gridX = 200;
-            const Size gridY = 100;
-            const Size gridT = 100;
-
-            option_->setPricingEngine(
-                ext::make_shared<FdExtOUJumpVanillaEngine>(
-                    process_, rTS,
-                    Size(gridT/x), Size(gridX/x), Size(gridY/x), shape_));
-
-            return option_->NPV();
-        }
-
-      private:
-        const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
-        const ext::shared_ptr<VanillaOption> option_;
-        const ext::shared_ptr<Shape> shape_;
-    };
-}
-
-void SwingOptionTest::testKlugeChFVanillaPricing() {
+BOOST_AUTO_TEST_CASE(testKlugeChFVanillaPricing) {
     BOOST_TEST_MESSAGE("Testing Kluge PDE Vanilla Pricing in"
             " comparison to moment matching...");
 
@@ -593,25 +594,6 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
     }
 }
 
-test_suite* SwingOptionTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Swing-Option Test");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess));
-    suite->add(QUANTLIB_TEST_CASE(&SwingOptionTest::testFdBSSwingOption));
-    suite->add(QUANTLIB_TEST_CASE(
-                          &SwingOptionTest::testFdmExponentialJump1dMesher));
-    suite->add(QUANTLIB_TEST_CASE(
-                          &SwingOptionTest::testKlugeChFVanillaPricing));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &SwingOptionTest::testExtOUJumpVanillaEngine));
-        suite->add(QUANTLIB_TEST_CASE(
-            &SwingOptionTest::testExtOUJumpSwingOption));
-    }
-
-    return suite;
-}
-
-
+BOOST_AUTO_TEST_SUITE_END()

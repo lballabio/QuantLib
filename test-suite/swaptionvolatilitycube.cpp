@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swaptionvolatilitycube.hpp"
+#include "toplevelfixture.hpp"
 #include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/swap/euriborswap.hpp>
@@ -145,7 +145,11 @@ namespace swaption_volatility_cube_test {
 
 }
 
-void SwaptionVolatilityCubeTest::testSabrNormalVolatility() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SwaptionVolatilityCubeTest)
+
+BOOST_AUTO_TEST_CASE(testSabrNormalVolatility) {
 
     BOOST_TEST_MESSAGE("Testing sabr normal volatility...");
 
@@ -172,7 +176,8 @@ void SwaptionVolatilityCubeTest::testSabrNormalVolatility() {
     vars.makeAtmVolTest(volCube, tolerance);
 }
 
-void SwaptionVolatilityCubeTest::testAtmVols() {
+// SwaptionVolCubeByLinear reproduces ATM vol with machine precision
+BOOST_AUTO_TEST_CASE(testAtmVols) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (atm vols)...");
 
@@ -193,7 +198,8 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
     vars.makeAtmVolTest(volCube, tolerance);
 }
 
-void SwaptionVolatilityCubeTest::testSmile() {
+// SwaptionVolCubeByLinear reproduces smile spreads with machine precision
+BOOST_AUTO_TEST_CASE(testSmile) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (smile)...");
 
@@ -214,7 +220,9 @@ void SwaptionVolatilityCubeTest::testSmile() {
     vars.makeVolSpreadsTest(volCube, tolerance);
 }
 
-void SwaptionVolatilityCubeTest::testSabrVols() {
+// SwaptionVolCubeBySabr reproduces ATM vol with given tolerance
+// SwaptionVolCubeBySabr reproduces smile spreads with given tolerance
+BOOST_AUTO_TEST_CASE(testSabrVols) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
 
@@ -255,7 +263,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     vars.makeVolSpreadsTest(volCube, tolerance);
 }
 
-void SwaptionVolatilityCubeTest::testSpreadedCube() {
+BOOST_AUTO_TEST_CASE(testSpreadedCube) {
 
     BOOST_TEST_MESSAGE("Testing spreaded swaption volatility cube...");
 
@@ -344,8 +352,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                     << "does not propagate notifications");
 }
 
-
-void SwaptionVolatilityCubeTest::testObservability() {
+BOOST_AUTO_TEST_CASE(testObservability) {
     BOOST_TEST_MESSAGE("Testing volatility cube observability...");
 
     using namespace swaption_volatility_cube_test;
@@ -477,7 +484,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
     Settings::instance().evaluationDate() = referenceDate;
 }
 
-void SwaptionVolatilityCubeTest::testSabrParameters() {
+BOOST_AUTO_TEST_CASE(testSabrParameters) {
     BOOST_TEST_MESSAGE("Testing interpolation of SABR smile sections...");
 
     using namespace swaption_volatility_cube_test;
@@ -582,23 +589,6 @@ void SwaptionVolatilityCubeTest::testSabrParameters() {
 
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* SwaptionVolatilityCubeTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrNormalVolatility));
-    // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
-    // SwaptionVolCubeByLinear reproduces smile spreads with machine precision
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
-
-    // SwaptionVolCubeBySabr reproduces ATM vol with given tolerance
-    // SwaptionVolCubeBySabr reproduces smile spreads with given tolerance
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSpreadedCube));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testObservability));
-    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrParameters));
-
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "quotes.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/quotes/simplequote.hpp>
 #include <ql/quotes/derivedquote.hpp>
@@ -45,8 +45,11 @@ namespace quotes_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void QuoteTest::testObservable() {
+BOOST_AUTO_TEST_SUITE(QuoteTest)
+
+BOOST_AUTO_TEST_CASE(testObservable) {
 
     BOOST_TEST_MESSAGE("Testing observability of quotes...");
 
@@ -60,7 +63,7 @@ void QuoteTest::testObservable() {
 
 }
 
-void QuoteTest::testObservableHandle() {
+BOOST_AUTO_TEST_CASE(testObservableHandle) {
 
     BOOST_TEST_MESSAGE("Testing observability of quote handles...");
 
@@ -81,7 +84,7 @@ void QuoteTest::testObservableHandle() {
 
 }
 
-void QuoteTest::testDerived() {
+BOOST_AUTO_TEST_CASE(testDerived) {
 
     BOOST_TEST_MESSAGE("Testing derived quotes...");
 
@@ -102,7 +105,7 @@ void QuoteTest::testDerived() {
     }
 }
 
-void QuoteTest::testComposite() {
+BOOST_AUTO_TEST_CASE(testComposite) {
 
     BOOST_TEST_MESSAGE("Testing composite quotes...");
 
@@ -122,7 +125,7 @@ void QuoteTest::testComposite() {
     }
 }
 
-void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
+BOOST_AUTO_TEST_CASE(testForwardValueQuoteAndImpliedStdevQuote){
     BOOST_TEST_MESSAGE(
             "Testing forward-value and implied-standard-deviation quotes...");
     Real forwardRate = .05;
@@ -194,16 +197,6 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
         BOOST_FAIL("Observer was not notified of quote change");
 
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* QuoteTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Quote tests");
-    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testObservable));
-    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testObservableHandle));
-    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testDerived));
-    suite->add(QUANTLIB_TEST_CASE(&QuoteTest::testComposite));
-    suite->add(QUANTLIB_TEST_CASE(
-                      &QuoteTest::testForwardValueQuoteAndImpliedStdevQuote));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

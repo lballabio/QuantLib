@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "tracing.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/utilities/tracing.hpp>
 #include <sstream>
@@ -80,8 +80,11 @@ namespace {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void TracingTest::testOutput() {
+BOOST_AUTO_TEST_SUITE(TracingTest)
+
+BOOST_AUTO_TEST_CASE(testOutput) {
 
     BOOST_TEST_MESSAGE("Testing tracing...");
 
@@ -89,10 +92,6 @@ void TracingTest::testOutput() {
     testTraceOutput(true,  "trace[0]: i = 42\n");
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* TracingTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Tracing tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&TracingTest::testOutput));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

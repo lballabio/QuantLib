@@ -18,17 +18,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>

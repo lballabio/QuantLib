@@ -21,7 +21,7 @@
 #ifndef quantlib_global_fixture_hpp
 #define quantlib_global_fixture_hpp
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include <chrono>
 
 class QuantLibGlobalFixture {  // NOLINT(cppcoreguidelines-special-member-functions)
@@ -29,12 +29,13 @@ class QuantLibGlobalFixture {  // NOLINT(cppcoreguidelines-special-member-functi
     QuantLibGlobalFixture();
     ~QuantLibGlobalFixture();
     static SpeedLevel get_speed ();
-    SpeedLevel speed_level (int argc, char **argv);
 
   private:
     static SpeedLevel speed;
     decltype(std::chrono::steady_clock::now()) start;
     decltype(std::chrono::steady_clock::now()) stop;
 };
+
+SpeedLevel speed_level (int argc, char **argv);
 
 #endif

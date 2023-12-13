@@ -19,21 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "optionletstripper.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/instruments/makecapfloor.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
+#include <ql/termstructures/volatility/capfloor/constantcapfloortermvol.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
 #include <ql/termstructures/volatility/optionlet/optionletstripper2.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
-#include <ql/termstructures/volatility/capfloor/constantcapfloortermvol.hpp>
-#include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/calendars/target.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
-#include <ql/instruments/makecapfloor.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <algorithm>
 #include <iterator>
 
@@ -381,7 +382,11 @@ namespace optionlet_stripper_test {
     };
 }
 
-void OptionletStripperTest::testFlatTermVolatilityStripping1() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OptionletStripperTest)
+
+BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1) {
 
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from flat term vol "
@@ -444,7 +449,7 @@ void OptionletStripperTest::testFlatTermVolatilityStripping1() {
     }
 }
 
-void OptionletStripperTest::testTermVolatilityStripping1() {
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1) {
 
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from non-flat term "
@@ -507,7 +512,7 @@ void OptionletStripperTest::testTermVolatilityStripping1() {
     }
 }
 
-void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
+BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingNormalVol) {
 
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from non-flat normal vol term "
@@ -575,7 +580,7 @@ void OptionletStripperTest::testTermVolatilityStrippingNormalVol() {
     }
 }
 
-void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
+BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingShiftedLogNormalVol) {
 
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from non-flat normal vol term "
@@ -644,7 +649,7 @@ void OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol() {
     }
 }
 
-void OptionletStripperTest::testFlatTermVolatilityStripping2() {
+BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping2) {
 
   BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from flat term vol "
@@ -713,7 +718,7 @@ void OptionletStripperTest::testFlatTermVolatilityStripping2() {
 
 }
 
-void OptionletStripperTest::testTermVolatilityStripping2() {
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2) {
 
   BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from non-flat term vol "
@@ -780,7 +785,7 @@ void OptionletStripperTest::testTermVolatilityStripping2() {
   }
 }
 
-void OptionletStripperTest::testSwitchStrike() {
+BOOST_AUTO_TEST_CASE(testSwitchStrike) {
     BOOST_TEST_MESSAGE("Testing switch strike level and recalibration of level "
                        "in case of curve relinking...");
 
@@ -827,16 +832,6 @@ void OptionletStripperTest::testSwitchStrike() {
                    << "\nerror:         " << io::rate(error)
                    << "\ntolerance:     " << io::rate(vars.tolerance));
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* OptionletStripperTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testFlatTermVolatilityStripping1));
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStripping1));
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testFlatTermVolatilityStripping2));
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStripping2));
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testSwitchStrike));
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStrippingNormalVol));
-    suite->add(QUANTLIB_TEST_CASE(&OptionletStripperTest::testTermVolatilityStrippingShiftedLogNormalVol));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

@@ -18,7 +18,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swapforwardmappings.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
@@ -166,23 +166,26 @@ namespace {
         return stats;
     }
 
-    MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
-        const std::vector<Time>& rateTimes, Real strike ){
-            std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
-            std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
-            for (auto& payoff : payoffs) {
-                payoff = ext::shared_ptr<StrikedTypePayoff>(
-                    new PlainVanillaPayoff(Option::Call, strike));
-            }
-            return MultiStepCoterminalSwaptions (rateTimes,
-                paymentTimes, payoffs);
-
-    }
+//    MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
+//        const std::vector<Time>& rateTimes, Real strike ){
+//            std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
+//            std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
+//            for (auto& payoff : payoffs) {
+//                payoff = ext::shared_ptr<StrikedTypePayoff>(
+//                    new PlainVanillaPayoff(Option::Call, strike));
+//            }
+//            return MultiStepCoterminalSwaptions (rateTimes,
+//                paymentTimes, payoffs);
+//
+//    }
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void SwapForwardMappingsTest::testForwardSwapJacobians()
+BOOST_AUTO_TEST_SUITE(SwapForwardMappingsTest)
+
+BOOST_AUTO_TEST_CASE(testForwardSwapJacobians)
 {
     {
         BOOST_TEST_MESSAGE("Testing forward-rate coinitial-swap Jacobian...");
@@ -291,82 +294,81 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
     }
 }
 
+//BOOST_AUTO_TEST_CASE(testForwardCoterminalMappings) {
+//
+//    BOOST_TEST_MESSAGE("Testing forward-rate coterminal-swap mappings...");
+//    MarketModelData marketData;
+//    const std::vector<Time>& rateTimes = marketData.rateTimes();
+//    const std::vector<Rate>& forwards = marketData.forwards();
+//    const Size nbRates = marketData.nbRates();
+//    LMMCurveState lmmCurveState(rateTimes);
+//    lmmCurveState.setOnForwardRates(forwards);
+//
+//    const Real longTermCorr=0.5;
+//    const Real beta = .2;
+//    Real strike = .03;
+//    MultiStepCoterminalSwaptions product
+//        = makeMultiStepCoterminalSwaptions(rateTimes, strike);
+//
+//    const EvolutionDescription& evolution = product.evolution();
+//    const Size numberOfFactors = nbRates;
+//    Spread displacement = marketData.displacements().front();
+//    Matrix jacobian =
+//        SwapForwardMappings::coterminalSwapZedMatrix(
+//        lmmCurveState, displacement);
+//
+//    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+//        longTermCorr,
+//        beta);
+//    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
+//        TimeHomogeneousForwardCorrelation(correlations,
+//        rateTimes));
+//    ext::shared_ptr<MarketModel> smmMarketModel(new
+//        FlatVol(marketData.volatilities(),
+//        corr,
+//        evolution,
+//        numberOfFactors,
+//        lmmCurveState.coterminalSwapRates(),
+//        marketData.displacements()));
+//
+//    ext::shared_ptr<MarketModel>
+//        lmmMarketModel(new CotSwapToFwdAdapter(smmMarketModel));
+//
+//    SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
+//    std::vector<Size> numeraires(nbRates,
+//        nbRates);
+//    ext::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
+//        (lmmMarketModel, generatorFactory, numeraires));
+//
+//    ext::shared_ptr<SequenceStatisticsInc> stats =
+//        simulate(marketData.discountFactors(), evolver, product);
+//    std::vector<Real> results = stats->mean();
+//    std::vector<Real> errors = stats->errorEstimate();
+//
+//    const std::vector<DiscountFactor>& todaysDiscounts = marketData.discountFactors();
+//    const std::vector<Rate>& todaysCoterminalSwapRates = lmmCurveState.coterminalSwapRates();
+//    for (Size i=0; i<nbRates; ++i) {
+//        const Matrix& cotSwapsCovariance = smmMarketModel->totalCovariance(i);
+//        //Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
+//        //Time expiry = rateTimes[i];
+//        ext::shared_ptr<PlainVanillaPayoff> payoff(
+//            new PlainVanillaPayoff(Option::Call, strike+displacement));
+//        //const std::vector<Time>&  taus = lmmCurveState.rateTaus();
+//        Real expectedSwaption = BlackCalculator(payoff,
+//            todaysCoterminalSwapRates[i]+displacement,
+//            std::sqrt(cotSwapsCovariance[i][i]),
+//            lmmCurveState.coterminalSwapAnnuity(i,i) *
+//            todaysDiscounts[i]).value();
+//        if (fabs(expectedSwaption-results[i]) > 0.0001)
+//            BOOST_ERROR(
+//            "expected\t" << expectedSwaption <<
+//            "\tLMM\t" << results[i]
+//        << "\tstdev:\t" << errors[i] <<
+//            "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
+//    }
+//}
 
-void SwapForwardMappingsTest::testForwardCoterminalMappings() {
-
-    BOOST_TEST_MESSAGE("Testing forward-rate coterminal-swap mappings...");
-    MarketModelData marketData;
-    const std::vector<Time>& rateTimes = marketData.rateTimes();
-    const std::vector<Rate>& forwards = marketData.forwards();
-    const Size nbRates = marketData.nbRates();
-    LMMCurveState lmmCurveState(rateTimes);
-    lmmCurveState.setOnForwardRates(forwards);
-
-    const Real longTermCorr=0.5;
-    const Real beta = .2;
-    Real strike = .03;
-    MultiStepCoterminalSwaptions product
-        = makeMultiStepCoterminalSwaptions(rateTimes, strike);
-
-    const EvolutionDescription& evolution = product.evolution();
-    const Size numberOfFactors = nbRates;
-    Spread displacement = marketData.displacements().front();
-    Matrix jacobian =
-        SwapForwardMappings::coterminalSwapZedMatrix(
-        lmmCurveState, displacement);
-
-    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
-        longTermCorr,
-        beta);
-    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
-        TimeHomogeneousForwardCorrelation(correlations,
-        rateTimes));
-    ext::shared_ptr<MarketModel> smmMarketModel(new
-        FlatVol(marketData.volatilities(),
-        corr,
-        evolution,
-        numberOfFactors,
-        lmmCurveState.coterminalSwapRates(),
-        marketData.displacements()));
-
-    ext::shared_ptr<MarketModel>
-        lmmMarketModel(new CotSwapToFwdAdapter(smmMarketModel));
-
-    SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
-    std::vector<Size> numeraires(nbRates,
-        nbRates);
-    ext::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
-        (lmmMarketModel, generatorFactory, numeraires));
-
-    ext::shared_ptr<SequenceStatisticsInc> stats =
-        simulate(marketData.discountFactors(), evolver, product);
-    std::vector<Real> results = stats->mean();
-    std::vector<Real> errors = stats->errorEstimate();
-
-    const std::vector<DiscountFactor>& todaysDiscounts = marketData.discountFactors();
-    const std::vector<Rate>& todaysCoterminalSwapRates = lmmCurveState.coterminalSwapRates();
-    for (Size i=0; i<nbRates; ++i) {
-        const Matrix& cotSwapsCovariance = smmMarketModel->totalCovariance(i);
-        //Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
-        //Time expiry = rateTimes[i];
-        ext::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(Option::Call, strike+displacement));
-        //const std::vector<Time>&  taus = lmmCurveState.rateTaus();
-        Real expectedSwaption = BlackCalculator(payoff,
-            todaysCoterminalSwapRates[i]+displacement,
-            std::sqrt(cotSwapsCovariance[i][i]),
-            lmmCurveState.coterminalSwapAnnuity(i,i) *
-            todaysDiscounts[i]).value();
-        if (fabs(expectedSwaption-results[i]) > 0.0001)
-            BOOST_ERROR(
-            "expected\t" << expectedSwaption <<
-            "\tLMM\t" << results[i]
-        << "\tstdev:\t" << errors[i] <<
-            "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
-    }
-}
-
-void SwapForwardMappingsTest::testSwaptionImpliedVolatility() 
+BOOST_AUTO_TEST_CASE(testSwaptionImpliedVolatility)
 {
 
     BOOST_TEST_MESSAGE("Testing implied swaption vol in LMM using HW approximation...");
@@ -447,18 +449,6 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
 
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-
-test_suite* SwapForwardMappingsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &SwapForwardMappingsTest::testSwaptionImpliedVolatility));
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &SwapForwardMappingsTest::testForwardSwapJacobians));
-    // suite->add(QUANTLIB_TEST_CASE(
-    //     &SwapForwardMappingsTest::testForwardCoterminalMappings));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(testBespokeConstructor) {
     std::string code("CCY");
     std::string symbol("#");
 
-    Currency customCcy(name, code, 100, symbol, "", 100, Rounding(), "");
+    Currency customCcy(name, code, 100, symbol, "", 100, Rounding());
 
     if (customCcy.empty())
         BOOST_ERROR("Failed to create bespoke currency.");

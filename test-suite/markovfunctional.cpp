@@ -17,161 +17,45 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "markovfunctional.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/processes/mfstateprocess.hpp>
-#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
-#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
-#include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
-#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
-#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
-#include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
-#include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
-#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
-#include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
-#include <ql/termstructures/volatility/kahalesmilesection.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
-#include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/indexes/swap/euriborswap.hpp>
+#include <ql/instruments/makecapfloor.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/instruments/makecapfloor.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
+#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/models/shortrate/onefactormodels/markovfunctional.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/gaussian1dcapfloorengine.hpp>
+#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/pricingengines/swaption/gaussian1dswaptionengine.hpp>
+#include <ql/processes/mfstateprocess.hpp>
+#include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/kahalesmilesection.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
+#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
+#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 using std::fabs;
-
-void MarkovFunctionalTest::testMfStateProcess() {
-
-    const Real tolerance = 1E-10;
-    BOOST_TEST_MESSAGE("Testing Markov functional state process...");
-
-    Array times1(0), vols1(1, 1.0);
-    MfStateProcess sp1(0.00, times1, vols1);
-    Real var11 = sp1.variance(0.0, 0.0, 1.0);
-    Real var12 = sp1.variance(0.0, 0.0, 2.0);
-    if (std::fabs(var11 - 1.0) > tolerance)
-        BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but "
-                    << var11);
-    if (std::fabs(var12 - 2.0) > tolerance)
-        BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but "
-                    << var12);
-
-    Array times2(2), vols2(3);
-    times2[0] = 1.0;
-    times2[1] = 2.0;
-    vols2[0] = 1.0;
-    vols2[1] = 2.0;
-    vols2[2] = 3.0;
-    MfStateProcess sp2(0.00, times2, vols2);
-    Real dif21 = sp2.diffusion(0.0, 0.0);
-    Real dif22 = sp2.diffusion(0.99, 0.0);
-    Real dif23 = sp2.diffusion(1.0, 0.0);
-    Real dif24 = sp2.diffusion(1.9, 0.0);
-    Real dif25 = sp2.diffusion(2.0, 0.0);
-    Real dif26 = sp2.diffusion(3.0, 0.0);
-    Real dif27 = sp2.diffusion(5.0, 0.0);
-    if (std::fabs(dif21 - 1.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 0.0, should be 1.0 but is "
-                    << dif21);
-    if (std::fabs(dif22 - 1.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 0.99, should be 1.0 but is "
-                    << dif22);
-    if (std::fabs(dif23 - 2.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 1.0, should be 2.0 but is "
-                    << dif23);
-    if (std::fabs(dif24 - 2.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 1.9, should be 2.0 but is "
-                    << dif24);
-    if (std::fabs(dif25 - 3.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 2.0, should be 3.0 but is "
-                    << dif25);
-    if (std::fabs(dif26 - 3.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 3.0, should be 3.0 but is "
-                    << dif26);
-    if (std::fabs(dif27 - 3.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong drift at 5.0, should be 3.0 but is "
-                    << dif27);
-    Real var21 = sp2.variance(0.0, 0.0, 0.0);
-    Real var22 = sp2.variance(0.0, 0.0, 0.5);
-    Real var23 = sp2.variance(0.0, 0.0, 1.0);
-    Real var24 = sp2.variance(0.0, 0.0, 1.5);
-    Real var25 = sp2.variance(0.0, 0.0, 3.0);
-    Real var26 = sp2.variance(0.0, 0.0, 5.0);
-    Real var27 = sp2.variance(1.2, 0.0, 1.0);
-    if (std::fabs(var21 - 0.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong variance at 0.0, should be 0.0 but is "
-                    << var21);
-    if (std::fabs(var22 - 0.5) > tolerance)
-        BOOST_ERROR("process 2 has wrong variance at 0.5, should be 0.5 but is "
-                    << var22);
-    if (std::fabs(var23 - 1.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong variance at 1.0, should be 1.0 but is "
-                    << var23);
-    if (std::fabs(var24 - 3.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong variance at 1.5, should be 3.0 but is "
-                    << var24);
-    if (std::fabs(var25 - 14.0) > tolerance)
-        BOOST_ERROR(
-            "process 2 has wrong variance at 3.0, should be 14.0 but is "
-            << var25);
-    if (std::fabs(var26 - 32.0) > tolerance)
-        BOOST_ERROR(
-            "process 2 has wrong variance at 5.0, should be 32.0 but is "
-            << var26);
-    if (std::fabs(var27 - 5.0) > tolerance)
-        BOOST_ERROR("process 2 has wrong variance between 1.2 and 2.2, should "
-                    "be 5.0 but is "
-                    << var27);
-
-    MfStateProcess sp3(0.01, times2, vols2);
-    Real var31 = sp3.variance(0.0, 0.0, 0.0);
-    Real var32 = sp3.variance(0.0, 0.0, 0.5);
-    Real var33 = sp3.variance(0.0, 0.0, 1.0);
-    Real var34 = sp3.variance(0.0, 0.0, 1.5);
-    Real var35 = sp3.variance(0.0, 0.0, 3.0);
-    Real var36 = sp3.variance(0.0, 0.0, 5.0);
-    Real var37 = sp3.variance(1.2, 0.0, 1.0);
-    if (std::fabs(var31 - 0.0) > tolerance)
-        BOOST_ERROR("process 3 has wrong variance at 0.0, should be 0.0 but is "
-                    << std::setprecision(12) << var31);
-    if (std::fabs(var32 - 0.502508354208) > tolerance)
-        BOOST_ERROR("process 3 has wrong variance at 0.5, should be 0.5 but it "
-                    << std::setprecision(12) << var32);
-    if (std::fabs(var33 - 1.01006700134) > tolerance)
-        BOOST_ERROR("process 3 has wrong variance at 1.0, should be 1.0 but it "
-                    << std::setprecision(12) << var33);
-    if (std::fabs(var34 - 3.06070578669) > tolerance)
-        BOOST_ERROR("process 3 has wrong variance at 1.5, should be 3.0 but it "
-                    << std::setprecision(12) << var34);
-    if (std::fabs(var35 - 14.5935513933) > tolerance)
-        BOOST_ERROR(
-            "process 3 has wrong variance at 3.0, should be 14.0 but it "
-            << std::setprecision(12) << var35);
-    if (std::fabs(var36 - 34.0940185819) > tolerance)
-        BOOST_ERROR(
-            "process 3 has wrong variance at 5.0, should be 32.0 but it "
-            << std::setprecision(12) << var36);
-    if (std::fabs(var37 - 5.18130257358) > tolerance)
-        BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should "
-                    "be 5.0 but it "
-                    << std::setprecision(12) << var37);
-}
 
 namespace {
 
@@ -632,7 +516,128 @@ namespace {
     }
 }
 
-void MarkovFunctionalTest::testKahaleSmileSection() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MarkovFunctionalTest)
+
+BOOST_AUTO_TEST_CASE(testMfStateProcess) {
+
+    const Real tolerance = 1E-10;
+    BOOST_TEST_MESSAGE("Testing Markov functional state process...");
+
+    Array times1(0), vols1(1, 1.0);
+    MfStateProcess sp1(0.00, times1, vols1);
+    Real var11 = sp1.variance(0.0, 0.0, 1.0);
+    Real var12 = sp1.variance(0.0, 0.0, 2.0);
+    if (std::fabs(var11 - 1.0) > tolerance)
+        BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but "
+                    << var11);
+    if (std::fabs(var12 - 2.0) > tolerance)
+        BOOST_ERROR("process 1 has not variance 1.0 for dt = 1.0 but "
+                    << var12);
+
+    Array times2(2), vols2(3);
+    times2[0] = 1.0;
+    times2[1] = 2.0;
+    vols2[0] = 1.0;
+    vols2[1] = 2.0;
+    vols2[2] = 3.0;
+    MfStateProcess sp2(0.00, times2, vols2);
+    Real dif21 = sp2.diffusion(0.0, 0.0);
+    Real dif22 = sp2.diffusion(0.99, 0.0);
+    Real dif23 = sp2.diffusion(1.0, 0.0);
+    Real dif24 = sp2.diffusion(1.9, 0.0);
+    Real dif25 = sp2.diffusion(2.0, 0.0);
+    Real dif26 = sp2.diffusion(3.0, 0.0);
+    Real dif27 = sp2.diffusion(5.0, 0.0);
+    if (std::fabs(dif21 - 1.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 0.0, should be 1.0 but is "
+                    << dif21);
+    if (std::fabs(dif22 - 1.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 0.99, should be 1.0 but is "
+                    << dif22);
+    if (std::fabs(dif23 - 2.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 1.0, should be 2.0 but is "
+                    << dif23);
+    if (std::fabs(dif24 - 2.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 1.9, should be 2.0 but is "
+                    << dif24);
+    if (std::fabs(dif25 - 3.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 2.0, should be 3.0 but is "
+                    << dif25);
+    if (std::fabs(dif26 - 3.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 3.0, should be 3.0 but is "
+                    << dif26);
+    if (std::fabs(dif27 - 3.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong drift at 5.0, should be 3.0 but is "
+                    << dif27);
+    Real var21 = sp2.variance(0.0, 0.0, 0.0);
+    Real var22 = sp2.variance(0.0, 0.0, 0.5);
+    Real var23 = sp2.variance(0.0, 0.0, 1.0);
+    Real var24 = sp2.variance(0.0, 0.0, 1.5);
+    Real var25 = sp2.variance(0.0, 0.0, 3.0);
+    Real var26 = sp2.variance(0.0, 0.0, 5.0);
+    Real var27 = sp2.variance(1.2, 0.0, 1.0);
+    if (std::fabs(var21 - 0.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong variance at 0.0, should be 0.0 but is "
+                    << var21);
+    if (std::fabs(var22 - 0.5) > tolerance)
+        BOOST_ERROR("process 2 has wrong variance at 0.5, should be 0.5 but is "
+                    << var22);
+    if (std::fabs(var23 - 1.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong variance at 1.0, should be 1.0 but is "
+                    << var23);
+    if (std::fabs(var24 - 3.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong variance at 1.5, should be 3.0 but is "
+                    << var24);
+    if (std::fabs(var25 - 14.0) > tolerance)
+        BOOST_ERROR(
+            "process 2 has wrong variance at 3.0, should be 14.0 but is "
+            << var25);
+    if (std::fabs(var26 - 32.0) > tolerance)
+        BOOST_ERROR(
+            "process 2 has wrong variance at 5.0, should be 32.0 but is "
+            << var26);
+    if (std::fabs(var27 - 5.0) > tolerance)
+        BOOST_ERROR("process 2 has wrong variance between 1.2 and 2.2, should "
+                    "be 5.0 but is "
+                    << var27);
+
+    MfStateProcess sp3(0.01, times2, vols2);
+    Real var31 = sp3.variance(0.0, 0.0, 0.0);
+    Real var32 = sp3.variance(0.0, 0.0, 0.5);
+    Real var33 = sp3.variance(0.0, 0.0, 1.0);
+    Real var34 = sp3.variance(0.0, 0.0, 1.5);
+    Real var35 = sp3.variance(0.0, 0.0, 3.0);
+    Real var36 = sp3.variance(0.0, 0.0, 5.0);
+    Real var37 = sp3.variance(1.2, 0.0, 1.0);
+    if (std::fabs(var31 - 0.0) > tolerance)
+        BOOST_ERROR("process 3 has wrong variance at 0.0, should be 0.0 but is "
+                    << std::setprecision(12) << var31);
+    if (std::fabs(var32 - 0.502508354208) > tolerance)
+        BOOST_ERROR("process 3 has wrong variance at 0.5, should be 0.5 but it "
+                    << std::setprecision(12) << var32);
+    if (std::fabs(var33 - 1.01006700134) > tolerance)
+        BOOST_ERROR("process 3 has wrong variance at 1.0, should be 1.0 but it "
+                    << std::setprecision(12) << var33);
+    if (std::fabs(var34 - 3.06070578669) > tolerance)
+        BOOST_ERROR("process 3 has wrong variance at 1.5, should be 3.0 but it "
+                    << std::setprecision(12) << var34);
+    if (std::fabs(var35 - 14.5935513933) > tolerance)
+        BOOST_ERROR(
+            "process 3 has wrong variance at 3.0, should be 14.0 but it "
+            << std::setprecision(12) << var35);
+    if (std::fabs(var36 - 34.0940185819) > tolerance)
+        BOOST_ERROR(
+            "process 3 has wrong variance at 5.0, should be 32.0 but it "
+            << std::setprecision(12) << var36);
+    if (std::fabs(var37 - 5.18130257358) > tolerance)
+        BOOST_ERROR("process 3 has wrong variance between 1.2 and 2.2, should "
+                    "be 5.0 but it "
+                    << std::setprecision(12) << var37);
+}
+
+BOOST_AUTO_TEST_CASE(testKahaleSmileSection) {
 
     BOOST_TEST_MESSAGE("Testing Kahale smile section...");
 
@@ -837,7 +842,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     }
 }
 
-void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
+BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet, *precondition(if_speed(Slow))) {
 
     const Real tol0 = 0.0001; //  1bp tolerance for model zero rates vs. market
                               // zero rates (note that model zero rates are
@@ -1068,7 +1073,7 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-void MarkovFunctionalTest::testVanillaEngines() {
+BOOST_AUTO_TEST_CASE(testVanillaEngines, *precondition(if_speed(Slow))) {
 
     const Real tol1 = 0.0001; // 1bp tolerance for model engine call put premia
                               // vs. black premia
@@ -1352,7 +1357,7 @@ void MarkovFunctionalTest::testVanillaEngines() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
+BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets, *precondition(if_speed(Fast))) {
 
     const Real tol1 = 0.1; // 0.1 times vega tolerance for model vs. market in
                            // second instrument set
@@ -1595,7 +1600,7 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-void MarkovFunctionalTest::testBermudanSwaption() {
+BOOST_AUTO_TEST_CASE(testBermudanSwaption) {
 
     Real tol0 = 0.0001; // 1bp tolerance against cached values
 
@@ -1678,21 +1683,6 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     Settings::instance().evaluationDate() = savedEvalDate;
 }
 
-test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Markov functional model tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testKahaleSmileSection));
-    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
-    }
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationOneInstrumentSet));
-        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
-    }
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

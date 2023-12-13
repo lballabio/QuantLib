@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swaptionvolatilitymatrix.hpp"
+#include "toplevelfixture.hpp"
 #include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
 #include <ql/utilities/dataformatters.hpp>
@@ -254,8 +254,11 @@ namespace swaption_volatility_matrix_test {
 
 }
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
+BOOST_AUTO_TEST_SUITE(SwaptionVolatilityMatrixTest)
+
+BOOST_AUTO_TEST_CASE(testSwaptionVolMatrixObservability) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix observability...");
 
@@ -316,8 +319,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
         //                         const DayCounter& dayCounter);
 }
 
-
-void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
+BOOST_AUTO_TEST_CASE(testSwaptionVolMatrixCoherence) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix...");
 
@@ -370,15 +372,6 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
                                  vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* SwaptionVolatilityMatrixTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-              &SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));
-
-    suite->add(QUANTLIB_TEST_CASE(
-          &SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
