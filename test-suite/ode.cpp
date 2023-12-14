@@ -30,6 +30,10 @@ using namespace boost::unit_test_framework;
 using std::exp;
 using std::sin;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OdeTests)
+
 namespace {
 
     struct ode1 {
@@ -62,10 +66,6 @@ namespace {
     };
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(OdeTest)
 
 BOOST_AUTO_TEST_CASE(testAdaptiveRungeKutta) {
 

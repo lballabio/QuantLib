@@ -50,6 +50,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AsianOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, averageType, \
                        runningAccumulator, pastFixings, \
@@ -141,10 +145,6 @@ namespace {
         Real tolerance;
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(AsianOptionTest)
 
 BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePrice) {
 
@@ -2241,7 +2241,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceHeston) {
     ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> engine(new
                                                                                    AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
 
-    AsianOptionTest::testDiscreteGeometricAveragePriceHeston(engine, tol);
+    AsianOptionTests::testDiscreteGeometricAveragePriceHeston(engine, tol);
 }
 
 BOOST_AUTO_TEST_CASE(testDiscreteGeometricAveragePriceHestonPastFixings) {

@@ -56,8 +56,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-namespace square_root_clv_model {
+BOOST_AUTO_TEST_SUITE(SquareRootCLVModelTests)
+
+namespace {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
         CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
@@ -73,15 +76,9 @@ namespace square_root_clv_model {
         chi_squared_type;
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SquareRootCLVModelTest)
-
 BOOST_AUTO_TEST_CASE(testSquareRootCLVVanillaPricing) {
     BOOST_TEST_MESSAGE(
         "Testing vanilla option pricing with square-root kernel process...");
-
-    using namespace square_root_clv_model;
 
     const Date todaysDate(5, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
@@ -162,8 +159,6 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVVanillaPricing) {
 BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
     BOOST_TEST_MESSAGE(
         "Testing mapping function of the square-root kernel process...");
-
-    using namespace square_root_clv_model;
 
     const Date todaysDate(16, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
@@ -259,7 +254,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
     }
 }
 
-namespace square_root_clv_model {
+namespace {
     class SquareRootCLVCalibrationFunction : public CostFunction {
       public:
         SquareRootCLVCalibrationFunction(Array strikes,

@@ -39,6 +39,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FdSabrTests)
+
 namespace {
     class SabrMonteCarloPricer {
       public:
@@ -136,10 +140,6 @@ namespace {
         { 0.0635, 0.0630 }, { 0.0523, 0.0520 }, { 0.0422, 0.0421 }
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(FdSabrTest)
 
 BOOST_AUTO_TEST_CASE(testFdmSabrOp, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing FDM SABR operator...");

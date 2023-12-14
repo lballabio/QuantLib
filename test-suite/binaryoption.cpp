@@ -36,6 +36,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BinaryOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier, s, q,\
                         r, today, v, expected, calculated, error, tolerance) \
@@ -55,7 +59,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance << "\n");
 
-namespace binary_option_test {
+namespace {
 
     std::string barrierTypeToString(Barrier::Type type) {
         switch(type){
@@ -88,15 +92,9 @@ namespace binary_option_test {
     };
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BinaryOptionTest)
-
 BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing cash-or-nothing barrier options against Haug's values...");
-
-    using namespace binary_option_test;
 
     BinaryOptionData values[] = {
         /* The data below are from
@@ -194,8 +192,6 @@ BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
 BOOST_AUTO_TEST_CASE(testAssetOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing asset-or-nothing barrier options against Haug's values...");
-
-    using namespace binary_option_test;
 
     BinaryOptionData values[] = {
         /* The data below are from

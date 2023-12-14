@@ -41,6 +41,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BasketOptionTests)
+
 #undef REPORT_FAILURE_2
 #define REPORT_FAILURE_2(greekName, basketType, payoff, exercise, \
                          s1, s2, q1, q2, r, today, v1, v2, rho, \
@@ -209,10 +213,6 @@ namespace {
         { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.4,  5.647, 1e-2 }
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BasketOptionTest)
 
 BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
 

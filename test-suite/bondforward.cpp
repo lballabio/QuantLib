@@ -27,7 +27,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace bond_forward_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BondForwardTests)
+
+namespace {
 
     struct CommonVars {
         // common data
@@ -64,15 +68,9 @@ namespace bond_forward_test {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BondForwardTest)
-
 BOOST_AUTO_TEST_CASE(testFuturesPriceReplication) {
     BOOST_TEST_MESSAGE("Testing futures price replication...");
 
-    using namespace bond_forward_test;
-    
     CommonVars vars;
 
     Real tolerance = 1.0e-2;
@@ -101,8 +99,6 @@ BOOST_AUTO_TEST_CASE(testFuturesPriceReplication) {
 BOOST_AUTO_TEST_CASE(testCleanForwardPriceReplication) {
     BOOST_TEST_MESSAGE("Testing clean forward price replication...");
 
-    using namespace bond_forward_test;
-
     CommonVars vars;
 
     Real tolerance = 1.0e-2;
@@ -130,8 +126,6 @@ BOOST_AUTO_TEST_CASE(testCleanForwardPriceReplication) {
 BOOST_AUTO_TEST_CASE(testThatForwardValueIsEqualToSpotValueIfNoIncome) {
     BOOST_TEST_MESSAGE(
         "Testing that forward value is equal to spot value if no income...");
-
-    using namespace bond_forward_test;
 
     CommonVars vars;
 

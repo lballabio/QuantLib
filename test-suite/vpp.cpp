@@ -58,7 +58,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace vpp_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VppTests)
+
+namespace {
 
     ext::function<Real(Real)> constant_b(Real b) {
         return [=](Real x){ return b; };
@@ -234,10 +238,6 @@ namespace vpp_test {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(VppTest)
-
 BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
 
     BOOST_TEST_MESSAGE("Testing Geman-Roncoroni process...");
@@ -248,8 +248,6 @@ BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
        Results are verified against the authors MatLab-Code.
        http://semeq.unipmn.it/files/Ch19_spark_spread.zip
     */
-
-    using namespace vpp_test;
 
     const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;
@@ -287,7 +285,7 @@ BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
     const Real alphaG    = 1.0;
     const Real x0G       = 1.1;
 
-    ext::function<Real (Real)> f = vpp_test::linear(alphaG, betaG);
+    ext::function<Real (Real)> f = linear(alphaG, betaG);
 
     ext::shared_ptr<StochasticProcess1D> eouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -365,8 +363,6 @@ BOOST_AUTO_TEST_CASE(testSimpleExtOUStorageEngine) {
 
     BOOST_TEST_MESSAGE("Testing simple-storage option based on ext. OU model...");
 
-    using namespace vpp_test;
-
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
     DayCounter dayCounter = ActualActual(ActualActual::ISDA);
@@ -412,8 +408,6 @@ BOOST_AUTO_TEST_CASE(testKlugeExtOUSpreadOption) {
 
     BOOST_TEST_MESSAGE("Testing simple Kluge ext-Ornstein-Uhlenbeck spread option...");
 
-    using namespace vpp_test;
-
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
 
@@ -433,7 +427,7 @@ BOOST_AUTO_TEST_CASE(testKlugeExtOUSpreadOption) {
 
     ext::shared_ptr<ExtOUWithJumpsProcess>
                                            klugeProcess = createKlugeProcess();
-    ext::function<Real (Real)> f = vpp_test::linear(alphaG, betaG);
+    ext::function<Real (Real)> f = linear(alphaG, betaG);
 
     ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOUProcess(
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
@@ -497,8 +491,6 @@ BOOST_AUTO_TEST_CASE(testVPPIntrinsicValue) {
 
     BOOST_TEST_MESSAGE("Testing VPP step condition...");
 
-    using namespace vpp_test;
-
     const Date today = Date(18, December, 2011);
     const DayCounter dc = ActualActual(ActualActual::ISDA);
     Settings::instance().evaluationDate() = today;
@@ -545,8 +537,6 @@ BOOST_AUTO_TEST_CASE(testVPPIntrinsicValue) {
 
 BOOST_AUTO_TEST_CASE(testVPPPricing, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing VPP pricing using perfect foresight or FDM...");
-
-    using namespace vpp_test;
 
     const Date today = Date(18, December, 2011);
     const DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -860,8 +850,6 @@ BOOST_AUTO_TEST_CASE(testVPPPricing, *precondition(if_speed(Slow))) {
 
 BOOST_AUTO_TEST_CASE(testKlugeExtOUMatrixDecomposition) {
     BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
-
-    using namespace vpp_test;
 
     const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;

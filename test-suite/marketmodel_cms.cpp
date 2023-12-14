@@ -52,7 +52,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace market_model_cms_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MarketModelCmsTests)
+
+namespace {
 
     Date todaysDate, startDate, endDate;
     std::vector<Time> rateTimes;
@@ -425,17 +429,11 @@ namespace market_model_cms_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(MarketModelCmsTest)
-
 BOOST_AUTO_TEST_CASE(testMultiStepCmSwapsAndSwaptions, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE("Testing exact repricing of "
                        "multi-step constant maturity swaps and swaptions "
                        "in a lognormal constant maturity swap market model...");
-
-    using namespace market_model_cms_test;
 
     setup();
 

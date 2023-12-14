@@ -27,7 +27,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace subperiodcoupons_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SubPeriodsCouponTests)
+
+namespace {
 
     struct CommonVars {
 
@@ -161,7 +165,6 @@ void testSinglePeriodCouponReplication(const Date& start,
                                        Spread rateSpread,
                                        RateAveraging::Type averaging,
                                        Natural fixingDays) {
-    using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread, fixingDays);
@@ -185,7 +188,6 @@ void testSinglePeriodCouponReplication(const Date& start,
 void testMultipleCompoundedSubPeriodsCouponReplication(const Date& start,
                                                        const Date& end,
                                                        Spread rateSpread) {
-    using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
@@ -210,7 +212,6 @@ void testMultipleCompoundedSubPeriodsCouponReplication(const Date& start,
 void testMultipleAveragedSubPeriodsCouponReplication(const Date& start,
                                                      const Date& end,
                                                      Spread rateSpread) {
-    using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
@@ -233,7 +234,6 @@ void testMultipleAveragedSubPeriodsCouponReplication(const Date& start,
 }
 
 void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
-    using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Date start(18, March, 2021);
@@ -263,10 +263,6 @@ void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
                     << "    expected:    " << expectedPayment << "\n"
                     << "    averaging:    " << averaging << "\n");
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SubPeriodsCouponTest)
 
 BOOST_AUTO_TEST_CASE(testRegularSinglePeriodForwardStartingCoupon) {
     BOOST_TEST_MESSAGE("Testing regular single period forward starting coupon...");
@@ -327,7 +323,6 @@ BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeri
 BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
     BOOST_TEST_MESSAGE("Testing ex-coupon cash flow...");
 
-    using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Date start(12, February, 2021);
@@ -358,7 +353,6 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegCashFlows) {
 BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
     BOOST_TEST_MESSAGE("Testing sub-periods leg consistency checks...");
 
-    using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Date start(18, March, 2021);

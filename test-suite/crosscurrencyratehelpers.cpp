@@ -33,7 +33,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace crosscurrencyratehelpers_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
+
+namespace {
 
     struct XccyTestDatum {
         Integer n;
@@ -219,8 +223,6 @@ namespace crosscurrencyratehelpers_test {
 void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCurrency,
                                                bool isBasisOnFxBaseCurrencyLeg) {
 
-    using namespace crosscurrencyratehelpers_test;
-
     CommonVars vars;
 
     Handle<YieldTermStructure> collateralHandle =
@@ -275,8 +277,6 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                                      bool isBasisOnFxBaseCurrencyLeg,
                                      bool isFxBaseCurrencyLegResettable) {
 
-    using namespace crosscurrencyratehelpers_test;
-
     CommonVars vars;
 
     Handle<YieldTermStructure> collateralHandle =
@@ -322,10 +322,6 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                         << "    maturity:    " << maturity << "\n");
     }
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTest)
 
 BOOST_AUTO_TEST_CASE(testConstNotionalBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy) {
     BOOST_TEST_MESSAGE("Testing constant notional basis swaps with collateral in quote ccy and "
@@ -419,8 +415,6 @@ BOOST_AUTO_TEST_CASE(testResettingBasisSwapsWithCollateralAndBasisInQuoteCcy) {
 BOOST_AUTO_TEST_CASE(testExceptionWhenInstrumentTenorShorterThanIndexFrequency) {
     BOOST_TEST_MESSAGE(
         "Testing exception when instrument tenor is shorter than index frequency...");
-
-    using namespace crosscurrencyratehelpers_test;
 
     CommonVars vars;
 

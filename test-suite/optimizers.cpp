@@ -41,6 +41,10 @@ using namespace boost::unit_test_framework;
 using std::pow;
 using std::cos;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OptimizersTests)
+
 namespace {
 
     struct NamedOptimizationMethod {
@@ -261,10 +265,6 @@ namespace {
     }
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(OptimizersTest)
 
 BOOST_AUTO_TEST_CASE(test) {
     BOOST_TEST_MESSAGE("Testing optimizers...");

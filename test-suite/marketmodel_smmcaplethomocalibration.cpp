@@ -72,7 +72,11 @@ using namespace boost::unit_test_framework;
 using std::fabs;
 using std::sqrt;
 
-namespace market_model_smm_caplet_homo_calibration_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletHomoCalibrationTests)
+
+namespace {
 
     Date todaysDate_, startDate_, endDate_;
     std::vector<Time> rateTimes_;
@@ -221,16 +225,10 @@ namespace market_model_smm_caplet_homo_calibration_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletHomoCalibrationTest)
-
 BOOST_AUTO_TEST_CASE(testFunction) {
 
     BOOST_TEST_MESSAGE("Testing max homogeneity caplet calibration "
                        "in a lognormal coterminal swap market model...");
-
-    using namespace market_model_smm_caplet_homo_calibration_test;
 
     setup();
 
@@ -358,8 +356,6 @@ BOOST_AUTO_TEST_CASE(testPeriodFunction) {
 
     BOOST_TEST_MESSAGE("Testing max homogeneity periodic caplet calibration "
                        "in a lognormal coterminal swap market model...");
-
-    using namespace market_model_smm_caplet_homo_calibration_test;
 
     setup();
 

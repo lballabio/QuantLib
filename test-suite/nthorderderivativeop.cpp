@@ -51,9 +51,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(NthOrderDerivativeOpTest)
+BOOST_AUTO_TEST_SUITE(NthOrderDerivativeOpTests)
 
 BOOST_AUTO_TEST_CASE(testSparseMatrixApply) {
     BOOST_TEST_MESSAGE("Testing sparse matrix apply...");

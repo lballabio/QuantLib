@@ -26,7 +26,6 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatility/flatsmilesection.hpp>
-
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
@@ -41,7 +40,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace range_accrual_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(RangeAccrualTests)
+
+namespace {
 
     struct CommonVars {
         // General settings
@@ -587,15 +590,9 @@ namespace range_accrual_test {
 //******************************************************************************************//
 //******************************************************************************************//
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(RangeAccrualTest)
-
 BOOST_AUTO_TEST_CASE(testInfiniteRange)  {
 
     BOOST_TEST_MESSAGE("Testing infinite range accrual floaters...");
-
-    using namespace range_accrual_test;
 
     CommonVars vars;
 
@@ -649,8 +646,6 @@ BOOST_AUTO_TEST_CASE(testPriceMonotonicityWithRespectToLowerStrike) {
 
     BOOST_TEST_MESSAGE(
             "Testing price monotonicity with respect to the lower strike...");
-
-    using namespace range_accrual_test;
 
     CommonVars vars;
 
@@ -706,8 +701,6 @@ BOOST_AUTO_TEST_CASE(testPriceMonotonicityWithRespectToUpperStrike) {
 
     BOOST_TEST_MESSAGE(
             "Testing price monotonicity with respect to the upper strike...");
-
-    using namespace range_accrual_test;
 
     CommonVars vars;
 

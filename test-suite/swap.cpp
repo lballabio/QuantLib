@@ -39,7 +39,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace swap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SwapTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -95,15 +99,9 @@ namespace swap_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwapTest)
-
 BOOST_AUTO_TEST_CASE(testFairRate) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -130,8 +128,6 @@ BOOST_AUTO_TEST_CASE(testFairSpread) {
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of "
                        "fair floating spread...");
 
-    using namespace swap_test;
-
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
@@ -155,8 +151,6 @@ BOOST_AUTO_TEST_CASE(testFairSpread) {
 BOOST_AUTO_TEST_CASE(testRateDependency) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -191,8 +185,6 @@ BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
-    using namespace swap_test;
-
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
@@ -226,8 +218,6 @@ BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 BOOST_AUTO_TEST_CASE(testInArrears) {
 
     BOOST_TEST_MESSAGE("Testing in-arrears swap calculation...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -295,8 +285,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation against cached value...");
 
-    using namespace swap_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
@@ -327,8 +315,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 BOOST_AUTO_TEST_CASE(testThirdWednesdayAdjustment) {
 
     BOOST_TEST_MESSAGE("Testing third-Wednesday adjustment...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 

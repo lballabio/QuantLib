@@ -32,7 +32,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace piecewise_zero_spreaded_term_structure_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PiecewiseZeroSpreadedTermStructureTests)
+
+namespace {
 
     struct Datum {
         Integer n;
@@ -75,15 +79,9 @@ namespace piecewise_zero_spreaded_term_structure_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(PiecewiseZeroSpreadedTermStructureTest)
-
 BOOST_AUTO_TEST_CASE(testFlatInterpolationLeft) {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation before the first spreaded date...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -121,8 +119,6 @@ BOOST_AUTO_TEST_CASE(testFlatInterpolationRight) {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation after the last spreaded date...");
 
-    using namespace piecewise_zero_spreaded_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
@@ -159,8 +155,6 @@ BOOST_AUTO_TEST_CASE(testFlatInterpolationRight) {
 BOOST_AUTO_TEST_CASE(testLinearInterpolationMultipleSpreads) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation with more than two spreaded dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -205,8 +199,6 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
 
-    using namespace piecewise_zero_spreaded_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
@@ -248,8 +240,6 @@ BOOST_AUTO_TEST_CASE(testForwardFlatInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing forward flat interpolation between two dates...");
 
-    using namespace piecewise_zero_spreaded_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
@@ -285,8 +275,6 @@ BOOST_AUTO_TEST_CASE(testForwardFlatInterpolation) {
 BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing backward flat interpolation between two dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -328,8 +316,6 @@ BOOST_AUTO_TEST_CASE(testDefaultInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing default interpolation between two dates...");
 
-    using namespace piecewise_zero_spreaded_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
@@ -365,8 +351,6 @@ BOOST_AUTO_TEST_CASE(testDefaultInterpolation) {
 BOOST_AUTO_TEST_CASE(testSetInterpolationFactory) {
 
     BOOST_TEST_MESSAGE("Testing factory constructor with additional parameters...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -416,8 +400,6 @@ BOOST_AUTO_TEST_CASE(testMaxDate) {
 
     BOOST_TEST_MESSAGE("Testing term structure max date...");
 
-    using namespace piecewise_zero_spreaded_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
@@ -448,8 +430,6 @@ BOOST_AUTO_TEST_CASE(testMaxDate) {
 BOOST_AUTO_TEST_CASE(testQuoteChanging) {
 
     BOOST_TEST_MESSAGE("Testing quote update...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 

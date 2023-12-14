@@ -42,9 +42,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CdoTests, *precondition(if_speed(Slow)))
+
 #ifndef QL_PATCH_SOLARIS
 
-namespace cdo_test {
+namespace {
 
     Real hwAttachment[] = { 0.00, 0.03, 0.06, 0.10 };
     Real hwDetachment[] = { 0.03, 0.06, 0.10, 1.00 };
@@ -90,14 +94,6 @@ namespace cdo_test {
 
 }
 
-#endif
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CdoTest, *precondition(if_speed(Slow)))
-
-#ifndef QL_PATCH_SOLARIS
-
 struct dataSetOne   { static const int dataset{0}; };
 struct dataSetTwo   { static const int dataset{1}; };
 struct dataSetThree { static const int dataset{2}; };
@@ -113,8 +109,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
     BOOST_TEST_MESSAGE("Testing CDO premiums against Hull-White values"
                        " for data set "
                        << dataSet << "...");
-
-    using namespace cdo_test;
 
     Size poolSize = 100;
     Real lambda = 0.01;

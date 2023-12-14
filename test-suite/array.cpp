@@ -25,22 +25,20 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace array_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ArrayTests)
+
+namespace {
     class FSquared {
       public:
         Real operator()(Real x) const { return x*x; }
     };
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(ArrayTest)
-
 BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing array construction...");
-
-    using namespace array_test;
 
     // empty array
     Array a1;

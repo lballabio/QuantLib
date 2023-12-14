@@ -26,7 +26,12 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace business_day_conventions_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BusinessDayConventionTests)
+
+namespace {
+
     struct SingleCase {
         SingleCase(Calendar calendar,
                    const BusinessDayConvention& convention,
@@ -46,15 +51,9 @@ namespace business_day_conventions_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BusinessDayConventionTest)
-
 BOOST_AUTO_TEST_CASE(testConventions) {
 
     BOOST_TEST_MESSAGE("Testing business day conventions...");
-
-    using namespace business_day_conventions_test;
 
     SingleCase testCases[] = {
         // Following

@@ -29,6 +29,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NumericalDifferentiationTests)
+
 namespace {
     bool isTheSame(Real a, Real b) {
         constexpr double eps = 500 * QL_EPSILON;
@@ -65,10 +69,6 @@ namespace {
                         << expected - calculated);
     }
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(NumericalDifferentiationTest)
 
 BOOST_AUTO_TEST_CASE(testTabulatedCentralScheme) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "

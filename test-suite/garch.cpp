@@ -29,7 +29,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace garch_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(GARCHTests)
+
+namespace {
 
     class DummyOptimizationMethod : public OptimizationMethod {
       public:
@@ -80,15 +84,9 @@ namespace garch_test {
                     << "\n    expected:   " << results.member); \
     }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(GARCHTest)
-
 BOOST_AUTO_TEST_CASE(testCalibration) {
 
     BOOST_TEST_MESSAGE("Testing GARCH model calibration...");
-
-    using namespace garch_test;
 
     Date start(7, July, 1962), d = start;
     TimeSeries<Volatility> ts;
@@ -172,8 +170,6 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
 BOOST_AUTO_TEST_CASE(testCalculation) {
     BOOST_TEST_MESSAGE("Testing GARCH model calculation...");
-
-    using namespace garch_test;
 
     Date d(7, July, 1962);
     TimeSeries<Volatility> ts;

@@ -47,6 +47,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrierlo, barrierhi, \
                        payoff, exercise, s, q, r, today, v, expected, \
@@ -105,7 +109,7 @@ using namespace boost::unit_test_framework;
                 << "Analytical: " << analytical << "\n" \
                 << "Monte Carlo: " << monteCarlo << "\n");
 
-namespace double_barrier_option_test {
+namespace {
 
     struct NewBarrierOptionData {
         DoubleBarrier::Type barrierType;
@@ -144,15 +148,9 @@ namespace double_barrier_option_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTest)
-
 BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing double barrier european options against Haug's values...");
-
-    using namespace double_barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     NewBarrierOptionData values[] = {
@@ -391,8 +389,6 @@ BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
 
-    using namespace double_barrier_option_test;
-
     DoubleBarrierFxOptionData values[] = {
 
         //            BarrierType, barr.1, barr.2, rebate,         type,    strike,          s,         q,         r,  t, vol25Put,    volAtm,vol25Call,      vol,    result,   tol
@@ -531,8 +527,6 @@ BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
 
 BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing MC double-barrier options against analytical values...");
-
-    using namespace double_barrier_option_test;
 
     Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated
 

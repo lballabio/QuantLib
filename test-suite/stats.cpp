@@ -36,6 +36,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(StatisticsTests)
+
 namespace {
 
     Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
@@ -284,10 +288,6 @@ namespace {
                        << "\n    expected:   " << expectedSampleSize2);
     }
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(StatisticsTest)
 
 BOOST_AUTO_TEST_CASE(testStatistics) {
 

@@ -48,7 +48,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace libor_market_model_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)  // tests for deprecated classes
+
+BOOST_AUTO_TEST_SUITE(LiborMarketModelTests)
+
+namespace {
 
     ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<Rate>& rates) {
         DayCounter dayCounter = Actual360();
@@ -101,14 +105,8 @@ namespace libor_market_model_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)  // tests for deprecated classes
-
-BOOST_AUTO_TEST_SUITE(LiborMarketModelTest)
-
 BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
     BOOST_TEST_MESSAGE("Testing simple covariance models...");
-
-    using namespace libor_market_model_test;
 
     const Size size = 10;
     const Real tolerance = 1e-14;
@@ -184,8 +182,6 @@ BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
 BOOST_AUTO_TEST_CASE(testCapletPricing) {
     BOOST_TEST_MESSAGE("Testing caplet pricing...");
 
-    using namespace libor_market_model_test;
-
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
     const Size size = 10;
@@ -233,8 +229,6 @@ BOOST_AUTO_TEST_CASE(testCapletPricing) {
 
 BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
-
-    using namespace libor_market_model_test;
 
     const Size size = 14;
     const Real tolerance = 8e-3;
@@ -337,8 +331,6 @@ BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Slow))) {
 
 BOOST_AUTO_TEST_CASE(testSwaptionPricing) {
     BOOST_TEST_MESSAGE("Testing forward swap and swaption pricing...");
-
-    using namespace libor_market_model_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 

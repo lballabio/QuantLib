@@ -44,7 +44,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace short_rate_models_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ShortRateModelTests)
+
+namespace {
 
     struct CalibrationData {
         Integer start;
@@ -54,14 +58,8 @@ namespace short_rate_models_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(ShortRateModelTest) // fails with QL_USE_INDEXED_COUPON
-
 BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");
-
-    using namespace short_rate_models_test;
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -134,8 +132,6 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
 
 BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration with fixed reversion against cached values...");
-
-    using namespace short_rate_models_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -211,8 +207,6 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
 BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached "
                        "values using swaptions without start delay...");
-
-    using namespace short_rate_models_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 

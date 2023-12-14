@@ -45,6 +45,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EuropeanOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
@@ -63,7 +67,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace european_option_test {
+namespace {
 
     // utilities
 
@@ -187,19 +191,11 @@ namespace european_option_test {
         return option;
     }
 
-}
-
-// different engines
-
-namespace {
-
-    void testEngineConsistency(european_option_test::EngineType engine,
+    void testEngineConsistency(EngineType engine,
                                Size binomialSteps,
                                Size samples,
                                std::map<std::string,Real> tolerance,
                                bool testGreeks = false) {
-
-        using namespace european_option_test;
 
         std::map<std::string,Real> calculated, expected;
 
@@ -284,15 +280,9 @@ namespace {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(EuropeanOptionTest)
-
 BOOST_AUTO_TEST_CASE(testValues) {
 
     BOOST_TEST_MESSAGE("Testing European option values...");
-
-    using namespace european_option_test;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -405,8 +395,6 @@ BOOST_AUTO_TEST_CASE(testValues) {
 BOOST_AUTO_TEST_CASE(testGreekValues) {
 
     BOOST_TEST_MESSAGE("Testing European option greek values...");
-
-    using namespace european_option_test;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -695,8 +683,6 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing analytic European option greeks...");
 
-    using namespace european_option_test;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -846,8 +832,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing European option implied volatility...");
 
-    using namespace european_option_test;
-
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
 
@@ -960,8 +944,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVol) {
 BOOST_AUTO_TEST_CASE(testImpliedVolWithDividends) {
 
     BOOST_TEST_MESSAGE("Testing European option implied volatility with dividends...");
-
-    using namespace european_option_test;
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -1151,8 +1133,6 @@ BOOST_AUTO_TEST_CASE(testJRBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing JR binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = JR;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1168,8 +1148,6 @@ BOOST_AUTO_TEST_CASE(testCRRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing CRR binomial European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = CRR;
     Size steps = 501;
@@ -1187,8 +1165,6 @@ BOOST_AUTO_TEST_CASE(testEQPBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing EQP binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = EQP;
     Size steps = 501;
     Size samples = Null<Size>();
@@ -1204,8 +1180,6 @@ BOOST_AUTO_TEST_CASE(testTGEOBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing TGEO binomial European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = TGEO;
     Size steps = 251;
@@ -1223,8 +1197,6 @@ BOOST_AUTO_TEST_CASE(testTIANBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing TIAN binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = TIAN;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1240,8 +1212,6 @@ BOOST_AUTO_TEST_CASE(testLRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing LR binomial European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = LR;
     Size steps = 251;
@@ -1259,8 +1229,6 @@ BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing Joshi binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = JOSHI;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1277,8 +1245,6 @@ BOOST_AUTO_TEST_CASE(testFdEngines) {
     BOOST_TEST_MESSAGE("Testing finite-difference European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = FiniteDifferences;
     Size timeSteps = 500;
     Size gridPoints = 500;
@@ -1294,8 +1260,6 @@ BOOST_AUTO_TEST_CASE(testIntegralEngines) {
 
     BOOST_TEST_MESSAGE("Testing integral engines against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = Integral;
     Size timeSteps = 300;
     Size gridPoints = 300;
@@ -1308,8 +1272,6 @@ BOOST_AUTO_TEST_CASE(testMcEngines) {
 
     BOOST_TEST_MESSAGE("Testing Monte Carlo European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = PseudoMonteCarlo;
     Size steps = Null<Size>();
@@ -1324,8 +1286,6 @@ BOOST_AUTO_TEST_CASE(testQmcEngines) {
     BOOST_TEST_MESSAGE("Testing Quasi Monte Carlo European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = QuasiMonteCarlo;
     Size steps = Null<Size>();
     Size samples = 4095; // 2^12-1
@@ -1336,8 +1296,6 @@ BOOST_AUTO_TEST_CASE(testQmcEngines) {
 
 BOOST_AUTO_TEST_CASE(testLocalVolatility) {
     BOOST_TEST_MESSAGE("Testing finite-differences with local volatility...");
-
-    using namespace european_option_test;
 
     const Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -1785,8 +1743,6 @@ BOOST_AUTO_TEST_CASE(testFFTEngines) {
 
     BOOST_TEST_MESSAGE("Testing FFT European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = FFT;
     Size steps = Null<Size>();

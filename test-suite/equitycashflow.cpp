@@ -26,7 +26,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace equitycashflow_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EquityCashFlowTests)
+
+namespace {
 
     struct CommonVars {
 
@@ -165,14 +169,8 @@ namespace equitycashflow_test {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(EquityCashFlowTest)
-
 BOOST_AUTO_TEST_CASE(testSimpleEquityCashFlow) {
     BOOST_TEST_MESSAGE("Testing simple equity cash flow...");
-
-    using namespace equitycashflow_test;
 
     const Real tolerance = 1.0e-6;
 
@@ -198,8 +196,6 @@ BOOST_AUTO_TEST_CASE(testSimpleEquityCashFlow) {
 BOOST_AUTO_TEST_CASE(testQuantoCorrection) {
     BOOST_TEST_MESSAGE("Testing quanto correction...");
 
-    using namespace equitycashflow_test;
-
     checkQuantoCorrection(true);
     checkQuantoCorrection(false);
 
@@ -210,8 +206,6 @@ BOOST_AUTO_TEST_CASE(testQuantoCorrection) {
 
 BOOST_AUTO_TEST_CASE(testErrorWhenBaseDateAfterFixingDate) {
     BOOST_TEST_MESSAGE("Testing error when base date after fixing date...");
-
-    using namespace equitycashflow_test;
 
     CommonVars vars;
 
@@ -226,8 +220,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenBaseDateAfterFixingDate) {
 BOOST_AUTO_TEST_CASE(testErrorWhenQuantoCurveHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when quanto currency curve handle is empty...");
 
-    using namespace equitycashflow_test;
-
     CommonVars vars;
 
     auto cf = vars.createEquityQuantoCashFlow();
@@ -239,8 +231,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenQuantoCurveHandleIsEmpty) {
 
 BOOST_AUTO_TEST_CASE(testErrorWhenEquityVolHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when equity vol handle is empty...");
-
-    using namespace equitycashflow_test;
 
     CommonVars vars;
 
@@ -254,8 +244,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenEquityVolHandleIsEmpty) {
 BOOST_AUTO_TEST_CASE(testErrorWhenFXVolHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when FX vol handle is empty...");
 
-    using namespace equitycashflow_test;
-
     CommonVars vars;
 
     auto cf = vars.createEquityQuantoCashFlow();
@@ -268,8 +256,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenFXVolHandleIsEmpty) {
 BOOST_AUTO_TEST_CASE(testErrorWhenCorrelationHandleIsEmpty) {
     BOOST_TEST_MESSAGE("Testing error when correlation handle is empty...");
 
-    using namespace equitycashflow_test;
-
     CommonVars vars;
 
     auto cf = vars.createEquityQuantoCashFlow();
@@ -281,8 +267,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenCorrelationHandleIsEmpty) {
 
 BOOST_AUTO_TEST_CASE(testErrorWhenInconsistentMarketDataReferenceDate) {
     BOOST_TEST_MESSAGE("Testing error when market data reference dates are inconsistent...");
-
-    using namespace equitycashflow_test;
 
     CommonVars vars;
 

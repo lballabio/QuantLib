@@ -53,7 +53,11 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace inflation_capfloored_coupon_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(InflationCapFlooredCouponTests)
+
+namespace {
     struct Datum {
         Date date;
         Rate rate;
@@ -364,15 +368,9 @@ namespace inflation_capfloored_coupon_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InflationCapFlooredCouponTest)
-
 BOOST_AUTO_TEST_CASE(testDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
-
-    using namespace inflation_capfloored_coupon_test;
 
     CommonVars vars;
 
@@ -689,8 +687,6 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
 
     BOOST_TEST_MESSAGE("Testing inflation capped/floored coupon against"
                        " inflation capfloor instrument...");
-
-    using namespace inflation_capfloored_coupon_test;
 
     CommonVars vars;
 

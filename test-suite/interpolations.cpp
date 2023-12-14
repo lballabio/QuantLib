@@ -53,6 +53,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(InterpolationTests)
+
 namespace {
 
     std::vector<Real> xRange(Real start, Real finish, Size points) {
@@ -239,9 +243,6 @@ namespace {
    SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
    http://math.lanl.gov/~mac/papers/numerics/H83.pdf
 */
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InterpolationTest)
 
 BOOST_AUTO_TEST_CASE(testSplineErrorOnGaussianValues) {
 

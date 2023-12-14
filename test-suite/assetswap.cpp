@@ -57,7 +57,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace asset_swap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AssetSwapTests)
+
+namespace {
 
     struct CommonVars {
         // common data
@@ -113,15 +117,9 @@ namespace asset_swap_test {
 }
 
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture) // fails with QL_USE_INDEXED_COUPON
-
-BOOST_AUTO_TEST_SUITE(AssetSwapTest)
-
 BOOST_AUTO_TEST_CASE(testConsistency) {
     BOOST_TEST_MESSAGE(
                  "Testing consistency between fair price and fair spread...");
-
-    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -509,8 +507,6 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
     BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
                        " price with null spread...");
 
-    using namespace asset_swap_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
@@ -876,8 +872,6 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
 
     BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
                        " and par asset swap...");
-
-    using namespace asset_swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -1317,8 +1311,6 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
-    using namespace asset_swap_test;
-
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -1638,8 +1630,6 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
 
     BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
                        " asset-swap fair price with null spread...");
-
-    using namespace asset_swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -2028,8 +2018,6 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
                        "with generic bond...");
-
-    using namespace asset_swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -2504,8 +2492,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
-    using namespace asset_swap_test;
-
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -2869,8 +2855,6 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
                        " against equivalent generic bond...");
-
-    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -3430,8 +3414,6 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
 
     BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
                        " bond against equivalent generic bond...");
-
-    using namespace asset_swap_test;
 
     CommonVars vars;
 

@@ -35,7 +35,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace libor_market_model_process_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(LiborMarketModelProcessTests)
+
+namespace {
 
     Size len = 10;
 
@@ -103,10 +107,6 @@ namespace libor_market_model_process_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture) // tests for deprecated classes
-
-BOOST_AUTO_TEST_SUITE(LiborMarketModelProcessTest)
-
 BOOST_AUTO_TEST_CASE(testInitialisation) {
     BOOST_TEST_MESSAGE("Testing caplet LMM process initialisation...");
 
@@ -150,8 +150,6 @@ BOOST_AUTO_TEST_CASE(testInitialisation) {
 
 BOOST_AUTO_TEST_CASE(testLambdaBootstrapping) {
     BOOST_TEST_MESSAGE("Testing caplet LMM lambda bootstrapping...");
-
-    using namespace libor_market_model_process_test;
 
     Real tolerance = 1e-10;
     Volatility lambdaExpected[]= {14.3010297550, 19.3821411939, 15.9816590141,
@@ -197,8 +195,6 @@ BOOST_AUTO_TEST_CASE(testLambdaBootstrapping) {
 
 BOOST_AUTO_TEST_CASE(testMonteCarloCapletPricing, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing caplet LMM Monte-Carlo caplet pricing...");
-
-    using namespace libor_market_model_process_test;
 
     /* factor loadings are taken from Hull & White article
        plus extra normalisation to get orthogonal eigenvectors

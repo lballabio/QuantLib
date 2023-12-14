@@ -33,6 +33,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ExtendedTreesTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
@@ -51,7 +55,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace extended_trees_test {
+namespace {
 
     // utilities
 
@@ -137,15 +141,9 @@ namespace extended_trees_test {
         return option;
     }
 
-}
-
-namespace {
-
-    void testEngineConsistency(extended_trees_test::EngineType engine,
+    void testEngineConsistency(EngineType engine,
                                Size binomialSteps,
                                std::map<std::string,Real> tolerance) {
-
-        using namespace extended_trees_test;
 
         std::map<std::string,Real> calculated, expected;
 
@@ -230,16 +228,10 @@ namespace {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(ExtendedTreesTest)
-
 BOOST_AUTO_TEST_CASE(testJRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent JR binomial European engines "
                        "against analytic results...");
-
-    using namespace extended_trees_test;
 
     EngineType engine = JR;
     Size steps = 251;
@@ -256,8 +248,6 @@ BOOST_AUTO_TEST_CASE(testCRRBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing time-dependent CRR binomial European engines "
                        "against analytic results...");
 
-    using namespace extended_trees_test;
-
     EngineType engine = CRR;
     Size steps = 501;
     std::map<std::string,Real> relativeTol;
@@ -272,8 +262,6 @@ BOOST_AUTO_TEST_CASE(testEQPBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent EQP binomial European engines "
                        "against analytic results...");
-
-    using namespace extended_trees_test;
 
     EngineType engine = EQP;
     Size steps = 501;
@@ -290,8 +278,6 @@ BOOST_AUTO_TEST_CASE(testTGEOBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing time-dependent TGEO binomial European engines "
                        "against analytic results...");
 
-    using namespace extended_trees_test;
-
     EngineType engine = TGEO;
     Size steps = 251;
     std::map<std::string,Real> relativeTol;
@@ -306,8 +292,6 @@ BOOST_AUTO_TEST_CASE(testTIANBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent TIAN binomial European engines "
                        "against analytic results...");
-
-    using namespace extended_trees_test;
 
     EngineType engine = TIAN;
     Size steps = 251;
@@ -324,8 +308,6 @@ BOOST_AUTO_TEST_CASE(testLRBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing time-dependent LR binomial European engines "
                        "against analytic results...");
 
-    using namespace extended_trees_test;
-
     EngineType engine = LR;
     Size steps = 251;
     std::map<std::string,Real> relativeTol;
@@ -340,8 +322,6 @@ BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing time-dependent Joshi binomial European engines "
                        "against analytic results...");
-
-    using namespace extended_trees_test;
 
     EngineType engine = JOSHI;
     Size steps = 251;

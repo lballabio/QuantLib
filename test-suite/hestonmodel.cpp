@@ -63,6 +63,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(HestonModelTests)
+
 namespace {
 
     struct CalibrationMarketData {
@@ -226,10 +230,6 @@ namespace {
         const ext::shared_ptr<Size> callCounter_;
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(HestonModelTest)
 
 BOOST_AUTO_TEST_CASE(testBlackCalibration) {
     BOOST_TEST_MESSAGE(

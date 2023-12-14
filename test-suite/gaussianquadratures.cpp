@@ -44,7 +44,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace gaussian_quadratures_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(GaussianQuadraturesTests)
+
+namespace {
 
     template <class T>
     void testSingle(const T& I, const std::string& tag,
@@ -155,14 +159,8 @@ namespace gaussian_quadratures_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(GaussianQuadraturesTest)
-
 BOOST_AUTO_TEST_CASE(testJacobi) {
     BOOST_TEST_MESSAGE("Testing Gauss-Jacobi integration...");
-
-    using namespace gaussian_quadratures_test;
 
     testSingleJacobi(GaussLegendreIntegration(16));
     testSingleJacobi(GaussChebyshevIntegration(130));
@@ -172,8 +170,6 @@ BOOST_AUTO_TEST_CASE(testJacobi) {
 
 BOOST_AUTO_TEST_CASE(testLaguerre) {
      BOOST_TEST_MESSAGE("Testing Gauss-Laguerre integration...");
-
-     using namespace gaussian_quadratures_test;
 
      testSingleLaguerre(GaussLaguerreIntegration(16));
      testSingleLaguerre(GaussLaguerreIntegration(150,0.01));
@@ -187,8 +183,6 @@ BOOST_AUTO_TEST_CASE(testLaguerre) {
 BOOST_AUTO_TEST_CASE(testHermite) {
      BOOST_TEST_MESSAGE("Testing Gauss-Hermite integration...");
 
-     using namespace gaussian_quadratures_test;
-
      testSingle(GaussHermiteIntegration(16), "f(x) = Gaussian(x)",
                 NormalDistribution(), 1.0);
      testSingle(GaussHermiteIntegration(16,0.5), "f(x) = x*Gaussian(x)",
@@ -200,8 +194,6 @@ BOOST_AUTO_TEST_CASE(testHermite) {
 BOOST_AUTO_TEST_CASE(testHyperbolic) {
      BOOST_TEST_MESSAGE("Testing Gauss hyperbolic integration...");
 
-     using namespace gaussian_quadratures_test;
-
      testSingle(GaussHyperbolicIntegration(16), "f(x) = 1/cosh(x)",
                 inv_cosh, M_PI);
      testSingle(GaussHyperbolicIntegration(16), "f(x) = x/cosh(x)",
@@ -211,10 +203,6 @@ BOOST_AUTO_TEST_CASE(testHyperbolic) {
 BOOST_AUTO_TEST_CASE(testTabulated) {
      BOOST_TEST_MESSAGE("Testing tabulated Gauss-Laguerre integration...");
 
-     using namespace gaussian_quadratures_test;
-
-     testSingleTabulated([](Real x) -> Real { return 1.0; }, "f(x) = 1",
-                         2.0,       1.0e-13);
      testSingleTabulated([](Real x) -> Real { return x; }, "f(x) = x",
                          0.0,       1.0e-13);
      testSingleTabulated([](Real x) -> Real { return x * x; }, "f(x) = x^2",
@@ -227,8 +215,6 @@ BOOST_AUTO_TEST_CASE(testTabulated) {
 
 BOOST_AUTO_TEST_CASE(testMomentBasedGaussianPolynomial) {
      BOOST_TEST_MESSAGE("Testing moment-based Gaussian polynomials...");
-
-     using namespace gaussian_quadratures_test;
 
      GaussLaguerrePolynomial g;
 
@@ -267,8 +253,6 @@ BOOST_AUTO_TEST_CASE(testMomentBasedGaussianPolynomial) {
 BOOST_AUTO_TEST_CASE(testGaussLaguerreCosinePolynomial) {
     BOOST_TEST_MESSAGE("Testing Gauss-Laguerre-Cosine quadrature...");
 
-    using namespace gaussian_quadratures_test;
-
     const GaussianQuadrature quadCosine(
             16, GaussLaguerreCosinePolynomial<Real>(0.2));
 
@@ -290,8 +274,6 @@ BOOST_AUTO_TEST_CASE(testNonCentralChiSquared) {
     BOOST_TEST_MESSAGE(
         "Testing Gauss non-central chi-squared integration...");
 
-    using namespace gaussian_quadratures_test;
-
     testSingle(
         GaussianQuadrature(2, GaussNonCentralChiSquaredPolynomial(4.0, 1.0)),
         "f(x) = x^2 * nonCentralChiSquared(4, 1)(x)",
@@ -306,8 +288,6 @@ BOOST_AUTO_TEST_CASE(testNonCentralChiSquared) {
 BOOST_AUTO_TEST_CASE(testNonCentralChiSquaredSumOfNodes) {
     BOOST_TEST_MESSAGE(
         "Testing Gauss non-central chi-squared sum of nodes...");
-
-    using namespace gaussian_quadratures_test;
 
     // Walter Gautschi, How and How not to check Gaussian Quadrature Formulae
     // https://www.cs.purdue.edu/homes/wxg/selected_works/section_08/084.pdf

@@ -43,6 +43,10 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using namespace boost::accumulators;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CmsSpreadTests)
+
 namespace {
 struct TestData {
     TestData() {
@@ -90,10 +94,6 @@ struct TestData {
         cmsspPricerN;
 };
 } // namespace
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CmsSpreadTest)
 
 BOOST_AUTO_TEST_CASE(testFixings) {
     BOOST_TEST_MESSAGE("Testing fixings of cms spread indices...");

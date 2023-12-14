@@ -45,7 +45,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace andreasen_huge_volatility_interpl_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AndreasenHugeVolatilityInterplTests)
+
+namespace {
 
     struct CalibrationData {
         const Handle<Quote> spot;
@@ -387,16 +391,10 @@ namespace andreasen_huge_volatility_interpl_test {
 }
 
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(AndreasenHugeVolatilityInterplTest)
-
 BOOST_AUTO_TEST_CASE(testAndreasenHugePut, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Put calibration...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData data = AndreasenHugeExampleData();
 
@@ -414,8 +412,6 @@ BOOST_AUTO_TEST_CASE(testAndreasenHugeCall) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Call calibration...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData data = AndreasenHugeExampleData();
 
@@ -435,8 +431,6 @@ BOOST_AUTO_TEST_CASE(testAndreasenHugeCallPut, *precondition(if_speed(Fast))) {
         "Testing Andreasen-Huge example with instantaneous "
          "Call and Put calibration...");
 
-    using namespace andreasen_huge_volatility_interpl_test;
-
     const CalibrationData data = AndreasenHugeExampleData();
 
     const CalibrationResults expected = {
@@ -453,8 +447,6 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolation, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with linear interpolation...");
 
-    using namespace andreasen_huge_volatility_interpl_test;
-
     const CalibrationData data = AndreasenHugeExampleData();
 
     const CalibrationResults expected = {
@@ -470,8 +462,6 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolation, *precondition(if_speed(Fast))) {
 BOOST_AUTO_TEST_CASE(testPiecewiseConstantInterpolation, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with piecewise constant interpolation...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData data = AndreasenHugeExampleData();
 
@@ -490,8 +480,6 @@ BOOST_AUTO_TEST_CASE(testTimeDependentInterestRates, *precondition(if_speed(Fast
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation with "
         "time dependent interest rates and dividend yield...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData data = AndreasenHugeExampleData();
 
@@ -634,8 +622,6 @@ BOOST_AUTO_TEST_CASE(testArbitrageFree) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge volatility interpolation gives "
         "arbitrage free prices...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     CalibrationData data[] = { BorovkovaExampleData(), arbitrageData() };;
 
@@ -829,8 +815,6 @@ BOOST_AUTO_TEST_CASE(testPeterAndFabiensExample) {
 
     // http://chasethedevil.github.io/post/andreasen-huge-extrapolation/
 
-    using namespace andreasen_huge_volatility_interpl_test;
-
     const std::pair<CalibrationData, std::vector<Real> > sd = sabrData();
     const CalibrationData& data = sd.first;
     const std::vector<Real>& parameter = sd.second;
@@ -875,8 +859,6 @@ BOOST_AUTO_TEST_CASE(testDifferentOptimizers) {
     BOOST_TEST_MESSAGE(
         "Testing different optimizer for Andreasen-Huge "
         "volatility interpolation...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     const CalibrationData& data = sabrData().first;
 
@@ -980,8 +962,6 @@ BOOST_AUTO_TEST_CASE(testMovingReferenceDate) {
 BOOST_AUTO_TEST_CASE(testFlatVolCalibration) {
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with flat volatility surface...");
-
-    using namespace andreasen_huge_volatility_interpl_test;
 
     const Date ref(1, November, 2019);
     const DayCounter dc = Actual365Fixed();

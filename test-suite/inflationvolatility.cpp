@@ -34,14 +34,16 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 
-#include <iostream>
-
 using namespace QuantLib;
 using namespace boost::unit_test;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(InflationVolTests)
+
 // local namespace for data
 //*************************************************************************
-namespace inflation_volatility_test {
+namespace {
 
     using namespace QuantLib;
 
@@ -273,15 +275,9 @@ namespace inflation_volatility_test {
 
 //***************************************************************************
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InflationVolTest)
-
 BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     BOOST_TEST_MESSAGE("Testing conversion from YoY price surface "
                        "to YoY volatility surface...");
-
-    using namespace inflation_volatility_test;
 
     setup();
 
@@ -365,8 +361,6 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
 BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToATM) {
     BOOST_TEST_MESSAGE("Testing conversion from YoY cap-floor surface "
                        "to YoY inflation term structure...");
-
-    using namespace inflation_volatility_test;
 
     setup();
 

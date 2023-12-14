@@ -41,11 +41,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#include <iostream>
-
 using std::fabs;
 
-namespace inflation_cpi_swap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CPISwapTests)
+
+namespace {
     struct Datum {
         Date date;
         Rate rate;
@@ -247,14 +249,8 @@ namespace inflation_cpi_swap_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CPISwapTest)
-
 BOOST_AUTO_TEST_CASE(consistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against inflation term structure...");
-
-    using namespace inflation_cpi_swap_test;
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -367,8 +363,6 @@ BOOST_AUTO_TEST_CASE(consistency) {
 BOOST_AUTO_TEST_CASE(zciisconsistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
 
-    using namespace inflation_cpi_swap_test;
-
     CommonVars common;
 
     Swap::Type ztype = Swap::Payer;
@@ -422,8 +416,6 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
 
 BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against CPI bond...");
-
-    using namespace inflation_cpi_swap_test;
 
     CommonVars common;
 

@@ -31,7 +31,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace equitytotalreturnswap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EquityTotalReturnSwapTests)
+
+namespace {
 
     struct CommonVars {
 
@@ -210,14 +214,8 @@ namespace equitytotalreturnswap_test {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(EquityTotalReturnSwapTest)
-
 BOOST_AUTO_TEST_CASE(testFairMargin) {
     BOOST_TEST_MESSAGE("Testing fair margin...");
-
-    using namespace equitytotalreturnswap_test;
 
     // Check TRS vs Libor-type index
     checkFairMarginCalculation(Swap::Receiver, Date(5, January, 2023), Date(5, April, 2023), false);
@@ -239,8 +237,6 @@ BOOST_AUTO_TEST_CASE(testFairMargin) {
 BOOST_AUTO_TEST_CASE(testErrorWhenNegativeNominal) {
     BOOST_TEST_MESSAGE("Testing error when negative nominal...");
 
-    using namespace equitytotalreturnswap_test;
-
     CommonVars vars;
 
     BOOST_CHECK_EXCEPTION(
@@ -252,8 +248,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenNegativeNominal) {
 
 BOOST_AUTO_TEST_CASE(testErrorWhenNoPaymentCalendar) {
     BOOST_TEST_MESSAGE("Testing error when payment calendar is missing...");
-
-    using namespace equitytotalreturnswap_test;
 
     CommonVars vars;
     
@@ -267,8 +261,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenNoPaymentCalendar) {
 
 BOOST_AUTO_TEST_CASE(testEquityLegNPV) {
     BOOST_TEST_MESSAGE("Testing equity leg NPV replication...");
-
-    using namespace equitytotalreturnswap_test;
 
     CommonVars vars;
 
@@ -293,8 +285,6 @@ BOOST_AUTO_TEST_CASE(testEquityLegNPV) {
 
 BOOST_AUTO_TEST_CASE(testTRSNPV) {
     BOOST_TEST_MESSAGE("Testing TRS NPV...");
-
-    using namespace equitytotalreturnswap_test;
 
     CommonVars vars;
 

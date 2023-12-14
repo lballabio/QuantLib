@@ -32,6 +32,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PathGeneratorTests)
+
 namespace {
 
     void testSingle(const ext::shared_ptr<StochasticProcess1D>& process,
@@ -139,10 +143,6 @@ namespace {
     }
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(PathGeneratorTest)
 
 BOOST_AUTO_TEST_CASE(testPathGenerator) {
 

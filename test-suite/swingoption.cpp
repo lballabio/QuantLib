@@ -49,8 +49,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-namespace swing_option_test {
+BOOST_AUTO_TEST_SUITE(SwingOptionTests)
+
+namespace {
 
     ext::function<Real(Real)> constant_b(Real b) {
         return [=](Real x){ return b; };
@@ -104,10 +107,6 @@ namespace swing_option_test {
         const ext::shared_ptr<Shape> shape_;
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwingOptionTest)
 
 BOOST_AUTO_TEST_CASE(testExtendedOrnsteinUhlenbeckProcess) {
 
@@ -165,8 +164,6 @@ BOOST_AUTO_TEST_CASE(testFdmExponentialJump1dMesher) {
 
     BOOST_TEST_MESSAGE("Testing finite difference mesher for the Kluge model...");
 
-    using namespace swing_option_test;
-
     Array x(2, 1.0);
     const Real beta = 100.0;
     const Real eta  = 1.0/0.4;
@@ -213,8 +210,6 @@ BOOST_AUTO_TEST_CASE(testFdmExponentialJump1dMesher) {
 BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing finite difference pricer for the Kluge model...");
-
-    using namespace swing_option_test;
 
     ext::shared_ptr<ExtOUWithJumpsProcess> jumpProcess = createKlugeProcess();
 
@@ -351,8 +346,6 @@ BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing simple swing option pricing for Kluge model...");
 
-    using namespace swing_option_test;
-
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
     DayCounter dayCounter = ActualActual(ActualActual::ISDA);
@@ -473,8 +466,6 @@ BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption, *precondition(if_speed(Fast))) {
 BOOST_AUTO_TEST_CASE(testKlugeChFVanillaPricing) {
     BOOST_TEST_MESSAGE("Testing Kluge PDE Vanilla Pricing in"
             " comparison to moment matching...");
-
-    using namespace swing_option_test;
 
     Date settlementDate = Date(22, November, 2019);
     Settings::instance().evaluationDate() = settlementDate;

@@ -51,9 +51,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(NormalCLVModelTest)
+BOOST_AUTO_TEST_SUITE(NormalCLVModelTests)
 
 BOOST_AUTO_TEST_CASE(testBSCumlativeDistributionFunction) {
     BOOST_TEST_MESSAGE("Testing Black-Scholes cumulative distribution function"
@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE(testIllustrative1DExample) {
     }
 }
 
-namespace normal_clv_model_test {
+namespace {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
         CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
@@ -280,8 +280,6 @@ namespace normal_clv_model_test {
 
 BOOST_AUTO_TEST_CASE(testMonteCarloBSOptionPricing) {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
-
-    using namespace normal_clv_model_test;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(22, June, 2016);

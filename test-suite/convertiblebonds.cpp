@@ -45,7 +45,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace convertible_bonds_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ConvertibleBondTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -102,10 +106,6 @@ namespace convertible_bonds_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(ConvertibleBondTest)
-
 BOOST_AUTO_TEST_CASE(testBond) {
 
     /* when deeply out-of-the-money, the value of the convertible bond
@@ -113,8 +113,6 @@ BOOST_AUTO_TEST_CASE(testBond) {
 
     BOOST_TEST_MESSAGE(
        "Testing out-of-the-money convertible bonds against vanilla bonds...");
-
-    using namespace convertible_bonds_test;
 
     CommonVars vars;
 
@@ -302,8 +300,6 @@ BOOST_AUTO_TEST_CASE(testOption) {
 
     BOOST_TEST_MESSAGE(
        "Testing zero-coupon convertible bonds against vanilla option...");
-
-    using namespace convertible_bonds_test;
 
     CommonVars vars;
 

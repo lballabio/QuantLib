@@ -79,6 +79,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FdmLinearOpTests)
+
 namespace {
 
     class FdmHestonExpressCondition : public StepCondition<Array> {
@@ -128,10 +132,6 @@ namespace {
     struct multiplies {
         V operator()(T t, U u) { return t*u;}
     };
-
-}
-
-namespace {
 
     ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
         Time maturity) {
@@ -264,10 +264,6 @@ namespace {
         return retVal;
     }
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(FdmLinearOpTest)
 
 BOOST_AUTO_TEST_CASE(testFdmLinearOpLayout) {
 

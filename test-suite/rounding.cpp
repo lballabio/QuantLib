@@ -25,7 +25,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace rounding_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(RoundingTests)
+
+namespace {
 
     struct TestCase {
         Decimal x;
@@ -63,15 +67,9 @@ namespace rounding_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(RoundingTest)
-
 BOOST_AUTO_TEST_CASE(testClosest) {
 
     BOOST_TEST_MESSAGE("Testing closest decimal rounding...");
-
-    using namespace rounding_test;
 
     for (auto& i : testData) {
         Integer digits = i.precision;
@@ -90,8 +88,6 @@ BOOST_AUTO_TEST_CASE(testUp) {
 
     BOOST_TEST_MESSAGE("Testing upward decimal rounding...");
 
-    using namespace rounding_test;
-
     for (auto& i : testData) {
         Integer digits = i.precision;
         UpRounding up(digits);
@@ -108,8 +104,6 @@ BOOST_AUTO_TEST_CASE(testUp) {
 BOOST_AUTO_TEST_CASE(testDown) {
 
     BOOST_TEST_MESSAGE("Testing downward decimal rounding...");
-
-    using namespace rounding_test;
 
     for (auto& i : testData) {
         Integer digits = i.precision;
@@ -128,8 +122,6 @@ BOOST_AUTO_TEST_CASE(testFloor) {
 
     BOOST_TEST_MESSAGE("Testing floor decimal rounding...");
 
-    using namespace rounding_test;
-
     for (auto& i : testData) {
         Integer digits = i.precision;
         FloorTruncation floor(digits);
@@ -146,8 +138,6 @@ BOOST_AUTO_TEST_CASE(testFloor) {
 BOOST_AUTO_TEST_CASE(testCeiling) {
 
     BOOST_TEST_MESSAGE("Testing ceiling decimal rounding...");
-
-    using namespace rounding_test;
 
     for (auto& i : testData) {
         Integer digits = i.precision;

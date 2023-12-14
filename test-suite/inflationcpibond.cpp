@@ -41,9 +41,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#include <iostream>
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-namespace inflation_cpi_bond_test {
+BOOST_AUTO_TEST_SUITE(InflationCPIBondTests)
+
+namespace {
 
     struct Datum {
         Date date;
@@ -164,15 +166,9 @@ namespace inflation_cpi_bond_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InflationCPIBondTest)
-
 BOOST_AUTO_TEST_CASE(testCleanPrice) {
     BOOST_TEST_MESSAGE("Checking cached pricers for CPI bond...");
 
-    using namespace inflation_cpi_bond_test;
-  
     CommonVars common;
 
     Real notional = 1000000.0;
@@ -227,8 +223,6 @@ BOOST_AUTO_TEST_CASE(testCleanPrice) {
 
 BOOST_AUTO_TEST_CASE(testCPILegWithoutBaseCPI) {
     BOOST_TEST_MESSAGE("Checking CPI leg with or without explicit base CPI fixing...");
-
-    using namespace inflation_cpi_bond_test;
 
     CommonVars common;
 

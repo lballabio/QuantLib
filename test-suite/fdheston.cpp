@@ -46,8 +46,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-namespace fd_heston_test {
+BOOST_AUTO_TEST_SUITE(FdHestonTests)
+
+namespace {
     struct NewBarrierOptionData {
         Barrier::Type barrierType;
         Real barrier;
@@ -87,9 +90,7 @@ namespace fd_heston_test {
         const Date referenceDate_;
         const Real s0_, alpha_;
     };
-}
 
-namespace {
     struct HestonTestData {
         Real kappa;
         Real theta;
@@ -101,14 +102,9 @@ namespace {
         Real K;
     };
 }
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(FdHestonTest)
 
 BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");
-
-    using namespace fd_heston_test;
 
     const Date today = Date(22, February, 2018);
     const DayCounter dc = Actual365Fixed();
@@ -206,8 +202,6 @@ BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
 BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
-
-    using namespace fd_heston_test;
 
     NewBarrierOptionData values[] = {
         /* The data below are from

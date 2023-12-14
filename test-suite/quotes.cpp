@@ -33,7 +33,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace quotes_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(QuoteTests)
+
+namespace {
 
     Real add10(Real x) { return x+10; }
     Real mul10(Real x) { return x*10; }
@@ -44,10 +48,6 @@ namespace quotes_test {
     Real sub(Real x, Real y) { return x-y; }
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(QuoteTest)
 
 BOOST_AUTO_TEST_CASE(testObservable) {
 
@@ -88,8 +88,6 @@ BOOST_AUTO_TEST_CASE(testDerived) {
 
     BOOST_TEST_MESSAGE("Testing derived quotes...");
 
-    using namespace quotes_test;
-
     typedef Real (*unary_f)(Real);
     unary_f funcs[3] = { add10, mul10, sub10 };
 
@@ -110,7 +108,7 @@ BOOST_AUTO_TEST_CASE(testComposite) {
     BOOST_TEST_MESSAGE("Testing composite quotes...");
 
     typedef Real (*binary_f)(Real,Real);
-    binary_f funcs[3] = { quotes_test::add, quotes_test::mul, quotes_test::sub };
+    binary_f funcs[3] = { add, mul, sub };
 
     ext::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
                              me2(new SimpleQuote(13.0));

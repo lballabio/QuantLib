@@ -42,7 +42,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace bates_model_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BatesModelTests)
+
+namespace {
 
     Real getCalibrationError(
                std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
@@ -79,10 +83,6 @@ namespace bates_model_test {
         {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BatesModelTest)
 
 BOOST_AUTO_TEST_CASE(testAnalyticVsBlack) {
 
@@ -295,8 +295,6 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsMCPricing) {
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
                        "engine...");
 
-    using namespace bates_model_test;
-
     Date settlementDate(30, March, 2007);
     Settings::instance().evaluationDate() = settlementDate;
 
@@ -373,8 +371,6 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
 
     BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
-
-    using namespace bates_model_test;
 
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;

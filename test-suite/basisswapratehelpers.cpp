@@ -32,7 +32,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace basisswapratehelpers_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BasisSwapRateHelpersTests)
+
+namespace {
 
     struct BasisSwapQuote {
         Integer n;
@@ -210,32 +214,28 @@ namespace basisswapratehelpers_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BasisSwapRateHelpersTest)
-
 BOOST_AUTO_TEST_CASE(testIborIborBaseCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (base curve bootstrap)...");
 
-    basisswapratehelpers_test::testIborIborBootstrap(true);
+    testIborIborBootstrap(true);
 }
 
 BOOST_AUTO_TEST_CASE(testIborIborOtherCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (other curve bootstrap)...");
 
-    basisswapratehelpers_test::testIborIborBootstrap(false);
+    testIborIborBootstrap(false);
 }
 
-BOOST_AUTO_TEST_CASE(testOvernightIborBootstrap) {
+BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithoutDiscountCurve) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers...");
 
-    basisswapratehelpers_test::testOvernightIborBootstrap(false);
+    testOvernightIborBootstrap(false);
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightIborBootstrapWithDiscountCurve) {
     BOOST_TEST_MESSAGE("Testing overnight-IBOR basis-swap rate helpers with external discount curve...");
 
-    basisswapratehelpers_test::testOvernightIborBootstrap(true);
+    testOvernightIborBootstrap(true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

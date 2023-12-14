@@ -37,7 +37,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace curve_states_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CurveStatesTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -112,35 +116,9 @@ namespace curve_states_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CurveStatesTest)
-
-// Comment/uncomment the desired test case.
-
-//BOOST_AUTO_TEST_CASE(testLMMCurveState) {
-//
-//    BOOST_TEST_MESSAGE("Testing Libor-market-model curve state...");
-//
-//    using namespace curve_states_test;
-//
-//    CommonVars vars;
-//}
-
-//BOOST_AUTO_TEST_CASE(testCoterminalSwapCurveState) {
-//
-//    BOOST_TEST_MESSAGE("Testing coterminal-swap-market-model curve state...");
-//
-//    using namespace curve_states_test;
-//
-//    CommonVars vars;
-//}
-
 BOOST_AUTO_TEST_CASE(testCMSwapCurveState) {
 
     BOOST_TEST_MESSAGE("Testing constant-maturity-swap-market-model curve state...");
-
-    using namespace curve_states_test;
 
     CommonVars vars;
 

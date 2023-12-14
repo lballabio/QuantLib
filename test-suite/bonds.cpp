@@ -54,6 +54,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BondsTests)
+
 #define ASSERT_CLOSE(name, settlement, calculated, expected, tolerance)  \
     if (std::fabs(calculated-expected) > tolerance) { \
     BOOST_ERROR("Failed to reproduce " << name << " at " << settlement \
@@ -61,7 +65,7 @@ using namespace boost::unit_test_framework;
                 << "\n    expected:   " << std::setprecision(8) << expected); \
     }
 
-namespace bonds_test {
+namespace {
 
     struct CommonVars {
         // common data
@@ -91,15 +95,9 @@ namespace bonds_test {
 }
 
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BondsTest)
-
 BOOST_AUTO_TEST_CASE(testYield) {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/yield calculation...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -199,8 +197,6 @@ BOOST_AUTO_TEST_CASE(testAtmRate) {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/ATM rate calculation...");
 
-    using namespace bonds_test;
-
     CommonVars vars;
 
     Real tolerance = 1.0e-7;
@@ -258,8 +254,6 @@ BOOST_AUTO_TEST_CASE(testAtmRate) {
 BOOST_AUTO_TEST_CASE(testZspread) {
 
     BOOST_TEST_MESSAGE("Testing consistency of bond price/z-spread calculation...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -337,8 +331,6 @@ BOOST_AUTO_TEST_CASE(testZspread) {
 BOOST_AUTO_TEST_CASE(testTheoretical) {
 
     BOOST_TEST_MESSAGE("Testing theoretical bond price/yield calculation...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -418,8 +410,6 @@ BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE(
         "Testing bond price/yield calculation against cached values...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -690,8 +680,6 @@ BOOST_AUTO_TEST_CASE(testCachedZero) {
 
     BOOST_TEST_MESSAGE("Testing zero-coupon bond prices against cached values...");
 
-    using namespace bonds_test;
-
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -771,8 +759,6 @@ BOOST_AUTO_TEST_CASE(testCachedZero) {
 BOOST_AUTO_TEST_CASE(testCachedFixed) {
 
     BOOST_TEST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -870,8 +856,6 @@ BOOST_AUTO_TEST_CASE(testCachedFixed) {
 BOOST_AUTO_TEST_CASE(testCachedFloating) {
 
     BOOST_TEST_MESSAGE("Testing floating-rate bond prices against cached values...");
-
-    using namespace bonds_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -1012,8 +996,6 @@ BOOST_AUTO_TEST_CASE(testBrazilianCached) {
 
     BOOST_TEST_MESSAGE(
         "Testing Brazilian public bond prices against Andima cached values...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 
@@ -1439,8 +1421,6 @@ BOOST_AUTO_TEST_CASE(testFixedBondWithGivenDates) {
 
     BOOST_TEST_MESSAGE("Testing fixed-coupon bond built on schedule with given dates...");
 
-    using namespace bonds_test;
-
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -1560,8 +1540,6 @@ BOOST_AUTO_TEST_CASE(testFixedBondWithGivenDates) {
 BOOST_AUTO_TEST_CASE(testRiskyBondWithGivenDates) {
 
     BOOST_TEST_MESSAGE("Testing risky bond engine...");
-
-    using namespace bonds_test;
 
     CommonVars vars;
 

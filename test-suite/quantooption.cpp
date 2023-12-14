@@ -46,6 +46,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(QuantoOptionTests)
+
 #undef QUANTO_REPORT_FAILURE
 #define QUANTO_REPORT_FAILURE(greekName, payoff, exercise, s, q, r, \
                         today, v, fxr, fxv, corr, expected, \
@@ -218,10 +222,6 @@ namespace {
         Real tol;        // tolerance
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(QuantoOptionTest)
 
 BOOST_AUTO_TEST_CASE(testValues) {
 

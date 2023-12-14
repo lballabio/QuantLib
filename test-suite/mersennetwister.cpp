@@ -24,9 +24,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(MersenneTwisterTest)
+BOOST_AUTO_TEST_SUITE(MersenneTwisterTests)
 
 BOOST_AUTO_TEST_CASE(testValues) {
 

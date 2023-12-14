@@ -33,6 +33,10 @@ Copyright (C) 2015 Thema Consulting SA
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DoubleBinaryOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier_lo, \
                         barrier_hi, s, q, r, today, v, expected, calculated, \
@@ -70,10 +74,6 @@ namespace {
         Real tol;      // tolerance
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(DoubleBinaryOptionTest)
 
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 

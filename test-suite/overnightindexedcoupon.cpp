@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace overnight_indexed_coupon_tests {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OvernightIndexedCouponTests)
+
+namespace {
 
     struct CommonVars {
         Date today;
@@ -84,14 +88,8 @@ namespace overnight_indexed_coupon_tests {
                     << "\n    error:      " << std::setprecision(12) << std::fabs(calculated-expected)); \
     }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(OvernightIndexedCouponTest)
-
 BOOST_AUTO_TEST_CASE(testPastCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -109,8 +107,6 @@ BOOST_AUTO_TEST_CASE(testPastCouponRate) {
 
 BOOST_AUTO_TEST_CASE(testCurrentCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for current overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -139,8 +135,6 @@ BOOST_AUTO_TEST_CASE(testCurrentCouponRate) {
 BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon...");
 
-    using namespace overnight_indexed_coupon_tests;
-
     CommonVars vars;
 
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -158,8 +152,6 @@ BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
 
 BOOST_AUTO_TEST_CASE(testRateWhenTodayIsHoliday) {
     BOOST_TEST_MESSAGE("Testing rate for overnight-indexed coupon when today is a holiday...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -179,8 +171,6 @@ BOOST_AUTO_TEST_CASE(testRateWhenTodayIsHoliday) {
 BOOST_AUTO_TEST_CASE(testAccruedAmountInThePast) {
     BOOST_TEST_MESSAGE("Testing accrued amount in the past for overnight-indexed coupon...");
 
-    using namespace overnight_indexed_coupon_tests;
-
     CommonVars vars;
 
     auto coupon = vars.makeCoupon(Date(18, October, 2021),
@@ -192,8 +182,6 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountInThePast) {
 
 BOOST_AUTO_TEST_CASE(testAccruedAmountSpanningToday) {
     BOOST_TEST_MESSAGE("Testing accrued amount spanning today for current overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -218,8 +206,6 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountSpanningToday) {
 BOOST_AUTO_TEST_CASE(testAccruedAmountInTheFuture) {
     BOOST_TEST_MESSAGE("Testing accrued amount in the future for overnight-indexed coupon...");
 
-    using namespace overnight_indexed_coupon_tests;
-
     CommonVars vars;
 
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -238,8 +224,6 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountInTheFuture) {
 BOOST_AUTO_TEST_CASE(testAccruedAmountOnPastHoliday) {
     BOOST_TEST_MESSAGE("Testing accrued amount on a past holiday for overnight-indexed coupon...");
 
-    using namespace overnight_indexed_coupon_tests;
-
     CommonVars vars;
 
     // coupon entirely in the past
@@ -253,8 +237,6 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountOnPastHoliday) {
 }
 BOOST_AUTO_TEST_CASE(testAccruedAmountOnFutureHoliday) {
     BOOST_TEST_MESSAGE("Testing accrued amount on a future holiday for overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 

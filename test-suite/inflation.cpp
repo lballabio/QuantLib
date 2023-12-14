@@ -51,6 +51,10 @@ using std::fabs;
 using std::pow;
 using std::vector;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(InflationTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(d, res, periodName) \
     BOOST_ERROR("wrong " << periodName << " inflation period for Date (1 " \
@@ -58,7 +62,7 @@ using std::vector;
         << res.first << "), End Date (" \
         << res.second << ")"); \
 
-namespace inflation_test {
+namespace {
 
     struct Datum {
         Date date;
@@ -233,10 +237,6 @@ namespace inflation_test {
 // zero inflation tests, index, termstructure, and swaps
 //===========================================================================================
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InflationTest)
-
 BOOST_AUTO_TEST_CASE(testZeroIndex) {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
 
@@ -335,8 +335,6 @@ BOOST_AUTO_TEST_CASE(testZeroIndex) {
 
 BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
-
-    using namespace inflation_test;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -575,8 +573,6 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 
 BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
     BOOST_TEST_MESSAGE("Testing seasonality correction on zero inflation term structure...");
-
-    using namespace inflation_test;
 
     // try the Zero UK
     Calendar calendar = UnitedKingdom();
@@ -1033,8 +1029,6 @@ BOOST_AUTO_TEST_CASE(testOldRatioYYIndex) {
 
 BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     BOOST_TEST_MESSAGE("Testing year-on-year inflation term structure...");
-
-    using namespace inflation_test;
 
     // try the YY UK
     Calendar calendar = UnitedKingdom();

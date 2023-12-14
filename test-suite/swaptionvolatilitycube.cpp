@@ -33,7 +33,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace swaption_volatility_cube_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SwaptionVolatilityCubeTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -145,15 +149,9 @@ namespace swaption_volatility_cube_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwaptionVolatilityCubeTest)
-
 BOOST_AUTO_TEST_CASE(testSabrNormalVolatility) {
 
     BOOST_TEST_MESSAGE("Testing sabr normal volatility...");
-
-    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -181,8 +179,6 @@ BOOST_AUTO_TEST_CASE(testAtmVols) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (atm vols)...");
 
-    using namespace swaption_volatility_cube_test;
-
     CommonVars vars;
 
     InterpolatedSwaptionVolatilityCube volCube(vars.atmVolMatrix,
@@ -202,8 +198,6 @@ BOOST_AUTO_TEST_CASE(testAtmVols) {
 BOOST_AUTO_TEST_CASE(testSmile) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (smile)...");
-
-    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -225,8 +219,6 @@ BOOST_AUTO_TEST_CASE(testSmile) {
 BOOST_AUTO_TEST_CASE(testSabrVols) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
-
-    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -266,8 +258,6 @@ BOOST_AUTO_TEST_CASE(testSabrVols) {
 BOOST_AUTO_TEST_CASE(testSpreadedCube) {
 
     BOOST_TEST_MESSAGE("Testing spreaded swaption volatility cube...");
-
-    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -354,8 +344,6 @@ BOOST_AUTO_TEST_CASE(testSpreadedCube) {
 
 BOOST_AUTO_TEST_CASE(testObservability) {
     BOOST_TEST_MESSAGE("Testing volatility cube observability...");
-
-    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 
@@ -486,8 +474,6 @@ BOOST_AUTO_TEST_CASE(testObservability) {
 
 BOOST_AUTO_TEST_CASE(testSabrParameters) {
     BOOST_TEST_MESSAGE("Testing interpolation of SABR smile sections...");
-
-    using namespace swaption_volatility_cube_test;
 
     CommonVars vars;
 

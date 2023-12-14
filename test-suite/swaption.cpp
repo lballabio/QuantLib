@@ -41,7 +41,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace swaption_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SwaptionTests)
+
+namespace {
 
     Period exercises[] = { 1*Years, 2*Years, 3*Years,
                            5*Years, 7*Years, 10*Years };
@@ -117,15 +121,9 @@ namespace swaption_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwaptionTest)
-
 BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
 
     BOOST_TEST_MESSAGE("Testing swaption result caching in Black engine...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -150,8 +148,6 @@ BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
 BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on strike...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -246,8 +242,6 @@ BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on spread...");
 
-    using namespace swaption_test;
-
     CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -334,8 +328,6 @@ BOOST_AUTO_TEST_CASE(testSpreadTreatment) {
 
     BOOST_TEST_MESSAGE("Testing swaption treatment of spread...");
 
-    using namespace swaption_test;
-
     CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -397,8 +389,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing swaption value against cached value...");
 
-    using namespace swaption_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
@@ -431,8 +421,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 BOOST_AUTO_TEST_CASE(testVega) {
 
     BOOST_TEST_MESSAGE("Testing swaption vega...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -500,8 +488,6 @@ BOOST_AUTO_TEST_CASE(testVega) {
 BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
 
     BOOST_TEST_MESSAGE("Testing cash settled swaptions modified annuity...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -799,8 +785,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
-    using namespace swaption_test;
-
     CommonVars vars;
 
     Size maxEvaluations = 100;
@@ -900,8 +884,6 @@ ext::shared_ptr<Engine> makeConstVolEngine(
 template <typename Engine>
 void checkSwaptionDelta(bool useBachelierVol)
 {
-    using namespace swaption_test;
-
     CommonVars vars;
     Date today = vars.today;
     Calendar calendar = vars.calendar;

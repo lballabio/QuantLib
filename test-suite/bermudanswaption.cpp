@@ -41,7 +41,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace bermudan_swaption_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BermudanSwaptionTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -107,16 +111,10 @@ namespace bermudan_swaption_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BermudanSwaptionTest)
-
 BOOST_AUTO_TEST_CASE(testCachedValues) {
 
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with HW model against cached values...");
-
-    using namespace bermudan_swaption_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -242,8 +240,6 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
 BOOST_AUTO_TEST_CASE(testCachedG2Values, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with G2 model against cached values...");
-
-    using namespace bermudan_swaption_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 

@@ -60,7 +60,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace market_model_smm_caplet_calibration_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletCalibrationTests)
+
+namespace {
 
     Date todaysDate_, startDate_, endDate_;
     std::vector<Time> rateTimes_;
@@ -209,16 +213,10 @@ namespace market_model_smm_caplet_calibration_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(MarketModelSmmCapletCalibrationTest)
-
 BOOST_AUTO_TEST_CASE(testFunction) {
 
     BOOST_TEST_MESSAGE("Testing GHLS caplet calibration "
                        "in a lognormal coterminal swap market model...");
-
-    using namespace market_model_smm_caplet_calibration_test;
 
     setup();
 

@@ -36,6 +36,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MCLongstaffSchwartzEngineTests)
+
 namespace {
 
     class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
@@ -120,10 +124,6 @@ namespace {
     };
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(MCLongstaffSchwartzEngineTest)
 
 BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");

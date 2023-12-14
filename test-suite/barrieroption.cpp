@@ -51,6 +51,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BarrierOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
@@ -100,7 +104,7 @@ using namespace boost::unit_test_framework;
                << "    tolerance:        " << tolerance);
 
 
-namespace barrier_option_test {
+namespace {
 
     std::string barrierTypeToString(Barrier::Type type) {
         switch(type){
@@ -172,10 +176,6 @@ namespace barrier_option_test {
     if (!exception_thrown) {                   \
         BOOST_FAIL("exception expected");      \
     }                                          \
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BarrierOptionTest)
 
 BOOST_AUTO_TEST_CASE(testParity) {
 
@@ -254,8 +254,6 @@ BOOST_AUTO_TEST_CASE(testParity) {
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Haug's values...");
-
-    using namespace barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     Exercise::Type american = Exercise::American;
@@ -522,8 +520,6 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Babsiri's values...");
 
-    using namespace barrier_option_test;
-
     /*
         Data from
         "Simulating Path-Dependent Options: A New Approach"
@@ -622,8 +618,6 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
 BOOST_AUTO_TEST_CASE(testBeagleholeValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Beaglehole's values...");
-
-    using namespace barrier_option_test;
 
     /*
         Data from
@@ -1461,8 +1455,6 @@ BOOST_AUTO_TEST_CASE(testPerturbative) {
 
 BOOST_AUTO_TEST_CASE(testVannaVolgaSimpleBarrierValues) {
     BOOST_TEST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
-
-    using namespace barrier_option_test;
 
     BarrierFxOptionData values[] = {
 

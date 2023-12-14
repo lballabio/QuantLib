@@ -26,6 +26,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TracingTests)
+
 namespace {
 
     class TestCaseCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
@@ -79,10 +83,6 @@ namespace {
 #endif
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(TracingTest)
 
 BOOST_AUTO_TEST_CASE(testOutput) {
 

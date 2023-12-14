@@ -44,6 +44,10 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MatricesTests)
+
 #ifdef __cpp_concepts
 static_assert(std::random_access_iterator<Matrix::column_iterator>);
 static_assert(std::random_access_iterator<Matrix::const_column_iterator>);
@@ -51,7 +55,7 @@ static_assert(std::random_access_iterator<Matrix::reverse_column_iterator>);
 static_assert(std::random_access_iterator<Matrix::const_reverse_column_iterator>);
 #endif
 
-namespace matrices_test {
+namespace {
 
     Size N;
     Matrix M1, M2, M3, M4, M5, M6, M7, I;
@@ -130,15 +134,9 @@ namespace matrices_test {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(MatricesTest)
-
 BOOST_AUTO_TEST_CASE(testEigenvectors) {
 
     BOOST_TEST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
-
-    using namespace matrices_test;
 
     setup();
 
@@ -178,8 +176,6 @@ BOOST_AUTO_TEST_CASE(testSqrt) {
 
     BOOST_TEST_MESSAGE("Testing matricial square root...");
 
-    using namespace matrices_test;
-
     setup();
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
@@ -198,8 +194,6 @@ BOOST_AUTO_TEST_CASE(testSqrt) {
 
 BOOST_AUTO_TEST_CASE(testHighamSqrt) {
     BOOST_TEST_MESSAGE("Testing Higham matricial square root...");
-
-    using namespace matrices_test;
 
     setup();
 
@@ -220,8 +214,6 @@ BOOST_AUTO_TEST_CASE(testHighamSqrt) {
 BOOST_AUTO_TEST_CASE(testSVD) {
 
     BOOST_TEST_MESSAGE("Testing singular value decomposition...");
-
-    using namespace matrices_test;
 
     setup();
 
@@ -267,8 +259,6 @@ BOOST_AUTO_TEST_CASE(testQRDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing QR decomposition...");
 
-    using namespace matrices_test;
-
     setup();
 
     Real tol = 1.0e-12;
@@ -303,8 +293,6 @@ BOOST_AUTO_TEST_CASE(testQRDecomposition) {
 BOOST_AUTO_TEST_CASE(testQRSolve) {
 
     BOOST_TEST_MESSAGE("Testing QR solve...");
-
-    using namespace matrices_test;
 
     setup();
 
@@ -376,8 +364,6 @@ BOOST_AUTO_TEST_CASE(testInverse) {
 
     BOOST_TEST_MESSAGE("Testing LU inverse calculation...");
 
-    using namespace matrices_test;
-
     setup();
 
     Real tol = 1.0e-12;
@@ -405,8 +391,6 @@ BOOST_AUTO_TEST_CASE(testInverse) {
 BOOST_AUTO_TEST_CASE(testDeterminant) {
 
     BOOST_TEST_MESSAGE("Testing LU determinant calculation...");
-
-    using namespace matrices_test;
 
     setup();
     Real tol = 1e-10;
@@ -645,8 +629,6 @@ BOOST_AUTO_TEST_CASE(testMoorePenroseInverse) {
 
 BOOST_AUTO_TEST_CASE(testIterativeSolvers) {
     BOOST_TEST_MESSAGE("Testing iterative solvers...");
-
-    using namespace matrices_test;
 
     setup();
 

@@ -26,14 +26,14 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TransformedGridTests)
+
 class PlusOne {
 public:
     Real operator()(Real x) const { return x+1;};
 };
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(TransformedGridTest)
 
 BOOST_AUTO_TEST_CASE(testConstruction) {
 

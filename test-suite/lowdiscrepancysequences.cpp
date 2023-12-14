@@ -46,9 +46,9 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(LowDiscrepancyTest)
+BOOST_AUTO_TEST_SUITE(LowDiscrepancyTests)
 
 BOOST_AUTO_TEST_CASE(testSeedGenerator) {
     BOOST_TEST_MESSAGE("Testing random-seed generator...");

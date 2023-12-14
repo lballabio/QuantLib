@@ -33,6 +33,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(JumpDiffusionTests)
+
 #undef REPORT_FAILURE_1
 #define REPORT_FAILURE_1(greekName, payoff, exercise, s, q, r, today, v, \
                          intensity, meanLogJump, jumpVol, expected, \
@@ -93,10 +97,6 @@ namespace {
     };
 
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(JumpDiffusionTest)
 
 BOOST_AUTO_TEST_CASE(testMerton76) {
 

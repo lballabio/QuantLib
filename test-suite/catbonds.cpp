@@ -48,7 +48,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace catbonds_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CatBondTests)
+
+namespace {
     std::pair<Date, Real> data[] = {std::pair<Date, Real>(Date(1, February, 2012), 100), std::pair<Date, Real>(Date(1, July, 2013), 150), std::pair<Date, Real>(Date(5, January, 2014), 50)};
     ext::shared_ptr<std::vector<std::pair<Date, Real> > > sampleEvents(new std::vector<std::pair<Date, Real> >(data, data+3));
 
@@ -71,14 +75,8 @@ namespace catbonds_test {
     };
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CatBondTest)
-
 BOOST_AUTO_TEST_CASE(testEventSetForWholeYears) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for periods of whole years...");
-
-    using namespace catbonds_test;
 
     EventSet catRisk(sampleEvents, eventsStart, eventsEnd);
     ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(1, January, 2015), Date(31, December, 2015));
@@ -111,8 +109,6 @@ BOOST_AUTO_TEST_CASE(testEventSetForWholeYears) {
 BOOST_AUTO_TEST_CASE(testEventSetForIrregularPeriods) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for irregular periods...");
 
-    using namespace catbonds_test;
-    
     EventSet catRisk(sampleEvents, eventsStart, eventsEnd);
     ext::shared_ptr<CatSimulation> simulation = catRisk.newSimulation(Date(2, January, 2015), Date(5, January, 2016));
 
@@ -135,8 +131,6 @@ BOOST_AUTO_TEST_CASE(testEventSetForIrregularPeriods) {
 
 BOOST_AUTO_TEST_CASE(testEventSetForNoEvents) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly when there are no simulated events...");
-
-    using namespace catbonds_test;
 
     ext::shared_ptr<std::vector<std::pair<Date, Real> > > emptyEvents(new std::vector<std::pair<Date, Real> >());
     EventSet catRisk(emptyEvents, eventsStart, eventsEnd);
@@ -206,8 +200,6 @@ BOOST_AUTO_TEST_CASE(testBetaRisk) {
 
 BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond against risk-free floating-rate bond...");
-
-    using namespace catbonds_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -375,8 +367,6 @@ BOOST_AUTO_TEST_CASE(testRiskFreeAgainstFloatingRateBond) {
 BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom scenario (certain default)...");
 
-    using namespace catbonds_test;
-
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -438,8 +428,6 @@ BOOST_AUTO_TEST_CASE(testCatBondInDoomScenario) {
 
 BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario...");
-
-    using namespace catbonds_test;
 
     CommonVars vars;
 
@@ -522,8 +510,6 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYears) {
 BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a doom once in 10 years scenario with proportional notional reduction...");
 
-    using namespace catbonds_test;
-
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -602,8 +588,6 @@ BOOST_AUTO_TEST_CASE(testCatBondWithDoomOnceInTenYearsProportional) {
 
 BOOST_AUTO_TEST_CASE(testCatBondWithGeneratedEventsProportional) {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond in a generated scenario with proportional notional reduction...");
-
-    using namespace catbonds_test;
 
     CommonVars vars;
 

@@ -93,6 +93,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(HestonSLVModelTests)
+
 namespace {
     Real fokkerPlanckPrice1D(const ext::shared_ptr<FdmMesher>& mesher,
                              const ext::shared_ptr<FdmLinearOpComposite>& op,
@@ -724,10 +728,6 @@ namespace {
             todaysDate, expiries, strikes, localVolMatrix, dc);
     }
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(HestonSLVModelTest)
 
 BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquation) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation for BS process...");

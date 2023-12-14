@@ -33,6 +33,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VarianceGammaTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, sigma, \
     nu, theta, expected, calculated, \
@@ -72,10 +76,6 @@ namespace {
         Time t;        // time to maturity
     };
 }
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(VarianceGammaTest)
 
 BOOST_AUTO_TEST_CASE(testVarianceGamma) {
 

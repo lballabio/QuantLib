@@ -31,7 +31,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace ultimate_forward_term_structure_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(UltimateForwardTermStructureTests)
+
+namespace {
 
     struct Datum {
         Integer n;
@@ -136,14 +140,8 @@ namespace ultimate_forward_term_structure_test {
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(UltimateForwardTermStructureTest)
-
 BOOST_AUTO_TEST_CASE(testDutchCentralBankRates) {
     BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates...");
-
-    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -182,8 +180,6 @@ BOOST_AUTO_TEST_CASE(testDutchCentralBankRates) {
 BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {
     BOOST_TEST_MESSAGE("Testing continuous forward rates in extrapolation region...");
 
-    using namespace ultimate_forward_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
@@ -221,8 +217,6 @@ BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {
 BOOST_AUTO_TEST_CASE(testZeroRateAtFirstSmoothingPoint) {
     BOOST_TEST_MESSAGE("Testing zero rate on the first smoothing point...");
 
-    using namespace ultimate_forward_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
@@ -246,8 +240,6 @@ BOOST_AUTO_TEST_CASE(testZeroRateAtFirstSmoothingPoint) {
 
 BOOST_AUTO_TEST_CASE(testThatInspectorsEqualToBaseCurve) {
     BOOST_TEST_MESSAGE("Testing UFR curve inspectors...");
-
-    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 
@@ -281,8 +273,6 @@ BOOST_AUTO_TEST_CASE(testThatInspectorsEqualToBaseCurve) {
 BOOST_AUTO_TEST_CASE(testExceptionWhenFspLessOrEqualZero) {
     BOOST_TEST_MESSAGE("Testing exception when the first smoothing point is less than or equal to zero...");
 
-    using namespace ultimate_forward_term_structure_test;
-
     CommonVars vars;
 
     ext::shared_ptr<Quote> llfr(new SimpleQuote(0.0125));
@@ -302,8 +292,6 @@ BOOST_AUTO_TEST_CASE(testExceptionWhenFspLessOrEqualZero) {
 
 BOOST_AUTO_TEST_CASE(testObservability) {
     BOOST_TEST_MESSAGE("Testing observability of the UFR curve...");
-
-    using namespace ultimate_forward_term_structure_test;
 
     CommonVars vars;
 

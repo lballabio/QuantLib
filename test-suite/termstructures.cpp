@@ -38,7 +38,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace term_structures_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TermStructureTests)
+
+namespace {
 
     struct Datum {
         Integer n;
@@ -115,15 +119,9 @@ namespace term_structures_test {
     Real sub(Real x, Real y) { return x - y; }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(TermStructureTest)
-
 BOOST_AUTO_TEST_CASE(testReferenceChange) {
 
     BOOST_TEST_MESSAGE("Testing term structure against evaluation date change...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -159,8 +157,6 @@ BOOST_AUTO_TEST_CASE(testImplied) {
 
     BOOST_TEST_MESSAGE("Testing consistency of implied term structure...");
 
-    using namespace term_structures_test;
-
     CommonVars vars;
 
     Real tolerance = 1.0e-10;
@@ -187,8 +183,6 @@ BOOST_AUTO_TEST_CASE(testImpliedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of implied term structure...");
 
-    using namespace term_structures_test;
-
     CommonVars vars;
 
     Date today = Settings::instance().evaluationDate();
@@ -208,8 +202,6 @@ BOOST_AUTO_TEST_CASE(testImpliedObs) {
 BOOST_AUTO_TEST_CASE(testFSpreaded) {
 
     BOOST_TEST_MESSAGE("Testing consistency of forward-spreaded term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -240,8 +232,6 @@ BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
     BOOST_TEST_MESSAGE("Testing observability of forward-spreaded "
                        "term structure...");
 
-    using namespace term_structures_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
@@ -263,8 +253,6 @@ BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
 BOOST_AUTO_TEST_CASE(testZSpreaded) {
 
     BOOST_TEST_MESSAGE("Testing consistency of zero-spreaded term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -292,8 +280,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of zero-spreaded term structure...");
 
-    using namespace term_structures_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
@@ -318,8 +304,6 @@ BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
         "Testing that a zero-spreaded curve can be created with "
         "a null underlying curve...");
 
-    using namespace term_structures_test;
-
     CommonVars vars;
 
     Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
@@ -338,8 +322,6 @@ BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
         "Testing that an underlying curve can be relinked to "
         "a null underlying curve...");
 
-    using namespace term_structures_test;
-
     CommonVars vars;
 
     Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.01)));
@@ -356,8 +338,6 @@ BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
 BOOST_AUTO_TEST_CASE(testCompositeZeroYieldStructures) {
     BOOST_TEST_MESSAGE(
         "Testing composite zero yield structures...");
-
-    using namespace term_structures_test;
 
     Settings::instance().evaluationDate() = Date(10, Nov, 2017);
 

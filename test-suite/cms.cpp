@@ -43,7 +43,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace cms_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CmsTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -243,15 +247,9 @@ namespace cms_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CmsTest)
-
 BOOST_AUTO_TEST_CASE(testFairRate)  {
 
     BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for coupons (lognormal case)...");
-
-    using namespace cms_test;
 
     CommonVars vars;
 
@@ -317,8 +315,6 @@ BOOST_AUTO_TEST_CASE(testCmsSwap) {
 
     BOOST_TEST_MESSAGE("Testing Hagan-pricer flat-vol equivalence for swaps (lognormal case)...");
 
-    using namespace cms_test;
-
     CommonVars vars;
 
     ext::shared_ptr<SwapIndex> swapIndex(new SwapIndex("EuriborSwapIsdaFixA",
@@ -379,8 +375,6 @@ BOOST_AUTO_TEST_CASE(testCmsSwap) {
 BOOST_AUTO_TEST_CASE(testParity) {
 
     BOOST_TEST_MESSAGE("Testing put-call parity for capped-floored CMS coupons (lognormal case)...");
-
-    using namespace cms_test;
 
     CommonVars vars;
 

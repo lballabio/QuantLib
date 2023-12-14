@@ -56,9 +56,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(HybridHestonHullWhiteProcessTest)
+BOOST_AUTO_TEST_SUITE(HybridHestonHullWhiteProcessTests)
 
 BOOST_AUTO_TEST_CASE(testBsmHullWhiteEngine) {
     BOOST_TEST_MESSAGE("Testing European option pricing for a BSM process"
@@ -883,7 +883,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteEngine, *precondition(if_speed(Fast))
 }
 
 
-namespace hybrid_heston_hullwhite_process_test {
+namespace {
 
     struct HestonModelData {
         const char* const name;
@@ -978,8 +978,6 @@ namespace hybrid_heston_hullwhite_process_test {
 BOOST_AUTO_TEST_CASE(testBsmHullWhitePricing) {
     BOOST_TEST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
 
-    using namespace hybrid_heston_hullwhite_process_test;
-
     Date today(27, December, 2004);
     Settings::instance().evaluationDate() = today;
 
@@ -1064,8 +1062,6 @@ BOOST_AUTO_TEST_CASE(testBsmHullWhitePricing) {
 BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing spatial convergence speed of Heston engine...");
 
-    using namespace hybrid_heston_hullwhite_process_test;
-
     Date today(27, December, 2004);
     Settings::instance().evaluationDate() = today;
 
@@ -1121,7 +1117,7 @@ BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError, *precondition(if_speed(Fast)
 
 
 
-namespace hybrid_heston_hullwhite_process_test {
+namespace {
     class HestonHullWhiteCorrelationConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {
@@ -1149,8 +1145,6 @@ namespace hybrid_heston_hullwhite_process_test {
 
 BOOST_AUTO_TEST_CASE(testHestonHullWhiteCalibration, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing the Heston Hull-White calibration...");
-
-    using namespace hybrid_heston_hullwhite_process_test;
 
     // Calibration of a hybrid Heston-Hull-White model using
     // the finite difference HestonHullWhite pricing engine

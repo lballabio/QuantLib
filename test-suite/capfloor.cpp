@@ -44,7 +44,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace capfloor_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CapFloorTests)
+
+namespace {
 
     struct CommonVars {
         // common data
@@ -145,15 +149,9 @@ namespace capfloor_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CapFloorTest)
-
 BOOST_AUTO_TEST_CASE(testVega) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor vega...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -203,8 +201,6 @@ BOOST_AUTO_TEST_CASE(testVega) {
 BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor dependency on strike...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -258,8 +254,6 @@ BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing consistency between cap, floor and collar...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -366,8 +360,6 @@ BOOST_AUTO_TEST_CASE(testParity) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor parity...");
 
-    using namespace capfloor_test;
-
     CommonVars vars;
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
@@ -410,8 +402,6 @@ BOOST_AUTO_TEST_CASE(testParity) {
 BOOST_AUTO_TEST_CASE(testATMRate) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor ATM rate...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -468,8 +458,6 @@ BOOST_AUTO_TEST_CASE(testATMRate) {
 BOOST_AUTO_TEST_CASE(testImpliedVolatility) {
 
     BOOST_TEST_MESSAGE("Testing implied term volatility for cap and floor...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -554,8 +542,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price against cached values...");
 
-    using namespace capfloor_test;
-
     CommonVars vars;
 
     Date cachedToday(14,March,2002),
@@ -599,8 +585,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 BOOST_AUTO_TEST_CASE(testCachedValueFromOptionLets) {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -668,8 +652,6 @@ BOOST_AUTO_TEST_CASE(testCachedValueFromOptionLets) {
 BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
 
     BOOST_TEST_MESSAGE("Testing Black caplet/floorlet delta coefficients against finite difference values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -791,8 +773,6 @@ BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
 BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier caplet/floorlet delta coefficients against finite difference values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 

@@ -33,7 +33,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace swaption_volatility_matrix_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SwaptionVolatilityMatrixTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -254,15 +258,9 @@ namespace swaption_volatility_matrix_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwaptionVolatilityMatrixTest)
-
 BOOST_AUTO_TEST_CASE(testSwaptionVolMatrixObservability) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix observability...");
-
-    using namespace swaption_volatility_matrix_test;
 
     CommonVars vars;
 
@@ -322,8 +320,6 @@ BOOST_AUTO_TEST_CASE(testSwaptionVolMatrixObservability) {
 BOOST_AUTO_TEST_CASE(testSwaptionVolMatrixCoherence) {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix...");
-
-    using namespace swaption_volatility_matrix_test;
 
     CommonVars vars;
 

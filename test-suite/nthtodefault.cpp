@@ -39,9 +39,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NthToDefaultTests)
+
 #ifndef QL_PATCH_SOLARIS
 
-namespace nth_to_default_test {
+namespace {
 
     struct hwDatum {
         Size rank;
@@ -97,17 +101,11 @@ namespace nth_to_default_test {
 
 #endif
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(NthToDefaultTest)
-
 #ifndef QL_PATCH_SOLARIS
 
 BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
-
-    using namespace nth_to_default_test;
 
     /*************************
      * Tolerances
@@ -246,8 +244,6 @@ BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Student copula...");
-
-    using namespace nth_to_default_test;
 
     /*************************
      * Tolerances

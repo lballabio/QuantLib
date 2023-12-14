@@ -51,7 +51,11 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-namespace overnight_indexed_swap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OvernightIndexedSwapTests)
+
+namespace {
 
     struct Datum {
         Integer settlementDays;
@@ -247,15 +251,9 @@ namespace overnight_indexed_swap_test {
     } // testBootstrap(telescopicValueDates)
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(OvernightIndexedSwapTest)
-
 BOOST_AUTO_TEST_CASE(testFairRate) {
 
     BOOST_TEST_MESSAGE("Testing Eonia-swap calculation of fair fixed rate...");
-
-    using namespace overnight_indexed_swap_test;
 
     CommonVars vars;
 
@@ -299,8 +297,6 @@ BOOST_AUTO_TEST_CASE(testFairSpread) {
     BOOST_TEST_MESSAGE("Testing Eonia-swap calculation of "
                        "fair floating spread...");
 
-    using namespace overnight_indexed_swap_test;
-
     CommonVars vars;
 
     Period lengths[] = { 1*Years, 2*Years, 5*Years, 10*Years, 20*Years };
@@ -343,8 +339,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing Eonia-swap calculation against cached value...");
 
-    using namespace overnight_indexed_swap_test;
-
     CommonVars vars;
 
     Settings::instance().evaluationDate() = vars.today;
@@ -371,20 +365,20 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
                     "\n tolerance:" << tolerance);
 }
 
-BOOST_AUTO_TEST_CASE(testBootstrap) {
+BOOST_AUTO_TEST_CASE(testBaseBootstrap) {
     BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with daily compounded ON rates...");
-    overnight_indexed_swap_test::testBootstrap(false, RateAveraging::Compound);
+    testBootstrap(false, RateAveraging::Compound);
 }
 
 BOOST_AUTO_TEST_CASE(testBootstrapWithArithmeticAverage) {
     BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with arithmetic average ON rates...");
-    overnight_indexed_swap_test::testBootstrap(false, RateAveraging::Simple);
+    testBootstrap(false, RateAveraging::Simple);
 }
 
 BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDates) {
     BOOST_TEST_MESSAGE(
         "Testing Eonia-swap curve building with telescopic value dates and DCON rates...");
-    overnight_indexed_swap_test::testBootstrap(true, RateAveraging::Compound);
+    testBootstrap(true, RateAveraging::Compound);
 }
 
 BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDatesAndArithmeticAverage) {
@@ -393,14 +387,12 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDatesAndArithmeticAverage) {
     // Given that we are using an approximation that omits
     // the required convexity correction, a lower tolerance
     // is needed.
-    overnight_indexed_swap_test::testBootstrap(true, RateAveraging::Simple, 1.0e-5);
+    testBootstrap(true, RateAveraging::Simple, 1.0e-5);
 }
 
 BOOST_AUTO_TEST_CASE(testSeasonedSwaps) {
 
     BOOST_TEST_MESSAGE("Testing seasoned Eonia-swap calculation...");
-
-    using namespace overnight_indexed_swap_test;
 
     CommonVars vars;
 
@@ -434,8 +426,6 @@ BOOST_AUTO_TEST_CASE(testSeasonedSwaps) {
 
 BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
     BOOST_TEST_MESSAGE("Testing 1.16 regression with OIS bootstrap...");
-
-    using namespace overnight_indexed_swap_test;
 
     Datum data[] = {
         { 0,  1, Days,   0.0066   },
@@ -515,8 +505,6 @@ BOOST_AUTO_TEST_CASE(test131BootstrapRegression) {
 
 BOOST_AUTO_TEST_CASE(testConstructorsAndNominals) {
     BOOST_TEST_MESSAGE("Testing different constructors for OIS...");
-
-    using namespace overnight_indexed_swap_test;
 
     CommonVars vars;
 

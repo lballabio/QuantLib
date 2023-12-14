@@ -41,7 +41,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace optionlet_stripper_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(OptionletStripperTests)
+
+namespace {
 
     struct CommonVars {
         // global data
@@ -382,17 +386,11 @@ namespace optionlet_stripper_test {
     };
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(OptionletStripperTest)
-
 BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping1) {
 
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from flat term vol "
         "surface using OptionletStripper1 class...");
-
-    using namespace optionlet_stripper_test;
 
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
@@ -455,8 +453,6 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1) {
         "Testing forward/forward vol stripping from non-flat term "
         "vol surface using OptionletStripper1 class...");
 
-    using namespace optionlet_stripper_test;
-
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
 
@@ -517,8 +513,6 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingNormalVol) {
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from non-flat normal vol term "
         "vol surface for normal vol setup using OptionletStripper1 class...");
-
-    using namespace optionlet_stripper_test;
 
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(30, April, 2015);
@@ -585,8 +579,6 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingShiftedLogNormalVol) {
     BOOST_TEST_MESSAGE(
         "Testing forward/forward vol stripping from non-flat normal vol term "
         "vol surface for normal vol setup using OptionletStripper1 class...");
-
-    using namespace optionlet_stripper_test;
 
     CommonVars vars;
     Real shift = 0.03;
@@ -655,8 +647,6 @@ BOOST_AUTO_TEST_CASE(testFlatTermVolatilityStripping2) {
         "Testing forward/forward vol stripping from flat term vol "
         "surface using OptionletStripper2 class...");
 
-  using namespace optionlet_stripper_test;
-
   CommonVars vars;
   Settings::instance().evaluationDate() = Date(28, October, 2013);
 
@@ -724,8 +714,6 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2) {
         "Testing forward/forward vol stripping from non-flat term vol "
         "surface using OptionletStripper2 class...");
 
-  using namespace optionlet_stripper_test;
-
   CommonVars vars;
   Settings::instance().evaluationDate() = Date(30, April, 2015);
 
@@ -788,8 +776,6 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2) {
 BOOST_AUTO_TEST_CASE(testSwitchStrike) {
     BOOST_TEST_MESSAGE("Testing switch strike level and recalibration of level "
                        "in case of curve relinking...");
-
-    using namespace optionlet_stripper_test;
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 

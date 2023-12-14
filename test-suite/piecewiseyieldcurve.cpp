@@ -64,7 +64,11 @@ using std::map;
 using std::vector;
 using std::string;
 
-namespace piecewise_yield_curve_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PiecewiseYieldCurveTests)
+
+namespace {
 
     struct Datum {
         Integer n;
@@ -652,10 +656,6 @@ namespace piecewise_yield_curve_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(PiecewiseYieldCurveTest)
-
 //Unstable
 //BOOST_AUTO_TEST_CASE(testLogCubicDiscountConsistency) {
 //
@@ -679,8 +679,6 @@ BOOST_AUTO_TEST_CASE(testLogLinearDiscountConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
 
     testCurveConsistency<Discount,LogLinear,IterativeBootstrap>(vars);
@@ -691,8 +689,6 @@ BOOST_AUTO_TEST_CASE(testLinearDiscountConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
-
-    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -705,8 +701,6 @@ BOOST_AUTO_TEST_CASE(testLinearZeroConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
 
     testCurveConsistency<ZeroYield,Linear,IterativeBootstrap>(vars);
@@ -717,8 +711,6 @@ BOOST_AUTO_TEST_CASE(testSplineZeroConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-cubic zero-yield curve...");
-
-    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -739,8 +731,6 @@ BOOST_AUTO_TEST_CASE(testLinearForwardConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
 
     testCurveConsistency<ForwardRate,Linear,IterativeBootstrap>(vars);
@@ -751,8 +741,6 @@ BOOST_AUTO_TEST_CASE(testFlatForwardConsistency) {
 
     BOOST_TEST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
-
-    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -786,8 +774,6 @@ BOOST_AUTO_TEST_CASE(testConvexMonotoneForwardConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of convex monotone forward-rate curve...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,IterativeBootstrap>(vars);
 
@@ -799,8 +785,6 @@ BOOST_AUTO_TEST_CASE(testLocalBootstrapConsistency) {
     BOOST_TEST_MESSAGE(
         "Testing consistency of local-bootstrap algorithm...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
     testCurveConsistency<ForwardRate,ConvexMonotone,LocalBootstrap>(
                                               vars, ConvexMonotone(), 1.0e-6);
@@ -810,8 +794,6 @@ BOOST_AUTO_TEST_CASE(testLocalBootstrapConsistency) {
 
 BOOST_AUTO_TEST_CASE(testParFraRegression) {
     BOOST_TEST_MESSAGE("Testing regression for at-par FRA...");
-
-    using namespace piecewise_yield_curve_test;
 
     CommonVars vars(Date(23, February, 2023));
 
@@ -851,8 +833,6 @@ BOOST_AUTO_TEST_CASE(testParFraRegression) {
 BOOST_AUTO_TEST_CASE(testObservability) {
 
     BOOST_TEST_MESSAGE("Testing observability of piecewise yield curve...");
-
-    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -899,8 +879,6 @@ BOOST_AUTO_TEST_CASE(testLiborFixing) {
 
     BOOST_TEST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
-
-    using namespace piecewise_yield_curve_test;
 
     CommonVars vars;
 
@@ -987,8 +965,6 @@ BOOST_AUTO_TEST_CASE(testJpyLibor) {
     BOOST_TEST_MESSAGE(
         "Testing bootstrap over JPY LIBOR swaps...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
 
     vars.today = Date(4, October, 2007);
@@ -1060,8 +1036,6 @@ BOOST_AUTO_TEST_CASE(testDefaultInstantiation) {
 
     BOOST_TEST_MESSAGE("Testing instantiation of curves without passing an interpolator...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
 
     // no actual tests at runtime; this tests that all these instantiations compile
@@ -1132,8 +1106,6 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperSpotDate) {
 BOOST_AUTO_TEST_CASE(testBadPreviousCurve, *precondition(usingAtParCoupons())) {
     BOOST_TEST_MESSAGE("Testing bootstrap starting from bad guess...");
 
-    using namespace piecewise_yield_curve_test;
-
     Datum data[] = {
         {  1, Weeks,  -0.003488 },
         {  2, Weeks,  -0.0033 },
@@ -1197,8 +1169,6 @@ BOOST_AUTO_TEST_CASE(testConstructionWithExplicitBootstrap) {
 
     BOOST_TEST_MESSAGE("Testing that construction with an explicit bootstrap succeeds...");
 
-    using namespace piecewise_yield_curve_test;
-
     CommonVars vars;
 
     // With an explicit IterativeBootstrap object
@@ -1222,8 +1192,6 @@ BOOST_AUTO_TEST_CASE(testConstructionWithExplicitBootstrap) {
 
 BOOST_AUTO_TEST_CASE(testLargeRates) {
     BOOST_TEST_MESSAGE("Testing bootstrap with large input rates...");
-
-    using namespace piecewise_yield_curve_test;
 
     Datum data[] = {
         {  1, Weeks,  2.418633 },
@@ -1257,7 +1225,7 @@ BOOST_AUTO_TEST_CASE(testLargeRates) {
     BOOST_CHECK_NO_THROW(curve->discount(0.01));
 }
 
-namespace piecewise_yield_curve_test {
+namespace {
     // helper classes for testGlobalBootstrap() below:
 
     // functor returning the additional error terms for the cost function
@@ -1299,8 +1267,6 @@ namespace piecewise_yield_curve_test {
 BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
 
     BOOST_TEST_MESSAGE("Testing global bootstrap...");
-
-    using namespace piecewise_yield_curve_test;
 
     Date today(26, Sep, 2019);
     Settings::instance().evaluationDate() = today;

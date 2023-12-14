@@ -44,12 +44,14 @@
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 
-#include <iostream>
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace inflation_cpi_capfloor_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(InflationCPICapFloorTests)
+
+namespace {
     struct Datum {
         Date date;
         Rate rate;
@@ -307,14 +309,8 @@ namespace inflation_cpi_capfloor_test {
 
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InflationCPICapFloorTest)
-
 BOOST_AUTO_TEST_CASE(cpicapfloorpricesurface) {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor against price surface...");
-    
-    using namespace inflation_cpi_capfloor_test;
     
     CommonVars common;
 
@@ -382,8 +378,6 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricesurface) {
 BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor pricer...");
     
-    using namespace inflation_cpi_capfloor_test;
-
     CommonVars common;
     Real nominal = 1.0;
     ext::shared_ptr<CPICapFloorTermPriceSurface> cpiCFpriceSurf(new InterpolatedCPICapFloorTermPriceSurface
