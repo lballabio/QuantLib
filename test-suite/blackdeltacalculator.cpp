@@ -63,7 +63,7 @@ namespace black_delta_calculator_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(BlackDeltaCalculatorExperimentalTest)
+BOOST_AUTO_TEST_SUITE(BlackDeltaCalculatorTest)
 
 BOOST_AUTO_TEST_CASE(testDeltaValues){
 

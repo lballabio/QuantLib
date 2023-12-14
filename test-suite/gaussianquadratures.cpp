@@ -286,10 +286,6 @@ BOOST_AUTO_TEST_CASE(testGaussLaguerreCosinePolynomial) {
                x_inv_exp, 1.0);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(GaussianQuadraturesExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testNonCentralChiSquared) {
     BOOST_TEST_MESSAGE(
         "Testing Gauss non-central chi-squared integration...");

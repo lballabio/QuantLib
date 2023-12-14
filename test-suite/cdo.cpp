@@ -94,7 +94,7 @@ namespace cdo_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CdoExperimentalTest, *precondition(if_speed(Slow)))
+BOOST_AUTO_TEST_SUITE(CdoTest, *precondition(if_speed(Slow)))
 
 #ifndef QL_PATCH_SOLARIS
 

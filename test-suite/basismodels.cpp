@@ -226,7 +226,7 @@ namespace {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(BasismodelsExperimentalTest)
+BOOST_AUTO_TEST_SUITE(BasisModelsTest)
 
 BOOST_AUTO_TEST_CASE(testSwaptioncfsContCompSpread) {
     BOOST_TEST_MESSAGE(

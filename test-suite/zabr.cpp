@@ -28,7 +28,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(ZabrExperimentalTest)
+BOOST_AUTO_TEST_SUITE(ZabrTest)
 
 BOOST_AUTO_TEST_CASE(testConsistency, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing the consistency of ZABR interpolation...");

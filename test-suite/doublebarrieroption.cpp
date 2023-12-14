@@ -387,10 +387,6 @@ BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");

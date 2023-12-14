@@ -1267,10 +1267,6 @@ BOOST_AUTO_TEST_CASE(testAmericanQuantoOption)  {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(QuantoOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testDoubleBarrierValues)  {
 
     BOOST_TEST_MESSAGE("Testing quanto-double-barrier option values...");

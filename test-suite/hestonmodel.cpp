@@ -3212,10 +3212,6 @@ BOOST_AUTO_TEST_CASE(testLocalVolFromHestonModel) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testAnalyticPDFHestonEngine) {
     BOOST_TEST_MESSAGE("Testing analytic PDF Heston engine...");
 

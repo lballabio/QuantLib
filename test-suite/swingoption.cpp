@@ -107,7 +107,7 @@ namespace swing_option_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(SwingOptionExperimentalTest)
+BOOST_AUTO_TEST_SUITE(SwingOptionTest)
 
 BOOST_AUTO_TEST_CASE(testExtendedOrnsteinUhlenbeckProcess) {
 

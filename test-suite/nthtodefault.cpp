@@ -99,7 +99,7 @@ namespace nth_to_default_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(NthToDefaultExperimentalTest)
+BOOST_AUTO_TEST_SUITE(NthToDefaultTest)
 
 #ifndef QL_PATCH_SOLARIS
 

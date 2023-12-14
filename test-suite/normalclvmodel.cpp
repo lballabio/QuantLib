@@ -53,7 +53,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(NormalCLVModelExperimentalTest)
+BOOST_AUTO_TEST_SUITE(NormalCLVModelTest)
 
 BOOST_AUTO_TEST_CASE(testBSCumlativeDistributionFunction) {
     BOOST_TEST_MESSAGE("Testing Black-Scholes cumulative distribution function"

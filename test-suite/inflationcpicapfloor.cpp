@@ -309,7 +309,7 @@ namespace inflation_cpi_capfloor_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(InflationCPICapFloorExperimentalTest)
+BOOST_AUTO_TEST_SUITE(InflationCPICapFloorTest)
 
 BOOST_AUTO_TEST_CASE(cpicapfloorpricesurface) {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor against price surface...");

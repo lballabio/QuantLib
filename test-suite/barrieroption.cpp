@@ -1366,10 +1366,6 @@ BOOST_AUTO_TEST_CASE(testLowVolatility) {
     check(  95.0,  Option::Call,      99.0,   Barrier::DownIn,     4.0,   0.01,   0.04,        2.0);  // fwd = 97, call, ITM
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(BarrierOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testPerturbative) {
     BOOST_TEST_MESSAGE("Testing perturbative engine for barrier options...");
 

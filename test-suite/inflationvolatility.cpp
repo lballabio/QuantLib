@@ -275,7 +275,7 @@ namespace inflation_volatility_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(InflationVolExperimentalTest)
+BOOST_AUTO_TEST_SUITE(InflationVolTest)
 
 BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
     BOOST_TEST_MESSAGE("Testing conversion from YoY price surface "

@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(TwoAssetCorrelationOptionExperimentalTest)
+BOOST_AUTO_TEST_SUITE(TwoAssetCorrelationOptionTest)
 
 BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     BOOST_TEST_MESSAGE(

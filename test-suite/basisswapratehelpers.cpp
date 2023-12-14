@@ -212,7 +212,7 @@ namespace basisswapratehelpers_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(BasisSwapRateHelpersExperimentalTest)
+BOOST_AUTO_TEST_SUITE(BasisSwapRateHelpersTest)
 
 BOOST_AUTO_TEST_CASE(testIborIborBaseCurveBootstrap) {
     BOOST_TEST_MESSAGE("Testing IBOR-IBOR basis-swap rate helpers (base curve bootstrap)...");
