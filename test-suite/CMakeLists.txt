@@ -127,6 +127,7 @@ set(QL_TEST_SOURCES
     piecewiseyieldcurve.cpp
     piecewisezerospreadedtermstructure.cpp
     preconditions.cpp
+    prices.cpp
     quantlibglobalfixture.cpp
     quantlibtestsuite.cpp
     quantooption.cpp
@@ -185,7 +186,7 @@ set(QL_TEST_HEADERS
 
 set(QL_BENCHMARK_SOURCES
     quantlibbenchmark.cpp
-    
+
     americanoption.cpp
     asianoptions.cpp
     barrieroption.cpp

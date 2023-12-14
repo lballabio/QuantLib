@@ -129,6 +129,7 @@ QL_TEST_SRCS = \
 	piecewiseyieldcurve.cpp \
 	piecewisezerospreadedtermstructure.cpp \
 	preconditions.cpp \
+	prices.cpp \
 	quantlibglobalfixture.cpp \
 	quantooption.cpp \
 	quotes.cpp \

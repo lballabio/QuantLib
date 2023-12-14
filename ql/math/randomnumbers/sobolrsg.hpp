@@ -128,27 +128,25 @@ namespace QuantLib {
                           DirectionIntegers directionIntegers = Jaeckel,
                           bool useGrayCode = true);
         /*! skip to the n-th sample in the low-discrepancy sequence */
-        const std::vector<std::uint_least32_t>& skipTo(std::uint_least32_t n) const;
-        const std::vector<std::uint_least32_t>& nextInt32Sequence() const;
+        const std::vector<std::uint32_t>& skipTo(std::uint32_t n) const;
+        const std::vector<std::uint32_t>& nextInt32Sequence() const;
 
         const SobolRsg::sample_type& nextSequence() const {
-            const std::vector<std::uint_least32_t>& v = nextInt32Sequence();
+            const std::vector<std::uint32_t>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
-            for (Size k=0; k<dimensionality_; ++k)
-                sequence_.value[k] = v[k] * normalizationFactor_;
+            for (Size k = 0; k < dimensionality_; ++k)
+                sequence_.value[k] = v[k] * (0.5 / (1UL << 31));
             return sequence_;
         }
         const sample_type& lastSequence() const { return sequence_; }
         Size dimension() const { return dimensionality_; }
       private:
-        static const int bits_;
-        static const double normalizationFactor_;
         Size dimensionality_;
-        mutable std::uint_least32_t sequenceCounter_ = 0;
+        mutable std::uint32_t sequenceCounter_ = 0;
         mutable bool firstDraw_ = true;
         mutable sample_type sequence_;
-        mutable std::vector<std::uint_least32_t> integerSequence_;
-        std::vector<std::vector<std::uint_least32_t>> directionIntegers_;
+        mutable std::vector<std::uint32_t> integerSequence_;
+        std::vector<std::vector<std::uint32_t>> directionIntegers_;
         bool useGrayCode_;
     };
 
