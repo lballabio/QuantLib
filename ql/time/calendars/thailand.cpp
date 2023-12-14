@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 Matthias Groncki
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,7 +49,7 @@ namespace QuantLib {
             // Coronation Day
             || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) && m == May && y >= 2019)
             // H.M.Queen Suthida Bajrasudhabimalalakshana’s Birthday
-            || ((d == 02 || ((d == 03 || d == 04) && w == Monday)) && m == June && y >= 2019)
+            || ((d == 03 || ((d == 04 || d == 05) && w == Monday)) && m == June && y >= 2019)
             // H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday
             || ((d == 28 || ((d == 29 || d == 30) && w == Monday)) && m == July && y >= 2017)
             // 	​H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day
@@ -56,15 +57,14 @@ namespace QuantLib {
             // H.M. King Bhumibol Adulyadej The Great Memorial Day
             || ((d == 13 || ((d == 14 || d == 15) && w == Monday)) && m == October && y >= 2017)
             // Chulalongkorn Day
-            || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) && m == October)
+            || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) && m == October && y != 2021)  // Moved 2021, see below
             // H.M. King Bhumibol Adulyadej The Great’s Birthday/ National Day / Father’s Day
             || ((d == 5 || ((d == 6 || d == 7) && w == Monday)) && m == December)
             // Constitution Day
             || ((d == 10 || ((d == 11 || d == 12) && w == Monday)) && m == December)
             // New Year’s Eve
-            || (d == 31 && m == December)
-            // New Year’s Eve Observence
-            || ((d == 1 || d == 2) && w == Monday && m == January))
+            || ((d == 31 && m == December) || (d == 2 && w == Monday && m == January && y != 2024))  // Moved 2024
+            )
             return false;
 
         if ((y == 2000) &&
@@ -262,8 +262,7 @@ namespace QuantLib {
         if ((y == 2021) && ((d == 12 && m == February)     // Special Holiday
                             || (d == 26 && m == February)  // Makha Bucha Day
                             || (d == 26 && m == May)       // Wisakha Bucha Day
-                            || (d == 26 && m == July)      // Asarnha Bucha Day
-                            || (d == 27 && m == July)      // Substitution for Songkran Festival
+                            || (d == 26 && m == July)      // Substitution for Asarnha Bucha Day (Saturday 24th July 2021)
                             || (d == 24 && m == September) // Special Holiday
                             || (d == 22 && m == October)   // ​Substitution for Chulalongkorn Day
                             ))
