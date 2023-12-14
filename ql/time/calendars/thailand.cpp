@@ -268,6 +268,33 @@ namespace QuantLib {
                             ))
             return false;
 
+        if ((y == 2022) && ((d == 16 && m == February)   // Makha Bucha Day
+                            || (d == 16 && m == May)     // Substitution for Wisakha Bucha Day (Sunday 15th May 2022)
+                            || (d == 13 && m == July)    // Asarnha Bucha Day
+                            || (d == 29 && m == July)    // Additional special holiday (added)
+                            || (d == 14 && m == October) // Additional special holiday (added)
+                            || (d == 24 && m == October) // ​Substitution for Chulalongkorn Day (Sunday 23rd October 2022)
+            ))
+            return false;
+
+        if ((y == 2023) && ((d == 6 && m == March)        // Makha Bucha Day
+                            || (d == 5 && m == May)       // Additional special holiday (added)
+                            || (d == 5 && m == June)      // Substitution for H.M. Queen's birthday and Wisakha Bucha Day (Saturday 3rd June 2022)
+                            || (d == 1 && m == August)    // Asarnha Bucha Day
+                            || (d == 23 && m == October)  // Chulalongkorn Day
+                            || (d == 29 && m == December) // Substitution for New Year’s Eve (Sunday 31st December 2023) (added)
+            ))
+            return false;
+
+        if ((y == 2024) && ((d == 26 && m == February)    // Substitution for Makha Bucha Day (Saturday 24th February 2024)
+                            || (d == 8 && m == April)     // Substitution for Chakri Memorial Day (Saturday 6th April 2024)
+                            || (d == 6 && m == May)       // Substitution for Coronation Day (Saturday 4th May 2024)
+                            || (d == 22 && m == May)      // Wisakha Bucha Day
+                            || (d == 22 && m == July)     // Substitution for Asarnha Bucha Day (Saturday 20th July 2024)
+                            || (d == 23 && m == October)  // Chulalongkorn Day
+            ))
+            return false;
+
         return true;
     }
 
