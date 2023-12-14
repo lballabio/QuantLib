@@ -1781,10 +1781,6 @@ BOOST_AUTO_TEST_CASE(testVanillaAndDividendEngine) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(EuropeanOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testFFTEngines) {
 
     BOOST_TEST_MESSAGE("Testing FFT European engines "

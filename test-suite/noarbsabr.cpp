@@ -45,7 +45,7 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(NoArbSabrExperimentalTest)
+BOOST_AUTO_TEST_SUITE(NoArbSabrTest)
 
 BOOST_AUTO_TEST_CASE(testAbsorptionMatrix) {
 

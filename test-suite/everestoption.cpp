@@ -30,7 +30,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(EverestOptionExperimentalTest)
+BOOST_AUTO_TEST_SUITE(EverestOptionTest)
 
 BOOST_AUTO_TEST_CASE(testCached) {
 

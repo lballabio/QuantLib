@@ -29,7 +29,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(VarianceOptionExperimentalTest)
+BOOST_AUTO_TEST_SUITE(VarianceOptionTest)
 
 BOOST_AUTO_TEST_CASE(testIntegralHeston) {
 

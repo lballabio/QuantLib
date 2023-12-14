@@ -93,7 +93,7 @@ struct TestData {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CmsSpreadExperimentalTest)
+BOOST_AUTO_TEST_SUITE(CmsSpreadTest)
 
 BOOST_AUTO_TEST_CASE(testFixings) {
     BOOST_TEST_MESSAGE("Testing fixings of cms spread indices...");

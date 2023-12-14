@@ -236,7 +236,7 @@ namespace vpp_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(VPPExperimentalTest)
+BOOST_AUTO_TEST_SUITE(VppTest)
 
 BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
 

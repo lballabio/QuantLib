@@ -49,7 +49,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(RiskNeutralDensityCalculatorExperimentalTest)
+BOOST_AUTO_TEST_SUITE(RiskNeutralDensityCalculatorTest)
 
 BOOST_AUTO_TEST_CASE(testDensityAgainstOptionPrices) {
     BOOST_TEST_MESSAGE("Testing density against option prices...");

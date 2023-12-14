@@ -50,7 +50,7 @@ namespace {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(TwoAssetBarrierOptionExperimentalTest)
+BOOST_AUTO_TEST_SUITE(TwoAssetBarrierOptionTest)
 
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 

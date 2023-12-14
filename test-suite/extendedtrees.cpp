@@ -232,7 +232,7 @@ namespace {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(ExtendedTreesExperimentalTest)
+BOOST_AUTO_TEST_SUITE(ExtendedTreesTest)
 
 BOOST_AUTO_TEST_CASE(testJRBinomialEngines) {
 

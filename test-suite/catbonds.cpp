@@ -73,7 +73,7 @@ namespace catbonds_test {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CatBondExperimentaltest)
+BOOST_AUTO_TEST_SUITE(CatBondTest)
 
 BOOST_AUTO_TEST_CASE(testEventSetForWholeYears) {
     BOOST_TEST_MESSAGE("Testing that catastrophe events are split correctly for periods of whole years...");

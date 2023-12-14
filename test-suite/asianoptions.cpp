@@ -1908,10 +1908,6 @@ BOOST_AUTO_TEST_CASE(testTurnbullWakemanAsianEngine) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(AsianOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testLevyEngine) {
 
     BOOST_TEST_MESSAGE("Testing Levy engine for Asians options...");

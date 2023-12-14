@@ -75,7 +75,7 @@ namespace square_root_clv_model {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(SquareRootCLVModelExperimentalTest)
+BOOST_AUTO_TEST_SUITE(SquareRootCLVModelTest)
 
 BOOST_AUTO_TEST_CASE(testSquareRootCLVVanillaPricing) {
     BOOST_TEST_MESSAGE(

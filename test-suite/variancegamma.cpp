@@ -75,7 +75,7 @@ namespace {
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(VarianceGammaExperimentalTest)
+BOOST_AUTO_TEST_SUITE(VarianceGammaTest)
 
 BOOST_AUTO_TEST_CASE(testVarianceGamma) {
 

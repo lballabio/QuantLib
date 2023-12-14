@@ -33,7 +33,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(ExtensibleOptionsExperimentalTest)
+BOOST_AUTO_TEST_SUITE(ExtensibleOptionsTest)
 
 BOOST_AUTO_TEST_CASE(testAnalyticHolderExtensibleOptionEngine) {
     BOOST_TEST_MESSAGE(
