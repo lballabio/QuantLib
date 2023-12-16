@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <array>
 #include <string>
+#include <stdio.h>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -149,61 +150,24 @@ namespace QuantLib {
         QL_REQUIRE(isECBdate(ecbDate),
                    ecbDate << " is not a valid ECB date");
 
-        std::ostringstream ECBcode;
-        unsigned int y = ecbDate.year() % 100;
-        string padding;
-        if (y < 10)
-            padding = "0";
-        switch(ecbDate.month()) {
-          case January:
-            ECBcode << "JAN" << padding << y;
-            break;
-          case February:
-            ECBcode << "FEB" << padding << y;
-            break;
-          case March:
-            ECBcode << "MAR" << padding << y;
-            break;
-          case April:
-            ECBcode << "APR" << padding << y;
-            break;
-          case May:
-            ECBcode << "MAY" << padding << y;
-            break;
-          case June:
-            ECBcode << "JUN" << padding << y;
-            break;
-          case July:
-            ECBcode << "JUL" << padding << y;
-            break;
-          case August:
-            ECBcode << "AUG" << padding << y;
-            break;
-          case September:
-            ECBcode << "SEP" << padding << y;
-            break;
-          case October:
-            ECBcode << "OCT" << padding << y;
-            break;
-          case November:
-            ECBcode << "NOV" << padding << y;
-            break;
-          case December:
-            ECBcode << "DEC" << padding << y;
-            break;
-          default:
-            QL_FAIL("not an ECB month (and it should have been)");
-        }
+        // 3 characters for the month
+        const int monthOneBased = static_cast<int>(ecbDate.month());
+        const boost::string_view month = MONTHS[monthOneBased-1];
+
+        // last two digits of the year
+        const unsigned int y = ecbDate.year() % 100;
+
+        // c-style string. length: 6 == (3 for month + 2 for year + 1 for terminating null)
+        char ECBcode[6];
+        snprintf(ECBcode, 6, "%3s%02d", month.data(), y);
 
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_ENSURE(isECBcode(ECBcode.str()),
-                  "the result " << ECBcode.str() <<
+        QL_ENSURE(isECBcode(ECBcode),
+                  "the result " << ECBcode <<
                   " is an invalid ECB code");
         #endif
-        return ECBcode.str();
+        return ECBcode;
     }
-
-
 
     Date ECB::nextDate(const Date& date) {
         Date d = (date == Date() ?
