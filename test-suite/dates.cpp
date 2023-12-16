@@ -98,6 +98,9 @@ BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
     BOOST_TEST(ECB::date("OCT13") == Date((Day) 9, October,   (Year)2013));
     BOOST_TEST(ECB::date("NOV14") == Date((Day)12, November,  (Year)2014));
     BOOST_TEST(ECB::date("DEC15") == Date((Day) 9, December,  (Year)2015));
+
+    // for (const auto& d : ECB::knownDates())
+        // std::cout << d << '\n';
 }
 
 BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
@@ -106,6 +109,16 @@ BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
     BOOST_TEST("JAN06" == ECB::code(Date((Day)18, January,  (Year)2006)));
     BOOST_TEST("MAR10" == ECB::code(Date((Day)10, March,    (Year)2010)));
     BOOST_TEST("NOV17" == ECB::code(Date((Day) 1, November, (Year)2017)));
+}
+
+BOOST_AUTO_TEST_CASE(ecbNextCode) {
+    BOOST_TEST_MESSAGE("Testing getting the next code from a given code...");
+
+    BOOST_TEST("FEB06" == ECB::nextCode("JAN06"));
+    BOOST_TEST("MAR10" == ECB::nextCode("FeB10"));
+    BOOST_TEST("NOV17" == ECB::nextCode("OCT17"));
+    BOOST_TEST("JAN18" == ECB::nextCode("dEC17"));
+    BOOST_TEST("JAN00" == ECB::nextCode("dec99"));
 }
 
 BOOST_AUTO_TEST_CASE(immDates) {
