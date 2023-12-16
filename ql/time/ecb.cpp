@@ -36,9 +36,7 @@ namespace QuantLib {
         const std::array<boost::string_view, 12> MONTHS{
             "JAN" ,"FEB" ,"MAR" ,"APR" ,"MAY" ,"JUN",
             "JUL" ,"AUG" ,"SEP" ,"OCT" ,"NOV" ,"DEC"};
-    }
 
-    namespace detail {
         //clang-format off
         // Start of maintenance period
         // source: https://web.archive.org/web/20230610050642/https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
@@ -99,15 +97,15 @@ namespace QuantLib {
     }
 
     const std::set<Date>& ECB::knownDates() {
-        return detail::ecbKnownDateSet;
+        return ecbKnownDateSet;
     }
 
     void ECB::addDate(const Date& d) {
-        detail::ecbKnownDateSet.insert(d);
+        ecbKnownDateSet.insert(d);
     }
 
     void ECB::removeDate(const Date& d) {
-        detail::ecbKnownDateSet.erase(d);
+        ecbKnownDateSet.erase(d);
     }
 
     namespace {
