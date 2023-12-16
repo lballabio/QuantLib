@@ -66,7 +66,7 @@ namespace QuantLib {
 
         // 1st character needs to represent the correct month
         const boost::string_view validMonthCodes = mainCycle ? "HMUZ" : All_MONTH_CODES;
-        return validMonthCodes.contains(std::toupper(in[0]));
+        return validMonthCodes.find(std::toupper(in[0])) != boost::string_view::npos;
     }
 
     std::string ASX::code(const Date& date) {
