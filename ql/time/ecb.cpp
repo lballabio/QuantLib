@@ -229,37 +229,50 @@ namespace QuantLib {
         QL_REQUIRE(isECBcode(ecbCode),
                    ecbCode << " is not a valid ECB code");
 
-        string code = to_upper_copy(ecbCode);
-        std::ostringstream result;
+        const boost::string_view month(ecbCode.data(), 3);
+        char monthUpper[3];
+        to_upper_copy(monthUpper, month);
+        const auto itMonth = std::find(MONTHS.begin(), MONTHS.end(), boost::string_view(monthUpper, 3));
+        QL_ASSERT(itMonth != MONTHS.end(), "not an ECB month (and it should have been)");
 
-        string monthString = code.substr(0, 3);
-        if (monthString=="JAN")      result << "FEB" << code.substr(3, 2);
-        else if (monthString=="FEB") result << "MAR" << code.substr(3, 2);
-        else if (monthString=="MAR") result << "APR" << code.substr(3, 2);
-        else if (monthString=="APR") result << "MAY" << code.substr(3, 2);
-        else if (monthString=="MAY") result << "JUN" << code.substr(3, 2);
-        else if (monthString=="JUN") result << "JUL" << code.substr(3, 2);
-        else if (monthString=="JUL") result << "AUG" << code.substr(3, 2);
-        else if (monthString=="AUG") result << "SEP" << code.substr(3, 2);
-        else if (monthString=="SEP") result << "OCT" << code.substr(3, 2);
-        else if (monthString=="OCT") result << "NOV" << code.substr(3, 2);
-        else if (monthString=="NOV") result << "DEC" << code.substr(3, 2);
-        else if (monthString=="DEC") {
-            unsigned int y = (std::stoi(code.substr(3, 2)) + 1) % 100;
-            string padding;
-            if (y < 10)
-                padding = "0";
+        string nextCodeStr;
+        nextCodeStr.reserve(5);
+        if (*itMonth != "DEC") {
+            // use next month
+            const boost::string_view nextMonth = *(itMonth + 1);
+            nextCodeStr.append(nextMonth.data(), 3);
 
-            result << "JAN" << padding << y;
-        } else QL_FAIL("not an ECB month (and it should have been)");
+            // copy year
+            nextCodeStr += { ecbCode[3], ecbCode[4] };
+        } else {
+            // previous month was DEC
+            nextCodeStr.append("JAN");
 
+            // init with previous year
+            nextCodeStr += { ecbCode[3], ecbCode[4] };
+
+            // increment year's last digit (e.g. '22' -> '23').
+            // if overflow (e.g. '29' -> '20'), then also increment 2nd digit (e.g. '20' -> '30').
+            const auto incrementAndCheckForOverlow = [](char& dig) -> bool {
+                if (dig == '9') {
+                    dig = '0';
+                    return true;
+                } else {
+                    ++dig;
+                    return false;
+                }
+            };
+            if (incrementAndCheckForOverlow(nextCodeStr[4]))
+                incrementAndCheckForOverlow(nextCodeStr[3]);
+        }
+        return nextCodeStr;
 
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_ENSURE(isECBcode(result.str()),
-                  "the result " << result.str() <<
+        QL_ENSURE(isECBcode(nextCodeStr),
+                  "the result " << nextCodeStr <<
                   " is an invalid ECB code");
         #endif
-        return result.str();
+        return nextCodeStr;
     }
 
 }
