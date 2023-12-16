@@ -100,6 +100,14 @@ BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
     BOOST_TEST(ECB::date("DEC15") == Date((Day) 9, December,  (Year)2015));
 }
 
+BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
+    BOOST_TEST_MESSAGE("Testing creation of ECB code from a given date...");
+
+    BOOST_TEST("JAN06" == ECB::code(Date((Day)18, January,  (Year)2006)));
+    BOOST_TEST("MAR10" == ECB::code(Date((Day)10, March,    (Year)2010)));
+    BOOST_TEST("NOV17" == ECB::code(Date((Day) 1, November, (Year)2017)));
+}
+
 BOOST_AUTO_TEST_CASE(immDates) {
     BOOST_TEST_MESSAGE("Testing IMM dates...");
 
