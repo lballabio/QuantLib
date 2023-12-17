@@ -3315,7 +3315,7 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmin) {
 
     option.setPricingEngine(
         ext::make_shared<ExponentialFittingHestonEngine>(
-            model, ExponentialFittingHestonEngine::OptimalCV
+            model, ExponentialFittingHestonEngine::ControlVariate::OptimalCV
         )
     );
 

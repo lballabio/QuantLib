@@ -25,7 +25,6 @@
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
 
 namespace QuantLib {
@@ -239,17 +238,14 @@ namespace QuantLib {
         const Real sigma = model_->sigma();
         const Real rho   = model_->rho();
 
+        QL_REQUIRE(cv_ == ControlVariate::Gatheral
+            || ControlVariate::BranchCorrection,
+            "Gather and Branch-Correction are not supported as control-variate");
+
         const AnalyticHestonEngine::ComplexLogFormula analyticCV =
-            (cv_ == AndersenPiterbarg)? AnalyticHestonEngine::AndersenPiterbarg
-                 : (cv_ == AndersenPiterbargOptCV)?
-                         AnalyticHestonEngine::AndersenPiterbargOptCV
-                 : (cv_ == AsymptoticChF)?
-                         AnalyticHestonEngine::AsymptoticChF
-                 : (cv_ == AngledContour)?
-                         AnalyticHestonEngine::AngledContour
-                 : (cv_ == AngledContourNoCV)?
-                         AnalyticHestonEngine::AngledContourNoCV
-                 : AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho);
+            (cv_ == ControlVariate::OptimalCV)
+            ? AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho)
+            : cv_;
 
         const AnalyticHestonEngine::AP_Helper helper(
             t, fwd, strike, analyticCV, analyticEngine_.get(), alpha_);
