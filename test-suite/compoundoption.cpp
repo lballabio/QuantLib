@@ -59,28 +59,25 @@ BOOST_AUTO_TEST_SUITE(CompoundOptionTests)
                "\nerror:                " << error << \
                "\ntolerance:            " << tolerance);
 
-namespace {
+struct CompoundOptionData {
+    Option::Type typeMother;
+    Option::Type typeDaughter;
+    Real strikeMother;
+    Real strikeDaughter;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time tMother;  // time to maturity
+    Time tDaughter;// time to maturity
+    Volatility v;  // volatility
+    Real npv;   // expected result
+    Real tol;      // tolerance
+    Real delta;
+    Real gamma;
+    Real vega;
+    Real theta;
+};
 
-    struct CompoundOptionData {
-        Option::Type typeMother;
-        Option::Type typeDaughter;
-        Real strikeMother;
-        Real strikeDaughter;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time tMother;  // time to maturity
-        Time tDaughter;// time to maturity
-        Volatility v;  // volatility
-        Real npv;   // expected result
-        Real tol;      // tolerance
-        Real delta;
-        Real gamma;
-        Real vega;
-        Real theta;
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testPutCallParity){
 

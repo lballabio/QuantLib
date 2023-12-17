@@ -41,80 +41,77 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CurveStatesTests)
 
-namespace {
+struct CommonVars {
+    // global data
+    Date todaysDate, startDate, endDate;
+    std::vector<Time> rateTimes, paymentTimes;
+    std::vector<Real> accruals;
+    Calendar calendar;
+    DayCounter dayCounter;
+    std::vector<Rate> todaysForwards, todaysCoterminalSwapRates;
+    std::vector<Real> coterminalAnnuity;
+    Spread displacement;
+    std::vector<DiscountFactor> todaysDiscounts;
 
-    struct CommonVars {
-        // global data
-        Date todaysDate, startDate, endDate;
-        std::vector<Time> rateTimes, paymentTimes;
-        std::vector<Real> accruals;
-        Calendar calendar;
-        DayCounter dayCounter;
-        std::vector<Rate> todaysForwards, todaysCoterminalSwapRates;
-        std::vector<Real> coterminalAnnuity;
-        Spread displacement;
-        std::vector<DiscountFactor> todaysDiscounts;
+    CommonVars() {
+        // Times
+        calendar = NullCalendar();
+        todaysDate = Settings::instance().evaluationDate();
+        //startDate = todaysDate + 5*Years;
+        endDate = todaysDate + 10*Years;
+        Schedule dates(todaysDate, endDate, Period(Semiannual),
+                       calendar, Following, Following,
+                       DateGeneration::Backward, false);
+        rateTimes = std::vector<Time>(dates.size()-1);
+        paymentTimes = std::vector<Time>(rateTimes.size()-1);
+        accruals = std::vector<Real>(rateTimes.size()-1);
+        dayCounter = SimpleDayCounter();
+        for (Size i=1; i<dates.size(); ++i)
+            rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
+        std::copy(rateTimes.begin()+1, rateTimes.end(),
+                  paymentTimes.begin());
+        for (Size i=1; i<rateTimes.size(); ++i)
+            accruals[i-1] = rateTimes[i] - rateTimes[i-1];
 
-        CommonVars() {
-            // Times
-            calendar = NullCalendar();
-            todaysDate = Settings::instance().evaluationDate();
-            //startDate = todaysDate + 5*Years;
-            endDate = todaysDate + 10*Years;
-            Schedule dates(todaysDate, endDate, Period(Semiannual),
-                           calendar, Following, Following,
-                           DateGeneration::Backward, false);
-            rateTimes = std::vector<Time>(dates.size()-1);
-            paymentTimes = std::vector<Time>(rateTimes.size()-1);
-            accruals = std::vector<Real>(rateTimes.size()-1);
-            dayCounter = SimpleDayCounter();
-            for (Size i=1; i<dates.size(); ++i)
-                rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
-            std::copy(rateTimes.begin()+1, rateTimes.end(),
-                      paymentTimes.begin());
-            for (Size i=1; i<rateTimes.size(); ++i)
-                accruals[i-1] = rateTimes[i] - rateTimes[i-1];
+        // Rates & displacement
+        todaysForwards = std::vector<Rate>(paymentTimes.size());
+        displacement = 0.0;
+        for (Size i=0; i<todaysForwards.size(); ++i)
+            todaysForwards[i] = 0.03 + 0.0010*i;
 
-            // Rates & displacement
-            todaysForwards = std::vector<Rate>(paymentTimes.size());
-            displacement = 0.0;
-            for (Size i=0; i<todaysForwards.size(); ++i)
-                todaysForwards[i] = 0.03 + 0.0010*i;
+        // Discounts
+        todaysDiscounts = std::vector<DiscountFactor>(rateTimes.size());
+        todaysDiscounts[0] = 0.95;
+        for (Size i=1; i<rateTimes.size(); ++i)
+            todaysDiscounts[i] = todaysDiscounts[i-1] /
+                (1.0+todaysForwards[i-1]*accruals[i-1]);
 
-            // Discounts
-            todaysDiscounts = std::vector<DiscountFactor>(rateTimes.size());
-            todaysDiscounts[0] = 0.95;
-            for (Size i=1; i<rateTimes.size(); ++i)
-                todaysDiscounts[i] = todaysDiscounts[i-1] /
-                    (1.0+todaysForwards[i-1]*accruals[i-1]);
-
-            // Coterminal swap rates & annuities
-            Size N = todaysForwards.size();
-            todaysCoterminalSwapRates = std::vector<Rate>(N);
-            coterminalAnnuity = std::vector<Real>(N);
-            Real floatingLeg = 0.0;
-            for (Size i=1; i<=N; ++i) {
-                if (i==1) {
-                    coterminalAnnuity[N-1] = accruals[N-1]*todaysDiscounts[N];
-                } else {
-                    coterminalAnnuity[N-i] = coterminalAnnuity[N-i+1] +
-                        accruals[N-i]*todaysDiscounts[N-i+1];
-                }
-                floatingLeg = todaysDiscounts[N-i]-todaysDiscounts[N];
-                todaysCoterminalSwapRates[N-i] =
-                    floatingLeg/coterminalAnnuity[N-i];
+        // Coterminal swap rates & annuities
+        Size N = todaysForwards.size();
+        todaysCoterminalSwapRates = std::vector<Rate>(N);
+        coterminalAnnuity = std::vector<Real>(N);
+        Real floatingLeg = 0.0;
+        for (Size i=1; i<=N; ++i) {
+            if (i==1) {
+                coterminalAnnuity[N-1] = accruals[N-1]*todaysDiscounts[N];
+            } else {
+                coterminalAnnuity[N-i] = coterminalAnnuity[N-i+1] +
+                    accruals[N-i]*todaysDiscounts[N-i+1];
             }
-
-            std::vector<Time> evolutionTimes(rateTimes.size()-1);
-            std::copy(rateTimes.begin(), rateTimes.end()-1,
-                      evolutionTimes.begin());
-            EvolutionDescription evolution(rateTimes,evolutionTimes);
-            evolution.rateTaus();
-            evolution.firstAliveRate();
+            floatingLeg = todaysDiscounts[N-i]-todaysDiscounts[N];
+            todaysCoterminalSwapRates[N-i] =
+                floatingLeg/coterminalAnnuity[N-i];
         }
-    };
 
-}
+        std::vector<Time> evolutionTimes(rateTimes.size()-1);
+        std::copy(rateTimes.begin(), rateTimes.end()-1,
+                  evolutionTimes.begin());
+        EvolutionDescription evolution(rateTimes,evolutionTimes);
+        evolution.rateTaus();
+        evolution.firstAliveRate();
+    }
+};
+
 
 BOOST_AUTO_TEST_CASE(testCMSwapCurveState) {
 

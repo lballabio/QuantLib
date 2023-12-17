@@ -52,68 +52,65 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(DayCounterTests)
 
-namespace {
+struct SingleCase {
+    SingleCase(ActualActual::Convention convention,
+               const Date& start,
+               const Date& end,
+               const Date& refStart,
+               const Date& refEnd,
+               Time result)
+    : convention(convention), start(start), end(end),
+      refStart(refStart), refEnd(refEnd), result(result) {}
+    SingleCase(ActualActual::Convention convention,
+               const Date& start,
+               const Date& end,
+               Time result)
+    : convention(convention), start(start), end(end), result(result) {}
+    ActualActual::Convention convention;
+    Date start;
+    Date end;
+    Date refStart;
+    Date refEnd;
+    Time result;
+};
 
-    struct SingleCase {
-        SingleCase(ActualActual::Convention convention,
-            const Date& start,
-            const Date& end,
-            const Date& refStart,
-            const Date& refEnd,
-            Time result)
-            : convention(convention), start(start), end(end),
-            refStart(refStart), refEnd(refEnd), result(result) {}
-        SingleCase(ActualActual::Convention convention,
-                   const Date& start,
-                   const Date& end,
-                   Time result)
-        : convention(convention), start(start), end(end), result(result) {}
-        ActualActual::Convention convention;
-        Date start;
-        Date end;
-        Date refStart;
-        Date refEnd;
-        Time result;
-    };
+struct Thirty360Case {
+    Date start;
+    Date end;
+    Date::serial_type expected;
+};
 
-    struct Thirty360Case {
-        Date start;
-        Date end;
-        Date::serial_type expected;
-    };
-
-    Time ISMAYearFractionWithReferenceDates(
-        const DayCounter& dayCounter, Date start, Date end, Date refStart, Date refEnd) {
-        Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
-        // guess how many coupon periods per year:
-        auto couponsPerYear = (Integer)std::lround(365.0 / referenceDayCount);
-        // the above is good enough for annual or semi annual payments.
-        return Real(dayCounter.dayCount(start, end))
-            / (referenceDayCount*couponsPerYear);
-    }
-
-    Time actualActualDaycountComputation(const Schedule& schedule, Date start, Date end) {
-
-        DayCounter daycounter = ActualActual(ActualActual::ISMA, schedule);
-        Time yearFraction = 0.0;
-
-        for (Size i = 1; i < schedule.size() - 1; i++) {
-            Date referenceStart = schedule.date(i);
-            Date referenceEnd = schedule.date(i+1);
-            if (start < referenceEnd && end > referenceStart) {
-                yearFraction += ISMAYearFractionWithReferenceDates(
-                    daycounter,
-                    (start > referenceStart) ? start : referenceStart,
-                    (end < referenceEnd) ? end : referenceEnd,
-                    referenceStart,
-                    referenceEnd
-                );
-            };
-        }
-        return yearFraction;
-    }
-
+Time ISMAYearFractionWithReferenceDates(
+                                        const DayCounter& dayCounter, Date start, Date end, Date refStart, Date refEnd) {
+    Real referenceDayCount = Real(dayCounter.dayCount(refStart, refEnd));
+    // guess how many coupon periods per year:
+    auto couponsPerYear = (Integer)std::lround(365.0 / referenceDayCount);
+    // the above is good enough for annual or semi annual payments.
+    return Real(dayCounter.dayCount(start, end))
+        / (referenceDayCount*couponsPerYear);
 }
+
+Time actualActualDaycountComputation(const Schedule& schedule, Date start, Date end) {
+
+    DayCounter daycounter = ActualActual(ActualActual::ISMA, schedule);
+    Time yearFraction = 0.0;
+
+    for (Size i = 1; i < schedule.size() - 1; i++) {
+        Date referenceStart = schedule.date(i);
+        Date referenceEnd = schedule.date(i+1);
+        if (start < referenceEnd && end > referenceStart) {
+            yearFraction += ISMAYearFractionWithReferenceDates(
+                                                               daycounter,
+                                                               (start > referenceStart) ? start : referenceStart,
+                                                               (end < referenceEnd) ? end : referenceEnd,
+                                                               referenceStart,
+                                                               referenceEnd
+                                                               );
+        };
+    }
+    return yearFraction;
+}
+
 
 BOOST_AUTO_TEST_CASE(testActualActual) {
 

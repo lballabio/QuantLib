@@ -39,73 +39,70 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(LiborMarketModelProcessTests)
 
-namespace {
+Size len = 10;
 
-    Size len = 10;
+ext::shared_ptr<IborIndex> makeIndex() {
+    DayCounter dayCounter = Actual360();
+    std::vector<Date> dates = {{4,September,2005}, {4,September,2018}};
+    std::vector<Rate> rates = {0.01, 0.08};
 
-    ext::shared_ptr<IborIndex> makeIndex() {
-        DayCounter dayCounter = Actual360();
-        std::vector<Date> dates = {{4,September,2005}, {4,September,2018}};
-        std::vector<Rate> rates = {0.01, 0.08};
-
-        RelinkableHandle<YieldTermStructure> termStructure(
+    RelinkableHandle<YieldTermStructure> termStructure(
                       ext::shared_ptr<YieldTermStructure>(
                                       new ZeroCurve(dates,rates,dayCounter)));
 
-        ext::shared_ptr<IborIndex> index(new Euribor1Y(termStructure));
+    ext::shared_ptr<IborIndex> index(new Euribor1Y(termStructure));
 
-        Date todaysDate =
-            index->fixingCalendar().adjust(Date(4,September,2005));
-        Settings::instance().evaluationDate() = todaysDate;
+    Date todaysDate =
+        index->fixingCalendar().adjust(Date(4,September,2005));
+    Settings::instance().evaluationDate() = todaysDate;
 
-        dates[0] = index->fixingCalendar().advance(todaysDate,
-                                                   index->fixingDays(), Days);
+    dates[0] = index->fixingCalendar().advance(todaysDate,
+                                               index->fixingDays(), Days);
 
-        termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
+    termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
-        return index;
-    }
+    return index;
+}
 
-    ext::shared_ptr<CapletVarianceCurve>
-    makeCapVolCurve(const Date& todaysDate) {
-        Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
-                             15.78, 15.40, 15.21, 14.86, 14.54};
+ext::shared_ptr<CapletVarianceCurve>
+makeCapVolCurve(const Date& todaysDate) {
+    Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
+                         15.78, 15.40, 15.21, 14.86, 14.54};
 
-        std::vector<Date> dates;
-        std::vector<Volatility> capletVols;
-        ext::shared_ptr<LiborForwardModelProcess> process(
+    std::vector<Date> dates;
+    std::vector<Volatility> capletVols;
+    ext::shared_ptr<LiborForwardModelProcess> process(
                             new LiborForwardModelProcess(len+1, makeIndex()));
 
-        for (Size i=0; i < len; ++i) {
-            capletVols.push_back(vols[i]/100);
-            dates.push_back(process->fixingDates()[i+1]);
-        }
-
-        return ext::make_shared<CapletVarianceCurve>(todaysDate, dates, capletVols,
-                                                     ActualActual(ActualActual::ISDA));
+    for (Size i=0; i < len; ++i) {
+        capletVols.push_back(vols[i]/100);
+        dates.push_back(process->fixingDates()[i+1]);
     }
 
-    ext::shared_ptr<LiborForwardModelProcess>
-    makeProcess(const Matrix& volaComp = Matrix()) {
-        Size factors = (volaComp.empty() ? 1 : volaComp.columns());
+    return ext::make_shared<CapletVarianceCurve>(todaysDate, dates, capletVols,
+                                                 ActualActual(ActualActual::ISDA));
+}
 
-        ext::shared_ptr<IborIndex> index = makeIndex();
-        ext::shared_ptr<LiborForwardModelProcess> process(
+ext::shared_ptr<LiborForwardModelProcess>
+makeProcess(const Matrix& volaComp = Matrix()) {
+    Size factors = (volaComp.empty() ? 1 : volaComp.columns());
+
+    ext::shared_ptr<IborIndex> index = makeIndex();
+    ext::shared_ptr<LiborForwardModelProcess> process(
                                     new LiborForwardModelProcess(len, index));
 
-        ext::shared_ptr<LfmCovarianceParameterization> fct(
+    ext::shared_ptr<LfmCovarianceParameterization> fct(
                 new LfmHullWhiteParameterization(
                     process,
                     makeCapVolCurve(Settings::instance().evaluationDate()),
                     volaComp * transpose(volaComp), factors));
 
-        process->setCovarParam(fct);
+    process->setCovarParam(fct);
 
-        return process;
-    }
-
+    return process;
 }
+
 
 BOOST_AUTO_TEST_CASE(testInitialisation) {
     BOOST_TEST_MESSAGE("Testing caplet LMM process initialisation...");

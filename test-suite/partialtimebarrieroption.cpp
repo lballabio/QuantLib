@@ -33,16 +33,13 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(PartialTimeBarrierOptionTests)
 
-namespace {
+struct TestCase {
+    Real underlying;
+    Real strike;
+    Integer days;
+    Real result;
+};
 
-    struct TestCase {
-        Real underlying;
-        Real strike;
-        Integer days;
-        Real result;
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     BOOST_TEST_MESSAGE(

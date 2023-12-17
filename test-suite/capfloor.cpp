@@ -48,106 +48,101 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CapFloorTests)
 
-namespace {
+struct CommonVars {
+    // common data
+    Date settlement;
+    std::vector<Real> nominals;
+    BusinessDayConvention convention;
+    Frequency frequency;
+    ext::shared_ptr<IborIndex> index;
+    Calendar calendar;
+    Natural fixingDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-    struct CommonVars {
-        // common data
-        Date settlement;
-        std::vector<Real> nominals;
-        BusinessDayConvention convention;
-        Frequency frequency;
-        ext::shared_ptr<IborIndex> index;
-        Calendar calendar;
-        Natural fixingDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
-
-        // setup
-        CommonVars()
-        : nominals(1,100) {
-            frequency = Semiannual;
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            calendar = index->fixingCalendar();
-            convention = ModifiedFollowing;
-            Date today = Settings::instance().evaluationDate();
-            Natural settlementDays = 2;
-            fixingDays = 2;
-            settlement = calendar.advance(today,settlementDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,
-                                          ActualActual(ActualActual::ISDA)));
-        }
-
-        // utilities
-        Leg makeLeg(const Date& startDate, Integer length) const {
-            Date endDate = calendar.advance(startDate,length*Years,convention);
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              convention, convention,
-                              DateGeneration::Forward, false);
-            return IborLeg(schedule, index)
-                .withNotionals(nominals)
-                .withPaymentDayCounter(index->dayCounter())
-                .withPaymentAdjustment(convention)
-                .withFixingDays(fixingDays);
-        }
-
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
-                                new BlackCapFloorEngine(termStructure, vol));
-        }
-
-        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
-                                new BachelierCapFloorEngine(termStructure, vol));
-        }
-
-        ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                               const Leg& leg,
-                                               Rate strike,
-                                               Volatility volatility,
-                                               bool isLogNormal = true) const {
-            ext::shared_ptr<CapFloor> result;
-            switch (type) {
-              case CapFloor::Cap:
-                result = ext::shared_ptr<CapFloor>(
-                                  new Cap(leg, std::vector<Rate>(1, strike)));
-                break;
-              case CapFloor::Floor:
-                result = ext::shared_ptr<CapFloor>(
-                                new Floor(leg, std::vector<Rate>(1, strike)));
-                break;
-              default:
-                QL_FAIL("unknown cap/floor type");
-            }
-            if(isLogNormal){
-                result->setPricingEngine(makeEngine(volatility));
-            } else {
-                result->setPricingEngine(makeBachelierEngine(volatility));
-            }
-            return result;
-        }
-    };
-
-    bool checkAbsError(Real x1, Real x2, Real tolerance){
-        return std::fabs(x1 - x2) < tolerance;
+    // setup
+    CommonVars()
+    : nominals(1,100) {
+        frequency = Semiannual;
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        convention = ModifiedFollowing;
+        Date today = Settings::instance().evaluationDate();
+        Natural settlementDays = 2;
+        fixingDays = 2;
+        settlement = calendar.advance(today,settlementDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,
+                                      ActualActual(ActualActual::ISDA)));
     }
 
-    std::string typeToString(CapFloor::Type type) {
+    // utilities
+    Leg makeLeg(const Date& startDate, Integer length) const {
+        Date endDate = calendar.advance(startDate,length*Years,convention);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          convention, convention,
+                          DateGeneration::Forward, false);
+        return IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(index->dayCounter())
+            .withPaymentAdjustment(convention)
+            .withFixingDays(fixingDays);
+    }
+
+    ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
+                                new BlackCapFloorEngine(termStructure, vol));
+    }
+
+    ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
+                                new BachelierCapFloorEngine(termStructure, vol));
+    }
+
+    ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+                                           const Leg& leg,
+                                           Rate strike,
+                                           Volatility volatility,
+                                           bool isLogNormal = true) const {
+        ext::shared_ptr<CapFloor> result;
         switch (type) {
           case CapFloor::Cap:
-            return "cap";
+            result = ext::shared_ptr<CapFloor>(
+                                  new Cap(leg, std::vector<Rate>(1, strike)));
+            break;
           case CapFloor::Floor:
-            return "floor";
-          case CapFloor::Collar:
-            return "collar";
+            result = ext::shared_ptr<CapFloor>(
+                                new Floor(leg, std::vector<Rate>(1, strike)));
+            break;
           default:
             QL_FAIL("unknown cap/floor type");
         }
+        if(isLogNormal){
+            result->setPricingEngine(makeEngine(volatility));
+        } else {
+            result->setPricingEngine(makeBachelierEngine(volatility));
+        }
+        return result;
     }
+};
 
+bool checkAbsError(Real x1, Real x2, Real tolerance){
+    return std::fabs(x1 - x2) < tolerance;
 }
+
+std::string typeToString(CapFloor::Type type) {
+    switch (type) {
+      case CapFloor::Cap:
+        return "cap";
+      case CapFloor::Floor:
+        return "floor";
+      case CapFloor::Collar:
+        return "collar";
+      default:
+        QL_FAIL("unknown cap/floor type");
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(testVega) {
 

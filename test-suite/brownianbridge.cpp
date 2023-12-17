@@ -36,31 +36,28 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BrownianBridgeTests)
 
-namespace {
-
-    template <class ForwardIterator1, class ForwardIterator2>
-    Real maxDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
-                 ForwardIterator2 begin2) {
-        Real diff = 0.0;
-        while (begin1 != end1) {
-            diff = std::max(diff, std::fabs(*begin1 - *begin2));
-            ++begin1; ++begin2;
-        }
-        return diff;
+template <class ForwardIterator1, class ForwardIterator2>
+Real maxDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
+             ForwardIterator2 begin2) {
+    Real diff = 0.0;
+    while (begin1 != end1) {
+        diff = std::max(diff, std::fabs(*begin1 - *begin2));
+        ++begin1; ++begin2;
     }
-
-    template <class ForwardIterator1, class ForwardIterator2>
-    Real maxRelDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
-                    ForwardIterator2 begin2) {
-        Real diff = 0.0;
-        while (begin1 != end1) {
-            diff = std::max(diff, std::fabs((*begin1 - *begin2)/(*begin2)));
-            ++begin1; ++begin2;
-        }
-        return diff;
-    }
-
+    return diff;
 }
+
+template <class ForwardIterator1, class ForwardIterator2>
+Real maxRelDiff(ForwardIterator1 begin1, ForwardIterator1 end1,
+                ForwardIterator2 begin2) {
+    Real diff = 0.0;
+    while (begin1 != end1) {
+        diff = std::max(diff, std::fabs((*begin1 - *begin2)/(*begin2)));
+        ++begin1; ++begin2;
+    }
+    return diff;
+}
+
 
 BOOST_AUTO_TEST_CASE(testVariates) {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge variates...");

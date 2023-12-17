@@ -67,162 +67,160 @@ BOOST_AUTO_TEST_SUITE(EuropeanOptionTests)
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+// utilities
 
-    // utilities
+struct EuropeanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-    struct EuropeanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
+enum EngineType { Analytic,
+                  JR, CRR, EQP, TGEO, TIAN, LR, JOSHI,
+                  FiniteDifferences,
+                  Integral,
+                  PseudoMonteCarlo, QuasiMonteCarlo,
+                  FFT };
 
-    enum EngineType { Analytic,
-                      JR, CRR, EQP, TGEO, TIAN, LR, JOSHI,
-                      FiniteDifferences,
-                      Integral,
-                      PseudoMonteCarlo, QuasiMonteCarlo,
-                      FFT };
-
-    ext::shared_ptr<GeneralizedBlackScholesProcess>
-    makeProcess(const ext::shared_ptr<Quote>& u,
-                const ext::shared_ptr<YieldTermStructure>& q,
-                const ext::shared_ptr<YieldTermStructure>& r,
-                const ext::shared_ptr<BlackVolTermStructure>& vol) {
-        return ext::make_shared<BlackScholesMertonProcess>(
+ext::shared_ptr<GeneralizedBlackScholesProcess>
+makeProcess(const ext::shared_ptr<Quote>& u,
+            const ext::shared_ptr<YieldTermStructure>& q,
+            const ext::shared_ptr<YieldTermStructure>& r,
+            const ext::shared_ptr<BlackVolTermStructure>& vol) {
+    return ext::make_shared<BlackScholesMertonProcess>(
            Handle<Quote>(u),
            Handle<YieldTermStructure>(q),
            Handle<YieldTermStructure>(r),
            Handle<BlackVolTermStructure>(vol));
-    }
+}
 
-    ext::shared_ptr<VanillaOption>
-    makeOption(const ext::shared_ptr<StrikedTypePayoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise,
-               const ext::shared_ptr<Quote>& u,
-               const ext::shared_ptr<YieldTermStructure>& q,
-               const ext::shared_ptr<YieldTermStructure>& r,
-               const ext::shared_ptr<BlackVolTermStructure>& vol,
-               EngineType engineType,
-               Size binomialSteps,
-               Size samples) {
+ext::shared_ptr<VanillaOption>
+makeOption(const ext::shared_ptr<StrikedTypePayoff>& payoff,
+           const ext::shared_ptr<Exercise>& exercise,
+           const ext::shared_ptr<Quote>& u,
+           const ext::shared_ptr<YieldTermStructure>& q,
+           const ext::shared_ptr<YieldTermStructure>& r,
+           const ext::shared_ptr<BlackVolTermStructure>& vol,
+           EngineType engineType,
+           Size binomialSteps,
+           Size samples) {
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
-            makeProcess(u,q,r,vol);
+    ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
+        makeProcess(u,q,r,vol);
 
-        ext::shared_ptr<PricingEngine> engine;
-        switch (engineType) {
-          case Analytic:
-            engine = ext::shared_ptr<PricingEngine>(
+    ext::shared_ptr<PricingEngine> engine;
+    switch (engineType) {
+      case Analytic:
+        engine = ext::shared_ptr<PricingEngine>(
                                     new AnalyticEuropeanEngine(stochProcess));
-            break;
-          case JR:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case JR:
+        engine = ext::shared_ptr<PricingEngine>(
                         new BinomialVanillaEngine<JarrowRudd>(stochProcess,
                                                               binomialSteps));
-            break;
-          case CRR:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case CRR:
+        engine = ext::shared_ptr<PricingEngine>(
                  new BinomialVanillaEngine<CoxRossRubinstein>(stochProcess,
                                                               binomialSteps));
-            break;
-          case EQP:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case EQP:
+        engine = ext::shared_ptr<PricingEngine>(
                  new BinomialVanillaEngine<AdditiveEQPBinomialTree>(
                                                               stochProcess,
                                                               binomialSteps));
-            break;
-          case TGEO:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case TGEO:
+        engine = ext::shared_ptr<PricingEngine>(
                         new BinomialVanillaEngine<Trigeorgis>(stochProcess,
                                                               binomialSteps));
-            break;
-          case TIAN:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case TIAN:
+        engine = ext::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<Tian>(stochProcess, binomialSteps));
-            break;
-          case LR:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case LR:
+        engine = ext::shared_ptr<PricingEngine>(
                       new BinomialVanillaEngine<LeisenReimer>(stochProcess,
                                                               binomialSteps));
-            break;
-          case JOSHI:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case JOSHI:
+        engine = ext::shared_ptr<PricingEngine>(
               new BinomialVanillaEngine<Joshi4>(stochProcess, binomialSteps));
-            break;
-          case FiniteDifferences:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case FiniteDifferences:
+        engine = ext::shared_ptr<PricingEngine>(
                             new FdBlackScholesVanillaEngine(stochProcess,
                                                             binomialSteps,
                                                             samples));
-            break;
-          case Integral:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case Integral:
+        engine = ext::shared_ptr<PricingEngine>(
                                             new IntegralEngine(stochProcess));
-            break;
-          case PseudoMonteCarlo:
-            engine = MakeMCEuropeanEngine<PseudoRandom>(stochProcess)
-                .withSteps(1)
-                .withSamples(samples)
-                .withSeed(42);
-            break;
-          case QuasiMonteCarlo:
-            engine = MakeMCEuropeanEngine<LowDiscrepancy>(stochProcess)
-                .withSteps(1)
-                .withSamples(samples);
-            break;
-          case FFT:
-              engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case PseudoMonteCarlo:
+        engine = MakeMCEuropeanEngine<PseudoRandom>(stochProcess)
+            .withSteps(1)
+            .withSamples(samples)
+            .withSeed(42);
+        break;
+      case QuasiMonteCarlo:
+        engine = MakeMCEuropeanEngine<LowDiscrepancy>(stochProcess)
+            .withSteps(1)
+            .withSamples(samples);
+        break;
+      case FFT:
+        engine = ext::shared_ptr<PricingEngine>(
                                           new FFTVanillaEngine(stochProcess));
-            break;
-          default:
-            QL_FAIL("unknown engine type");
-        }
-
-        ext::shared_ptr<VanillaOption> option(
-            new EuropeanOption(payoff, exercise));
-        option->setPricingEngine(engine);
-        return option;
+        break;
+      default:
+        QL_FAIL("unknown engine type");
     }
 
-    void testEngineConsistency(EngineType engine,
-                               Size binomialSteps,
-                               Size samples,
-                               std::map<std::string,Real> tolerance,
-                               bool testGreeks = false) {
+    ext::shared_ptr<VanillaOption> option(
+            new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
+    return option;
+}
 
-        std::map<std::string,Real> calculated, expected;
+void testEngineConsistency(EngineType engine,
+                           Size binomialSteps,
+                           Size samples,
+                           std::map<std::string,Real> tolerance,
+                           bool testGreeks = false) {
 
-        // test options
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 75.0, 100.0, 125.0 };
-        Integer lengths[] = { 1 };
+    std::map<std::string,Real> calculated, expected;
 
-        // test data
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.00, 0.05 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Volatility vols[] = { 0.11, 0.50, 1.20 };
+    // test options
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 75.0, 100.0, 125.0 };
+    Integer lengths[] = { 1 };
 
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
+    // test data
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.00, 0.05 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
-        for (auto& type : types) {
-          for (Real strike : strikes) {
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
+
+    for (auto& type : types) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * 360;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -275,10 +273,10 @@ namespace {
                     }
                 }
             }
-          }
         }
     }
 }
+
 
 BOOST_AUTO_TEST_CASE(testValues) {
 

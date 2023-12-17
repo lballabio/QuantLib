@@ -60,21 +60,19 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SquareRootCLVModelTests)
 
-namespace {
-    class CLVModelPayoff : public PlainVanillaPayoff {
-      public:
-        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
-        : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
+class CLVModelPayoff : public PlainVanillaPayoff {
+  public:
+    CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+    : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
-        Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
+    Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
-      private:
-        const ext::function<Real(Real)> g_;
-    };
+  private:
+    const ext::function<Real(Real)> g_;
+};
 
-    typedef boost::math::non_central_chi_squared_distribution<Real>
-        chi_squared_type;
-}
+typedef boost::math::non_central_chi_squared_distribution<Real> chi_squared_type;
+
 
 BOOST_AUTO_TEST_CASE(testSquareRootCLVVanillaPricing) {
     BOOST_TEST_MESSAGE(
@@ -254,48 +252,46 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
     }
 }
 
-namespace {
-    class SquareRootCLVCalibrationFunction : public CostFunction {
-      public:
-        SquareRootCLVCalibrationFunction(Array strikes,
-                                         const std::vector<Date>& resetDates,
-                                         const std::vector<Date>& maturityDates,
-                                         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
-                                         Array refVols,
-                                         Size nScenarios = 10000)
-        : strikes_(std::move(strikes)), resetDates_(resetDates), maturityDates_(maturityDates),
-          bsProcess_(std::move(bsProcess)), refVols_(std::move(refVols)), nScenarios_(nScenarios) {
-            std::set<Date> c(resetDates.begin(), resetDates.end());
-            c.insert(maturityDates.begin(), maturityDates.end());
-            calibrationDates_.insert(
-                calibrationDates_.begin(), c.begin(), c.end());
-        }
 
-        Real value(const Array& params) const override {
-            const Array diff = values(params);
+class SquareRootCLVCalibrationFunction : public CostFunction {
+  public:
+    SquareRootCLVCalibrationFunction(Array strikes,
+                                     const std::vector<Date>& resetDates,
+                                     const std::vector<Date>& maturityDates,
+                                     ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+                                     Array refVols,
+                                     Size nScenarios = 10000)
+    : strikes_(std::move(strikes)), resetDates_(resetDates), maturityDates_(maturityDates),
+      bsProcess_(std::move(bsProcess)), refVols_(std::move(refVols)), nScenarios_(nScenarios) {
+        std::set<Date> c(resetDates.begin(), resetDates.end());
+        c.insert(maturityDates.begin(), maturityDates.end());
+        calibrationDates_.insert(calibrationDates_.begin(), c.begin(), c.end());
+    }
 
-            Real retVal = 0.0;
-            for (Real i : diff)
-                retVal += i * i;
+    Real value(const Array& params) const override {
+        const Array diff = values(params);
 
-            return retVal;
-        }
+        Real retVal = 0.0;
+        for (Real i : diff)
+            retVal += i * i;
 
-        Array values(const Array& params) const override {
-            const Real theta = params[0];
-            const Real kappa = params[1];
-            const Real sigma = params[2];
-            const Real x0    = params[3];
+        return retVal;
+    }
 
-            const ext::shared_ptr<SimpleQuote> vol(
-                ext::make_shared<SimpleQuote>(0.1));
+    Array values(const Array& params) const override {
+        const Real theta = params[0];
+        const Real kappa = params[1];
+        const Real sigma = params[2];
+        const Real x0    = params[3];
 
-            const Handle<YieldTermStructure> rTS(bsProcess_->riskFreeRate());
-            const Handle<YieldTermStructure> qTS(bsProcess_->dividendYield());
-            const Handle<Quote> spot(ext::make_shared<SimpleQuote>(
-                bsProcess_->x0()));
+        const ext::shared_ptr<SimpleQuote> vol =
+                ext::make_shared<SimpleQuote>(0.1);
 
-            const ext::shared_ptr<PricingEngine> fwdEngine(
+        const Handle<YieldTermStructure> rTS(bsProcess_->riskFreeRate());
+        const Handle<YieldTermStructure> qTS(bsProcess_->dividendYield());
+        const Handle<Quote> spot(ext::make_shared<SimpleQuote>(bsProcess_->x0()));
+
+        const ext::shared_ptr<PricingEngine> fwdEngine(
                 ext::make_shared<ForwardVanillaEngine<AnalyticEuropeanEngine> >(
                     ext::make_shared<GeneralizedBlackScholesProcess>(
                         spot, qTS, rTS,
@@ -303,141 +299,140 @@ namespace {
                             flatVol(rTS->referenceDate(), vol,
                                     rTS->dayCounter())))));
 
-            const ext::shared_ptr<SquareRootProcess> sqrtProcess(
-                ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
+        const ext::shared_ptr<SquareRootProcess> sqrtProcess =
+            ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0);
 
-            const SquareRootCLVModel clvSqrtModel(
+        const SquareRootCLVModel clvSqrtModel(
                 bsProcess_, sqrtProcess, calibrationDates_,
                 14, 1-1e-14, 1e-14);
 
-            const ext::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
+        const ext::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
 
-            Array retVal(resetDates_.size()*strikes_.size());
+        Array retVal(resetDates_.size()*strikes_.size());
 
-            for (Size i=0, n=resetDates_.size(); i < n; ++i) {
-                const Date resetDate = resetDates_[i];
-                const Date maturityDate = maturityDates_[i];
+        for (Size i=0, n=resetDates_.size(); i < n; ++i) {
+            const Date resetDate = resetDates_[i];
+            const Date maturityDate = maturityDates_[i];
 
-                const Time t0 = bsProcess_->time(resetDate);
-                const Time t1 = bsProcess_->time(maturityDate);
+            const Time t0 = bsProcess_->time(resetDate);
+            const Time t1 = bsProcess_->time(maturityDate);
 
-                const Real df  = 4*theta*kappa/(sigma*sigma);
-                const Real ncp = 4*kappa*std::exp(-kappa*t0)
-                    / (sigma*sigma*(1-std::exp(-kappa*t0)))*x0;
+            const Real df  = 4*theta*kappa/(sigma*sigma);
+            const Real ncp = 4*kappa*std::exp(-kappa*t0)
+                / (sigma*sigma*(1-std::exp(-kappa*t0)))*x0;
 
-                typedef boost::math::non_central_chi_squared_distribution<Real>
-                    chi_squared_type;
+            typedef boost::math::non_central_chi_squared_distribution<Real> chi_squared_type;
 
-                const chi_squared_type dist(df, ncp);
+            const chi_squared_type dist(df, ncp);
 
-                const Real ncp1 = 4*kappa*std::exp(-kappa*(t1-t0))
-                    / (sigma*sigma*(1-std::exp(-kappa*(t1-t0))));
+            const Real ncp1 = 4*kappa*std::exp(-kappa*(t1-t0))
+                / (sigma*sigma*(1-std::exp(-kappa*(t1-t0))));
 
-                const LowDiscrepancy::ursg_type ursg = LowDiscrepancy::ursg_type(2, 1235UL);
+            const LowDiscrepancy::ursg_type ursg = LowDiscrepancy::ursg_type(2, 1235UL);
 
-                std::vector<GeneralStatistics> stats(strikes_.size());
+            std::vector<GeneralStatistics> stats(strikes_.size());
 
-                for (Size j=0; j < nScenarios_; ++j) {
-                    const std::vector<Real>& path = ursg.nextSequence().value;
+            for (Size j=0; j < nScenarios_; ++j) {
+                const std::vector<Real>& path = ursg.nextSequence().value;
 
-                    const Real x1 = boost::math::quantile(dist, path[0]);
-                    const Real u1 =
-                        sigma*sigma*(1-std::exp(-kappa*t0))/(4*kappa)*x1;
+                const Real x1 = boost::math::quantile(dist, path[0]);
+                const Real u1 =
+                    sigma*sigma*(1-std::exp(-kappa*t0))/(4*kappa)*x1;
 
-                    const Real x2 = boost::math::quantile(
-                        chi_squared_type(df, ncp1*u1), path[1]);
-                    const Real u2 =
-                        sigma*sigma*(1-std::exp(-kappa*(t1-t0)))/(4*kappa)*x2;
-                    const Real X2 =
-                        u2*4*kappa/(sigma*sigma*(1-std::exp(-kappa*t1)));
+                const Real x2 = boost::math::quantile(
+                                                      chi_squared_type(df, ncp1*u1), path[1]);
+                const Real u2 =
+                    sigma*sigma*(1-std::exp(-kappa*(t1-t0)))/(4*kappa)*x2;
+                const Real X2 =
+                    u2*4*kappa/(sigma*sigma*(1-std::exp(-kappa*t1)));
 
-                    const Real s1 = gSqrt(t0, x1);
-                    const Real s2 = gSqrt(t1, X2);
-
-                    for (Size k=0; k < strikes_.size(); ++k) {
-                        const Real strike = strikes_[k];
-
-                        const Real payoff = (strike < 1.0)
-                            ?  Real(s1 * std::max(0.0, strike - s2/s1))
-                            :  Real(s1 * std::max(0.0, s2/s1 - strike));
-
-                        stats[k].add(payoff);
-                    }
-                }
-
-                const ext::shared_ptr<Exercise> exercise(
-                    ext::make_shared<EuropeanExercise>(maturityDate));
-
-                const DiscountFactor dF(
-                    bsProcess_->riskFreeRate()->discount(maturityDate));
+                const Real s1 = gSqrt(t0, x1);
+                const Real s2 = gSqrt(t1, X2);
 
                 for (Size k=0; k < strikes_.size(); ++k) {
                     const Real strike = strikes_[k];
-                    const Real npv = stats[k].mean() * dF;
 
-                    const ext::shared_ptr<StrikedTypePayoff> payoff(
-                        ext::make_shared<PlainVanillaPayoff>(
-                            (strike < 1.0) ? Option::Put : Option::Call, strike));
+                    const Real payoff = (strike < 1.0)
+                        ?  Real(s1 * std::max(0.0, strike - s2/s1))
+                        :  Real(s1 * std::max(0.0, s2/s1 - strike));
 
-                    const ext::shared_ptr<ForwardVanillaOption> fwdOption(
-                        ext::make_shared<ForwardVanillaOption>(
-                            strike, resetDate, payoff, exercise));
-
-                    const Volatility implVol =
-                        QuantLib::detail::ImpliedVolatilityHelper::calculate(
-                            *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
-
-                    const Size idx = k + i*strikes_.size();
-                    retVal[idx] = implVol - refVols_[idx];
+                    stats[k].add(payoff);
                 }
             }
 
-            return retVal;
+            const ext::shared_ptr<Exercise> exercise =
+                ext::make_shared<EuropeanExercise>(maturityDate);
+
+            const DiscountFactor dF =
+                    bsProcess_->riskFreeRate()->discount(maturityDate);
+
+            for (Size k=0; k < strikes_.size(); ++k) {
+                const Real strike = strikes_[k];
+                const Real npv = stats[k].mean() * dF;
+
+                const ext::shared_ptr<StrikedTypePayoff> payoff =
+                    ext::make_shared<PlainVanillaPayoff>(
+                            (strike < 1.0) ? Option::Put : Option::Call, strike);
+
+                const ext::shared_ptr<ForwardVanillaOption> fwdOption =
+                    ext::make_shared<ForwardVanillaOption>(
+                            strike, resetDate, payoff, exercise);
+
+                const Volatility implVol =
+                    QuantLib::detail::ImpliedVolatilityHelper::calculate(
+                            *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
+
+                const Size idx = k + i*strikes_.size();
+                retVal[idx] = implVol - refVols_[idx];
+            }
         }
 
+        return retVal;
+    }
 
-      private:
-        const Array strikes_;
-        const std::vector<Date> resetDates_, maturityDates_;
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        const Array refVols_;
-        const Size nScenarios_;
 
-        std::vector<Date> calibrationDates_;
-    };
+  private:
+    const Array strikes_;
+    const std::vector<Date> resetDates_, maturityDates_;
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+    const Array refVols_;
+    const Size nScenarios_;
 
-    class NonZeroConstraint : public Constraint {
-      private:
-        class Impl : public Constraint::Impl {
-          public:
-            bool test(const Array& params) const override {
-                const Real theta = params[0];
-                const Real kappa = params[1];
-                const Real sigma = params[2];
-                const Real x0    = params[3];
+    std::vector<Date> calibrationDates_;
+};
 
-                return (sigma >= 0.001 && kappa > 1e-6 && theta > 0.001
-                        && x0 > 1e-4);
-            }
-
-            Array upperBound(const Array& params) const override {
-                const Real upper[] = { 1.0, 1.0, 1.0, 2.0 };
-
-                return Array(upper, upper + 4);
-            }
-
-            Array lowerBound(const Array& params) const override {
-                const Real lower[] = { 0.001, 0.001, 0.001, 1e-4 };
-
-                return Array(lower, lower + 4);
-            }
-        };
-
+class NonZeroConstraint : public Constraint {
+  private:
+    class Impl : public Constraint::Impl {
       public:
-        NonZeroConstraint()
-        : Constraint(ext::make_shared<NonZeroConstraint::Impl>()) {}
+        bool test(const Array& params) const override {
+            const Real theta = params[0];
+            const Real kappa = params[1];
+            const Real sigma = params[2];
+            const Real x0    = params[3];
+
+            return (sigma >= 0.001 && kappa > 1e-6 && theta > 0.001
+                    && x0 > 1e-4);
+        }
+
+        Array upperBound(const Array& params) const override {
+            const Real upper[] = { 1.0, 1.0, 1.0, 2.0 };
+
+            return Array(upper, upper + 4);
+        }
+
+        Array lowerBound(const Array& params) const override {
+            const Real lower[] = { 0.001, 0.001, 0.001, 1e-4 };
+
+            return Array(lower, lower + 4);
+        }
     };
-}
+
+  public:
+    NonZeroConstraint()
+    : Constraint(ext::make_shared<NonZeroConstraint::Impl>()) {}
+};
+
 
 // This test takes very long
 

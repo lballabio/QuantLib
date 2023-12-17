@@ -50,58 +50,56 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(FdHestonTests)
 
-namespace {
-    struct NewBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-    };
+struct NewBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+};
 
-    class ParableLocalVolatility : public LocalVolTermStructure {
-      public:
-        ParableLocalVolatility(
-            const Date& referenceDate,
-            Real s0,
-            Real alpha,
-            const DayCounter& dayCounter)
-        : LocalVolTermStructure(
-              referenceDate, NullCalendar(), Following, dayCounter),
-          referenceDate_(referenceDate),
-          s0_(s0),
-          alpha_(alpha) {}
+class ParableLocalVolatility : public LocalVolTermStructure {
+  public:
+    ParableLocalVolatility(
+                           const Date& referenceDate,
+                           Real s0,
+                           Real alpha,
+                           const DayCounter& dayCounter)
+    : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
+      referenceDate_(referenceDate),
+      s0_(s0),
+      alpha_(alpha) {}
 
-        Date maxDate() const override { return Date::maxDate(); }
-        Real minStrike() const override { return 0.0; }
-        Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
+    Date maxDate() const override { return Date::maxDate(); }
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
 
-      protected:
-        Volatility localVolImpl(Time, Real s) const override {
-            return alpha_*(squared(s0_ - s) + 25.0);
-        }
+  protected:
+    Volatility localVolImpl(Time, Real s) const override {
+        return alpha_*(squared(s0_ - s) + 25.0);
+    }
 
-      private:
-        const Date referenceDate_;
-        const Real s0_, alpha_;
-    };
+  private:
+    const Date referenceDate_;
+    const Real s0_, alpha_;
+};
 
-    struct HestonTestData {
-        Real kappa;
-        Real theta;
-        Real sigma;
-        Real rho;
-        Real r;
-        Real q;
-        Real T;
-        Real K;
-    };
-}
+struct HestonTestData {
+    Real kappa;
+    Real theta;
+    Real sigma;
+    Real rho;
+    Real r;
+    Real q;
+    Real T;
+    Real K;
+};
+
 
 BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");

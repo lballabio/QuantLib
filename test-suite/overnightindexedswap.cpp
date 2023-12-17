@@ -55,160 +55,157 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(OvernightIndexedSwapTests)
 
-namespace {
+struct Datum {
+    Integer settlementDays;
+    Integer n;
+    TimeUnit unit;
+    Rate rate;
+};
 
-    struct Datum {
-        Integer settlementDays;
-        Integer n;
-        TimeUnit unit;
-        Rate rate;
-    };
+Datum depositData[] = {
+    { 0, 1, Days, 1.10 },
+    { 1, 1, Days, 1.10 },
+    { 2, 1, Weeks, 1.40 },
+    { 2, 2, Weeks, 1.50 },
+    { 2, 1, Months, 1.70 },
+    { 2, 2, Months, 1.90 },
+    { 2, 3, Months, 2.05 },
+    { 2, 4, Months, 2.08 },
+    { 2, 5, Months, 2.11 },
+    { 2, 6, Months, 2.13 }
+};
 
-    Datum depositData[] = {
-        { 0, 1, Days, 1.10 },
-        { 1, 1, Days, 1.10 },
-        { 2, 1, Weeks, 1.40 },
-        { 2, 2, Weeks, 1.50 },
-        { 2, 1, Months, 1.70 },
-        { 2, 2, Months, 1.90 },
-        { 2, 3, Months, 2.05 },
-        { 2, 4, Months, 2.08 },
-        { 2, 5, Months, 2.11 },
-        { 2, 6, Months, 2.13 }
-    };
+Datum eoniaSwapData[] = {
+    { 2,  1, Weeks, 1.245 },
+    { 2,  2, Weeks, 1.269 },
+    { 2,  3, Weeks, 1.277 },
+    { 2,  1, Months, 1.281 },
+    { 2,  2, Months, 1.18 },
+    { 2,  3, Months, 1.143 },
+    { 2,  4, Months, 1.125 },
+    { 2,  5, Months, 1.116 },
+    { 2,  6, Months, 1.111 },
+    { 2,  7, Months, 1.109 },
+    { 2,  8, Months, 1.111 },
+    { 2,  9, Months, 1.117 },
+    { 2, 10, Months, 1.129 },
+    { 2, 11, Months, 1.141 },
+    { 2, 12, Months, 1.153 },
+    { 2, 15, Months, 1.218 },
+    { 2, 18, Months, 1.308 },
+    { 2, 21, Months, 1.407 },
+    { 2,  2,  Years, 1.510 },
+    { 2,  3,  Years, 1.916 },
+    { 2,  4,  Years, 2.254 },
+    { 2,  5,  Years, 2.523 },
+    { 2,  6,  Years, 2.746 },
+    { 2,  7,  Years, 2.934 },
+    { 2,  8,  Years, 3.092 },
+    { 2,  9,  Years, 3.231 },
+    { 2, 10,  Years, 3.380 },
+    { 2, 11,  Years, 3.457 },
+    { 2, 12,  Years, 3.544 },
+    { 2, 15,  Years, 3.702 },
+    { 2, 20,  Years, 3.703 },
+    { 2, 25,  Years, 3.541 },
+    { 2, 30,  Years, 3.369 }
+};
 
-    Datum eoniaSwapData[] = {
-        { 2,  1, Weeks, 1.245 },
-        { 2,  2, Weeks, 1.269 },
-        { 2,  3, Weeks, 1.277 },
-        { 2,  1, Months, 1.281 },
-        { 2,  2, Months, 1.18 },
-        { 2,  3, Months, 1.143 },
-        { 2,  4, Months, 1.125 },
-        { 2,  5, Months, 1.116 },
-        { 2,  6, Months, 1.111 },
-        { 2,  7, Months, 1.109 },
-        { 2,  8, Months, 1.111 },
-        { 2,  9, Months, 1.117 },
-        { 2, 10, Months, 1.129 },
-        { 2, 11, Months, 1.141 },
-        { 2, 12, Months, 1.153 },
-        { 2, 15, Months, 1.218 },
-        { 2, 18, Months, 1.308 },
-        { 2, 21, Months, 1.407 },
-        { 2,  2,  Years, 1.510 },
-        { 2,  3,  Years, 1.916 },
-        { 2,  4,  Years, 2.254 },
-        { 2,  5,  Years, 2.523 },
-        { 2,  6,  Years, 2.746 },
-        { 2,  7,  Years, 2.934 },
-        { 2,  8,  Years, 3.092 },
-        { 2,  9,  Years, 3.231 },
-        { 2, 10,  Years, 3.380 },
-        { 2, 11,  Years, 3.457 },
-        { 2, 12,  Years, 3.544 },
-        { 2, 15,  Years, 3.702 },
-        { 2, 20,  Years, 3.703 },
-        { 2, 25,  Years, 3.541 },
-        { 2, 30,  Years, 3.369 }
-    };
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Swap::Type type;
+    Real nominal;
+    Calendar calendar;
+    Natural settlementDays;
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Swap::Type type;
-        Real nominal;
-        Calendar calendar;
-        Natural settlementDays;
+    Period fixedEoniaPeriod, floatingEoniaPeriod;
+    DayCounter fixedEoniaDayCount;
+    BusinessDayConvention fixedEoniaConvention, floatingEoniaConvention;
+    ext::shared_ptr<Eonia> eoniaIndex;
+    RelinkableHandle<YieldTermStructure> eoniaTermStructure;
 
-        Period fixedEoniaPeriod, floatingEoniaPeriod;
-        DayCounter fixedEoniaDayCount;
-        BusinessDayConvention fixedEoniaConvention, floatingEoniaConvention;
-        ext::shared_ptr<Eonia> eoniaIndex;
-        RelinkableHandle<YieldTermStructure> eoniaTermStructure;
+    Frequency fixedSwapFrequency;
+    DayCounter fixedSwapDayCount;
+    BusinessDayConvention fixedSwapConvention;
+    ext::shared_ptr<IborIndex> swapIndex;
+    RelinkableHandle<YieldTermStructure> swapTermStructure;
 
-        Frequency fixedSwapFrequency;
-        DayCounter fixedSwapDayCount;
-        BusinessDayConvention fixedSwapConvention;
-        ext::shared_ptr<IborIndex> swapIndex;
-        RelinkableHandle<YieldTermStructure> swapTermStructure;
+    // utilities
+    ext::shared_ptr<OvernightIndexedSwap>
+    makeSwap(Period length,
+             Rate fixedRate,
+             Spread spread,
+             bool telescopicValueDates,
+             Date effectiveDate = Null<Date>(),
+             Integer paymentLag = 0,
+             RateAveraging::Type averagingMethod = RateAveraging::Compound) {
+        return MakeOIS(length, eoniaIndex, fixedRate, 0 * Days)
+            .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
+            .withOvernightLegSpread(spread)
+            .withNominal(nominal)
+            .withPaymentLag(paymentLag)
+            .withDiscountingTermStructure(eoniaTermStructure)
+            .withTelescopicValueDates(telescopicValueDates)
+            .withAveragingMethod(averagingMethod);
+    }
 
-        // utilities
-        ext::shared_ptr<OvernightIndexedSwap>
-        makeSwap(Period length,
-                 Rate fixedRate,
-                 Spread spread,
-                 bool telescopicValueDates,
-                 Date effectiveDate = Null<Date>(),
-                 Integer paymentLag = 0,
-                 RateAveraging::Type averagingMethod = RateAveraging::Compound) {
-            return MakeOIS(length, eoniaIndex, fixedRate, 0 * Days)
-                .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
-                .withOvernightLegSpread(spread)
-                .withNominal(nominal)
-                .withPaymentLag(paymentLag)
-                .withDiscountingTermStructure(eoniaTermStructure)
-                .withTelescopicValueDates(telescopicValueDates)
-                .withAveragingMethod(averagingMethod);
-        }
+    CommonVars() {
+        type = Swap::Payer;
+        settlementDays = 2;
+        nominal = 100.0;
+        fixedEoniaConvention = ModifiedFollowing;
+        floatingEoniaConvention = ModifiedFollowing;
+        fixedEoniaPeriod = 1*Years;
+        floatingEoniaPeriod = 1*Years;
+        fixedEoniaDayCount = Actual360();
+        eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
+        fixedSwapConvention = ModifiedFollowing;
+        fixedSwapFrequency = Annual;
+        fixedSwapDayCount = Thirty360(Thirty360::BondBasis);
+        swapIndex = ext::shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
+        calendar = eoniaIndex->fixingCalendar();
+        today = Date(5, February, 2009);
+        //today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today,settlementDays*Days,Following);
+        eoniaTermStructure.linkTo(flatRate(today, 0.05,
+                                           Actual365Fixed()));
+    }
+};
 
-        CommonVars() {
-            type = Swap::Payer;
-            settlementDays = 2;
-            nominal = 100.0;
-            fixedEoniaConvention = ModifiedFollowing;
-            floatingEoniaConvention = ModifiedFollowing;
-            fixedEoniaPeriod = 1*Years;
-            floatingEoniaPeriod = 1*Years;
-            fixedEoniaDayCount = Actual360();
-            eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
-            fixedSwapConvention = ModifiedFollowing;
-            fixedSwapFrequency = Annual;
-            fixedSwapDayCount = Thirty360(Thirty360::BondBasis);
-            swapIndex = ext::shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
-            calendar = eoniaIndex->fixingCalendar();
-            today = Date(5, February, 2009);
-            //today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today,settlementDays*Days,Following);
-            eoniaTermStructure.linkTo(flatRate(today, 0.05,
-                                               Actual365Fixed()));
-        }
-    };
+void testBootstrap(bool telescopicValueDates,
+                   RateAveraging::Type averagingMethod,
+                   Real tolerance = 1.0e-8) {
 
-    void testBootstrap(bool telescopicValueDates,
-                       RateAveraging::Type averagingMethod,
-                       Real tolerance = 1.0e-8) {
+    CommonVars vars;
 
-        CommonVars vars;
+    Natural paymentLag = 2;
 
-        Natural paymentLag = 2;
+    std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
 
-        std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
+    ext::shared_ptr<IborIndex> euribor3m(new Euribor3M);
+    ext::shared_ptr<Eonia> eonia(new Eonia);
 
-        ext::shared_ptr<IborIndex> euribor3m(new Euribor3M);
-        ext::shared_ptr<Eonia> eonia(new Eonia);
-
-        for (auto& i : depositData) {
-            Real rate = 0.01 * i.rate;
-            ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
-            ext::shared_ptr<Quote> quote (simple);
-            Period term = i.n * i.unit;
-            ext::shared_ptr<RateHelper> helper(new DepositRateHelper(
+    for (auto& i : depositData) {
+        Real rate = 0.01 * i.rate;
+        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+        ext::shared_ptr<Quote> quote (simple);
+        Period term = i.n * i.unit;
+        ext::shared_ptr<RateHelper> helper(new DepositRateHelper(
                 Handle<Quote>(quote), term, i.settlementDays, euribor3m->fixingCalendar(),
                 euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m->dayCounter()));
 
-            if (term <= 2*Days)
-                eoniaHelpers.push_back(helper);
-        }
+        if (term <= 2*Days)
+            eoniaHelpers.push_back(helper);
+    }
 
-        for (auto& i : eoniaSwapData) {
-            Real rate = 0.01 * i.rate;
-            ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
-            ext::shared_ptr<Quote> quote (simple);
-            Period term = i.n * i.unit;
-            ext::shared_ptr<RateHelper> helper(new
-                                               OISRateHelper(i.settlementDays,
+    for (auto& i : eoniaSwapData) {
+        Real rate = 0.01 * i.rate;
+        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+        ext::shared_ptr<Quote> quote (simple);
+        Period term = i.n * i.unit;
+        ext::shared_ptr<RateHelper> helper(new OISRateHelper(i.settlementDays,
                                                              term,
                                                              Handle<Quote>(quote),
                                                              eonia,
@@ -223,33 +220,33 @@ namespace {
                                                              Pillar::LastRelevantDate,
                                                              Date(),
                                                              averagingMethod));
-            eoniaHelpers.push_back(helper);
-        }
+        eoniaHelpers.push_back(helper);
+    }
 
-        auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
+    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
 
-        vars.eoniaTermStructure.linkTo(eoniaTS);
+    vars.eoniaTermStructure.linkTo(eoniaTS);
 
-        // test curve consistency
-        for (auto& i : eoniaSwapData) {
-            Rate expected = i.rate / 100;
-            Period term = i.n * i.unit;
-            // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
-            ext::shared_ptr<OvernightIndexedSwap> swap =
-                vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
-            Rate calculated = swap->fairRate();
-            Rate error = std::fabs(expected-calculated);
+    // test curve consistency
+    for (auto& i : eoniaSwapData) {
+        Rate expected = i.rate / 100;
+        Period term = i.n * i.unit;
+        // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
+        ext::shared_ptr<OvernightIndexedSwap> swap =
+            vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
+        Rate calculated = swap->fairRate();
+        Rate error = std::fabs(expected-calculated);
 
-            if (error>tolerance)
-                BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
-                           "\n swap length:     " << term <<
-                           "\n quoted rate:     " << expected <<
-                           "\n calculated rate: " << calculated <<
-                           "\n error:           " << error <<
-                           "\n tolerance:       " << tolerance);
-        }
-    } // testBootstrap(telescopicValueDates)
+        if (error>tolerance)
+            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
+                       "\n swap length:     " << term <<
+                       "\n quoted rate:     " << expected <<
+                       "\n calculated rate: " << calculated <<
+                       "\n error:           " << error <<
+                       "\n tolerance:       " << tolerance);
+    }
 }
+
 
 BOOST_AUTO_TEST_CASE(testFairRate) {
 

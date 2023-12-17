@@ -38,32 +38,29 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BlackDeltaCalculatorTests)
 
-namespace {
+struct DeltaData {
+    Option::Type ot;
+    DeltaVolQuote::DeltaType dt;
+    Real spot;
+    DiscountFactor dDf;   // domestic discount
+    DiscountFactor fDf;   // foreign  discount
+    Real stdDev;
+    Real strike;
+    Real value;
+};
 
-    struct DeltaData {
-        Option::Type ot;
-        DeltaVolQuote::DeltaType dt;
-        Real spot;
-        DiscountFactor dDf;   // domestic discount
-        DiscountFactor fDf;   // foreign  discount
-        Real stdDev;
-        Real strike;
-        Real value;
-    };
+struct EuropeanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-    struct EuropeanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testDeltaValues){
 

@@ -43,61 +43,58 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SwapTests)
 
-namespace {
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Swap::Type type;
+    Real nominal;
+    Calendar calendar;
+    BusinessDayConvention fixedConvention, floatingConvention;
+    Frequency fixedFrequency, floatingFrequency;
+    DayCounter fixedDayCount;
+    ext::shared_ptr<IborIndex> index;
+    Natural settlementDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Swap::Type type;
-        Real nominal;
-        Calendar calendar;
-        BusinessDayConvention fixedConvention, floatingConvention;
-        Frequency fixedFrequency, floatingFrequency;
-        DayCounter fixedDayCount;
-        ext::shared_ptr<IborIndex> index;
-        Natural settlementDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
-
-        // utilities
-        ext::shared_ptr<VanillaSwap>
-        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {
-            Date maturity = calendar.advance(settlement,length,Years,
-                                             floatingConvention);
-            Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
-                                   calendar,fixedConvention,fixedConvention, rule, false);
-            Schedule floatSchedule(settlement,maturity,
-                                   Period(floatingFrequency),
-                                   calendar,floatingConvention,
-                                   floatingConvention, rule, false);
-            ext::shared_ptr<VanillaSwap> swap(
+    // utilities
+    ext::shared_ptr<VanillaSwap>
+    makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {
+        Date maturity = calendar.advance(settlement,length,Years,
+                                         floatingConvention);
+        Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
+                               calendar,fixedConvention,fixedConvention, rule, false);
+        Schedule floatSchedule(settlement,maturity,
+                               Period(floatingFrequency),
+                               calendar,floatingConvention,
+                               floatingConvention, rule, false);
+        ext::shared_ptr<VanillaSwap> swap(
                 new VanillaSwap(type, nominal,
                                 fixedSchedule, fixedRate, fixedDayCount,
                                 floatSchedule, index, floatingSpread,
                                 index->dayCounter()));
-            swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                                   new DiscountingSwapEngine(termStructure)));
-            return swap;
-        }
+        return swap;
+    }
 
-        CommonVars() {
-            type = Swap::Payer;
-            settlementDays = 2;
-            nominal = 100.0;
-            fixedConvention = Unadjusted;
-            floatingConvention = ModifiedFollowing;
-            fixedFrequency = Annual;
-            floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360(Thirty360::BondBasis);
-            index = ext::shared_ptr<IborIndex>(new
+    CommonVars() {
+        type = Swap::Payer;
+        settlementDays = 2;
+        nominal = 100.0;
+        fixedConvention = Unadjusted;
+        floatingConvention = ModifiedFollowing;
+        fixedFrequency = Annual;
+        floatingFrequency = Semiannual;
+        fixedDayCount = Thirty360(Thirty360::BondBasis);
+        index = ext::shared_ptr<IborIndex>(new
                 Euribor(Period(floatingFrequency), termStructure));
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Settings::instance().evaluationDate());
-            settlement = calendar.advance(today,settlementDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-        }
-    };
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Settings::instance().evaluationDate());
+        settlement = calendar.advance(today,settlementDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+    }
+};
 
-}
 
 BOOST_AUTO_TEST_CASE(testFairRate) {
 

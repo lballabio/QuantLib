@@ -37,188 +37,186 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
 
-namespace {
+struct XccyTestDatum {
+    Integer n;
+    TimeUnit units;
+    Spread basis;
 
-    struct XccyTestDatum {
-        Integer n;
-        TimeUnit units;
-        Spread basis;
+    XccyTestDatum(Integer n, TimeUnit units, Spread basis) : n(n), units(units), basis(basis) {}
+};
 
-        XccyTestDatum(Integer n, TimeUnit units, Spread basis) : n(n), units(units), basis(basis) {}
-    };
+struct CommonVars {
+    Real basisPoint;
+    Real fxSpot;
 
-    struct CommonVars {
-        Real basisPoint;
-        Real fxSpot;
+    Date today, settlement;
+    Calendar calendar;
+    Natural settlementDays;
+    Currency ccy;
+    BusinessDayConvention businessConvention;
+    DayCounter dayCount;
+    bool endOfMonth;
 
-        Date today, settlement;
-        Calendar calendar;
-        Natural settlementDays;
-        Currency ccy;
-        BusinessDayConvention businessConvention;
-        DayCounter dayCount;
-        bool endOfMonth;
+    ext::shared_ptr<IborIndex> baseCcyIdx;
+    ext::shared_ptr<IborIndex> quoteCcyIdx;
 
-        ext::shared_ptr<IborIndex> baseCcyIdx;
-        ext::shared_ptr<IborIndex> quoteCcyIdx;
+    RelinkableHandle<YieldTermStructure> baseCcyIdxHandle;
+    RelinkableHandle<YieldTermStructure> quoteCcyIdxHandle;
 
-        RelinkableHandle<YieldTermStructure> baseCcyIdxHandle;
-        RelinkableHandle<YieldTermStructure> quoteCcyIdxHandle;
+    std::vector<XccyTestDatum> basisData;
 
-        std::vector<XccyTestDatum> basisData;
+    // utilities
 
-        // utilities
-
-        ext::shared_ptr<RateHelper>
-        constantNotionalXccyRateHelper(const XccyTestDatum& q,
-                                       const Handle<YieldTermStructure>& collateralHandle,
-                                       bool isFxBaseCurrencyCollateralCurrency,
-                                       bool isBasisOnFxBaseCurrencyLeg) const {
-            Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
-            Period tenor(q.n, q.units);
-            return ext::shared_ptr<RateHelper>(new ConstNotionalCrossCurrencyBasisSwapRateHelper(
+    ext::shared_ptr<RateHelper>
+    constantNotionalXccyRateHelper(const XccyTestDatum& q,
+                                   const Handle<YieldTermStructure>& collateralHandle,
+                                   bool isFxBaseCurrencyCollateralCurrency,
+                                   bool isBasisOnFxBaseCurrencyLeg) const {
+        Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
+        Period tenor(q.n, q.units);
+        return ext::shared_ptr<RateHelper>(new ConstNotionalCrossCurrencyBasisSwapRateHelper(
                 quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
                 baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                 isBasisOnFxBaseCurrencyLeg));
-        }
+    }
 
-        std::vector<ext::shared_ptr<RateHelper> >
-        buildConstantNotionalXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
-                                             const Handle<YieldTermStructure>& collateralHandle,
-                                             bool isFxBaseCurrencyCollateralCurrency,
-                                             bool isBasisOnFxBaseCurrencyLeg) const {
-            std::vector<ext::shared_ptr<RateHelper> > instruments;
-            instruments.reserve(xccyData.size());
-            for (const auto& i : xccyData) {
-                instruments.push_back(constantNotionalXccyRateHelper(
+    std::vector<ext::shared_ptr<RateHelper> >
+    buildConstantNotionalXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
+                                         const Handle<YieldTermStructure>& collateralHandle,
+                                         bool isFxBaseCurrencyCollateralCurrency,
+                                         bool isBasisOnFxBaseCurrencyLeg) const {
+        std::vector<ext::shared_ptr<RateHelper> > instruments;
+        instruments.reserve(xccyData.size());
+        for (const auto& i : xccyData) {
+            instruments.push_back(constantNotionalXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                     isBasisOnFxBaseCurrencyLeg));
-            }
-
-            return instruments;
         }
 
-        ext::shared_ptr<RateHelper>
-        resettingXccyRateHelper(const XccyTestDatum& q,
-                                const Handle<YieldTermStructure>& collateralHandle,
-                                bool isFxBaseCurrencyCollateralCurrency,
-                                bool isBasisOnFxBaseCurrencyLeg,
-                                bool isFxBaseCurrencyLegResettable) const {
-            Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
-            Period tenor(q.n, q.units);
-            return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
+        return instruments;
+    }
+
+    ext::shared_ptr<RateHelper>
+    resettingXccyRateHelper(const XccyTestDatum& q,
+                            const Handle<YieldTermStructure>& collateralHandle,
+                            bool isFxBaseCurrencyCollateralCurrency,
+                            bool isBasisOnFxBaseCurrencyLeg,
+                            bool isFxBaseCurrencyLegResettable) const {
+        Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
+        Period tenor(q.n, q.units);
+        return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
                 quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
                 baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                 isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable));
-        }
+    }
 
-        std::vector<ext::shared_ptr<RateHelper> >
-        buildResettingXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
-                                       const Handle<YieldTermStructure>& collateralHandle,
-                                       bool isFxBaseCurrencyCollateralCurrency,
-                                       bool isBasisOnFxBaseCurrencyLeg,
-                                       bool isFxBaseCurrencyLegResettable) const {
-            std::vector<ext::shared_ptr<RateHelper> > instruments;
-            instruments.reserve(xccyData.size());
-            for (const auto& i : xccyData) {
-                instruments.push_back(resettingXccyRateHelper(
+    std::vector<ext::shared_ptr<RateHelper> >
+    buildResettingXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
+                                  const Handle<YieldTermStructure>& collateralHandle,
+                                  bool isFxBaseCurrencyCollateralCurrency,
+                                  bool isBasisOnFxBaseCurrencyLeg,
+                                  bool isFxBaseCurrencyLegResettable) const {
+        std::vector<ext::shared_ptr<RateHelper> > instruments;
+        instruments.reserve(xccyData.size());
+        for (const auto& i : xccyData) {
+            instruments.push_back(resettingXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                     isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable));
-            }
-
-            return instruments;
         }
 
-        Schedule legSchedule(const Period& tenor, 
-                             const ext::shared_ptr<IborIndex>& idx) const {
-            return MakeSchedule()
-                .from(settlement)
-                .to(settlement + tenor)
-                .withTenor(idx->tenor())
-                .withCalendar(calendar)
-                .withConvention(businessConvention)
-                .endOfMonth(endOfMonth)
-                .backwards();
-        }
+        return instruments;
+    }
 
-        Leg constantNotionalLeg(const Schedule& schedule,
-                                const ext::shared_ptr<IborIndex>& idx,
-                                Real notional,
-                                Spread basis) const {
-            Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
-            Date lastPaymentDate = leg.back()->date();
-            leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
-            return leg;
-        }
+    Schedule legSchedule(const Period& tenor, 
+                         const ext::shared_ptr<IborIndex>& idx) const {
+        return MakeSchedule()
+            .from(settlement)
+            .to(settlement + tenor)
+            .withTenor(idx->tenor())
+            .withCalendar(calendar)
+            .withConvention(businessConvention)
+            .endOfMonth(endOfMonth)
+            .backwards();
+    }
 
-        std::vector<ext::shared_ptr<Swap> >
-        buildXccyBasisSwap(const XccyTestDatum& q,
-                           Real fxSpot,
-                           bool isFxBaseCurrencyCollateralCurrency,
-                           bool isBasisOnFxBaseCurrencyLeg) const {
-            const Real baseCcyLegNotional = 1.0;
-            Real quoteCcyLegNotional = baseCcyLegNotional * fxSpot;
+    Leg constantNotionalLeg(const Schedule& schedule,
+                            const ext::shared_ptr<IborIndex>& idx,
+                            Real notional,
+                            Spread basis) const {
+        Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
+        Date lastPaymentDate = leg.back()->date();
+        leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
+        return leg;
+    }
 
-            Spread baseCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? Real(q.basis * basisPoint) : 0.0;
-            Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : Real(q.basis * basisPoint);
+    std::vector<ext::shared_ptr<Swap> >
+    buildXccyBasisSwap(const XccyTestDatum& q,
+                       Real fxSpot,
+                       bool isFxBaseCurrencyCollateralCurrency,
+                       bool isBasisOnFxBaseCurrencyLeg) const {
+        const Real baseCcyLegNotional = 1.0;
+        Real quoteCcyLegNotional = baseCcyLegNotional * fxSpot;
 
-            std::vector<ext::shared_ptr<Swap> > legs;
-            bool payer = true;
+        Spread baseCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? Real(q.basis * basisPoint) : 0.0;
+        Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : Real(q.basis * basisPoint);
 
-            Leg baseCcyLeg = constantNotionalLeg(legSchedule(Period(q.n, q.units), baseCcyIdx),
-                                                 baseCcyIdx, baseCcyLegNotional, baseCcyLegBasis);
-            legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, baseCcyLeg),
-                                                  std::vector<bool>(1, !payer)));
+        std::vector<ext::shared_ptr<Swap> > legs;
+        bool payer = true;
 
-            Leg quoteCcyLeg =
-                constantNotionalLeg(legSchedule(Period(q.n, q.units), quoteCcyIdx), quoteCcyIdx,
-                                    quoteCcyLegNotional, quoteCcyLegBasis);
-            legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, quoteCcyLeg),
-                                                  std::vector<bool>(1, payer)));
-            return legs;
-        }
+        Leg baseCcyLeg = constantNotionalLeg(legSchedule(Period(q.n, q.units), baseCcyIdx),
+                                             baseCcyIdx, baseCcyLegNotional, baseCcyLegBasis);
+        legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, baseCcyLeg),
+                                              std::vector<bool>(1, !payer)));
 
-        CommonVars() {
-            settlementDays = 2;
-            businessConvention = Following;
-            calendar = TARGET();
-            dayCount = Actual365Fixed();
-            endOfMonth = false;
+        Leg quoteCcyLeg =
+            constantNotionalLeg(legSchedule(Period(q.n, q.units), quoteCcyIdx), quoteCcyIdx,
+                                quoteCcyLegNotional, quoteCcyLegBasis);
+        legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, quoteCcyLeg),
+                                              std::vector<bool>(1, payer)));
+        return legs;
+    }
 
-            basisPoint = 1.0e-4;
-            fxSpot = 1.25;
+    CommonVars() {
+        settlementDays = 2;
+        businessConvention = Following;
+        calendar = TARGET();
+        dayCount = Actual365Fixed();
+        endOfMonth = false;
 
-            baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyIdxHandle));
-            quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyIdxHandle));
+        basisPoint = 1.0e-4;
+        fxSpot = 1.25;
 
-            /* Data source:
-               N. Moreni, A. Pallavicini (2015)
-               FX Modelling in Collateralized Markets: foreign measures, basis curves
-               and pricing formulae.
+        baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyIdxHandle));
+        quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyIdxHandle));
 
-               section 4.2.1, Table 2.
-            */
-            basisData.emplace_back(1, Years, -14.5);
-            basisData.emplace_back(18, Months, -18.5);
-            basisData.emplace_back(2, Years, -20.5);
-            basisData.emplace_back(3, Years, -23.75);
-            basisData.emplace_back(4, Years, -25.5);
-            basisData.emplace_back(5, Years, -26.5);
-            basisData.emplace_back(7, Years, -26.75);
-            basisData.emplace_back(10, Years, -26.25);
-            basisData.emplace_back(15, Years, -24.75);
-            basisData.emplace_back(20, Years, -23.25);
-            basisData.emplace_back(30, Years, -20.50);
+        /* Data source:
+           N. Moreni, A. Pallavicini (2015)
+           FX Modelling in Collateralized Markets: foreign measures, basis curves
+           and pricing formulae.
 
-            today = calendar.adjust(Date(6, September, 2013));
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today, settlementDays, Days);
+           section 4.2.1, Table 2.
+        */
+        basisData.emplace_back(1, Years, -14.5);
+        basisData.emplace_back(18, Months, -18.5);
+        basisData.emplace_back(2, Years, -20.5);
+        basisData.emplace_back(3, Years, -23.75);
+        basisData.emplace_back(4, Years, -25.5);
+        basisData.emplace_back(5, Years, -26.5);
+        basisData.emplace_back(7, Years, -26.75);
+        basisData.emplace_back(10, Years, -26.25);
+        basisData.emplace_back(15, Years, -24.75);
+        basisData.emplace_back(20, Years, -23.25);
+        basisData.emplace_back(30, Years, -20.50);
 
-            baseCcyIdxHandle.linkTo(flatRate(settlement, 0.007, dayCount));
-            quoteCcyIdxHandle.linkTo(flatRate(settlement, 0.015, dayCount));
-        }
-    };
-}
+        today = calendar.adjust(Date(6, September, 2013));
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today, settlementDays, Days);
+
+        baseCcyIdxHandle.linkTo(flatRate(settlement, 0.007, dayCount));
+        quoteCcyIdxHandle.linkTo(flatRate(settlement, 0.015, dayCount));
+    }
+};
+
 
 void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCurrency,
                                                bool isBasisOnFxBaseCurrencyLeg) {

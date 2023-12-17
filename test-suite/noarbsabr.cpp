@@ -29,7 +29,6 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(NoArbSabrTests)
 
-namespace {
 void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
              const Real tau, const unsigned int absorptions) {
 
@@ -45,7 +44,7 @@ void checkD0(const Real sigmaI, const Real beta, const Real rho, const Real nu,
                     << d() * QuantLib::detail::NoArbSabrModel::nsim
                     << " while the reference value is " << absorptions);
 }
-}
+
 
 BOOST_AUTO_TEST_CASE(testAbsorptionMatrix) {
 

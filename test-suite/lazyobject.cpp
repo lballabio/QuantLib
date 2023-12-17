@@ -30,21 +30,18 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(LazyObjectTests)
 
-namespace {
+class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
+    bool alwaysForward;
+  public:
+    TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
+    ~TearDown() {
+        if (alwaysForward)
+            LazyObject::Defaults::instance().alwaysForwardNotifications();
+        else
+            LazyObject::Defaults::instance().forwardFirstNotificationOnly();
+    }
+};
 
-    class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
-        bool alwaysForward;
-      public:
-        TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
-        ~TearDown() {
-            if (alwaysForward)
-                LazyObject::Defaults::instance().alwaysForwardNotifications();
-            else
-                LazyObject::Defaults::instance().forwardFirstNotificationOnly();
-        }
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testDiscardingNotifications) {
 

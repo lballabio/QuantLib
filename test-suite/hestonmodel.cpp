@@ -67,169 +67,167 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(HestonModelTests)
 
-namespace {
+struct CalibrationMarketData {
+    Handle<Quote> s0;
+    Handle<YieldTermStructure> riskFreeTS, dividendYield;
+    std::vector<ext::shared_ptr<CalibrationHelper> > options;
+};
 
-    struct CalibrationMarketData {
-        Handle<Quote> s0;
-        Handle<YieldTermStructure> riskFreeTS, dividendYield;
-        std::vector<ext::shared_ptr<CalibrationHelper> > options;
-    };
+CalibrationMarketData getDAXCalibrationMarketData() {
+    /* this example is taken from A. Sepp
+       Pricing European-Style Options under Jump Diffusion Processes
+       with Stochstic Volatility: Applications of Fourier Transform
+       http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
+    */
 
-    CalibrationMarketData getDAXCalibrationMarketData() {
-        /* this example is taken from A. Sepp
-           Pricing European-Style Options under Jump Diffusion Processes
-           with Stochstic Volatility: Applications of Fourier Transform
-           http://math.ut.ee/~spartak/papers/stochjumpvols.pdf
-        */
-
-        Date settlementDate(Settings::instance().evaluationDate());
+    Date settlementDate(Settings::instance().evaluationDate());
         
-        DayCounter dayCounter = Actual365Fixed();
-        Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual365Fixed();
+    Calendar calendar = TARGET();
         
-        Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
-        Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
+    Integer t[] = { 13, 41, 75, 165, 256, 345, 524, 703 };
+    Rate r[] = { 0.0357,0.0349,0.0341,0.0355,0.0359,0.0368,0.0386,0.0401 };
         
-        std::vector<Date> dates;
-        std::vector<Rate> rates;
-        dates.push_back(settlementDate);
-        rates.push_back(0.0357);
-        Size i;
-        for (i = 0; i < 8; ++i) {
-            dates.push_back(settlementDate + t[i]);
-            rates.push_back(r[i]);
-        }
-        Handle<YieldTermStructure> riskFreeTS(
+    std::vector<Date> dates;
+    std::vector<Rate> rates;
+    dates.push_back(settlementDate);
+    rates.push_back(0.0357);
+    Size i;
+    for (i = 0; i < 8; ++i) {
+        dates.push_back(settlementDate + t[i]);
+        rates.push_back(r[i]);
+    }
+    Handle<YieldTermStructure> riskFreeTS(
             ext::make_shared<ZeroCurve>(dates, rates, dayCounter));
         
-        Handle<YieldTermStructure> dividendYield(
+    Handle<YieldTermStructure> dividendYield(
                                     flatRate(settlementDate, 0.0, dayCounter));
         
-        Volatility v[] =
-          { 0.6625,0.4875,0.4204,0.3667,0.3431,0.3267,0.3121,0.3121,
-            0.6007,0.4543,0.3967,0.3511,0.3279,0.3154,0.2984,0.2921,
-            0.5084,0.4221,0.3718,0.3327,0.3155,0.3027,0.2919,0.2889,
-            0.4541,0.3869,0.3492,0.3149,0.2963,0.2926,0.2819,0.2800,
-            0.4060,0.3607,0.3330,0.2999,0.2887,0.2811,0.2751,0.2775,
-            0.3726,0.3396,0.3108,0.2781,0.2788,0.2722,0.2661,0.2686,
-            0.3550,0.3277,0.3012,0.2781,0.2781,0.2661,0.2661,0.2681,
-            0.3428,0.3209,0.2958,0.2740,0.2688,0.2627,0.2580,0.2620,
-            0.3302,0.3062,0.2799,0.2631,0.2573,0.2533,0.2504,0.2544,
-            0.3343,0.2959,0.2705,0.2540,0.2504,0.2464,0.2448,0.2462,
-            0.3460,0.2845,0.2624,0.2463,0.2425,0.2385,0.2373,0.2422,
-            0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
-            0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
+    Volatility v[] =
+        { 0.6625,0.4875,0.4204,0.3667,0.3431,0.3267,0.3121,0.3121,
+          0.6007,0.4543,0.3967,0.3511,0.3279,0.3154,0.2984,0.2921,
+          0.5084,0.4221,0.3718,0.3327,0.3155,0.3027,0.2919,0.2889,
+          0.4541,0.3869,0.3492,0.3149,0.2963,0.2926,0.2819,0.2800,
+          0.4060,0.3607,0.3330,0.2999,0.2887,0.2811,0.2751,0.2775,
+          0.3726,0.3396,0.3108,0.2781,0.2788,0.2722,0.2661,0.2686,
+          0.3550,0.3277,0.3012,0.2781,0.2781,0.2661,0.2661,0.2681,
+          0.3428,0.3209,0.2958,0.2740,0.2688,0.2627,0.2580,0.2620,
+          0.3302,0.3062,0.2799,0.2631,0.2573,0.2533,0.2504,0.2544,
+          0.3343,0.2959,0.2705,0.2540,0.2504,0.2464,0.2448,0.2462,
+          0.3460,0.2845,0.2624,0.2463,0.2425,0.2385,0.2373,0.2422,
+          0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
+          0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
         
-        Handle<Quote> s0(ext::make_shared<SimpleQuote>(4468.17));
-        Real strike[] = { 3400,3600,3800,4000,4200,4400,
-                          4500,4600,4800,5000,5200,5400,5600 };
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(4468.17));
+    Real strike[] = { 3400,3600,3800,4000,4200,4400,
+                      4500,4600,4800,5000,5200,5400,5600 };
         
-        std::vector<ext::shared_ptr<CalibrationHelper> > options;
+    std::vector<ext::shared_ptr<CalibrationHelper> > options;
         
-        for (Size s = 0; s < 13; ++s) {
-            for (Size m = 0; m < 8; ++m) {
-                Handle<Quote> vol(ext::make_shared<SimpleQuote>(v[s*8+m]));
+    for (Size s = 0; s < 13; ++s) {
+        for (Size m = 0; m < 8; ++m) {
+            Handle<Quote> vol(ext::make_shared<SimpleQuote>(v[s*8+m]));
         
-                Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
-                options.push_back(ext::make_shared<HestonModelHelper>(maturity, calendar,
-                                              s0, strike[s], vol,
-                                              riskFreeTS, dividendYield,
-                                          BlackCalibrationHelper::ImpliedVolError));
-            }
+            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
+            options.push_back(ext::make_shared<HestonModelHelper>(maturity, calendar,
+                                                                  s0, strike[s], vol,
+                                                                  riskFreeTS, dividendYield,
+                                                                  BlackCalibrationHelper::ImpliedVolError));
         }
-        
-        CalibrationMarketData marketData = { s0, riskFreeTS, dividendYield, options };
-        
-        return marketData;
     }
+        
+    CalibrationMarketData marketData = { s0, riskFreeTS, dividendYield, options };
+        
+    return marketData;
+}
 
-    struct HestonProcessDiscretizationDesc {
-        HestonProcess::Discretization discretization;
-        Size nSteps;
-        std::string name;
-    };
+struct HestonProcessDiscretizationDesc {
+    HestonProcess::Discretization discretization;
+    Size nSteps;
+    std::string name;
+};
 
-    struct HestonParameter {
-        Real v0, kappa, theta, sigma, rho;
-    };
+struct HestonParameter {
+    Real v0, kappa, theta, sigma, rho;
+};
 
-    void reportOnIntegrationMethodTest(VanillaOption& option,
-                                       const ext::shared_ptr<HestonModel>& model,
-                                       const AnalyticHestonEngine::Integration& integration,
-                                       AnalyticHestonEngine::ComplexLogFormula formula,
-                                       bool isAdaptive,
-                                       Real expected,
-                                       Real tol,
-                                       Size valuations,
-                                       const std::string& method) {
+void reportOnIntegrationMethodTest(VanillaOption& option,
+                                   const ext::shared_ptr<HestonModel>& model,
+                                   const AnalyticHestonEngine::Integration& integration,
+                                   AnalyticHestonEngine::ComplexLogFormula formula,
+                                   bool isAdaptive,
+                                   Real expected,
+                                   Real tol,
+                                   Size valuations,
+                                   const std::string& method) {
 
-        if (integration.isAdaptiveIntegration() != isAdaptive)
-            BOOST_ERROR(method << " is not an adaptive integration routine");
+    if (integration.isAdaptiveIntegration() != isAdaptive)
+        BOOST_ERROR(method << " is not an adaptive integration routine");
 
-        const ext::shared_ptr<AnalyticHestonEngine> engine =
-            ext::make_shared<AnalyticHestonEngine>(
+    const ext::shared_ptr<AnalyticHestonEngine> engine =
+        ext::make_shared<AnalyticHestonEngine>(
                 model, formula, integration, 1e-9);
 
-        option.setPricingEngine(engine);
-        const Real calculated = option.NPV();
+    option.setPricingEngine(engine);
+    const Real calculated = option.NPV();
 
-        const Real error = std::fabs(calculated - expected);
+    const Real error = std::fabs(calculated - expected);
 
-        if (std::isnan(error) || error > tol) {
-            BOOST_ERROR("failed to reproduce simple Heston Pricing with "
-                        << "\n    integration method: " << method
-                        <<  std::setprecision(12)
-                        << "\n    expected          : " << expected
-                        << "\n    calculated        : " << calculated
-                        << "\n    error             : " << error);
-        }
-
-        if (   valuations != Null<Size>()
-            && valuations != engine->numberOfEvaluations()) {
-            BOOST_ERROR("nubmer of function evaluations does not match "
-                        << "\n    integration method      : " << method
-                        << "\n    expected function calls : " << valuations
-                        << "\n    number of function calls: "
-                        << engine->numberOfEvaluations());
-        }
+    if (std::isnan(error) || error > tol) {
+        BOOST_ERROR("failed to reproduce simple Heston Pricing with "
+                    << "\n    integration method: " << method
+                    <<  std::setprecision(12)
+                    << "\n    expected          : " << expected
+                    << "\n    calculated        : " << calculated
+                    << "\n    error             : " << error);
     }
 
-    class LogCharacteristicFunction {
-      public:
-        LogCharacteristicFunction(Size n, Time t, ext::shared_ptr<COSHestonEngine> engine)
-        : t_(t), alpha_(0.0, 1.0), engine_(std::move(engine)) {
-            for (Size i=1; i < n; ++i, alpha_*=std::complex<Real>(0,1));
-        }
-
-        Real operator()(Real u) const {
-            return (std::log(engine_->chF(u, t_))/alpha_).real();
-        }
-
-      private:
-        const Time t_;
-        std::complex<Real> alpha_;
-        const ext::shared_ptr<COSHestonEngine> engine_;
-    };
-
-    class HestonIntegrationMaxBoundTestFct {
-      public:
-        explicit HestonIntegrationMaxBoundTestFct(Real maxBound)
-        : maxBound_(maxBound),
-          callCounter_(ext::make_shared<Size>(Size(0))) {}
-
-        Real operator()() {
-            ++(*callCounter_);
-            return maxBound_;
-        }
-
-        Size getCallCounter() const {
-            return *callCounter_;
-        }
-      private:
-        const Real maxBound_;
-        const ext::shared_ptr<Size> callCounter_;
-    };
+    if (   valuations != Null<Size>()
+           && valuations != engine->numberOfEvaluations()) {
+        BOOST_ERROR("nubmer of function evaluations does not match "
+                    << "\n    integration method      : " << method
+                    << "\n    expected function calls : " << valuations
+                    << "\n    number of function calls: "
+                    << engine->numberOfEvaluations());
+    }
 }
+
+class LogCharacteristicFunction {
+  public:
+    LogCharacteristicFunction(Size n, Time t, ext::shared_ptr<COSHestonEngine> engine)
+    : t_(t), alpha_(0.0, 1.0), engine_(std::move(engine)) {
+        for (Size i=1; i < n; ++i, alpha_*=std::complex<Real>(0,1));
+    }
+
+    Real operator()(Real u) const {
+        return (std::log(engine_->chF(u, t_))/alpha_).real();
+    }
+
+  private:
+    const Time t_;
+    std::complex<Real> alpha_;
+    const ext::shared_ptr<COSHestonEngine> engine_;
+};
+
+class HestonIntegrationMaxBoundTestFct {
+  public:
+    explicit HestonIntegrationMaxBoundTestFct(Real maxBound)
+    : maxBound_(maxBound),
+      callCounter_(ext::make_shared<Size>(Size(0))) {}
+
+    Real operator()() {
+        ++(*callCounter_);
+        return maxBound_;
+    }
+
+    Size getCallCounter() const {
+        return *callCounter_;
+    }
+  private:
+    const Real maxBound_;
+    const ext::shared_ptr<Size> callCounter_;
+};
+
 
 BOOST_AUTO_TEST_CASE(testBlackCalibration) {
     BOOST_TEST_MESSAGE(

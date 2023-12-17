@@ -265,18 +265,17 @@ BOOST_AUTO_TEST_CASE(testIllustrative1DExample) {
     }
 }
 
-namespace {
-    class CLVModelPayoff : public PlainVanillaPayoff {
-      public:
-        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
-        : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
+class CLVModelPayoff : public PlainVanillaPayoff {
+  public:
+    CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+    : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
-        Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
+    Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
-      private:
-        const ext::function<Real(Real)> g_;
-    };
-}
+  private:
+    const ext::function<Real(Real)> g_;
+};
+
 
 BOOST_AUTO_TEST_CASE(testMonteCarloBSOptionPricing) {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");

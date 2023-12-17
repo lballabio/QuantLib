@@ -61,60 +61,53 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(AssetSwapTests)
 
-namespace {
+struct CommonVars {
+    // common data
+    ext::shared_ptr<IborIndex> iborIndex;
+    ext::shared_ptr<SwapIndex> swapIndex;
+    ext::shared_ptr<IborCouponPricer> pricer;
+    ext::shared_ptr<CmsCouponPricer> cmspricer;
+    Spread spread;
+    Spread nonnullspread;
+    Real faceAmount;
+    Compounding compounding;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-    struct CommonVars {
-        // common data
-        ext::shared_ptr<IborIndex> iborIndex;
-        ext::shared_ptr<SwapIndex> swapIndex;
-        ext::shared_ptr<IborCouponPricer> pricer;
-        ext::shared_ptr<CmsCouponPricer> cmspricer;
-        Spread spread;
-        Spread nonnullspread;
-        Real faceAmount;
-        Compounding compounding;
-        RelinkableHandle<YieldTermStructure> termStructure;
-
-        // initial setup
-        CommonVars() {
-            Natural swapSettlementDays = 2;
-            faceAmount = 100.0;
-            BusinessDayConvention fixedConvention = Unadjusted;
-            compounding = Continuous;
-            Frequency fixedFrequency = Annual;
-            Frequency floatingFrequency = Semiannual;
-            iborIndex = ext::shared_ptr<IborIndex>(
+    // initial setup
+    CommonVars() {
+        Natural swapSettlementDays = 2;
+        faceAmount = 100.0;
+        BusinessDayConvention fixedConvention = Unadjusted;
+        compounding = Continuous;
+        Frequency fixedFrequency = Annual;
+        Frequency floatingFrequency = Semiannual;
+        iborIndex = ext::shared_ptr<IborIndex>(
                      new Euribor(Period(floatingFrequency), termStructure));
-            Calendar calendar = iborIndex->fixingCalendar();
-            swapIndex= ext::make_shared<SwapIndex>(
+        Calendar calendar = iborIndex->fixingCalendar();
+        swapIndex = ext::make_shared<SwapIndex>(
                 "EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
                               iborIndex->currency(), calendar,
                               Period(fixedFrequency), fixedConvention,
                               iborIndex->dayCounter(), iborIndex);
-            spread = 0.0;
-            nonnullspread = 0.003;
-            Date today(24,April,2007);
-            Settings::instance().evaluationDate() = today;
+        spread = 0.0;
+        nonnullspread = 0.003;
+        Date today(24,April,2007);
+        Settings::instance().evaluationDate() = today;
 
-            //Date today = Settings::instance().evaluationDate();
-
-            termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
-            pricer = ext::shared_ptr<IborCouponPricer>(new
-                                                        BlackIborCouponPricer);
-            Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
+        termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+        pricer = ext::shared_ptr<IborCouponPricer>(new BlackIborCouponPricer);
+        Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
                 ext::shared_ptr<SwaptionVolatilityStructure>(new
                     ConstantSwaptionVolatility(today, NullCalendar(),Following,
                                                0.2, Actual365Fixed())));
-            Handle<Quote> meanReversionQuote(ext::shared_ptr<Quote>(new
+        Handle<Quote> meanReversionQuote(ext::shared_ptr<Quote>(new
                 SimpleQuote(0.01)));
-            cmspricer = ext::shared_ptr<CmsCouponPricer>(new
+        cmspricer = ext::shared_ptr<CmsCouponPricer>(new
                 AnalyticHaganPricer(swaptionVolatilityStructure,
                                     GFunctionFactory::Standard,
                                     meanReversionQuote));
-        }
-    };
-
-}
+    }
+};
 
 
 BOOST_AUTO_TEST_CASE(testConsistency) {

@@ -30,144 +30,142 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(EquityCashFlowTests)
 
-namespace {
+struct CommonVars {
 
-    struct CommonVars {
+    Date today;
+    Calendar calendar;
+    DayCounter dayCount;
 
-        Date today;
-        Calendar calendar;
-        DayCounter dayCount;
+    Real notional;
 
-        Real notional;
-
-        ext::shared_ptr<EquityIndex> equityIndex;
+    ext::shared_ptr<EquityIndex> equityIndex;
         
-        RelinkableHandle<YieldTermStructure> localCcyInterestHandle;
-        RelinkableHandle<YieldTermStructure> dividendHandle;
-        RelinkableHandle<YieldTermStructure> quantoCcyInterestHandle;
+    RelinkableHandle<YieldTermStructure> localCcyInterestHandle;
+    RelinkableHandle<YieldTermStructure> dividendHandle;
+    RelinkableHandle<YieldTermStructure> quantoCcyInterestHandle;
 
-        RelinkableHandle<BlackVolTermStructure> equityVolHandle;
-        RelinkableHandle<BlackVolTermStructure> fxVolHandle;
+    RelinkableHandle<BlackVolTermStructure> equityVolHandle;
+    RelinkableHandle<BlackVolTermStructure> fxVolHandle;
         
-        RelinkableHandle<Quote> spotHandle;
-        RelinkableHandle<Quote> correlationHandle;
+    RelinkableHandle<Quote> spotHandle;
+    RelinkableHandle<Quote> correlationHandle;
 
-        // utilities
+    // utilities
 
-        CommonVars() {
-            calendar = TARGET();
-            dayCount = Actual365Fixed();
-            notional = 1.0e7;
+    CommonVars() {
+        calendar = TARGET();
+        dayCount = Actual365Fixed();
+        notional = 1.0e7;
 
-            today = calendar.adjust(Date(27, January, 2023));
-            Settings::instance().evaluationDate() = today;
+        today = calendar.adjust(Date(27, January, 2023));
+        Settings::instance().evaluationDate() = today;
 
-            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, localCcyInterestHandle,
-                                                        dividendHandle, spotHandle);
-            equityIndex->addFixing(Date(5, January, 2023), 9010.0);
-            equityIndex->addFixing(today, 8690.0);
+        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, localCcyInterestHandle,
+                                                    dividendHandle, spotHandle);
+        equityIndex->addFixing(Date(5, January, 2023), 9010.0);
+        equityIndex->addFixing(today, 8690.0);
 
-            localCcyInterestHandle.linkTo(flatRate(0.0375, dayCount));
-            dividendHandle.linkTo(flatRate(0.005, dayCount));
-            quantoCcyInterestHandle.linkTo(flatRate(0.001, dayCount));
+        localCcyInterestHandle.linkTo(flatRate(0.0375, dayCount));
+        dividendHandle.linkTo(flatRate(0.005, dayCount));
+        quantoCcyInterestHandle.linkTo(flatRate(0.001, dayCount));
 
-            equityVolHandle.linkTo(flatVol(0.4, dayCount));
-            fxVolHandle.linkTo(flatVol(0.2, dayCount));
+        equityVolHandle.linkTo(flatVol(0.4, dayCount));
+        fxVolHandle.linkTo(flatVol(0.2, dayCount));
 
-            spotHandle.linkTo(ext::make_shared<SimpleQuote>(8700.0));
-            correlationHandle.linkTo(ext::make_shared<SimpleQuote>(0.4));
-        }
+        spotHandle.linkTo(ext::make_shared<SimpleQuote>(8700.0));
+        correlationHandle.linkTo(ext::make_shared<SimpleQuote>(0.4));
+    }
 
-        ext::shared_ptr<EquityCashFlow>
-        createEquityQuantoCashFlow(const ext::shared_ptr<EquityIndex>& index,
-                                   const Date& start,
-                                   const Date& end,
-                                   bool useQuantoPricer = true) {
+    ext::shared_ptr<EquityCashFlow>
+    createEquityQuantoCashFlow(const ext::shared_ptr<EquityIndex>& index,
+                               const Date& start,
+                               const Date& end,
+                               bool useQuantoPricer = true) {
 
-            auto cf = ext::make_shared<EquityCashFlow>(notional, index, start, end, end);
-            if (useQuantoPricer) {
-                auto pricer = ext::make_shared<EquityQuantoCashFlowPricer>(
+        auto cf = ext::make_shared<EquityCashFlow>(notional, index, start, end, end);
+        if (useQuantoPricer) {
+            auto pricer = ext::make_shared<EquityQuantoCashFlowPricer>(
                     quantoCcyInterestHandle, equityVolHandle, fxVolHandle, correlationHandle);
-                cf->setPricer(pricer);
-            }
-            return cf;
+            cf->setPricer(pricer);
         }
+        return cf;
+    }
 
-        ext::shared_ptr<EquityCashFlow>
-        createEquityQuantoCashFlow(const ext::shared_ptr<EquityIndex>& index,
-                                   bool useQuantoPricer = true) {
-            Date start(5, January, 2023);
-            Date end(5, April, 2023);
+    ext::shared_ptr<EquityCashFlow>
+    createEquityQuantoCashFlow(const ext::shared_ptr<EquityIndex>& index,
+                               bool useQuantoPricer = true) {
+        Date start(5, January, 2023);
+        Date end(5, April, 2023);
 
-            return createEquityQuantoCashFlow(index, start, end, useQuantoPricer);
-        }
+        return createEquityQuantoCashFlow(index, start, end, useQuantoPricer);
+    }
 
-        ext::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(bool useQuantoPricer = true) {
-            return createEquityQuantoCashFlow(equityIndex, useQuantoPricer);
-        }
-    };
+    ext::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(bool useQuantoPricer = true) {
+        return createEquityQuantoCashFlow(equityIndex, useQuantoPricer);
+    }
+};
 
-    void bumpMarketData(CommonVars& vars) {
+void bumpMarketData(CommonVars& vars) {
         
-        vars.localCcyInterestHandle.linkTo(flatRate(0.04, vars.dayCount));
-        vars.dividendHandle.linkTo(flatRate(0.01, vars.dayCount));
-        vars.quantoCcyInterestHandle.linkTo(flatRate(0.03, vars.dayCount));
+    vars.localCcyInterestHandle.linkTo(flatRate(0.04, vars.dayCount));
+    vars.dividendHandle.linkTo(flatRate(0.01, vars.dayCount));
+    vars.quantoCcyInterestHandle.linkTo(flatRate(0.03, vars.dayCount));
 
-        vars.equityVolHandle.linkTo(flatVol(0.45, vars.dayCount));
-        vars.fxVolHandle.linkTo(flatVol(0.25, vars.dayCount));
+    vars.equityVolHandle.linkTo(flatVol(0.45, vars.dayCount));
+    vars.fxVolHandle.linkTo(flatVol(0.25, vars.dayCount));
 
-        vars.spotHandle.linkTo(ext::make_shared<SimpleQuote>(8710.0));
-    }
-
-    void checkQuantoCorrection(bool includeDividend, bool bumpData = false) {
-        const Real tolerance = 1.0e-6;
-
-        CommonVars vars;
-
-        ext::shared_ptr<EquityIndex> equityIndex =
-            includeDividend ?
-                vars.equityIndex :
-                vars.equityIndex->clone(vars.localCcyInterestHandle, Handle<YieldTermStructure>(),
-                                        vars.spotHandle);
-
-        auto cf = vars.createEquityQuantoCashFlow(equityIndex);
-
-        if (bumpData)
-            bumpMarketData(vars);
-
-        Real strike = vars.equityIndex->fixing(cf->fixingDate());
-        Real indexStart = vars.equityIndex->fixing(cf->baseDate());
-
-        Real time = vars.localCcyInterestHandle->timeFromReference(cf->fixingDate());
-        Real rf = vars.localCcyInterestHandle->zeroRate(time, Continuous);
-        Real q = includeDividend ? vars.dividendHandle->zeroRate(time, Continuous) : Real(0.0);
-        Real eqVol = vars.equityVolHandle->blackVol(cf->fixingDate(), strike);
-        Real fxVol = vars.fxVolHandle->blackVol(cf->fixingDate(), 1.0);
-        Real rho = vars.correlationHandle->value();
-        Real spot = vars.spotHandle->value();
-
-        Real quantoForward = spot * std::exp((rf - q - rho * eqVol * fxVol) * time);
-        Real expectedAmount = (quantoForward / indexStart - 1.0) * vars.notional;
-
-        Real actualAmount = cf->amount();
-
-        if ((std::fabs(actualAmount - expectedAmount) > tolerance))
-            BOOST_ERROR("could not replicate equity quanto correction\n"
-                        << "    actual amount:    " << actualAmount << "\n"
-                        << "    expected amount:    " << expectedAmount << "\n"
-                        << "    index start:    " << indexStart << "\n"
-                        << "    index end:    " << quantoForward << "\n"
-                        << "    local rate:    " << rf << "\n"
-                        << "    equity volatility:    " << eqVol << "\n"
-                        << "    FX volatility:    " << fxVol << "\n"
-                        << "    correlation:    " << rho << "\n"
-                        << "    spot:    " << spot << "\n");
-    }
-
-    void checkRaisedError(const ext::shared_ptr<EquityCashFlow>& cf, const std::string& message) {
-        BOOST_CHECK_EXCEPTION(cf->amount(), Error, ExpectedErrorMessage(message));
-    }
+    vars.spotHandle.linkTo(ext::make_shared<SimpleQuote>(8710.0));
 }
+
+void checkQuantoCorrection(bool includeDividend, bool bumpData = false) {
+    const Real tolerance = 1.0e-6;
+
+    CommonVars vars;
+
+    ext::shared_ptr<EquityIndex> equityIndex =
+        includeDividend ?
+            vars.equityIndex :
+            vars.equityIndex->clone(vars.localCcyInterestHandle, Handle<YieldTermStructure>(),
+                                    vars.spotHandle);
+
+    auto cf = vars.createEquityQuantoCashFlow(equityIndex);
+
+    if (bumpData)
+        bumpMarketData(vars);
+
+    Real strike = vars.equityIndex->fixing(cf->fixingDate());
+    Real indexStart = vars.equityIndex->fixing(cf->baseDate());
+
+    Real time = vars.localCcyInterestHandle->timeFromReference(cf->fixingDate());
+    Real rf = vars.localCcyInterestHandle->zeroRate(time, Continuous);
+    Real q = includeDividend ? vars.dividendHandle->zeroRate(time, Continuous) : Real(0.0);
+    Real eqVol = vars.equityVolHandle->blackVol(cf->fixingDate(), strike);
+    Real fxVol = vars.fxVolHandle->blackVol(cf->fixingDate(), 1.0);
+    Real rho = vars.correlationHandle->value();
+    Real spot = vars.spotHandle->value();
+
+    Real quantoForward = spot * std::exp((rf - q - rho * eqVol * fxVol) * time);
+    Real expectedAmount = (quantoForward / indexStart - 1.0) * vars.notional;
+
+    Real actualAmount = cf->amount();
+
+    if ((std::fabs(actualAmount - expectedAmount) > tolerance))
+        BOOST_ERROR("could not replicate equity quanto correction\n"
+                    << "    actual amount:    " << actualAmount << "\n"
+                    << "    expected amount:    " << expectedAmount << "\n"
+                    << "    index start:    " << indexStart << "\n"
+                    << "    index end:    " << quantoForward << "\n"
+                    << "    local rate:    " << rf << "\n"
+                    << "    equity volatility:    " << eqVol << "\n"
+                    << "    FX volatility:    " << fxVol << "\n"
+                    << "    correlation:    " << rho << "\n"
+                    << "    spot:    " << spot << "\n");
+}
+
+void checkRaisedError(const ext::shared_ptr<EquityCashFlow>& cf, const std::string& message) {
+    BOOST_CHECK_EXCEPTION(cf->amount(), Error, ExpectedErrorMessage(message));
+}
+
 
 BOOST_AUTO_TEST_CASE(testSimpleEquityCashFlow) {
     BOOST_TEST_MESSAGE("Testing simple equity cash flow...");

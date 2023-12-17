@@ -47,48 +47,46 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CmsTests)
 
-namespace {
+struct CommonVars {
+    // global data
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-    struct CommonVars {
-        // global data
-        RelinkableHandle<YieldTermStructure> termStructure;
+    ext::shared_ptr<IborIndex> iborIndex;
 
-        ext::shared_ptr<IborIndex> iborIndex;
+    Handle<SwaptionVolatilityStructure> atmVol;
+    Handle<SwaptionVolatilityStructure> SabrVolCube1;
+    Handle<SwaptionVolatilityStructure> SabrVolCube2;
 
-        Handle<SwaptionVolatilityStructure> atmVol;
-        Handle<SwaptionVolatilityStructure> SabrVolCube1;
-        Handle<SwaptionVolatilityStructure> SabrVolCube2;
+    std::vector<GFunctionFactory::YieldCurveModel> yieldCurveModels;
+    std::vector<ext::shared_ptr<CmsCouponPricer> > numericalPricers;
+    std::vector<ext::shared_ptr<CmsCouponPricer> > analyticPricers;
 
-        std::vector<GFunctionFactory::YieldCurveModel> yieldCurveModels;
-        std::vector<ext::shared_ptr<CmsCouponPricer> > numericalPricers;
-        std::vector<ext::shared_ptr<CmsCouponPricer> > analyticPricers;
+    // setup
+    CommonVars() {
 
-        // setup
-        CommonVars() {
+        Calendar calendar = TARGET();
 
-            Calendar calendar = TARGET();
+        Date referenceDate = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = referenceDate;
 
-            Date referenceDate = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = referenceDate;
+        termStructure.linkTo(flatRate(referenceDate, 0.05,
+                                      Actual365Fixed()));
 
-            termStructure.linkTo(flatRate(referenceDate, 0.05,
-                                          Actual365Fixed()));
+        // ATM Volatility structure
+        std::vector<Period> atmOptionTenors = {1 * Months, 6 * Months, 1 * Years,
+                                               5 * Years,  10 * Years, 30 * Years};
 
-            // ATM Volatility structure
-            std::vector<Period> atmOptionTenors = {1 * Months, 6 * Months, 1 * Years,
-                                                   5 * Years,  10 * Years, 30 * Years};
+        std::vector<Period> atmSwapTenors = {1 * Years, 5 * Years, 10 * Years, 30 * Years};
 
-            std::vector<Period> atmSwapTenors = {1 * Years, 5 * Years, 10 * Years, 30 * Years};
+        Matrix m(atmOptionTenors.size(), atmSwapTenors.size());
+        m[0][0]=0.1300; m[0][1]=0.1560; m[0][2]=0.1390; m[0][3]=0.1220;
+        m[1][0]=0.1440; m[1][1]=0.1580; m[1][2]=0.1460; m[1][3]=0.1260;
+        m[2][0]=0.1600; m[2][1]=0.1590; m[2][2]=0.1470; m[2][3]=0.1290;
+        m[3][0]=0.1640; m[3][1]=0.1470; m[3][2]=0.1370; m[3][3]=0.1220;
+        m[4][0]=0.1400; m[4][1]=0.1300; m[4][2]=0.1250; m[4][3]=0.1100;
+        m[5][0]=0.1130; m[5][1]=0.1090; m[5][2]=0.1070; m[5][3]=0.0930;
 
-            Matrix m(atmOptionTenors.size(), atmSwapTenors.size());
-            m[0][0]=0.1300; m[0][1]=0.1560; m[0][2]=0.1390; m[0][3]=0.1220;
-            m[1][0]=0.1440; m[1][1]=0.1580; m[1][2]=0.1460; m[1][3]=0.1260;
-            m[2][0]=0.1600; m[2][1]=0.1590; m[2][2]=0.1470; m[2][3]=0.1290;
-            m[3][0]=0.1640; m[3][1]=0.1470; m[3][2]=0.1370; m[3][3]=0.1220;
-            m[4][0]=0.1400; m[4][1]=0.1300; m[4][2]=0.1250; m[4][3]=0.1100;
-            m[5][0]=0.1130; m[5][1]=0.1090; m[5][2]=0.1070; m[5][3]=0.0930;
-
-            atmVol = Handle<SwaptionVolatilityStructure>(
+        atmVol = Handle<SwaptionVolatilityStructure>(
                 ext::shared_ptr<SwaptionVolatilityStructure>(new
                     SwaptionVolatilityMatrix(calendar,
                                              Following,
@@ -97,86 +95,86 @@ namespace {
                                              m,
                                              Actual365Fixed())));
 
-            // Vol cubes
-            std::vector<Period> optionTenors = {{1, Years}, {10, Years}, {30, Years}};
-            std::vector<Period> swapTenors = {{2, Years}, {10, Years}, {30, Years}};
-            std::vector<Spread> strikeSpreads = {-0.020, -0.005, 0.000, 0.005, 0.020};
+        // Vol cubes
+        std::vector<Period> optionTenors = {{1, Years}, {10, Years}, {30, Years}};
+        std::vector<Period> swapTenors = {{2, Years}, {10, Years}, {30, Years}};
+        std::vector<Spread> strikeSpreads = {-0.020, -0.005, 0.000, 0.005, 0.020};
 
-            Size nRows = optionTenors.size()*swapTenors.size();
-            Size nCols = strikeSpreads.size();
-            Matrix volSpreadsMatrix(nRows, nCols);
-            volSpreadsMatrix[0][0] =  0.0599;
-            volSpreadsMatrix[0][1] =  0.0049;
-            volSpreadsMatrix[0][2] =  0.0000;
-            volSpreadsMatrix[0][3] = -0.0001;
-            volSpreadsMatrix[0][4] =  0.0127;
+        Size nRows = optionTenors.size()*swapTenors.size();
+        Size nCols = strikeSpreads.size();
+        Matrix volSpreadsMatrix(nRows, nCols);
+        volSpreadsMatrix[0][0] =  0.0599;
+        volSpreadsMatrix[0][1] =  0.0049;
+        volSpreadsMatrix[0][2] =  0.0000;
+        volSpreadsMatrix[0][3] = -0.0001;
+        volSpreadsMatrix[0][4] =  0.0127;
 
-            volSpreadsMatrix[1][0] =  0.0729;
-            volSpreadsMatrix[1][1] =  0.0086;
-            volSpreadsMatrix[1][2] =  0.0000;
-            volSpreadsMatrix[1][3] = -0.0024;
-            volSpreadsMatrix[1][4] =  0.0098;
+        volSpreadsMatrix[1][0] =  0.0729;
+        volSpreadsMatrix[1][1] =  0.0086;
+        volSpreadsMatrix[1][2] =  0.0000;
+        volSpreadsMatrix[1][3] = -0.0024;
+        volSpreadsMatrix[1][4] =  0.0098;
 
-            volSpreadsMatrix[2][0] =  0.0738;
-            volSpreadsMatrix[2][1] =  0.0102;
-            volSpreadsMatrix[2][2] =  0.0000;
-            volSpreadsMatrix[2][3] = -0.0039;
-            volSpreadsMatrix[2][4] =  0.0065;
+        volSpreadsMatrix[2][0] =  0.0738;
+        volSpreadsMatrix[2][1] =  0.0102;
+        volSpreadsMatrix[2][2] =  0.0000;
+        volSpreadsMatrix[2][3] = -0.0039;
+        volSpreadsMatrix[2][4] =  0.0065;
 
-            volSpreadsMatrix[3][0] =  0.0465;
-            volSpreadsMatrix[3][1] =  0.0063;
-            volSpreadsMatrix[3][2] =  0.0000;
-            volSpreadsMatrix[3][3] = -0.0032;
-            volSpreadsMatrix[3][4] = -0.0010;
+        volSpreadsMatrix[3][0] =  0.0465;
+        volSpreadsMatrix[3][1] =  0.0063;
+        volSpreadsMatrix[3][2] =  0.0000;
+        volSpreadsMatrix[3][3] = -0.0032;
+        volSpreadsMatrix[3][4] = -0.0010;
 
-            volSpreadsMatrix[4][0] =  0.0558;
-            volSpreadsMatrix[4][1] =  0.0084;
-            volSpreadsMatrix[4][2] =  0.0000;
-            volSpreadsMatrix[4][3] = -0.0050;
-            volSpreadsMatrix[4][4] = -0.0057;
+        volSpreadsMatrix[4][0] =  0.0558;
+        volSpreadsMatrix[4][1] =  0.0084;
+        volSpreadsMatrix[4][2] =  0.0000;
+        volSpreadsMatrix[4][3] = -0.0050;
+        volSpreadsMatrix[4][4] = -0.0057;
 
-            volSpreadsMatrix[5][0] =  0.0576;
-            volSpreadsMatrix[5][1] =  0.0083;
-            volSpreadsMatrix[5][2] =  0.0000;
-            volSpreadsMatrix[5][3] = -0.0043;
-            volSpreadsMatrix[5][4] = -0.0014;
+        volSpreadsMatrix[5][0] =  0.0576;
+        volSpreadsMatrix[5][1] =  0.0083;
+        volSpreadsMatrix[5][2] =  0.0000;
+        volSpreadsMatrix[5][3] = -0.0043;
+        volSpreadsMatrix[5][4] = -0.0014;
 
-            volSpreadsMatrix[6][0] =  0.0437;
-            volSpreadsMatrix[6][1] =  0.0059;
-            volSpreadsMatrix[6][2] =  0.0000;
-            volSpreadsMatrix[6][3] = -0.0030;
-            volSpreadsMatrix[6][4] = -0.0006;
+        volSpreadsMatrix[6][0] =  0.0437;
+        volSpreadsMatrix[6][1] =  0.0059;
+        volSpreadsMatrix[6][2] =  0.0000;
+        volSpreadsMatrix[6][3] = -0.0030;
+        volSpreadsMatrix[6][4] = -0.0006;
 
-            volSpreadsMatrix[7][0] =  0.0533;
-            volSpreadsMatrix[7][1] =  0.0078;
-            volSpreadsMatrix[7][2] =  0.0000;
-            volSpreadsMatrix[7][3] = -0.0045;
-            volSpreadsMatrix[7][4] = -0.0046;
+        volSpreadsMatrix[7][0] =  0.0533;
+        volSpreadsMatrix[7][1] =  0.0078;
+        volSpreadsMatrix[7][2] =  0.0000;
+        volSpreadsMatrix[7][3] = -0.0045;
+        volSpreadsMatrix[7][4] = -0.0046;
 
-            volSpreadsMatrix[8][0] =  0.0545;
-            volSpreadsMatrix[8][1] =  0.0079;
-            volSpreadsMatrix[8][2] =  0.0000;
-            volSpreadsMatrix[8][3] = -0.0042;
-            volSpreadsMatrix[8][4] = -0.0020;
+        volSpreadsMatrix[8][0] =  0.0545;
+        volSpreadsMatrix[8][1] =  0.0079;
+        volSpreadsMatrix[8][2] =  0.0000;
+        volSpreadsMatrix[8][3] = -0.0042;
+        volSpreadsMatrix[8][4] = -0.0020;
 
-            std::vector<std::vector<Handle<Quote> > > volSpreads(nRows);
-            for (Size i=0; i<nRows; ++i){
-                volSpreads[i] = std::vector<Handle<Quote> >(nCols);
-                for (Size j=0; j<nCols; ++j) {
-                    volSpreads[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(
+        std::vector<std::vector<Handle<Quote> > > volSpreads(nRows);
+        for (Size i=0; i<nRows; ++i){
+            volSpreads[i] = std::vector<Handle<Quote> >(nCols);
+            for (Size j=0; j<nCols; ++j) {
+                volSpreads[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(
                                     new SimpleQuote(volSpreadsMatrix[i][j])));
-                }
             }
+        }
 
-            iborIndex = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            ext::shared_ptr<SwapIndex> swapIndexBase(new
+        iborIndex = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        ext::shared_ptr<SwapIndex> swapIndexBase(new
                 EuriborSwapIsdaFixA(10*Years, termStructure));
-            ext::shared_ptr<SwapIndex> shortSwapIndexBase(new
+        ext::shared_ptr<SwapIndex> shortSwapIndexBase(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
 
-            bool vegaWeightedSmileFit = false;
+        bool vegaWeightedSmileFit = false;
 
-            SabrVolCube2 = Handle<SwaptionVolatilityStructure>(
+        SabrVolCube2 = Handle<SwaptionVolatilityStructure>(
                 ext::make_shared<InterpolatedSwaptionVolatilityCube>(atmVol,
                                      optionTenors,
                                      swapTenors,
@@ -185,27 +183,27 @@ namespace {
                                      swapIndexBase,
                                      shortSwapIndexBase,
                                      vegaWeightedSmileFit));
-            SabrVolCube2->enableExtrapolation();
+        SabrVolCube2->enableExtrapolation();
 
-            std::vector<std::vector<Handle<Quote> > > guess(nRows);
-            for (Size i=0; i<nRows; ++i) {
-                guess[i] = std::vector<Handle<Quote> >(4);
-                guess[i][0] =
-                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
-                guess[i][1] =
-                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
-                guess[i][2] =
-                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
-                guess[i][3] =
-                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
-            }
-            std::vector<bool> isParameterFixed(4, false);
-            isParameterFixed[1] = true;
+        std::vector<std::vector<Handle<Quote> > > guess(nRows);
+        for (Size i=0; i<nRows; ++i) {
+            guess[i] = std::vector<Handle<Quote> >(4);
+            guess[i][0] =
+                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+            guess[i][1] =
+                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+            guess[i][2] =
+                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+            guess[i][3] =
+                Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+        }
+        std::vector<bool> isParameterFixed(4, false);
+        isParameterFixed[1] = true;
 
-            // FIXME
-            bool isAtmCalibrated = false;
+        // FIXME
+        bool isAtmCalibrated = false;
 
-            SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
+        SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
                 ext::make_shared<SabrSwaptionVolatilityCube>(atmVol,
                                      optionTenors,
                                      swapTenors,
@@ -217,35 +215,34 @@ namespace {
                                      guess,
                                      isParameterFixed,
                                      isAtmCalibrated));
-            SabrVolCube1->enableExtrapolation();
+        SabrVolCube1->enableExtrapolation();
 
-            yieldCurveModels = {GFunctionFactory::Standard,
-                                GFunctionFactory::ExactYield,
-                                GFunctionFactory::ParallelShifts,
-                                GFunctionFactory::NonParallelShifts,
-                                GFunctionFactory::NonParallelShifts};
+        yieldCurveModels = {GFunctionFactory::Standard,
+                            GFunctionFactory::ExactYield,
+                            GFunctionFactory::ParallelShifts,
+                            GFunctionFactory::NonParallelShifts,
+                            GFunctionFactory::NonParallelShifts};
 
-            Handle<Quote> zeroMeanRev(ext::make_shared<SimpleQuote>(0.0));
+        Handle<Quote> zeroMeanRev(ext::make_shared<SimpleQuote>(0.0));
 
-            numericalPricers.clear();
-            analyticPricers.clear();
-            for (Size j = 0; j < yieldCurveModels.size(); ++j) {
-                if (j < yieldCurveModels.size() - 1)
-                    numericalPricers.push_back(
+        numericalPricers.clear();
+        analyticPricers.clear();
+        for (Size j = 0; j < yieldCurveModels.size(); ++j) {
+            if (j < yieldCurveModels.size() - 1)
+                numericalPricers.push_back(
                         ext::shared_ptr<CmsCouponPricer>(new NumericHaganPricer(
                             atmVol, yieldCurveModels[j], zeroMeanRev)));
-                else
-                    numericalPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
+            else
+                numericalPricers.push_back(ext::shared_ptr<CmsCouponPricer>(
                         new LinearTsrPricer(atmVol, zeroMeanRev)));
 
-                analyticPricers.push_back(ext::shared_ptr<CmsCouponPricer>(new
+            analyticPricers.push_back(ext::shared_ptr<CmsCouponPricer>(new
                     AnalyticHaganPricer(atmVol, yieldCurveModels[j],
                                         zeroMeanRev)));
-            }
         }
-    };
+    }
+};
 
-}
 
 BOOST_AUTO_TEST_CASE(testFairRate)  {
 

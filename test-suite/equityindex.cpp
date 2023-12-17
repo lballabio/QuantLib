@@ -30,44 +30,42 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(EquityIndexTests)
 
-namespace {
+struct CommonVars {
 
-    struct CommonVars {
+    Date today;
+    Calendar calendar;
+    DayCounter dayCount;
 
-        Date today;
-        Calendar calendar;
-        DayCounter dayCount;
+    ext::shared_ptr<EquityIndex> equityIndex;
+    RelinkableHandle<YieldTermStructure> interestHandle;
+    RelinkableHandle<YieldTermStructure> dividendHandle;
+    ext::shared_ptr<Quote> spot;
+    RelinkableHandle<Quote> spotHandle;
 
-        ext::shared_ptr<EquityIndex> equityIndex;
-        RelinkableHandle<YieldTermStructure> interestHandle;
-        RelinkableHandle<YieldTermStructure> dividendHandle;
-        ext::shared_ptr<Quote> spot;
-        RelinkableHandle<Quote> spotHandle;
+    // utilities
 
-        // utilities
+    CommonVars(bool addTodaysFixing = true) {
+        calendar = TARGET();
+        dayCount = Actual365Fixed();
 
-        CommonVars(bool addTodaysFixing = true) {
-            calendar = TARGET();
-            dayCount = Actual365Fixed();
+        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+                                                    dividendHandle, spotHandle);
 
-            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
-                                                        dividendHandle, spotHandle);
-
-            today = calendar.adjust(Date(27, January, 2023));
+        today = calendar.adjust(Date(27, January, 2023));
             
-            if (addTodaysFixing)
-                equityIndex->addFixing(today, 8690.0);
+        if (addTodaysFixing)
+            equityIndex->addFixing(today, 8690.0);
 
-            Settings::instance().evaluationDate() = today;
+        Settings::instance().evaluationDate() = today;
 
-            interestHandle.linkTo(flatRate(0.03, dayCount));
-            dividendHandle.linkTo(flatRate(0.01, dayCount));
+        interestHandle.linkTo(flatRate(0.03, dayCount));
+        dividendHandle.linkTo(flatRate(0.01, dayCount));
             
-            spot = ext::make_shared<SimpleQuote>(8700.0);
-            spotHandle.linkTo(spot);
-        }
-    };
-}
+        spot = ext::make_shared<SimpleQuote>(8700.0);
+        spotHandle.linkTo(spot);
+    }
+};
+
 
 BOOST_AUTO_TEST_CASE(testTodaysFixing) {
     BOOST_TEST_MESSAGE("Testing today's fixing...");

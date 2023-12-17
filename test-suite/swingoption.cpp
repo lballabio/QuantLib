@@ -53,60 +53,57 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SwingOptionTests)
 
-namespace {
+ext::function<Real(Real)> constant_b(Real b) {
+    return [=](Real x){ return b; };
+}
 
-    ext::function<Real(Real)> constant_b(Real b) {
-        return [=](Real x){ return b; };
-    }
+ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
+    Array x0(2);
+    x0[0] = 3.0; x0[1] = 0.0;
 
-    ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
-        Array x0(2);
-        x0[0] = 3.0; x0[1] = 0.0;
+    const Real beta = 5.0;
+    const Real eta  = 2.0;
+    const Real jumpIntensity = 1.0;
+    const Real speed = 1.0;
+    const Real volatility = 2.0;
 
-        const Real beta = 5.0;
-        const Real eta  = 2.0;
-        const Real jumpIntensity = 1.0;
-        const Real speed = 1.0;
-        const Real volatility = 2.0;
-
-        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
+    ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
             new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
                                                  constant_b(x0[0])));
-        return ext::make_shared<ExtOUWithJumpsProcess>(
-            ouProcess, x0[1], beta, jumpIntensity, eta);
-    }
+    return ext::make_shared<ExtOUWithJumpsProcess>(
+                                                   ouProcess, x0[1], beta, jumpIntensity, eta);
+}
 
-    class SwingPdePricing {
-      public:
-        typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
+class SwingPdePricing {
+  public:
+    typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
 
-        SwingPdePricing(ext::shared_ptr<ExtOUWithJumpsProcess> process,
-                        ext::shared_ptr<VanillaOption> option,
-                        ext::shared_ptr<Shape> shape)
-        : process_(std::move(process)), option_(std::move(option)), shape_(std::move(shape)) {}
+    SwingPdePricing(ext::shared_ptr<ExtOUWithJumpsProcess> process,
+                    ext::shared_ptr<VanillaOption> option,
+                    ext::shared_ptr<Shape> shape)
+    : process_(std::move(process)), option_(std::move(option)), shape_(std::move(shape)) {}
 
-        Real operator()(Real x) const {
-            const ext::shared_ptr<YieldTermStructure> rTS(
-                flatRate(0.0, Actual365Fixed()));
+    Real operator()(Real x) const {
+        const ext::shared_ptr<YieldTermStructure> rTS(flatRate(0.0, Actual365Fixed()));
 
-            const Size gridX = 200;
-            const Size gridY = 100;
-            const Size gridT = 100;
+        const Size gridX = 200;
+        const Size gridY = 100;
+        const Size gridT = 100;
 
-            option_->setPricingEngine(
+        option_->setPricingEngine(
                 ext::make_shared<FdExtOUJumpVanillaEngine>(
                     process_, rTS,
                     Size(gridT/x), Size(gridX/x), Size(gridY/x), shape_));
 
-            return option_->NPV();
-        }
+        return option_->NPV();
+    }
 
-      private:
-        const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
-        const ext::shared_ptr<VanillaOption> option_;
-        const ext::shared_ptr<Shape> shape_;
-    };
-}
+  private:
+    const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
+    const ext::shared_ptr<VanillaOption> option_;
+    const ext::shared_ptr<Shape> shape_;
+};
+
 
 BOOST_AUTO_TEST_CASE(testExtendedOrnsteinUhlenbeckProcess) {
 

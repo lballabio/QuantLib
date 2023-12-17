@@ -58,22 +58,20 @@ BOOST_AUTO_TEST_SUITE(DoubleBinaryOptionTests)
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance << "\n");
 
-namespace {
+struct DoubleBinaryOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrier_lo;
+    Real barrier_hi;
+    Real cash;     // cash payoff for cash-or-nothing
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-    struct DoubleBinaryOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrier_lo;
-        Real barrier_hi;
-        Real cash;     // cash payoff for cash-or-nothing
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
-}
 
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 

@@ -883,97 +883,92 @@ BOOST_AUTO_TEST_CASE(testFdmHestonHullWhiteEngine, *precondition(if_speed(Fast))
 }
 
 
-namespace {
+struct HestonModelData {
+    const char* const name;
+    Real v0;
+    Real kappa;
+    Real theta;
+    Real sigma;
+    Real rho;
+    Real r;
+    Real q;
+};
 
-    struct HestonModelData {
-        const char* const name;
-        Real v0;
-        Real kappa;
-        Real theta;
-        Real sigma;
-        Real rho;
-        Real r;
-        Real q;
-    };
+HestonModelData hestonModels[] = {
+    // ADI finite difference schemes for option pricing in the
+    // Heston model with correlation, K.J. in t'Hout and S. Foulon,
+    {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
+    {"'t Hout case 2", 0.12, 3.0, 0.12, 0.04, 0.6, 0.01, 0.04},
+    {"'t Hout case 3", 0.0707,0.6067, 0.0707, 0.2928, -0.7571, 0.03, 0.0},
+    {"'t Hout case 4", 0.06, 2.5, 0.06, 0.5, -0.1, 0.0507, 0.0469},
+    // Efficient numerical methods for pricing American options under
+    // stochastic volatility, Samuli Ikonen and Jari Toivanen,
+    {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
+    // Not-so-complex logarithms in the Heston model,
+    // Christian Kahl and Peter Jäckel
+    {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
+    // self defined test cases
+    {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
+    {"high correlation", 0.07, 1.0, 0.04, 0.55,  0.995, 0.02, 0.04 },
+    {"low Vol-Of-Vol", 0.07, 1.0, 0.04, 0.001, -0.75, 0.04, 0.03 },
+    {"kappaEqSigRho", 0.07, 0.4, 0.04, 0.5, 0.8, 0.03, 0.03 }
+};
 
-    HestonModelData hestonModels[] = {
-        // ADI finite difference schemes for option pricing in the
-        // Heston model with correlation, K.J. in t'Hout and S. Foulon,
-        {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
-        {"'t Hout case 2", 0.12, 3.0, 0.12, 0.04, 0.6, 0.01, 0.04},
-        {"'t Hout case 3", 0.0707,0.6067, 0.0707, 0.2928, -0.7571, 0.03, 0.0},
-        {"'t Hout case 4", 0.06, 2.5, 0.06, 0.5, -0.1, 0.0507, 0.0469},
-        // Efficient numerical methods for pricing American options under
-        // stochastic volatility, Samuli Ikonen and Jari Toivanen,
-        {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
-        // Not-so-complex logarithms in the Heston model,
-        // Christian Kahl and Peter Jäckel
-        {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
-        // self defined test cases
-        {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
-        {"high correlation", 0.07, 1.0, 0.04, 0.55,  0.995, 0.02, 0.04 },
-        {"low Vol-Of-Vol", 0.07, 1.0, 0.04, 0.001, -0.75, 0.04, 0.03 },
-        {"kappaEqSigRho", 0.07, 0.4, 0.04, 0.5, 0.8, 0.03, 0.03 }
-    };
+struct HullWhiteModelData {
+    const char* const name;
+    Real a;
+    Real sigma;
+};
 
-    struct HullWhiteModelData {
-        const char* const name;
-        Real a;
-        Real sigma;
-    };
-
-    HullWhiteModelData hullWhiteModels[] = {
-        {"EUR-2003", 0.00883, 0.00631 }
-    };
+HullWhiteModelData hullWhiteModels[] = {
+    {"EUR-2003", 0.00883, 0.00631 }
+};
 
 
-    struct SchemeData {
-        const char* const name;
-        FdmSchemeDesc schemeDesc;
-    };
+struct SchemeData {
+    const char* const name;
+    FdmSchemeDesc schemeDesc;
+};
 
-    SchemeData schemes[] = {
-        { "HV2", FdmSchemeDesc::Hundsdorfer() },
-        { "HV1", FdmSchemeDesc::ModifiedHundsdorfer() },
-        { "CS" , FdmSchemeDesc::CraigSneyd() },
-        { "MCS", FdmSchemeDesc::ModifiedCraigSneyd() },
-        { "DS" , FdmSchemeDesc::Douglas() }
-    };
+SchemeData schemes[] = {
+    { "HV2", FdmSchemeDesc::Hundsdorfer() },
+    { "HV1", FdmSchemeDesc::ModifiedHundsdorfer() },
+    { "CS" , FdmSchemeDesc::CraigSneyd() },
+    { "MCS", FdmSchemeDesc::ModifiedCraigSneyd() },
+    { "DS" , FdmSchemeDesc::Douglas() }
+};
 
-    struct VanillaOptionData {
-        Real strike;
-        Time maturity;
-        Option::Type optionType;
-    };
+struct VanillaOptionData {
+    Real strike;
+    Time maturity;
+    Option::Type optionType;
+};
 
-    ext::shared_ptr<HestonProcess> makeHestonProcess(
-                                             const HestonModelData& params) {
+ext::shared_ptr<HestonProcess> makeHestonProcess(const HestonModelData& params) {
 
-        Handle<Quote> spot(
-                ext::make_shared<SimpleQuote>(100));
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(100));
 
-        DayCounter dayCounter = Actual365Fixed();
-        Handle<YieldTermStructure> rTS(flatRate(params.r, dayCounter));
-        Handle<YieldTermStructure> qTS(flatRate(params.q, dayCounter));
+    DayCounter dayCounter = Actual365Fixed();
+    Handle<YieldTermStructure> rTS(flatRate(params.r, dayCounter));
+    Handle<YieldTermStructure> qTS(flatRate(params.q, dayCounter));
 
-        return ext::make_shared<HestonProcess>(
+    return ext::make_shared<HestonProcess>(
                    rTS, qTS, spot, params.v0, params.kappa,
                    params.theta, params.sigma, params.rho);
-    }
+}
 
-    ext::shared_ptr<VanillaOption> makeVanillaOption(
-                                            const VanillaOptionData& params) {
+ext::shared_ptr<VanillaOption> makeVanillaOption(const VanillaOptionData& params) {
 
-        Date maturity = Date(Settings::instance().evaluationDate())
-                                          + Period(Size(params.maturity*365), Days);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+    Date maturity = Date(Settings::instance().evaluationDate())
+        + Period(Size(params.maturity*365), Days);
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
+    ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(params.optionType, params.strike));
 
-        return ext::make_shared<VanillaOption>(
+    return ext::make_shared<VanillaOption>(
                                           payoff, exercise);
-    }
 }
+
 
 BOOST_AUTO_TEST_CASE(testBsmHullWhitePricing) {
     BOOST_TEST_MESSAGE("Testing convergence speed of Heston-Hull-White engine...");
@@ -1115,33 +1110,30 @@ BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError, *precondition(if_speed(Fast)
 }
 
 
-
-
-namespace {
-    class HestonHullWhiteCorrelationConstraint : public Constraint {
-      private:
-        class Impl : public Constraint::Impl {
-          public:
-            explicit Impl(Real equityShortRateCorr)
-            : equityShortRateCorr_(equityShortRateCorr) {}
-
-            bool test(const Array& params) const override {
-                const Real rho = params[3];
-
-                return (squared(rho) + squared(equityShortRateCorr_) <= 1.0);
-            }
-
-          private:
-            const Real equityShortRateCorr_;
-        };
+class HestonHullWhiteCorrelationConstraint : public Constraint {
+  private:
+    class Impl : public Constraint::Impl {
       public:
-        explicit HestonHullWhiteCorrelationConstraint(
+        explicit Impl(Real equityShortRateCorr)
+        : equityShortRateCorr_(equityShortRateCorr) {}
+
+        bool test(const Array& params) const override {
+            const Real rho = params[3];
+
+            return (squared(rho) + squared(equityShortRateCorr_) <= 1.0);
+        }
+
+      private:
+        const Real equityShortRateCorr_;
+    };
+  public:
+    explicit HestonHullWhiteCorrelationConstraint(
             Real equityShortRateCorr)
-        : Constraint(ext::shared_ptr<Constraint::Impl>(
+    : Constraint(ext::shared_ptr<Constraint::Impl>(
              new HestonHullWhiteCorrelationConstraint::Impl(
                                                      equityShortRateCorr))) {}
-    };
-}
+};
+
 
 BOOST_AUTO_TEST_CASE(testHestonHullWhiteCalibration, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing the Heston Hull-White calibration...");

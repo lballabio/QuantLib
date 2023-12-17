@@ -105,17 +105,14 @@ BOOST_AUTO_TEST_CASE(testRegression) {
     }
 }
 
-namespace {
+struct get_item {
+    Size i;
+    explicit get_item(Size i) : i(i) {}
+    Real operator()(const Array& a) const {
+        return a[i];
+    }
+};
 
-    struct get_item {
-        Size i;
-        explicit get_item(Size i) : i(i) {}
-        Real operator()(const Array& a) const {
-            return a[i];
-        }
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testMultiDimRegression) {
 

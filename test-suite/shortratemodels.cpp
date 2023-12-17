@@ -48,15 +48,12 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ShortRateModelTests)
 
-namespace {
+struct CalibrationData {
+    Integer start;
+    Integer length;
+    Volatility volatility;
+};
 
-    struct CalibrationData {
-        Integer start;
-        Integer length;
-        Volatility volatility;
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");

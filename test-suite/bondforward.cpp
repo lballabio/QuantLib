@@ -31,42 +31,40 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BondForwardTests)
 
-namespace {
+struct CommonVars {
+    // common data
+    Date today;
+    RelinkableHandle<YieldTermStructure> curveHandle;
 
-    struct CommonVars {
-        // common data
-        Date today;
-        RelinkableHandle<YieldTermStructure> curveHandle;
+    // setup
+    CommonVars() {
+        today = Date(7, March, 2022);
+        Settings::instance().evaluationDate() = today;
 
-        // setup
-        CommonVars() {
-            today = Date(7, March, 2022);
-            Settings::instance().evaluationDate() = today;
-
-            curveHandle.linkTo(flatRate(today, 0.0004977, Actual365Fixed()));
-        }
-    };
-
-    ext::shared_ptr<Bond> buildBond(const Date &issue, 
-                                    const Date &maturity, 
-                                    Rate cpn) {
-        Schedule sch(issue, maturity, Period(Annual), TARGET(), Following, Following,
-                     DateGeneration::Backward, false);
-
-        return ext::make_shared<FixedRateBond>(2, 1.e5, sch, std::vector<Rate>(1, cpn),
-                                               ActualActual(ActualActual::ISDA));
+        curveHandle.linkTo(flatRate(today, 0.0004977, Actual365Fixed()));
     }
+};
 
-    ext::shared_ptr<BondForward> buildBondForward(const ext::shared_ptr<Bond>& underlying,
-                                                  const Handle<YieldTermStructure> &handle,
-                                                  const Date& delivery, 
-                                                  Position::Type type) {
-        auto valueDt = handle->referenceDate();
-        return ext::make_shared<BondForward>(valueDt, delivery, type, 0.0, 2,
-                                             ActualActual(ActualActual::ISDA), 
-                                             TARGET(), Following, underlying, handle, handle);
-    }
+ext::shared_ptr<Bond> buildBond(const Date &issue, 
+                                const Date &maturity, 
+                                Rate cpn) {
+    Schedule sch(issue, maturity, Period(Annual), TARGET(), Following, Following,
+                 DateGeneration::Backward, false);
+
+    return ext::make_shared<FixedRateBond>(2, 1.e5, sch, std::vector<Rate>(1, cpn),
+                                           ActualActual(ActualActual::ISDA));
 }
+
+ext::shared_ptr<BondForward> buildBondForward(const ext::shared_ptr<Bond>& underlying,
+                                              const Handle<YieldTermStructure> &handle,
+                                              const Date& delivery, 
+                                              Position::Type type) {
+    auto valueDt = handle->referenceDate();
+    return ext::make_shared<BondForward>(valueDt, delivery, type, 0.0, 2,
+                                         ActualActual(ActualActual::ISDA), 
+                                         TARGET(), Following, underlying, handle, handle);
+}
+
 
 BOOST_AUTO_TEST_CASE(testFuturesPriceReplication) {
     BOOST_TEST_MESSAGE("Testing futures price replication...");

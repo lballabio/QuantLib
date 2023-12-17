@@ -33,20 +33,16 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(InterestRateTests)
 
-namespace {
-
-    struct InterestRateData {
-        Rate r;
-        Compounding comp;
-        Frequency freq;
-        Time t;
-        Compounding comp2;
-        Frequency freq2;
-        Rate expected;
-        Size precision;
-    };
-
-}
+struct InterestRateData {
+    Rate r;
+    Compounding comp;
+    Frequency freq;
+    Time t;
+    Compounding comp2;
+    Frequency freq2;
+    Rate expected;
+    Size precision;
+};
 
 BOOST_AUTO_TEST_CASE(testConversions) {
     BOOST_TEST_MESSAGE("Testing interest-rate conversions...");

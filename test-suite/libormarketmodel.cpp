@@ -52,58 +52,55 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)  // tests for deprecate
 
 BOOST_AUTO_TEST_SUITE(LiborMarketModelTests)
 
-namespace {
+ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<Rate>& rates) {
+    DayCounter dayCounter = Actual360();
 
-    ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<Rate>& rates) {
-        DayCounter dayCounter = Actual360();
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-        RelinkableHandle<YieldTermStructure> termStructure;
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-        ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    Date todaysDate =
+        index->fixingCalendar().adjust(Date(4,September,2005));
+    Settings::instance().evaluationDate() = todaysDate;
 
-        Date todaysDate =
-            index->fixingCalendar().adjust(Date(4,September,2005));
-        Settings::instance().evaluationDate() = todaysDate;
+    dates[0] = index->fixingCalendar().advance(todaysDate,
+                                               index->fixingDays(), Days);
 
-        dates[0] = index->fixingCalendar().advance(todaysDate,
-                                                   index->fixingDays(), Days);
-
-        termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
+    termStructure.linkTo(ext::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
-        return index;
-    }
+    return index;
+}
 
 
-    ext::shared_ptr<IborIndex> makeIndex() {
-        std::vector<Date> dates = {{4,September,2005}, {4,September,2018}};
-        std::vector<Rate> rates = {0.039, 0.041};
+ext::shared_ptr<IborIndex> makeIndex() {
+    std::vector<Date> dates = {{4,September,2005}, {4,September,2018}};
+    std::vector<Rate> rates = {0.039, 0.041};
 
-        return makeIndex(dates, rates);
-    }
+    return makeIndex(dates, rates);
+}
 
 
-    ext::shared_ptr<OptionletVolatilityStructure>
-    makeCapVolCurve(const Date& todaysDate) {
-        Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
-                             15.78, 15.40, 15.21, 14.86};
+ext::shared_ptr<OptionletVolatilityStructure>
+makeCapVolCurve(const Date& todaysDate) {
+    Volatility vols[] = {14.40, 17.15, 16.81, 16.64, 16.17,
+                         15.78, 15.40, 15.21, 14.86};
 
-        std::vector<Date> dates;
-        std::vector<Volatility> capletVols;
-        ext::shared_ptr<LiborForwardModelProcess> process(
+    std::vector<Date> dates;
+    std::vector<Volatility> capletVols;
+    ext::shared_ptr<LiborForwardModelProcess> process(
                                new LiborForwardModelProcess(10, makeIndex()));
 
-        for (Size i=0; i < 9; ++i) {
-            capletVols.push_back(vols[i]/100);
-            dates.push_back(process->fixingDates()[i+1]);
-        }
-
-        return ext::make_shared<CapletVarianceCurve>(
-                         todaysDate, dates,
-                                                 capletVols, Actual360());
+    for (Size i=0; i < 9; ++i) {
+        capletVols.push_back(vols[i]/100);
+        dates.push_back(process->fixingDates()[i+1]);
     }
 
+    return ext::make_shared<CapletVarianceCurve>(
+                         todaysDate, dates,
+                         capletVols, Actual360());
 }
+
 
 BOOST_AUTO_TEST_CASE(testSimpleCovarianceModels) {
     BOOST_TEST_MESSAGE("Testing simple covariance models...");

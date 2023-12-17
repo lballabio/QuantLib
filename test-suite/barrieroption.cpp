@@ -104,67 +104,63 @@ BOOST_AUTO_TEST_SUITE(BarrierOptionTests)
                << "    tolerance:        " << tolerance);
 
 
-namespace {
-
-    std::string barrierTypeToString(Barrier::Type type) {
-        switch(type){
-          case Barrier::DownIn:
-            return std::string("Down-and-in");
-          case Barrier::UpIn:
-            return std::string("Up-and-in");
-          case Barrier::DownOut:
-            return std::string("Down-and-out");
-          case Barrier::UpOut:
-            return std::string("Up-and-out");
-          default:
-            QL_FAIL("unknown exercise type");
-        }
+std::string barrierTypeToString(Barrier::Type type) {
+    switch(type){
+      case Barrier::DownIn:
+        return std::string("Down-and-in");
+      case Barrier::UpIn:
+        return std::string("Up-and-in");
+      case Barrier::DownOut:
+        return std::string("Down-and-out");
+      case Barrier::UpOut:
+        return std::string("Up-and-out");
+      default:
+        QL_FAIL("unknown exercise type");
     }
-
-    struct BarrierOptionData {
-        Barrier::Type type;
-        Volatility volatility;
-        Real strike;
-        Real barrier;
-        Real callValue;
-        Real putValue;
-    };
-
-    struct NewBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Exercise::Type exType;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // result
-        Real tol;      // tolerance
-    };
-
-    struct BarrierFxOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;                 // spot
-        Rate q;                 // dividend
-        Rate r;                 // risk-free rate
-        Time t;                 // time to maturity
-        Volatility vol25Put;    // 25 delta put vol
-        Volatility volAtm;      // atm vol
-        Volatility vol25Call;   // 25 delta call vol
-        Volatility v;           // volatility at strike
-        Real result;            // result
-        Real tol;               // tolerance
-    };
-
 }
+
+struct BarrierOptionData {
+    Barrier::Type type;
+    Volatility volatility;
+    Real strike;
+    Real barrier;
+    Real callValue;
+    Real putValue;
+};
+
+struct NewBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Exercise::Type exType;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // result
+    Real tol;      // tolerance
+};
+
+struct BarrierFxOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;                 // spot
+    Rate q;                 // dividend
+    Rate r;                 // risk-free rate
+    Time t;                 // time to maturity
+    Volatility vol25Put;    // 25 delta put vol
+    Volatility volAtm;      // atm vol
+    Volatility vol25Call;   // 25 delta call vol
+    Volatility v;           // volatility at strike
+    Real result;            // result
+    Real tol;               // tolerance
+};
 
 #define QL_ASSERT_EXCEPTION_THROWN(statement)  \
     auto exception_thrown = false;             \

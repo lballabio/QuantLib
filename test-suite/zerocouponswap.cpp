@@ -31,168 +31,165 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ZeroCouponSwapTests)
 
-namespace {
+struct CommonVars {
 
-    struct CommonVars {
+    Date today, settlement;
+    Calendar calendar;
+    Natural settlementDays, paymentDelay;
+    DayCounter dayCount;
+    BusinessDayConvention businessConvention;
+    Real baseNominal, finalPayment;
 
-        Date today, settlement;
-        Calendar calendar;
-        Natural settlementDays, paymentDelay;
-        DayCounter dayCount;
-        BusinessDayConvention businessConvention;
-        Real baseNominal, finalPayment;
+    ext::shared_ptr<IborIndex> euribor;
+    RelinkableHandle<YieldTermStructure> euriborHandle;
+    ext::shared_ptr<PricingEngine> discountEngine;
 
-        ext::shared_ptr<IborIndex> euribor;
-        RelinkableHandle<YieldTermStructure> euriborHandle;
-        ext::shared_ptr<PricingEngine> discountEngine;
+    // utilities
 
-        // utilities
+    CommonVars() {
+        settlementDays = 2;
+        paymentDelay = 1;
+        calendar = TARGET();
+        dayCount = Actual365Fixed();
+        businessConvention = ModifiedFollowing;
+        baseNominal = 1.0e6;
+        finalPayment = 1.2e6;
 
-        CommonVars() {
-            settlementDays = 2;
-            paymentDelay = 1;
-            calendar = TARGET();
-            dayCount = Actual365Fixed();
-            businessConvention = ModifiedFollowing;
-            baseNominal = 1.0e6;
-            finalPayment = 1.2e6;
+        euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
+        euribor->addFixing(Date(10, February, 2021), 0.0085);
 
-            euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
-            euribor->addFixing(Date(10, February, 2021), 0.0085);
+        today = calendar.adjust(Date(15, March, 2021));
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today, settlementDays, Days);
 
-            today = calendar.adjust(Date(15, March, 2021));
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today, settlementDays, Days);
+        euriborHandle.linkTo(flatRate(settlement, 0.007, dayCount));
+        discountEngine =
+            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
+    }
 
-            euriborHandle.linkTo(flatRate(settlement, 0.007, dayCount));
-            discountEngine =
-                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
-        }
-
-        ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
-            Date paymentDate = calendar.advance(end, paymentDelay * Days, businessConvention);
-            ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
+    ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
+        Date paymentDate = calendar.advance(end, paymentDelay * Days, businessConvention);
+        ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
                 paymentDate, baseNominal, start, end, settlementDays, euribor));
-            cpn->setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
-            return cpn;
-        }
-
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
-                                                     const Date& start,
-                                                     const Date& end,
-                                                     Real baseNominal,
-                                                     Real finalPayment) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(type, baseNominal, start, end, finalPayment, 
-                                                         euribor, calendar, businessConvention,
-                                                         paymentDelay);
-            swap->setPricingEngine(discountEngine);
-            return swap;
-        }
-
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
-                                                     const Date& start,
-                                                     const Date& end,
-                                                     Real finalPayment) {
-            return createZCSwap(type, start, end, baseNominal, finalPayment);
-        }
-
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
-                                                     const Date& start,
-                                                     const Date& end) {
-            return createZCSwap(type, start, end, finalPayment);
-        }
-
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(const Date& start, 
-                                                     const Date& end, 
-                                                     Rate fixedRate) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(Swap::Receiver, baseNominal, 
-                                                         start, end, fixedRate, dayCount, euribor,
-                                                         calendar, businessConvention, paymentDelay);
-            swap->setPricingEngine(discountEngine);
-            return swap;
-        }
-    };
-
-    void checkReplicationOfZeroCouponSwapNPV(const Date& start,
-                                             const Date& end,
-                                             Swap::Type type = Swap::Receiver) {
-        CommonVars vars;
-        const Real tolerance = 1.0e-8;
-
-        auto zcSwap = vars.createZCSwap(type, start, end);
-
-        Real actualNPV = zcSwap->NPV();
-        Real actualFixedLegNPV = zcSwap->fixedLegNPV();
-        Real actualFloatLegNPV = zcSwap->floatingLegNPV();
-
-        Date paymentDate =
-            vars.calendar.advance(end, vars.paymentDelay * Days, vars.businessConvention);
-        Real discountAtPayment =
-            paymentDate < vars.settlement ? 0.0 : vars.euriborHandle->discount(paymentDate);
-        Real expectedFixedLegNPV = -type * discountAtPayment * vars.finalPayment;
-
-        auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end);
-        Real expectedFloatLegNPV =
-            paymentDate < vars.settlement ? 0.0 : Real(Integer(type) * discountAtPayment * subPeriodCpn->amount());
-
-        Real expectedNPV = expectedFloatLegNPV + expectedFixedLegNPV;
-
-        if ((std::fabs(actualNPV - expectedNPV) > tolerance) ||
-            (std::fabs(actualFixedLegNPV - expectedFixedLegNPV) > tolerance) ||
-            (std::fabs(actualFloatLegNPV - expectedFloatLegNPV) > tolerance))
-            BOOST_ERROR("unable to replicate NPVs of zero coupon swap and its legs\n"
-                        << "    actual NPV:    " << actualNPV << "\n"
-                        << "    expected NPV:    " << expectedNPV << "\n"
-                        << "    actual fixed leg NPV:    " << actualFixedLegNPV << "\n"
-                        << "    expected fixed leg NPV:    " << expectedFixedLegNPV << "\n"
-                        << "    actual float leg NPV:    " << actualFloatLegNPV << "\n"
-                        << "    expected float leg NPV:    " << expectedFloatLegNPV << "\n"
-                        << "    start:    " << start << "\n"
-                        << "    end:    " << end << "\n"
-                        << "    type:    " << type << "\n");
+        cpn->setPricer(ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
+        return cpn;
     }
 
-    void checkFairFixedPayment(const Date& start,
-                               const Date& end,
-                               Swap::Type type) {
-        CommonVars vars;
-        const Real tolerance = 1.0e-8;
-
-        auto zcSwap = vars.createZCSwap(type, start, end);
-        Real fairFixedPayment = zcSwap->fairFixedPayment();
-        auto parZCSwap = vars.createZCSwap(type, start, end, fairFixedPayment);
-        Real parZCSwapNPV = parZCSwap->NPV();
-
-        if ((std::fabs(parZCSwapNPV) > tolerance))
-            BOOST_ERROR("unable to replicate fair fixed payment\n"
-                        << "    actual NPV:    " << parZCSwapNPV << "\n"
-                        << "    expected NPV:    0.0\n"
-                        << "    fair fixed payment:    " << fairFixedPayment << "\n"
-                        << "    start:    " << start << "\n"
-                        << "    end:    " << end << "\n"
-                        << "    type:    " << type << "\n");
+    ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
+                                                 const Date& start,
+                                                 const Date& end,
+                                                 Real baseNominal,
+                                                 Real finalPayment) {
+        auto swap = ext::make_shared<ZeroCouponSwap>(type, baseNominal, start, end, finalPayment, 
+                                                     euribor, calendar, businessConvention,
+                                                     paymentDelay);
+        swap->setPricingEngine(discountEngine);
+        return swap;
     }
 
-    void checkFairFixedRate(const Date& start, const Date& end, Swap::Type type) {
-        CommonVars vars;
-        const Real tolerance = 1.0e-8;
-
-        auto zcSwap = vars.createZCSwap(type, start, end);
-        Rate fairFixedRate = zcSwap->fairFixedRate(vars.dayCount);
-        auto parZCSwap = vars.createZCSwap(start, end, fairFixedRate);
-        Real parZCSwapNPV = parZCSwap->NPV();
-
-        if ((std::fabs(parZCSwapNPV) > tolerance))
-            BOOST_ERROR("unable to replicate fair fixed rate\n"
-                        << "    actual NPV:    " << parZCSwapNPV << "\n"
-                        << "    expected NPV:    0.0\n"
-                        << "    fair fixed rate:    " << fairFixedRate << "\n"
-                        << "    start:    " << start << "\n"
-                        << "    end:    " << end << "\n"
-                        << "    type:    " << type << "\n");
+    ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
+                                                 const Date& start,
+                                                 const Date& end,
+                                                 Real finalPayment) {
+        return createZCSwap(type, start, end, baseNominal, finalPayment);
     }
+
+    ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
+                                                 const Date& start,
+                                                 const Date& end) {
+        return createZCSwap(type, start, end, finalPayment);
+    }
+
+    ext::shared_ptr<ZeroCouponSwap> createZCSwap(const Date& start, 
+                                                 const Date& end, 
+                                                 Rate fixedRate) {
+        auto swap = ext::make_shared<ZeroCouponSwap>(Swap::Receiver, baseNominal, 
+                                                     start, end, fixedRate, dayCount, euribor,
+                                                     calendar, businessConvention, paymentDelay);
+        swap->setPricingEngine(discountEngine);
+        return swap;
+    }
+};
+
+void checkReplicationOfZeroCouponSwapNPV(const Date& start,
+                                         const Date& end,
+                                         Swap::Type type = Swap::Receiver) {
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    auto zcSwap = vars.createZCSwap(type, start, end);
+
+    Real actualNPV = zcSwap->NPV();
+    Real actualFixedLegNPV = zcSwap->fixedLegNPV();
+    Real actualFloatLegNPV = zcSwap->floatingLegNPV();
+
+    Date paymentDate =
+        vars.calendar.advance(end, vars.paymentDelay * Days, vars.businessConvention);
+    Real discountAtPayment =
+        paymentDate < vars.settlement ? 0.0 : vars.euriborHandle->discount(paymentDate);
+    Real expectedFixedLegNPV = -type * discountAtPayment * vars.finalPayment;
+
+    auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end);
+    Real expectedFloatLegNPV =
+        paymentDate < vars.settlement ? 0.0 : Real(Integer(type) * discountAtPayment * subPeriodCpn->amount());
+
+    Real expectedNPV = expectedFloatLegNPV + expectedFixedLegNPV;
+
+    if ((std::fabs(actualNPV - expectedNPV) > tolerance) ||
+        (std::fabs(actualFixedLegNPV - expectedFixedLegNPV) > tolerance) ||
+        (std::fabs(actualFloatLegNPV - expectedFloatLegNPV) > tolerance))
+        BOOST_ERROR("unable to replicate NPVs of zero coupon swap and its legs\n"
+                    << "    actual NPV:    " << actualNPV << "\n"
+                    << "    expected NPV:    " << expectedNPV << "\n"
+                    << "    actual fixed leg NPV:    " << actualFixedLegNPV << "\n"
+                    << "    expected fixed leg NPV:    " << expectedFixedLegNPV << "\n"
+                    << "    actual float leg NPV:    " << actualFloatLegNPV << "\n"
+                    << "    expected float leg NPV:    " << expectedFloatLegNPV << "\n"
+                    << "    start:    " << start << "\n"
+                    << "    end:    " << end << "\n"
+                    << "    type:    " << type << "\n");
 }
+
+void checkFairFixedPayment(const Date& start,
+                           const Date& end,
+                           Swap::Type type) {
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    auto zcSwap = vars.createZCSwap(type, start, end);
+    Real fairFixedPayment = zcSwap->fairFixedPayment();
+    auto parZCSwap = vars.createZCSwap(type, start, end, fairFixedPayment);
+    Real parZCSwapNPV = parZCSwap->NPV();
+
+    if ((std::fabs(parZCSwapNPV) > tolerance))
+        BOOST_ERROR("unable to replicate fair fixed payment\n"
+                    << "    actual NPV:    " << parZCSwapNPV << "\n"
+                    << "    expected NPV:    0.0\n"
+                    << "    fair fixed payment:    " << fairFixedPayment << "\n"
+                    << "    start:    " << start << "\n"
+                    << "    end:    " << end << "\n"
+                    << "    type:    " << type << "\n");
+}
+
+void checkFairFixedRate(const Date& start, const Date& end, Swap::Type type) {
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    auto zcSwap = vars.createZCSwap(type, start, end);
+    Rate fairFixedRate = zcSwap->fairFixedRate(vars.dayCount);
+    auto parZCSwap = vars.createZCSwap(start, end, fairFixedRate);
+    Real parZCSwapNPV = parZCSwap->NPV();
+
+    if ((std::fabs(parZCSwapNPV) > tolerance))
+        BOOST_ERROR("unable to replicate fair fixed rate\n"
+                    << "    actual NPV:    " << parZCSwapNPV << "\n"
+                    << "    expected NPV:    0.0\n"
+                    << "    fair fixed rate:    " << fairFixedRate << "\n"
+                    << "    start:    " << start << "\n"
+                    << "    end:    " << end << "\n"
+                    << "    type:    " << type << "\n");
+}
+
 
 BOOST_AUTO_TEST_CASE(testInstrumentValuation) {
     BOOST_TEST_MESSAGE("Testing zero coupon swap valuation...");

@@ -32,53 +32,49 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(OvernightIndexedCouponTests)
 
-namespace {
+struct CommonVars {
+    Date today;
+    Real notional = 10000.0;
+    ext::shared_ptr<OvernightIndex> sofr;
+    RelinkableHandle<YieldTermStructure> forecastCurve;
 
-    struct CommonVars {
-        Date today;
-        Real notional = 10000.0;
-        ext::shared_ptr<OvernightIndex> sofr;
-        RelinkableHandle<YieldTermStructure> forecastCurve;
+    ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
+        return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
+    }
 
-        ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
-            return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
-        }
+    CommonVars() {
+        today = Date(23, November, 2021);
 
-        CommonVars() {
-            today = Date(23, November, 2021);
+        Settings::instance().evaluationDate() = today;
 
-            Settings::instance().evaluationDate() = today;
+        sofr = ext::make_shared<Sofr>(forecastCurve);
 
-            sofr = ext::make_shared<Sofr>(forecastCurve);
+        std::vector<Date> pastDates = {
+            Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),
+            Date(21, October, 2021), Date(22, October, 2021), Date(25, October, 2021),
+            Date(26, October, 2021), Date(27, October, 2021), Date(28, October, 2021),
+            Date(29, October, 2021), Date(1, November, 2021), Date(2, November, 2021),
+            Date(3, November, 2021), Date(4, November, 2021), Date(5, November, 2021),
+            Date(8, November, 2021), Date(9, November, 2021), Date(10, November, 2021),
+            Date(12, November, 2021), Date(15, November, 2021), Date(16, November, 2021),
+            Date(17, November, 2021), Date(18, November, 2021), Date(19, November, 2021),
+            Date(22, November, 2021)
+        };
+        std::vector<Rate> pastRates = {
+            0.0008, 0.0009, 0.0008,
+            0.0010, 0.0012, 0.0011,
+            0.0013, 0.0012, 0.0012,
+            0.0008, 0.0009, 0.0010,
+            0.0011, 0.0014, 0.0013,
+            0.0011, 0.0009, 0.0008,
+            0.0007, 0.0008, 0.0008,
+            0.0007, 0.0009, 0.0010,
+            0.0009
+        };
 
-            std::vector<Date> pastDates = {
-                Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),
-                Date(21, October, 2021), Date(22, October, 2021), Date(25, October, 2021),
-                Date(26, October, 2021), Date(27, October, 2021), Date(28, October, 2021),
-                Date(29, October, 2021), Date(1, November, 2021), Date(2, November, 2021),
-                Date(3, November, 2021), Date(4, November, 2021), Date(5, November, 2021),
-                Date(8, November, 2021), Date(9, November, 2021), Date(10, November, 2021),
-                Date(12, November, 2021), Date(15, November, 2021), Date(16, November, 2021),
-                Date(17, November, 2021), Date(18, November, 2021), Date(19, November, 2021),
-                Date(22, November, 2021)
-            };
-            std::vector<Rate> pastRates = {
-                0.0008, 0.0009, 0.0008,
-                0.0010, 0.0012, 0.0011,
-                0.0013, 0.0012, 0.0012,
-                0.0008, 0.0009, 0.0010,
-                0.0011, 0.0014, 0.0013,
-                0.0011, 0.0009, 0.0008,
-                0.0007, 0.0008, 0.0008,
-                0.0007, 0.0009, 0.0010,
-                0.0009
-            };
-
-            sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
-        }
-    };
-
-}
+        sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+    }
+};
 
 #define CHECK_OIS_COUPON_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \

@@ -46,43 +46,40 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BatesModelTests)
 
-namespace {
-
-    Real getCalibrationError(
-               std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
-        Real sse = 0;
-        for (auto& option : options) {
-            const Real diff = option->calibrationError() * 100.0;
-            sse += diff*diff;
-        }
-        return sse;
+Real getCalibrationError(std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
+    Real sse = 0;
+    for (auto& option : options) {
+        const Real diff = option->calibrationError() * 100.0;
+        sse += diff*diff;
     }
-
-    struct HestonModelData {
-        const char* const name;
-        Real v0;
-        Real kappa;
-        Real theta;
-        Real sigma;
-        Real rho;
-        Real r;
-        Real q;
-    };
-
-    HestonModelData hestonModels[] = {
-        // ADI finite difference schemes for option pricing in the
-        // Heston model with correlation, K.J. in t'Hout and S. Foulon,
-        {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
-        // Efficient numerical methods for pricing American options under
-        // stochastic volatility, Samuli Ikonen and Jari Toivanen,
-        {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
-        // Not-so-complex logarithms in the Heston model,
-        // Christian Kahl and Peter Jäckel
-        {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
-        // self defined test cases
-        {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
-    };
+    return sse;
 }
+
+struct HestonModelData {
+    const char* const name;
+    Real v0;
+    Real kappa;
+    Real theta;
+    Real sigma;
+    Real rho;
+    Real r;
+    Real q;
+};
+
+HestonModelData hestonModels[] = {
+    // ADI finite difference schemes for option pricing in the
+    // Heston model with correlation, K.J. in t'Hout and S. Foulon,
+    {"'t Hout case 1", 0.04, 1.5, 0.04, 0.3, -0.9, 0.025, 0.0},
+    // Efficient numerical methods for pricing American options under
+    // stochastic volatility, Samuli Ikonen and Jari Toivanen,
+    {"Ikonen-Toivanen", 0.0625, 5, 0.16, 0.9, 0.1, 0.1, 0.0},
+    // Not-so-complex logarithms in the Heston model,
+    // Christian Kahl and Peter Jäckel
+    {"Kahl-Jaeckel", 0.16, 1.0, 0.16, 2.0, -0.8, 0.0, 0.0},
+    // self defined test cases
+    {"Equity case", 0.07, 2.0, 0.04, 0.55, -0.8, 0.03, 0.035 },
+};
+
 
 BOOST_AUTO_TEST_CASE(testAnalyticVsBlack) {
 

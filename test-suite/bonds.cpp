@@ -65,32 +65,29 @@ BOOST_AUTO_TEST_SUITE(BondsTests)
                 << "\n    expected:   " << std::setprecision(8) << expected); \
     }
 
-namespace {
+struct CommonVars {
+    // common data
+    Calendar calendar;
+    Date today;
+    Real faceAmount;
 
-    struct CommonVars {
-        // common data
-        Calendar calendar;
-        Date today;
-        Real faceAmount;
+    // setup
+    CommonVars() {
+        calendar = TARGET();
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        faceAmount = 1000000.0;
+    }
+};
 
-        // setup
-        CommonVars() {
-            calendar = TARGET();
-            today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            faceAmount = 1000000.0;
-        }
-    };
-
-    void checkValue(Real value, Real expectedValue, Real tolerance, const std::string& msg) {
-        if (std::fabs(value - expectedValue) > tolerance) {
-            BOOST_ERROR(msg
-                        << std::fixed
-                        << "\n    calculated: " << value
-                        << "\n    expected:   " << expectedValue
-                        << "\n    tolerance:  " << tolerance
-                        << "\n    error:      " << value - expectedValue);
-        }
+void checkValue(Real value, Real expectedValue, Real tolerance, const std::string& msg) {
+    if (std::fabs(value - expectedValue) > tolerance) {
+        BOOST_ERROR(msg
+                    << std::fixed
+                    << "\n    calculated: " << value
+                    << "\n    expected:   " << expectedValue
+                    << "\n    tolerance:  " << tolerance
+                    << "\n    error:      " << value - expectedValue);
     }
 }
 

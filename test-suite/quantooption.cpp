@@ -152,76 +152,74 @@ BOOST_AUTO_TEST_SUITE(QuantoOptionTests)
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+struct QuantoOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoForwardOptionData {
+    Option::Type type;
+    Real moneyness;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time start;      // time to reset
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoForwardOptionData {
-        Option::Type type;
-        Real moneyness;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time start;      // time to reset
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real s;          // spot
+    Real strike;
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real s;          // spot
-        Real strike;
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoDoubleBarrierOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrier_lo;
+    Real barrier_hi;
+    Real rebate;
+    Option::Type type;
+    Real s;          // spot
+    Real strike;
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoDoubleBarrierOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrier_lo;
-        Real barrier_hi;
-        Real rebate;
-        Option::Type type;
-        Real s;          // spot
-        Real strike;
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
-}
 
 BOOST_AUTO_TEST_CASE(testValues) {
 

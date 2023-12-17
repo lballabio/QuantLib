@@ -45,71 +45,68 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BermudanSwaptionTests)
 
-namespace {
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Calendar calendar;
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Calendar calendar;
+    // underlying swap parameters
+    Integer startYears, length;
+    Swap::Type type;
+    Real nominal;
+    BusinessDayConvention fixedConvention, floatingConvention;
+    Frequency fixedFrequency, floatingFrequency;
+    DayCounter fixedDayCount;
+    ext::shared_ptr<IborIndex> index;
+    Natural settlementDays;
 
-        // underlying swap parameters
-        Integer startYears, length;
-        Swap::Type type;
-        Real nominal;
-        BusinessDayConvention fixedConvention, floatingConvention;
-        Frequency fixedFrequency, floatingFrequency;
-        DayCounter fixedDayCount;
-        ext::shared_ptr<IborIndex> index;
-        Natural settlementDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-        RelinkableHandle<YieldTermStructure> termStructure;
+    // setup
+    CommonVars() {
+        startYears = 1;
+        length = 5;
+        type = Swap::Payer;
+        nominal = 1000.0;
+        settlementDays = 2;
+        fixedConvention = Unadjusted;
+        floatingConvention = ModifiedFollowing;
+        fixedFrequency = Annual;
+        floatingFrequency = Semiannual;
+        fixedDayCount = Thirty360(Thirty360::BondBasis);
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Date::todaysDate());
+        settlement = calendar.advance(today,settlementDays,Days);
+    }
 
-        // setup
-        CommonVars() {
-            startYears = 1;
-            length = 5;
-            type = Swap::Payer;
-            nominal = 1000.0;
-            settlementDays = 2;
-            fixedConvention = Unadjusted;
-            floatingConvention = ModifiedFollowing;
-            fixedFrequency = Annual;
-            floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360(Thirty360::BondBasis);
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Date::todaysDate());
-            settlement = calendar.advance(today,settlementDays,Days);
-        }
-
-        // utilities
-        ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
-            Date start = calendar.advance(settlement, startYears, Years);
-            Date maturity = calendar.advance(start, length, Years);
-            Schedule fixedSchedule(start, maturity,
-                                   Period(fixedFrequency),
-                                   calendar,
-                                   fixedConvention,
-                                   fixedConvention,
-                                   DateGeneration::Forward, false);
-            Schedule floatSchedule(start, maturity,
-                                   Period(floatingFrequency),
-                                   calendar,
-                                   floatingConvention,
-                                   floatingConvention,
-                                   DateGeneration::Forward, false);
-            ext::shared_ptr<VanillaSwap> swap(
+    // utilities
+    ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
+        Date start = calendar.advance(settlement, startYears, Years);
+        Date maturity = calendar.advance(start, length, Years);
+        Schedule fixedSchedule(start, maturity,
+                               Period(fixedFrequency),
+                               calendar,
+                               fixedConvention,
+                               fixedConvention,
+                               DateGeneration::Forward, false);
+        Schedule floatSchedule(start, maturity,
+                               Period(floatingFrequency),
+                               calendar,
+                               floatingConvention,
+                               floatingConvention,
+                               DateGeneration::Forward, false);
+        ext::shared_ptr<VanillaSwap> swap(
                       new VanillaSwap(type, nominal,
                                       fixedSchedule, fixedRate, fixedDayCount,
                                       floatSchedule, index, 0.0,
                                       index->dayCounter()));
-            swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));
-            return swap;
-        }
-    };
+        return swap;
+    }
+};
 
-}
 
 BOOST_AUTO_TEST_CASE(testCachedValues) {
 

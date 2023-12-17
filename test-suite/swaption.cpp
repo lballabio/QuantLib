@@ -45,81 +45,77 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SwaptionTests)
 
-namespace {
+Period exercises[] = { 1*Years, 2*Years, 3*Years,
+                       5*Years, 7*Years, 10*Years };
+Period lengths[] = { 1*Years, 2*Years, 3*Years,
+                     5*Years, 7*Years, 10*Years,
+                     15*Years, 20*Years };
+Swap::Type type[] = { Swap::Receiver, Swap::Payer };
 
-    Period exercises[] = { 1*Years, 2*Years, 3*Years,
-                           5*Years, 7*Years, 10*Years };
-    Period lengths[] = { 1*Years, 2*Years, 3*Years,
-                         5*Years, 7*Years, 10*Years,
-                         15*Years, 20*Years };
-    Swap::Type type[] = { Swap::Receiver, Swap::Payer };
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Real nominal;
+    Calendar calendar;
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Real nominal;
-        Calendar calendar;
+    BusinessDayConvention fixedConvention;
+    Frequency fixedFrequency;
+    DayCounter fixedDayCount;
 
-        BusinessDayConvention fixedConvention;
-        Frequency fixedFrequency;
-        DayCounter fixedDayCount;
+    BusinessDayConvention floatingConvention;
+    Period floatingTenor;
+    ext::shared_ptr<IborIndex> index;
 
-        BusinessDayConvention floatingConvention;
-        Period floatingTenor;
-        ext::shared_ptr<IborIndex> index;
+    Natural settlementDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-        Natural settlementDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
-
-        // utilities
-        ext::shared_ptr<Swaption> makeSwaption(
-            const ext::shared_ptr<VanillaSwap>& swap,
-            const Date& exercise,
-            Volatility volatility,
-            Settlement::Type settlementType = Settlement::Physical,
-            Settlement::Method settlementMethod = Settlement::PhysicalOTC,
-            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
+    // utilities
+    ext::shared_ptr<Swaption> makeSwaption(
+                                           const ext::shared_ptr<VanillaSwap>& swap,
+                                           const Date& exercise,
+                                           Volatility volatility,
+                                           Settlement::Type settlementType = Settlement::Physical,
+                                           Settlement::Method settlementMethod = Settlement::PhysicalOTC,
+                                           BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
                 termStructure, vol, Actual365Fixed(), 0.0, model));
 
-            ext::shared_ptr<Swaption> result(new
+        ext::shared_ptr<Swaption> result(new
                 Swaption(swap,
                          ext::shared_ptr<Exercise>(
                                               new EuropeanExercise(exercise)),
                          settlementType, settlementMethod));
-            result->setPricingEngine(engine);
-            return result;
-        }
+        result->setPricingEngine(engine);
+        return result;
+    }
 
-        ext::shared_ptr<PricingEngine> makeEngine(
-            Volatility volatility,
-            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-            Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
+    ext::shared_ptr<PricingEngine> makeEngine(
+                                              Volatility volatility,
+                                              BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
                 new BlackSwaptionEngine(termStructure, h, Actual365Fixed(), 0.0, model));
-        }
+    }
 
-        CommonVars() {
-            settlementDays = 2;
-            nominal = 1000000.0;
-            fixedConvention = Unadjusted;
-            fixedFrequency = Annual;
-            fixedDayCount = Thirty360(Thirty360::BondBasis);
+    CommonVars() {
+        settlementDays = 2;
+        nominal = 1000000.0;
+        fixedConvention = Unadjusted;
+        fixedFrequency = Annual;
+        fixedDayCount = Thirty360(Thirty360::BondBasis);
 
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            floatingConvention = index->businessDayConvention();
-            floatingTenor = index->tenor();
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today,settlementDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-        }
-    };
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        floatingConvention = index->businessDayConvention();
+        floatingTenor = index->tenor();
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today,settlementDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+    }
+};
 
-}
 
 BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
 

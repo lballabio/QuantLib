@@ -96,123 +96,120 @@ BOOST_AUTO_TEST_SUITE(BasketOptionTests)
         << "    tolerance:        " << tolerance);
 
 
-namespace {
+enum BasketType { MinBasket, MaxBasket, SpreadBasket };
 
-    enum BasketType { MinBasket, MaxBasket, SpreadBasket };
-
-    std::string basketTypeToString(BasketType basketType) {
-        switch (basketType) {
-          case MinBasket:
-            return "MinBasket";
-          case MaxBasket:
-            return "MaxBasket";
-          case SpreadBasket:
-            return "Spread";
-        }
-        QL_FAIL("unknown basket option type");
+std::string basketTypeToString(BasketType basketType) {
+    switch (basketType) {
+      case MinBasket:
+        return "MinBasket";
+      case MaxBasket:
+        return "MaxBasket";
+      case SpreadBasket:
+        return "Spread";
     }
-
-    ext::shared_ptr<BasketPayoff> basketTypeToPayoff(
-                                         BasketType basketType,
-                                         const ext::shared_ptr<Payoff> &p) {
-        switch (basketType) {
-          case MinBasket:
-            return ext::shared_ptr<BasketPayoff>(new MinBasketPayoff(p));
-          case MaxBasket:
-            return ext::shared_ptr<BasketPayoff>(new MaxBasketPayoff(p));
-          case SpreadBasket:
-            return ext::shared_ptr<BasketPayoff>(new SpreadBasketPayoff(p));
-        }
-        QL_FAIL("unknown basket option type");
-    }
-
-    struct BasketOptionOneData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
-
-    struct BasketOptionTwoData {
-        BasketType basketType;
-        Option::Type type;
-        Real strike;
-        Real s1;
-        Real s2;
-        Rate q1;
-        Rate q2;
-        Rate r;
-        Time t; // years
-        Volatility v1;
-        Volatility v2;
-        Real rho;
-        Real result;
-        Real tol;
-    };
-
-    struct BasketOptionThreeData {
-        BasketType basketType;
-        Option::Type type;
-        Real strike;
-        Real s1;
-        Real s2;
-        Real s3;
-        Rate r;
-        Time t; // months
-        Volatility v1;
-        Volatility v2;
-        Volatility v3;
-        Real rho;
-        Real euroValue;
-        Real amValue;
-    };
-
-    BasketOptionOneData oneDataValues[] = {
-        //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
-        { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
-        { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
-        { Option::Put, 100.00,  90.00,   0.0, 0.06,   0.5, 0.4,  14.9187, 1e-2 },
-        { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },
-        { Option::Put, 100.00, 100.00,   0.0, 0.06,   0.5, 0.4,  9.9458, 1e-2 },
-        { Option::Put, 100.00, 105.00,   0.0, 0.06,   0.5, 0.4,  8.0281, 1e-2 },
-        { Option::Put, 100.00, 110.00,   0.0, 0.06,   0.5, 0.4,  6.4352, 1e-2 },
-        { Option::Put, 100.00, 115.00,   0.0, 0.06,   0.5, 0.4,  5.1265, 1e-2 },
-        { Option::Put, 100.00, 120.00,   0.0, 0.06,   0.5, 0.4,  4.0611, 1e-2 },
-
-        // Longstaff Schwartz 1D example
-        // use constant and three Laguerre polynomials
-        // 100,000 paths and 50 timesteps per year
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.2,  4.478, 1e-2 },
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.2,  4.840, 1e-2 },
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.4,  7.101, 1e-2 },
-        { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.4,  8.508, 1e-2 },
-
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.2,  3.250, 1e-2 },
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.2,  3.745, 1e-2 },
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.4,  6.148, 1e-2 },
-        { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.4,  7.670, 1e-2 },
-
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.2,  2.314, 1e-2 },
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.2,  2.885, 1e-2 },
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.4,  5.312, 1e-2 },
-        { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.4,  6.920, 1e-2 },
-
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.2,  1.617, 1e-2 },
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.2,  2.212, 1e-2 },
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.4,  4.582, 1e-2 },
-        { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.4,  6.248, 1e-2 },
-
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.2,  1.110, 1e-2 },
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.2,  1.690, 1e-2 },
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.4,  3.948, 1e-2 },
-        { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.4,  5.647, 1e-2 }
-    };
+    QL_FAIL("unknown basket option type");
 }
+
+ext::shared_ptr<BasketPayoff> basketTypeToPayoff(BasketType basketType,
+                                                 const ext::shared_ptr<Payoff> &p) {
+    switch (basketType) {
+      case MinBasket:
+        return ext::shared_ptr<BasketPayoff>(new MinBasketPayoff(p));
+      case MaxBasket:
+        return ext::shared_ptr<BasketPayoff>(new MaxBasketPayoff(p));
+      case SpreadBasket:
+        return ext::shared_ptr<BasketPayoff>(new SpreadBasketPayoff(p));
+    }
+    QL_FAIL("unknown basket option type");
+}
+
+struct BasketOptionOneData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
+
+struct BasketOptionTwoData {
+    BasketType basketType;
+    Option::Type type;
+    Real strike;
+    Real s1;
+    Real s2;
+    Rate q1;
+    Rate q2;
+    Rate r;
+    Time t; // years
+    Volatility v1;
+    Volatility v2;
+    Real rho;
+    Real result;
+    Real tol;
+};
+
+struct BasketOptionThreeData {
+    BasketType basketType;
+    Option::Type type;
+    Real strike;
+    Real s1;
+    Real s2;
+    Real s3;
+    Rate r;
+    Time t; // months
+    Volatility v1;
+    Volatility v2;
+    Volatility v3;
+    Real rho;
+    Real euroValue;
+    Real amValue;
+};
+
+BasketOptionOneData oneDataValues[] = {
+    //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
+    { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
+    { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
+    { Option::Put, 100.00,  90.00,   0.0, 0.06,   0.5, 0.4,  14.9187, 1e-2 },
+    { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },
+    { Option::Put, 100.00, 100.00,   0.0, 0.06,   0.5, 0.4,  9.9458, 1e-2 },
+    { Option::Put, 100.00, 105.00,   0.0, 0.06,   0.5, 0.4,  8.0281, 1e-2 },
+    { Option::Put, 100.00, 110.00,   0.0, 0.06,   0.5, 0.4,  6.4352, 1e-2 },
+    { Option::Put, 100.00, 115.00,   0.0, 0.06,   0.5, 0.4,  5.1265, 1e-2 },
+    { Option::Put, 100.00, 120.00,   0.0, 0.06,   0.5, 0.4,  4.0611, 1e-2 },
+
+    // Longstaff Schwartz 1D example
+    // use constant and three Laguerre polynomials
+    // 100,000 paths and 50 timesteps per year
+    { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.2,  4.478, 1e-2 },
+    { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.2,  4.840, 1e-2 },
+    { Option::Put, 40.00, 36.00,   0.0, 0.06,   1.0, 0.4,  7.101, 1e-2 },
+    { Option::Put, 40.00, 36.00,   0.0, 0.06,   2.0, 0.4,  8.508, 1e-2 },
+
+    { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.2,  3.250, 1e-2 },
+    { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.2,  3.745, 1e-2 },
+    { Option::Put, 40.00, 38.00,   0.0, 0.06,   1.0, 0.4,  6.148, 1e-2 },
+    { Option::Put, 40.00, 38.00,   0.0, 0.06,   2.0, 0.4,  7.670, 1e-2 },
+
+    { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.2,  2.314, 1e-2 },
+    { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.2,  2.885, 1e-2 },
+    { Option::Put, 40.00, 40.00,   0.0, 0.06,   1.0, 0.4,  5.312, 1e-2 },
+    { Option::Put, 40.00, 40.00,   0.0, 0.06,   2.0, 0.4,  6.920, 1e-2 },
+
+    { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.2,  1.617, 1e-2 },
+    { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.2,  2.212, 1e-2 },
+    { Option::Put, 40.00, 42.00,   0.0, 0.06,   1.0, 0.4,  4.582, 1e-2 },
+    { Option::Put, 40.00, 42.00,   0.0, 0.06,   2.0, 0.4,  6.248, 1e-2 },
+
+    { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.2,  1.110, 1e-2 },
+    { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.2,  1.690, 1e-2 },
+    { Option::Put, 40.00, 44.00,   0.0, 0.06,   1.0, 0.4,  3.948, 1e-2 },
+    { Option::Put, 40.00, 44.00,   0.0, 0.06,   2.0, 0.4,  5.647, 1e-2 }
+};
+
 
 BOOST_AUTO_TEST_CASE(testEuroTwoValues) {
 

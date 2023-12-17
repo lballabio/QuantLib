@@ -59,22 +59,19 @@ BOOST_AUTO_TEST_SUITE(DigitalOptionTests)
                << "    tolerance:        " << tolerance << "\n" \
                << "    knock_in:         " << knockin);
 
-namespace {
+struct DigitalOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+    bool knockin;  // true if knock-in
+};
 
-    struct DigitalOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-        bool knockin;  // true if knock-in
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testCashOrNothingEuropeanValues) {
 

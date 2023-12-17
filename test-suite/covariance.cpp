@@ -31,17 +31,14 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CovarianceTests)
 
-namespace {
-
-    Real norm(const Matrix& m) {
-        Real sum = 0.0;
-        for (Size i=0; i<m.rows(); i++)
-            for (Size j=0; j<m.columns(); j++)
-                sum += m[i][j]*m[i][j];
-        return std::sqrt(sum);
-    }
-
+Real norm(const Matrix& m) {
+    Real sum = 0.0;
+    for (Size i=0; i<m.rows(); i++)
+        for (Size j=0; j<m.columns(); j++)
+            sum += m[i][j]*m[i][j];
+    return std::sqrt(sum);
 }
+
 
 BOOST_AUTO_TEST_CASE(testRankReduction) {
 

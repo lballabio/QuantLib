@@ -55,84 +55,82 @@ static_assert(std::random_access_iterator<Matrix::reverse_column_iterator>);
 static_assert(std::random_access_iterator<Matrix::const_reverse_column_iterator>);
 #endif
 
-namespace {
+Size N;
+Matrix M1, M2, M3, M4, M5, M6, M7, I;
 
-    Size N;
-    Matrix M1, M2, M3, M4, M5, M6, M7, I;
-
-    Real norm(const Array& v) {
-        return std::sqrt(DotProduct(v,v));
-    }
-
-    Real norm(const Matrix& m) {
-        Real sum = 0.0;
-        for (Size i=0; i<m.rows(); i++)
-            for (Size j=0; j<m.columns(); j++)
-                sum += m[i][j]*m[i][j];
-        return std::sqrt(sum);
-    }
-
-    void setup() {
-
-        N = 3;
-        M1 = M2 = I = Matrix(N,N);
-        M3 = Matrix(3,4);
-        M4 = Matrix(4,3);
-        M5 = Matrix(4, 4, 0.0);
-        M6 = Matrix(4, 4, 0.0);
-
-        M1[0][0] = 1.0;  M1[0][1] = 0.9;  M1[0][2] = 0.7;
-        M1[1][0] = 0.9;  M1[1][1] = 1.0;  M1[1][2] = 0.4;
-        M1[2][0] = 0.7;  M1[2][1] = 0.4;  M1[2][2] = 1.0;
-
-        M2[0][0] = 1.0;  M2[0][1] = 0.9;  M2[0][2] = 0.7;
-        M2[1][0] = 0.9;  M2[1][1] = 1.0;  M2[1][2] = 0.3;
-        M2[2][0] = 0.7;  M2[2][1] = 0.3;  M2[2][2] = 1.0;
-
-        I[0][0] = 1.0;  I[0][1] = 0.0;  I[0][2] = 0.0;
-        I[1][0] = 0.0;  I[1][1] = 1.0;  I[1][2] = 0.0;
-        I[2][0] = 0.0;  I[2][1] = 0.0;  I[2][2] = 1.0;
-
-        M3[0][0] = 1; M3[0][1] = 2; M3[0][2] = 3; M3[0][3] = 4;
-        M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 2; M3[1][3] = 1;
-        M3[2][0] = 0; M3[2][1] = 1; M3[2][2] = 0; M3[2][3] = 0;
-
-        M4[0][0] = 1;  M4[0][1] = 2;  M4[0][2] = 400;
-        M4[1][0] = 2;  M4[1][1] = 0;  M4[1][2] = 1;
-        M4[2][0] = 30; M4[2][1] = 2;  M4[2][2] = 0;
-        M4[3][0] = 2;  M4[3][1] = 0;  M4[3][2] = 1.05;
-
-        // from Higham - nearest correlation matrix
-        M5[0][0] = 2;   M5[0][1] = -1;  M5[0][2] = 0.0; M5[0][3] = 0.0;
-        M5[1][0] = M5[0][1];  M5[1][1] = 2;   M5[1][2] = -1;  M5[1][3] = 0.0;
-        M5[2][0] = M5[0][2]; M5[2][1] = M5[1][2];  M5[2][2] = 2;   M5[2][3] = -1;
-        M5[3][0] = M5[0][3]; M5[3][1] = M5[1][3]; M5[3][2] = M5[2][3];  M5[3][3] = 2;
-
-        // from Higham - nearest correlation matrix to M5
-        M6[0][0] = 1;        M6[0][1] = -0.8084124981;  M6[0][2] = 0.1915875019;   M6[0][3] = 0.106775049;
-        M6[1][0] = M6[0][1]; M6[1][1] = 1;        M6[1][2] = -0.6562326948;  M6[1][3] = M6[0][2];
-        M6[2][0] = M6[0][2]; M6[2][1] = M6[1][2]; M6[2][2] = 1;        M6[2][3] = M6[0][1];
-        M6[3][0] = M6[0][3]; M6[3][1] = M6[1][3]; M6[3][2] = M6[2][3]; M6[3][3] = 1;
-
-        M7 = M1;
-        M7[0][1] = 0.3; M7[0][2] = 0.2; M7[2][1] = 1.2;
-    }
-
-    class MatrixMult {
-      public:
-        explicit MatrixMult(Matrix m) : m_(std::move(m)) {}
-        Array operator()(const Array& x) const {
-            return m_ * x;
-        }
-
-      private:
-        const Matrix m_;
-    };
-
-    Real norm2(const Array& x) {
-        return std::sqrt(DotProduct(x,x));
-    }
+Real norm(const Array& v) {
+    return std::sqrt(DotProduct(v,v));
 }
+
+Real norm(const Matrix& m) {
+    Real sum = 0.0;
+    for (Size i=0; i<m.rows(); i++)
+        for (Size j=0; j<m.columns(); j++)
+            sum += m[i][j]*m[i][j];
+    return std::sqrt(sum);
+}
+
+void setup() {
+
+    N = 3;
+    M1 = M2 = I = Matrix(N,N);
+    M3 = Matrix(3,4);
+    M4 = Matrix(4,3);
+    M5 = Matrix(4, 4, 0.0);
+    M6 = Matrix(4, 4, 0.0);
+
+    M1[0][0] = 1.0;  M1[0][1] = 0.9;  M1[0][2] = 0.7;
+    M1[1][0] = 0.9;  M1[1][1] = 1.0;  M1[1][2] = 0.4;
+    M1[2][0] = 0.7;  M1[2][1] = 0.4;  M1[2][2] = 1.0;
+
+    M2[0][0] = 1.0;  M2[0][1] = 0.9;  M2[0][2] = 0.7;
+    M2[1][0] = 0.9;  M2[1][1] = 1.0;  M2[1][2] = 0.3;
+    M2[2][0] = 0.7;  M2[2][1] = 0.3;  M2[2][2] = 1.0;
+
+    I[0][0] = 1.0;  I[0][1] = 0.0;  I[0][2] = 0.0;
+    I[1][0] = 0.0;  I[1][1] = 1.0;  I[1][2] = 0.0;
+    I[2][0] = 0.0;  I[2][1] = 0.0;  I[2][2] = 1.0;
+
+    M3[0][0] = 1; M3[0][1] = 2; M3[0][2] = 3; M3[0][3] = 4;
+    M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 2; M3[1][3] = 1;
+    M3[2][0] = 0; M3[2][1] = 1; M3[2][2] = 0; M3[2][3] = 0;
+
+    M4[0][0] = 1;  M4[0][1] = 2;  M4[0][2] = 400;
+    M4[1][0] = 2;  M4[1][1] = 0;  M4[1][2] = 1;
+    M4[2][0] = 30; M4[2][1] = 2;  M4[2][2] = 0;
+    M4[3][0] = 2;  M4[3][1] = 0;  M4[3][2] = 1.05;
+
+    // from Higham - nearest correlation matrix
+    M5[0][0] = 2;   M5[0][1] = -1;  M5[0][2] = 0.0; M5[0][3] = 0.0;
+    M5[1][0] = M5[0][1];  M5[1][1] = 2;   M5[1][2] = -1;  M5[1][3] = 0.0;
+    M5[2][0] = M5[0][2]; M5[2][1] = M5[1][2];  M5[2][2] = 2;   M5[2][3] = -1;
+    M5[3][0] = M5[0][3]; M5[3][1] = M5[1][3]; M5[3][2] = M5[2][3];  M5[3][3] = 2;
+
+    // from Higham - nearest correlation matrix to M5
+    M6[0][0] = 1;        M6[0][1] = -0.8084124981;  M6[0][2] = 0.1915875019;   M6[0][3] = 0.106775049;
+    M6[1][0] = M6[0][1]; M6[1][1] = 1;        M6[1][2] = -0.6562326948;  M6[1][3] = M6[0][2];
+    M6[2][0] = M6[0][2]; M6[2][1] = M6[1][2]; M6[2][2] = 1;        M6[2][3] = M6[0][1];
+    M6[3][0] = M6[0][3]; M6[3][1] = M6[1][3]; M6[3][2] = M6[2][3]; M6[3][3] = 1;
+
+    M7 = M1;
+    M7[0][1] = 0.3; M7[0][2] = 0.2; M7[2][1] = 1.2;
+}
+
+class MatrixMult {
+  public:
+    explicit MatrixMult(Matrix m) : m_(std::move(m)) {}
+    Array operator()(const Array& x) const {
+        return m_ * x;
+    }
+
+  private:
+    const Matrix m_;
+};
+
+Real norm2(const Array& x) {
+    return std::sqrt(DotProduct(x,x));
+}
+
 
 BOOST_AUTO_TEST_CASE(testEigenvectors) {
 
@@ -706,25 +704,22 @@ BOOST_AUTO_TEST_CASE(testInitializers) {
 }
 
 
-namespace {
-
-    typedef std::pair< std::pair< std::vector<Size>, std::vector<Size> >,
+typedef std::pair< std::pair< std::vector<Size>, std::vector<Size> >,
                    std::vector<Real> > coordinate_tuple;
 
-    coordinate_tuple sparseMatrixToCoordinateTuple(const SparseMatrix& m) {
-        std::vector<Size> row_idx, col_idx;
-        std::vector<Real> data;
-        for (auto iter1 = m.begin1(); iter1 != m.end1(); ++iter1)
-            for (auto iter2 = iter1.begin(); iter2 != iter1.end(); ++iter2) {
-                row_idx.push_back(iter1.index1());
-                col_idx.push_back(iter2.index2());
-                data.push_back(*iter2);
-            }
+coordinate_tuple sparseMatrixToCoordinateTuple(const SparseMatrix& m) {
+    std::vector<Size> row_idx, col_idx;
+    std::vector<Real> data;
+    for (auto iter1 = m.begin1(); iter1 != m.end1(); ++iter1)
+        for (auto iter2 = iter1.begin(); iter2 != iter1.end(); ++iter2) {
+            row_idx.push_back(iter1.index1());
+            col_idx.push_back(iter2.index2());
+            data.push_back(*iter2);
+        }
 
-        return std::make_pair(std::make_pair(row_idx, col_idx), data);
-    }
-
+    return std::make_pair(std::make_pair(row_idx, col_idx), data);
 }
+
 
 BOOST_AUTO_TEST_CASE(testSparseMatrixMemory) {
 

@@ -80,23 +80,20 @@ BOOST_AUTO_TEST_SUITE(JumpDiffusionTests)
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+struct HaugMertonData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real jumpIntensity;
+    Real gamma;
+    Real result;   // result
+    Real tol;      // tolerance
+};
 
-    struct HaugMertonData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real jumpIntensity;
-        Real gamma;
-        Real result;   // result
-        Real tol;      // tolerance
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testMerton76) {
 

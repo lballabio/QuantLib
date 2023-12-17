@@ -42,82 +42,79 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(TermStructureTests)
 
-namespace {
+struct Datum {
+    Integer n;
+    TimeUnit units;
+    Rate rate;
+};
 
-    struct Datum {
-        Integer n;
-        TimeUnit units;
-        Rate rate;
-    };
+struct CommonVars {
+    // common data
+    Calendar calendar;
+    Natural settlementDays;
+    ext::shared_ptr<YieldTermStructure> termStructure;
+    ext::shared_ptr<YieldTermStructure> dummyTermStructure;
 
-    struct CommonVars {
-        // common data
-        Calendar calendar;
-        Natural settlementDays;
-        ext::shared_ptr<YieldTermStructure> termStructure;
-        ext::shared_ptr<YieldTermStructure> dummyTermStructure;
+    // setup
+    CommonVars() {
+        calendar = TARGET();
+        settlementDays = 2;
+        Date today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        Date settlement = calendar.advance(today,settlementDays,Days);
+        Datum depositData[] = {
+            { 1, Months, 4.581 },
+            { 2, Months, 4.573 },
+            { 3, Months, 4.557 },
+            { 6, Months, 4.496 },
+            { 9, Months, 4.490 }
+        };
+        Datum swapData[] = {
+            {  1, Years, 4.54 },
+            {  5, Years, 4.99 },
+            { 10, Years, 5.47 },
+            { 20, Years, 5.89 },
+            { 30, Years, 5.96 }
+        };
+        Size deposits = LENGTH(depositData),
+            swaps = LENGTH(swapData);
 
-        // setup
-        CommonVars() {
-            calendar = TARGET();
-            settlementDays = 2;
-            Date today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            Date settlement = calendar.advance(today,settlementDays,Days);
-            Datum depositData[] = {
-                { 1, Months, 4.581 },
-                { 2, Months, 4.573 },
-                { 3, Months, 4.557 },
-                { 6, Months, 4.496 },
-                { 9, Months, 4.490 }
-            };
-            Datum swapData[] = {
-                {  1, Years, 4.54 },
-                {  5, Years, 4.99 },
-                { 10, Years, 5.47 },
-                { 20, Years, 5.89 },
-                { 30, Years, 5.96 }
-            };
-            Size deposits = LENGTH(depositData),
-                swaps = LENGTH(swapData);
-
-            std::vector<ext::shared_ptr<RateHelper> > instruments(
-                                                              deposits+swaps);
-            for (Size i=0; i<deposits; i++) {
-                instruments[i] = ext::shared_ptr<RateHelper>(new
+        std::vector<ext::shared_ptr<RateHelper> > instruments(deposits+swaps);
+        for (Size i=0; i<deposits; i++) {
+            instruments[i] = ext::shared_ptr<RateHelper>(new
                     DepositRateHelper(depositData[i].rate/100,
                                       depositData[i].n*depositData[i].units,
                                       settlementDays, calendar,
                                       ModifiedFollowing, true,
                                       Actual360()));
-            }
-            ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
-                                                             6*Months,
-                                                             settlementDays,
-                                                             Currency(),
-                                                             calendar,
-                                                             ModifiedFollowing,
-                                                             false,
-                                                             Actual360()));
-            for (Size i=0; i<swaps; ++i) {
-                instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
+        }
+        ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
+                                                       6*Months,
+                                                       settlementDays,
+                                                       Currency(),
+                                                       calendar,
+                                                       ModifiedFollowing,
+                                                       false,
+                                                       Actual360()));
+        for (Size i=0; i<swaps; ++i) {
+            instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
                                    Annual, Unadjusted, Thirty360(Thirty360::BondBasis),
                                    index));
-            }
-            termStructure = ext::shared_ptr<YieldTermStructure>(new
-                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
-                                                        instruments, Actual360()));
-            dummyTermStructure = ext::shared_ptr<YieldTermStructure>(new
-                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
-                                                        instruments, Actual360()));
         }
-    };
+        termStructure = ext::shared_ptr<YieldTermStructure>(new
+                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                        instruments, Actual360()));
+        dummyTermStructure = ext::shared_ptr<YieldTermStructure>(new
+                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                        instruments, Actual360()));
+    }
+};
 
-    Real sub(Real x, Real y) { return x - y; }
-}
+Real sub(Real x, Real y) { return x - y; }
+
 
 BOOST_AUTO_TEST_CASE(testReferenceChange) {
 

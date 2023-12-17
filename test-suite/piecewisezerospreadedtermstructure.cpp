@@ -36,48 +36,45 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(PiecewiseZeroSpreadedTermStructureTests)
 
-namespace {
+struct Datum {
+    Integer n;
+    TimeUnit units;
+    Rate rate;
+};
 
-    struct Datum {
-        Integer n;
-        TimeUnit units;
-        Rate rate;
-    };
+struct CommonVars {
+    // common data
+    Calendar calendar;
+    Natural settlementDays;
+    DayCounter dayCount;
+    Compounding compounding;
+    ext::shared_ptr<YieldTermStructure> termStructure;
+    Date today;
+    Date settlementDate;
 
-    struct CommonVars {
-        // common data
-        Calendar calendar;
-        Natural settlementDays;
-        DayCounter dayCount;
-        Compounding compounding;
-        ext::shared_ptr<YieldTermStructure> termStructure;
-        Date today;
-        Date settlementDate;
+    // setup
+    CommonVars() {
+        calendar = TARGET();
+        settlementDays = 2;
+        today =Date(9,June,2009);
+        compounding = Continuous;
+        dayCount = Actual360();
+        settlementDate = calendar.advance(today,settlementDays,Days);
 
-        // setup
-        CommonVars() {
-            calendar = TARGET();
-            settlementDays = 2;
-            today =Date(9,June,2009);
-            compounding = Continuous;
-            dayCount = Actual360();
-            settlementDate = calendar.advance(today,settlementDays,Days);
+        Settings::instance().evaluationDate() = today;
 
-            Settings::instance().evaluationDate() = today;
-
-            Integer ts[] = { 13,    41,  75,   165,   256 , 345,  524,  703 };
-            Rate r[] = { 0.035,0.033,0.034, 0.034, 0.036,0.037,0.039,0.040 };
-            std::vector<Rate> rates(1, 0.035);
-            std::vector<Date> dates(1, settlementDate);
-            for (Size i = 0; i < 8; ++i) {
-                dates.push_back(calendar.advance(today,ts[i],Days));
-                rates.push_back(r[i]);
-            }
-            termStructure = ext::make_shared<ZeroCurve>(dates, rates, dayCount);
+        Integer ts[] = { 13,    41,  75,   165,   256 , 345,  524,  703 };
+        Rate r[] = { 0.035,0.033,0.034, 0.034, 0.036,0.037,0.039,0.040 };
+        std::vector<Rate> rates(1, 0.035);
+        std::vector<Date> dates(1, settlementDate);
+        for (Size i = 0; i < 8; ++i) {
+            dates.push_back(calendar.advance(today,ts[i],Days));
+            rates.push_back(r[i]);
         }
-    };
+        termStructure = ext::make_shared<ZeroCurve>(dates, rates, dayCount);
+    }
+};
 
-}
 
 BOOST_AUTO_TEST_CASE(testFlatInterpolationLeft) {
 

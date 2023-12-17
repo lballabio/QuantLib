@@ -79,47 +79,44 @@ BOOST_AUTO_TEST_SUITE(MargrabeOptionTests)
         << "    error:            " << error << "\n" \
         << "    tolerance:        " << tolerance);
 
-namespace {
+struct MargrabeOptionTwoData {
+    Real s1;
+    Real s2;
+    Integer Q1;
+    Integer Q2;
+    Rate q1;
+    Rate q2;
+    Rate r;
+    Time t; // years
+    Volatility v1;
+    Volatility v2;
+    Real rho;
+    Real result;
+    Real delta1;
+    Real delta2;
+    Real gamma1;
+    Real gamma2;
+    Real theta;
+    Real rho_greek;
+    Real tol;
+};
 
-    struct MargrabeOptionTwoData {
-        Real s1;
-        Real s2;
-        Integer Q1;
-        Integer Q2;
-        Rate q1;
-        Rate q2;
-        Rate r;
-        Time t; // years
-        Volatility v1;
-        Volatility v2;
-        Real rho;
-        Real result;
-        Real delta1;
-        Real delta2;
-        Real gamma1;
-        Real gamma2;
-        Real theta;
-        Real rho_greek;
-        Real tol;
-    };
+struct MargrabeAmericanOptionTwoData {
+    Real s1;
+    Real s2;
+    Integer Q1;
+    Integer Q2;
+    Rate q1;
+    Rate q2;
+    Rate r;
+    Time t; // years
+    Volatility v1;
+    Volatility v2;
+    Real rho;
+    Real result;
+    Real tol;
+};
 
-    struct MargrabeAmericanOptionTwoData {
-        Real s1;
-        Real s2;
-        Integer Q1;
-        Integer Q2;
-        Rate q1;
-        Rate q2;
-        Rate r;
-        Time t; // years
-        Volatility v1;
-        Volatility v2;
-        Real rho;
-        Real result;
-        Real tol;
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testEuroExchangeTwoAssets) {
 

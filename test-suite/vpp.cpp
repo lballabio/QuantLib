@@ -62,181 +62,178 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(VppTests)
 
-namespace {
+ext::function<Real(Real)> constant_b(Real b) {
+    return [=](Real x){ return b; };
+}
 
-    ext::function<Real(Real)> constant_b(Real b) {
-        return [=](Real x){ return b; };
-    }
+ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
+    Array x0(2);
+    x0[0] = 3.0; x0[1] = 0.0;
 
-    ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
-        Array x0(2);
-        x0[0] = 3.0; x0[1] = 0.0;
+    const Real beta = 5.0;
+    const Real eta  = 2.0;
+    const Real jumpIntensity = 1.0;
+    const Real speed = 1.0;
+    const Real volatility = 2.0;
 
-        const Real beta = 5.0;
-        const Real eta  = 2.0;
-        const Real jumpIntensity = 1.0;
-        const Real speed = 1.0;
-        const Real volatility = 2.0;
-
-        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
+    ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
             new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
                                                  constant_b(x0[0])));
-        return ext::make_shared<ExtOUWithJumpsProcess>(
-            ouProcess, x0[1], beta,
-                                      jumpIntensity, eta);
+    return ext::make_shared<ExtOUWithJumpsProcess>(
+            ouProcess, x0[1], beta, jumpIntensity, eta);
+}
+
+class linear {
+    Real alpha, beta;
+  public:
+    linear(Real alpha, Real beta) : alpha(alpha), beta(beta) {}
+    Real operator()(Real x) const {
+        return alpha + beta*x;
+    }
+};
+
+// for a "real" gas and power forward curve
+// please see. e.g. http://www.kyos.com/?content=64
+const std::vector<Real> fuelPrices = {
+    20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
+    21.02,21.46,21.75,20.69,22.16,20.38,20.82,20.68,
+    20.57,21.92,22.04,20.45,20.75,21.92,20.53,20.67,
+    20.88,21.02,20.82,21.67,21.82,22.12,20.45,20.74,
+    22.39,20.95,21.71,20.70,20.94,21.59,22.33,21.13,
+    21.50,21.42,20.56,21.23,21.37,21.90,20.62,21.17,
+    21.86,22.04,22.05,21.00,20.70,21.12,21.26,22.40,
+    21.31,22.24,21.96,21.02,21.71,20.48,21.36,21.75,
+    21.90,20.44,21.26,22.29,20.34,21.79,21.66,21.50,
+    20.76,20.27,20.84,20.24,21.97,20.52,20.98,21.40,
+    20.39,20.71,20.78,20.30,21.56,21.72,20.27,21.57,
+    21.82,20.57,21.33,20.51,22.32,21.99,20.57,22.11,
+    21.56,22.24,20.62,21.70,21.11,21.19,21.79,20.46,
+    22.21,20.82,20.52,22.29,20.71,21.45,22.40,20.63,
+    20.95,21.97,22.20,20.67,21.01,22.25,20.76,21.33,
+    20.49,20.33,21.94,20.64,20.99,21.09,20.97,22.17,
+    20.72,22.06,20.86,21.40,21.75,20.78,21.79,20.47,
+    21.19,21.60,20.75,21.36,21.61,20.37,21.67,20.28,
+    22.33,21.37,21.33,20.87,21.25,22.01,22.08,20.81,
+    20.70,21.84,21.82,21.68,21.24,22.36,20.83,20.64,
+    21.03,20.57,22.34,20.96,21.54,21.26,21.43,22.39};
+
+const std::vector<Real> powerPrices = {
+    40.40,36.71,31.87,25.81,31.61,35.00,46.22,60.68,
+    42.45,38.01,33.84,29.79,31.84,38.53,49.23,59.92,
+    43.85,37.47,34.89,29.99,30.85,29.19,29.25,38.67,
+    36.90,25.93,22.12,20.19,17.19,19.29,13.51,18.14,
+    33.76,30.48,25.63,18.01,23.86,32.41,48.56,64.69,
+    38.42,39.31,32.73,29.97,31.41,35.02,46.85,58.12,
+    39.14,35.42,32.61,28.76,29.41,35.83,46.73,61.41,
+    61.01,59.43,60.43,66.29,62.79,62.66,57.66,51.63,
+    62.18,60.53,61.94,64.86,59.57,58.15,53.74,48.36,
+    45.64,51.21,51.54,50.79,54.50,49.92,41.58,39.81,
+    28.86,37.42,39.78,42.36,45.67,36.84,33.91,28.75,
+    62.97,63.84,62.91,68.77,64.33,61.95,59.12,54.89,
+    63.62,60.90,66.57,69.51,64.71,59.89,57.28,57.10,
+    65.09,63.82,67.52,70.51,65.59,59.36,58.22,54.64,
+    52.17,53.02,57.12,53.50,53.16,49.21,52.21,40.96,
+    49.01,47.94,49.89,53.83,52.96,50.33,51.72,46.99,
+    39.06,47.99,47.91,52.35,48.51,47.39,50.45,43.66,
+    25.62,35.76,42.76,46.51,45.62,46.79,48.76,41.00,
+    52.65,55.57,57.67,56.79,55.15,54.74,50.31,47.49,
+    53.72,55.62,55.89,58.11,54.46,52.92,49.61,44.68,
+    51.59,57.44,56.50,55.12,57.22,54.61,49.92,45.20};
+
+class PathFuelPrice : public FdmInnerValueCalculator {
+  public:
+    typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
+
+    PathFuelPrice(const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
+                  ext::shared_ptr<Shape> shape)
+    : path_(path), shape_(std::move(shape)) {}
+    Real innerValue(const FdmLinearOpIterator&, Time t) override {
+        QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
+                   "invalid time");
+
+        const Size i = Size(t * 365U * 24U);
+        const Real f = std::lower_bound(shape_->begin(), shape_->end(),
+                                        std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
+
+        return std::exp(path_[2][i] + f);
+    }
+    Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
+        return innerValue(iter, t);
     }
 
-    class linear {
-        Real alpha, beta;
-      public:
-        linear(Real alpha, Real beta) : alpha(alpha), beta(beta) {}
-        Real operator()(Real x) const {
-            return alpha + beta*x;
-        }
-    };
+  private:
+    const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
+    const ext::shared_ptr<Shape> shape_;
+};
 
-    // for a "real" gas and power forward curve
-    // please see. e.g. http://www.kyos.com/?content=64
-    const std::vector<Real> fuelPrices = {
-        20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
-        21.02,21.46,21.75,20.69,22.16,20.38,20.82,20.68,
-        20.57,21.92,22.04,20.45,20.75,21.92,20.53,20.67,
-        20.88,21.02,20.82,21.67,21.82,22.12,20.45,20.74,
-        22.39,20.95,21.71,20.70,20.94,21.59,22.33,21.13,
-        21.50,21.42,20.56,21.23,21.37,21.90,20.62,21.17,
-        21.86,22.04,22.05,21.00,20.70,21.12,21.26,22.40,
-        21.31,22.24,21.96,21.02,21.71,20.48,21.36,21.75,
-        21.90,20.44,21.26,22.29,20.34,21.79,21.66,21.50,
-        20.76,20.27,20.84,20.24,21.97,20.52,20.98,21.40,
-        20.39,20.71,20.78,20.30,21.56,21.72,20.27,21.57,
-        21.82,20.57,21.33,20.51,22.32,21.99,20.57,22.11,
-        21.56,22.24,20.62,21.70,21.11,21.19,21.79,20.46,
-        22.21,20.82,20.52,22.29,20.71,21.45,22.40,20.63,
-        20.95,21.97,22.20,20.67,21.01,22.25,20.76,21.33,
-        20.49,20.33,21.94,20.64,20.99,21.09,20.97,22.17,
-        20.72,22.06,20.86,21.40,21.75,20.78,21.79,20.47,
-        21.19,21.60,20.75,21.36,21.61,20.37,21.67,20.28,
-        22.33,21.37,21.33,20.87,21.25,22.01,22.08,20.81,
-        20.70,21.84,21.82,21.68,21.24,22.36,20.83,20.64,
-        21.03,20.57,22.34,20.96,21.54,21.26,21.43,22.39};
+class PathSparkSpreadPrice : public FdmInnerValueCalculator {
+  public:
+    typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-    const std::vector<Real> powerPrices = {
-        40.40,36.71,31.87,25.81,31.61,35.00,46.22,60.68,
-        42.45,38.01,33.84,29.79,31.84,38.53,49.23,59.92,
-        43.85,37.47,34.89,29.99,30.85,29.19,29.25,38.67,
-        36.90,25.93,22.12,20.19,17.19,19.29,13.51,18.14,
-        33.76,30.48,25.63,18.01,23.86,32.41,48.56,64.69,
-        38.42,39.31,32.73,29.97,31.41,35.02,46.85,58.12,
-        39.14,35.42,32.61,28.76,29.41,35.83,46.73,61.41,
-        61.01,59.43,60.43,66.29,62.79,62.66,57.66,51.63,
-        62.18,60.53,61.94,64.86,59.57,58.15,53.74,48.36,
-        45.64,51.21,51.54,50.79,54.50,49.92,41.58,39.81,
-        28.86,37.42,39.78,42.36,45.67,36.84,33.91,28.75,
-        62.97,63.84,62.91,68.77,64.33,61.95,59.12,54.89,
-        63.62,60.90,66.57,69.51,64.71,59.89,57.28,57.10,
-        65.09,63.82,67.52,70.51,65.59,59.36,58.22,54.64,
-        52.17,53.02,57.12,53.50,53.16,49.21,52.21,40.96,
-        49.01,47.94,49.89,53.83,52.96,50.33,51.72,46.99,
-        39.06,47.99,47.91,52.35,48.51,47.39,50.45,43.66,
-        25.62,35.76,42.76,46.51,45.62,46.79,48.76,41.00,
-        52.65,55.57,57.67,56.79,55.15,54.74,50.31,47.49,
-        53.72,55.62,55.89,58.11,54.46,52.92,49.61,44.68,
-        51.59,57.44,56.50,55.12,57.22,54.61,49.92,45.20};
+    PathSparkSpreadPrice(Real heatRate,
+                         const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
+                         ext::shared_ptr<Shape> fuelShape,
+                         ext::shared_ptr<Shape> powerShape)
+    : heatRate_(heatRate), path_(path), fuelShape_(std::move(fuelShape)),
+      powerShape_(std::move(powerShape)) {}
 
-    class PathFuelPrice : public FdmInnerValueCalculator {
-      public:
-        typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
+    Real innerValue(const FdmLinearOpIterator&, Time t) override {
+        QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
+                   "invalid time");
 
-        PathFuelPrice(const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-                      ext::shared_ptr<Shape> shape)
-        : path_(path), shape_(std::move(shape)) {}
-        Real innerValue(const FdmLinearOpIterator&, Time t) override {
-            QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
-                       "invalid time");
-
-            const Size i = Size(t * 365U * 24U);
-            const Real f = std::lower_bound(shape_->begin(), shape_->end(),
-                                            std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
-
-            return std::exp(path_[2][i] + f);
-        }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
-            return innerValue(iter, t);
-        }
-
-      private:
-        const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
-        const ext::shared_ptr<Shape> shape_;
-    };
-
-    class PathSparkSpreadPrice : public FdmInnerValueCalculator {
-      public:
-        typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
-
-        PathSparkSpreadPrice(Real heatRate,
-                             const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-                             ext::shared_ptr<Shape> fuelShape,
-                             ext::shared_ptr<Shape> powerShape)
-        : heatRate_(heatRate), path_(path), fuelShape_(std::move(fuelShape)),
-          powerShape_(std::move(powerShape)) {}
-
-        Real innerValue(const FdmLinearOpIterator&, Time t) override {
-            QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
-                       "invalid time");
-
-            const Size i = Size(t * 365U * 24U);
-            const Real f = std::lower_bound(
+        const Size i = Size(t * 365U * 24U);
+        const Real f = std::lower_bound(
                                powerShape_->begin(), powerShape_->end(),
                                std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
-            const Real g = std::lower_bound(
+        const Real g = std::lower_bound(
                                fuelShape_->begin(),fuelShape_->end(),
                                std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
 
-            return std::exp(f + path_[0][i]+path_[1][i])
-                   - heatRate_*std::exp(g + path_[2][i]);
-        }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
-            return innerValue(iter, t);
-        }
+        return std::exp(f + path_[0][i]+path_[1][i])
+            - heatRate_*std::exp(g + path_[2][i]);
+    }
+    Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
+        return innerValue(iter, t);
+    }
 
-      private:
-        const Real heatRate_;
-        const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
-        const ext::shared_ptr<Shape> fuelShape_;
-        const ext::shared_ptr<Shape> powerShape_;
-    };
+  private:
+    const Real heatRate_;
+    const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
+    const ext::shared_ptr<Shape> fuelShape_;
+    const ext::shared_ptr<Shape> powerShape_;
+};
 
-    ext::shared_ptr<KlugeExtOUProcess> createKlugeExtOUProcess() {
-        // model definition
-        const Real beta         = 200;
-        const Real eta          = 1.0/0.2;
-        const Real lambda       = 4.0;
-        const Real alpha        = 7.0;
-        const Real volatility_x = 1.4;
-        const Real kappa        = 4.45;
-        const Real volatility_u = std::sqrt(1.3);
-        const Real rho          = 0.7;
+ext::shared_ptr<KlugeExtOUProcess> createKlugeExtOUProcess() {
+    // model definition
+    const Real beta         = 200;
+    const Real eta          = 1.0/0.2;
+    const Real lambda       = 4.0;
+    const Real alpha        = 7.0;
+    const Real volatility_x = 1.4;
+    const Real kappa        = 4.45;
+    const Real volatility_u = std::sqrt(1.3);
+    const Real rho          = 0.7;
 
-        Array x0(2);
-        x0[0] = 0.0; x0[1] = 0.0;
+    Array x0(2);
+    x0[0] = 0.0; x0[1] = 0.0;
 
-        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
+    const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
             new ExtendedOrnsteinUhlenbeckProcess(alpha, volatility_x, x0[0],
                                                  constant_b(x0[0])));
-        const ext::shared_ptr<ExtOUWithJumpsProcess> lnPowerProcess(
+    const ext::shared_ptr<ExtOUWithJumpsProcess> lnPowerProcess(
             new ExtOUWithJumpsProcess(ouProcess, x0[1], beta, lambda, eta));
 
-        const Real u=0.0;
-        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> lnGasProcess(
+    const Real u=0.0;
+    const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> lnGasProcess(
             new ExtendedOrnsteinUhlenbeckProcess(kappa, volatility_u, u,
                                                  constant_b(u)));
 
-        ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
+    ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
             new KlugeExtOUProcess(rho, lnPowerProcess, lnGasProcess));
 
-        return klugeOUProcess;
-    }
+    return klugeOUProcess;
 }
+
 
 BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
 

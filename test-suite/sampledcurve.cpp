@@ -30,12 +30,11 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SampledCurveTests)
 
-namespace {
-    class FSquared {
-      public:
-        Real operator()(Real x) const { return x*x;};
-    };
-}
+class FSquared {
+  public:
+    Real operator()(Real x) const { return x*x;};
+};
+
 
 QL_DEPRECATED_DISABLE_WARNING
 

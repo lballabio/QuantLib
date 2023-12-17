@@ -82,69 +82,68 @@ BOOST_AUTO_TEST_SUITE(AsianOptionTests)
         << "\n" \
         << "    tolerance:        " << tolerance);
 
-namespace {
 
-    std::string averageTypeToString(Average::Type averageType) {
+std::string averageTypeToString(Average::Type averageType) {
 
-        if (averageType == Average::Geometric)
-            return "Geometric Averaging";
-        else if (averageType == Average::Arithmetic)
-            return "Arithmetic Averaging";
-        else
-            QL_FAIL("unknown averaging");
-    }
-
-    struct DiscreteAverageData {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Time first;
-        Time length;
-        Size fixings;
-        Volatility volatility;
-        bool controlVariate;
-        Real result;
-    };
-
-    struct ContinuousAverageData {
-        Option::Type type;
-        Real spot;
-        Real currentAverage;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Volatility volatility;
-        Natural length;
-        Natural elapsed;
-        Real result;
-    };
-
-    struct DiscreteAverageDataTermStructure {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate b;
-        Rate riskFreeRate;
-        Time first; // t1
-        Time expiry;
-        Size fixings;
-        Volatility volatility;
-        std::string slope;
-        Real result;
-    };
-
-    struct VecerData {
-        Real spot;
-        Rate riskFreeRate;
-        Volatility volatility;
-        Real strike;
-        Natural length;
-        Real result;
-        Real tolerance;
-    };
+    if (averageType == Average::Geometric)
+        return "Geometric Averaging";
+    else if (averageType == Average::Arithmetic)
+        return "Arithmetic Averaging";
+    else
+        QL_FAIL("unknown averaging");
 }
+
+struct DiscreteAverageData {
+    Option::Type type;
+    Real underlying;
+    Real strike;
+    Rate dividendYield;
+    Rate riskFreeRate;
+    Time first;
+    Time length;
+    Size fixings;
+    Volatility volatility;
+    bool controlVariate;
+    Real result;
+};
+
+struct ContinuousAverageData {
+    Option::Type type;
+    Real spot;
+    Real currentAverage;
+    Real strike;
+    Rate dividendYield;
+    Rate riskFreeRate;
+    Volatility volatility;
+    Natural length;
+    Natural elapsed;
+    Real result;
+};
+
+struct DiscreteAverageDataTermStructure {
+    Option::Type type;
+    Real underlying;
+    Real strike;
+    Rate b;
+    Rate riskFreeRate;
+    Time first; // t1
+    Time expiry;
+    Size fixings;
+    Volatility volatility;
+    std::string slope;
+    Real result;
+};
+
+struct VecerData {
+    Real spot;
+    Rate riskFreeRate;
+    Volatility volatility;
+    Real strike;
+    Natural length;
+    Real result;
+    Real tolerance;
+};
+
 
 BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePrice) {
 

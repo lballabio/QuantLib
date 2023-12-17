@@ -40,35 +40,32 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(DigitalCouponTests)
 
-namespace {
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Real nominal;
+    Calendar calendar;
+    ext::shared_ptr<IborIndex> index;
+    Natural fixingDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    Real optionTolerance;
+    Real blackTolerance;
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Real nominal;
-        Calendar calendar;
-        ext::shared_ptr<IborIndex> index;
-        Natural fixingDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
-        Real optionTolerance;
-        Real blackTolerance;
+    // setup
+    CommonVars() {
+        fixingDays = 2;
+        nominal = 1000000.0;
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Settings::instance().evaluationDate());
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today,fixingDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+        optionTolerance = 1.e-04;
+        blackTolerance = 1e-10;
+    }
+};
 
-        // setup
-        CommonVars() {
-            fixingDays = 2;
-            nominal = 1000000.0;
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Settings::instance().evaluationDate());
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today,fixingDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-            optionTolerance = 1.e-04;
-            blackTolerance = 1e-10;
-        }
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testAssetOrNothing) {
 

@@ -34,19 +34,18 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(FdCevTests)
 
-namespace {
-    class ExpectationFct {
-      public:
-        ExpectationFct(const CEVRNDCalculator& calculator, Time t)
-        : t_(t), calculator_(calculator) { }
+class ExpectationFct {
+  public:
+    ExpectationFct(const CEVRNDCalculator& calculator, Time t)
+    : t_(t), calculator_(calculator) { }
 
-        Real operator()(Real f) const { return f*calculator_.pdf(f, t_); }
+    Real operator()(Real f) const { return f*calculator_.pdf(f, t_); }
 
-      private:
-        const Time t_;
-        const CEVRNDCalculator& calculator_;
-    };
-}
+  private:
+    const Time t_;
+    const CEVRNDCalculator& calculator_;
+};
+
 
 BOOST_AUTO_TEST_CASE(testLocalMartingale) {
     BOOST_TEST_MESSAGE(

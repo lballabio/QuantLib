@@ -32,18 +32,17 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(MoneyTests)
 
-namespace {
-    bool IsSameCurrencyAndValuesAreClose(const Money& lhs, const Money& rhs) {
-        return (lhs.currency() == rhs.currency())
-            && std::abs(lhs.value() - rhs.value()) < 0.01;
-    }
-
-    const Currency EUR = EURCurrency();
-    const Currency GBP = GBPCurrency();
-    const Currency USD = USDCurrency();
-    const ExchangeRate eur_usd = ExchangeRate(EUR, USD, 1.2042);
-    const ExchangeRate eur_gbp = ExchangeRate(EUR, GBP, 0.6612);
+bool IsSameCurrencyAndValuesAreClose(const Money& lhs, const Money& rhs) {
+    return (lhs.currency() == rhs.currency())
+        && std::abs(lhs.value() - rhs.value()) < 0.01;
 }
+
+const Currency EUR = EURCurrency();
+const Currency GBP = GBPCurrency();
+const Currency USD = USDCurrency();
+const ExchangeRate eur_usd = ExchangeRate(EUR, USD, 1.2042);
+const ExchangeRate eur_gbp = ExchangeRate(EUR, GBP, 0.6612);
+
 
 BOOST_AUTO_TEST_CASE(testNone) {
 

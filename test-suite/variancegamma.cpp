@@ -58,24 +58,22 @@ BOOST_AUTO_TEST_SUITE(VarianceGammaTests)
     << "    error:            " << error << "\n" \
     << "    tolerance:        " << tolerance);
 
-namespace {
+struct VarianceGammaProcessData {
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Real sigma;
+    Real nu;
+    Real theta;
 
-    struct VarianceGammaProcessData {
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Real sigma;
-        Real nu;
-        Real theta;
+};
 
-    };
+struct VarianceGammaOptionData {
+    Option::Type type;
+    Real strike;
+    Time t;        // time to maturity
+};
 
-    struct VarianceGammaOptionData {
-        Option::Type type;
-        Real strike;
-        Time t;        // time to maturity
-    };
-}
 
 BOOST_AUTO_TEST_CASE(testVarianceGamma) {
 

@@ -149,34 +149,32 @@ BOOST_AUTO_TEST_CASE(testFlatHazardRate) {
 }
 
 
-namespace {
+template <class T, class I>
+void testBootstrapFromSpread() {
 
-    template <class T, class I>
-    void testBootstrapFromSpread() {
+    Calendar calendar = TARGET();
 
-        Calendar calendar = TARGET();
+    Date today = Settings::instance().evaluationDate();
 
-        Date today = Settings::instance().evaluationDate();
+    Integer settlementDays = 1;
 
-        Integer settlementDays = 1;
+    std::vector<Real> quote = {0.005, 0.006, 0.007, 0.009};
+    std::vector<Integer> n = {1, 2, 3, 5};
 
-        std::vector<Real> quote = {0.005, 0.006, 0.007, 0.009};
-        std::vector<Integer> n = {1, 2, 3, 5};
+    Frequency frequency = Quarterly;
+    BusinessDayConvention convention = Following;
+    DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
+    DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
+    Real recoveryRate = 0.4;
 
-        Frequency frequency = Quarterly;
-        BusinessDayConvention convention = Following;
-        DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
-        DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
-        Real recoveryRate = 0.4;
-
-        RelinkableHandle<YieldTermStructure> discountCurve;
-        discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
                                     new FlatForward(today,0.06,Actual360())));
 
-        std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
+    std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
-        for(Size i=0; i<n.size(); i++)
-            helpers.push_back(
+    for(Size i=0; i<n.size(); i++)
+        helpers.push_back(
                 ext::shared_ptr<DefaultProbabilityHelper>(
                     new SpreadCdsHelper(quote[i], Period(n[i], Years),
                                         settlementDays, calendar,
@@ -184,78 +182,77 @@ namespace {
                                         dayCounter, recoveryRate,
                                         discountCurve)));
 
-        RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
-        piecewiseCurve.linkTo(
+    RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
+    piecewiseCurve.linkTo(
             ext::shared_ptr<DefaultProbabilityTermStructure>(
                 new PiecewiseDefaultCurve<T,I>(today, helpers,
                                                Thirty360(Thirty360::BondBasis))));
 
-        Real notional = 1.0;
-        double tolerance = 1.0e-6;
+    Real notional = 1.0;
+    double tolerance = 1.0e-6;
 
-        {
-            SavedSettings restore;
-            // ensure apple-to-apple comparison
-            Settings::instance().includeTodaysCashFlows() = true;
+    {
+        SavedSettings restore;
+        // ensure apple-to-apple comparison
+        Settings::instance().includeTodaysCashFlows() = true;
 
-            for (Size i=0; i<n.size(); i++) {
-                Date protectionStart = today + settlementDays;
-                Date startDate = calendar.adjust(protectionStart, convention);
-                Date endDate = today + n[i]*Years;
+        for (Size i=0; i<n.size(); i++) {
+            Date protectionStart = today + settlementDays;
+            Date startDate = calendar.adjust(protectionStart, convention);
+            Date endDate = today + n[i]*Years;
 
-                Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                                  convention, Unadjusted, rule, false);
+            Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                              convention, Unadjusted, rule, false);
 
-                CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
-                                      schedule, convention, dayCounter,
-                                      true, true, protectionStart);
-                cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            CreditDefaultSwap cds(Protection::Buyer, notional, quote[i],
+                                  schedule, convention, dayCounter,
+                                  true, true, protectionStart);
+            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve)));
 
-                // test
-                Rate inputRate = quote[i];
-                Rate computedRate = cds.fairSpread();
-                if (std::fabs(inputRate - computedRate) > tolerance)
-                    BOOST_ERROR(
-                                "\nFailed to reproduce fair spread for " << n[i] <<
-                                "Y credit-default swaps\n"
-                                << std::setprecision(10)
-                                << "    computed rate: " << io::rate(computedRate) << "\n"
-                                << "    input rate:    " << io::rate(inputRate));
-            }
+            // test
+            Rate inputRate = quote[i];
+            Rate computedRate = cds.fairSpread();
+            if (std::fabs(inputRate - computedRate) > tolerance)
+                BOOST_ERROR("\nFailed to reproduce fair spread for " << n[i] <<
+                            "Y credit-default swaps\n"
+                            << std::setprecision(10)
+                            << "    computed rate: " << io::rate(computedRate) << "\n"
+                            << "    input rate:    " << io::rate(inputRate));
         }
     }
+}
 
 
-    template <class T, class I>
-    void testBootstrapFromUpfront() {
+template <class T, class I>
+void testBootstrapFromUpfront() {
 
-        Calendar calendar = TARGET();
+    Calendar calendar = TARGET();
 
-        Date today = Settings::instance().evaluationDate();
+    Date today = Settings::instance().evaluationDate();
 
-        Integer settlementDays = 1;
+    Integer settlementDays = 1;
 
-        std::vector<Real> quote = {0.01, 0.02, 0.04, 0.06};
-        std::vector<Integer> n = {2, 3, 5, 7};
+    std::vector<Real> quote = {0.01, 0.02, 0.04, 0.06};
+    std::vector<Integer> n = {2, 3, 5, 7};
 
-        Rate fixedRate = 0.05;
-        Frequency frequency = Quarterly;
-        BusinessDayConvention convention = ModifiedFollowing;
-        DateGeneration::Rule rule = DateGeneration::CDS;
-        DayCounter dayCounter = Actual360();
-        Real recoveryRate = 0.4;
-        Integer upfrontSettlementDays = 3;
+    Rate fixedRate = 0.05;
+    Frequency frequency = Quarterly;
+    BusinessDayConvention convention = ModifiedFollowing;
+    DateGeneration::Rule rule = DateGeneration::CDS;
+    DayCounter dayCounter = Actual360();
+    Real recoveryRate = 0.4;
+    Integer upfrontSettlementDays = 3;
 
-        RelinkableHandle<YieldTermStructure> discountCurve;
-        discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(ext::shared_ptr<YieldTermStructure>(
                                     new FlatForward(today,0.06,Actual360())));
 
-        std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
+    std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
-        for(Size i=0; i<n.size(); i++)
-            helpers.push_back(
+    for(Size i=0; i<n.size(); i++)
+        helpers.push_back(
                 ext::shared_ptr<DefaultProbabilityHelper>(
                     new UpfrontCdsHelper(quote[i], fixedRate,
                                          Period(n[i], Years),
@@ -266,59 +263,57 @@ namespace {
                                          upfrontSettlementDays, 
                                          true, true, Date(), Actual360(true))));
 
-        RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
-        piecewiseCurve.linkTo(
+    RelinkableHandle<DefaultProbabilityTermStructure> piecewiseCurve;
+    piecewiseCurve.linkTo(
             ext::shared_ptr<DefaultProbabilityTermStructure>(
                 new PiecewiseDefaultCurve<T,I>(today, helpers,
                                                Thirty360(Thirty360::BondBasis))));
 
-        Real notional = 1.0;
-        double tolerance = 1.0e-6;
+    Real notional = 1.0;
+    double tolerance = 1.0e-6;
 
-        {
-            SavedSettings backup;
-            // ensure apple-to-apple comparison
-            Settings::instance().includeTodaysCashFlows() = true;
+    {
+        SavedSettings backup;
+        // ensure apple-to-apple comparison
+        Settings::instance().includeTodaysCashFlows() = true;
 
-            for (Size i=0; i<n.size(); i++) {
-                Date protectionStart = today + settlementDays;
-                Date startDate = protectionStart;
-                Date endDate = cdsMaturity(today, n[i] * Years, rule);
-                Date upfrontDate = calendar.advance(today,
-                                                    upfrontSettlementDays,
-                                                    Days,
-                                                    convention);
+        for (Size i=0; i<n.size(); i++) {
+            Date protectionStart = today + settlementDays;
+            Date startDate = protectionStart;
+            Date endDate = cdsMaturity(today, n[i] * Years, rule);
+            Date upfrontDate = calendar.advance(today,
+                                                upfrontSettlementDays,
+                                                Days,
+                                                convention);
 
-                Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                                  convention, Unadjusted, rule, false);
+            Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                              convention, Unadjusted, rule, false);
 
-                CreditDefaultSwap cds(Protection::Buyer, notional,
-                                      quote[i], fixedRate,
-                                      schedule, convention, dayCounter,
-                                      true, true, protectionStart,
-                                      upfrontDate,
-                                      ext::shared_ptr<Claim>(),
-                                      Actual360(true),
-                                      true, today);
-                cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
+            CreditDefaultSwap cds(Protection::Buyer, notional,
+                                  quote[i], fixedRate,
+                                  schedule, convention, dayCounter,
+                                  true, true, protectionStart,
+                                  upfrontDate,
+                                  ext::shared_ptr<Claim>(),
+                                  Actual360(true),
+                                  true, today);
+            cds.setPricingEngine(ext::shared_ptr<PricingEngine>(
                            new MidPointCdsEngine(piecewiseCurve, recoveryRate,
                                                  discountCurve, true)));
 
-                // test
-                Rate inputUpfront = quote[i];
-                Rate computedUpfront = cds.fairUpfront();
-                if (std::fabs(inputUpfront - computedUpfront) > tolerance)
-                    BOOST_ERROR(
-                                "\nFailed to reproduce fair upfront for " << n[i] <<
-                                "Y credit-default swaps\n"
-                                << std::setprecision(10)
-                                << "    computed: " << io::rate(computedUpfront) << "\n"
-                                << "    expected: " << io::rate(inputUpfront));
-            }
+            // test
+            Rate inputUpfront = quote[i];
+            Rate computedUpfront = cds.fairUpfront();
+            if (std::fabs(inputUpfront - computedUpfront) > tolerance)
+                BOOST_ERROR("\nFailed to reproduce fair upfront for " << n[i] <<
+                            "Y credit-default swaps\n"
+                            << std::setprecision(10)
+                            << "    computed: " << io::rate(computedUpfront) << "\n"
+                            << "    expected: " << io::rate(inputUpfront));
         }
     }
-
 }
+
 
 BOOST_AUTO_TEST_CASE(testFlatHazardConsistency) {
     BOOST_TEST_MESSAGE("Testing piecewise-flat hazard-rate consistency...");

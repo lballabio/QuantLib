@@ -33,17 +33,14 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SofrFuturesTests)
 
-namespace {
+struct SofrQuotes {
+    Frequency freq;
+    Month month;
+    Year year;
+    Real price;
+    RateAveraging::Type averagingMethod;
+};
 
-    struct SofrQuotes {
-        Frequency freq;
-        Month month;
-        Year year;
-        Real price;
-        RateAveraging::Type averagingMethod;
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testBootstrap) {
     BOOST_TEST_MESSAGE("Testing bootstrap over SOFR futures...");

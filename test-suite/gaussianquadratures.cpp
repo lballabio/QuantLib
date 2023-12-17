@@ -48,116 +48,113 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(GaussianQuadraturesTests)
 
-namespace {
-
-    template <class T>
-    void testSingle(const T& I, const std::string& tag,
-                    const boost::function<Real(Real)>& f, Real expected) {
-        Real calculated = I(f);
-        if (std::fabs(calculated-expected) > 1.0e-4) {
-            BOOST_ERROR("integrating" << tag << "\n"
-                        << "    calculated: " << calculated << "\n"
-                        << "    expected:   " << expected);
-        }
+template <class T>
+void testSingle(const T& I, const std::string& tag,
+                const boost::function<Real(Real)>& f, Real expected) {
+    Real calculated = I(f);
+    if (std::fabs(calculated-expected) > 1.0e-4) {
+        BOOST_ERROR("integrating" << tag << "\n"
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
     }
-
-    // test functions
-
-    Real inv_exp(Real x) {
-        return std::exp(-x);
-    }
-
-    Real x_inv_exp(Real x) {
-        return x*std::exp(-x);
-    }
-
-    Real x_normaldistribution(Real x) {
-        return x*NormalDistribution()(x);
-    }
-
-    Real x_x_normaldistribution(Real x) {
-        return x*x*NormalDistribution()(x);
-    }
-
-    Real inv_cosh(Real x) {
-        return 1/std::cosh(x);
-    }
-
-    Real x_inv_cosh(Real x) {
-        return x/std::cosh(x);
-    }
-
-    Real x_x_nonCentralChiSquared(Real x) {
-        return x * x * boost::math::pdf(
-            boost::math::non_central_chi_squared_distribution<Real>(4.0,1.0),x);
-    }
-
-    Real x_sin_exp_nonCentralChiSquared(Real x) {
-        return x * std::sin(0.1*x) * std::exp(0.3*x) * boost::math::pdf(
-            boost::math::non_central_chi_squared_distribution<Real>(1.0,1.0),x);
-    }
-
-    template <class T>
-    void testSingleJacobi(const T& I) {
-        testSingle(I, "f(x) = 1",
-                   [](Real x) -> Real { return 1.0; }, 2.0);
-        testSingle(I, "f(x) = x",
-                   [](Real x) -> Real { return x; }, 0.0);
-        testSingle(I, "f(x) = x^2",
-                   [](Real x) -> Real{ return x * x; }, 2/3.);
-        testSingle(I, "f(x) = sin(x)",
-                   [](Real x) -> Real { return std::sin(x); }, 0.0);
-        testSingle(I, "f(x) = cos(x)",
-                   [](Real x) -> Real { return std::cos(x); },
-                   std::sin(1.0)-std::sin(-1.0));
-        testSingle(I, "f(x) = Gaussian(x)",
-                   NormalDistribution(),
-                   CumulativeNormalDistribution()(1.0)
-                   -CumulativeNormalDistribution()(-1.0));
-    }
-
-    template <class T>
-    void testSingleLaguerre(const T& I) {
-        testSingle(I, "f(x) = exp(-x)",
-                   inv_exp, 1.0);
-        testSingle(I, "f(x) = x*exp(-x)",
-                   x_inv_exp, 1.0);
-        testSingle(I, "f(x) = Gaussian(x)",
-                   NormalDistribution(), 0.5);
-    }
-
-    void testSingleTabulated(const boost::function<Real(Real)>& f,
-                             const std::string& tag,
-                             Real expected, Real tolerance) {
-        const Size order[] = { 6, 7, 12, 20 };
-        TabulatedGaussLegendre quad;
-        for (unsigned long i : order) {
-            quad.order(i);
-            Real realised = quad(f);
-            if (std::fabs(realised-expected) > tolerance) {
-                BOOST_ERROR(" integrating " << tag << "\n"
-                                            << "    order " << i << "\n"
-                                            << "    realised: " << realised << "\n"
-                                            << "    expected: " << expected);
-            }
-        }
-    }
-
-    template <class mp_float>
-    class MomentBasedGaussLaguerrePolynomial
-    : public MomentBasedGaussianPolynomial<mp_float> {
-      public:
-        mp_float moment(Size i) const override {
-            if (i == 0)
-                return mp_float(1.0);
-            else
-                return mp_float(i)*moment(i-1);
-        }
-
-        Real w(Real x) const override { return std::exp(-x); }
-    };
-
 }
+
+// test functions
+
+Real inv_exp(Real x) {
+    return std::exp(-x);
+}
+
+Real x_inv_exp(Real x) {
+    return x*std::exp(-x);
+}
+
+Real x_normaldistribution(Real x) {
+    return x*NormalDistribution()(x);
+}
+
+Real x_x_normaldistribution(Real x) {
+    return x*x*NormalDistribution()(x);
+}
+
+Real inv_cosh(Real x) {
+    return 1/std::cosh(x);
+}
+
+Real x_inv_cosh(Real x) {
+    return x/std::cosh(x);
+}
+
+Real x_x_nonCentralChiSquared(Real x) {
+    return x * x * boost::math::pdf(
+            boost::math::non_central_chi_squared_distribution<Real>(4.0,1.0),x);
+}
+
+Real x_sin_exp_nonCentralChiSquared(Real x) {
+    return x * std::sin(0.1*x) * std::exp(0.3*x) * boost::math::pdf(
+            boost::math::non_central_chi_squared_distribution<Real>(1.0,1.0),x);
+}
+
+template <class T>
+void testSingleJacobi(const T& I) {
+    testSingle(I, "f(x) = 1",
+               [](Real x) -> Real { return 1.0; }, 2.0);
+    testSingle(I, "f(x) = x",
+               [](Real x) -> Real { return x; }, 0.0);
+    testSingle(I, "f(x) = x^2",
+               [](Real x) -> Real{ return x * x; }, 2/3.);
+    testSingle(I, "f(x) = sin(x)",
+               [](Real x) -> Real { return std::sin(x); }, 0.0);
+    testSingle(I, "f(x) = cos(x)",
+               [](Real x) -> Real { return std::cos(x); },
+               std::sin(1.0)-std::sin(-1.0));
+    testSingle(I, "f(x) = Gaussian(x)",
+               NormalDistribution(),
+               CumulativeNormalDistribution()(1.0)
+               -CumulativeNormalDistribution()(-1.0));
+}
+
+template <class T>
+void testSingleLaguerre(const T& I) {
+    testSingle(I, "f(x) = exp(-x)",
+               inv_exp, 1.0);
+    testSingle(I, "f(x) = x*exp(-x)",
+               x_inv_exp, 1.0);
+    testSingle(I, "f(x) = Gaussian(x)",
+               NormalDistribution(), 0.5);
+}
+
+void testSingleTabulated(const boost::function<Real(Real)>& f,
+                         const std::string& tag,
+                         Real expected, Real tolerance) {
+    const Size order[] = { 6, 7, 12, 20 };
+    TabulatedGaussLegendre quad;
+    for (unsigned long i : order) {
+        quad.order(i);
+        Real realised = quad(f);
+        if (std::fabs(realised-expected) > tolerance) {
+            BOOST_ERROR(" integrating " << tag << "\n"
+                        << "    order " << i << "\n"
+                        << "    realised: " << realised << "\n"
+                        << "    expected: " << expected);
+        }
+    }
+}
+
+template <class mp_float>
+class MomentBasedGaussLaguerrePolynomial
+    : public MomentBasedGaussianPolynomial<mp_float> {
+  public:
+    mp_float moment(Size i) const override {
+        if (i == 0)
+            return mp_float(1.0);
+        else
+            return mp_float(i)*moment(i-1);
+    }
+
+    Real w(Real x) const override { return std::exp(-x); }
+};
+
 
 BOOST_AUTO_TEST_CASE(testJacobi) {
     BOOST_TEST_MESSAGE("Testing Gauss-Jacobi integration...");

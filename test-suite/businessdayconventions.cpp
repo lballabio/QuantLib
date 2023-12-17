@@ -30,26 +30,23 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BusinessDayConventionTests)
 
-namespace {
+struct SingleCase {
+    SingleCase(Calendar calendar,
+               const BusinessDayConvention& convention,
+               const Date& start,
+               const Period& period,
+               const bool endOfMonth,
+               Date result)
+    : calendar(std::move(calendar)), convention(convention), start(start), period(period),
+      endOfMonth(endOfMonth), result(result) {}
+    Calendar calendar;
+    BusinessDayConvention convention;
+    Date start;
+    Period period;
+    bool endOfMonth;
+    Date result;
+};
 
-    struct SingleCase {
-        SingleCase(Calendar calendar,
-                   const BusinessDayConvention& convention,
-                   const Date& start,
-                   const Period& period,
-                   const bool endOfMonth,
-                   Date result)
-        : calendar(std::move(calendar)), convention(convention), start(start), period(period),
-          endOfMonth(endOfMonth), result(result) {}
-        Calendar calendar;
-        BusinessDayConvention convention;
-        Date start;
-        Period period;
-        bool endOfMonth;
-        Date result;
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testConventions) {
 

@@ -44,59 +44,56 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CallableBondTests)
 
-namespace {
+struct Globals {
+    // global data
+    Date today, settlement;
+    Calendar calendar;
+    DayCounter dayCounter;
+    BusinessDayConvention rollingConvention;
 
-    struct Globals {
-        // global data
-        Date today, settlement;
-        Calendar calendar;
-        DayCounter dayCounter;
-        BusinessDayConvention rollingConvention;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    RelinkableHandle<ShortRateModel> model;
 
-        RelinkableHandle<YieldTermStructure> termStructure;
-        RelinkableHandle<ShortRateModel> model;
+    Date issueDate() const {
+        // ensure that we're in mid-coupon
+        return calendar.adjust(today - 100*Days);
+    }
 
-        Date issueDate() const {
-            // ensure that we're in mid-coupon
-            return calendar.adjust(today - 100*Days);
-        }
+    Date maturityDate() const {
+        // ensure that we're in mid-coupon
+        return calendar.advance(issueDate(),10,Years);
+    }
 
-        Date maturityDate() const {
-            // ensure that we're in mid-coupon
-            return calendar.advance(issueDate(),10,Years);
-        }
+    std::vector<Date> evenYears() const {
+        std::vector<Date> dates;
+        for (Size i=2; i<10; i+=2)
+            dates.push_back(calendar.advance(issueDate(),i,Years));
+        return dates;
+    }
 
-        std::vector<Date> evenYears() const {
-            std::vector<Date> dates;
-            for (Size i=2; i<10; i+=2)
-                dates.push_back(calendar.advance(issueDate(),i,Years));
-            return dates;
-        }
+    std::vector<Date> oddYears() const {
+        std::vector<Date> dates;
+        for (Size i=1; i<10; i+=2)
+            dates.push_back(calendar.advance(issueDate(),i,Years));
+        return dates;
+    }
 
-        std::vector<Date> oddYears() const {
-            std::vector<Date> dates;
-            for (Size i=1; i<10; i+=2)
-                dates.push_back(calendar.advance(issueDate(),i,Years));
-            return dates;
-        }
-
-        template <class R>
-        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
-            return ext::shared_ptr<YieldTermStructure>(
+    template <class R>
+    ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
+        return ext::shared_ptr<YieldTermStructure>(
                                   new FlatForward(settlement, r, dayCounter));
-        }
+    }
 
-        Globals() {
-            calendar = TARGET();
-            dayCounter = Actual365Fixed();
-            rollingConvention = ModifiedFollowing;
+    Globals() {
+        calendar = TARGET();
+        dayCounter = Actual365Fixed();
+        rollingConvention = ModifiedFollowing;
 
-            today = Settings::instance().evaluationDate();
-            settlement = calendar.advance(today,2,Days);
-        }
-    };
+        today = Settings::instance().evaluationDate();
+        settlement = calendar.advance(today,2,Days);
+    }
+};
 
-}
 
 BOOST_AUTO_TEST_CASE(testInterplay) {
 

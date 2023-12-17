@@ -44,97 +44,95 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(IntegralTests)
 
-namespace {
+Real tolerance = 1.0e-6;
 
-    Real tolerance = 1.0e-6;
-
-    template <class T>
-    void testSingle(const T& I, const std::string& tag,
-                    const ext::function<Real (Real)>& f,
-                    Real xMin, Real xMax, Real expected) {
-        Real calculated = I(f,xMin,xMax);
-        if (std::fabs(calculated-expected) > tolerance) {
-            BOOST_FAIL(std::setprecision(10)
-                       << "integrating " << tag
-                       << "    calculated: " << calculated
-                       << "    expected:   " << expected);
-        }
-    }
-
-    template <class T>
-    void testSeveral(const T& I) {
-        testSingle(I, "f(x) = 0", [](Real x) -> Real { return 0.0; }, 0.0, 1.0, 0.0);
-        testSingle(I, "f(x) = 1", [](Real x) -> Real { return 1.0; }, 0.0, 1.0, 1.0);
-        testSingle(I, "f(x) = x", [](Real x) -> Real { return x; }, 0.0, 1.0, 0.5);
-        testSingle(I, "f(x) = x^2",
-                   [](Real x) -> Real { return x * x; }, 0.0, 1.0, 1.0/3.0);
-        testSingle(I, "f(x) = sin(x)",
-                   [](Real x) -> Real { return std::sin(x); }, 0.0, M_PI, 2.0);
-        testSingle(I, "f(x) = cos(x)",
-                   [](Real x) -> Real { return std::cos(x); }, 0.0, M_PI, 0.0);
-
-        testSingle(I, "f(x) = Gaussian(x)",
-                   NormalDistribution(), -10.0, 10.0, 1.0);
-        testSingle(I, "f(x) = Abcd2(x)",
-                   AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
-                   AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
-    }
-
-    template <class T>
-    void testDegeneratedDomain(const T& I) {
-        testSingle(I, "f(x) = 0 over [1, 1 + macheps]", [](Real x) -> Real { return 0.0; }, 1.0,
-            1.0 + QL_EPSILON, 0.0);
-    }
-
-    class sineF {
-      public:
-        Real operator()(Real x) const {
-            return std::exp(-0.5*(x - M_PI_2/100));
-        }
-    };
-
-    class cosineF {
-      public:
-        Real operator()(Real x) const {
-            return std::exp(-0.5*x);
-        }
-    };
-
-    Real f1(Real x) {
-        return 1.2*x*x+3.2*x+3.1;
-    }
-
-    Real f2(Real x) {
-        return 4.3*(x-2.34)*(x-2.34)-6.2*(x-2.34) + f1(2.34);
-    }
-
-    std::vector<Real> x, y;
-
-    Real pw_fct(const Real t) { return QL_PIECEWISE_FUNCTION(x, y, t); }
-
-    void pw_check(const Integrator &in, const Real a, const Real b,
-                  const Real expected) {
-        Real calculated = in(pw_fct, a, b);
-        if (!close(calculated, expected))
-            BOOST_FAIL(std::setprecision(16)
-                       << "piecewise integration over [" << a << "," << b
-                       << "] failed: "
-                       << "\n   calculated: " << calculated
-                       << "\n   expected:   " << expected
-                       << "\n   difference: " << (calculated - expected));
-    }
-
-    template <class T>
-    void reportSiCiFail(
-        const std::string& name, T z, T c, T e, Real diff, Real tol) {
-        BOOST_FAIL(std::setprecision(16)
-                   << name << " calculation failed for " << z
-                   << "\n calculated: " << c
-                   << "\n expected:   " << e
-                   << "\n difference: " << diff
-                   << "\n tolerance:  " << tol);
+template <class T>
+void testSingle(const T& I, const std::string& tag,
+                const ext::function<Real (Real)>& f,
+                Real xMin, Real xMax, Real expected) {
+    Real calculated = I(f,xMin,xMax);
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_FAIL(std::setprecision(10)
+                   << "integrating " << tag
+                   << "    calculated: " << calculated
+                   << "    expected:   " << expected);
     }
 }
+
+template <class T>
+void testSeveral(const T& I) {
+    testSingle(I, "f(x) = 0", [](Real x) -> Real { return 0.0; }, 0.0, 1.0, 0.0);
+    testSingle(I, "f(x) = 1", [](Real x) -> Real { return 1.0; }, 0.0, 1.0, 1.0);
+    testSingle(I, "f(x) = x", [](Real x) -> Real { return x; }, 0.0, 1.0, 0.5);
+    testSingle(I, "f(x) = x^2",
+               [](Real x) -> Real { return x * x; }, 0.0, 1.0, 1.0/3.0);
+    testSingle(I, "f(x) = sin(x)",
+               [](Real x) -> Real { return std::sin(x); }, 0.0, M_PI, 2.0);
+    testSingle(I, "f(x) = cos(x)",
+               [](Real x) -> Real { return std::cos(x); }, 0.0, M_PI, 0.0);
+
+    testSingle(I, "f(x) = Gaussian(x)",
+               NormalDistribution(), -10.0, 10.0, 1.0);
+    testSingle(I, "f(x) = Abcd2(x)",
+               AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
+               AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
+}
+
+template <class T>
+void testDegeneratedDomain(const T& I) {
+    testSingle(I, "f(x) = 0 over [1, 1 + macheps]", [](Real x) -> Real { return 0.0; }, 1.0,
+               1.0 + QL_EPSILON, 0.0);
+}
+
+class sineF {
+  public:
+    Real operator()(Real x) const {
+        return std::exp(-0.5*(x - M_PI_2/100));
+    }
+};
+
+class cosineF {
+  public:
+    Real operator()(Real x) const {
+        return std::exp(-0.5*x);
+    }
+};
+
+Real f1(Real x) {
+    return 1.2*x*x+3.2*x+3.1;
+}
+
+Real f2(Real x) {
+    return 4.3*(x-2.34)*(x-2.34)-6.2*(x-2.34) + f1(2.34);
+}
+
+std::vector<Real> x, y;
+
+Real pw_fct(const Real t) { return QL_PIECEWISE_FUNCTION(x, y, t); }
+
+void pw_check(const Integrator &in, const Real a, const Real b,
+              const Real expected) {
+    Real calculated = in(pw_fct, a, b);
+    if (!close(calculated, expected))
+        BOOST_FAIL(std::setprecision(16)
+                   << "piecewise integration over [" << a << "," << b
+                   << "] failed: "
+                   << "\n   calculated: " << calculated
+                   << "\n   expected:   " << expected
+                   << "\n   difference: " << (calculated - expected));
+}
+
+template <class T>
+void reportSiCiFail(
+                    const std::string& name, T z, T c, T e, Real diff, Real tol) {
+    BOOST_FAIL(std::setprecision(16)
+               << name << " calculation failed for " << z
+               << "\n calculated: " << c
+               << "\n expected:   " << e
+               << "\n difference: " << diff
+               << "\n tolerance:  " << tol);
+}
+
 
 BOOST_AUTO_TEST_CASE(testSegment) {
     BOOST_TEST_MESSAGE("Testing segment integration...");

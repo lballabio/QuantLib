@@ -46,89 +46,87 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ObservableTests)
 
-namespace {
+class UpdateCounter : public Observer {
+  public:
+    UpdateCounter() = default;
+    void update() override { ++counter_; }
+    Size counter() const { return counter_; }
 
-    class UpdateCounter : public Observer {
-      public:
-        UpdateCounter() = default;
-        void update() override { ++counter_; }
-        Size counter() const { return counter_; }
+  private:
+    Size counter_ = 0;
+};
 
-      private:
-        Size counter_ = 0;
-    };
-
-    class RestoreUpdates { // NOLINT(cppcoreguidelines-special-member-functions)
-      public:
-        ~RestoreUpdates() {
-            ObservableSettings::instance().enableUpdates();
-        }
-    };
+class RestoreUpdates { // NOLINT(cppcoreguidelines-special-member-functions)
+  public:
+    ~RestoreUpdates() {
+        ObservableSettings::instance().enableUpdates();
+    }
+};
 
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-    class MTUpdateCounter : public Observer {
-      public:
-        MTUpdateCounter() : counter_(0) {
-            ++instanceCounter_;
-        }
-        ~MTUpdateCounter() {
-            --instanceCounter_;
-        }
-        void update() {
-            ++counter_;
-        }
-        int counter() { return counter_; }
-        static int instanceCounter() { return instanceCounter_; }
+class MTUpdateCounter : public Observer {
+  public:
+    MTUpdateCounter() : counter_(0) {
+        ++instanceCounter_;
+    }
+    ~MTUpdateCounter() {
+        --instanceCounter_;
+    }
+    void update() {
+        ++counter_;
+    }
+    int counter() { return counter_; }
+    static int instanceCounter() { return instanceCounter_; }
 
-      private:
-        std::atomic<int> counter_;
-        static std::atomic<int> instanceCounter_;
-    };
+  private:
+    std::atomic<int> counter_;
+    static std::atomic<int> instanceCounter_;
+};
 
-    std::atomic<int> MTUpdateCounter::instanceCounter_(0);
+std::atomic<int> MTUpdateCounter::instanceCounter_(0);
 
-    class GarbageCollector {
-      public:
-        GarbageCollector() : terminate_(false) { }
+class GarbageCollector {
+  public:
+    GarbageCollector() : terminate_(false) { }
 
-        void addObj(const ext::shared_ptr<MTUpdateCounter>& updateCounter) {
-            std::lock_guard<std::mutex> lock(mutex_);
-            objList.push_back(updateCounter);
-        }
+    void addObj(const ext::shared_ptr<MTUpdateCounter>& updateCounter) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        objList.push_back(updateCounter);
+    }
 
-        void run() {
-            while(!terminate_) {
-                Size objListSize;
-                {
+    void run() {
+        while(!terminate_) {
+            Size objListSize;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                objListSize = objList.size();
+            }
+
+            if (objListSize > 20) {
+                // trigger gc
+                while (objListSize > 0) {
                     std::lock_guard<std::mutex> lock(mutex_);
+                    objList.pop_front();
                     objListSize = objList.size();
                 }
-
-                if (objListSize > 20) {
-                    // trigger gc
-                    while (objListSize > 0) {
-                        std::lock_guard<std::mutex> lock(mutex_);
-                        objList.pop_front();
-                        objListSize = objList.size();
-                    }
-                }
-
-                std::this_thread::sleep_for(std::chrono::milliseconds(2));
             }
-            objList.clear();
-        }
 
-        void terminate() {
-            terminate_ = true;
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
         }
-      private:
-        std::mutex mutex_;
-        std::atomic<bool> terminate_;
+        objList.clear();
+    }
 
-        std::list<ext::shared_ptr<MTUpdateCounter> > objList;
-    };
+    void terminate() {
+        terminate_ = true;
+    }
+  private:
+    std::mutex mutex_;
+    std::atomic<bool> terminate_;
+
+    std::list<ext::shared_ptr<MTUpdateCounter> > objList;
+};
 #endif
-}
+
 
 BOOST_AUTO_TEST_CASE(testObservableSettings) {
 
@@ -305,13 +303,13 @@ BOOST_AUTO_TEST_CASE(testDeepUpdate) {
     QL_CHECK_CLOSE(v4, 0.21, 1E-10);
 }
 
-namespace {
-	class DummyObserver : public Observer {
-	  public:
-            DummyObserver() = default;
-            void update() override {}
-        };
-}
+
+class DummyObserver : public Observer {
+  public:
+    DummyObserver() = default;
+    void update() override {}
+};
+
 
 BOOST_AUTO_TEST_CASE(testEmptyObserverList) {
 	BOOST_TEST_MESSAGE("Testing unregisterWith call on empty observer...");
