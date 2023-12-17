@@ -114,9 +114,6 @@ BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
     BOOST_TEST(ECB::date("OCT13") == Date((Day) 9, October,   (Year)2013));
     BOOST_TEST(ECB::date("NOV14") == Date((Day)12, November,  (Year)2014));
     BOOST_TEST(ECB::date("DEC15") == Date((Day) 9, December,  (Year)2015));
-
-    // for (const auto& d : ECB::knownDates())
-        // std::cout << d << '\n';
 }
 
 BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
