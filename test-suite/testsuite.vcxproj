@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (static runtime)|Win32">
@@ -763,6 +763,8 @@
     <ClCompile Include="period.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
+    <ClCompile Include="preconditions.cpp" />
+    <ClCompile Include="prices.cpp" />
     <ClCompile Include="quantlibglobalfixture.cpp" />
     <ClCompile Include="quantooption.cpp" />
     <ClCompile Include="quotes.cpp" />
@@ -777,7 +779,6 @@
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="solvers.cpp" />
-    <ClCompile Include="speedlevel.cpp" />
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
@@ -810,83 +811,13 @@
     <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="margrabeoption.hpp" />
     <ClInclude Include="marketmodel.hpp" />
-    <ClInclude Include="marketmodel_cms.hpp" />
-    <ClInclude Include="marketmodel_smm.hpp" />
-    <ClInclude Include="marketmodel_smmcapletalphacalibration.hpp" />
-    <ClInclude Include="marketmodel_smmcapletcalibration.hpp" />
-    <ClInclude Include="marketmodel_smmcaplethomocalibration.hpp" />
-    <ClInclude Include="markovfunctional.hpp" />
-    <ClInclude Include="matrices.hpp" />
-    <ClInclude Include="mclongstaffschwartzengine.hpp" />
-    <ClInclude Include="mersennetwister.hpp" />
-    <ClInclude Include="money.hpp" />
-    <ClInclude Include="noarbsabr.hpp" />
-    <ClInclude Include="normalclvmodel.hpp" />
-    <ClInclude Include="nthtodefault.hpp" />
-    <ClInclude Include="numericaldifferentiation.hpp" />
-    <ClInclude Include="nthorderderivativeop.hpp" />
-    <ClInclude Include="observable.hpp" />
-    <ClInclude Include="ode.hpp" />
-    <ClInclude Include="operators.hpp" />
-    <ClInclude Include="optimizers.hpp" />
-    <ClInclude Include="optionletstripper.hpp" />
-    <ClInclude Include="overnightindexedcoupon.hpp" />
-    <ClInclude Include="overnightindexedswap.hpp" />
-    <ClInclude Include="pagodaoption.hpp" />
-    <ClInclude Include="partialtimebarrieroption.hpp" />
-    <ClInclude Include="pathgenerator.hpp" />
     <ClInclude Include="paralleltestrunner.hpp" />
-    <ClInclude Include="period.hpp" />
-    <ClInclude Include="piecewiseyieldcurve.hpp" />
-    <ClInclude Include="piecewisezerospreadedtermstructure.hpp" />
+    <ClInclude Include="preconditions.hpp" />
     <ClInclude Include="quantlibglobalfixture.hpp" />
-    <ClInclude Include="quantooption.hpp" />
-    <ClInclude Include="quotes.hpp" />
-    <ClInclude Include="rangeaccrual.hpp" />
-    <ClInclude Include="riskneutraldensitycalculator.hpp" />
-    <ClInclude Include="riskstats.hpp" />
-    <ClInclude Include="rngtraits.hpp" />
-    <ClInclude Include="rounding.hpp" />
-    <ClInclude Include="sampledcurve.hpp" />
-    <ClInclude Include="schedule.hpp" />
-    <ClInclude Include="settings.hpp" />
-    <ClInclude Include="shortratemodels.hpp" />
-    <ClInclude Include="sofrfutures.hpp" />
-    <ClInclude Include="solvers.hpp" />
-    <ClInclude Include="speedlevel.hpp" />
-    <ClInclude Include="spreadoption.hpp" />
-    <ClInclude Include="squarerootclvmodel.hpp" />
-    <ClInclude Include="stats.hpp" />
-    <ClInclude Include="subperiodcoupons.hpp" />
-    <ClInclude Include="svivolatility.hpp" />
-    <ClInclude Include="swap.hpp" />
-    <ClInclude Include="swapforwardmappings.hpp" />
-    <ClInclude Include="swaption.hpp" />
-    <ClInclude Include="swaptionvolatilitycube.hpp" />
-    <ClInclude Include="swaptionvolatilitymatrix.hpp" />
     <ClInclude Include="swaptionvolstructuresutilities.hpp" />
-    <ClInclude Include="swingoption.hpp" />
-    <ClInclude Include="termstructures.hpp" />
-    <ClInclude Include="timegrid.hpp" />
-    <ClInclude Include="timeseries.hpp" />
-    <ClInclude Include="tqreigendecomposition.hpp" />
     <ClInclude Include="toplevelfixture.hpp" />
-    <ClInclude Include="tracing.hpp" />
-    <ClInclude Include="transformedgrid.hpp" />
-    <ClInclude Include="twoassetbarrieroption.hpp" />
-    <ClInclude Include="twoassetcorrelationoption.hpp" />
-    <ClInclude Include="ultimateforwardtermstructure.hpp" />
     <ClInclude Include="utilities.hpp" />
-    <ClInclude Include="variancegamma.hpp" />
-    <ClInclude Include="varianceoption.hpp" />
-    <ClInclude Include="varianceswaps.hpp" />
-    <ClInclude Include="volatilitymodels.hpp" />
-    <ClInclude Include="vpp.hpp" />
-    <ClInclude Include="xoshiro256starstar.hpp" />
-    <ClInclude Include="zabr.hpp" />
-    <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib.vcxproj">
