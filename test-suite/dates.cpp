@@ -42,6 +42,22 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(DateTest)
 
+BOOST_AUTO_TEST_CASE(ecbIsECBcode) {
+    BOOST_TEST_MESSAGE("Testing ECB codes for validity...");
+
+    BOOST_TEST(ECB::isECBcode("JAN00"));
+    BOOST_TEST(ECB::isECBcode("FEB78"));
+    BOOST_TEST(ECB::isECBcode("mar58"));
+    BOOST_TEST(ECB::isECBcode("aPr99"));
+
+    BOOST_TEST(!ECB::isECBcode(""));
+    BOOST_TEST(!ECB::isECBcode("JUNE99"));
+    BOOST_TEST(!ECB::isECBcode("JUN1999"));
+    BOOST_TEST(!ECB::isECBcode("JUNE"));
+    BOOST_TEST(!ECB::isECBcode("JUNE1999"));
+    BOOST_TEST(!ECB::isECBcode("1999"));
+}
+
 BOOST_AUTO_TEST_CASE(ecbDates) {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
