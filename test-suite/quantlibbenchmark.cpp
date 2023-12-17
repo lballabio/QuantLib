@@ -83,29 +83,25 @@
 #endif
 
 #include "utilities.hpp"
-#include "marketmodel_smm.hpp"
-#include "marketmodel_cms.hpp"
-#include "quantooption.hpp"
-#include "riskstats.hpp"
-#include "shortratemodels.hpp"
 
-namespace QuantLibTest {
-    namespace AmericanOptionTest {
+namespace QuantLibTests {
+
+    namespace AmericanOptionTests {
         struct testFdAmericanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace AsianOptionTest {
+    namespace AsianOptionTests {
         struct testMCDiscreteArithmeticAveragePrice:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace BarrierOptionTest {
+    namespace BarrierOptionTests {
         struct testBabsiriValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace BasketOptionTest {
+    namespace BasketOptionTests {
         struct testEuroTwoValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
 
@@ -116,22 +112,22 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace BatesModelTest {
+    namespace BatesModelTests {
         struct testDAXCalibration:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace ConvertibleBondTest {
+    namespace ConvertibleBondTests {
         struct testBond:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace DigitalOptionTest {
+    namespace DigitalOptionTests {
         struct testMCCashAtHit:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace DividendOptionTest {
+    namespace DividendOptionTests {
         struct testFdEuropeanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
 
@@ -139,7 +135,7 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace EuropeanOptionTest {
+    namespace EuropeanOptionTests {
         struct testMcEngines:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
 
@@ -150,28 +146,53 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace FdHestonTest {
+    namespace FdHestonTests {
         struct testFdmHestonAmerican:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace HestonModelTest {
+    namespace HestonModelTests {
         struct testDAXCalibration:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace InterpolationTest {
+    namespace InterpolationTests {
         struct testSabrInterpolation:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace JumpDiffusionTest {
+    namespace JumpDiffusionTests {
         struct testGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace LowDiscrepancyTest {
+    namespace LowDiscrepancyTests {
         struct testMersenneTwisterDiscrepancy:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace MarketModelCmsTests {
+        struct testMultiStepCmSwapsAndSwaptions:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace MarketModelSmmTests {
+        struct testMultiStepCoterminalSwapsAndSwaptions:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace QuantoOptionTests {
+        struct testForwardGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace RiskStatisticsTests {
+        struct testResults:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace ShortRateModelTests {
+        struct testSwaps:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
@@ -205,30 +226,30 @@ namespace {
     };
 
     std::vector<Benchmark> bm = {
-        Benchmark("AmericanOption::FdAmericanGreeks", [] { QuantLibTest::AmericanOptionTest::testFdAmericanGreeks().test_method(); }, 518.31),
-        Benchmark("AsianOption::MCArithmeticAveragePrice", [] { QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice().test_method(); }, 5186.13),
-        Benchmark("BarrierOption::BabsiriValues", [] { QuantLibTest::BarrierOptionTest::testBabsiriValues().test_method(); }, 880.8),
-        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTest::BasketOptionTest::testEuroTwoValues().test_method(); }, 340.04),
-        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTest::BasketOptionTest::testTavellaValues().test_method(); }, 933.80),
-        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTest::BasketOptionTest::testOddSamples().test_method(); }, 642.46),
-        Benchmark("BatesModel::DAXCalibration", [] { QuantLibTest::BatesModelTest::testDAXCalibration().test_method(); }, 1993.35),
-        Benchmark("ConvertibleBondTest::testBond", [] { QuantLibTest::ConvertibleBondTest::testBond().test_method(); }, 159.85),
-        Benchmark("DigitalOption::MCCashAtHit", [] { QuantLibTest::DigitalOptionTest::testMCCashAtHit().test_method(); }, 995.87),
-        Benchmark("DividendOption::FdEuropeanGreeks", [] { QuantLibTest::DividendOptionTest::testFdEuropeanGreeks().test_method(); }, 949.52),
-        Benchmark("DividendOption::FdAmericanGreeks", [] { QuantLibTest::DividendOptionTest::testFdAmericanGreeks().test_method(); }, 1113.74),
-        Benchmark("EuropeanOption::FdMcEngines", [] { QuantLibTest::EuropeanOptionTest::testMcEngines().test_method(); }, 1988.63),
-        Benchmark("EuropeanOption::ImpliedVol", [] { QuantLibTest::EuropeanOptionTest::testImpliedVol().test_method(); }, 131.51),
-        Benchmark("EuropeanOption::FdEngines", [] { QuantLibTest::EuropeanOptionTest::testFdEngines().test_method(); }, 148.43),
-        Benchmark("FdHestonTest::testFdmHestonAmerican", [] { QuantLibTest::FdHestonTest::testFdmHestonAmerican().test_method(); }, 234.21),
-        Benchmark("HestonModel::DAXCalibration", [] { QuantLibTest::HestonModelTest::testDAXCalibration().test_method(); }, 555.19),
-        Benchmark("InterpolationTest::testSabrInterpolation", [] { QuantLibTest::InterpolationTest::testSabrInterpolation().test_method(); }, 295.63),
-        Benchmark("JumpDiffusion::Greeks", [] { QuantLibTest::JumpDiffusionTest::testGreeks().test_method(); }, 433.77),
-        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
-        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
-        Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
-        Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
-        Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
-        Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
+        Benchmark("AmericanOption::FdAmericanGreeks", [] { QuantLibTests::AmericanOptionTests::testFdAmericanGreeks().test_method(); }, 518.31),
+        Benchmark("AsianOption::MCArithmeticAveragePrice", [] { QuantLibTests::AsianOptionTests::testMCDiscreteArithmeticAveragePrice().test_method(); }, 5186.13),
+        Benchmark("BarrierOption::BabsiriValues", [] { QuantLibTests::BarrierOptionTests::testBabsiriValues().test_method(); }, 880.8),
+        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testEuroTwoValues().test_method(); }, 340.04),
+        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testTavellaValues().test_method(); }, 933.80),
+        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testOddSamples().test_method(); }, 642.46),
+        Benchmark("BatesModel::DAXCalibration", [] { QuantLibTests::BatesModelTests::testDAXCalibration().test_method(); }, 1993.35),
+        Benchmark("ConvertibleBondTest::testBond", [] { QuantLibTests::ConvertibleBondTests::testBond().test_method(); }, 159.85),
+        Benchmark("DigitalOption::MCCashAtHit", [] { QuantLibTests::DigitalOptionTests::testMCCashAtHit().test_method(); }, 995.87),
+        Benchmark("DividendOption::FdEuropeanGreeks", [] { QuantLibTests::DividendOptionTests::testFdEuropeanGreeks().test_method(); }, 949.52),
+        Benchmark("DividendOption::FdAmericanGreeks", [] { QuantLibTests::DividendOptionTests::testFdAmericanGreeks().test_method(); }, 1113.74),
+        Benchmark("EuropeanOption::FdMcEngines", [] { QuantLibTests::EuropeanOptionTests::testMcEngines().test_method(); }, 1988.63),
+        Benchmark("EuropeanOption::ImpliedVol", [] { QuantLibTests::EuropeanOptionTests::testImpliedVol().test_method(); }, 131.51),
+        Benchmark("EuropeanOption::FdEngines", [] { QuantLibTests::EuropeanOptionTests::testFdEngines().test_method(); }, 148.43),
+        Benchmark("FdHestonTest::testFdmHestonAmerican", [] { QuantLibTests::FdHestonTests::testFdmHestonAmerican().test_method(); }, 234.21),
+        Benchmark("HestonModel::DAXCalibration", [] { QuantLibTests::HestonModelTests::testDAXCalibration().test_method(); }, 555.19),
+        Benchmark("InterpolationTest::testSabrInterpolation", [] { QuantLibTests::InterpolationTests::testSabrInterpolation().test_method(); }, 295.63),
+        Benchmark("JumpDiffusion::Greeks", [] { QuantLibTests::JumpDiffusionTests::testGreeks().test_method(); }, 433.77),
+        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", [] { QuantLibTests::MarketModelCmsTests::testMultiStepCmSwapsAndSwaptions().test_method(); }, 11497.73),
+        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", [] { QuantLibTests::MarketModelSmmTests::testMultiStepCoterminalSwapsAndSwaptions().test_method(); }, 11244.95),
+        Benchmark("QuantoOption::ForwardGreeks", [] { QuantLibTests::QuantoOptionTests::testForwardGreeks().test_method(); }, 90.98),
+        Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTests::LowDiscrepancyTests::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
+        Benchmark("RiskStatistics::Results", [] { QuantLibTests::RiskStatisticsTests::testResults().test_method(); }, 300.28),
+        Benchmark("ShortRateModel::Swaps", [] { QuantLibTests::ShortRateModelTests::testSwaps().test_method(); }, 454.73)
     };
 
     class TimedBenchmark {
