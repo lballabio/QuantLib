@@ -199,30 +199,19 @@ namespace QuantLib {
         if (ecbCode.length() != 5)
             return false;
 
-        string code = to_upper_copy(ecbCode);
+        // first 3 characters need to represent month, case insensitive
+        {
+            const boost::string_view month(ecbCode.data(), 3);
+            char monthUpper[3];
+            to_upper_copy(monthUpper, month);
+            const auto itMonth = std::find(MONTHS.begin(), MONTHS.end(), boost::string_view(monthUpper, 3));
+            if (itMonth == MONTHS.end())
+                return false;
+        }
 
-        string str1("0123456789");
-        string::size_type loc = str1.find(code.substr(3, 1), 0);
-        if (loc == string::npos)
-            return false;
-        loc = str1.find(code.substr(4, 1), 0);
-        if (loc == string::npos)
-            return false;
-
-        string monthString = code.substr(0, 3);
-        if (monthString=="JAN")      return true;
-        else if (monthString=="FEB") return true;
-        else if (monthString=="MAR") return true;
-        else if (monthString=="APR") return true;
-        else if (monthString=="MAY") return true;
-        else if (monthString=="JUN") return true;
-        else if (monthString=="JUL") return true;
-        else if (monthString=="AUG") return true;
-        else if (monthString=="SEP") return true;
-        else if (monthString=="OCT") return true;
-        else if (monthString=="NOV") return true;
-        else if (monthString=="DEC") return true;
-        else return false;
+        // 4th, 5th characters need to be digit
+        return std::isdigit(static_cast<unsigned char>(ecbCode[3]))
+            && std::isdigit(static_cast<unsigned char>(ecbCode[4]));
     }
 
     string ECB::nextCode(const std::string& ecbCode) {
