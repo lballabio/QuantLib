@@ -156,7 +156,6 @@ namespace QuantLib {
         const AnalyticHestonEngine* const engine_;
     };
 
-
     AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta,
         Real sigma, Real v0, Real s0, Real rho,
         const AnalyticHestonEngine* const engine,
@@ -1063,6 +1062,103 @@ namespace QuantLib {
         }
         catch (const Error&) {
             return uMax;
+        }
+    }
+
+
+    void AnalyticHestonEngine::doCalculation(Real riskFreeDiscount,
+                                             Real dividendDiscount,
+                                             Real spotPrice,
+                                             Real strikePrice,
+                                             Real term,
+                                             Real kappa, Real theta, Real sigma, Real v0, Real rho,
+                                             const TypePayoff& type,
+                                             const Integration& integration,
+                                             const ComplexLogFormula cpxLog,
+                                             const AnalyticHestonEngine* const enginePtr,
+                                             Real& value,
+                                             Size& evaluations) {
+
+        const Real ratio = riskFreeDiscount/dividendDiscount;
+
+        evaluations = 0;
+
+        switch(cpxLog) {
+          case Gatheral:
+          case BranchCorrection: {
+            const Real c_inf = std::min(0.2, std::max(0.0001,
+                std::sqrt(1.0-rho*rho)/sigma))*(v0 + kappa*theta*term);
+
+            const Real p1 = integration.calculate(c_inf,
+                Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
+                          cpxLog, term, strikePrice, ratio, 1))/M_PI;
+            evaluations += integration.numberOfEvaluations();
+
+            const Real p2 = integration.calculate(c_inf,
+                Fj_Helper(kappa, theta, sigma, v0, spotPrice, rho, enginePtr,
+                          cpxLog, term, strikePrice, ratio, 2))/M_PI;
+            evaluations += integration.numberOfEvaluations();
+
+            switch (type.optionType())
+            {
+              case Option::Call:
+                value = spotPrice*dividendDiscount*(p1+0.5)
+                               - strikePrice*riskFreeDiscount*(p2+0.5);
+                break;
+              case Option::Put:
+                value = spotPrice*dividendDiscount*(p1-0.5)
+                               - strikePrice*riskFreeDiscount*(p2-0.5);
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
+          }
+          break;
+          case AndersenPiterbarg:
+          case AndersenPiterbargOptCV:
+          case AsymptoticChF:
+          case OptimalCV: {
+            const Real c_inf =
+                std::sqrt(1.0-rho*rho)*(v0 + kappa*theta*term)/sigma;
+
+            const Real fwdPrice = spotPrice / ratio;
+
+            const Real epsilon = enginePtr->andersenPiterbargEpsilon_
+                *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
+
+            const ext::function<Real()> uM = [&](){
+                return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+            };
+
+            AP_Helper cvHelper(term, fwdPrice, strikePrice,
+                (cpxLog == OptimalCV)
+                    ? optimalControlVariate(term, v0, kappa, theta, sigma, rho)
+                    : cpxLog,
+                enginePtr
+            );
+
+            const Real cvValue = cvHelper.controlVariateValue();
+
+            const Real h_cv = integration.calculate(c_inf, cvHelper, uM)
+                * std::sqrt(strikePrice * fwdPrice)/M_PI;
+            evaluations += integration.numberOfEvaluations();
+
+            switch (type.optionType())
+            {
+              case Option::Call:
+                value = (cvValue + h_cv)*riskFreeDiscount;
+                break;
+              case Option::Put:
+                value = (cvValue + h_cv - (fwdPrice - strikePrice))*riskFreeDiscount;
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
+          }
+          break;
+
+          default:
+            QL_FAIL("unknown complex log formula");
         }
     }
 }

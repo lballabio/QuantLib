@@ -145,6 +145,24 @@ namespace QuantLib {
 
         Size numberOfEvaluations() const;
 
+        [[deprecated("Use AnalyticHestonEngine::priceVanillaPayoff instead.")]]
+        static void doCalculation(Real riskFreeDiscount,
+                                  Real dividendDiscount,
+                                  Real spotPrice,
+                                  Real strikePrice,
+                                  Real term,
+                                  Real kappa,
+                                  Real theta,
+                                  Real sigma,
+                                  Real v0,
+                                  Real rho,
+                                  const TypePayoff& type,
+                                  const Integration& integration,
+                                  ComplexLogFormula cpxLog,
+                                  const AnalyticHestonEngine* enginePtr,
+                                  Real& value,
+                                  Size& evaluations);
+
         Real priceVanillaPayoff(
            const ext::shared_ptr<PlainVanillaPayoff>& payoff,
            const Date& maturity) const;
