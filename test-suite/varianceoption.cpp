@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "varianceoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/varianceoption/varianceoption.hpp>
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
@@ -27,7 +27,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void VarianceOptionTest::testIntegralHeston() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VarianceOptionTests)
+
+BOOST_AUTO_TEST_CASE(testIntegralHeston) {
 
     BOOST_TEST_MESSAGE("Testing variance option with integral Heston engine...");
 
@@ -109,10 +113,6 @@ void VarianceOptionTest::testIntegralHeston() {
 
 }
 
-test_suite* VarianceOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Variance option tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&VarianceOptionTest::testIntegralHeston));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

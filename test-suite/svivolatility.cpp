@@ -17,15 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "svivolatility.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/volatility/svismilesection.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-void SviVolatilityTest::testSviSmileSection() {
+BOOST_AUTO_TEST_SUITE(SviVolatilityTests)
+
+BOOST_AUTO_TEST_CASE(testSviSmileSection) {
 
     BOOST_TEST_MESSAGE("Testing SviSmileSection construction...");
 
@@ -62,8 +65,6 @@ void SviVolatilityTest::testSviSmileSection() {
     QL_CHECK_CLOSE(date_section->variance(strike), a + b * sigma, 1E-10);
 }
 
-test_suite* SviVolatilityTest::experimental() {
-    auto* suite = BOOST_TEST_SUITE("SVI volatility tests");
-    suite->add(QUANTLIB_TEST_CASE(&SviVolatilityTest::testSviSmileSection));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "piecewisezerospreadedtermstructure.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/yield/piecewisezerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -32,54 +32,53 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace piecewise_zero_spreaded_term_structure_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct Datum {
-        Integer n;
-        TimeUnit units;
-        Rate rate;
-    };
+BOOST_AUTO_TEST_SUITE(PiecewiseZeroSpreadedTermStructureTests)
 
-    struct CommonVars {
-        // common data
-        Calendar calendar;
-        Natural settlementDays;
-        DayCounter dayCount;
-        Compounding compounding;
-        ext::shared_ptr<YieldTermStructure> termStructure;
-        Date today;
-        Date settlementDate;
+struct Datum {
+    Integer n;
+    TimeUnit units;
+    Rate rate;
+};
 
-        // setup
-        CommonVars() {
-            calendar = TARGET();
-            settlementDays = 2;
-            today =Date(9,June,2009);
-            compounding = Continuous;
-            dayCount = Actual360();
-            settlementDate = calendar.advance(today,settlementDays,Days);
+struct CommonVars {
+    // common data
+    Calendar calendar;
+    Natural settlementDays;
+    DayCounter dayCount;
+    Compounding compounding;
+    ext::shared_ptr<YieldTermStructure> termStructure;
+    Date today;
+    Date settlementDate;
 
-            Settings::instance().evaluationDate() = today;
+    // setup
+    CommonVars() {
+        calendar = TARGET();
+        settlementDays = 2;
+        today =Date(9,June,2009);
+        compounding = Continuous;
+        dayCount = Actual360();
+        settlementDate = calendar.advance(today,settlementDays,Days);
 
-            Integer ts[] = { 13,    41,  75,   165,   256 , 345,  524,  703 };
-            Rate r[] = { 0.035,0.033,0.034, 0.034, 0.036,0.037,0.039,0.040 };
-            std::vector<Rate> rates(1, 0.035);
-            std::vector<Date> dates(1, settlementDate);
-            for (Size i = 0; i < 8; ++i) {
-                dates.push_back(calendar.advance(today,ts[i],Days));
-                rates.push_back(r[i]);
-            }
-            termStructure = ext::make_shared<ZeroCurve>(dates, rates, dayCount);
+        Settings::instance().evaluationDate() = today;
+
+        Integer ts[] = { 13,    41,  75,   165,   256 , 345,  524,  703 };
+        Rate r[] = { 0.035,0.033,0.034, 0.034, 0.036,0.037,0.039,0.040 };
+        std::vector<Rate> rates(1, 0.035);
+        std::vector<Date> dates(1, settlementDate);
+        for (Size i = 0; i < 8; ++i) {
+            dates.push_back(calendar.advance(today,ts[i],Days));
+            rates.push_back(r[i]);
         }
-    };
+        termStructure = ext::make_shared<ZeroCurve>(dates, rates, dayCount);
+    }
+};
 
-}
 
-void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
+BOOST_AUTO_TEST_CASE(testFlatInterpolationLeft) {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation before the first spreaded date...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -113,11 +112,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
+BOOST_AUTO_TEST_CASE(testFlatInterpolationRight) {
 
     BOOST_TEST_MESSAGE("Testing flat interpolation after the last spreaded date...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -152,11 +149,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpreads() {
+BOOST_AUTO_TEST_CASE(testLinearInterpolationMultipleSpreads) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation with more than two spreaded dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -197,11 +192,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpre
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
+BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -240,11 +233,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
+BOOST_AUTO_TEST_CASE(testForwardFlatInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing forward flat interpolation between two dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -278,11 +269,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
+BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing backward flat interpolation between two dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -320,11 +309,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
+BOOST_AUTO_TEST_CASE(testDefaultInterpolation) {
 
     BOOST_TEST_MESSAGE("Testing default interpolation between two dates...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -358,11 +345,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
+BOOST_AUTO_TEST_CASE(testSetInterpolationFactory) {
 
     BOOST_TEST_MESSAGE("Testing factory constructor with additional parameters...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -408,11 +393,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
+BOOST_AUTO_TEST_CASE(testMaxDate) {
 
     BOOST_TEST_MESSAGE("Testing term structure max date...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -441,11 +424,9 @@ void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
 
 }
 
-void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
+BOOST_AUTO_TEST_CASE(testQuoteChanging) {
 
     BOOST_TEST_MESSAGE("Testing quote update...");
-
-    using namespace piecewise_zero_spreaded_term_structure_test;
 
     CommonVars vars;
 
@@ -491,26 +472,6 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 
 }
 
-test_suite* PiecewiseZeroSpreadedTermStructureTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Interpolated piecewise zero spreaded yield curve tests");
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpreads));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseZeroSpreadedTermStructureTest::testMaxDate));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

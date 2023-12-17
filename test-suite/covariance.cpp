@@ -27,27 +27,22 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace covariance_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    Real norm(const Matrix& m) {
-        Real sum = 0.0;
-        for (Size i=0; i<m.rows(); i++)
-            for (Size j=0; j<m.columns(); j++)
-                sum += m[i][j]*m[i][j];
-        return std::sqrt(sum);
-    }
+BOOST_AUTO_TEST_SUITE(CovarianceTests)
 
+Real norm(const Matrix& m) {
+    Real sum = 0.0;
+    for (Size i=0; i<m.rows(); i++)
+        for (Size j=0; j<m.columns(); j++)
+            sum += m[i][j]*m[i][j];
+    return std::sqrt(sum);
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CovarianceTest)
 
 BOOST_AUTO_TEST_CASE(testRankReduction) {
 
     BOOST_TEST_MESSAGE("Testing matrix rank reduction salvaging algorithms...");
-
-    using namespace covariance_test;
 
     Real expected, calculated;
 
@@ -105,8 +100,6 @@ BOOST_AUTO_TEST_CASE(testSalvagingMatrix) {
 
     BOOST_TEST_MESSAGE("Testing positive semi-definiteness salvaging "
                        "algorithms...");
-
-    using namespace covariance_test;
 
     Real expected, calculated;
 

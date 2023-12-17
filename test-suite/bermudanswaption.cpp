@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/coupon.hpp>
@@ -41,82 +41,77 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace bermudan_swaption_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Calendar calendar;
+BOOST_AUTO_TEST_SUITE(BermudanSwaptionTests)
 
-        // underlying swap parameters
-        Integer startYears, length;
-        Swap::Type type;
-        Real nominal;
-        BusinessDayConvention fixedConvention, floatingConvention;
-        Frequency fixedFrequency, floatingFrequency;
-        DayCounter fixedDayCount;
-        ext::shared_ptr<IborIndex> index;
-        Natural settlementDays;
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Calendar calendar;
 
-        RelinkableHandle<YieldTermStructure> termStructure;
+    // underlying swap parameters
+    Integer startYears, length;
+    Swap::Type type;
+    Real nominal;
+    BusinessDayConvention fixedConvention, floatingConvention;
+    Frequency fixedFrequency, floatingFrequency;
+    DayCounter fixedDayCount;
+    ext::shared_ptr<IborIndex> index;
+    Natural settlementDays;
 
-        // setup
-        CommonVars() {
-            startYears = 1;
-            length = 5;
-            type = Swap::Payer;
-            nominal = 1000.0;
-            settlementDays = 2;
-            fixedConvention = Unadjusted;
-            floatingConvention = ModifiedFollowing;
-            fixedFrequency = Annual;
-            floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360(Thirty360::BondBasis);
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Date::todaysDate());
-            settlement = calendar.advance(today,settlementDays,Days);
-        }
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-        // utilities
-        ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
-            Date start = calendar.advance(settlement, startYears, Years);
-            Date maturity = calendar.advance(start, length, Years);
-            Schedule fixedSchedule(start, maturity,
-                                   Period(fixedFrequency),
-                                   calendar,
-                                   fixedConvention,
-                                   fixedConvention,
-                                   DateGeneration::Forward, false);
-            Schedule floatSchedule(start, maturity,
-                                   Period(floatingFrequency),
-                                   calendar,
-                                   floatingConvention,
-                                   floatingConvention,
-                                   DateGeneration::Forward, false);
-            ext::shared_ptr<VanillaSwap> swap(
+    // setup
+    CommonVars() {
+        startYears = 1;
+        length = 5;
+        type = Swap::Payer;
+        nominal = 1000.0;
+        settlementDays = 2;
+        fixedConvention = Unadjusted;
+        floatingConvention = ModifiedFollowing;
+        fixedFrequency = Annual;
+        floatingFrequency = Semiannual;
+        fixedDayCount = Thirty360(Thirty360::BondBasis);
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Date::todaysDate());
+        settlement = calendar.advance(today,settlementDays,Days);
+    }
+
+    // utilities
+    ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
+        Date start = calendar.advance(settlement, startYears, Years);
+        Date maturity = calendar.advance(start, length, Years);
+        Schedule fixedSchedule(start, maturity,
+                               Period(fixedFrequency),
+                               calendar,
+                               fixedConvention,
+                               fixedConvention,
+                               DateGeneration::Forward, false);
+        Schedule floatSchedule(start, maturity,
+                               Period(floatingFrequency),
+                               calendar,
+                               floatingConvention,
+                               floatingConvention,
+                               DateGeneration::Forward, false);
+        ext::shared_ptr<VanillaSwap> swap(
                       new VanillaSwap(type, nominal,
                                       fixedSchedule, fixedRate, fixedDayCount,
                                       floatSchedule, index, 0.0,
                                       index->dayCounter()));
-            swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));
-            return swap;
-        }
-    };
+        return swap;
+    }
+};
 
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BermudanSwaptionTest)
 
 BOOST_AUTO_TEST_CASE(testCachedValues) {
 
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with HW model against cached values...");
-
-    using namespace bermudan_swaption_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -242,8 +237,6 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
 BOOST_AUTO_TEST_CASE(testCachedG2Values, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with G2 model against cached values...");
-
-    using namespace bermudan_swaption_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 

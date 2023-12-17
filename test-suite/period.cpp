@@ -17,14 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "period.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include "ql/time/period.hpp"
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void PeriodTest::testYearsMonthsAlgebra() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PeriodTests)
+
+BOOST_AUTO_TEST_CASE(testYearsMonthsAlgebra) {
 
     BOOST_TEST_MESSAGE("Testing period algebra on years/months...");
 
@@ -77,7 +81,7 @@ void PeriodTest::testYearsMonthsAlgebra() {
                     " instead of " << Years);
 }
 
-void PeriodTest::testWeeksDaysAlgebra() {
+BOOST_AUTO_TEST_CASE(testWeeksDaysAlgebra) {
 
     BOOST_TEST_MESSAGE("Testing period algebra on weeks/days...");
 
@@ -120,7 +124,7 @@ void PeriodTest::testWeeksDaysAlgebra() {
                     " instead of " << Days);
 }
 
-void PeriodTest::testNormalization() {
+BOOST_AUTO_TEST_CASE(testNormalization) {
 
     BOOST_TEST_MESSAGE("Testing period normalization...");
 
@@ -185,11 +189,6 @@ void PeriodTest::testNormalization() {
 
 }
 
-test_suite* PeriodTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Period tests");
-    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testYearsMonthsAlgebra));
-    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testWeeksDaysAlgebra));
-    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testNormalization));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

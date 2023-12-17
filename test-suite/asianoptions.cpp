@@ -22,33 +22,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
+#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/instruments/asianoption.hpp>
+#include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
-#include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
-#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
-#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
+#include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price_heston.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
-#include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
-#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
-#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
-#include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
-#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
 #include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AsianOptionTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, averageType, \
@@ -78,73 +82,68 @@ using namespace boost::unit_test_framework;
         << "\n" \
         << "    tolerance:        " << tolerance);
 
-namespace {
 
-    std::string averageTypeToString(Average::Type averageType) {
+std::string averageTypeToString(Average::Type averageType) {
 
-        if (averageType == Average::Geometric)
-            return "Geometric Averaging";
-        else if (averageType == Average::Arithmetic)
-            return "Arithmetic Averaging";
-        else
-            QL_FAIL("unknown averaging");
-    }
-
-    struct DiscreteAverageData {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Time first;
-        Time length;
-        Size fixings;
-        Volatility volatility;
-        bool controlVariate;
-        Real result;
-    };
-
-    struct ContinuousAverageData {
-        Option::Type type;
-        Real spot;
-        Real currentAverage;
-        Real strike;
-        Rate dividendYield;
-        Rate riskFreeRate;
-        Volatility volatility;
-        Natural length;
-        Natural elapsed;
-        Real result;
-    };
-
-    struct DiscreteAverageDataTermStructure {
-        Option::Type type;
-        Real underlying;
-        Real strike;
-        Rate b;
-        Rate riskFreeRate;
-        Time first; // t1
-        Time expiry;
-        Size fixings;
-        Volatility volatility;
-        std::string slope;
-        Real result;
-    };
-
-    struct VecerData {
-        Real spot;
-        Rate riskFreeRate;
-        Volatility volatility;
-        Real strike;
-        Natural length;
-        Real result;
-        Real tolerance;
-    };
+    if (averageType == Average::Geometric)
+        return "Geometric Averaging";
+    else if (averageType == Average::Arithmetic)
+        return "Arithmetic Averaging";
+    else
+        QL_FAIL("unknown averaging");
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+struct DiscreteAverageData {
+    Option::Type type;
+    Real underlying;
+    Real strike;
+    Rate dividendYield;
+    Rate riskFreeRate;
+    Time first;
+    Time length;
+    Size fixings;
+    Volatility volatility;
+    bool controlVariate;
+    Real result;
+};
 
-BOOST_AUTO_TEST_SUITE(AsianOptionTest)
+struct ContinuousAverageData {
+    Option::Type type;
+    Real spot;
+    Real currentAverage;
+    Real strike;
+    Rate dividendYield;
+    Rate riskFreeRate;
+    Volatility volatility;
+    Natural length;
+    Natural elapsed;
+    Real result;
+};
+
+struct DiscreteAverageDataTermStructure {
+    Option::Type type;
+    Real underlying;
+    Real strike;
+    Rate b;
+    Rate riskFreeRate;
+    Time first; // t1
+    Time expiry;
+    Size fixings;
+    Volatility volatility;
+    std::string slope;
+    Real result;
+};
+
+struct VecerData {
+    Real spot;
+    Rate riskFreeRate;
+    Volatility volatility;
+    Real strike;
+    Natural length;
+    Real result;
+    Real tolerance;
+};
+
 
 BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePrice) {
 
@@ -1908,10 +1907,6 @@ BOOST_AUTO_TEST_CASE(testTurnbullWakemanAsianEngine) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(AsianOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testLevyEngine) {
 
     BOOST_TEST_MESSAGE("Testing Levy engine for Asians options...");
@@ -2245,7 +2240,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceHeston) {
     ext::shared_ptr<AnalyticDiscreteGeometricAveragePriceAsianHestonEngine> engine(new
                                                                                    AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(hestonProcess));
 
-    AsianOptionTest::testDiscreteGeometricAveragePriceHeston(engine, tol);
+    AsianOptionTests::testDiscreteGeometricAveragePriceHeston(engine, tol);
 }
 
 BOOST_AUTO_TEST_CASE(testDiscreteGeometricAveragePriceHestonPastFixings) {

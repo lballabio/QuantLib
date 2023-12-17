@@ -29,6 +29,22 @@ namespace QuantLib {
             return out << "null currency";
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
+
+    Currency::Data::Data(std::string name,
+                         std::string code,
+                         Integer numericCode,
+                         std::string symbol,
+                         std::string fractionSymbol,
+                         Integer fractionsPerUnit,
+                         const Rounding& rounding,
+                         Currency triangulationCurrency,
+                         std::set<std::string> minorUnitCodes)
+    : name(std::move(name)), code(std::move(code)), numeric(numericCode), symbol(std::move(symbol)),
+      fractionSymbol(std::move(fractionSymbol)), fractionsPerUnit(fractionsPerUnit),
+      rounding(rounding), triangulated(std::move(triangulationCurrency)),
+      minorUnitCodes(std::move(minorUnitCodes)) {}
+
     Currency::Data::Data(std::string name,
                          std::string code,
                          Integer numericCode,
@@ -51,6 +67,25 @@ namespace QuantLib {
                        const std::string& fractionSymbol,
                        Integer fractionsPerUnit,
                        const Rounding& rounding,
+                       const Currency& triangulationCurrency,
+                       const std::set<std::string>& minorUnitCodes)
+    : data_(ext::make_shared<Currency::Data>(name,
+                                             code,
+                                             numericCode,
+                                             symbol,
+                                             fractionSymbol,
+                                             fractionsPerUnit,
+                                             rounding,
+                                             triangulationCurrency,
+                                             minorUnitCodes)) {}
+
+    Currency::Currency(const std::string& name,
+                       const std::string& code,
+                       Integer numericCode,
+                       const std::string& symbol,
+                       const std::string& fractionSymbol,
+                       Integer fractionsPerUnit,
+                       const Rounding& rounding,
                        const std::string& formatString,
                        const Currency& triangulationCurrency,
                        const std::set<std::string>& minorUnitCodes)
@@ -64,5 +99,7 @@ namespace QuantLib {
                                              formatString,
                                              triangulationCurrency,
                                              minorUnitCodes)) {}
-}
 
+    QL_DEPRECATED_ENABLE_WARNING
+
+}

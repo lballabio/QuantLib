@@ -22,8 +22,6 @@
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
 
-#include <boost/format.hpp>
-
 namespace QuantLib {
 
     namespace {
@@ -44,6 +42,26 @@ namespace QuantLib {
             convertTo(m, base_currency);
         }
 
+        template< typename ReturnValue, typename Function >
+        ReturnValue apply(const Money& m1, const Money& m2, const Function f) {
+            const auto & conversion_type =
+                Money::Settings::instance().conversionType();
+            if (m1.currency() == m2.currency()) {
+                return f(m1.value(), m2.value());
+            } else if (conversion_type == Money::BaseCurrencyConversion) {
+                Money tmp1 = m1;
+                convertToBase(tmp1);
+                Money tmp2 = m2;
+                convertToBase(tmp2);
+                return f(tmp1.value(), tmp2.value());
+            } else if (conversion_type == Money::AutomatedConversion) {
+                Money tmp = m2;
+                convertTo(tmp, m1.currency());
+                return f(m1.value(), tmp.value());
+            } else {
+                QL_FAIL("currency mismatch and no conversion specified");
+            }
+        }
     }
 
     Money& Money::operator+=(const Money& m) {
@@ -66,154 +84,48 @@ namespace QuantLib {
     }
 
     Money& Money::operator-=(const Money& m) {
-        const auto & conversion_type = Settings::instance().conversionType();
-        if (currency_ == m.currency_) {
-            value_ -= m.value_;
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            convertToBase(*this);
-            Money tmp = m;
-            convertToBase(tmp);
-            *this -= tmp;
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m;
-            convertTo(tmp, currency_);
-            *this -= tmp;
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
-        return *this;
+        return *this += (-m);
     }
 
     Decimal operator/(const Money& m1, const Money& m2) {
-        const auto & conversion_type =
-            Money::Settings::instance().conversionType();
-        if (m1.currency() == m2.currency()) {
-            return m1.value()/m2.value();
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            Money tmp1 = m1;
-            convertToBase(tmp1);
-            Money tmp2 = m2;
-            convertToBase(tmp2);
-            return tmp1/tmp2;
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m2;
-            convertTo(tmp, m1.currency());
-            return m1/tmp;
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
+        return apply<Decimal>(
+                    m1, m2,
+                    [](const Real x, const Real y) { return x / y; });
     }
 
     bool operator==(const Money& m1, const Money& m2) {
-        const auto & conversion_type =
-            Money::Settings::instance().conversionType();
-        if (m1.currency() == m2.currency()) {
-            return m1.value() == m2.value();
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            Money tmp1 = m1;
-            convertToBase(tmp1);
-            Money tmp2 = m2;
-            convertToBase(tmp2);
-            return tmp1 == tmp2;
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m2;
-            convertTo(tmp, m1.currency());
-            return m1 == tmp;
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
+        return apply<bool>(
+                    m1, m2,
+                    [](const Real x, const Real y) { return x == y; });
     }
 
     bool operator<(const Money& m1, const Money& m2) {
-        const auto & conversion_type =
-            Money::Settings::instance().conversionType();
-        if (m1.currency() == m2.currency()) {
-            return m1.value() < m2.value();
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            Money tmp1 = m1;
-            convertToBase(tmp1);
-            Money tmp2 = m2;
-            convertToBase(tmp2);
-            return tmp1 < tmp2;
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m2;
-            convertTo(tmp, m1.currency());
-            return m1 < tmp;
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
+        return apply<bool>(
+                    m1, m2,
+                    [](const Real x, const Real y) { return x < y; });
     }
 
     bool operator<=(const Money& m1, const Money& m2) {
-        const auto & conversion_type =
-            Money::Settings::instance().conversionType();
-        if (m1.currency() == m2.currency()) {
-            return m1.value() <= m2.value();
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            Money tmp1 = m1;
-            convertToBase(tmp1);
-            Money tmp2 = m2;
-            convertToBase(tmp2);
-            return tmp1 <= tmp2;
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m2;
-            convertTo(tmp, m1.currency());
-            return m1 <= tmp;
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
+        return apply<bool>(
+                    m1, m2,
+                    [](const Real x, const Real y) { return x <= y; });
     }
 
     bool close(const Money& m1, const Money& m2, Size n) {
-        const auto & conversion_type =
-            Money::Settings::instance().conversionType();
-        if (m1.currency() == m2.currency()) {
-            return close(m1.value(),m2.value(),n);
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            Money tmp1 = m1;
-            convertToBase(tmp1);
-            Money tmp2 = m2;
-            convertToBase(tmp2);
-            return close(tmp1,tmp2,n);
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m2;
-            convertTo(tmp, m1.currency());
-            return close(m1,tmp,n);
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
+        return apply<bool>(
+                    m1, m2,
+                    [n](const Real x, const Real y) { return close(x, y, n); });
     }
 
     bool close_enough(const Money& m1, const Money& m2, Size n) {
-        const auto & conversion_type =
-            Money::Settings::instance().conversionType();
-        if (m1.currency() == m2.currency()) {
-            return close_enough(m1.value(),m2.value(),n);
-        } else if (conversion_type == Money::BaseCurrencyConversion) {
-            Money tmp1 = m1;
-            convertToBase(tmp1);
-            Money tmp2 = m2;
-            convertToBase(tmp2);
-            return close_enough(tmp1,tmp2,n);
-        } else if (conversion_type == Money::AutomatedConversion) {
-            Money tmp = m2;
-            convertTo(tmp, m1.currency());
-            return close_enough(m1,tmp,n);
-        } else {
-            QL_FAIL("currency mismatch and no conversion specified");
-        }
+        return apply<bool>(
+                    m1, m2,
+                    [n](const Real x, const Real y) { return close_enough(x, y, n); });
     }
-
 
     std::ostream& operator<<(std::ostream& out, const Money& m) {
-        boost::format fmt(m.currency().format());
-        fmt.exceptions(boost::io::all_error_bits ^
-                       boost::io::too_many_args_bit);
-        return out << fmt % m.rounded().value()
-                          % m.currency().code()
-                          % m.currency().symbol();
+        return out << m.rounded().value() << " " << m.currency().code();
     }
-
 
     const Money::ConversionType & Money::Settings::conversionType() const
     {

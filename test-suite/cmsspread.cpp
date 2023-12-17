@@ -43,7 +43,10 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using namespace boost::accumulators;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CmsSpreadTests)
+
 struct TestData {
     TestData() {
         refDate = Date(23, February, 2018);
@@ -89,11 +92,7 @@ struct TestData {
     ext::shared_ptr<CmsSpreadCouponPricer> cmsspPricerLn, cmsspPricerSln,
         cmsspPricerN;
 };
-} // namespace
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CmsSpreadExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testFixings) {
     BOOST_TEST_MESSAGE("Testing fixings of cms spread indices...");
@@ -134,7 +133,7 @@ BOOST_AUTO_TEST_CASE(testFixings) {
                       cms10y->fixing(d.refDate) - cms2y->fixing(d.refDate));
 }
 
-namespace {
+
 Real mcReferenceValue(const ext::shared_ptr<CmsCoupon>& cpn1,
                       const ext::shared_ptr<CmsCoupon>& cpn2, const Real cap,
                       const Real floor,
@@ -185,8 +184,8 @@ Real mcReferenceValue(const ext::shared_ptr<CmsCoupon>& cpn1,
         acc(std::min(std::max(z[0] - z[1], floor), cap));
     }
     return mean(acc);
-} // mcReferenceValue
-} // namespace
+}
+
 
 BOOST_AUTO_TEST_CASE(testCouponPricing) {
     BOOST_TEST_MESSAGE("Testing pricing of cms spread coupons...");

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "twoassetcorrelationoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void TwoAssetCorrelationOptionTest::testAnalyticEngine() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TwoAssetCorrelationOptionTests)
+
+BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     BOOST_TEST_MESSAGE(
         "Testing analytic engine for two-asset correlation option...");
 
@@ -82,11 +86,6 @@ void TwoAssetCorrelationOptionTest::testAnalyticEngine() {
                     << "\n    error:      " << error);
 }
 
-test_suite* TwoAssetCorrelationOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Two-asset correlation option tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-       &TwoAssetCorrelationOptionTest::testAnalyticEngine));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

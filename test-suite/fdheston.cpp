@@ -18,97 +18,91 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/math/functional.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
-#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/tuple.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-namespace fd_heston_test {
-    struct NewBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-    };
+BOOST_AUTO_TEST_SUITE(FdHestonTests)
 
-    class ParableLocalVolatility : public LocalVolTermStructure {
-      public:
-        ParableLocalVolatility(
-            const Date& referenceDate,
-            Real s0,
-            Real alpha,
-            const DayCounter& dayCounter)
-        : LocalVolTermStructure(
-              referenceDate, NullCalendar(), Following, dayCounter),
-          referenceDate_(referenceDate),
-          s0_(s0),
-          alpha_(alpha) {}
+struct NewBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+};
 
-        Date maxDate() const override { return Date::maxDate(); }
-        Real minStrike() const override { return 0.0; }
-        Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
+class ParableLocalVolatility : public LocalVolTermStructure {
+  public:
+    ParableLocalVolatility(
+                           const Date& referenceDate,
+                           Real s0,
+                           Real alpha,
+                           const DayCounter& dayCounter)
+    : LocalVolTermStructure(referenceDate, NullCalendar(), Following, dayCounter),
+      referenceDate_(referenceDate),
+      s0_(s0),
+      alpha_(alpha) {}
 
-      protected:
-        Volatility localVolImpl(Time, Real s) const override {
-            return alpha_*(squared(s0_ - s) + 25.0);
-        }
+    Date maxDate() const override { return Date::maxDate(); }
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
 
-      private:
-        const Date referenceDate_;
-        const Real s0_, alpha_;
-    };
-}
+  protected:
+    Volatility localVolImpl(Time, Real s) const override {
+        return alpha_*(squared(s0_ - s) + 25.0);
+    }
 
-namespace {
-    struct HestonTestData {
-        Real kappa;
-        Real theta;
-        Real sigma;
-        Real rho;
-        Real r;
-        Real q;
-        Real T;
-        Real K;
-    };
-}
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+  private:
+    const Date referenceDate_;
+    const Real s0_, alpha_;
+};
 
-BOOST_AUTO_TEST_SUITE(FdHestonTest)
+struct HestonTestData {
+    Real kappa;
+    Real theta;
+    Real sigma;
+    Real rho;
+    Real r;
+    Real q;
+    Real T;
+    Real K;
+};
+
 
 BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
     BOOST_TEST_MESSAGE("Testing FDM Heston variance mesher...");
-
-    using namespace fd_heston_test;
 
     const Date today = Date(22, February, 2018);
     const DayCounter dc = Actual365Fixed();
@@ -206,8 +200,6 @@ BOOST_AUTO_TEST_CASE(testFdmHestonVarianceMesher) {
 BOOST_AUTO_TEST_CASE(testFdmHestonBarrierVsBlackScholes, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing FDM with barrier option in Heston model...");
-
-    using namespace fd_heston_test;
 
     NewBarrierOptionData values[] = {
         /* The data below are from

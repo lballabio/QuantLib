@@ -17,15 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-#include "normalclvmodel.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
 #include <ql/functional.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -35,6 +34,7 @@
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -51,7 +51,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NormalCLVModelTests)
+
+BOOST_AUTO_TEST_CASE(testBSCumlativeDistributionFunction) {
     BOOST_TEST_MESSAGE("Testing Black-Scholes cumulative distribution function"
                        " with constant volatility...");
 
@@ -94,7 +98,7 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     }
 }
 
-void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
+BOOST_AUTO_TEST_CASE(testHestonCumlativeDistributionFunction) {
     BOOST_TEST_MESSAGE("Testing Heston cumulative distribution function...");
 
     const DayCounter dc = Actual365Fixed();
@@ -145,9 +149,7 @@ void NormalCLVModelTest::testHestonCumlativeDistributionFunction() {
     }
 }
 
-
-
-void NormalCLVModelTest::testIllustrative1DExample() {
+BOOST_AUTO_TEST_CASE(testIllustrative1DExample) {
     BOOST_TEST_MESSAGE(
         "Testing illustrative 1D example of normal CLV model...");
 
@@ -263,23 +265,20 @@ void NormalCLVModelTest::testIllustrative1DExample() {
     }
 }
 
-namespace normal_clv_model_test {
-    class CLVModelPayoff : public PlainVanillaPayoff {
-      public:
-        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
-        : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
+class CLVModelPayoff : public PlainVanillaPayoff {
+  public:
+    CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+    : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
-        Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
+    Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
-      private:
-        const ext::function<Real(Real)> g_;
-    };
-}
+  private:
+    const ext::function<Real(Real)> g_;
+};
 
-void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
+
+BOOST_AUTO_TEST_CASE(testMonteCarloBSOptionPricing) {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
-
-    using namespace normal_clv_model_test;
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(22, June, 2016);
@@ -370,8 +369,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
                    << "\n    expected:   " << expected);
     }
 }
-
-void NormalCLVModelTest::testMoustacheGraph() {
+BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE(
         "Testing double no-touch pricing with normal CLV model...");
 
@@ -537,22 +535,6 @@ void NormalCLVModelTest::testMoustacheGraph() {
         }
     }
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* NormalCLVModelTest::experimental(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testBSCumlativeDistributionFunction));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testHestonCumlativeDistributionFunction));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testIllustrative1DExample));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NormalCLVModelTest::testMonteCarloBSOptionPricing));
-
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &NormalCLVModelTest::testMoustacheGraph));
-    }
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

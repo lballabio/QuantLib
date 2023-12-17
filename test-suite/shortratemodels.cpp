@@ -21,7 +21,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "shortratemodels.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
@@ -44,21 +44,19 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace short_rate_models_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CalibrationData {
-        Integer start;
-        Integer length;
-        Volatility volatility;
-    };
+BOOST_AUTO_TEST_SUITE(ShortRateModelTests)
 
-}
+struct CalibrationData {
+    Integer start;
+    Integer length;
+    Volatility volatility;
+};
 
 
-void ShortRateModelTest::testCachedHullWhite() {
+BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");
-
-    using namespace short_rate_models_test;
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -129,10 +127,8 @@ void ShortRateModelTest::testCachedHullWhite() {
     }
 }
 
-void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
+BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration with fixed reversion against cached values...");
-
-    using namespace short_rate_models_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -205,12 +201,9 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     }
 }
 
-
-void ShortRateModelTest::testCachedHullWhite2() {
+BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached "
                        "values using swaptions without start delay...");
-
-    using namespace short_rate_models_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -287,7 +280,7 @@ void ShortRateModelTest::testCachedHullWhite2() {
     }
 }
 
-void ShortRateModelTest::testSwaps() {
+BOOST_AUTO_TEST_CASE(testSwaps) {
     BOOST_TEST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
@@ -389,7 +382,7 @@ void ShortRateModelTest::testSwaps() {
     }
 }
 
-void ShortRateModelTest::testFuturesConvexityBias() {
+BOOST_AUTO_TEST_CASE(testFuturesConvexityBias) {
     BOOST_TEST_MESSAGE("Testing Hull-White futures convexity bias...");
 
     // G. Kirikos, D. Novak, "Convexity Conundrums", Risk Magazine, March 1997
@@ -418,7 +411,7 @@ void ShortRateModelTest::testFuturesConvexityBias() {
     }
 }
 
-void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
+BOOST_AUTO_TEST_CASE(testExtendedCoxIngersollRossDiscountFactor) {
     BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
 
     const Date today = Settings::instance().evaluationDate();
@@ -447,17 +440,6 @@ void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
                     << "\n  tolerance : " << tol);
     }
 }
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* ShortRateModelTest::suite(SpeedLevel) {
-    auto* suite = BOOST_TEST_SUITE("Short-rate model tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
-    suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -29,47 +29,48 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace garch_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class DummyOptimizationMethod : public OptimizationMethod {
-      public:
-        EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override {
-            P.setFunctionValue(P.value(P.currentValue()));
-            return EndCriteria::None;
-        }
-    };
+BOOST_AUTO_TEST_SUITE(GARCHTests)
 
-    struct Results {
-        Real alpha;
-        Real beta;
-        Real omega;
-        Real logLikelihood;
-    };
+class DummyOptimizationMethod : public OptimizationMethod {
+  public:
+    EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override {
+        P.setFunctionValue(P.value(P.currentValue()));
+        return EndCriteria::None;
+    }
+};
 
-    typedef InverseCumulativeRng<MersenneTwisterUniformRng,
-                                 InverseCumulativeNormal>
-        GaussianGenerator;
+struct Results {
+    Real alpha;
+    Real beta;
+    Real omega;
+    Real logLikelihood;
+};
 
-    static Real expected_calc[] = {
-        0.452769, 0.513323, 0.530141, 0.5350841, 0.536558,
-        0.536999, 0.537132, 0.537171, 0.537183, 0.537187
-    };
+typedef InverseCumulativeRng<MersenneTwisterUniformRng,
+                             InverseCumulativeNormal>
+GaussianGenerator;
 
-    void check_ts(const std::pair<Date, Volatility> &x) {
-        if (x.first.serialNumber() < 22835 || x.first.serialNumber() > 22844) {
-            BOOST_ERROR("Failed to reproduce calculated GARCH time: "
-                        << "\n    calculated: " << x.first.serialNumber()
-                        << "\n    expected:   [22835, 22844]");
-        }
-        Real error =
-            std::fabs(x.second - expected_calc[x.first.serialNumber()-22835]);
-        if (error > 1.0e-6) {
-            BOOST_ERROR("Failed to reproduce calculated GARCH value at "
-                        << x.first.serialNumber() << ": "
-                        << "\n    calculated: " << x.second
-                        << "\n    expected:   "
-                        << expected_calc[x.first.serialNumber()-22835]);
-        }
+static Real expected_calc[] = {
+    0.452769, 0.513323, 0.530141, 0.5350841, 0.536558,
+    0.536999, 0.537132, 0.537171, 0.537183, 0.537187
+};
+
+void check_ts(const std::pair<Date, Volatility> &x) {
+    if (x.first.serialNumber() < 22835 || x.first.serialNumber() > 22844) {
+        BOOST_ERROR("Failed to reproduce calculated GARCH time: "
+                    << "\n    calculated: " << x.first.serialNumber()
+                    << "\n    expected:   [22835, 22844]");
+    }
+    Real error =
+        std::fabs(x.second - expected_calc[x.first.serialNumber()-22835]);
+    if (error > 1.0e-6) {
+        BOOST_ERROR("Failed to reproduce calculated GARCH value at "
+                    << x.first.serialNumber() << ": "
+                    << "\n    calculated: " << x.second
+                    << "\n    expected:   "
+                    << expected_calc[x.first.serialNumber()-22835]);
     }
 }
 
@@ -80,15 +81,10 @@ namespace garch_test {
                     << "\n    expected:   " << results.member); \
     }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(GARCHTest)
 
 BOOST_AUTO_TEST_CASE(testCalibration) {
 
     BOOST_TEST_MESSAGE("Testing GARCH model calibration...");
-
-    using namespace garch_test;
 
     Date start(7, July, 1962), d = start;
     TimeSeries<Volatility> ts;
@@ -172,8 +168,6 @@ BOOST_AUTO_TEST_CASE(testCalibration) {
 
 BOOST_AUTO_TEST_CASE(testCalculation) {
     BOOST_TEST_MESSAGE("Testing GARCH model calculation...");
-
-    using namespace garch_test;
 
     Date d(7, July, 1962);
     TimeSeries<Volatility> ts;

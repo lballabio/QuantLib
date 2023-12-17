@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "timeseries.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/timeseries.hpp>
 #include <ql/prices.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void TimeSeriesTest::testConstruction() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TimeSeriesTests)
+
+BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing time series construction...");
 
@@ -58,7 +62,7 @@ void TimeSeriesTest::testConstruction() {
     }
 }
 
-void TimeSeriesTest::testIntervalPrice() {
+BOOST_AUTO_TEST_CASE(testIntervalPrice) {
     BOOST_TEST_MESSAGE("Testing time series interval price...");
 
     std::vector<Date> date = {Date(25, March, 2005), Date(29, March, 2005)};
@@ -75,7 +79,7 @@ void TimeSeriesTest::testIntervalPrice() {
                                                                low);
 }
 
-void TimeSeriesTest::testIterators() {
+BOOST_AUTO_TEST_CASE(testIterators) {
     BOOST_TEST_MESSAGE("Testing time series iterators...");
 
     std::vector<Date> dates = {Date(25, March, 2005),
@@ -162,11 +166,6 @@ void TimeSeriesTest::testIterators() {
     }
 }
 
-test_suite* TimeSeriesTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("time series tests");
-    suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testConstruction));
-    suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testIntervalPrice));
-    suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testIterators));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

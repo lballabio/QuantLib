@@ -19,257 +19,247 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/processes/hestonprocess.hpp>
-#include <ql/processes/hullwhiteprocess.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/processes/hybridhestonhullwhiteprocess.hpp>
-#include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/functional.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
-#include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
-#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
-#include <ql/methods/finitedifferences/meshers/uniformgridmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
-#include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmndimsolver.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniformgridmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonhullwhiteop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
+#include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
+#include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmndimsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
-#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
-#include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-#include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
-#include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
-#include <ql/functional.hpp>
-
-#include <boost/numeric/ublas/vector.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmmesherintegral.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/processes/hybridhestonhullwhiteprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <boost/numeric/ublas/operation.hpp>
-
+#include <boost/numeric/ublas/vector.hpp>
 #include <numeric>
 #include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class FdmHestonExpressCondition : public StepCondition<Array> {
-      public:
-        FdmHestonExpressCondition(std::vector<Real> redemptions,
-                                  std::vector<Real> triggerLevels,
-                                  std::vector<Time> exerciseTimes,
-                                  ext::shared_ptr<FdmMesher> mesher)
-        : redemptions_(std::move(redemptions)), triggerLevels_(std::move(triggerLevels)),
-          exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)) {}
+BOOST_AUTO_TEST_SUITE(FdmLinearOpTests)
 
-        void applyTo(Array& a, Time t) const override {
-            auto iter = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
+class FdmHestonExpressCondition : public StepCondition<Array> {
+  public:
+    FdmHestonExpressCondition(std::vector<Real> redemptions,
+                              std::vector<Real> triggerLevels,
+                              std::vector<Time> exerciseTimes,
+                              ext::shared_ptr<FdmMesher> mesher)
+    : redemptions_(std::move(redemptions)), triggerLevels_(std::move(triggerLevels)),
+      exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)) {}
 
-            if (iter != exerciseTimes_.end()) {
-                Size index = std::distance(exerciseTimes_.begin(), iter);
+    void applyTo(Array& a, Time t) const override {
+        auto iter = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
 
-                for (const auto& iter : *mesher_->layout()) {
-                    const Real s = std::exp(mesher_->location(iter, 0));
+        if (iter != exerciseTimes_.end()) {
+            Size index = std::distance(exerciseTimes_.begin(), iter);
 
-                    if (s > triggerLevels_[index]) {
-                        a[iter.index()] = redemptions_[index];
-                    }
+            for (const auto& iter : *mesher_->layout()) {
+                const Real s = std::exp(mesher_->location(iter, 0));
+
+                if (s > triggerLevels_[index]) {
+                    a[iter.index()] = redemptions_[index];
                 }
             }
         }
+    }
 
-      private:
-        const std::vector<Real> redemptions_;
-        const std::vector<Real> triggerLevels_;
-        const std::vector<Time> exerciseTimes_;
-        const ext::shared_ptr<FdmMesher> mesher_;
-    };
+  private:
+    const std::vector<Real> redemptions_;
+    const std::vector<Real> triggerLevels_;
+    const std::vector<Time> exerciseTimes_;
+    const ext::shared_ptr<FdmMesher> mesher_;
+};
 
-    class ExpressPayoff : public Payoff {
-      public:
-        std::string name() const override { return "ExpressPayoff"; }
-        std::string description() const override { return "ExpressPayoff"; }
+class ExpressPayoff : public Payoff {
+  public:
+    std::string name() const override { return "ExpressPayoff"; }
+    std::string description() const override { return "ExpressPayoff"; }
 
-        Real operator()(Real s) const override {
-            return  ((s >= 100.0) ? 108.0 : 100.0)
-                  - ((s <= 75.0) ? Real(100.0 - s) : 0.0);
-        }
-    };
+    Real operator()(Real s) const override {
+        return  ((s >= 100.0) ? 108.0 : 100.0)
+              - ((s <= 75.0) ? Real(100.0 - s) : 0.0);
+    }
+};
 
-    template <class T, class U, class V>
-    struct multiplies {
-        V operator()(T t, U u) { return t*u;}
-    };
+template <class T, class U, class V>
+struct multiplies {
+    V operator()(T t, U u) { return t*u; }
+};
 
-}
+ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(Time maturity) {
 
-namespace {
+    DayCounter dc = Actual365Fixed();
+    const Date today = Settings::instance().evaluationDate();
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
 
-    ext::shared_ptr<HybridHestonHullWhiteProcess> createHestonHullWhite(
-        Time maturity) {
+    std::vector<Date> dates;
+    std::vector<Rate> rates, divRates;
 
-        DayCounter dc = Actual365Fixed();
-        const Date today = Settings::instance().evaluationDate();
-        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    for (Size i=0; i <= 25; ++i) {
+        dates.push_back(today+Period(i, Years));
+        rates.push_back(0.05);
+        divRates.push_back(0.02);
+    }
 
-        std::vector<Date> dates;
-        std::vector<Rate> rates, divRates;
-
-        for (Size i=0; i <= 25; ++i) {
-            dates.push_back(today+Period(i, Years));
-            rates.push_back(0.05);
-            divRates.push_back(0.02);
-        }
-
-        const Handle<YieldTermStructure> rTS(
+    const Handle<YieldTermStructure> rTS(
             ext::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
-        const Handle<YieldTermStructure> qTS(
+    const Handle<YieldTermStructure> qTS(
             ext::shared_ptr<YieldTermStructure>(
                 new ZeroCurve(dates, divRates, dc)));
 
-        const Real v0 = 0.04;
-        ext::shared_ptr<HestonProcess> hestonProcess(
+    const Real v0 = 0.04;
+    ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, v0, 1.0, v0*0.75, 0.4, -0.7));
 
-        ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
+    ext::shared_ptr<HullWhiteForwardProcess> hwFwdProcess(
             new HullWhiteForwardProcess(rTS, 0.00883, 0.01));
-        hwFwdProcess->setForwardMeasureTime(maturity);
+    hwFwdProcess->setForwardMeasureTime(maturity);
 
-        const Real equityShortRateCorr = -0.7;
+    const Real equityShortRateCorr = -0.7;
 
-        return ext::make_shared<HybridHestonHullWhiteProcess>(
+    return ext::make_shared<HybridHestonHullWhiteProcess>(
             hestonProcess, hwFwdProcess,
             equityShortRateCorr);
-    }
+}
 
-    FdmSolverDesc createSolverDesc(
-        const std::vector<Size>& dim,
-        const ext::shared_ptr<HybridHestonHullWhiteProcess>& process) {
+FdmSolverDesc createSolverDesc(
+                               const std::vector<Size>& dim,
+                               const ext::shared_ptr<HybridHestonHullWhiteProcess>& process) {
 
-        const Time maturity
-            = process->hullWhiteProcess()->getForwardMeasureTime();
+    const Time maturity
+        = process->hullWhiteProcess()->getForwardMeasureTime();
 
-        ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
+    ext::shared_ptr<FdmLinearOpLayout> layout(new FdmLinearOpLayout(dim));
 
-        std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d = {
-            ext::shared_ptr<Fdm1dMesher>(
+    std::vector<ext::shared_ptr<Fdm1dMesher> > mesher1d = {
+        ext::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(std::log(22.0), std::log(440.0), dim[0])),
-            ext::shared_ptr<Fdm1dMesher>(
+        ext::shared_ptr<Fdm1dMesher>(
                 new FdmHestonVarianceMesher(dim[1], process->hestonProcess(),
                                             maturity)),
-            ext::shared_ptr<Fdm1dMesher>(
+        ext::shared_ptr<Fdm1dMesher>(
                 new Uniform1dMesher(-0.15, 0.15, dim[2]))
-        };
+    };
 
-        const ext::shared_ptr<FdmMesher> mesher(
+    const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(mesher1d));
 
-        const FdmBoundaryConditionSet boundaries;
+    const FdmBoundaryConditionSet boundaries;
 
-        std::list<std::vector<Time> > stoppingTimes;
-        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
+    std::list<std::vector<Time> > stoppingTimes;
+    std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
 
-        ext::shared_ptr<FdmStepConditionComposite> conditions(
+    ext::shared_ptr<FdmStepConditionComposite> conditions(
             new FdmStepConditionComposite(
                 std::list<std::vector<Time> >(),
                 FdmStepConditionComposite::Conditions()));
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
+    ext::shared_ptr<StrikedTypePayoff> payoff(
             new PlainVanillaPayoff(Option::Call, 160.0));
 
-        ext::shared_ptr<FdmInnerValueCalculator> calculator(
+    ext::shared_ptr<FdmInnerValueCalculator> calculator(
             new FdmLogInnerValue(payoff, mesher, 0));
 
-        const Size tGrid = 100;
-        const Size dampingSteps = 0;
+    const Size tGrid = 100;
+    const Size dampingSteps = 0;
 
-        FdmSolverDesc desc = { mesher, boundaries,
-                              conditions, calculator,
-                              maturity, tGrid, dampingSteps };
+    FdmSolverDesc desc = { mesher, boundaries,
+                           conditions, calculator,
+                           maturity, tGrid, dampingSteps };
 
-        return desc;
-    }
-
-    Array axpy(const boost::numeric::ublas::compressed_matrix<Real>& A,
-               const Array& x) {
-
-        boost::numeric::ublas::vector<Real> tmpX(x.size()), y(x.size());
-        std::copy(x.begin(), x.end(), tmpX.begin());
-        boost::numeric::ublas::axpy_prod(A, tmpX, y);
-
-        return Array(y.begin(), y.end());
-    }
-
-    boost::numeric::ublas::compressed_matrix<Real> createTestMatrix(
-        Size n, Size m, Real theta) {
-
-        boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
-
-        for (Size i=0; i < n; ++i) {
-            for (Size j=0; j < m; ++j) {
-                const Size k = i*m+j;
-                a(k,k)=1.0;
-
-                if (i > 0 && j > 0 && i <n-1 && j < m-1) {
-                    const Size im1 = i-1;
-                    const Size ip1 = i+1;
-                    const Size jm1 = j-1;
-                    const Size jp1 = j+1;
-                    const Real delta = theta/((ip1-im1)*(jp1-jm1));
-
-                    a(k,im1*m+jm1) =  delta;
-                    a(k,im1*m+jp1) = -delta;
-                    a(k,ip1*m+jm1) = -delta;
-                    a(k,ip1*m+jp1) =  delta;
-                }
-            }
-        }
-        return a;
-    }
-
-    Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
-        Size retVal = 0;
-        for (SparseMatrix::const_iterator1 i1 = m.begin1();
-             i1 != m.end1(); ++i1) {
-            retVal+=std::distance(i1.begin(), i1.end());
-        }
-        return retVal;
-    }
+    return desc;
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+Array axpy(const boost::numeric::ublas::compressed_matrix<Real>& A,
+           const Array& x) {
 
-BOOST_AUTO_TEST_SUITE(FdmLinearOpTest)
+    boost::numeric::ublas::vector<Real> tmpX(x.size()), y(x.size());
+    std::copy(x.begin(), x.end(), tmpX.begin());
+    boost::numeric::ublas::axpy_prod(A, tmpX, y);
+
+    return Array(y.begin(), y.end());
+}
+
+boost::numeric::ublas::compressed_matrix<Real> createTestMatrix(Size n, Size m, Real theta) {
+
+    boost::numeric::ublas::compressed_matrix<Real> a(n*m, n*m);
+
+    for (Size i=0; i < n; ++i) {
+        for (Size j=0; j < m; ++j) {
+            const Size k = i*m+j;
+            a(k,k)=1.0;
+
+            if (i > 0 && j > 0 && i <n-1 && j < m-1) {
+                const Size im1 = i-1;
+                const Size ip1 = i+1;
+                const Size jm1 = j-1;
+                const Size jp1 = j+1;
+                const Real delta = theta/((ip1-im1)*(jp1-jm1));
+
+                a(k,im1*m+jm1) =  delta;
+                a(k,im1*m+jp1) = -delta;
+                a(k,ip1*m+jm1) = -delta;
+                a(k,ip1*m+jp1) =  delta;
+            }
+        }
+    }
+    return a;
+}
+
+Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
+    Size retVal = 0;
+    for (SparseMatrix::const_iterator1 i1 = m.begin1();
+         i1 != m.end1(); ++i1) {
+        retVal+=std::distance(i1.begin(), i1.end());
+    }
+    return retVal;
+}
+
 
 BOOST_AUTO_TEST_CASE(testFdmLinearOpLayout) {
 

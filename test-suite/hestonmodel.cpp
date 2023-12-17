@@ -3255,7 +3255,6 @@ BOOST_AUTO_TEST_CASE(testLocalVolFromHestonModel) {
     }
 }
 
-<<<<<<< HEAD
 BOOST_AUTO_TEST_CASE(testOptimalAlphaKmin) {
     BOOST_TEST_MESSAGE("Testing optimal Alpha k_min for characteristic function...");
 
@@ -3376,8 +3375,6 @@ BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)
 
-=======
->>>>>>> refs/remotes/origin/heston_update
 BOOST_AUTO_TEST_CASE(testAnalyticPDFHestonEngine) {
     BOOST_TEST_MESSAGE("Testing analytic PDF Heston engine...");
 
