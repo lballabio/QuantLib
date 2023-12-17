@@ -28,29 +28,26 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct OptionData {
-        Barrier::Type barrierType;
-        Option::Type type;
-        Real barrier;
-        Real strike;
-        Real s1;       // spot
-        Rate q1;       // dividend
-        Volatility v1; // volatility
-        Real s2;
-        Rate q2;
-        Volatility v2;
-        Real correlation;
-        Rate r;        // risk-free rate
-        Real result;   // result
-    };
+BOOST_AUTO_TEST_SUITE(TwoAssetBarrierOptionTests)
 
-}
+struct OptionData {
+    Barrier::Type barrierType;
+    Option::Type type;
+    Real barrier;
+    Real strike;
+    Real s1;       // spot
+    Rate q1;       // dividend
+    Volatility v1; // volatility
+    Real s2;
+    Rate q2;
+    Volatility v2;
+    Real correlation;
+    Rate r;        // risk-free rate
+    Real result;   // result
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(TwoAssetBarrierOptionExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 

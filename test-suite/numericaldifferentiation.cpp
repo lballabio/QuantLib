@@ -29,46 +29,45 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
-    bool isTheSame(Real a, Real b) {
-        constexpr double eps = 500 * QL_EPSILON;
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-        if (std::fabs(b) < QL_EPSILON)
-            return std::fabs(a) < eps;
-        else
-            return std::fabs((a - b)/b) < eps;
-    }
+BOOST_AUTO_TEST_SUITE(NumericalDifferentiationTests)
 
-    void checkTwoArraysAreTheSame(const Array& calculated,
-                                  const Array& expected) {
-        bool correct = (calculated.size() == expected.size())
-            && std::equal(calculated.begin(), calculated.end(),
-                          expected.begin(), isTheSame);
+bool isTheSame(Real a, Real b) {
+    constexpr double eps = 500 * QL_EPSILON;
 
-        if (!correct) {
-            BOOST_FAIL("Failed to reproduce expected array"
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected
-                        << "\n    difference: " << expected - calculated);
-        }
-    }
+    if (std::fabs(b) < QL_EPSILON)
+        return std::fabs(a) < eps;
+    else
+        return std::fabs((a - b)/b) < eps;
+}
 
-    void singleValueTest(const std::string& comment,
-                         Real calculated, Real expected, Real tol) {
-        if (std::fabs(calculated - expected) > tol)
-            BOOST_FAIL("Failed to reproduce " << comment
-                        << " order derivative"
-                        << "\n    calculated: " << calculated
-                        << "\n      expected: " << expected
-                        << "\n     tolerance: " << tol
-                        << "\n    difference: "
-                        << expected - calculated);
+void checkTwoArraysAreTheSame(const Array& calculated,
+                              const Array& expected) {
+    bool correct = (calculated.size() == expected.size())
+        && std::equal(calculated.begin(), calculated.end(),
+                      expected.begin(), isTheSame);
+
+    if (!correct) {
+        BOOST_FAIL("Failed to reproduce expected array"
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    difference: " << expected - calculated);
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+void singleValueTest(const std::string& comment,
+                     Real calculated, Real expected, Real tol) {
+    if (std::fabs(calculated - expected) > tol)
+        BOOST_FAIL("Failed to reproduce " << comment
+                   << " order derivative"
+                   << "\n    calculated: " << calculated
+                   << "\n      expected: " << expected
+                   << "\n     tolerance: " << tol
+                   << "\n    difference: "
+                   << expected - calculated);
+}
 
-BOOST_AUTO_TEST_SUITE(NumericalDifferentiationTest)
 
 BOOST_AUTO_TEST_CASE(testTabulatedCentralScheme) {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
@@ -253,25 +252,25 @@ BOOST_AUTO_TEST_CASE(testDerivativesOfSineFunction) {
     }
 }
 
-namespace {
-    Array vandermondeCoefficients(
-        Size order, Real x, const Array& gridPoints) {
 
-        const Array q = gridPoints - x;
-        const Size n = gridPoints.size();
+Array vandermondeCoefficients(
+                              Size order, Real x, const Array& gridPoints) {
 
-        Matrix m(n, n, 1.0);
-        for (Size i=1; i < n; ++i) {
-            const Real fact = Factorial::get(i);
-            for (Size j=0; j < n; ++j)
-                m[i][j] = std::pow(q[j], Integer(i)) / fact;
-        }
+    const Array q = gridPoints - x;
+    const Size n = gridPoints.size();
 
-        Array b(n, 0.0);
-        b[order] = 1.0;
-        return inverse(m)*b;
+    Matrix m(n, n, 1.0);
+    for (Size i=1; i < n; ++i) {
+        const Real fact = Factorial::get(i);
+        for (Size j=0; j < n; ++j)
+            m[i][j] = std::pow(q[j], Integer(i)) / fact;
     }
+
+    Array b(n, 0.0);
+    b[order] = 1.0;
+    return inverse(m)*b;
 }
+
 
 BOOST_AUTO_TEST_CASE(testCoefficientBasedOnVandermonde) {
     BOOST_TEST_MESSAGE("Testing coefficients from numerical differentiation"

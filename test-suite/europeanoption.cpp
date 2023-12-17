@@ -45,6 +45,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EuropeanOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
@@ -63,170 +67,160 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace european_option_test {
+// utilities
 
-    // utilities
+struct EuropeanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-    struct EuropeanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
+enum EngineType { Analytic,
+                  JR, CRR, EQP, TGEO, TIAN, LR, JOSHI,
+                  FiniteDifferences,
+                  Integral,
+                  PseudoMonteCarlo, QuasiMonteCarlo,
+                  FFT };
 
-    enum EngineType { Analytic,
-                      JR, CRR, EQP, TGEO, TIAN, LR, JOSHI,
-                      FiniteDifferences,
-                      Integral,
-                      PseudoMonteCarlo, QuasiMonteCarlo,
-                      FFT };
-
-    ext::shared_ptr<GeneralizedBlackScholesProcess>
-    makeProcess(const ext::shared_ptr<Quote>& u,
-                const ext::shared_ptr<YieldTermStructure>& q,
-                const ext::shared_ptr<YieldTermStructure>& r,
-                const ext::shared_ptr<BlackVolTermStructure>& vol) {
-        return ext::make_shared<BlackScholesMertonProcess>(
+ext::shared_ptr<GeneralizedBlackScholesProcess>
+makeProcess(const ext::shared_ptr<Quote>& u,
+            const ext::shared_ptr<YieldTermStructure>& q,
+            const ext::shared_ptr<YieldTermStructure>& r,
+            const ext::shared_ptr<BlackVolTermStructure>& vol) {
+    return ext::make_shared<BlackScholesMertonProcess>(
            Handle<Quote>(u),
            Handle<YieldTermStructure>(q),
            Handle<YieldTermStructure>(r),
            Handle<BlackVolTermStructure>(vol));
-    }
+}
 
-    ext::shared_ptr<VanillaOption>
-    makeOption(const ext::shared_ptr<StrikedTypePayoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise,
-               const ext::shared_ptr<Quote>& u,
-               const ext::shared_ptr<YieldTermStructure>& q,
-               const ext::shared_ptr<YieldTermStructure>& r,
-               const ext::shared_ptr<BlackVolTermStructure>& vol,
-               EngineType engineType,
-               Size binomialSteps,
-               Size samples) {
+ext::shared_ptr<VanillaOption>
+makeOption(const ext::shared_ptr<StrikedTypePayoff>& payoff,
+           const ext::shared_ptr<Exercise>& exercise,
+           const ext::shared_ptr<Quote>& u,
+           const ext::shared_ptr<YieldTermStructure>& q,
+           const ext::shared_ptr<YieldTermStructure>& r,
+           const ext::shared_ptr<BlackVolTermStructure>& vol,
+           EngineType engineType,
+           Size binomialSteps,
+           Size samples) {
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
-            makeProcess(u,q,r,vol);
+    ext::shared_ptr<GeneralizedBlackScholesProcess> stochProcess =
+        makeProcess(u,q,r,vol);
 
-        ext::shared_ptr<PricingEngine> engine;
-        switch (engineType) {
-          case Analytic:
-            engine = ext::shared_ptr<PricingEngine>(
+    ext::shared_ptr<PricingEngine> engine;
+    switch (engineType) {
+      case Analytic:
+        engine = ext::shared_ptr<PricingEngine>(
                                     new AnalyticEuropeanEngine(stochProcess));
-            break;
-          case JR:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case JR:
+        engine = ext::shared_ptr<PricingEngine>(
                         new BinomialVanillaEngine<JarrowRudd>(stochProcess,
                                                               binomialSteps));
-            break;
-          case CRR:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case CRR:
+        engine = ext::shared_ptr<PricingEngine>(
                  new BinomialVanillaEngine<CoxRossRubinstein>(stochProcess,
                                                               binomialSteps));
-            break;
-          case EQP:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case EQP:
+        engine = ext::shared_ptr<PricingEngine>(
                  new BinomialVanillaEngine<AdditiveEQPBinomialTree>(
                                                               stochProcess,
                                                               binomialSteps));
-            break;
-          case TGEO:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case TGEO:
+        engine = ext::shared_ptr<PricingEngine>(
                         new BinomialVanillaEngine<Trigeorgis>(stochProcess,
                                                               binomialSteps));
-            break;
-          case TIAN:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case TIAN:
+        engine = ext::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<Tian>(stochProcess, binomialSteps));
-            break;
-          case LR:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case LR:
+        engine = ext::shared_ptr<PricingEngine>(
                       new BinomialVanillaEngine<LeisenReimer>(stochProcess,
                                                               binomialSteps));
-            break;
-          case JOSHI:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case JOSHI:
+        engine = ext::shared_ptr<PricingEngine>(
               new BinomialVanillaEngine<Joshi4>(stochProcess, binomialSteps));
-            break;
-          case FiniteDifferences:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case FiniteDifferences:
+        engine = ext::shared_ptr<PricingEngine>(
                             new FdBlackScholesVanillaEngine(stochProcess,
                                                             binomialSteps,
                                                             samples));
-            break;
-          case Integral:
-            engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case Integral:
+        engine = ext::shared_ptr<PricingEngine>(
                                             new IntegralEngine(stochProcess));
-            break;
-          case PseudoMonteCarlo:
-            engine = MakeMCEuropeanEngine<PseudoRandom>(stochProcess)
-                .withSteps(1)
-                .withSamples(samples)
-                .withSeed(42);
-            break;
-          case QuasiMonteCarlo:
-            engine = MakeMCEuropeanEngine<LowDiscrepancy>(stochProcess)
-                .withSteps(1)
-                .withSamples(samples);
-            break;
-          case FFT:
-              engine = ext::shared_ptr<PricingEngine>(
+        break;
+      case PseudoMonteCarlo:
+        engine = MakeMCEuropeanEngine<PseudoRandom>(stochProcess)
+            .withSteps(1)
+            .withSamples(samples)
+            .withSeed(42);
+        break;
+      case QuasiMonteCarlo:
+        engine = MakeMCEuropeanEngine<LowDiscrepancy>(stochProcess)
+            .withSteps(1)
+            .withSamples(samples);
+        break;
+      case FFT:
+        engine = ext::shared_ptr<PricingEngine>(
                                           new FFTVanillaEngine(stochProcess));
-            break;
-          default:
-            QL_FAIL("unknown engine type");
-        }
-
-        ext::shared_ptr<VanillaOption> option(
-            new EuropeanOption(payoff, exercise));
-        option->setPricingEngine(engine);
-        return option;
+        break;
+      default:
+        QL_FAIL("unknown engine type");
     }
 
+    ext::shared_ptr<VanillaOption> option(
+            new EuropeanOption(payoff, exercise));
+    option->setPricingEngine(engine);
+    return option;
 }
 
-// different engines
+void testEngineConsistency(EngineType engine,
+                           Size binomialSteps,
+                           Size samples,
+                           std::map<std::string,Real> tolerance,
+                           bool testGreeks = false) {
 
-namespace {
+    std::map<std::string,Real> calculated, expected;
 
-    void testEngineConsistency(european_option_test::EngineType engine,
-                               Size binomialSteps,
-                               Size samples,
-                               std::map<std::string,Real> tolerance,
-                               bool testGreeks = false) {
+    // test options
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 75.0, 100.0, 125.0 };
+    Integer lengths[] = { 1 };
 
-        using namespace european_option_test;
+    // test data
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.00, 0.05 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        std::map<std::string,Real> calculated, expected;
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
-        // test options
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 75.0, 100.0, 125.0 };
-        Integer lengths[] = { 1 };
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
-        // test data
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.00, 0.05 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Volatility vols[] = { 0.11, 0.50, 1.20 };
-
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
-
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
-
-        for (auto& type : types) {
-          for (Real strike : strikes) {
+    for (auto& type : types) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * 360;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -279,20 +273,14 @@ namespace {
                     }
                 }
             }
-          }
         }
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(EuropeanOptionTest)
 
 BOOST_AUTO_TEST_CASE(testValues) {
 
     BOOST_TEST_MESSAGE("Testing European option values...");
-
-    using namespace european_option_test;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -405,8 +393,6 @@ BOOST_AUTO_TEST_CASE(testValues) {
 BOOST_AUTO_TEST_CASE(testGreekValues) {
 
     BOOST_TEST_MESSAGE("Testing European option greek values...");
-
-    using namespace european_option_test;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -695,8 +681,6 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing analytic European option greeks...");
 
-    using namespace european_option_test;
-
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -846,8 +830,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing European option implied volatility...");
 
-    using namespace european_option_test;
-
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
 
@@ -960,8 +942,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVol) {
 BOOST_AUTO_TEST_CASE(testImpliedVolWithDividends) {
 
     BOOST_TEST_MESSAGE("Testing European option implied volatility with dividends...");
-
-    using namespace european_option_test;
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -1151,8 +1131,6 @@ BOOST_AUTO_TEST_CASE(testJRBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing JR binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = JR;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1168,8 +1146,6 @@ BOOST_AUTO_TEST_CASE(testCRRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing CRR binomial European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = CRR;
     Size steps = 501;
@@ -1187,8 +1163,6 @@ BOOST_AUTO_TEST_CASE(testEQPBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing EQP binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = EQP;
     Size steps = 501;
     Size samples = Null<Size>();
@@ -1204,8 +1178,6 @@ BOOST_AUTO_TEST_CASE(testTGEOBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing TGEO binomial European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = TGEO;
     Size steps = 251;
@@ -1223,8 +1195,6 @@ BOOST_AUTO_TEST_CASE(testTIANBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing TIAN binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = TIAN;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1240,8 +1210,6 @@ BOOST_AUTO_TEST_CASE(testLRBinomialEngines) {
 
     BOOST_TEST_MESSAGE("Testing LR binomial European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = LR;
     Size steps = 251;
@@ -1259,8 +1227,6 @@ BOOST_AUTO_TEST_CASE(testJOSHIBinomialEngines) {
     BOOST_TEST_MESSAGE("Testing Joshi binomial European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = JOSHI;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1277,8 +1243,6 @@ BOOST_AUTO_TEST_CASE(testFdEngines) {
     BOOST_TEST_MESSAGE("Testing finite-difference European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = FiniteDifferences;
     Size timeSteps = 500;
     Size gridPoints = 500;
@@ -1294,8 +1258,6 @@ BOOST_AUTO_TEST_CASE(testIntegralEngines) {
 
     BOOST_TEST_MESSAGE("Testing integral engines against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = Integral;
     Size timeSteps = 300;
     Size gridPoints = 300;
@@ -1308,8 +1270,6 @@ BOOST_AUTO_TEST_CASE(testMcEngines) {
 
     BOOST_TEST_MESSAGE("Testing Monte Carlo European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = PseudoMonteCarlo;
     Size steps = Null<Size>();
@@ -1324,8 +1284,6 @@ BOOST_AUTO_TEST_CASE(testQmcEngines) {
     BOOST_TEST_MESSAGE("Testing Quasi Monte Carlo European engines "
                        "against analytic results...");
 
-    using namespace european_option_test;
-
     EngineType engine = QuasiMonteCarlo;
     Size steps = Null<Size>();
     Size samples = 4095; // 2^12-1
@@ -1336,8 +1294,6 @@ BOOST_AUTO_TEST_CASE(testQmcEngines) {
 
 BOOST_AUTO_TEST_CASE(testLocalVolatility) {
     BOOST_TEST_MESSAGE("Testing finite-differences with local volatility...");
-
-    using namespace european_option_test;
 
     const Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -1781,16 +1737,10 @@ BOOST_AUTO_TEST_CASE(testVanillaAndDividendEngine) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(EuropeanOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testFFTEngines) {
 
     BOOST_TEST_MESSAGE("Testing FFT European engines "
                        "against analytic results...");
-
-    using namespace european_option_test;
 
     EngineType engine = FFT;
     Size steps = Null<Size>();

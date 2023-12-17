@@ -46,9 +46,9 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(LowDiscrepancyTest)
+BOOST_AUTO_TEST_SUITE(LowDiscrepancyTests)
 
 BOOST_AUTO_TEST_CASE(testSeedGenerator) {
     BOOST_TEST_MESSAGE("Testing random-seed generator...");
@@ -552,339 +552,336 @@ BOOST_AUTO_TEST_CASE(testHalton) {
 
 }
 
-namespace {
+const Real dim002Discr_Sobol[] = {
+    8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
+    5.69e-005, 2.14e-005 // , null
+};
+const Real dim002DiscrMersenneTwis[] = {
+    8.84e-003, 5.42e-003, 5.23e-003, 4.47e-003,
+    4.75e-003, 3.11e-003, 2.97e-003
+};
+const Real dim002DiscrPlain_Halton[] = {
+    1.26e-003, 6.73e-004, 3.35e-004, 1.91e-004,
+    1.11e-004, 5.05e-005, 2.42e-005
+};
+const Real dim002DiscrRShiftHalton[] = {1.32e-003, 7.25e-004};
+const Real dim002DiscrRStRShHalton[] = {1.35e-003, 9.43e-004};
+const Real dim002DiscrRStartHalton[] = {1.08e-003, 6.40e-004};
+const Real dim002Discr_Unit_Sobol[] = {
+    8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004, 5.69e-005, 2.14e-005 // , null
+};
 
-    const Real dim002Discr_Sobol[] = {
-        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
-        5.69e-005, 2.14e-005 // , null
-    };
-    const Real dim002DiscrMersenneTwis[] = {
-        8.84e-003, 5.42e-003, 5.23e-003, 4.47e-003,
-        4.75e-003, 3.11e-003, 2.97e-003
-    };
-    const Real dim002DiscrPlain_Halton[] = {
-        1.26e-003, 6.73e-004, 3.35e-004, 1.91e-004,
-        1.11e-004, 5.05e-005, 2.42e-005
-    };
-    const Real dim002DiscrRShiftHalton[] = {1.32e-003, 7.25e-004};
-    const Real dim002DiscrRStRShHalton[] = {1.35e-003, 9.43e-004};
-    const Real dim002DiscrRStartHalton[] = {1.08e-003, 6.40e-004};
-    const Real dim002Discr_Unit_Sobol[] = {
-        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004, 5.69e-005, 2.14e-005 // , null
-    };
+const Real dim003Discr_Sobol[] = {
+    1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
+    9.21e-005, 4.79e-005, 2.56e-005
+};
+const Real dim003DiscrMersenneTwis[] = {
+    7.02e-003, 4.94e-003, 4.82e-003, 4.91e-003,
+    3.33e-003, 2.80e-003, 2.62e-003
+};
+const Real dim003DiscrPlain_Halton[] = {
+    1.63e-003, 9.62e-004, 4.83e-004, 2.67e-004,
+    1.41e-004, 7.64e-005, 3.93e-005
+};
+const Real dim003DiscrRShiftHalton[] = {1.96e-003, 1.03e-003};
+const Real dim003DiscrRStRShHalton[] = {2.17e-003, 1.54e-003};
+const Real dim003DiscrRStartHalton[] = {1.48e-003, 7.77e-004};
+const Real dim003Discr_Unit_Sobol[] = {1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
+                                       9.21e-005, 4.79e-005, 2.56e-005};
 
-    const Real dim003Discr_Sobol[] = {
-        1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
-        9.21e-005, 4.79e-005, 2.56e-005
-    };
-    const Real dim003DiscrMersenneTwis[] = {
-        7.02e-003, 4.94e-003, 4.82e-003, 4.91e-003,
-        3.33e-003, 2.80e-003, 2.62e-003
-    };
-    const Real dim003DiscrPlain_Halton[] = {
-        1.63e-003, 9.62e-004, 4.83e-004, 2.67e-004,
-        1.41e-004, 7.64e-005, 3.93e-005
-    };
-    const Real dim003DiscrRShiftHalton[] = {1.96e-003, 1.03e-003};
-    const Real dim003DiscrRStRShHalton[] = {2.17e-003, 1.54e-003};
-    const Real dim003DiscrRStartHalton[] = {1.48e-003, 7.77e-004};
-    const Real dim003Discr_Unit_Sobol[] = {1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
-                                           9.21e-005, 4.79e-005, 2.56e-005};
+const Real dim005Discr_Sobol[] = {
+    1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
+    1.63e-004, 9.41e-005, 5.19e-005
+};
+const Real dim005DiscrMersenneTwis[] = {
+    4.28e-003, 3.48e-003, 2.48e-003, 1.98e-003,
+    1.57e-003, 1.39e-003, 6.33e-004
+};
+const Real dim005DiscrPlain_Halton[] = {
+    1.93e-003, 1.23e-003, 6.89e-004, 4.22e-004,
+    2.13e-004, 1.25e-004, 7.17e-005
+};
+const Real dim005DiscrRShiftHalton[] = {2.02e-003, 1.36e-003};
+const Real dim005DiscrRStRShHalton[] = {2.11e-003, 1.25e-003};
+const Real dim005DiscrRStartHalton[] = {1.74e-003, 1.08e-003};
+const Real dim005Discr_Unit_Sobol[] = {1.85e-003, 9.39e-004, 5.19e-004, 2.99e-004,
+                                       1.75e-004, 9.51e-005, 5.55e-005};
 
-    const Real dim005Discr_Sobol[] = {
-        1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
-        1.63e-004, 9.41e-005, 5.19e-005
-    };
-    const Real dim005DiscrMersenneTwis[] = {
-        4.28e-003, 3.48e-003, 2.48e-003, 1.98e-003,
-        1.57e-003, 1.39e-003, 6.33e-004
-    };
-    const Real dim005DiscrPlain_Halton[] = {
-        1.93e-003, 1.23e-003, 6.89e-004, 4.22e-004,
-        2.13e-004, 1.25e-004, 7.17e-005
-    };
-    const Real dim005DiscrRShiftHalton[] = {2.02e-003, 1.36e-003};
-    const Real dim005DiscrRStRShHalton[] = {2.11e-003, 1.25e-003};
-    const Real dim005DiscrRStartHalton[] = {1.74e-003, 1.08e-003};
-    const Real dim005Discr_Unit_Sobol[] = {1.85e-003, 9.39e-004, 5.19e-004, 2.99e-004,
-                                           1.75e-004, 9.51e-005, 5.55e-005};
+const Real dim010DiscrJackel_Sobol[] = {
+    7.08e-004, 5.31e-004, 3.60e-004, 2.18e-004,
+    1.57e-004, 1.12e-004, 6.39e-005
+};
+const Real dim010DiscrSobLev_Sobol[] = {
+    7.01e-004, 5.10e-004, 3.28e-004, 2.21e-004,
+    1.57e-004, 1.08e-004, 6.38e-005
+};
+const Real dim010DiscrMersenneTwis[] = {
+    8.83e-004, 6.56e-004, 4.87e-004, 3.37e-004,
+    3.06e-004, 1.73e-004, 1.43e-004
+};
+const Real dim010DiscrPlain_Halton[] = {
+    1.23e-003, 6.89e-004, 4.03e-004, 2.83e-004,
+    1.61e-004, 1.08e-004, 6.69e-005
+};
+const Real dim010DiscrRShiftHalton[] = {9.25e-004, 6.40e-004};
+const Real dim010DiscrRStRShHalton[] = {8.41e-004, 5.42e-004};
+const Real dim010DiscrRStartHalton[] = {7.89e-004, 5.33e-004};
+const Real dim010Discr_Unit_Sobol[] = {7.67e-004, 4.92e-004, 3.47e-004, 2.34e-004,
+                                       1.39e-004, 9.47e-005, 5.72e-005};
 
-    const Real dim010DiscrJackel_Sobol[] = {
-        7.08e-004, 5.31e-004, 3.60e-004, 2.18e-004,
-        1.57e-004, 1.12e-004, 6.39e-005
-    };
-    const Real dim010DiscrSobLev_Sobol[] = {
-        7.01e-004, 5.10e-004, 3.28e-004, 2.21e-004,
-        1.57e-004, 1.08e-004, 6.38e-005
-    };
-    const Real dim010DiscrMersenneTwis[] = {
-        8.83e-004, 6.56e-004, 4.87e-004, 3.37e-004,
-        3.06e-004, 1.73e-004, 1.43e-004
-    };
-    const Real dim010DiscrPlain_Halton[] = {
-        1.23e-003, 6.89e-004, 4.03e-004, 2.83e-004,
-        1.61e-004, 1.08e-004, 6.69e-005
-    };
-    const Real dim010DiscrRShiftHalton[] = {9.25e-004, 6.40e-004};
-    const Real dim010DiscrRStRShHalton[] = {8.41e-004, 5.42e-004};
-    const Real dim010DiscrRStartHalton[] = {7.89e-004, 5.33e-004};
-    const Real dim010Discr_Unit_Sobol[] = {7.67e-004, 4.92e-004, 3.47e-004, 2.34e-004,
-                                           1.39e-004, 9.47e-005, 5.72e-005};
+const Real dim015DiscrJackel_Sobol[] = {
+    1.59e-004, 1.23e-004, 7.73e-005, 5.51e-005,
+    3.91e-005, 2.73e-005, 1.96e-005
+};
+const Real dim015DiscrSobLev_Sobol[] = {
+    1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
+    4.16e-005, 2.54e-005, 1.73e-005
+};
+const Real dim015DiscrMersenneTwis[] = {
+    1.63e-004, 1.12e-004, 8.36e-005, 6.09e-005,
+    4.34e-005, 2.95e-005, 2.10e-005
+};
+const Real dim015DiscrPlain_Halton[] = {
+    5.75e-004, 3.12e-004, 1.70e-004, 9.89e-005,
+    5.33e-005, 3.45e-005, 2.11e-005
+};
+const Real dim015DiscrRShiftHalton[] = {1.75e-004, 1.19e-004};
+const Real dim015DiscrRStRShHalton[] = {1.66e-004, 1.34e-004};
+const Real dim015DiscrRStartHalton[] = {2.09e-004, 1.30e-004};
+const Real dim015Discr_Unit_Sobol[] = {2.24e-004, 1.39e-004, 9.86e-005, 6.02e-005,
+                                       4.39e-005, 3.06e-005, 2.32e-005};
 
-    const Real dim015DiscrJackel_Sobol[] = {
-        1.59e-004, 1.23e-004, 7.73e-005, 5.51e-005,
-        3.91e-005, 2.73e-005, 1.96e-005
-    };
-    const Real dim015DiscrSobLev_Sobol[] = {
-        1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
-        4.16e-005, 2.54e-005, 1.73e-005
-    };
-    const Real dim015DiscrMersenneTwis[] = {
-        1.63e-004, 1.12e-004, 8.36e-005, 6.09e-005,
-        4.34e-005, 2.95e-005, 2.10e-005
-    };
-    const Real dim015DiscrPlain_Halton[] = {
-        5.75e-004, 3.12e-004, 1.70e-004, 9.89e-005,
-        5.33e-005, 3.45e-005, 2.11e-005
-    };
-    const Real dim015DiscrRShiftHalton[] = {1.75e-004, 1.19e-004};
-    const Real dim015DiscrRStRShHalton[] = {1.66e-004, 1.34e-004};
-    const Real dim015DiscrRStartHalton[] = {2.09e-004, 1.30e-004};
-    const Real dim015Discr_Unit_Sobol[] = {2.24e-004, 1.39e-004, 9.86e-005, 6.02e-005,
-                                           4.39e-005, 3.06e-005, 2.32e-005};
+const Real dim030DiscrJackel_Sobol[] = {
+    6.43e-007, 5.28e-007, 3.88e-007, 2.49e-007,
+    2.09e-007, 1.55e-007, 1.07e-007
+};
+const Real dim030DiscrSobLev_Sobol[] = {
+    1.03e-006, 6.06e-007, 3.81e-007, 2.71e-007,
+    2.68e-007, 1.73e-007, 1.21e-007
+};
+const Real dim030DiscrMersenneTwis[] = {
+    4.38e-007, 3.25e-007, 4.47e-007, 2.85e-007,
+    2.03e-007, 1.50e-007, 1.17e-007
+};
+const Real dim030DiscrPlain_Halton[] = {
+    4.45e-004, 2.23e-004, 1.11e-004, 5.56e-005,
+    2.78e-005, 1.39e-005, 6.95e-006
+};
+const Real dim030DiscrRShiftHalton[] = {8.11e-007, 6.05e-007};
+const Real dim030DiscrRStRShHalton[] = {1.85e-006, 1.03e-006};
+const Real dim030DiscrRStartHalton[] = {4.42e-007, 4.64e-007};
+const Real dim030Discr_Unit_Sobol[] = {4.35e-005, 2.17e-005, 1.09e-005, 5.43e-006,
+                                       2.73e-006, 1.37e-006, 6.90e-007};
 
-    const Real dim030DiscrJackel_Sobol[] = {
-        6.43e-007, 5.28e-007, 3.88e-007, 2.49e-007,
-        2.09e-007, 1.55e-007, 1.07e-007
-    };
-    const Real dim030DiscrSobLev_Sobol[] = {
-        1.03e-006, 6.06e-007, 3.81e-007, 2.71e-007,
-        2.68e-007, 1.73e-007, 1.21e-007
-    };
-    const Real dim030DiscrMersenneTwis[] = {
-        4.38e-007, 3.25e-007, 4.47e-007, 2.85e-007,
-        2.03e-007, 1.50e-007, 1.17e-007
-    };
-    const Real dim030DiscrPlain_Halton[] = {
-        4.45e-004, 2.23e-004, 1.11e-004, 5.56e-005,
-        2.78e-005, 1.39e-005, 6.95e-006
-    };
-    const Real dim030DiscrRShiftHalton[] = {8.11e-007, 6.05e-007};
-    const Real dim030DiscrRStRShHalton[] = {1.85e-006, 1.03e-006};
-    const Real dim030DiscrRStartHalton[] = {4.42e-007, 4.64e-007};
-    const Real dim030Discr_Unit_Sobol[] = {4.35e-005, 2.17e-005, 1.09e-005, 5.43e-006,
-                                           2.73e-006, 1.37e-006, 6.90e-007};
+const Real dim050DiscrJackel_Sobol[] = {
+    2.98e-010, 2.91e-010, 2.62e-010, 1.53e-010,
+    1.48e-010, 1.15e-010, 8.41e-011
+};
+const Real dim050DiscrSobLev_Sobol[] = {
+    3.11e-010, 2.52e-010, 1.61e-010, 1.54e-010,
+    1.11e-010, 8.60e-011, 1.17e-010
+};
+const Real dim050DiscrSobLem_Sobol[] = {
+    4.57e-010, 6.84e-010, 3.68e-010, 2.20e-010,
+    1.81e-010, 1.14e-010, 8.31e-011
+};
+const Real dim050DiscrMersenneTwis[] = {
+    3.27e-010, 2.42e-010, 1.47e-010, 1.98e-010,
+    2.31e-010, 1.30e-010, 8.09e-011
+};
+const Real dim050DiscrPlain_Halton[] = {
+    4.04e-004, 2.02e-004, 1.01e-004, 5.05e-005,
+    2.52e-005, 1.26e-005, 6.31e-006
+};
+const Real dim050DiscrRShiftHalton[] = {1.14e-010, 1.25e-010};
+const Real dim050DiscrRStRShHalton[] = {2.92e-010, 5.02e-010};
+const Real dim050DiscrRStartHalton[] = {1.93e-010, 6.82e-010};
+const Real dim050Discr_Unit_Sobol[] = {1.63e-005, 8.14e-006, 4.07e-006, 2.04e-006,
+                                       1.02e-006, 5.09e-007, 2.54e-007};
 
-    const Real dim050DiscrJackel_Sobol[] = {
-        2.98e-010, 2.91e-010, 2.62e-010, 1.53e-010,
-        1.48e-010, 1.15e-010, 8.41e-011
-    };
-    const Real dim050DiscrSobLev_Sobol[] = {
-        3.11e-010, 2.52e-010, 1.61e-010, 1.54e-010,
-        1.11e-010, 8.60e-011, 1.17e-010
-    };
-    const Real dim050DiscrSobLem_Sobol[] = {
-        4.57e-010, 6.84e-010, 3.68e-010, 2.20e-010,
-        1.81e-010, 1.14e-010, 8.31e-011
-    };
-    const Real dim050DiscrMersenneTwis[] = {
-        3.27e-010, 2.42e-010, 1.47e-010, 1.98e-010,
-        2.31e-010, 1.30e-010, 8.09e-011
-    };
-    const Real dim050DiscrPlain_Halton[] = {
-        4.04e-004, 2.02e-004, 1.01e-004, 5.05e-005,
-        2.52e-005, 1.26e-005, 6.31e-006
-    };
-    const Real dim050DiscrRShiftHalton[] = {1.14e-010, 1.25e-010};
-    const Real dim050DiscrRStRShHalton[] = {2.92e-010, 5.02e-010};
-    const Real dim050DiscrRStartHalton[] = {1.93e-010, 6.82e-010};
-    const Real dim050Discr_Unit_Sobol[] = {1.63e-005, 8.14e-006, 4.07e-006, 2.04e-006,
-                                           1.02e-006, 5.09e-007, 2.54e-007};
+const Real dim100DiscrJackel_Sobol[] = {
+    1.26e-018, 1.55e-018, 8.46e-019, 4.43e-019,
+    4.04e-019, 2.44e-019, 4.86e-019
+};
+const Real dim100DiscrSobLev_Sobol[] = {
+    1.17e-018, 2.65e-018, 1.45e-018, 7.28e-019,
+    6.33e-019, 3.36e-019, 3.43e-019
+};
+const Real dim100DiscrSobLem_Sobol[] = {
+    8.79e-019, 4.60e-019, 6.69e-019, 7.17e-019,
+    5.81e-019, 2.97e-019, 2.64e-019
+};
+const Real dim100DiscrMersenneTwis[] = {
+    5.30e-019, 7.29e-019, 3.71e-019, 3.33e-019,
+    1.33e-017, 6.70e-018, 3.36e-018
+};
+const Real dim100DiscrPlain_Halton[] = {
+    3.63e-004, 1.81e-004, 9.07e-005, 4.53e-005,
+    2.27e-005, 1.13e-005, 5.66e-006
+};
+const Real dim100DiscrRShiftHalton[] = {3.36e-019, 2.19e-019};
+const Real dim100DiscrRStRShHalton[] = {4.44e-019, 2.24e-019};
+const Real dim100DiscrRStartHalton[] = {9.85e-020, 8.34e-019};
+const Real dim100Discr_Unit_Sobol[] = {4.97e-006, 2.48e-006, 1.24e-006, 6.20e-007,
+                                       3.10e-007, 1.55e-007, 7.76e-008};
 
-    const Real dim100DiscrJackel_Sobol[] = {
-        1.26e-018, 1.55e-018, 8.46e-019, 4.43e-019,
-        4.04e-019, 2.44e-019, 4.86e-019
-    };
-    const Real dim100DiscrSobLev_Sobol[] = {
-        1.17e-018, 2.65e-018, 1.45e-018, 7.28e-019,
-        6.33e-019, 3.36e-019, 3.43e-019
-    };
-    const Real dim100DiscrSobLem_Sobol[] = {
-        8.79e-019, 4.60e-019, 6.69e-019, 7.17e-019,
-        5.81e-019, 2.97e-019, 2.64e-019
-    };
-    const Real dim100DiscrMersenneTwis[] = {
-        5.30e-019, 7.29e-019, 3.71e-019, 3.33e-019,
-        1.33e-017, 6.70e-018, 3.36e-018
-    };
-    const Real dim100DiscrPlain_Halton[] = {
-        3.63e-004, 1.81e-004, 9.07e-005, 4.53e-005,
-        2.27e-005, 1.13e-005, 5.66e-006
-    };
-    const Real dim100DiscrRShiftHalton[] = {3.36e-019, 2.19e-019};
-    const Real dim100DiscrRStRShHalton[] = {4.44e-019, 2.24e-019};
-    const Real dim100DiscrRStartHalton[] = {9.85e-020, 8.34e-019};
-    const Real dim100Discr_Unit_Sobol[] = {4.97e-006, 2.48e-006, 1.24e-006, 6.20e-007,
-                                           3.10e-007, 1.55e-007, 7.76e-008};
+const Size dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
 
-    const Size dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
+// 7 discrepancy measures for each dimension of all sequence generators
+// would take a few days ... too long for usual/frequent test running
+const Size discrepancyMeasuresNumber = 1;
 
-    // 7 discrepancy measures for each dimension of all sequence generators
-    // would take a few days ... too long for usual/frequent test running
-    const Size discrepancyMeasuresNumber = 1;
+// let's add some generality here...
 
-    // let's add some generality here...
+class MersenneFactory {
+  public:
+    typedef RandomSequenceGenerator<MersenneTwisterUniformRng>
+    MersenneTwisterUniformRsg;
+    typedef MersenneTwisterUniformRsg generator_type;
+    MersenneTwisterUniformRsg make(Size dim,
+                                   BigNatural seed) const {
+        return MersenneTwisterUniformRsg(dim,seed);
+    }
+    std::string name() const { return "Mersenne Twister"; }
+};
 
-    class MersenneFactory {
-      public:
-        typedef RandomSequenceGenerator<MersenneTwisterUniformRng>
-        MersenneTwisterUniformRsg;
-        typedef MersenneTwisterUniformRsg generator_type;
-        MersenneTwisterUniformRsg make(Size dim,
-                                       BigNatural seed) const {
-            return MersenneTwisterUniformRsg(dim,seed);
+class SobolFactory {
+  public:
+    typedef SobolRsg generator_type;
+    explicit SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
+    SobolRsg make(Size dim,
+                  BigNatural seed) const {
+        return SobolRsg(dim,seed,unit_);
+    }
+    std::string name() const {
+        std::string prefix;
+        switch (unit_) {
+          case SobolRsg::Unit:
+            prefix = "unit-initialized ";
+            break;
+          case SobolRsg::Jaeckel:
+            prefix = "Jaeckel-initialized ";
+            break;
+          case SobolRsg::SobolLevitan:
+            prefix = "SobolLevitan-initialized ";
+            break;
+          case SobolRsg::SobolLevitanLemieux:
+            prefix = "SobolLevitanLemieux-initialized ";
+            break;
+          case SobolRsg::Kuo:
+            prefix = "Kuo";
+            break;
+          case SobolRsg::Kuo2:
+            prefix = "Kuo2";
+            break;
+          case SobolRsg::Kuo3:
+            prefix = "Kuo3";
+            break;
+          default:
+            QL_FAIL("unknown direction integers");
         }
-        std::string name() const { return "Mersenne Twister"; }
-    };
+        return prefix + "Sobol sequences: ";
+    }
+  private:
+    SobolRsg::DirectionIntegers unit_;
+};
 
-    class SobolFactory {
-      public:
-        typedef SobolRsg generator_type;
-        explicit SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
-        SobolRsg make(Size dim,
-                      BigNatural seed) const {
-            return SobolRsg(dim,seed,unit_);
-        }
-        std::string name() const {
-            std::string prefix;
-            switch (unit_) {
-              case SobolRsg::Unit:
-                prefix = "unit-initialized ";
-                break;
-              case SobolRsg::Jaeckel:
-                prefix = "Jaeckel-initialized ";
-                break;
-              case SobolRsg::SobolLevitan:
-                prefix = "SobolLevitan-initialized ";
-                break;
-              case SobolRsg::SobolLevitanLemieux:
-                prefix = "SobolLevitanLemieux-initialized ";
-                break;
-              case SobolRsg::Kuo:
-                prefix = "Kuo";
-                break;
-              case SobolRsg::Kuo2:
-                prefix = "Kuo2";
-                break;
-              case SobolRsg::Kuo3:
-                prefix = "Kuo3";
-                break;
-              default:
-                QL_FAIL("unknown direction integers");
-            }
-            return prefix + "Sobol sequences: ";
-        }
-      private:
-        SobolRsg::DirectionIntegers unit_;
-    };
+class HaltonFactory {
+  public:
+    typedef HaltonRsg generator_type;
+    HaltonFactory(bool randomStart, bool randomShift)
+    : start_(randomStart), shift_(randomShift) {}
+    HaltonRsg make(Size dim,
+                   BigNatural seed) const {
+        return HaltonRsg(dim,seed,start_,shift_);
+    }
+    std::string name() const {
+        std::string prefix = start_ ?
+            "random-start " :
+            "";
+        if (shift_)
+            prefix += "random-shift ";
+        return prefix + "Halton";
+    }
+  private:
+    bool start_, shift_;
+};
 
-    class HaltonFactory {
-      public:
-        typedef HaltonRsg generator_type;
-        HaltonFactory(bool randomStart, bool randomShift)
-        : start_(randomStart), shift_(randomShift) {}
-        HaltonRsg make(Size dim,
-                       BigNatural seed) const {
-            return HaltonRsg(dim,seed,start_,shift_);
-        }
-        std::string name() const {
-            std::string prefix = start_ ?
-                "random-start " :
-                "";
-            if (shift_)
-                prefix += "random-shift ";
-            return prefix + "Halton";
-        }
-      private:
-        bool start_, shift_;
-    };
+template <class T>
+void testGeneratorDiscrepancy(const T& generatorFactory,
+                              #ifndef PRINT_ONLY
+                              const Real * const discrepancy[8],
+                              const std::string&,
+                              const std::string&
+                              #else
+                              const Real * const [8],
+                              const std::string& fileName,
+                              const std::string& arrayName
+                              #endif
+                              ) {
 
-    template <class T>
-    void testGeneratorDiscrepancy(const T& generatorFactory,
-                                  #ifndef PRINT_ONLY
-                                  const Real * const discrepancy[8],
-                                  const std::string&,
-                                  const std::string&
-                                  #else
-                                  const Real * const [8],
-                                  const std::string& fileName,
-                                  const std::string& arrayName
-                                  #endif
-                                  ) {
+    #ifndef PRINT_ONLY
+    Real tolerance = 1.0e-2;
+    #endif
 
-        #ifndef PRINT_ONLY
-        Real tolerance = 1.0e-2;
-        #endif
+    std::vector<Real> point;
+    Size dim;
+    BigNatural seed = 123456;
+    Real discr;
+    // more than 1 discrepancy measures take long time
+    Size sampleLoops = std::max<Size>(1, discrepancyMeasuresNumber);
 
-        std::vector<Real> point;
-        Size dim;
-        BigNatural seed = 123456;
-        Real discr;
-        // more than 1 discrepancy measures take long time
-        Size sampleLoops = std::max<Size>(1, discrepancyMeasuresNumber);
-
+    #ifdef PRINT_ONLY
+    std::ofstream outStream(fileName.c_str());
+    #endif
+    for (Integer i = 0; i<8; i++) {
         #ifdef PRINT_ONLY
-        std::ofstream outStream(fileName.c_str());
+        outStream << std::endl;
         #endif
-        for (Integer i = 0; i<8; i++) {
-            #ifdef PRINT_ONLY
-            outStream << std::endl;
-            #endif
 
-            dim = dimensionality[i];
-            DiscrepancyStatistics stat(dim);
+        dim = dimensionality[i];
+        DiscrepancyStatistics stat(dim);
 
-            typename T::generator_type rsg = generatorFactory.make(dim, seed);
+        typename T::generator_type rsg = generatorFactory.make(dim, seed);
 
-            Size j, k=0, jMin=10;
-            stat.reset();
-            #ifdef PRINT_ONLY
-            outStream << "const Real dim" << dim
-                      << arrayName << "[] = {" ;
-            #endif
-            for (j=jMin; j<jMin+sampleLoops; j++) {
-                Size points = Size(std::pow(2.0, Integer(j)))-1;
-                for (; k<points; k++) {
-                    point = rsg.nextSequence().value;
-                    stat.add(point);
-                }
-
-                discr = stat.discrepancy();
-
-                #ifdef PRINT_ONLY
-                if (j!=jMin)
-                    outStream << ", ";
-                outStream << std::fixed << std::setprecision(2) << discr;
-                #else
-                if (std::fabs(discr-discrepancy[i][j-jMin])>tolerance*discr) {
-                    BOOST_ERROR(generatorFactory.name()
-                                << "discrepancy dimension " << dimensionality[i]
-                                << " at " << points << " samples is "
-                                << discr << " instead of "
-                                << discrepancy[i][j-jMin]);
-                }
-                #endif
+        Size j, k=0, jMin=10;
+        stat.reset();
+        #ifdef PRINT_ONLY
+        outStream << "const Real dim" << dim
+                  << arrayName << "[] = {" ;
+        #endif
+        for (j=jMin; j<jMin+sampleLoops; j++) {
+            Size points = Size(std::pow(2.0, Integer(j)))-1;
+            for (; k<points; k++) {
+                point = rsg.nextSequence().value;
+                stat.add(point);
             }
+
+            discr = stat.discrepancy();
+
             #ifdef PRINT_ONLY
-            outStream << "};" << std::endl;
+            if (j!=jMin)
+                outStream << ", ";
+            outStream << std::fixed << std::setprecision(2) << discr;
+            #else
+            if (std::fabs(discr-discrepancy[i][j-jMin])>tolerance*discr) {
+                BOOST_ERROR(generatorFactory.name()
+                            << "discrepancy dimension " << dimensionality[i]
+                            << " at " << points << " samples is "
+                            << discr << " instead of "
+                            << discrepancy[i][j-jMin]);
+            }
             #endif
         }
         #ifdef PRINT_ONLY
-        outStream.close();
+        outStream << "};" << std::endl;
         #endif
     }
-
+    #ifdef PRINT_ONLY
+    outStream.close();
+    #endif
 }
+
 
 BOOST_AUTO_TEST_CASE(testMersenneTwisterDiscrepancy) {
 

@@ -36,6 +36,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DigitalOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance, knockin) \
@@ -55,26 +59,19 @@ using namespace boost::unit_test_framework;
                << "    tolerance:        " << tolerance << "\n" \
                << "    knock_in:         " << knockin);
 
-namespace {
+struct DigitalOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+    bool knockin;  // true if knock-in
+};
 
-    struct DigitalOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-        bool knockin;  // true if knock-in
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(DigitalOptionTest)
 
 BOOST_AUTO_TEST_CASE(testCashOrNothingEuropeanValues) {
 

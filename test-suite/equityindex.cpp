@@ -26,53 +26,49 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace equityindex_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
+BOOST_AUTO_TEST_SUITE(EquityIndexTests)
 
-        Date today;
-        Calendar calendar;
-        DayCounter dayCount;
+struct CommonVars {
 
-        ext::shared_ptr<EquityIndex> equityIndex;
-        RelinkableHandle<YieldTermStructure> interestHandle;
-        RelinkableHandle<YieldTermStructure> dividendHandle;
-        ext::shared_ptr<Quote> spot;
-        RelinkableHandle<Quote> spotHandle;
+    Date today;
+    Calendar calendar;
+    DayCounter dayCount;
 
-        // utilities
+    ext::shared_ptr<EquityIndex> equityIndex;
+    RelinkableHandle<YieldTermStructure> interestHandle;
+    RelinkableHandle<YieldTermStructure> dividendHandle;
+    ext::shared_ptr<Quote> spot;
+    RelinkableHandle<Quote> spotHandle;
 
-        CommonVars(bool addTodaysFixing = true) {
-            calendar = TARGET();
-            dayCount = Actual365Fixed();
+    // utilities
 
-            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
-                                                        dividendHandle, spotHandle);
+    CommonVars(bool addTodaysFixing = true) {
+        calendar = TARGET();
+        dayCount = Actual365Fixed();
 
-            today = calendar.adjust(Date(27, January, 2023));
+        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+                                                    dividendHandle, spotHandle);
+
+        today = calendar.adjust(Date(27, January, 2023));
             
-            if (addTodaysFixing)
-                equityIndex->addFixing(today, 8690.0);
+        if (addTodaysFixing)
+            equityIndex->addFixing(today, 8690.0);
 
-            Settings::instance().evaluationDate() = today;
+        Settings::instance().evaluationDate() = today;
 
-            interestHandle.linkTo(flatRate(0.03, dayCount));
-            dividendHandle.linkTo(flatRate(0.01, dayCount));
+        interestHandle.linkTo(flatRate(0.03, dayCount));
+        dividendHandle.linkTo(flatRate(0.01, dayCount));
             
-            spot = ext::make_shared<SimpleQuote>(8700.0);
-            spotHandle.linkTo(spot);
-        }
-    };
-}
+        spot = ext::make_shared<SimpleQuote>(8700.0);
+        spotHandle.linkTo(spot);
+    }
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(EquityIndexTest)
 
 BOOST_AUTO_TEST_CASE(testTodaysFixing) {
     BOOST_TEST_MESSAGE("Testing today's fixing...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
     const Real tolerance = 1.0e-8;
@@ -97,8 +93,6 @@ BOOST_AUTO_TEST_CASE(testTodaysFixing) {
 BOOST_AUTO_TEST_CASE(testTodaysFixingWithSpotAsProxy) {
     BOOST_TEST_MESSAGE("Testing today's fixing with spot as proxy...");
 
-    using namespace equityindex_test;
-
     CommonVars vars(false);
     const Real tolerance = 1.0e-8;
 
@@ -113,8 +107,6 @@ BOOST_AUTO_TEST_CASE(testTodaysFixingWithSpotAsProxy) {
 
 BOOST_AUTO_TEST_CASE(testFixingForecast) {
     BOOST_TEST_MESSAGE("Testing fixing forecast...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
     const Real tolerance = 1.0e-8;
@@ -134,8 +126,6 @@ BOOST_AUTO_TEST_CASE(testFixingForecast) {
 
 BOOST_AUTO_TEST_CASE(testFixingForecastWithoutDividend) {
     BOOST_TEST_MESSAGE("Testing fixing forecast without dividend...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
     const Real tolerance = 1.0e-8;
@@ -157,8 +147,6 @@ BOOST_AUTO_TEST_CASE(testFixingForecastWithoutDividend) {
 
 BOOST_AUTO_TEST_CASE(testFixingForecastWithoutSpot) {
     BOOST_TEST_MESSAGE("Testing fixing forecast without spot handle...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
     const Real tolerance = 1.0e-8;
@@ -182,8 +170,6 @@ BOOST_AUTO_TEST_CASE(testFixingForecastWithoutSpot) {
 BOOST_AUTO_TEST_CASE(testFixingForecastWithoutSpotAndHistoricalFixing) {
     BOOST_TEST_MESSAGE("Testing fixing forecast without spot handle and historical fixing...");
 
-    using namespace equityindex_test;
-
     CommonVars vars(false);
 
     Date forecastedDate(20, May, 2030);
@@ -199,8 +185,6 @@ BOOST_AUTO_TEST_CASE(testFixingForecastWithoutSpotAndHistoricalFixing) {
 
 BOOST_AUTO_TEST_CASE(testSpotChange) {
     BOOST_TEST_MESSAGE("Testing spot change...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
     const Real tolerance = 1.0e-8;
@@ -224,8 +208,6 @@ BOOST_AUTO_TEST_CASE(testSpotChange) {
 BOOST_AUTO_TEST_CASE(testErrorWhenInvalidFixingDate) {
     BOOST_TEST_MESSAGE("Testing error when invalid fixing date is used...");
 
-    using namespace equityindex_test;
-
     CommonVars vars;
 
     BOOST_CHECK_EXCEPTION(
@@ -236,8 +218,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenInvalidFixingDate) {
 BOOST_AUTO_TEST_CASE(testErrorWhenFixingMissing) {
     BOOST_TEST_MESSAGE("Testing error when required fixing is missing...");
 
-    using namespace equityindex_test;
-
     CommonVars vars;
 
     BOOST_CHECK_EXCEPTION(
@@ -247,8 +227,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenFixingMissing) {
 
 BOOST_AUTO_TEST_CASE(testErrorWhenInterestHandleMissing) {
     BOOST_TEST_MESSAGE("Testing error when interest handle is missing...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
 
@@ -265,8 +243,6 @@ BOOST_AUTO_TEST_CASE(testErrorWhenInterestHandleMissing) {
 
 BOOST_AUTO_TEST_CASE(testFixingObservability) {
     BOOST_TEST_MESSAGE("Testing observability of index fixings...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
 
@@ -287,8 +263,6 @@ BOOST_AUTO_TEST_CASE(testFixingObservability) {
 
 BOOST_AUTO_TEST_CASE(testNoErrorIfTodayIsNotBusinessDay) {
     BOOST_TEST_MESSAGE("Testing that no error is thrown if today is not a business day...");
-
-    using namespace equityindex_test;
 
     CommonVars vars;
 

@@ -30,42 +30,39 @@ using namespace boost::unit_test_framework;
 using std::exp;
 using std::sin;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct ode1 {
-        Real operator()(Real x, Real y) const { return y; }
-    };
+BOOST_AUTO_TEST_SUITE(OdeTests)
 
-    struct ode2 {
-        std::complex<Real> operator()(Real x,
-                                      const std::complex<Real>& y) {
-            return std::complex<Real>(0.0,1.0)*y;
-        }
-    };
+struct ode1 {
+    Real operator()(Real x, Real y) const { return y; }
+};
 
-    struct ode3 {
-        std::vector<Real> operator()(Real x, const std::vector<Real>& y) {
-            std::vector<Real> r(2);
-            r[0] = y[1]; r[1] = -y[0];
-            return r;
-        }
-    };
+struct ode2 {
+    std::complex<Real> operator()(Real x,
+                                  const std::complex<Real>& y) {
+        return std::complex<Real>(0.0,1.0)*y;
+    }
+};
 
-    struct ode4 {
-        std::vector<std::complex<Real> > operator()(
-                                  const std::complex<Real>& x,
-                                  const std::vector<std::complex<Real> >& y) {
-            std::vector<std::complex<Real> > r(2);
-            r[0] = y[1]; r[1] = -y[0];
-            return r;
-        }
-    };
+struct ode3 {
+    std::vector<Real> operator()(Real x, const std::vector<Real>& y) {
+        std::vector<Real> r(2);
+        r[0] = y[1]; r[1] = -y[0];
+        return r;
+    }
+};
 
-}
+struct ode4 {
+    std::vector<std::complex<Real> > operator()(
+                                                const std::complex<Real>& x,
+                                                const std::vector<std::complex<Real> >& y) {
+        std::vector<std::complex<Real> > r(2);
+        r[0] = y[1]; r[1] = -y[0];
+        return r;
+    }
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(OdeTest)
 
 BOOST_AUTO_TEST_CASE(testAdaptiveRungeKutta) {
 
@@ -138,12 +135,12 @@ BOOST_AUTO_TEST_CASE(testAdaptiveRungeKutta) {
     }
 }
 
-namespace {
-    Real frobenuiusNorm(const Matrix& m) {
-        return std::sqrt(DotProduct((m*transpose(m)).diagonal(),
-                                    Array(m.rows(), 1.0)));
-    }
+
+Real frobenuiusNorm(const Matrix& m) {
+    return std::sqrt(DotProduct((m*transpose(m)).diagonal(),
+                                Array(m.rows(), 1.0)));
 }
+
 
 BOOST_AUTO_TEST_CASE(testMatrixExponential) {
     BOOST_TEST_MESSAGE("Testing matrix exponential based on ode...");

@@ -41,91 +41,85 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace swaption_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    Period exercises[] = { 1*Years, 2*Years, 3*Years,
-                           5*Years, 7*Years, 10*Years };
-    Period lengths[] = { 1*Years, 2*Years, 3*Years,
-                         5*Years, 7*Years, 10*Years,
-                         15*Years, 20*Years };
-    Swap::Type type[] = { Swap::Receiver, Swap::Payer };
+BOOST_AUTO_TEST_SUITE(SwaptionTests)
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Real nominal;
-        Calendar calendar;
+Period exercises[] = { 1*Years, 2*Years, 3*Years,
+                       5*Years, 7*Years, 10*Years };
+Period lengths[] = { 1*Years, 2*Years, 3*Years,
+                     5*Years, 7*Years, 10*Years,
+                     15*Years, 20*Years };
+Swap::Type type[] = { Swap::Receiver, Swap::Payer };
 
-        BusinessDayConvention fixedConvention;
-        Frequency fixedFrequency;
-        DayCounter fixedDayCount;
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Real nominal;
+    Calendar calendar;
 
-        BusinessDayConvention floatingConvention;
-        Period floatingTenor;
-        ext::shared_ptr<IborIndex> index;
+    BusinessDayConvention fixedConvention;
+    Frequency fixedFrequency;
+    DayCounter fixedDayCount;
 
-        Natural settlementDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
+    BusinessDayConvention floatingConvention;
+    Period floatingTenor;
+    ext::shared_ptr<IborIndex> index;
 
-        // utilities
-        ext::shared_ptr<Swaption> makeSwaption(
-            const ext::shared_ptr<VanillaSwap>& swap,
-            const Date& exercise,
-            Volatility volatility,
-            Settlement::Type settlementType = Settlement::Physical,
-            Settlement::Method settlementMethod = Settlement::PhysicalOTC,
-            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
+    Natural settlementDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
+
+    // utilities
+    ext::shared_ptr<Swaption> makeSwaption(
+                                           const ext::shared_ptr<VanillaSwap>& swap,
+                                           const Date& exercise,
+                                           Volatility volatility,
+                                           Settlement::Type settlementType = Settlement::Physical,
+                                           Settlement::Method settlementMethod = Settlement::PhysicalOTC,
+                                           BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        ext::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(
                 termStructure, vol, Actual365Fixed(), 0.0, model));
 
-            ext::shared_ptr<Swaption> result(new
+        ext::shared_ptr<Swaption> result(new
                 Swaption(swap,
                          ext::shared_ptr<Exercise>(
                                               new EuropeanExercise(exercise)),
                          settlementType, settlementMethod));
-            result->setPricingEngine(engine);
-            return result;
-        }
+        result->setPricingEngine(engine);
+        return result;
+    }
 
-        ext::shared_ptr<PricingEngine> makeEngine(
-            Volatility volatility,
-            BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
-            Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
+    ext::shared_ptr<PricingEngine> makeEngine(
+                                              Volatility volatility,
+                                              BlackSwaptionEngine::CashAnnuityModel model = BlackSwaptionEngine::SwapRate) const {
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
                 new BlackSwaptionEngine(termStructure, h, Actual365Fixed(), 0.0, model));
-        }
+    }
 
-        CommonVars() {
-            settlementDays = 2;
-            nominal = 1000000.0;
-            fixedConvention = Unadjusted;
-            fixedFrequency = Annual;
-            fixedDayCount = Thirty360(Thirty360::BondBasis);
+    CommonVars() {
+        settlementDays = 2;
+        nominal = 1000000.0;
+        fixedConvention = Unadjusted;
+        fixedFrequency = Annual;
+        fixedDayCount = Thirty360(Thirty360::BondBasis);
 
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            floatingConvention = index->businessDayConvention();
-            floatingTenor = index->tenor();
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today,settlementDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-        }
-    };
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        floatingConvention = index->businessDayConvention();
+        floatingTenor = index->tenor();
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today,settlementDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+    }
+};
 
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwaptionTest)
 
 BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
 
     BOOST_TEST_MESSAGE("Testing swaption result caching in Black engine...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -150,8 +144,6 @@ BOOST_AUTO_TEST_CASE(testBlackEngineCaching) {
 BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on strike...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -246,8 +238,6 @@ BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 
     BOOST_TEST_MESSAGE("Testing swaption dependency on spread...");
 
-    using namespace swaption_test;
-
     CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -334,8 +324,6 @@ BOOST_AUTO_TEST_CASE(testSpreadTreatment) {
 
     BOOST_TEST_MESSAGE("Testing swaption treatment of spread...");
 
-    using namespace swaption_test;
-
     CommonVars vars;
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
@@ -397,8 +385,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing swaption value against cached value...");
 
-    using namespace swaption_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
@@ -431,8 +417,6 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
 BOOST_AUTO_TEST_CASE(testVega) {
 
     BOOST_TEST_MESSAGE("Testing swaption vega...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -500,8 +484,6 @@ BOOST_AUTO_TEST_CASE(testVega) {
 BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
 
     BOOST_TEST_MESSAGE("Testing cash settled swaptions modified annuity...");
-
-    using namespace swaption_test;
 
     CommonVars vars;
 
@@ -799,8 +781,6 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Fast))) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
-    using namespace swaption_test;
-
     CommonVars vars;
 
     Size maxEvaluations = 100;
@@ -900,8 +880,6 @@ ext::shared_ptr<Engine> makeConstVolEngine(
 template <typename Engine>
 void checkSwaptionDelta(bool useBachelierVol)
 {
-    using namespace swaption_test;
-
     CommonVars vars;
     Date today = vars.today;
     Calendar calendar = vars.calendar;

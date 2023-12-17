@@ -36,45 +36,40 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace digital_coupon_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Real nominal;
-        Calendar calendar;
-        ext::shared_ptr<IborIndex> index;
-        Natural fixingDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
-        Real optionTolerance;
-        Real blackTolerance;
+BOOST_AUTO_TEST_SUITE(DigitalCouponTests)
 
-        // setup
-        CommonVars() {
-            fixingDays = 2;
-            nominal = 1000000.0;
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Settings::instance().evaluationDate());
-            Settings::instance().evaluationDate() = today;
-            settlement = calendar.advance(today,fixingDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-            optionTolerance = 1.e-04;
-            blackTolerance = 1e-10;
-        }
-    };
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Real nominal;
+    Calendar calendar;
+    ext::shared_ptr<IborIndex> index;
+    Natural fixingDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    Real optionTolerance;
+    Real blackTolerance;
 
-}
+    // setup
+    CommonVars() {
+        fixingDays = 2;
+        nominal = 1000000.0;
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Settings::instance().evaluationDate());
+        Settings::instance().evaluationDate() = today;
+        settlement = calendar.advance(today,fixingDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+        optionTolerance = 1.e-04;
+        blackTolerance = 1e-10;
+    }
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture) // might fail with QL_USE_INDEXED_COUPON
-
-BOOST_AUTO_TEST_SUITE(DigitalCouponTest)
 
 BOOST_AUTO_TEST_CASE(testAssetOrNothing) {
 
     BOOST_TEST_MESSAGE("Testing European asset-or-nothing digital coupon...");
-
-    using namespace digital_coupon_test;
 
     /*  Call Payoff = (aL+b)Heaviside(aL+b-X) =  a Max[L-X'] + (b+aX')Heaviside(L-X')
         Value Call = aF N(d1') + bN(d2')
@@ -262,8 +257,6 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothingDeepInTheMoney) {
     BOOST_TEST_MESSAGE("Testing European deep in-the-money asset-or-nothing "
                        "digital coupon...");
 
-    using namespace digital_coupon_test;
-
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -370,8 +363,6 @@ BOOST_AUTO_TEST_CASE(testAssetOrNothingDeepOutTheMoney) {
 
     BOOST_TEST_MESSAGE("Testing European deep out-the-money asset-or-nothing "
                        "digital coupon...");
-
-    using namespace digital_coupon_test;
 
     CommonVars vars;
 
@@ -484,8 +475,6 @@ BOOST_AUTO_TEST_CASE(testCashOrNothing) {
         where:
         d2' = ln(F/X')/stdDev - 0.5*stdDev;
     */
-
-    using namespace digital_coupon_test;
 
     CommonVars vars;
 
@@ -631,8 +620,6 @@ BOOST_AUTO_TEST_CASE(testCashOrNothingDeepInTheMoney) {
     BOOST_TEST_MESSAGE("Testing European deep in-the-money cash-or-nothing "
                        "digital coupon...");
 
-    using namespace digital_coupon_test;
-
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -737,8 +724,6 @@ BOOST_AUTO_TEST_CASE(testCashOrNothingDeepOutTheMoney) {
 
     BOOST_TEST_MESSAGE("Testing European deep out-the-money cash-or-nothing "
                        "digital coupon...");
-
-    using namespace digital_coupon_test;
 
     CommonVars vars;
 
@@ -845,8 +830,6 @@ BOOST_AUTO_TEST_CASE(testCallPutParity) {
 
     BOOST_TEST_MESSAGE("Testing call/put parity for European digital coupon...");
 
-    using namespace digital_coupon_test;
-
     CommonVars vars;
 
     Volatility vols[] = { 0.05, 0.15, 0.30 };
@@ -939,8 +922,6 @@ BOOST_AUTO_TEST_CASE(testCallPutParity) {
 BOOST_AUTO_TEST_CASE(testReplicationType) {
 
     BOOST_TEST_MESSAGE("Testing replication type for European digital coupon...");
-
-    using namespace digital_coupon_test;
 
     CommonVars vars;
 

@@ -37,6 +37,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(LookbackOptionTests)
+
 #undef REPORT_FAILURE_FLOATING
 #define REPORT_FAILURE_FLOATING(greekName, minmax, payoff, exercise, \
                                 s, q, r, today, v, \
@@ -85,31 +89,24 @@ using namespace boost::unit_test_framework;
         << "    tolerance:     " << tolerance << "\n" \
         << "    difference:    " << std::abs(analytical - monteCarlo));
 
-namespace {
+struct LookbackOptionData {
+    Option::Type type;
+    Real strike;
+    Real minmax;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
 
-    struct LookbackOptionData {
-        Option::Type type;
-        Real strike;
-        Real minmax;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
+    //Partial-time lookback options:
+    Real l;        // level above/below actual extremum
+    Real t1;       // time to start of lookback period
 
-        //Partial-time lookback options:
-        Real l;        // level above/below actual extremum
-        Real t1;       // time to start of lookback period
+    Real result;   // result
+    Real tol;      // tolerance
+};
 
-        Real result;   // result
-        Real tol;      // tolerance
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(LookbackOptionTest)
 
 BOOST_AUTO_TEST_CASE(testAnalyticContinuousFloatingLookback) {
 

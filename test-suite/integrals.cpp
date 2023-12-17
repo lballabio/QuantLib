@@ -40,106 +40,102 @@
 using namespace QuantLib;
 using namespace boost::unit_test;
 
-namespace integrals_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    Real tolerance = 1.0e-6;
+BOOST_AUTO_TEST_SUITE(IntegralTests)
 
-    template <class T>
-    void testSingle(const T& I, const std::string& tag,
-                    const ext::function<Real (Real)>& f,
-                    Real xMin, Real xMax, Real expected) {
-        Real calculated = I(f,xMin,xMax);
-        if (std::fabs(calculated-expected) > integrals_test::tolerance) {
-            BOOST_FAIL(std::setprecision(10)
-                       << "integrating " << tag
-                       << "    calculated: " << calculated
-                       << "    expected:   " << expected);
-        }
-    }
+Real tolerance = 1.0e-6;
 
-    template <class T>
-    void testSeveral(const T& I) {
-        testSingle(I, "f(x) = 0", [](Real x) -> Real { return 0.0; }, 0.0, 1.0, 0.0);
-        testSingle(I, "f(x) = 1", [](Real x) -> Real { return 1.0; }, 0.0, 1.0, 1.0);
-        testSingle(I, "f(x) = x", [](Real x) -> Real { return x; }, 0.0, 1.0, 0.5);
-        testSingle(I, "f(x) = x^2",
-                   [](Real x) -> Real { return x * x; }, 0.0, 1.0, 1.0/3.0);
-        testSingle(I, "f(x) = sin(x)",
-                   [](Real x) -> Real { return std::sin(x); }, 0.0, M_PI, 2.0);
-        testSingle(I, "f(x) = cos(x)",
-                   [](Real x) -> Real { return std::cos(x); }, 0.0, M_PI, 0.0);
-
-        testSingle(I, "f(x) = Gaussian(x)",
-                   NormalDistribution(), -10.0, 10.0, 1.0);
-        testSingle(I, "f(x) = Abcd2(x)",
-                   AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
-                   AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
-    }
-
-    template <class T>
-    void testDegeneratedDomain(const T& I) {
-        testSingle(I, "f(x) = 0 over [1, 1 + macheps]", [](Real x) -> Real { return 0.0; }, 1.0,
-            1.0 + QL_EPSILON, 0.0);
-    }
-
-    class sineF {
-      public:
-        Real operator()(Real x) const {
-            return std::exp(-0.5*(x - M_PI_2/100));
-        }
-    };
-
-    class cosineF {
-      public:
-        Real operator()(Real x) const {
-            return std::exp(-0.5*x);
-        }
-    };
-
-    Real f1(Real x) {
-        return 1.2*x*x+3.2*x+3.1;
-    }
-
-    Real f2(Real x) {
-        return 4.3*(x-2.34)*(x-2.34)-6.2*(x-2.34) + f1(2.34);
-    }
-
-    std::vector<Real> x, y;
-
-    Real pw_fct(const Real t) { return QL_PIECEWISE_FUNCTION(x, y, t); }
-
-    void pw_check(const Integrator &in, const Real a, const Real b,
-                  const Real expected) {
-        Real calculated = in(pw_fct, a, b);
-        if (!close(calculated, expected))
-            BOOST_FAIL(std::setprecision(16)
-                       << "piecewise integration over [" << a << "," << b
-                       << "] failed: "
-                       << "\n   calculated: " << calculated
-                       << "\n   expected:   " << expected
-                       << "\n   difference: " << (calculated - expected));
-    }
-
-    template <class T>
-    void reportSiCiFail(
-        const std::string& name, T z, T c, T e, Real diff, Real tol) {
-        BOOST_FAIL(std::setprecision(16)
-                   << name << " calculation failed for " << z
-                   << "\n calculated: " << c
-                   << "\n expected:   " << e
-                   << "\n difference: " << diff
-                   << "\n tolerance:  " << tol);
+template <class T>
+void testSingle(const T& I, const std::string& tag,
+                const ext::function<Real (Real)>& f,
+                Real xMin, Real xMax, Real expected) {
+    Real calculated = I(f,xMin,xMax);
+    if (std::fabs(calculated-expected) > tolerance) {
+        BOOST_FAIL(std::setprecision(10)
+                   << "integrating " << tag
+                   << "    calculated: " << calculated
+                   << "    expected:   " << expected);
     }
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+template <class T>
+void testSeveral(const T& I) {
+    testSingle(I, "f(x) = 0", [](Real x) -> Real { return 0.0; }, 0.0, 1.0, 0.0);
+    testSingle(I, "f(x) = 1", [](Real x) -> Real { return 1.0; }, 0.0, 1.0, 1.0);
+    testSingle(I, "f(x) = x", [](Real x) -> Real { return x; }, 0.0, 1.0, 0.5);
+    testSingle(I, "f(x) = x^2",
+               [](Real x) -> Real { return x * x; }, 0.0, 1.0, 1.0/3.0);
+    testSingle(I, "f(x) = sin(x)",
+               [](Real x) -> Real { return std::sin(x); }, 0.0, M_PI, 2.0);
+    testSingle(I, "f(x) = cos(x)",
+               [](Real x) -> Real { return std::cos(x); }, 0.0, M_PI, 0.0);
 
-BOOST_AUTO_TEST_SUITE(IntegralTest)
+    testSingle(I, "f(x) = Gaussian(x)",
+               NormalDistribution(), -10.0, 10.0, 1.0);
+    testSingle(I, "f(x) = Abcd2(x)",
+               AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
+               AbcdFunction(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
+}
+
+template <class T>
+void testDegeneratedDomain(const T& I) {
+    testSingle(I, "f(x) = 0 over [1, 1 + macheps]", [](Real x) -> Real { return 0.0; }, 1.0,
+               1.0 + QL_EPSILON, 0.0);
+}
+
+class sineF {
+  public:
+    Real operator()(Real x) const {
+        return std::exp(-0.5*(x - M_PI_2/100));
+    }
+};
+
+class cosineF {
+  public:
+    Real operator()(Real x) const {
+        return std::exp(-0.5*x);
+    }
+};
+
+Real f1(Real x) {
+    return 1.2*x*x+3.2*x+3.1;
+}
+
+Real f2(Real x) {
+    return 4.3*(x-2.34)*(x-2.34)-6.2*(x-2.34) + f1(2.34);
+}
+
+std::vector<Real> x, y;
+
+Real pw_fct(const Real t) { return QL_PIECEWISE_FUNCTION(x, y, t); }
+
+void pw_check(const Integrator &in, const Real a, const Real b,
+              const Real expected) {
+    Real calculated = in(pw_fct, a, b);
+    if (!close(calculated, expected))
+        BOOST_FAIL(std::setprecision(16)
+                   << "piecewise integration over [" << a << "," << b
+                   << "] failed: "
+                   << "\n   calculated: " << calculated
+                   << "\n   expected:   " << expected
+                   << "\n   difference: " << (calculated - expected));
+}
+
+template <class T>
+void reportSiCiFail(
+                    const std::string& name, T z, T c, T e, Real diff, Real tol) {
+    BOOST_FAIL(std::setprecision(16)
+               << name << " calculation failed for " << z
+               << "\n calculated: " << c
+               << "\n expected:   " << e
+               << "\n difference: " << diff
+               << "\n tolerance:  " << tol);
+}
+
 
 BOOST_AUTO_TEST_CASE(testSegment) {
     BOOST_TEST_MESSAGE("Testing segment integration...");
-
-    using namespace integrals_test;
 
     testSeveral(SegmentIntegral(10000));
     testDegeneratedDomain(SegmentIntegral(10000));
@@ -148,47 +144,37 @@ BOOST_AUTO_TEST_CASE(testSegment) {
 BOOST_AUTO_TEST_CASE(testTrapezoid) {
     BOOST_TEST_MESSAGE("Testing trapezoid integration...");
 
-    using namespace integrals_test;
-
-    testSeveral(TrapezoidIntegral<Default>(integrals_test::tolerance, 10000));
-    testDegeneratedDomain(TrapezoidIntegral<Default>(integrals_test::tolerance, 10000));
+    testSeveral(TrapezoidIntegral<Default>(tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<Default>(tolerance, 10000));
 }
 
 BOOST_AUTO_TEST_CASE(testMidPointTrapezoid) {
     BOOST_TEST_MESSAGE("Testing mid-point trapezoid integration...");
 
-    using namespace integrals_test;
-
-    testSeveral(TrapezoidIntegral<MidPoint>(integrals_test::tolerance, 10000));
-    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(integrals_test::tolerance, 10000));
+    testSeveral(TrapezoidIntegral<MidPoint>(tolerance, 10000));
+    testDegeneratedDomain(TrapezoidIntegral<MidPoint>(tolerance, 10000));
 }
 
 BOOST_AUTO_TEST_CASE(testSimpson) {
     BOOST_TEST_MESSAGE("Testing Simpson integration...");
 
-    using namespace integrals_test;
-
-    testSeveral(SimpsonIntegral(integrals_test::tolerance, 10000));
-    testDegeneratedDomain(SimpsonIntegral(integrals_test::tolerance, 10000));
+    testSeveral(SimpsonIntegral(tolerance, 10000));
+    testDegeneratedDomain(SimpsonIntegral(tolerance, 10000));
 }
 
 BOOST_AUTO_TEST_CASE(testGaussKronrodAdaptive) {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Kronrod integration...");
 
-    using namespace integrals_test;
-
     Size maxEvaluations = 1000;
-    testSeveral(GaussKronrodAdaptive(integrals_test::tolerance, maxEvaluations));
-    testDegeneratedDomain(GaussKronrodAdaptive(integrals_test::tolerance, maxEvaluations));
+    testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
+    testDegeneratedDomain(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
 BOOST_AUTO_TEST_CASE(testGaussLobatto) {
     BOOST_TEST_MESSAGE("Testing adaptive Gauss-Lobatto integration...");
 
-    using namespace integrals_test;
-
     Size maxEvaluations = 1000;
-    testSeveral(GaussLobattoIntegral(maxEvaluations, integrals_test::tolerance));
+    testSeveral(GaussLobattoIntegral(maxEvaluations, tolerance));
     // on degenerated domain [1,1+macheps] an exception is thrown
     // which is also ok, but not tested here
 }
@@ -197,15 +183,12 @@ BOOST_AUTO_TEST_CASE(testGaussLobatto) {
 BOOST_AUTO_TEST_CASE(testTanhSinh) {
     BOOST_TEST_MESSAGE("Testing tanh-sinh integration...");
 
-    using namespace integrals_test;
     testSeveral(TanhSinhIntegral());
 }
 #endif
 
 BOOST_AUTO_TEST_CASE(testGaussLegendreIntegrator) {
     BOOST_TEST_MESSAGE("Testing Gauss-Legendre integrator...");
-
-    using namespace integrals_test;
 
     const GaussLegendreIntegrator integrator(64);
     testSeveral(integrator);
@@ -214,8 +197,6 @@ BOOST_AUTO_TEST_CASE(testGaussLegendreIntegrator) {
 
 BOOST_AUTO_TEST_CASE(testGaussChebyshevIntegrator) {
     BOOST_TEST_MESSAGE("Testing Gauss-Chebyshev integrator...");
-
-    using namespace integrals_test;
 
     const GaussChebyshevIntegrator integrator(64);
     testSingle(integrator, "f(x) = Gaussian(x)",
@@ -226,8 +207,6 @@ BOOST_AUTO_TEST_CASE(testGaussChebyshevIntegrator) {
 BOOST_AUTO_TEST_CASE(testGaussChebyshev2ndIntegrator) {
     BOOST_TEST_MESSAGE("Testing Gauss-Chebyshev 2nd integrator...");
 
-    using namespace integrals_test;
-
     const GaussChebyshev2ndIntegrator integrator(64);
     testSingle(integrator, "f(x) = Gaussian(x)",
                NormalDistribution(), -10.0, 10.0, 1.0);
@@ -237,11 +216,9 @@ BOOST_AUTO_TEST_CASE(testGaussChebyshev2ndIntegrator) {
 BOOST_AUTO_TEST_CASE(testGaussKronrodNonAdaptive) {
     BOOST_TEST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
 
-    using namespace integrals_test;
-
-    Real precision = integrals_test::tolerance;
+    Real precision = tolerance;
     Size maxEvaluations = 100;
-    Real relativeAccuracy = integrals_test::tolerance;
+    Real relativeAccuracy = tolerance;
     GaussKronrodNonAdaptive gaussKronrodNonAdaptive(precision, maxEvaluations,
                                                     relativeAccuracy);
     testSeveral(gaussKronrodNonAdaptive);
@@ -252,19 +229,17 @@ BOOST_AUTO_TEST_CASE(testTwoDimensionalIntegration) {
     BOOST_TEST_MESSAGE("Testing two dimensional adaptive "
                        "Gauss-Lobatto integration...");
 
-    using namespace integrals_test;
-
     const Size maxEvaluations = 1000;
     const Real calculated = TwoDimensionalIntegral(
         ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)),
+            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)),
         ext::shared_ptr<Integrator>(
-            new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)))(
+            new TrapezoidIntegral<Default>(tolerance, maxEvaluations)))(
         std::multiplies<>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
 
     const Real expected = 1.0;
-    if (std::fabs(calculated-expected) > integrals_test::tolerance) {
+    if (std::fabs(calculated-expected) > tolerance) {
         BOOST_FAIL(std::setprecision(10)
                    << "two dimensional integration: "
                    << "\n    calculated: " << calculated
@@ -274,8 +249,6 @@ BOOST_AUTO_TEST_CASE(testTwoDimensionalIntegration) {
 
 BOOST_AUTO_TEST_CASE(testFolinIntegration) {
     BOOST_TEST_MESSAGE("Testing Folin's integral formulae...");
-
-    using namespace integrals_test;
 
     // Examples taken from
     // http://www.tat.physik.uni-tuebingen.de/~kokkotas/Teaching/Num_Methods_files/Comp_Phys5.pdf
@@ -315,8 +288,6 @@ BOOST_AUTO_TEST_CASE(testFolinIntegration) {
 BOOST_AUTO_TEST_CASE(testDiscreteIntegrals) {
     BOOST_TEST_MESSAGE("Testing discrete integral formulae...");
 
-    using namespace integrals_test;
-
     Array x(6), f(6);
     x[0] = 1.0; x[1] = 2.02; x[2] = 2.34; x[3] = 3.3; x[4] = 4.2; x[5] = 4.6;
 
@@ -354,16 +325,12 @@ BOOST_AUTO_TEST_CASE(testDiscreteIntegrals) {
 BOOST_AUTO_TEST_CASE(testDiscreteIntegrator) {
     BOOST_TEST_MESSAGE("Testing discrete integrator formulae...");
 
-    using namespace integrals_test;
-
     testSeveral(DiscreteSimpsonIntegrator(300));
     testSeveral(DiscreteTrapezoidIntegrator(3000));
 }
 
 BOOST_AUTO_TEST_CASE(testPiecewiseIntegral) {
     BOOST_TEST_MESSAGE("Testing piecewise integral...");
-
-    using namespace integrals_test;
 
     x = { 1.0, 2.0, 3.0, 4.0, 5.0 };
     y = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
@@ -505,7 +472,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
         if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(si.real()) > tol)
             || (std::abs(ref.imag()) < tol && std::abs(si.imag()) > tol)) {
-            integrals_test::reportSiCiFail("Si", z, si, ref, diff, tol);
+            reportSiCiFail("Si", z, si, ref, diff, tol);
         }
 
         const std::complex<Real> ci = Ci(z);
@@ -514,7 +481,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
         if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(ci.real()) > tol)
             || (std::abs(ref.imag()) < tol && std::abs(ci.imag()) > tol)) {
-            integrals_test::reportSiCiFail("Ci", z, ci, ref, diff, tol);
+            reportSiCiFail("Ci", z, ci, ref, diff, tol);
         }
 
         const std::complex<Real> ei = Ei(z);
@@ -523,7 +490,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
         if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(ei.real()) > tol)
             || (std::abs(ref.imag()) < tol && std::abs(ei.imag()) > tol)) {
-            integrals_test::reportSiCiFail("Ei", z, ei, ref, diff, tol);
+            reportSiCiFail("Ei", z, ei, ref, diff, tol);
         }
 
         const std::complex<Real> e1 = E1(z);
@@ -533,7 +500,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
             if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(e1.real()) > tol)
             || (std::abs(ref.imag()) < tol && std::abs(e1.imag()) > tol)) {
-            integrals_test::reportSiCiFail("E1", z, e1, ref, diff, tol);
+            reportSiCiFail("E1", z, e1, ref, diff, tol);
         }
     }
 }
@@ -573,20 +540,20 @@ BOOST_AUTO_TEST_CASE(testRealSiCiIntegrals) {
 
         Real diff = std::fabs(si - i[1]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("SineIntegral", x, si, i[1], diff, tol);
+            reportSiCiFail("SineIntegral", x, si, i[1], diff, tol);
         }
 
         const Real ci = Ci(x);
         diff = std::fabs(ci - i[2]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("CosineIntegral", x, ci, i[2], diff, tol);
+            reportSiCiFail("CosineIntegral", x, ci, i[2], diff, tol);
         }
 
         x = -i[0];
         si = Si(x);
         diff = std::fabs(si + i[1]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("SineIntegral", x, si, Real(-i[1]), diff, tol);
+            reportSiCiFail("SineIntegral", x, si, Real(-i[1]), diff, tol);
         }
     }
 }

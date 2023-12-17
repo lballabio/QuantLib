@@ -53,196 +53,199 @@ using namespace boost::unit_test_framework;
 
 using std::fabs;
 
-namespace inflation_capfloored_coupon_test {
-    struct Datum {
-        Date date;
-        Rate rate;
-    };
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    template <class T, class U, class I>
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                        const std::vector<Datum>& iiData,
-                        const ext::shared_ptr<I> &ii, const Period &observationLag,
-                        const Calendar &calendar,
-                        const BusinessDayConvention &bdc,
-                        const DayCounter &dc,
-                        const Handle<YieldTermStructure>& discountCurve) {
+BOOST_AUTO_TEST_SUITE(InflationCapFlooredCouponTests)
 
-        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Datum datum : iiData) {
-            Date maturity = datum.date;
-            Handle<Quote> quote(ext::shared_ptr<Quote>(
+struct Datum {
+    Date date;
+    Rate rate;
+};
+
+template <class T, class U, class I>
+std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+                                                               const std::vector<Datum>& iiData,
+                                                               const ext::shared_ptr<I> &ii, const Period &observationLag,
+                                                               const Calendar &calendar,
+                                                               const BusinessDayConvention &bdc,
+                                                               const DayCounter &dc,
+                                                               const Handle<YieldTermStructure>& discountCurve) {
+
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
+    for (Datum datum : iiData) {
+        Date maturity = datum.date;
+        Handle<Quote> quote(ext::shared_ptr<Quote>(
                             new SimpleQuote(datum.rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
+        ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                             quote, observationLag, maturity,
                             calendar, bdc, dc, ii, discountCurve));
-            instruments.push_back(anInstrument);
-        }
-
-        return instruments;
+        instruments.push_back(anInstrument);
     }
 
+    return instruments;
+}
 
-    struct CommonVars {
-        // common data
 
-        Size length;
-        Date startDate;
-        Real volatility;
+struct CommonVars {
+    // common data
 
-        Frequency frequency;
-        std::vector<Real> nominals;
-        Calendar calendar;
-        BusinessDayConvention convention;
-        Natural fixingDays;
-        Date evaluationDate;
-        Natural settlementDays;
-        Date settlement;
-        Period observationLag;
-        DayCounter dc;
-        ext::shared_ptr<YoYInflationIndex> iir;
+    Size length;
+    Date startDate;
+    Real volatility;
 
-        RelinkableHandle<YieldTermStructure> nominalTS;
-        ext::shared_ptr<YoYInflationTermStructure> yoyTS;
-        RelinkableHandle<YoYInflationTermStructure> hy;
+    Frequency frequency;
+    std::vector<Real> nominals;
+    Calendar calendar;
+    BusinessDayConvention convention;
+    Natural fixingDays;
+    Date evaluationDate;
+    Natural settlementDays;
+    Date settlement;
+    Period observationLag;
+    DayCounter dc;
+    ext::shared_ptr<YoYInflationIndex> iir;
 
-        // setup
-        CommonVars()
-        : nominals(1,1000000) {
-            // option variables
-            frequency = Annual;
-            // usual setup
-            volatility = 0.01;
-            length = 7;
-            calendar = UnitedKingdom();
-            convention = ModifiedFollowing;
-            Date today(13, August, 2007);
-            evaluationDate = calendar.adjust(today);
-            Settings::instance().evaluationDate() = evaluationDate;
-            settlementDays = 0;
-            fixingDays = 0;
-            settlement = calendar.advance(today,settlementDays,Days);
-            startDate = settlement;
-            dc = Thirty360(Thirty360::BondBasis);
+    RelinkableHandle<YieldTermStructure> nominalTS;
+    ext::shared_ptr<YoYInflationTermStructure> yoyTS;
+    RelinkableHandle<YoYInflationTermStructure> hy;
 
-            // yoy index
-            //      fixing data
-            Date from(1, January, 2005);
-            Date to(13, August, 2007);
-            Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+    // setup
+    CommonVars()
+    : nominals(1,1000000) {
+        // option variables
+        frequency = Annual;
+        // usual setup
+        volatility = 0.01;
+        length = 7;
+        calendar = UnitedKingdom();
+        convention = ModifiedFollowing;
+        Date today(13, August, 2007);
+        evaluationDate = calendar.adjust(today);
+        Settings::instance().evaluationDate() = evaluationDate;
+        settlementDays = 0;
+        fixingDays = 0;
+        settlement = calendar.advance(today,settlementDays,Days);
+        startDate = settlement;
+        dc = Thirty360(Thirty360::BondBasis);
+
+        // yoy index
+        //      fixing data
+        Date from(1, January, 2005);
+        Date to(13, August, 2007);
+        Schedule rpiSchedule = MakeSchedule().from(from).to(to)
             .withTenor(1*Months)
             .withCalendar(UnitedKingdom())
             .withConvention(ModifiedFollowing);
-            Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
-                192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
-                194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
-                198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
-                202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
-                207.3, -999.0, -999 };
-            auto rpi = ext::make_shared<UKRPI>();
-            for (Size i=0; i<rpiSchedule.size();i++) {
-                rpi->addFixing(rpiSchedule[i], fixData[i]);
-            }
-            // link from yoy index to yoy TS
-            bool interp = false;
-            iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
+        Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
+                           192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
+                           194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
+                           198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
+                           202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
+                           207.3, -999.0, -999 };
+        auto rpi = ext::make_shared<UKRPI>();
+        for (Size i=0; i<rpiSchedule.size();i++) {
+            rpi->addFixing(rpiSchedule[i], fixData[i]);
+        }
+        // link from yoy index to yoy TS
+        bool interp = false;
+        iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
 
-            ext::shared_ptr<YieldTermStructure> nominalFF(
+        ext::shared_ptr<YieldTermStructure> nominalFF(
                         new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));
-            nominalTS.linkTo(nominalFF);
+        nominalTS.linkTo(nominalFF);
 
-            // now build the YoY inflation curve
-            Period observationLag = Period(2,Months);
+        // now build the YoY inflation curve
+        Period observationLag = Period(2,Months);
 
-            std::vector<Datum> yyData = {
-                { Date(13, August, 2008), 2.95 },
-                { Date(13, August, 2009), 2.95 },
-                { Date(13, August, 2010), 2.93 },
-                { Date(15, August, 2011), 2.955 },
-                { Date(13, August, 2012), 2.945 },
-                { Date(13, August, 2013), 2.985 },
-                { Date(13, August, 2014), 3.01 },
-                { Date(13, August, 2015), 3.035 },
-                { Date(13, August, 2016), 3.055 },  // note that
-                { Date(13, August, 2017), 3.075 },  // some dates will be on
-                { Date(13, August, 2019), 3.105 },  // holidays but the payment
-                { Date(15, August, 2022), 3.135 },  // calendar will roll them
-                { Date(13, August, 2027), 3.155 },
-                { Date(13, August, 2032), 3.145 },
-                { Date(13, August, 2037), 3.145 }
-            };
+        std::vector<Datum> yyData = {
+            { Date(13, August, 2008), 2.95 },
+            { Date(13, August, 2009), 2.95 },
+            { Date(13, August, 2010), 2.93 },
+            { Date(15, August, 2011), 2.955 },
+            { Date(13, August, 2012), 2.945 },
+            { Date(13, August, 2013), 2.985 },
+            { Date(13, August, 2014), 3.01 },
+            { Date(13, August, 2015), 3.035 },
+            { Date(13, August, 2016), 3.055 },  // note that
+            { Date(13, August, 2017), 3.075 },  // some dates will be on
+            { Date(13, August, 2019), 3.105 },  // holidays but the payment
+            { Date(15, August, 2022), 3.135 },  // calendar will roll them
+            { Date(13, August, 2027), 3.155 },
+            { Date(13, August, 2032), 3.145 },
+            { Date(13, August, 2037), 3.145 }
+        };
 
             // now build the helpers ...
-            std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
+        std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
             YoYInflationIndex>(yyData, iir,
                                observationLag,
                                calendar, convention, dc,
                                Handle<YieldTermStructure>(nominalTS));
 
-            Rate baseYYRate = yyData[0].rate/100.0;
-            ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
+        Rate baseYYRate = yyData[0].rate/100.0;
+        ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
                             new PiecewiseYoYInflationCurve<Linear>(
                                 evaluationDate, calendar, dc, observationLag,
                                 iir->frequency(),iir->interpolated(), baseYYRate,
                                 helpers));
-            pYYTS->recalculate();
-            yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
+        pYYTS->recalculate();
+        yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
 
 
-            // make sure that the index has the latest yoy term structure
-            hy.linkTo(pYYTS);
-        }
+        // make sure that the index has the latest yoy term structure
+        hy.linkTo(pYYTS);
+    }
 
-        // utilities
-        Leg makeYoYLeg(const Date& startDate,
-                       Integer length,
-                       const Rate gearing = 1.0,
-                       const Rate spread = 0.0) const {
-            ext::shared_ptr<YoYInflationIndex> ii =
+    // utilities
+    Leg makeYoYLeg(const Date& startDate,
+                   Integer length,
+                   const Rate gearing = 1.0,
+                   const Rate spread = 0.0) const {
+        ext::shared_ptr<YoYInflationIndex> ii =
             ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
-            Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              Unadjusted,Unadjusted,// ref periods & acc periods
-                              DateGeneration::Forward, false);
+        Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          Unadjusted,Unadjusted,// ref periods & acc periods
+                          DateGeneration::Forward, false);
 
-            std::vector<Rate> gearingVector(length, gearing);
-            std::vector<Spread> spreadVector(length, spread);
+        std::vector<Rate> gearingVector(length, gearing);
+        std::vector<Spread> spreadVector(length, spread);
 
-            Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag)
+        Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
             .withSpreads(spreadVector)
             .withPaymentAdjustment(convention);
 
-            return yoyLeg;
-        }
+        return yoyLeg;
+    }
 
-        Leg makeFixedLeg(const Date& startDate, Integer length) const {
+    Leg makeFixedLeg(const Date& startDate, Integer length) const {
 
-            Date endDate = calendar.advance(startDate, length, Years,
-                                            convention);
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              convention, convention,
-                              DateGeneration::Forward, false);
-            std::vector<Rate> coupons(length, 0.0);
-            return FixedRateLeg(schedule)
+        Date endDate = calendar.advance(startDate, length, Years,
+                                        convention);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          convention, convention,
+                          DateGeneration::Forward, false);
+        std::vector<Rate> coupons(length, 0.0);
+        return FixedRateLeg(schedule)
             .withNotionals(nominals)
             .withCouponRates(coupons, dc);
-        }
+    }
 
 
-        Leg makeYoYCapFlooredLeg(Size which,
-                                 const Date& startDate,
-                                 Integer length,
-                                 const std::vector<Rate>& caps,
-                                 const std::vector<Rate>& floors,
-                                 Volatility volatility,
-                                 const Rate gearing = 1.0,
-                                 const Rate spread = 0.0) const {
+    Leg makeYoYCapFlooredLeg(Size which,
+                             const Date& startDate,
+                             Integer length,
+                             const std::vector<Rate>& caps,
+                             const std::vector<Rate>& floors,
+                             Volatility volatility,
+                             const Rate gearing = 1.0,
+                             const Rate spread = 0.0) const {
 
-            Handle<YoYOptionletVolatilitySurface>
+        Handle<YoYOptionletVolatilitySurface>
             vol(ext::make_shared<ConstantYoYOptionletVolatility>(
                             volatility,
                                 settlementDays,
@@ -253,38 +256,38 @@ namespace inflation_capfloored_coupon_test {
                                 frequency,
                                 iir->interpolated()));
 
-            ext::shared_ptr<YoYInflationCouponPricer> pricer;
-            switch (which) {
-                case 0:
-                    pricer = ext::shared_ptr<YoYInflationCouponPricer>(
+        ext::shared_ptr<YoYInflationCouponPricer> pricer;
+        switch (which) {
+          case 0:
+            pricer = ext::shared_ptr<YoYInflationCouponPricer>(
                             new BlackYoYInflationCouponPricer(vol, nominalTS));
-                    break;
-                case 1:
-                    pricer = ext::shared_ptr<YoYInflationCouponPricer>(
+            break;
+          case 1:
+            pricer = ext::shared_ptr<YoYInflationCouponPricer>(
                             new UnitDisplacedBlackYoYInflationCouponPricer(vol, nominalTS));
-                    break;
-                case 2:
-                    pricer = ext::shared_ptr<YoYInflationCouponPricer>(
+            break;
+          case 2:
+            pricer = ext::shared_ptr<YoYInflationCouponPricer>(
                             new BachelierYoYInflationCouponPricer(vol, nominalTS));
-                    break;
-                default:
-                    BOOST_FAIL("unknown coupon pricer request: which = "<<which
-                               <<"should be 0=Black,1=DD,2=Bachelier");
-                    break;
-            }
+            break;
+          default:
+            BOOST_FAIL("unknown coupon pricer request: which = "<<which
+                       <<"should be 0=Black,1=DD,2=Bachelier");
+            break;
+        }
 
 
-            std::vector<Rate> gearingVector(length, gearing);
-            std::vector<Spread> spreadVector(length, spread);
+        std::vector<Rate> gearingVector(length, gearing);
+        std::vector<Spread> spreadVector(length, spread);
 
-            ext::shared_ptr<YoYInflationIndex> ii =
+        ext::shared_ptr<YoYInflationIndex> ii =
             ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
-            Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              Unadjusted,Unadjusted,// ref periods & acc periods
-                              DateGeneration::Forward, false);
+        Date endDate = calendar.advance(startDate,length*Years,Unadjusted);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          Unadjusted,Unadjusted,// ref periods & acc periods
+                          DateGeneration::Forward, false);
 
-            Leg yoyLeg =  yoyInflationLeg(schedule, calendar, ii, observationLag)
+        Leg yoyLeg =  yoyInflationLeg(schedule, calendar, ii, observationLag)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withPaymentAdjustment(convention)
@@ -293,20 +296,20 @@ namespace inflation_capfloored_coupon_test {
             .withCaps(caps)
             .withFloors(floors);
 
-            setCouponPricer(yoyLeg, pricer);
+        setCouponPricer(yoyLeg, pricer);
 
-            return yoyLeg;
-        }
+        return yoyLeg;
+    }
 
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) const {
+    ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility, Size which) const {
 
-            ext::shared_ptr<YoYInflationIndex>
+        ext::shared_ptr<YoYInflationIndex>
             yyii = ext::dynamic_pointer_cast<YoYInflationIndex>(iir);
 
-            Handle<YoYOptionletVolatilitySurface>
+        Handle<YoYOptionletVolatilitySurface>
             vol(ext::make_shared<ConstantYoYOptionletVolatility>(
-                    volatility,
+                            volatility,
                             settlementDays,
                             calendar,
                             convention,
@@ -316,63 +319,56 @@ namespace inflation_capfloored_coupon_test {
                             iir->interpolated()));
 
 
-            switch (which) {
-                case 0:
-                    return ext::shared_ptr<PricingEngine>(
+        switch (which) {
+          case 0:
+            return ext::shared_ptr<PricingEngine>(
                             new YoYInflationBlackCapFloorEngine(iir, vol, nominalTS));
-                    break;
-                case 1:
-                    return ext::shared_ptr<PricingEngine>(
+            break;
+          case 1:
+            return ext::shared_ptr<PricingEngine>(
                             new YoYInflationUnitDisplacedBlackCapFloorEngine(iir, vol, nominalTS));
-                    break;
-                case 2:
-                    return ext::shared_ptr<PricingEngine>(
+            break;
+          case 2:
+            return ext::shared_ptr<PricingEngine>(
                             new YoYInflationBachelierCapFloorEngine(iir, vol, nominalTS));
-                    break;
-                default:
-                    BOOST_FAIL("unknown engine request: which = "<<which
-                               <<"should be 0=Black,1=DD,2=Bachelier");
-                    break;
-            }
-            // make compiler happy
-            QL_FAIL("never get here - no engine resolution");
+            break;
+          default:
+            BOOST_FAIL("unknown engine request: which = "<<which
+                       <<"should be 0=Black,1=DD,2=Bachelier");
+            break;
         }
+        // make compiler happy
+        QL_FAIL("never get here - no engine resolution");
+    }
 
 
-        ext::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
-                                                              const Leg& leg,
-                                                              Rate strike,
-                                                              Volatility volatility,
-                                                              Size which) const {
-            ext::shared_ptr<YoYInflationCapFloor> result;
-            switch (type) {
-                case YoYInflationCapFloor::Cap:
-                    result = ext::shared_ptr<YoYInflationCapFloor>(
+    ext::shared_ptr<YoYInflationCapFloor> makeYoYCapFloor(YoYInflationCapFloor::Type type,
+                                                          const Leg& leg,
+                                                          Rate strike,
+                                                          Volatility volatility,
+                                                          Size which) const {
+        ext::shared_ptr<YoYInflationCapFloor> result;
+        switch (type) {
+          case YoYInflationCapFloor::Cap:
+            result = ext::shared_ptr<YoYInflationCapFloor>(
                                 new YoYInflationCap(leg, std::vector<Rate>(1, strike)));
-                    break;
-                case YoYInflationCapFloor::Floor:
-                    result = ext::shared_ptr<YoYInflationCapFloor>(
+            break;
+          case YoYInflationCapFloor::Floor:
+            result = ext::shared_ptr<YoYInflationCapFloor>(
                                 new YoYInflationFloor(leg, std::vector<Rate>(1, strike)));
-                    break;
-                default:
-                    QL_FAIL("unknown YoYInflation cap/floor type");
-            }
-            result->setPricingEngine(makeEngine(volatility, which));
-            return result;
+            break;
+          default:
+            QL_FAIL("unknown YoYInflation cap/floor type");
         }
-    };
+        result->setPricingEngine(makeEngine(volatility, which));
+        return result;
+    }
+};
 
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InflationCapFlooredCouponTest)
 
 BOOST_AUTO_TEST_CASE(testDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
-
-    using namespace inflation_capfloored_coupon_test;
 
     CommonVars vars;
 
@@ -689,8 +685,6 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
 
     BOOST_TEST_MESSAGE("Testing inflation capped/floored coupon against"
                        " inflation capfloor instrument...");
-
-    using namespace inflation_capfloored_coupon_test;
 
     CommonVars vars;
 

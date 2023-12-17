@@ -47,9 +47,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(RiskNeutralDensityCalculatorExperimentalTest)
+BOOST_AUTO_TEST_SUITE(RiskNeutralDensityCalculatorTests)
 
 BOOST_AUTO_TEST_CASE(testDensityAgainstOptionPrices) {
     BOOST_TEST_MESSAGE("Testing density against option prices...");
@@ -207,82 +207,80 @@ BOOST_AUTO_TEST_CASE(testBSMagainstHestonRND) {
     }
 }
 
-namespace {
-    // see Svetlana Borovkova, Ferry J. Permana
-    // Implied volatility in oil markets
-    // http://www.researchgate.net/publication/46493859_Implied_volatility_in_oil_markets
-    class DumasParametricVolSurface : public BlackVolatilityTermStructure {
-      public:
-        DumasParametricVolSurface(Real b1,
-                                  Real b2,
-                                  Real b3,
-                                  Real b4,
-                                  Real b5,
-                                  ext::shared_ptr<Quote> spot,
-                                  const ext::shared_ptr<YieldTermStructure>& rTS,
-                                  ext::shared_ptr<YieldTermStructure> qTS)
-        : BlackVolatilityTermStructure(0, NullCalendar(), Following, rTS->dayCounter()), b1_(b1),
-          b2_(b2), b3_(b3), b4_(b4), b5_(b5), spot_(std::move(spot)), rTS_(rTS),
-          qTS_(std::move(qTS)) {}
+// see Svetlana Borovkova, Ferry J. Permana
+// Implied volatility in oil markets
+// http://www.researchgate.net/publication/46493859_Implied_volatility_in_oil_markets
+class DumasParametricVolSurface : public BlackVolatilityTermStructure {
+  public:
+    DumasParametricVolSurface(Real b1,
+                              Real b2,
+                              Real b3,
+                              Real b4,
+                              Real b5,
+                              ext::shared_ptr<Quote> spot,
+                              const ext::shared_ptr<YieldTermStructure>& rTS,
+                              ext::shared_ptr<YieldTermStructure> qTS)
+    : BlackVolatilityTermStructure(0, NullCalendar(), Following, rTS->dayCounter()), b1_(b1),
+      b2_(b2), b3_(b3), b4_(b4), b5_(b5), spot_(std::move(spot)), rTS_(rTS),
+      qTS_(std::move(qTS)) {}
 
-        Date maxDate() const override { return Date::maxDate(); }
-        Rate minStrike() const override { return 0.0; }
-        Rate maxStrike() const override { return QL_MAX_REAL; }
+    Date maxDate() const override { return Date::maxDate(); }
+    Rate minStrike() const override { return 0.0; }
+    Rate maxStrike() const override { return QL_MAX_REAL; }
 
-      protected:
-        Volatility blackVolImpl(Time t, Real strike) const override {
-            QL_REQUIRE(t >= 0.0, "t must be >= 0");
+  protected:
+    Volatility blackVolImpl(Time t, Real strike) const override {
+        QL_REQUIRE(t >= 0.0, "t must be >= 0");
 
-            if (t < QL_EPSILON)
-                return b1_;
+        if (t < QL_EPSILON)
+            return b1_;
 
-            const Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
-            const Real mn = std::log(fwd/strike)/std::sqrt(t);
+        const Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
+        const Real mn = std::log(fwd/strike)/std::sqrt(t);
 
-            return b1_ + b2_*mn + b3_*mn*mn + b4_*t + b5_*mn*t;
-        }
-
-      private:
-        const Real b1_, b2_, b3_, b4_, b5_;
-        const ext::shared_ptr<Quote> spot_;
-        const ext::shared_ptr<YieldTermStructure> rTS_;
-        const ext::shared_ptr<YieldTermStructure> qTS_;
-    };
-
-    class ProbWeightedPayoff {
-      public:
-        ProbWeightedPayoff(Time t,
-                           ext::shared_ptr<Payoff> payoff,
-                           ext::shared_ptr<RiskNeutralDensityCalculator> calc)
-        : t_(t), payoff_(std::move(payoff)), calc_(std::move(calc)) {}
-
-        Real operator()(Real x) const {
-            return calc_->pdf(x, t_) * (*payoff_)(std::exp(x));
-        }
-
-      private:
-        const Real t_;
-        const ext::shared_ptr<Payoff> payoff_;
-        const ext::shared_ptr<RiskNeutralDensityCalculator> calc_;
-    };
-
-    std::vector<Time> adaptiveTimeGrid(
-        Size maxStepsPerYear, Size minStepsPerYear, Real decay, Time endTime) {
-        const Time maxDt = 1.0/maxStepsPerYear;
-        const Time minDt = 1.0/minStepsPerYear;
-
-        Time t=0.0;
-        std::vector<Time> times(1, t);
-        while (t < endTime) {
-            const Time dt = maxDt*std::exp(-decay*t)
-                          + minDt*(1.0-std::exp(-decay*t));
-            t+=dt;
-            times.push_back(std::min(endTime, t));
-        }
-
-        return times;
+        return b1_ + b2_*mn + b3_*mn*mn + b4_*t + b5_*mn*t;
     }
+
+  private:
+    const Real b1_, b2_, b3_, b4_, b5_;
+    const ext::shared_ptr<Quote> spot_;
+    const ext::shared_ptr<YieldTermStructure> rTS_;
+    const ext::shared_ptr<YieldTermStructure> qTS_;
+};
+
+class ProbWeightedPayoff {
+  public:
+    ProbWeightedPayoff(Time t,
+                       ext::shared_ptr<Payoff> payoff,
+                       ext::shared_ptr<RiskNeutralDensityCalculator> calc)
+    : t_(t), payoff_(std::move(payoff)), calc_(std::move(calc)) {}
+
+    Real operator()(Real x) const {
+        return calc_->pdf(x, t_) * (*payoff_)(std::exp(x));
+    }
+
+  private:
+    const Real t_;
+    const ext::shared_ptr<Payoff> payoff_;
+    const ext::shared_ptr<RiskNeutralDensityCalculator> calc_;
+};
+
+std::vector<Time> adaptiveTimeGrid(Size maxStepsPerYear, Size minStepsPerYear, Real decay, Time endTime) {
+    const Time maxDt = 1.0/maxStepsPerYear;
+    const Time minDt = 1.0/minStepsPerYear;
+
+    Time t=0.0;
+    std::vector<Time> times(1, t);
+    while (t < endTime) {
+        const Time dt = maxDt*std::exp(-decay*t)
+            + minDt*(1.0-std::exp(-decay*t));
+        t+=dt;
+        times.push_back(std::min(endTime, t));
+    }
+
+    return times;
 }
+
 
 BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     BOOST_TEST_MESSAGE("Testing Fokker-Planck forward equation "

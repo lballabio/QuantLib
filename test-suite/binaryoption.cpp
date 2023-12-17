@@ -36,6 +36,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BinaryOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier, s, q,\
                         r, today, v, expected, calculated, error, tolerance) \
@@ -55,48 +59,40 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance << "\n");
 
-namespace binary_option_test {
-
-    std::string barrierTypeToString(Barrier::Type type) {
-        switch(type){
-          case Barrier::DownIn:
-            return std::string("Down-and-in");
-          case Barrier::UpIn:
-            return std::string("Up-and-in");
-          case Barrier::DownOut:
-            return std::string("Down-and-out");
-          case Barrier::UpOut:
-            return std::string("Up-and-out");
-          default:
-            QL_FAIL("unknown exercise type");
-        }
+std::string barrierTypeToString(Barrier::Type type) {
+    switch(type){
+      case Barrier::DownIn:
+        return std::string("Down-and-in");
+      case Barrier::UpIn:
+        return std::string("Up-and-in");
+      case Barrier::DownOut:
+        return std::string("Down-and-out");
+      case Barrier::UpOut:
+        return std::string("Up-and-out");
+      default:
+        QL_FAIL("unknown exercise type");
     }
-
-    struct BinaryOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real cash;     // cash payoff for cash-or-nothing
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+struct BinaryOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real cash;     // cash payoff for cash-or-nothing
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-BOOST_AUTO_TEST_SUITE(BinaryOptionTest)
 
 BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing cash-or-nothing barrier options against Haug's values...");
-
-    using namespace binary_option_test;
 
     BinaryOptionData values[] = {
         /* The data below are from
@@ -194,8 +190,6 @@ BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
 BOOST_AUTO_TEST_CASE(testAssetOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing asset-or-nothing barrier options against Haug's values...");
-
-    using namespace binary_option_test;
 
     BinaryOptionData values[] = {
         /* The data below are from

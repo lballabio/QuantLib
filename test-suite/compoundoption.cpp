@@ -34,6 +34,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CompoundOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoffM, payoffD, exerciseM,    \
                        exerciseD, s, q, r, today,                 \
@@ -55,38 +59,29 @@ using namespace boost::unit_test_framework;
                "\nerror:                " << error << \
                "\ntolerance:            " << tolerance);
 
-namespace compound_option_test {
+struct CompoundOptionData {
+    Option::Type typeMother;
+    Option::Type typeDaughter;
+    Real strikeMother;
+    Real strikeDaughter;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time tMother;  // time to maturity
+    Time tDaughter;// time to maturity
+    Volatility v;  // volatility
+    Real npv;   // expected result
+    Real tol;      // tolerance
+    Real delta;
+    Real gamma;
+    Real vega;
+    Real theta;
+};
 
-    struct CompoundOptionData {
-        Option::Type typeMother;
-        Option::Type typeDaughter;
-        Real strikeMother;
-        Real strikeDaughter;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time tMother;  // time to maturity
-        Time tDaughter;// time to maturity
-        Volatility v;  // volatility
-        Real npv;   // expected result
-        Real tol;      // tolerance
-        Real delta;
-        Real gamma;
-        Real vega;
-        Real theta;
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CompoundOptionTest)
 
 BOOST_AUTO_TEST_CASE(testPutCallParity){
 
     BOOST_TEST_MESSAGE("Testing compound-option put-call parity...");
-
-    using namespace compound_option_test;
 
     // Test Put Call Parity for compound options.
     // Formula taken from: "Foreign Exchange Risk", Wystup, Risk 2002
@@ -201,8 +196,6 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
 BOOST_AUTO_TEST_CASE(testValues){
 
     BOOST_TEST_MESSAGE("Testing compound-option values and greeks...");
-
-    using namespace compound_option_test;
 
     CompoundOptionData values[] = {
         // type Mother, typeDaughter, strike Mother, strike Daughter,  spot,    q,    r,    t Mother, t Daughter,  vol,   value,    tol, delta, gamma, vega, theta

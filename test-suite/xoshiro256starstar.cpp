@@ -22,6 +22,12 @@
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <numeric>
 
+using namespace QuantLib;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(Xoshiro256StarStarTests)
+
 // we do not want to change the original xoshiro256starstar.c implementation. Therefore, we suppress
 // any warnings from this file and also prevent linting and formatting.
 // clang-format off
@@ -151,13 +157,6 @@ extern "C" {
 #endif
 // NOLINTEND
 // clang-format on
-
-using namespace QuantLib;
-using QuantLib::Xoshiro256StarStarUniformRng;
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(Xoshiro256StarStarTest)
 
 BOOST_AUTO_TEST_CASE(testMeanAndStdDevOfNextReal) {
     BOOST_TEST_MESSAGE(

@@ -29,24 +29,20 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct InterestRateData {
-        Rate r;
-        Compounding comp;
-        Frequency freq;
-        Time t;
-        Compounding comp2;
-        Frequency freq2;
-        Rate expected;
-        Size precision;
-    };
+BOOST_AUTO_TEST_SUITE(InterestRateTests)
 
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(InterestRateTest)
+struct InterestRateData {
+    Rate r;
+    Compounding comp;
+    Frequency freq;
+    Time t;
+    Compounding comp2;
+    Frequency freq2;
+    Rate expected;
+    Size precision;
+};
 
 BOOST_AUTO_TEST_CASE(testConversions) {
     BOOST_TEST_MESSAGE("Testing interest-rate conversions...");

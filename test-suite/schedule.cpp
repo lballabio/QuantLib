@@ -37,28 +37,25 @@ using std::map;
 using std::pair;
 using std::vector;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    void check_dates(const Schedule& s,
-                     const std::vector<Date>& expected) {
-        if (s.size() != expected.size()) {
-            BOOST_FAIL("expected " << expected.size() << " dates, "
-                       << "found " << s.size());
-        }
-        for (Size i=0; i<expected.size(); ++i) {
-            if (s[i] != expected[i]) {
-                BOOST_ERROR("expected " << expected[i]
-                            << " at index " << i << ", "
-                            "found " << s[i]);
-            }
+BOOST_AUTO_TEST_SUITE(ScheduleTests)
+
+void check_dates(const Schedule& s,
+                 const std::vector<Date>& expected) {
+    if (s.size() != expected.size()) {
+        BOOST_FAIL("expected " << expected.size() << " dates, "
+                   << "found " << s.size());
+    }
+    for (Size i=0; i<expected.size(); ++i) {
+        if (s[i] != expected[i]) {
+            BOOST_ERROR("expected " << expected[i]
+                        << " at index " << i << ", "
+                        "found " << s[i]);
         }
     }
-
 }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(ScheduleTest)
 
 BOOST_AUTO_TEST_CASE(testDailySchedule) {
     BOOST_TEST_MESSAGE("Testing schedule with daily frequency...");

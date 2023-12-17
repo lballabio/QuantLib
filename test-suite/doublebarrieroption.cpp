@@ -47,6 +47,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrierlo, barrierhi, \
                        payoff, exercise, s, q, r, today, v, expected, \
@@ -105,54 +109,45 @@ using namespace boost::unit_test_framework;
                 << "Analytical: " << analytical << "\n" \
                 << "Monte Carlo: " << monteCarlo << "\n");
 
-namespace double_barrier_option_test {
+struct NewBarrierOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrierlo;
+    Real barrierhi;
+    Option::Type type;
+    Exercise::Type exType;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // result
+    Real tol;      // tolerance
+};
 
-    struct NewBarrierOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrierlo;
-        Real barrierhi;
-        Option::Type type;
-        Exercise::Type exType;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // result
-        Real tol;      // tolerance
-    };
+struct DoubleBarrierFxOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrier1;
+    Real barrier2;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;                 // spot
+    Rate q;                 // dividend
+    Rate r;                 // risk-free rate
+    Time t;                 // time to maturity
+    Volatility vol25Put;    // 25 delta put vol
+    Volatility volAtm;      // atm vol
+    Volatility vol25Call;   // 25 delta call vol
+    Volatility v;           // volatility at strike
+    Real result;            // result
+    Real tol;               // tolerance
+};
 
-    struct DoubleBarrierFxOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrier1;
-        Real barrier2;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;                 // spot
-        Rate q;                 // dividend
-        Rate r;                 // risk-free rate
-        Time t;                 // time to maturity
-        Volatility vol25Put;    // 25 delta put vol
-        Volatility volAtm;      // atm vol
-        Volatility vol25Call;   // 25 delta call vol
-        Volatility v;           // volatility at strike
-        Real result;            // result
-        Real tol;               // tolerance
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTest)
 
 BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing double barrier european options against Haug's values...");
-
-    using namespace double_barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     NewBarrierOptionData values[] = {
@@ -387,15 +382,9 @@ BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
-
-    using namespace double_barrier_option_test;
 
     DoubleBarrierFxOptionData values[] = {
 
@@ -535,8 +524,6 @@ BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
 
 BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing MC double-barrier options against analytical values...");
-
-    using namespace double_barrier_option_test;
 
     Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated
 

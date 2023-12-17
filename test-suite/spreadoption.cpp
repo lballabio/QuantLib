@@ -28,6 +28,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SpreadOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE( \
     greekName,  \
@@ -59,10 +63,6 @@ struct Case {
     Real value;
     Real theta;
 };
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SpreadOptionExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testKirkEngine) {
     BOOST_TEST_MESSAGE("Testing Kirk approximation for spread options...");
