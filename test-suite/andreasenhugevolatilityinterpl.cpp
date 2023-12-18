@@ -150,8 +150,7 @@ CalibrationData AndreasenHugeExampleData() {
     return { spot, rTS, qTS, calibrationSet };
 }
 
-void testAndreasenHugeVolatilityInterpolation(
-                                              const CalibrationData& data, const CalibrationResults& expected) {
+void testAndreasenHugeVolatilityInterpolation(const CalibrationData& data, const CalibrationResults& expected) {
 
     const Handle<YieldTermStructure> rTS = data.rTS;
     const Handle<YieldTermStructure> qTS = data.qTS;
@@ -388,7 +387,7 @@ std::pair<CalibrationData, std::vector<Real> > sabrData() {
 }
 
 
-BOOST_AUTO_TEST_CASE(testAndreasenHugePut, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testAndreasenHugePut) {
 
     BOOST_TEST_MESSAGE(
         "Testing Andreasen-Huge example with Put calibration...");
