@@ -52,6 +52,7 @@ namespace QuantLib {
         <li>All Saints' Day, November 1st</li>
         <li>Immaculate Conception, December 8th</li>
         <li>Christmas Day, December 25th</li>
+        <li>New Year's Eve, December 31st; ([Issue 1839] Markets are closed on NYE in Chile) https://www.cmfchile.cl/portal/prensa/615/w3-article-49984.html</li>
         </ul>
 
         \ingroup calendars
