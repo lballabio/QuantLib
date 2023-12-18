@@ -211,27 +211,14 @@ set(QL_BENCHMARK_SOURCES
                                         swaptionvolstructuresutilities.hpp
 )
 
-if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
-    add_library(ql_unit_test_main STATIC main.cpp)
-    target_include_directories(ql_unit_test_main PRIVATE
-        ${PROJECT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR})
-    target_include_directories(ql_unit_test_main SYSTEM PRIVATE
-        ${Boost_INCLUDE_DIRS})
-    if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)
-    endif()
-endif()
-
 if (QL_BUILD_TEST_SUITE)
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
     if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
+        target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK)
     endif()
     target_link_libraries(ql_test_suite PRIVATE
         ql_library
-        ql_unit_test_main
         ${QL_THREAD_LIBRARIES})
     if(MSVC AND CMAKE_UNITY_BUILD)
         # for Unity builds, we need to add /bigobj
@@ -248,11 +235,10 @@ IF (QL_BUILD_BENCHMARK)
     set_target_properties(ql_benchmark PROPERTIES OUTPUT_NAME "quantlib-benchmark")
     set_source_files_properties(quantlibbenchmark.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION true)
     if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
+        target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK)
     endif()
     target_link_libraries(ql_benchmark PRIVATE
         ql_library
-        ql_unit_test_main
         ${QL_THREAD_LIBRARIES})
     if(MSVC AND CMAKE_UNITY_BUILD)
         # for Unity builds, we need to add /bigobj
