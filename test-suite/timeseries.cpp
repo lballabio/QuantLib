@@ -79,90 +79,134 @@ BOOST_AUTO_TEST_CASE(testIntervalPrice) {
                                                                low);
 }
 
-BOOST_AUTO_TEST_CASE(testIterators) {
-    BOOST_TEST_MESSAGE("Testing time series iterators...");
+BOOST_AUTO_TEST_CASE(testIteratingDefaultContainer) {
+    BOOST_TEST_MESSAGE("Testing iterating of time series w/ default container which sorts by date...");
 
-    std::vector<Date> dates = {Date(25, March, 2005),
-                               Date(29, March, 2005),
-                               Date(15, March, 2005)};
+    const std::vector<Date> dates = {Date(25, March, 2005),
+                                     Date(29, March, 2005),
+                                     Date(15, March, 2005)};
 
-    std::vector<Real> prices = {25, 23, 20};
+    const std::vector<Real> prices = {25, 23, 20};
 
-    TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
+    const TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
 
-    // projection iterators
+    // accessing dates
+    {
+        std::vector<Date> tsDates;
+        std::transform(ts.begin(), ts.end(), std::back_inserter(tsDates),
+            [](const std::pair<const Date, Real>& x) -> Date { return x.first; });
+        const std::vector<Date> expected{dates[2], dates[0], dates[1]};
+        BOOST_TEST(tsDates == expected);
+    }
 
+    // accessing Values
+    {
+        std::vector<Real> tsValues;
+        std::transform(ts.begin(), ts.end(), std::back_inserter(tsValues),
+            [](const std::pair<const Date, Real>& x) -> Real { return x.second; });
+        const std::vector<Real> expected{prices[2], prices[0], prices[1]};
+        BOOST_TEST(tsValues == expected);
+    }
+
+    // == deprecated ==
     QL_DEPRECATED_DISABLE_WARNING
 
-    std::copy(ts.cbegin_time(), ts.cend_time(), dates.begin());
-    if (dates[0] != Date(15, March, 2005)) {
-        BOOST_ERROR("date does not match");
+    // accessing dates
+    {
+        std::vector<Date> tsDates;
+        std::copy(ts.cbegin_time(), ts.cend_time(), std::back_inserter(tsDates));
+        const std::vector<Date> expected{dates[2], dates[0], dates[1]};
+        BOOST_TEST(tsDates == expected);
     }
 
-    std::copy(ts.cbegin_values(), ts.cend_values(), prices.begin());
-    if (prices[0] != 20) {
-        BOOST_ERROR("value does not match");
+    // accessing values
+    {
+        std::vector<Real> tsValues;
+        std::copy(ts.cbegin_values(), ts.cend_values(), std::back_inserter(tsValues));
+        const std::vector<Real> expected{prices[2], prices[0], prices[1]};
+        BOOST_TEST(tsValues == expected);
     }
 
-    dates = ts.dates(); 
-    if (dates[0] != Date(15, March, 2005)) {
-        BOOST_ERROR("date does not match");
-    }
+    QL_DEPRECATED_ENABLE_WARNING
+}
 
-    prices = ts.values();
-    if (prices[0] != 20) {
-        BOOST_ERROR("value does not match");
-    }
+BOOST_AUTO_TEST_CASE(testCustomContainer) {
+    BOOST_TEST_MESSAGE("Testing usage of a custom container for time series data...");
 
     // unordered container
     typedef TimeSeries<int, boost::unordered_map<Date, int> >
                                                           TimeSeriesUnordered;
-    TimeSeriesUnordered ts1;
+    TimeSeriesUnordered ts;
     Date d0(25, March, 2005), d1(25, April, 2005), d = d0;
     UnitedStates calendar(UnitedStates::NYSE);
     for (int i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
-        ts1[d] = i;
+        ts[d] = i;
     }
 
     d = d0;
     for (int i = 0; d < d1; ++i, d = calendar.advance(d, 1, Days)) {
-        if (ts1[d] != int(i)) {
-            BOOST_ERROR("value does not match");
-        }
+        BOOST_TEST(ts[d] == i);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInspectors) {
+    BOOST_TEST_MESSAGE("Testing inspectors of time series...");
+
+    const std::vector<Date> dates = {Date(25, March, 2005),
+                                     Date(29, March, 2005),
+                                     Date(15, March, 2005)};
+
+    const std::vector<Real> prices = {25, 23, 20};
+
+    const TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
+
+    BOOST_TEST(ts.firstDate() == Date(15, March, 2005));
+    BOOST_TEST(ts.lastDate() == Date(29, March, 2005));
+    BOOST_TEST(ts.size() == 3);
+    BOOST_TEST(!ts.empty());
+}
+
+BOOST_AUTO_TEST_CASE(testUtilities) {
+    BOOST_TEST_MESSAGE("Testing utilities of time series...");
+
+    const std::vector<Date> dates = {Date(25, March, 2005),
+                                     Date(29, March, 2005),
+                                     Date(15, March, 2005)};
+
+    const std::vector<Real> prices = {25, 23, 20};
+
+    // find: needs mutable TimeSeries object as it might insert
+    {
+        TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
+
+        BOOST_TEST(ts.find(Date(15, March, 2005))->first == Date(15, March, 2005));
+        BOOST_TEST(ts.find(Date(15, March, 2005))->second == 20);
+        BOOST_TEST(3 == ts.size());
+
+        BOOST_TEST(ts.find(Date(25, March, 2005))->first == Date(25, March, 2005));
+        BOOST_TEST(ts.find(Date(25, March, 2005))->second == 25);
+        BOOST_TEST(3 == ts.size());
+
+        BOOST_TEST(ts.find(Date(29, March, 2005))->first == Date(29, March, 2005));
+        BOOST_TEST(ts.find(Date(29, March, 2005))->second == 23);
+        BOOST_TEST(3 == ts.size());
+
+        BOOST_TEST(ts.find(Date(1, March, 2005))->first == Date(1, March, 2005));
+        BOOST_TEST(4 == ts.size());
     }
 
-    // reverse iterators
+    const TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
 
-    std::vector<std::pair<Date,Real> > data(prices.size());
-    std::copy(ts.crbegin(), ts.crend(), data.begin());
-    if (data[2].second != 20) {
-        BOOST_ERROR("value does not match");
-    }
-    if (data[2].first != Date(15, March, 2005)) {
-        BOOST_ERROR("date does not match");
+    // dates()
+    {
+        const std::vector<Date> expected{dates[2], dates[0], dates[1]};
+        BOOST_TEST(ts.dates() == expected);
     }
 
-    std::copy(ts.crbegin_time(), ts.crend_time(), dates.begin());
-    if (dates[0] != Date(29, March, 2005)) {
-        BOOST_ERROR("date does not match");
-    }
-
-    std::copy(ts.crbegin_values(), ts.crend_values(), prices.begin());
-    if (prices[0] != 23) {
-        BOOST_ERROR("value does not match");
-    }
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-    // The following should not compile:
-    // std::transform(ts1.crbegin(), ts1.crend(), prices.begin(),
-    //                TimeSeriesUnordered::get_value);
-    // std::copy(ts1.crbegin_values(), ts1.crend_values(), prices.begin());
-    // ts1.lastDate();
-
-    // last date 
-    if (ts.lastDate() != Date(29, March, 2005)) {
-        BOOST_ERROR("lastDate does not match");
+    // values()
+    {
+        const std::vector<Real> expected{prices[2], prices[0], prices[1]};
+        BOOST_TEST(ts.values() == expected);
     }
 }
 
