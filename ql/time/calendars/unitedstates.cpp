@@ -6,6 +6,7 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2017 Peter Caspers
  Copyright (C) 2017 Oleg Kulkov
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +36,7 @@ namespace QuantLib {
                 // third Monday in February
                 return (d >= 15 && d <= 21) && w == Monday && m == February;
             } else {
-                // February 22nd, possily adjusted
+                // February 22nd, possibly adjusted
                 return (d == 22 || (d == 23 && w == Monday)
                         || (d == 21 && w == Friday)) && m == February;
             }
