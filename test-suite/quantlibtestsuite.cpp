@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#define BOOST_TEST_MODULE QuantLibTests
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
@@ -33,21 +34,3 @@
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
-
-#include "marketmodel.hpp"
-#include "quantlibglobalfixture.hpp"
-
-using namespace boost::unit_test_framework;
-
-test_suite* init_unit_test_suite(int, char* []) {
-
-    int argc = boost::unit_test::framework::master_test_suite().argc;
-    char **argv = boost::unit_test::framework::master_test_suite().argv;
-    SpeedLevel speed = speed_level(argc, argv);
-
-    auto* test = BOOST_TEST_SUITE("QuantLib test suite");
-
-    test->add(MarketModelTest::suite(speed));
-
-    return test;
-}

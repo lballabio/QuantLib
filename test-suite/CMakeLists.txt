@@ -175,7 +175,6 @@ set(QL_TEST_SOURCES
 )
 
 set(QL_TEST_HEADERS
-    marketmodel.hpp
     paralleltestrunner.hpp
     preconditions.hpp
     quantlibglobalfixture.hpp
@@ -227,6 +226,7 @@ endif()
 if (QL_BUILD_TEST_SUITE)
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
+    set_source_files_properties(quantlibbenchmark.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION true)
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
