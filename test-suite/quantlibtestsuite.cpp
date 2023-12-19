@@ -18,6 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#define BOOST_TEST_MODULE QuantLibTests
+
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #include "paralleltestrunner.hpp"
 #else
@@ -31,13 +33,3 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include "quantlibglobalfixture.hpp"
-
-using namespace boost::unit_test_framework;
-
-test_suite* init_unit_test_suite(int, char* []) {
-
-    auto* test = BOOST_TEST_SUITE("QuantLib test suite");
-
-    return test;
-}

@@ -808,7 +808,9 @@
     <ClCompile Include="xoshiro256starstar.cpp" />
     <ClCompile Include="zabr.cpp" />
     <ClCompile Include="zerocouponswap.cpp" />
-    <ClCompile Include="quantlibtestsuite.cpp" />
+    <ClCompile Include="quantlibtestsuite.cpp">
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="paralleltestrunner.hpp" />
