@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE(testIndex)
 
     BOOST_CHECK_THROW(tg.index(-2.0), Error);
 
-    BOOST_ASSERT(4u == tg.size());
+    BOOST_ASSERT(4U == tg.size());
 
     BOOST_CHECK_THROW(tg.index(-0.1), Error);
     BOOST_TEST(0 == tg.index(0.0));
