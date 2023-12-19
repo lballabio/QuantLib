@@ -36,13 +36,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-
 #include <ql/models/marketmodels/products/multistep/multistepswaption.hpp>
-
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -50,121 +44,123 @@ using namespace boost::unit_test_framework;
 using std::fabs;
 using std::sqrt;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class MarketModelData{
-    public:
-        MarketModelData();
-        const std::vector<Time>& rateTimes(){return rateTimes_;}
-        const std::vector<Rate>& forwards(){return forwards_;}
-        const std::vector<Volatility>& volatilities(){return volatilities_;}
-        const std::vector<Rate>& displacements(){return displacements_;}
-        const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
-        Size nbRates() const { return nbRates_; }
+BOOST_AUTO_TEST_SUITE(SwapForwardMappingsTests)
 
-      private:
-        std::vector<Time> rateTimes_, accruals_;
-        std::vector<Rate> forwards_;
-        std::vector<Spread> displacements_;
-        std::vector<Volatility> volatilities_;
-        std::vector<DiscountFactor> discountFactors_;
-        Size nbRates_;
-    };
+class MarketModelData{
+  public:
+    MarketModelData();
+    const std::vector<Time>& rateTimes(){return rateTimes_;}
+    const std::vector<Rate>& forwards(){return forwards_;}
+    const std::vector<Volatility>& volatilities(){return volatilities_;}
+    const std::vector<Rate>& displacements(){return displacements_;}
+    const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
+    Size nbRates() const { return nbRates_; }
 
-    MarketModelData::MarketModelData(){
-        // Times
-        Calendar calendar = NullCalendar();
-        Date todaysDate = Settings::instance().evaluationDate();
-        Date endDate = todaysDate + 9*Years; // change back
-        Schedule dates(todaysDate, endDate, Period(Semiannual),
-            calendar, Following, Following, DateGeneration::Backward, false);
-        nbRates_ = dates.size()-2;
-        rateTimes_ = std::vector<Time>(nbRates_+1);
-        //paymentTimes_ = std::vector<Time>(rateTimes_.size()-1);
-        accruals_ = std::vector<Time>(nbRates_);
-        DayCounter dayCounter = SimpleDayCounter();
-        for (Size i=1; i<nbRates_+2; ++i)
-            rateTimes_[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
+  private:
+    std::vector<Time> rateTimes_, accruals_;
+    std::vector<Rate> forwards_;
+    std::vector<Spread> displacements_;
+    std::vector<Volatility> volatilities_;
+    std::vector<DiscountFactor> discountFactors_;
+    Size nbRates_;
+};
 
-        displacements_ = std::vector<Rate>(nbRates_, .0);
+MarketModelData::MarketModelData(){
+    // Times
+    Calendar calendar = NullCalendar();
+    Date todaysDate = Settings::instance().evaluationDate();
+    Date endDate = todaysDate + 9*Years; // change back
+    Schedule dates(todaysDate, endDate, Period(Semiannual),
+                   calendar, Following, Following, DateGeneration::Backward, false);
+    nbRates_ = dates.size()-2;
+    rateTimes_ = std::vector<Time>(nbRates_+1);
+    //paymentTimes_ = std::vector<Time>(rateTimes_.size()-1);
+    accruals_ = std::vector<Time>(nbRates_);
+    DayCounter dayCounter = SimpleDayCounter();
+    for (Size i=1; i<nbRates_+2; ++i)
+        rateTimes_[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
 
-        forwards_ = std::vector<Rate>(nbRates_);
-        discountFactors_ = std::vector<Rate>(nbRates_+1);
-        discountFactors_[0] = 1.0; // .95; fdv1-> WHY ???????
-        for (Size i=0; i<nbRates_; ++i){
-            forwards_[i] = 0.03 + 0.0010*i;
-            accruals_[i] = rateTimes_[i+1] - rateTimes_[i];
-            discountFactors_[i+1] = discountFactors_[i]
+    displacements_ = std::vector<Rate>(nbRates_, .0);
+
+    forwards_ = std::vector<Rate>(nbRates_);
+    discountFactors_ = std::vector<Rate>(nbRates_+1);
+    discountFactors_[0] = 1.0; // .95; fdv1-> WHY ???????
+    for (Size i=0; i<nbRates_; ++i){
+        forwards_[i] = 0.03 + 0.0010*i;
+        accruals_[i] = rateTimes_[i+1] - rateTimes_[i];
+        discountFactors_[i+1] = discountFactors_[i]
             /(1+forwards_[i]*accruals_[i]);
-        }
-        Volatility mktVols[] = {0.15541283,
-            0.18719678,
-            0.20890740,
-            0.22318179,
-            0.23212717,
-            0.23731450,
-            0.23988649,
-            0.24066384,
-            0.24023111,
-            0.23900189,
-            0.23726699,
-            0.23522952,
-            0.23303022,
-            0.23076564,
-            0.22850101,
-            0.22627951,
-            0.22412881,
-            0.22206569,
-            0.22009939
-            /*
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2,
-            0.2
-            */
-
-        };
-        volatilities_ = std::vector<Volatility>(nbRates_);
-        for (Size i = 0; i < volatilities_.size(); ++i)
-            volatilities_[i] =   mktVols[i];//.0;
     }
+    Volatility mktVols[] = {0.15541283,
+                            0.18719678,
+                            0.20890740,
+                            0.22318179,
+                            0.23212717,
+                            0.23731450,
+                            0.23988649,
+                            0.24066384,
+                            0.24023111,
+                            0.23900189,
+                            0.23726699,
+                            0.23522952,
+                            0.23303022,
+                            0.23076564,
+                            0.22850101,
+                            0.22627951,
+                            0.22412881,
+                            0.22206569,
+                            0.22009939
+                            /*
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2,
+                              0.2
+                            */
 
-    ext::shared_ptr<SequenceStatisticsInc>
-    simulate(const std::vector<Real>& todaysDiscounts,
-             const ext::shared_ptr<MarketModelEvolver>& evolver,
-             const MarketModelMultiProduct& product) {
-        Size paths_;
+    };
+    volatilities_ = std::vector<Volatility>(nbRates_);
+    for (Size i = 0; i < volatilities_.size(); ++i)
+        volatilities_[i] =   mktVols[i];//.0;
+}
+
+ext::shared_ptr<SequenceStatisticsInc>
+simulate(const std::vector<Real>& todaysDiscounts,
+         const ext::shared_ptr<MarketModelEvolver>& evolver,
+         const MarketModelMultiProduct& product) {
+    Size paths_;
 #ifdef _DEBUG
-        paths_ = 127;// //
+    paths_ = 127;// //
 #else
-        paths_ = 32767; //262144-1; // //; // 2^15-1
+    paths_ = 32767; //262144-1; // //; // 2^15-1
 #endif
 
-        Size initialNumeraire = evolver->numeraires().front();
-        Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+    Size initialNumeraire = evolver->numeraires().front();
+    Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
-        AccountingEngine engine(evolver, product, initialNumeraireValue);
-        ext::shared_ptr<SequenceStatisticsInc> stats(new
+    AccountingEngine engine(evolver, product, initialNumeraireValue);
+    ext::shared_ptr<SequenceStatisticsInc> stats(new
             SequenceStatisticsInc(product.numberOfProducts()));
-        engine.multiplePathValues(*stats, paths_);
-        return stats;
-    }
+    engine.multiplePathValues(*stats, paths_);
+    return stats;
+}
 
 //    MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
 //        const std::vector<Time>& rateTimes, Real strike ){
@@ -179,11 +175,6 @@ namespace {
 //
 //    }
 
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SwapForwardMappingsTest)
 
 BOOST_AUTO_TEST_CASE(testForwardSwapJacobians)
 {

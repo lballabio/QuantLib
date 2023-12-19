@@ -33,6 +33,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VarianceGammaTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, sigma, \
     nu, theta, expected, calculated, \
@@ -54,28 +58,22 @@ using namespace boost::unit_test_framework;
     << "    error:            " << error << "\n" \
     << "    tolerance:        " << tolerance);
 
-namespace {
+struct VarianceGammaProcessData {
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Real sigma;
+    Real nu;
+    Real theta;
 
-    struct VarianceGammaProcessData {
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Real sigma;
-        Real nu;
-        Real theta;
+};
 
-    };
+struct VarianceGammaOptionData {
+    Option::Type type;
+    Real strike;
+    Time t;        // time to maturity
+};
 
-    struct VarianceGammaOptionData {
-        Option::Type type;
-        Real strike;
-        Time t;        // time to maturity
-    };
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(VarianceGammaExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testVarianceGamma) {
 

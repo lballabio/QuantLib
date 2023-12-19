@@ -51,6 +51,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BarrierOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
@@ -100,67 +104,63 @@ using namespace boost::unit_test_framework;
                << "    tolerance:        " << tolerance);
 
 
-namespace barrier_option_test {
-
-    std::string barrierTypeToString(Barrier::Type type) {
-        switch(type){
-          case Barrier::DownIn:
-            return std::string("Down-and-in");
-          case Barrier::UpIn:
-            return std::string("Up-and-in");
-          case Barrier::DownOut:
-            return std::string("Down-and-out");
-          case Barrier::UpOut:
-            return std::string("Up-and-out");
-          default:
-            QL_FAIL("unknown exercise type");
-        }
+std::string barrierTypeToString(Barrier::Type type) {
+    switch(type){
+      case Barrier::DownIn:
+        return std::string("Down-and-in");
+      case Barrier::UpIn:
+        return std::string("Up-and-in");
+      case Barrier::DownOut:
+        return std::string("Down-and-out");
+      case Barrier::UpOut:
+        return std::string("Up-and-out");
+      default:
+        QL_FAIL("unknown exercise type");
     }
-
-    struct BarrierOptionData {
-        Barrier::Type type;
-        Volatility volatility;
-        Real strike;
-        Real barrier;
-        Real callValue;
-        Real putValue;
-    };
-
-    struct NewBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Exercise::Type exType;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // result
-        Real tol;      // tolerance
-    };
-
-    struct BarrierFxOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;                 // spot
-        Rate q;                 // dividend
-        Rate r;                 // risk-free rate
-        Time t;                 // time to maturity
-        Volatility vol25Put;    // 25 delta put vol
-        Volatility volAtm;      // atm vol
-        Volatility vol25Call;   // 25 delta call vol
-        Volatility v;           // volatility at strike
-        Real result;            // result
-        Real tol;               // tolerance
-    };
-
 }
+
+struct BarrierOptionData {
+    Barrier::Type type;
+    Volatility volatility;
+    Real strike;
+    Real barrier;
+    Real callValue;
+    Real putValue;
+};
+
+struct NewBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Exercise::Type exType;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // result
+    Real tol;      // tolerance
+};
+
+struct BarrierFxOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;                 // spot
+    Rate q;                 // dividend
+    Rate r;                 // risk-free rate
+    Time t;                 // time to maturity
+    Volatility vol25Put;    // 25 delta put vol
+    Volatility volAtm;      // atm vol
+    Volatility vol25Call;   // 25 delta call vol
+    Volatility v;           // volatility at strike
+    Real result;            // result
+    Real tol;               // tolerance
+};
 
 #define QL_ASSERT_EXCEPTION_THROWN(statement)  \
     auto exception_thrown = false;             \
@@ -172,10 +172,6 @@ namespace barrier_option_test {
     if (!exception_thrown) {                   \
         BOOST_FAIL("exception expected");      \
     }                                          \
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BarrierOptionTest)
 
 BOOST_AUTO_TEST_CASE(testParity) {
 
@@ -254,8 +250,6 @@ BOOST_AUTO_TEST_CASE(testParity) {
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Haug's values...");
-
-    using namespace barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     Exercise::Type american = Exercise::American;
@@ -522,8 +516,6 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Babsiri's values...");
 
-    using namespace barrier_option_test;
-
     /*
         Data from
         "Simulating Path-Dependent Options: A New Approach"
@@ -622,8 +614,6 @@ BOOST_AUTO_TEST_CASE(testBabsiriValues) {
 BOOST_AUTO_TEST_CASE(testBeagleholeValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Beaglehole's values...");
-
-    using namespace barrier_option_test;
 
     /*
         Data from
@@ -1366,10 +1356,6 @@ BOOST_AUTO_TEST_CASE(testLowVolatility) {
     check(  95.0,  Option::Call,      99.0,   Barrier::DownIn,     4.0,   0.01,   0.04,        2.0);  // fwd = 97, call, ITM
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(BarrierOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testPerturbative) {
     BOOST_TEST_MESSAGE("Testing perturbative engine for barrier options...");
 
@@ -1465,8 +1451,6 @@ BOOST_AUTO_TEST_CASE(testPerturbative) {
 
 BOOST_AUTO_TEST_CASE(testVannaVolgaSimpleBarrierValues) {
     BOOST_TEST_MESSAGE("Testing barrier FX options against Vanna/Volga values...");
-
-    using namespace barrier_option_test;
 
     BarrierFxOptionData values[] = {
 

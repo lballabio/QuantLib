@@ -29,6 +29,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(MargrabeOptionTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, exercise, \
                        s1, s2, Q1, Q2, q1, q2, r, today, v1, v2, rho,   \
@@ -75,51 +79,44 @@ using namespace boost::unit_test_framework;
         << "    error:            " << error << "\n" \
         << "    tolerance:        " << tolerance);
 
-namespace {
+struct MargrabeOptionTwoData {
+    Real s1;
+    Real s2;
+    Integer Q1;
+    Integer Q2;
+    Rate q1;
+    Rate q2;
+    Rate r;
+    Time t; // years
+    Volatility v1;
+    Volatility v2;
+    Real rho;
+    Real result;
+    Real delta1;
+    Real delta2;
+    Real gamma1;
+    Real gamma2;
+    Real theta;
+    Real rho_greek;
+    Real tol;
+};
 
-    struct MargrabeOptionTwoData {
-        Real s1;
-        Real s2;
-        Integer Q1;
-        Integer Q2;
-        Rate q1;
-        Rate q2;
-        Rate r;
-        Time t; // years
-        Volatility v1;
-        Volatility v2;
-        Real rho;
-        Real result;
-        Real delta1;
-        Real delta2;
-        Real gamma1;
-        Real gamma2;
-        Real theta;
-        Real rho_greek;
-        Real tol;
-    };
+struct MargrabeAmericanOptionTwoData {
+    Real s1;
+    Real s2;
+    Integer Q1;
+    Integer Q2;
+    Rate q1;
+    Rate q2;
+    Rate r;
+    Time t; // years
+    Volatility v1;
+    Volatility v2;
+    Real rho;
+    Real result;
+    Real tol;
+};
 
-    struct MargrabeAmericanOptionTwoData {
-        Real s1;
-        Real s2;
-        Integer Q1;
-        Integer Q2;
-        Rate q1;
-        Rate q2;
-        Rate r;
-        Time t; // years
-        Volatility v1;
-        Volatility v2;
-        Real rho;
-        Real result;
-        Real tol;
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(MargrabeOptionTest)
 
 BOOST_AUTO_TEST_CASE(testEuroExchangeTwoAssets) {
 

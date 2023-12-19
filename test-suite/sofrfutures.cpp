@@ -29,21 +29,18 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct SofrQuotes {
-        Frequency freq;
-        Month month;
-        Year year;
-        Real price;
-        RateAveraging::Type averagingMethod;
-    };
+BOOST_AUTO_TEST_SUITE(SofrFuturesTests)
 
-}
+struct SofrQuotes {
+    Frequency freq;
+    Month month;
+    Year year;
+    Real price;
+    RateAveraging::Type averagingMethod;
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SofrFuturesTest)
 
 BOOST_AUTO_TEST_CASE(testBootstrap) {
     BOOST_TEST_MESSAGE("Testing bootstrap over SOFR futures...");

@@ -6,6 +6,7 @@
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2017 Peter Caspers
  Copyright (C) 2017 Oleg Kulkov
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -121,6 +122,28 @@ namespace QuantLib {
         <li>Memorial Day, last Monday in May</li>
         <li>Independence Day, July 4th (moved to Monday if Sunday)</li>
         <li>Labor Day, first Monday in September</li>
+        <li>Thanksgiving Day, fourth Thursday in November</li>
+        <li>Christmas, December 25th (moved to Monday if Sunday)</li>
+        </ul>
+
+        Holidays for the Federal Reserve Bankwire System
+        (data from https://www.federalreserve.gov/aboutthefed/k8.htm
+        and https://www.frbservices.org/about/holiday-schedules):
+         <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday if
+            actually on Sunday)</li>
+        <li>Martin Luther King's birthday, third Monday in January (since
+            1983)</li>
+        <li>Presidents' Day (a.k.a. Washington's birthday),
+            third Monday in February</li>
+        <li>Memorial Day, last Monday in May</li>
+        <li>Juneteenth, June 19th (moved to Monday if Sunday)</li>
+        <li>Independence Day, July 4th (moved to Monday if Sunday)</li>
+        <li>Labor Day, first Monday in September</li>
+        <li>Columbus Day, second Monday in October</li>
+        <li>Veterans' Day, November 11th (moved to Monday if Sunday)</li>
         <li>Thanksgiving Day, fourth Thursday in November</li>
         <li>Christmas, December 25th (moved to Monday if Sunday)</li>
         </ul>

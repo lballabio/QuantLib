@@ -46,6 +46,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(QuantoOptionTests)
+
 #undef QUANTO_REPORT_FAILURE
 #define QUANTO_REPORT_FAILURE(greekName, payoff, exercise, s, q, r, \
                         today, v, fxr, fxv, corr, expected, \
@@ -148,80 +152,74 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
+struct QuantoOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoForwardOptionData {
+    Option::Type type;
+    Real moneyness;
+    Real s;          // spot
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time start;      // time to reset
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoForwardOptionData {
-        Option::Type type;
-        Real moneyness;
-        Real s;          // spot
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time start;      // time to reset
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoBarrierOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real rebate;
+    Option::Type type;
+    Real s;          // spot
+    Real strike;
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoBarrierOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real rebate;
-        Option::Type type;
-        Real s;          // spot
-        Real strike;
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
+struct QuantoDoubleBarrierOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrier_lo;
+    Real barrier_hi;
+    Real rebate;
+    Option::Type type;
+    Real s;          // spot
+    Real strike;
+    Rate q;          // dividend
+    Rate r;          // risk-free rate
+    Time t;          // time to maturity
+    Volatility v;    // volatility
+    Rate fxr;        // fx risk-free rate
+    Volatility fxv;  // fx volatility
+    Real corr;       // correlation
+    Real result;     // expected result
+    Real tol;        // tolerance
+};
 
-    struct QuantoDoubleBarrierOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrier_lo;
-        Real barrier_hi;
-        Real rebate;
-        Option::Type type;
-        Real s;          // spot
-        Real strike;
-        Rate q;          // dividend
-        Rate r;          // risk-free rate
-        Time t;          // time to maturity
-        Volatility v;    // volatility
-        Rate fxr;        // fx risk-free rate
-        Volatility fxv;  // fx volatility
-        Real corr;       // correlation
-        Real result;     // expected result
-        Real tol;        // tolerance
-    };
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(QuantoOptionTest)
 
 BOOST_AUTO_TEST_CASE(testValues) {
 
@@ -1266,10 +1264,6 @@ BOOST_AUTO_TEST_CASE(testAmericanQuantoOption)  {
                     << "\n    expected:   " << expected);
     }
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(QuantoOptionExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testDoubleBarrierValues)  {
 

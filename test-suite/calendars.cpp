@@ -49,9 +49,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CalendarTest)
+BOOST_AUTO_TEST_SUITE(CalendarTests)
 
 BOOST_AUTO_TEST_CASE(testModifiedCalendars) {
 
@@ -385,6 +385,36 @@ BOOST_AUTO_TEST_CASE(testSOFR) {
     auto sofr = Sofr();
     if (sofr.isValidFixingDate(testDate))
         BOOST_ERROR(testDate << " should not be a fixing date for " << sofr.name());
+}
+
+BOOST_AUTO_TEST_CASE(testUSFederalReserveJuneteenth) {
+    BOOST_TEST_MESSAGE("Testing holiday occurrence of Juneteenth for US Federal Reserve calendar...");
+
+    auto fedCalendar = UnitedStates(UnitedStates::FederalReserve);
+
+    std::vector<Date> expectedHol;
+    // Sunday, moved to Monday 20th: expectedHol.emplace_back(19, June, 2022);
+    expectedHol.emplace_back(20, June, 2022);
+    expectedHol.emplace_back(19, June, 2023);
+    expectedHol.emplace_back(19, June, 2024);
+    expectedHol.emplace_back(19, June, 2025);
+    // Saturday: expectedHol.emplace_back(19, June, 2026);
+    expectedHol.emplace_back(19, June, 2027);
+    expectedHol.emplace_back(19, June, 2028);
+    expectedHol.emplace_back(19, June, 2029);
+    expectedHol.emplace_back(19, June, 2030);
+    expectedHol.emplace_back(19, June, 2031);
+    // Saturday: expectedHol.emplace_back(19, June, 2032);
+    // Sunday, moved to Monday 20th: expectedHol.emplace_back(19, June, 2033);
+    expectedHol.emplace_back(20, June, 2033);
+    for (Date holiday : expectedHol) {
+        if (!fedCalendar.isHoliday(holiday))
+            BOOST_ERROR(holiday << " should be a holiday for " << fedCalendar.name());
+    }
+
+    Date notMovedToFriday(18, June, 2027);
+    if (fedCalendar.isHoliday(notMovedToFriday))
+        BOOST_ERROR(notMovedToFriday << " should not be a holiday for " << fedCalendar.name());
 }
 
 BOOST_AUTO_TEST_CASE(testTARGET) {

@@ -36,6 +36,10 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VarianceSwapTests)
+
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, isLong, varStrike, nominal, s, q, r, today, \
                        exDate, v, expected, calculated, error, tolerance) \
@@ -55,47 +59,40 @@ using namespace boost::unit_test_framework;
         << "    tolerance:        " << tolerance);
 
 
-namespace {
+struct MCVarianceSwapData {
+    Position::Type type;
+    Real varStrike;
+    Real nominal;
+    Real s;         // spot
+    Rate q;         // dividend
+    Rate r;         // risk-free rate
+    Time t1;        // intermediate time
+    Time t;         // time to maturity
+    Volatility v1;  // volatility at t1
+    Volatility v;   // volatility at t
+    Real result;    // result
+    Real tol;       // tolerance
+};
 
-    struct MCVarianceSwapData {
-        Position::Type type;
-        Real varStrike;
-        Real nominal;
-        Real s;         // spot
-        Rate q;         // dividend
-        Rate r;         // risk-free rate
-        Time t1;        // intermediate time
-        Time t;         // time to maturity
-        Volatility v1;  // volatility at t1
-        Volatility v;   // volatility at t
-        Real result;    // result
-        Real tol;       // tolerance
-    };
+struct ReplicatingVarianceSwapData {
+    Position::Type type;
+    Real varStrike;
+    Real nominal;
+    Real s;         // spot
+    Rate q;         // dividend
+    Rate r;         // risk-free rate
+    Time t;         // time to maturity
+    Volatility v;   // volatility at t
+    Real result;    // result
+    Real tol;       // tolerance
+};
 
-    struct ReplicatingVarianceSwapData {
-        Position::Type type;
-        Real varStrike;
-        Real nominal;
-        Real s;         // spot
-        Rate q;         // dividend
-        Rate r;         // risk-free rate
-        Time t;         // time to maturity
-        Volatility v;   // volatility at t
-        Real result;    // result
-        Real tol;       // tolerance
-    };
+struct Datum {
+    Option::Type type;
+    Real strike;
+    Volatility v;
+};
 
-    struct Datum {
-        Option::Type type;
-        Real strike;
-        Volatility v;
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(VarianceSwapTest)
 
 BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
 

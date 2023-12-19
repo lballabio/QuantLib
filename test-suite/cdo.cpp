@@ -42,61 +42,54 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CdoTests, *precondition(if_speed(Slow)))
+
 #ifndef QL_PATCH_SOLARIS
 
-namespace cdo_test {
+Real hwAttachment[] = { 0.00, 0.03, 0.06, 0.10 };
+Real hwDetachment[] = { 0.03, 0.06, 0.10, 1.00 };
 
-    Real hwAttachment[] = { 0.00, 0.03, 0.06, 0.10 };
-    Real hwDetachment[] = { 0.03, 0.06, 0.10, 1.00 };
+struct hwDatum {
+    Real correlation;
+    Integer nm;
+    Integer nz;
+    Real trancheSpread[4];
+};
 
-    struct hwDatum {
-        Real correlation;
-        Integer nm;
-        Integer nz;
-        Real trancheSpread[4];
-    };
+// HW Table 7
+// corr, Nm, Nz, 0-3, 3-6, 6-10, 10-100
+hwDatum hwData7[] = {
+    { 0.1, -1, -1, { 2279, 450,  89,  1 } },
+    { 0.3, -1, -1, { 1487, 472, 203,  7 } },
+    // Opening the T, T&G tests too. The convolution is analytical
+    //   now so it runs it a time comparable to the gaussian tests and
+    //   has enough precission to pass the tests.
+    // Below the T models are integrated with a quadrature, even if this
+    //   is incorrect the test pass good enough, the quadrature gets to
+    //   be worst as the kernel deviates from a normal, this is low 
+    //   orders of the T; here 5 is enough, 3 would not be.
+    { 0.3, -1,  5, { 1766, 420, 161,  6 } },
+    { 0.3,  5, -1, { 1444, 408, 171, 10 } },
+    { 0.3,  5,  5, { 1713, 359, 136,  9 } }
+};
 
-    // HW Table 7
-    // corr, Nm, Nz, 0-3, 3-6, 6-10, 10-100
-    hwDatum hwData7[] = {
-        { 0.1, -1, -1, { 2279, 450,  89,  1 } },
-        { 0.3, -1, -1, { 1487, 472, 203,  7 } },
-        // Opening the T, T&G tests too. The convolution is analytical
-        //   now so it runs it a time comparable to the gaussian tests and
-        //   has enough precission to pass the tests.
-        // Below the T models are integrated with a quadrature, even if this
-        //   is incorrect the test pass good enough, the quadrature gets to
-        //   be worst as the kernel deviates from a normal, this is low 
-        //   orders of the T; here 5 is enough, 3 would not be.
-        { 0.3, -1,  5, { 1766, 420, 161,  6 } },
-        { 0.3,  5, -1, { 1444, 408, 171, 10 } },
-        { 0.3,  5,  5, { 1713, 359, 136,  9 } }
-    };
-
-    void check(int i, int j, const std::string& desc, Real found, Real expected,
-               Real bpTolerance, Real relativeTolerance) 
-    {
-        /* Uncomment to display the full show if your debugging:
-        std::cout<< "Case: "<< i << " " << j << " " << found << " :: " 
-            << expected  <<  " ("<< desc << ") " << std::endl;
-        */
-        Real absDiff = found - expected;
-        Real relDiff = absDiff / expected;
-        BOOST_CHECK_MESSAGE (fabs(relDiff) < relativeTolerance ||
-                             fabs(absDiff) < bpTolerance,
-                             "case " << i << " " << j << " ("<< desc << "): "
-                             << found << " vs. " << expected);
-    }
-
+void check(int i, int j, const std::string& desc, Real found, Real expected,
+           Real bpTolerance, Real relativeTolerance) 
+{
+    /* Uncomment to display the full show if your debugging:
+       std::cout<< "Case: "<< i << " " << j << " " << found << " :: " 
+       << expected  <<  " ("<< desc << ") " << std::endl;
+    */
+    Real absDiff = found - expected;
+    Real relDiff = absDiff / expected;
+    BOOST_CHECK_MESSAGE (fabs(relDiff) < relativeTolerance ||
+                         fabs(absDiff) < bpTolerance,
+                         "case " << i << " " << j << " ("<< desc << "): "
+                         << found << " vs. " << expected);
 }
 
-#endif
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CdoExperimentalTest, *precondition(if_speed(Slow)))
-
-#ifndef QL_PATCH_SOLARIS
 
 struct dataSetOne   { static const int dataset{0}; };
 struct dataSetTwo   { static const int dataset{1}; };
@@ -113,8 +106,6 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
     BOOST_TEST_MESSAGE("Testing CDO premiums against Hull-White values"
                        " for data set "
                        << dataSet << "...");
-
-    using namespace cdo_test;
 
     Size poolSize = 100;
     Real lambda = 0.01;

@@ -29,26 +29,21 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace partial_time_barrier_option_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct TestCase {
-        Real underlying;
-        Real strike;
-        Integer days;
-        Real result;
-    };
+BOOST_AUTO_TEST_SUITE(PartialTimeBarrierOptionTests)
 
-}
+struct TestCase {
+    Real underlying;
+    Real strike;
+    Integer days;
+    Real result;
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(PartialTimeBarrierOptionExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     BOOST_TEST_MESSAGE(
         "Testing analytic engine for partial-time barrier option...");
-
-    using namespace partial_time_barrier_option_test;
 
     Date today = Settings::instance().evaluationDate();
 

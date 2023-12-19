@@ -26,24 +26,21 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace sampled_curve_test {
-    class FSquared {
-      public:
-        Real operator()(Real x) const { return x*x;};
-    };
-}
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(SampledCurveTests)
+
+class FSquared {
+  public:
+    Real operator()(Real x) const { return x*x;};
+};
+
 
 QL_DEPRECATED_DISABLE_WARNING
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(SampledCurveTest)
 
 BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing sampled curve construction...");
-
-    using namespace sampled_curve_test;
 
     SampledCurve curve(BoundedGrid(-10.0,10.0,100));
     FSquared f2;

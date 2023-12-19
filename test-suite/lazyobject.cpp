@@ -26,31 +26,28 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using ext::shared_ptr;
 
-namespace lazy_object_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
-        bool alwaysForward;
-      public:
-        TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
-        ~TearDown() {
-            if (alwaysForward)
-                LazyObject::Defaults::instance().alwaysForwardNotifications();
-            else
-                LazyObject::Defaults::instance().forwardFirstNotificationOnly();
-        }
-    };
+BOOST_AUTO_TEST_SUITE(LazyObjectTests)
 
-}
+class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
+    bool alwaysForward;
+  public:
+    TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
+    ~TearDown() {
+        if (alwaysForward)
+            LazyObject::Defaults::instance().alwaysForwardNotifications();
+        else
+            LazyObject::Defaults::instance().forwardFirstNotificationOnly();
+    }
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(LazyObjectTest)
 
 BOOST_AUTO_TEST_CASE(testDiscardingNotifications) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first against default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
@@ -83,7 +80,7 @@ BOOST_AUTO_TEST_CASE(testDiscardingNotificationsByDefault) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first by default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
@@ -114,7 +111,7 @@ BOOST_AUTO_TEST_CASE(testForwardingNotificationsByDefault) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications by default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
@@ -139,7 +136,7 @@ BOOST_AUTO_TEST_CASE(testForwardingNotifications) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications against default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
@@ -166,7 +163,7 @@ BOOST_AUTO_TEST_CASE(testNotificationLoop) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects manage recursive notifications...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
