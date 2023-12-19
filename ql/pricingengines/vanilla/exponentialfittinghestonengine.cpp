@@ -238,9 +238,8 @@ namespace QuantLib {
         const Real sigma = model_->sigma();
         const Real rho   = model_->rho();
 
-        QL_REQUIRE(cv_ == ControlVariate::Gatheral
-            || ControlVariate::BranchCorrection,
-            "Gather and Branch-Correction are not supported as control-variate");
+        QL_REQUIRE(cv_ != ControlVariate::Gatheral && cv_ != ControlVariate::BranchCorrection,
+            "Gatheral and Branch-Correction are not supported as control-variate");
 
         const AnalyticHestonEngine::ComplexLogFormula analyticCV =
             (cv_ == ControlVariate::OptimalCV)
