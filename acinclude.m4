@@ -113,7 +113,7 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER],
     ])
 ])
 
-# QL_CHECK_BOOST_UNIT§_TEST
+# QL_CHECK_BOOST_UNIT_TEST
 # ------------------------
 # Check whether the Boost unit-test framework is available
 AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
