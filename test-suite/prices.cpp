@@ -181,12 +181,12 @@ BOOST_AUTO_TEST_CASE(testIntervalPriceExtractComponent) {
     const std::array<Date, 3> expectedDates{Date{(Day)1, (Month)1, (Year)2001},
                                             Date{(Day)2, (Month)2, (Year)2002},
                                             Date{(Day)3, (Month)3, (Year)2003}};
-    auto expectedDate = expectedDates.begin();
+    auto expectedDate = expectedDates.begin();  // NOLINT(readability-qualified-auto)
 
     const std::array<IntervalPrice, 3> expectedPrices{IntervalPrice{11, 21, 31, 41},
                                                       IntervalPrice{12, 22, 32, 42},
                                                       IntervalPrice{13, 23, 33, 43}};
-    auto expectedPrice = expectedPrices.begin();
+    auto expectedPrice = expectedPrices.begin();  // NOLINT(readability-qualified-auto)
 
     for (auto openIt = openSeries.begin(), closeIt = closeSeries.begin(),
              highIt = highSeries.begin(), lowIt = lowSeries.begin();
