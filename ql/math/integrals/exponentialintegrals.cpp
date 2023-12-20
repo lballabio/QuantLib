@@ -23,13 +23,11 @@
 
 #include <ql/errors.hpp>
 #include <ql/mathconstants.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/math/integrals/exponentialintegrals.hpp>
 
+#include <boost/math/special_functions/sign.hpp>
 #include <cmath>
-
-#ifndef M_EULER_MASCHERONI
-    #define M_EULER_MASCHERONI 0.5772156649015328606065121
-#endif
 
 namespace QuantLib {
     namespace exponential_integrals_helper {
@@ -122,28 +120,61 @@ namespace QuantLib {
             }
         }
 
+        std::complex<Real> _Ei(
+            const std::complex<Real>& z, const std::complex<Real>& acc) {
 
-        std::complex<Real> E1(std::complex<Real> z) {
-            QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
-
-            std::complex<Real> s(0.0), sn(-z);
-
-            Size n;
-            for (n=2; n < 1000 && s + sn/Real(n-1) != s; ++n) {
-                s+=sn/Real(n-1);
-                sn *= -z/Real(n);
+            if (z.real() == 0.0 && z.imag() == 0.0
+                && std::numeric_limits<Real>::has_infinity) {
+                return std::complex<Real>(-std::numeric_limits<Real>::infinity());
             }
 
-            QL_REQUIRE(n < 1000, "series conversion issue");
 
-            return -M_EULER_MASCHERONI - std::log(z) -s;
-        }
+            constexpr Real DIST = 4.5;
+            constexpr Real MAX_ERROR = 5*QL_EPSILON;
 
-        std::complex<Real> Ei(std::complex<Real> z) {
-            QL_REQUIRE(std::abs(z) <= 25.0, "Insufficient precision for |z| > 25.0");
+            const Real z_inf = std::log(0.01*QL_MAX_REAL) + std::log(100.0);
+            QL_REQUIRE(z.real() < z_inf, "argument error " << z);
+
+            const Real z_asym = 2.0 - 1.035*std::log(MAX_ERROR);
+
+            using boost::math::sign;
+            const Real abs_z = std::abs(z);
+
+            const auto match = [=](
+                const std::complex<Real>& z1, const std::complex<Real>& z2)
+                -> bool {
+                    const std::complex<Real> d = z1 - z2;
+                    return std::abs(d.real()) <= MAX_ERROR*std::abs(z1.real())
+                        && std::abs(d.imag()) <= MAX_ERROR*std::abs(z1.imag());
+            };
+
+            if (z.real() > z_inf)
+                return std::complex<Real>(std::exp(z)/z) + acc;
+
+            if (abs_z > 1.1*z_asym) {
+                std::complex<Real> ei = acc + std::complex<Real>(Real(0.0), sign(z.imag())*M_PI);
+                std::complex<Real> s(std::exp(z)/z);
+                for (Size i=1; i <= std::floor(abs_z)+1; ++i) {
+                    if (match(ei+s, ei))
+                        return ei+s;
+                    ei += s;
+                    s *= Real(i)/z;
+                }
+                QL_FAIL("series conversion issue for Ei(" << z << ")");
+            }
+
+            if (abs_z > DIST && (z.real() < 0 || std::abs(z.imag()) > DIST)) {
+                std::complex<Real> ei(0.0);
+                for (Size k = 47; k >=1; --k) {
+                    ei = - Real(k*k)/(2.0*k + 1.0 - z + ei);
+                }
+                return (acc + std::complex<Real>(0.0, sign(z.imag())*M_PI))
+                        - std::exp(z)/ (1.0 - z + ei);
+
+                QL_FAIL("series conversion issue for Ei(" << z << ")");
+            }
 
             std::complex<Real> s(0.0), sn=z;
-
             Real nn=1.0;
 
             Size n;
@@ -156,27 +187,65 @@ namespace QuantLib {
                 sn *= -z / Real(2*n);
             }
 
-            QL_REQUIRE(n < 1000, "series conversion issue");
+            QL_REQUIRE(n < 1000, "series conversion issue for Ei(" << z << ")");
 
-            return M_EULER_MASCHERONI + std::log(z) + std::exp(0.5*z)*s;
+            const std::complex<Real> r
+                = (M_EULER_MASCHERONI + acc) + std::log(z) + std::exp(0.5*z)*s;
+
+            if (z.imag() != Real(0.0))
+                return r;
+            else
+                return std::complex<Real>(r.real(), acc.imag());
+        }
+
+        std::complex<Real> Ei(const std::complex<Real>&z) {
+            return _Ei(z, std::complex<Real>(0.0));
+        }
+
+        std::complex<Real> E1(const std::complex<Real>& z) {
+            if (z.imag() < 0.0) {
+                return -_Ei(-z, std::complex<Real>(0.0, -M_PI));
+            }
+            else if (z.imag() > 0.0 || z.real() < 0.0) {
+                return -_Ei(-z, std::complex<Real>(0.0, M_PI));
+            }
+            else {
+                return -Ei(-z);
+            }
         }
 
         // Reference:
         // https://functions.wolfram.com/GammaBetaErf/ExpIntegralEi/introductions/ExpIntegrals/ShowAll.html
-        std::complex<Real> Si(std::complex<Real> z) {
-            const std::complex<Real> i(0.0, 1.0);
+        std::complex<Real> Si(const std::complex<Real>& z) {
+            if (std::abs(z) <= 0.2) {
+                std::complex<Real> s(0), nn(z);
+                Size k;
+                for (k=2; k < 100 && s != s+nn; ++k) {
+                    s += nn;
+                    nn *= -z*z/((2.0*k-2)*(2*k-1)*(2*k-1))*(2.0*k-3);
+                }
+                QL_REQUIRE(k < 100, "series conversion issue for Si(" << z << ")");
 
-            return 0.25*i*(2.0*(Ei(-i*z) - Ei(i*z))
-                    + std::log(i/z) - std::log(-i/z) - std::log(-i*z)
-                    + std::log(i*z));
+                return s;
+            }
+            else {
+                const std::complex<Real> i(0.0, 1.0);
+                return 0.5*i*(E1(-i*z) - E1(i*z)
+                        - std::complex<Real>(0.0, ((z.real() >= 0 && z.imag() >= 0)
+                                || (z.real() > 0 && z.imag() < 0) )? M_PI : -M_PI));
+            }
         }
 
-        std::complex<Real> Ci(std::complex<Real> z) {
+        std::complex<Real> Ci(const std::complex<Real>& z) {
             const std::complex<Real> i(0.0, 1.0);
 
-            return 0.25*(2.0*(Ei(-i*z) + Ei(i*z))
-                    + std::log(i/z) + std::log(-i/z) - std::log(-i*z)
-                    - std::log(i*z)) + std::log(z);
+            std::complex<Real> acc(0.0);
+            if (z.real() < 0.0 && z.imag() >= 0.0)
+                acc.imag(M_PI);
+            else if (z.real() <= 0.0 && z.imag() <= 0.0)
+                acc.imag(-M_PI);
+
+            return -0.5*(E1(-i*z) + E1(i*z)) + acc;
         }
     }
 }

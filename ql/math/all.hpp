@@ -9,6 +9,7 @@
 #include <ql/math/bspline.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/errorfunction.hpp>
+#include <ql/math/expm1.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/fastfouriertransform.hpp>
 #include <ql/math/functional.hpp>

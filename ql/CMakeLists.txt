@@ -364,6 +364,7 @@ set(QL_SOURCES
     math/distributions/normaldistribution.cpp
     math/distributions/studenttdistribution.cpp
     math/errorfunction.cpp
+    math/expm1.cpp
     math/factorial.cpp
     math/incompletegamma.cpp
     math/integrals/discreteintegrals.cpp
@@ -1426,6 +1427,7 @@ set(QL_HEADERS
     math/distributions/poissondistribution.hpp
     math/distributions/studenttdistribution.hpp
     math/errorfunction.hpp
+    math/expm1.hpp
     math/factorial.hpp
     math/fastfouriertransform.hpp
     math/functional.hpp
@@ -1433,6 +1435,7 @@ set(QL_HEADERS
     math/incompletegamma.hpp
     math/integrals/discreteintegrals.hpp
     math/integrals/exponentialintegrals.hpp
+    math/integrals/expsinhintegral.hpp
     math/integrals/filonintegral.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp

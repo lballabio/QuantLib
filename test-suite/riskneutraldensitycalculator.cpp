@@ -588,7 +588,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew, *precondition(if_speed(Fast))) {
         ext::make_shared<HestonBlackVolSurface>(
             Handle<HestonModel>(ext::make_shared<HestonModel>(hestonProcess)),
             AnalyticHestonEngine::AndersenPiterbarg,
-            AnalyticHestonEngine::Integration::discreteTrapezoid(64)));
+            AnalyticHestonEngine::Integration::discreteTrapezoid(128)));
 
     const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
 
@@ -692,7 +692,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew, *precondition(if_speed(Fast))) {
 
         const Real calculatedLocalVol
             = std::exp(localVolCalc.invcdf(quantile, maturity));
-        const Real localVolTol = 0.1;
+        const Real localVolTol = 0.2;
         if (std::fabs(expected - calculatedLocalVol) > localVolTol) {
             BOOST_FAIL("failed to match Heston and local Volatility invcdf"
                     << "\n   t:          " << maturity

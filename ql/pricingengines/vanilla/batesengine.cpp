@@ -25,11 +25,16 @@ namespace QuantLib {
 
     BatesEngine::BatesEngine(const ext::shared_ptr<BatesModel> & model,
                              Size integrationOrder)
-    : AnalyticHestonEngine(model, integrationOrder) { }
+    : AnalyticHestonEngine(
+        model, AnalyticHestonEngine::Gatheral,
+        AnalyticHestonEngine::Integration::gaussLaguerre(integrationOrder)) { }
 
     BatesEngine::BatesEngine(const ext::shared_ptr<BatesModel>& model,
                              Real relTolerance, Size maxEvaluations)
-    : AnalyticHestonEngine(model, relTolerance, maxEvaluations) { }
+    : AnalyticHestonEngine(
+        model, AnalyticHestonEngine::Gatheral,
+        AnalyticHestonEngine::Integration::gaussLobatto(
+            relTolerance, Null<Real>(), maxEvaluations)) { }
 
     std::complex<Real> BatesEngine::addOnTerm(
                                             Real phi, Time t, Size j) const {
@@ -81,12 +86,17 @@ namespace QuantLib {
     BatesDoubleExpEngine::BatesDoubleExpEngine(
         const ext::shared_ptr<BatesDoubleExpModel> & model,
         Size integrationOrder)
-    : AnalyticHestonEngine(model, integrationOrder) { }
+    : AnalyticHestonEngine(
+        model, AnalyticHestonEngine::Gatheral,
+        AnalyticHestonEngine::Integration::gaussLaguerre(integrationOrder)) { }
 
     BatesDoubleExpEngine::BatesDoubleExpEngine(
         const ext::shared_ptr<BatesDoubleExpModel>& model,
         Real relTolerance, Size maxEvaluations)
-    : AnalyticHestonEngine(model, relTolerance, maxEvaluations) { }
+    : AnalyticHestonEngine(
+        model, AnalyticHestonEngine::Gatheral,
+        AnalyticHestonEngine::Integration::gaussLobatto(
+            relTolerance, Null<Real>(), maxEvaluations)) { }
 
     std::complex<Real> BatesDoubleExpEngine::addOnTerm(
         Real phi, Time t, Size j) const {

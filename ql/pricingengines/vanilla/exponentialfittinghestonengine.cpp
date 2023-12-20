@@ -23,7 +23,8 @@
 #include <ql/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
 
 namespace QuantLib {
@@ -185,12 +186,13 @@ namespace QuantLib {
     ExponentialFittingHestonEngine::ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
         ControlVariate cv,
-        Real scaling)
+        Real scaling, Real alpha)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
       cv_(cv),
       scaling_(scaling),
+      alpha_(alpha),
       analyticEngine_(ext::make_shared<AnalyticHestonEngine>(model, 1)) {
 
         if (moneyness_.empty()) {
@@ -236,22 +238,22 @@ namespace QuantLib {
         const Real sigma = model_->sigma();
         const Real rho   = model_->rho();
 
+        QL_REQUIRE(cv_ != ControlVariate::Gatheral && cv_ != ControlVariate::BranchCorrection,
+            "Gatheral and Branch-Correction are not supported as control-variate");
+
         const AnalyticHestonEngine::ComplexLogFormula analyticCV =
-            (cv_ == AndersenPiterbarg)? AnalyticHestonEngine::AndersenPiterbarg
-                 : (cv_ == AndersenPiterbargOptCV)?
-                         AnalyticHestonEngine::AndersenPiterbargOptCV
-                 : (cv_ == AsymptoticChF)?
-                         AnalyticHestonEngine::AsymptoticChF
-                 : AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho);
+            (cv_ == ControlVariate::OptimalCV)
+            ? AnalyticHestonEngine::optimalControlVariate(t, v0, kappa, theta, sigma, rho)
+            : cv_;
 
         const AnalyticHestonEngine::AP_Helper helper(
-            t, fwd, strike, analyticCV, analyticEngine_.get());
+            t, fwd, strike, analyticCV, analyticEngine_.get(), alpha_);
 
         const Real vAvg = (1-std::exp(-kappa*t))*(v0-theta)/(kappa*t) + theta;
 
         const Real scalingFactor = (scaling_ == Null<Real>())
             ? (analyticCV != AnalyticHestonEngine::AsymptoticChF)
-                    ? std::max(0.01, std::min(10.0, 0.25/std::sqrt(0.5*vAvg*t)))
+                    ? std::max(0.25, std::min(1000.0, 0.25/std::sqrt(0.5*vAvg*t)))
                     : Real(1.0)
             : scaling_;
 
@@ -287,7 +289,7 @@ namespace QuantLib {
             s += w_i*u*helper(u*x_i);
         }
 
-        const Real h_cv = s * std::sqrt(strike * fwd)/M_PI;
+        const Real h_cv = s * fwd/M_PI;
         const Real cvValue = helper.controlVariateValue();
 
         switch (payoff->optionType())

@@ -17,6 +17,7 @@ this_include_HEADERS = \
 	comparison.hpp \
 	curve.hpp \
 	errorfunction.hpp \
+	expm1.hpp \
 	factorial.hpp \
 	fastfouriertransform.hpp \
 	functional.hpp \
@@ -44,6 +45,7 @@ cpp_files = \
 	beta.cpp \
 	bspline.cpp \
 	errorfunction.cpp \
+	expm1.cpp \
 	factorial.cpp \
 	incompletegamma.cpp \
 	matrix.cpp \
