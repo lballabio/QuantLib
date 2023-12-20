@@ -166,33 +166,33 @@ BOOST_AUTO_TEST_CASE(asxDates) {
         const Date asx = ASX::nextDate(counter, false);
 
         // check that asx is greater than counter
-        BOOST_TEST(asx > counter,
-                       asx.weekday() << " " << asx
+        if (asx <= counter)
+            BOOST_FAIL(asx.weekday() << " " << asx
                        << " is not greater than "
                        << counter.weekday() << " " << counter);
 
         // check that asx is an ASX date
-        BOOST_TEST(ASX::isASXdate(asx, false),
-                       asx.weekday() << " " << asx
+        if (!ASX::isASXdate(asx, false))
+            BOOST_FAIL(asx.weekday() << " " << asx
                        << " is not an ASX date (calculated from "
                        << counter.weekday() << " " << counter << ")");
 
         // check that asx is <= to the next ASX date in the main cycle
-        BOOST_TEST(asx <= ASX::nextDate(counter, true),
-                       asx.weekday() << " " << asx
+        if (asx > ASX::nextDate(counter, true))
+            BOOST_FAIL(asx.weekday() << " " << asx
                        << " is not less than or equal to the next future in the main cycle "
                        << ASX::nextDate(counter, true));
 
         // check that for every date ASXdate is the inverse of ASXcode
-        BOOST_TEST(ASX::date(ASX::code(asx), counter) == asx,
-                       ASX::code(asx)
+        if (ASX::date(ASX::code(asx), counter) != asx)
+            BOOST_FAIL(ASX::code(asx)
                        << " at calendar day " << counter
                        << " is not the ASX code matching " << asx);
 
         // check that for every date the 120 ASX codes refer to future dates
         for (const auto& ASXcode : ASXcodes) {
-            BOOST_TEST(ASX::date(ASXcode, counter) >= counter,
-                           ASX::date(ASXcode, counter) << " is wrong for " << ASXcode
+            if (ASX::date(ASXcode, counter) < counter)
+                BOOST_FAIL(ASX::date(ASXcode, counter) << " is wrong for " << ASXcode
                            << " at reference date " << counter);
         }
     }
