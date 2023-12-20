@@ -72,19 +72,19 @@ BOOST_AUTO_TEST_CASE(ecbDates) {
 
     Date previousEcbDate = Date::minDate();
     for (const Date& currentEcbDate : knownDates) {
-        BOOST_TEST(ECB::isECBdate(currentEcbDate),
-                       currentEcbDate << " fails isECBdate check");
+        if (!ECB::isECBdate(currentEcbDate))
+            BOOST_FAIL(currentEcbDate << " fails isECBdate check");
 
         const Date ecbDateMinusOne = currentEcbDate-1;
-        BOOST_TEST(!ECB::isECBdate(ecbDateMinusOne),
-                       ecbDateMinusOne << " fails isECBdate check");
+        if (ECB::isECBdate(ecbDateMinusOne))
+            BOOST_FAIL(ecbDateMinusOne << " fails isECBdate check");
 
-        BOOST_TEST(ECB::nextDate(ecbDateMinusOne)==currentEcbDate,
-                       "next ECB date following " << ecbDateMinusOne <<
+        if (ECB::nextDate(ecbDateMinusOne) != currentEcbDate)
+            BOOST_FAIL("next ECB date following " << ecbDateMinusOne <<
                        " must be " << currentEcbDate);
 
-        BOOST_TEST(ECB::nextDate(previousEcbDate)==currentEcbDate,
-                       "next ECB date following " << previousEcbDate <<
+        if (ECB::nextDate(previousEcbDate) != currentEcbDate)
+            BOOST_FAIL("next ECB date following " << previousEcbDate <<
                        " must be " << currentEcbDate);
 
         previousEcbDate = currentEcbDate;
