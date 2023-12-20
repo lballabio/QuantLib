@@ -92,7 +92,35 @@ namespace QuantLib {
 
             // 2017
             Date(42760), Date(42809), Date(42858), Date(42900), Date(42942), Date(42991),
-            Date(43040), Date(43089)
+            Date(43040), Date(43089),
+
+            // 2018
+            Date(43131), Date(43167), Date(43216), Date(43265), Date(43307), Date(43356),
+            Date(43398), Date(43447),
+
+            // 2019
+            Date(43495), Date(43537), Date(43572), Date(43628), Date(43677), Date(43726),
+            Date(43768), Date(43817),
+
+            // 2020
+            Date(43859), Date(43908), Date(43957), Date(43992), Date(44034), Date(44090),
+            Date(44139), Date(44181),
+
+            // 2021
+            Date(44223), Date(44272), Date(44314), Date(44363), Date(44405), Date(44454),
+            Date(44503), Date(44552),
+
+            // 2022
+            Date(44601), Date(44636), Date(44671), Date(44727), Date(44769), Date(44818),
+            Date(44867), Date(44916),
+
+            // 2023
+            Date(44965), Date(45007), Date(45056), Date(45098), Date(45140), Date(45189),
+            Date(45231), Date(45280),
+
+            // 2024
+            Date(45322), Date(45364), Date(45399), Date(45455), Date(45497), Date(45553),
+            Date(45588), Date(45644)
         };
         //clang-format on
     }
