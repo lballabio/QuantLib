@@ -61,10 +61,12 @@ namespace QuantLib {
             // start from the coarsest trapezoid...
             Size N = 1;
             Real I = (f(a)+f(b))*(b-a)/2.0, newI;
+            increaseNumberOfEvaluations(2);
             // ...and refine it
             Size i = 1;
             do {
                 newI = IntegrationPolicy::integrate(f,a,b,I,N);
+                increaseNumberOfEvaluations(N*(IntegrationPolicy::nbEvalutions()-1));
                 N *= IntegrationPolicy::nbEvalutions();
                 // good enough? Also, don't run away immediately
                 if (std::fabs(I-newI) <= absoluteAccuracy() && i > 5)
