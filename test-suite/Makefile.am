@@ -175,7 +175,6 @@ QL_TEST_SRCS = \
 	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
-    marketmodel.hpp \
     preconditions.hpp \
 	quantlibglobalfixture.hpp \
 	swaptionvolstructuresutilities.hpp \
@@ -226,10 +225,6 @@ if BUILD_TEST_SUITE
 
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
-noinst_LTLIBRARIES = libUnitMain.la
-libUnitMain_la_SOURCES = main.cpp
-libUnitMain_la_CXXFLAGS = ${BOOST_UNIT_TEST_MAIN_CXXFLAGS}
-
 if AUTO_BENCHMARK
 bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
 else
@@ -272,10 +267,10 @@ EXTRA_DIST =
 
 endif
 
-quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
+quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la \
                             ${PTHREAD_LIB} ${BOOST_INTERPROCESS_LIB}
 
-quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
+quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la \
                            ${PTHREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
