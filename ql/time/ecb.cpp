@@ -151,10 +151,9 @@ namespace QuantLib {
         QL_REQUIRE(isECBcode(ecbCode),
                    ecbCode << " is not a valid ECB code");
 
-        std::array<char, 3> upperMonthCode;
-        for (int i=0; i<3; ++i)
-            upperMonthCode[i] = std::toupper(ecbCode[i]);
-        const boost::string_view monthString(upperMonthCode.data(), 3);
+        char upperMonthCode[3];
+        to_upper_copy(upperMonthCode, ecbCode);
+        const boost::string_view monthString(upperMonthCode, 3);
         const auto it = std::find(MONTHS.begin(), MONTHS.end(), monthString);
         QL_ASSERT(it != MONTHS.end() ,"not an ECB month (and it should have been). code: " + ecbCode);
 
