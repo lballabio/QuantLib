@@ -61,7 +61,7 @@ namespace QuantLib {
             return false;
 
         // 2nd character of code needs to be digit
-        if (!std::isdigit(in[1]))
+        if (!std::isdigit(static_cast<unsigned char>(in[1])))
             return false;
 
         // 1st character needs to represent the correct month
