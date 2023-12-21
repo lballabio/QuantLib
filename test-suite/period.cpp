@@ -154,6 +154,17 @@ BOOST_AUTO_TEST_CASE(testConvertToYears) {
     BOOST_TEST(years(Period(18, Months)) == 1.5, tol);
 }
 
+BOOST_AUTO_TEST_CASE(testConvertToMonths) {
+    BOOST_TEST_MESSAGE("Testing converting periods to months...");
+
+    BOOST_TEST(months(Period(0, Months)) == 0);
+    BOOST_TEST(months(Period(1, Months)) == 1);
+    BOOST_TEST(months(Period(5, Months)) == 5);
+
+    BOOST_TEST(months(Period(1, Years)) == 12);
+    BOOST_TEST(months(Period(3, Years)) == 36);
+}
+
 BOOST_AUTO_TEST_CASE(testNormalization) {
 
     BOOST_TEST_MESSAGE("Testing period normalization...");
