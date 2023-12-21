@@ -129,6 +129,17 @@ BOOST_AUTO_TEST_CASE(testWeeksDaysAlgebra) {
                     " instead of " << Days);
 }
 
+BOOST_AUTO_TEST_CASE(testOperators) {
+    BOOST_TEST_MESSAGE("Testing specific operators...");
+
+    Period p(3, Days);
+    p *= 2;
+    BOOST_TEST(p == Period(6, Days));
+
+    p -= Period(2, Days);
+    BOOST_TEST(p == Period(4, Days));
+}
+
 BOOST_AUTO_TEST_CASE(testNormalization) {
 
     BOOST_TEST_MESSAGE("Testing period normalization...");
