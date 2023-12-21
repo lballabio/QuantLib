@@ -152,9 +152,8 @@ namespace QuantLib {
                    ecbCode << " is not a valid ECB code");
 
         char upperMonthCode[3];
-        to_upper_copy(upperMonthCode, ecbCode);
-        const boost::string_view monthString(upperMonthCode, 3);
-        const auto it = std::find(MONTHS.begin(), MONTHS.end(), monthString);
+        to_upper_copy(upperMonthCode, boost::string_view(ecbCode.data(), 3));
+        const auto it = std::find(MONTHS.begin(), MONTHS.end(), boost::string_view(upperMonthCode, 3));
         QL_ASSERT(it != MONTHS.end() ,"not an ECB month (and it should have been). code: " + ecbCode);
 
         // QuantLib::Month is 1-based!
