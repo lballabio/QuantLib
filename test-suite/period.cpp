@@ -165,6 +165,19 @@ BOOST_AUTO_TEST_CASE(testConvertToMonths) {
     BOOST_TEST(months(Period(3, Years)) == 36);
 }
 
+BOOST_AUTO_TEST_CASE(testConvertToWeeks) {
+    BOOST_TEST_MESSAGE("Testing converting periods to weeks...");
+
+    BOOST_TEST(weeks(Period(0, Weeks)) == 0);
+    BOOST_TEST(weeks(Period(1, Weeks)) == 1);
+    BOOST_TEST(weeks(Period(5, Weeks)) == 5);
+
+    const auto tol = boost::test_tools::tolerance(1e-15);
+    BOOST_TEST(weeks(Period(1, Days)) == 1.0/7.0, tol);
+    BOOST_TEST(weeks(Period(3, Days)) == 3.0/7.0, tol);
+    BOOST_TEST(weeks(Period(11, Days)) == 11.0/7.0, tol);
+}
+
 BOOST_AUTO_TEST_CASE(testNormalization) {
 
     BOOST_TEST_MESSAGE("Testing period normalization...");
