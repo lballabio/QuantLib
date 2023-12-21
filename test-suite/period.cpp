@@ -140,6 +140,20 @@ BOOST_AUTO_TEST_CASE(testOperators) {
     BOOST_TEST(p == Period(4, Days));
 }
 
+BOOST_AUTO_TEST_CASE(testConvertToYears) {
+    BOOST_TEST_MESSAGE("Testing converting periods to years...");
+
+    BOOST_TEST(years(Period(0, Years)) == 0);
+    BOOST_TEST(years(Period(1, Years)) == 1);
+    BOOST_TEST(years(Period(5, Years)) == 5);
+
+    const auto tol = boost::test_tools::tolerance(1e-15);
+    BOOST_TEST(years(Period(1, Months)) == 1.0/12.0, tol);
+    BOOST_TEST(years(Period(8, Months)) == 8.0/12.0, tol);
+    BOOST_TEST(years(Period(12, Months)) == 1);
+    BOOST_TEST(years(Period(18, Months)) == 1.5, tol);
+}
+
 BOOST_AUTO_TEST_CASE(testNormalization) {
 
     BOOST_TEST_MESSAGE("Testing period normalization...");
