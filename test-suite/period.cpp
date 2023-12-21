@@ -189,6 +189,29 @@ BOOST_AUTO_TEST_CASE(testNormalization) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testFrequencyComputation) {
+    BOOST_TEST_MESSAGE("Testing computation of frequency from period...");
+
+    // frequency -> period -> frequency == initial frequency?
+    for (const Frequency f : {NoFrequency, Once, Annual, Semiannual, EveryFourthMonth, Quarterly,
+                              Bimonthly, Monthly, EveryFourthWeek, Biweekly, Weekly, Daily}) {
+        BOOST_TEST(Period(f).frequency() == f);
+    }
+    BOOST_CHECK_THROW(Period(OtherFrequency).frequency(), QuantLib::Error);
+
+    // test Period(count, timeUnit).frequency()
+    BOOST_TEST(Period(1, Years).frequency() == Annual);
+    BOOST_TEST(Period(6, Months).frequency() == Semiannual);
+    BOOST_TEST(Period(4, Months).frequency() == EveryFourthMonth);
+    BOOST_TEST(Period(3, Months).frequency() == Quarterly);
+    BOOST_TEST(Period(2, Months).frequency() == Bimonthly);
+    BOOST_TEST(Period(1, Months).frequency() == Monthly);
+    BOOST_TEST(Period(4, Weeks).frequency() == EveryFourthWeek);
+    BOOST_TEST(Period(2, Weeks).frequency() == Biweekly);
+    BOOST_TEST(Period(1, Weeks).frequency() == Weekly);
+    BOOST_TEST(Period(1, Days).frequency() == Daily);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
