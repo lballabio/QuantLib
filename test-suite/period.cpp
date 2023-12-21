@@ -89,6 +89,7 @@ BOOST_AUTO_TEST_CASE(testWeeksDaysAlgebra) {
     Period OneWeek(1, Weeks);
     Period ThreeDays(3, Days);
     Period OneDay(1, Days);
+    Period ZeroDays(0, Days);
 
     Integer n = 2;
     if (TwoWeeks/n!=OneWeek)
@@ -112,6 +113,10 @@ BOOST_AUTO_TEST_CASE(testWeeksDaysAlgebra) {
                     " + " << OneDay <<
                     " + " << OneWeek <<
                     " != " << Period(11, Days));
+
+    BOOST_TEST((OneWeek + ZeroDays) == OneWeek);
+    BOOST_TEST((OneWeek + 3*OneDay) == Period(10, Days));
+    BOOST_TEST((OneWeek + 7*OneDay) == TwoWeeks);
 
     Period SevenDays(7, Days);
     if (SevenDays.length()!=7)
