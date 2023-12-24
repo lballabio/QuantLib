@@ -21,22 +21,33 @@
 #include <ql/time/ecb.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/utility/string_view.hpp>
+#include <boost/bimap.hpp>
 #include <algorithm>
-#include <array>
 #include <string>
 #include <stdio.h>
 
-using boost::algorithm::to_upper_copy;
 using std::string;
 
 namespace QuantLib {
 
     namespace {
-        const std::array<boost::string_view, 12> MONTHS{
-            "JAN" ,"FEB" ,"MAR" ,"APR" ,"MAY" ,"JUN",
-            "JUL" ,"AUG" ,"SEP" ,"OCT" ,"NOV" ,"DEC"};
+        const boost::bimap<boost::string_view, Month> MONTHS = []() {
+            boost::bimap<boost::string_view, Month> months;
+            months.insert({"JAN", January});
+            months.insert({"FEB", February});
+            months.insert({"MAR", March});
+            months.insert({"APR", April});
+            months.insert({"MAY", May});
+            months.insert({"JUN", June});
+            months.insert({"JUL", July});
+            months.insert({"AUG", August});
+            months.insert({"SEP", September});
+            months.insert({"OCT", October});
+            months.insert({"NOV", November});
+            months.insert({"DEC", December});
+            return months;
+        }();
 
         //clang-format off
         // Start of maintenance period
@@ -151,14 +162,11 @@ namespace QuantLib {
         QL_REQUIRE(isECBcode(ecbCode),
                    ecbCode << " is not a valid ECB code");
 
-        char upperMonthCode[3];
-        to_upper_copy(upperMonthCode, boost::string_view(ecbCode.data(), 3));
-        const auto it = std::find(MONTHS.begin(), MONTHS.end(), boost::string_view(upperMonthCode, 3));
-        QL_ASSERT(it != MONTHS.end() ,"not an ECB month (and it should have been). code: " + ecbCode);
+        // convert first 3 characters to `Month m`
+        const boost::string_view monthCode(ecbCode.data(), 3);
+        const Month m = MONTHS.left.at(monthCode);
 
-        // QuantLib::Month is 1-based!
-        const Month m = static_cast<QuantLib::Month>(std::distance(MONTHS.begin(), it) + 1);
-
+        // convert 4th, 5th characters to `Year y`
         Year y = ToInteger(ecbCode[3])*10 + ToInteger(ecbCode[4]);
         Date referenceDate = (refDate != Date() ?
                               refDate :
@@ -177,8 +185,7 @@ namespace QuantLib {
                    ecbDate << " is not a valid ECB date");
 
         // 3 characters for the month
-        const int monthOneBased = static_cast<int>(ecbDate.month());
-        const boost::string_view month = MONTHS[monthOneBased-1];
+        const boost::string_view month = MONTHS.right.at(ecbDate.month());
 
         // last two digits of the year
         const unsigned int y = ecbDate.year() % 100;
@@ -228,10 +235,7 @@ namespace QuantLib {
         // first 3 characters need to represent month, case insensitive
         {
             const boost::string_view month(ecbCode.data(), 3);
-            char monthUpper[3];
-            to_upper_copy(monthUpper, month);
-            const auto itMonth = std::find(MONTHS.begin(), MONTHS.end(), boost::string_view(monthUpper, 3));
-            if (itMonth == MONTHS.end())
+            if (MONTHS.left.find(month) == MONTHS.left.end())
                 return false;
         }
 
@@ -245,16 +249,13 @@ namespace QuantLib {
                    ecbCode << " is not a valid ECB code");
 
         const boost::string_view month(ecbCode.data(), 3);
-        char monthUpper[3];
-        to_upper_copy(monthUpper, month);
-        const auto itMonth = std::find(MONTHS.begin(), MONTHS.end(), boost::string_view(monthUpper, 3));
-        QL_ASSERT(itMonth != MONTHS.end(), "not an ECB month (and it should have been)");
+        auto itMonth = MONTHS.left.find(month);
 
         string nextCodeStr;
         nextCodeStr.reserve(5);
-        if (*itMonth != "DEC") {
+        if (itMonth->first != "DEC") {
             // use next month
-            const boost::string_view nextMonth = *(itMonth + 1);
+            const boost::string_view nextMonth = (++itMonth)->first;
             nextCodeStr.append(nextMonth.data(), 3);
 
             // copy year
