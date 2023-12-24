@@ -120,7 +120,7 @@ namespace QuantLib {
             }
         }
 
-        std::complex<Real> _Ei(
+        std::complex<Real> Ei(
             const std::complex<Real>& z, const std::complex<Real>& acc) {
 
             if (z.real() == 0.0 && z.imag() == 0.0
@@ -199,15 +199,15 @@ namespace QuantLib {
         }
 
         std::complex<Real> Ei(const std::complex<Real>&z) {
-            return _Ei(z, std::complex<Real>(0.0));
+            return Ei(z, std::complex<Real>(0.0));
         }
 
         std::complex<Real> E1(const std::complex<Real>& z) {
             if (z.imag() < 0.0) {
-                return -_Ei(-z, std::complex<Real>(0.0, -M_PI));
+                return -Ei(-z, std::complex<Real>(0.0, -M_PI));
             }
             else if (z.imag() > 0.0 || z.real() < 0.0) {
-                return -_Ei(-z, std::complex<Real>(0.0, M_PI));
+                return -Ei(-z, std::complex<Real>(0.0, M_PI));
             }
             else {
                 return -Ei(-z);

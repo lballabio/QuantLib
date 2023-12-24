@@ -185,7 +185,7 @@ namespace QuantLib {
 
         Real priceVanillaPayoff(
            const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-           const Time maturity, Real fwd) const;
+           Time maturity, Real fwd) const;
 
 
         mutable Size evaluations_;
@@ -259,7 +259,7 @@ namespace QuantLib {
         AP_Helper(Time term, Real fwd, Real strike,
                   ComplexLogFormula cpxLog,
                   const AnalyticHestonEngine* enginePtr,
-                  const Real alpha = -0.5);
+                  Real alpha = -0.5);
 
         Real operator()(Real u) const;
         Real controlVariateValue() const;
@@ -278,8 +278,8 @@ namespace QuantLib {
     class AnalyticHestonEngine::OptimalAlpha {
       public:
         OptimalAlpha(
-            const Time t,
-            const AnalyticHestonEngine* const enginePtr);
+            Time t,
+            const AnalyticHestonEngine* enginePtr);
 
         Real operator()(Real strike) const;
         std::pair<Real, Real> alphaGreaterZero(Real strike) const;
@@ -300,7 +300,7 @@ namespace QuantLib {
 
         const AnalyticHestonEngine* const enginePtr_;
         Real km_, kp_;
-        mutable Size evaluations_;
+        mutable Size evaluations_ = 0;
     };
 
 
