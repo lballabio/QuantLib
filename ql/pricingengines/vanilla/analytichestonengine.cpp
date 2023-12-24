@@ -150,8 +150,8 @@ namespace QuantLib {
         const Real t0_;
 
         // log branch counter
-        mutable int  b_;     // log branch counter
-        mutable Real g_km1_; // imag part of last log value
+        mutable int  b_ = 0;     // log branch counter
+        mutable Real g_km1_ = 0; // imag part of last log value
 
         const AnalyticHestonEngine* const engine_;
     };
@@ -175,8 +175,7 @@ namespace QuantLib {
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
         t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
-        b_(0),
-        g_km1_(0),
+        
         engine_(engine)
     {
     }
@@ -310,8 +309,8 @@ namespace QuantLib {
       sigma_(enginePtr->model_->sigma()),
       rho_(enginePtr->model_->rho()),
       eps_(std::pow(2, -int(0.5*std::numeric_limits<Real>::digits))),
-      enginePtr_(enginePtr),
-      evaluations_(0) {
+      enginePtr_(enginePtr)
+      {
         km_ = k(0.0, -1);
         kp_ = k(0.0,  1);
     }

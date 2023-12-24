@@ -254,8 +254,8 @@ namespace {
 
     class TimedBenchmark {
       public:
-        TimedBenchmark(std::function<void(void)> f, const std::string name)
-        : f_(std::move(f)), name_(std::move(name)) {}
+        TimedBenchmark(std::function<void(void)> f, const std::string& name)
+        : f_(std::move(f)), name_(name) {}
 
         void startMeasurement() const {
             //QL_REQUIRE(PAPI_hl_region_begin(name_.c_str()) == PAPI_OK,
