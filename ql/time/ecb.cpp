@@ -22,7 +22,8 @@
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <boost/utility/string_view.hpp>
-#include <boost/bimap.hpp>
+#include <boost/bimap/bimap.hpp>
+#include <boost/bimap/set_of.hpp>
 #include <algorithm>
 #include <string>
 #include <stdio.h>
@@ -32,21 +33,40 @@ using std::string;
 namespace QuantLib {
 
     namespace {
-        const boost::bimap<boost::string_view, Month> MONTHS = []() {
-            boost::bimap<boost::string_view, Month> months;
-            months.insert({"JAN", January});
-            months.insert({"FEB", February});
-            months.insert({"MAR", March});
-            months.insert({"APR", April});
-            months.insert({"MAY", May});
-            months.insert({"JUN", June});
-            months.insert({"JUL", July});
-            months.insert({"AUG", August});
-            months.insert({"SEP", September});
-            months.insert({"OCT", October});
-            months.insert({"NOV", November});
-            months.insert({"DEC", December});
-            return months;
+        // case-insensitive comparison. answers: lhs < rhs.
+        struct is_iless {
+          bool operator()(const boost::string_view lhs,
+                          const boost::string_view rhs) const {
+            char lhsUpper[3];
+            char rhsUpper[3];
+            for (int i = 0; i < 3; ++i) {
+              lhsUpper[i] = std::toupper(lhs[i]);
+              rhsUpper[i] = std::toupper(rhs[i]);
+            }
+            return boost::string_view(lhsUpper, 3) <
+                   boost::string_view(rhsUpper, 3);
+          }
+        };
+
+        using MonthBimap_t = boost::bimaps::bimap<
+            boost::bimaps::set_of<boost::string_view, is_iless>, Month>;
+
+        // bimap: generalization of map. can be queried by string_view or Month.
+        const MonthBimap_t MONTHS = []() {
+          MonthBimap_t months;
+          months.insert({"JAN", January});
+          months.insert({"FEB", February});
+          months.insert({"MAR", March});
+          months.insert({"APR", April});
+          months.insert({"MAY", May});
+          months.insert({"JUN", June});
+          months.insert({"JUL", July});
+          months.insert({"AUG", August});
+          months.insert({"SEP", September});
+          months.insert({"OCT", October});
+          months.insert({"NOV", November});
+          months.insert({"DEC", December});
+          return months;
         }();
 
         //clang-format off
