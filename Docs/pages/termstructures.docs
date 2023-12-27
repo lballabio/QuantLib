@@ -16,7 +16,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \defgroup yieldtermstructures Term structures
+/*! \defgroup termstructuressss Term structures
+
+    @{
+*/
+
+/*! \defgroup yieldtermstructures Interest-rate term structures
 
     The abstract class QuantLib::YieldTermStructure provides the common
     interface to concrete yield-rate term structure models. Among
@@ -27,3 +32,9 @@
     non-redundant part.
 */
 
+/*! \defgroup defaultprobabilitytermstructures Default-probability term structures */
+
+/*! \defgroup inflationtermstructures Inflation term structures */
+
+
+/*! @} */

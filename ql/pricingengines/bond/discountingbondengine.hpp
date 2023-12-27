@@ -32,6 +32,10 @@
 
 namespace QuantLib {
 
+    //! Discounting engine for bonds
+    /*! This engine discounts future bond cashflows to the settlement date.
+        \ingroup bondengines
+    */
     class DiscountingBondEngine : public Bond::engine {
       public:
         DiscountingBondEngine(

@@ -99,8 +99,6 @@ namespace QuantLib {
       The pricing algorithm allows for varying notional amounts and
       default termstructures of the underlyings.
 
-      \ingroup credit
-
       \todo Investigate and fix cases \f$ E_{i+1} < E_i. \f$
     */
     class SyntheticCDO : public Instrument {

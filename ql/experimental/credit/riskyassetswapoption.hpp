@@ -29,7 +29,6 @@
 namespace QuantLib {
 
     //! %Option on risky asset swap
-    /*! \ingroup credit */
     class RiskyAssetSwapOption : public Instrument {
       public:
         RiskyAssetSwapOption(ext::shared_ptr<RiskyAssetSwap> asw,

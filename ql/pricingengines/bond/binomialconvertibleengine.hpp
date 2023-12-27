@@ -37,7 +37,7 @@
 namespace QuantLib {
 
     //! Binomial Tsiveriotis-Fernandes engine for convertible bonds
-    /*  \ingroup hybridengines
+    /*  \ingroup bondengines
 
         \test the correctness of the returned value is tested by
               checking it against known results in a few corner cases.
