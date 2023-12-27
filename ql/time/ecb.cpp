@@ -269,17 +269,18 @@ namespace QuantLib {
                    ecbCode << " is not a valid ECB code");
 
         const boost::string_view month(ecbCode.data(), 3);
-        auto itMonth = MONTHS.left.find(month);
+        const Month monthEnum = MONTHS.left.at(month);
 
         string nextCodeStr;
         nextCodeStr.reserve(5);
-        if (itMonth->first != "DEC") {
+        if (monthEnum != December) {
             // use next month
-            const boost::string_view nextMonth = (++itMonth)->first;
+            const Month nextMonthEnum = static_cast<Month>(monthEnum + 1);
+            const boost::string_view nextMonth = MONTHS.right.at(nextMonthEnum);
             nextCodeStr.append(nextMonth.data(), 3);
 
             // copy year
-            nextCodeStr += { ecbCode[3], ecbCode[4] };
+            nextCodeStr += {ecbCode[3], ecbCode[4]};
         } else {
             // previous month was DEC
             nextCodeStr.append("JAN");
