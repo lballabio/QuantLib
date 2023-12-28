@@ -213,7 +213,7 @@ namespace QuantLib {
 
         // c-style string. length: 6 == (3 for month + 2 for year + 1 for terminating null)
         char ECBcode[6];
-        std::snprintf(ECBcode, 6, "%3s%02d", month.data(), y);
+        std::snprintf(ECBcode, 6, "%3s%02u", month.data(), y);
 
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_ENSURE(isECBcode(ECBcode),
