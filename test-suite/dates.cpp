@@ -209,12 +209,8 @@ BOOST_AUTO_TEST_CASE(asxDates) {
         "F9", "G9", "H9", "J9", "K9", "M9", "N9", "Q9", "U9", "V9", "X9", "Z9"
     };
 
-    Date counter = { 1, January, 2000 };
-    Date last = { 1, January, 2040 };
-    Date asx;
-
-    while (counter <= last) {
-        asx = ASX::nextDate(counter, false);
+    for (Date counter(1, January, 2000); counter <= Date(1,January, 2040); ++counter) {
+        const Date asx = ASX::nextDate(counter, false);
 
         // check that asx is greater than counter
         if (asx <= counter)
@@ -229,7 +225,7 @@ BOOST_AUTO_TEST_CASE(asxDates) {
                        << counter.weekday() << " " << counter << ")");
 
         // check that asx is <= to the next ASX date in the main cycle
-        if (asx>ASX::nextDate(counter, true))
+        if (asx > ASX::nextDate(counter, true))
             BOOST_FAIL(asx.weekday() << " " << asx
                        << " is not less than or equal to the next future in the main cycle "
                        << ASX::nextDate(counter, true));
@@ -246,9 +242,38 @@ BOOST_AUTO_TEST_CASE(asxDates) {
                 BOOST_FAIL(ASX::date(ASXcode, counter) << " is wrong for " << ASXcode
                            << " at reference date " << counter);
         }
-
-        counter = counter + 1;
     }
+}
+
+
+BOOST_AUTO_TEST_CASE(asxDatesSpecific) {
+    BOOST_TEST_MESSAGE("Testing ASX functionlity with specific dates...");
+
+    // isASXdate
+    {
+        // date is ASX date depending on mainCycle
+        const Date date((Day)12, January, (Year)2024);
+        BOOST_ASSERT(date.weekday() == Friday);
+
+        // check mainCycle
+        BOOST_TEST(ASX::isASXdate(date, /*mainCycle*/false));
+        BOOST_TEST(!ASX::isASXdate(date, /*mainCycle*/true));
+    }
+
+    // nextDate from code + ref date
+    BOOST_TEST(Date((Day)8, February, (Year)2002)
+        == ASX::nextDate("F2", /*mainCycle*/false, Date((Day)1, January, (Year)2000)));
+
+    BOOST_TEST(Date((Day)9, June, (Year)2023)
+        == ASX::nextDate("K3", /*mainCycle*/true, Date((Day)1, January, (Year)2014)));
+
+    // nextCode
+    BOOST_TEST("F4" == ASX::nextCode(Date((Day)1, January, (Year)2024), /*mainCycle*/false));
+    BOOST_TEST("G4" == ASX::nextCode(Date((Day)15, January, (Year)2024), /*mainCycle*/false));
+    BOOST_TEST("H4" == ASX::nextCode(Date((Day)15, January, (Year)2024), /*mainCycle*/true));
+
+    BOOST_TEST("G4" == ASX::nextCode("F4", /*mainCycle*/false, Date((Day)1, January, (Year)2020)));
+    BOOST_TEST("H5" == ASX::nextCode("Z4", /*mainCycle*/true, Date((Day)1, January, (Year)2020)));
 }
 
 BOOST_AUTO_TEST_CASE(testConsistency) {
