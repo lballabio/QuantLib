@@ -26,7 +26,8 @@
 #include <boost/bimap/set_of.hpp>
 #include <algorithm>
 #include <string>
-#include <stdio.h>
+#include <cstdio>
+#include <cctype>
 
 using std::string;
 
@@ -212,7 +213,7 @@ namespace QuantLib {
 
         // c-style string. length: 6 == (3 for month + 2 for year + 1 for terminating null)
         char ECBcode[6];
-        snprintf(ECBcode, 6, "%3s%02d", month.data(), y);
+        std::snprintf(ECBcode, 6, "%3s%02d", month.data(), y);
 
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_ENSURE(isECBcode(ECBcode),
