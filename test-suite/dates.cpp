@@ -42,49 +42,96 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(DateTests)
 
+BOOST_AUTO_TEST_CASE(ecbIsECBcode) {
+    BOOST_TEST_MESSAGE("Testing ECB codes for validity...");
+
+    BOOST_TEST(ECB::isECBcode("JAN00"));
+    BOOST_TEST(ECB::isECBcode("FEB78"));
+    BOOST_TEST(ECB::isECBcode("mar58"));
+    BOOST_TEST(ECB::isECBcode("aPr99"));
+
+    BOOST_TEST(!ECB::isECBcode(""));
+    BOOST_TEST(!ECB::isECBcode("JUNE99"));
+    BOOST_TEST(!ECB::isECBcode("JUN1999"));
+    BOOST_TEST(!ECB::isECBcode("JUNE"));
+    BOOST_TEST(!ECB::isECBcode("JUNE1999"));
+    BOOST_TEST(!ECB::isECBcode("1999"));
+}
+
 BOOST_AUTO_TEST_CASE(ecbDates) {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
-    std::set<Date> knownDates = ECB::knownDates();
-    if (knownDates.empty())
-        BOOST_FAIL("empty EBC date vector");
+    const std::set<Date> knownDates = ECB::knownDates();
+    BOOST_TEST(!knownDates.empty(),
+                   "empty ECB date vector");
 
-    Size n = ECB::nextDates(Date::minDate()).size();
-    if (n != knownDates.size())
-        BOOST_FAIL("nextDates(minDate) returns "  << n <<
+    const Size n = ECB::nextDates(Date::minDate()).size();
+    BOOST_TEST(n == knownDates.size(),
+                   "nextDates(minDate) returns "  << n <<
                    " instead of " << knownDates.size() << " dates");
 
-    std::set<Date>::const_iterator i;
-    Date previousEcbDate = Date::minDate(),
-         currentEcbDate, ecbDateMinusOne;
-    for (i=knownDates.begin(); i!=knownDates.end(); ++i) {
-
-        currentEcbDate = *i;
+    Date previousEcbDate = Date::minDate();
+    for (const Date& currentEcbDate : knownDates) {
         if (!ECB::isECBdate(currentEcbDate))
             BOOST_FAIL(currentEcbDate << " fails isECBdate check");
 
-        ecbDateMinusOne = currentEcbDate-1;
+        const Date ecbDateMinusOne = currentEcbDate-1;
         if (ECB::isECBdate(ecbDateMinusOne))
             BOOST_FAIL(ecbDateMinusOne << " fails isECBdate check");
 
-        if (ECB::nextDate(ecbDateMinusOne)!=currentEcbDate)
-            BOOST_FAIL("next EBC date following " << ecbDateMinusOne <<
+        if (ECB::nextDate(ecbDateMinusOne) != currentEcbDate)
+            BOOST_FAIL("next ECB date following " << ecbDateMinusOne <<
                        " must be " << currentEcbDate);
 
-        if (ECB::nextDate(previousEcbDate)!=currentEcbDate)
-            BOOST_FAIL("next EBC date following " << previousEcbDate <<
+        if (ECB::nextDate(previousEcbDate) != currentEcbDate)
+            BOOST_FAIL("next ECB date following " << previousEcbDate <<
                        " must be " << currentEcbDate);
 
         previousEcbDate = currentEcbDate;
     }
 
-    Date knownDate = *knownDates.begin();
+    const Date knownDate = *knownDates.begin();
     ECB::removeDate(knownDate);
-    if (ECB::isECBdate(knownDate))
-        BOOST_FAIL("unable to remove an EBC date");
+    BOOST_TEST(!ECB::isECBdate(knownDate),
+                   "unable to remove an ECB date");
     ECB::addDate(knownDate);
-    if (!ECB::isECBdate(knownDate))
-        BOOST_FAIL("unable to add an EBC date");
+    BOOST_TEST(ECB::isECBdate(knownDate),
+                   "unable to add an ECB date");
+}
+
+BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
+    BOOST_TEST_MESSAGE("Testing conversion of ECB codes to dates...");
+
+    const Date ref2000((Day)1, January, (Year)2000);
+    BOOST_TEST(ECB::date("JAN05", ref2000) == Date((Day)19, January,  (Year)2005));
+    BOOST_TEST(ECB::date("FEB06", ref2000) == Date((Day) 8, February, (Year)2006));
+    BOOST_TEST(ECB::date("MAR07", ref2000) == Date((Day)14, March,    (Year)2007));
+    BOOST_TEST(ECB::date("APR08", ref2000) == Date((Day)16, April,    (Year)2008));
+    BOOST_TEST(ECB::date("JUN09", ref2000) == Date((Day)10, June,     (Year)2009));
+    BOOST_TEST(ECB::date("JUL10") == Date((Day)14, July,      (Year)2010));
+    BOOST_TEST(ECB::date("AUG11") == Date((Day)10, August,    (Year)2011));
+    BOOST_TEST(ECB::date("SEP12") == Date((Day)12, September, (Year)2012));
+    BOOST_TEST(ECB::date("OCT13") == Date((Day) 9, October,   (Year)2013));
+    BOOST_TEST(ECB::date("NOV14") == Date((Day)12, November,  (Year)2014));
+    BOOST_TEST(ECB::date("DEC15") == Date((Day) 9, December,  (Year)2015));
+}
+
+BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
+    BOOST_TEST_MESSAGE("Testing creation of ECB code from a given date...");
+
+    BOOST_TEST("JAN06" == ECB::code(Date((Day)18, January,  (Year)2006)));
+    BOOST_TEST("MAR10" == ECB::code(Date((Day)10, March,    (Year)2010)));
+    BOOST_TEST("NOV17" == ECB::code(Date((Day) 1, November, (Year)2017)));
+}
+
+BOOST_AUTO_TEST_CASE(ecbNextCode) {
+    BOOST_TEST_MESSAGE("Testing getting the next code from a given code...");
+
+    BOOST_TEST("FEB06" == ECB::nextCode("JAN06"));
+    BOOST_TEST("MAR10" == ECB::nextCode("FeB10"));
+    BOOST_TEST("NOV17" == ECB::nextCode("OCT17"));
+    BOOST_TEST("JAN18" == ECB::nextCode("dEC17"));
+    BOOST_TEST("JAN00" == ECB::nextCode("dec99"));
 }
 
 BOOST_AUTO_TEST_CASE(immDates) {
