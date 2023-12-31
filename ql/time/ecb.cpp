@@ -73,7 +73,7 @@ namespace QuantLib {
         //clang-format off
         // Start of maintenance period
         // source: https://web.archive.org/web/20230610050642/https://www.ecb.europa.eu/press/calendars/reserve/html/index.en.html
-        static std::set<Date> ecbKnownDateSet = {
+        std::set<Date> ecbKnownDateSet = {
             // 2005
             Date(38371), Date(38391), Date(38420), Date(38455), Date(38483), Date(38511),
             Date(38546), Date(38574), Date(38602), Date(38637), Date(38665), Date(38692),
@@ -261,8 +261,8 @@ namespace QuantLib {
         }
 
         // 4th, 5th characters need to be digit
-        return std::isdigit(static_cast<unsigned char>(ecbCode[3]))
-            && std::isdigit(static_cast<unsigned char>(ecbCode[4]));
+        return (std::isdigit(static_cast<unsigned char>(ecbCode[3])) != 0)
+            && (std::isdigit(static_cast<unsigned char>(ecbCode[4])) != 0);
     }
 
     string ECB::nextCode(const std::string& ecbCode) {
@@ -276,7 +276,7 @@ namespace QuantLib {
         nextCodeStr.reserve(5);
         if (monthEnum != December) {
             // use next month
-            const Month nextMonthEnum = static_cast<Month>(monthEnum + 1);
+            const auto nextMonthEnum = static_cast<Month>(monthEnum + 1);
             const boost::string_view nextMonth = MONTHS.right.at(nextMonthEnum);
             nextCodeStr.append(nextMonth.data(), 3);
 
