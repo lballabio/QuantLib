@@ -59,6 +59,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <string>
 #include <utility>
@@ -254,8 +255,8 @@ namespace {
 
     class TimedBenchmark {
       public:
-        TimedBenchmark(std::function<void(void)> f, const std::string& name)
-        : f_(std::move(f)), name_(name) {}
+        TimedBenchmark(std::function<void(void)> f, std::string  name)
+        : f_(std::move(f)), name_(std::move(name)) {}
 
         void startMeasurement() const {
             //QL_REQUIRE(PAPI_hl_region_begin(name_.c_str()) == PAPI_OK,

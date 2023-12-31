@@ -61,7 +61,7 @@ namespace QuantLib {
             return false;
 
         // 2nd character of code needs to be digit
-        if (!std::isdigit(static_cast<unsigned char>(in[1])))
+        if (std::isdigit(static_cast<unsigned char>(in[1])) == 0)
             return false;
 
         // 1st character needs to represent the correct month
@@ -101,7 +101,7 @@ namespace QuantLib {
         QL_ASSERT(idxZeroBased != All_MONTH_CODES.npos, "invalid ASX month letter. code: " + asxCode);
 
         // QuantLib::Month is 1-based!
-        const QuantLib::Month m = static_cast<QuantLib::Month>(idxZeroBased + 1);
+        const auto m = static_cast<QuantLib::Month>(idxZeroBased + 1);
 
         // convert 2nd char to year digit
         Year y = static_cast<int>(asxCode[1]) - static_cast<int>('0');
