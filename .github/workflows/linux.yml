@@ -104,10 +104,15 @@ jobs:
             tag: lunar
             cc: clang
             cxx: clang++
-            tests: true
           - name: "Clang 16"
             shortname: clang16
             tag: mantic
+            cc: clang
+            cxx: clang++
+            tests: true
+          - name: "Clang 17"
+            shortname: clang17
+            tag: noble
             cc: clang
             cxx: clang++
             tests: true

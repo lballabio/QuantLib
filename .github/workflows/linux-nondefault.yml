@@ -110,6 +110,11 @@ jobs:
             tag: mantic
             cc: clang
             cxx: clang++
+          - name: "Clang 17"
+            shortname: clang17
+            tag: noble
+            cc: clang
+            cxx: clang++
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
