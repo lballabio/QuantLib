@@ -123,7 +123,7 @@ namespace QuantLib {
             explicit Impl(std::vector<Time> times) : times_(std::move(times)) {}
 
             Real value(const Array& params, Time t) const override {
-                Size i = upper_bound(times_.begin(), times_.end(), t) - times_.begin();
+                Size i = std::upper_bound(times_.begin(), times_.end(), t) - times_.begin();
                 return params[i-(i!=0)];
             }
 
