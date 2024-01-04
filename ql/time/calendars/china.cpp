@@ -201,7 +201,7 @@ namespace QuantLib {
     }
 
     bool China::IbImpl::isBusinessDay(const Date& date) const {
-        static const Date working_weekends[] = {
+        static const std::set<Date> workingWeekends = {
             // 2005
             Date(5, February, 2005),
             Date(6, February, 2005),
@@ -356,9 +356,6 @@ namespace QuantLib {
             Date(29, Sep, 2024),
             Date(12, October, 2024)
         };
-        static const Size n = sizeof(working_weekends) / sizeof(working_weekends[0]);
-        static const std::set<Date> workingWeekends(working_weekends+0,
-                                                    working_weekends+n);
 
         // If it is already a SSE business day, it must be a IB business day
         return sseImpl->isBusinessDay(date) ||
