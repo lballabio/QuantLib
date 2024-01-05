@@ -124,7 +124,7 @@ namespace QuantLib {
 
             Real value(const Array& params, Time t) const override {
                 Size i = std::upper_bound(times_.begin(), times_.end(), t) - times_.begin();
-                return params[i-(i!=0)];
+                return params[i];
             }
 
           private:
