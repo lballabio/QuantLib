@@ -190,14 +190,19 @@ set(QL_BENCHMARK_SOURCES
     batesmodel.cpp                      
     bermudanswaption.cpp                
     cdo.cpp                             
+    cms.cpp          
     cmsspread.cpp                       
     convertiblebonds.cpp                
     creditdefaultswap.cpp               
     europeanoption.cpp                  
     fdheston.cpp                        
     fdmlinearop.cpp                     
+    functions.cpp     
+    gaussianquadratures.cpp   
     hestonmodel.cpp                     
     hestonslvmodel.cpp                  
+    interestrates.cpp        
+    libormarketmodel.cpp  
     linearleastsquaresregression.cpp   
     lowdiscrepancysequences.cpp         
     marketmodel_cms.cpp                 
@@ -207,7 +212,10 @@ set(QL_BENCHMARK_SOURCES
     overnightindexedswap.cpp            
     piecewiseyieldcurve.cpp             
     riskstats.cpp                       
+    rounding.cpp                        
     shortratemodels.cpp                 
+    stats.cpp    
+    squarerootclvmodel.cpp              
     swaptionvolatilitycube.cpp          
     swingoption.cpp                     
     preconditions.cpp                   preconditions.hpp
