@@ -31,13 +31,13 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        accumulator_set<Real, features<tag::sum> > acc;
+        Real acc=0.0;
 
         for (Size i=0; i < n-1; ++i) {
-            acc((x[i+1]-x[i])*(f[i]+f[i+1]));
+            acc+=(x[i+1]-x[i])*(f[i]+f[i+1]);
         }
 
-        return 0.5*sum(acc);
+        return 0.5*acc;
     }
 
     Real DiscreteSimpsonIntegral::operator()(
@@ -46,7 +46,7 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        accumulator_set<Real, features<tag::sum> > acc;
+        Real acc=0.0;
 
         for (Size j=0; j < n-2; j+=2) {
             const Real dxj   = x[j+1]-x[j];
@@ -58,13 +58,13 @@ namespace QuantLib {
             const Real beta = dd*dd;
             const Real gamma = dxj*(2*dxjp1-dxj);
 
-            acc(k*(alpha*f[j]+beta*f[j+1]+gamma*f[j+2]));
+            acc+=k*(alpha*f[j]+beta*f[j+1]+gamma*f[j+2]);
         }
         if ((n & 1) == 0U) {
-            acc(0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]));
+            acc+=0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]);
         }
 
-        return sum(acc);
+        return acc;
     }
 
     Real DiscreteTrapezoidIntegrator::integrate(
