@@ -18,10 +18,6 @@
 */
 
 #include <ql/math/integrals/discreteintegrals.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-
-using namespace boost::accumulators;
 
 namespace QuantLib {
 
@@ -31,13 +27,13 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        Real acc=0.0;
+        Real sum=0.0;
 
         for (Size i=0; i < n-1; ++i) {
-            acc+=(x[i+1]-x[i])*(f[i]+f[i+1]);
+            sum+=(x[i+1]-x[i])*(f[i]+f[i+1]);
         }
 
-        return 0.5*acc;
+        return 0.5*sum;
     }
 
     Real DiscreteSimpsonIntegral::operator()(
@@ -46,7 +42,7 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        Real acc=0.0;
+        Real sum=0.0;
 
         for (Size j=0; j < n-2; j+=2) {
             const Real dxj   = x[j+1]-x[j];
@@ -58,53 +54,53 @@ namespace QuantLib {
             const Real beta = dd*dd;
             const Real gamma = dxj*(2*dxjp1-dxj);
 
-            acc+=k*(alpha*f[j]+beta*f[j+1]+gamma*f[j+2]);
+            sum+=k*(alpha*f[j]+beta*f[j+1]+gamma*f[j+2]);
         }
         if ((n & 1) == 0U) {
-            acc+=0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]);
+            sum+=0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]);
         }
 
-        return acc;
+        return sum;
     }
 
     Real DiscreteTrapezoidIntegrator::integrate(
         const ext::function<Real (Real)>& f, Real a, Real b) const {
             const Size n=maxEvaluations()-1;
             const Real d=(b-a)/n;
-            Real acc=f(a)/2;
+            Real sum=f(a)/2;
             for(Size i=0;i<n-1;++i) {
                 a+=d;
-                acc+=f(a);
+                sum+=f(a);
             }
-            acc+=f(b)/2;
+            sum+=f(b)/2;
             increaseNumberOfEvaluations(maxEvaluations());
-            return d*acc;
+            return d*sum;
     }
 
     Real DiscreteSimpsonIntegrator::integrate(
         const ext::function<Real (Real)>& f, Real a, Real b) const {
             const Size n=maxEvaluations()-1;
             const Real d=(b-a)/n, d2=d*2;
-            Real acc=0.0, x=a+d;
+            Real sum=0.0, x=a+d;
             for(Size i=1;i<n;i+=2) {//to time 4
-                acc+=f(x);
+                sum+=f(x);
                 x+=d2;
             }
-            acc*=2;
+            sum*=2;
 
             x=a+d2;
             for(Size i=2;i<n-1;i+=2) {//to time 2
-                acc+=f(x);
+                sum+=f(x);
                 x+=d2;
             }
-            acc*=2;
+            sum*=2;
 
-            acc+=f(a);
+            sum+=f(a);
             if(n&1)
-                acc+=1.5*f(b)+2.5*f(b-d);
+                sum+=1.5*f(b)+2.5*f(b-d);
             else
-                acc+=f(b);
+                sum+=f(b);
             increaseNumberOfEvaluations(maxEvaluations());
-            return d/3*acc;
+            return d/3*sum;
     }
 }
