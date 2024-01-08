@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(testIntervalPrice) {
 }
 
 BOOST_AUTO_TEST_CASE(testIteratingDefaultContainer) {
-    BOOST_TEST_MESSAGE("Testing iterating of time series w/ default container which sorts by date...");
+    BOOST_TEST_MESSAGE("Testing iteration of time series with a default container which sorts by date...");
 
     const std::vector<Date> dates = {Date(25, March, 2005),
                                      Date(29, March, 2005),
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(testInspectors) {
 }
 
 BOOST_AUTO_TEST_CASE(testUtilities) {
-    BOOST_TEST_MESSAGE("Testing utilities of time series...");
+    BOOST_TEST_MESSAGE("Testing time series utilities...");
 
     const std::vector<Date> dates = {Date(25, March, 2005),
                                      Date(29, March, 2005),

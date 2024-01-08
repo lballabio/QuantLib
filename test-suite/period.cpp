@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(testWeeksDaysAlgebra) {
 }
 
 BOOST_AUTO_TEST_CASE(testOperators) {
-    BOOST_TEST_MESSAGE("Testing specific operators...");
+    BOOST_TEST_MESSAGE("Testing period operators...");
 
     Period p(3, Days);
     p *= 2;
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(testOperators) {
 }
 
 BOOST_AUTO_TEST_CASE(testConvertToYears) {
-    BOOST_TEST_MESSAGE("Testing converting periods to years...");
+    BOOST_TEST_MESSAGE("Testing conversion of periods to years...");
 
     BOOST_TEST(years(Period(0, Years)) == 0);
     BOOST_TEST(years(Period(1, Years)) == 1);
@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE(testConvertToYears) {
 }
 
 BOOST_AUTO_TEST_CASE(testConvertToMonths) {
-    BOOST_TEST_MESSAGE("Testing converting periods to months...");
+    BOOST_TEST_MESSAGE("Testing conversion of periods to months...");
 
     BOOST_TEST(months(Period(0, Months)) == 0);
     BOOST_TEST(months(Period(1, Months)) == 1);
@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE(testConvertToMonths) {
 }
 
 BOOST_AUTO_TEST_CASE(testConvertToWeeks) {
-    BOOST_TEST_MESSAGE("Testing converting periods to weeks...");
+    BOOST_TEST_MESSAGE("Testing conversion of periods to weeks...");
 
     BOOST_TEST(weeks(Period(0, Weeks)) == 0);
     BOOST_TEST(weeks(Period(1, Weeks)) == 1);

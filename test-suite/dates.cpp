@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
 }
 
 BOOST_AUTO_TEST_CASE(ecbNextCode) {
-    BOOST_TEST_MESSAGE("Testing getting the next code from a given code...");
+    BOOST_TEST_MESSAGE("Testing calculation of the next ECB code from a given code...");
 
     BOOST_TEST("FEB06" == ECB::nextCode("JAN06"));
     BOOST_TEST("MAR10" == ECB::nextCode("FeB10"));
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(asxDates) {
 
 
 BOOST_AUTO_TEST_CASE(asxDatesSpecific) {
-    BOOST_TEST_MESSAGE("Testing ASX functionlity with specific dates...");
+    BOOST_TEST_MESSAGE("Testing ASX functionality with specific dates...");
 
     // isASXdate
     {
