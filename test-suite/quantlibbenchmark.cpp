@@ -59,9 +59,9 @@
 
 #include <iomanip>
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <string>
-#include <utility>
 #include <chrono>
 #include <thread>
 
@@ -254,7 +254,7 @@ namespace {
 
     class TimedBenchmark {
       public:
-        TimedBenchmark(std::function<void(void)> f, const std::string name)
+        TimedBenchmark(std::function<void(void)> f, std::string  name)
         : f_(std::move(f)), name_(std::move(name)) {}
 
         void startMeasurement() const {

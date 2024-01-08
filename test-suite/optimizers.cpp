@@ -431,7 +431,7 @@ class Griewangk : public CostFunction {
 };
 
 
-BOOST_AUTO_TEST_CASE(testDifferentialEvolution, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
     BOOST_TEST_MESSAGE("Testing differential evolution...");
 
     /* Note:

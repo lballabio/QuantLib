@@ -95,6 +95,7 @@ namespace QuantLib {
             || (y == 2021 && (d == 11 || d == 12 || d == 15 || d == 16 || d == 17) && m == February)
             || (y == 2022 && ((d == 31 && m == January) || (d <= 4 && m == February)))
             || (y == 2023 && d >= 23 && d <= 27 && m == January)
+            || (y == 2024 && (d == 9 || (d >= 12 && d <= 16)) && m == February)
             // Ching Ming Festival
             || (y <= 2008 && d == 4 && m == April)
             || (y == 2009 && d == 6 && m == April)
@@ -112,6 +113,7 @@ namespace QuantLib {
             || (y == 2021 && d == 5 && m == April)
             || (y == 2022 && d >= 4 && d <= 5 && m == April)
             || (y == 2023 && d == 5 && m == April)
+            || (y == 2024 && d >= 4 && d <= 5 && m == April)
             // Labor Day
             || (y <= 2007 && d >= 1 && d <= 7 && m == May)
             || (y == 2008 && d >= 1 && d <= 2 && m == May)
@@ -132,6 +134,7 @@ namespace QuantLib {
             || (y == 2021 && (d == 3 || d == 4 || d == 5) && m == May)
             || (y == 2022 && d >= 2 && d <= 4 && m == May)
             || (y == 2023 && d >= 1 && d <= 3 && m == May)
+            || (y == 2024 && d >= 1 && d <= 3 && m == May)
             // Tuen Ng Festival
             || (y <= 2008 && d == 9 && m == June)
             || (y == 2009 && (d == 28 || d == 29) && m == May)
@@ -149,6 +152,7 @@ namespace QuantLib {
             || (y == 2021 && d == 14 && m == June)
             || (y == 2022 && d == 3 && m == June)
             || (y == 2023 && d >= 22 && d <= 23 && m == June)
+            || (y == 2024 && d == 10 && m == June)
             // Mid-Autumn Festival
             || (y <= 2008 && d == 15 && m == September)
             || (y == 2010 && d >= 22 && d <= 24 && m == September)
@@ -163,6 +167,7 @@ namespace QuantLib {
             || (y == 2021 && (d == 20 || d == 21) && m == September)
             || (y == 2022 && d == 12 && m == September)
             || (y == 2023 && d == 29 && m == September)
+            || (y == 2024 && d >= 16 && d <= 17 && m == September)
             // National Day
             || (y <= 2007 && d >= 1 && d <= 7 && m == October) 
             || (y == 2008 && ((d >= 29 && m == September) ||
@@ -183,6 +188,7 @@ namespace QuantLib {
             || (y == 2021 && (d == 1 || d == 4 || d == 5 || d == 6 || d == 7) && m == October)
             || (y == 2022 && d >= 3 && d <= 7 && m == October)
             || (y == 2023 && d >= 2 && d <= 6 && m == October)
+            || (y == 2024 && ((d >= 1 && d <= 4) || d == 7) && m == October)
             // 70th anniversary of the victory of anti-Japaneses war
             || (y == 2015 && d >= 3 && d <= 4 && m == September)
             )
@@ -195,7 +201,7 @@ namespace QuantLib {
     }
 
     bool China::IbImpl::isBusinessDay(const Date& date) const {
-        static const Date working_weekends[] = {
+        static const std::set<Date> workingWeekends = {
             // 2005
             Date(5, February, 2005),
             Date(6, February, 2005),
@@ -338,12 +344,18 @@ namespace QuantLib {
             Date(6, May, 2023),
             Date(25, June, 2023),
             Date(7, October, 2023),
-            Date(8, October, 2023)
+            Date(8, October, 2023),
+            // 2024
+            Date(4, Feb, 2024),
+            Date(9, Feb, 2024),
+            Date(18, Feb, 2024),
+            Date(7, Apr, 2024),
+            Date(28, Apr, 2024),
+            Date(11, May, 2024),
+            Date(14, Sep, 2024),
+            Date(29, Sep, 2024),
+            Date(12, October, 2024)
         };
-        static const Size n =
-            sizeof(working_weekends)/sizeof(working_weekends[0]);
-        static const std::set<Date> workingWeekends(working_weekends+0,
-                                                    working_weekends+n);
 
         // If it is already a SSE business day, it must be a IB business day
         return sseImpl->isBusinessDay(date) ||

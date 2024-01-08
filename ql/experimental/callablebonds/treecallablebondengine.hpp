@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! Numerical lattice engine for callable fixed rate bonds
-    /*! \ingroup callablebondengines */
+    /*! \ingroup bondengines */
     class TreeCallableFixedRateBondEngine
         : public LatticeShortRateModelEngine<CallableBond::arguments,
                                              CallableBond::results> {
@@ -57,7 +57,7 @@ namespace QuantLib {
     };
 
     //! Numerical lattice engine for callable zero coupon bonds
-    /*! \ingroup callablebondengines */
+    /*! \ingroup bondengines */
     class TreeCallableZeroCouponBondEngine
         : public TreeCallableFixedRateBondEngine {
 

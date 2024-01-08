@@ -19,7 +19,6 @@
 
 /*! \file globalbootstrap.hpp
     \brief global bootstrap, with additional restrictions
-    \ingroup termstructures
 */
 
 #ifndef quantlib_global_bootstrap_hpp

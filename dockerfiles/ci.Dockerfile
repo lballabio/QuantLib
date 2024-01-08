@@ -12,7 +12,7 @@ ARG boost_version
 ARG boost_dir
 ENV boost_version ${boost_version}
 
-RUN wget https://boostorg.jfrog.io/artifactory/main/release/${boost_version}/source/${boost_dir}.tar.gz \
+RUN wget https://downloads.sourceforge.net/project/boost/boost/${boost_version}/${boost_dir}.tar.gz \
     && tar xfz ${boost_dir}.tar.gz \
     && rm ${boost_dir}.tar.gz \
     && cd ${boost_dir} \

@@ -1,178 +1,113 @@
-Changes for QuantLib 1.32:
+Changes for QuantLib 1.33:
 ==========================
 
-QuantLib 1.32 includes 34 pull requests from several contributors.
+QuantLib 1.33 includes 38 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/29?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/31?closed=1>.
 
 
 Portability
 -----------
 
-- **Possibly breaking change:** the protected `evaluationDate_` data
-  member of the `SwaptionVolatilityDiscrete` class was renamed to
-  `cachedReferenceDate_`.
-
-- **Future end of support:** we're targeting the future release 1.35
-  as the last to support Visual C++ 2015, g++ up to version 6.x, and
-  clang up to version 4; support for those compilers will be dropped
-  in release 1.36, about one year from now.  From that point onwards,
-  this will allows us to enable the use of C++17 in the code base.
+- **Future end of support:** as announced in release 1.32, we're
+  targeting the future release 1.35 as the last to support Visual C++
+  2015, g++ up to version 6.x, and clang up to version 4; support for
+  those compilers will be dropped in release 1.36, about nine months
+  from now.  From that point onwards, this will allows us to enable
+  the use of C++17 in the code base.
 
 - **Future end of support:** at the same time as the above, we'll also
   remove the configure switch that allows to use `boost::tuple`,
   `boost::function` and `boost::bind` instead of their `std`
-  counterparts; starting from this release, the `std` classes are
-  already the default.
+  counterparts; the `std` classes are already the default since
+  release 1.32.
 
-- Reorganized the CMake presets; thanks to the XAD team
-  (@auto-differentiation-dev).
-
-
-Cash flows
-----------
-
-- All cash flows are now lazy; thanks to Peter Caspers (@pcaspers).
+- Added CMake presets for Apple; thanks to Christian Köhnenkamp
+  (@kohnech).
 
 
-Instruments
------------
+Dates and calendars
+-------------------
 
-- Overnight-indexed swaps can now have different schedules and
-  nominals on the two legs; thanks to Tom Anderson
-  (@tomwhoiscontrary).
+- Added New Year's Eve as a holiday to Chilean calendar; thanks to
+  GitHub user @MoixaStrikes.
 
-- Margrabe options, compound options and chooser options were moved
-  from experimental to core (@lballabio).
+- Added Chinese holidays for 2024; thanks to Cheng Li (@wegamekinglc).
 
-- Introduced common base class `FixedVsFloatingSwap` for vanilla swap
-  and overnight-indexed swaps; this will be used in the future to help
-  a few existing swap engines support OIS (@lballabio).
+- Updated list of known ECB dates; thanks to GitHub user @PaulXiCao.
 
-- Added optional `redemptions` argument to amortizing bond
-  constructors.  This allows them to be used for pools of loans where a
-  certain proportion of the underlying loans are subject to defaults
-  and losses.  Thanks to Gyan Sinha (@gyansinha).
+- Added Thailandese and Taiwanese holidays up to 2024; thanks to
+  Fredrik Gerdin Börjesson (@gbfredrik).
 
-- It is now possible to manually prune the notification tree for swaps
-  and bonds if one knows that the cashflows won't change pricer;
-  thanks to Peter Caspers (@pcaspers).
+- Added one-time holiday to South African calendar; thanks to Francois
+  Botha (@igitur).
 
 
 Models
 ------
 
-- Fixed the algorithm to add instruments to the calibration set of the
-  Markov model; thanks to Peter Caspers (@pcaspers) for the fix and
-  Giuseppe Trapani (@lePidduN7) for the heads-up.
+- Added support for angled contour shift integrals to Heston model;
+  thanks to Klaus Spanderen (@klausspanderen).
 
 
-Term structures
----------------
+Instruments
+-----------
 
-- Time-to-date conversion in some swaption volatility classes could
-  return the wrong date before the first exercise date; this is now
-  fixed, thanks to Peter Caspers (@pcaspers).
+- Allow different calendars and frequencies for different legs in
+  `MakeOIS` and `OISRateHelper`; thanks to Eugene Toder (@eltoder).
 
-- It's now possible to specify the maximum number of iteration for the
-  solver inside a bootstrapped term structure; thanks to Jonathan
-  Sweemer (@sweemer) for the change and Daniel Ángeles Ortiz (@Danie8)
-  for the heads-up.
-
-- Reduced the number of notifications for bootstrap helpers; thanks to
-  Peter Caspers (@pcaspers).
+- Enabled negative payment lag in swap legs; thanks to GitHub user
+  @Stoozy.
 
 
 Random numbers
 --------------
 
-- Added the xoshiro265** random-number generator; thanks to Ralf
-  Konrad (@ralfkonrad).  It is faster than the Mersenne Twister and
-  might be used as default in the future.
+- Added Burley 2020 scrambled Sobol sequence generator; thanks to
+  Peter Caspers (@pcaspers).
 
 
-Examples
---------
+Tests
+-----
 
-- The code of the examples has been modernized a bit; thanks to
-  Jonathan Sweemer (@sweemer).
+- Use automated registration of unit tests; thanks to Siddharth
+  Mehrotra (@Sidsky).
 
+- Added a few fuzzing tests; thanks to Nathaniel Brough (@silvergasp).
 
-Patterns
---------
-
-- Avoided a possible crash when using observables in a multi-threaded
-  setting; thanks to Peter Caspers (@pcaspers).
+- Improved test coverage for a few classes; thanks to GitHub user
+  @PaulXiCao.
 
 
 Deprecated features
 -------------------
 
-- **Removed** features deprecated in version 1.27:
-  - The `QL_NULL_INTEGER`, `QL_NULL_REAL`, `QL_NOEXCEPT`,
-    `QL_CONSTEXPR` and `QL_USE_STD_UNIQUE_PTR` macros.
-  - The `MultiCurveSensitivities` class.
-  - The `constant`, `identity`, `square`, `cube`, `fourth_power`,
-    `add`, `subtract`, `subtract_from`, `multiply_by`, `divide`,
-    `divide_by`, `less_than`, `greater_than`, `greater_or_equal_to`,
-    `not_zero`, `not_null`, `everywhere`, `nowhere`, `equal_within`,
-    `clipped_function`, `clip`, `composed_function`, `compose`,
-    `binary_compose3_function` and `compose3` functors.
-  - The `PdeShortRate`, `ShoutCondition`, `FDShoutCondition`,
-    `FDStepConditionEngine` and `FDEngineAdapter` classes from the old
-    finite-differences framework.
-  - The `dsd::inner_product` function.
-  - The `FDDividendEngineBase`, `FDDividendEngineMerton73`,
-    `FDDividendEngineShiftScale` and `FDDividendEngine` pricing
-    engines.
-  - The empty headers `ql/auto_ptr.hpp`, `ql/math/initializers.hpp`,
-    `ql/methods/finitedifferences/americancondition.hpp`,
-    `ql/methods/finitedifferences/onefactoroperator.hpp`,
-    `ql/pricingengines/vanilla/fddividendshoutengine.hpp`,
-    `ql/pricingengines/vanilla/fdshoutengine.hpp` and
-    `ql/utilities/disposable.hpp`.
+- **Removed** features deprecated in version 1.28:
+  - The overload of `CallableBond::impliedVolatility` taking an NPV as target.
+  - The constructor of `AmortizingFixedRateBond` taking a sinking frequency.
+  - The constructor of `AmortizingFixedRateBond` taking a vector of
+    `InterestRate` instances.
+  - The constructor of `FixedRateBond` taking start date, maturity
+    date etc. instead of a schedule.
+  - The constructor of `FixedRateBond` taking a vector of
+    `InterestRate` instances.
+  - The constructor of `FloatingRateBond` taking start date, maturity
+    date etc. instead of a schedule.
+  - The constructor of `CPICapFloor` taking a handle to an
+    interest-rate index.
+  - The `CPICapFloor::inflationIndex` method.
+  - The `infIndex` data member of the `CPICapFloor::arguments` class.
+  - A redundant constructor of `SabrSmileSection`.
+  - The empty headers
+    `ql/experimental/amortizingbonds/amortizingcmsratebond.hpp`,
+    `ql/experimental/amortizingbonds/amortizingfixedratebond.hpp` and
+    `ql/experimental/amortizingbonds/amortizingfloatingratebond.hpp`.
 
-- Deprecated the overload of the `withReplication` method in the
-  `DigitalIborLeg`, `DigitalCmsLeg` and `DigitalCmsSpreadLeg` classes
-  that takes no arguments; use the other overload instead.
-
-- Deprecated the `StandardFiniteDifferenceModel`,
-  `StandardSystemFiniteDifferenceModel` and `StandardStepCondition`
-  typedefs; define your own typedefs if needed.
-
-- Deprecated the `FDVanillaEngine`, `FDMultiPeriodEngine`,
-  `StepConditionSet`, `ParallelEvolverTraits`, `ParallelEvolver` and
-  `SampledCurve`classes and the `BSMTermOperator` and
-  `SampledCurveSet` typedefs; use the new finite-differences framework
-  instead.
-
-- Deprecated the `QL_NULL_FUNCTION` macro; to check if a function is
-  empty, use it in a bool context instead.
-
-- Deprecated the now empty headers
-  `ql/experimental/exoticoptions/margrabeoption.hpp`,
-  `ql/experimental/exoticoptions/analyticcomplexchooserengine.hpp`,
-  `ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp`,
-  `ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp`,
-  `ql/experimental/exoticoptions/simplechooseroption.hpp`,
-  `ql/experimental/exoticoptions/compoundoption.hpp`,
-  `ql/experimental/exoticoptions/analyticamericanmargrabeengine.hpp`,
-  `ql/experimental/exoticoptions/analyticsimplechooserengine.hpp`,
-  `ql/experimental/exoticoptions/complexchooseroption.hpp`,
-  `ql/experimental/termstructures/multicurvesensitivities.hpp`,
-  `ql/methods/finitedifferences/shoutcondition.hpp`,
-  `ql/methods/finitedifferences/pdeshortrate.hpp`,
-  `ql/pricingengines/vanilla/fddividendengine.hpp`,
-  `ql/pricingengines/vanilla/fdstepconditionengine.hpp`,
-  `ql/pricingengines/vanilla/fdconditions.hpp` and
-  `ql/models/marketmodels/duffsdeviceinnerproduct.hpp`.
+- Deprecated the constructor of `Currency` and `Currency::Data` taking
+  a format string, and the `Currency::format` method.
 
 
-**Thanks go also** to Jonathan Sweemer (@sweemer), Ralf Konrad
-(@ralfkonrad), Klaus Spanderen (@klausspanderen), Peter Caspers
-(@pcaspers), Tom Anderson (@tomwhoiscontrary), Fredrik Gerdin
-Börjesson (@gbfredrik), Guillaume Horel (@thrasibule) and the XAD team
-(@auto-differentiation-dev) for a number of smaller fixes and
-improvements.
+**Thanks go also** to Yi Jiang (@yjian012), Hoang Giap Vu (@hgv79116)
+and Jonathan Sweemer (@sweemer) for smaller fixes and improvements.
