@@ -138,6 +138,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
+            cxxflags: "-Wno-array-bounds"
             configureflags: --enable-unity-build
           - name: "Standard Library classes enabled/disabled"
             shortname: stdclasses
