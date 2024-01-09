@@ -3288,7 +3288,7 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmin) {
     const Real alphaStar = AnalyticHestonEngine::OptimalAlpha(1.0, engine.get())
                                .alphaSmallerMinusOne(strike).first;
 
-    BOOST_CHECK_SMALL(alphaStar+3.71, 0.0051);
+    QL_CHECK_SMALL(alphaStar+3.71, 0.0051);
 
     const Date maturityDate = todaysDate + Period(15, Months);
 
@@ -3345,7 +3345,7 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmax) {
     auto engine = ext::make_shared<AnalyticHestonEngine>(model);
     Real alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
             .alphaGreaterZero(strike).first;
-    BOOST_CHECK_SMALL(alphaStar - 3.22615, 1e-4);
+    QL_CHECK_SMALL(alphaStar - 3.22615, 1e-4);
 
     // case 2: kappa - sigma*rho < 0, T < t_cut
     model = ext::make_shared<HestonModel>(
@@ -3353,7 +3353,7 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmax) {
     engine = ext::make_shared<AnalyticHestonEngine>(model);
     alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
             .alphaGreaterZero(strike).first;
-    BOOST_CHECK_SMALL(alphaStar - 0.31137, 1e-4);
+    QL_CHECK_SMALL(alphaStar - 0.31137, 1e-4);
 
     // case 3: kappa - sigma*rho < 0, T >= t_cut
     model = ext::make_shared<HestonModel>(
@@ -3361,7 +3361,7 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmax) {
     engine = ext::make_shared<AnalyticHestonEngine>(model);
     alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
             .alphaGreaterZero(strike).first;
-    BOOST_CHECK_SMALL(alphaStar - 0.11940, 1e-4);
+    QL_CHECK_SMALL(alphaStar - 0.11940, 1e-4);
 
     // case 4: kappa - sigma*rho == 0
     model = ext::make_shared<HestonModel>(
@@ -3369,7 +3369,7 @@ BOOST_AUTO_TEST_CASE(testOptimalAlphaKmax) {
     engine = ext::make_shared<AnalyticHestonEngine>(model);
     alphaStar = AnalyticHestonEngine::OptimalAlpha(T, engine.get())
             .alphaGreaterZero(strike).first;
-    BOOST_CHECK_SMALL(alphaStar - 0.28006, 1e-4);
+    QL_CHECK_SMALL(alphaStar - 0.28006, 1e-4);
 }
 BOOST_AUTO_TEST_SUITE_END()
 
