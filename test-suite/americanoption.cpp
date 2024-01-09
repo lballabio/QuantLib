@@ -1944,15 +1944,15 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandEuropeanGreeks) {
 
         constexpr double tol = 1000*QL_EPSILON;
 
-        BOOST_CHECK_CLOSE(europeanOption.NPV(), americanOption.NPV(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.delta(), americanOption.delta(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.strikeSensitivity(), americanOption.strikeSensitivity(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.gamma(), americanOption.gamma(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.vega(), americanOption.vega(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.theta(), americanOption.theta(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.thetaPerDay(), americanOption.thetaPerDay(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.rho(), americanOption.rho(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.dividendRho(), americanOption.dividendRho(), tol);
+        QL_CHECK_CLOSE(europeanOption.NPV(), americanOption.NPV(), tol);
+        QL_CHECK_CLOSE(europeanOption.delta(), americanOption.delta(), tol);
+        QL_CHECK_CLOSE(europeanOption.strikeSensitivity(), americanOption.strikeSensitivity(), tol);
+        QL_CHECK_CLOSE(europeanOption.gamma(), americanOption.gamma(), tol);
+        QL_CHECK_CLOSE(europeanOption.vega(), americanOption.vega(), tol);
+        QL_CHECK_CLOSE(europeanOption.theta(), americanOption.theta(), tol);
+        QL_CHECK_CLOSE(europeanOption.thetaPerDay(), americanOption.thetaPerDay(), tol);
+        QL_CHECK_CLOSE(europeanOption.rho(), americanOption.rho(), tol);
+        QL_CHECK_CLOSE(europeanOption.dividendRho(), americanOption.dividendRho(), tol);
     }
 }
 

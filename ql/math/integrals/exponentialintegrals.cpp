@@ -129,8 +129,8 @@ namespace QuantLib {
             }
 
 
-            constexpr Real DIST = 4.5;
-            constexpr Real MAX_ERROR = 5*QL_EPSILON;
+            constexpr double DIST = 4.5;
+            constexpr double MAX_ERROR = 5.0 * QL_EPSILON;
 
             const Real z_inf = std::log(0.01*QL_MAX_REAL) + std::log(100.0);
             QL_REQUIRE(z.real() < z_inf, "argument error " << z);

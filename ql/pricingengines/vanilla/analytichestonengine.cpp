@@ -511,7 +511,7 @@ namespace QuantLib {
                         == std::complex<Real>(0.0),
                    "only Heston model is supported");
 
-        constexpr std::complex<Real> i(0, 1);
+        constexpr std::complex<double> i(0, 1);
 
         if (cpxLog_ == AngledContour || cpxLog_ == AngledContourNoCV || cpxLog_ == AsymptoticChF) {
             const std::complex<Real> h_u(u, u*tanPhi_ - alpha_);

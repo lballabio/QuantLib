@@ -588,16 +588,16 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
 
     const Real tol = 1000*QL_EPSILON;
 
-    BOOST_CHECK_CLOSE(largeValuePosImag.imag(), M_PI, tol);
+    QL_CHECK_CLOSE(largeValuePosImag.imag(), M_PI, tol);
 
-    BOOST_CHECK_CLOSE(
+    QL_CHECK_CLOSE(
         largeValuePosImag.real(), std::exp(largeValue)/largeValue, 1e3/largeValue);
 
     const std::complex<Real> largeValueNegImag =
         Ei(std::complex<Real>(largeValue, -std::numeric_limits<Real>::min()));
 
-    BOOST_CHECK_CLOSE(largeValueNegImag.imag(), -M_PI, tol);
-    BOOST_CHECK_CLOSE(
+    QL_CHECK_CLOSE(largeValueNegImag.imag(), -M_PI, tol);
+    QL_CHECK_CLOSE(
         largeValueNegImag.real(), std::exp(largeValue)/largeValue, 1e3/largeValue);
 
     const std::complex<Real> largeValueZeroImag =
@@ -619,8 +619,8 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
         // principal branch
         const std::complex<Real> limit_ei = M_EULER_MASCHERONI + std::log(z);
 
-        BOOST_CHECK_CLOSE(ei.real(), limit_ei.real(), tol);
-        BOOST_CHECK_CLOSE(ei.imag(), limit_ei.imag(), tol);
+        QL_CHECK_CLOSE(ei.real(), limit_ei.real(), tol);
+        QL_CHECK_CLOSE(ei.imag(), limit_ei.imag(), tol);
     }
 
     const Real largeR = largeValue;
@@ -632,7 +632,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
 
             const Real limit_ei_imag = boost::math::sign(z.imag())*M_PI;
             BOOST_CHECK(close_enough(ei.real(), 0.0));
-            BOOST_CHECK_CLOSE(ei.imag(), limit_ei_imag, tol);
+            QL_CHECK_CLOSE(ei.imag(), limit_ei_imag, tol);
         }
     }
 }
