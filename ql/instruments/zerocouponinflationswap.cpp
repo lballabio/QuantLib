@@ -54,7 +54,7 @@ namespace QuantLib {
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
-        if (detail::CPI::effectiveInterpolationType(infIndex_, observationInterpolation_) == CPI::Linear) {
+        if (detail::CPI::effectiveInterpolationType(observationInterpolation_) == CPI::Linear) {
             Period pShift(infIndex_->frequency());
             QL_REQUIRE(observationLag_ - pShift >= infIndex_->availabilityLag(),
                        "inconsistency between swap observation lag "
@@ -91,7 +91,7 @@ namespace QuantLib {
         // term structure before allowing users to create instruments.
         Real T =
             inflationYearFraction(infIndex_->frequency(),
-                                  detail::CPI::isInterpolated(infIndex_, observationInterpolation_),
+                                  detail::CPI::isInterpolated(observationInterpolation_),
                                   dayCounter_, baseDate_, obsDate_);
         // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
         Real fixedAmount = nominal * (std::pow(1.0 + fixedRate, T) - 1.0);
@@ -132,7 +132,7 @@ namespace QuantLib {
         Real growth = icf->amount() / icf->notional() + 1.0;
         Real T =
             inflationYearFraction(infIndex_->frequency(),
-                                  detail::CPI::isInterpolated(infIndex_, observationInterpolation_),
+                                  detail::CPI::isInterpolated(observationInterpolation_),
                                   dayCounter_, baseDate_, obsDate_);
 
         return std::pow(growth,1.0/T) - 1.0;

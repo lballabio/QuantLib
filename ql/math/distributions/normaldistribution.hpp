@@ -43,18 +43,6 @@ namespace QuantLib {
     */
     class NormalDistribution {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         NormalDistribution(Real average = 0.0,
                            Real sigma = 1.0);
         // function
@@ -79,18 +67,6 @@ namespace QuantLib {
     */
     class CumulativeNormalDistribution {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         CumulativeNormalDistribution(Real average = 0.0,
                                      Real sigma   = 1.0);
         // function
@@ -123,18 +99,6 @@ namespace QuantLib {
     */
     class InverseCumulativeNormal {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         InverseCumulativeNormal(Real average = 0.0,
                                 Real sigma   = 1.0);
         // function
@@ -233,18 +197,6 @@ namespace QuantLib {
     */
     class MoroInverseCumulativeNormal {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         MoroInverseCumulativeNormal(Real average = 0.0,
                                     Real sigma   = 1.0);
         // function
@@ -285,18 +237,6 @@ namespace QuantLib {
     */
     class MaddockInverseCumulativeNormal {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         MaddockInverseCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
@@ -308,18 +248,6 @@ namespace QuantLib {
     //! Maddock's cumulative normal distribution class
     class MaddockCumulativeNormal {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
