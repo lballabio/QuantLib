@@ -18,6 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/qldefines.hpp>
+
 #define BOOST_TEST_MODULE QuantLibTests
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
