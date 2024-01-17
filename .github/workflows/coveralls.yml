@@ -17,7 +17,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-shared CXXFLAGS='-O1 -fprofile-arcs -ftest-coverage' LDFLAGS='-lgcov'
-        make -j 2
+        make -j 4
     - name: Capture baseline
       run: |
         mkdir -p coverage tmp
