@@ -26,9 +26,6 @@
 
 #include <ql/indexes/ibor/libor.hpp>
 #include <ql/time/calendars/thailand.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/currencies/asia.hpp>
 
