@@ -41,6 +41,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 #include <iostream>

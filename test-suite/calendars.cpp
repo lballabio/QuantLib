@@ -9,7 +9,7 @@
  Copyright (C) 2020 Piotr Siejda
  Copyright (C) 2020 Leonardo Arcari
  Copyright (C) 2020 Kline s.r.l.
- Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2022, 2024 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2023 Jonghee Lee
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,6 +38,7 @@
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/mexico.hpp>
 #include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/southkorea.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -3330,6 +3331,45 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
                                  << " expected working weekends, while there are " << k
                                  << " calculated working weekends");
 }
+
+BOOST_AUTO_TEST_CASE(testMexicoInaugurationDay) {
+    BOOST_TEST_MESSAGE("Testing Mexican Inauguration Day holiday...");
+
+    // The first five Inauguration Days 2024 and later
+    std::vector<Date> expectedHol;
+    expectedHol.emplace_back(1, Oct, 2024);
+    expectedHol.emplace_back(1, Oct, 2030);
+    expectedHol.emplace_back(1, Oct, 2036);
+    expectedHol.emplace_back(1, Oct, 2042);
+    expectedHol.emplace_back(1, Oct, 2048);
+
+    // Some years of non-Inaugurations
+    std::vector<Date> expectedWorkingDays;
+    expectedWorkingDays.emplace_back(1, Oct, 2018);
+    expectedWorkingDays.emplace_back(1, Oct, 2025);
+    expectedWorkingDays.emplace_back(1, Oct, 2026);
+    expectedWorkingDays.emplace_back(1, Oct, 2027);
+    // 2028 falls on a weekend
+    expectedWorkingDays.emplace_back(1, Oct, 2029);
+    expectedWorkingDays.emplace_back(1, Oct, 2031);
+    expectedWorkingDays.emplace_back(1, Oct, 2032);
+    // 2033 and 2034 fall on weekends
+    expectedWorkingDays.emplace_back(1, Oct, 2035);
+
+    Calendar mexico = Mexico();
+    for (auto holiday : expectedHol) {
+        if (!mexico.isHoliday(holiday)) {
+            BOOST_FAIL("Expected to have an Inauguration Day holiday in the Mexican calendar for date " << holiday);
+        }
+    }
+    for (auto workingDay : expectedWorkingDays) {
+        if (!mexico.isBusinessDay(workingDay)) {
+            BOOST_FAIL("Did not expect to have a holiday in the Mexican calendar for date "
+                       << workingDay);
+        }
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(testEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");

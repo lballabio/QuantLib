@@ -34,14 +34,18 @@
     - Added CMake presets for Apple; thanks to Christian Köhnenkamp.
     
     DATES AND CALENDARS
-    - Added New Year's Eve as a holiday to Chilean calendar; thanks to
+    - Added New Year's Eve as a holiday to the Chilean calendar; thanks to
       GitHub user MoixaStrikes.
+    - Added Black Awareness Day as a holiday to the Brazilian calendar
+      starting from 2024; thanks to GitHub user PaulXiCao.
+    - Added Inauguration Day as a holiday to the Mexican calendar starting
+      from 2024; thanks to Fredrik Gerdin Börjesson.
     - Added Chinese holidays for 2024; thanks to Cheng Li.
     - Updated list of known ECB dates; thanks to GitHub user PaulXiCao.
     - Added Thailandese and Taiwanese holidays up to 2024; thanks to
       Fredrik Gerdin Börjesson.
-    - Added one-time holiday to South African calendar; thanks to Francois
-      Botha.
+    - Added a one-time holiday to the South African calendar; thanks to
+      Francois Botha.
     
     MODELS
     - Added support for angled contour shift integrals to Heston model;
@@ -88,8 +92,8 @@
     - Deprecated the constructor of `Currency` and `Currency::Data` taking
       a format string, and the `Currency::format` method.
     
-    Thanks go also to Yi Jiang, Hoang Giap Vu and Jonathan Sweemer for
-    smaller fixes and improvements.
+    Thanks go also to Yi Jiang, Hoang Giap Vu, Jonathan Sweemer and
+    the XAD team for smaller fixes and improvements.
 
     <strong>Release 1.32 - October 20th, 2023</strong>
 
