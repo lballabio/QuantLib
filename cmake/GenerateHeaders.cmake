@@ -55,7 +55,6 @@ function(generate_dir_headers source_dir binary_dir)
         list(FILTER children_hpp EXCLUDE REGEX "analyticcomplexchooserengine.hpp")
     endif ()
 
-    list(FILTER children_hpp EXCLUDE REGEX "riskybond.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "composite.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "lexicographicalview.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "^curve.hpp")

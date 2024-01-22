@@ -50,18 +50,6 @@ namespace QuantLib {
     */
     class BinomialDistribution {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         BinomialDistribution(Real p, BigNatural n);
         // function
         Real operator()(BigNatural k) const;
@@ -78,18 +66,6 @@ namespace QuantLib {
     */
     class CumulativeBinomialDistribution {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         CumulativeBinomialDistribution(Real p, BigNatural n);
         // function
         Real operator()(BigNatural k) const {

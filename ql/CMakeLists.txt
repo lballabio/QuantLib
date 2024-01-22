@@ -1087,7 +1087,6 @@ set(QL_HEADERS
     experimental/credit/recursivelossmodel.hpp
     experimental/credit/riskyassetswap.hpp
     experimental/credit/riskyassetswapoption.hpp
-    experimental/credit/riskybond.hpp
     experimental/credit/saddlepointlossmodel.hpp
     experimental/credit/spotlosslatentmodel.hpp
     experimental/credit/spreadedhazardratecurve.hpp

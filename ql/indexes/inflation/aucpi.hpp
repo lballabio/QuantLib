@@ -38,20 +38,6 @@ namespace QuantLib {
               const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
               "CPI", AustraliaRegion(), revised, frequency, Period(2, Months), AUDCurrency(), ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        AUCPI(Frequency frequency,
-              bool revised,
-              bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts = {})
-        : AUCPI(frequency, revised, ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 

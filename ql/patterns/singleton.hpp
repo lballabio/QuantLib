@@ -108,22 +108,6 @@ namespace QuantLib {
 
 #endif
 
-    // backwards compatibility
-
-#if defined(QL_THREAD_KEY)
-    /*! \deprecated This typedef is obsolete. Do not use it.
-                    Deprecated in version 1.29.
-    */
-    QL_DEPRECATED
-    typedef QL_THREAD_KEY ThreadKey;
-#else
-    /*! \deprecated This typedef is obsolete. Do not use it.
-                    Deprecated in version 1.29.
-    */
-    QL_DEPRECATED
-    typedef Integer ThreadKey;
-#endif
-
 }
 
 #endif

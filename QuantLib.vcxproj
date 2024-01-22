@@ -649,7 +649,6 @@
     <ClInclude Include="ql\experimental\credit\recursivelossmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\riskyassetswap.hpp" />
     <ClInclude Include="ql\experimental\credit\riskyassetswapoption.hpp" />
-    <ClInclude Include="ql\experimental\credit\riskybond.hpp" />
     <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spotlosslatentmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spreadedhazardratecurve.hpp" />
