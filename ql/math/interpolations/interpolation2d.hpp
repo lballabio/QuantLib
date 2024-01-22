@@ -65,23 +65,6 @@ namespace QuantLib {
         };
         ext::shared_ptr<Impl> impl_;
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real first_argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real second_argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
         //! basic template implementation
         template <class I1, class I2, class M>
         class templateImpl : public Impl {

@@ -32,18 +32,6 @@ namespace QuantLib {
     class PolynomialFunction {
 
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Time argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         PolynomialFunction(const std::vector<Real>& coeff);
 
         //! function value at time t: \f[ f(t) = \sum_{i=0}^n{c_i t^i} \f]

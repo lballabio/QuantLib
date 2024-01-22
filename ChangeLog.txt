@@ -1,3 +1,19 @@
+commit 9b0ef744951aa69c4e6a8ed796282bfa622b795e
+Merge: a6f874bc0 c5f6ac108
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 20 Jan 2024 23:39:37 +0100
+
+    Fix building parallel test runner (#1889)
+
+commit a6f874bc034d48a67f507c20fedd7ae327a5193a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jan 2024 10:24:22 +0100
+
+    Update changelog
+
+ ChangeLog.txt | 191 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 191 insertions(+)
+
 commit 58a908d202289cc6da5a302e57d3a50421432017
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 12 Jul 2021 09:46:54 +0200
@@ -55,6 +71,18 @@ Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Wed, 17 Jan 2024 10:14:09 +0100
 
     Add Inauguration Day to Mexican calendar (#1884)
+
+commit c5f6ac108231a8dbae462fb9b7a8f2c96910cc68
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 16 Jan 2024 21:15:30 -0500
+
+    Fix building parallel test runner
+    
+    We are missing #include of the config option to select parallel test
+    runner, so we always end up with the standard one.
+
+ test-suite/quantlibtestsuite.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
 
 commit 6582fad9ca941417bf8bc361730c98df39d114b0
 Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>

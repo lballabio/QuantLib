@@ -56,7 +56,7 @@ namespace QuantLib {
         QL_REQUIRE(fixCalendar_ != Calendar(), "no fixing calendar passed");
         QL_REQUIRE(payCalendar_ != Calendar(), "no payment calendar passed");
 
-        if (!detail::CPI::isInterpolated(index_, observationInterpolation_)) {
+        if (!detail::CPI::isInterpolated(observationInterpolation_)) {
             QL_REQUIRE(observationLag_ >= index_->availabilityLag(),
                        "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "
                        <<"when the observation is effectively flat"

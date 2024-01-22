@@ -36,19 +36,6 @@ namespace QuantLib {
         explicit UKRPI(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
               "RPI", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        explicit UKRPI(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = {})
-        : UKRPI(ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 

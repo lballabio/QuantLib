@@ -114,7 +114,7 @@ namespace QuantLib {
 
         Time T = inflationYearFraction(
             zii_->frequency(),
-            detail::CPI::isInterpolated(zii_, interpolationType_), dayCounter(),
+            detail::CPI::isInterpolated(interpolationType_), dayCounter(),
             referenceDate() - observationLag_, maturity - observationLag_);
 
         return T > 0.0 ? std::pow(F1 / F0, 1 / T) - 1.0 : baseRate();

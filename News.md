@@ -1,7 +1,7 @@
 Changes for QuantLib 1.33:
 ==========================
 
-QuantLib 1.33 includes 42 pull requests from several contributors.
+QuantLib 1.33 includes 43 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at

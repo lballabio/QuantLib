@@ -36,19 +36,6 @@ namespace QuantLib {
         explicit ZACPI(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
               "CPI", ZARegion(), false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        explicit ZACPI(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = {})
-        : ZACPI(ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 

@@ -39,18 +39,6 @@ namespace QuantLib {
     */
     class PoissonDistribution {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         PoissonDistribution(Real mu);
         // function
         Real operator()(BigNatural k) const;
@@ -72,18 +60,6 @@ namespace QuantLib {
     */
     class CumulativePoissonDistribution {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         CumulativePoissonDistribution(Real mu) : mu_(mu) {}
         Real operator()(BigNatural k) const {
             return 1.0 - incompleteGammaFunction(k+1, mu_);
@@ -99,18 +75,6 @@ namespace QuantLib {
     */
     class InverseCumulativePoisson {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         InverseCumulativePoisson(Real lambda = 1.0);
         Real operator()(Real x) const;
       private:

@@ -3360,9 +3360,6 @@
     <ClInclude Include="ql\experimental\credit\riskyassetswapoption.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\credit\riskybond.hpp">
-      <Filter>experimental\credit</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>

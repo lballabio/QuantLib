@@ -41,18 +41,6 @@ namespace QuantLib {
 
     class StochasticCollocationInvCDF {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         StochasticCollocationInvCDF(
             const ext::function<Real(Real)>& invCDF,
             Size lagrangeOrder,
