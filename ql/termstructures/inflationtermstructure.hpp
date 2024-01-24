@@ -60,9 +60,6 @@ namespace QuantLib {
 
         //! \name Inflation interface
         //@{
-        //! The TS observes with a lag that is usually different from the
-        //! availability lag of the index.  An inflation rate is given,
-        //! by default, for the maturity requested assuming this lag.
         virtual Period observationLag() const;
         virtual Frequency frequency() const;
         virtual Rate baseRate() const;
@@ -80,23 +77,24 @@ namespace QuantLib {
         virtual Date baseDate() const = 0;
         //@}
 
-        //! Functions to set and get seasonality.
-        /*! Calling setSeasonality with no arguments means unsetting
-            as the default is used to choose unsetting.
+        //! \name Seasonality
+        //@{
+        /*! \deprecated Use the overload taking a pointer and pass an empty one to remove seasonality.
+                        Deprecated in version 1.34.
         */
-        void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality = {});
+        [[deprecated("Use the overload taking a pointer and pass an empty one to remove seasonality.")]]
+        void setSeasonality() { setSeasonality({}); }
+        void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality);
         ext::shared_ptr<Seasonality> seasonality() const;
         bool hasSeasonality() const;
+        //@}
 
       protected:
-
-        // This next part is required for piecewise- constructors
-        // because, for inflation, they need more than just the
-        // instruments to build the term structure, since the rate at
-        // time 0-lag is non-zero, since we deal (effectively) with
-        // "forwards".
+        /*! \deprecated Do not use; set baseRate_ directly if needed.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Do not use; set baseRate_ directly if needed.")]]
         virtual void setBaseRate(const Rate &r) { baseRate_ = r; }
-
 
         // range-checking
         void checkRange(const Date&,

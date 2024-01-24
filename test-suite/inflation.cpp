@@ -185,7 +185,7 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     }
 
     // Testing that unsetting seasonality works also
-    hz->setSeasonality();
+    hz->setSeasonality({});
     vector<Rate> unsetSeasonalityFixings(12, 1.0);
     for (Size i = 0; i < fixingDates.size(); ++i) {
         unsetSeasonalityFixings[i] = ii->fixing(fixingDates[i], true);
