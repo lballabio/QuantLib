@@ -39,10 +39,11 @@ namespace QuantLib {
         const std::vector<Period>& cfMaturities,
         const Matrix& cPrice,
         const Matrix& fPrice)
-    : InflationTermStructure(0, cal, baseRate, observationLag, zii->frequency(), dc),
+    : TermStructure(0, cal, dc),
       zii_(zii), interpolationType_(interpolationType), nominalTS_(std::move(yts)),
       cStrikes_(cStrikes), fStrikes_(fStrikes), cfMaturities_(cfMaturities),
-      cPrice_(cPrice), fPrice_(fPrice), nominal_(nominal), bdc_(bdc) {
+      cPrice_(cPrice), fPrice_(fPrice), nominal_(nominal), bdc_(bdc),
+      observationLag_(observationLag), baseRate_(baseRate) {
 
         // does the index have a TS?
         QL_REQUIRE(!zii_->zeroInflationTermStructure().empty(), "ZITS missing from index");

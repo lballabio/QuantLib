@@ -39,7 +39,7 @@ namespace QuantLib {
 
         \todo deal with index interpolation.
     */
-    class YoYCapFloorTermPriceSurface : public InflationTermStructure {
+    class YoYCapFloorTermPriceSurface : public TermStructure {
       public:
         YoYCapFloorTermPriceSurface(Natural fixingDays,
                                     const Period& yyLag,
@@ -56,6 +56,8 @@ namespace QuantLib {
                                     const Matrix& fPrice);
 
         bool indexIsInterpolated() const;
+        virtual Period observationLag() const;
+        virtual Frequency frequency() const;
 
         //! atm yoy swaps from put-call parity on cap/floor data
         /*! uses interpolation (on surface price data), yearly maturities. */
@@ -79,6 +81,7 @@ namespace QuantLib {
         //@{
         virtual BusinessDayConvention businessDayConvention() const {return bdc_;}
         virtual Natural fixingDays() const {return fixingDays_;}
+        virtual Date baseDate() const = 0;
         virtual Real price(const Date& d, Rate k) const = 0;
         virtual Real capPrice(const Date& d, Rate k) const = 0;
         virtual Real floorPrice(const Date& d, Rate k) const = 0;
@@ -124,6 +127,7 @@ namespace QuantLib {
         Natural fixingDays_;
         BusinessDayConvention bdc_;
         ext::shared_ptr<YoYInflationIndex> yoyIndex_;
+        Period observationLag_;
         Handle<YieldTermStructure> nominalTS_;
         // data
         std::vector<Rate> cStrikes_;
@@ -232,6 +236,14 @@ namespace QuantLib {
 
     inline bool YoYCapFloorTermPriceSurface::indexIsInterpolated() const {
         return indexIsInterpolated_;
+    }
+
+    inline Period YoYCapFloorTermPriceSurface::observationLag() const {
+        return observationLag_;
+    }
+
+    inline Frequency YoYCapFloorTermPriceSurface::frequency() const {
+        return yoyIndex_->frequency();
     }
 
     // template definitions
