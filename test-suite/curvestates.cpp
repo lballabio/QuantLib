@@ -57,6 +57,7 @@ struct CommonVars {
     Size N, numeraire;
     Matrix pseudo;
     const Size alive = 0;
+    const Size spanningFwds = 1;
 
     const std::vector<Real> expected_drifts = {
         -0.0825792, -0.0787625, -0.0748546, -0.0708555,  -0.0667655, -0.0625846, -0.0583128,
@@ -68,6 +69,11 @@ struct CommonVars {
     const std::vector<Real> expected_forward_rates = {
         0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.046, 0.047, 0.048, 0.049,
         0.05, 0.051, 0.052, 0.053, 0.054, 0.055, 0.056, 0.057, 0.058};
+
+    const std::vector<Real> expected_swap_annuity = {
+        0.776368, 0.760772, 0.745125, 0.729442, 0.713739, 0.698034, 0.68234,
+        0.666673, 0.651048, 0.635479, 0.619979, 0.604563, 0.589242, 0.574031,
+        0.558939, 0.54398,  0.529163, 0.5145,   0.5};
 
     CommonVars() {
         // Times
@@ -205,55 +211,75 @@ BOOST_AUTO_TEST_CASE(testCMSwapCurveState) {
 
     CommonVars vars;
 
-    Size nbRates = vars.todaysForwards.size();
-    Size factors = nbRates;
-    Matrix pseudo(nbRates, factors, 0.1);
-    std::vector<Spread> displacements(nbRates, .0);
-    std::vector<Time> rateTimes(nbRates+1);
-    std::vector<Time> taus(nbRates, .5);
-    std::vector<Rate> forwards(nbRates, 0.0);
+    CMSMMDriftCalculator cmsDriftcalculator(vars.pseudo, vars.displacements, vars.taus,
+                                            vars.numeraire, vars.alive, vars.spanningFwds);
 
-    //std::cout << "rate value:"<< std::endl;
-
-    for (Size i = 0; i < forwards.size(); ++i)
-        forwards[i] = static_cast<Rate>(i)*.001+.04;
-
-    for (Size i = 0; i < rateTimes.size(); ++i)
-        rateTimes[i] = static_cast<Time>(i+1)*.5;
-
-    //std::cout << "Rates\nTime\tValue:"<< std::endl;
-    //for (Size i = 0; i < rateTimes.size()-1; ++i){
-    //    std::cout << rateTimes[i+1] << "\t"<<io::rate(forwards[i]) << std::endl;
-    //}
-
-    Size numeraire = nbRates;
-    Size alive = 0;
-
-    Size spanningFwds = 1;
-
-    CMSMMDriftCalculator cmsDriftcalculator(pseudo, displacements, taus,
-                                            numeraire, alive, spanningFwds);
-
-    CMSwapCurveState cmsCs(rateTimes, spanningFwds);
-    cmsCs.setOnCMSwapRates(forwards);
-    std::vector<Real> cmsDrifts(nbRates);
+    CMSwapCurveState cmsCs(vars.rateTimes, vars.spanningFwds);
+    cmsCs.setOnCMSwapRates(vars.todaysForwards);
+    std::vector<Real> cmsDrifts(vars.N);
     cmsDriftcalculator.compute(cmsCs,cmsDrifts);
 
-    std::cout << "drifts:" << std::endl;
-    std::cout << "tCMS" << std::endl;
-    for (Size i = 0; i < nbRates; ++i) {
-        std::cout << cmsDrifts[i] << std::endl;
-    }
+    // std::cout << "CMS drifts:" << std::endl;
+    // for (Size i = 0; i < vars.N; ++i) {
+    //    std::cout << cmsDrifts[i] << std::endl;
+    // }
 
-    std::cout << "discounts ratios:" << std::endl;
-    std::cout << "CMS" << std::endl;
-    for (Size i = 0; i < nbRates; ++i) {
-        std::cout << cmsCs.discountRatio(i, nbRates) << std::endl;
-    }
+    // std::cout << "CMS discounts ratios:" << std::endl;
+    // for (Size i = 0; i < vars.N; ++i) {
+    //    std::cout << cmsCs.discountRatio(i, nbRates) << std::endl;
+    // }
 
-        std::cout << "LMM forward rates:" << std::endl;
+    // std::cout << "CMS forward rates:" << std::endl;
+    // for (Size i = 0; i < vars.N; ++i) {
+    //    std::cout << cmsCs.forwardRate(i) << std::endl;
+    // }
+
+     //for (Size i = 0; i < vars.N; ++i) {
+     //   std::cout << cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) << std::endl;
+     //             //<< "second span:" << cmsCs.cmSwapAnnuity(vars.numeraire, i, 3) 
+     //}
+
+     //for (Size i = 0; i < vars.N; ++i) {
+     //   std::cout << cmsCs.cmSwapRate(i, vars.spanningFwds)
+     //             << "second span:" << cmsCs.cmSwapRate(i, 2) << std::endl;
+     //}
+
+
     for (Size i = 0; i < vars.N; ++i) {
-        std::cout << cmsCs.forwardRate(i) << std::endl;
+        if (std::fabs(cmsDrifts[i] - vars.expected_drifts[i]) > vars.tol) {
+            std::cout << cmsDrifts[i] << "\t\t" << vars.expected_drifts[i] << std::endl;
+            BOOST_FAIL("CMS drifts mismatched");
+        }
+
+        if (std::fabs(cmsCs.discountRatio(i, vars.N) - vars.expected_discount_ratios[i]) >
+            vars.tol) {
+            std::cout << cmsCs.discountRatio(i, vars.N) << "\t\t"
+                      << vars.expected_discount_ratios[i] << std::endl;
+            BOOST_FAIL("CMS discount ratio mismatch");
+        }
+
+        if (std::fabs(cmsCs.forwardRate(i) - vars.expected_forward_rates[i]) > vars.tol) {
+            std::cout << cmsCs.forwardRate(i) << "\t\t" << vars.expected_forward_rates[i]
+                      << std::endl;
+            BOOST_FAIL("CMS forward rate mismatch");
+        }
+
+        if (std::fabs(cmsCs.cmSwapRate(i, vars.spanningFwds) - vars.expected_forward_rates[i]) >
+            vars.tol) {
+            // Swap rate should be the same as Forward Rates
+            std::cout << cmsCs.cmSwapRate(i, vars.spanningFwds) << "\t\t"
+                      << vars.expected_forward_rates[i]
+                      << std::endl;
+            BOOST_FAIL("CMS swap rate mismatch");
+        }
+
+        if (std::fabs(cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) -
+                      vars.expected_swap_annuity[i]) >
+            vars.tol) {
+            std::cout << cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) << "\t\t"
+                      << vars.expected_swap_annuity[i] << std::endl;
+            BOOST_FAIL("CMS swap annunity mismatch");
+        }
     }
 }
 
