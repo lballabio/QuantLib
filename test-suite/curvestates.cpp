@@ -101,8 +101,9 @@ struct CommonVars {
                        calendar, Following, Following,
                        DateGeneration::Backward, false);
         rateTimes = std::vector<Time>(dates.size()-1);
-        N = rateTimes.size() - 1;
 
+        // init
+        N = rateTimes.size() - 1;
         paymentTimes = std::vector<Time>(N);
         accruals = std::vector<Real>(N);
         numeraire = N;
