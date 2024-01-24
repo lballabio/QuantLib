@@ -215,9 +215,6 @@ if (QL_BUILD_TEST_SUITE)
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
     set_source_files_properties(quantlibtestsuite.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION true)
-    if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK)
-    endif()
     target_link_libraries(ql_test_suite PRIVATE
         ql_library
         ${QL_THREAD_LIBRARIES})
@@ -235,9 +232,6 @@ IF (QL_BUILD_BENCHMARK)
     add_executable(ql_benchmark ${QL_BENCHMARK_SOURCES})
     set_target_properties(ql_benchmark PROPERTIES OUTPUT_NAME "quantlib-benchmark")
     set_source_files_properties(quantlibbenchmark.cpp PROPERTIES SKIP_UNITY_BUILD_INCLUSION true)
-    if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK)
-    endif()
     target_link_libraries(ql_benchmark PRIVATE
         ql_library
         ${QL_THREAD_LIBRARIES})
