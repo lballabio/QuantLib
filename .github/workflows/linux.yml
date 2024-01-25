@@ -221,7 +221,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-static ${{ matrix.configureflags }} CC="ccache ${{ matrix.cc }}" CXX="ccache ${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
-        make -j 2
+        make -j 4
     - name: Run tests
       if: ${{ matrix.tests }}
       run: |

@@ -197,19 +197,6 @@ namespace QuantLib {
                                             Date settlementDate = Date(),
                                             Date npvDate = Date());
 
-        //! NPV and BPS of the cash flows.
-        /*! \deprecated Use the overload returning a pair of Reals.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        static void npvbps(const Leg& leg,
-                           const YieldTermStructure& discountCurve,
-                           bool includeSettlementDateFlows,
-                           Date settlementDate,
-                           Date npvDate,
-                           Real& npv,
-                           Real& bps);
-
         //! At-the-money rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
             vector, equivalent to the input vector, has the required NPV

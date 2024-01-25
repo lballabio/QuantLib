@@ -42,19 +42,6 @@ namespace QuantLib {
                              Period(1, Months), // availability
                              EURCurrency(),
                              ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        explicit EUHICP(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = {})
-        : EUHICP(ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
     //! EU HICPXT index
@@ -68,19 +55,6 @@ namespace QuantLib {
                              Period(1, Months), // availability
                              EURCurrency(),
                              ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        explicit EUHICPXT(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = {})
-        : EUHICPXT(ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 
