@@ -36,19 +36,6 @@ namespace QuantLib {
         explicit FRHICP(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
               "HICP", FranceRegion(), false, Monthly, Period(1, Months), EURCurrency(), ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        explicit FRHICP(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = {})
-        : FRHICP(ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 

@@ -1,3 +1,203 @@
+commit 9b0ef744951aa69c4e6a8ed796282bfa622b795e
+Merge: a6f874bc0 c5f6ac108
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 20 Jan 2024 23:39:37 +0100
+
+    Fix building parallel test runner (#1889)
+
+commit a6f874bc034d48a67f507c20fedd7ae327a5193a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jan 2024 10:24:22 +0100
+
+    Update changelog
+
+ ChangeLog.txt | 191 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 191 insertions(+)
+
+commit 58a908d202289cc6da5a302e57d3a50421432017
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.33 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit e9422af1e7d46379bc6c38df46dd0e3d071ab09d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jan 2024 21:23:39 +0100
+
+    Use all available cores on Action runners
+
+ .github/workflows/coveralls.yml        | 2 +-
+ .github/workflows/linux-full-tests.yml | 2 +-
+ .github/workflows/linux-nondefault.yml | 2 +-
+ .github/workflows/linux.yml            | 2 +-
+ .github/workflows/sanitizer.yml        | 4 ++--
+ .github/workflows/test-times.yml       | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 69cc0ccf32bd56f78ca6434849eb11c0c349d1dc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jan 2024 14:54:10 +0100
+
+    Update news
+
+ Docs/pages/history.docs | 14 +++++++++-----
+ News.md                 | 19 +++++++++++++------
+ 2 files changed, 22 insertions(+), 11 deletions(-)
+
+commit 7fbbf5f892792952e1a24c29177eeab5a0ea0c45
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Wed, 17 Jan 2024 09:14:27 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 03e86a168a27db63d4d6d0281d7b563f98a501a1
+Merge: 9d2c7b2b4 6582fad9c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jan 2024 10:15:18 +0100
+
+    Move calendar imports where they are used (#1885)
+
+commit 9d2c7b2b4e4167635919ff943d10f792e6dc4df9
+Merge: f094be00f 014a9a2f0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jan 2024 10:14:09 +0100
+
+    Add Inauguration Day to Mexican calendar (#1884)
+
+commit c5f6ac108231a8dbae462fb9b7a8f2c96910cc68
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 16 Jan 2024 21:15:30 -0500
+
+    Fix building parallel test runner
+    
+    We are missing #include of the config option to select parallel test
+    runner, so we always end up with the standard one.
+
+ test-suite/quantlibtestsuite.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 6582fad9ca941417bf8bc361730c98df39d114b0
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Tue, 16 Jan 2024 18:48:09 +0100
+
+    Move calendar imports where they are used
+
+ ql/indexes/ibor/thbfix.hpp                                 | 3 ---
+ ql/termstructures/yield/overnightindexfutureratehelper.cpp | 1 +
+ ql/termstructures/yield/ratehelpers.cpp                    | 1 -
+ ql/termstructures/yield/ratehelpers.hpp                    | 1 -
+ test-suite/overnightindexedswap.cpp                        | 1 +
+ 5 files changed, 2 insertions(+), 5 deletions(-)
+
+commit 014a9a2f0f34e7cd43aa932689cbef1e1c30f5c0
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Tue, 16 Jan 2024 18:46:48 +0100
+
+    Add Inauguration Day to Mexican calendar
+
+ ql/time/calendars/mexico.cpp |  3 +++
+ ql/time/calendars/mexico.hpp |  2 ++
+ test-suite/calendars.cpp     | 42 +++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 46 insertions(+), 1 deletion(-)
+
+commit f094be00f7ea262aafa230f8b72485b180ed8b97
+Merge: 32f57d05e 6909bfc1b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 12 Jan 2024 08:54:57 +0100
+
+    New Brazilian holiday (#1879)
+
+commit 32f57d05e8bf5555b446dfcd8addbf013b08ad81
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 10 Jan 2024 08:48:50 +0100
+
+    Back to Artifactory for Boost downloads
+    
+    This reverts commit 484e48af47ed6b8cf37be5a45e0962a572940a1f.
+
+ .github/workflows/cmake.yml         | 6 +++---
+ .github/workflows/msvc-analysis.yml | 2 +-
+ dockerfiles/ci.Dockerfile           | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 19c991861075efb195071b27447897932ec434c9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jan 2024 17:33:23 +0100
+
+    Disable compile-time bound check in CI build
+
+ .github/workflows/linux-nondefault.yml | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit a643b957415898a4587306d706d94af2b7d7f27e
+Merge: 2e5a77b20 d860bf0c3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jan 2024 20:37:48 +0100
+
+    Fixes to maintain AAD compatibility (#1881)
+
+commit d860bf0c3f1710328d818438de1d9de146423757
+Author: Auto Differentiation Dev Team <dev@auto-differentiation.com>
+Date:   Tue, 9 Jan 2024 15:34:49 +0000
+
+    Consistently using QL_CHECK_XXX macros
+
+ test-suite/americanoption.cpp | 18 +++++++++---------
+ test-suite/functions.cpp      | 12 ++++++------
+ test-suite/hestonmodel.cpp    | 10 +++++-----
+ test-suite/integrals.cpp      | 14 +++++++-------
+ 4 files changed, 27 insertions(+), 27 deletions(-)
+
+commit bf4b0bec06f1fd8f2d020be4576e248e16e5fc17
+Author: Auto Differentiation Dev Team <dev@auto-differentiation.com>
+Date:   Tue, 9 Jan 2024 15:34:43 +0000
+
+    Adds utility test macro QL_CHECK_CLOSE_FRACTION, compatible to arbitrary Real types
+
+ test-suite/utilities.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 9c40fd424ede69457628bc679f4e0fd8309712ca
+Author: Auto Differentiation Dev Team <dev@auto-differentiation.com>
+Date:   Tue, 9 Jan 2024 15:34:30 +0000
+
+    Defines constants as double type
+
+ ql/math/integrals/exponentialintegrals.cpp         | 4 ++--
+ ql/pricingengines/vanilla/analytichestonengine.cpp | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 2e5a77b20d9e83ad41c00aa6b5398a0846ce0f9b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.33-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit c517b5eb7cf2f26314a6ca14455ba8761aa36a40
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jan 2024 12:59:39 +0100
+
+    Update news and changelog
+
+ ChangeLog.txt           | 6899 ++++++++++++++++++++++++++++++++++++-----------
+ Contributors.txt        |    4 +
+ Docs/pages/history.docs |   76 +-
+ News.md                 |  199 +-
+ 4 files changed, 5543 insertions(+), 1635 deletions(-)
+
 commit 216e962f94454fda33f513783312d6bd8b8c40b9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 8 Jan 2024 11:22:18 +0100
@@ -31,6 +231,25 @@ Date:   Sun, 7 Jan 2024 21:18:13 +0100
  .github/workflows/msvc-analysis.yml |  6 +++---
  dockerfiles/ci.Dockerfile           |  2 +-
  3 files changed, 13 insertions(+), 13 deletions(-)
+
+commit 6909bfc1b011d8bd9198e6cf98ac8fcb762dfda3
+Author: Paul <d.goldbauer@protonmail.com>
+Date:   Sun, 7 Jan 2024 14:46:57 +0100
+
+    fix unit test
+
+ test-suite/amortizingbond.cpp | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit d892b8d3b33e7bcf5198fcbcf30d2711e45ec899
+Author: Paul <d.goldbauer@protonmail.com>
+Date:   Sun, 7 Jan 2024 13:49:17 +0100
+
+    add Black Awarenedd Day holiday
+
+ ql/time/calendars/brazil.cpp | 2 ++
+ ql/time/calendars/brazil.hpp | 1 +
+ 2 files changed, 3 insertions(+)
 
 commit dee33df049a031fed50bb3690615c2116015eb84
 Merge: 6aca59ed1 84d52647c

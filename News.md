@@ -1,7 +1,7 @@
 Changes for QuantLib 1.33:
 ==========================
 
-QuantLib 1.33 includes 38 pull requests from several contributors.
+QuantLib 1.33 includes 43 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -31,8 +31,14 @@ Portability
 Dates and calendars
 -------------------
 
-- Added New Year's Eve as a holiday to Chilean calendar; thanks to
+- Added New Year's Eve as a holiday to the Chilean calendar; thanks to
   GitHub user @MoixaStrikes.
+
+- Added Black Awareness Day as a holiday to the Brazilian calendar
+  starting from 2024; thanks to GitHub user @PaulXiCao.
+
+- Added Inauguration Day as a holiday to the Mexican calendar starting
+  from 2024; thanks to Fredrik Gerdin Börjesson (@gbfredrik).
 
 - Added Chinese holidays for 2024; thanks to Cheng Li (@wegamekinglc).
 
@@ -41,8 +47,8 @@ Dates and calendars
 - Added Thailandese and Taiwanese holidays up to 2024; thanks to
   Fredrik Gerdin Börjesson (@gbfredrik).
 
-- Added one-time holiday to South African calendar; thanks to Francois
-  Botha (@igitur).
+- Added a one-time holiday to the South African calendar; thanks to
+  Francois Botha (@igitur).
 
 
 Models
@@ -109,5 +115,6 @@ Deprecated features
   a format string, and the `Currency::format` method.
 
 
-**Thanks go also** to Yi Jiang (@yjian012), Hoang Giap Vu (@hgv79116)
-and Jonathan Sweemer (@sweemer) for smaller fixes and improvements.
+**Thanks go also** to Yi Jiang (@yjian012), Hoang Giap Vu (@hgv79116),
+Jonathan Sweemer (@sweemer) and the XAD team
+(@auto-differentiation-dev) for smaller fixes and improvements.

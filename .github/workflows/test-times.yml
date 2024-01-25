@@ -21,7 +21,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-static CC="ccache gcc" CXX="ccache g++" CXXFLAGS="-O2 -g0"
-        make -j 2
+        make -j 4
     - name: Run faster tests
       run: |
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,faster.xml:HRF,message -- --faster
