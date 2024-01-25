@@ -154,30 +154,22 @@ struct CommonVars {
 
      std::vector<Real> lmmDrifts(vars.N);
      lmmDriftcalculator.compute(lmmCs, lmmDrifts);
-
-    // for (Size i = 0; i < vars.N; ++i) {
-    //    std::cout << "LMM drifts: " << lmmDrifts[i] << std::endl;
-    //    std::cout << "LMM discounts ratios: " << lmmCs.discountRatio(i, vars.N) << std::endl;
-    //    std::cout << "LMM forward rates: " << lmmCs.forwardRate(i) << std::endl;
-    // }
      
     for (Size i = 0; i < vars.N; ++i) {
         if (std::fabs(lmmDrifts[i] - vars.expectedDrifts[i]) > vars.tol){
-            std::cout << lmmDrifts[i] << "\t\t" << vars.expectedDrifts[i] << std::endl;
-            BOOST_FAIL("LMM drifts mismatched");
+            BOOST_FAIL("LMM drifts mismatched: " << 
+                lmmDrifts[i] << "\t\t" << vars.expectedDrifts[i]);
         }
 
         if (std::fabs(lmmCs.discountRatio(i, vars.N) - vars.expectedDiscountRatios[i]) >
             vars.tol) {
-            std::cout << lmmCs.discountRatio(i, vars.N) << "\t\t"
-                      << vars.expectedDiscountRatios[i] << std::endl;
-            BOOST_FAIL("LMM discount ratio mismatch");
+            BOOST_FAIL("LMM discount ratio mismatch: " <<
+                lmmCs.discountRatio(i, vars.N) << "\t\t" << vars.expectedDiscountRatios[i]);
         }
 
         if (std::fabs(lmmCs.forwardRate(i) - vars.expectedForwardRates[i]) > vars.tol) {
-            std::cout << lmmCs.forwardRate(i) << "\t\t" << vars.expectedForwardRates[i]
-                      << std::endl;
-            BOOST_FAIL("LMM forward rate mismatch");
+            BOOST_FAIL("LMM forward rate mismatch: " << lmmCs.forwardRate(i) << "\t\t"
+                                                     << vars.expectedForwardRates[i]);
         }
      }
 
@@ -221,50 +213,37 @@ struct CommonVars {
 
       std::vector<Real> cotDrifts(vars.N);
       smmDriftcalculator.compute(cotCs, cotDrifts);
-     
-    //for (Size i = 0; i < vars.N; ++i) {
-    //  std::cout << "COT drifts: " << cotDrifts[i] << std::endl;
-    //  std::cout << "COT discount ratio: " << cotCs.discountRatio(i, vars.N) << std::endl;
-    //  std::cout << "COT forward: " << cotCs.forwardRate(i) << std::endl;
-    //  std::cout << "COT Swap Rate: " << cotCs.coterminalSwapRate(i) << std::endl;
-    //  std::cout << "COT Swap Annuity: " << cotCs.coterminalSwapAnnuity(vars.numeraire, i) 
-    //      << std::endl;
-    //}
 
      for (Size i = 0; i < vars.N; ++i) {
         if (std::fabs(cotDrifts[i] - vars.expectedCotDrifts[i]) > vars.tol) {
-            std::cout << cotDrifts[i] << "\t\t" << vars.expectedCotDrifts[i] << std::endl;
-            BOOST_FAIL("COT drifts mismatched");
+            BOOST_FAIL("COT drifts mismatched: " << cotDrifts[i] << "\t\t"
+                                                 << vars.expectedCotDrifts[i]);
         }
 
         if (std::fabs(cotCs.discountRatio(i, vars.N) - vars.expectedCotDiscountRatios[i]) >
             vars.tol) {
-            std::cout << cotCs.discountRatio(i, vars.N) << "\t\t"
-                      << vars.expectedCotDiscountRatios[i]
-                      << std::endl;
-            BOOST_FAIL("COT discount ratio mismatch");
+            BOOST_FAIL("COT discount ratio mismatch: " << cotCs.discountRatio(i, vars.N) << "\t\t"
+                                                       << vars.expectedCotDiscountRatios[i]);
         }
 
         if (std::fabs(cotCs.forwardRate(i) - vars.expectedForwardRates[i]) > vars.tol) {
-            std::cout << cotCs.forwardRate(i) << "\t\t" << vars.expectedForwardRates[i]
-                      << std::endl;
-            BOOST_FAIL("COT forward rate mismatch");
+            BOOST_FAIL("COT forward rate mismatch: " << cotCs.forwardRate(i) << "\t\t"
+                                                     << vars.expectedForwardRates[i]);
         }
 
         if (std::fabs(cotCs.coterminalSwapRate(i) - todaysCoterminalSwapRates[i]) >
             vars.tol) {
             // Swap rate should be the same as Forward Rates
-            std::cout << cotCs.coterminalSwapRate(i) << "\t\t" << todaysCoterminalSwapRates[i]
-                      << std::endl;
-            BOOST_FAIL("COT swap rate mismatch");
+            BOOST_FAIL("COT swap rate mismatch: " << cotCs.coterminalSwapRate(i) << "\t\t"
+                                                  << todaysCoterminalSwapRates[i]);
         }
 
         if (std::fabs(cotCs.coterminalSwapAnnuity(vars.numeraire, i) - 
             vars.expectedCotSwapAnnuity[i]) >
             vars.tol) {
-            std::cout << cotCs.coterminalSwapAnnuity(vars.numeraire, i) << "\t\t"
-                      << vars.expectedCotSwapAnnuity[i] << std::endl;
-            BOOST_FAIL("COT swap annunity mismatch");
+            BOOST_FAIL("COT swap annunity mismatch: "
+                       << cotCs.coterminalSwapAnnuity(vars.numeraire, i) << "\t\t"
+                       << vars.expectedCotSwapAnnuity[i]);
         }
      }
  }
@@ -285,50 +264,36 @@ BOOST_AUTO_TEST_CASE(testCMSwapCurveState) {
     std::vector<Real> cmsDrifts(vars.N);
     cmsDriftcalculator.compute(cmsCs,cmsDrifts);
 
-    //for (Size i = 0; i < vars.N; ++i) {
-    //    std::cout << "CMS drifts: " << cmsDrifts[i] << std::endl;
-    //    std::cout << "CMS discounts ratios: " << cmsCs.discountRatio(i, vars.N)
-    //        << std::endl;
-    //    std::cout << "CMS forward rates:" << cmsCs.forwardRate(i) << std::endl;
-    //    std::cout << "CMS swap annuity:" 
-    //        << cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) << std::endl;
-    //    std::cout << "CMS swap rates:" << cmsCs.cmSwapRate(i, vars.spanningFwds) << std::endl;
-    //}
-
     for (Size i = 0; i < vars.N; ++i) {
         if (std::fabs(cmsDrifts[i] - vars.expectedDrifts[i]) > vars.tol) {
-            std::cout << cmsDrifts[i] << "\t\t" << vars.expectedDrifts[i] << std::endl;
-            BOOST_FAIL("CMS drifts mismatched");
+            BOOST_FAIL("CMS drifts mismatched: " << cmsDrifts[i] << "\t\t"
+                                                 << vars.expectedDrifts[i]);
         }
 
         if (std::fabs(cmsCs.discountRatio(i, vars.N) - vars.expectedDiscountRatios[i]) >
             vars.tol) {
-            std::cout << cmsCs.discountRatio(i, vars.N) << "\t\t"
-                      << vars.expectedDiscountRatios[i] << std::endl;
-            BOOST_FAIL("CMS discount ratio mismatch");
+            BOOST_FAIL("CMS discount ratio mismatch: " << cmsCs.discountRatio(i, vars.N) << "\t\t"
+                                                       << vars.expectedDiscountRatios[i]);
         }
 
         if (std::fabs(cmsCs.forwardRate(i) - vars.expectedForwardRates[i]) > vars.tol) {
-            std::cout << cmsCs.forwardRate(i) << "\t\t" << vars.expectedForwardRates[i]
-                      << std::endl;
-            BOOST_FAIL("CMS forward rate mismatch");
+            BOOST_FAIL("CMS forward rate mismatch: " << cmsCs.forwardRate(i) << "\t\t"
+                                                     << vars.expectedForwardRates[i]);
         }
 
         if (std::fabs(cmsCs.cmSwapRate(i, vars.spanningFwds) - vars.expectedForwardRates[i]) >
             vars.tol) {
             // Swap rate should be the same as Forward Rates
-            std::cout << cmsCs.cmSwapRate(i, vars.spanningFwds) << "\t\t"
-                      << vars.expectedForwardRates[i]
-                      << std::endl;
-            BOOST_FAIL("CMS swap rate mismatch");
+            BOOST_FAIL("CMS swap rate mismatch: " << cmsCs.cmSwapRate(i, vars.spanningFwds)
+                                                  << "\t\t" << vars.expectedForwardRates[i]);
         }
 
         if (std::fabs(cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) -
                       vars.expectedSwapAnnuity[i]) >
             vars.tol) {
-            std::cout << cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) << "\t\t"
-                      << vars.expectedSwapAnnuity[i] << std::endl;
-            BOOST_FAIL("CMS swap annunity mismatch");
+            BOOST_FAIL("CMS swap annunity mismatch: "
+                       << cmsCs.cmSwapAnnuity(vars.numeraire, i, vars.spanningFwds) << "\t\t"
+                       << vars.expectedSwapAnnuity[i]);
         }
     }
 }
