@@ -1099,6 +1099,162 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     evaluationDate = calendar.adjust(evaluationDate);
     Settings::instance().evaluationDate() = evaluationDate;
 
+    // fixing data
+    Date from(1, January, 2005);
+    Date to(1, July, 2007);
+    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
+    .withTenor(1*Months)
+    .withCalendar(UnitedKingdom())
+    .withConvention(ModifiedFollowing);
+    Real fixData[] = {
+        189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
+        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
+        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
+        198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
+        202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
+        207.3
+    };
+
+    RelinkableHandle<YoYInflationTermStructure> hy;
+    bool interp = false;
+    auto rpi = ext::make_shared<UKRPI>();
+    auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
+    for (Size i=0; i<LENGTH(fixData); i++) {
+        rpi->addFixing(rpiSchedule[i], fixData[i]);
+    }
+
+    ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
+
+    // now build the YoY inflation curve
+    std::vector<Datum> yyData = {
+        { Date(13, August, 2008), 2.95 },
+        { Date(13, August, 2009), 2.95 },
+        { Date(13, August, 2010), 2.93 },
+        { Date(15, August, 2011), 2.955 },
+        { Date(13, August, 2012), 2.945 },
+        { Date(13, August, 2013), 2.985 },
+        { Date(13, August, 2014), 3.01 },
+        { Date(13, August, 2015), 3.035 },
+        { Date(13, August, 2016), 3.055 },  // note that
+        { Date(13, August, 2017), 3.075 },  // some dates will be on
+        { Date(13, August, 2019), 3.105 },  // holidays but the payment
+        { Date(15, August, 2022), 3.135 },  // calendar will roll them
+        { Date(13, August, 2027), 3.155 },
+        { Date(13, August, 2032), 3.145 },
+        { Date(13, August, 2037), 3.145 }
+    };
+
+    Period observationLag = Period(2,Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+
+    // now build the helpers ...
+    auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
+        return ext::make_shared<YearOnYearInflationSwapHelper>(
+            quote, observationLag, maturity, calendar, bdc, dc, iir,
+            Handle<YieldTermStructure>(nominalTS));
+    };
+    auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
+
+    Date baseDate = rpi->lastFixingDate();
+    Rate baseYYRate = yyData[0].rate/100.0;
+    auto pYYTS =
+        ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
+                evaluationDate, baseDate, baseYYRate,
+                iir->frequency(),iir->interpolated(), dc,
+                helpers);
+
+    // validation
+    // yoy swaps should reprice to zero
+    // yy rates should not equal yySwap rates
+    Real eps = 0.000001;
+    // usual swap engine
+    Handle<YieldTermStructure> hTS(nominalTS);
+    ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
+
+    // make sure that the index has the latest yoy term structure
+    hy.linkTo(pYYTS);
+
+    for (Size j = 1; j < yyData.size(); j++) {
+
+        from = nominalTS->referenceDate();
+        to = yyData[j].date;
+        Schedule yoySchedule = MakeSchedule().from(from).to(to)
+        .withConvention(Unadjusted) // fixed leg gets calendar from
+        .withCalendar(calendar)     // schedule
+        .withTenor(1*Years)
+        .backwards()
+        ;
+
+        YearOnYearInflationSwap yyS2(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[j].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
+
+        yyS2.setPricingEngine(sppe);
+
+        BOOST_CHECK_MESSAGE(fabs(yyS2.NPV())<eps,"fresh yoy swap NPV!=0 from TS "
+                <<"swap quote for pt " << j
+                << ", is " << yyData[j].rate/100.0
+                <<" vs YoY rate "<< pYYTS->yoyRate(yyData[j].date-observationLag)
+                <<" at quote date "<<(yyData[j].date-observationLag)
+                <<", NPV of a fresh yoy swap is " << yyS2.NPV()
+                <<"\n      fair rate " << yyS2.fairRate()
+                <<" payment "<<yyS2.paymentConvention());
+    }
+
+    Size jj=3;
+    for (Size k = 0; k < 14; k++) {
+
+        from = nominalTS->referenceDate() - k*Months;
+        to = yyData[jj].date - k*Months;
+        Schedule yoySchedule = MakeSchedule().from(from).to(to)
+        .withConvention(Unadjusted) // fixed leg gets calendar from
+        .withCalendar(calendar)     // schedule
+        .withTenor(1*Years)
+        .backwards()
+        ;
+
+        YearOnYearInflationSwap yyS3(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[jj].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
+
+        yyS3.setPricingEngine(sppe);
+
+        BOOST_CHECK_MESSAGE(fabs(yyS3.NPV())< 20000.0,
+                            "unexpected size of aged YoY swap, aged "
+                            <<k<<" months: YY aged NPV = " << yyS3.NPV()
+                            <<", legs "<< yyS3.legNPV(0) << " and " << yyS3.legNPV(1)
+                            );
+    }
+    // remove circular refernce
+    hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+}
+
+BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
+    BOOST_TEST_MESSAGE("Testing old-style year-on-year inflation term structure with lag...");
+
+    // try the YY UK
+    Calendar calendar = UnitedKingdom();
+    BusinessDayConvention bdc = ModifiedFollowing;
+    Date evaluationDate(13, August, 2007);
+    evaluationDate = calendar.adjust(evaluationDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
 
     // fixing data
     Date from(1, January, 2005);
@@ -1121,8 +1277,6 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     for (Size i=0; i<LENGTH(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
-
-
 
     ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
 
@@ -1157,12 +1311,13 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
 
     Rate baseYYRate = yyData[0].rate/100.0;
+    QL_DEPRECATED_DISABLE_WARNING
     ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
         new PiecewiseYoYInflationCurve<Linear>(
                 evaluationDate, calendar, dc, observationLag,
                 iir->frequency(),iir->interpolated(), baseYYRate,
                 helpers));
-    pYYTS->recalculate();
+    QL_DEPRECATED_ENABLE_WARNING
 
     // validation
     // yoy swaps should reprice to zero

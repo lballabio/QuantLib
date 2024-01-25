@@ -193,8 +193,9 @@ namespace QuantLib {
                         bool extrapolate = true) const override {
             // work in terms of maturity-of-instruments
             // so ask for rate with observation lag
+            Period p = (obsLag == Period(-1, Days)) ? observationLag() : obsLag;
             // Third parameter = force linear interpolation of yoy
-            return yoy_->yoyRate(d, obsLag, false, extrapolate);
+            return yoy_->yoyRate(d, p, false, extrapolate);
         }
         //@}
 
@@ -540,18 +541,22 @@ namespace QuantLib {
             YYhelpers.push_back (anInstrument);
         }
 
+        Date baseDate =
+            yoyIndex()->interpolated() ?
+            nominalTS_->referenceDate() - observationLag() :
+            inflationPeriod(nominalTS_->referenceDate() - observationLag(),
+                            yoyIndex()->frequency()).first;
         // usually this base rate is known
         // however for the data to be self-consistent
         // we pick this as the end of the curve
         Rate baseYoYRate = atmYoYSwapRate( referenceDate() );//!
 
         // Linear is OK because we have every year
-        ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> >   pYITS(
-              new PiecewiseYoYInflationCurve<Linear>(
-                      nominalTS_->referenceDate(),
-                      calendar(), dayCounter(), observationLag(), yoyIndex()->frequency(),
-                      yoyIndex()->interpolated(), baseYoYRate,
-                      YYhelpers));
+        auto pYITS =
+            ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
+                      nominalTS_->referenceDate(), baseDate, baseYoYRate,
+                      yoyIndex()->frequency(), yoyIndex()->interpolated(),
+                      dayCounter(), YYhelpers);
         pYITS->recalculate();
         yoy_ = pYITS;   // store
 

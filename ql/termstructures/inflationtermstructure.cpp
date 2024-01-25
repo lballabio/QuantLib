@@ -263,6 +263,41 @@ namespace QuantLib {
     }
 
 
+    YoYInflationTermStructure::YoYInflationTermStructure(
+                                    Date baseDate,
+                                    Rate baseYoYRate,
+                                    Frequency frequency,
+                                    bool indexIsInterpolated,
+                                    const DayCounter& dayCounter,
+                                    const ext::shared_ptr<Seasonality> &seasonality)
+    : InflationTermStructure(baseDate, frequency, dayCounter, seasonality, baseYoYRate),
+      indexIsInterpolated_(indexIsInterpolated) {}
+
+    YoYInflationTermStructure::YoYInflationTermStructure(
+                                    const Date& referenceDate,
+                                    Date baseDate,
+                                    Rate baseYoYRate,
+                                    Frequency frequency,
+                                    bool indexIsInterpolated,
+                                    const DayCounter& dayCounter,
+                                    const ext::shared_ptr<Seasonality> &seasonality)
+    : InflationTermStructure(referenceDate, baseDate, frequency,
+                             dayCounter, seasonality, baseYoYRate),
+      indexIsInterpolated_(indexIsInterpolated) {}
+
+    YoYInflationTermStructure::YoYInflationTermStructure(
+                                    Natural settlementDays,
+                                    const Calendar& calendar,
+                                    Date baseDate,
+                                    Rate baseYoYRate,
+                                    Frequency frequency,
+                                    bool indexIsInterpolated,
+                                    const DayCounter& dayCounter,
+                                    const ext::shared_ptr<Seasonality> &seasonality)
+    : InflationTermStructure(settlementDays, calendar, baseDate, frequency,
+                             dayCounter, seasonality, baseYoYRate),
+      indexIsInterpolated_(indexIsInterpolated) {}
+
     QL_DEPRECATED_DISABLE_WARNING
 
     YoYInflationTermStructure::YoYInflationTermStructure(

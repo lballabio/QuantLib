@@ -181,10 +181,9 @@ void setup() {
     bool indexIsInterpolated = true;    // actually false for UKRPI but smooth surfaces are
                                         // better for finding intersections etc
 
-    ext::shared_ptr<InterpolatedYoYInflationCurve<Linear> >
-        pYTSEU( new InterpolatedYoYInflationCurve<Linear>(
-                    eval, TARGET(), Actual365Fixed(), Period(2,Months), Monthly,
-                    indexIsInterpolated, d, r) );
+    auto pYTSEU =
+        ext::make_shared<InterpolatedYoYInflationCurve<Linear>>(
+                    eval, d, r, Monthly, indexIsInterpolated, Actual365Fixed());
     yoyEU.linkTo(pYTSEU);
 
     // price data

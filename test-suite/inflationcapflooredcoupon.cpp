@@ -183,15 +183,13 @@ struct CommonVars {
                                calendar, convention, dc,
                                Handle<YieldTermStructure>(nominalTS));
 
+        Date baseDate = rpi->lastFixingDate();
         Rate baseYYRate = yyData[0].rate/100.0;
-        ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
-                            new PiecewiseYoYInflationCurve<Linear>(
-                                evaluationDate, calendar, dc, observationLag,
-                                iir->frequency(),iir->interpolated(), baseYYRate,
-                                helpers));
-        pYYTS->recalculate();
+        auto pYYTS =
+            ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
+                        evaluationDate, baseDate, baseYYRate, iir->frequency(),
+                        iir->interpolated(), dc, helpers);
         yoyTS = ext::dynamic_pointer_cast<YoYInflationTermStructure>(pYYTS);
-
 
         // make sure that the index has the latest yoy term structure
         hy.linkTo(pYYTS);
