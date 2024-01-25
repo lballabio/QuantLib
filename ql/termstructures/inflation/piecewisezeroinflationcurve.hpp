@@ -69,6 +69,8 @@ namespace QuantLib {
             bootstrap_.setup(this);
         }
 
+        QL_DEPRECATED_DISABLE_WARNING
+
         /*! \deprecated Use the other overload and pass the base date directly
                         instead of using a lag. A base rate is not needed.
                         Deprecated in version 1.34.
@@ -84,7 +86,6 @@ namespace QuantLib {
             std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
             Real accuracy = 1.0e-12,
             const Interpolator& i = Interpolator())
-        QL_DEPRECATED_DISABLE_WARNING
         : base_curve(referenceDate,
                      calendar,
                      dayCounter,
@@ -95,6 +96,7 @@ namespace QuantLib {
           instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
+
         QL_DEPRECATED_ENABLE_WARNING
         //@}
 
