@@ -229,7 +229,7 @@ struct CommonVars {
 
         // we can use historical or first ZCIIS for this
         // we know historical is WAY off market-implied, so use market implied flat.
-        Date baseDate(1, September, 2009);
+        Date baseDate = ii->lastFixingDate();
         auto pCPIts =
             ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                                     evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);

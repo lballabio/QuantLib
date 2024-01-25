@@ -146,7 +146,8 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
             makeHelpers(zciisData, ii,
                         observationLag, calendar, convention, dayCounter, yTS);
 
-        Date baseDate(1, September, 2009);
+        Date baseDate = ii->lastFixingDate();
+
         cpiTS.linkTo(ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
                          evaluationDate, baseDate, ii->frequency(), dayCounter, helpers));
     }

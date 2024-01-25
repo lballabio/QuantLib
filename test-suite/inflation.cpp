@@ -24,6 +24,7 @@
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukhicp.hpp>
+#include <ql/indexes/inflation/aucpi.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -255,23 +256,31 @@ BOOST_AUTO_TEST_CASE(testZeroIndex) {
 
     // fixing data
     Date from(1, January, 2005);
-    Date to(13, August, 2007);
-    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
-    .withTenor(1*Months)
-    .withCalendar(UnitedKingdom())
-    .withConvention(ModifiedFollowing);
+    Date to(1, August, 2007);
+    Schedule rpiSchedule =
+        MakeSchedule()
+        .from(from)
+        .to(to)
+        .withFrequency(Monthly);
 
-    Real fixData[] = { 189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
+    Real fixData[] = {
+        189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
         192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
         194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
         198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
-        207.3, 206.1 };
+        207.3, 206.1
+    };
 
     auto iir = ext::make_shared<UKRPI>();
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
+
+    if (iir->lastFixingDate() != to)
+        BOOST_ERROR("Wrong last fixing date for UK RPI"
+                    << "\n    calculated: " << iir->lastFixingDate()
+                    << "\n    expected:   " << to);
 
     Date todayMinusLag = evaluationDate - iir->availabilityLag();
     std::pair<Date,Date> lim = inflationPeriod(todayMinusLag, iir->frequency());
@@ -293,6 +302,15 @@ BOOST_AUTO_TEST_CASE(testZeroIndex) {
             }
         }
     }
+
+    AUCPI aucpi(Quarterly, false);
+    aucpi.addFixing(Date(15, December, 2007), 100.0);
+
+    Date expected(1, October, 2007);
+    if (aucpi.lastFixingDate() != expected)
+        BOOST_ERROR("Wrong last fixing date for quarterly AU CPI"
+                    << "\n    calculated: " << aucpi.lastFixingDate()
+                    << "\n    expected:   " << expected);
 }
 
 BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
@@ -305,16 +323,12 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     evaluationDate = calendar.adjust(evaluationDate);
     Settings::instance().evaluationDate() = evaluationDate;
 
-    Date baseDate(1, July, 2007);
-
     // fixing data
     Date from(1, January, 2005);
-    Date to(13, August, 2007);
-    Schedule rpiSchedule = MakeSchedule().from(from).to(to)
-        .withTenor(1*Months)
-        .withCalendar(NullCalendar())
-        .withConvention(ModifiedFollowing)
-        .forwards();
+    Date to(1, July, 2007);
+    Schedule rpiSchedule =
+        MakeSchedule().from(from).to(to)
+        .withFrequency(Monthly);
 
     Real fixData[] = {
         189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
@@ -359,6 +373,8 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
             quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
+
+    Date baseDate = ii->lastFixingDate();
 
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
