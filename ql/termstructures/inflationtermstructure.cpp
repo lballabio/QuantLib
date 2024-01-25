@@ -165,19 +165,16 @@ namespace QuantLib {
                                    Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality,
-                                   Rate baseRate)
-    : InflationTermStructure(baseDate, frequency, dayCounter, seasonality, baseRate) {}
+                                   const ext::shared_ptr<Seasonality>& seasonality)
+    : InflationTermStructure(baseDate, frequency, dayCounter, seasonality) {}
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
                                    const Date& referenceDate,
                                    Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality,
-                                   Rate baseRate)
-    : InflationTermStructure(referenceDate, baseDate, frequency,
-                             dayCounter, seasonality, baseRate) {}
+                                   const ext::shared_ptr<Seasonality>& seasonality)
+    : InflationTermStructure(referenceDate, baseDate, frequency, dayCounter, seasonality) {}
 
     ZeroInflationTermStructure::ZeroInflationTermStructure(
                                    Natural settlementDays,
@@ -185,10 +182,8 @@ namespace QuantLib {
                                    Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality,
-                                   Rate baseRate)
-    : InflationTermStructure(settlementDays, calendar, baseDate, frequency,
-                             dayCounter, seasonality, baseRate) {}
+                                   const ext::shared_ptr<Seasonality>& seasonality)
+    : InflationTermStructure(settlementDays, calendar, baseDate, frequency, dayCounter, seasonality) {}
 
     QL_DEPRECATED_DISABLE_WARNING
 

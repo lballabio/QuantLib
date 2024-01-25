@@ -56,7 +56,6 @@ namespace QuantLib {
             Frequency frequency,
             const DayCounter& dayCounter,
             std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
-            Rate baseRate,
             const ext::shared_ptr<Seasonality>& seasonality = {},
             Real accuracy = 1.0e-14,
             const Interpolator& i = Interpolator())
@@ -65,14 +64,13 @@ namespace QuantLib {
                      frequency,
                      dayCounter,
                      seasonality,
-                     baseRate,
                      i),
           instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
 
         /*! \deprecated Use the other overload and pass the base date directly
-                        instead of using a lag.
+                        instead of using a lag. A base rate is not needed.
                         Deprecated in version 1.34.
         */
         QL_DEPRECATED

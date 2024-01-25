@@ -229,12 +229,10 @@ struct CommonVars {
 
         // we can use historical or first ZCIIS for this
         // we know historical is WAY off market-implied, so use market implied flat.
-        Rate baseZeroRate = zciisData[0].rate/100.0;
         Date baseDate(1, September, 2009);
         auto pCPIts =
             ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
-                                    evaluationDate, baseDate, ii->frequency(), dcZCIIS,
-                                    helpers, baseZeroRate);
+                                    evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);
         pCPIts->recalculate();
         cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
 

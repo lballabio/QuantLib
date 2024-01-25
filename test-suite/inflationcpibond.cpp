@@ -146,11 +146,9 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
             makeHelpers(zciisData, ii,
                         observationLag, calendar, convention, dayCounter, yTS);
 
-        Rate baseZeroRate = zciisData[0].rate/100.0;
         Date baseDate(1, September, 2009);
         cpiTS.linkTo(ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
-                         evaluationDate, baseDate, ii->frequency(), dayCounter,
-                         helpers, baseZeroRate));
+                         evaluationDate, baseDate, ii->frequency(), dayCounter, helpers));
     }
 
     // teardown

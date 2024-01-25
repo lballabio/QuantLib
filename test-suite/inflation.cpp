@@ -359,12 +359,14 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
             quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
-    Rate baseZeroRate = zcData[0].rate/100.0;
 
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
         ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
-            evaluationDate, baseDate, frequency, dc, helpers, baseZeroRate);
+            evaluationDate, baseDate, frequency, dc, helpers);
     hz.linkTo(pZITS);
+
+    for (auto n : pZITS->nodes())
+        std::cout << n.first << "\t" << n.second << std::endl;
 
     //===========================================================================================
     // first check that the quoted swaps are repriced correctly
@@ -442,6 +444,10 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
         ext::make_shared<MultiplicativePriceSeasonality>(seasonalityBaseDate, Monthly, seasonalityFactors);
 
     pZITS->setSeasonality(nonUnitSeasonality);
+
+    std::cout << "setting seasonality" << std::endl;
+    for (auto n : pZITS->nodes())
+        std::cout << n.first << "\t" << n.second << std::endl;
 
     for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,

@@ -93,11 +93,10 @@ namespace QuantLib {
                                        Frequency frequency,
                                        const DayCounter& dayCounter,
                                        const ext::shared_ptr<Seasonality>& seasonality = {},
-                                       Rate baseRate = Null<Rate>(),
                                        const Interpolator &interpolator = Interpolator());
 
         /*! \deprecated Use the other overload and pass the base date directly
-                        instead of using a lag.
+                        instead of using a lag. A base rate should not be needed.
                         Deprecated in version 1.34.
         */
         QL_DEPRECATED
@@ -151,9 +150,8 @@ namespace QuantLib {
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
                                    const ext::shared_ptr<Seasonality>& seasonality,
-                                   Rate baseRate,
                                    const Interpolator& interpolator)
-    :  ZeroInflationTermStructure(referenceDate, baseDate, frequency, dayCounter, seasonality, baseRate),
+    :  ZeroInflationTermStructure(referenceDate, baseDate, frequency, dayCounter, seasonality),
        InterpolatedCurve<Interpolator>(interpolator) {
     }
 

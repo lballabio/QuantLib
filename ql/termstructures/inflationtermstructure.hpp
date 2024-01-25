@@ -157,26 +157,23 @@ namespace QuantLib {
         ZeroInflationTermStructure(Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {},
-                                   Rate baseRate = Null<Rate>());
+                                   const ext::shared_ptr<Seasonality>& seasonality = {});
 
         ZeroInflationTermStructure(const Date& referenceDate,
                                    Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {},
-                                   Rate baseRate = Null<Rate>());
+                                   const ext::shared_ptr<Seasonality>& seasonality = {});
 
         ZeroInflationTermStructure(Natural settlementDays,
                                    const Calendar& calendar,
                                    Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {},
-                                   Rate baseRate = Null<Rate>());
+                                   const ext::shared_ptr<Seasonality>& seasonality = {});
 
         /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag.
+                        instead of using a lag. A base rate should not be needed.
                         Deprecated in version 1.34.
         */
         QL_DEPRECATED
@@ -187,7 +184,7 @@ namespace QuantLib {
                                    const ext::shared_ptr<Seasonality> &seasonality = {});
 
         /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag.
+                        instead of using a lag. A base rate should not be needed.
                         Deprecated in version 1.34.
         */
         QL_DEPRECATED
@@ -200,7 +197,7 @@ namespace QuantLib {
                                    const ext::shared_ptr<Seasonality>& seasonality = {});
 
         /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag.
+                        instead of using a lag. A base rate should not be needed.
                         Deprecated in version 1.34.
         */
         QL_DEPRECATED

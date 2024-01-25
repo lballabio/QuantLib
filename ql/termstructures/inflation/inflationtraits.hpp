@@ -50,8 +50,9 @@ namespace QuantLib {
                 return inflationPeriod(t->referenceDate() - t->observationLag(), t->frequency()).first;
         }
         // value at reference date
-        static Rate initialValue(const ZeroInflationTermStructure* t) {
-            return t->baseRate();
+        static Rate initialValue(const ZeroInflationTermStructure*) {
+            // this will be overwritten during bootstrap
+            return detail::avgInflation;
         }
 
         // guesses
@@ -64,10 +65,6 @@ namespace QuantLib {
             if (validData) // previous iteration value
                 return c->data()[i];
 
-            if (i==1) // first pillar
-                return detail::avgInflation;
-
-            // could/should extrapolate
             return detail::avgInflation;
         }
 
@@ -104,6 +101,8 @@ namespace QuantLib {
                                 Rate level,
                                 Size i) {
             data[i] = level;
+            if (i==1)
+                data[0] = level; // the first point is updated as well
         }
         // upper bound for convergence loop
         // calibration is trivial, should be immediate
@@ -142,10 +141,6 @@ namespace QuantLib {
             if (validData) // previous iteration value
                 return c->data()[i];
 
-            if (i==1) // first pillar
-                return detail::avgInflation;
-        
-            // could/should extrapolate
             return detail::avgInflation;
         }
 
