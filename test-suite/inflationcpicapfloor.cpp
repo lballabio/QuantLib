@@ -138,22 +138,20 @@ struct CommonVars {
         dcZCIIS = ActualActual(ActualActual::ISDA);
         dcNominal = ActualActual(ActualActual::ISDA);
 
-        // uk rpi index
-        //      fixing data
-        Date from(1, July, 2007);
-        Date to(1, June, 2010);
-        Schedule rpiSchedule = MakeSchedule().from(from).to(to)
-            .withTenor(1*Months)
-            .withCalendar(UnitedKingdom())
-            .withConvention(ModifiedFollowing);
+        // UK RPI index fixing data
+        Schedule rpiSchedule =
+            MakeSchedule()
+            .from(Date(1, July, 2007))
+            .to(Date(1, April, 2010))
+            .withFrequency(Monthly);
         Real fixData[] = {
             206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
             209.8, 211.4, 212.1, 214.0, 215.1, 216.8,   //  2008
             216.5, 217.2, 218.4, 217.7, 216.0, 212.9,
             210.1, 211.4, 211.3, 211.5, 212.8, 213.4,   //  2009
             213.4, 214.4, 215.3, 216.0, 216.6, 218.0,
-            217.9, 219.2, 220.7, 222.8, -999, -999,     //  2010
-            -999};
+            217.9, 219.2, 220.7, 222.8                  //  2010
+        };
 
         // link from cpi index to cpi TS
         ii = ext::make_shared<UKRPI>(hcpi);
@@ -251,10 +249,10 @@ struct CommonVars {
         // we can use historical or first ZCIIS for this
         // we know historical is WAY off market-implied, so use market implied flat.
         baseZeroRate = zciisData[0].rate/100.0;
-        ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
-                                new PiecewiseZeroInflationCurve<Linear>(
-                                    evaluationDate, calendar, dcZCIIS, observationLag,
-                                    ii->frequency(), baseZeroRate, helpers));
+        Date baseDate(1, April, 2010);
+        auto pCPIts = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                                    evaluationDate, baseDate, ii->frequency(), dcZCIIS,
+                                    helpers, baseZeroRate);
         pCPIts->recalculate();
         cpiUK.linkTo(pCPIts);
 
