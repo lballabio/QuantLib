@@ -92,7 +92,7 @@ namespace QuantLib {
             // New Year's Day
             || (d == 1 && m == January)
             // Sao Paulo City Day
-            || (d == 25 && m == January)
+            || (d == 25 && m == January && y < 2022)
             // Tiradentes Day
             || (d == 21 && m == April)
             // Labor Day
