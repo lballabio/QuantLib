@@ -97,22 +97,20 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
         Settings::instance().evaluationDate() = evaluationDate;
         dayCounter = ActualActual(ActualActual::ISDA);
 
-        Date from(20, July, 2007);
-        Date to(20, November, 2009);
-        Schedule rpiSchedule =
-            MakeSchedule().from(from).to(to)
-            .withTenor(1*Months)
-            .withCalendar(UnitedKingdom())
-            .withConvention(ModifiedFollowing);
-
         ii = ext::make_shared<UKRPI>(cpiTS);
+
+        Schedule rpiSchedule =
+            MakeSchedule()
+            .from(Date(1, July, 2007))
+            .to(Date(1, September, 2009))
+            .withFrequency(Monthly);
 
         Real fixData[] = {
             206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
             209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
-            216.5, 217.2, 218.4, 217.7, 216,
-            212.9, 210.1, 211.4, 211.3, 211.5,
-            212.8, 213.4, 213.4, 213.4, 214.4
+            216.5, 217.2, 218.4, 217.7, 216.0, 212.9,
+            210.1, 211.4, 211.3, 211.5, 212.8, 213.4,
+            213.4, 213.4, 214.4
         };
         for (Size i=0; i<LENGTH(fixData); ++i) {
             ii->addFixing(rpiSchedule[i], fixData[i]);
@@ -148,11 +146,10 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
             makeHelpers(zciisData, ii,
                         observationLag, calendar, convention, dayCounter, yTS);
 
-        Rate baseZeroRate = zciisData[0].rate/100.0;
-        cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>(
-                  new PiecewiseZeroInflationCurve<Linear>(
-                         evaluationDate, calendar, dayCounter, observationLag,
-                         ii->frequency(), baseZeroRate, helpers)));
+        Date baseDate = ii->lastFixingDate();
+
+        cpiTS.linkTo(ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                         evaluationDate, baseDate, ii->frequency(), dayCounter, helpers));
     }
 
     // teardown

@@ -124,22 +124,19 @@ struct CommonVars {
         dcZCIIS = ActualActual(ActualActual::ISDA);
         dcNominal = ActualActual(ActualActual::ISDA);
 
-        // uk rpi index
-        //      fixing data
-        Date from(20, July, 2007);
-        //Date from(20, July, 2008);
-        Date to(20, November, 2009);
-        Schedule rpiSchedule = MakeSchedule().from(from).to(to)
-            .withTenor(1*Months)
-            .withCalendar(UnitedKingdom())
-            .withConvention(ModifiedFollowing);
+        // UK RPI index fixing data
+        Schedule rpiSchedule =
+            MakeSchedule()
+            .from(Date(1, July, 2007))
+            .to(Date(1, September, 2009))
+            .withFrequency(Monthly);
         Real fixData[] = {
             206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
             209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
-            216.5, 217.2, 218.4, 217.7, 216,
-            212.9, 210.1, 211.4, 211.3, 211.5,
-            212.8, 213.4, 213.4, 213.4, 214.4,
-            -999.0, -999.0 };
+            216.5, 217.2, 218.4, 217.7, 216.0, 212.9,
+            210.1, 211.4, 211.3, 211.5, 212.8, 213.4,
+            213.4, 213.4, 214.4
+        };
 
         // link from cpi index to cpi TS
         ii = ext::make_shared<UKRPI>(hcpi);
@@ -232,14 +229,12 @@ struct CommonVars {
 
         // we can use historical or first ZCIIS for this
         // we know historical is WAY off market-implied, so use market implied flat.
-        Rate baseZeroRate = zciisData[0].rate/100.0;
-        ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
-                                new PiecewiseZeroInflationCurve<Linear>(
-                                    evaluationDate, calendar, dcZCIIS, observationLag,
-                                    ii->frequency(), baseZeroRate, helpers));
+        Date baseDate = ii->lastFixingDate();
+        auto pCPIts =
+            ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                                    evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);
         pCPIts->recalculate();
         cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
-
 
         // make sure that the index has the latest zero inflation term structure
         hcpi.linkTo(pCPIts);

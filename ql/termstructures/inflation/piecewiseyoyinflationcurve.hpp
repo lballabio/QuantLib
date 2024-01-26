@@ -51,6 +51,37 @@ namespace QuantLib {
         //@{
         PiecewiseYoYInflationCurve(
             const Date& referenceDate,
+            Date baseDate,
+            Rate baseYoYRate,
+            Frequency frequency,
+            bool indexIsInterpolated,
+            const DayCounter& dayCounter,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const ext::shared_ptr<Seasonality>& seasonality = {},
+            Real accuracy = 1.0e-12,
+            const Interpolator& i = Interpolator())
+        : base_curve(referenceDate,
+                     baseDate,
+                     baseYoYRate,
+                     frequency,
+                     indexIsInterpolated,
+                     dayCounter,
+                     seasonality,
+                     i),
+          instruments_(std::move(instruments)), accuracy_(accuracy) {
+            bootstrap_.setup(this);
+        }
+
+
+        QL_DEPRECATED_DISABLE_WARNING
+
+        /*! \deprecated Use the other overload and pass the base date directly
+                        instead of using a lag.
+                        Deprecated in version 1.34.
+        */
+        QL_DEPRECATED
+        PiecewiseYoYInflationCurve(
+            const Date& referenceDate,
             const Calendar& calendar,
             const DayCounter& dayCounter,
             const Period& lag,
@@ -71,6 +102,8 @@ namespace QuantLib {
           instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
+
+        QL_DEPRECATED_ENABLE_WARNING
         //@}
 
         //! \name Inflation interface
@@ -106,7 +139,8 @@ namespace QuantLib {
 
     template <class I, template <class> class B, class T>
     inline Date PiecewiseYoYInflationCurve<I,B,T>::baseDate() const {
-        this->calculate();
+        if (!this->hasExplicitBaseDate())
+            this->calculate();
         return base_curve::baseDate();
     }
 
