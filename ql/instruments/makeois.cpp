@@ -23,7 +23,6 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
@@ -106,21 +105,14 @@ namespace QuantLib {
                                fixedTerminationDateConvention_,
                                fixedRule,
                                fixedEndOfMonth);
-        ext::optional<Schedule> overnightSchedule;
-        if (fixedPaymentFrequency != overnightPaymentFrequency ||
-            fixedCalendar_ != overnightCalendar_ ||
-            fixedConvention_ != overnightConvention_ ||
-            fixedTerminationDateConvention_ != overnightTerminationDateConvention_ ||
-            fixedRule != overnightRule ||
-            fixedEndOfMonth != overnightEndOfMonth) {
-            overnightSchedule.emplace(startDate, endDate,
-                                      Period(overnightPaymentFrequency),
-                                      overnightCalendar_,
-                                      overnightConvention_,
-                                      overnightTerminationDateConvention_,
-                                      overnightRule,
-                                      overnightEndOfMonth);
-        }
+
+        Schedule overnightSchedule(startDate, endDate,
+                                   Period(overnightPaymentFrequency),
+                                   overnightCalendar_,
+                                   overnightConvention_,
+                                   overnightTerminationDateConvention_,
+                                   overnightRule,
+                                   overnightEndOfMonth);
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
@@ -128,7 +120,7 @@ namespace QuantLib {
                                       fixedSchedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
-                                      overnightSchedule ? *overnightSchedule : fixedSchedule,
+                                      overnightSchedule,
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
                                       paymentCalendar_, telescopicValueDates_);
@@ -152,7 +144,7 @@ namespace QuantLib {
             OvernightIndexedSwap(type_, nominal_,
                                  fixedSchedule,
                                  usedFixedRate, fixedDayCount_,
-                                 overnightSchedule ? *overnightSchedule : fixedSchedule,
+                                 overnightSchedule,
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
                                  paymentCalendar_, telescopicValueDates_, 
@@ -232,6 +224,10 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withCalendar(const Calendar& cal) {
+        return withFixedLegCalendar(cal).withOvernightLegCalendar(cal);
+    }
+
     MakeOIS& MakeOIS::withFixedLegCalendar(const Calendar& cal) {
         fixedCalendar_ = cal;
         return *this;
@@ -275,6 +271,10 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withConvention(BusinessDayConvention bdc) {
+        return withFixedLegConvention(bdc).withOvernightLegConvention(bdc);
+    }
+
     MakeOIS& MakeOIS::withFixedLegConvention(BusinessDayConvention bdc) {
         fixedConvention_ = bdc;
         return *this;
@@ -283,6 +283,11 @@ namespace QuantLib {
     MakeOIS& MakeOIS::withOvernightLegConvention(BusinessDayConvention bdc) {
         overnightConvention_ = bdc;
         return *this;
+    }
+
+    MakeOIS& MakeOIS::withTerminationDateConvention(BusinessDayConvention bdc) {
+        withFixedLegTerminationDateConvention(bdc);
+        return withOvernightLegTerminationDateConvention(bdc);
     }
 
     MakeOIS& MakeOIS::withFixedLegTerminationDateConvention(BusinessDayConvention bdc) {

@@ -63,11 +63,14 @@ namespace QuantLib {
         MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
         MakeOIS& withPaymentLag(Integer lag);
         MakeOIS& withPaymentCalendar(const Calendar& cal);
+        MakeOIS& withCalendar(const Calendar& cal);
         MakeOIS& withFixedLegCalendar(const Calendar& cal);
         MakeOIS& withOvernightLegCalendar(const Calendar& cal);
 
+        MakeOIS& withConvention(BusinessDayConvention bdc);
         MakeOIS& withFixedLegConvention(BusinessDayConvention bdc);
         MakeOIS& withOvernightLegConvention(BusinessDayConvention bdc);
+        MakeOIS& withTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withOvernightLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withEndOfMonth(bool flag = true);
