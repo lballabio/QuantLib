@@ -202,9 +202,8 @@ struct CommonVars {
       std::copy(vars.rateTimes.begin(), vars.rateTimes.end() - 1,
                 evolutionTimes.begin());
       EvolutionDescription evolution(vars.rateTimes, evolutionTimes);
-      std::vector<Time> taus = evolution.rateTaus();
-      std::vector<Size> alive = evolution.firstAliveRate();
-
+      const std::vector<Time>& taus = evolution.rateTaus();
+      
 
     SMMDriftCalculator smmDriftcalculator(vars.pseudo, vars.displacements, taus, vars.numeraire,
                                             vars.firstAliveRates[0]);
