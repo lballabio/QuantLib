@@ -31,7 +31,7 @@ namespace QuantLib {
         const Calendar& cal, // calendar in index may not be useful
         const BusinessDayConvention& bdc,
         const DayCounter& dc,
-        const ext::shared_ptr<ZeroInflationIndex>& zii,
+        ext::shared_ptr<ZeroInflationIndex>  zii,
         CPI::InterpolationType interpolationType,
         Handle<YieldTermStructure> yts,
         const std::vector<Rate>& cStrikes,
@@ -40,7 +40,7 @@ namespace QuantLib {
         const Matrix& cPrice,
         const Matrix& fPrice)
     : TermStructure(0, cal, dc),
-      zii_(zii), interpolationType_(interpolationType), nominalTS_(std::move(yts)),
+      zii_(std::move(zii)), interpolationType_(interpolationType), nominalTS_(std::move(yts)),
       cStrikes_(cStrikes), fStrikes_(fStrikes), cfMaturities_(cfMaturities),
       cPrice_(cPrice), fPrice_(fPrice), nominal_(nominal), bdc_(bdc),
       observationLag_(observationLag), baseRate_(baseRate) {
