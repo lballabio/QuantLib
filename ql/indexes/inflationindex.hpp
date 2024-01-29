@@ -167,6 +167,7 @@ namespace QuantLib {
         //@}
         //! \name Other methods
         //@{
+        Date lastFixingDate() const;
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
         ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
         //@}

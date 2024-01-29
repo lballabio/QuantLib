@@ -126,6 +126,12 @@ namespace QuantLib {
         }
     }
 
+    Date ZeroInflationIndex::lastFixingDate() const {
+        const auto& fixings = timeSeries();
+        QL_REQUIRE(!fixings.empty(), "no fixings stored for " << name());
+        // attribute fixing to first day of the underlying period
+        return inflationPeriod(fixings.lastDate(), frequency_).first;
+    }
 
     bool ZeroInflationIndex::needsForecast(const Date& fixingDate) const {
 
