@@ -318,9 +318,16 @@ namespace QuantLib {
 
 
     bool UnitedStates::SofrImpl::isBusinessDay(const Date& date) const {
-        // Good Friday 2023 was only a half close for SIFMA but SOFR didn't fix
-        if (date == Date(7, April, 2023))
+        // so far (that is, up to 2023 at the time of this change) SOFR never fixed
+        // on Good Friday.  We're extrapolating that pattern.  This might change if
+        // a fixing on Good Friday occurs in future years.
+        const Day dY = date.dayOfYear();
+        const Year y = date.year();
+
+        // Good Friday
+        if (dY == (easterMonday(y) - 3))
             return false;
+
         return GovernmentBondImpl::isBusinessDay(date);
     }
 

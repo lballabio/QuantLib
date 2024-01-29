@@ -375,17 +375,16 @@ BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
 }
 
 BOOST_AUTO_TEST_CASE(testSOFR) {
-    BOOST_TEST_MESSAGE("Testing extra non-fixing day for SOFR...");
+    BOOST_TEST_MESSAGE("Testing holidays for SOFR...");
 
-    auto fedCalendar = UnitedStates(UnitedStates::GovernmentBond);
-    auto testDate = Date(7, April, 2023); // Good Friday 2023 was only a half close but SOFR didn't fix
-
-    if (fedCalendar.isHoliday(testDate))
-        BOOST_ERROR(testDate << " should not be a holiday for " << fedCalendar.name());
-
-    auto sofr = Sofr();
-    if (sofr.isValidFixingDate(testDate))
-        BOOST_ERROR(testDate << " should not be a fixing date for " << sofr.name());
+    // Good Friday
+    for (const Date goodFriday :
+         {Date(14, April, 2017), Date(30, March, 2018), Date(19, April, 2019),
+          Date(10, April, 2020), Date(2, April, 2021), Date(15, April, 2022), Date(7, April, 2023),
+          Date(29, March, 2024), Date(18, April, 2025), Date(3, April, 2026), Date(26, March, 2027),
+          Date(14, April, 2028), Date(30, March, 2029), Date(19, April, 2030),
+          Date(11, April, 2031)})
+        BOOST_TEST(UnitedStates(UnitedStates::SOFR).isHoliday(goodFriday));
 }
 
 BOOST_AUTO_TEST_CASE(testUSFederalReserveJuneteenth) {
