@@ -318,6 +318,9 @@ namespace QuantLib {
 
 
     bool UnitedStates::SofrImpl::isBusinessDay(const Date& date) const {
+        // so far (that is, up to 2023 at the time of this change) SOFR never fixed
+        // on Good Friday.  We're extrapolating that pattern.  This might change if
+        // a fixing on Good Friday occurs in future years.
         const Day dY = date.dayOfYear();
         const Year y = date.year();
 
