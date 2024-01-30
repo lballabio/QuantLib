@@ -61,8 +61,8 @@ BOOST_AUTO_TEST_SUITE(BondsTests)
 #define ASSERT_CLOSE(name, settlement, calculated, expected, tolerance)  \
     if (std::fabs(calculated-expected) > tolerance) { \
     BOOST_ERROR("Failed to reproduce " << name << " at " << settlement \
-                << "\n    calculated: " << std::setprecision(8) << calculated \
-                << "\n    expected:   " << std::setprecision(8) << expected); \
+                << "\n    calculated: " << std::setprecision(9) << calculated \
+                << "\n    expected:   " << std::setprecision(9) << expected); \
     }
 
 struct CommonVars {
@@ -1678,6 +1678,74 @@ BOOST_AUTO_TEST_CASE(testThirty360BondWithSettlementOn31st){
 
     Real accrued = BondFunctions::accruedAmount(fixedRateBond, settlement);
     ASSERT_CLOSE("accrued", settlement, accrued, 0.7, 1e-6);
+}
+
+BOOST_AUTO_TEST_CASE(testBasisPointValue) {
+
+    BOOST_TEST_MESSAGE("Testing consistency of bond basisPointValue and yieldValueBasisPoint calculations...");
+
+    CommonVars vars;
+
+    Date today(29, January, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Date datedDate(15, November, 2023);
+    Date maturity(15, August, 2033);
+
+    DayCounter dayCounter = Thirty360(Thirty360::USA);
+    Compounding compounding = Compounded;
+    Frequency frequency = Semiannual;
+    Period period = Period(frequency);
+
+    Schedule fixedBondSchedule(datedDate,
+            maturity,
+            period,
+            UnitedStates(UnitedStates::GovernmentBond),
+            Unadjusted, Unadjusted, DateGeneration::Forward, false);
+
+    FixedRateBond fixedRateBond(
+            1,
+            vars.faceAmount,
+            fixedBondSchedule,
+            std::vector<Rate>(1, 0.045),
+            dayCounter,
+            Unadjusted,
+            100.0);
+
+    Date defaultSettlement = fixedRateBond.settlementDate();
+    Real cleanPrice = 102.890625;
+
+    Real tolerance = 1e-6;
+
+    Real yield = BondFunctions::yield(fixedRateBond, cleanPrice, dayCounter, compounding, frequency);
+    ASSERT_CLOSE("yield", defaultSettlement, yield, 0.041301, tolerance);
+
+    struct test_case {
+        Date settlement;
+        Real bpv;
+        Real yvbp;
+    };
+    test_case cases[] = {
+        { Date(), -795.459834, -0.0012571287},
+        { defaultSettlement, -795.459834, -0.0012571287 },
+        { Date(12, February, 2024), -793.149033, -0.0012607913 },
+    };
+
+    for (auto& i : cases)
+    {
+        Real bvp1 = BondFunctions::basisPointValue(fixedRateBond, yield, dayCounter, compounding, frequency, i.settlement);
+        ASSERT_CLOSE("basisPointValue from yield", i.settlement, bvp1, i.bpv, tolerance);
+        Real bvp2 = BondFunctions::basisPointValue(fixedRateBond, InterestRate(yield, dayCounter, compounding, frequency), i.settlement);
+        ASSERT_CLOSE("basisPointValue from InterestRate", i.settlement, bvp2, i.bpv, tolerance);
+
+        Real yvbp1 = BondFunctions::yieldValueBasisPoint(fixedRateBond, yield, dayCounter, compounding, frequency, i.settlement);
+        yvbp1 *= vars.faceAmount;
+        ASSERT_CLOSE("yieldValueBasisPoint from yield", i.settlement, yvbp1, i.yvbp, tolerance);
+        Real yvbp2 = BondFunctions::yieldValueBasisPoint(fixedRateBond, InterestRate(yield, dayCounter, compounding, frequency), i.settlement);
+        yvbp2 *= vars.faceAmount;
+        ASSERT_CLOSE("yieldValueBasisPoint from InterestRate", i.settlement, yvbp2, i.yvbp, tolerance);
+
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

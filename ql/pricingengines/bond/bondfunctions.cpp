@@ -446,8 +446,7 @@ namespace QuantLib {
                               Frequency frequency,
                                         Date settlement) {
         InterestRate y(yield, dayCounter, compounding, frequency);
-        return CashFlows::basisPointValue(bond.cashflows(), y,
-                                          false, settlement);
+        return basisPointValue(bond, y, settlement);
     }
 
     Real BondFunctions::yieldValueBasisPoint(const Bond& bond,
@@ -471,8 +470,7 @@ namespace QuantLib {
                                              Frequency frequency,
                                              Date settlement) {
         InterestRate y(yield, dayCounter, compounding, frequency);
-        return CashFlows::yieldValueBasisPoint(bond.cashflows(), y,
-                                               false, settlement);
+        return yieldValueBasisPoint(bond, y, settlement);
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
