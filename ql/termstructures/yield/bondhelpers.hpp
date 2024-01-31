@@ -90,10 +90,6 @@ namespace QuantLib {
                             bool exCouponEndOfMonth = false,
                             Bond::Price::Type priceType = Bond::Price::Clean);
 
-        //! \name Additional inspectors
-        //@{
-        ext::shared_ptr<FixedRateBond> fixedRateBond() const;
-        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
@@ -126,10 +122,6 @@ namespace QuantLib {
                       bool exCouponEndOfMonth = false,
                       Bond::Price::Type priceType = Bond::Price::Clean);
 
-        //! \name Additional inspectors
-        //@{
-        ext::shared_ptr<CPIBond> cpiBond() const;
-        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
@@ -149,15 +141,6 @@ namespace QuantLib {
         return priceType_;
     }
 
-    inline ext::shared_ptr<FixedRateBond>
-    FixedRateBondHelper::fixedRateBond() const {
-        return fixedRateBond_;
-    }
-
-    inline ext::shared_ptr<CPIBond>
-    CPIBondHelper::cpiBond() const {
-        return cpiBond_;
-    }
 
 }
 
