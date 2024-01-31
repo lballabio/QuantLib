@@ -23,7 +23,6 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
@@ -63,16 +62,21 @@ namespace QuantLib {
         }
 
         // OIS end of month default
-        bool usedEndOfMonth =
-            isDefaultEOM_ ? overnightCalendar_.isEndOfMonth(startDate) : endOfMonth_;
+        bool fixedEndOfMonth, overnightEndOfMonth;
+        if (isDefaultEOM_)
+            fixedEndOfMonth = overnightEndOfMonth = overnightCalendar_.isEndOfMonth(startDate);
+        else {
+            fixedEndOfMonth = fixedEndOfMonth_;
+            overnightEndOfMonth = overnightEndOfMonth_;
+        }
 
         Date endDate = terminationDate_;
         if (endDate == Date()) {
-            if (usedEndOfMonth)
+            if (overnightEndOfMonth)
                 endDate = overnightCalendar_.advance(startDate,
                                                      swapTenor_,
                                                      ModifiedFollowing,
-                                                     usedEndOfMonth);
+                                                     overnightEndOfMonth);
             else
                 endDate = startDate + swapTenor_;
         }
@@ -97,21 +101,18 @@ namespace QuantLib {
         Schedule fixedSchedule(startDate, endDate,
                                Period(fixedPaymentFrequency),
                                fixedCalendar_,
-                               ModifiedFollowing,
-                               ModifiedFollowing,
+                               fixedConvention_,
+                               fixedTerminationDateConvention_,
                                fixedRule,
-                               usedEndOfMonth);
-        ext::optional<Schedule> overnightSchedule;
-        if (fixedPaymentFrequency != overnightPaymentFrequency || fixedRule != overnightRule ||
-            fixedCalendar_ != overnightCalendar_) {
-            overnightSchedule.emplace(startDate, endDate,
-                                      Period(overnightPaymentFrequency),
-                                      overnightCalendar_,
-                                      ModifiedFollowing,
-                                      ModifiedFollowing,
-                                      overnightRule,
-                                      usedEndOfMonth);
-        }
+                               fixedEndOfMonth);
+
+        Schedule overnightSchedule(startDate, endDate,
+                                   Period(overnightPaymentFrequency),
+                                   overnightCalendar_,
+                                   overnightConvention_,
+                                   overnightTerminationDateConvention_,
+                                   overnightRule,
+                                   overnightEndOfMonth);
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
@@ -119,7 +120,7 @@ namespace QuantLib {
                                       fixedSchedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
-                                      overnightSchedule ? *overnightSchedule : fixedSchedule,
+                                      overnightSchedule,
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
                                       paymentCalendar_, telescopicValueDates_);
@@ -143,7 +144,7 @@ namespace QuantLib {
             OvernightIndexedSwap(type_, nominal_,
                                  fixedSchedule,
                                  usedFixedRate, fixedDayCount_,
-                                 overnightSchedule ? *overnightSchedule : fixedSchedule,
+                                 overnightSchedule,
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
                                  paymentCalendar_, telescopicValueDates_, 
@@ -223,6 +224,10 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withCalendar(const Calendar& cal) {
+        return withFixedLegCalendar(cal).withOvernightLegCalendar(cal);
+    }
+
     MakeOIS& MakeOIS::withFixedLegCalendar(const Calendar& cal) {
         fixedCalendar_ = cal;
         return *this;
@@ -266,8 +271,47 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withConvention(BusinessDayConvention bdc) {
+        return withFixedLegConvention(bdc).withOvernightLegConvention(bdc);
+    }
+
+    MakeOIS& MakeOIS::withFixedLegConvention(BusinessDayConvention bdc) {
+        fixedConvention_ = bdc;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withOvernightLegConvention(BusinessDayConvention bdc) {
+        overnightConvention_ = bdc;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withTerminationDateConvention(BusinessDayConvention bdc) {
+        withFixedLegTerminationDateConvention(bdc);
+        return withOvernightLegTerminationDateConvention(bdc);
+    }
+
+    MakeOIS& MakeOIS::withFixedLegTerminationDateConvention(BusinessDayConvention bdc) {
+        fixedTerminationDateConvention_ = bdc;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withOvernightLegTerminationDateConvention(BusinessDayConvention bdc) {
+        overnightTerminationDateConvention_ = bdc;
+        return *this;
+    }
+
     MakeOIS& MakeOIS::withEndOfMonth(bool flag) {
-        endOfMonth_ = flag;
+        return withFixedLegEndOfMonth(flag).withOvernightLegEndOfMonth(flag);
+    }
+
+    MakeOIS& MakeOIS::withFixedLegEndOfMonth(bool flag) {
+        fixedEndOfMonth_ = flag;
+        isDefaultEOM_ = false;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withOvernightLegEndOfMonth(bool flag) {
+        overnightEndOfMonth_ = flag;
         isDefaultEOM_ = false;
         return *this;
     }
