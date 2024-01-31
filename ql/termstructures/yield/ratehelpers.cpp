@@ -39,42 +39,30 @@
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
-#define APPLY_DATES(dates)                               \
-    {                                                    \
-        earliestDate_ = dates.earliestDate_;             \
-        latestDate_ = dates.latestDate_;                 \
-        maturityDate_ = dates.maturityDate_;             \
-        latestRelevantDate_ = dates.latestRelevantDate_; \
-        pillarDate_ = dates.pillarDate_;                 \
-        yearFraction_ = dates.yearFraction_;             \
-    }
-
 namespace QuantLib {
+
     namespace {
-        struct FuturesRateHelperDates {
-            Date earliestDate_, latestDate_;
-            Date maturityDate_, latestRelevantDate_, pillarDate_;
-            Time yearFraction_;
-        };
 
         void CheckDate(const Date& date, const Futures::Type type) {
             switch (type) {
-                case Futures::IMM:
-                    QL_REQUIRE(IMM::isIMMdate(date, false), date << " is not a valid IMM date");
-                    break;
-                case Futures::ASX:
-                    QL_REQUIRE(ASX::isASXdate(date, false), date << " is not a valid ASX date");
-                    break;
-                default:
-                    QL_FAIL("unknown futures type (" << Integer(type) << ')');
+              case Futures::IMM:
+                QL_REQUIRE(IMM::isIMMdate(date, false), date << " is not a valid IMM date");
+                break;
+              case Futures::ASX:
+                QL_REQUIRE(ASX::isASXdate(date, false), date << " is not a valid ASX date");
+                break;
+              default:
+                QL_FAIL("unknown futures type (" << Integer(type) << ')');
             }
         }
 
-        Time DetermineYearFraction(const FuturesRateHelperDates& dates,
+        Time DetermineYearFraction(const Date& earliestDate,
+                                   const Date& maturityDate,
                                    const DayCounter& dayCounter) {
-            return dayCounter.yearFraction(dates.earliestDate_, dates.maturityDate_,
-                                           dates.earliestDate_, dates.maturityDate_);
+            return dayCounter.yearFraction(earliestDate, maturityDate,
+                                           earliestDate, maturityDate);
         }
+
     } // namespace
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
@@ -88,14 +76,13 @@ namespace QuantLib {
                                          Futures::Type type)
     : RateHelper(price), convAdj_(std::move(convAdj)) {
         CheckDate(iborStartDate, type);
-        FuturesRateHelperDates dates;
-        dates.earliestDate_ = iborStartDate;
-        dates.maturityDate_ =
-            calendar.advance(iborStartDate, lengthInMonths * Months, convention, endOfMonth);
-        dates.yearFraction_ = DetermineYearFraction(dates, dayCounter);
-        dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
 
-        APPLY_DATES(dates);
+        earliestDate_ = iborStartDate;
+        maturityDate_ =
+            calendar.advance(iborStartDate, lengthInMonths * Months, convention, endOfMonth);
+        yearFraction_ = DetermineYearFraction(earliestDate_, maturityDate_, dayCounter);
+        pillarDate_ = latestDate_ = latestRelevantDate_ = maturityDate_;
+
         registerWith(convAdj_);
     }
 
@@ -139,24 +126,22 @@ namespace QuantLib {
                 return maturityDate;
             };
 
-        FuturesRateHelperDates dates;
         switch (type) {
           case Futures::IMM:
-            dates.maturityDate_ = determineMaturityDate(
+            maturityDate_ = determineMaturityDate(
                 [](const Date date) -> Date { return IMM::nextDate(date, false); });
             break;
           case Futures::ASX:
-            dates.maturityDate_ = determineMaturityDate(
+            maturityDate_ = determineMaturityDate(
                 [](const Date date) -> Date { return ASX::nextDate(date, false); });
             break;
           default:
             QL_FAIL("unknown futures type (" << Integer(type) << ')');
         }
-        dates.earliestDate_ = iborStartDate;
-        dates.yearFraction_ = DetermineYearFraction(dates, dayCounter);
-        dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
+        earliestDate_ = iborStartDate;
+        yearFraction_ = DetermineYearFraction(earliestDate_, maturityDate_, dayCounter);
+        pillarDate_ = latestDate_ = latestRelevantDate_ = maturityDate_;
 
-        APPLY_DATES(dates);
         registerWith(convAdj_);
     }
 
@@ -177,14 +162,14 @@ namespace QuantLib {
                                          Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
         CheckDate(iborStartDate, type);
-        FuturesRateHelperDates dates;
-        dates.earliestDate_ = iborStartDate;
+
+        earliestDate_ = iborStartDate;
         const Calendar& cal = index->fixingCalendar();
-        dates.maturityDate_ =
+        maturityDate_ =
             cal.advance(iborStartDate, index->tenor(), index->businessDayConvention());
-        dates.yearFraction_ = DetermineYearFraction(dates, index->dayCounter());
-        dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
-        APPLY_DATES(dates);
+        yearFraction_ = DetermineYearFraction(earliestDate_, maturityDate_, index->dayCounter());
+        pillarDate_ = latestDate_ = latestRelevantDate_ = maturityDate_;
+
         registerWith(convAdj);
     }
 
