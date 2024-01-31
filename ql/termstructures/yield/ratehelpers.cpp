@@ -175,11 +175,10 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          Rate convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(convAdj)))) {
-        const FuturesRateHelperDates dates = InitializeDates(
-            iborStartDate, lengthInMonths, calendar, convention, endOfMonth, dayCounter, type);
-        APPLY_DATES(dates);
-    }
+    : FuturesRateHelper(Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
+                        iborStartDate, lengthInMonths, calendar,
+                        convention, endOfMonth, dayCounter,
+                        Handle<Quote>(ext::make_shared<SimpleQuote>(convAdj)), type) {}
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& iborStartDate,
@@ -200,32 +199,29 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          Rate convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(convAdj)))) {
-        const FuturesRateHelperDates dates =
-            InitializeDates(iborStartDate, iborEndDate, dayCounter, type);
-        APPLY_DATES(dates);
-    }
+    : FuturesRateHelper(Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
+                        iborStartDate, iborEndDate, dayCounter,
+                        Handle<Quote>(ext::make_shared<SimpleQuote>(convAdj)), type) {}
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& iborStartDate,
-                                         const ext::shared_ptr<IborIndex>& i,
+                                         const ext::shared_ptr<IborIndex>& index,
                                          const Handle<Quote>& convAdj,
                                          Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
-        const FuturesRateHelperDates dates = InitializeDates(iborStartDate, i, type);
+        const FuturesRateHelperDates dates = InitializeDates(iborStartDate, index, type);
         APPLY_DATES(dates);
         registerWith(convAdj);
     }
 
     FuturesRateHelper::FuturesRateHelper(Real price,
                                          const Date& iborStartDate,
-                                         const ext::shared_ptr<IborIndex>& i,
+                                         const ext::shared_ptr<IborIndex>& index,
                                          Rate convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(convAdj)))) {
-        const FuturesRateHelperDates dates = InitializeDates(iborStartDate, i, type);
-        APPLY_DATES(dates);
-    }
+    : FuturesRateHelper(Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
+                        iborStartDate, index,
+                        Handle<Quote>(ext::make_shared<SimpleQuote>(convAdj)), type) {}
 
     Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
