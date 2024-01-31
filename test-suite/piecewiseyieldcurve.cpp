@@ -43,6 +43,7 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/asx.hpp>
+#include <ql/time/calendars/canada.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -1023,6 +1024,40 @@ BOOST_AUTO_TEST_CASE(testJpyLibor) {
         }
     }
 }
+
+
+BOOST_AUTO_TEST_CASE(testCA365Futures) {
+
+    BOOST_TEST_MESSAGE("Testing futures rate helpers with act/365 Canadian day counter...");
+
+    CommonVars vars;
+
+    Settings::instance().evaluationDate() = vars.today;
+
+    auto index =
+        ext::make_shared<IborIndex>("foo", 3*Months, 2, Currency(),
+                                    Canada(), ModifiedFollowing, true,
+                                    Actual365Fixed(Actual365Fixed::Canadian));
+
+    Date immDate = Date();
+    for (Size i = 0; i<vars.immFuts; i++) {
+        Handle<Quote> r(vars.immFutPrices[i]);
+        immDate = IMM::nextDate(immDate, false);
+        // if the fixing is before the evaluation date, we
+        // just jump forward by one future maturity
+        if (index->fixingDate(immDate) < Settings::instance().evaluationDate())
+            immDate = IMM::nextDate(immDate, false);
+        vars.immFutHelpers[i] =
+            ext::make_shared<FuturesRateHelper>(r, immDate, index, Handle<Quote>(), Futures::IMM);
+    }
+
+    auto termStructure =
+        ext::make_shared<PiecewiseYieldCurve<Discount,LogLinear>>(
+            vars.settlement, vars.immFutHelpers, Actual360());
+
+    BOOST_CHECK_NO_THROW(termStructure->nodes());
+}
+
 
 BOOST_AUTO_TEST_CASE(testDefaultInstantiation) {
 
