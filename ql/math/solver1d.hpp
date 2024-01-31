@@ -227,7 +227,7 @@ namespace QuantLib {
         mutable Size evaluationNumber_;
       private:
         Real enforceBounds_(Real x) const;
-        Real lowerBound_, upperBound_;
+        Real lowerBound_{}, upperBound_{};
         bool lowerBoundEnforced_ = false, upperBoundEnforced_ = false;
     };
 

@@ -18,12 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "ode.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/matrixutilities/expm.hpp>
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <complex>
-
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -31,40 +30,41 @@ using namespace boost::unit_test_framework;
 using std::exp;
 using std::sin;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct ode1 {
-        Real operator()(Real x, Real y) const { return y; }
-    };
+BOOST_AUTO_TEST_SUITE(OdeTests)
 
-    struct ode2 {
-        std::complex<Real> operator()(Real x,
-                                      const std::complex<Real>& y) {
-            return std::complex<Real>(0.0,1.0)*y;
-        }
-    };
+struct ode1 {
+    Real operator()(Real x, Real y) const { return y; }
+};
 
-    struct ode3 {
-        std::vector<Real> operator()(Real x, const std::vector<Real>& y) {
-            std::vector<Real> r(2);
-            r[0] = y[1]; r[1] = -y[0];
-            return r;
-        }
-    };
+struct ode2 {
+    std::complex<Real> operator()(Real x,
+                                  const std::complex<Real>& y) {
+        return std::complex<Real>(0.0,1.0)*y;
+    }
+};
 
-    struct ode4 {
-        std::vector<std::complex<Real> > operator()(
-                                  const std::complex<Real>& x,
-                                  const std::vector<std::complex<Real> >& y) {
-            std::vector<std::complex<Real> > r(2);
-            r[0] = y[1]; r[1] = -y[0];
-            return r;
-        }
-    };
+struct ode3 {
+    std::vector<Real> operator()(Real x, const std::vector<Real>& y) {
+        std::vector<Real> r(2);
+        r[0] = y[1]; r[1] = -y[0];
+        return r;
+    }
+};
 
-}
+struct ode4 {
+    std::vector<std::complex<Real> > operator()(
+                                                const std::complex<Real>& x,
+                                                const std::vector<std::complex<Real> >& y) {
+        std::vector<std::complex<Real> > r(2);
+        r[0] = y[1]; r[1] = -y[0];
+        return r;
+    }
+};
 
-void OdeTest::testAdaptiveRungeKutta() {
+
+BOOST_AUTO_TEST_CASE(testAdaptiveRungeKutta) {
 
     BOOST_TEST_MESSAGE("Testing adaptive Runge Kutta...");
 
@@ -135,14 +135,14 @@ void OdeTest::testAdaptiveRungeKutta() {
     }
 }
 
-namespace {
-    Real frobenuiusNorm(const Matrix& m) {
-        return std::sqrt(DotProduct((m*transpose(m)).diagonal(),
-                                    Array(m.rows(), 1.0)));
-    }
+
+Real frobenuiusNorm(const Matrix& m) {
+    return std::sqrt(DotProduct((m*transpose(m)).diagonal(),
+                                Array(m.rows(), 1.0)));
 }
 
-void OdeTest::testMatrixExponential() {
+
+BOOST_AUTO_TEST_CASE(testMatrixExponential) {
     BOOST_TEST_MESSAGE("Testing matrix exponential based on ode...");
 
     // Reference results are taken from
@@ -191,7 +191,7 @@ void OdeTest::testMatrixExponential() {
     }
 }
 
-void OdeTest::testMatrixExponentialOfZero() {
+BOOST_AUTO_TEST_CASE(testMatrixExponentialOfZero) {
     BOOST_TEST_MESSAGE("Testing matrix exponential of a zero matrix "
                        "based on ode...");
 
@@ -212,10 +212,6 @@ void OdeTest::testMatrixExponentialOfZero() {
     }
 }
 
-test_suite* OdeTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("ode tests");
-    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testAdaptiveRungeKutta));
-    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponential));
-    suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponentialOfZero));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -35,70 +35,11 @@
  ./quantlib-benchmark --mp
 
  The number of floating point operations of a given test case was measured
- using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
- and PAPI, http://icl.cs.utk.edu/papi
+ using PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. i7 7820X@3.6GHz        :24192.2 mflops
-                  2. i7 4702HQ@2.2GHz       : 6524.9 mflops
-                  3. i7 870@2.93GHz         : 4759.2 mflops
-                  4. Core2 Q9300@2.5Ghz     : 2272.6 mflops
-                  5. Core2 Q6600@2.4Ghz     : 1984.0 mflops
-                  6. i3 540@3.1Ghz          : 1755.3 mflops
-                  7. Raspberry Pi4@1.5GHz   : 1704.2 mflops
-                  8. Core2 Dual@2.0Ghz      :  835.9 mflops
-                  9. Athlon 64 X2 4400+     :  824.2 mflops
-                 10. Cortex-A57@2.0GHz      :  821.7 mflops
-                 11. Core2 Dual@2.0Ghz      :  754.1 mflops
-                 12. Pentium4 Dual@2.8Ghz   :  423.8 mflops
-                 13. Raspberry Pi3@1.2GHz   :  309.2 mflops
-                 14. Pentium4@3.0Ghz        :  266.3 mflops
-                 15. PentiumIII@1.1Ghz      :  146.2 mflops
-                 16. Alpha 2xEV68@833Mhz    :  184.6 mflops
-                 17. Wii PowerPC 750@729MHz :   46.1 mflops
-                 18. Raspberry Pi ARM@700Mhz:   28.3 mflops
-                 19. MIPS R5000@150MHz      :   12.6 mflops
-                 20. RISC-V on FPGA@25Mhz   :    2.4 mflops
-                 21. Strong ARM@206Mhz      :    1.4 mflops
-                 22. SPARC v7@25MHz         :    0.78mflops
+ Example results can be found at https://openbenchmarking.org/test/pts/quantlib
 
- Remarks: OS: Linux, static libs
-  1. g++-6.3.0 -O3 -ffast-math -march=core-avx2
-      Remark: 16 processes
-  2. g++-4.8.1 -O3 -ffast-math -march=core-avx2
-      Remark: eight processes
-  3. gcc-4.6.3, -O3 -ffast-math -mfpmath=sse,387 -march=corei7
-      Remark: eight processes
-  4. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
-      Remark: four processes
-  5. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
-      Remark: four processes
-  6. gcc-4.4.5, -O3 -ffast-math -mfpmath=sse,387 -msse4.2 -march=core2
-      Remark: four processes
-  7. gcc-8.3.0, -O3 -ffast-math -mcpu=cortx-a8 -mfpu=neon-fp-armv8
-      Remark: four processes
-  8. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
-      Remark: two processes
-  9. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
-                -fp-model fast=2 -ipo-jobs2, Remark: two processes
- 10. clang++-6.0.1 -O2, Remark: four processes
- 11. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
-      Remark: two processes
- 12. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
-      -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
- 13. gcc-4.9.2  -O2, Remark: four processes
- 14. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
-                -mfpmath=sse,387 -msse2 -funroll-all-loops
- 15. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
-                -mfpmath=sse,387 -msse -funroll-all-loops
- 16. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 17. gcc-4.9.2, -O2 -g on a Nintendo Wii
- 18. gcc-4.6.3, -O3
- 19. gcc-4-7-4, -O2 on a SGI Indy
- 20. gcc-9.2,   -O2 on RISC-V softcore on an Artix7 100T FPGA
- 21. gcc-3.4.3, -O2 -g on a Zaurus PDA
- 22. gcc-7.5.0, -O2 on a Sun SPARCstation IPC, FPU: Weitek 3170
-
-  This benchmark is derived from quantlibtestsuite.cpp. Please see the
+ This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
 */
 
@@ -118,16 +59,21 @@
 
 #include <iomanip>
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <string>
-#include <utility>
 #include <chrono>
 #include <thread>
 
-/* PAPI code
-#include <stdio.h
-#include <papi.h>
+
+/* initialize PAPI on Linux
+  sudo sysctl -w kernel.perf_event_paranoid=0
+  export PAPI_EVENTS="PAPI_TOT_INS,PAPI_FP_OPS,PAPI_FP_INS"
+  export PAPI_REPORT=1
 */
+//#include <papi.h>
+
+
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -137,29 +83,25 @@
 #endif
 
 #include "utilities.hpp"
-#include "marketmodel_smm.hpp"
-#include "marketmodel_cms.hpp"
-#include "quantooption.hpp"
-#include "riskstats.hpp"
-#include "shortratemodels.hpp"
 
-namespace QuantLibTest {
-    namespace AmericanOptionTest {
+namespace QuantLibTests {
+
+    namespace AmericanOptionTests {
         struct testFdAmericanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace AsianOptionTest {
+    namespace AsianOptionTests {
         struct testMCDiscreteArithmeticAveragePrice:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace BarrierOptionTest {
+    namespace BarrierOptionTests {
         struct testBabsiriValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace BasketOptionTest {
+    namespace BasketOptionTests {
         struct testEuroTwoValues:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
 
@@ -170,22 +112,22 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace BatesModelTest {
+    namespace BatesModelTests {
         struct testDAXCalibration:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace ConvertibleBondTest {
+    namespace ConvertibleBondTests {
         struct testBond:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace DigitalOptionTest {
+    namespace DigitalOptionTests {
         struct testMCCashAtHit:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace DividendOptionTest {
+    namespace DividendOptionTests {
         struct testFdEuropeanGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
 
@@ -193,7 +135,7 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace EuropeanOptionTest {
+    namespace EuropeanOptionTests {
         struct testMcEngines:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
 
@@ -204,28 +146,53 @@ namespace QuantLibTest {
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace FdHestonTest {
+    namespace FdHestonTests {
         struct testFdmHestonAmerican:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace HestonModelTest {
+    namespace HestonModelTests {
         struct testDAXCalibration:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace InterpolationTest {
+    namespace InterpolationTests {
         struct testSabrInterpolation:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace JumpDiffusionTest {
+    namespace JumpDiffusionTests {
         struct testGreeks:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 
-    namespace LowDiscrepancyTest {
+    namespace LowDiscrepancyTests {
         struct testMersenneTwisterDiscrepancy:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace MarketModelCmsTests {
+        struct testMultiStepCmSwapsAndSwaptions:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace MarketModelSmmTests {
+        struct testMultiStepCoterminalSwapsAndSwaptions:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace QuantoOptionTests {
+        struct testForwardGreeks:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace RiskStatisticsTests {
+        struct testResults:
+            public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
+    }
+
+    namespace ShortRateModelTests {
+        struct testSwaps:
             public BOOST_AUTO_TEST_CASE_FIXTURE { void test_method(); };
     }
 }
@@ -259,54 +226,45 @@ namespace {
     };
 
     std::vector<Benchmark> bm = {
-        Benchmark("AmericanOption::FdAmericanGreeks", std::bind(&QuantLibTest::AmericanOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::AmericanOptionTest::testFdAmericanGreeks()), 518.31),
-        Benchmark("AsianOption::MCArithmeticAveragePrice", std::bind(&QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice::test_method, QuantLibTest::AsianOptionTest::testMCDiscreteArithmeticAveragePrice()), 5186.13),
-        Benchmark("BarrierOption::BabsiriValues", std::bind(&QuantLibTest::BarrierOptionTest::testBabsiriValues::test_method, QuantLibTest::BarrierOptionTest::testBabsiriValues()), 880.8),
-        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testEuroTwoValues::test_method, QuantLibTest::BasketOptionTest::testEuroTwoValues()), 340.04),
-        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testTavellaValues::test_method, QuantLibTest::BasketOptionTest::testTavellaValues()), 933.80),
-        Benchmark("BasketOption::EuroTwoValues", std::bind(&QuantLibTest::BasketOptionTest::testOddSamples::test_method, QuantLibTest::BasketOptionTest::testOddSamples()), 642.46),
-        Benchmark("BatesModel::DAXCalibration", std::bind(&QuantLibTest::BatesModelTest::testDAXCalibration::test_method, QuantLibTest::BatesModelTest::testDAXCalibration()), 1993.35),
-        Benchmark("ConvertibleBondTest::testBond", std::bind(&QuantLibTest::ConvertibleBondTest::testBond::test_method, QuantLibTest::ConvertibleBondTest::testBond()), 159.85),
-        Benchmark("DigitalOption::MCCashAtHit", std::bind(&QuantLibTest::DigitalOptionTest::testMCCashAtHit::test_method, QuantLibTest::DigitalOptionTest::testMCCashAtHit()), 995.87),
-        Benchmark("DividendOption::FdEuropeanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdEuropeanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdEuropeanGreeks()), 949.52),
-        Benchmark("DividendOption::FdAmericanGreeks", std::bind(&QuantLibTest::DividendOptionTest::testFdAmericanGreeks::test_method, QuantLibTest::DividendOptionTest::testFdAmericanGreeks()), 1113.74),
-        Benchmark("EuropeanOption::FdMcEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testMcEngines::test_method, QuantLibTest::EuropeanOptionTest::testMcEngines()), 1988.63),
-        Benchmark("EuropeanOption::ImpliedVol", std::bind(&QuantLibTest::EuropeanOptionTest::testImpliedVol::test_method, QuantLibTest::EuropeanOptionTest::testImpliedVol()), 131.51),
-        Benchmark("EuropeanOption::FdEngines", std::bind(&QuantLibTest::EuropeanOptionTest::testFdEngines::test_method, QuantLibTest::EuropeanOptionTest::testFdEngines()), 148.43),
-        Benchmark("FdHestonTest::testFdmHestonAmerican", std::bind(&QuantLibTest::FdHestonTest::testFdmHestonAmerican::test_method, QuantLibTest::FdHestonTest::testFdmHestonAmerican()), 234.21),
-        Benchmark("HestonModel::DAXCalibration", std::bind(&QuantLibTest::HestonModelTest::testDAXCalibration::test_method, QuantLibTest::HestonModelTest::testDAXCalibration()), 555.19),
-        Benchmark("InterpolationTest::testSabrInterpolation", std::bind(&QuantLibTest::InterpolationTest::testSabrInterpolation::test_method, QuantLibTest::InterpolationTest::testSabrInterpolation()), 2266.06),
-        Benchmark("JumpDiffusion::Greeks", std::bind(&QuantLibTest::JumpDiffusionTest::testGreeks::test_method, QuantLibTest::JumpDiffusionTest::testGreeks()), 433.77),
-        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73),
-        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95),
-        Benchmark("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98),
-        Benchmark("RandomNumber::MersenneTwisterDescrepancy", std::bind(&QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy::test_method, QuantLibTest::LowDiscrepancyTest::testMersenneTwisterDiscrepancy()), 951.98),
-        Benchmark("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28),
-        Benchmark("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73)
+        Benchmark("AmericanOption::FdAmericanGreeks", [] { QuantLibTests::AmericanOptionTests::testFdAmericanGreeks().test_method(); }, 518.31),
+        Benchmark("AsianOption::MCArithmeticAveragePrice", [] { QuantLibTests::AsianOptionTests::testMCDiscreteArithmeticAveragePrice().test_method(); }, 5186.13),
+        Benchmark("BarrierOption::BabsiriValues", [] { QuantLibTests::BarrierOptionTests::testBabsiriValues().test_method(); }, 880.8),
+        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testEuroTwoValues().test_method(); }, 340.04),
+        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testTavellaValues().test_method(); }, 933.80),
+        Benchmark("BasketOption::EuroTwoValues", [] { QuantLibTests::BasketOptionTests::testOddSamples().test_method(); }, 642.46),
+        Benchmark("BatesModel::DAXCalibration", [] { QuantLibTests::BatesModelTests::testDAXCalibration().test_method(); }, 1993.35),
+        Benchmark("ConvertibleBondTest::testBond", [] { QuantLibTests::ConvertibleBondTests::testBond().test_method(); }, 159.85),
+        Benchmark("DigitalOption::MCCashAtHit", [] { QuantLibTests::DigitalOptionTests::testMCCashAtHit().test_method(); }, 995.87),
+        Benchmark("DividendOption::FdEuropeanGreeks", [] { QuantLibTests::DividendOptionTests::testFdEuropeanGreeks().test_method(); }, 949.52),
+        Benchmark("DividendOption::FdAmericanGreeks", [] { QuantLibTests::DividendOptionTests::testFdAmericanGreeks().test_method(); }, 1113.74),
+        Benchmark("EuropeanOption::FdMcEngines", [] { QuantLibTests::EuropeanOptionTests::testMcEngines().test_method(); }, 1988.63),
+        Benchmark("EuropeanOption::ImpliedVol", [] { QuantLibTests::EuropeanOptionTests::testImpliedVol().test_method(); }, 131.51),
+        Benchmark("EuropeanOption::FdEngines", [] { QuantLibTests::EuropeanOptionTests::testFdEngines().test_method(); }, 148.43),
+        Benchmark("FdHestonTest::testFdmHestonAmerican", [] { QuantLibTests::FdHestonTests::testFdmHestonAmerican().test_method(); }, 234.21),
+        Benchmark("HestonModel::DAXCalibration", [] { QuantLibTests::HestonModelTests::testDAXCalibration().test_method(); }, 555.19),
+        Benchmark("InterpolationTest::testSabrInterpolation", [] { QuantLibTests::InterpolationTests::testSabrInterpolation().test_method(); }, 295.63),
+        Benchmark("JumpDiffusion::Greeks", [] { QuantLibTests::JumpDiffusionTests::testGreeks().test_method(); }, 433.77),
+        Benchmark("MarketModelCmsTest::testCmSwapsSwaptions", [] { QuantLibTests::MarketModelCmsTests::testMultiStepCmSwapsAndSwaptions().test_method(); }, 11497.73),
+        Benchmark("MarketModelSmmTest::testMultiSmmSwaptions", [] { QuantLibTests::MarketModelSmmTests::testMultiStepCoterminalSwapsAndSwaptions().test_method(); }, 11244.95),
+        Benchmark("QuantoOption::ForwardGreeks", [] { QuantLibTests::QuantoOptionTests::testForwardGreeks().test_method(); }, 90.98),
+        Benchmark("RandomNumber::MersenneTwisterDescrepancy", [] { QuantLibTests::LowDiscrepancyTests::testMersenneTwisterDiscrepancy().test_method(); }, 951.98),
+        Benchmark("RiskStatistics::Results", [] { QuantLibTests::RiskStatisticsTests::testResults().test_method(); }, 300.28),
+        Benchmark("ShortRateModel::Swaps", [] { QuantLibTests::ShortRateModelTests::testSwaps().test_method(); }, 454.73)
     };
-
-    /* PAPI code
-    float real_time, proc_time, mflops;
-    long_long lflop, flop=0;
-    */
 
     class TimedBenchmark {
       public:
-        explicit TimedBenchmark(std::function<void(void)> f) : f_(std::move(f)) {}
+        TimedBenchmark(std::function<void(void)> f, std::string  name)
+        : f_(std::move(f)), name_(std::move(name)) {}
 
         void startMeasurement() const {
-            /* PAPI code
-               lflop = flop;
-               PAPI_flops(&real_time, &proc_time, &flop, &mflops);
-            */
+            //QL_REQUIRE(PAPI_hl_region_begin(name_.c_str()) == PAPI_OK,
+            //    "could not initialize PAPI");
         }
 
         void stopMeasurement() const {
-            /* PAPI code
-               PAPI_flops(&real_time, &proc_time, &flop, &mflops);
-               printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
-               real_time, proc_time, (flop-lflop)/1e6);
-            */
+            //QL_REQUIRE(PAPI_hl_region_end(name_.c_str()) == PAPI_OK,
+            //    "could not stop PAPI");
         }
 
         double operator()() const {
@@ -321,6 +279,7 @@ namespace {
         }
       private:
         std::function<void(void)> f_;
+        const std::string name_;
     };
 
     void printResults(
@@ -428,7 +387,7 @@ int main(int argc, char* argv[] ) {
         std::for_each(bm.begin(), bm.end(),
             [&runTimes](const Benchmark& iter) {
                 runTimes.emplace_back(
-                    iter, TimedBenchmark(iter.getTestCase())());
+                    iter, TimedBenchmark(iter.getTestCase(), iter.getName())());
         });
         printResults(nProc, runTimes);
     }
@@ -493,7 +452,7 @@ int main(int argc, char* argv[] ) {
             mq.receive(&id, sizeof(unsigned), recvd_size, priority);
 
             while (id != terminateId) {
-                result_type a(id, TimedBenchmark(bm[id].getTestCase())());
+                result_type a(id, TimedBenchmark(bm[id].getTestCase(), bm[id].getName())());
                 rq.send(&a, sizeof(result_type), 0);
 
                 mq.receive(&id, sizeof(unsigned), recvd_size, priority);

@@ -6,6 +6,7 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2017 Peter Caspers
  Copyright (C) 2017 Oleg Kulkov
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +36,7 @@ namespace QuantLib {
                 // third Monday in February
                 return (d >= 15 && d <= 21) && w == Monday && m == February;
             } else {
-                // February 22nd, possily adjusted
+                // February 22nd, possibly adjusted
                 return (d == 22 || (d == 23 && w == Monday)
                         || (d == 21 && w == Friday)) && m == February;
             }
@@ -84,9 +85,9 @@ namespace QuantLib {
             }
         }
 
-        bool isJuneteenth(Day d, Month m, Year y, Weekday w) {
+        bool isJuneteenth(Day d, Month m, Year y, Weekday w, bool moveToFriday = true) {
             // declared in 2021, but only observed by exchanges since 2022
-            return (d == 19 || (d == 20 && w == Monday) || (d == 18 && w == Friday))
+            return (d == 19 || (d == 20 && w == Monday) || ((d == 18 && w == Friday) && moveToFriday))
                 && m == June && y >= 2022;
         }
     }
@@ -317,9 +318,16 @@ namespace QuantLib {
 
 
     bool UnitedStates::SofrImpl::isBusinessDay(const Date& date) const {
-        // Good Friday 2023 was only a half close for SIFMA but SOFR didn't fix
-        if (date == Date(7, April, 2023))
+        // so far (that is, up to 2023 at the time of this change) SOFR never fixed
+        // on Good Friday.  We're extrapolating that pattern.  This might change if
+        // a fixing on Good Friday occurs in future years.
+        const Day dY = date.dayOfYear();
+        const Year y = date.year();
+
+        // Good Friday
+        if (dY == (easterMonday(y) - 3))
             return false;
+
         return GovernmentBondImpl::isBusinessDay(date);
     }
 
@@ -363,8 +371,8 @@ namespace QuantLib {
             || isWashingtonBirthday(d, m, y, w)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
-            // Juneteenth (Monday if Sunday or Friday if Saturday)
-            || isJuneteenth(d, m, y, w)
+            // Juneteenth (Monday if Sunday)
+            || isJuneteenth(d, m, y, w, false)
             // Independence Day (Monday if Sunday)
             || ((d == 4 || (d == 5 && w == Monday)) && m == July)
             // Labor Day (first Monday in September)

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "swap.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -39,68 +39,66 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace swap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        // global data
-        Date today, settlement;
-        Swap::Type type;
-        Real nominal;
-        Calendar calendar;
-        BusinessDayConvention fixedConvention, floatingConvention;
-        Frequency fixedFrequency, floatingFrequency;
-        DayCounter fixedDayCount;
-        ext::shared_ptr<IborIndex> index;
-        Natural settlementDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
+BOOST_AUTO_TEST_SUITE(SwapTests)
 
-        // utilities
-        ext::shared_ptr<VanillaSwap>
-        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {
-            Date maturity = calendar.advance(settlement,length,Years,
-                                             floatingConvention);
-            Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
-                                   calendar,fixedConvention,fixedConvention, rule, false);
-            Schedule floatSchedule(settlement,maturity,
-                                   Period(floatingFrequency),
-                                   calendar,floatingConvention,
-                                   floatingConvention, rule, false);
-            ext::shared_ptr<VanillaSwap> swap(
+struct CommonVars {
+    // global data
+    Date today, settlement;
+    Swap::Type type;
+    Real nominal;
+    Calendar calendar;
+    BusinessDayConvention fixedConvention, floatingConvention;
+    Frequency fixedFrequency, floatingFrequency;
+    DayCounter fixedDayCount;
+    ext::shared_ptr<IborIndex> index;
+    Natural settlementDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
+
+    // utilities
+    ext::shared_ptr<VanillaSwap>
+    makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {
+        Date maturity = calendar.advance(settlement,length,Years,
+                                         floatingConvention);
+        Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
+                               calendar,fixedConvention,fixedConvention, rule, false);
+        Schedule floatSchedule(settlement,maturity,
+                               Period(floatingFrequency),
+                               calendar,floatingConvention,
+                               floatingConvention, rule, false);
+        ext::shared_ptr<VanillaSwap> swap(
                 new VanillaSwap(type, nominal,
                                 fixedSchedule, fixedRate, fixedDayCount,
                                 floatSchedule, index, floatingSpread,
                                 index->dayCounter()));
-            swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
+        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                                   new DiscountingSwapEngine(termStructure)));
-            return swap;
-        }
+        return swap;
+    }
 
-        CommonVars() {
-            type = Swap::Payer;
-            settlementDays = 2;
-            nominal = 100.0;
-            fixedConvention = Unadjusted;
-            floatingConvention = ModifiedFollowing;
-            fixedFrequency = Annual;
-            floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360(Thirty360::BondBasis);
-            index = ext::shared_ptr<IborIndex>(new
+    CommonVars() {
+        type = Swap::Payer;
+        settlementDays = 2;
+        nominal = 100.0;
+        fixedConvention = Unadjusted;
+        floatingConvention = ModifiedFollowing;
+        fixedFrequency = Annual;
+        floatingFrequency = Semiannual;
+        fixedDayCount = Thirty360(Thirty360::BondBasis);
+        index = ext::shared_ptr<IborIndex>(new
                 Euribor(Period(floatingFrequency), termStructure));
-            calendar = index->fixingCalendar();
-            today = calendar.adjust(Settings::instance().evaluationDate());
-            settlement = calendar.advance(today,settlementDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
-        }
-    };
-
-}
+        calendar = index->fixingCalendar();
+        today = calendar.adjust(Settings::instance().evaluationDate());
+        settlement = calendar.advance(today,settlementDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,Actual365Fixed()));
+    }
+};
 
 
-void SwapTest::testFairRate() {
+BOOST_AUTO_TEST_CASE(testFairRate) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -122,12 +120,10 @@ void SwapTest::testFairRate() {
     }
 }
 
-void SwapTest::testFairSpread() {
+BOOST_AUTO_TEST_CASE(testFairSpread) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of "
                        "fair floating spread...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -149,11 +145,9 @@ void SwapTest::testFairSpread() {
     }
 }
 
-void SwapTest::testRateDependency() {
+BOOST_AUTO_TEST_CASE(testRateDependency) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -184,11 +178,9 @@ void SwapTest::testRateDependency() {
     }
 }
 
-void SwapTest::testSpreadDependency() {
+BOOST_AUTO_TEST_CASE(testSpreadDependency) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -220,11 +212,9 @@ void SwapTest::testSpreadDependency() {
     }
 }
 
-void SwapTest::testInArrears() {
+BOOST_AUTO_TEST_CASE(testInArrears) {
 
     BOOST_TEST_MESSAGE("Testing in-arrears swap calculation...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -288,11 +278,9 @@ void SwapTest::testInArrears() {
                     << "    calculated: " << swap.NPV());
 }
 
-void SwapTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing vanilla-swap calculation against cached value...");
-
-    using namespace swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -321,11 +309,9 @@ void SwapTest::testCachedValue() {
                     << "    expected:   " << cachedNPV);
 }
 
-void SwapTest::testThirdWednesdayAdjustment() {
+BOOST_AUTO_TEST_CASE(testThirdWednesdayAdjustment) {
 
     BOOST_TEST_MESSAGE("Testing third-Wednesday adjustment...");
-
-    using namespace swap_test;
 
     CommonVars vars;
 
@@ -340,15 +326,6 @@ void SwapTest::testThirdWednesdayAdjustment() {
     }
 }
 
-test_suite* SwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Swap tests");
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairRate));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairSpread));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testRateDependency));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testSpreadDependency));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testInArrears));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testThirdWednesdayAdjustment));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

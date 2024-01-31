@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "pagodaoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/pagodaoption.hpp>
 #include <ql/experimental/exoticoptions/mcpagodaengine.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void PagodaOptionTest::testCached() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PagodaOptionTests)
+
+BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE("Testing pagoda option against cached values...");
 
@@ -125,10 +129,6 @@ void PagodaOptionTest::testCached() {
                    << "    expected:         " << tolerance);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* PagodaOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Pagoda-option tests");
-    suite->add(QUANTLIB_TEST_CASE(&PagodaOptionTest::testCached));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

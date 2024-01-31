@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "varianceswaps.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -35,6 +35,10 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VarianceSwapTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, isLong, varStrike, nominal, s, q, r, today, \
@@ -55,46 +59,42 @@ using namespace boost::unit_test_framework;
         << "    tolerance:        " << tolerance);
 
 
-namespace {
+struct MCVarianceSwapData {
+    Position::Type type;
+    Real varStrike;
+    Real nominal;
+    Real s;         // spot
+    Rate q;         // dividend
+    Rate r;         // risk-free rate
+    Time t1;        // intermediate time
+    Time t;         // time to maturity
+    Volatility v1;  // volatility at t1
+    Volatility v;   // volatility at t
+    Real result;    // result
+    Real tol;       // tolerance
+};
 
-    struct MCVarianceSwapData {
-        Position::Type type;
-        Real varStrike;
-        Real nominal;
-        Real s;         // spot
-        Rate q;         // dividend
-        Rate r;         // risk-free rate
-        Time t1;        // intermediate time
-        Time t;         // time to maturity
-        Volatility v1;  // volatility at t1
-        Volatility v;   // volatility at t
-        Real result;    // result
-        Real tol;       // tolerance
-    };
+struct ReplicatingVarianceSwapData {
+    Position::Type type;
+    Real varStrike;
+    Real nominal;
+    Real s;         // spot
+    Rate q;         // dividend
+    Rate r;         // risk-free rate
+    Time t;         // time to maturity
+    Volatility v;   // volatility at t
+    Real result;    // result
+    Real tol;       // tolerance
+};
 
-    struct ReplicatingVarianceSwapData {
-        Position::Type type;
-        Real varStrike;
-        Real nominal;
-        Real s;         // spot
-        Rate q;         // dividend
-        Rate r;         // risk-free rate
-        Time t;         // time to maturity
-        Volatility v;   // volatility at t
-        Real result;    // result
-        Real tol;       // tolerance
-    };
-
-    struct Datum {
-        Option::Type type;
-        Real strike;
-        Volatility v;
-    };
-
-}
+struct Datum {
+    Option::Type type;
+    Real strike;
+    Volatility v;
+};
 
 
-void VarianceSwapTest::testReplicatingVarianceSwap() {
+BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
 
     BOOST_TEST_MESSAGE("Testing variance swap with replicating cost engine...");
 
@@ -215,8 +215,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
     }
 }
 
-
-void VarianceSwapTest::testMCVarianceSwap() {
+BOOST_AUTO_TEST_CASE(testMCVarianceSwap) {
 
     BOOST_TEST_MESSAGE("Testing variance swap with Monte Carlo engine...");
 
@@ -290,12 +289,6 @@ void VarianceSwapTest::testMCVarianceSwap() {
     }
 }
 
-test_suite* VarianceSwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Variance swap tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(
-                             &VarianceSwapTest::testReplicatingVarianceSwap));
-    suite->add(QUANTLIB_TEST_CASE(&VarianceSwapTest::testMCVarianceSwap));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

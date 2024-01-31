@@ -470,17 +470,6 @@ namespace QuantLib {
         return basisPoint_*calc.bps()/discountCurve.discount(npvDate);
     }
 
-    void CashFlows::npvbps(const Leg& leg,
-                           const YieldTermStructure& discountCurve,
-                           bool includeSettlementDateFlows,
-                           Date settlementDate,
-                           Date npvDate,
-                           Real& npv,
-                           Real& bps) {
-        std::tie(npv, bps) =
-            npvbps(leg, discountCurve, includeSettlementDateFlows, settlementDate, npvDate);
-    }
-
     std::pair<Real, Real> CashFlows::npvbps(const Leg& leg,
                                             const YieldTermStructure& discountCurve,
                                             bool includeSettlementDateFlows,

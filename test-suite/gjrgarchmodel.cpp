@@ -17,33 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <ql/models/equity/gjrgarchmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/vanilla/analyticgjrgarchengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/time/period.hpp>
+#include <ql/processes/gjrgarchprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/period.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(GJRGARCHModelTest)
+BOOST_AUTO_TEST_SUITE(GJRGARCHModelTests)
 
 BOOST_AUTO_TEST_CASE(testEngines, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE(

@@ -34,42 +34,37 @@ using namespace boost::unit_test_framework;
 
 using std::sqrt;
 
-namespace black_delta_calculator_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct DeltaData {
-        Option::Type ot;
-        DeltaVolQuote::DeltaType dt;
-        Real spot;
-        DiscountFactor dDf;   // domestic discount
-        DiscountFactor fDf;   // foreign  discount
-        Real stdDev;
-        Real strike;
-        Real value;
-    };
+BOOST_AUTO_TEST_SUITE(BlackDeltaCalculatorTests)
 
-    struct EuropeanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
+struct DeltaData {
+    Option::Type ot;
+    DeltaVolQuote::DeltaType dt;
+    Real spot;
+    DiscountFactor dDf;   // domestic discount
+    DiscountFactor fDf;   // foreign  discount
+    Real stdDev;
+    Real strike;
+    Real value;
+};
 
-}
+struct EuropeanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(BlackDeltaCalculatorExperimentalTest)
 
 BOOST_AUTO_TEST_CASE(testDeltaValues){
 
     BOOST_TEST_MESSAGE("Testing delta calculator values...");
-
-    using namespace black_delta_calculator_test;
 
     DeltaData values[] = {
         // Values taken from parallel implementation in R
@@ -153,8 +148,6 @@ BOOST_AUTO_TEST_CASE(testDeltaValues){
 BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
 
     BOOST_TEST_MESSAGE("Testing premium-adjusted delta price consistency...");
-
-    using namespace black_delta_calculator_test;
 
     // This function tests for price consistencies with the standard
     // Black Scholes calculator, since premium adjusted deltas can be calculated
@@ -318,8 +311,6 @@ BOOST_AUTO_TEST_CASE(testDeltaPriceConsistency) {
 BOOST_AUTO_TEST_CASE(testPutCallParity){
 
     BOOST_TEST_MESSAGE("Testing put-call parity for deltas...");
-
-    using namespace black_delta_calculator_test;
 
     // Test for put call parity between put and call deltas.
 
@@ -523,8 +514,6 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
 BOOST_AUTO_TEST_CASE(testAtmCalcs){
 
     BOOST_TEST_MESSAGE("Testing delta-neutral ATM quotations...");
-
-    using namespace black_delta_calculator_test;
 
     DeltaData values[] = {
         {Option::Call, DeltaVolQuote::Spot,     1.421, 0.997306, 0.992266,          0.1180654,  1.608080, 0.15},

@@ -6,13 +6,13 @@ on:
         description: 'Boost version'
         required: true
 env:
-  ROLLING: lunar
+  ROLLING: mantic
 jobs:
   docker-images:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: [lunar, mantic]
+        tag: [lunar, mantic, noble]
     steps:
     - uses: actions/checkout@v3
     - name: Build CI images

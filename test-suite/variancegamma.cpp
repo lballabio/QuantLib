@@ -18,7 +18,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "variancegamma.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -32,6 +32,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(VarianceGammaTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, sigma, \
@@ -54,27 +58,24 @@ using namespace boost::unit_test_framework;
     << "    error:            " << error << "\n" \
     << "    tolerance:        " << tolerance);
 
-namespace {
+struct VarianceGammaProcessData {
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Real sigma;
+    Real nu;
+    Real theta;
 
-    struct VarianceGammaProcessData {
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Real sigma;
-        Real nu;
-        Real theta;
+};
 
-    };
-
-    struct VarianceGammaOptionData {
-        Option::Type type;
-        Real strike;
-        Time t;        // time to maturity
-    };
-}
+struct VarianceGammaOptionData {
+    Option::Type type;
+    Real strike;
+    Time t;        // time to maturity
+};
 
 
-void VarianceGammaTest::testVarianceGamma() {
+BOOST_AUTO_TEST_CASE(testVarianceGamma) {
 
     BOOST_TEST_MESSAGE("Testing variance-gamma model for European options...");
 
@@ -206,7 +207,7 @@ void VarianceGammaTest::testVarianceGamma() {
     }
 }
 
-void VarianceGammaTest::testSingularityAtZero() {
+BOOST_AUTO_TEST_CASE(testSingularityAtZero) {
 
     BOOST_TEST_MESSAGE(
         "Testing variance-gamma model integration around zero...");
@@ -245,11 +246,6 @@ void VarianceGammaTest::testSingularityAtZero() {
     option.NPV();
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* VarianceGammaTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Variance Gamma tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testVarianceGamma));
-    suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testSingularityAtZero));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

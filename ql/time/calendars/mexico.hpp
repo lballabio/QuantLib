@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2024 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,6 +44,7 @@ namespace QuantLib {
         <li>Good Friday</li>
         <li>Labour Day, May 1st</li>
         <li>National Day, September 16th</li>
+        <li>Inauguration Day, October 1st, every sixth year starting 2024</li>
         <li>All Souls Day, November 2nd (bank holiday, not a public one)</li>
         <li>Revolution Day, third Monday in November
             (November 20th before 2006)</li>

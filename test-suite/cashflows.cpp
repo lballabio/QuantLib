@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
@@ -41,19 +42,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
-    namespace tt = boost::test_tools;
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct usingAtParCoupons {
-        tt::assertion_result operator()(test_unit_id) {
-            return tt::assertion_result(IborCoupon::Settings::instance().usingAtParCoupons());
-        }
-    };
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(CashFlowTest)
+BOOST_AUTO_TEST_SUITE(CashFlowTests)
 
 BOOST_AUTO_TEST_CASE(testSettings) {
 

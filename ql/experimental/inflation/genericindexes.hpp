@@ -50,22 +50,6 @@ namespace QuantLib {
             const Currency& ccy,
             const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex("CPI", GenericRegion(), revised, frequency, lag, ccy, ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        GenericCPI(Frequency frequency,
-                   bool revised,
-                   bool interpolated,
-                   const Period &lag,
-                   const Currency &ccy,
-                   const Handle<ZeroInflationTermStructure>& ts = {})
-        : GenericCPI(frequency, revised, lag, ccy, ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 

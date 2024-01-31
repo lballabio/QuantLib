@@ -25,15 +25,16 @@
 #include <ql/math/factorial.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/modifiedbessel.hpp>
+#include <ql/math/expm1.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 using std::exp;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(FunctionsTest)
+BOOST_AUTO_TEST_SUITE(FunctionsTests)
 
 BOOST_AUTO_TEST_CASE(testFactorial) {
 
@@ -293,6 +294,35 @@ BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
         }
     }
 }
+
+BOOST_AUTO_TEST_CASE(testExpm1) {
+    BOOST_TEST_MESSAGE("Testing complex valued expm1...");
+
+    const std::complex<Real> z = std::complex<Real>(1.2, 0.5);
+    QL_CHECK_SMALL(std::abs(std::exp(z) - 1.0 - expm1(z)), 10*QL_EPSILON);
+
+    const std::complex<Real> calculated = expm1(std::complex<Real>(5e-6, 5e-5));
+    //scipy reference value
+    const std::complex<Real> expected(4.998762493771078e-06,5.000024997979157e-05);
+    const Real tol = std::max(2.2e-14, 100*QL_EPSILON);
+    QL_CHECK_CLOSE_FRACTION(calculated.real(), expected.real(), tol);
+    QL_CHECK_CLOSE_FRACTION(calculated.imag(), expected.imag(), tol);
+}
+
+BOOST_AUTO_TEST_CASE(testLog1p) {
+    BOOST_TEST_MESSAGE("Testing complex valued log1p...");
+
+    const std::complex<Real> z = std::complex<Real>(1.2, 0.57);
+    QL_CHECK_SMALL(std::abs(std::log(1.0+z) - log1p(z)), 10*QL_EPSILON);
+
+    const std::complex<Real> calculated = log1p(std::complex<Real>(5e-6, 5e-5));
+    //scipy reference value
+    const std::complex<Real> expected(5.0012374875401984e-06, 4.999974995958395e-05);
+    const Real tol = std::max(2.2e-14, 100*QL_EPSILON);
+    QL_CHECK_CLOSE_FRACTION(calculated.real(), expected.real(), tol);
+    QL_CHECK_CLOSE_FRACTION(calculated.imag(), expected.imag(), tol);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

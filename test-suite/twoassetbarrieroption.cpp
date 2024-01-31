@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "twoassetbarrieroption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
@@ -28,28 +28,28 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct OptionData {
-        Barrier::Type barrierType;
-        Option::Type type;
-        Real barrier;
-        Real strike;
-        Real s1;       // spot
-        Rate q1;       // dividend
-        Volatility v1; // volatility
-        Real s2;
-        Rate q2;
-        Volatility v2;
-        Real correlation;
-        Rate r;        // risk-free rate
-        Real result;   // result
-    };
+BOOST_AUTO_TEST_SUITE(TwoAssetBarrierOptionTests)
 
-}
+struct OptionData {
+    Barrier::Type barrierType;
+    Option::Type type;
+    Real barrier;
+    Real strike;
+    Real s1;       // spot
+    Rate q1;       // dividend
+    Volatility v1; // volatility
+    Real s2;
+    Rate q2;
+    Volatility v2;
+    Real correlation;
+    Rate r;        // risk-free rate
+    Real result;   // result
+};
 
 
-void TwoAssetBarrierOptionTest::testHaugValues() {
+BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing two-asset barrier options against Haug's values...");
 
@@ -139,8 +139,6 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
     }
 }
 
-test_suite* TwoAssetBarrierOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Two-asset barrier option tests");
-    suite->add(QUANTLIB_TEST_CASE(&TwoAssetBarrierOptionTest::testHaugValues));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

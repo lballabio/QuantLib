@@ -19,35 +19,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/any.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/integrals/integral.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/integral.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
-#include <ql/pricingengines/vanilla/juquadraticengine.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
-
 #include <map>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AmericanOptionTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
@@ -69,24 +72,16 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
-
-    struct AmericanOptionData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(AmericanOptionTest)
+struct AmericanOptionData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+};
 
 BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
@@ -256,82 +251,79 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
     }
 }
 
-namespace {
+/* The data below are from
+   An Approximate Formula for Pricing American Options
+   Journal of Derivatives Winter 1999
+   Ju, N.
+*/
+AmericanOptionData juValues[] = {
+    //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
+    // These values are from Exhibit 3 - Short dated Put Options
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.006 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  0.201 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  0.433 },
 
-    /* The data below are from
-       An Approximate Formula for Pricing American Options
-       Journal of Derivatives Winter 1999
-       Ju, N.
-    */
-    AmericanOptionData juValues[] = {
-        //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
-        // These values are from Exhibit 3 - Short dated Put Options
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.006 },
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  0.201 },
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  0.433 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.851 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  1.576 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  1.984 },
 
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.851 },
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  1.576 },
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  1.984 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  5.000 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  5.084 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  5.260 },
 
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  5.000 },
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  5.084 },
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  5.260 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  0.078 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  0.697 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  1.218 },
 
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  0.078 },
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  0.697 },
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  1.218 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  1.309 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  2.477 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  3.161 },
 
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  1.309 },
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  2.477 },
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  3.161 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  5.059 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  5.699 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  6.231 },
 
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  5.059 },
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  5.699 },
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  6.231 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  0.247 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  1.344 },
+    { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  2.150 },
 
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  0.247 },
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  1.344 },
-        { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  2.150 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  1.767 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  3.381 },
+    { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  4.342 },
 
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  1.767 },
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  3.381 },
-        { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  4.342 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  5.288 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  6.501 },
+    { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  7.367 },
 
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  5.288 },
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  6.501 },
-        { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  7.367 },
+    // Type in Exhibits 4 and 5 if you have some spare time ;-)
 
-        // Type in Exhibits 4 and 5 if you have some spare time ;-)
+    //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
+    // values from Exhibit 6 - Long dated Call Options with dividends
+    { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.2,   2.605 },
+    { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.2,   5.182 },
+    { Option::Call, 100.00,  100.00,  0.07,  0.03, 3.0,  0.2,   9.065 },
+    { Option::Call, 100.00,  110.00,  0.07,  0.03, 3.0,  0.2,  14.430 },
+    { Option::Call, 100.00,  120.00,  0.07,  0.03, 3.0,  0.2,  21.398 },
 
-        //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
-        // values from Exhibit 6 - Long dated Call Options with dividends
-        { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.2,   2.605 },
-        { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.2,   5.182 },
-        { Option::Call, 100.00,  100.00,  0.07,  0.03, 3.0,  0.2,   9.065 },
-        { Option::Call, 100.00,  110.00,  0.07,  0.03, 3.0,  0.2,  14.430 },
-        { Option::Call, 100.00,  120.00,  0.07,  0.03, 3.0,  0.2,  21.398 },
+    { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.4,  11.336 },
+    { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.4,  15.711 },
+    { Option::Call, 100.00,  100.00,  0.07,  0.03, 3.0,  0.4,  20.760 },
+    { Option::Call, 100.00,  110.00,  0.07,  0.03, 3.0,  0.4,  26.440 },
+    { Option::Call, 100.00,  120.00,  0.07,  0.03, 3.0,  0.4,  32.709 },
 
-        { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.4,  11.336 },
-        { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.4,  15.711 },
-        { Option::Call, 100.00,  100.00,  0.07,  0.03, 3.0,  0.4,  20.760 },
-        { Option::Call, 100.00,  110.00,  0.07,  0.03, 3.0,  0.4,  26.440 },
-        { Option::Call, 100.00,  120.00,  0.07,  0.03, 3.0,  0.4,  32.709 },
+    { Option::Call, 100.00,   80.00,  0.07,  0.00001, 3.0,  0.3,   5.552 },
+    { Option::Call, 100.00,   90.00,  0.07,  0.00001, 3.0,  0.3,   8.868 },
+    { Option::Call, 100.00,  100.00,  0.07,  0.00001, 3.0,  0.3,  13.158 },
+    { Option::Call, 100.00,  110.00,  0.07,  0.00001, 3.0,  0.3,  18.458 },
+    { Option::Call, 100.00,  120.00,  0.07,  0.00001, 3.0,  0.3,  24.786 },
 
-        { Option::Call, 100.00,   80.00,  0.07,  0.00001, 3.0,  0.3,   5.552 },
-        { Option::Call, 100.00,   90.00,  0.07,  0.00001, 3.0,  0.3,   8.868 },
-        { Option::Call, 100.00,  100.00,  0.07,  0.00001, 3.0,  0.3,  13.158 },
-        { Option::Call, 100.00,  110.00,  0.07,  0.00001, 3.0,  0.3,  18.458 },
-        { Option::Call, 100.00,  120.00,  0.07,  0.00001, 3.0,  0.3,  24.786 },
+    { Option::Call, 100.00,   80.00,  0.03,  0.07, 3.0,  0.3,  12.177 },
+    { Option::Call, 100.00,   90.00,  0.03,  0.07, 3.0,  0.3,  17.411 },
+    { Option::Call, 100.00,  100.00,  0.03,  0.07, 3.0,  0.3,  23.402 },
+    { Option::Call, 100.00,  110.00,  0.03,  0.07, 3.0,  0.3,  30.028 },
+    { Option::Call, 100.00,  120.00,  0.03,  0.07, 3.0,  0.3,  37.177 }
+};
 
-        { Option::Call, 100.00,   80.00,  0.03,  0.07, 3.0,  0.3,  12.177 },
-        { Option::Call, 100.00,   90.00,  0.03,  0.07, 3.0,  0.3,  17.411 },
-        { Option::Call, 100.00,  100.00,  0.03,  0.07, 3.0,  0.3,  23.402 },
-        { Option::Call, 100.00,  110.00,  0.03,  0.07, 3.0,  0.3,  30.028 },
-        { Option::Call, 100.00,  120.00,  0.03,  0.07, 3.0,  0.3,  37.177 }
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testJuValues) {
 
@@ -457,100 +449,97 @@ BOOST_AUTO_TEST_CASE(testFdValues) {
 }
 
 
-namespace {
+template <class Engine>
+void testFdGreeks() {
 
-    template <class Engine>
-    void testFdGreeks() {
+    std::map<std::string,Real> calculated, expected, tolerance;
+    tolerance["delta"]  = 7.0e-4;
+    tolerance["gamma"]  = 2.0e-4;
+    //tolerance["theta"]  = 1.0e-4;
 
-        std::map<std::string,Real> calculated, expected, tolerance;
-        tolerance["delta"]  = 7.0e-4;
-        tolerance["gamma"]  = 2.0e-4;
-        //tolerance["theta"]  = 1.0e-4;
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Integer years[] = { 1, 2 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.04, 0.05, 0.06 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Integer years[] = { 1, 2 };
-        Volatility vols[] = { 0.11, 0.50, 1.20 };
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
 
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
-        Settings::instance().evaluationDate() = today;
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    ext::shared_ptr<StrikedTypePayoff> payoff;
 
-        ext::shared_ptr<StrikedTypePayoff> payoff;
+    for (auto& type : types) {
+        for (Real strike : strikes) {
+            for (int year : years) {
+                Date exDate = today + year * Years;
+                ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-        for (auto& type : types) {
-            for (Real strike : strikes) {
-                for (int year : years) {
-                    Date exDate = today + year * Years;
-                    ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
-                    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
-                    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                        new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
+                ext::shared_ptr<PricingEngine> engine(new Engine(stochProcess, 50));
 
-                    ext::shared_ptr<PricingEngine> engine(new Engine(stochProcess, 50));
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
 
-                    VanillaOption option(payoff, exercise);
-                    option.setPricingEngine(engine);
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
+                                Rate q = m, r = n;
+                                spot->setValue(u);
+                                qRate->setValue(q);
+                                rRate->setValue(r);
+                                vol->setValue(v);
+                                Real value = option.NPV();
+                                calculated["delta"] = option.delta();
+                                calculated["gamma"] = option.gamma();
+                                // calculated["theta"]  = option.theta();
 
-                    for (Real u : underlyings) {
-                        for (Real m : qRates) {
-                            for (Real n : rRates) {
-                                for (Real v : vols) {
-                                    Rate q = m, r = n;
+                                if (value > spot->value() * 1.0e-5) {
+                                    // perturb spot and get delta and gamma
+                                    Real du = u * 1.0e-4;
+                                    spot->setValue(u + du);
+                                    Real value_p = option.NPV(), delta_p = option.delta();
+                                    spot->setValue(u - du);
+                                    Real value_m = option.NPV(), delta_m = option.delta();
                                     spot->setValue(u);
-                                    qRate->setValue(q);
-                                    rRate->setValue(r);
-                                    vol->setValue(v);
-                                    Real value = option.NPV();
-                                    calculated["delta"] = option.delta();
-                                    calculated["gamma"] = option.gamma();
-                                    // calculated["theta"]  = option.theta();
+                                    expected["delta"] = (value_p - value_m) / (2 * du);
+                                    expected["gamma"] = (delta_p - delta_m) / (2 * du);
 
-                                    if (value > spot->value() * 1.0e-5) {
-                                        // perturb spot and get delta and gamma
-                                        Real du = u * 1.0e-4;
-                                        spot->setValue(u + du);
-                                        Real value_p = option.NPV(), delta_p = option.delta();
-                                        spot->setValue(u - du);
-                                        Real value_m = option.NPV(), delta_m = option.delta();
-                                        spot->setValue(u);
-                                        expected["delta"] = (value_p - value_m) / (2 * du);
-                                        expected["gamma"] = (delta_p - delta_m) / (2 * du);
+                                    /*
+                                    // perturb date and get theta
+                                    Time dT = dc.yearFraction(today-1, today+1);
+                                    Settings::instance().setEvaluationDate(today-1);
+                                    value_m = option.NPV();
+                                    Settings::instance().setEvaluationDate(today+1);
+                                    value_p = option.NPV();
+                                    Settings::instance().setEvaluationDate(today);
+                                    expected["theta"] = (value_p - value_m)/dT;
+                                    */
 
-                                        /*
-                                        // perturb date and get theta
-                                        Time dT = dc.yearFraction(today-1, today+1);
-                                        Settings::instance().setEvaluationDate(today-1);
-                                        value_m = option.NPV();
-                                        Settings::instance().setEvaluationDate(today+1);
-                                        value_p = option.NPV();
-                                        Settings::instance().setEvaluationDate(today);
-                                        expected["theta"] = (value_p - value_m)/dT;
-                                        */
-
-                                        // compare
-                                        std::map<std::string, Real>::iterator it;
-                                        for (it = calculated.begin(); it != calculated.end();
-                                             ++it) {
-                                            std::string greek = it->first;
-                                            Real expct = expected[greek], calcl = calculated[greek],
-                                                 tol = tolerance[greek];
-                                            Real error = relativeError(expct, calcl, u);
-                                            if (error > tol) {
-                                                REPORT_FAILURE(greek, payoff, exercise, u, q, r,
-                                                               today, v, expct, calcl, error, tol);
-                                            }
+                                    // compare
+                                    std::map<std::string, Real>::iterator it;
+                                    for (it = calculated.begin(); it != calculated.end();
+                                         ++it) {
+                                        std::string greek = it->first;
+                                        Real expct = expected[greek], calcl = calculated[greek],
+                                            tol = tolerance[greek];
+                                        Real error = relativeError(expct, calcl, u);
+                                        if (error > tol) {
+                                            REPORT_FAILURE(greek, payoff, exercise, u, q, r,
+                                                           today, v, expct, calcl, error, tol);
                                         }
                                     }
                                 }
@@ -561,7 +550,6 @@ namespace {
             }
         }
     }
-
 }
 
 BOOST_AUTO_TEST_CASE(testFdAmericanGreeks) {
@@ -1613,37 +1601,36 @@ BOOST_AUTO_TEST_CASE(testQdEngineStandardExample) {
     }
 }
 
-namespace {
-    class QdFpGaussLobattoScheme: public QdFpIterationScheme {
-      public:
-        QdFpGaussLobattoScheme(Size m, Size n, Real eps)
-        : m_(m), n_(n),
-          integrator_(ext::make_shared<GaussLobattoIntegral>(
-            100000, QL_MAX_REAL, 0.1*eps)) {
-        }
-        Size getNumberOfChebyshevInterpolationNodes() const override {
-            return n_;
-        }
-        Size getNumberOfNaiveFixedPointSteps() const override {
-            return m_-1;
-        }
-        Size getNumberOfJacobiNewtonFixedPointSteps() const override {
-            return Size(1);
-        }
-        ext::shared_ptr<Integrator>
-        getFixedPointIntegrator() const override {
-            return integrator_;
-        }
-        ext::shared_ptr<Integrator>
-        getExerciseBoundaryToPriceIntegrator() const override {
-            return integrator_;
-        }
+class QdFpGaussLobattoScheme: public QdFpIterationScheme {
+  public:
+    QdFpGaussLobattoScheme(Size m, Size n, Real eps)
+    : m_(m), n_(n),
+      integrator_(ext::make_shared<GaussLobattoIntegral>(
+                                                         100000, QL_MAX_REAL, 0.1*eps)) {
+    }
+    Size getNumberOfChebyshevInterpolationNodes() const override {
+        return n_;
+    }
+    Size getNumberOfNaiveFixedPointSteps() const override {
+        return m_-1;
+    }
+    Size getNumberOfJacobiNewtonFixedPointSteps() const override {
+        return Size(1);
+    }
+    ext::shared_ptr<Integrator>
+    getFixedPointIntegrator() const override {
+        return integrator_;
+    }
+    ext::shared_ptr<Integrator>
+    getExerciseBoundaryToPriceIntegrator() const override {
+        return integrator_;
+    }
 
-      private:
-        const Size m_, n_;
-        const ext::shared_ptr<Integrator> integrator_;
-    };
-}
+  private:
+    const Size m_, n_;
+    const ext::shared_ptr<Integrator> integrator_;
+};
+
 
 BOOST_AUTO_TEST_CASE(testBulkQdFpAmericanEngine) {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
@@ -1957,15 +1944,15 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandEuropeanGreeks) {
 
         constexpr double tol = 1000*QL_EPSILON;
 
-        BOOST_CHECK_CLOSE(europeanOption.NPV(), americanOption.NPV(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.delta(), americanOption.delta(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.strikeSensitivity(), americanOption.strikeSensitivity(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.gamma(), americanOption.gamma(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.vega(), americanOption.vega(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.theta(), americanOption.theta(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.thetaPerDay(), americanOption.thetaPerDay(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.rho(), americanOption.rho(), tol);
-        BOOST_CHECK_CLOSE(europeanOption.dividendRho(), americanOption.dividendRho(), tol);
+        QL_CHECK_CLOSE(europeanOption.NPV(), americanOption.NPV(), tol);
+        QL_CHECK_CLOSE(europeanOption.delta(), americanOption.delta(), tol);
+        QL_CHECK_CLOSE(europeanOption.strikeSensitivity(), americanOption.strikeSensitivity(), tol);
+        QL_CHECK_CLOSE(europeanOption.gamma(), americanOption.gamma(), tol);
+        QL_CHECK_CLOSE(europeanOption.vega(), americanOption.vega(), tol);
+        QL_CHECK_CLOSE(europeanOption.theta(), americanOption.theta(), tol);
+        QL_CHECK_CLOSE(europeanOption.thetaPerDay(), americanOption.thetaPerDay(), tol);
+        QL_CHECK_CLOSE(europeanOption.rho(), americanOption.rho(), tol);
+        QL_CHECK_CLOSE(europeanOption.dividendRho(), americanOption.dividendRho(), tol);
     }
 }
 

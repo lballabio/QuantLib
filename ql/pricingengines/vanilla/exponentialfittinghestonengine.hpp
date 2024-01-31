@@ -24,9 +24,8 @@
 #ifndef quantlib_exponential_fitting_heston_engine_hpp
 #define quantlib_exponential_fitting_heston_engine_hpp
 
-#include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
 #include <vector>
 
@@ -51,27 +50,19 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
-        enum ControlVariate {
-            // Gatheral form with Andersen-Piterbarg control variate
-            AndersenPiterbarg,
-            // same as AndersenPiterbarg, but a slightly better control variate
-            AndersenPiterbargOptCV,
-            // Gatheral form with asymptotic expansion of the characteristic function as control variate
-            AsymptoticChF,
-            // auto selection of best control variate algorithm from above
-            OptimalCV
-        };
+        typedef AnalyticHestonEngine::ComplexLogFormula ControlVariate;
 
         explicit ExponentialFittingHestonEngine(
             const ext::shared_ptr<HestonModel>& model,
-            ControlVariate cv = OptimalCV,
-            Real scaling = Null<Real>());
+            ControlVariate cv = ControlVariate::OptimalCV,
+            Real scaling = Null<Real>(),
+            Real alpha = -0.5);
 
         void calculate() const override;
 
       private:
         const ControlVariate cv_;
-        const Real scaling_;
+        const Real scaling_, alpha_;
         const ext::shared_ptr<AnalyticHestonEngine> analyticEngine_;
 
         static std::vector<Real> moneyness_;

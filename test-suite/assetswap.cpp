@@ -57,71 +57,62 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace asset_swap_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        // common data
-        ext::shared_ptr<IborIndex> iborIndex;
-        ext::shared_ptr<SwapIndex> swapIndex;
-        ext::shared_ptr<IborCouponPricer> pricer;
-        ext::shared_ptr<CmsCouponPricer> cmspricer;
-        Spread spread;
-        Spread nonnullspread;
-        Real faceAmount;
-        Compounding compounding;
-        RelinkableHandle<YieldTermStructure> termStructure;
+BOOST_AUTO_TEST_SUITE(AssetSwapTests)
 
-        // initial setup
-        CommonVars() {
-            Natural swapSettlementDays = 2;
-            faceAmount = 100.0;
-            BusinessDayConvention fixedConvention = Unadjusted;
-            compounding = Continuous;
-            Frequency fixedFrequency = Annual;
-            Frequency floatingFrequency = Semiannual;
-            iborIndex = ext::shared_ptr<IborIndex>(
+struct CommonVars {
+    // common data
+    ext::shared_ptr<IborIndex> iborIndex;
+    ext::shared_ptr<SwapIndex> swapIndex;
+    ext::shared_ptr<IborCouponPricer> pricer;
+    ext::shared_ptr<CmsCouponPricer> cmspricer;
+    Spread spread;
+    Spread nonnullspread;
+    Real faceAmount;
+    Compounding compounding;
+    RelinkableHandle<YieldTermStructure> termStructure;
+
+    // initial setup
+    CommonVars() {
+        Natural swapSettlementDays = 2;
+        faceAmount = 100.0;
+        BusinessDayConvention fixedConvention = Unadjusted;
+        compounding = Continuous;
+        Frequency fixedFrequency = Annual;
+        Frequency floatingFrequency = Semiannual;
+        iborIndex = ext::shared_ptr<IborIndex>(
                      new Euribor(Period(floatingFrequency), termStructure));
-            Calendar calendar = iborIndex->fixingCalendar();
-            swapIndex= ext::make_shared<SwapIndex>(
+        Calendar calendar = iborIndex->fixingCalendar();
+        swapIndex = ext::make_shared<SwapIndex>(
                 "EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
                               iborIndex->currency(), calendar,
                               Period(fixedFrequency), fixedConvention,
                               iborIndex->dayCounter(), iborIndex);
-            spread = 0.0;
-            nonnullspread = 0.003;
-            Date today(24,April,2007);
-            Settings::instance().evaluationDate() = today;
+        spread = 0.0;
+        nonnullspread = 0.003;
+        Date today(24,April,2007);
+        Settings::instance().evaluationDate() = today;
 
-            //Date today = Settings::instance().evaluationDate();
-
-            termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
-            pricer = ext::shared_ptr<IborCouponPricer>(new
-                                                        BlackIborCouponPricer);
-            Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
+        termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
+        pricer = ext::shared_ptr<IborCouponPricer>(new BlackIborCouponPricer);
+        Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
                 ext::shared_ptr<SwaptionVolatilityStructure>(new
                     ConstantSwaptionVolatility(today, NullCalendar(),Following,
                                                0.2, Actual365Fixed())));
-            Handle<Quote> meanReversionQuote(ext::shared_ptr<Quote>(new
+        Handle<Quote> meanReversionQuote(ext::shared_ptr<Quote>(new
                 SimpleQuote(0.01)));
-            cmspricer = ext::shared_ptr<CmsCouponPricer>(new
+        cmspricer = ext::shared_ptr<CmsCouponPricer>(new
                 AnalyticHaganPricer(swaptionVolatilityStructure,
                                     GFunctionFactory::Standard,
                                     meanReversionQuote));
-        }
-    };
+    }
+};
 
-}
-
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture) // fails with QL_USE_INDEXED_COUPON
-
-BOOST_AUTO_TEST_SUITE(AssetSwapTest)
 
 BOOST_AUTO_TEST_CASE(testConsistency) {
     BOOST_TEST_MESSAGE(
                  "Testing consistency between fair price and fair spread...");
-
-    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -509,8 +500,6 @@ BOOST_AUTO_TEST_CASE(testImpliedValue) {
     BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
                        " price with null spread...");
 
-    using namespace asset_swap_test;
-
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
@@ -876,8 +865,6 @@ BOOST_AUTO_TEST_CASE(testMarketASWSpread) {
 
     BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
                        " and par asset swap...");
-
-    using namespace asset_swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -1317,8 +1304,6 @@ BOOST_AUTO_TEST_CASE(testZSpread) {
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
-    using namespace asset_swap_test;
-
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -1638,8 +1623,6 @@ BOOST_AUTO_TEST_CASE(testGenericBondImplied) {
 
     BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
                        " asset-swap fair price with null spread...");
-
-    using namespace asset_swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -2028,8 +2011,6 @@ BOOST_AUTO_TEST_CASE(testMASWWithGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
                        "with generic bond...");
-
-    using namespace asset_swap_test;
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -2504,8 +2485,6 @@ BOOST_AUTO_TEST_CASE(testZSpreadWithGenericBond) {
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
 
-    using namespace asset_swap_test;
-
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -2869,8 +2848,6 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBond) {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
                        " against equivalent generic bond...");
-
-    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -3430,8 +3407,6 @@ BOOST_AUTO_TEST_CASE(testSpecializedBondVsGenericBondUsingAsw) {
 
     BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
                        " bond against equivalent generic bond...");
-
-    using namespace asset_swap_test;
 
     CommonVars vars;
 

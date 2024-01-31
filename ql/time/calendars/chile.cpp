@@ -75,6 +75,8 @@ namespace QuantLib {
             || (d == 8 && m == December)
             // Christmas Day
             || (d == 25 && m == December)
+            // New Year's Eve 
+            || (d == 31 && m == December)
             )
             return false;
 

@@ -18,34 +18,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "speedlevel.hpp"
+#include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/instruments/doublebarrieroption.hpp>
-#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
-#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/suowangdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/mcdoublebarrierengine.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, barrierType, barrierlo, barrierhi, \
@@ -105,54 +109,45 @@ using namespace boost::unit_test_framework;
                 << "Analytical: " << analytical << "\n" \
                 << "Monte Carlo: " << monteCarlo << "\n");
 
-namespace double_barrier_option_test {
+struct NewBarrierOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrierlo;
+    Real barrierhi;
+    Option::Type type;
+    Exercise::Type exType;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // result
+    Real tol;      // tolerance
+};
 
-    struct NewBarrierOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrierlo;
-        Real barrierhi;
-        Option::Type type;
-        Exercise::Type exType;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // result
-        Real tol;      // tolerance
-    };
+struct DoubleBarrierFxOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrier1;
+    Real barrier2;
+    Real rebate;
+    Option::Type type;
+    Real strike;
+    Real s;                 // spot
+    Rate q;                 // dividend
+    Rate r;                 // risk-free rate
+    Time t;                 // time to maturity
+    Volatility vol25Put;    // 25 delta put vol
+    Volatility volAtm;      // atm vol
+    Volatility vol25Call;   // 25 delta call vol
+    Volatility v;           // volatility at strike
+    Real result;            // result
+    Real tol;               // tolerance
+};
 
-    struct DoubleBarrierFxOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrier1;
-        Real barrier2;
-        Real rebate;
-        Option::Type type;
-        Real strike;
-        Real s;                 // spot
-        Rate q;                 // dividend
-        Rate r;                 // risk-free rate
-        Time t;                 // time to maturity
-        Volatility vol25Put;    // 25 delta put vol
-        Volatility volAtm;      // atm vol
-        Volatility vol25Call;   // 25 delta call vol
-        Volatility v;           // volatility at strike
-        Real result;            // result
-        Real tol;               // tolerance
-    };
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
-
-BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionTest)
 
 BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing double barrier european options against Haug's values...");
-
-    using namespace double_barrier_option_test;
 
     Exercise::Type european = Exercise::European;
     NewBarrierOptionData values[] = {
@@ -387,15 +382,9 @@ BOOST_AUTO_TEST_CASE(testEuropeanHaugValues) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE(DoubleBarrierOptionExperimentalTest)
-
 BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
     BOOST_TEST_MESSAGE(
          "Testing double-barrier FX options against Vanna/Volga values...");
-
-    using namespace double_barrier_option_test;
 
     DoubleBarrierFxOptionData values[] = {
 
@@ -535,8 +524,6 @@ BOOST_AUTO_TEST_CASE(testVannaVolgaDoubleBarrierValues) {
 
 BOOST_AUTO_TEST_CASE(testMonteCarloDoubleBarrierWithAnalytical, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing MC double-barrier options against analytical values...");
-
-    using namespace double_barrier_option_test;
 
     Real tolerance = 0.01; //percentage difference between analytical and monte carlo values to be tolerated
 

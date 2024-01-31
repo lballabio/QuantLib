@@ -32,6 +32,10 @@
 
 namespace QuantLib {
 
+    //! Discounting engine for swaps
+    /*! This engine discounts future swap cashflows to the reference
+        date of the discount curve.
+    */
     class DiscountingSwapEngine : public Swap::engine {
       public:
         DiscountingSwapEngine(

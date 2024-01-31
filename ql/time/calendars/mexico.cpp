@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2024 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,6 +51,8 @@ namespace QuantLib {
             || (d == 1 && m == May)
             // National Day
             || (d == 16 && m == September)
+            // Inauguration Day
+            || (d == 1 && m == October && y >= 2024 && (y - 2024) % 6 == 0)
             // All Souls Day
             || (d == 2 && m == November)
             // Revolution Day

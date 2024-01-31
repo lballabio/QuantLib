@@ -1,4 +1,4 @@
-# Doxyfile 1.9.7
+# Doxyfile 1.10.0
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -8,6 +8,7 @@ PROJECT_NAME           = QuantLib
 PROJECT_NUMBER         = ql_version
 PROJECT_BRIEF          = "A free/open-source library for quantitative finance"
 PROJECT_LOGO           =
+PROJECT_ICON           =
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
 CREATE_SUBDIRS_LEVEL   = 8
@@ -175,6 +176,9 @@ HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
 HTML_DYNAMIC_MENUS     = YES
 HTML_DYNAMIC_SECTIONS  = YES
+HTML_CODE_FOLDING      = YES
+HTML_COPY_CLIPBOARD    = YES
+HTML_PROJECT_COOKIE    =
 HTML_INDEX_NUM_ENTRIES = 100
 GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
@@ -277,6 +281,12 @@ DOCBOOK_OUTPUT         = docbook
 # Configuration options for the AutoGen Definitions output
 #---------------------------------------------------------------------------
 GENERATE_AUTOGEN_DEF   = NO
+#---------------------------------------------------------------------------
+# Configuration options related to Sqlite3 output
+#---------------------------------------------------------------------------
+GENERATE_SQLITE3       = NO
+SQLITE3_OUTPUT         = sqlite3
+SQLITE3_RECREATE_DB    = YES
 #---------------------------------------------------------------------------
 # Configuration options related to the Perl module output
 #---------------------------------------------------------------------------

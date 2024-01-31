@@ -66,28 +66,6 @@ namespace QuantLib {
     InflationIndex::InflationIndex(std::string familyName,
                                    Region region,
                                    bool revised,
-                                   bool interpolated,
-                                   Frequency frequency,
-                                   const Period& availabilityLag,
-                                   Currency currency)
-    : InflationIndex(std::move(familyName),
-                     std::move(region),
-                     revised,
-                     frequency,
-                     availabilityLag,
-                     std::move(currency)) {
-        QL_DEPRECATED_DISABLE_WARNING
-        interpolated_ = interpolated;
-        QL_DEPRECATED_ENABLE_WARNING
-    }
-
-    /* gcc complains in the constructor about the deprecated call of initializing
-     * `bool InflationIndex::interpolated_ = false;` that's why we need to disable the warning here.
-     */
-    QL_DEPRECATED_DISABLE_WARNING
-    InflationIndex::InflationIndex(std::string familyName,
-                                   Region region,
-                                   bool revised,
                                    Frequency frequency,
                                    const Period& availabilityLag,
                                    Currency currency)
@@ -96,13 +74,6 @@ namespace QuantLib {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(InflationIndex::name()));
-    }
-    QL_DEPRECATED_ENABLE_WARNING
-
-    bool InflationIndex::interpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return interpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
     Calendar InflationIndex::fixingCalendar() const {
@@ -130,21 +101,6 @@ namespace QuantLib {
     ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
                                            const Region& region,
                                            bool revised,
-                                           bool interpolated,
-                                           Frequency frequency,
-                                           const Period& availabilityLag,
-                                           const Currency& currency,
-                                           Handle<ZeroInflationTermStructure> zeroInflation)
-    : ZeroInflationIndex(
-          familyName, region, revised, frequency, availabilityLag, currency, std::move(zeroInflation)) {
-        QL_DEPRECATED_DISABLE_WARNING
-        interpolated_ = interpolated;
-        QL_DEPRECATED_ENABLE_WARNING
-    }
-
-    ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
-                                           const Region& region,
-                                           bool revised,
                                            Frequency frequency,
                                            const Period& availabilityLag,
                                            const Currency& currency,
@@ -164,30 +120,18 @@ namespace QuantLib {
             QL_REQUIRE(I1 != Null<Real>(),
                        "Missing " << name() << " fixing for " << p.first);
 
-            QL_DEPRECATED_DISABLE_WARNING
-            if (interpolated_ && fixingDate > p.first) {
-            QL_DEPRECATED_ENABLE_WARNING
-
-                Real I2 = ts[p.second+1];
-                QL_REQUIRE(I2 != Null<Real>(),
-                           "Missing " << name() << " fixing for " << p.second+1);
-
-                // Use non-lagged period for interpolation
-                Date observationDate = fixingDate + zeroInflation_->observationLag();
-                std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
-                Real daysInPeriod = (p2.second + 1) - p2.first;
-                Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
-
-                return I1 + (I2 - I1) * interpolationCoefficient;
-            } else {
-                // we don't need the next fixing
-                return I1;
-            }
+            return I1;
         } else {
             return forecastFixing(fixingDate);
         }
     }
 
+    Date ZeroInflationIndex::lastFixingDate() const {
+        const auto& fixings = timeSeries();
+        QL_REQUIRE(!fixings.empty(), "no fixings stored for " << name());
+        // attribute fixing to first day of the underlying period
+        return inflationPeriod(fixings.lastDate(), frequency_).first;
+    }
 
     bool ZeroInflationIndex::needsForecast(const Date& fixingDate) const {
 
@@ -204,14 +148,6 @@ namespace QuantLib {
         Date historicalFixingKnown =
             inflationPeriod(todayMinusLag, frequency_).first-1;
         Date latestNeededDate = fixingDate;
-
-        QL_DEPRECATED_DISABLE_WARNING
-        if (interpolated_) { // might need the next one too
-            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
-            if (fixingDate > p.first)
-                latestNeededDate += Period(frequency_);
-        }
-        QL_DEPRECATED_ENABLE_WARNING
 
         if (latestNeededDate <= historicalFixingKnown) {
             // the fixing date is well before the availability lag, so
@@ -241,46 +177,18 @@ namespace QuantLib {
 
         std::pair<Date, Date> p = inflationPeriod(fixingDate, frequency_);
 
-        QL_DEPRECATED_DISABLE_WARNING
-
         Date firstDateInPeriod = p.first;
         Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
-        Time t1 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+        Time t1 = inflationYearFraction(frequency_, false, zeroInflation_->dayCounter(),
                                         baseDate, firstDateInPeriod);
-        Real I1 = baseFixing * std::pow(1.0 + Z1, t1);
-
-        if (interpolated_ && fixingDate > firstDateInPeriod) {
-            Date firstDateInNextPeriod = p.second + 1;
-            Rate Z2 = zeroInflation_->zeroRate(firstDateInNextPeriod, Period(0,Days), false);
-            Time t2 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
-                                            baseDate, firstDateInNextPeriod);
-            Real I2 = baseFixing * std::pow(1.0 + Z2, t2);
-
-            // // Use non-lagged period for interpolation
-            Date observationDate = fixingDate + zeroInflation_->observationLag();
-            std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
-            Real daysInPeriod = (p2.second + 1) - p2.first;
-            Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
-
-            return I1 + (I2 - I1) * interpolationCoefficient;
-        } else {
-            return I1;
-        }
-
-        QL_DEPRECATED_ENABLE_WARNING
+        return baseFixing * std::pow(1.0 + Z1, t1);
     }
 
 
     ext::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(
                           const Handle<ZeroInflationTermStructure>& h) const {
-        /* using the new constructor and set interpolated to avoid the deprecated warning and
-         * error...  */
-        auto clonedIndex = ext::make_shared<ZeroInflationIndex>(
+        return ext::make_shared<ZeroInflationIndex>(
             familyName_, region_, revised_, frequency_, availabilityLag_, currency_, h);
-        QL_DEPRECATED_DISABLE_WARNING
-        clonedIndex->interpolated_ = interpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
-        return clonedIndex;
     }
 
 
@@ -418,12 +326,9 @@ namespace QuantLib {
 
 
     CPI::InterpolationType
-    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                            const QuantLib::CPI::InterpolationType& type) {
+    detail::CPI::effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type) {
         if (type == QuantLib::CPI::AsIndex) {
-            QL_DEPRECATED_DISABLE_WARNING
-            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
-            QL_DEPRECATED_ENABLE_WARNING
+            return QuantLib::CPI::Flat;
         } else {
             return type;
         }

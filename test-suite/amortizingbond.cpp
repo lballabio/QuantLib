@@ -31,9 +31,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(AmortizingBondTest)
+BOOST_AUTO_TEST_SUITE(AmortizingBondTests)
 
 BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBond) {
     BOOST_TEST_MESSAGE("Testing amortizing fixed rate bond...");
@@ -159,7 +159,10 @@ BOOST_AUTO_TEST_CASE(testBrazilianAmortizingFixedRateBond) {
         1.38600825, 1.23425366, 1.39521333, 1.06968563,
         1.03950542, 1.00065409, 0.90968563, 0.81871706,
         0.79726493, 0.63678002, 0.57187676, 0.49829046,
-        0.32913418, 0.27290565, 0.19062560, 0.08662552
+        // data changed as source (pentagonotrustee.com.br) does not include newly introduced
+        // "Black Awareness Day" holiday
+        0.31177086,
+                    0.27290565, 0.19062560, 0.08662552
     };
 
     Natural settlementDays = 0;

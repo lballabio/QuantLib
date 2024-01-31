@@ -30,24 +30,22 @@
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-namespace {
-    class ExpectationFct {
-      public:
-        ExpectationFct(const CEVRNDCalculator& calculator, Time t)
-        : t_(t), calculator_(calculator) { }
+BOOST_AUTO_TEST_SUITE(FdCevTests)
 
-        Real operator()(Real f) const { return f*calculator_.pdf(f, t_); }
+class ExpectationFct {
+  public:
+    ExpectationFct(const CEVRNDCalculator& calculator, Time t)
+    : t_(t), calculator_(calculator) { }
 
-      private:
-        const Time t_;
-        const CEVRNDCalculator& calculator_;
-    };
-}
+    Real operator()(Real f) const { return f*calculator_.pdf(f, t_); }
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+  private:
+    const Time t_;
+    const CEVRNDCalculator& calculator_;
+};
 
-BOOST_AUTO_TEST_SUITE(FdCevTest)
 
 BOOST_AUTO_TEST_CASE(testLocalMartingale) {
     BOOST_TEST_MESSAGE(

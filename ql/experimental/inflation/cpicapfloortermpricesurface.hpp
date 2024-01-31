@@ -51,7 +51,7 @@ namespace QuantLib {
         The observationLag is that for the referenced instrument prices.
         Strikes are as-quoted not as-used.
     */
-    class CPICapFloorTermPriceSurface : public InflationTermStructure {
+    class CPICapFloorTermPriceSurface : public TermStructure {
       public:
         CPICapFloorTermPriceSurface(
             Real nominal,
@@ -60,7 +60,7 @@ namespace QuantLib {
             const Calendar& cal, // calendar in index may not be useful
             const BusinessDayConvention& bdc,
             const DayCounter& dc,
-            const ext::shared_ptr<ZeroInflationIndex>& zii,
+            ext::shared_ptr<ZeroInflationIndex>  zii,
             CPI::InterpolationType interpolationType,
             Handle<YieldTermStructure> yts,
             const std::vector<Rate>& cStrikes,
@@ -71,8 +71,10 @@ namespace QuantLib {
 
         //! \name InflationTermStructure interface
         //@{
-        Period observationLag() const override;
-        Date baseDate() const override;
+        virtual Period observationLag() const;
+        virtual Frequency frequency() const;
+        virtual Date baseDate() const;
+        virtual Rate baseRate() const;
         //@}
 
         //! inspectors
@@ -138,6 +140,8 @@ namespace QuantLib {
       private:
         Real nominal_;
         BusinessDayConvention bdc_;
+        Period observationLag_;
+        Rate baseRate_;
     };
 
 
@@ -326,11 +330,19 @@ namespace QuantLib {
     // inline definitions
 
     inline Period CPICapFloorTermPriceSurface::observationLag() const {
-        return zeroInflationIndex()->zeroInflationTermStructure()->observationLag();
+        return observationLag_;
+    }
+
+    inline Frequency CPICapFloorTermPriceSurface::frequency() const {
+        return zeroInflationIndex()->frequency();
     }
 
     inline Date CPICapFloorTermPriceSurface::baseDate() const {
         return zeroInflationIndex()->zeroInflationTermStructure()->baseDate();
+    }
+
+    inline Rate CPICapFloorTermPriceSurface::baseRate() const {
+        return baseRate_;
     }
 
     inline Real CPICapFloorTermPriceSurface::nominal() const {

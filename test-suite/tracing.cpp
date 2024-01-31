@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "tracing.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/utilities/tracing.hpp>
 #include <sstream>
@@ -26,62 +26,62 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class TestCaseCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
-      public:
-        TestCaseCleaner() = default;
-        ~TestCaseCleaner() {
-            QL_TRACE_ON(std::cerr);
-        }
-    };
+BOOST_AUTO_TEST_SUITE(TracingTests)
+
+class TestCaseCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
+  public:
+    TestCaseCleaner() = default;
+    ~TestCaseCleaner() {
+        QL_TRACE_ON(std::cerr);
+    }
+};
 
 #if defined(__clang__) && __clang_major__ >= 14
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #endif
 
-    void testTraceOutput(bool enable,
+void testTraceOutput(bool enable,
 #if defined(QL_ENABLE_TRACING)
-                         const std::string& result) {
+                     const std::string& result) {
 #else
-                         const std::string&) {
+                     const std::string&) {
 #endif
 
-        TestCaseCleaner cleaner;
+    TestCaseCleaner cleaner;
 
-        std::ostringstream output;
-        if (enable)
-            QL_TRACE_ENABLE;
-        else
-            QL_TRACE_DISABLE;
-        QL_TRACE_ON(output);
-        int i = 42;
-        QL_TRACE_VARIABLE(i);
-        i++;
+    std::ostringstream output;
+    if (enable)
+        QL_TRACE_ENABLE;
+    else
+        QL_TRACE_DISABLE;
+    QL_TRACE_ON(output);
+    int i = 42;
+    QL_TRACE_VARIABLE(i);
+    i++;
 
-        #if defined(QL_ENABLE_TRACING)
-        std::string expected = result;
-        #else
-        std::string expected;
-        #endif
-        if (output.str() != expected) {
-            BOOST_FAIL("wrong trace:\n"
-                       "    expected:\n"
-                       "\""+ expected + "\"\n"
-                       "    written:\n"
-                       "\""+ output.str() + "\"");
-        }
+    #if defined(QL_ENABLE_TRACING)
+    std::string expected = result;
+    #else
+    std::string expected;
+    #endif
+    if (output.str() != expected) {
+        BOOST_FAIL("wrong trace:\n"
+                   "    expected:\n"
+                   "\""+ expected + "\"\n"
+                   "    written:\n"
+                   "\""+ output.str() + "\"");
     }
+}
 
 #if defined(__clang__) && __clang_major__ >= 14
 #pragma clang diagnostic pop
 #endif
 
-}
 
-
-void TracingTest::testOutput() {
+BOOST_AUTO_TEST_CASE(testOutput) {
 
     BOOST_TEST_MESSAGE("Testing tracing...");
 
@@ -89,10 +89,6 @@ void TracingTest::testOutput() {
     testTraceOutput(true,  "trace[0]: i = 42\n");
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* TracingTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Tracing tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&TracingTest::testOutput));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

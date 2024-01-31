@@ -30,12 +30,12 @@ namespace QuantLib {
     using QuantLib::SavedSettings;
     using QuantLib::IndexManager;
 
-    class TopLevelFixture {
+    class TopLevelFixture {  // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         // Restore settings after each test.
         SavedSettings restore;
 
-        TopLevelFixture() {}
+        TopLevelFixture() = default;
 
         ~TopLevelFixture() {
             IndexManager::instance().clearHistories();

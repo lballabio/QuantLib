@@ -28,9 +28,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(LinearLeastSquaresRegressionTest)
+BOOST_AUTO_TEST_SUITE(LinearLeastSquaresRegressionTests)
 
 BOOST_AUTO_TEST_CASE(testRegression) {
 
@@ -105,24 +105,19 @@ BOOST_AUTO_TEST_CASE(testRegression) {
     }
 }
 
-namespace linear_least_square_regression_test {
+struct get_item {
+    Size i;
+    explicit get_item(Size i) : i(i) {}
+    Real operator()(const Array& a) const {
+        return a[i];
+    }
+};
 
-    struct get_item {
-        Size i;
-        explicit get_item(Size i) : i(i) {}
-        Real operator()(const Array& a) const {
-            return a[i];
-        }
-    };
-
-}
 
 BOOST_AUTO_TEST_CASE(testMultiDimRegression) {
 
     BOOST_TEST_MESSAGE(
         "Testing multi-dimensional linear least-squares regression...");
-
-    using namespace linear_least_square_regression_test;
 
     const Size nr=100000;
     const Size dims = 4;

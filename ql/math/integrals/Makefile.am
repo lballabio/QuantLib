@@ -5,6 +5,7 @@ this_include_HEADERS = \
 	all.hpp \
 	discreteintegrals.hpp \
 	exponentialintegrals.hpp \
+	expsinhintegral.hpp \
 	filonintegral.hpp \
 	gausslaguerrecosinepolynomial.hpp \
 	gausslobattointegral.hpp \

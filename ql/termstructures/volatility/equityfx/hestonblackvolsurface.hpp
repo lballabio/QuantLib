@@ -35,9 +35,10 @@ namespace QuantLib {
       public:
         explicit HestonBlackVolSurface(
             const Handle<HestonModel>& hestonModel,
-            AnalyticHestonEngine::ComplexLogFormula cpxLogFormula = AnalyticHestonEngine::Gatheral,
+            AnalyticHestonEngine::ComplexLogFormula cpxLogFormula =
+                AnalyticHestonEngine::AngledContour,
             AnalyticHestonEngine::Integration integration =
-                AnalyticHestonEngine::Integration::gaussLaguerre(164));
+                AnalyticHestonEngine::Integration::gaussLaguerre(160));
 
         DayCounter dayCounter() const override;
         Date maxDate() const override;

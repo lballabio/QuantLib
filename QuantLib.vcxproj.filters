@@ -987,6 +987,9 @@
     <ClInclude Include="ql\math\errorfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\expm1.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\factorial.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -1164,6 +1167,9 @@
     <ClInclude Include="ql\math\integrals\discreteintegrals.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\expsinhintegral.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\filonintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -1234,6 +1240,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\burley2020sobolrsg.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp">
@@ -3351,9 +3360,6 @@
     <ClInclude Include="ql\experimental\credit\riskyassetswapoption.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\credit\riskybond.hpp">
-      <Filter>experimental\credit</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
@@ -4847,6 +4853,9 @@
     <ClCompile Include="ql\math\errorfunction.cpp">
       <Filter>math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\expm1.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\factorial.cpp">
       <Filter>math</Filter>
     </ClCompile>
@@ -4957,6 +4966,9 @@
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\tqreigendecomposition.cpp">
       <Filter>math\matrixutilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\burley2020sobolrsg.cpp">
+      <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\faurersg.cpp">
       <Filter>math\randomnumbers</Filter>

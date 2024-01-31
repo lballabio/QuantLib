@@ -74,38 +74,23 @@ namespace QuantLib {
     }
 
     Volatility HestonBlackVolSurface::blackVolImpl(Time t, Real strike) const {
-        const ext::shared_ptr<HestonProcess> process = hestonModel_->process();
+        AnalyticHestonEngine hestonEngine(
+                    hestonModel_.currentLink(), cpxLogFormula_, integration_);
+
+        const ext::shared_ptr<HestonProcess>& process = hestonModel_->process();
 
         const DiscountFactor df = process->riskFreeRate()->discount(t, true);
-        const DiscountFactor div = process->dividendYield()->discount(t, true);
-        const Real spotPrice = process->s0()->value();
 
-        const Real fwd = spotPrice
-            * process->dividendYield()->discount(t, true)
-            / process->riskFreeRate()->discount(t, true);
+        const Real fwd = process->s0()->value()
+            * process->dividendYield()->discount(t, true) / df;
 
+        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::make_shared<PlainVanillaPayoff>(
+                            fwd > strike ? Option::Put : Option::Call, strike);
 
-        const PlainVanillaPayoff payoff(
-            fwd > strike ? Option::Put : Option::Call, strike);
+        const Real npv = hestonEngine.priceVanillaPayoff(payoff, t);
 
-        const Real kappa = hestonModel_->kappa();
         const Real theta = hestonModel_->theta();
-        const Real rho   = hestonModel_->rho();
-        const Real sigma = hestonModel_->sigma();
-        const Real v0    = hestonModel_->v0();
-
-        AnalyticHestonEngine hestonEngine(
-            hestonModel_.currentLink(), cpxLogFormula_, integration_);
-
-        Real npv;
-        Size evaluations;
-
-        AnalyticHestonEngine::doCalculation(
-            df, div, spotPrice, strike, t,
-            kappa, theta, sigma, v0, rho,
-            payoff, integration_, cpxLogFormula_,
-            &hestonEngine, npv, evaluations);
-
         if (npv <= 0.0) return std::sqrt(theta);
 
         Brent solver;
@@ -113,8 +98,12 @@ namespace QuantLib {
         const Volatility guess = std::sqrt(theta);
         constexpr double accuracy = std::numeric_limits<double>::epsilon();
 
-        return solver.solve([&](Volatility _v) { return blackValue(payoff.optionType(), strike, fwd,
-                                                                   t, _v, df, npv); },
-                            accuracy, guess, 0.01);
+        return solver.solve(
+            [&](Volatility _v) {
+                return blackValue(
+                    payoff->optionType(), strike, fwd, t, _v, df, npv);
+            },
+            accuracy, guess, 0.01
+        );
     }
 }

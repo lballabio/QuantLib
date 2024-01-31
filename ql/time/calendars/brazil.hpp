@@ -41,6 +41,7 @@ namespace QuantLib {
         <li>Nossa Sra. Aparecida Day, October 12th</li>
         <li>All Souls Day, November 2nd</li>
         <li>Republic Day, November 15th</li>
+        <li>Black Awareness Day, November 20th (since 2024)</li>
         <li>Christmas, December 25th</li>
         <li>Passion of Christ</li>
         <li>Carnival</li>
@@ -52,7 +53,7 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
-        <li>Sao Paulo City Day, January 25th</li>
+        <li>Sao Paulo City Day, January 25th (up to 2021 included)</li>
         <li>Tiradentes's Day, April 21th</li>
         <li>Labour Day, May 1st</li>
         <li>Revolution Day, July 9th</li>

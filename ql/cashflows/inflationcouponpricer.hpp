@@ -73,11 +73,6 @@ namespace QuantLib {
       void update() override { notifyObservers(); }
       //@}
     protected:
-      /*! \deprecated Don't use this data member.  If you need it,
-                      provide it in your derived class.
-                      Deprecated in version 1.29.
-      */
-      QL_DEPRECATED Handle<YieldTermStructure> rateCurve_;
       Date paymentDate_;
     };
 

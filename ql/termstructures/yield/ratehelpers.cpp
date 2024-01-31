@@ -34,7 +34,6 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/asx.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>

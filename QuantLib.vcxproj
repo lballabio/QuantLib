@@ -649,7 +649,6 @@
     <ClInclude Include="ql\experimental\credit\recursivelossmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\riskyassetswap.hpp" />
     <ClInclude Include="ql\experimental\credit\riskyassetswapoption.hpp" />
-    <ClInclude Include="ql\experimental\credit\riskybond.hpp" />
     <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spotlosslatentmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spreadedhazardratecurve.hpp" />
@@ -1011,6 +1010,7 @@
     <ClInclude Include="ql\math\distributions\poissondistribution.hpp" />
     <ClInclude Include="ql\math\distributions\studenttdistribution.hpp" />
     <ClInclude Include="ql\math\errorfunction.hpp" />
+    <ClInclude Include="ql\math\expm1.hpp" />
     <ClInclude Include="ql\math\factorial.hpp" />
     <ClInclude Include="ql\math\fastfouriertransform.hpp" />
     <ClInclude Include="ql\math\functional.hpp" />
@@ -1019,6 +1019,7 @@
     <ClInclude Include="ql\math\integrals\all.hpp" />
     <ClInclude Include="ql\math\integrals\discreteintegrals.hpp" />
     <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp" />
+    <ClInclude Include="ql\math\integrals\expsinhintegral.hpp" />
     <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
@@ -1107,6 +1108,7 @@
     <ClInclude Include="ql\math\quadratic.hpp" />
     <ClInclude Include="ql\math\randomnumbers\all.hpp" />
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\burley2020sobolrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\faurersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\haltonrsg.hpp" />
@@ -2259,6 +2261,7 @@
     <ClCompile Include="ql\math\distributions\normaldistribution.cpp" />
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp" />
     <ClCompile Include="ql\math\errorfunction.cpp" />
+    <ClCompile Include="ql\math\expm1.cpp" />
     <ClCompile Include="ql\math\factorial.cpp" />
     <ClCompile Include="ql\math\incompletegamma.cpp" />
     <ClCompile Include="ql\math\integrals\discreteintegrals.cpp" />
@@ -2308,6 +2311,7 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\primenumbers.cpp" />
     <ClCompile Include="ql\math\quadratic.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\burley2020sobolrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\faurersg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\haltonrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\knuthuniformrng.cpp" />

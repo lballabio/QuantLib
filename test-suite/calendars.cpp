@@ -9,7 +9,7 @@
  Copyright (C) 2020 Piotr Siejda
  Copyright (C) 2020 Leonardo Arcari
  Copyright (C) 2020 Kline s.r.l.
- Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2022, 2024 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2023 Jonghee Lee
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,6 +38,7 @@
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/mexico.hpp>
 #include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/southkorea.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -49,9 +50,9 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-BOOST_FIXTURE_TEST_SUITE(QuantLibTest, TopLevelFixture)
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(CalendarTest)
+BOOST_AUTO_TEST_SUITE(CalendarTests)
 
 BOOST_AUTO_TEST_CASE(testModifiedCalendars) {
 
@@ -374,17 +375,46 @@ BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
 }
 
 BOOST_AUTO_TEST_CASE(testSOFR) {
-    BOOST_TEST_MESSAGE("Testing extra non-fixing day for SOFR...");
+    BOOST_TEST_MESSAGE("Testing holidays for SOFR...");
 
-    auto fedCalendar = UnitedStates(UnitedStates::GovernmentBond);
-    auto testDate = Date(7, April, 2023); // Good Friday 2023 was only a half close but SOFR didn't fix
+    // Good Friday
+    for (const Date goodFriday :
+         {Date(14, April, 2017), Date(30, March, 2018), Date(19, April, 2019),
+          Date(10, April, 2020), Date(2, April, 2021), Date(15, April, 2022), Date(7, April, 2023),
+          Date(29, March, 2024), Date(18, April, 2025), Date(3, April, 2026), Date(26, March, 2027),
+          Date(14, April, 2028), Date(30, March, 2029), Date(19, April, 2030),
+          Date(11, April, 2031)})
+        BOOST_TEST(UnitedStates(UnitedStates::SOFR).isHoliday(goodFriday));
+}
 
-    if (fedCalendar.isHoliday(testDate))
-        BOOST_ERROR(testDate << " should not be a holiday for " << fedCalendar.name());
+BOOST_AUTO_TEST_CASE(testUSFederalReserveJuneteenth) {
+    BOOST_TEST_MESSAGE("Testing holiday occurrence of Juneteenth for US Federal Reserve calendar...");
 
-    auto sofr = Sofr();
-    if (sofr.isValidFixingDate(testDate))
-        BOOST_ERROR(testDate << " should not be a fixing date for " << sofr.name());
+    auto fedCalendar = UnitedStates(UnitedStates::FederalReserve);
+
+    std::vector<Date> expectedHol;
+    // Sunday, moved to Monday 20th: expectedHol.emplace_back(19, June, 2022);
+    expectedHol.emplace_back(20, June, 2022);
+    expectedHol.emplace_back(19, June, 2023);
+    expectedHol.emplace_back(19, June, 2024);
+    expectedHol.emplace_back(19, June, 2025);
+    // Saturday: expectedHol.emplace_back(19, June, 2026);
+    expectedHol.emplace_back(19, June, 2027);
+    expectedHol.emplace_back(19, June, 2028);
+    expectedHol.emplace_back(19, June, 2029);
+    expectedHol.emplace_back(19, June, 2030);
+    expectedHol.emplace_back(19, June, 2031);
+    // Saturday: expectedHol.emplace_back(19, June, 2032);
+    // Sunday, moved to Monday 20th: expectedHol.emplace_back(19, June, 2033);
+    expectedHol.emplace_back(20, June, 2033);
+    for (Date holiday : expectedHol) {
+        if (!fedCalendar.isHoliday(holiday))
+            BOOST_ERROR(holiday << " should be a holiday for " << fedCalendar.name());
+    }
+
+    Date notMovedToFriday(18, June, 2027);
+    if (fedCalendar.isHoliday(notMovedToFriday))
+        BOOST_ERROR(notMovedToFriday << " should not be a holiday for " << fedCalendar.name());
 }
 
 BOOST_AUTO_TEST_CASE(testTARGET) {
@@ -3147,8 +3177,30 @@ BOOST_AUTO_TEST_CASE(testChinaSSE) {
     expectedHol.emplace_back(5, October, 2023);
     expectedHol.emplace_back(6, October, 2023);
 
+    // China Shanghai Securities Exchange holiday list in the year 2024
+    expectedHol.emplace_back(1, Jan, 2024);
+    expectedHol.emplace_back(9, Feb, 2024);
+    expectedHol.emplace_back(12, Feb, 2024);
+    expectedHol.emplace_back(13, Feb, 2024);
+    expectedHol.emplace_back(14, Feb, 2024);
+    expectedHol.emplace_back(15, Feb, 2024);
+    expectedHol.emplace_back(16, Feb, 2024);
+    expectedHol.emplace_back(4, April, 2024);
+    expectedHol.emplace_back(5, April, 2024);
+    expectedHol.emplace_back(1, May, 2024);
+    expectedHol.emplace_back(2, May, 2024);
+    expectedHol.emplace_back(3, May, 2024);
+    expectedHol.emplace_back(10, Jun, 2024);
+    expectedHol.emplace_back(16, Sep, 2024);
+    expectedHol.emplace_back(17, Sep, 2024);
+    expectedHol.emplace_back(1, Oct, 2024);
+    expectedHol.emplace_back(2, Oct, 2024);
+    expectedHol.emplace_back(3, Oct, 2024);
+    expectedHol.emplace_back(4, Oct, 2024);
+    expectedHol.emplace_back(7, Oct, 2024);
+
     Calendar c = China(China::SSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2023));
+    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2024));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -3246,9 +3298,19 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
     expectedWorkingWeekEnds.emplace_back(7, October, 2023);
     expectedWorkingWeekEnds.emplace_back(8, October, 2023);
 
+    // China Inter Bank working weekends list in the year 2024
+    expectedWorkingWeekEnds.emplace_back(4, Feb, 2024);
+    expectedWorkingWeekEnds.emplace_back(18, Feb, 2024);
+    expectedWorkingWeekEnds.emplace_back(7, April, 2024);
+    expectedWorkingWeekEnds.emplace_back(28, April, 2024);
+    expectedWorkingWeekEnds.emplace_back(11, May, 2024);
+    expectedWorkingWeekEnds.emplace_back(14, Sep, 2024);
+    expectedWorkingWeekEnds.emplace_back(29, Sep, 2024);
+    expectedWorkingWeekEnds.emplace_back(12, October, 2024);
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2023);
+    Date end(31, Dec, 2024);
 
     Size k = 0;
 
@@ -3268,6 +3330,45 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
                                  << " expected working weekends, while there are " << k
                                  << " calculated working weekends");
 }
+
+BOOST_AUTO_TEST_CASE(testMexicoInaugurationDay) {
+    BOOST_TEST_MESSAGE("Testing Mexican Inauguration Day holiday...");
+
+    // The first five Inauguration Days 2024 and later
+    std::vector<Date> expectedHol;
+    expectedHol.emplace_back(1, Oct, 2024);
+    expectedHol.emplace_back(1, Oct, 2030);
+    expectedHol.emplace_back(1, Oct, 2036);
+    expectedHol.emplace_back(1, Oct, 2042);
+    expectedHol.emplace_back(1, Oct, 2048);
+
+    // Some years of non-Inaugurations
+    std::vector<Date> expectedWorkingDays;
+    expectedWorkingDays.emplace_back(1, Oct, 2018);
+    expectedWorkingDays.emplace_back(1, Oct, 2025);
+    expectedWorkingDays.emplace_back(1, Oct, 2026);
+    expectedWorkingDays.emplace_back(1, Oct, 2027);
+    // 2028 falls on a weekend
+    expectedWorkingDays.emplace_back(1, Oct, 2029);
+    expectedWorkingDays.emplace_back(1, Oct, 2031);
+    expectedWorkingDays.emplace_back(1, Oct, 2032);
+    // 2033 and 2034 fall on weekends
+    expectedWorkingDays.emplace_back(1, Oct, 2035);
+
+    Calendar mexico = Mexico();
+    for (auto holiday : expectedHol) {
+        if (!mexico.isHoliday(holiday)) {
+            BOOST_FAIL("Expected to have an Inauguration Day holiday in the Mexican calendar for date " << holiday);
+        }
+    }
+    for (auto workingDay : expectedWorkingDays) {
+        if (!mexico.isBusinessDay(workingDay)) {
+            BOOST_FAIL("Did not expect to have a holiday in the Mexican calendar for date "
+                       << workingDay);
+        }
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(testEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");

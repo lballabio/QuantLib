@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "transformedgrid.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/transformedgrid.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -26,12 +26,16 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(TransformedGridTests)
+
 class PlusOne {
 public:
     Real operator()(Real x) const { return x+1;};
 };
 
-void TransformedGridTest::testConstruction() {
+BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing transformed grid construction...");
 
@@ -46,9 +50,6 @@ void TransformedGridTest::testConstruction() {
         BOOST_ERROR("grid transformation failed");
 }
 
-test_suite* TransformedGridTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("transformed grid");
-    suite->add(QUANTLIB_TEST_CASE(&TransformedGridTest::testConstruction));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

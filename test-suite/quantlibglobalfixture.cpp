@@ -144,13 +144,17 @@ SpeedLevel QuantLibGlobalFixture::get_speed() {
     return speed;
 }
 
-SpeedLevel QuantLibGlobalFixture::speed_level(int argc, char** argv) {
+SpeedLevel QuantLibGlobalFixture::speed = Slow;
+
+BOOST_TEST_GLOBAL_FIXTURE(QuantLibGlobalFixture);
+
+SpeedLevel speed_level(int argc, char** argv) {
     /*! Again, dead simple parser:
-        - passing --slow causes all tests to be run;
-        - passing --fast causes most tests to be run, except the slowest;
-        - passing --faster causes only the faster tests to be run;
-        - passing nothing is the same as --slow
-    */
+    - passing --slow causes all tests to be run;
+    - passing --fast causes most tests to be run, except the slowest;
+    - passing --faster causes only the faster tests to be run;
+    - passing nothing is the same as --slow
+*/
 
     for (int i=1; i<argc; ++i) {
         std::string arg = argv[i];
@@ -163,7 +167,3 @@ SpeedLevel QuantLibGlobalFixture::speed_level(int argc, char** argv) {
     }
     return Slow;
 }
-
-SpeedLevel QuantLibGlobalFixture::speed = Slow;
-
-BOOST_TEST_GLOBAL_FIXTURE(QuantLibGlobalFixture);
