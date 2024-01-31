@@ -75,79 +75,6 @@ namespace QuantLib {
             return dayCounter.yearFraction(dates.earliestDate_, dates.maturityDate_,
                                            dates.earliestDate_, dates.maturityDate_);
         }
-
-        FuturesRateHelperDates InitializeDates(const Date& iborStartDate,
-                                               const Natural lengthInMonths,
-                                               const Calendar& calendar,
-                                               const BusinessDayConvention convention,
-                                               const bool endOfMonth,
-                                               const DayCounter& dayCounter,
-                                               const Futures::Type type) {
-            CheckDate(iborStartDate, type);
-            FuturesRateHelperDates dates;
-            dates.earliestDate_ = iborStartDate;
-            dates.maturityDate_ =
-                calendar.advance(iborStartDate, lengthInMonths * Months, convention, endOfMonth);
-            dates.yearFraction_ = DetermineYearFraction(dates, dayCounter);
-            dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
-            return dates;
-        }
-
-        FuturesRateHelperDates InitializeDates(const Date& iborStartDate,
-                                               const Date& iborEndDate,
-                                               const DayCounter& dayCounter,
-                                               Futures::Type type) {
-            CheckDate(iborStartDate, type);
-
-            const auto determineMaturityDate =
-                [&iborStartDate, &iborEndDate](const auto nextDateCalculator) -> Date {
-                Date maturityDate;
-                if (iborEndDate == Date()) {
-                    // advance 3 months
-                    maturityDate = nextDateCalculator(iborStartDate);
-                    maturityDate = nextDateCalculator(maturityDate);
-                    maturityDate = nextDateCalculator(maturityDate);
-                } else {
-                    QL_REQUIRE(iborEndDate > iborStartDate,
-                               "end date (" << iborEndDate << ") must be greater than start date ("
-                                            << iborStartDate << ')');
-                    maturityDate = iborEndDate;
-                }
-                return maturityDate;
-            };
-
-            FuturesRateHelperDates dates;
-            switch (type) {
-                case Futures::IMM:
-                    dates.maturityDate_ = determineMaturityDate(
-                        [](const Date date) -> Date { return IMM::nextDate(date, false); });
-                    break;
-                case Futures::ASX:
-                    dates.maturityDate_ = determineMaturityDate(
-                        [](const Date date) -> Date { return ASX::nextDate(date, false); });
-                    break;
-                default:
-                    QL_FAIL("unknown futures type (" << Integer(type) << ')');
-            }
-            dates.earliestDate_ = iborStartDate;
-            dates.yearFraction_ = DetermineYearFraction(dates, dayCounter);
-            dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
-            return dates;
-        }
-
-        FuturesRateHelperDates InitializeDates(const Date& iborStartDate,
-                                               const ext::shared_ptr<IborIndex>& i,
-                                               const Futures::Type type) {
-            CheckDate(iborStartDate, type);
-            FuturesRateHelperDates dates;
-            dates.earliestDate_ = iborStartDate;
-            const Calendar& cal = i->fixingCalendar();
-            dates.maturityDate_ =
-                cal.advance(iborStartDate, i->tenor(), i->businessDayConvention());
-            dates.yearFraction_ = DetermineYearFraction(dates, i->dayCounter());
-            dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
-            return dates;
-        }
     } // namespace
 
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
@@ -160,8 +87,14 @@ namespace QuantLib {
                                          Handle<Quote> convAdj,
                                          Futures::Type type)
     : RateHelper(price), convAdj_(std::move(convAdj)) {
-        const FuturesRateHelperDates dates = InitializeDates(
-            iborStartDate, lengthInMonths, calendar, convention, endOfMonth, dayCounter, type);
+        CheckDate(iborStartDate, type);
+        FuturesRateHelperDates dates;
+        dates.earliestDate_ = iborStartDate;
+        dates.maturityDate_ =
+            calendar.advance(iborStartDate, lengthInMonths * Months, convention, endOfMonth);
+        dates.yearFraction_ = DetermineYearFraction(dates, dayCounter);
+        dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
+
         APPLY_DATES(dates);
         registerWith(convAdj_);
     }
@@ -187,8 +120,42 @@ namespace QuantLib {
                                          Handle<Quote> convAdj,
                                          Futures::Type type)
     : RateHelper(price), convAdj_(std::move(convAdj)) {
-        const FuturesRateHelperDates dates =
-            InitializeDates(iborStartDate, iborEndDate, dayCounter, type);
+        CheckDate(iborStartDate, type);
+
+        const auto determineMaturityDate =
+            [&iborStartDate, &iborEndDate](const auto nextDateCalculator) -> Date {
+                Date maturityDate;
+                if (iborEndDate == Date()) {
+                    // advance 3 months
+                    maturityDate = nextDateCalculator(iborStartDate);
+                    maturityDate = nextDateCalculator(maturityDate);
+                    maturityDate = nextDateCalculator(maturityDate);
+                } else {
+                    QL_REQUIRE(iborEndDate > iborStartDate,
+                               "end date (" << iborEndDate << ") must be greater than start date ("
+                                            << iborStartDate << ')');
+                    maturityDate = iborEndDate;
+                }
+                return maturityDate;
+            };
+
+        FuturesRateHelperDates dates;
+        switch (type) {
+          case Futures::IMM:
+            dates.maturityDate_ = determineMaturityDate(
+                [](const Date date) -> Date { return IMM::nextDate(date, false); });
+            break;
+          case Futures::ASX:
+            dates.maturityDate_ = determineMaturityDate(
+                [](const Date date) -> Date { return ASX::nextDate(date, false); });
+            break;
+          default:
+            QL_FAIL("unknown futures type (" << Integer(type) << ')');
+        }
+        dates.earliestDate_ = iborStartDate;
+        dates.yearFraction_ = DetermineYearFraction(dates, dayCounter);
+        dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
+
         APPLY_DATES(dates);
         registerWith(convAdj_);
     }
@@ -209,7 +176,14 @@ namespace QuantLib {
                                          const Handle<Quote>& convAdj,
                                          Futures::Type type)
     : RateHelper(price), convAdj_(convAdj) {
-        const FuturesRateHelperDates dates = InitializeDates(iborStartDate, index, type);
+        CheckDate(iborStartDate, type);
+        FuturesRateHelperDates dates;
+        dates.earliestDate_ = iborStartDate;
+        const Calendar& cal = index->fixingCalendar();
+        dates.maturityDate_ =
+            cal.advance(iborStartDate, index->tenor(), index->businessDayConvention());
+        dates.yearFraction_ = DetermineYearFraction(dates, index->dayCounter());
+        dates.pillarDate_ = dates.latestDate_ = dates.latestRelevantDate_ = dates.maturityDate_;
         APPLY_DATES(dates);
         registerWith(convAdj);
     }
