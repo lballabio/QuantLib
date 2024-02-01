@@ -74,6 +74,12 @@ namespace QuantLib {
     //! Fixed-coupon bond helper for curve bootstrap
     class FixedRateBondHelper : public BondHelper {
       public:
+        // needed to avoid warning about deprecated data member;
+        // it can be removed once the latter is gone.
+        QL_DEPRECATED_DISABLE_WARNING
+        ~FixedRateBondHelper() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         FixedRateBondHelper(const Handle<Quote>& price,
                             Natural settlementDays,
                             Real faceAmount,
@@ -90,15 +96,25 @@ namespace QuantLib {
                             bool exCouponEndOfMonth = false,
                             Bond::Price::Type priceType = Bond::Price::Clean);
 
-        //! \name Additional inspectors
-        //@{
-        ext::shared_ptr<FixedRateBond> fixedRateBond() const;
-        //@}
+        /*! \deprecated Do not use; this method is broken and will be removed.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Do not use; this method is broken and will be removed.")]]
+        ext::shared_ptr<FixedRateBond> fixedRateBond() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return fixedRateBond_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
+
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
+        /*! \deprecated Do not use; this pointer is always null.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Do not use; this pointer is always null.")]]
         ext::shared_ptr<FixedRateBond> fixedRateBond_;
     };
 
@@ -106,6 +122,12 @@ namespace QuantLib {
     //! CPI bond helper for curve bootstrap
     class CPIBondHelper : public BondHelper {
       public:
+        // needed to avoid warning about deprecated data member;
+        // it can be removed once the latter is gone.
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPIBondHelper() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         CPIBondHelper(const Handle<Quote>& price,
                       Natural settlementDays,
                       Real faceAmount,
@@ -126,15 +148,25 @@ namespace QuantLib {
                       bool exCouponEndOfMonth = false,
                       Bond::Price::Type priceType = Bond::Price::Clean);
 
-        //! \name Additional inspectors
-        //@{
-        ext::shared_ptr<CPIBond> cpiBond() const;
-        //@}
+        /*! \deprecated Do not use; this method is broken and will be removed.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Do not use; this method is broken and will be removed.")]]
+        ext::shared_ptr<CPIBond> cpiBond() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return cpiBond_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
+
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
+        /*! \deprecated Do not use; this pointer is always null.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Do not use; this pointer is always null.")]]
         ext::shared_ptr<CPIBond> cpiBond_;
     };
 
@@ -149,15 +181,6 @@ namespace QuantLib {
         return priceType_;
     }
 
-    inline ext::shared_ptr<FixedRateBond>
-    FixedRateBondHelper::fixedRateBond() const {
-        return fixedRateBond_;
-    }
-
-    inline ext::shared_ptr<CPIBond>
-    CPIBondHelper::cpiBond() const {
-        return cpiBond_;
-    }
 
 }
 
