@@ -100,7 +100,11 @@ namespace QuantLib {
                         Deprecated in version 1.34.
         */
         [[deprecated("Do not use; this method is broken and will be removed.")]]
-        ext::shared_ptr<FixedRateBond> fixedRateBond() const { return fixedRateBond_; }
+        ext::shared_ptr<FixedRateBond> fixedRateBond() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return fixedRateBond_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
 
         //! \name Visitability
         //@{
@@ -148,7 +152,11 @@ namespace QuantLib {
                         Deprecated in version 1.34.
         */
         [[deprecated("Do not use; this method is broken and will be removed.")]]
-        ext::shared_ptr<CPIBond> cpiBond() const;
+        ext::shared_ptr<CPIBond> cpiBond() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return cpiBond_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
 
         //! \name Visitability
         //@{
