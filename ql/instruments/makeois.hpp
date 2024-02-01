@@ -63,10 +63,19 @@ namespace QuantLib {
         MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
         MakeOIS& withPaymentLag(Integer lag);
         MakeOIS& withPaymentCalendar(const Calendar& cal);
+        MakeOIS& withCalendar(const Calendar& cal);
         MakeOIS& withFixedLegCalendar(const Calendar& cal);
         MakeOIS& withOvernightLegCalendar(const Calendar& cal);
 
+        MakeOIS& withConvention(BusinessDayConvention bdc);
+        MakeOIS& withFixedLegConvention(BusinessDayConvention bdc);
+        MakeOIS& withOvernightLegConvention(BusinessDayConvention bdc);
+        MakeOIS& withTerminationDateConvention(BusinessDayConvention bdc);
+        MakeOIS& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeOIS& withOvernightLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withEndOfMonth(bool flag = true);
+        MakeOIS& withFixedLegEndOfMonth(bool flag = true);
+        MakeOIS& withOvernightLegEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
 
@@ -97,9 +106,13 @@ namespace QuantLib {
         BusinessDayConvention paymentAdjustment_ = Following;
         Integer paymentLag_ = 0;
 
+        BusinessDayConvention fixedConvention_ = ModifiedFollowing,
+                              fixedTerminationDateConvention_ = ModifiedFollowing,
+                              overnightConvention_ = ModifiedFollowing,
+                              overnightTerminationDateConvention_ = ModifiedFollowing;
         DateGeneration::Rule fixedRule_ = DateGeneration::Backward;
         DateGeneration::Rule overnightRule_ = DateGeneration::Backward;
-        bool endOfMonth_ = false, isDefaultEOM_ = true;
+        bool fixedEndOfMonth_ = false, overnightEndOfMonth_ = false, isDefaultEOM_ = true;
 
         Swap::Type type_ = Swap::Payer;
         Real nominal_ = 1.0;
