@@ -94,15 +94,12 @@ namespace QuantLib {
                                     bool exCouponEndOfMonth,
                                     const Bond::Price::Type priceType)
     : BondHelper(price,
-                 ext::shared_ptr<Bond>(
-                     new FixedRateBond(settlementDays, faceAmount, schedule,
-                                       coupons, dayCounter, paymentConvention,
-                                       redemption, issueDate, paymentCalendar,
-                                       exCouponPeriod, exCouponCalendar,
-                                       exCouponConvention, exCouponEndOfMonth)),
-                 priceType) {
-        fixedRateBond_ = ext::dynamic_pointer_cast<FixedRateBond>(bond_);
-    }
+                 ext::make_shared<FixedRateBond>(settlementDays, faceAmount, schedule,
+                                                 coupons, dayCounter, paymentConvention,
+                                                 redemption, issueDate, paymentCalendar,
+                                                 exCouponPeriod, exCouponCalendar,
+                                                 exCouponConvention, exCouponEndOfMonth),
+                 priceType) {}
 
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<FixedRateBondHelper>*>(&v);
@@ -133,15 +130,12 @@ namespace QuantLib {
                             bool exCouponEndOfMonth,
                             const Bond::Price::Type priceType)
     : BondHelper(price,
-                 ext::shared_ptr<Bond>(
-                     new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI,
-                                       observationLag, cpiIndex, observationInterpolation,
-                                       schedule, fixedRate, accrualDayCounter, paymentConvention,
-                                       issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
-                                       exCouponConvention, exCouponEndOfMonth)),
-                 priceType) {
-        cpiBond_ = ext::dynamic_pointer_cast<CPIBond>(bond_);
-    }
+                 ext::make_shared<CPIBond>(settlementDays, faceAmount, growthOnly, baseCPI,
+                                           observationLag, cpiIndex, observationInterpolation,
+                                           schedule, fixedRate, accrualDayCounter, paymentConvention,
+                                           issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
+                                           exCouponConvention, exCouponEndOfMonth),
+                 priceType) {}
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CPIBondHelper>*>(&v);
