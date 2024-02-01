@@ -77,6 +77,9 @@ namespace QuantLib {
             BootstrapHelper<YieldTermStructure>::accept(v);
     }
 
+
+    QL_DEPRECATED_DISABLE_WARNING
+
     FixedRateBondHelper::FixedRateBondHelper(
                                     const Handle<Quote>& price,
                                     Natural settlementDays,
@@ -101,6 +104,8 @@ namespace QuantLib {
                                                  exCouponConvention, exCouponEndOfMonth),
                  priceType) {}
 
+    QL_DEPRECATED_ENABLE_WARNING
+
     void FixedRateBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<FixedRateBondHelper>*>(&v);
         if (v1 != nullptr)
@@ -108,6 +113,9 @@ namespace QuantLib {
         else
             BondHelper::accept(v);
     }
+
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     CPIBondHelper::CPIBondHelper(
                             const Handle<Quote>& price,
@@ -136,6 +144,8 @@ namespace QuantLib {
                                            issueDate, paymentCalendar, exCouponPeriod, exCouponCalendar,
                                            exCouponConvention, exCouponEndOfMonth),
                  priceType) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     void CPIBondHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CPIBondHelper>*>(&v);
