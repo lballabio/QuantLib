@@ -68,13 +68,13 @@ namespace QuantLib {
             const Size n=maxEvaluations()-1;
             const Real d=(b-a)/n;
             
-            Real sum = f(a)/2;
+            Real sum = f(a)*0.5;
             
             for(Size i=0;i<n-1;++i) {
                 a += d;
                 sum += f(a);
             }
-            sum += f(b)/2;
+            sum += f(b)*0.5;
             
             increaseNumberOfEvaluations(maxEvaluations());
             
