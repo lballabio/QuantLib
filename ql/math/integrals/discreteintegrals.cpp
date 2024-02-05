@@ -18,10 +18,6 @@
 */
 
 #include <ql/math/integrals/discreteintegrals.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-
-using namespace boost::accumulators;
 
 namespace QuantLib {
 
@@ -31,13 +27,13 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        accumulator_set<Real, features<tag::sum> > acc;
+        Real sum = 0.0;
 
         for (Size i=0; i < n-1; ++i) {
-            acc((x[i+1]-x[i])*(f[i]+f[i+1]));
+            sum += (x[i+1]-x[i])*(f[i]+f[i+1]);
         }
 
-        return 0.5*sum(acc);
+        return 0.5*sum;
     }
 
     Real DiscreteSimpsonIntegral::operator()(
@@ -46,45 +42,72 @@ namespace QuantLib {
         const Size n = f.size();
         QL_REQUIRE(n == x.size(), "inconsistent size");
 
-        accumulator_set<Real, features<tag::sum> > acc;
+        Real sum = 0.0;
 
         for (Size j=0; j < n-2; j+=2) {
             const Real dxj   = x[j+1]-x[j];
             const Real dxjp1 = x[j+2]-x[j+1];
 
-            const Real alpha = -dxjp1*(2*x[j]-3*x[j+1]+x[j+2]);
-            const Real dd = x[j+2]-x[j];
+            const Real alpha = dxjp1*(2*dxj-dxjp1);
+            const Real dd = dxj+dxjp1;
             const Real k = dd/(6*dxjp1*dxj);
             const Real beta = dd*dd;
-            const Real gamma = dxj*(x[j]-3*x[j+1]+2*x[j+2]);
+            const Real gamma = dxj*(2*dxjp1-dxj);
 
-            acc(k*alpha*f[j]+k*beta*f[j+1]+k*gamma*f[j+2]);
+            sum += k*(alpha*f[j]+beta*f[j+1]+gamma*f[j+2]);
         }
         if ((n & 1) == 0U) {
-            acc(0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]));
+            sum += 0.5*(x[n-1]-x[n-2])*(f[n-1]+f[n-2]);
         }
 
-        return sum(acc);
+        return sum;
     }
-
 
     Real DiscreteTrapezoidIntegrator::integrate(
         const ext::function<Real (Real)>& f, Real a, Real b) const {
-            const Array x(maxEvaluations(), a, (b-a)/(maxEvaluations()-1));
-            Array fv(x.size());
-            std::transform(x.begin(), x.end(), fv.begin(), f);
-
+            const Size n=maxEvaluations()-1;
+            const Real d=(b-a)/n;
+            
+            Real sum = f(a)*0.5;
+            
+            for(Size i=0;i<n-1;++i) {
+                a += d;
+                sum += f(a);
+            }
+            sum += f(b)*0.5;
+            
             increaseNumberOfEvaluations(maxEvaluations());
-            return DiscreteTrapezoidIntegral()(x, fv);
+            
+            return d * sum;
     }
 
     Real DiscreteSimpsonIntegrator::integrate(
         const ext::function<Real (Real)>& f, Real a, Real b) const {
-            const Array x(maxEvaluations(), a, (b-a)/(maxEvaluations()-1));
-            Array fv(x.size());
-            std::transform(x.begin(), x.end(), fv.begin(), f);
+            const Size n=maxEvaluations()-1;
+            const Real d=(b-a)/n, d2=d*2;
+            
+            Real sum = 0.0, x = a + d;
+            for(Size i=1;i<n;i+=2) {//to time 4
+                sum += f(x);
+                x += d2;
+            }
+            sum *= 2;
 
+            x = a+d2;
+            for(Size i=2;i<n-1;i+=2) {//to time 2
+                sum += f(x);
+                x += d2;
+            }
+            sum *= 2;
+
+            sum += f(a);
+            if(n&1)
+                sum += 1.5*f(b)+2.5*f(b-d);
+            else
+                sum += f(b);
+            
             increaseNumberOfEvaluations(maxEvaluations());
-            return DiscreteSimpsonIntegral()(x, fv);
+            
+            return d/3 * sum;
     }
 }
