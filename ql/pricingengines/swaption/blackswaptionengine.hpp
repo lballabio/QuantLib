@@ -241,7 +241,9 @@ namespace QuantLib {
         // using the discounting curve
         // swap.iborIndex() might be using a different forwarding curve
         auto engine = ext::make_shared<DiscountingSwapEngine>(discountCurve_, false);
+        ObservableSettings::instance().disableUpdates();
         swap->setPricingEngine(engine);
+        ObservableSettings::instance().enableUpdates();
         Date valuation_date = results_.valuationDate  = swap->valuationDate();
         Rate atmForward = swap->fairRate();
 
