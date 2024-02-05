@@ -17,7 +17,7 @@ jobs:
         cmake --preset linux-ci-build-with-clang-tidy
         cd build/linux-ci-build-with-clang-tidy
         cmake --build . -j1
-    - uses: peter-evans/create-pull-request@v5
+    - uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: clang-tidy-fixes-${{ github.ref_name }}
