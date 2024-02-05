@@ -70,7 +70,7 @@ namespace QuantLib {
         ext::shared_ptr<SwapIndex> swapIndex_;
         Settlement::Type delivery_;
         Settlement::Method settlementMethod_;
-        mutable ext::shared_ptr<VanillaSwap> underlyingSwap_;
+        mutable ext::shared_ptr<FixedVsFloatingSwap> underlyingSwap_;
 
         Period optionTenor_;
         BusinessDayConvention optionConvention_;

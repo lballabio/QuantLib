@@ -21,6 +21,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/exercise.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -72,13 +73,13 @@ namespace QuantLib {
         }
 
         Rate usedStrike = strike_;
+        ext::shared_ptr<OvernightIndexedSwapIndex> OIswap_index = ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIndex_);
         if (strike_ == Null<Rate>()) {
             // ATM on curve(s) attached to index
             QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
                        "null term structure set to this instance of " <<
                        swapIndex_->name());
-            ext::shared_ptr<VanillaSwap> temp =
-                swapIndex_->underlyingSwap(fixingDate_);
+            ext::shared_ptr<FixedVsFloatingSwap> temp = swapIndex_->underlyingSwap(fixingDate_);
             temp->setPricingEngine(
                 ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(
                     swapIndex_->exogenousDiscount()
@@ -89,21 +90,38 @@ namespace QuantLib {
         }
 
         BusinessDayConvention bdc = swapIndex_->fixedLegConvention();
-        underlyingSwap_ =
-            MakeVanillaSwap(swapIndex_->tenor(),
-                            swapIndex_->iborIndex(), usedStrike)
-            .withEffectiveDate(swapIndex_->valueDate(fixingDate_))
-            .withFixedLegCalendar(swapIndex_->fixingCalendar())
-            .withFixedLegDayCount(swapIndex_->dayCounter())
-            .withFixedLegTenor(swapIndex_->fixedLegTenor())
-            .withFixedLegConvention(bdc)
-            .withFixedLegTerminationDateConvention(bdc)
-            .withType(underlyingType_)
-            .withNominal(nominal_)
-            .withIndexedCoupons(useIndexedCoupons_);
-
-        ext::shared_ptr<Swaption> swaption(new Swaption(
-            underlyingSwap_, exercise_, delivery_, settlementMethod_));
+        if (OIswap_index) {
+            underlyingSwap_ =
+                (ext::shared_ptr<OvernightIndexedSwap>)(
+                    MakeOIS(swapIndex_->tenor(),
+                            OIswap_index->overnightIndex(), usedStrike)
+                    .withEffectiveDate(swapIndex_->valueDate(fixingDate_))
+                    .withPaymentCalendar(swapIndex_->fixingCalendar())
+                    .withFixedLegDayCount(swapIndex_->dayCounter())
+                    .withPaymentAdjustment(bdc)
+                    .withFixedLegConvention(bdc)
+                    .withFixedLegTerminationDateConvention(bdc)
+                    .withType(underlyingType_)
+                    .withNominal(nominal_)
+                    );
+        } else {
+            underlyingSwap_ =
+                (ext::shared_ptr<VanillaSwap>)(
+                    MakeVanillaSwap(swapIndex_->tenor(),
+                                    swapIndex_->iborIndex(), usedStrike)
+                    .withEffectiveDate(swapIndex_->valueDate(fixingDate_))
+                    .withFixedLegCalendar(swapIndex_->fixingCalendar())
+                    .withFixedLegDayCount(swapIndex_->dayCounter())
+                    .withFixedLegTenor(swapIndex_->fixedLegTenor())
+                    .withFixedLegConvention(bdc)
+                    .withFixedLegTerminationDateConvention(bdc)
+                    .withType(underlyingType_)
+                    .withNominal(nominal_)
+                    .withIndexedCoupons(useIndexedCoupons_)
+                    );
+        }
+        ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+            underlyingSwap_, exercise_, delivery_, settlementMethod_);
         swaption->setPricingEngine(engine_);
         return swaption;
     }
