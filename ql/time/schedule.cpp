@@ -202,13 +202,10 @@ namespace QuantLib {
 
             seed = terminationDate;
             if (nextToLastDate_ != Date()) {
-                dates_.insert(dates_.begin(), nextToLastDate_);
+                dates_.push_back(nextToLastDate_);
                 Date temp = nullCalendar.advance(seed,
                     -periods*(*tenor_), convention, *endOfMonth_);
-                if (temp!=nextToLastDate_)
-                    isRegular_.insert(isRegular_.begin(), false);
-                else
-                    isRegular_.insert(isRegular_.begin(), true);
+                isRegular_.push_back(temp == nextToLastDate_);
                 seed = nextToLastDate_;
             }
 
@@ -221,29 +218,31 @@ namespace QuantLib {
                     -periods*(*tenor_), convention, *endOfMonth_);
                 if (temp < exitDate) {
                     if (firstDate_ != Date() &&
-                        (calendar_.adjust(dates_.front(),convention)!=
+                        (calendar_.adjust(dates_.back(),convention)!=
                          calendar_.adjust(firstDate_,convention))) {
-                        dates_.insert(dates_.begin(), firstDate_);
-                        isRegular_.insert(isRegular_.begin(), false);
+                        dates_.push_back(firstDate_);
+                        isRegular_.push_back(false);
                     }
                     break;
                 } else {
                     // skip dates that would result in duplicates
                     // after adjustment
-                    if (calendar_.adjust(dates_.front(),convention)!=
+                    if (calendar_.adjust(dates_.back(),convention)!=
                         calendar_.adjust(temp,convention)) {
-                        dates_.insert(dates_.begin(), temp);
-                        isRegular_.insert(isRegular_.begin(), true);
+                        dates_.push_back(temp);
+                        isRegular_.push_back(true);
                     }
                     ++periods;
                 }
             }
 
-            if (calendar_.adjust(dates_.front(),convention)!=
+            if (calendar_.adjust(dates_.back(),convention)!=
                 calendar_.adjust(effectiveDate,convention)) {
-                dates_.insert(dates_.begin(), effectiveDate);
-                isRegular_.insert(isRegular_.begin(), false);
+                dates_.push_back(effectiveDate);
+                isRegular_.push_back(false);
             }
+	    std::reverse(dates_.begin(), dates_.end());
+	    std::reverse(isRegular_.begin(), isRegular_.end());
             break;
 
           case DateGeneration::Twentieth:
