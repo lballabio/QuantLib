@@ -84,8 +84,34 @@ namespace QuantLib {
         return spanningTimeIndexMaturity_;
     }
 
-    Rate IborCoupon::indexFixing() const {
+    bool IborCoupon::hasFixed(Date refDate) const {
+        if (refDate == Date()) {
+            refDate = QuantLib::Settings::instance().evaluationDate();
+        }
 
+        if (fixingDate_ > refDate) {
+            return false;
+        } else if (fixingDate_ < refDate) {
+            return true;
+        } else {
+            // fixingDate_ == refDate
+            if (refDate == QuantLib::Settings::instance().evaluationDate()) {
+                if (QuantLib::Settings::instance().enforcesTodaysHistoricFixings()) {
+                    return true;
+                } else {
+                    try {
+                        return index_->pastFixing(fixingDate_) != Null<Real>();
+                    } catch (const Error&) {
+                        return false; // fall through and forecast
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+
+    Rate IborCoupon::indexFixing() const {
         initializeCachedData();
 
         /* instead of just returning index_->fixing(fixingValueDate_)
@@ -94,34 +120,18 @@ namespace QuantLib {
            1) allows to save date/time recalculations, and
            2) takes into account par coupon needs
         */
-        Date today = QuantLib::Settings::instance().evaluationDate();
 
-        if (fixingDate_>today)
-            return iborIndex_->forecastFixing(fixingValueDate_,
-                                              fixingEndDate_,
-                                              spanningTime_);
-
-        if (fixingDate_<today ||
-            QuantLib::Settings::instance().enforcesTodaysHistoricFixings()) {
+        if (hasFixed()) {
             // do not catch exceptions
             Rate result = index_->pastFixing(fixingDate_);
             QL_REQUIRE(result != Null<Real>(),
                        "Missing " << index_->name() << " fixing for " << fixingDate_);
             return result;
+        } else {
+            return iborIndex_->forecastFixing(fixingValueDate_,
+                                              fixingEndDate_,
+                                              spanningTime_);
         }
-
-        try {
-            Rate result = index_->pastFixing(fixingDate_);
-            if (result!=Null<Real>())
-                return result;
-            else
-                ;   // fall through and forecast
-        } catch (Error&) {
-                ;   // fall through and forecast
-        }
-        return iborIndex_->forecastFixing(fixingValueDate_,
-                                          fixingEndDate_,
-                                          spanningTime_);
     }
 
     void IborCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
