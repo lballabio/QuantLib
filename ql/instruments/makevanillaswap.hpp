@@ -54,6 +54,7 @@ namespace QuantLib {
         MakeVanillaSwap& withEffectiveDate(const Date&);
         MakeVanillaSwap& withTerminationDate(const Date&);
         MakeVanillaSwap& withRule(DateGeneration::Rule r);
+        MakeVanillaSwap& withPaymentConvention(BusinessDayConvention bdc);
 
         MakeVanillaSwap& withFixedLegTenor(const Period& t);
         MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
@@ -108,6 +109,7 @@ namespace QuantLib {
         Spread floatSpread_ = 0.0;
         DayCounter fixedDayCount_, floatDayCount_;
         ext::optional<bool> useIndexedCoupons_;
+        ext::optional<BusinessDayConvention> paymentConvention_;
 
         ext::shared_ptr<PricingEngine> engine_;
     };
