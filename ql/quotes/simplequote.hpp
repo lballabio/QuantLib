@@ -32,6 +32,7 @@ namespace QuantLib {
     //! market element returning a stored value
     class SimpleQuote : public Quote {
       public:
+        static Handle<Quote> handle(Real value = Null<Real>());
         SimpleQuote(Real value = Null<Real>());
         //! \name Quote interface
         //@{
@@ -49,6 +50,10 @@ namespace QuantLib {
     };
 
     // inline definitions
+
+    inline Handle<Quote> SimpleQuote::handle(Real value) {
+        return Handle<Quote>(ext::make_shared<SimpleQuote>(value));
+    }
 
     inline SimpleQuote::SimpleQuote(Real value)
     : value_(value) {}
