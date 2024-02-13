@@ -820,7 +820,7 @@ BOOST_AUTO_TEST_CASE(testCashSettledSwaptions) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
 
     BOOST_TEST_MESSAGE("Testing implied volatility for swaptions...");
 
