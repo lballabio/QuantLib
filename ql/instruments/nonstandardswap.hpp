@@ -42,7 +42,7 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-        NonstandardSwap(const FixedVsFloatingSwap &fromVanilla);
+        explicit NonstandardSwap(const FixedVsFloatingSwap &fromVanilla);
         NonstandardSwap(Swap::Type type,
                         std::vector<Real> fixedNominal,
                         const std::vector<Real>& floatingNominal,
