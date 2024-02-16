@@ -137,9 +137,8 @@ int main(int argc, char *argv[]) {
         Real forward6mLevel = 0.025;
         Real oisLevel = 0.02;
 
-        Handle<Quote> forward6mQuote(
-            ext::make_shared<SimpleQuote>(forward6mLevel));
-        Handle<Quote> oisQuote(ext::make_shared<SimpleQuote>(oisLevel));
+        auto forward6mQuote = handle(forward6mLevel);
+        auto oisQuote = handle(oisLevel);
 
         Handle<YieldTermStructure> yts6m(ext::make_shared<FlatForward>(
             0, TARGET(), forward6mQuote, Actual365Fixed()));
@@ -156,7 +155,7 @@ int main(int argc, char *argv[]) {
             << "\nat a level of " << forward6mLevel << std::endl;
 
         Real volLevel = 0.20;
-        Handle<Quote> volQuote(ext::make_shared<SimpleQuote>(volLevel));
+        auto volQuote = handle(volLevel);
         Handle<SwaptionVolatilityStructure> swaptionVol(
             ext::make_shared<ConstantSwaptionVolatility>(
                 0, TARGET(), ModifiedFollowing, volQuote, Actual365Fixed()));
@@ -483,8 +482,7 @@ int main(int argc, char *argv[]) {
                "\npricing this using the LinearTsrPricer for CMS coupon "
                "estimation" << std::endl;
 
-        Handle<Quote> reversionQuote(
-            ext::make_shared<SimpleQuote>(reversion));
+        auto reversionQuote = handle(reversion);
 
         const Leg &leg0 = underlying4->leg(0);
         const Leg &leg1 = underlying4->leg(1);

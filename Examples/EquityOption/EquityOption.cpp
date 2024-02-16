@@ -97,7 +97,7 @@ int main(int, char* []) {
 
         auto americanExercise = ext::make_shared<AmericanExercise>(settlementDate, maturity);
 
-        Handle<Quote> underlyingH(ext::make_shared<SimpleQuote>(underlying));
+        auto underlyingH = handle(underlying);
 
         // bootstrap the yield/dividend/vol curves
         Handle<YieldTermStructure> flatTermStructure(
