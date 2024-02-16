@@ -37,6 +37,7 @@
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/optional.hpp>
+#include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
 
@@ -253,9 +254,70 @@ namespace QuantLib {
     };
 
 
+    namespace detail {
+        class SwapRateHelperBase : public RateHelper {
+          public:
+            SwapRateHelperBase(const Handle<Quote>& rate,
+                               const ext::shared_ptr<IborIndex>& iborIndex,
+                               Handle<YieldTermStructure> discountingCurve = {},
+                               Pillar::Choice pillar = Pillar::LastRelevantDate,
+                               Date customPillarDate = Date());
+            //! \name RateHelper interface
+            //@{
+            void setTermStructure(YieldTermStructure*) override;
+            //@}
+          private:
+            void _setInstrument(ext::shared_ptr<FixedVsFloatingSwap> swap);
+          protected:
+            template <class SwapType>
+            void setInstrument(ext::shared_ptr<SwapType> swap) { _setInstrument(std::move(swap)); }
+
+            Pillar::Choice pillarChoice_;
+            ext::shared_ptr<IborIndex> iborIndex_;
+            ext::shared_ptr<FixedVsFloatingSwap> swap_;
+            RelinkableHandle<YieldTermStructure> termStructureHandle_;
+            Handle<YieldTermStructure> discountHandle_;
+            RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+        };
+
+        class VanillaSwapRateHelperBase : public SwapRateHelperBase {
+          public:
+            VanillaSwapRateHelperBase(const Handle<Quote>& rate,
+                                      const ext::shared_ptr<IborIndex>& iborIndex,
+                                      Handle<Quote> spread = {},
+                                      Handle<YieldTermStructure> discountingCurve = {},
+                                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                                      Date customPillarDate = Date());
+            //! \name RateHelper interface
+            //@{
+            Real impliedQuote() const override;
+            //@}
+            //! \name VanillaSwapRateHelperBase inspectors
+            //@{
+            // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+            ext::shared_ptr<VanillaSwap> swap() const;
+            Spread spread() const;
+            //@}
+          protected:
+            Handle<Quote> spread_;
+        };
+
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        inline ext::shared_ptr<VanillaSwap> VanillaSwapRateHelperBase::swap() const {
+            return ext::static_pointer_cast<VanillaSwap>(swap_);
+        }
+
+        inline Spread VanillaSwapRateHelperBase::spread() const {
+            return spread_.empty() ? 0.0 : spread_->value();
+        }
+    }
+
     //! Rate helper for bootstrapping over swap rates
     /*! \todo use input SwapIndex to create the swap */
-    class SwapRateHelper : public RelativeDateRateHelper {
+    class SwapRateHelper : public RelativeDateBootstrapHelper<YieldTermStructure,
+                                                              detail::VanillaSwapRateHelperBase> {
+        typedef RelativeDateBootstrapHelper<YieldTermStructure, detail::VanillaSwapRateHelperBase>
+            base_type;
       public:
         SwapRateHelper(const Handle<Quote>& rate,
                        const ext::shared_ptr<SwapIndex>& swapIndex,
@@ -313,16 +375,8 @@ namespace QuantLib {
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
                        const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
-        //! \name RateHelper interface
-        //@{
-        Real impliedQuote() const override;
-        void setTermStructure(YieldTermStructure*) override;
-        //@}
         //! \name SwapRateHelper inspectors
         //@{
-        Spread spread() const;
-        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
-        ext::shared_ptr<VanillaSwap> swap() const;
         const Period& forwardStart() const;
         //@}
         //! \name Visitability
@@ -333,20 +387,40 @@ namespace QuantLib {
         void initializeDates() override;
         Natural settlementDays_;
         Period tenor_;
-        Pillar::Choice pillarChoice_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;
         DayCounter fixedDayCount_;
-        ext::shared_ptr<IborIndex> iborIndex_;
-        ext::shared_ptr<VanillaSwap> swap_;
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
-        Handle<Quote> spread_;
         bool endOfMonth_;
         Period fwdStart_;
-        Handle<YieldTermStructure> discountHandle_;
-        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
         ext::optional<bool> useIndexedCoupons_;
+    };
+
+    //! Rate helper for bootstrapping over swap rates
+    class DatedSwapRateHelper : public detail::VanillaSwapRateHelperBase {
+        typedef detail::VanillaSwapRateHelperBase base_type;
+      public:
+        DatedSwapRateHelper(const Handle<Quote>& rate,
+                            const Date& startDate,
+                            const Date& endDate,
+                            Calendar calendar,
+                            // fixed leg
+                            Frequency fixedFrequency,
+                            BusinessDayConvention fixedConvention,
+                            DayCounter fixedDayCount,
+                            // floating leg
+                            const ext::shared_ptr<IborIndex>& iborIndex,
+                            Handle<Quote> spread = {},
+                            // exogenous discounting curve
+                            Handle<YieldTermStructure> discountingCurve = {},
+                            Pillar::Choice pillar = Pillar::LastRelevantDate,
+                            Date customPillarDate = Date(),
+                            bool endOfMonth = false,
+                            const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&) override;
+        //@}
     };
 
 
@@ -477,15 +551,6 @@ namespace QuantLib {
     };
 
     // inline
-
-    inline Spread SwapRateHelper::spread() const {
-        return spread_.empty() ? 0.0 : spread_->value();
-    }
-
-    // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
-    inline ext::shared_ptr<VanillaSwap> SwapRateHelper::swap() const {
-        return swap_;
-    }
 
     inline const Period& SwapRateHelper::forwardStart() const {
         return fwdStart_;

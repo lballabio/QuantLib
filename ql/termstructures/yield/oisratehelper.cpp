@@ -26,6 +26,22 @@
 #include <utility>
 
 namespace QuantLib {
+    namespace detail {
+        OISRateHelperBase::OISRateHelperBase(const Handle<Quote>& fixedRate,
+                                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                                             Handle<YieldTermStructure> discountingCurve,
+                                             Pillar::Choice pillar,
+                                             Date customPillarDate)
+        : SwapRateHelperBase(fixedRate, overnightIndex, std::move(discountingCurve), pillar,
+            customPillarDate) {}
+
+        Real OISRateHelperBase::impliedQuote() const {
+            QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
+            // we didn't register as observers - force calculation
+            swap_->deepUpdate();
+            return swap_->fairRate();
+        }
+    }
 
     OISRateHelper::OISRateHelper(Natural settlementDays,
                                  const Period& tenor, // swap maturity
@@ -45,33 +61,20 @@ namespace QuantLib {
                                  ext::optional<bool> endOfMonth,
                                  ext::optional<Frequency> fixedPaymentFrequency,
                                  Calendar fixedCalendar)
-    : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays), tenor_(tenor),
-      discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
+    : base_type(fixedRate, overnightIndex, std::move(discount), pillar, customPillarDate),
+      settlementDays_(settlementDays), tenor_(tenor), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
       forwardStart_(forwardStart), overnightSpread_(overnightSpread),
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
       fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)) {
-
-        overnightIndex_ =
-            ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
-        // We want to be notified of changes of fixings, but we don't
-        // want notifications from termStructureHandle_ (they would
-        // interfere with bootstrapping.)
-        overnightIndex_->unregisterWith(termStructureHandle_);
-
-        registerWith(overnightIndex_);
-        registerWith(discountHandle_);
-
-        pillarDate_ = customPillarDate;
         OISRateHelper::initializeDates();
     }
 
     void OISRateHelper::initializeDates() {
-
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        MakeOIS tmp = MakeOIS(tenor_, overnightIndex_, 0.0, forwardStart_)
+        auto tmp = MakeOIS(tenor_, overnightIndex(), 0.0, forwardStart_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withSettlementDays(settlementDays_)
             .withTelescopicValueDates(telescopicValueDates_)
@@ -90,63 +93,7 @@ namespace QuantLib {
         if (!fixedCalendar_.empty()) {
             tmp.withFixedLegCalendar(fixedCalendar_);
         }
-        swap_ = tmp;
-
-        simplifyNotificationGraph(*swap_, true);
-
-        earliestDate_ = swap_->startDate();
-        maturityDate_ = swap_->maturityDate();
-
-        Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
-                                        swap_->fixedLeg().back()->date());
-        latestRelevantDate_ = std::max(maturityDate_, lastPaymentDate);
-
-        switch (pillarChoice_) {
-          case Pillar::MaturityDate:
-            pillarDate_ = maturityDate_;
-            break;
-          case Pillar::LastRelevantDate:
-            pillarDate_ = latestRelevantDate_;
-            break;
-          case Pillar::CustomDate:
-            // pillarDate_ already assigned at construction time
-            QL_REQUIRE(pillarDate_ >= earliestDate_,
-                       "pillar date (" << pillarDate_ << ") must be later "
-                       "than or equal to the instrument's earliest date (" <<
-                       earliestDate_ << ")");
-            QL_REQUIRE(pillarDate_ <= latestRelevantDate_,
-                       "pillar date (" << pillarDate_ << ") must be before "
-                       "or equal to the instrument's latest relevant date (" <<
-                       latestRelevantDate_ << ")");
-            break;
-          default:
-            QL_FAIL("unknown Pillar::Choice(" << Integer(pillarChoice_) << ")");
-        }
-
-        latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
-    }
-
-    void OISRateHelper::setTermStructure(YieldTermStructure* t) {
-        // do not set the relinkable handle as an observer -
-        // force recalculation when needed
-        bool observer = false;
-
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
-        termStructureHandle_.linkTo(temp, observer);
-
-        if (discountHandle_.empty())
-            discountRelinkableHandle_.linkTo(temp, observer);
-        else
-            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
-
-        RelativeDateRateHelper::setTermStructure(t);
-    }
-
-    Real OISRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
-        // we didn't register as observers - force calculation
-        swap_->deepUpdate();
-        return swap_->fairRate();
+        setInstrument<OvernightIndexedSwap>(tmp);
     }
 
     void OISRateHelper::accept(AcyclicVisitor& v) {
@@ -154,13 +101,13 @@ namespace QuantLib {
         if (v1 != nullptr)
             v1->visit(*this);
         else
-            RateHelper::accept(v);
+            base_type::accept(v);
     }
 
     DatedOISRateHelper::DatedOISRateHelper(const Date& startDate,
                                            const Date& endDate,
                                            const Handle<Quote>& fixedRate,
-                                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                                           const ext::shared_ptr<OvernightIndex>& index,
                                            Handle<YieldTermStructure> discount,
                                            bool telescopicValueDates,
                                            RateAveraging::Type averagingMethod,
@@ -172,33 +119,23 @@ namespace QuantLib {
                                            Spread overnightSpread,
                                            ext::optional<bool> endOfMonth,
                                            ext::optional<Frequency> fixedPaymentFrequency,
-                                           const Calendar& fixedCalendar)
-    : RateHelper(fixedRate), discountHandle_(std::move(discount)),
-      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
-
-        auto clonedOvernightIndex =
-            ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
-        // We want to be notified of changes of fixings, but we don't
-        // want notifications from termStructureHandle_ (they would
-        // interfere with bootstrapping.)
-        clonedOvernightIndex->unregisterWith(termStructureHandle_);
-
-        registerWith(clonedOvernightIndex);
-        registerWith(discountHandle_);
-
+                                           const Calendar& fixedCalendar,
+                                           Pillar::Choice pillar,
+                                           Date customPillarDate)
+    : base_type(fixedRate, index, std::move(discount), pillar, customPillarDate) {
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        auto tmp = MakeOIS(Period(), clonedOvernightIndex, 0.0, forwardStart)
+        auto tmp = MakeOIS(Period(), overnightIndex(), 0.0, forwardStart)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withEffectiveDate(startDate)
             .withTerminationDate(endDate)
-            .withTelescopicValueDates(telescopicValueDates_)
+            .withTelescopicValueDates(telescopicValueDates)
             .withPaymentLag(paymentLag)
             .withPaymentAdjustment(paymentConvention)
             .withPaymentFrequency(paymentFrequency)
             .withPaymentCalendar(paymentCalendar)
             .withOvernightLegSpread(overnightSpread)
-            .withAveragingMethod(averagingMethod_);
+            .withAveragingMethod(averagingMethod);
         if (endOfMonth) {
             tmp.withEndOfMonth(*endOfMonth);
         }
@@ -208,35 +145,7 @@ namespace QuantLib {
         if (!fixedCalendar.empty()) {
             tmp.withFixedLegCalendar(fixedCalendar);
         }
-        swap_ = tmp;
-
-        earliestDate_ = swap_->startDate();
-        Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
-                                        swap_->fixedLeg().back()->date());
-        latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
-    }
-
-    void DatedOISRateHelper::setTermStructure(YieldTermStructure* t) {
-        // do not set the relinkable handle as an observer -
-        // force recalculation when needed
-        bool observer = false;
-
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
-        termStructureHandle_.linkTo(temp, observer);
-
-        if (discountHandle_.empty())
-            discountRelinkableHandle_.linkTo(temp, observer);
-        else
-            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
-
-        RateHelper::setTermStructure(t);
-    }
-
-    Real DatedOISRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
-        // we didn't register as observers - force calculation
-        swap_->deepUpdate();
-        return swap_->fairRate();
+        setInstrument<OvernightIndexedSwap>(tmp);
     }
 
     void DatedOISRateHelper::accept(AcyclicVisitor& v) {
@@ -244,7 +153,7 @@ namespace QuantLib {
         if (v1 != nullptr)
             v1->visit(*this);
         else
-            RateHelper::accept(v);
+            base_type::accept(v);
     }
 
 }

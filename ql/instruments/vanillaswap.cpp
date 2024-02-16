@@ -79,4 +79,8 @@ namespace QuantLib {
         }
     }
 
+    Date VanillaSwap::latestRelevantDate() const {
+        auto lastCoupon = ext::dynamic_pointer_cast<IborCoupon>(floatingLeg().back());
+        return std::max(maturityDate(), lastCoupon->fixingEndDate());
+    }
 }

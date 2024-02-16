@@ -103,6 +103,12 @@ namespace QuantLib {
                             floatingSchedule().tenor().frequency());
         }
 
+        Date latestRelevantDate() const override {
+            Date lastPaymentDate = std::max(overnightLeg().back()->date(),
+                                            fixedLeg().back()->date());
+            return std::max(maturityDate(), lastPaymentDate);
+        }
+
         const std::vector<Real>& overnightNominals() const { return floatingNominals(); }
         const Schedule& overnightSchedule() const { return floatingSchedule(); }
         const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
