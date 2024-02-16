@@ -155,7 +155,7 @@ namespace QuantLib {
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(Real quote)
-    : quote_(SimpleQuote::handle(quote)), termStructure_(nullptr) {}
+    : quote_(handle(quote)), termStructure_(nullptr) {}
 
     template <class TS>
     void BootstrapHelper<TS>::setTermStructure(TS* t) {
