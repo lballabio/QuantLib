@@ -376,6 +376,28 @@ BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfMonth) {
                     "got " << firstCoupon->referencePeriodStart());
 }
 
+BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfCalendarMonth) {
+    BOOST_TEST_MESSAGE("Testing irregular first coupon reference dates at end of calendar month with end of month enabled...");
+    Schedule schedule =
+        MakeSchedule()
+        .from(Date(30, September, 2017)).to(Date(2, April, 2018))
+        .withFrequency(Semiannual)
+        .withConvention(Unadjusted)
+        .endOfMonth()
+        .backwards();
+
+    Leg leg = FixedRateLeg(schedule)
+        .withNotionals(100.0)
+        .withCouponRates(0.01875, ActualActual(ActualActual::ISMA));
+
+    ext::shared_ptr<Coupon> firstCoupon =
+        ext::dynamic_pointer_cast<Coupon>(leg.front());
+
+    if (firstCoupon->referencePeriodStart() != Date(30, September, 2017))
+        BOOST_ERROR("Expected reference start date at end of calendar day of the month, "
+                    "got " << firstCoupon->referencePeriodStart());
+}
+
 BOOST_AUTO_TEST_CASE(testIrregularLastCouponReferenceDatesAtEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing irregular last coupon reference dates with end of month enabled...");
     Schedule schedule =
