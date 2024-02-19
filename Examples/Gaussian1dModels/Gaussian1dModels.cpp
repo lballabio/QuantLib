@@ -118,7 +118,7 @@ void printModelCalibration(
 
 // here the main part of the code starts
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 
     try {
 
@@ -137,8 +137,8 @@ int main(int argc, char *argv[]) {
         Real forward6mLevel = 0.025;
         Real oisLevel = 0.02;
 
-        auto forward6mQuote = handle(forward6mLevel);
-        auto oisQuote = handle(oisLevel);
+        auto forward6mQuote = makeQuoteHandle(forward6mLevel);
+        auto oisQuote = makeQuoteHandle(oisLevel);
 
         Handle<YieldTermStructure> yts6m(ext::make_shared<FlatForward>(
             0, TARGET(), forward6mQuote, Actual365Fixed()));
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
             << "\nat a level of " << forward6mLevel << std::endl;
 
         Real volLevel = 0.20;
-        auto volQuote = handle(volLevel);
+        auto volQuote = makeQuoteHandle(volLevel);
         Handle<SwaptionVolatilityStructure> swaptionVol(
             ext::make_shared<ConstantSwaptionVolatility>(
                 0, TARGET(), ModifiedFollowing, volQuote, Actual365Fixed()));
@@ -482,7 +482,7 @@ int main(int argc, char *argv[]) {
                "\npricing this using the LinearTsrPricer for CMS coupon "
                "estimation" << std::endl;
 
-        auto reversionQuote = handle(reversion);
+        auto reversionQuote = makeQuoteHandle(reversion);
 
         const Leg &leg0 = underlying4->leg(0);
         const Leg &leg1 = underlying4->leg(1);
