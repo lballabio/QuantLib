@@ -71,7 +71,10 @@ jobs:
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
         Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
-        choco install -y ninja
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -105,7 +108,10 @@ jobs:
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
         Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
-        choco install -y ninja
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -139,7 +145,10 @@ jobs:
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
         Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
-        choco install -y ninja
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
