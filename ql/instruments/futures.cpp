@@ -30,8 +30,10 @@ namespace QuantLib {
             return out << "IMM";
           case Futures::ASX:
             return out << "ASX";
+          case Futures::Custom:
+            return out << "Custom";
           default:
-            QL_FAIL("unknown futures type (" << Integer(f) << ")");
+            return out << "Unknown(" << Integer(f) << ')';
         }
     }
 
