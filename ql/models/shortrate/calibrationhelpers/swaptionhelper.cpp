@@ -184,19 +184,22 @@ namespace QuantLib {
 
         Swap::Type type = Swap::Receiver;
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
-        FixedVsFloatingSwap* temp;
+        std::unique_ptr<FixedVsFloatingSwap> temp;
         if (onIndex) {
             // construct ois swap
-            temp = new OvernightIndexedSwap(Swap::Receiver, nominal_, fixedSchedule, 0.0,
-                                            fixedLegDayCounter_, onIndex, 0.0, 0, Following, Calendar(),
-                                            true, averagingMethod_);
+            temp = std::make_unique<OvernightIndexedSwap>(
+                Swap::Receiver, nominal_, fixedSchedule, 0.0,
+                fixedLegDayCounter_, onIndex, 0.0, 0, Following, Calendar(),
+                true, averagingMethod_
+            );
         } else {
-            temp = new VanillaSwap(Swap::Receiver, nominal_, fixedSchedule, 0.0, fixedLegDayCounter_,
-                                   floatSchedule, index_, 0.0, floatingLegDayCounter_);
+            temp = std::make_unique<VanillaSwap>(
+                 Swap::Receiver, nominal_, fixedSchedule, 0.0, fixedLegDayCounter_,
+                 floatSchedule, index_, 0.0, floatingLegDayCounter_
+            );
         }
         temp->setPricingEngine(swapEngine);
         Real forward = temp->fairRate();
-        delete temp;
         if (strike_ == Null<Real>()) {
             exerciseRate_ = forward;
         } else {
