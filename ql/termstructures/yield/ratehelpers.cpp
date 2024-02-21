@@ -50,8 +50,10 @@ namespace QuantLib {
               case Futures::ASX:
                 QL_REQUIRE(ASX::isASXdate(date, false), date << " is not a valid ASX date");
                 break;
+              case Futures::Custom:
+                break;
               default:
-                QL_FAIL("unknown futures type (" << Integer(type) << ')');
+                QL_FAIL("unknown futures type (" << type << ')');
             }
         }
 
@@ -133,7 +135,7 @@ namespace QuantLib {
                 [](const Date date) -> Date { return ASX::nextDate(date, false); });
             break;
           default:
-            QL_FAIL("unknown futures type (" << Integer(type) << ')');
+            QL_FAIL("unsupported futures type (" << type << ')');
         }
         earliestDate_ = iborStartDate;
         yearFraction_ = DetermineYearFraction(earliestDate_, maturityDate_, dayCounter);
@@ -180,11 +182,10 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
             termStructure_->discount(maturityDate_) - 1.0) / yearFraction_;
-        Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
         // Convexity, as FRA/futures adjustment, has been used in the
         // past to take into account futures margining vs FRA.
         // Therefore, there's no requirement for it to be non-negative.
-        Rate futureRate = forwardRate + convAdj;
+        Rate futureRate = forwardRate + convexityAdjustment();
         return 100.0 * (1.0 - futureRate);
     }
 

@@ -36,8 +36,9 @@ namespace QuantLib {
         enum Type {
             IMM, /*!< Chicago Mercantile Internation Money Market, i.e.
                       third Wednesday of March, June, September, December */
-            ASX  /*!< Australian Security Exchange, i.e. second Friday
+            ASX, /*!< Australian Security Exchange, i.e. second Friday
                       of March, June, September, December */
+            Custom /*!< Other rules */
         };
     };
 
