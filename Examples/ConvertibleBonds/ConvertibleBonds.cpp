@@ -144,7 +144,7 @@ int main(int, char* []) {
         auto exercise = ext::make_shared<EuropeanExercise>(exerciseDate);
         auto amExercise = ext::make_shared<AmericanExercise>(settlementDate, exerciseDate);
 
-        Handle<Quote> underlyingH(ext::make_shared<SimpleQuote>(underlying));
+        auto underlyingH = makeQuoteHandle(underlying);
 
         Handle<YieldTermStructure> flatTermStructure(
             ext::make_shared<FlatForward>(settlementDate, riskFreeRate, dayCounter));
@@ -160,7 +160,7 @@ int main(int, char* []) {
 
         Size timeSteps = 801;
 
-        Handle<Quote> creditSpread(ext::make_shared<SimpleQuote>(spreadRate));
+        auto creditSpread = makeQuoteHandle(spreadRate);
 
         auto rate = ext::make_shared<SimpleQuote>(riskFreeRate);
 

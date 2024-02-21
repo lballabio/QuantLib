@@ -69,7 +69,7 @@ int main(int, char* []) {
         vector<ext::shared_ptr<RateHelper>> swapHelpers;
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++)
             swapHelpers.push_back(ext::make_shared<SwapRateHelper>(
-                Handle<Quote>(ext::make_shared<SimpleQuote>(ratesSwapmkt[i])),
+                    makeQuoteHandle(ratesSwapmkt[i]),
                     tenorsSwapMkt[i] * Years,
                     TARGET(),
                     Quarterly,
