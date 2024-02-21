@@ -278,7 +278,7 @@ namespace QuantLib {
                                     ? firstCoupon->accrualStartDate()
                                     : valuation_date;
             Frequency freq = Annual;
-            const Schedule fixedSchedule = swap->fixedSchedule();
+            const Schedule& fixedSchedule = swap->fixedSchedule();
             if (fixedSchedule.hasTenor()) {
                 freq = fixedSchedule.tenor().frequency();
             }
@@ -293,7 +293,7 @@ namespace QuantLib {
         }
         results_.additionalResults["annuity"] = annuity;
 
-        const Schedule floatingSchedule = swap->floatingSchedule();
+        const Schedule& floatingSchedule = swap->floatingSchedule();
         Time swapLength =  vol_->swapLength(floatingSchedule.dates().front(),
                                             floatingSchedule.dates().back());
 
