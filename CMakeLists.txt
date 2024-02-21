@@ -232,7 +232,7 @@ set(libdir "\${exec_prefix}/lib")
 configure_file(quantlib-config.in quantlib-config @ONLY)
 configure_file(quantlib.pc.in quantlib.pc @ONLY)
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/quantlib-config TYPE BIN)
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/quantlib.pc DESTINATION lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/quantlib.pc DESTINATION lib/pkgconfig)
 
 include(Platform)
 
