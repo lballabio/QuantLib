@@ -72,21 +72,38 @@ namespace QuantLib {
                 EuropeanExercise(exerciseDate_));
         }
 
-        Rate usedStrike = strike_;
+        Rate usedStrike;
         ext::shared_ptr<OvernightIndexedSwapIndex> OIswap_index = ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIndex_);
         if (strike_ == Null<Rate>()) {
             // ATM on curve(s) attached to index
             QL_REQUIRE(!swapIndex_->forwardingTermStructure().empty(),
                        "null term structure set to this instance of " <<
                        swapIndex_->name());
-            ext::shared_ptr<FixedVsFloatingSwap> temp = swapIndex_->underlyingSwap(fixingDate_);
-            temp->setPricingEngine(
-                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(
-                    swapIndex_->exogenousDiscount()
+            if (OIswap_index) {
+                auto temp = OIswap_index->underlyingSwap(fixingDate_);
+                temp->setPricingEngine(
+                    ext::make_shared<DiscountingSwapEngine>(
+                        swapIndex_->exogenousDiscount()
                         ? swapIndex_->discountingTermStructure()
                         : swapIndex_->forwardingTermStructure(),
-                    false)));
-            usedStrike = temp->fairRate();
+                        false
+                    )
+                );
+                usedStrike = temp->fairRate();
+            } else {
+                auto temp = swapIndex_->underlyingSwap(fixingDate_);
+                temp->setPricingEngine(
+                    ext::make_shared<DiscountingSwapEngine>(
+                        swapIndex_->exogenousDiscount()
+                        ? swapIndex_->discountingTermStructure()
+                        : swapIndex_->forwardingTermStructure(),
+                        false
+                    )
+                );
+                usedStrike = temp->fairRate();
+            }
+        } else {
+            usedStrike = strike_;
         }
 
         BusinessDayConvention bdc = swapIndex_->fixedLegConvention();
