@@ -162,11 +162,10 @@ namespace QuantLib {
             if (endOfMonth && isEndOfMonth(d))
                 if (c == Unadjusted){
                     // move to end of calendar day if using Unadjusted convention
-                    return Date::endOfMonth(d);
+                    return Date::endOfMonth(d1);
                 } else {
                     return Calendar::endOfMonth(d1);
                 }
-
             return adjust(d1, c);
         }
     }
