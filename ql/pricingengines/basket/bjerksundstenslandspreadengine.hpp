@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Klaus Spanderen
- 
+ Copyright (C) 2024 Klaus Spanderen
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -17,33 +17,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file kirkengine.hpp
-    \brief kirk formulae, due to Kirk (1995)
+/*! \file bjerksundstenslandspreadengine.hpp
+    \brief Bjerksund and Stensland formulae (2006)
 */
 
-#ifndef quantlib_kirk_engine_hpp
-#define quantlib_kirk_engine_hpp
+#ifndef quantlib_bjerksund_stensland_spread_engine_hpp
+#define quantlib_bjerksund_stensland_spread_engine_hpp
 
 #include <ql/pricingengines/basket/spreadblackscholesvanillaengine.hpp>
 
 namespace QuantLib {
 
     //! Pricing engine for spread option on two futures
-    /*! This class implements formulae from
-        "Correlation in the Energy Markets", E. Kirk
-        Managing Energy Price Risk. 
-        London: Risk Publications and Enron, pp. 71-78
+    /*! P. Bjerksund and G. Stensland,
+        Closed form spread option valuation,
+        Quantitative Finance, 14 (2014), pp. 1785–1794.
 
         \ingroup basketengines
-
-        \test the correctness of the returned value is tested by
-              reproducing results available in literature.
     */
-    class KirkEngine : public SpreadBlackScholesVanillaEngine {
+    class BjerksundStenslandSpreadEngine : public SpreadBlackScholesVanillaEngine {
       public:
-        KirkEngine(ext::shared_ptr<BlackProcess> process1,
-                   ext::shared_ptr<BlackProcess> process2,
-                   Real correlation);
+        BjerksundStenslandSpreadEngine(
+            ext::shared_ptr<BlackProcess> process1,
+            ext::shared_ptr<BlackProcess> process2,
+            Real correlation);
 
       protected:
         Real calculate(

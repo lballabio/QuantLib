@@ -24,10 +24,12 @@
 #include "utilities.hpp"
 #include <ql/instruments/basketoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/pricingengines/basket/bjerksundstenslandspreadengine.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
+#include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -35,8 +37,11 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/yearfractiontodate.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1051,6 +1056,249 @@ BOOST_AUTO_TEST_CASE(test2DPDEGreeks) {
                    << "\n    expected:   " << expectedGamma
                    << "\n    tolerance:  " << tol);
     }
+}
+
+
+BOOST_AUTO_TEST_CASE(testBjerksundStenslandSpreadEngine) {
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland spread engine...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, March, 2024);
+    const Date maturity = today + Period(12, Months);
+
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    const Real rho = 0.75;
+    const Real f1 = 100, f2 = 110;
+    const Handle<YieldTermStructure> r
+        = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f1)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))
+    );
+    const ext::shared_ptr<BlackProcess> p2 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f2)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc))
+    );
+
+    const ext::shared_ptr<PricingEngine> engine
+        = ext::make_shared<BjerksundStenslandSpreadEngine>(p1, p2, rho);
+
+    const Real strike = 5;
+    BasketOption callOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+        exercise);
+
+    callOption.setPricingEngine(engine);
+    const Real callNPV = callOption.NPV();
+
+    // reference value was calculated with python packages pyfeng 0.2.6
+    const Real expectedPutNPV = 17.850835947276213;
+
+    BasketOption putOption(ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, strike)),
+        exercise);
+
+    putOption.setPricingEngine(engine);
+    const Real putNPV = putOption.NPV();
+
+    const Real tol = QL_EPSILON*100;
+    Real diff = std::abs(putNPV - expectedPutNPV);
+
+    if (diff > tol) {
+        BOOST_FAIL("failed to reproduce reference put price "
+                "using the Bjerksund-Stensland spread engine."
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated: " << putOption.NPV()
+                   << "\n    expected  : " << expectedPutNPV
+                   << "\n    diff      : " << diff
+                   << "\n    tolerance : " << tol);
+    }
+
+    const DiscountFactor df = r->discount(maturity);
+    const Real fwd = (callNPV - putNPV)/df;
+    diff = std::abs(fwd - (f1 - f2 - strike));
+
+    if (diff > tol) {
+        BOOST_FAIL("failed to reproduce call-put parity "
+                "using the Bjerksund-Stensland spread engine."
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated fwd: " << fwd
+                   << "\n    expected fwd  : " << f1 - f2 - strike
+                   << "\n    diff          : " << diff
+                   << "\n    tolerance     : " << tol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
+    BOOST_TEST_MESSAGE("Testing Operator Splitting spread engine...");
+
+    // Example taken from
+    // Chi-Fai Lo, Pricing Spread Options by the Operator Splitting Method,
+    // https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2429696
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, March, 2025);
+    const Date maturity = yearFractionToDate(dc, today, 1.0);
+
+    const Handle<YieldTermStructure> r
+        = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
+
+    const DiscountFactor df = r->discount(maturity);
+    const DiscountFactor dq1 = flatRate(today, 0.03, dc)->discount(maturity);
+    const DiscountFactor dq2 = flatRate(today, 0.02, dc)->discount(maturity);
+    const Real f1 = 110*dq1/df, f2 = 90*dq2/df;
+
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f1)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.3, dc))
+    );
+    const ext::shared_ptr<BlackProcess> p2 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(f2)), r,
+            Handle<BlackVolTermStructure>(flatVol(today, 0.2, dc))
+    );
+
+    BasketOption option(
+        ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, 20.0)),
+        ext::make_shared<EuropeanExercise>(maturity));
+
+    const Real testData[][2] = {
+            {-0.9, 18.9323},
+            {-0.7, 18.0092},
+            {-0.5, 17.0325},
+            {-0.4, 16.5211},
+            {-0.3, 15.9925},
+            {-0.2, 15.4449},
+            {-0.1, 14.8762},
+            { 0.0, 14.284},
+            { 0.1, 13.6651},
+            { 0.2, 13.016},
+            { 0.3, 12.3319},
+            { 0.4, 11.6067},
+            { 0.5, 10.8323},
+            { 0.7, 9.0863},
+            { 0.9, 6.9148}
+    };
+    for (Size i = 0; i < LENGTH(testData); ++i) {
+        const Real rho = testData[i][0];
+        const Real expected = testData[i][1];
+
+        const ext::shared_ptr<PricingEngine> osEngine
+            = ext::make_shared<OperatorSplittingSpreadEngine>(p1, p2, rho);
+
+        option.setPricingEngine(osEngine);
+
+        const Real diff = std::abs(option.NPV() - expected);
+        const Real tol = 0.0001;
+
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce reference values "
+                    "using the operator splitting spread engine."
+                       << std::fixed << std::setprecision(5)
+                       << "\n    calculated: " << option.NPV()
+                       << "\n    expected  : " << expected
+                       << "\n    diff          : " << diff
+                       << "\n    tolerance     : " << tol);
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
+    BOOST_TEST_MESSAGE("Testing two-dimensional PDE engine "
+            "vs analytical approximations...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, February, 2024);
+    const Date maturity = today + Period(6, Months);
+
+    const ext::shared_ptr<SimpleQuote> s1 = ext::make_shared<SimpleQuote>(100);
+    const ext::shared_ptr<SimpleQuote> s2 = ext::make_shared<SimpleQuote>(100);
+
+    const ext::shared_ptr<SimpleQuote> r = ext::make_shared<SimpleQuote>(0.05);
+
+    const ext::shared_ptr<SimpleQuote> v1 = ext::make_shared<SimpleQuote>(0.25);
+    const ext::shared_ptr<SimpleQuote> v2 = ext::make_shared<SimpleQuote>(0.4);
+
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(s1),
+            Handle<YieldTermStructure>(flatRate(today, r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, v1, dc))
+    );
+    const ext::shared_ptr<BlackProcess> p2 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(s2),
+            Handle<YieldTermStructure>(flatRate(today, r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, v2, dc))
+    );
+
+    const Real strike = 5;
+
+    IncrementalStatistics statKirk, statBS2014, statOs;
+
+    for (Option::Type type: {Option::Call, Option::Put}) {
+        BasketOption option(
+            ext::make_shared<SpreadBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(type, strike)),
+            ext::make_shared<EuropeanExercise>(maturity));
+
+        for (Real rho: {-0.75, 0.0, 0.9}) {
+            const ext::shared_ptr<PricingEngine> kirkEngine
+                = ext::make_shared<KirkEngine>(p1, p2, rho);
+
+            const ext::shared_ptr<PricingEngine> bs2014Engine
+                = ext::make_shared<BjerksundStenslandSpreadEngine>(p1, p2, rho);
+
+            const ext::shared_ptr<PricingEngine> osEngine
+                = ext::make_shared<OperatorSplittingSpreadEngine>(p1, p2, rho);
+
+            const ext::shared_ptr<PricingEngine> fdEngine
+                = ext::make_shared<Fd2dBlackScholesVanillaEngine>(
+                    p1, p2, rho, 50, 50, 15);
+
+            for (Real rate: {0.0, 0.05, 0.2}) {
+                r->setValue(rate);
+                for (Real spot: {75, 90, 100, 105, 175}) {
+                    s2->setValue(spot);
+
+                    option.setPricingEngine(fdEngine);
+                    const Real fdNPV = option.NPV();
+
+                    option.setPricingEngine(kirkEngine);
+                    statKirk.add(option.NPV() - fdNPV);
+
+                    option.setPricingEngine(bs2014Engine);
+                    statBS2014.add(option.NPV() - fdNPV);
+
+                    option.setPricingEngine(osEngine);
+                    statOs.add(option.NPV() - fdNPV);
+                }
+            }
+        }
+    }
+
+
+    if (statKirk.standardDeviation() > 0.025) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices "
+                "with Kirk engine."
+                   << std::fixed << std::setprecision(5)
+                   << "\n    stdev: " << option.NPV()
+                   << "\n    expected  : " << expected
+                   << "\n    diff          : " << diff
+                   << "\n    tolerance     : " << tol);
+
+    }
+    std::cout << std::setprecision(18)
+            << statKirk.standardDeviation() << " "
+            << statBS2014.standardDeviation() << " "
+            << statOs.standardDeviation() << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()
