@@ -300,8 +300,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     Calendar calendar = TARGET();
     Date today = Date::todaysDate();
     DayCounter dayCount = Actual365Fixed();
-    Handle<Quote> stateVariable(
-                          ext::make_shared<SimpleQuote>(s0_));
+    auto stateVariable = makeQuoteHandle(s0_);
     Handle<YieldTermStructure> riskFreeRate(
                           ext::make_shared<FlatForward>(today, r_, dayCount));
     Handle<YieldTermStructure> dividendYield(

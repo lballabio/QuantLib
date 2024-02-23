@@ -59,6 +59,7 @@ namespace QuantLib {
         //@}
         //! \name FloatingRateCoupon interface
         //@{
+        Date fixingDate() const override;
         // implemented in order to manage the case of par coupon
         Rate indexFixing() const override;
         void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&) override;
