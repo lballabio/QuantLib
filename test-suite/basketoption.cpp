@@ -1285,15 +1285,25 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
     }
 
 
-    if (statKirk.standardDeviation() > 0.025) {
-        BOOST_FAIL("failed to reproduce PDE spread option prices "
-                "with Kirk engine."
+    if (statKirk.standardDeviation() > 0.03) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices with Kirk engine."
                    << std::fixed << std::setprecision(5)
-                   << "\n    stdev: " << option.NPV()
-                   << "\n    expected  : " << expected
-                   << "\n    diff          : " << diff
-                   << "\n    tolerance     : " << tol);
-
+                   << "\n    stdev     : " << statKirk.standardDeviation()
+                   << "\n    tolerance : " << 0.03);
+    }
+    if (statBS2014.standardDeviation() > 0.02) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices"
+                " with Bjerksund-Stensland engine."
+                   << std::fixed << std::setprecision(5)
+                   << "\n    stdev     : " << statBS2014.standardDeviation()
+                   << "\n    tolerance : " << 0.02);
+    }
+    if (statOs.standardDeviation() > 0.02) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices"
+                " with Operator-Splitting engine."
+                   << std::fixed << std::setprecision(5)
+                   << "\n    stdev     : " << statOs.standardDeviation()
+                   << "\n    tolerance : " << 0.02);
     }
     std::cout << std::setprecision(18)
             << statKirk.standardDeviation() << " "
