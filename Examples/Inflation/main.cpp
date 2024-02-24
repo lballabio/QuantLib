@@ -26,16 +26,15 @@ struct Coupon {
     Rate rate;
 };
 
-template <class T>
-std::vector<ext::shared_ptr<BootstrapHelper<T>>>
+std::vector<ext::shared_ptr<ZeroCouponInflationSwapHelper>>
 makeHelpers(const std::vector<Coupon>& coupons,
-            std::function<ext::shared_ptr<BootstrapHelper<T>>(const Handle<Quote>&, const Date&)>
+            std::function<ext::shared_ptr<ZeroCouponInflationSwapHelper>(const Handle<Quote>&, const Date&)>
                 makeHelper) {
 
-    std::vector<ext::shared_ptr<BootstrapHelper<T>>> instruments;
+    std::vector<ext::shared_ptr<ZeroCouponInflationSwapHelper>> instruments;
     for (Coupon coupon : coupons) {
         Handle<Quote> quote(ext::shared_ptr<Quote>(new SimpleQuote(coupon.rate / 100.0)));
-        ext::shared_ptr<BootstrapHelper<T>> anInstrument = makeHelper(quote, coupon.maturity);
+        ext::shared_ptr<ZeroCouponInflationSwapHelper> anInstrument = makeHelper(quote, coupon.maturity);
         instruments.push_back(anInstrument);
     }
 
@@ -43,6 +42,8 @@ makeHelpers(const std::vector<Coupon>& coupons,
 }
 
 int main() {
+
+    // KPI Index
 
     ZeroInflationIndex kpiIndex("KPI", EURegion(), false, Monthly, Period(1, Days), SEKCurrency());
 
@@ -62,9 +63,17 @@ int main() {
     TimeSeries<Real> ts = kpiIndex.timeSeries();
     std::cout << "ts.size(): " << ts.size() << '\n';
 
-    boost::shared_ptr<ZeroInflationIndex> test = boost::make_shared<ZeroInflationIndex>(kpiIndex);
+    std::cout << "------KPI Zero index------" << '\n';
+    std::cout << "1 Jan 2024: " << kpiIndex.fixing(Date(1, January, 2024)) << std::endl;
+    std::cout << "1 Dec 2023: " << kpiIndex.fixing(Date(1, December, 2023)) << std::endl;
+    std::cout << "1 Nov 2023: " << kpiIndex.fixing(Date(1, November, 2023)) << std::endl;
 
-    YoYInflationIndex yyIndex(test, false);
+    // YoY KPI
+
+    boost::shared_ptr<ZeroInflationIndex> pKpiIndex =
+        boost::make_shared<ZeroInflationIndex>(kpiIndex);
+
+    YoYInflationIndex yyIndex(pKpiIndex, false);
     Rate yyRate = yyIndex.fixing(Date(1, January, 2024));
 
     std::cout << "------KPI YoY index------" << '\n';
@@ -99,13 +108,10 @@ int main() {
     BusinessDayConvention bdc = ModifiedFollowing;
     DayCounter dc = Thirty360(Thirty360::BondBasis);
 
-    // Inflation leg (KPI)
-    boost::shared_ptr<ZeroInflationIndex> pKpiIndex =
-        boost::make_shared<ZeroInflationIndex>(kpiIndex);
 
-    Date evaluationDate(13, August, 2007);
+    Date studyDate(13, August, 2007);
     boost::shared_ptr<YieldTermStructure> yieldTermStructure(
-        new FlatForward(evaluationDate, 0.05, Actual360()));
+        new FlatForward(studyDate, 0.05, Actual360()));
     Handle<YieldTermStructure> nominalTermStructure(yieldTermStructure);
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
@@ -115,12 +121,12 @@ int main() {
                                                                calendar,
                                                                bdc,
                                                                dc,
-                                                               pKpiIndex,
+                                                               pKpiIndex, // Inflation leg (KPI)
                                                                CPI::AsIndex,
                                                                nominalTermStructure);
     };
-    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers =
-        makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
+    std::vector<ext::shared_ptr<ZeroCouponInflationSwapHelper>> helpers =
+        makeHelpers(zcData, makeHelper);
 
     return 0;
 }
