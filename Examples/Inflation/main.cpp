@@ -3,6 +3,7 @@
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
+#include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/sweden.hpp>
@@ -26,12 +27,12 @@ struct Coupon {
     Rate rate;
 };
 
-std::vector<ext::shared_ptr<ZeroCouponInflationSwapHelper>>
+std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>>
 makeHelpers(const std::vector<Coupon>& coupons,
             std::function<ext::shared_ptr<ZeroCouponInflationSwapHelper>(const Handle<Quote>&, const Date&)>
                 makeHelper) {
 
-    std::vector<ext::shared_ptr<ZeroCouponInflationSwapHelper>> instruments;
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> instruments;
     for (Coupon coupon : coupons) {
         Handle<Quote> quote(ext::shared_ptr<Quote>(new SimpleQuote(coupon.rate / 100.0)));
         ext::shared_ptr<ZeroCouponInflationSwapHelper> anInstrument = makeHelper(quote, coupon.maturity);
@@ -47,11 +48,12 @@ int main() {
 
     ZeroInflationIndex kpiIndex("KPI", EURegion(), false, Monthly, Period(1, Days), SEKCurrency());
 
-    Real kpi[] = {350.56, 353.56, 359.80, 362.02, 365.82, 370.95, 371.28, 377.81, 383.21,
-                  384.04, 387.93, 395.96, 391.50, 395.82, 398.08, 399.93, 401.19, 405.49,
+    Real kpi[] = {338.09, 339.01, 339.54, 340.37, 341.04, 341.32, 342.23, 343.99, 345.74, 346.44,
+                  348.03, 352.47, 350.56, 353.56, 359.80, 362.02, 365.82, 370.95, 371.28, 377.81,
+                  383.21, 384.04, 387.93, 395.96, 391.50, 395.82, 398.08, 399.93, 401.19, 405.49,
                   405.67, 405.97, 408.05, 409.07, 410.35, 413.34, 412.74};
 
-    Date from(1, January, 2022);
+    Date from(1, January, 2021);
     Date to(1, January, 2024);
     Schedule kpiSchedule = MakeSchedule().from(from).to(to).withFrequency(Monthly);
 
@@ -94,14 +96,14 @@ int main() {
 
     ///////////////
     // now build the ZCIS (Zero-Coupon Inflation Swap)
-    // Fixed Leg
-    std::vector<Coupon> zcData = {{Date(13, August, 2008), 2.93},  {Date(13, August, 2009), 2.95},
-                                  {Date(13, August, 2010), 2.965}, {Date(15, August, 2011), 2.98},
-                                  {Date(13, August, 2012), 3.0},   {Date(13, August, 2014), 3.06},
-                                  {Date(13, August, 2017), 3.175}, {Date(13, August, 2019), 3.243},
-                                  {Date(15, August, 2022), 3.293}, {Date(14, August, 2027), 3.338},
-                                  {Date(13, August, 2032), 3.348}, {Date(15, August, 2037), 3.348},
-                                  {Date(13, August, 2047), 3.308}, {Date(13, August, 2057), 3.228}};
+    // Fixed Leg 
+    // SE statsobligation 2/5/7/10 år (2024 January)
+    std::vector<Coupon> zcData = {{Date(1, January, 2024), 4.00},
+                                  {Date(1, January, 2026), 2.4344},
+                                  {Date(1, January, 2029), 2.1718},
+                                  {Date(1, January, 2031), 2.1629},
+                                  {Date(1, January, 2034), 2.2307}};
+
 
     Period observationLag = Period(3, Months);
     Calendar calendar = Sweden();
@@ -109,7 +111,7 @@ int main() {
     DayCounter dc = Thirty360(Thirty360::BondBasis);
 
 
-    Date studyDate(13, August, 2007);
+    Date studyDate(15, August, 2022);
     boost::shared_ptr<YieldTermStructure> yieldTermStructure(
         new FlatForward(studyDate, 0.05, Actual360()));
     Handle<YieldTermStructure> nominalTermStructure(yieldTermStructure);
@@ -125,8 +127,44 @@ int main() {
                                                                CPI::AsIndex,
                                                                nominalTermStructure);
     };
-    std::vector<ext::shared_ptr<ZeroCouponInflationSwapHelper>> helpers =
+
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers =
         makeHelpers(zcData, makeHelper);
+
+    Frequency frequency = Monthly;
+    Date baseDate = pKpiIndex->lastFixingDate();
+
+    ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZCIS =
+        ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+            studyDate,
+            baseDate,
+            frequency,
+            dc,
+            helpers
+            );
+
+    std::vector<Time> times = pZCIS->times();
+    std::vector<Real> rates = pZCIS->data();
+    std::vector<Date> dates = pZCIS->dates();
+
+    std::cout << "ZCIS baseDate(): " << pZCIS->baseDate().year() << pZCIS->baseDate().month()
+              << pZCIS->baseDate().dayOfMonth() << '\n';
+    std::cout << "ZCIS maxDate(): " << pZCIS->maxDate() << '\n';
+
+    std::cout << "---times---" << '\n';
+    for (auto time : times) {
+        std::cout << time << '\n';
+    }
+
+    std::cout << "---dates---" << '\n';
+    for (auto date : dates) {
+        std::cout << date << '\n';
+    }
+
+    std::cout << "---rates---" << '\n';
+    for (auto rate : rates) {
+        std::cout << rate << '\n';
+    }
 
     return 0;
 }
