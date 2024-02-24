@@ -1,0 +1,5 @@
+add_executable(Inflation main.cpp)
+target_link_libraries(Inflation ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS Inflation RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()
