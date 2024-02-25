@@ -147,8 +147,7 @@ int main() {
     std::vector<Real> rates = pZCIS->data();
     std::vector<Date> dates = pZCIS->dates();
 
-    std::cout << "ZCIS baseDate(): " << pZCIS->baseDate().year() << pZCIS->baseDate().month()
-              << pZCIS->baseDate().dayOfMonth() << '\n';
+    std::cout << "ZCIS baseDate(): " << pZCIS->baseDate() << '\n';
     std::cout << "ZCIS maxDate(): " << pZCIS->maxDate() << '\n';
 
     std::cout << "---times---" << '\n';
