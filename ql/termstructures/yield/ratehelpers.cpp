@@ -596,8 +596,8 @@ namespace QuantLib {
                                    Date customPillarDate,
                                    bool endOfMonth,
                                    const ext::optional<bool>& useIndexedCoupons)
-    : SwapRateHelper(makeQuoteHandle(rate), tenor, calendar, fixedFrequency, fixedConvention,
-                     fixedDayCount, iborIndex, std::move(spread), fwdStart, std::move(discount), settlementDays,
+    : SwapRateHelper(makeQuoteHandle(rate), tenor, std::move(calendar), fixedFrequency, fixedConvention,
+                     std::move(fixedDayCount), iborIndex, std::move(spread), fwdStart, std::move(discount), settlementDays,
                      pillarChoice, customPillarDate, endOfMonth, useIndexedCoupons) {}
 
     void SwapRateHelper::initializeDates() {
