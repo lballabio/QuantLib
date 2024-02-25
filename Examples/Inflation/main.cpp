@@ -145,11 +145,13 @@ int main() {
 
     std::vector<Time> times = pZCIS->times();
     std::vector<Real> rates = pZCIS->data();
-    std::vector<Date> dates = pZCIS->dates();
+    std::vector<Date> c = pZCIS->dates();
+    std::vector<std::pair<Date, Rate> > nodes = pZCIS->nodes();
 
     std::cout << "ZCIS baseDate(): " << pZCIS->baseDate() << '\n';
     std::cout << "ZCIS maxDate(): " << pZCIS->maxDate() << '\n';
 
+    /*
     std::cout << "---times---" << '\n';
     for (auto time : times) {
         std::cout << time << '\n';
@@ -163,6 +165,12 @@ int main() {
     std::cout << "---rates---" << '\n';
     for (auto rate : rates) {
         std::cout << rate << '\n';
+    }*/
+
+    std::cout << "---nodes---" << '\n';
+    for (auto node : nodes) {
+        std::cout << node.first << '\n';
+        std::cout << node.second * 100 << '%' << '\n';
     }
 
     return 0;
