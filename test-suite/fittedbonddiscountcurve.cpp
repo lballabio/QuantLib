@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     // extract the model prices using the two curves
 
-    std::vector<Real> modelPrices1, modelPrices2;
+    std::vector<Bond::Price> modelPrices1, modelPrices2;
 
     ext::shared_ptr<PricingEngine> engine1 =
         ext::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(curve1));
@@ -153,9 +153,9 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     for (auto& bond : bonds) {
         bond->setPricingEngine(engine1);
-        modelPrices1.push_back(bond->cleanPrice());
+        modelPrices1.push_back(Bond::Price(bond->cleanPrice(), Bond::Price::Clean));
         bond->setPricingEngine(engine2);
-        modelPrices2.push_back(bond->cleanPrice());
+        modelPrices2.push_back(Bond::Price(bond->cleanPrice(), Bond::Price::Clean));
     }
     BOOST_CHECK_EQUAL(curve1->fitResults().errorCode(), EndCriteria::MaxIterations);
     BOOST_CHECK_EQUAL(curve2->fitResults().errorCode(), EndCriteria::MaxIterations);

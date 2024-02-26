@@ -134,18 +134,20 @@ BOOST_AUTO_TEST_CASE(testYield) {
 
                         for (Real m : yields) {
 
-                            Real price =
-                                BondFunctions::cleanPrice(bond, m, bondDayCount, n, frequency);
+                            Bond::Price price(
+                                BondFunctions::cleanPrice(bond, m, bondDayCount, n, frequency),
+                                Bond::Price::Clean);
 
                             Rate calculated = BondFunctions::yield(
                                 bond, price, bondDayCount, n, frequency, Date(), tolerance,
-                                maxEvaluations, 0.05, Bond::Price::Clean);
+                                maxEvaluations, 0.05);
 
                             if (std::fabs(m - calculated) > tolerance) {
                                 // the difference might not matter
                                 Real price2 = BondFunctions::cleanPrice(
                                     bond, calculated, bondDayCount, n, frequency);
-                                if (std::fabs(price - price2) / price > tolerance) {
+                                if (std::fabs(price.amount() - price2) / price.amount() >
+                                    tolerance) {
                                     BOOST_ERROR("\nyield recalculation failed:"
                                                 "\n    issue:        " << issue <<
                                                 "\n    maturity:     " << maturity <<
@@ -154,23 +156,25 @@ BOOST_AUTO_TEST_CASE(testYield) {
                                                 "\n    yield:        " << io::rate(m) <<
                                                     (n == Compounded ? " compounded" : " continuous") <<
                                                 std::setprecision(7) <<
-                                                "\n    clean price:  " << price <<
+                                                "\n    clean price:  " << price.amount() <<
                                                 "\n    yield':       " << io::rate(calculated) <<
                                                 "\n    clean price': " << price2);
                                 }
                             }
 
-                            price = BondFunctions::dirtyPrice(bond, m, bondDayCount, n, frequency);
+                            price = Bond::Price(
+                                BondFunctions::dirtyPrice(bond, m, bondDayCount, n, frequency),
+                                Bond::Price::Dirty);
 
                             calculated = BondFunctions::yield(
                                 bond, price, bondDayCount, n, frequency, Date(), tolerance,
-                                maxEvaluations, 0.05, Bond::Price::Dirty);
+                                maxEvaluations, 0.05);
 
                             if (std::fabs(m - calculated) > tolerance) {
                                 // the difference might not matter
                                 Real price2 = BondFunctions::dirtyPrice(
                                     bond, calculated, bondDayCount, n, frequency);
-                                if (std::fabs(price - price2) / price > tolerance) {
+                                if (std::fabs(price.amount() - price2) / price.amount() > tolerance) {
                                     BOOST_ERROR("\nyield recalculation failed:"
                                                 "\n    issue:        " << issue <<
                                                 "\n    maturity:     " << maturity <<
@@ -179,7 +183,7 @@ BOOST_AUTO_TEST_CASE(testYield) {
                                                 "\n    yield:        " << io::rate(m) <<
                                                     (n == Compounded ? " compounded" : " continuous") <<
                                                 std::setprecision(7) <<
-                                                "\n    dirty price:  " << price <<
+                                                "\n    dirty price:  " << price.amount() <<
                                                 "\n    yield':       " << io::rate(calculated) <<
                                                 "\n    dirty price': " << price2);
                                 }
@@ -391,8 +395,8 @@ BOOST_AUTO_TEST_CASE(testTheoretical) {
                     }
 
                     Rate calculatedYield = BondFunctions::yield(
-                        bond, calculatedPrice, bondDayCount, Continuous, frequency,
-                        bond.settlementDate(), tolerance, maxEvaluations);
+                        bond, Bond::Price(calculatedPrice, Bond::Price::Clean), bondDayCount,
+                        Continuous, frequency, bond.settlementDate(), tolerance, maxEvaluations);
                     if (std::fabs(m - calculatedYield) > tolerance) {
                         BOOST_ERROR("yield calculation failed:" <<
                                     "\n    issue:     " << issue <<
@@ -519,42 +523,31 @@ BOOST_AUTO_TEST_CASE(testCached) {
         tolerance,
         "failed to reproduce cached clean price with no schdule for bond 1:"
     );
-    checkValue(
-        BondFunctions::yield(bond1, marketPrice1, bondDayCount1, Compounded, freq),
-        cachedYield1a,
-        tolerance,
-        "failed to reproduce cached compounded yield with schedule for bond 1:"
-    );
-    checkValue(
-        BondFunctions::yield(bond1NoSchedule, marketPrice1, bondDayCount1NoSchedule, Compounded, freq),
-        cachedYield1a,
-        tolerance,
-        "failed to reproduce cached compounded yield with no schedule for bond 1:"
-    );
-    checkValue(
-        BondFunctions::yield(bond1, marketPrice1, bondDayCount1, Continuous, freq),
-        cachedYield1b,
-        tolerance,
-        "failed to reproduce cached continuous yield with schedule for bond 1:"
-    );
-    checkValue(
-        BondFunctions::yield(bond1NoSchedule, marketPrice1, bondDayCount1NoSchedule, Continuous, freq),
-        cachedYield1b,
-        tolerance,
-        "failed to reproduce cached continuous yield with no schedule for bond 1:"
-    );
-    checkValue(
-        BondFunctions::yield(bond1, bond1.cleanPrice(), bondDayCount1, Continuous, freq, bond1.settlementDate()),
-        cachedYield1c,
-        tolerance,
-        "failed to reproduce cached continuous yield with schedule for bond 1:"
-    );
-    checkValue(
-        BondFunctions::yield(bond1NoSchedule, bond1NoSchedule.cleanPrice(), bondDayCount1NoSchedule, Continuous, freq, bond1.settlementDate()),
-        cachedYield1c,
-        tolerance,
-        "failed to reproduce cached continuous yield with no schedule for bond 1:"
-    );
+    checkValue(BondFunctions::yield(bond1, Bond::Price(marketPrice1, Bond::Price::Clean),
+                                    bondDayCount1, Compounded, freq),
+               cachedYield1a, tolerance,
+               "failed to reproduce cached compounded yield with schedule for bond 1:");
+    checkValue(BondFunctions::yield(bond1NoSchedule, Bond::Price(marketPrice1, Bond::Price::Clean),
+                                    bondDayCount1NoSchedule, Compounded, freq),
+               cachedYield1a, tolerance,
+               "failed to reproduce cached compounded yield with no schedule for bond 1:");
+    checkValue(BondFunctions::yield(bond1, Bond::Price(marketPrice1, Bond::Price::Clean),
+                                    bondDayCount1, Continuous, freq),
+               cachedYield1b, tolerance,
+               "failed to reproduce cached continuous yield with schedule for bond 1:");
+    checkValue(BondFunctions::yield(bond1NoSchedule, Bond::Price(marketPrice1, Bond::Price::Clean),
+                                    bondDayCount1NoSchedule, Continuous, freq),
+               cachedYield1b, tolerance,
+               "failed to reproduce cached continuous yield with no schedule for bond 1:");
+    checkValue(BondFunctions::yield(bond1, Bond::Price(bond1.cleanPrice(), Bond::Price::Clean),
+                                    bondDayCount1, Continuous, freq, bond1.settlementDate()),
+               cachedYield1c, tolerance,
+               "failed to reproduce cached continuous yield with schedule for bond 1:");
+    checkValue(BondFunctions::yield(
+                   bond1NoSchedule, Bond::Price(bond1NoSchedule.cleanPrice(), Bond::Price::Clean),
+                   bondDayCount1NoSchedule, Continuous, freq, bond1.settlementDate()),
+               cachedYield1c, tolerance,
+               "failed to reproduce cached continuous yield with no schedule for bond 1:");
     
 
     //Now bond 2
@@ -582,42 +575,31 @@ BOOST_AUTO_TEST_CASE(testCached) {
         tolerance,
         "failed to reproduce cached clean price with no schedule for bond 2:"
     );
-    checkValue(
-        BondFunctions::yield(bond2, marketPrice2, bondDayCount2, Compounded, freq),
-        cachedYield2a,
-        tolerance,
-        "failed to reproduce cached compounded yield with schedule for bond 2:"
-    );
-    checkValue(
-        BondFunctions::yield(bond2NoSchedule, marketPrice2, bondDayCount2NoSchedule, Compounded, freq),
-        cachedYield2a,
-        tolerance,
-        "failed to reproduce cached compounded yield with no schedule for bond 2:"
-    );
-    checkValue(
-        BondFunctions::yield(bond2, marketPrice2, bondDayCount2, Continuous, freq),
-        cachedYield2b,
-        tolerance,
-        "failed to reproduce chached continuous yield with schedule for bond 2:"
-    );
-    checkValue(
-        BondFunctions::yield(bond2NoSchedule, marketPrice2, bondDayCount2NoSchedule, Continuous, freq),
-        cachedYield2b,
-        tolerance,
-        "failed to reproduce cached continuous yield with schedule for bond 2:"
-    );
-    checkValue(
-        BondFunctions::yield(bond2, bond2.cleanPrice(), bondDayCount2, Continuous, freq, bond2.settlementDate()),
-        cachedYield2c,
-        tolerance,
-        "failed to reproduce cached continuous yield for bond 2 with schedule:"
-    );
-    checkValue(
-        BondFunctions::yield(bond2NoSchedule, bond2NoSchedule.cleanPrice(), bondDayCount2NoSchedule, Continuous, freq, bond2NoSchedule.settlementDate()),
-        cachedYield2c,
-        tolerance,
-        "failed to reproduce cached continuous yield for bond 2 with no schedule:"
-    );
+    checkValue(BondFunctions::yield(bond2, Bond::Price(marketPrice2, Bond::Price::Clean),
+                                    bondDayCount2, Compounded, freq),
+               cachedYield2a, tolerance,
+               "failed to reproduce cached compounded yield with schedule for bond 2:");
+    checkValue(BondFunctions::yield(bond2NoSchedule, Bond::Price(marketPrice2, Bond::Price::Clean),
+                                    bondDayCount2NoSchedule, Compounded, freq),
+               cachedYield2a, tolerance,
+               "failed to reproduce cached compounded yield with no schedule for bond 2:");
+    checkValue(BondFunctions::yield(bond2, Bond::Price(marketPrice2, Bond::Price::Clean),
+                                    bondDayCount2, Continuous, freq),
+               cachedYield2b, tolerance,
+               "failed to reproduce chached continuous yield with schedule for bond 2:");
+    checkValue(BondFunctions::yield(bond2NoSchedule, Bond::Price(marketPrice2, Bond::Price::Clean),
+                                    bondDayCount2NoSchedule, Continuous, freq),
+               cachedYield2b, tolerance,
+               "failed to reproduce cached continuous yield with schedule for bond 2:");
+    checkValue(BondFunctions::yield(bond2, Bond::Price(bond2.cleanPrice(), Bond::Price::Clean),
+                                    bondDayCount2, Continuous, freq, bond2.settlementDate()),
+               cachedYield2c, tolerance,
+               "failed to reproduce cached continuous yield for bond 2 with schedule:");
+    checkValue(BondFunctions::yield(
+                   bond2NoSchedule, Bond::Price(bond2NoSchedule.cleanPrice(), Bond::Price::Clean),
+                   bondDayCount2NoSchedule, Continuous, freq, bond2NoSchedule.settlementDate()),
+               cachedYield2c, tolerance,
+               "failed to reproduce cached continuous yield for bond 2 with no schedule:");
 
     
 
@@ -1672,7 +1654,7 @@ BOOST_AUTO_TEST_CASE(testThirty360BondWithSettlementOn31st){
             Unadjusted,
             100.0);
 
-    Real cleanPrice = 100.0;
+    Bond::Price cleanPrice(100.0, Bond::Price::Clean);
 
     Real yield = BondFunctions::yield(fixedRateBond, cleanPrice, dayCounter, compounding, Semiannual, settlement);
     ASSERT_CLOSE("yield", settlement, yield, 0.015, 1e-4);
@@ -1720,7 +1702,7 @@ BOOST_AUTO_TEST_CASE(testBasisPointValue) {
             100.0);
 
     Date defaultSettlement = fixedRateBond.settlementDate();
-    Real cleanPrice = 102.890625;
+    Bond::Price cleanPrice(102.890625, Bond::Price::Clean);
 
     Real tolerance = 1e-6;
 

@@ -146,6 +146,7 @@ namespace QuantLib {
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate = Date());
+        [[deprecated("Use the version with the Bond::Price argument")]]
         static Rate yield(const Bond& bond,
                           Real price,
                           const DayCounter& dayCounter,
@@ -156,7 +157,17 @@ namespace QuantLib {
                           Size maxIterations = 100,
                           Rate guess = 0.05,
                           Bond::Price::Type priceType = Bond::Price::Clean);
+        static Rate yield(const Bond& bond,
+                          Bond::Price price,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date(),
+                          Real accuracy = 1.0e-10,
+                          Size maxIterations = 100,
+                          Rate guess = 0.05);
         template <typename Solver>
+        [[deprecated("Use the version with the Bond::Price argument")]]
         static Rate yield(const Solver& solver,
                           const Bond& bond,
                           Real price,
@@ -167,6 +178,19 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Rate guess = 0.05,
                           Bond::Price::Type priceType = Bond::Price::Clean) {
+            return yield(solver, Bond::Price(price, priceType), dayCounter, compounding, frequency,
+                         settlementDate, accuracy, guess);
+        }
+        template <typename Solver>
+        static Rate yield(const Solver& solver,
+                          const Bond& bond,
+                          Bond::Price price,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date(),
+                          Real accuracy = 1.0e-10,
+                          Rate guess = 0.05) {
             if (settlementDate == Date())
                 settlementDate = bond.settlementDate();
 
@@ -174,15 +198,15 @@ namespace QuantLib {
                        "non tradable at " << settlementDate <<
                        " (maturity being " << bond.maturityDate() << ")");
 
-            Real dirtyPrice = price;
+            Real amount = price.amount();
 
-            if (priceType == Bond::Price::Clean)
-                dirtyPrice += bond.accruedAmount(settlementDate);
+            if (price.type() == Bond::Price::Clean)
+                amount += bond.accruedAmount(settlementDate);
 
-            dirtyPrice /= 100.0 / bond.notional(settlementDate);
+            amount /= 100.0 / bond.notional(settlementDate);
 
-            return CashFlows::yield<Solver>(solver, bond.cashflows(),
-                                            dirtyPrice, dayCounter, compounding,
+            return CashFlows::yield<Solver>(solver, bond.cashflows(), amount, dayCounter,
+                                            compounding,
                                             frequency, false, settlementDate,
                                             settlementDate, accuracy, guess);
         }

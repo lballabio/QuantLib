@@ -206,12 +206,12 @@ namespace QuantLib {
         if (currentNotional == 0.0)
             return 0.0;
 
-        Real price = priceType == Bond::Price::Clean ? cleanPrice() : dirtyPrice();
+        Bond::Price price(priceType == Bond::Price::Clean ? cleanPrice() : dirtyPrice(), priceType);
 
         return BondFunctions::yield(*this, price, dc, comp, freq,
                                     settlementDate(),
                                     accuracy, maxEvaluations,
-                                    guess, priceType);
+                                    guess);
     }
 
     Real Bond::cleanPrice(Rate y,
@@ -244,13 +244,24 @@ namespace QuantLib {
                      Size maxEvaluations,
                      Real guess,
                      Bond::Price::Type priceType) const {
+        return yield(Bond::Price(price, priceType), dc, comp, freq, settlement, accuracy,
+                     maxEvaluations, guess);
+    }
+    Rate Bond::yield(Bond::Price price,
+                     const DayCounter& dc,
+                     Compounding comp,
+                     Frequency freq,
+                     Date settlement,
+                     Real accuracy,
+                     Size maxEvaluations,
+                     Real guess) const {
         Real currentNotional = notional(settlement);
         if (currentNotional == 0.0)
             return 0.0;
 
         return BondFunctions::yield(*this, price, dc, comp, freq,
                                     settlement, accuracy, maxEvaluations,
-                                    guess, priceType);
+                                    guess);
     }
 
     Real Bond::accruedAmount(Date settlement) const {
