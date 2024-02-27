@@ -9,6 +9,8 @@ convention = ql.ModifiedFollowing
 daycounter = ql.Actual360()
 dc360 = ql.Actual360()
 
+kpi_from_date = ql.Date(1, 1, 2021)
+kpi_to_date = ql.Date(1, 1, 2024)
 kpi_data = [338.09, 339.01, 339.54, 340.37, 341.04, 341.32, 342.23, 343.99, 345.74, 346.44,
             348.03, 352.47, 350.56, 353.56, 359.80, 362.02, 365.82, 370.95, 371.28, 377.81,
             383.21, 384.04, 387.93, 395.96, 391.50, 395.82, 398.08, 399.93, 401.19, 405.49,
@@ -82,15 +84,14 @@ def create_yoy_coupon_inflation_swap_helpers(coupons, index):
 
 def get_zero_index() -> ql.ZeroInflationIndex:
     zero_index = ql.ZeroInflationIndex("KPI", ql.CustomRegion("Europe", "EU"), False, ql.Monthly, ql.Period(1, ql.Days), ql.SEKCurrency())
-    from_date = ql.Date(1, 1, 2021)
-    to_date = ql.Date(1, 1, 2024)
-    kpi_schedule = ql.Schedule(from_date, 
-                               to_date, 
+    kpi_schedule = ql.Schedule(kpi_from_date, 
+                               kpi_to_date, 
                                ql.Period(ql.Monthly), 
                                calendar, 
                                convention, 
                                ql.Unadjusted,
-            ql.DateGeneration.Backward,False)
+                               ql.DateGeneration.Backward,
+                               False)
     for i in range(len(kpi_data)):
         zero_index.addFixing(kpi_schedule[i], kpi_data[i])
     return zero_index
@@ -134,7 +135,7 @@ zero_bootstrap_curve = ql.PiecewiseZeroInflation(
 ############## YoY benchmarchs ############
 
 yoy_swap = [
-    Coupon(ql.Date(1, 2, 2024), 5.45),
+#    Coupon(ql.Date(1, 2, 2024), 5.45),
     Coupon(ql.Date(1, 3, 2024), 5.35),
     Coupon(ql.Date(1, 4, 2024), 5.23),
     Coupon(ql.Date(1, 5, 2024), 5.21),
@@ -177,7 +178,7 @@ yoy_bootstrap_curve = ql.PiecewiseYoYInflation(
 )
 
 ############## Plot curve
-start_date = ql.Date(1, 1, 2025)
+start_date = ql.Date(1, 1, 2024)
 end_date = ql.Date(1, 2, 2033)
 calendar = ql. Sweden()
 
@@ -188,13 +189,22 @@ x = []
 y = []
 
 for day in  schedule:
-    print(day)
-    _y = zero_bootstrap_curve.zeroRate(day)
-    print(_y)
-    y.append(_y)
+    if day < ql.Date(1, 1, 2026):
+        print("YOY: ")
+        print(day)
+        _y = yoy_bootstrap_curve.yoyRate(day)
+        print(_y)
+        y.append(_y)
+    else:
+        print("ZC: ")
+        print(day)
+        _y = zero_bootstrap_curve.zeroRate(day)
+        print(_y)
+        y.append(_y)
+
     year_fraction = dc360.yearFraction(start_date, day)
-    print(year_fraction)
     x.append(year_fraction)
+    print(year_fraction)
 
 
 
