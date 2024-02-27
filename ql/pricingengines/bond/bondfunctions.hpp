@@ -108,6 +108,9 @@ namespace QuantLib {
         static Real cleanPrice(const Bond& bond,
                                const YieldTermStructure& discountCurve,
                                Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
+                               const YieldTermStructure& discountCurve,
+                               Date settlementDate = Date());
         static Real bps(const Bond& bond,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date());
@@ -258,6 +261,13 @@ namespace QuantLib {
         //! \name Z-spread functions
         //@{
         static Real cleanPrice(const Bond& bond,
+                               const ext::shared_ptr<YieldTermStructure>& discount,
+                               Spread zSpread,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Date settlementDate = Date());
+        static Real dirtyPrice(const Bond& bond,
                                const ext::shared_ptr<YieldTermStructure>& discount,
                                Spread zSpread,
                                const DayCounter& dayCounter,
