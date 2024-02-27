@@ -1,11 +1,13 @@
 import QuantLib as ql
 from datetime import date
+import matplotlib.pyplot as plt
 
 
-study_date = ql.Date(1, ql.January, 2023)
+study_date = ql.Date(1, ql.August, 2022)
 calendar = ql.Sweden()
 convention = ql.ModifiedFollowing
 daycounter = ql.Actual360()
+dc360 = ql.Actual360()
 
 
 class Coupon:
@@ -14,18 +16,22 @@ class Coupon:
         self.rate = rate
 
 
+def nominal_term_structure() -> ql.YieldTermStructureHandle:
+    nominal_term_structure = ql.FlatForward(study_date, 0.05, ql.Actual360())
+    handle_nts = ql.YieldTermStructureHandle(nominal_term_structure)
+    return handle_nts
+
+
 def create_zero_coupon_inflation_swap_helpers(coupons, index):
     helpers = []
     
     for coupon in coupons:
-        quote = ql.SimpleQuote(coupon.rate)
+        quote = ql.SimpleQuote(coupon.rate / 100.0)
         quote_handle = ql.QuoteHandle(quote)
         
+        nts = nominal_term_structure()
+        observation_lag =ql.Period(1, ql.Months)
         
-        observation_lag =ql.Period(3, ql.Months)
-        nominal_term_structure = ql.FlatForward(study_date, 0.05, ql.Actual360())
-        handle_nts = ql.YieldTermStructureHandle(nominal_term_structure)
-
         helper = ql.ZeroCouponInflationSwapHelper(
             quote_handle,
             observation_lag,
@@ -35,7 +41,7 @@ def create_zero_coupon_inflation_swap_helpers(coupons, index):
             daycounter,
             index,
             ql.CPI.AsIndex,
-            handle_nts
+            nts
         )
         
         helpers.append(helper)
@@ -64,25 +70,52 @@ def get_kpi_index() -> ql.ZeroInflationIndex:
     
 
 zcSwap = [
-    Coupon(ql.Date(1, ql.January, 2026), 3.145),
-    Coupon(ql.Date(1, ql.January, 2027), 3.145),
-    Coupon(ql.Date(1, ql.January, 2029), 3.145),
-    Coupon(ql.Date(1, ql.January, 2031), 3.145),
-    Coupon(ql.Date(1, ql.January, 2034), 3.145)
+    Coupon(ql.Date(1, 1, 2026), 3.145),
+    Coupon(ql.Date(1, 1, 2027), 3.145),
+    Coupon(ql.Date(1, 1, 2029), 3.145),
+    Coupon(ql.Date(1, 1, 2031), 3.145),
+    Coupon(ql.Date(1, 1, 2034), 3.145)
 ]
 
 #########################
 inflation_index = get_kpi_index()
 helper = create_zero_coupon_inflation_swap_helpers(zcSwap, inflation_index)
 
+frequency = ql.Monthly
+base_rate = 0.0
+period_lag = ql.Period("1M")
 
 bootstrap_curve = ql.PiecewiseZeroInflation(
     study_date,
-    ql.UnitedKingdom(),  # ?
-    ql.OneDayCounter(),  # ?
-    ql.Period("2M"),
-    ql.Annual,  # ?
-    0.0,
-    helper,
-    1.0e-5,
+    calendar,
+    daycounter,
+    period_lag,
+    frequency,
+    base_rate,
+    helper
 )
+
+## Plot curve
+start_date = ql.Date(1, 1, 2025)
+end_date = ql.Date(1, 2, 2033)
+calendar = ql. Sweden()
+
+
+schedule = ql.MakeSchedule(start_date, end_date, ql.Period('1M'), rule=ql.DateGeneration.Forward)
+
+x = []
+y = []
+
+for day in  schedule:
+    print(day)
+    _y =bootstrap_curve.zeroRate(day)
+    print(_y)
+    y.append(_y)
+    year_fraction = dc360.yearFraction(start_date, day)
+    print(year_fraction)
+    x.append(year_fraction)
+
+
+
+plt.plot(x, y)
+plt.show()
