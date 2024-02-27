@@ -72,8 +72,7 @@ struct CommonVars {
     CommonVars() {
         calendar = TARGET();
 
-        today = calendar.adjust(Date::todaysDate());
-        Settings::instance().evaluationDate() = today;
+        today = Settings::instance().evaluationDate();
 
         dayCounter = Actual360();
         frequency = Annual;
