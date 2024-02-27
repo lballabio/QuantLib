@@ -62,7 +62,8 @@ namespace QuantLib {
         class Price {
           public:
             enum Type { Dirty, Clean };
-            Price() : amount_(Null<Real>()) {}
+            Price() : amount_(Null<Real>()), type_(Bond::Price::Clean) {}
+            Price(Real amount) : amount_(amount), type_(Bond::Price::Clean) {}
             Price(Real amount, Type type) : amount_(amount), type_(type) {}
             Real amount() const {
                 QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
@@ -350,6 +351,14 @@ namespace QuantLib {
         return issueDate_;
     }
 
+/*! Returns <tt>true</tt> iff the two bond prices belong to the same
+    derived class.
+    \relates Bond::Price
+*/
+    bool operator==(const Bond::Price&, const Bond::Price&);
+
+    /*! \relates Bond::Price */
+    bool operator!=(const Bond::Price&, const Bond::Price&);
 }
 
 #endif
