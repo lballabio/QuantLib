@@ -235,38 +235,30 @@ int main() {
     Date toDay(1, September, 2033);
     Schedule printSchedule = MakeSchedule().from(startDay).to(toDay).withFrequency(Monthly);
 
-    int monthsYoy = 21;
-    int monthsZc = 12*7;
-    int months = monthsYoy + monthsZc;
 
-    std::vector<Time> x(months);
-    std::vector<Rate> y(months);
+    std::vector<Time> x(printSchedule.size());
+    std::vector<Rate> y(printSchedule.size());
 
 
-    for (int i = 0; i < monthsYoy; ++i) {
-        Time t = dc360.yearFraction(startDay, printSchedule[i]);
-        //std::cout << "Date to print YoY: " << printSchedule[i] << '\n';
-        //std::cout << "Yearfraction: " << t << '\n';
-        Real yyr = pYoYIS->yoyRate(printSchedule[i]);
-        //std::cout << "YoY rate: " << yyr << '\n';
+    for (auto day : printSchedule) {
+        Time t = dc360.yearFraction(startDay, day);
+        Real spotRate;
+        if (day < Date(1, November, 2025)) {
+            std::cout << "YoY benchmarch:" << '\n';
+            spotRate = pYoYIS->yoyRate(day);
+        }
+        else {
+            std::cout << "ZC benchmarch:" << '\n';
+            spotRate = pZCIS->zeroRate(day);
+        }
 
-        x.emplace_back(t);
-        y.emplace_back(yyr);
-    }
-    
-    
-    for (int i = monthsYoy; i < months; ++i) {
-        Time t = dc360.yearFraction(startDay, printSchedule[i]);
-        //std::cout << "Date to print ZC: " << printSchedule[i] << '\n';
-        //std::cout << "Yearfraction: " << t << '\n';
-        Real zr = pZCIS->zeroRate(printSchedule[i]);
-        //std::cout << "Zero rate: " << zr << '\n';
+        std::cout << "Date: " << day << '\n';
+        std::cout << "Spot rate: " << spotRate << '\n';
         
         x.emplace_back(t);
-        y.emplace_back(zr);
+        y.emplace_back(spotRate);
     }
-
-
+    
    
     // inflation index
     Date iiStart(1, January, 2024); // Must be after or equal base date
@@ -288,9 +280,11 @@ int main() {
     using namespace matplot;
 
     figure();
+    title("Spot rate, annual comp");
     plot(x, y, "-o");
     
     figure();
+    title("Inflation index");
     plot(xt, ii, "-o");
     
     show();
