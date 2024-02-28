@@ -55,11 +55,22 @@ makeHelpers(const std::vector<Coupon>& coupons,
 }
 
 int main() {
-
+    // Evaluation date, AsOfDate
+    Date studyDate(13, February, 2024);
+    std::cout << "studyDate:" << studyDate << '\n';
+    Calendar calendar = UnitedKingdom();
+    BusinessDayConvention bdc = ModifiedFollowing;
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Frequency frequency = Monthly;
+    // Common to YoY and ZC
+    Actual360 dc360;
+    // Use the same for both YoY and ZC inflation swap curves
+    Period observationLag = Period(2, Months);
+    
     // KPI Index
-    //RelinkableHandle<ZeroInflationTermStructure> relinkableZeroTermStructureHandle;
-    Period availabilityLag(1, Days);
-    ZeroInflationIndex kpiIndex("UKRPI", UKRegion(), false, Monthly, availabilityLag, GBPCurrency());
+    RelinkableHandle<ZeroInflationTermStructure> relinkableZeroTermStructureHandle;
+    Period availabilityLag(25, Days);
+    ZeroInflationIndex kpiIndex("UKRPI", UKRegion(), false, Monthly, availabilityLag, GBPCurrency(), relinkableZeroTermStructureHandle);
     boost::shared_ptr<ZeroInflationIndex> pKpiIndex =
         boost::make_shared<ZeroInflationIndex>(kpiIndex);
 
@@ -76,6 +87,9 @@ int main() {
         kpiIndex.addFixing(kpiSchedule[i], kpi[i]);
     }
 
+    Date baseDate = pKpiIndex->lastFixingDate();
+    std::cout << "baseDate: " << baseDate << '\n';
+
     std::cout << "kpiSchedule.size(): " << kpiSchedule.size() << '\n';
     TimeSeries<Real> ts = kpiIndex.timeSeries();
     std::cout << "ts.size(): " << ts.size() << '\n';
@@ -85,20 +99,6 @@ int main() {
     std::cout << "1 Dec 2023: " << kpiIndex.fixing(Date(1, December, 2023)) << std::endl;
     std::cout << "1 Nov 2023: " << kpiIndex.fixing(Date(1, November, 2023)) << std::endl;
 
-    // Common to YoY and ZC
-    Actual360 dc360;
-    // Use the same for both YoY and ZC inflation swap curves
-    Period observationLag = Period(3, Months);
-    Calendar calendar = UnitedKingdom();
-    BusinessDayConvention bdc = ModifiedFollowing;
-    DayCounter dc = Thirty360(Thirty360::BondBasis);
-    Frequency frequency = Monthly;
-    Date baseDate = pKpiIndex->lastFixingDate();
-    std::cout << "baseDate: " << baseDate << '\n';
-
-    // Evaluation date, AsOfDate
-    Date studyDate(13, February, 2024);
-    std::cout << "studyDate:" << studyDate << '\n';
 
     ///////////////
     // YoY Inflation Swaps
@@ -153,12 +153,15 @@ int main() {
 
     auto helpersYoY = makeHelpers<YoYInflationTermStructure>(yoySwap, makeHelperYoY);
 
-    Rate baseYoYRate = 0.03645;//yyIndex.fixing(Date(1, January, 2024));
+    //Rate baseYoYRate = 0.03645;//yyIndex.fixing(Date(1, January, 2024));
+    Rate baseYoYRate = 0.056014;//yyIndex.fixing(Date(1, January, 2024));
+    
     std::cout << "baseYoYRate: " << baseYoYRate << '\n';
 
     auto pYoYIS = ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
         studyDate, baseDate, baseYoYRate, frequency, true, dc, helpersYoY);
 
+    
 
     ///////////////
     // ZCIS //
@@ -175,6 +178,12 @@ int main() {
         {Date(14, February, 2033), 3.64000},
         {Date(14, February, 2034), 3.60000},
         {Date(13, February, 2036), 3.53875},
+        {Date(14, February, 2039), 3.47125},
+        {Date(15, February, 2044), 3.39125},
+        {Date(15, February, 2049), 3.29375},
+        {Date(13, February, 2054), 3.23000},
+        {Date(13, February, 2064), 3.12500},
+        {Date(13, February, 2074), 3.10250},
     };
 
 
@@ -207,7 +216,8 @@ int main() {
             dc,
             helpers
             );
-
+    
+    relinkableZeroTermStructureHandle.linkTo(pZCIS);
 
     std::vector<Time> times = pZCIS->times();  // year fractions
     std::vector<Real> rates = pZCIS->data();
@@ -257,9 +267,32 @@ int main() {
     }
 
 
-    ////// plot ////////
+   
+    // inflation index
+    Date iiStart(1, January, 2024); // Must be after or equal base date
+    Date iiTo(1, September, 2073);
+    Schedule inflationSchedule = MakeSchedule().from(iiStart).to(iiTo).withFrequency(Monthly);
+    std::vector<Time> xt(inflationSchedule.size());
+    std::vector<Rate> ii(inflationSchedule.size());
+    std::cout << "printschedule.size: " << inflationSchedule.size() << '\n' ;
+    for (auto day : inflationSchedule) {
+        Time t = dc360.yearFraction(startDay, day);
+        Rate index = pKpiIndex->fixing(day);
+        std::cout << "Time fraction: " << day << '\n';
+        std::cout << "Inflation index: " << index << '\n';
+        xt.emplace_back(t);
+        ii.emplace_back(index);
+    }
+
+     ////// plot ////////
     using namespace matplot;
+
+    figure();
     plot(x, y, "-o");
+    
+    figure();
+    plot(xt, ii, "-o");
+    
     show();
     
     //std::cout << pZCIS->zeroRate(studyDate) << '\n';
