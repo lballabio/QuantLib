@@ -7,7 +7,7 @@
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/time/calendars/sweden.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
@@ -57,15 +57,16 @@ makeHelpers(const std::vector<Coupon>& coupons,
 int main() {
 
     // KPI Index
-
-    ZeroInflationIndex kpiIndex("KPI", EURegion(), false, Monthly, Period(1, Days), SEKCurrency());
+    //RelinkableHandle<ZeroInflationTermStructure> relinkableZeroTermStructureHandle;
+    Period availabilityLag(1, Days);
+    ZeroInflationIndex kpiIndex("UKRPI", UKRegion(), false, Monthly, availabilityLag, GBPCurrency());
     boost::shared_ptr<ZeroInflationIndex> pKpiIndex =
         boost::make_shared<ZeroInflationIndex>(kpiIndex);
 
-    Real kpi[] = {338.09, 339.01, 339.54, 340.37, 341.04, 341.32, 342.23, 343.99, 345.74, 346.44,
-                  348.03, 352.47, 350.56, 353.56, 359.80, 362.02, 365.82, 370.95, 371.28, 377.81,
-                  383.21, 384.04, 387.93, 395.96, 391.50, 395.82, 398.08, 399.93, 401.19, 405.49,
-                  405.67, 405.97, 408.05, 409.07, 410.35, 413.34, 412.74};
+    Real kpi[] = {294.6, 296.0, 296.9, 301.1, 301.9, 304.0, 305.5, 307.4, 308.6, 312.0,
+                  314.3, 317.7, 317.7, 320.2, 323.5, 334.6, 337.1, 340.0, 343.2, 345.2,
+                  347.6, 356.2, 358.3, 360.4, 360.3, 364.5, 367.2, 372.8, 375.3, 376.4,
+                  374.2, 376.6, 378.4, 377.8, 377.3, 379.0, 378.0};
 
     Date from(1, January, 2021);
     Date to(1, January, 2024);
@@ -88,18 +89,19 @@ int main() {
     Actual360 dc360;
     // Use the same for both YoY and ZC inflation swap curves
     Period observationLag = Period(3, Months);
-    Calendar calendar = Sweden();
+    Calendar calendar = UnitedKingdom();
     BusinessDayConvention bdc = ModifiedFollowing;
     DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
     Date baseDate = pKpiIndex->lastFixingDate();
+    std::cout << "baseDate: " << baseDate << '\n';
 
     // Evaluation date, AsOfDate
-    Date studyDate(15, August, 2022);
+    Date studyDate(13, February, 2024);
+    std::cout << "studyDate:" << studyDate << '\n';
 
     ///////////////
-    // YoY Inflation Swap
-    // YoY KPI
+    // YoY Inflation Swaps
 
     YoYInflationIndex yyIndex(pKpiIndex, false);
     boost::shared_ptr<YoYInflationIndex> pYoyIndex =
@@ -108,30 +110,29 @@ int main() {
     std::cout << "1 Jan 2024: " << yyRate * 100 << '%' << std::endl;
 
     // YoY Swaps (first 2 years to get monthly granularity)
+
     std::vector<Coupon> yoySwap = {
-        { Date(1, February, 2024), 5.45 },
-        { Date(1, March,    2024), 5.35 },
-        { Date(1, April,    2024), 5.23 },
-        { Date(1, May,      2024), 5.21 },
-        { Date(1, June,     2024), 5.14 },
-        { Date(1, July,     2024), 5.00 },
-        { Date(1, August,   2024), 4.80 },
-        { Date(1, September,2024), 4.55 },
-        { Date(1, October,  2024), 4.45 },
-        { Date(1, November, 2024), 4.37 },
-        { Date(1, December, 2024), 4.25 },
-        { Date(1, January,  2025), 3.135 },
-        { Date(1, February, 2025), 3.155 },
-        { Date(1, March,    2025), 3.145 },
-        { Date(1, April,    2025), 3.145 },
-        { Date(1, May,      2025), 3.145 },
-        { Date(1, June,     2025), 3.145 },
-        { Date(1, July,     2025), 3.145 },
-        { Date(1, August,   2025), 3.145 },
-        { Date(1, September,2025), 3.145 },
-        { Date(1, October,  2025), 3.145 },
-        { Date(1, November, 2025), 3.145 },
-        { Date(1, December, 2025), 3.145 },
+        {Date(15, May, 2024), 4.25500},
+        {Date(13, June, 2024), 2.98000},
+        {Date(15, July, 2024), 2.67250},
+        {Date(14, August, 2024), 2.66500},
+        {Date(13, September, 2024), 3.38750},
+        {Date(14, October, 2024), 3.29500},
+        {Date(13, November, 2024), 2.90500},
+        {Date(13, December, 2024), 3.32500},
+        {Date(15, January, 2025), 3.61000},
+        {Date(13, February, 2025), 3.64500},
+        {Date(13, March, 2025), 3.44628},
+        {Date(15, April, 2025), 3.29883},
+        {Date(13, May, 2025), 3.10817},
+        {Date(13, June, 2025), 3.72133},
+        {Date(15, July, 2025), 3.75031},
+        {Date(13, August, 2025), 3.65739},
+        {Date(15, September, 2025), 3.78288},
+        {Date(14, October, 2025), 3.81064},
+        {Date(13, November, 2025), 3.84212},
+        {Date(15, December, 2025), 3.77549},
+        {Date(13, January, 2026), 3.7825},
     };
 
 
@@ -152,21 +153,29 @@ int main() {
 
     auto helpersYoY = makeHelpers<YoYInflationTermStructure>(yoySwap, makeHelperYoY);
 
-    Rate baseYoYRate = yyIndex.fixing(Date(1, January, 2024));
+    Rate baseYoYRate = 0.03645;//yyIndex.fixing(Date(1, January, 2024));
     std::cout << "baseYoYRate: " << baseYoYRate << '\n';
 
     auto pYoYIS = ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
         studyDate, baseDate, baseYoYRate, frequency, true, dc, helpersYoY);
 
 
-    // ZCIS //
     ///////////////
-    // now build the ZCIS (Zero-Coupon Inflation Swap)
-    std::vector<Coupon> zcSwap = {{Date(1, January, 2026), 3.145},
-                                  {Date(1, January, 2027), 3.145},
-                                  {Date(1, January, 2029), 3.145},
-                                  {Date(1, January, 2031), 3.145},
-                                  {Date(1, January, 2034), 3.145}};
+    // ZCIS //
+    // Zero-Coupon Inflation Swaps
+
+    std::vector<Coupon> zcSwap = {
+        {Date(13, February, 2026), 3.75625},
+        {Date(13, February, 2027), 3.78750},
+        {Date(13, February, 2028), 3.79250},
+        {Date(13, February, 2029), 3.79250},
+        {Date(13, February, 2030), 3.80625},
+        {Date(13, February, 2031), 3.75250},
+        {Date(13, February, 2032), 3.69000},
+        {Date(14, February, 2033), 3.64000},
+        {Date(14, February, 2034), 3.60000},
+        {Date(13, February, 2036), 3.53875},
+    };
 
 
     boost::shared_ptr<YieldTermStructure> yieldTermStructure(
@@ -213,9 +222,6 @@ int main() {
 
 
     Date startDay(1, January, 2024); // Must be after or equal base date
-    //Date toDayYoY(1, December, 2025);
-    
-    //Date startDayZc(1, January, 2026);
     Date toDay(1, September, 2033);
     Schedule printSchedule = MakeSchedule().from(startDay).to(toDay).withFrequency(Monthly);
 
@@ -229,10 +235,10 @@ int main() {
 
     for (int i = 0; i < monthsYoy; ++i) {
         Time t = dc360.yearFraction(startDay, printSchedule[i]);
-        std::cout << "Date to print YoY: " << printSchedule[i] << '\n';
-        std::cout << "Yearfraction: " << t << '\n';
+        //std::cout << "Date to print YoY: " << printSchedule[i] << '\n';
+        //std::cout << "Yearfraction: " << t << '\n';
         Real yyr = pYoYIS->yoyRate(printSchedule[i]);
-        std::cout << "YoY rate: " << yyr << '\n';
+        //std::cout << "YoY rate: " << yyr << '\n';
 
         x.emplace_back(t);
         y.emplace_back(yyr);
@@ -241,15 +247,14 @@ int main() {
     
     for (int i = monthsYoy; i < months; ++i) {
         Time t = dc360.yearFraction(startDay, printSchedule[i]);
-        std::cout << "Date to print ZC: " << printSchedule[i] << '\n';
-        std::cout << "Yearfraction: " << t << '\n';
+        //std::cout << "Date to print ZC: " << printSchedule[i] << '\n';
+        //std::cout << "Yearfraction: " << t << '\n';
         Real zr = pZCIS->zeroRate(printSchedule[i]);
-        std::cout << "Zero rate: " << zr << '\n';
+        //std::cout << "Zero rate: " << zr << '\n';
         
         x.emplace_back(t);
         y.emplace_back(zr);
     }
-
 
 
     ////// plot ////////
