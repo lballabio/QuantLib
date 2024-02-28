@@ -33,9 +33,9 @@ struct Coupon {
     Rate rate;
 };
 
-ext::shared_ptr<YieldTermStructure> nominalTermStructure(Date studyDate) {
+ext::shared_ptr<YieldTermStructure> nominalTermStructure(Date studyDate, Rate baseRate) {
     return ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(studyDate, 0.05, Actual360()));
+            new FlatForward(studyDate, baseRate, Actual360()));
 }
 
 template <class T>
@@ -60,7 +60,7 @@ int main() {
     std::cout << "studyDate:" << studyDate << '\n';
     Calendar calendar = UnitedKingdom();
     BusinessDayConvention bdc = ModifiedFollowing;
-    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    DayCounter dc = Thirty360(Thirty360::European);
     Frequency frequency = Monthly;
     // Common to YoY and ZC
     Actual360 dc360;
@@ -71,6 +71,9 @@ int main() {
     RelinkableHandle<ZeroInflationTermStructure> relinkableZeroTermStructureHandle;
     Period availabilityLag(25, Days);
     ZeroInflationIndex kpiIndex("UKRPI", UKRegion(), false, Monthly, availabilityLag, GBPCurrency(), relinkableZeroTermStructureHandle);
+    
+    
+    
     boost::shared_ptr<ZeroInflationIndex> pKpiIndex =
         boost::make_shared<ZeroInflationIndex>(kpiIndex);
 
@@ -103,7 +106,8 @@ int main() {
     ///////////////
     // YoY Inflation Swaps
 
-    YoYInflationIndex yyIndex(pKpiIndex, false);
+    bool interpolatedYoy = false;
+    YoYInflationIndex yyIndex(pKpiIndex, interpolatedYoy);
     boost::shared_ptr<YoYInflationIndex> pYoyIndex =
         boost::make_shared<YoYInflationIndex>(yyIndex);
         Rate yyRate = yyIndex.fixing(Date(1, January, 2024));
@@ -136,8 +140,10 @@ int main() {
     };
 
 
-    // TODO
-    ext::shared_ptr<YieldTermStructure> yoyNominalTS = nominalTermStructure(studyDate);
+    //Rate baseYoYRate = 0.03645;//yyIndex.fixing(Date(1, January, 2024));
+    Rate baseYoYRate = 0.056014;//yyIndex.fixing(Date(1, January, 2024));
+    std::cout << "baseYoYRate: " << baseYoYRate << '\n';
+    ext::shared_ptr<YieldTermStructure> yoyNominalTS = nominalTermStructure(studyDate, baseYoYRate);
 
     auto makeHelperYoY = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
@@ -152,11 +158,6 @@ int main() {
     };
 
     auto helpersYoY = makeHelpers<YoYInflationTermStructure>(yoySwap, makeHelperYoY);
-
-    //Rate baseYoYRate = 0.03645;//yyIndex.fixing(Date(1, January, 2024));
-    Rate baseYoYRate = 0.056014;//yyIndex.fixing(Date(1, January, 2024));
-    
-    std::cout << "baseYoYRate: " << baseYoYRate << '\n';
 
     auto pYoYIS = ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
         studyDate, baseDate, baseYoYRate, frequency, true, dc, helpersYoY);
@@ -187,9 +188,11 @@ int main() {
     };
 
 
-    boost::shared_ptr<YieldTermStructure> yieldTermStructure(
-        new FlatForward(studyDate, 0.05, Actual360()));
-    Handle<YieldTermStructure> nominalTermStructure(yieldTermStructure);
+    // boost::shared_ptr<YieldTermStructure> yieldTermStructure(
+    //        new FlatForward(studyDate, 0.05, Actual360()));
+    //    Handle<YieldTermStructure> nts(yieldTermStructure);
+    Rate zcBaseRate = 0.03756250;
+    ext::shared_ptr<YieldTermStructure> nts = nominalTermStructure(studyDate, zcBaseRate);
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<ZeroCouponInflationSwapHelper>(quote,
@@ -199,8 +202,8 @@ int main() {
                                                                bdc,
                                                                dc,
                                                                pKpiIndex,
-                                                               CPI::AsIndex,
-                                                               nominalTermStructure);
+                                                               CPI::Linear,
+                                                               Handle<YieldTermStructure>(nts));
     };
 
     std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers =
@@ -230,18 +233,32 @@ int main() {
     //////////////////////
     // Plot Inflation curve
 
+    std::vector<Date> dates = {
+        Date(1, January, 2024),  Date(1, February, 2024), Date(1, March, 2024),
+        Date(1, April, 2024),    Date(1, May, 2024),      Date(1, June, 2024),
+        Date(1, July, 2024),     Date(1, August, 2024),   Date(1, September, 2024),
+        Date(1, October, 2024),  Date(1, November, 2024), Date(1, December, 2024),
+        Date(1, January, 2025),  Date(1, February, 2025), Date(1, March, 2025),
+        Date(1, April, 2025),    Date(1, May, 2025),      Date(1, June, 2025),
+        Date(1, July, 2025),     Date(1, August, 2025),   Date(1, September, 2025),
+        Date(1, October, 2025),  Date(1, November, 2025), Date(1, December, 2025),
+        Date(1, December, 2026), Date(1, December, 2027), Date(1, December, 2028),
+        Date(1, February, 2029), Date(1, February, 2030), Date(1, February, 2031),
+        Date(1, February, 2032), Date(1, February, 2033), Date(1, February, 2034),
+        Date(1, February, 2036), Date(1, February, 2039), Date(1, February, 2044),
+        Date(1, February, 2049), Date(1, February, 2054), Date(1, February, 2064),
+        Date(1, December, 2073),
+    };
 
-    Date startDay(1, January, 2024); // Must be after or equal base date
-    Date toDay(1, September, 2033);
-    Schedule printSchedule = MakeSchedule().from(startDay).to(toDay).withFrequency(Monthly);
+    //Date startDay(1, January, 2024); // Must be after or equal base date
+    //Date toDay(1, September, 2033);
+    //Schedule printSchedule = MakeSchedule().from(startDay).to(toDay).withFrequency(Monthly);
 
+    std::vector<Time> x(dates.size());
+    std::vector<Rate> y(dates.size());
 
-    std::vector<Time> x(printSchedule.size());
-    std::vector<Rate> y(printSchedule.size());
-
-
-    for (auto day : printSchedule) {
-        Time t = dc360.yearFraction(startDay, day);
+    for (auto day : dates) {
+        Time t = dc360.yearFraction(dates[0], day);
         Real spotRate;
         if (day < Date(1, November, 2025)) {
             std::cout << "YoY benchmarch:" << '\n';
@@ -268,23 +285,25 @@ int main() {
     std::vector<Rate> ii(inflationSchedule.size());
     std::cout << "printschedule.size: " << inflationSchedule.size() << '\n' ;
     for (auto day : inflationSchedule) {
-        Time t = dc360.yearFraction(startDay, day);
+        Time t = dc360.yearFraction(dates[0], day);
         Rate index = pKpiIndex->fixing(day);
-        std::cout << "Time fraction: " << day << '\n';
-        std::cout << "Inflation index: " << index << '\n';
+        //std::cout << "Time fraction: " << day << '\n';
+        //std::cout << "Inflation index: " << index << '\n';
         xt.emplace_back(t);
         ii.emplace_back(index);
     }
 
-     ////// plot ////////
+    //////// plot ////////
     using namespace matplot;
 
     figure();
     title("Spot rate, annual comp");
+    xlabel("Years");
     plot(x, y, "-o");
     
     figure();
     title("Inflation index");
+    xlabel("Years");
     plot(xt, ii, "-o");
     
     show();
