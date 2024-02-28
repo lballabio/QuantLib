@@ -1,6 +1,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/indexes/region.hpp>
+#include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
@@ -70,12 +71,12 @@ int main() {
     // KPI Index
     RelinkableHandle<ZeroInflationTermStructure> relinkableZeroTermStructureHandle;
     Period availabilityLag(25, Days);
-    ZeroInflationIndex kpiIndex("UKRPI", UKRegion(), false, Monthly, availabilityLag, GBPCurrency(), relinkableZeroTermStructureHandle);
+    ZeroInflationIndex ukrpi("UKRPI", UKRegion(), false, Monthly, availabilityLag, GBPCurrency(), relinkableZeroTermStructureHandle);
+    //UKRPI ukrpi(relinkableZeroTermStructureHandle);
     
     
-    
-    boost::shared_ptr<ZeroInflationIndex> pKpiIndex =
-        boost::make_shared<ZeroInflationIndex>(kpiIndex);
+    boost::shared_ptr<ZeroInflationIndex> pUkrpiIndex =
+        boost::make_shared<ZeroInflationIndex>(ukrpi);
 
     Real kpi[] = {294.6, 296.0, 296.9, 301.1, 301.9, 304.0, 305.5, 307.4, 308.6, 312.0,
                   314.3, 317.7, 317.7, 320.2, 323.5, 334.6, 337.1, 340.0, 343.2, 345.2,
@@ -87,27 +88,27 @@ int main() {
     Schedule kpiSchedule = MakeSchedule().from(from).to(to).withFrequency(Monthly);
 
     for (Size i = 0; i < LENGTH(kpi); ++i) {
-        kpiIndex.addFixing(kpiSchedule[i], kpi[i]);
+        ukrpi.addFixing(kpiSchedule[i], kpi[i]);
     }
 
-    Date baseDate = pKpiIndex->lastFixingDate();
+    Date baseDate = pUkrpiIndex->lastFixingDate();
     std::cout << "baseDate: " << baseDate << '\n';
 
     std::cout << "kpiSchedule.size(): " << kpiSchedule.size() << '\n';
-    TimeSeries<Real> ts = kpiIndex.timeSeries();
+    TimeSeries<Real> ts = ukrpi.timeSeries();
     std::cout << "ts.size(): " << ts.size() << '\n';
 
     std::cout << "------KPI Zero index------" << '\n';
-    std::cout << "1 Jan 2024: " << kpiIndex.fixing(Date(1, January, 2024)) << std::endl;
-    std::cout << "1 Dec 2023: " << kpiIndex.fixing(Date(1, December, 2023)) << std::endl;
-    std::cout << "1 Nov 2023: " << kpiIndex.fixing(Date(1, November, 2023)) << std::endl;
+    std::cout << "1 Jan 2024: " << ukrpi.fixing(Date(1, January, 2024)) << std::endl;
+    std::cout << "1 Dec 2023: " << ukrpi.fixing(Date(1, December, 2023)) << std::endl;
+    std::cout << "1 Nov 2023: " << ukrpi.fixing(Date(1, November, 2023)) << std::endl;
 
 
     ///////////////
     // YoY Inflation Swaps
 
     bool interpolatedYoy = false;
-    YoYInflationIndex yyIndex(pKpiIndex, interpolatedYoy);
+    YoYInflationIndex yyIndex(pUkrpiIndex, interpolatedYoy);
     boost::shared_ptr<YoYInflationIndex> pYoyIndex =
         boost::make_shared<YoYInflationIndex>(yyIndex);
         Rate yyRate = yyIndex.fixing(Date(1, January, 2024));
@@ -201,7 +202,7 @@ int main() {
                                                                calendar,
                                                                bdc,
                                                                dc,
-                                                               pKpiIndex,
+                                                               pUkrpiIndex,
                                                                CPI::Linear,
                                                                Handle<YieldTermStructure>(nts));
     };
@@ -286,7 +287,7 @@ int main() {
     std::cout << "printschedule.size: " << inflationSchedule.size() << '\n' ;
     for (auto day : inflationSchedule) {
         Time t = dc360.yearFraction(dates[0], day);
-        Rate index = pKpiIndex->fixing(day);
+        Rate index = pUkrpiIndex->fixing(day);
         //std::cout << "Time fraction: " << day << '\n';
         //std::cout << "Inflation index: " << index << '\n';
         xt.emplace_back(t);
