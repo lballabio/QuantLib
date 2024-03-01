@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 FIMAT Group
  Copyright (C) 2007, 2008, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2024 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -195,8 +196,25 @@ namespace QuantLib {
                 || (d == 2 && m == June)
                 // Hari Raya Haji
                 || (d == 29 && m == June)
+                // Public holiday on polling day
+                || (d == 1 && m == September)
                 // Deepavali
                 || (d == 13 && m == November))
+                return false;
+        }
+        // https://api2.sgx.com/sites/default/files/2024-01/SGX%20Calendar%202024_2.pdf
+        if (y == 2024)
+        {
+            if (// Chinese New Year
+                (d == 12 && m == February)
+                // Hari Raya Puasa
+                || (d == 10 && m == April)
+                // Vesak Poya Day
+                || (d == 22 && m == May)
+                // Hari Raya Haji
+                || (d == 17 && m == June)
+                // Deepavali
+                || (d == 31 && m == October))
                 return false;
         }
         return true;
