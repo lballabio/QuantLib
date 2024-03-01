@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -80,6 +80,8 @@ namespace QuantLib {
             || (d == 27 && m == December && y == 2022)
             // one-shot: Special holiday to celebrate winning of Rugby World Cup 2023
             || (d == 15 && m == December && y == 2023)
+            // one-shot: Election day 2024
+            || (d == 29 && m == May && y == 2024)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
