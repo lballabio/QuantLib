@@ -55,7 +55,7 @@ struct CommonVars {
     Calendar calendar;
     DayCounter dayCounter;
     Frequency frequency;
-    Natural settlementDays;
+    Natural settlementDays, fixingDays;
 
     RelinkableHandle<Quote> underlying;
     RelinkableHandle<YieldTermStructure> dividendYield, riskFreeRate;
@@ -78,10 +78,15 @@ struct CommonVars {
         frequency = Annual;
         settlementDays = 3;
 
-        issueDate = calendar.advance(today,2,Days);
+        fixingDays = 2;
+        issueDate = calendar.advance(today, fixingDays, Days);
         maturityDate = calendar.advance(issueDate, 10, Years);
         // reset to avoid inconsistencies as the schedule is backwards
         issueDate = calendar.advance(maturityDate, -10, Years);
+        fixingDays = 0;
+        for (Date d = today; d != issueDate; ++d)
+            if (calendar.isBusinessDay(d) && !calendar.isWeekend(d.weekday()))
+                ++fixingDays;
 
         underlying.linkTo(ext::make_shared<SimpleQuote>(50.0));
         dividendYield.linkTo(flatRate(today, 0.02, dayCounter));
@@ -231,14 +236,13 @@ BOOST_AUTO_TEST_CASE(testBond) {
 
     ext::shared_ptr<IborIndex> index =
         ext::make_shared<Euribor1Y>(discountCurve);
-    Natural fixingDays = 2;
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 
     ConvertibleFloatingRateBond euFloating(euExercise, vars.conversionRatio,
                                            vars.no_callability,
                                            vars.issueDate, vars.settlementDays,
-                                           index, fixingDays, spreads,
+                                           index, vars.fixingDays, spreads,
                                            vars.dayCounter, schedule,
                                            vars.redemption);
     euFloating.setPricingEngine(engine);
@@ -246,7 +250,7 @@ BOOST_AUTO_TEST_CASE(testBond) {
     ConvertibleFloatingRateBond amFloating(amExercise, vars.conversionRatio,
                                            vars.no_callability,
                                            vars.issueDate, vars.settlementDays,
-                                           index, fixingDays, spreads,
+                                           index, vars.fixingDays, spreads,
                                            vars.dayCounter, schedule,
                                            vars.redemption);
     amFloating.setPricingEngine(engine);
@@ -261,7 +265,7 @@ BOOST_AUTO_TEST_CASE(testBond) {
                            DateGeneration::Backward, false);
 
     FloatingRateBond floating(vars.settlementDays, vars.faceAmount, floatSchedule,
-                              index, vars.dayCounter, Following, fixingDays,
+                              index, vars.dayCounter, Following, vars.fixingDays,
                               gearings, spreads,
                               std::vector<Rate>(), std::vector<Rate>(),
                               false,
