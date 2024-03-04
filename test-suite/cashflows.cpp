@@ -405,7 +405,7 @@ BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfCalendarMonth)
         BOOST_ERROR("Expected reference start date at end of calendar day of the month, "
                     "got " << firstCoupon->referencePeriodStart());
     // Expect first cashflow to be 0.9375
-    BOOST_TEST(firstCoupon->amount() == 0.9375, boost::test_tools::tolerance(0.0001));
+    BOOST_TEST(firstCoupon->amount() == 0.9375, boost::test_tools::tolerance<Real>(0.0001));
 }
 
 BOOST_AUTO_TEST_CASE(testIrregularLastCouponReferenceDatesAtEndOfMonth) {
