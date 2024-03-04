@@ -83,10 +83,7 @@ struct CommonVars {
         maturityDate = calendar.advance(issueDate, 10, Years);
         // reset to avoid inconsistencies as the schedule is backwards
         issueDate = calendar.advance(maturityDate, -10, Years);
-        fixingDays = 0;
-        for (Date d = today; d != issueDate; ++d)
-            if (calendar.isBusinessDay(d) && !calendar.isWeekend(d.weekday()))
-                ++fixingDays;
+        fixingDays = calendar.businessDaysBetween(today, issueDate);
 
         underlying.linkTo(ext::make_shared<SimpleQuote>(50.0));
         dividendYield.linkTo(flatRate(today, 0.02, dayCounter));
