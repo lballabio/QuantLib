@@ -114,7 +114,11 @@ namespace QuantLib {
         static Real bps(const Bond& bond,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date());
-        [[deprecated("Use the version with the Bond::Price argument")]]
+
+        /*! \deprecated Use the overload taking a Bond::Price argument instead.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
         static Rate atmRate(const Bond& bond,
                             const YieldTermStructure& discountCurve,
                             Date settlementDate = Date(),
@@ -154,7 +158,10 @@ namespace QuantLib {
                         Compounding compounding,
                         Frequency frequency,
                         Date settlementDate = Date());
-        [[deprecated("Use the version with the Bond::Price argument")]]
+        /*! \deprecated Use the overload taking a Bond::Price argument instead.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
         static Rate yield(const Bond& bond,
                           Real price,
                           const DayCounter& dayCounter,
@@ -174,8 +181,11 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
                           Rate guess = 0.05);
+        /*! \deprecated Use the overload taking a Bond::Price argument instead.
+                        Deprecated in version 1.34.
+        */
         template <typename Solver>
-        [[deprecated("Use the version with the Bond::Price argument")]]
+        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
         static Rate yield(const Solver& solver,
                           const Bond& bond,
                           Real price,
@@ -274,7 +284,10 @@ namespace QuantLib {
                                Compounding compounding,
                                Frequency frequency,
                                Date settlementDate = Date());
-        [[deprecated("Use the version with the Bond::Price argument")]]
+        /*! \deprecated Use the overload taking a Bond::Price argument instead.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
         static Spread zSpread(const Bond& bond,
                               Real cleanPrice,
                               const ext::shared_ptr<YieldTermStructure>&,

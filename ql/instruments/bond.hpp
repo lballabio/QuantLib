@@ -195,9 +195,10 @@ namespace QuantLib {
         /*! The default bond settlement date is used for calculation. */
         Real settlementValue(Real cleanPrice) const;
 
-        //! yield given a price and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        [[deprecated("Use the version with the Bond::Price argument")]]
+        /*! \deprecated Use the overload taking a Bond::Price argument instead.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
         Rate yield(Real price,
                    const DayCounter& dc,
                    Compounding comp,
@@ -207,6 +208,7 @@ namespace QuantLib {
                    Size maxEvaluations = 100,
                    Real guess = 0.05,
                    Bond::Price::Type priceType = Bond::Price::Clean) const;
+
         //! yield given a price and settlement date
         /*! The default bond settlement is used if no date is given. */
         Rate yield(Bond::Price price,
