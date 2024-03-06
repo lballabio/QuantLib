@@ -149,10 +149,11 @@ namespace QuantLib {
             for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
                 ext::shared_ptr<Bond> bond = curve_->bondHelpers_[i]->bond();
 
-                Real cleanPrice = curve_->bondHelpers_[i]->quote()->value();
+                Real amount = curve_->bondHelpers_[i]->quote()->value();
+                Bond::Price price(amount, curve_->bondHelpers_[i]->priceType());
 
                 Date bondSettlement = bond->settlementDate();
-                Rate ytm = BondFunctions::yield(*bond, cleanPrice,
+                Rate ytm = BondFunctions::yield(*bond, price,
                                                 yieldDC, yieldComp, yieldFreq,
                                                 bondSettlement);
 
