@@ -126,7 +126,7 @@ namespace QuantLib {
         static Rate atmRate(const Bond& bond,
                             const YieldTermStructure& discountCurve,
                             Date settlementDate = Date(),
-                            Bond::Price price = Null<Bond::Price>());
+                            Bond::Price price = {});
         //@}
 
         //! \name Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions
