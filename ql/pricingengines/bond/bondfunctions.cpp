@@ -281,7 +281,7 @@ namespace QuantLib {
                                 const YieldTermStructure& discountCurve,
                                 Date settlement,
                                 Real cleanPrice) {
-        return atmRate(bond, discountCurve, settlement, Bond::Price(cleanPrice, Bond::Price::Clean));
+        return atmRate(bond, discountCurve, settlement, {cleanPrice, Bond::Price::Clean});
     }
 
     Rate BondFunctions::atmRate(const Bond& bond,
@@ -387,9 +387,10 @@ namespace QuantLib {
                               Size maxIterations,
                               Rate guess,
                               Bond::Price::Type priceType) {
-        return yield(bond, Bond::Price(price, priceType), dayCounter, compounding, frequency,
+        return yield(bond, {price, priceType}, dayCounter, compounding, frequency,
                      settlement, accuracy, maxIterations, guess);
     }
+
     Rate BondFunctions::yield(const Bond& bond,
                               Bond::Price price,
                               const DayCounter& dayCounter,
@@ -549,9 +550,10 @@ namespace QuantLib {
                                   Real accuracy,
                                   Size maxIterations,
                                   Rate guess) {
-        return zSpread(bond, Bond::Price(cleanPrice, Bond::Price::Clean), d, dayCounter,
+        return zSpread(bond, {cleanPrice, Bond::Price::Clean}, d, dayCounter,
                        compounding, frequency, settlement, accuracy, maxIterations, guess);
     }
+
     Spread BondFunctions::zSpread(const Bond& bond,
                                   Bond::Price price,
                                   const ext::shared_ptr<YieldTermStructure>& d,

@@ -592,7 +592,7 @@ int main(int, char* []) {
 
             Real P = instrumentsA[k]->quote()->value();
             const Bond& b = *instrumentsA[k]->bond();
-            Rate ytm = BondFunctions::yield(b, Bond::Price(P, Bond::Price::Clean),
+            Rate ytm = BondFunctions::yield(b, {P, Bond::Price::Clean},
                                             dc, Compounded, frequency,
                                             today);
             Time dur = BondFunctions::duration(b, ytm,

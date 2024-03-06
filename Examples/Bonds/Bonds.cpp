@@ -541,13 +541,9 @@ int main(int, char* []) {
          << floatingRateBond.cleanPrice(floatingRateBond.yield(Actual360(),Compounded,Annual),Actual360(),Compounded,Annual,settlementDate) << std::endl;
 
          std::cout << "Clean Price to Yield: "
-                   << io::rate(floatingRateBond.yield(
-                          Bond::Price(floatingRateBond.cleanPrice(), Bond::Price::Clean),
-                          Actual360(), Compounded, Annual, settlementDate))
+                   << io::rate(floatingRateBond.yield({floatingRateBond.cleanPrice(), Bond::Price::Clean},
+                                                      Actual360(), Compounded, Annual, settlementDate))
                    << std::endl;
-
-         /* "Yield to Price"
-            "Price to Yield" */
 
          return 0;
 

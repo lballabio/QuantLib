@@ -244,7 +244,7 @@ namespace QuantLib {
                      Size maxEvaluations,
                      Real guess,
                      Bond::Price::Type priceType) const {
-        return yield(Bond::Price(price, priceType), dc, comp, freq, settlement, accuracy,
+        return yield({price, priceType}, dc, comp, freq, settlement, accuracy,
                      maxEvaluations, guess);
     }
     Rate Bond::yield(Bond::Price price,
