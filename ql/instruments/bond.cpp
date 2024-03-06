@@ -414,12 +414,4 @@ namespace QuantLib {
             QL_REQUIRE(cf, "null cash flow provided");
     }
 
-    bool operator==(const Bond::Price& p1, const Bond::Price& p2) {
-        return (p1.amount() == p2.amount()) && ((p1.type() == p2.type()));
-    }
-
-    bool operator!=(const Bond::Price& p1, const Bond::Price& p2) {
-        return (p1.amount() != p2.amount()) || ((p1.type() != p2.type()));
-    }
-
 }

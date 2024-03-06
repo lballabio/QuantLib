@@ -70,6 +70,7 @@ namespace QuantLib {
                 return amount_;
             }
             Type type() const { return type_; }
+            bool isValid() const { return amount_ != Null<Real>(); }
           private:
             Real amount_;
             Type type_;
@@ -351,14 +352,6 @@ namespace QuantLib {
         return issueDate_;
     }
 
-/*! Returns <tt>true</tt> iff the two bond prices belong to the same
-    derived class.
-    \relates Bond::Price
-*/
-    bool operator==(const Bond::Price&, const Bond::Price&);
-
-    /*! \relates Bond::Price */
-    bool operator!=(const Bond::Price&, const Bond::Price&);
 }
 
 #endif
