@@ -25,9 +25,9 @@
 namespace QuantLib {
 
     GeometricBrownianMotionProcess::GeometricBrownianMotionProcess(
-                                                          double initialValue,
-                                                          double mue,
-                                                          double sigma)
+                                                          Real initialValue,
+                                                          Real mue,
+                                                          Real sigma)
     : StochasticProcess1D(ext::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       initialValue_(initialValue), mue_(mue), sigma_(sigma) {}

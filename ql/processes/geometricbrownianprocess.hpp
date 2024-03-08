@@ -40,17 +40,17 @@ namespace QuantLib {
     */
     class GeometricBrownianMotionProcess : public StochasticProcess1D {
       public:
-        GeometricBrownianMotionProcess(double initialValue,
-                                       double mue,
-                                       double sigma);
+        GeometricBrownianMotionProcess(Real initialValue,
+                                       Real mue,
+                                       Real sigma);
         Real x0() const override;
         Real drift(Time t, Real x) const override;
         Real diffusion(Time t, Real x) const override;
 
       protected:
-        double initialValue_;
-        double mue_;
-        double sigma_;
+        Real initialValue_;
+        Real mue_;
+        Real sigma_;
     };
 
 }
