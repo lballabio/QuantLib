@@ -196,7 +196,7 @@ namespace QuantLib {
                           Real accuracy = 1.0e-10,
                           Rate guess = 0.05,
                           Bond::Price::Type priceType = Bond::Price::Clean) {
-            return yield(solver, Bond::Price(price, priceType), dayCounter, compounding, frequency,
+            return yield(solver, bond, {price, priceType}, dayCounter, compounding, frequency,
                          settlementDate, accuracy, guess);
         }
         template <typename Solver>
