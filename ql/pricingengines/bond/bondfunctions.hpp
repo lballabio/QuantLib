@@ -121,8 +121,8 @@ namespace QuantLib {
         [[deprecated("Use the overload taking a Bond::Price argument instead")]]
         static Rate atmRate(const Bond& bond,
                             const YieldTermStructure& discountCurve,
-                            Date settlementDate = Date(),
-                            Real cleanPrice = Null<Real>());
+                            Date settlementDate,
+                            Real cleanPrice);
         static Rate atmRate(const Bond& bond,
                             const YieldTermStructure& discountCurve,
                             Date settlementDate = Date(),
