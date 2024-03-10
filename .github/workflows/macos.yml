@@ -7,8 +7,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: [macos-11]
-            shortname: default-11
           - os: [macos-12]
             shortname: default-12
           - os: [macos-13]

@@ -10,12 +10,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: [macos-11]
-            shortname: default-11
-          - os: [macos-11]
-            shortname: stdclasses-11
-            cxxflags: "-std=c++17"
-            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional --enable-std-any
           - os: [macos-12]
             shortname: default-12
           - os: [macos-12]
