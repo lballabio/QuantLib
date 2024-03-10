@@ -31,6 +31,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Setup
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install automake boost
     - name: Compiler version
