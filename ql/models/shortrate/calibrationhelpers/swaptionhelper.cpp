@@ -170,7 +170,6 @@ namespace QuantLib {
         if (endDate == Null<Date>())
             endDate = calendar.advance(startDate, length_,
                                        index_->businessDayConvention());
-        auto onIndex = ext::dynamic_pointer_cast<OvernightIndex>(index_);
         Schedule fixedSchedule(startDate, endDate, fixedLegTenor_, calendar,
                                index_->businessDayConvention(),
                                index_->businessDayConvention(),
@@ -180,25 +179,11 @@ namespace QuantLib {
                                index_->businessDayConvention(),
                                DateGeneration::Forward, false);
 
-        ext::shared_ptr<PricingEngine> swapEngine(
-                             new DiscountingSwapEngine(termStructure_, false));
+        auto swapEngine = ext::make_shared<DiscountingSwapEngine>(termStructure_, false);
 
         Swap::Type type = Swap::Receiver;
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
-        std::unique_ptr<FixedVsFloatingSwap> temp;
-        if (onIndex) {
-            // construct ois swap
-            temp = std::make_unique<OvernightIndexedSwap>(
-                Swap::Receiver, nominal_, fixedSchedule, 0.0,
-                fixedLegDayCounter_, floatSchedule, onIndex, 0.0, 0, Following, Calendar(),
-                true, averagingMethod_
-            );
-        } else {
-            temp = std::make_unique<VanillaSwap>(
-                 Swap::Receiver, nominal_, fixedSchedule, 0.0, fixedLegDayCounter_,
-                 floatSchedule, index_, 0.0, floatingLegDayCounter_
-            );
-        }
+        auto temp = makeSwap(fixedSchedule, floatSchedule, 0.0, type);
         temp->setPricingEngine(swapEngine);
         Real forward = temp->fairRate();
         if (strike_ == Null<Real>()) {
@@ -207,19 +192,27 @@ namespace QuantLib {
             exerciseRate_ = strike_;
             type = strike_ <= forward ? Swap::Receiver : Swap::Payer;
         }
-        if (onIndex) {
-            swap_ = ext::make_shared<OvernightIndexedSwap>(
-                type, nominal_, fixedSchedule, exerciseRate_, fixedLegDayCounter_,
-                floatSchedule, onIndex, 0.0, 0, Following,
-                Calendar(), true, averagingMethod_);
-        } else {
-            swap_ = ext::make_shared<VanillaSwap>(type, nominal_, fixedSchedule, exerciseRate_,
-                                                  fixedLegDayCounter_, floatSchedule, index_, 0.0,
-                                                  floatingLegDayCounter_);
-        }
+        swap_ = makeSwap(fixedSchedule, floatSchedule, exerciseRate_, type);
         swap_->setPricingEngine(swapEngine);
         swaption_ = ext::make_shared<Swaption>(swap_, exercise);
         BlackCalibrationHelper::performCalculations();
+    }
+
+    ext::shared_ptr<FixedVsFloatingSwap> SwaptionHelper::makeSwap(const Schedule& fixedSchedule,
+                                                                  const Schedule& floatSchedule,
+                                                                  Rate exerciseRate,
+                                                                  Swap::Type type) const {
+        auto onIndex = ext::dynamic_pointer_cast<OvernightIndex>(index_);
+        if (onIndex) {
+            return ext::make_shared<OvernightIndexedSwap>(
+                type, nominal_, fixedSchedule, exerciseRate, fixedLegDayCounter_,
+                floatSchedule, onIndex, 0.0, 0, Following,
+                Calendar(), true, averagingMethod_);
+        } else {
+            return ext::make_shared<VanillaSwap>(type, nominal_, fixedSchedule, exerciseRate,
+                                                 fixedLegDayCounter_, floatSchedule, index_, 0.0,
+                                                 floatingLegDayCounter_);
+        }
     }
 
 }

@@ -96,6 +96,10 @@ namespace QuantLib {
 
       private:
         void performCalculations() const override;
+        ext::shared_ptr<FixedVsFloatingSwap> makeSwap(const Schedule& fixedSchedule,
+                                                      const Schedule& floatSchedule,
+                                                      Rate exerciseRate,
+                                                      Swap::Type type) const;
         mutable Date exerciseDate_, endDate_;
         const Period maturity_, length_, fixedLegTenor_;
         const ext::shared_ptr<IborIndex> index_;
