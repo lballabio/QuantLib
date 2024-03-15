@@ -40,7 +40,7 @@ namespace QuantLib {
                                    DayCounter fixedLegDayCounter,
                                    DayCounter floatingLegDayCounter,
                                    Handle<YieldTermStructure> termStructure,
-                                   BlackCalibrationHelper::CalibrationErrorType errorType,
+                                   CalibrationErrorType errorType,
                                    const Real strike,
                                    const Real nominal,
                                    const VolatilityType type,
@@ -65,7 +65,7 @@ namespace QuantLib {
                                    DayCounter fixedLegDayCounter,
                                    DayCounter floatingLegDayCounter,
                                    Handle<YieldTermStructure> termStructure,
-                                   BlackCalibrationHelper::CalibrationErrorType errorType,
+                                   CalibrationErrorType errorType,
                                    const Real strike,
                                    const Real nominal,
                                    const VolatilityType type,
@@ -90,7 +90,7 @@ namespace QuantLib {
                                    DayCounter fixedLegDayCounter,
                                    DayCounter floatingLegDayCounter,
                                    Handle<YieldTermStructure> termStructure,
-                                   BlackCalibrationHelper::CalibrationErrorType errorType,
+                                   CalibrationErrorType errorType,
                                    const Real strike,
                                    const Real nominal,
                                    const VolatilityType type,
@@ -190,7 +190,7 @@ namespace QuantLib {
             // construct ois swap
             temp = std::make_unique<OvernightIndexedSwap>(
                 Swap::Receiver, nominal_, fixedSchedule, 0.0,
-                fixedLegDayCounter_, onIndex, 0.0, 0, Following, Calendar(),
+                fixedLegDayCounter_, floatSchedule, onIndex, 0.0, 0, Following, Calendar(),
                 true, averagingMethod_
             );
         } else {
@@ -209,7 +209,8 @@ namespace QuantLib {
         }
         if (onIndex) {
             swap_ = ext::make_shared<OvernightIndexedSwap>(
-                type, nominal_, fixedSchedule, 0.0, fixedLegDayCounter_, onIndex, 0.0, 0, Following,
+                type, nominal_, fixedSchedule, exerciseRate_, fixedLegDayCounter_,
+                floatSchedule, onIndex, 0.0, 0, Following,
                 Calendar(), true, averagingMethod_);
         } else {
             swap_ = ext::make_shared<VanillaSwap>(type, nominal_, fixedSchedule, exerciseRate_,
@@ -220,4 +221,5 @@ namespace QuantLib {
         swaption_ = ext::make_shared<Swaption>(swap_, exercise);
         BlackCalibrationHelper::performCalculations();
     }
+
 }

@@ -44,8 +44,7 @@ namespace QuantLib {
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
                        Handle<YieldTermStructure> termStructure,
-                       BlackCalibrationHelper::CalibrationErrorType errorType =
-                           BlackCalibrationHelper::RelativePriceError,
+                       CalibrationErrorType errorType = RelativePriceError,
                        Real strike = Null<Real>(),
                        Real nominal = 1.0,
                        VolatilityType type = ShiftedLognormal,
@@ -61,8 +60,7 @@ namespace QuantLib {
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
                        Handle<YieldTermStructure> termStructure,
-                       BlackCalibrationHelper::CalibrationErrorType errorType =
-                           BlackCalibrationHelper::RelativePriceError,
+                       CalibrationErrorType errorType = RelativePriceError,
                        Real strike = Null<Real>(),
                        Real nominal = 1.0,
                        VolatilityType type = ShiftedLognormal,
@@ -78,8 +76,7 @@ namespace QuantLib {
                        DayCounter fixedLegDayCounter,
                        DayCounter floatingLegDayCounter,
                        Handle<YieldTermStructure> termStructure,
-                       BlackCalibrationHelper::CalibrationErrorType errorType =
-                           BlackCalibrationHelper::RelativePriceError,
+                       CalibrationErrorType errorType = RelativePriceError,
                        Real strike = Null<Real>(),
                        Real nominal = 1.0,
                        VolatilityType type = ShiftedLognormal,
