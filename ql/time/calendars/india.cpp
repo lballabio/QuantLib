@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2005, 2007, 2008, 2009, 2010, 2011 StatPro Italia srl
  Copyright (C) 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2024 Oleg Kulkov
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -354,7 +355,7 @@ namespace QuantLib {
                 // Mahashivratri
                 || (d == 11 && m == March)
                 // Holi
-                || (d == 29 && m == March) 
+                || (d == 29 && m == March)
                 // Gudi Padwa
                 || (d == 13 && m == April)
                 // Mahavir Jayanti
@@ -399,7 +400,7 @@ namespace QuantLib {
         }
 
         if (y == 2023) {
-            if ( 
+            if (
                 // Holi
                 (d == 7 && m == March)
                 // Gudi Padwa
@@ -423,39 +424,61 @@ namespace QuantLib {
                 // Diwali - Balipratipada
                 || (d == 14 && m == November)
                 // Gurunank Jayanti
-                || (d == 27 && m == November))
+                || (d == 27 && m == November)
+                // Christmas Day
+                || (d == 25 && m == December))
                 return false;
         }
 
         if (y == 2024) {
-            if ( // Special holiday
+            if ( // Public Holiday
                 (d == 22 && m == January)
-                // Chatrapati Shivaji Jayanti
-                || (d == 19 && m == February)
+                // Republic Day
+                || (d == 26 && m == January)
+                // Chhatrapati Shivaji
+                ||(d == 19 && m == February)
                 // Mahashivratri
                 || (d == 8 && m == March)
                 // Holi
                 || (d == 25 && m == March)
-                // Annual Bank Closing
+                // Good Friday
+                || (d == 29 && m == March)
+                // Annual Closing of the Banks
                 || (d == 1 && m == April)
                 // Gudi Padwa
                 || (d == 9 && m == April)
-                // Id-Ul-Fitr (Ramadan Eid)
+                // Idd Ul Fitr
                 || (d == 11 && m == April)
-                // Ram Navamiz
+                // Ram Navami
                 || (d == 17 && m == April)
                 // Mahavir Jayanti
                 || (d == 21 && m == April)
+                // Maharashtra Day
+                || (d == 1 && m == May)
                 // Buddha Pournima
                 || (d == 23 && m == May)
                 // Bakri Id (estimated Sunday 16th or Monday 17th)
                 || (d == 17 && m == June)
-                // Id-E-Milad (estimated Sunday 15th or Monday 16th)
+                // Muharram
+                || (d == 17 && m == July)
+                // Independence Day
+                || (d == 15 && m == August)
+                // Ganesh Chaturthi
+                || (d == 7 && m == September)
+                // Id-e-milad
                 || (d == 16 && m == September)
-                // Diwali-Laxmi Pujan
+                // Gandhi Jayanthi
+                || (d == 2 && m == October)
+                // Dussehra
+                || (d == 12 && m == October)
+                // Diwali Amavasya
                 || (d == 1 && m == November)
+                // Diwali Balipratipada
+                || (d == 2 && m == November)
+                // Guru Nanak Jayanti
+                || (d == 15 && m == November)
                 // Gurunank Jayanti
-                || (d == 15 && m == November))
+                || (d == 25 && m == December))
                 return false;
         }
 
@@ -474,6 +497,8 @@ namespace QuantLib {
                 || (d == 12 && m == May)
                 // Id-E-Milad (estimated Thursday 4th or Friday 5th)
                 || (d == 5 && m == September)
+                // Dasera
+                || (d == 2 && m == October)
                 // Diwali - Balipratipada
                 || (d == 22 && m == October)
                 // Gurunank Jayanti
