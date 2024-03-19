@@ -140,7 +140,7 @@ namespace QuantLib {
                     }
                 }
                 if (isCorner) {
-                    // shandling of the "corners", all second derivs are zero in the op
+                    // handling of the "corners", all second derivs are zero in the op
                     // this directly generalizes Numerical Recipes, 3rd ed, eq 3.8.6
                     Real sum_corner_h =
                         std::accumulate(corner_h.begin(), corner_h.end(), 0.0, std::plus<Real>());
