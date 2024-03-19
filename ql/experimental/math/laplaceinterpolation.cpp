@@ -71,7 +71,7 @@ namespace QuantLib {
         // set up the Laplace operator and convert it to matrix
 
         struct LaplaceOp : public FdmLinearOpComposite {
-            LaplaceOp(const ext::shared_ptr<FdmMesher>& mesher) {
+            explicit LaplaceOp(const ext::shared_ptr<FdmMesher>& mesher) {
                 for (Size direction = 0; direction < mesher->layout()->dim().size(); ++direction) {
                     if (mesher->layout()->dim()[direction] > 1)
                         map_.push_back(SecondDerivativeOp(direction, mesher));
