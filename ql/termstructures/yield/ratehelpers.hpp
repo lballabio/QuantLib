@@ -32,6 +32,7 @@
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
@@ -313,6 +314,18 @@ namespace QuantLib {
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
                        const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+        SwapRateHelper(const Handle<Quote>& rate,
+                       const MakeVanillaSwap& swapBuilder,
+                       Handle<YieldTermStructure> discountingCurve = {},
+                       Handle<Quote> spread = {},
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
+        SwapRateHelper(Rate rate,
+                       const MakeVanillaSwap& swapBuilder,
+                       Handle<YieldTermStructure> discountingCurve = {},
+                       Handle<Quote> spread = {},
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -331,22 +344,14 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates() override;
-        Natural settlementDays_;
-        Period tenor_;
+
         Pillar::Choice pillarChoice_;
-        Calendar calendar_;
-        BusinessDayConvention fixedConvention_;
-        Frequency fixedFrequency_;
-        DayCounter fixedDayCount_;
-        ext::shared_ptr<IborIndex> iborIndex_;
         ext::shared_ptr<VanillaSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
-        bool endOfMonth_;
-        Period fwdStart_;
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
-        ext::optional<bool> useIndexedCoupons_;
+        MakeVanillaSwap swapBuilder_;
     };
 
 
@@ -488,7 +493,7 @@ namespace QuantLib {
     }
 
     inline const Period& SwapRateHelper::forwardStart() const {
-        return fwdStart_;
+        return swapBuilder_.forwardStart_;
     }
 
 }

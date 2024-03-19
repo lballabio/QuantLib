@@ -112,6 +112,8 @@ namespace QuantLib {
         ext::optional<BusinessDayConvention> paymentConvention_;
 
         ext::shared_ptr<PricingEngine> engine_;
+
+        friend class SwapRateHelper;
     };
 
 }
