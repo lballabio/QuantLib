@@ -667,7 +667,6 @@ namespace QuantLib {
         }
 
         latestDate_ = pillarDate_; // backward compatibility
-
     }
 
     void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -678,10 +677,8 @@ namespace QuantLib {
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
 
-        if (discountHandle_.empty())
-            discountRelinkableHandle_.linkTo(temp, observer);
-        else
-            discountRelinkableHandle_.linkTo(*discountHandle_, observer);
+        discountRelinkableHandle_.linkTo((discountHandle_.empty() ? temp : *discountHandle_),
+                                         observer);
 
         RelativeDateRateHelper::setTermStructure(t);
     }
