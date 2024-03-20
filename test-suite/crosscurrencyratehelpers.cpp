@@ -22,6 +22,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -49,9 +50,9 @@ struct CommonVars {
     Real basisPoint;
     Real fxSpot;
 
-    Date today, settlement;
+    Natural instrumentSettlementDays, curveSettlementDays;
+    Date today, instrumentSettlementDt, curveSettlementDt;
     Calendar calendar;
-    Natural settlementDays;
     Currency ccy;
     BusinessDayConvention businessConvention;
     DayCounter dayCount;
@@ -75,7 +76,7 @@ struct CommonVars {
         Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
         Period tenor(q.n, q.units);
         return ext::shared_ptr<RateHelper>(new ConstNotionalCrossCurrencyBasisSwapRateHelper(
-                quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
+                quoteHandle, tenor, instrumentSettlementDays, calendar, businessConvention, endOfMonth,
                 baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                 isBasisOnFxBaseCurrencyLeg));
     }
@@ -105,7 +106,7 @@ struct CommonVars {
         Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
         Period tenor(q.n, q.units);
         return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
-                quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
+                quoteHandle, tenor, instrumentSettlementDays, calendar, businessConvention, endOfMonth,
                 baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                 isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable));
     }
@@ -130,8 +131,8 @@ struct CommonVars {
     Schedule legSchedule(const Period& tenor, 
                          const ext::shared_ptr<IborIndex>& idx) const {
         return MakeSchedule()
-            .from(settlement)
-            .to(settlement + tenor)
+            .from(instrumentSettlementDt)
+            .to(instrumentSettlementDt + tenor)
             .withTenor(idx->tenor())
             .withCalendar(calendar)
             .withConvention(businessConvention)
@@ -144,7 +145,11 @@ struct CommonVars {
                             Real notional,
                             Spread basis) const {
         Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
-        Date lastPaymentDate = leg.back()->date();
+        
+        Date initialPaymentDate = CashFlows::startDate(leg);
+        leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
+        
+        Date lastPaymentDate = CashFlows::maturityDate(leg);
         leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
         return leg;
     }
@@ -177,7 +182,8 @@ struct CommonVars {
     }
 
     CommonVars() {
-        settlementDays = 2;
+        curveSettlementDays = 0;
+        instrumentSettlementDays = 2;
         businessConvention = Following;
         calendar = TARGET();
         dayCount = Actual365Fixed();
@@ -210,10 +216,12 @@ struct CommonVars {
 
         today = calendar.adjust(Date(6, September, 2013));
         Settings::instance().evaluationDate() = today;
-        settlement = calendar.advance(today, settlementDays, Days);
+        
+        instrumentSettlementDt = calendar.advance(today, instrumentSettlementDays, Days);
+        curveSettlementDt = calendar.advance(today, curveSettlementDays, Days);
 
-        baseCcyIdxHandle.linkTo(flatRate(settlement, 0.007, dayCount));
-        quoteCcyIdxHandle.linkTo(flatRate(settlement, 0.015, dayCount));
+        baseCcyIdxHandle.linkTo(flatRate(curveSettlementDt, 0.007, dayCount));
+        quoteCcyIdxHandle.linkTo(flatRate(curveSettlementDt, 0.015, dayCount));
     }
 };
 
@@ -234,7 +242,7 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
                                                   isFxBaseCurrencyCollateralCurrency,
                                                   isBasisOnFxBaseCurrencyLeg);
     ext::shared_ptr<YieldTermStructure> foreignCcyCurve(
-        new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, instruments, vars.dayCount));
+        new PiecewiseYieldCurve<Discount, LogLinear>(vars.curveSettlementDt, instruments, vars.dayCount));
     foreignCcyCurve->enableExtrapolation();
     Handle<YieldTermStructure> foreignCcyHandle(foreignCcyCurve);
     ext::shared_ptr<DiscountingSwapEngine> foreignCcyLegEngine(
@@ -291,11 +299,12 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
                                                   isBasisOnFxBaseCurrencyLeg);
 
     ext::shared_ptr<YieldTermStructure> resettingCurve(
-        new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, resettingInstruments, vars.dayCount));
+        new PiecewiseYieldCurve<Discount, LogLinear>(vars.curveSettlementDt, resettingInstruments, vars.dayCount));
     resettingCurve->enableExtrapolation();
 
     ext::shared_ptr<YieldTermStructure> constNotionalCurve(
-        new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, constNotionalInstruments,
+        new PiecewiseYieldCurve<Discount, LogLinear>(vars.curveSettlementDt,
+                                                     constNotionalInstruments,
                                                      vars.dayCount));
     constNotionalCurve->enableExtrapolation();
 
