@@ -6173,6 +6173,9 @@
     <ClCompile Include="ql\legacy\libormarketmodels\lmvolmodel.cpp">
       <Filter>legacy\libormarketmodels</Filter>
     </ClCompile>
+    <ClCompile Include="ql\experimental\math\laplaceinterpolation.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\experimental\volatility\abcdatmvolcurve.cpp">
       <Filter>experimental\volatility</Filter>
     </ClCompile>
