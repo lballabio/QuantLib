@@ -25,6 +25,7 @@
 #define quantlib_laplace_interpolation
 
 #include <ql/math/array.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
 
@@ -64,8 +65,7 @@ namespace QuantLib {
     /*! Convenience function that Laplace-interpolates null values in a given matrix.
         If the x or y grid or both are not given, an equidistant grid is assumed. */
 
-    template <class M>
-    void laplaceInterpolation(M& A,
+    void laplaceInterpolation(Matrix& A,
                               const std::vector<Real>& x = {},
                               const std::vector<Real>& y = {},
                               Real relTol = 1E-6);

@@ -209,8 +209,7 @@ namespace QuantLib {
         }
     }
 
-    template <class M>
-    void laplaceInterpolation(M& A,
+    void laplaceInterpolation(Matrix& A,
                               const std::vector<Real>& x,
                               const std::vector<Real>& y,
                               Real relTol) {
@@ -242,12 +241,5 @@ namespace QuantLib {
             }
         }
     }
-
-    // template instantiations for matrix classes we want to support
-
-    template void laplaceInterpolation(Matrix& A,
-                                       const std::vector<Real>& x,
-                                       const std::vector<Real>& y,
-                                       Real relTol);
 
 } // namespace QuantLib
