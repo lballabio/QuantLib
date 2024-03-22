@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 FIMAT Group
  Copyright (C) 2007, 2008, 2009, 2010 StatPro Italia srl
+ Copyright (C) 2024 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,7 +45,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2010, 2012-2014, 2019-2023 only:)
+        (data available for 2004-2010, 2012-2014, 2019-2024 only:)
         <ul>
         <li>Chinese New Year</li>
         <li>Hari Raya Haji</li>

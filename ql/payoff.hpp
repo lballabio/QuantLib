@@ -35,18 +35,6 @@ namespace QuantLib {
     //! Abstract base class for option payoffs
     class Payoff {
       public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
         virtual ~Payoff() = default;
         //! \name Payoff interface
         //@{

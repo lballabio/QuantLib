@@ -17,14 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "period.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include "ql/time/period.hpp"
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void PeriodTest::testYearsMonthsAlgebra() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(PeriodTests)
+
+BOOST_AUTO_TEST_CASE(testYearsMonthsAlgebra) {
 
     BOOST_TEST_MESSAGE("Testing period algebra on years/months...");
 
@@ -77,7 +81,7 @@ void PeriodTest::testYearsMonthsAlgebra() {
                     " instead of " << Years);
 }
 
-void PeriodTest::testWeeksDaysAlgebra() {
+BOOST_AUTO_TEST_CASE(testWeeksDaysAlgebra) {
 
     BOOST_TEST_MESSAGE("Testing period algebra on weeks/days...");
 
@@ -85,6 +89,7 @@ void PeriodTest::testWeeksDaysAlgebra() {
     Period OneWeek(1, Weeks);
     Period ThreeDays(3, Days);
     Period OneDay(1, Days);
+    Period ZeroDays(0, Days);
 
     Integer n = 2;
     if (TwoWeeks/n!=OneWeek)
@@ -109,6 +114,10 @@ void PeriodTest::testWeeksDaysAlgebra() {
                     " + " << OneWeek <<
                     " != " << Period(11, Days));
 
+    BOOST_TEST((OneWeek + ZeroDays) == OneWeek);
+    BOOST_TEST((OneWeek + 3*OneDay) == Period(10, Days));
+    BOOST_TEST((OneWeek + 7*OneDay) == TwoWeeks);
+
     Period SevenDays(7, Days);
     if (SevenDays.length()!=7)
         BOOST_ERROR("normalization error: SevenDays.length()" <<
@@ -120,7 +129,56 @@ void PeriodTest::testWeeksDaysAlgebra() {
                     " instead of " << Days);
 }
 
-void PeriodTest::testNormalization() {
+BOOST_AUTO_TEST_CASE(testOperators) {
+    BOOST_TEST_MESSAGE("Testing period operators...");
+
+    Period p(3, Days);
+    p *= 2;
+    BOOST_TEST(p == Period(6, Days));
+
+    p -= Period(2, Days);
+    BOOST_TEST(p == Period(4, Days));
+}
+
+BOOST_AUTO_TEST_CASE(testConvertToYears) {
+    BOOST_TEST_MESSAGE("Testing conversion of periods to years...");
+
+    BOOST_TEST(years(Period(0, Years)) == 0);
+    BOOST_TEST(years(Period(1, Years)) == 1);
+    BOOST_TEST(years(Period(5, Years)) == 5);
+
+    const auto tol = boost::test_tools::tolerance<Real>(1e-15);
+    BOOST_TEST(years(Period(1, Months)) == 1.0/12.0, tol);
+    BOOST_TEST(years(Period(8, Months)) == 8.0/12.0, tol);
+    BOOST_TEST(years(Period(12, Months)) == 1);
+    BOOST_TEST(years(Period(18, Months)) == 1.5, tol);
+}
+
+BOOST_AUTO_TEST_CASE(testConvertToMonths) {
+    BOOST_TEST_MESSAGE("Testing conversion of periods to months...");
+
+    BOOST_TEST(months(Period(0, Months)) == 0);
+    BOOST_TEST(months(Period(1, Months)) == 1);
+    BOOST_TEST(months(Period(5, Months)) == 5);
+
+    BOOST_TEST(months(Period(1, Years)) == 12);
+    BOOST_TEST(months(Period(3, Years)) == 36);
+}
+
+BOOST_AUTO_TEST_CASE(testConvertToWeeks) {
+    BOOST_TEST_MESSAGE("Testing conversion of periods to weeks...");
+
+    BOOST_TEST(weeks(Period(0, Weeks)) == 0);
+    BOOST_TEST(weeks(Period(1, Weeks)) == 1);
+    BOOST_TEST(weeks(Period(5, Weeks)) == 5);
+
+    const auto tol = boost::test_tools::tolerance<Real>(1e-15);
+    BOOST_TEST(weeks(Period(1, Days)) == 1.0/7.0, tol);
+    BOOST_TEST(weeks(Period(3, Days)) == 3.0/7.0, tol);
+    BOOST_TEST(weeks(Period(11, Days)) == 11.0/7.0, tol);
+}
+
+BOOST_AUTO_TEST_CASE(testNormalization) {
 
     BOOST_TEST_MESSAGE("Testing period normalization...");
 
@@ -185,11 +243,29 @@ void PeriodTest::testNormalization() {
 
 }
 
-test_suite* PeriodTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Period tests");
-    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testYearsMonthsAlgebra));
-    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testWeeksDaysAlgebra));
-    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testNormalization));
-    return suite;
+BOOST_AUTO_TEST_CASE(testFrequencyComputation) {
+    BOOST_TEST_MESSAGE("Testing computation of frequency from period...");
+
+    // frequency -> period -> frequency == initial frequency?
+    for (const Frequency f : {NoFrequency, Once, Annual, Semiannual, EveryFourthMonth, Quarterly,
+                              Bimonthly, Monthly, EveryFourthWeek, Biweekly, Weekly, Daily}) {
+        BOOST_TEST(Period(f).frequency() == f);
+    }
+    BOOST_CHECK_THROW(Period(OtherFrequency).frequency(), QuantLib::Error);
+
+    // test Period(count, timeUnit).frequency()
+    BOOST_TEST(Period(1, Years).frequency() == Annual);
+    BOOST_TEST(Period(6, Months).frequency() == Semiannual);
+    BOOST_TEST(Period(4, Months).frequency() == EveryFourthMonth);
+    BOOST_TEST(Period(3, Months).frequency() == Quarterly);
+    BOOST_TEST(Period(2, Months).frequency() == Bimonthly);
+    BOOST_TEST(Period(1, Months).frequency() == Monthly);
+    BOOST_TEST(Period(4, Weeks).frequency() == EveryFourthWeek);
+    BOOST_TEST(Period(2, Weeks).frequency() == Biweekly);
+    BOOST_TEST(Period(1, Weeks).frequency() == Weekly);
+    BOOST_TEST(Period(1, Days).frequency() == Daily);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

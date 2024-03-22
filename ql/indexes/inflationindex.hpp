@@ -71,18 +71,6 @@ namespace QuantLib {
                        const Period& availabilitiyLag,
                        Currency currency);
 
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        InflationIndex(std::string familyName,
-                       Region region,
-                       bool revised,
-                       bool interpolated,
-                       Frequency frequency,
-                       const Period& availabilitiyLag,
-                       Currency currency);
-
         //! \name Index interface
         //@{
         std::string name() const override;
@@ -132,15 +120,6 @@ namespace QuantLib {
             the mid-period extrapolated value.
         */
 
-        /*! \deprecated Don't use this method.  Indexes should only be
-                        asked monthly fixings (by convention, on the
-                        first of the month); interpolation is
-                        delegated to coupons.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        bool interpolated() const;
-
         Frequency frequency() const;
         /*! The availability lag describes when the index is
             <i>available</i>, not how it is used.  Specifically the
@@ -162,15 +141,6 @@ namespace QuantLib {
         Period availabilityLag_;
         Currency currency_;
 
-        /*! \deprecated Don't use this data member.  Indexes should
-                        only be asked monthly fixings (by convention,
-                        on the first of the month); interpolation is
-                        delegated to coupons.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        bool interpolated_ = false;
-
       private:
         std::string name_;
     };
@@ -188,20 +158,6 @@ namespace QuantLib {
             const Currency& currency,
             Handle<ZeroInflationTermStructure> ts = {});
 
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        ZeroInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            Handle<ZeroInflationTermStructure> ts = {});
-
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by
@@ -211,6 +167,7 @@ namespace QuantLib {
         //@}
         //! \name Other methods
         //@{
+        Date lastFixingDate() const;
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
         ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
         //@}
@@ -314,15 +271,12 @@ namespace QuantLib {
             // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
             // CPI::InterpolationType.
             QuantLib::CPI::InterpolationType effectiveInterpolationType(
-                const ext::shared_ptr<ZeroInflationIndex>& index,
                 const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
 
 
             // checks whether the combination of index and CPI::InterpolationType results
             // effectively in CPI::Linear
-            bool
-            isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                           const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
+            bool isInterpolated(const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
         }
     }
 
@@ -383,10 +337,10 @@ namespace QuantLib {
         return yoyInflation_;
     }
 
-    inline bool detail::CPI::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                            const QuantLib::CPI::InterpolationType& type) {
-        return detail::CPI::effectiveInterpolationType(index, type) == QuantLib::CPI::Linear;
+    inline bool detail::CPI::isInterpolated(const QuantLib::CPI::InterpolationType& type) {
+        return detail::CPI::effectiveInterpolationType(type) == QuantLib::CPI::Linear;
     }
+
 }
 
 #endif

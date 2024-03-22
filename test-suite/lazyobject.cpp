@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "lazyobject.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/stock.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -26,27 +26,28 @@ using namespace QuantLib;
 using namespace boost::unit_test_framework;
 using ext::shared_ptr;
 
-namespace lazy_object_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
-        bool alwaysForward;
-      public:
-        TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
-        ~TearDown() {
-            if (alwaysForward)
-                LazyObject::Defaults::instance().alwaysForwardNotifications();
-            else
-                LazyObject::Defaults::instance().forwardFirstNotificationOnly();
-        }
-    };
+BOOST_AUTO_TEST_SUITE(LazyObjectTests)
 
-}
+class TearDown { // NOLINT(cppcoreguidelines-special-member-functions)
+    bool alwaysForward;
+  public:
+    TearDown() : alwaysForward(LazyObject::Defaults::instance().forwardsAllNotifications()) {}
+    ~TearDown() {
+        if (alwaysForward)
+            LazyObject::Defaults::instance().alwaysForwardNotifications();
+        else
+            LazyObject::Defaults::instance().forwardFirstNotificationOnly();
+    }
+};
 
-void LazyObjectTest::testDiscardingNotifications() {
+
+BOOST_AUTO_TEST_CASE(testDiscardingNotifications) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first against default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
@@ -75,12 +76,11 @@ void LazyObjectTest::testDiscardingNotifications() {
         BOOST_FAIL("Observer was not notified of change after recalculation");
 }
 
-
-void LazyObjectTest::testDiscardingNotificationsByDefault() {
+BOOST_AUTO_TEST_CASE(testDiscardingNotificationsByDefault) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can discard notifications after the first by default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
@@ -107,12 +107,11 @@ void LazyObjectTest::testDiscardingNotificationsByDefault() {
         BOOST_FAIL("Observer was not notified of change after recalculation");
 }
 
-
-void LazyObjectTest::testForwardingNotificationsByDefault() {
+BOOST_AUTO_TEST_CASE(testForwardingNotificationsByDefault) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications by default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
@@ -133,11 +132,11 @@ void LazyObjectTest::testForwardingNotificationsByDefault() {
         BOOST_FAIL("Observer was not notified of second change");
 }
 
-void LazyObjectTest::testForwardingNotifications() {
+BOOST_AUTO_TEST_CASE(testForwardingNotifications) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects can forward all notifications against default...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
@@ -160,11 +159,11 @@ void LazyObjectTest::testForwardingNotifications() {
         BOOST_FAIL("Observer was not notified of second change");
 }
 
-void LazyObjectTest::testNotificationLoop() {
+BOOST_AUTO_TEST_CASE(testNotificationLoop) {
 
     BOOST_TEST_MESSAGE("Testing that lazy objects manage recursive notifications...");
 
-    lazy_object_test::TearDown teardown;
+    TearDown teardown;
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
@@ -200,12 +199,6 @@ void LazyObjectTest::testNotificationLoop() {
     s3->unregisterWithAll();
 }
 
-test_suite* LazyObjectTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("LazyObject tests");
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotificationsByDefault));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotificationsByDefault));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testForwardingNotifications));
-    suite->add(QUANTLIB_TEST_CASE(&LazyObjectTest::testNotificationLoop));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

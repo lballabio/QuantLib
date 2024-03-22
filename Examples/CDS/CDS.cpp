@@ -98,7 +98,7 @@ void example01() {
     std::vector<ext::shared_ptr<DefaultProbabilityHelper>> instruments;
     for (Size i = 0; i < 4; i++) {
         instruments.push_back(ext::make_shared<SpreadCdsHelper>(
-                                Handle<Quote>(ext::make_shared<SimpleQuote>(quoted_spreads[i])),
+                                makeQuoteHandle(quoted_spreads[i]),
                                 tenors[i], settlementDays, calendar, Quarterly, Following,
                                 DateGeneration::TwentiethIMM, Actual365Fixed(),
                                 recovery_rate, tsCurve));

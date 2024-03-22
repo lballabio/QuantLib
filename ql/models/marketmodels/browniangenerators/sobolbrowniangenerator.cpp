@@ -107,13 +107,10 @@ namespace QuantLib {
     }
 
 
-    SobolBrownianGenerator::SobolBrownianGenerator(Size factors,
+    SobolBrownianGeneratorBase::SobolBrownianGeneratorBase(Size factors,
                                                    Size steps,
-                                                   Ordering ordering,
-                                                   unsigned long seed,
-                                                   SobolRsg::DirectionIntegers integers)
+                                                   Ordering ordering)
     : factors_(factors), steps_(steps), ordering_(ordering),
-      generator_(SobolRsg(factors * steps, seed, integers), InverseCumulativeNormal()),
       bridge_(steps), orderedIndices_(factors, std::vector<Size>(steps)),
       bridgedVariates_(factors, std::vector<Real>(steps)) {
 
@@ -133,12 +130,8 @@ namespace QuantLib {
     }
 
 
-    Real SobolBrownianGenerator::nextPath() {
-        typedef InverseCumulativeRsg<SobolRsg,
-                                     InverseCumulativeNormal>::sample_type
-            sample_type;
-
-        const sample_type& sample = generator_.nextSequence();
+    Real SobolBrownianGeneratorBase::nextPath() {
+        const auto& sample = nextSequence();
         // Brownian-bridge the variates according to the ordered indices
         for (Size i=0; i<factors_; ++i) {
             bridge_.transform(boost::make_permutation_iterator(
@@ -155,11 +148,11 @@ namespace QuantLib {
     
     
     const std::vector<std::vector<Size> >& 
-    SobolBrownianGenerator::orderedIndices() const {
+    SobolBrownianGeneratorBase::orderedIndices() const {
         return orderedIndices_;
     }
 
-    std::vector<std::vector<Real> > SobolBrownianGenerator::transform(
+    std::vector<std::vector<Real> > SobolBrownianGeneratorBase::transform(
                             const std::vector<std::vector<Real> >& variates) {
         
         QL_REQUIRE(   (variates.size() == factors_*steps_),
@@ -190,7 +183,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Real SobolBrownianGenerator::nextStep(std::vector<Real>& output) {
+    Real SobolBrownianGeneratorBase::nextStep(std::vector<Real>& output) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(output.size() == factors_, "size mismatch");
         QL_REQUIRE(lastStep_<steps_, "sequence exhausted");
@@ -201,11 +194,21 @@ namespace QuantLib {
         return 1.0;
     }
 
-    Size SobolBrownianGenerator::numberOfFactors() const { return factors_; }
+    Size SobolBrownianGeneratorBase::numberOfFactors() const { return factors_; }
 
-    Size SobolBrownianGenerator::numberOfSteps() const { return steps_; }
+    Size SobolBrownianGeneratorBase::numberOfSteps() const { return steps_; }
 
+    SobolBrownianGenerator::SobolBrownianGenerator(Size factors,
+                                                   Size steps,
+                                                   Ordering ordering,
+                                                   unsigned long seed,
+                                                   SobolRsg::DirectionIntegers integers)
+    : SobolBrownianGeneratorBase(factors, steps, ordering),
+      generator_(SobolRsg(factors * steps, seed, integers), InverseCumulativeNormal()) {}
 
+    const SobolRsg::sample_type& SobolBrownianGenerator::nextSequence() {
+        return generator_.nextSequence();
+    }
 
     SobolBrownianGeneratorFactory::SobolBrownianGeneratorFactory(
                                     SobolBrownianGenerator::Ordering ordering,
@@ -220,5 +223,32 @@ namespace QuantLib {
                                                     seed_, integers_));
     }
 
+    Burley2020SobolBrownianGenerator::Burley2020SobolBrownianGenerator(
+        Size factors,
+        Size steps,
+        Ordering ordering,
+        unsigned long seed,
+        SobolRsg::DirectionIntegers integers,
+        unsigned long scrambleSeed)
+    : SobolBrownianGeneratorBase(factors, steps, ordering),
+      generator_(Burley2020SobolRsg(factors * steps, seed, integers, scrambleSeed),
+                 InverseCumulativeNormal()) {}
+
+    const Burley2020SobolRsg::sample_type& Burley2020SobolBrownianGenerator::nextSequence() {
+        return generator_.nextSequence();
+    }
+
+    Burley2020SobolBrownianGeneratorFactory::Burley2020SobolBrownianGeneratorFactory(
+        SobolBrownianGenerator::Ordering ordering,
+        unsigned long seed,
+        SobolRsg::DirectionIntegers integers,
+        unsigned long scrambleSeed)
+    : ordering_(ordering), seed_(seed), integers_(integers), scrambleSeed_(scrambleSeed) {}
+
+    ext::shared_ptr<BrownianGenerator>
+    Burley2020SobolBrownianGeneratorFactory::create(Size factors, Size steps) const {
+        return ext::shared_ptr<BrownianGenerator>(new Burley2020SobolBrownianGenerator(
+            factors, steps, ordering_, seed_, integers_, scrambleSeed_));
+    }
 }
 

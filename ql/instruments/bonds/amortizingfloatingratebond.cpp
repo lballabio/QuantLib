@@ -42,7 +42,9 @@ namespace QuantLib {
                                     const Period& exCouponPeriod,
                                     const Calendar& exCouponCalendar,
                                     const BusinessDayConvention exCouponConvention,
-                                    bool exCouponEndOfMonth)
+                                    bool exCouponEndOfMonth,
+                                    const std::vector<Real>& redemptions,
+                                    Integer paymentLag)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
         maturityDate_ = schedule.endDate();
@@ -52,6 +54,7 @@ namespace QuantLib {
             .withPaymentDayCounter(paymentDayCounter)
             .withPaymentAdjustment(paymentConvention)
             .withFixingDays(fixingDays)
+            .withPaymentLag(paymentLag)
             .withGearings(gearings)
             .withSpreads(spreads)
             .withCaps(caps)
@@ -62,7 +65,7 @@ namespace QuantLib {
                                 exCouponEndOfMonth)
             .inArrears(inArrears);
 
-        addRedemptionsToCashflows();
+        addRedemptionsToCashflows(redemptions);
 
         QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
 

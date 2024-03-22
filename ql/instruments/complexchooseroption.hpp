@@ -42,7 +42,7 @@ namespace QuantLib{
                              Real strikeCall,
                              Real strikePut,
                              const ext::shared_ptr<Exercise>& exerciseCall,
-                             const ext::shared_ptr<Exercise>& exercisePut);
+                             ext::shared_ptr<Exercise>  exercisePut);
         void setupArguments(PricingEngine::arguments*) const override;
 
       private:

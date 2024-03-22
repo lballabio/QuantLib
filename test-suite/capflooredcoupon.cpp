@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "capflooredcoupon.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
@@ -40,157 +40,154 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace capfloored_coupon_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        // global data
-        Date today, settlement, startDate;
-        Calendar calendar;
-        Real nominal;
-        std::vector<Real> nominals;
-        BusinessDayConvention convention;
-        Frequency frequency;
-        ext::shared_ptr<IborIndex> index;
-        Natural settlementDays, fixingDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
-        std::vector<Rate> caps;
-        std::vector<Rate> floors;
-        Integer length;
-        Volatility volatility;
+BOOST_AUTO_TEST_SUITE(CapFlooredCouponTests)
 
-        // setup
-        CommonVars() {
-            length = 20;           //years
-            volatility = 0.20;
-            nominal = 100.;
-            nominals = std::vector<Real>(length,nominal);
-            frequency = Annual;
-            index = ext::shared_ptr<IborIndex>(new Euribor1Y(termStructure));
-            calendar = index->fixingCalendar();
-            convention = ModifiedFollowing;
-            today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            settlementDays = 2;
-            fixingDays = 2;
-            settlement = calendar.advance(today,settlementDays,Days);
-            startDate = settlement;
-            termStructure.linkTo(flatRate(settlement,0.05,
-                                          ActualActual(ActualActual::ISDA)));
-        }
+struct CommonVars {
+    // global data
+    Date today, settlement, startDate;
+    Calendar calendar;
+    Real nominal;
+    std::vector<Real> nominals;
+    BusinessDayConvention convention;
+    Frequency frequency;
+    ext::shared_ptr<IborIndex> index;
+    Natural settlementDays, fixingDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    std::vector<Rate> caps;
+    std::vector<Rate> floors;
+    Integer length;
+    Volatility volatility;
 
-        // utilities
-        Leg makeFixedLeg(const Date& startDate, Integer length) const {
+    // setup
+    CommonVars() {
+        length = 20;           //years
+        volatility = 0.20;
+        nominal = 100.;
+        nominals = std::vector<Real>(length,nominal);
+        frequency = Annual;
+        index = ext::shared_ptr<IborIndex>(new Euribor1Y(termStructure));
+        calendar = index->fixingCalendar();
+        convention = ModifiedFollowing;
+        today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        settlementDays = 2;
+        fixingDays = 2;
+        settlement = calendar.advance(today,settlementDays,Days);
+        startDate = settlement;
+        termStructure.linkTo(flatRate(settlement,0.05,
+                                      ActualActual(ActualActual::ISDA)));
+    }
 
-            Date endDate = calendar.advance(startDate, length, Years,
-                                            convention);
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              convention, convention,
-                              DateGeneration::Forward, false);
-            std::vector<Rate> coupons(length, 0.0);
-            return FixedRateLeg(schedule)
-                .withNotionals(nominals)
-                .withCouponRates(coupons, Thirty360(Thirty360::BondBasis));
-        }
+    // utilities
+    Leg makeFixedLeg(const Date& startDate, Integer length) const {
 
-        Leg makeFloatingLeg(const Date& startDate,
-                            Integer length,
-                            const Rate gearing = 1.0,
-                            const Rate spread = 0.0) const {
+        Date endDate = calendar.advance(startDate, length, Years,
+                                        convention);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          convention, convention,
+                          DateGeneration::Forward, false);
+        std::vector<Rate> coupons(length, 0.0);
+        return FixedRateLeg(schedule)
+            .withNotionals(nominals)
+            .withCouponRates(coupons, Thirty360(Thirty360::BondBasis));
+    }
 
-            Date endDate = calendar.advance(startDate,length,Years,convention);
-            Schedule schedule(startDate,endDate,Period(frequency),calendar,
-                              convention,convention,
-                              DateGeneration::Forward,false);
-            std::vector<Real> gearingVector(length, gearing);
-            std::vector<Spread> spreadVector(length, spread);
-            return IborLeg(schedule, index)
-                .withNotionals(nominals)
-                .withPaymentDayCounter(index->dayCounter())
-                .withPaymentAdjustment(convention)
-                .withFixingDays(fixingDays)
-                .withGearings(gearingVector)
-                .withSpreads(spreadVector);
-        }
+    Leg makeFloatingLeg(const Date& startDate,
+                        Integer length,
+                        const Rate gearing = 1.0,
+                        const Rate spread = 0.0) const {
 
-        Leg makeCapFlooredLeg(const Date& startDate,
-                              Integer length,
-                              const std::vector<Rate>& caps,
-                              const std::vector<Rate>& floors,
-                              Volatility volatility,
-                              const Rate gearing = 1.0,
-                              const Rate spread = 0.0) const {
+        Date endDate = calendar.advance(startDate,length,Years,convention);
+        Schedule schedule(startDate,endDate,Period(frequency),calendar,
+                          convention,convention,
+                          DateGeneration::Forward,false);
+        std::vector<Real> gearingVector(length, gearing);
+        std::vector<Spread> spreadVector(length, spread);
+        return IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(index->dayCounter())
+            .withPaymentAdjustment(convention)
+            .withFixingDays(fixingDays)
+            .withGearings(gearingVector)
+            .withSpreads(spreadVector);
+    }
 
-            Date endDate = calendar.advance(startDate,length,Years,convention);
-            Schedule schedule(startDate,endDate,Period(frequency),calendar,
-                              convention,convention,
-                              DateGeneration::Forward,false);
-            Handle<OptionletVolatilityStructure> vol(
+    Leg makeCapFlooredLeg(const Date& startDate,
+                          Integer length,
+                          const std::vector<Rate>& caps,
+                          const std::vector<Rate>& floors,
+                          Volatility volatility,
+                          const Rate gearing = 1.0,
+                          const Rate spread = 0.0) const {
+
+        Date endDate = calendar.advance(startDate,length,Years,convention);
+        Schedule schedule(startDate,endDate,Period(frequency),calendar,
+                          convention,convention,
+                          DateGeneration::Forward,false);
+        Handle<OptionletVolatilityStructure> vol(
                 ext::shared_ptr<OptionletVolatilityStructure>(new
                     ConstantOptionletVolatility(0, calendar, Following,
                                                 volatility,Actual365Fixed())));
 
-            ext::shared_ptr<IborCouponPricer> pricer(new
+        ext::shared_ptr<IborCouponPricer> pricer(new
                 BlackIborCouponPricer(vol));
-            std::vector<Rate> gearingVector(length, gearing);
-            std::vector<Spread> spreadVector(length, spread);
+        std::vector<Rate> gearingVector(length, gearing);
+        std::vector<Spread> spreadVector(length, spread);
 
-            Leg iborLeg = IborLeg(schedule, index)
-                .withNotionals(nominals)
-                .withPaymentDayCounter(index->dayCounter())
-                .withPaymentAdjustment(convention)
-                .withFixingDays(fixingDays)
-                .withGearings(gearingVector)
-                .withSpreads(spreadVector)
-                .withCaps(caps)
-                .withFloors(floors);
-            setCouponPricer(iborLeg, pricer);
-            return iborLeg;
-        }
+        Leg iborLeg = IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(index->dayCounter())
+            .withPaymentAdjustment(convention)
+            .withFixingDays(fixingDays)
+            .withGearings(gearingVector)
+            .withSpreads(spreadVector)
+            .withCaps(caps)
+            .withFloors(floors);
+        setCouponPricer(iborLeg, pricer);
+        return iborLeg;
+    }
 
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
+    ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
                                  new BlackCapFloorEngine(termStructure, vol));
-        }
+    }
 
-        ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                               const Leg& leg,
-                                               Rate capStrike,
-                                               Rate floorStrike,
-                                               Volatility volatility) const {
-            ext::shared_ptr<CapFloor> result;
-            switch (type) {
-              case CapFloor::Cap:
-                result = ext::shared_ptr<CapFloor>(
+    ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+                                           const Leg& leg,
+                                           Rate capStrike,
+                                           Rate floorStrike,
+                                           Volatility volatility) const {
+        ext::shared_ptr<CapFloor> result;
+        switch (type) {
+          case CapFloor::Cap:
+            result = ext::shared_ptr<CapFloor>(
                                new Cap(leg, std::vector<Rate>(1, capStrike)));
-                break;
-              case CapFloor::Floor:
-                result = ext::shared_ptr<CapFloor>(
+            break;
+          case CapFloor::Floor:
+            result = ext::shared_ptr<CapFloor>(
                            new Floor(leg, std::vector<Rate>(1, floorStrike)));
-                break;
-              case CapFloor::Collar:
-                result = ext::shared_ptr<CapFloor>(
+            break;
+          case CapFloor::Collar:
+            result = ext::shared_ptr<CapFloor>(
                                new Collar(leg,
                                           std::vector<Rate>(1, capStrike),
                                           std::vector<Rate>(1, floorStrike)));
-                break;
-              default:
-                QL_FAIL("unknown cap/floor type");
-            }
-            result->setPricingEngine(makeEngine(volatility));
-            return result;
+            break;
+          default:
+            QL_FAIL("unknown cap/floor type");
         }
-    };
+        result->setPricingEngine(makeEngine(volatility));
+        return result;
+    }
+};
 
-}
 
-
-void CapFlooredCouponTest::testLargeRates() {
+BOOST_AUTO_TEST_CASE(testLargeRates) {
 
     BOOST_TEST_MESSAGE("Testing degenerate collared coupon...");
-
-    using namespace capfloored_coupon_test;
 
     CommonVars vars;
 
@@ -232,11 +229,9 @@ void CapFlooredCouponTest::testLargeRates() {
    }
 }
 
-void CapFlooredCouponTest::testDecomposition() {
+BOOST_AUTO_TEST_CASE(testDecomposition) {
 
     BOOST_TEST_MESSAGE("Testing collared coupon against its decomposition...");
-
-    using namespace capfloored_coupon_test;
 
     CommonVars vars;
 
@@ -544,10 +539,7 @@ void CapFlooredCouponTest::testDecomposition() {
     }
 }
 
-test_suite* CapFlooredCouponTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Capped and floored coupon tests");
-    suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testLargeRates));
-    suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testDecomposition));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()
 

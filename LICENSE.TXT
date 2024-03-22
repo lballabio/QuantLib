@@ -156,8 +156,8 @@ QuantLib is
 
     Copyright (C) 2021 Anubhav Pandey
     Copyright (C) 2021 Magnus Mencke
-    Copyright (C) 2021, 2022 Ralf Konrad Eckel
-    Copyright (C) 2021, 2022, 2023 Skandinaviska Enskilda Banken AB (publ)
+    Copyright (C) 2021, 2022, 2023 Ralf Konrad Eckel
+    Copyright (C) 2021, 2022, 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 
     Copyright (C) 2022, 2023 Ignacio Anguita
     Copyright (C) 2022, 2023 Jonghee Lee
@@ -165,6 +165,8 @@ QuantLib is
     Copyright (C) 2023 Aditya Narayan Das
     Copyright (C) 2023 Andrea Pellegatta
     Copyright (C) 2023 Jonathan Sweemer
+    Copyright (C) 2023 Nathaniel Brough
+    Copyright (C) 2023 Paul Xi Cao
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

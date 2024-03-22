@@ -106,7 +106,7 @@ namespace QuantLib {
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
         FixedRateLeg& withLastPeriodDayCounter(const DayCounter&);
         FixedRateLeg& withPaymentCalendar(const Calendar&);
-        FixedRateLeg& withPaymentLag(Natural lag);
+        FixedRateLeg& withPaymentLag(Integer lag);
         FixedRateLeg& withExCouponPeriod(const Period&,
                                          const Calendar&,
                                          BusinessDayConvention,
@@ -119,7 +119,7 @@ namespace QuantLib {
         DayCounter firstPeriodDC_ , lastPeriodDC_;
         Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_ = Following;
-        Natural paymentLag_ = 0;
+        Integer paymentLag_ = 0;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_ = Following;

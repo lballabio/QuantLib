@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "gsr.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/processes/gsrprocess.hpp>
 #include <ql/models/shortrate/onefactormodels/gsr.hpp>
@@ -46,7 +46,11 @@ using boost::unit_test_framework::test_suite;
 
 using std::fabs;
 
-void GsrTest::testGsrProcess() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(GsrTests)
+
+BOOST_AUTO_TEST_CASE(testGsrProcess) {
 
     BOOST_TEST_MESSAGE("Testing GSR process...");
 
@@ -162,7 +166,7 @@ void GsrTest::testGsrProcess() {
     // add more test cases here ...
 }
 
-void GsrTest::testGsrModel() {
+BOOST_AUTO_TEST_CASE(testGsrModel) {
 
     BOOST_TEST_MESSAGE("Testing GSR model...");
 
@@ -285,9 +289,6 @@ void GsrTest::testGsrModel() {
                     << GsrJamNpv << ")");
 }
 
-test_suite *GsrTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("GSR model tests");
-    suite->add(QUANTLIB_TEST_CASE(&GsrTest::testGsrProcess));
-    suite->add(QUANTLIB_TEST_CASE(&GsrTest::testGsrModel));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

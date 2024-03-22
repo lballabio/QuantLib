@@ -7,8 +7,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: [macos-11]
-            shortname: default-11
           - os: [macos-12]
             shortname: default-12
           - os: [macos-13]
@@ -16,6 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Setup
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install automake boost ccache
     - name: Cache

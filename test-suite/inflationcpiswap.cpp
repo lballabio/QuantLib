@@ -17,8 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include "utilities.hpp"
-#include "inflationcpiswap.hpp"
+#include "toplevelfixture.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -42,18 +41,19 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#include <iostream>
-
 using std::fabs;
 
-namespace inflation_cpi_swap_test {
-    struct Datum {
-        Date date;
-        Rate rate;
-    };
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    template <class T, class U, class I>
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
+BOOST_AUTO_TEST_SUITE(CPISwapTests)
+
+struct Datum {
+    Date date;
+    Rate rate;
+};
+
+template <class T, class U, class I>
+std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         Datum iiData[], Size N,
         const ext::shared_ptr<I> &ii, const Period &observationLag,
         const Calendar &calendar,
@@ -61,199 +61,189 @@ namespace inflation_cpi_swap_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
-        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Size i=0; i<N; i++) {
-            Date maturity = iiData[i].date;
-            Handle<Quote> quote(ext::shared_ptr<Quote>(
+    std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
+    for (Size i=0; i<N; i++) {
+        Date maturity = iiData[i].date;
+        Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
-                                                                    calendar, bdc, dc, ii,
-                                                                    CPI::AsIndex, discountCurve));
-            instruments.push_back(anInstrument);
-        }
-
-        return instruments;
+        ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
+                                                                calendar, bdc, dc, ii,
+                                                                CPI::AsIndex, discountCurve));
+        instruments.push_back(anInstrument);
     }
 
+    return instruments;
+}
 
-    struct CommonVars {
-        // common data
+
+struct CommonVars {
+    // common data
     
-        Size length;
-        Date startDate;
-        Real volatility;
+    Size length;
+    Date startDate;
+    Real volatility;
 
-        Frequency frequency;
-        std::vector<Real> nominals;
-        Calendar calendar;
-        BusinessDayConvention convention;
-        Natural fixingDays;
-        Date evaluationDate;
-        Natural settlementDays;
-        Date settlement;
-        Period observationLag, contractObservationLag;
-        CPI::InterpolationType contractObservationInterpolation;
-        DayCounter dcZCIIS,dcNominal;
-        std::vector<Date> zciisD;
-        std::vector<Rate> zciisR;
-        ext::shared_ptr<UKRPI> ii;
-        Size zciisDataLength;
+    Frequency frequency;
+    std::vector<Real> nominals;
+    Calendar calendar;
+    BusinessDayConvention convention;
+    Natural fixingDays;
+    Date evaluationDate;
+    Natural settlementDays;
+    Date settlement;
+    Period observationLag, contractObservationLag;
+    CPI::InterpolationType contractObservationInterpolation;
+    DayCounter dcZCIIS,dcNominal;
+    std::vector<Date> zciisD;
+    std::vector<Rate> zciisR;
+    ext::shared_ptr<UKRPI> ii;
+    Size zciisDataLength;
 
-        RelinkableHandle<YieldTermStructure> nominalTS;
-        ext::shared_ptr<ZeroInflationTermStructure> cpiTS;
-        RelinkableHandle<ZeroInflationTermStructure> hcpi;
+    RelinkableHandle<YieldTermStructure> nominalTS;
+    ext::shared_ptr<ZeroInflationTermStructure> cpiTS;
+    RelinkableHandle<ZeroInflationTermStructure> hcpi;
 
-        // setup
-        CommonVars()
-        : nominals(1,1000000) {
+    // setup
+    CommonVars()
+    : nominals(1,1000000) {
 
-            // option variables
-            frequency = Annual;
-            // usual setup
-            volatility = 0.01;
-            length = 7;
-            calendar = UnitedKingdom();
-            convention = ModifiedFollowing;
-            Date today(25, November, 2009);
-            evaluationDate = calendar.adjust(today);
-            Settings::instance().evaluationDate() = evaluationDate;
-            settlementDays = 0;
-            fixingDays = 0;
-            settlement = calendar.advance(today,settlementDays,Days);
-            startDate = settlement;
-            dcZCIIS = ActualActual(ActualActual::ISDA);
-            dcNominal = ActualActual(ActualActual::ISDA);
+        // option variables
+        frequency = Annual;
+        // usual setup
+        volatility = 0.01;
+        length = 7;
+        calendar = UnitedKingdom();
+        convention = ModifiedFollowing;
+        Date today(25, November, 2009);
+        evaluationDate = calendar.adjust(today);
+        Settings::instance().evaluationDate() = evaluationDate;
+        settlementDays = 0;
+        fixingDays = 0;
+        settlement = calendar.advance(today,settlementDays,Days);
+        startDate = settlement;
+        dcZCIIS = ActualActual(ActualActual::ISDA);
+        dcNominal = ActualActual(ActualActual::ISDA);
 
-            // uk rpi index
-            //      fixing data
-            Date from(20, July, 2007);
-            //Date from(20, July, 2008);
-            Date to(20, November, 2009);
-            Schedule rpiSchedule = MakeSchedule().from(from).to(to)
-            .withTenor(1*Months)
-            .withCalendar(UnitedKingdom())
-            .withConvention(ModifiedFollowing);
-            Real fixData[] = {
-                206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
-                209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
-                216.5, 217.2, 218.4, 217.7, 216,
-                212.9, 210.1, 211.4, 211.3, 211.5,
-                212.8, 213.4, 213.4, 213.4, 214.4,
-                -999.0, -999.0 };
+        // UK RPI index fixing data
+        Schedule rpiSchedule =
+            MakeSchedule()
+            .from(Date(1, July, 2007))
+            .to(Date(1, September, 2009))
+            .withFrequency(Monthly);
+        Real fixData[] = {
+            206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
+            209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
+            216.5, 217.2, 218.4, 217.7, 216.0, 212.9,
+            210.1, 211.4, 211.3, 211.5, 212.8, 213.4,
+            213.4, 213.4, 214.4
+        };
 
-            // link from cpi index to cpi TS
-            ii = ext::make_shared<UKRPI>(hcpi);
-            for (Size i=0; i<rpiSchedule.size();i++) {
-                ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
-            };
+        // link from cpi index to cpi TS
+        ii = ext::make_shared<UKRPI>(hcpi);
+        for (Size i=0; i<rpiSchedule.size();i++) {
+            ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
+        };
 
 
-            Datum nominalData[] = {
-                { Date(26, November, 2009), 0.475 },
-                { Date(2, December, 2009), 0.47498 },
-                { Date(29, December, 2009), 0.49988 },
-                { Date(25, February, 2010), 0.59955 },
-                { Date(18, March, 2010), 0.65361 },
-                { Date(25, May, 2010), 0.82830 },
-                //  { Date(17, June, 2010), 0.7 },  // can't bootstrap with this data point
-                { Date(16, September, 2010), 0.78960 },
-                { Date(16, December, 2010), 0.93762 },
-                { Date(17, March, 2011), 1.12037 },
-                { Date(16, June, 2011), 1.31308 },
-                { Date(22, September, 2011),1.52011 },
-                { Date(25, November, 2011), 1.78399 },
-                { Date(26, November, 2012), 2.41170 },
-                { Date(25, November, 2013), 2.83935 },
-                { Date(25, November, 2014), 3.12888 },
-                { Date(25, November, 2015), 3.34298 },
-                { Date(25, November, 2016), 3.50632 },
-                { Date(27, November, 2017), 3.63666 },
-                { Date(26, November, 2018), 3.74723 },
-                { Date(25, November, 2019), 3.83988 },
-                { Date(25, November, 2021), 4.00508 },
-                { Date(25, November, 2024), 4.16042 },
-                { Date(26, November, 2029), 4.15577 },
-                { Date(27, November, 2034), 4.04933 },
-                { Date(25, November, 2039), 3.95217 },
-                { Date(25, November, 2049), 3.80932 },
-                { Date(25, November, 2059), 3.80849 },
-                { Date(25, November, 2069), 3.72677 },
-                { Date(27, November, 2079), 3.63082 }
-            };
+        Datum nominalData[] = {
+            { Date(26, November, 2009), 0.475 },
+            { Date(2, December, 2009), 0.47498 },
+            { Date(29, December, 2009), 0.49988 },
+            { Date(25, February, 2010), 0.59955 },
+            { Date(18, March, 2010), 0.65361 },
+            { Date(25, May, 2010), 0.82830 },
+            //  { Date(17, June, 2010), 0.7 },  // can't bootstrap with this data point
+            { Date(16, September, 2010), 0.78960 },
+            { Date(16, December, 2010), 0.93762 },
+            { Date(17, March, 2011), 1.12037 },
+            { Date(16, June, 2011), 1.31308 },
+            { Date(22, September, 2011),1.52011 },
+            { Date(25, November, 2011), 1.78399 },
+            { Date(26, November, 2012), 2.41170 },
+            { Date(25, November, 2013), 2.83935 },
+            { Date(25, November, 2014), 3.12888 },
+            { Date(25, November, 2015), 3.34298 },
+            { Date(25, November, 2016), 3.50632 },
+            { Date(27, November, 2017), 3.63666 },
+            { Date(26, November, 2018), 3.74723 },
+            { Date(25, November, 2019), 3.83988 },
+            { Date(25, November, 2021), 4.00508 },
+            { Date(25, November, 2024), 4.16042 },
+            { Date(26, November, 2029), 4.15577 },
+            { Date(27, November, 2034), 4.04933 },
+            { Date(25, November, 2039), 3.95217 },
+            { Date(25, November, 2049), 3.80932 },
+            { Date(25, November, 2059), 3.80849 },
+            { Date(25, November, 2069), 3.72677 },
+            { Date(27, November, 2079), 3.63082 }
+        };
 
-            std::vector<Date> nomD;
-            std::vector<Rate> nomR;
-            for (auto& i : nominalData) {
-                nomD.push_back(i.date);
-                nomR.push_back(i.rate / 100.0);
-            }
-            ext::shared_ptr<YieldTermStructure> nominal =
-                ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
+        std::vector<Date> nomD;
+        std::vector<Rate> nomR;
+        for (auto& i : nominalData) {
+            nomD.push_back(i.date);
+            nomR.push_back(i.rate / 100.0);
+        }
+        ext::shared_ptr<YieldTermStructure> nominal =
+            ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
-            nominalTS.linkTo(nominal);
+        nominalTS.linkTo(nominal);
 
-            // now build the zero inflation curve
-            observationLag = Period(2,Months);
-            contractObservationLag = Period(3,Months);
-            contractObservationInterpolation = CPI::Flat;
+        // now build the zero inflation curve
+        observationLag = Period(2,Months);
+        contractObservationLag = Period(3,Months);
+        contractObservationInterpolation = CPI::Flat;
 
-            Datum zciisData[] = {
-                { Date(25, November, 2010), 3.0495 },
-                { Date(25, November, 2011), 2.93 },
-                { Date(26, November, 2012), 2.9795 },
-                { Date(25, November, 2013), 3.029 },
-                { Date(25, November, 2014), 3.1425 },
-                { Date(25, November, 2015), 3.211 },
-                { Date(25, November, 2016), 3.2675 },
-                { Date(25, November, 2017), 3.3625 },
-                { Date(25, November, 2018), 3.405 },
-                { Date(25, November, 2019), 3.48 },
-                { Date(25, November, 2021), 3.576 },
-                { Date(25, November, 2024), 3.649 },
-                { Date(26, November, 2029), 3.751 },
-                { Date(27, November, 2034), 3.77225 },
-                { Date(25, November, 2039), 3.77 },
-                { Date(25, November, 2049), 3.734 },
-                { Date(25, November, 2059), 3.714 },
-            };
-            zciisDataLength = 17;
-            for (Size i = 0; i < zciisDataLength; i++) {
-                zciisD.push_back(zciisData[i].date);
-                zciisR.push_back(zciisData[i].rate);
-            }
+        Datum zciisData[] = {
+            { Date(25, November, 2010), 3.0495 },
+            { Date(25, November, 2011), 2.93 },
+            { Date(26, November, 2012), 2.9795 },
+            { Date(25, November, 2013), 3.029 },
+            { Date(25, November, 2014), 3.1425 },
+            { Date(25, November, 2015), 3.211 },
+            { Date(25, November, 2016), 3.2675 },
+            { Date(25, November, 2017), 3.3625 },
+            { Date(25, November, 2018), 3.405 },
+            { Date(25, November, 2019), 3.48 },
+            { Date(25, November, 2021), 3.576 },
+            { Date(25, November, 2024), 3.649 },
+            { Date(26, November, 2029), 3.751 },
+            { Date(27, November, 2034), 3.77225 },
+            { Date(25, November, 2039), 3.77 },
+            { Date(25, November, 2049), 3.734 },
+            { Date(25, November, 2059), 3.714 },
+        };
+        zciisDataLength = 17;
+        for (Size i = 0; i < zciisDataLength; i++) {
+            zciisD.push_back(zciisData[i].date);
+            zciisR.push_back(zciisData[i].rate);
+        }
 
-            // now build the helpers ...
-            std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
+        // now build the helpers ...
+        std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
             makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
             ZeroInflationIndex>(zciisData, zciisDataLength, ii,
                                 observationLag,
                                 calendar, convention, dcZCIIS,
                                 Handle<YieldTermStructure>(nominalTS));
 
-            // we can use historical or first ZCIIS for this
-            // we know historical is WAY off market-implied, so use market implied flat.
-            Rate baseZeroRate = zciisData[0].rate/100.0;
-            ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
-                                new PiecewiseZeroInflationCurve<Linear>(
-                                    evaluationDate, calendar, dcZCIIS, observationLag,
-                                    ii->frequency(), baseZeroRate, helpers));
-            pCPIts->recalculate();
-            cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
+        // we can use historical or first ZCIIS for this
+        // we know historical is WAY off market-implied, so use market implied flat.
+        Date baseDate = ii->lastFixingDate();
+        auto pCPIts =
+            ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+                                    evaluationDate, baseDate, ii->frequency(), dcZCIIS, helpers);
+        pCPIts->recalculate();
+        cpiTS = ext::dynamic_pointer_cast<ZeroInflationTermStructure>(pCPIts);
+
+        // make sure that the index has the latest zero inflation term structure
+        hcpi.linkTo(pCPIts);
+    }
+};
 
 
-            // make sure that the index has the latest zero inflation term structure
-            hcpi.linkTo(pCPIts);
-        }
-    };
-
-}
-
-
-
-void CPISwapTest::consistency() {
+BOOST_AUTO_TEST_CASE(consistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against inflation term structure...");
-
-    using namespace inflation_cpi_swap_test;
 
     bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -363,11 +353,8 @@ void CPISwapTest::consistency() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
-
-void CPISwapTest::zciisconsistency() {
+BOOST_AUTO_TEST_CASE(zciisconsistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
-
-    using namespace inflation_cpi_swap_test;
 
     CommonVars common;
 
@@ -420,11 +407,8 @@ void CPISwapTest::zciisconsistency() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
-
-void CPISwapTest::cpibondconsistency() {
+BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     BOOST_TEST_MESSAGE("Checking CPI swap against CPI bond...");
-
-    using namespace inflation_cpi_swap_test;
 
     CommonVars common;
 
@@ -513,14 +497,6 @@ void CPISwapTest::cpibondconsistency() {
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CPISwapTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("CPISwap tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::consistency));
-    suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::zciisconsistency));
-    suite->add(QUANTLIB_TEST_CASE(&CPISwapTest::cpibondconsistency));
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

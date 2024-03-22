@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "basismodels.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/compounding.hpp>
@@ -39,204 +39,203 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    // auxiliary data
-    Period termsData[] = {
-        Period(0, Days),   Period(1, Years), Period(2, Years),  Period(3, Years),
-        Period(5, Years),  Period(7, Years), Period(10, Years), Period(15, Years),
-        Period(20, Years), Period(61, Years) // avoid extrapolation issues with 30y caplets
-    };
-    std::vector<Period> terms(termsData, termsData + 10);
+BOOST_AUTO_TEST_SUITE(BasisModelsTests)
 
-    Real discRatesData[] = {-0.00147407, -0.001761684, -0.001736745, -0.00119244, 0.000896055,
-                            0.003537077, 0.007213824,  0.011391278,  0.013334611, 0.013982809};
-    std::vector<Real> discRates(discRatesData, discRatesData + 10);
+// auxiliary data
+Period termsData[] = {
+    Period(0, Days),   Period(1, Years), Period(2, Years),  Period(3, Years),
+    Period(5, Years),  Period(7, Years), Period(10, Years), Period(15, Years),
+    Period(20, Years), Period(61, Years) // avoid extrapolation issues with 30y caplets
+};
+std::vector<Period> terms(termsData, termsData + 10);
 
-    Real proj3mRatesData[] = {-0.000483439, -0.000578569, -0.000383832, 0.000272656, 0.002478699,
-                              0.005100113,  0.008750643,  0.012788095,  0.014534052, 0.014942896};
-    std::vector<Real> proj3mRates(proj3mRatesData, proj3mRatesData + 10);
+Real discRatesData[] = {-0.00147407, -0.001761684, -0.001736745, -0.00119244, 0.000896055,
+                        0.003537077, 0.007213824,  0.011391278,  0.013334611, 0.013982809};
+std::vector<Real> discRates(discRatesData, discRatesData + 10);
 
-    Real proj6mRatesData[] = {0.000233608, 0.000218862, 0.000504018, 0.001240556, 0.003554415,
-                              0.006153921, 0.009688264, 0.013521628, 0.015136391, 0.015377704};
-    std::vector<Real> proj6mRates(proj6mRatesData, proj6mRatesData + 10);
+Real proj3mRatesData[] = {-0.000483439, -0.000578569, -0.000383832, 0.000272656, 0.002478699,
+                          0.005100113,  0.008750643,  0.012788095,  0.014534052, 0.014942896};
+std::vector<Real> proj3mRates(proj3mRatesData, proj3mRatesData + 10);
 
-    Handle<YieldTermStructure> getYTS(const std::vector<Period>& terms,
-                                      const std::vector<Real>& rates,
-                                      const Real spread = 0.0) {
-        Date today = Settings::instance().evaluationDate();
-        std::vector<Date> dates;
-        dates.reserve(terms.size());
-        for (auto term : terms)
-            dates.push_back(NullCalendar().advance(today, term, Unadjusted));
-        std::vector<Real> ratesPlusSpread(rates);
-        for (Real& k : ratesPlusSpread)
-            k += spread;
-        ext::shared_ptr<YieldTermStructure> ts =
-            ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
+Real proj6mRatesData[] = {0.000233608, 0.000218862, 0.000504018, 0.001240556, 0.003554415,
+                          0.006153921, 0.009688264, 0.013521628, 0.015136391, 0.015377704};
+std::vector<Real> proj6mRates(proj6mRatesData, proj6mRatesData + 10);
+
+Handle<YieldTermStructure> getYTS(const std::vector<Period>& terms,
+                                  const std::vector<Real>& rates,
+                                  const Real spread = 0.0) {
+    Date today = Settings::instance().evaluationDate();
+    std::vector<Date> dates;
+    dates.reserve(terms.size());
+    for (auto term : terms)
+        dates.push_back(NullCalendar().advance(today, term, Unadjusted));
+    std::vector<Real> ratesPlusSpread(rates);
+    for (Real& k : ratesPlusSpread)
+        k += spread;
+    ext::shared_ptr<YieldTermStructure> ts =
+        ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
                 dates, ratesPlusSpread, Actual365Fixed(), NullCalendar()));
-        return RelinkableHandle<YieldTermStructure>(ts);
-    }
+    return RelinkableHandle<YieldTermStructure>(ts);
+}
 
-    Period capletTermsData[] = {Period(1, Years),  Period(2, Years),  Period(3, Years),
-                                Period(5, Years),  Period(7, Years),  Period(10, Years),
-                                Period(15, Years), Period(20, Years), Period(25, Years),
-                                Period(30, Years)};
-    std::vector<Period> capletTerms(capletTermsData, capletTermsData + 10);
+Period capletTermsData[] = {Period(1, Years),  Period(2, Years),  Period(3, Years),
+                            Period(5, Years),  Period(7, Years),  Period(10, Years),
+                            Period(15, Years), Period(20, Years), Period(25, Years),
+                            Period(30, Years)};
+std::vector<Period> capletTerms(capletTermsData, capletTermsData + 10);
 
-    Real capletStrikesData[] = {-0.0050, 0.0000, 0.0050, 0.0100, 0.0150, 0.0200, 0.0300, 0.0500};
-    std::vector<Real> capletStrikes(capletStrikesData, capletStrikesData + 8);
+Real capletStrikesData[] = {-0.0050, 0.0000, 0.0050, 0.0100, 0.0150, 0.0200, 0.0300, 0.0500};
+std::vector<Real> capletStrikes(capletStrikesData, capletStrikesData + 8);
 
 
-    Handle<OptionletVolatilityStructure> getOptionletTS() {
-        Date today = Settings::instance().evaluationDate();
-        std::vector<Date> dates;
-        dates.reserve(capletTerms.size());
-        for (auto& capletTerm : capletTerms)
-            dates.push_back(TARGET().advance(today, capletTerm, Following));
-        // set up vol data manually
-        std::vector<std::vector<Real> > capletVols =
+Handle<OptionletVolatilityStructure> getOptionletTS() {
+    Date today = Settings::instance().evaluationDate();
+    std::vector<Date> dates;
+    dates.reserve(capletTerms.size());
+    for (auto& capletTerm : capletTerms)
+        dates.push_back(TARGET().advance(today, capletTerm, Following));
+    // set up vol data manually
+    std::vector<std::vector<Real> > capletVols =
         {
-         {0.003010094, 0.002628065, 0.00456118,  0.006731268, 0.008678572, 0.010570881, 0.014149552, 0.021000638},
-         {0.004173715, 0.003727039, 0.004180263, 0.005726083, 0.006905876, 0.008263514, 0.010555395, 0.014976523},
-         {0.005870143, 0.005334526, 0.005599775, 0.006633987, 0.007773317, 0.009036581, 0.011474391, 0.016277549},
-         {0.007458597, 0.007207522, 0.007263995, 0.007308727, 0.007813586, 0.008274858, 0.009743988, 0.012555171},
-         {0.007711531, 0.007608826, 0.007572816, 0.007684107, 0.007971932, 0.008283118, 0.009268828, 0.011574083},
-         {0.007619605, 0.007639059, 0.007719825, 0.007823373, 0.00800813,  0.008113384, 0.008616374, 0.009785436},
-         {0.007312199, 0.007352993, 0.007369116, 0.007468333, 0.007515657, 0.00767695,  0.008020447, 0.009072769},
-         {0.006905851, 0.006966315, 0.007056413, 0.007116494, 0.007259661, 0.00733308,  0.007667563, 0.008419696},
-         {0.006529553, 0.006630731, 0.006749022, 0.006858027, 0.007001959, 0.007139097, 0.007390404, 0.008036255},
-         {0.006225482, 0.006404012, 0.00651594,  0.006642273, 0.006640887, 0.006885713, 0.007093024, 0.00767373}
+            {0.003010094, 0.002628065, 0.00456118,  0.006731268, 0.008678572, 0.010570881, 0.014149552, 0.021000638},
+            {0.004173715, 0.003727039, 0.004180263, 0.005726083, 0.006905876, 0.008263514, 0.010555395, 0.014976523},
+            {0.005870143, 0.005334526, 0.005599775, 0.006633987, 0.007773317, 0.009036581, 0.011474391, 0.016277549},
+            {0.007458597, 0.007207522, 0.007263995, 0.007308727, 0.007813586, 0.008274858, 0.009743988, 0.012555171},
+            {0.007711531, 0.007608826, 0.007572816, 0.007684107, 0.007971932, 0.008283118, 0.009268828, 0.011574083},
+            {0.007619605, 0.007639059, 0.007719825, 0.007823373, 0.00800813,  0.008113384, 0.008616374, 0.009785436},
+            {0.007312199, 0.007352993, 0.007369116, 0.007468333, 0.007515657, 0.00767695,  0.008020447, 0.009072769},
+            {0.006905851, 0.006966315, 0.007056413, 0.007116494, 0.007259661, 0.00733308,  0.007667563, 0.008419696},
+            {0.006529553, 0.006630731, 0.006749022, 0.006858027, 0.007001959, 0.007139097, 0.007390404, 0.008036255},
+            {0.006225482, 0.006404012, 0.00651594,  0.006642273, 0.006640887, 0.006885713, 0.007093024, 0.00767373}
         };
-        // create quotes
-        std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
-        for (auto& capletVol : capletVols) {
-            std::vector<Handle<Quote> > row;
-            row.reserve(capletVol.size());
-            for (Real j : capletVol)
-                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
-            capletVolQuotes.push_back(row);
-        }
-        Handle<YieldTermStructure> curve3m = getYTS(terms, proj3mRates);
-        ext::shared_ptr<IborIndex> index(new Euribor3M(curve3m));
-        ext::shared_ptr<StrippedOptionletBase> tmp1(
+    // create quotes
+    std::vector<std::vector<Handle<Quote> > > capletVolQuotes;
+    for (auto& capletVol : capletVols) {
+        std::vector<Handle<Quote> > row;
+        row.reserve(capletVol.size());
+        for (Real j : capletVol)
+            row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
+        capletVolQuotes.push_back(row);
+    }
+    Handle<YieldTermStructure> curve3m = getYTS(terms, proj3mRates);
+    ext::shared_ptr<IborIndex> index(new Euribor3M(curve3m));
+    ext::shared_ptr<StrippedOptionletBase> tmp1(
             new StrippedOptionlet(2, TARGET(), Following, index, dates, capletStrikes,
                                   capletVolQuotes, Actual365Fixed(), Normal, 0.0));
-        ext::shared_ptr<StrippedOptionletAdapter> tmp2(new StrippedOptionletAdapter(tmp1));
-        return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
+    ext::shared_ptr<StrippedOptionletAdapter> tmp2(new StrippedOptionletAdapter(tmp1));
+    return RelinkableHandle<OptionletVolatilityStructure>(tmp2);
+}
+
+Period swaptionVTSTermsData[] = {
+    Period(1, Years), Period(5, Years), Period(10, Years), Period(20, Years), Period(30, Years),
+};
+std::vector<Period> swaptionVTSTerms(swaptionVTSTermsData, swaptionVTSTermsData + 5);
+
+Handle<SwaptionVolatilityStructure> getSwaptionVTS() {
+    std::vector<std::vector<Real> > swaptionVols =
+        {
+            {0.002616, 0.00468, 0.0056, 0.005852, 0.005823},
+            {0.006213, 0.00643, 0.006622, 0.006124, 0.005958},
+            {0.006658, 0.006723, 0.006602, 0.005802, 0.005464},
+            {0.005728, 0.005814, 0.005663, 0.004689, 0.004276},
+            {0.005041, 0.005059, 0.004746, 0.003927, 0.003608}
+        };
+    std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
+    for (auto& swaptionVol : swaptionVols) {
+        std::vector<Handle<Quote> > row;
+        row.reserve(swaptionVol.size());
+        for (Real j : swaptionVol)
+            row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
+        swaptionVolQuotes.push_back(row);
     }
-
-    Period swaptionVTSTermsData[] = {
-        Period(1, Years), Period(5, Years), Period(10, Years), Period(20, Years), Period(30, Years),
-    };
-    std::vector<Period> swaptionVTSTerms(swaptionVTSTermsData, swaptionVTSTermsData + 5);
-
-    Handle<SwaptionVolatilityStructure> getSwaptionVTS() {
-        std::vector<std::vector<Real> > swaptionVols =
-            {
-             {0.002616, 0.00468, 0.0056, 0.005852, 0.005823},
-             {0.006213, 0.00643, 0.006622, 0.006124, 0.005958},
-             {0.006658, 0.006723, 0.006602, 0.005802, 0.005464},
-             {0.005728, 0.005814, 0.005663, 0.004689, 0.004276},
-             {0.005041, 0.005059, 0.004746, 0.003927, 0.003608}
-            };
-        std::vector<std::vector<Handle<Quote> > > swaptionVolQuotes;
-        for (auto& swaptionVol : swaptionVols) {
-            std::vector<Handle<Quote> > row;
-            row.reserve(swaptionVol.size());
-            for (Real j : swaptionVol)
-                row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
-            swaptionVolQuotes.push_back(row);
-        }
-        ext::shared_ptr<SwaptionVolatilityStructure> tmp(
+    ext::shared_ptr<SwaptionVolatilityStructure> tmp(
             new SwaptionVolatilityMatrix(TARGET(), Following, swaptionVTSTerms, swaptionVTSTerms,
                                          swaptionVolQuotes, Actual365Fixed(), true, Normal));
-        return RelinkableHandle<SwaptionVolatilityStructure>(tmp);
-    }
+    return RelinkableHandle<SwaptionVolatilityStructure>(tmp);
+}
 
-    void testSwaptioncfs(bool contTenorSpread) {
-        bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-        // market data and floating rate index
-        Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
-        Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
-        ext::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
-        // Vanilla swap details
-        Date today = Settings::instance().evaluationDate();
-        Date swapStart = TARGET().advance(today, Period(5, Years), Following);
-        Date swapEnd = TARGET().advance(swapStart, Period(10, Years), Following);
-        Date exerciseDate = TARGET().advance(swapStart, Period(-2, Days), Preceding);
-        Schedule fixedSchedule(swapStart, swapEnd, Period(1, Years), TARGET(), ModifiedFollowing,
-                               ModifiedFollowing, DateGeneration::Backward, false);
-        Schedule floatSchedule(swapStart, swapEnd, Period(6, Months), TARGET(), ModifiedFollowing,
-                               ModifiedFollowing, DateGeneration::Backward, false);
-        ext::shared_ptr<VanillaSwap> swap(
+void testSwaptioncfs(bool contTenorSpread) {
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+    // market data and floating rate index
+    Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
+    Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
+    ext::shared_ptr<IborIndex> euribor6m(new Euribor6M(proj6mYTS));
+    // Vanilla swap details
+    Date today = Settings::instance().evaluationDate();
+    Date swapStart = TARGET().advance(today, Period(5, Years), Following);
+    Date swapEnd = TARGET().advance(swapStart, Period(10, Years), Following);
+    Date exerciseDate = TARGET().advance(swapStart, Period(-2, Days), Preceding);
+    Schedule fixedSchedule(swapStart, swapEnd, Period(1, Years), TARGET(), ModifiedFollowing,
+                           ModifiedFollowing, DateGeneration::Backward, false);
+    Schedule floatSchedule(swapStart, swapEnd, Period(6, Months), TARGET(), ModifiedFollowing,
+                           ModifiedFollowing, DateGeneration::Backward, false);
+    ext::shared_ptr<VanillaSwap> swap(
             new VanillaSwap(Swap::Payer, 10000.0, fixedSchedule, 0.03, Thirty360(Thirty360::BondBasis),
                             floatSchedule, euribor6m, 0.0, euribor6m->dayCounter()));
-        swap->setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(discYTS)));
-        // European exercise and swaption
-        ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(exerciseDate));
-        ext::shared_ptr<Swaption> swaption(
-            new Swaption(swap, europeanExercise, Settlement::Physical));
-        // calculate basis model swaption cash flows, discount and conmpare with swap
-        SwaptionCashFlows cashFlows(swaption, discYTS, contTenorSpread);
-        // model time is always Act365Fixed
-        Time exerciseTime = Actual365Fixed().yearFraction(discYTS->referenceDate(),
-                                                          swaption->exercise()->dates()[0]);
-        if (exerciseTime != cashFlows.exerciseTimes()[0])
-            BOOST_ERROR(
-                "Swaption cash flow exercise time does not coincide with manual calculation");
-        // there might be rounding errors
-        Real tol = 1.0e-8;
-        // (discounted) fixed leg coupons must match swap fixed leg NPV
-        Real fixedLeg = 0.0;
-        for (Size k = 0; k < cashFlows.fixedTimes().size(); ++k)
-            fixedLeg += cashFlows.fixedWeights()[k] * discYTS->discount(cashFlows.fixedTimes()[k]);
-        if (fabs(fixedLeg - (-swap->fixedLegNPV())) > tol) // note, '-1' because payer swap
-            BOOST_ERROR("Swaption cash flow fixed leg NPV does not match Vanillaswap fixed leg NPV"
-                        << "SwaptionCashFlows: " << fixedLeg << "\n"
-                        << "swap->fixedLegNPV: " << swap->fixedLegNPV() << "\n"
-                        << "Variance:          " << swap->fixedLegNPV() - fixedLeg << "\n");
-        // (discounted) floating leg coupons must match swap floating leg NPV
-        Real floatLeg = 0.0;
-        for (Size k = 0; k < cashFlows.floatTimes().size(); ++k)
-            floatLeg += cashFlows.floatWeights()[k] * discYTS->discount(cashFlows.floatTimes()[k]);
-        if (fabs(floatLeg - swap->floatingLegNPV()) > tol)
-            BOOST_ERROR(
-                "Swaption cash flow floating leg NPV does not match Vanillaswap floating leg NPV.\n"
-                << "SwaptionCashFlows:    " << floatLeg << "\n"
-                << "swap->floatingLegNPV: " << swap->floatingLegNPV() << "\n"
-                << "Variance:             " << swap->floatingLegNPV() - floatLeg << "\n");
-        // There should not be spread coupons in a single-curve setting.
-        // However, if indexed coupons are used the floating leg is not at par,
-        // so we need to relax the tolerance to a level at which it will only
-        // catch large errors.
-        Real tol2 = usingAtParCoupons ? tol : 0.02;
+    swap->setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(discYTS)));
+    // European exercise and swaption
+    ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Swaption> swaption(
+                                       new Swaption(swap, europeanExercise, Settlement::Physical));
+    // calculate basis model swaption cash flows, discount and conmpare with swap
+    SwaptionCashFlows cashFlows(swaption, discYTS, contTenorSpread);
+    // model time is always Act365Fixed
+    Time exerciseTime = Actual365Fixed().yearFraction(discYTS->referenceDate(),
+                                                      swaption->exercise()->dates()[0]);
+    if (exerciseTime != cashFlows.exerciseTimes()[0])
+        BOOST_ERROR("Swaption cash flow exercise time does not coincide with manual calculation");
+    // there might be rounding errors
+    Real tol = 1.0e-8;
+    // (discounted) fixed leg coupons must match swap fixed leg NPV
+    Real fixedLeg = 0.0;
+    for (Size k = 0; k < cashFlows.fixedTimes().size(); ++k)
+        fixedLeg += cashFlows.fixedWeights()[k] * discYTS->discount(cashFlows.fixedTimes()[k]);
+    if (fabs(fixedLeg - (-swap->fixedLegNPV())) > tol) // note, '-1' because payer swap
+        BOOST_ERROR("Swaption cash flow fixed leg NPV does not match Vanillaswap fixed leg NPV"
+                    << "SwaptionCashFlows: " << fixedLeg << "\n"
+                    << "swap->fixedLegNPV: " << swap->fixedLegNPV() << "\n"
+                    << "Variance:          " << swap->fixedLegNPV() - fixedLeg << "\n");
+    // (discounted) floating leg coupons must match swap floating leg NPV
+    Real floatLeg = 0.0;
+    for (Size k = 0; k < cashFlows.floatTimes().size(); ++k)
+        floatLeg += cashFlows.floatWeights()[k] * discYTS->discount(cashFlows.floatTimes()[k]);
+    if (fabs(floatLeg - swap->floatingLegNPV()) > tol)
+        BOOST_ERROR(
+                    "Swaption cash flow floating leg NPV does not match Vanillaswap floating leg NPV.\n"
+                    << "SwaptionCashFlows:    " << floatLeg << "\n"
+                    << "swap->floatingLegNPV: " << swap->floatingLegNPV() << "\n"
+                    << "Variance:             " << swap->floatingLegNPV() - floatLeg << "\n");
+    // There should not be spread coupons in a single-curve setting.
+    // However, if indexed coupons are used the floating leg is not at par,
+    // so we need to relax the tolerance to a level at which it will only
+    // catch large errors.
+    Real tol2 = usingAtParCoupons ? tol : 0.02;
 
-        SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
-        for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {
-            if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2)
-                BOOST_ERROR("Swaption cash flow floating leg spread does not vanish in "
-                            "single-curve setting.\n"
-                            << "Cash flow index k: " << k << ", floatWeights: "
-                            << singleCurveCashFlows.floatWeights()[k] << "\n");
-        }
+    SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
+    for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {
+        if (fabs(singleCurveCashFlows.floatWeights()[k]) > tol2)
+            BOOST_ERROR("Swaption cash flow floating leg spread does not vanish in "
+                        "single-curve setting.\n"
+                        << "Cash flow index k: " << k << ", floatWeights: "
+                        << singleCurveCashFlows.floatWeights()[k] << "\n");
     }
-
 }
 
 
-void BasismodelsTest::testSwaptioncfsContCompSpread() {
+BOOST_AUTO_TEST_CASE(testSwaptioncfsContCompSpread) {
     BOOST_TEST_MESSAGE(
         "Testing deterministic tenor basis model with continuous compounded spreads...");
     testSwaptioncfs(true);
 }
 
-void BasismodelsTest::testSwaptioncfsSimpleCompSpread() {
+BOOST_AUTO_TEST_CASE(testSwaptioncfsSimpleCompSpread) {
     BOOST_TEST_MESSAGE("Testing deterministic tenor basis model with simple compounded spreads...");
     testSwaptioncfs(false);
 }
 
-void BasismodelsTest::testTenoroptionletvts() {
+BOOST_AUTO_TEST_CASE(testTenoroptionletvts) {
     BOOST_TEST_MESSAGE("Testing volatility transformation for caplets/floorlets...");
     // market data and floating rate index
     Real spread = 0.01;
@@ -320,7 +319,7 @@ void BasismodelsTest::testTenoroptionletvts() {
     }
 }
 
-void BasismodelsTest::testTenorswaptionvts() {
+BOOST_AUTO_TEST_CASE(testTenorswaptionvts) {
     BOOST_TEST_MESSAGE("Testing volatility transformation for swaptions...");
     // market data and floating rate index
     Real spread = 0.01;
@@ -397,12 +396,6 @@ void BasismodelsTest::testTenorswaptionvts() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* BasismodelsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Basismodels tests");
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsContCompSpread));
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testSwaptioncfsSimpleCompSpread));
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenoroptionletvts));
-    suite->add(QUANTLIB_TEST_CASE(&BasismodelsTest::testTenorswaptionvts));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

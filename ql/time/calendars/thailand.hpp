@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 Matthias Groncki
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,12 +32,12 @@ namespace QuantLib {
     //! %Thailand calendars
     /*! Holidays for the Thailand exchange
         Holidays observed by financial institutions (not to be confused with bank holidays in the United Kingdom) are regulated by the Bank of Thailand.
-        If a holiday fall on a weekend the government will annouce a replacement day (usally the following monday).
+        If a holiday fall on a weekend the government will announce a replacement day (usually the following Monday).
 
         Sometimes the government add one or two extra holidays in a year.
 
         (data from
-         https://www.bot.or.th/English/FinancialInstitutions/FIholiday/Pages/2018.aspx:
+         https://www.bot.or.th/en/financial-institutions-holiday.html:
         Fixed holidays
         <ul>
         <li>Saturdays</li>
@@ -53,7 +54,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2000-2018 with some years missing)
+        (data available for 2000-2024 with some years missing)
         <ul>
         <li>Makha Bucha Day</li>
         <li>Wisakha Bucha Day</li>

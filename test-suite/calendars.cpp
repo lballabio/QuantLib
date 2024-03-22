@@ -9,7 +9,7 @@
  Copyright (C) 2020 Piotr Siejda
  Copyright (C) 2020 Leonardo Arcari
  Copyright (C) 2020 Kline s.r.l.
- Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2022, 2024 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2023 Jonghee Lee
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,7 +26,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "calendars.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/errors.hpp>
 #include <ql/time/calendar.hpp>
@@ -38,6 +38,7 @@
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/mexico.hpp>
 #include <ql/time/calendars/russia.hpp>
 #include <ql/time/calendars/southkorea.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -49,7 +50,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CalendarTest::testModifiedCalendars() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CalendarTests)
+
+BOOST_AUTO_TEST_CASE(testModifiedCalendars) {
 
     BOOST_TEST_MESSAGE("Testing calendar modification...");
 
@@ -109,8 +114,7 @@ void CalendarTest::testModifiedCalendars() {
         BOOST_FAIL(d2 << " still a holiday");
 }
 
-
-void CalendarTest::testJointCalendars() {
+BOOST_AUTO_TEST_CASE(testJointCalendars) {
 
     BOOST_TEST_MESSAGE("Testing joint calendars...");
 
@@ -185,7 +189,7 @@ void CalendarTest::testJointCalendars() {
     }
 }
 
-void CalendarTest::testUSSettlement() {
+BOOST_AUTO_TEST_CASE(testUSSettlement) {
     BOOST_TEST_MESSAGE("Testing US settlement holiday list...");
 
     std::vector<Date> expectedHol;
@@ -244,7 +248,7 @@ void CalendarTest::testUSSettlement() {
     }
 }
 
-void CalendarTest::testUSGovernmentBondMarket() {
+BOOST_AUTO_TEST_CASE(testUSGovernmentBondMarket) {
     BOOST_TEST_MESSAGE("Testing US government bond market holiday list...");
 
     std::vector<Date> expectedHol;
@@ -274,7 +278,7 @@ void CalendarTest::testUSGovernmentBondMarket() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUSNewYorkStockExchange() {
+BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
     BOOST_TEST_MESSAGE("Testing New York Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -370,23 +374,50 @@ void CalendarTest::testUSNewYorkStockExchange() {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSOFR) {
+    BOOST_TEST_MESSAGE("Testing holidays for SOFR...");
 
-void CalendarTest::testSOFR() {
-    BOOST_TEST_MESSAGE("Testing extra non-fixing day for SOFR...");
-
-    auto fedCalendar = UnitedStates(UnitedStates::GovernmentBond);
-    auto testDate = Date(7, April, 2023); // Good Friday 2023 was only a half close but SOFR didn't fix
-
-    if (fedCalendar.isHoliday(testDate))
-        BOOST_ERROR(testDate << " should not be a holiday for " << fedCalendar.name());
-
-    auto sofr = Sofr();
-    if (sofr.isValidFixingDate(testDate))
-        BOOST_ERROR(testDate << " should not be a fixing date for " << sofr.name());
+    // Good Friday
+    for (const Date goodFriday :
+         {Date(14, April, 2017), Date(30, March, 2018), Date(19, April, 2019),
+          Date(10, April, 2020), Date(2, April, 2021), Date(15, April, 2022), Date(7, April, 2023),
+          Date(29, March, 2024), Date(18, April, 2025), Date(3, April, 2026), Date(26, March, 2027),
+          Date(14, April, 2028), Date(30, March, 2029), Date(19, April, 2030),
+          Date(11, April, 2031)})
+        BOOST_TEST(UnitedStates(UnitedStates::SOFR).isHoliday(goodFriday));
 }
 
+BOOST_AUTO_TEST_CASE(testUSFederalReserveJuneteenth) {
+    BOOST_TEST_MESSAGE("Testing holiday occurrence of Juneteenth for US Federal Reserve calendar...");
 
-void CalendarTest::testTARGET() {
+    auto fedCalendar = UnitedStates(UnitedStates::FederalReserve);
+
+    std::vector<Date> expectedHol;
+    // Sunday, moved to Monday 20th: expectedHol.emplace_back(19, June, 2022);
+    expectedHol.emplace_back(20, June, 2022);
+    expectedHol.emplace_back(19, June, 2023);
+    expectedHol.emplace_back(19, June, 2024);
+    expectedHol.emplace_back(19, June, 2025);
+    // Saturday: expectedHol.emplace_back(19, June, 2026);
+    expectedHol.emplace_back(19, June, 2027);
+    expectedHol.emplace_back(19, June, 2028);
+    expectedHol.emplace_back(19, June, 2029);
+    expectedHol.emplace_back(19, June, 2030);
+    expectedHol.emplace_back(19, June, 2031);
+    // Saturday: expectedHol.emplace_back(19, June, 2032);
+    // Sunday, moved to Monday 20th: expectedHol.emplace_back(19, June, 2033);
+    expectedHol.emplace_back(20, June, 2033);
+    for (Date holiday : expectedHol) {
+        if (!fedCalendar.isHoliday(holiday))
+            BOOST_ERROR(holiday << " should be a holiday for " << fedCalendar.name());
+    }
+
+    Date notMovedToFriday(18, June, 2027);
+    if (fedCalendar.isHoliday(notMovedToFriday))
+        BOOST_ERROR(notMovedToFriday << " should not be a holiday for " << fedCalendar.name());
+}
+
+BOOST_AUTO_TEST_CASE(testTARGET) {
     BOOST_TEST_MESSAGE("Testing TARGET holiday list...");
 
     std::vector<Date> expectedHol;
@@ -448,7 +479,7 @@ void CalendarTest::testTARGET() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testGermanyFrankfurt() {
+BOOST_AUTO_TEST_CASE(testGermanyFrankfurt) {
     BOOST_TEST_MESSAGE("Testing Frankfurt Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -478,7 +509,7 @@ void CalendarTest::testGermanyFrankfurt() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testGermanyEurex() {
+BOOST_AUTO_TEST_CASE(testGermanyEurex) {
     BOOST_TEST_MESSAGE("Testing Eurex holiday list...");
 
     std::vector<Date> expectedHol;
@@ -510,7 +541,7 @@ void CalendarTest::testGermanyEurex() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testGermanyXetra() {
+BOOST_AUTO_TEST_CASE(testGermanyXetra) {
     BOOST_TEST_MESSAGE("Testing Xetra holiday list...");
 
     std::vector<Date> expectedHol;
@@ -540,7 +571,7 @@ void CalendarTest::testGermanyXetra() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUKSettlement() {
+BOOST_AUTO_TEST_CASE(testUKSettlement) {
     BOOST_TEST_MESSAGE("Testing UK settlement holiday list...");
 
     std::vector<Date> expectedHol;
@@ -593,7 +624,7 @@ void CalendarTest::testUKSettlement() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUKExchange() {
+BOOST_AUTO_TEST_CASE(testUKExchange) {
     BOOST_TEST_MESSAGE("Testing London Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -646,7 +677,7 @@ void CalendarTest::testUKExchange() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testUKMetals() {
+BOOST_AUTO_TEST_CASE(testUKMetals) {
     BOOST_TEST_MESSAGE("Testing London Metals Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -699,7 +730,7 @@ void CalendarTest::testUKMetals() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testItalyExchange() {
+BOOST_AUTO_TEST_CASE(testItalyExchange) {
     BOOST_TEST_MESSAGE("Testing Milan Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -742,7 +773,7 @@ void CalendarTest::testItalyExchange() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testRussia() {
+BOOST_AUTO_TEST_CASE(testRussia) {
     BOOST_TEST_MESSAGE("Testing Russia holiday list...");
 
     std::vector<Date> expectedHol;
@@ -1343,7 +1374,7 @@ void CalendarTest::testRussia() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testBrazil() {
+BOOST_AUTO_TEST_CASE(testBrazil) {
     BOOST_TEST_MESSAGE("Testing Brazil holiday list...");
 
     std::vector<Date> expectedHol;
@@ -1386,7 +1417,7 @@ void CalendarTest::testBrazil() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testDenmark() {
+BOOST_AUTO_TEST_CASE(testDenmark) {
 
     BOOST_TEST_MESSAGE("Testing Denmark holiday list...");
 
@@ -1446,7 +1477,7 @@ void CalendarTest::testDenmark() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testSouthKoreanSettlement() {
+BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
     BOOST_TEST_MESSAGE("Testing South-Korean settlement holiday list...");
 
     std::vector<Date> expectedHol;
@@ -1721,6 +1752,7 @@ void CalendarTest::testSouthKoreanSettlement() {
     expectedHol.emplace_back(28, September, 2023);
     expectedHol.emplace_back(29, September, 2023);
     // expectedHol.emplace_back(30, September, 2023);    // Saturday
+    expectedHol.emplace_back(2, October, 2023);
     expectedHol.emplace_back(3, October, 2023);
     expectedHol.emplace_back(9, October, 2023);
     expectedHol.emplace_back(25, December, 2023);
@@ -2171,7 +2203,7 @@ void CalendarTest::testSouthKoreanSettlement() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testKoreaStockExchange() {
+BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
     BOOST_TEST_MESSAGE("Testing Korea Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -2467,6 +2499,7 @@ void CalendarTest::testKoreaStockExchange() {
     expectedHol.emplace_back(28, September, 2023);
     expectedHol.emplace_back(29, September, 2023);
     // expectedHol.emplace_back(30, September, 2023);    // Saturday
+    expectedHol.emplace_back(2, October, 2023);
     expectedHol.emplace_back(3, October, 2023);
     expectedHol.emplace_back(9, October, 2023);
     expectedHol.emplace_back(25, December, 2023);
@@ -2945,7 +2978,7 @@ void CalendarTest::testKoreaStockExchange() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testChinaSSE() {
+BOOST_AUTO_TEST_CASE(testChinaSSE) {
     BOOST_TEST_MESSAGE("Testing China Shanghai Stock Exchange holiday list...");
 
     std::vector<Date> expectedHol;
@@ -3144,8 +3177,30 @@ void CalendarTest::testChinaSSE() {
     expectedHol.emplace_back(5, October, 2023);
     expectedHol.emplace_back(6, October, 2023);
 
+    // China Shanghai Securities Exchange holiday list in the year 2024
+    expectedHol.emplace_back(1, Jan, 2024);
+    expectedHol.emplace_back(9, Feb, 2024);
+    expectedHol.emplace_back(12, Feb, 2024);
+    expectedHol.emplace_back(13, Feb, 2024);
+    expectedHol.emplace_back(14, Feb, 2024);
+    expectedHol.emplace_back(15, Feb, 2024);
+    expectedHol.emplace_back(16, Feb, 2024);
+    expectedHol.emplace_back(4, April, 2024);
+    expectedHol.emplace_back(5, April, 2024);
+    expectedHol.emplace_back(1, May, 2024);
+    expectedHol.emplace_back(2, May, 2024);
+    expectedHol.emplace_back(3, May, 2024);
+    expectedHol.emplace_back(10, Jun, 2024);
+    expectedHol.emplace_back(16, Sep, 2024);
+    expectedHol.emplace_back(17, Sep, 2024);
+    expectedHol.emplace_back(1, Oct, 2024);
+    expectedHol.emplace_back(2, Oct, 2024);
+    expectedHol.emplace_back(3, Oct, 2024);
+    expectedHol.emplace_back(4, Oct, 2024);
+    expectedHol.emplace_back(7, Oct, 2024);
+
     Calendar c = China(China::SSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2023));
+    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2024));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -3157,7 +3212,7 @@ void CalendarTest::testChinaSSE() {
                                  << hol.size() << " calculated holidays");
 }
 
-void CalendarTest::testChinaIB() {
+BOOST_AUTO_TEST_CASE(testChinaIB) {
     BOOST_TEST_MESSAGE("Testing China Inter Bank working weekends list...");
 
     std::vector<Date> expectedWorkingWeekEnds;
@@ -3243,9 +3298,19 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.emplace_back(7, October, 2023);
     expectedWorkingWeekEnds.emplace_back(8, October, 2023);
 
+    // China Inter Bank working weekends list in the year 2024
+    expectedWorkingWeekEnds.emplace_back(4, Feb, 2024);
+    expectedWorkingWeekEnds.emplace_back(18, Feb, 2024);
+    expectedWorkingWeekEnds.emplace_back(7, April, 2024);
+    expectedWorkingWeekEnds.emplace_back(28, April, 2024);
+    expectedWorkingWeekEnds.emplace_back(11, May, 2024);
+    expectedWorkingWeekEnds.emplace_back(14, Sep, 2024);
+    expectedWorkingWeekEnds.emplace_back(29, Sep, 2024);
+    expectedWorkingWeekEnds.emplace_back(12, October, 2024);
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2023);
+    Date end(31, Dec, 2024);
 
     Size k = 0;
 
@@ -3266,7 +3331,46 @@ void CalendarTest::testChinaIB() {
                                  << " calculated working weekends");
 }
 
-void CalendarTest::testEndOfMonth() {
+BOOST_AUTO_TEST_CASE(testMexicoInaugurationDay) {
+    BOOST_TEST_MESSAGE("Testing Mexican Inauguration Day holiday...");
+
+    // The first five Inauguration Days 2024 and later
+    std::vector<Date> expectedHol;
+    expectedHol.emplace_back(1, Oct, 2024);
+    expectedHol.emplace_back(1, Oct, 2030);
+    expectedHol.emplace_back(1, Oct, 2036);
+    expectedHol.emplace_back(1, Oct, 2042);
+    expectedHol.emplace_back(1, Oct, 2048);
+
+    // Some years of non-Inaugurations
+    std::vector<Date> expectedWorkingDays;
+    expectedWorkingDays.emplace_back(1, Oct, 2018);
+    expectedWorkingDays.emplace_back(1, Oct, 2025);
+    expectedWorkingDays.emplace_back(1, Oct, 2026);
+    expectedWorkingDays.emplace_back(1, Oct, 2027);
+    // 2028 falls on a weekend
+    expectedWorkingDays.emplace_back(1, Oct, 2029);
+    expectedWorkingDays.emplace_back(1, Oct, 2031);
+    expectedWorkingDays.emplace_back(1, Oct, 2032);
+    // 2033 and 2034 fall on weekends
+    expectedWorkingDays.emplace_back(1, Oct, 2035);
+
+    Calendar mexico = Mexico();
+    for (auto holiday : expectedHol) {
+        if (!mexico.isHoliday(holiday)) {
+            BOOST_FAIL("Expected to have an Inauguration Day holiday in the Mexican calendar for date " << holiday);
+        }
+    }
+    for (auto workingDay : expectedWorkingDays) {
+        if (!mexico.isBusinessDay(workingDay)) {
+            BOOST_FAIL("Did not expect to have a holiday in the Mexican calendar for date "
+                       << workingDay);
+        }
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
 
     Calendar c = TARGET(); // any calendar would be OK
@@ -3287,7 +3391,7 @@ void CalendarTest::testEndOfMonth() {
     }
 }
 
-void CalendarTest::testBusinessDaysBetween() {
+BOOST_AUTO_TEST_CASE(testBusinessDaysBetween) {
 
     BOOST_TEST_MESSAGE("Testing calculation of business days between dates...");
 
@@ -3362,8 +3466,7 @@ void CalendarTest::testBusinessDaysBetween() {
     }
 }
 
-
-void CalendarTest::testBespokeCalendars() {
+BOOST_AUTO_TEST_CASE(testBespokeCalendars) {
 
     BOOST_TEST_MESSAGE("Testing bespoke calendars...");
 
@@ -3476,8 +3579,9 @@ void CalendarTest::testBespokeCalendars() {
         BOOST_ERROR(testDate4 << " (marked as holiday) not detected");
 }
 
-void CalendarTest::testIntradayAddHolidays() {
 #ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(testIntradayAddHolidays) {
+
     BOOST_TEST_MESSAGE("Testing addHolidays with enable-intraday...");
 
     // test cases taken from testModifiedCalendars
@@ -3563,11 +3667,10 @@ void CalendarTest::testIntradayAddHolidays() {
                           << " and different hours/min/secs");
     if (c1.isHoliday(d2Mock))
         BOOST_FAIL(d2Mock << " still a holiday and different hours/min/secs");
-
-#endif
 }
+#endif
 
-void CalendarTest::testDayLists() {
+BOOST_AUTO_TEST_CASE(testDayLists) {
 
     BOOST_TEST_MESSAGE("Testing holidayList and businessDaysList...");
     Calendar germany = Germany();
@@ -3597,46 +3700,6 @@ void CalendarTest::testDayLists() {
     }
 }
 
-test_suite* CalendarTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Calendar tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBrazil));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testRussia));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testItalyExchange));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKSettlement));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKExchange));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUKMetals));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyFrankfurt));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyXetra));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyEurex));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testTARGET));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDenmark));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSSettlement));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSOFR));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testSouthKoreanSettlement));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testKoreaStockExchange));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaSSE));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testChinaIB));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testModifiedCalendars));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testJointCalendars));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBespokeCalendars));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testEndOfMonth));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
-
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testIntradayAddHolidays));
-    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDayLists));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

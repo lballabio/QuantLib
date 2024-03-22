@@ -59,17 +59,6 @@ namespace QuantLib {
     */
     class CumulativeBehrensFisher { // ODD orders only by now, rename?
     public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Probability result_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real argument_type;
         /*!
             @param degreesFreedom Degrees of freedom of the Ts convolved. The
                 algorithm is limited to odd orders only.
@@ -171,17 +160,6 @@ namespace QuantLib {
      */
     class InverseCumulativeBehrensFisher {
     public:
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Real result_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef Probability argument_type;
         /*!
             @param degreesFreedom Degrees of freedom of the Ts convolved. The
                 algorithm is limited to odd orders only.

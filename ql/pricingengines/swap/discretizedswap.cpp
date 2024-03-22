@@ -201,6 +201,9 @@ namespace QuantLib {
         bond.initialize(method(), floatingPayTimes_[i]);
         bond.rollback(time_);
 
+        QL_REQUIRE(arguments_.nominal != Null<Real>(),
+                   "non-constant nominals are not supported yet");
+
         Real nominal = arguments_.nominal;
         Time T = arguments_.floatingAccrualTimes[i];
         Spread spread = arguments_.floatingSpreads[i];

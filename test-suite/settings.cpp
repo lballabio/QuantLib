@@ -17,15 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "settings.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/settings.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-void SettingsTest::testNotificationsOnDateChange() {
+BOOST_AUTO_TEST_SUITE(SettingsTests)
+
+BOOST_AUTO_TEST_CASE(testNotificationsOnDateChange) {
     BOOST_TEST_MESSAGE("Testing notifications on evaluation-date change...");
 
 #ifdef QL_HIGH_RESOLUTION_DATE
@@ -58,8 +61,6 @@ void SettingsTest::testNotificationsOnDateChange() {
         BOOST_ERROR("missing notification");
 }
 
-test_suite* SettingsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("SettingsTest tests");
-    suite->add(QUANTLIB_TEST_CASE(&SettingsTest::testNotificationsOnDateChange));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

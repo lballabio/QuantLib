@@ -20,6 +20,7 @@
 
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {

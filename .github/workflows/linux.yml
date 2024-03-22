@@ -7,21 +7,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "gcc 5.4 (Boost 1.66)"
-            shortname: gcc5
-            tag: xenial
-            cc: gcc
-            cxx: g++
-          - name: "gcc 6.3 (Boost 1.66)"
-            shortname: gcc6
-            tag: zesty
-            cc: gcc
-            cxx: g++
-          - name: "gcc 7.4 (Boost 1.72)"
-            shortname: gcc7
-            tag: bionic
-            cc: gcc
-            cxx: g++
           - name: "gcc 8.3 (Boost 1.72)"
             shortname: gcc8
             tag: cosmic
@@ -37,7 +22,7 @@ jobs:
             tag: hirsute
             cc: gcc
             cxx: g++
-          - name: "gcc 11.x (Boost 1.82)"
+          - name: "gcc 11.4 (Boost 1.82)"
             shortname: gcc11
             tag: jammy
             cc: gcc
@@ -54,11 +39,6 @@ jobs:
             cc: gcc
             cxx: g++
             tests: true
-          - name: "Clang 6 (Boost 1.72)"
-            shortname: clang6
-            tag: bionic
-            cc: clang
-            cxx: clang++
           - name: "Clang 7 (Boost 1.72)"
             shortname: clang7
             tag: cosmic
@@ -104,10 +84,15 @@ jobs:
             tag: lunar
             cc: clang
             cxx: clang++
-            tests: true
           - name: "Clang 16"
             shortname: clang16
             tag: mantic
+            cc: clang
+            cxx: clang++
+            tests: true
+          - name: "Clang 17"
+            shortname: clang17
+            tag: noble
             cc: clang
             cxx: clang++
             tests: true
@@ -216,7 +201,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-static ${{ matrix.configureflags }} CC="ccache ${{ matrix.cc }}" CXX="ccache ${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
-        make -j 2
+        make -j 4
     - name: Run tests
       if: ${{ matrix.tests }}
       run: |

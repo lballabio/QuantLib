@@ -62,13 +62,14 @@ namespace QuantLib {
         class Price {
           public:
             enum Type { Dirty, Clean };
-            Price() : amount_(Null<Real>()) {}
+            Price() : amount_(Null<Real>()), type_(Bond::Price::Clean) {}
             Price(Real amount, Type type) : amount_(amount), type_(type) {}
             Real amount() const {
                 QL_REQUIRE(amount_ != Null<Real>(), "no amount given");
                 return amount_;
             }
             Type type() const { return type_; }
+            bool isValid() const { return amount_ != Null<Real>(); }
           private:
             Real amount_;
             Type type_;
@@ -194,9 +195,11 @@ namespace QuantLib {
         /*! The default bond settlement date is used for calculation. */
         Real settlementValue(Real cleanPrice) const;
 
-        //! yield given a (clean) price and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        Rate yield(Real cleanPrice,
+        /*! \deprecated Use the overload taking a Bond::Price argument instead.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Use the overload taking a Bond::Price argument instead")]]
+        Rate yield(Real price,
                    const DayCounter& dc,
                    Compounding comp,
                    Frequency freq,
@@ -205,6 +208,17 @@ namespace QuantLib {
                    Size maxEvaluations = 100,
                    Real guess = 0.05,
                    Bond::Price::Type priceType = Bond::Price::Clean) const;
+
+        //! yield given a price and settlement date
+        /*! The default bond settlement is used if no date is given. */
+        Rate yield(Bond::Price price,
+                   const DayCounter& dc,
+                   Compounding comp,
+                   Frequency freq,
+                   Date settlementDate = Date(),
+                   Real accuracy = 1.0e-8,
+                   Size maxEvaluations = 100,
+                   Real guess = 0.05) const;
 
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */

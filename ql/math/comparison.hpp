@@ -133,24 +133,6 @@ namespace QuantLib {
        pointees. */
     template <class T>
     struct earlier_than<ext::shared_ptr<T> > {
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef ext::shared_ptr<T> first_argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef ext::shared_ptr<T> second_argument_type;
-
-        /*! \deprecated Use `auto` or `decltype` instead.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        typedef bool result_type;
-
         bool operator()(const ext::shared_ptr<T>& x,
                         const ext::shared_ptr<T>& y) const {
             return earlier_than<T>()(*x,*y);

@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
+#include <ql/math/randomnumbers/burley2020sobolrsg.hpp>
 #include <ql/math/randomnumbers/centrallimitgaussianrng.hpp>
 #include <ql/math/randomnumbers/faurersg.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
@@ -21,4 +22,5 @@
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
+#include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "binaryoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -35,6 +35,10 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(BinaryOptionTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier, s, q,\
@@ -55,45 +59,40 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance << "\n");
 
-namespace binary_option_test {
-
-    std::string barrierTypeToString(Barrier::Type type) {
-        switch(type){
-          case Barrier::DownIn:
-            return std::string("Down-and-in");
-          case Barrier::UpIn:
-            return std::string("Up-and-in");
-          case Barrier::DownOut:
-            return std::string("Down-and-out");
-          case Barrier::UpOut:
-            return std::string("Up-and-out");
-          default:
-            QL_FAIL("unknown exercise type");
-        }
+std::string barrierTypeToString(Barrier::Type type) {
+    switch(type){
+      case Barrier::DownIn:
+        return std::string("Down-and-in");
+      case Barrier::UpIn:
+        return std::string("Up-and-in");
+      case Barrier::DownOut:
+        return std::string("Down-and-out");
+      case Barrier::UpOut:
+        return std::string("Up-and-out");
+      default:
+        QL_FAIL("unknown exercise type");
     }
-
-    struct BinaryOptionData {
-        Barrier::Type barrierType;
-        Real barrier;
-        Real cash;     // cash payoff for cash-or-nothing
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
 }
 
+struct BinaryOptionData {
+    Barrier::Type barrierType;
+    Real barrier;
+    Real cash;     // cash payoff for cash-or-nothing
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
-void BinaryOptionTest::testCashOrNothingHaugValues() {
+
+BOOST_AUTO_TEST_CASE(testCashOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing cash-or-nothing barrier options against Haug's values...");
-
-    using namespace binary_option_test;
 
     BinaryOptionData values[] = {
         /* The data below are from
@@ -188,11 +187,9 @@ void BinaryOptionTest::testCashOrNothingHaugValues() {
     }
 }
 
-void BinaryOptionTest::testAssetOrNothingHaugValues() {
+BOOST_AUTO_TEST_CASE(testAssetOrNothingHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing asset-or-nothing barrier options against Haug's values...");
-
-    using namespace binary_option_test;
 
     BinaryOptionData values[] = {
         /* The data below are from
@@ -269,9 +266,6 @@ void BinaryOptionTest::testAssetOrNothingHaugValues() {
     }
 }
 
-test_suite* BinaryOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Binary");
-    suite->add(QUANTLIB_TEST_CASE(&BinaryOptionTest::testCashOrNothingHaugValues));
-    suite->add(QUANTLIB_TEST_CASE(&BinaryOptionTest::testAssetOrNothingHaugValues));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

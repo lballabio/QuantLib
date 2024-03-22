@@ -16,21 +16,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "currency.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/currency.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CurrencyTest::testBespokeConstructor() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CurrencyTests)
+
+BOOST_AUTO_TEST_CASE(testBespokeConstructor) {
     BOOST_TEST_MESSAGE("Testing bespoke currency constructor...");
 
     std::string name("Some Currency");
     std::string code("CCY");
     std::string symbol("#");
 
-    Currency customCcy(name, code, 100, symbol, "", 100, Rounding(), "");
+    Currency customCcy(name, code, 100, symbol, "", 100, Rounding());
 
     if (customCcy.empty())
         BOOST_ERROR("Failed to create bespoke currency.");
@@ -51,10 +55,6 @@ void CurrencyTest::testBespokeConstructor() {
                     << "    expected:    " << symbol << "\n");
 }
 
-test_suite* CurrencyTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Currency tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&CurrencyTest::testBespokeConstructor));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

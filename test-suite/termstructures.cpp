@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "termstructures.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
@@ -38,88 +38,87 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace term_structures_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct Datum {
-        Integer n;
-        TimeUnit units;
-        Rate rate;
-    };
+BOOST_AUTO_TEST_SUITE(TermStructureTests)
 
-    struct CommonVars {
-        // common data
-        Calendar calendar;
-        Natural settlementDays;
-        ext::shared_ptr<YieldTermStructure> termStructure;
-        ext::shared_ptr<YieldTermStructure> dummyTermStructure;
+struct Datum {
+    Integer n;
+    TimeUnit units;
+    Rate rate;
+};
 
-        // setup
-        CommonVars() {
-            calendar = TARGET();
-            settlementDays = 2;
-            Date today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
-            Date settlement = calendar.advance(today,settlementDays,Days);
-            Datum depositData[] = {
-                { 1, Months, 4.581 },
-                { 2, Months, 4.573 },
-                { 3, Months, 4.557 },
-                { 6, Months, 4.496 },
-                { 9, Months, 4.490 }
-            };
-            Datum swapData[] = {
-                {  1, Years, 4.54 },
-                {  5, Years, 4.99 },
-                { 10, Years, 5.47 },
-                { 20, Years, 5.89 },
-                { 30, Years, 5.96 }
-            };
-            Size deposits = LENGTH(depositData),
-                swaps = LENGTH(swapData);
+struct CommonVars {
+    // common data
+    Calendar calendar;
+    Natural settlementDays;
+    ext::shared_ptr<YieldTermStructure> termStructure;
+    ext::shared_ptr<YieldTermStructure> dummyTermStructure;
 
-            std::vector<ext::shared_ptr<RateHelper> > instruments(
-                                                              deposits+swaps);
-            for (Size i=0; i<deposits; i++) {
-                instruments[i] = ext::shared_ptr<RateHelper>(new
+    // setup
+    CommonVars() {
+        calendar = TARGET();
+        settlementDays = 2;
+        Date today = calendar.adjust(Date::todaysDate());
+        Settings::instance().evaluationDate() = today;
+        Date settlement = calendar.advance(today,settlementDays,Days);
+        Datum depositData[] = {
+            { 1, Months, 4.581 },
+            { 2, Months, 4.573 },
+            { 3, Months, 4.557 },
+            { 6, Months, 4.496 },
+            { 9, Months, 4.490 }
+        };
+        Datum swapData[] = {
+            {  1, Years, 4.54 },
+            {  5, Years, 4.99 },
+            { 10, Years, 5.47 },
+            { 20, Years, 5.89 },
+            { 30, Years, 5.96 }
+        };
+        Size deposits = LENGTH(depositData),
+            swaps = LENGTH(swapData);
+
+        std::vector<ext::shared_ptr<RateHelper> > instruments(deposits+swaps);
+        for (Size i=0; i<deposits; i++) {
+            instruments[i] = ext::shared_ptr<RateHelper>(new
                     DepositRateHelper(depositData[i].rate/100,
                                       depositData[i].n*depositData[i].units,
                                       settlementDays, calendar,
                                       ModifiedFollowing, true,
                                       Actual360()));
-            }
-            ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
-                                                             6*Months,
-                                                             settlementDays,
-                                                             Currency(),
-                                                             calendar,
-                                                             ModifiedFollowing,
-                                                             false,
-                                                             Actual360()));
-            for (Size i=0; i<swaps; ++i) {
-                instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
+        }
+        ext::shared_ptr<IborIndex> index(new IborIndex("dummy",
+                                                       6*Months,
+                                                       settlementDays,
+                                                       Currency(),
+                                                       calendar,
+                                                       ModifiedFollowing,
+                                                       false,
+                                                       Actual360()));
+        for (Size i=0; i<swaps; ++i) {
+            instruments[i+deposits] = ext::shared_ptr<RateHelper>(new
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
                                    Annual, Unadjusted, Thirty360(Thirty360::BondBasis),
                                    index));
-            }
-            termStructure = ext::shared_ptr<YieldTermStructure>(new
-                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
-                                                        instruments, Actual360()));
-            dummyTermStructure = ext::shared_ptr<YieldTermStructure>(new
-                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
-                                                        instruments, Actual360()));
         }
-    };
+        termStructure = ext::shared_ptr<YieldTermStructure>(new
+                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                        instruments, Actual360()));
+        dummyTermStructure = ext::shared_ptr<YieldTermStructure>(new
+                PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                        instruments, Actual360()));
+    }
+};
 
-    Real sub(Real x, Real y) { return x - y; }
-}
+Real sub(Real x, Real y) { return x - y; }
 
-void TermStructureTest::testReferenceChange() {
+
+BOOST_AUTO_TEST_CASE(testReferenceChange) {
 
     BOOST_TEST_MESSAGE("Testing term structure against evaluation date change...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -151,12 +150,9 @@ void TermStructureTest::testReferenceChange() {
     }
 }
 
-
-void TermStructureTest::testImplied() {
+BOOST_AUTO_TEST_CASE(testImplied) {
 
     BOOST_TEST_MESSAGE("Testing consistency of implied term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -180,11 +176,9 @@ void TermStructureTest::testImplied() {
             << "    expected:   " << discount);
 }
 
-void TermStructureTest::testImpliedObs() {
+BOOST_AUTO_TEST_CASE(testImpliedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of implied term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -202,11 +196,9 @@ void TermStructureTest::testImpliedObs() {
         BOOST_ERROR("Observer was not notified of term structure change");
 }
 
-void TermStructureTest::testFSpreaded() {
+BOOST_AUTO_TEST_CASE(testFSpreaded) {
 
     BOOST_TEST_MESSAGE("Testing consistency of forward-spreaded term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -232,12 +224,10 @@ void TermStructureTest::testFSpreaded() {
             << "    expected:   " << io::rate(forward));
 }
 
-void TermStructureTest::testFSpreadedObs() {
+BOOST_AUTO_TEST_CASE(testFSpreadedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of forward-spreaded "
                        "term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -257,11 +247,9 @@ void TermStructureTest::testFSpreadedObs() {
         BOOST_ERROR("Observer was not notified of spread change");
 }
 
-void TermStructureTest::testZSpreaded() {
+BOOST_AUTO_TEST_CASE(testZSpreaded) {
 
     BOOST_TEST_MESSAGE("Testing consistency of zero-spreaded term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -285,11 +273,9 @@ void TermStructureTest::testZSpreaded() {
             << "    expected:   " << io::rate(zero));
 }
 
-void TermStructureTest::testZSpreadedObs() {
+BOOST_AUTO_TEST_CASE(testZSpreadedObs) {
 
     BOOST_TEST_MESSAGE("Testing observability of zero-spreaded term structure...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -310,12 +296,10 @@ void TermStructureTest::testZSpreadedObs() {
         BOOST_ERROR("Observer was not notified of spread change");
 }
 
-void TermStructureTest::testCreateWithNullUnderlying() {
+BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
     BOOST_TEST_MESSAGE(
         "Testing that a zero-spreaded curve can be created with "
         "a null underlying curve...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -330,12 +314,10 @@ void TermStructureTest::testCreateWithNullUnderlying() {
     spreaded->referenceDate();
 }
 
-void TermStructureTest::testLinkToNullUnderlying() {
+BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
     BOOST_TEST_MESSAGE(
         "Testing that an underlying curve can be relinked to "
         "a null underlying curve...");
-
-    using namespace term_structures_test;
 
     CommonVars vars;
 
@@ -350,11 +332,9 @@ void TermStructureTest::testLinkToNullUnderlying() {
     underlying.linkTo(ext::shared_ptr<YieldTermStructure>());
 }
 
-void TermStructureTest::testCompositeZeroYieldStructures() {
+BOOST_AUTO_TEST_CASE(testCompositeZeroYieldStructures) {
     BOOST_TEST_MESSAGE(
         "Testing composite zero yield structures...");
-
-    using namespace term_structures_test;
 
     Settings::instance().evaluationDate() = Date(10, Nov, 2017);
 
@@ -416,21 +396,25 @@ void TermStructureTest::testCompositeZeroYieldStructures() {
     }
 }
 
-test_suite* TermStructureTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Term structure tests");
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testReferenceChange));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImplied));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testImpliedObs));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreaded));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testFSpreadedObs));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreaded));
-    suite->add(QUANTLIB_TEST_CASE(&TermStructureTest::testZSpreadedObs));
-    suite->add(QUANTLIB_TEST_CASE(
-                         &TermStructureTest::testCreateWithNullUnderlying));
-    suite->add(QUANTLIB_TEST_CASE(
-                             &TermStructureTest::testLinkToNullUnderlying));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &TermStructureTest::testCompositeZeroYieldStructures));
-    return suite;
+BOOST_AUTO_TEST_CASE(testNullTimeToReference) {
+    BOOST_TEST_MESSAGE("Testing zero-rate calculation for null time-to-reference...");
+
+    Rate rate = 0.02;
+    auto dayCount = Thirty360(Thirty360::BondBasis);
+    auto curve = FlatForward(Date(30, August, 2023), rate, dayCount);
+
+    // the time between August 30th and 31st is null for the 30/360 day count convention
+    Rate expected = rate;
+    Rate calculated = curve.zeroRate(Date(31, August, 2023), dayCount, Continuous);
+    Real tolerance = 1.0e-10;
+
+    if (std::fabs(calculated - expected) > tolerance)
+        BOOST_ERROR("unable to reproduce zero yield rate from curve\n"
+                    << std::fixed << std::setprecision(10)
+                    << "    calculated: " << calculated << "\n"
+                    << "    expected:   " << expected);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

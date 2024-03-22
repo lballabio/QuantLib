@@ -38,7 +38,7 @@ namespace QuantLib {
 
         \warning This class has yet to be tested
 
-        \ingroup callablebondengines
+        \ingroup bondengines
     */
     class BlackCallableFixedRateBondEngine
         : public CallableFixedRateBond::engine {
@@ -69,7 +69,7 @@ namespace QuantLib {
 
         \warning This class has yet to be tested.
 
-        \ingroup callablebondengines
+        \ingroup bondengines
     */
     class BlackCallableZeroCouponBondEngine :
         public BlackCallableFixedRateBondEngine {

@@ -17,14 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "autocovariances.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/autocovariance.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void AutocovariancesTest::testConvolutions() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(AutocovariancesTests)
+
+BOOST_AUTO_TEST_CASE(testConvolutions) {
     BOOST_TEST_MESSAGE("Testing convolutions...");
     Array x(10, 1, 1);
     Array conv(6);
@@ -38,7 +42,7 @@ void AutocovariancesTest::testConvolutions() {
                     << "    expected:     " << Array(expected, expected+6));
 }
 
-void AutocovariancesTest::testAutoCovariances() {
+BOOST_AUTO_TEST_CASE(testAutoCovariances) {
     BOOST_TEST_MESSAGE("Testing auto-covariances...");
     Array x(10, 1, 1);
     Array acovf(6);
@@ -57,7 +61,7 @@ void AutocovariancesTest::testAutoCovariances() {
                     << "    expected:     " << Array(expected, expected+6));
 }
 
-void AutocovariancesTest::testAutoCorrelations() {
+BOOST_AUTO_TEST_CASE(testAutoCorrelations) {
     BOOST_TEST_MESSAGE("Testing auto-correlations...");
     Array x(10, 1, 1);
     Array acorf(6);
@@ -83,11 +87,6 @@ void AutocovariancesTest::testAutoCorrelations() {
                     << "    expected:     " << Array(10, -4.5, 1));
 }
 
-test_suite* AutocovariancesTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("auto-covariance tests");
-    suite->add(QUANTLIB_TEST_CASE(&AutocovariancesTest::testConvolutions));
-    suite->add(QUANTLIB_TEST_CASE(&AutocovariancesTest::testAutoCovariances));
-    suite->add(QUANTLIB_TEST_CASE(&AutocovariancesTest::testAutoCorrelations));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

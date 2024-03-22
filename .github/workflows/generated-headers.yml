@@ -21,7 +21,7 @@ jobs:
         find ql -name *.am | xargs touch
         make dist
         rm QuantLib-*.tar.gz
-    - uses: peter-evans/create-pull-request@v5
+    - uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: update-generated-headers-${{ github.ref_name }}

@@ -28,6 +28,7 @@
 #include <ql/instruments/equitytotalreturnswap.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
+#include <ql/instruments/fixedvsfloatingswap.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/instruments/floatfloatswaption.hpp>
 #include <ql/instruments/forward.hpp>

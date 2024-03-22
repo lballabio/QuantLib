@@ -17,7 +17,7 @@
    FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include "forwardrateagreement.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/handle.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
@@ -30,7 +30,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void ForwardRateAgreementTest::testConstructionWithoutACurve() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(ForwardRateAgreementTests)
+
+BOOST_AUTO_TEST_CASE(testConstructionWithoutACurve) {
         BOOST_TEST_MESSAGE("Testing forward rate agreement construction...");
 
         Date today = QuantLib::Settings::instance().evaluationDate();
@@ -111,8 +115,6 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 
 }
 
-test_suite* ForwardRateAgreementTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("forward rate agreement");
-    suite->add(QUANTLIB_TEST_CASE(&ForwardRateAgreementTest::testConstructionWithoutACurve));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

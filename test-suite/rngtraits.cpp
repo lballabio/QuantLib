@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "rngtraits.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/ranluxuniformrng.hpp>
@@ -27,7 +27,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void RngTraitsTest::testGaussian() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(RngTraitsTests)
+
+BOOST_AUTO_TEST_CASE(testGaussian) {
 
     BOOST_TEST_MESSAGE("Testing Gaussian pseudo-random number generation...");
 
@@ -47,8 +51,7 @@ void RngTraitsTest::testGaussian() {
                    << "    expected:   " << stored);
 }
 
-
-void RngTraitsTest::testDefaultPoisson() {
+BOOST_AUTO_TEST_CASE(testDefaultPoisson) {
 
     BOOST_TEST_MESSAGE("Testing Poisson pseudo-random number generation...");
 
@@ -69,8 +72,7 @@ void RngTraitsTest::testDefaultPoisson() {
                    << "    expected:   " << stored);
 }
 
-
-void RngTraitsTest::testCustomPoisson() {
+BOOST_AUTO_TEST_CASE(testCustomPoisson) {
 
     BOOST_TEST_MESSAGE("Testing custom Poisson pseudo-random number generation...");
 
@@ -92,7 +94,7 @@ void RngTraitsTest::testCustomPoisson() {
                    << "    expected:   " << stored);
 }
 
-void RngTraitsTest::testRanLux() {
+BOOST_AUTO_TEST_CASE(testRanLux) {
     BOOST_TEST_MESSAGE("Testing known RanLux sequence...");
 
     Ranlux3UniformRng ranlux3(2938723U);
@@ -126,12 +128,6 @@ void RngTraitsTest::testRanLux() {
     }
 }
 
-test_suite* RngTraitsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("RNG traits tests");
-    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testGaussian));
-    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testDefaultPoisson));
-    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testCustomPoisson));
-    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testRanLux));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

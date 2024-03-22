@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "fittedbonddiscountcurve.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
@@ -33,7 +33,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void FittedBondDiscountCurveTest::testEvaluation() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(FittedBondDiscountCurveTests)
+
+BOOST_AUTO_TEST_CASE(testEvaluation) {
 
     BOOST_TEST_MESSAGE("Testing that fitted bond curves work as evaluators...");
 
@@ -65,7 +69,7 @@ void FittedBondDiscountCurveTest::testEvaluation() {
     BOOST_CHECK_NO_THROW(curve.discount(3.0));
 }
 
-void FittedBondDiscountCurveTest::testFlatExtrapolation() {
+BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     BOOST_TEST_MESSAGE("Testing fitted bond curve with flat extrapolation...");
 
@@ -140,7 +144,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
     // extract the model prices using the two curves
 
-    std::vector<Real> modelPrices1, modelPrices2;
+    std::vector<Bond::Price> modelPrices1, modelPrices2;
 
     ext::shared_ptr<PricingEngine> engine1 =
         ext::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(curve1));
@@ -149,9 +153,9 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
 
     for (auto& bond : bonds) {
         bond->setPricingEngine(engine1);
-        modelPrices1.push_back(bond->cleanPrice());
+        modelPrices1.emplace_back(bond->cleanPrice(), Bond::Price::Clean);
         bond->setPricingEngine(engine2);
-        modelPrices2.push_back(bond->cleanPrice());
+        modelPrices2.emplace_back(bond->cleanPrice(), Bond::Price::Clean);
     }
     BOOST_CHECK_EQUAL(curve1->fitResults().errorCode(), EndCriteria::MaxIterations);
     BOOST_CHECK_EQUAL(curve2->fitResults().errorCode(), EndCriteria::MaxIterations);
@@ -193,10 +197,6 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
     
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* FittedBondDiscountCurveTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Fitted bond discount curve tests");
-    suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testEvaluation));
-    suite->add(QUANTLIB_TEST_CASE(&FittedBondDiscountCurveTest::testFlatExtrapolation));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

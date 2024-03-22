@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "capfloor.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
@@ -44,113 +44,109 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace capfloor_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        // common data
-        Date settlement;
-        std::vector<Real> nominals;
-        BusinessDayConvention convention;
-        Frequency frequency;
-        ext::shared_ptr<IborIndex> index;
-        Calendar calendar;
-        Natural fixingDays;
-        RelinkableHandle<YieldTermStructure> termStructure;
+BOOST_AUTO_TEST_SUITE(CapFloorTests)
 
-        // setup
-        CommonVars()
-        : nominals(1,100) {
-            frequency = Semiannual;
-            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
-            calendar = index->fixingCalendar();
-            convention = ModifiedFollowing;
-            Date today = Settings::instance().evaluationDate();
-            Natural settlementDays = 2;
-            fixingDays = 2;
-            settlement = calendar.advance(today,settlementDays,Days);
-            termStructure.linkTo(flatRate(settlement,0.05,
-                                          ActualActual(ActualActual::ISDA)));
-        }
+struct CommonVars {
+    // common data
+    Date settlement;
+    std::vector<Real> nominals;
+    BusinessDayConvention convention;
+    Frequency frequency;
+    ext::shared_ptr<IborIndex> index;
+    Calendar calendar;
+    Natural fixingDays;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
-        // utilities
-        Leg makeLeg(const Date& startDate, Integer length) const {
-            Date endDate = calendar.advance(startDate,length*Years,convention);
-            Schedule schedule(startDate, endDate, Period(frequency), calendar,
-                              convention, convention,
-                              DateGeneration::Forward, false);
-            return IborLeg(schedule, index)
-                .withNotionals(nominals)
-                .withPaymentDayCounter(index->dayCounter())
-                .withPaymentAdjustment(convention)
-                .withFixingDays(fixingDays);
-        }
-
-        ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
-                                new BlackCapFloorEngine(termStructure, vol));
-        }
-
-        ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
-            Handle<Quote> vol(ext::shared_ptr<Quote>(
-                                                new SimpleQuote(volatility)));
-            return ext::shared_ptr<PricingEngine>(
-                                new BachelierCapFloorEngine(termStructure, vol));
-        }
-
-        ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                                               const Leg& leg,
-                                               Rate strike,
-                                               Volatility volatility,
-                                               bool isLogNormal = true) const {
-            ext::shared_ptr<CapFloor> result;
-            switch (type) {
-              case CapFloor::Cap:
-                result = ext::shared_ptr<CapFloor>(
-                                  new Cap(leg, std::vector<Rate>(1, strike)));
-                break;
-              case CapFloor::Floor:
-                result = ext::shared_ptr<CapFloor>(
-                                new Floor(leg, std::vector<Rate>(1, strike)));
-                break;
-              default:
-                QL_FAIL("unknown cap/floor type");
-            }
-            if(isLogNormal){
-                result->setPricingEngine(makeEngine(volatility));
-            } else {
-                result->setPricingEngine(makeBachelierEngine(volatility));
-            }
-            return result;
-        }
-    };
-
-    bool checkAbsError(Real x1, Real x2, Real tolerance){
-        return std::fabs(x1 - x2) < tolerance;
+    // setup
+    CommonVars()
+    : nominals(1,100) {
+        frequency = Semiannual;
+        index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+        calendar = index->fixingCalendar();
+        convention = ModifiedFollowing;
+        Date today = Settings::instance().evaluationDate();
+        Natural settlementDays = 2;
+        fixingDays = 2;
+        settlement = calendar.advance(today,settlementDays,Days);
+        termStructure.linkTo(flatRate(settlement,0.05,
+                                      ActualActual(ActualActual::ISDA)));
     }
 
-    std::string typeToString(CapFloor::Type type) {
+    // utilities
+    Leg makeLeg(const Date& startDate, Integer length) const {
+        Date endDate = calendar.advance(startDate,length*Years,convention);
+        Schedule schedule(startDate, endDate, Period(frequency), calendar,
+                          convention, convention,
+                          DateGeneration::Forward, false);
+        return IborLeg(schedule, index)
+            .withNotionals(nominals)
+            .withPaymentDayCounter(index->dayCounter())
+            .withPaymentAdjustment(convention)
+            .withFixingDays(fixingDays);
+    }
+
+    ext::shared_ptr<PricingEngine> makeEngine(Volatility volatility) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
+                                new BlackCapFloorEngine(termStructure, vol));
+    }
+
+    ext::shared_ptr<PricingEngine> makeBachelierEngine(Volatility volatility) const {
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        return ext::shared_ptr<PricingEngine>(
+                                new BachelierCapFloorEngine(termStructure, vol));
+    }
+
+    ext::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
+                                           const Leg& leg,
+                                           Rate strike,
+                                           Volatility volatility,
+                                           bool isLogNormal = true) const {
+        ext::shared_ptr<CapFloor> result;
         switch (type) {
           case CapFloor::Cap:
-            return "cap";
+            result = ext::shared_ptr<CapFloor>(
+                                  new Cap(leg, std::vector<Rate>(1, strike)));
+            break;
           case CapFloor::Floor:
-            return "floor";
-          case CapFloor::Collar:
-            return "collar";
+            result = ext::shared_ptr<CapFloor>(
+                                new Floor(leg, std::vector<Rate>(1, strike)));
+            break;
           default:
             QL_FAIL("unknown cap/floor type");
         }
+        if(isLogNormal){
+            result->setPricingEngine(makeEngine(volatility));
+        } else {
+            result->setPricingEngine(makeBachelierEngine(volatility));
+        }
+        return result;
     }
+};
 
+bool checkAbsError(Real x1, Real x2, Real tolerance){
+    return std::fabs(x1 - x2) < tolerance;
+}
+
+std::string typeToString(CapFloor::Type type) {
+    switch (type) {
+      case CapFloor::Cap:
+        return "cap";
+      case CapFloor::Floor:
+        return "floor";
+      case CapFloor::Collar:
+        return "collar";
+      default:
+        QL_FAIL("unknown cap/floor type");
+    }
 }
 
 
-void CapFloorTest::testVega() {
+BOOST_AUTO_TEST_CASE(testVega) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor vega...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -197,11 +193,9 @@ void CapFloorTest::testVega() {
     }
 }
 
-void CapFloorTest::testStrikeDependency() {
+BOOST_AUTO_TEST_CASE(testStrikeDependency) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor dependency on strike...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -252,11 +246,9 @@ void CapFloorTest::testStrikeDependency() {
     }
 }
 
-void CapFloorTest::testConsistency() {
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing consistency between cap, floor and collar...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -359,11 +351,9 @@ void CapFloorTest::testConsistency() {
     }
 }
 
-void CapFloorTest::testParity() {
+BOOST_AUTO_TEST_CASE(testParity) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor parity...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -404,11 +394,9 @@ void CapFloorTest::testParity() {
     }
 }
 
-void CapFloorTest::testATMRate() {
+BOOST_AUTO_TEST_CASE(testATMRate) {
 
     BOOST_TEST_MESSAGE("Testing cap/floor ATM rate...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -462,12 +450,9 @@ void CapFloorTest::testATMRate() {
     }
 }
 
-
-void CapFloorTest::testImpliedVolatility() {
+BOOST_AUTO_TEST_CASE(testImpliedVolatility) {
 
     BOOST_TEST_MESSAGE("Testing implied term volatility for cap and floor...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -548,11 +533,9 @@ void CapFloorTest::testImpliedVolatility() {
     }
 }
 
-void CapFloorTest::testCachedValue() {
+BOOST_AUTO_TEST_CASE(testCachedValue) {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price against cached values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -594,11 +577,9 @@ void CapFloorTest::testCachedValue() {
             << "    expected:   " << cachedFloorNPV);
 }
 
-void CapFloorTest::testCachedValueFromOptionLets() {
+BOOST_AUTO_TEST_CASE(testCachedValueFromOptionLets) {
 
     BOOST_TEST_MESSAGE("Testing Black cap/floor price as a sum of optionlets prices against cached values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -663,11 +644,9 @@ void CapFloorTest::testCachedValueFromOptionLets() {
             << "    expected:   " << cachedFloorNPV);
 }
 
-void CapFloorTest::testOptionLetsDelta() {
+BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
 
     BOOST_TEST_MESSAGE("Testing Black caplet/floorlet delta coefficients against finite difference values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -786,11 +765,9 @@ void CapFloorTest::testOptionLetsDelta() {
 
 }
 
-void CapFloorTest::testBachelierOptionLetsDelta() {
+BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier caplet/floorlet delta coefficients against finite difference values...");
-
-    using namespace capfloor_test;
 
     CommonVars vars;
 
@@ -912,18 +889,6 @@ void CapFloorTest::testBachelierOptionLetsDelta() {
 
 }
 
-test_suite* CapFloorTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cap and floor tests");
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testStrikeDependency));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testParity));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testVega));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testATMRate));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testImpliedVolatility));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testCachedValueFromOptionLets));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testOptionLetsDelta));
-    suite->add(QUANTLIB_TEST_CASE(&CapFloorTest::testBachelierOptionLetsDelta));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE_END()

@@ -23,7 +23,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "dates.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/date.hpp>
 #include <ql/time/timeunit.hpp>
@@ -38,52 +38,103 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void DateTest::ecbDates() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DateTests)
+
+BOOST_AUTO_TEST_CASE(ecbIsECBcode) {
+    BOOST_TEST_MESSAGE("Testing ECB codes for validity...");
+
+    BOOST_TEST(ECB::isECBcode("JAN00"));
+    BOOST_TEST(ECB::isECBcode("FEB78"));
+    BOOST_TEST(ECB::isECBcode("mar58"));
+    BOOST_TEST(ECB::isECBcode("aPr99"));
+
+    BOOST_TEST(!ECB::isECBcode(""));
+    BOOST_TEST(!ECB::isECBcode("JUNE99"));
+    BOOST_TEST(!ECB::isECBcode("JUN1999"));
+    BOOST_TEST(!ECB::isECBcode("JUNE"));
+    BOOST_TEST(!ECB::isECBcode("JUNE1999"));
+    BOOST_TEST(!ECB::isECBcode("1999"));
+}
+
+BOOST_AUTO_TEST_CASE(ecbDates) {
     BOOST_TEST_MESSAGE("Testing ECB dates...");
 
-    std::set<Date> knownDates = ECB::knownDates();
-    if (knownDates.empty())
-        BOOST_FAIL("empty EBC date vector");
+    const std::set<Date> knownDates = ECB::knownDates();
+    BOOST_TEST(!knownDates.empty(),
+                   "empty ECB date vector");
 
-    Size n = ECB::nextDates(Date::minDate()).size();
-    if (n != knownDates.size())
-        BOOST_FAIL("nextDates(minDate) returns "  << n <<
+    const Size n = ECB::nextDates(Date::minDate()).size();
+    BOOST_TEST(n == knownDates.size(),
+                   "nextDates(minDate) returns "  << n <<
                    " instead of " << knownDates.size() << " dates");
 
-    std::set<Date>::const_iterator i;
-    Date previousEcbDate = Date::minDate(),
-         currentEcbDate, ecbDateMinusOne;
-    for (i=knownDates.begin(); i!=knownDates.end(); ++i) {
-
-        currentEcbDate = *i;
+    Date previousEcbDate = Date::minDate();
+    for (const Date& currentEcbDate : knownDates) {
         if (!ECB::isECBdate(currentEcbDate))
             BOOST_FAIL(currentEcbDate << " fails isECBdate check");
 
-        ecbDateMinusOne = currentEcbDate-1;
+        const Date ecbDateMinusOne = currentEcbDate-1;
         if (ECB::isECBdate(ecbDateMinusOne))
             BOOST_FAIL(ecbDateMinusOne << " fails isECBdate check");
 
-        if (ECB::nextDate(ecbDateMinusOne)!=currentEcbDate)
-            BOOST_FAIL("next EBC date following " << ecbDateMinusOne <<
+        if (ECB::nextDate(ecbDateMinusOne) != currentEcbDate)
+            BOOST_FAIL("next ECB date following " << ecbDateMinusOne <<
                        " must be " << currentEcbDate);
 
-        if (ECB::nextDate(previousEcbDate)!=currentEcbDate)
-            BOOST_FAIL("next EBC date following " << previousEcbDate <<
+        if (ECB::nextDate(previousEcbDate) != currentEcbDate)
+            BOOST_FAIL("next ECB date following " << previousEcbDate <<
                        " must be " << currentEcbDate);
 
         previousEcbDate = currentEcbDate;
     }
 
-    Date knownDate = *knownDates.begin();
+    const Date knownDate = *knownDates.begin();
     ECB::removeDate(knownDate);
-    if (ECB::isECBdate(knownDate))
-        BOOST_FAIL("unable to remove an EBC date");
+    BOOST_TEST(!ECB::isECBdate(knownDate),
+                   "unable to remove an ECB date");
     ECB::addDate(knownDate);
-    if (!ECB::isECBdate(knownDate))
-        BOOST_FAIL("unable to add an EBC date");
+    BOOST_TEST(ECB::isECBdate(knownDate),
+                   "unable to add an ECB date");
 }
 
-void DateTest::immDates() {
+BOOST_AUTO_TEST_CASE(ecbGetDateFromCode) {
+    BOOST_TEST_MESSAGE("Testing conversion of ECB codes to dates...");
+
+    const Date ref2000((Day)1, January, (Year)2000);
+    BOOST_TEST(ECB::date("JAN05", ref2000) == Date((Day)19, January,  (Year)2005));
+    BOOST_TEST(ECB::date("FEB06", ref2000) == Date((Day) 8, February, (Year)2006));
+    BOOST_TEST(ECB::date("MAR07", ref2000) == Date((Day)14, March,    (Year)2007));
+    BOOST_TEST(ECB::date("APR08", ref2000) == Date((Day)16, April,    (Year)2008));
+    BOOST_TEST(ECB::date("JUN09", ref2000) == Date((Day)10, June,     (Year)2009));
+    BOOST_TEST(ECB::date("JUL10") == Date((Day)14, July,      (Year)2010));
+    BOOST_TEST(ECB::date("AUG11") == Date((Day)10, August,    (Year)2011));
+    BOOST_TEST(ECB::date("SEP12") == Date((Day)12, September, (Year)2012));
+    BOOST_TEST(ECB::date("OCT13") == Date((Day) 9, October,   (Year)2013));
+    BOOST_TEST(ECB::date("NOV14") == Date((Day)12, November,  (Year)2014));
+    BOOST_TEST(ECB::date("DEC15") == Date((Day) 9, December,  (Year)2015));
+}
+
+BOOST_AUTO_TEST_CASE(ecbGetCodeFromDate) {
+    BOOST_TEST_MESSAGE("Testing creation of ECB code from a given date...");
+
+    BOOST_TEST("JAN06" == ECB::code(Date((Day)18, January,  (Year)2006)));
+    BOOST_TEST("MAR10" == ECB::code(Date((Day)10, March,    (Year)2010)));
+    BOOST_TEST("NOV17" == ECB::code(Date((Day) 1, November, (Year)2017)));
+}
+
+BOOST_AUTO_TEST_CASE(ecbNextCode) {
+    BOOST_TEST_MESSAGE("Testing calculation of the next ECB code from a given code...");
+
+    BOOST_TEST("FEB06" == ECB::nextCode("JAN06"));
+    BOOST_TEST("MAR10" == ECB::nextCode("FeB10"));
+    BOOST_TEST("NOV17" == ECB::nextCode("OCT17"));
+    BOOST_TEST("JAN18" == ECB::nextCode("dEC17"));
+    BOOST_TEST("JAN00" == ECB::nextCode("dec99"));
+}
+
+BOOST_AUTO_TEST_CASE(immDates) {
     BOOST_TEST_MESSAGE("Testing IMM dates...");
 
     const std::string IMMcodes[] = {
@@ -142,7 +193,7 @@ void DateTest::immDates() {
     }
 }
 
-void DateTest::asxDates() {
+BOOST_AUTO_TEST_CASE(asxDates) {
     BOOST_TEST_MESSAGE("Testing ASX dates...");
 
     const std::string ASXcodes[] = {
@@ -158,12 +209,8 @@ void DateTest::asxDates() {
         "F9", "G9", "H9", "J9", "K9", "M9", "N9", "Q9", "U9", "V9", "X9", "Z9"
     };
 
-    Date counter = { 1, January, 2000 };
-    Date last = { 1, January, 2040 };
-    Date asx;
-
-    while (counter <= last) {
-        asx = ASX::nextDate(counter, false);
+    for (Date counter(1, January, 2000); counter <= Date(1,January, 2040); ++counter) {
+        const Date asx = ASX::nextDate(counter, false);
 
         // check that asx is greater than counter
         if (asx <= counter)
@@ -178,7 +225,7 @@ void DateTest::asxDates() {
                        << counter.weekday() << " " << counter << ")");
 
         // check that asx is <= to the next ASX date in the main cycle
-        if (asx>ASX::nextDate(counter, true))
+        if (asx > ASX::nextDate(counter, true))
             BOOST_FAIL(asx.weekday() << " " << asx
                        << " is not less than or equal to the next future in the main cycle "
                        << ASX::nextDate(counter, true));
@@ -195,12 +242,41 @@ void DateTest::asxDates() {
                 BOOST_FAIL(ASX::date(ASXcode, counter) << " is wrong for " << ASXcode
                            << " at reference date " << counter);
         }
-
-        counter = counter + 1;
     }
 }
 
-void DateTest::testConsistency() {
+
+BOOST_AUTO_TEST_CASE(asxDatesSpecific) {
+    BOOST_TEST_MESSAGE("Testing ASX functionality with specific dates...");
+
+    // isASXdate
+    {
+        // date is ASX date depending on mainCycle
+        const Date date((Day)12, January, (Year)2024);
+        BOOST_ASSERT(date.weekday() == Friday);
+
+        // check mainCycle
+        BOOST_TEST(ASX::isASXdate(date, /*mainCycle*/false));
+        BOOST_TEST(!ASX::isASXdate(date, /*mainCycle*/true));
+    }
+
+    // nextDate from code + ref date
+    BOOST_TEST(Date((Day)8, February, (Year)2002)
+        == ASX::nextDate("F2", /*mainCycle*/false, Date((Day)1, January, (Year)2000)));
+
+    BOOST_TEST(Date((Day)9, June, (Year)2023)
+        == ASX::nextDate("K3", /*mainCycle*/true, Date((Day)1, January, (Year)2014)));
+
+    // nextCode
+    BOOST_TEST("F4" == ASX::nextCode(Date((Day)1, January, (Year)2024), /*mainCycle*/false));
+    BOOST_TEST("G4" == ASX::nextCode(Date((Day)15, January, (Year)2024), /*mainCycle*/false));
+    BOOST_TEST("H4" == ASX::nextCode(Date((Day)15, January, (Year)2024), /*mainCycle*/true));
+
+    BOOST_TEST("G4" == ASX::nextCode("F4", /*mainCycle*/false, Date((Day)1, January, (Year)2020)));
+    BOOST_TEST("H5" == ASX::nextCode("Z4", /*mainCycle*/true, Date((Day)1, January, (Year)2020)));
+}
+
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing dates...");
 
@@ -302,7 +378,7 @@ void DateTest::testConsistency() {
 
 }
 
-void DateTest::isoDates() {
+BOOST_AUTO_TEST_CASE(isoDates) {
     BOOST_TEST_MESSAGE("Testing ISO dates...");
     std::string input_date("2006-01-15");
     Date d = DateParser::parseISO(input_date);
@@ -317,7 +393,8 @@ void DateTest::isoDates() {
     }
 }
 
-void DateTest::parseDates() {
+#ifndef QL_PATCH_SOLARIS
+BOOST_AUTO_TEST_CASE(parseDates) {
     BOOST_TEST_MESSAGE("Testing parsing of dates...");
 
     std::string input_date("2006-01-15");
@@ -350,9 +427,10 @@ void DateTest::parseDates() {
                    << " parsed date: " << d);
     }
 }
+#endif
 
-void DateTest::intraday() {
 #ifdef QL_HIGH_RESOLUTION_DATE
+BOOST_AUTO_TEST_CASE(intraday) {
 
     BOOST_TEST_MESSAGE("Testing intraday information of dates...");
 
@@ -422,10 +500,10 @@ void DateTest::intraday() {
     BOOST_CHECK_MESSAGE(d3 + Period(20, Microseconds) ==
             Date(10, April, 2023, 11, 43, 13, 234, 273), "failed to add microseconds");
 
-#endif
 }
+#endif
 
-void DateTest::canHash() {
+BOOST_AUTO_TEST_CASE(canHash) {
     BOOST_TEST_MESSAGE("Testing hashing of dates...");
 
     Date start_date = Date(1, Jan, 2020);
@@ -466,20 +544,6 @@ void DateTest::canHash() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* DateTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Date tests");
-
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::ecbDates));
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::immDates));
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::asxDates));
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::isoDates));
-    #ifndef QL_PATCH_SOLARIS
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::parseDates));
-    #endif
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::intraday));
-    suite->add(QUANTLIB_TEST_CASE(&DateTest::canHash));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

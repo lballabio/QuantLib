@@ -19,7 +19,6 @@
 
 /*! \file globalbootstrap.hpp
     \brief global bootstrap, with additional restrictions
-    \ingroup termstructures
 */
 
 #ifndef quantlib_global_bootstrap_hpp
@@ -31,6 +30,7 @@
 #include <ql/termstructures/bootstraperror.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -75,8 +75,6 @@ template <class Curve> class GlobalBootstrap {
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_, numberHelpers_;
     mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
-    mutable Size firstAdditionalDate_, numberAdditionalDates_;
-    mutable std::vector<Real> lowerBounds_, upperBounds_;
 };
 
 // template definitions
@@ -111,7 +109,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     std::sort(additionalHelpers_.begin(), additionalHelpers_.end(), detail::BootstrapHelperSorter());
 
     // skip expired helpers
-    Date firstDate = Traits::initialDate(ts_);
+    const Date firstDate = Traits::initialDate(ts_);
 
     firstHelper_ = 0;
     if (!ts_->instruments_.empty()) {
@@ -133,16 +131,18 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     std::vector<Date> additionalDates;
     if (additionalDates_)
         additionalDates = additionalDates_();
-    firstAdditionalDate_ = 0;
     if (!additionalDates.empty()) {
-        while (firstAdditionalDate_ < additionalDates.size() && additionalDates[firstAdditionalDate_] <= firstDate)
-            ++firstAdditionalDate_;
+        additionalDates.erase(
+            std::remove_if(additionalDates.begin(), additionalDates.end(),
+                           [=](const Date& date) { return date <= firstDate; }),
+            additionalDates.end()
+        );
     }
-    numberAdditionalDates_ = additionalDates.size() - firstAdditionalDate_;
+    const Size numberAdditionalDates = additionalDates.size();
 
-    QL_REQUIRE(numberHelpers_ + numberAdditionalDates_ >= Interpolator::requiredPoints - 1,
-               "not enough alive instruments (" << numberHelpers_ << ") + additional dates (" << numberAdditionalDates_
-                                                << ") = " << numberHelpers_ + numberAdditionalDates_ << " provided, "
+    QL_REQUIRE(numberHelpers_ + numberAdditionalDates >= Interpolator::requiredPoints - 1,
+               "not enough alive instruments (" << numberHelpers_ << ") + additional dates (" << numberAdditionalDates
+                                                << ") = " << numberHelpers_ + numberAdditionalDates << " provided, "
                                                 << Interpolator::requiredPoints - 1 << " required");
 
     // calculate dates and times
@@ -154,8 +154,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     dates.push_back(firstDate);
     for (Size j = 0; j < numberHelpers_; ++j)
         dates.push_back(ts_->instruments_[firstHelper_ + j]->pillarDate());
-    for (Size j = firstAdditionalDate_; j < numberAdditionalDates_; ++j)
-        dates.push_back(additionalDates[firstAdditionalDate_ + j]);
+    dates.insert(dates.end(), additionalDates.begin(), additionalDates.end());
     std::sort(dates.begin(), dates.end());
     auto it = std::unique(dates.begin(), dates.end());
     QL_REQUIRE(it == dates.end(), "duplicate dates among alive instruments and additional dates");
@@ -166,12 +165,9 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
         times.push_back(ts_->timeFromReference(date));
 
     // determine maxDate
-    Date maxDate = firstDate;
+    Date maxDate = dates.back();
     for (Size j = 0; j < numberHelpers_; ++j) {
         maxDate = std::max(ts_->instruments_[firstHelper_ + j]->latestRelevantDate(), maxDate);
-    }
-    for (Size j = 0; j < numberAdditionalDates_; ++j) {
-        maxDate = std::max(additionalDates[firstAdditionalDate_ + j], maxDate);
     }
     ts_->maxDate_ = maxDate;
 
@@ -231,9 +227,9 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     }
 
     // determine bounds, we use an unconstrained optimisation transforming the free variables to [lowerBound,upperBound]
-    std::vector<Real> lowerBounds(numberHelpers_ + numberAdditionalDates_),
-        upperBounds(numberHelpers_ + numberAdditionalDates_);
-    for (Size i = 0; i < numberHelpers_ + numberAdditionalDates_; ++i) {
+    const Size numberBounds = ts_->times_.size() - 1;
+    std::vector<Real> lowerBounds(numberBounds), upperBounds(numberBounds);
+    for (Size i = 0; i < numberBounds; ++i) {
         // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
         lowerBounds[i] = Traits::minValueAfter(i + 1, ts_, validCurve_, 0);
         upperBounds[i] = Traits::maxValueAfter(i + 1, ts_, validCurve_, 0);
@@ -295,8 +291,8 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     TargetFunction cost(firstHelper_, numberHelpers_, additionalErrors_, ts_, lowerBounds, upperBounds);
 
     // setup guess
-    Array guess(numberHelpers_ + numberAdditionalDates_);
-    for (Size i = 0; i < guess.size(); ++i) {
+    Array guess(numberBounds);
+    for (Size i = 0; i < numberBounds; ++i) {
         // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
         guess[i] = cost.transformInverse(Traits::guess(i + 1, ts_, validCurve_, 0), i);
     }

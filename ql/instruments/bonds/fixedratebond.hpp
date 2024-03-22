@@ -61,52 +61,9 @@ namespace QuantLib {
                       bool exCouponEndOfMonth = false,
                       const DayCounter& firstPeriodDayCounter = DayCounter());
 
-        /*! \deprecated Use the constructor taking a schedule.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        FixedRateBond(Natural settlementDays,
-                      const Calendar& couponCalendar,
-                      Real faceAmount,
-                      const Date& startDate,
-                      const Date& maturityDate,
-                      const Period& tenor,
-                      const std::vector<Rate>& coupons,
-                      const DayCounter& accrualDayCounter,
-                      BusinessDayConvention accrualConvention = Following,
-                      BusinessDayConvention paymentConvention = Following,
-                      Real redemption = 100.0,
-                      const Date& issueDate = Date(),
-                      const Date& stubDate = Date(),
-                      DateGeneration::Rule rule = DateGeneration::Backward,
-                      bool endOfMonth = false,
-                      const Calendar& paymentCalendar = Calendar(),
-                      const Period& exCouponPeriod = Period(),
-                      const Calendar& exCouponCalendar = Calendar(),
-                      BusinessDayConvention exCouponConvention = Unadjusted,
-                      bool exCouponEndOfMonth = false,
-                      const DayCounter& firstPeriodDayCounter = DayCounter());
-
-        /*! \deprecated Build a FixedRateLeg instead and use it
-                        to create an instance of the base Bond class.
-                        Deprecated in version 1.28.
-        */
-        QL_DEPRECATED
-        FixedRateBond(Natural settlementDays,
-                      Real faceAmount,
-                      const Schedule& schedule,
-                      const std::vector<InterestRate>& coupons,
-                      BusinessDayConvention paymentConvention = Following,
-                      Real redemption = 100.0,
-                      const Date& issueDate = Date(),
-                      const Calendar& paymentCalendar = Calendar(),
-                      const Period& exCouponPeriod = Period(),
-                      const Calendar& exCouponCalendar = Calendar(),
-                      BusinessDayConvention exCouponConvention = Unadjusted,
-                      bool exCouponEndOfMonth = false);
         Frequency frequency() const { return frequency_; }
-        const DayCounter& dayCounter() const {return dayCounter_;}
-        const DayCounter& firstPeriodDayCounter() const {return firstPeriodDayCounter_;}
+        const DayCounter& dayCounter() const { return dayCounter_; }
+        const DayCounter& firstPeriodDayCounter() const { return firstPeriodDayCounter_; }
       protected:
         Frequency frequency_;
         DayCounter dayCounter_;

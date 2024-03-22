@@ -50,7 +50,7 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears, exCouponDate),
       iborIndex_(iborIndex) {
-        fixingDate_ = fixingDate();
+        fixingDate_ = FloatingRateCoupon::fixingDate();
     }
 
     void IborCoupon::initializeCachedData() const {
@@ -82,6 +82,10 @@ namespace QuantLib {
     Time IborCoupon::spanningTimeIndexMaturity() const {
         initializeCachedData();
         return spanningTimeIndexMaturity_;
+    }
+
+    Date IborCoupon::fixingDate() const {
+        return fixingDate_;
     }
 
     Rate IborCoupon::indexFixing() const {
@@ -175,7 +179,7 @@ namespace QuantLib {
         return *this;
     }
 
-    IborLeg& IborLeg::withPaymentLag(Natural lag) {
+    IborLeg& IborLeg::withPaymentLag(Integer lag) {
         paymentLag_ = lag;
         return *this;
     }

@@ -244,9 +244,6 @@
     <Filter Include="experimental">
       <UniqueIdentifier>{4eadb3fc-a4ce-4e0c-bfe5-f23777a30a8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="experimental\amortizingbonds">
-      <UniqueIdentifier>{101d6cdd-3e77-48cd-8bec-c84a252324f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="experimental\averageois">
       <UniqueIdentifier>{33f1be16-e858-4cfe-ba9c-483609826221}</UniqueIdentifier>
     </Filter>
@@ -828,6 +825,9 @@
     <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\fixedvsfloatingswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\forward.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -985,6 +985,9 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\errorfunction.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\expm1.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\factorial.hpp">
@@ -1164,6 +1167,9 @@
     <ClInclude Include="ql\math\integrals\discreteintegrals.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\expsinhintegral.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\integrals\filonintegral.hpp">
       <Filter>math\integrals</Filter>
     </ClInclude>
@@ -1236,6 +1242,9 @@
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\burley2020sobolrsg.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
@@ -1288,6 +1297,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\solvers1d\all.hpp">
@@ -3348,9 +3360,6 @@
     <ClInclude Include="ql\experimental\credit\riskyassetswapoption.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\credit\riskybond.hpp">
-      <Filter>experimental\credit</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp">
       <Filter>experimental\credit</Filter>
     </ClInclude>
@@ -3599,18 +3608,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\commodities\unitofmeasureconversionmanager.hpp">
       <Filter>experimental\commodities</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\all.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp">
-      <Filter>experimental\amortizingbonds</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\averageois\all.hpp">
       <Filter>experimental\averageois</Filter>
@@ -4712,6 +4709,9 @@
     <ClCompile Include="ql\instruments\europeanoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\fixedvsfloatingswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\forward.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -4853,6 +4853,9 @@
     <ClCompile Include="ql\math\errorfunction.cpp">
       <Filter>math</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\expm1.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\factorial.cpp">
       <Filter>math</Filter>
     </ClCompile>
@@ -4964,6 +4967,9 @@
     <ClCompile Include="ql\math\matrixutilities\tqreigendecomposition.cpp">
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\burley2020sobolrsg.cpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\faurersg.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
@@ -4995,6 +5001,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.cpp">
       <Filter>math\randomnumbers</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\optimization\armijo.cpp">
@@ -6163,6 +6172,9 @@
     </ClCompile>
     <ClCompile Include="ql\legacy\libormarketmodels\lmvolmodel.cpp">
       <Filter>legacy\libormarketmodels</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\laplaceinterpolation.cpp">
+      <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\volatility\abcdatmvolcurve.cpp">
       <Filter>experimental\volatility</Filter>

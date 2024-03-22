@@ -59,6 +59,7 @@ namespace QuantLib {
         //@}
         //! \name FloatingRateCoupon interface
         //@{
+        Date fixingDate() const override;
         // implemented in order to manage the case of par coupon
         Rate indexFixing() const override;
         void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&) override;
@@ -137,7 +138,7 @@ namespace QuantLib {
         IborLeg& withNotionals(const std::vector<Real>& notionals);
         IborLeg& withPaymentDayCounter(const DayCounter&);
         IborLeg& withPaymentAdjustment(BusinessDayConvention);
-        IborLeg& withPaymentLag(Natural lag);
+        IborLeg& withPaymentLag(Integer lag);
         IborLeg& withPaymentCalendar(const Calendar&);
         IborLeg& withFixingDays(Natural fixingDays);
         IborLeg& withFixingDays(const std::vector<Natural>& fixingDays);
@@ -165,7 +166,7 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_ = Following;
-        Natural paymentLag_ = 0;
+        Integer paymentLag_ = 0;
         Calendar paymentCalendar_;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;

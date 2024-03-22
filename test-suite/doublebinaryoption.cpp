@@ -17,7 +17,7 @@ Copyright (C) 2015 Thema Consulting SA
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "doublebinaryoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -32,6 +32,10 @@ Copyright (C) 2015 Thema Consulting SA
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(DoubleBinaryOptionTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier_lo, \
@@ -54,25 +58,22 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance << "\n");
 
-namespace {
-
-    struct DoubleBinaryOptionData {
-        DoubleBarrier::Type barrierType;
-        Real barrier_lo;
-        Real barrier_hi;
-        Real cash;     // cash payoff for cash-or-nothing
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real result;   // expected result
-        Real tol;      // tolerance
-    };
-}
+struct DoubleBinaryOptionData {
+    DoubleBarrier::Type barrierType;
+    Real barrier_lo;
+    Real barrier_hi;
+    Real cash;     // cash payoff for cash-or-nothing
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real result;   // expected result
+    Real tol;      // tolerance
+};
 
 
-void DoubleBinaryOptionTest::testHaugValues() {
+BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options against Haug's values...");
 
@@ -243,7 +244,7 @@ void DoubleBinaryOptionTest::testHaugValues() {
     }
 } 
 
-void DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical() {
+BOOST_AUTO_TEST_CASE(testPdeDoubleBarrierWithAnalytical) {
     BOOST_TEST_MESSAGE("Testing cash-or-nothing double barrier options "
             "against PDE Heston version...");
 
@@ -323,10 +324,6 @@ void DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* DoubleBinaryOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("DoubleBinary");
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBinaryOptionTest::testHaugValues));
-    suite->add(QUANTLIB_TEST_CASE(&DoubleBinaryOptionTest::testPdeDoubleBarrierWithAnalytical));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

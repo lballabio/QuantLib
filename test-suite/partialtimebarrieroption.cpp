@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "partialtimebarrieroption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/partialtimebarrieroption.hpp>
 #include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
@@ -29,22 +29,21 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace partial_time_barrier_option_test {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct TestCase {
-        Real underlying;
-        Real strike;
-        Integer days;
-        Real result;
-    };
+BOOST_AUTO_TEST_SUITE(PartialTimeBarrierOptionTests)
 
-}
+struct TestCase {
+    Real underlying;
+    Real strike;
+    Integer days;
+    Real result;
+};
 
-void PartialTimeBarrierOptionTest::testAnalyticEngine() {
+
+BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     BOOST_TEST_MESSAGE(
         "Testing analytic engine for partial-time barrier option...");
-
-    using namespace partial_time_barrier_option_test;
 
     Date today = Settings::instance().evaluationDate();
 
@@ -125,12 +124,6 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* PartialTimeBarrierOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
-
-    suite->add(QUANTLIB_TEST_CASE(
-                          &PartialTimeBarrierOptionTest::testAnalyticEngine));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

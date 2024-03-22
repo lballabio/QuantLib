@@ -25,27 +25,31 @@
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 
 namespace QuantLib {
-    SobolBrownianBridgeRsg::SobolBrownianBridgeRsg(
-        Size factors, Size steps,
-        SobolBrownianGenerator::Ordering ordering,
-        unsigned long seed,
-        SobolRsg::DirectionIntegers directionIntegers)
-    : factors_(factors), steps_(steps), dim_(factors*steps),
-      seq_(sample_type::value_type(factors*steps), 1.0),
-      gen_(factors, steps, ordering, seed, directionIntegers) {
+
+    namespace {
+        void setNextSequence(SobolBrownianGeneratorBase& gen, std::vector<Real>& seq) {
+            gen.nextPath();
+            std::vector<Real> output(gen.numberOfFactors());
+            for (Size i = 0; i < gen.numberOfSteps(); ++i) {
+                gen.nextStep(output);
+                std::copy(output.begin(), output.end(), seq.begin() + i * gen.numberOfFactors());
+            }
+        }
     }
+
+    SobolBrownianBridgeRsg::SobolBrownianBridgeRsg(Size factors,
+                                                   Size steps,
+                                                   SobolBrownianGenerator::Ordering ordering,
+                                                   unsigned long seed,
+                                                   SobolRsg::DirectionIntegers directionIntegers)
+    : seq_(sample_type::value_type(factors * steps), 1.0),
+      gen_(factors, steps, ordering, seed, directionIntegers) {}
 
     const SobolBrownianBridgeRsg::sample_type&
     SobolBrownianBridgeRsg::nextSequence() const {
-        gen_.nextPath();
-        std::vector<Real> output(factors_);
-        for (Size i=0; i < steps_; ++i) {
-            gen_.nextStep(output);
-            std::copy(output.begin(), output.end(),
-                      seq_.value.begin()+i*factors_);
-        }
-
+        setNextSequence(gen_, seq_.value);
         return seq_;
+
     }
 
     const SobolBrownianBridgeRsg::sample_type&
@@ -54,6 +58,32 @@ namespace QuantLib {
     }
 
     Size SobolBrownianBridgeRsg::dimension() const {
-        return dim_;
+        return gen_.numberOfFactors() * gen_.numberOfSteps();
     }
+
+    Burley2020SobolBrownianBridgeRsg::Burley2020SobolBrownianBridgeRsg(
+        Size factors,
+        Size steps,
+        SobolBrownianGenerator::Ordering ordering,
+        unsigned long seed,
+        SobolRsg::DirectionIntegers directionIntegers,
+        unsigned long scrambleSeed)
+    : seq_(sample_type::value_type(factors * steps), 1.0),
+      gen_(factors, steps, ordering, seed, directionIntegers, scrambleSeed) {}
+
+    const Burley2020SobolBrownianBridgeRsg::sample_type&
+    Burley2020SobolBrownianBridgeRsg::nextSequence() const {
+        setNextSequence(gen_, seq_.value);
+        return seq_;
+    }
+
+    const Burley2020SobolBrownianBridgeRsg::sample_type&
+    Burley2020SobolBrownianBridgeRsg::lastSequence() const {
+        return seq_;
+    }
+
+    Size Burley2020SobolBrownianBridgeRsg::dimension() const {
+        return gen_.numberOfFactors() * gen_.numberOfSteps();
+    }
+
 }

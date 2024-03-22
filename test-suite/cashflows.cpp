@@ -17,7 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "cashflows.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
@@ -41,7 +42,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CashFlowsTest::testSettings() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CashFlowTests)
+
+BOOST_AUTO_TEST_CASE(testSettings) {
 
     BOOST_TEST_MESSAGE("Testing cash-flow settings...");
 
@@ -174,7 +179,7 @@ void CashFlowsTest::testSettings() {
 
 }
 
-void CashFlowsTest::testAccessViolation() {
+BOOST_AUTO_TEST_CASE(testAccessViolation) {
     BOOST_TEST_MESSAGE("Testing dynamic cast of coupon in Black pricer...");
 
     Date todaysDate(7, April, 2010);
@@ -217,7 +222,7 @@ void CashFlowsTest::testAccessViolation() {
     }
 }
 
-void CashFlowsTest::testDefaultSettlementDate() {
+BOOST_AUTO_TEST_CASE(testDefaultSettlementDate) {
     BOOST_TEST_MESSAGE("Testing default evaluation date in cashflows methods...");
     Date today = Settings::instance().evaluationDate();
     Schedule schedule =
@@ -247,7 +252,7 @@ void CashFlowsTest::testDefaultSettlementDate() {
         BOOST_ERROR("null accrued amount with default settlement date");
 }
 
-void CashFlowsTest::testNullFixingDays() {
+BOOST_AUTO_TEST_CASE(testNullFixingDays, *precondition(usingAtParCoupons())) {
     BOOST_TEST_MESSAGE("Testing ibor leg construction with null fixing days...");
     Date today = Settings::instance().evaluationDate();
     Schedule schedule =
@@ -266,7 +271,7 @@ void CashFlowsTest::testNullFixingDays() {
         .withFixingDays(Null<Natural>());
 }
 
-void CashFlowsTest::testExCouponDates() {
+BOOST_AUTO_TEST_CASE(testExCouponDates) {
     BOOST_TEST_MESSAGE("Testing ex-coupon date calculation...");
 
     Date today = Date::todaysDate();
@@ -349,7 +354,7 @@ void CashFlowsTest::testExCouponDates() {
     }
 }
 
-void CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth() {
+BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing irregular first coupon reference dates with end of month enabled...");
     Schedule schedule =
         MakeSchedule()
@@ -371,7 +376,39 @@ void CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth() {
                     "got " << firstCoupon->referencePeriodStart());
 }
 
-void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
+BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfCalendarMonth) {
+    BOOST_TEST_MESSAGE("Testing irregular first coupon reference dates at end of calendar month with end of month enabled...");
+    Schedule schedule =
+        MakeSchedule()
+        .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+        .from(Date(30, September, 2017)).to(Date(30, September, 2022))
+        .withTenor(6*Months)
+        .withConvention(Unadjusted)
+        .withTerminationDateConvention(Unadjusted)
+        .withFirstDate(Date(31, March, 2018))
+        .withNextToLastDate(Date(31, March, 2022))
+        .endOfMonth()
+        .backwards();
+
+    Leg leg = FixedRateLeg(schedule)
+        .withNotionals(100.0)
+        .withCouponRates(0.01875, ActualActual(ActualActual::ISMA));
+
+    for (const auto& elem : leg) {
+        BOOST_TEST_MESSAGE("Reference Period: " << ext::dynamic_pointer_cast<Coupon>(elem)->referencePeriodStart() << " - " << ext::dynamic_pointer_cast<Coupon>(elem)->referencePeriodEnd());
+        BOOST_TEST_MESSAGE("Amount: " << ext::dynamic_pointer_cast<Coupon>(elem)->amount());
+    }
+
+    ext::shared_ptr<Coupon> firstCoupon =
+        ext::dynamic_pointer_cast<Coupon>(leg.front());
+    if (firstCoupon->referencePeriodStart() != Date(30, September, 2017))
+        BOOST_ERROR("Expected reference start date at end of calendar day of the month, "
+                    "got " << firstCoupon->referencePeriodStart());
+    // Expect first cashflow to be 0.9375
+    BOOST_TEST(firstCoupon->amount() == 0.9375, boost::test_tools::tolerance<Real>(0.0001));
+}
+
+BOOST_AUTO_TEST_CASE(testIrregularLastCouponReferenceDatesAtEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing irregular last coupon reference dates with end of month enabled...");
     Schedule schedule =
             MakeSchedule()
@@ -394,7 +431,7 @@ void CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth() {
                             "got " << lastCoupon->referencePeriodEnd());
 }
 
-void CashFlowsTest::testPartialScheduleLegConstruction() {
+BOOST_AUTO_TEST_CASE(testPartialScheduleLegConstruction) {
     BOOST_TEST_MESSAGE("Testing leg construction with partial schedule...");
     // schedule with irregular first and last period
     Schedule schedule = MakeSchedule()
@@ -502,7 +539,7 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
     BOOST_CHECK_EQUAL(lastCpnF3->referencePeriodEnd(), Date(30, Sep, 2020));
 }
 
-void CashFlowsTest::testFixedIborCouponWithoutForecastCurve() {
+BOOST_AUTO_TEST_CASE(testFixedIborCouponWithoutForecastCurve) {
     BOOST_TEST_MESSAGE("Testing past ibor coupon without forecast curve...");
 
     Date today = Settings::instance().evaluationDate();
@@ -532,20 +569,6 @@ void CashFlowsTest::testFixedIborCouponWithoutForecastCurve() {
     }
 }
 
-test_suite* CashFlowsTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cash flows tests");
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testExCouponDates));
+BOOST_AUTO_TEST_SUITE_END()
 
-    if (IborCoupon::Settings::instance().usingAtParCoupons())
-        suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
-
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth));
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testPartialScheduleLegConstruction));
-    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testFixedIborCouponWithoutForecastCurve));
-
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

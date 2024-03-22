@@ -66,6 +66,9 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments_.swap->spread() == 0.0, "non zero spread (" << arguments_.swap->spread() << ") not allowed");
 
+        QL_REQUIRE(arguments_.nominal != Null<Real>(),
+                   "non-constant nominals are not supported yet");
+
         QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;

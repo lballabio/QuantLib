@@ -41,19 +41,6 @@ namespace QuantLib {
                              Period(1, Months), // availability
                              USDCurrency(),
                              ts) {}
-
-        /*! \deprecated Use the constructor without the "interpolated" parameter.
-                        Deprecated in version 1.29.
-        */
-        QL_DEPRECATED
-        explicit USCPI(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = {})
-        : USCPI(ts) {
-            QL_DEPRECATED_DISABLE_WARNING
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING
-        }
     };
 
 

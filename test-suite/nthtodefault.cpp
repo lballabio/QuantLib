@@ -17,91 +17,88 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "nthtodefault.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/credit/nthtodefault.hpp>
+#include <ql/currencies/europe.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
-#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/integralntdengine.hpp>
+#include <ql/experimental/credit/nthtodefault.hpp>
 #include <ql/experimental/credit/pool.hpp>
+#include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/currencies/europe.hpp>
 #include <iostream>
 #include <string>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(NthToDefaultTests)
+
 #ifndef QL_PATCH_SOLARIS
 
-namespace nth_to_default_test {
+struct hwDatum {
+    Size rank;
+    Real spread[3];
+};
 
-    struct hwDatum {
-        Size rank;
-        Real spread[3];
-    };
-
-    /* Spread (bp p.a.) to buy protection for the nth to default from
-       a basket of 10 names. All pairs have same correlation, 0 in
-       column 2, 0.3 in column 3, 0.6 in column 4. Default intensity
-       for all names is constant at 0.01, maturity 5 years, equal
-       notional amounts.
-    */
-    hwDatum hwData[] = {
-        { 1, { 603, 440, 293 } },
-        { 2, {  98, 139, 137 } },
-        { 3, {  12,  53,  79 } },
-        { 4, {   1,  21,  49 } },
-        { 5, {   0,   8,  31 } },
-        { 6, {   0,   3,  19 } },
-        { 7, {   0,   1,  12 } },
-        { 8, {   0,   0,   7 } },
-        { 9, {   0,   0,   3 } },
-        {10, {   0,   0,   1 } }
-    };
+/* Spread (bp p.a.) to buy protection for the nth to default from
+   a basket of 10 names. All pairs have same correlation, 0 in
+   column 2, 0.3 in column 3, 0.6 in column 4. Default intensity
+   for all names is constant at 0.01, maturity 5 years, equal
+   notional amounts.
+*/
+hwDatum hwData[] = {
+    { 1, { 603, 440, 293 } },
+    { 2, {  98, 139, 137 } },
+    { 3, {  12,  53,  79 } },
+    { 4, {   1,  21,  49 } },
+    { 5, {   0,   8,  31 } },
+    { 6, {   0,   3,  19 } },
+    { 7, {   0,   1,  12 } },
+    { 8, {   0,   0,   7 } },
+    { 9, {   0,   0,   3 } },
+    {10, {   0,   0,   1 } }
+};
 
 
-    Real hwCorrelation[] = { 0.0, 0.3, 0.6 };
+Real hwCorrelation[] = { 0.0, 0.3, 0.6 };
 
 
-    struct hwDatumDist {
-        Size rank;
-        Real spread[4];
-    };
+struct hwDatumDist {
+    Size rank;
+    Real spread[4];
+};
 
-    // HW Table 3, Nth to Default Basket
-    // corr = 0.3
-    // NM/NZ
-    // rank inf/inf 5/inf inf/5 5/5
-    hwDatumDist hwDataDist[] = {
-        { 1, { 440, 419, 474, 455 } },
-        { 2, { 139, 127, 127, 116 } },
-        { 3, {  53,  51,  44,  44 } },
-        { 4, {  21,  24,  18,  22 } },
-        { 5, {   8,  13,   7,  13 } },
-        { 6, {   3,   8,   3,   8 } },
-        { 7, {   1,   5,   1,   5 } },
-        { 8, {   0,   3,   0,   4 } },
-        { 9, {   0,   2,   0,   2 } },
-        {10, {   0,   1,   0,   1 } }
-    };
+// HW Table 3, Nth to Default Basket
+// corr = 0.3
+// NM/NZ
+// rank inf/inf 5/inf inf/5 5/5
+hwDatumDist hwDataDist[] = {
+    { 1, { 440, 419, 474, 455 } },
+    { 2, { 139, 127, 127, 116 } },
+    { 3, {  53,  51,  44,  44 } },
+    { 4, {  21,  24,  18,  22 } },
+    { 5, {   8,  13,   7,  13 } },
+    { 6, {   3,   8,   3,   8 } },
+    { 7, {   1,   5,   1,   5 } },
+    { 8, {   0,   3,   0,   4 } },
+    { 9, {   0,   2,   0,   2 } },
+    {10, {   0,   1,   0,   1 } }
+};
 
-}
 
-#endif
-
-void NthToDefaultTest::testGauss() {
-    #ifndef QL_PATCH_SOLARIS
+BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
-
-    using namespace nth_to_default_test;
 
     /*************************
      * Tolerances
@@ -235,16 +232,11 @@ void NthToDefaultTest::testGauss() {
                                  << absTolerance << " exceeded");
         }
     }
-    #endif
 }
+BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
 
-
-void NthToDefaultTest::testStudent() {
-    #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Student copula...");
-
-    using namespace nth_to_default_test;
 
     /*************************
      * Tolerances
@@ -381,16 +373,10 @@ void NthToDefaultTest::testStudent() {
                              << abs(diff) << "|" << hwDataDist[i].spread[3]);
     }
     //END
-    #endif
 }
 
-test_suite* NthToDefaultTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Nth-to-default tests");
-#ifndef QL_PATCH_SOLARIS
-    if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
-        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testStudent));
-    }
-    #endif
-    return suite;
-}
+#endif
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "jumpdiffusion.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/europeanoption.hpp>
@@ -32,6 +32,10 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(JumpDiffusionTests)
 
 #undef REPORT_FAILURE_1
 #define REPORT_FAILURE_1(greekName, payoff, exercise, s, q, r, today, v, \
@@ -76,26 +80,22 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-namespace {
-
-    struct HaugMertonData {
-        Option::Type type;
-        Real strike;
-        Real s;        // spot
-        Rate q;        // dividend
-        Rate r;        // risk-free rate
-        Time t;        // time to maturity
-        Volatility v;  // volatility
-        Real jumpIntensity;
-        Real gamma;
-        Real result;   // result
-        Real tol;      // tolerance
-    };
-
-}
+struct HaugMertonData {
+    Option::Type type;
+    Real strike;
+    Real s;        // spot
+    Rate q;        // dividend
+    Rate r;        // risk-free rate
+    Time t;        // time to maturity
+    Volatility v;  // volatility
+    Real jumpIntensity;
+    Real gamma;
+    Real result;   // result
+    Real tol;      // tolerance
+};
 
 
-void JumpDiffusionTest::testMerton76() {
+BOOST_AUTO_TEST_CASE(testMerton76) {
 
     BOOST_TEST_MESSAGE("Testing Merton 76 jump-diffusion model "
                        "for European options...");
@@ -338,7 +338,7 @@ void JumpDiffusionTest::testMerton76() {
     }
 }
 
-void JumpDiffusionTest::testGreeks() {
+BOOST_AUTO_TEST_CASE(testGreeks) {
 
     BOOST_TEST_MESSAGE("Testing jump-diffusion option greeks...");
 
@@ -519,10 +519,6 @@ void JumpDiffusionTest::testGreeks() {
     } // type loop
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* JumpDiffusionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Jump-diffusion tests");
-    suite->add(QUANTLIB_TEST_CASE(&JumpDiffusionTest::testMerton76));
-    suite->add(QUANTLIB_TEST_CASE(&JumpDiffusionTest::testGreeks));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

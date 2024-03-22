@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "cliquetoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
@@ -33,6 +33,10 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(CliquetOptionTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, v, \
@@ -50,8 +54,7 @@ using namespace boost::unit_test_framework;
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
 
-
-void CliquetOptionTest::testValues() {
+BOOST_AUTO_TEST_CASE(testValues) {
 
     BOOST_TEST_MESSAGE("Testing Cliquet option values...");
 
@@ -100,144 +103,141 @@ void CliquetOptionTest::testValues() {
 }
 
 
-namespace {
+template <class T>
+void testOptionGreeks() {
 
-    template <class T>
-    void testOptionGreeks() {
+    std::map<std::string,Real> calculated, expected, tolerance;
+    tolerance["delta"]  = 1.0e-5;
+    tolerance["gamma"]  = 1.0e-5;
+    tolerance["theta"]  = 1.0e-5;
+    tolerance["rho"]    = 1.0e-5;
+    tolerance["divRho"] = 1.0e-5;
+    tolerance["vega"]   = 1.0e-5;
 
-        std::map<std::string,Real> calculated, expected, tolerance;
-        tolerance["delta"]  = 1.0e-5;
-        tolerance["gamma"]  = 1.0e-5;
-        tolerance["theta"]  = 1.0e-5;
-        tolerance["rho"]    = 1.0e-5;
-        tolerance["divRho"] = 1.0e-5;
-        tolerance["vega"]   = 1.0e-5;
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real moneyness[] = { 0.9, 1.0, 1.1 };
+    Real underlyings[] = { 100.0 };
+    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Integer lengths[] = { 1, 2 };
+    Frequency frequencies[] = { Semiannual, Quarterly };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        Option::Type types[] = { Option::Call, Option::Put };
-        Real moneyness[] = { 0.9, 1.0, 1.1 };
-        Real underlyings[] = { 100.0 };
-        Rate qRates[] = { 0.04, 0.05, 0.06 };
-        Rate rRates[] = { 0.01, 0.05, 0.15 };
-        Integer lengths[] = { 1, 2 };
-        Frequency frequencies[] = { Semiannual, Quarterly };
-        Volatility vols[] = { 0.11, 0.50, 1.20 };
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+    Settings::instance().evaluationDate() = today;
 
-        DayCounter dc = Actual360();
-        Date today = Date::todaysDate();
-        Settings::instance().evaluationDate() = today;
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
-
-        ext::shared_ptr<BlackScholesMertonProcess> process(
+    ext::shared_ptr<BlackScholesMertonProcess> process(
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-        for (auto& type : types) {
-            for (Real moneynes : moneyness) {
-                for (int length : lengths) {
-                    for (auto& frequencie : frequencies) {
+    for (auto& type : types) {
+        for (Real moneynes : moneyness) {
+            for (int length : lengths) {
+                for (auto& frequencie : frequencies) {
 
-                        ext::shared_ptr<EuropeanExercise> maturity(
+                    ext::shared_ptr<EuropeanExercise> maturity(
                             new EuropeanExercise(today + length * Years));
 
-                        ext::shared_ptr<PercentageStrikePayoff> payoff(
+                    ext::shared_ptr<PercentageStrikePayoff> payoff(
                             new PercentageStrikePayoff(type, moneynes));
 
-                        std::vector<Date> reset;
-                        for (Date d = today + Period(frequencie); d < maturity->lastDate();
-                             d += Period(frequencie))
-                            reset.push_back(d);
+                    std::vector<Date> reset;
+                    for (Date d = today + Period(frequencie); d < maturity->lastDate();
+                         d += Period(frequencie))
+                        reset.push_back(d);
 
-                        ext::shared_ptr<PricingEngine> engine(new T(process));
+                    ext::shared_ptr<PricingEngine> engine(new T(process));
 
-                        CliquetOption option(payoff, maturity, reset);
-                        option.setPricingEngine(engine);
+                    CliquetOption option(payoff, maturity, reset);
+                    option.setPricingEngine(engine);
 
-                        for (Real u : underlyings) {
-                            for (Real m : qRates) {
-                                for (Real n : rRates) {
-                                    for (Real v : vols) {
+                    for (Real u : underlyings) {
+                        for (Real m : qRates) {
+                            for (Real n : rRates) {
+                                for (Real v : vols) {
 
-                                        Rate q = m, r = n;
+                                    Rate q = m, r = n;
+                                    spot->setValue(u);
+                                    qRate->setValue(q);
+                                    rRate->setValue(r);
+                                    vol->setValue(v);
+
+                                    Real value = option.NPV();
+                                    calculated["delta"] = option.delta();
+                                    calculated["gamma"] = option.gamma();
+                                    calculated["theta"] = option.theta();
+                                    calculated["rho"] = option.rho();
+                                    calculated["divRho"] = option.dividendRho();
+                                    calculated["vega"] = option.vega();
+
+                                    if (value > spot->value() * 1.0e-5) {
+                                        // perturb spot and get delta and gamma
+                                        Real du = u * 1.0e-4;
+                                        spot->setValue(u + du);
+                                        Real value_p = option.NPV(), delta_p = option.delta();
+                                        spot->setValue(u - du);
+                                        Real value_m = option.NPV(), delta_m = option.delta();
                                         spot->setValue(u);
-                                        qRate->setValue(q);
+                                        expected["delta"] = (value_p - value_m) / (2 * du);
+                                        expected["gamma"] = (delta_p - delta_m) / (2 * du);
+
+                                        // perturb rates and get rho and dividend rho
+                                        Spread dr = r * 1.0e-4;
+                                        rRate->setValue(r + dr);
+                                        value_p = option.NPV();
+                                        rRate->setValue(r - dr);
+                                        value_m = option.NPV();
                                         rRate->setValue(r);
+                                        expected["rho"] = (value_p - value_m) / (2 * dr);
+
+                                        Spread dq = q * 1.0e-4;
+                                        qRate->setValue(q + dq);
+                                        value_p = option.NPV();
+                                        qRate->setValue(q - dq);
+                                        value_m = option.NPV();
+                                        qRate->setValue(q);
+                                        expected["divRho"] = (value_p - value_m) / (2 * dq);
+
+                                        // perturb volatility and get vega
+                                        Volatility dv = v * 1.0e-4;
+                                        vol->setValue(v + dv);
+                                        value_p = option.NPV();
+                                        vol->setValue(v - dv);
+                                        value_m = option.NPV();
                                         vol->setValue(v);
+                                        expected["vega"] = (value_p - value_m) / (2 * dv);
 
-                                        Real value = option.NPV();
-                                        calculated["delta"] = option.delta();
-                                        calculated["gamma"] = option.gamma();
-                                        calculated["theta"] = option.theta();
-                                        calculated["rho"] = option.rho();
-                                        calculated["divRho"] = option.dividendRho();
-                                        calculated["vega"] = option.vega();
+                                        // perturb date and get theta
+                                        Time dT = dc.yearFraction(today - 1, today + 1);
+                                        Settings::instance().evaluationDate() = today - 1;
+                                        value_m = option.NPV();
+                                        Settings::instance().evaluationDate() = today + 1;
+                                        value_p = option.NPV();
+                                        Settings::instance().evaluationDate() = today;
+                                        expected["theta"] = (value_p - value_m) / dT;
 
-                                        if (value > spot->value() * 1.0e-5) {
-                                            // perturb spot and get delta and gamma
-                                            Real du = u * 1.0e-4;
-                                            spot->setValue(u + du);
-                                            Real value_p = option.NPV(), delta_p = option.delta();
-                                            spot->setValue(u - du);
-                                            Real value_m = option.NPV(), delta_m = option.delta();
-                                            spot->setValue(u);
-                                            expected["delta"] = (value_p - value_m) / (2 * du);
-                                            expected["gamma"] = (delta_p - delta_m) / (2 * du);
-
-                                            // perturb rates and get rho and dividend rho
-                                            Spread dr = r * 1.0e-4;
-                                            rRate->setValue(r + dr);
-                                            value_p = option.NPV();
-                                            rRate->setValue(r - dr);
-                                            value_m = option.NPV();
-                                            rRate->setValue(r);
-                                            expected["rho"] = (value_p - value_m) / (2 * dr);
-
-                                            Spread dq = q * 1.0e-4;
-                                            qRate->setValue(q + dq);
-                                            value_p = option.NPV();
-                                            qRate->setValue(q - dq);
-                                            value_m = option.NPV();
-                                            qRate->setValue(q);
-                                            expected["divRho"] = (value_p - value_m) / (2 * dq);
-
-                                            // perturb volatility and get vega
-                                            Volatility dv = v * 1.0e-4;
-                                            vol->setValue(v + dv);
-                                            value_p = option.NPV();
-                                            vol->setValue(v - dv);
-                                            value_m = option.NPV();
-                                            vol->setValue(v);
-                                            expected["vega"] = (value_p - value_m) / (2 * dv);
-
-                                            // perturb date and get theta
-                                            Time dT = dc.yearFraction(today - 1, today + 1);
-                                            Settings::instance().evaluationDate() = today - 1;
-                                            value_m = option.NPV();
-                                            Settings::instance().evaluationDate() = today + 1;
-                                            value_p = option.NPV();
-                                            Settings::instance().evaluationDate() = today;
-                                            expected["theta"] = (value_p - value_m) / dT;
-
-                                            // compare
-                                            std::map<std::string, Real>::iterator it;
-                                            for (it = calculated.begin(); it != calculated.end();
-                                                 ++it) {
-                                                std::string greek = it->first;
-                                                Real expct = expected[greek],
-                                                     calcl = calculated[greek],
-                                                     tol = tolerance[greek];
-                                                Real error = relativeError(expct, calcl, u);
-                                                if (error > tol) {
-                                                    REPORT_FAILURE(greek, payoff, maturity, u, q, r,
-                                                                   today, v, expct, calcl, error,
-                                                                   tol);
-                                                }
+                                        // compare
+                                        std::map<std::string, Real>::iterator it;
+                                        for (it = calculated.begin(); it != calculated.end();
+                                             ++it) {
+                                            std::string greek = it->first;
+                                            Real expct = expected[greek],
+                                                calcl = calculated[greek],
+                                                tol = tolerance[greek];
+                                            Real error = relativeError(expct, calcl, u);
+                                            if (error > tol) {
+                                                REPORT_FAILURE(greek, payoff, maturity, u, q, r,
+                                                               today, v, expct, calcl, error,
+                                                               tol);
                                             }
                                         }
                                     }
@@ -249,23 +249,20 @@ namespace {
             }
         }
     }
-
 }
 
 
-void CliquetOptionTest::testGreeks() {
+BOOST_AUTO_TEST_CASE(testGreeks) {
     BOOST_TEST_MESSAGE("Testing Cliquet option greeks...");
     testOptionGreeks<AnalyticCliquetEngine>();
 }
 
-
-void CliquetOptionTest::testPerformanceGreeks() {
+BOOST_AUTO_TEST_CASE(testPerformanceGreeks) {
     BOOST_TEST_MESSAGE("Testing performance option greeks...");
     testOptionGreeks<AnalyticPerformanceEngine>();
 }
 
-
-void CliquetOptionTest::testMcPerformance() {
+BOOST_AUTO_TEST_CASE(testMcPerformance) {
     BOOST_TEST_MESSAGE(
         "Testing Monte Carlo performance engine against analytic results...");
 
@@ -354,13 +351,6 @@ void CliquetOptionTest::testMcPerformance() {
     }
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CliquetOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Cliquet option tests");
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testValues));
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testMcPerformance));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

@@ -21,18 +21,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "optimizers.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
-#include <ql/math/optimization/steepestdescent.hpp>
 #include <ql/math/optimization/bfgs.hpp>
+#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/goldstein.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/steepestdescent.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -40,231 +41,229 @@ using namespace boost::unit_test_framework;
 using std::pow;
 using std::cos;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct NamedOptimizationMethod;
+BOOST_AUTO_TEST_SUITE(OptimizersTests)
 
-    std::vector<ext::shared_ptr<CostFunction> > costFunctions_;
-    std::vector<ext::shared_ptr<Constraint> > constraints_;
-    std::vector<Array> initialValues_;
-    std::vector<Size> maxIterations_, maxStationaryStateIterations_;
-    std::vector<Real> rootEpsilons_, functionEpsilons_, gradientNormEpsilons_;
-    std::vector<ext::shared_ptr<EndCriteria> > endCriterias_;
-    std::vector<std::vector<NamedOptimizationMethod> > optimizationMethods_;
-    std::vector<Array> xMinExpected_, yMinExpected_;
+struct NamedOptimizationMethod {
+    ext::shared_ptr<OptimizationMethod> optimizationMethod;
+    std::string name;
+};
 
-    class OneDimensionalPolynomialDegreeN : public CostFunction {
-      public:
-        explicit OneDimensionalPolynomialDegreeN(const Array& coefficients)
-        : coefficients_(coefficients),
-          polynomialDegree_(coefficients.size()-1) {}
+std::vector<ext::shared_ptr<CostFunction> > costFunctions_;
+std::vector<ext::shared_ptr<Constraint> > constraints_;
+std::vector<Array> initialValues_;
+std::vector<Size> maxIterations_, maxStationaryStateIterations_;
+std::vector<Real> rootEpsilons_, functionEpsilons_, gradientNormEpsilons_;
+std::vector<ext::shared_ptr<EndCriteria> > endCriterias_;
+std::vector<std::vector<NamedOptimizationMethod> > optimizationMethods_;
+std::vector<Array> xMinExpected_, yMinExpected_;
 
-        Real value(const Array& x) const override {
-            QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
-            Real y = 0;
-            for (Size i=0; i<=polynomialDegree_; ++i)
-                y += coefficients_[i]*std::pow(x[0],static_cast<int>(i));
-            return y;
-        }
+class OneDimensionalPolynomialDegreeN : public CostFunction {
+  public:
+    explicit OneDimensionalPolynomialDegreeN(const Array& coefficients)
+    : coefficients_(coefficients),
+      polynomialDegree_(coefficients.size()-1) {}
 
-        Array values(const Array& x) const override {
-            QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
-            return Array(1, value(x));
-        }
-
-      private:
-        const Array coefficients_;
-        const Size polynomialDegree_;
-    };
-
-
-    // The goal of this cost function is simply to call another optimization inside
-    // in order to test nested optimizations
-    class OptimizationBasedCostFunction : public CostFunction {
-      public:
-        Real value(const Array&) const override { return 1.0; }
-
-        Array values(const Array&) const override {
-            // dummy nested optimization
-            Array coefficients(3, 1.0);
-            OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
-            NoConstraint constraint;
-            Array initialValues(1, 100.0);
-            Problem problem(oneDimensionalPolynomialDegreeN, constraint,
-                            initialValues);
-            LevenbergMarquardt optimizationMethod;
-            //Simplex optimizationMethod(0.1);
-            //ConjugateGradient optimizationMethod;
-            //SteepestDescent optimizationMethod;
-            EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
-            optimizationMethod.minimize(problem, endCriteria);
-            // return dummy result
-            return Array(1, 0);
-        }
-    };
-
-
-    enum OptimizationMethodType {simplex,
-                                 levenbergMarquardt,
-                                 levenbergMarquardt2,
-                                 conjugateGradient,
-                                 conjugateGradient_goldstein,
-                                 steepestDescent,
-                                 steepestDescent_goldstein,
-                                 bfgs,
-                                 bfgs_goldstein};
-
-    std::string optimizationMethodTypeToString(OptimizationMethodType type) {
-        switch (type) {
-          case simplex:
-            return "Simplex";
-          case levenbergMarquardt:
-            return "Levenberg Marquardt";
-          case levenbergMarquardt2:
-            return "Levenberg Marquardt (cost function's jacbobian)";
-          case conjugateGradient:
-            return "Conjugate Gradient";
-          case steepestDescent:
-            return "Steepest Descent";
-          case bfgs:
-            return "BFGS";
-          case conjugateGradient_goldstein:
-              return "Conjugate Gradient (Goldstein line search)";
-          case steepestDescent_goldstein:
-              return "Steepest Descent (Goldstein line search)";
-          case bfgs_goldstein:
-              return "BFGS (Goldstein line search)";
-          default:
-            QL_FAIL("unknown OptimizationMethod type");
-        }
+    Real value(const Array& x) const override {
+        QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
+        Real y = 0;
+        for (Size i=0; i<=polynomialDegree_; ++i)
+            y += coefficients_[i]*std::pow(x[0],static_cast<int>(i));
+        return y;
     }
 
-    struct NamedOptimizationMethod {
-        ext::shared_ptr<OptimizationMethod> optimizationMethod;
-        std::string name;
-    };
+    Array values(const Array& x) const override {
+        QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
+        return Array(1, value(x));
+    }
+
+  private:
+    const Array coefficients_;
+    const Size polynomialDegree_;
+};
 
 
-    ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
-                                OptimizationMethodType optimizationMethodType,
-                                Real simplexLambda,
-                                Real levenbergMarquardtEpsfcn,
-                                Real levenbergMarquardtXtol,
-                                Real levenbergMarquardtGtol) {
-        switch (optimizationMethodType) {
-          case simplex:
-            return ext::shared_ptr<OptimizationMethod>(
+// The goal of this cost function is simply to call another optimization inside
+// in order to test nested optimizations
+class OptimizationBasedCostFunction : public CostFunction {
+  public:
+    Real value(const Array&) const override { return 1.0; }
+
+    Array values(const Array&) const override {
+        // dummy nested optimization
+        Array coefficients(3, 1.0);
+        OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
+        NoConstraint constraint;
+        Array initialValues(1, 100.0);
+        Problem problem(oneDimensionalPolynomialDegreeN, constraint,
+                        initialValues);
+        LevenbergMarquardt optimizationMethod;
+        //Simplex optimizationMethod(0.1);
+        //ConjugateGradient optimizationMethod;
+        //SteepestDescent optimizationMethod;
+        EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
+        optimizationMethod.minimize(problem, endCriteria);
+        // return dummy result
+        return Array(1, 0);
+    }
+};
+
+
+enum OptimizationMethodType {simplex,
+                             levenbergMarquardt,
+                             levenbergMarquardt2,
+                             conjugateGradient,
+                             conjugateGradient_goldstein,
+                             steepestDescent,
+                             steepestDescent_goldstein,
+                             bfgs,
+                             bfgs_goldstein};
+
+std::string optimizationMethodTypeToString(OptimizationMethodType type) {
+    switch (type) {
+      case simplex:
+        return "Simplex";
+      case levenbergMarquardt:
+        return "Levenberg Marquardt";
+      case levenbergMarquardt2:
+        return "Levenberg Marquardt (cost function's jacbobian)";
+      case conjugateGradient:
+        return "Conjugate Gradient";
+      case steepestDescent:
+        return "Steepest Descent";
+      case bfgs:
+        return "BFGS";
+      case conjugateGradient_goldstein:
+        return "Conjugate Gradient (Goldstein line search)";
+      case steepestDescent_goldstein:
+        return "Steepest Descent (Goldstein line search)";
+      case bfgs_goldstein:
+        return "BFGS (Goldstein line search)";
+      default:
+        QL_FAIL("unknown OptimizationMethod type");
+    }
+}
+
+
+ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
+                                                           OptimizationMethodType optimizationMethodType,
+                                                           Real simplexLambda,
+                                                           Real levenbergMarquardtEpsfcn,
+                                                           Real levenbergMarquardtXtol,
+                                                           Real levenbergMarquardtGtol) {
+    switch (optimizationMethodType) {
+      case simplex:
+        return ext::shared_ptr<OptimizationMethod>(
                 new Simplex(simplexLambda));
-          case levenbergMarquardt:
-            return ext::shared_ptr<OptimizationMethod>(
+      case levenbergMarquardt:
+        return ext::shared_ptr<OptimizationMethod>(
                 new LevenbergMarquardt(levenbergMarquardtEpsfcn,
                                        levenbergMarquardtXtol,
                                        levenbergMarquardtGtol));
-          case levenbergMarquardt2:
-            return ext::shared_ptr<OptimizationMethod>(
+      case levenbergMarquardt2:
+        return ext::shared_ptr<OptimizationMethod>(
                 new LevenbergMarquardt(levenbergMarquardtEpsfcn,
                                        levenbergMarquardtXtol,
                                        levenbergMarquardtGtol,
                                        true));
-          case conjugateGradient:
-            return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient);
-          case steepestDescent:
-            return ext::shared_ptr<OptimizationMethod>(new SteepestDescent);
-          case bfgs:
-            return ext::shared_ptr<OptimizationMethod>(new BFGS);
-          case conjugateGradient_goldstein:
-              return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(ext::make_shared<GoldsteinLineSearch>()));
-          case steepestDescent_goldstein:
-              return ext::shared_ptr<OptimizationMethod>(new SteepestDescent(ext::make_shared<GoldsteinLineSearch>()));
-          case bfgs_goldstein:
-              return ext::shared_ptr<OptimizationMethod>(new BFGS(ext::make_shared<GoldsteinLineSearch>()));
-          default:
-            QL_FAIL("unknown OptimizationMethod type");
-        }
+      case conjugateGradient:
+        return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient);
+      case steepestDescent:
+        return ext::shared_ptr<OptimizationMethod>(new SteepestDescent);
+      case bfgs:
+        return ext::shared_ptr<OptimizationMethod>(new BFGS);
+      case conjugateGradient_goldstein:
+        return ext::shared_ptr<OptimizationMethod>(new ConjugateGradient(ext::make_shared<GoldsteinLineSearch>()));
+      case steepestDescent_goldstein:
+        return ext::shared_ptr<OptimizationMethod>(new SteepestDescent(ext::make_shared<GoldsteinLineSearch>()));
+      case bfgs_goldstein:
+        return ext::shared_ptr<OptimizationMethod>(new BFGS(ext::make_shared<GoldsteinLineSearch>()));
+      default:
+        QL_FAIL("unknown OptimizationMethod type");
     }
-
-
-    std::vector<NamedOptimizationMethod> makeOptimizationMethods(
-                             const std::vector<OptimizationMethodType>& optimizationMethodTypes,
-                             Real simplexLambda,
-                             Real levenbergMarquardtEpsfcn,
-                             Real levenbergMarquardtXtol,
-                             Real levenbergMarquardtGtol) {
-        std::vector<NamedOptimizationMethod> results;
-        for (auto optimizationMethodType : optimizationMethodTypes) {
-            NamedOptimizationMethod namedOptimizationMethod;
-            namedOptimizationMethod.optimizationMethod = makeOptimizationMethod(
-                optimizationMethodType, simplexLambda, levenbergMarquardtEpsfcn,
-                levenbergMarquardtXtol, levenbergMarquardtGtol);
-            namedOptimizationMethod.name = optimizationMethodTypeToString(optimizationMethodType);
-            results.push_back(namedOptimizationMethod);
-        }
-        return results;
-    }
-
-    Real maxDifference(const Array& a, const Array& b) {
-        Array diff = a-b;
-        Real maxDiff = 0.0;
-        for (Real i : diff)
-            maxDiff = std::max(maxDiff, std::fabs(i));
-        return maxDiff;
-    }
-
-    // Set up, for each cost function, all the ingredients for optimization:
-    // constraint, initial guess, end criteria, optimization methods.
-    void setup() {
-
-        // Cost function n. 1: 1D polynomial of degree 2 (parabolic function y=a*x^2+b*x+c)
-        const Real a = 1;   // required a > 0
-        const Real b = 1;
-        const Real c = 1;
-        Array coefficients(3);
-        coefficients[0]= c;
-        coefficients[1]= b;
-        coefficients[2]= a;
-        costFunctions_.push_back(ext::shared_ptr<CostFunction>(
-            new OneDimensionalPolynomialDegreeN(coefficients)));
-        // Set constraint for optimizers: unconstrained problem
-        constraints_.push_back(ext::shared_ptr<Constraint>(new NoConstraint()));
-        // Set initial guess for optimizer
-        Array initialValue(1);
-        initialValue[0] = -100;
-        initialValues_.push_back(initialValue);
-        // Set end criteria for optimizer
-        maxIterations_.push_back(10000);                // maxIterations
-        maxStationaryStateIterations_.push_back(100);   // MaxStationaryStateIterations
-        rootEpsilons_.push_back(1e-8);                  // rootEpsilon
-        functionEpsilons_.push_back(1e-8);              // functionEpsilon
-        gradientNormEpsilons_.push_back(1e-8);          // gradientNormEpsilon
-        endCriterias_.push_back(ext::make_shared<EndCriteria>(
-            maxIterations_.back(), maxStationaryStateIterations_.back(),
-                            rootEpsilons_.back(), functionEpsilons_.back(),
-                            gradientNormEpsilons_.back()));
-        // Set optimization methods for optimizer
-        std::vector<OptimizationMethodType> optimizationMethodTypes = {
-            simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,
-            bfgs //, steepestDescent
-        };
-        Real simplexLambda = 0.1;                   // characteristic search length for simplex
-        Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
-        Real levenbergMarquardtXtol   = 1.0e-8;     //
-        Real levenbergMarquardtGtol   = 1.0e-8;     //
-        optimizationMethods_.push_back(makeOptimizationMethods(
-            optimizationMethodTypes,
-            simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol,
-            levenbergMarquardtGtol));
-        // Set expected results for optimizer
-        Array xMinExpected(1),yMinExpected(1);
-        xMinExpected[0] = -b/(2.0*a);
-        yMinExpected[0] = -(b*b-4.0*a*c)/(4.0*a);
-        xMinExpected_.push_back(xMinExpected);
-        yMinExpected_.push_back(yMinExpected);
-    }
-
 }
 
 
-void OptimizersTest::test() {
+std::vector<NamedOptimizationMethod> makeOptimizationMethods(
+                                                             const std::vector<OptimizationMethodType>& optimizationMethodTypes,
+                                                             Real simplexLambda,
+                                                             Real levenbergMarquardtEpsfcn,
+                                                             Real levenbergMarquardtXtol,
+                                                             Real levenbergMarquardtGtol) {
+    std::vector<NamedOptimizationMethod> results;
+    for (auto optimizationMethodType : optimizationMethodTypes) {
+        NamedOptimizationMethod namedOptimizationMethod;
+        namedOptimizationMethod.optimizationMethod = makeOptimizationMethod(
+                optimizationMethodType, simplexLambda, levenbergMarquardtEpsfcn,
+                levenbergMarquardtXtol, levenbergMarquardtGtol);
+        namedOptimizationMethod.name = optimizationMethodTypeToString(optimizationMethodType);
+        results.push_back(namedOptimizationMethod);
+    }
+    return results;
+}
+
+Real maxDifference(const Array& a, const Array& b) {
+    Array diff = a-b;
+    Real maxDiff = 0.0;
+    for (Real i : diff)
+        maxDiff = std::max(maxDiff, std::fabs(i));
+    return maxDiff;
+}
+
+// Set up, for each cost function, all the ingredients for optimization:
+// constraint, initial guess, end criteria, optimization methods.
+void setup() {
+
+    // Cost function n. 1: 1D polynomial of degree 2 (parabolic function y=a*x^2+b*x+c)
+    const Real a = 1;   // required a > 0
+    const Real b = 1;
+    const Real c = 1;
+    Array coefficients(3);
+    coefficients[0]= c;
+    coefficients[1]= b;
+    coefficients[2]= a;
+    costFunctions_.push_back(ext::shared_ptr<CostFunction>(
+            new OneDimensionalPolynomialDegreeN(coefficients)));
+    // Set constraint for optimizers: unconstrained problem
+    constraints_.push_back(ext::shared_ptr<Constraint>(new NoConstraint()));
+    // Set initial guess for optimizer
+    Array initialValue(1);
+    initialValue[0] = -100;
+    initialValues_.push_back(initialValue);
+    // Set end criteria for optimizer
+    maxIterations_.push_back(10000);                // maxIterations
+    maxStationaryStateIterations_.push_back(100);   // MaxStationaryStateIterations
+    rootEpsilons_.push_back(1e-8);                  // rootEpsilon
+    functionEpsilons_.push_back(1e-8);              // functionEpsilon
+    gradientNormEpsilons_.push_back(1e-8);          // gradientNormEpsilon
+    endCriterias_.push_back(ext::make_shared<EndCriteria>(
+            maxIterations_.back(), maxStationaryStateIterations_.back(),
+                            rootEpsilons_.back(), functionEpsilons_.back(),
+                            gradientNormEpsilons_.back()));
+    // Set optimization methods for optimizer
+    std::vector<OptimizationMethodType> optimizationMethodTypes = {
+        simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,
+        bfgs //, steepestDescent
+    };
+    Real simplexLambda = 0.1;                   // characteristic search length for simplex
+    Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
+    Real levenbergMarquardtXtol   = 1.0e-8;     //
+    Real levenbergMarquardtGtol   = 1.0e-8;     //
+    optimizationMethods_.push_back(makeOptimizationMethods(
+            optimizationMethodTypes,
+            simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol,
+            levenbergMarquardtGtol));
+    // Set expected results for optimizer
+    Array xMinExpected(1),yMinExpected(1);
+    xMinExpected[0] = -b/(2.0*a);
+    yMinExpected[0] = -(b*b-4.0*a*c)/(4.0*a);
+    xMinExpected_.push_back(xMinExpected);
+    yMinExpected_.push_back(yMinExpected);
+}
+
+
+BOOST_AUTO_TEST_CASE(test) {
     BOOST_TEST_MESSAGE("Testing optimizers...");
 
     setup();
@@ -345,8 +344,7 @@ void OptimizersTest::test() {
     }
 }
 
-
-void OptimizersTest::nestedOptimizationTest() {
+BOOST_AUTO_TEST_CASE(nestedOptimizationTest) {
     BOOST_TEST_MESSAGE("Testing nested optimizations...");
     OptimizationBasedCostFunction optimizationBasedCostFunction;
     NoConstraint constraint;
@@ -362,79 +360,78 @@ void OptimizersTest::nestedOptimizationTest() {
 
 }
 
-namespace {
 
-    class FirstDeJong : public CostFunction {
-      public:
-        Array values(const Array& x) const override {
-            return Array(x.size(),value(x));
-        }
-        Real value(const Array& x) const override { return DotProduct(x, x); }
-    };
+class FirstDeJong : public CostFunction {
+  public:
+    Array values(const Array& x) const override {
+        return Array(x.size(),value(x));
+    }
+    Real value(const Array& x) const override { return DotProduct(x, x); }
+};
 
-    class SecondDeJong : public CostFunction {
-      public:
-        Array values(const Array& x) const override {
-            return Array(x.size(),value(x));
-        }
-        Real value(const Array& x) const override {
-            return  100.0*(x[0]*x[0]-x[1])*(x[0]*x[0]-x[1])
-                  + (1.0-x[0])*(1.0-x[0]);
-        }
-    };
+class SecondDeJong : public CostFunction {
+  public:
+    Array values(const Array& x) const override {
+        return Array(x.size(),value(x));
+    }
+    Real value(const Array& x) const override {
+        return  100.0*(x[0]*x[0]-x[1])*(x[0]*x[0]-x[1])
+            + (1.0-x[0])*(1.0-x[0]);
+    }
+};
 
-    class ModThirdDeJong : public CostFunction {
-      public:
-        Array values(const Array& x) const override {
-            return Array(x.size(),value(x));
+class ModThirdDeJong : public CostFunction {
+  public:
+    Array values(const Array& x) const override {
+        return Array(x.size(),value(x));
+    }
+    Real value(const Array& x) const override {
+        Real fx = 0.0;
+        for (Real i : x) {
+            fx += std::floor(i) * std::floor(i);
         }
-        Real value(const Array& x) const override {
-            Real fx = 0.0;
-            for (Real i : x) {
-                fx += std::floor(i) * std::floor(i);
-            }
-            return fx;
-        }
-    };
+        return fx;
+    }
+};
 
-    class ModFourthDeJong : public CostFunction {
-      public:
-        ModFourthDeJong()
-        : uniformRng_(MersenneTwisterUniformRng(4711)) {
+class ModFourthDeJong : public CostFunction {
+  public:
+    ModFourthDeJong()
+    : uniformRng_(MersenneTwisterUniformRng(4711)) {
+    }
+    Array values(const Array& x) const override {
+        return Array(x.size(),value(x));
+    }
+    Real value(const Array& x) const override {
+        Real fx = 0.0;
+        for (Size i=0; i<x.size(); ++i) {
+            fx += (i+1.0)*pow(x[i],4.0) + uniformRng_.nextReal();
         }
-        Array values(const Array& x) const override {
-            return Array(x.size(),value(x));
-        }
-        Real value(const Array& x) const override {
-            Real fx = 0.0;
-            for (Size i=0; i<x.size(); ++i) {
-                fx += (i+1.0)*pow(x[i],4.0) + uniformRng_.nextReal();
-            }
-            return fx;
-        }
-        MersenneTwisterUniformRng uniformRng_;
-    };
+        return fx;
+    }
+    MersenneTwisterUniformRng uniformRng_;
+};
 
-    class Griewangk : public CostFunction {
-      public:
-        Array values(const Array& x) const override {
-            return Array(x.size(),value(x));
+class Griewangk : public CostFunction {
+  public:
+    Array values(const Array& x) const override {
+        return Array(x.size(),value(x));
+    }
+    Real value(const Array& x) const override {
+        Real fx = 0.0;
+        for (Real i : x) {
+            fx += i * i / 4000.0;
         }
-        Real value(const Array& x) const override {
-            Real fx = 0.0;
-            for (Real i : x) {
-                fx += i * i / 4000.0;
-            }
-            Real p = 1.0;
-            for (Size i=0; i<x.size(); ++i) {
-                p *= cos(x[i]/sqrt(i+1.0));
-            }
-            return fx - p + 1.0;
+        Real p = 1.0;
+        for (Size i=0; i<x.size(); ++i) {
+            p *= cos(x[i]/sqrt(i+1.0));
         }
-    };
-}
+        return fx - p + 1.0;
+    }
+};
 
-void OptimizersTest::testDifferentialEvolution() {
+
+BOOST_AUTO_TEST_CASE(testDifferentialEvolution) {
     BOOST_TEST_MESSAGE("Testing differential evolution...");
 
     /* Note:
@@ -543,17 +540,6 @@ void OptimizersTest::testDifferentialEvolution() {
     }
 }
 
-test_suite* OptimizersTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Optimizers tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
-    suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &OptimizersTest::testDifferentialEvolution));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

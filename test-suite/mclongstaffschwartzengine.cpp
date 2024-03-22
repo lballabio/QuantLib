@@ -19,7 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "mclongstaffschwartzengine.hpp"
+#include "preconditions.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
@@ -35,93 +36,92 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
-      public:
-        explicit AmericanMaxPathPricer(ext::shared_ptr<Payoff> payoff)
-        : payoff_(std::move(payoff)) {}
+BOOST_AUTO_TEST_SUITE(MCLongstaffSchwartzEngineTests)
 
-        StateType state(const MultiPath& path, Size t) const override {
-            Array tmp(path.assetNumber());
-            for (Size i=0; i<path.assetNumber(); ++i) {
-                tmp[i]=path[i][t];
-            }
+class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
+  public:
+    explicit AmericanMaxPathPricer(ext::shared_ptr<Payoff> payoff)
+    : payoff_(std::move(payoff)) {}
 
-            return tmp;
+    StateType state(const MultiPath& path, Size t) const override {
+        Array tmp(path.assetNumber());
+        for (Size i=0; i<path.assetNumber(); ++i) {
+            tmp[i]=path[i][t];
         }
 
-        Real operator()(const MultiPath& path, Size t) const override {
-            const Array tmp = state(path, t);
-            return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
-        }
+        return tmp;
+    }
 
-        std::vector<ext::function<Real(StateType)> > basisSystem() const override {
-            return LsmBasisSystem::multiPathBasisSystem(2, 2,
-                                                        LsmBasisSystem::Monomial);
-        }
+    Real operator()(const MultiPath& path, Size t) const override {
+        const Array tmp = state(path, t);
+        return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
+    }
 
-      protected:
-        const ext::shared_ptr<Payoff> payoff_;
-    };
+    std::vector<ext::function<Real(StateType)> > basisSystem() const override {
+        return LsmBasisSystem::multiPathBasisSystem(2, 2,
+                                                    LsmBasisSystem::Monomial);
+    }
 
-    template <class RNG>
-    class MCAmericanMaxEngine
-        : public MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                           MultiVariate,RNG>{
-      public:
-        MCAmericanMaxEngine(
-                            const ext::shared_ptr<StochasticProcessArray>& processes,
-                            Size timeSteps,
-                            Size timeStepsPerYear,
-                            bool brownianbridge,
-                            bool antitheticVariate,
-                            bool controlVariate,
-                            Size requiredSamples,
-                            Real requiredTolerance,
-                            Size maxSamples,
-                            BigNatural seed,
-                            Size nCalibrationSamples = Null<Size>())
-        : MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                    MultiVariate,RNG>(processes,
-                                                      timeSteps,
-                                                      timeStepsPerYear,
-                                                      brownianbridge,
-                                                      antitheticVariate,
-                                                      controlVariate,
-                                                      requiredSamples,
-                                                      requiredTolerance,
-                                                      maxSamples,
-                                                      seed, nCalibrationSamples)
-        { }
+  protected:
+    const ext::shared_ptr<Payoff> payoff_;
+};
 
-      protected:
-        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override {
-            ext::shared_ptr<StochasticProcessArray> processArray =
+template <class RNG>
+class MCAmericanMaxEngine
+    : public MCLongstaffSchwartzEngine<VanillaOption::engine,
+                                       MultiVariate,RNG>{
+  public:
+    MCAmericanMaxEngine(const ext::shared_ptr<StochasticProcessArray>& processes,
+                        Size timeSteps,
+                        Size timeStepsPerYear,
+                        bool brownianbridge,
+                        bool antitheticVariate,
+                        bool controlVariate,
+                        Size requiredSamples,
+                        Real requiredTolerance,
+                        Size maxSamples,
+                        BigNatural seed,
+                        Size nCalibrationSamples = Null<Size>())
+    : MCLongstaffSchwartzEngine<VanillaOption::engine,
+                                MultiVariate,RNG>(processes,
+                                                  timeSteps,
+                                                  timeStepsPerYear,
+                                                  brownianbridge,
+                                                  antitheticVariate,
+                                                  controlVariate,
+                                                  requiredSamples,
+                                                  requiredTolerance,
+                                                  maxSamples,
+                                                  seed, nCalibrationSamples)
+    { }
+
+  protected:
+    ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override {
+        ext::shared_ptr<StochasticProcessArray> processArray =
             ext::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
-            QL_REQUIRE(processArray && processArray->size() > 0,
-                       "Stochastic process array required");
+        QL_REQUIRE(processArray && processArray->size() > 0,
+                   "Stochastic process array required");
 
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process =
-                ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                     processArray->process(0));
-            QL_REQUIRE(process, "generalized Black-Scholes proces required");
+        QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-            ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
+        ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
                           new AmericanMaxPathPricer(this->arguments_.payoff));
 
-            return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
+        return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
                 
                     this->timeGrid(),
                     earlyExercisePathPricer,
                     process->riskFreeRate().currentLink());
-        }
-    };
-
-}
+    }
+};
 
 
-void MCLongstaffSchwartzEngineTest::testAmericanOption() {
+BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
     // most of the example taken from the EquityOption.cpp
@@ -222,7 +222,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     }
 }
 
-void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
+BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
 
     // reference values taken from
     // "Monte Carlo Methods in Financial Engineering",
@@ -307,15 +307,6 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     }
 }
 
-test_suite* MCLongstaffSchwartzEngineTest::suite(SpeedLevel speed) {
-    auto* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
+BOOST_AUTO_TEST_SUITE_END()
 
-    suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanOption));
-    }
-
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

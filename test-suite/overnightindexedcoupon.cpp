@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "overnightindexedcoupon.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -28,53 +28,53 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace overnight_indexed_coupon_tests {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct CommonVars {
-        Date today;
-        Real notional = 10000.0;
-        ext::shared_ptr<OvernightIndex> sofr;
-        RelinkableHandle<YieldTermStructure> forecastCurve;
+BOOST_AUTO_TEST_SUITE(OvernightIndexedCouponTests)
 
-        ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
-            return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
-        }
+struct CommonVars {
+    Date today;
+    Real notional = 10000.0;
+    ext::shared_ptr<OvernightIndex> sofr;
+    RelinkableHandle<YieldTermStructure> forecastCurve;
 
-        CommonVars() {
-            today = Date(23, November, 2021);
+    ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
+        return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
+    }
 
-            Settings::instance().evaluationDate() = today;
+    CommonVars() {
+        today = Date(23, November, 2021);
 
-            sofr = ext::make_shared<Sofr>(forecastCurve);
+        Settings::instance().evaluationDate() = today;
 
-            std::vector<Date> pastDates = {
-                Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),
-                Date(21, October, 2021), Date(22, October, 2021), Date(25, October, 2021),
-                Date(26, October, 2021), Date(27, October, 2021), Date(28, October, 2021),
-                Date(29, October, 2021), Date(1, November, 2021), Date(2, November, 2021),
-                Date(3, November, 2021), Date(4, November, 2021), Date(5, November, 2021),
-                Date(8, November, 2021), Date(9, November, 2021), Date(10, November, 2021),
-                Date(12, November, 2021), Date(15, November, 2021), Date(16, November, 2021),
-                Date(17, November, 2021), Date(18, November, 2021), Date(19, November, 2021),
-                Date(22, November, 2021)
-            };
-            std::vector<Rate> pastRates = {
-                0.0008, 0.0009, 0.0008,
-                0.0010, 0.0012, 0.0011,
-                0.0013, 0.0012, 0.0012,
-                0.0008, 0.0009, 0.0010,
-                0.0011, 0.0014, 0.0013,
-                0.0011, 0.0009, 0.0008,
-                0.0007, 0.0008, 0.0008,
-                0.0007, 0.0009, 0.0010,
-                0.0009
-            };
+        sofr = ext::make_shared<Sofr>(forecastCurve);
 
-            sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
-        }
-    };
+        std::vector<Date> pastDates = {
+            Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),
+            Date(21, October, 2021), Date(22, October, 2021), Date(25, October, 2021),
+            Date(26, October, 2021), Date(27, October, 2021), Date(28, October, 2021),
+            Date(29, October, 2021), Date(1, November, 2021), Date(2, November, 2021),
+            Date(3, November, 2021), Date(4, November, 2021), Date(5, November, 2021),
+            Date(8, November, 2021), Date(9, November, 2021), Date(10, November, 2021),
+            Date(12, November, 2021), Date(15, November, 2021), Date(16, November, 2021),
+            Date(17, November, 2021), Date(18, November, 2021), Date(19, November, 2021),
+            Date(22, November, 2021)
+        };
+        std::vector<Rate> pastRates = {
+            0.0008, 0.0009, 0.0008,
+            0.0010, 0.0012, 0.0011,
+            0.0013, 0.0012, 0.0012,
+            0.0008, 0.0009, 0.0010,
+            0.0011, 0.0014, 0.0013,
+            0.0011, 0.0009, 0.0008,
+            0.0007, 0.0008, 0.0008,
+            0.0007, 0.0009, 0.0010,
+            0.0009
+        };
 
-}
+        sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+    }
+};
 
 #define CHECK_OIS_COUPON_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \
@@ -83,11 +83,9 @@ namespace overnight_indexed_coupon_tests {
                     << "\n    calculated: " << std::setprecision(12) << calculated \
                     << "\n    error:      " << std::setprecision(12) << std::fabs(calculated-expected)); \
     }
-        
-void OvernightIndexedCouponTest::testPastCouponRate() {
-    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon...");
 
-    using namespace overnight_indexed_coupon_tests;
+BOOST_AUTO_TEST_CASE(testPastCouponRate) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon...");
 
     CommonVars vars;
 
@@ -103,10 +101,8 @@ void OvernightIndexedCouponTest::testPastCouponRate() {
     CHECK_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAmount, 1e-8);
 }
 
-void OvernightIndexedCouponTest::testCurrentCouponRate() {
+BOOST_AUTO_TEST_CASE(testCurrentCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for current overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -132,10 +128,8 @@ void OvernightIndexedCouponTest::testCurrentCouponRate() {
     CHECK_OIS_COUPON_RESULT("coupon amount", currentCoupon->amount(), expectedAmount, 1e-8);
 }
 
-void OvernightIndexedCouponTest::testFutureCouponRate() {
+BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -152,10 +146,8 @@ void OvernightIndexedCouponTest::testFutureCouponRate() {
     CHECK_OIS_COUPON_RESULT("coupon amount", futureCoupon->amount(), expectedAmount, 1e-8);
 }
 
-void OvernightIndexedCouponTest::testRateWhenTodayIsHoliday() {
+BOOST_AUTO_TEST_CASE(testRateWhenTodayIsHoliday) {
     BOOST_TEST_MESSAGE("Testing rate for overnight-indexed coupon when today is a holiday...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -171,11 +163,9 @@ void OvernightIndexedCouponTest::testRateWhenTodayIsHoliday() {
     CHECK_OIS_COUPON_RESULT("coupon rate", coupon->rate(), expectedRate, 1e-12);
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->amount(), expectedAmount, 1e-8);
 }
-        
-void OvernightIndexedCouponTest::testAccruedAmountInThePast() {
-    BOOST_TEST_MESSAGE("Testing accrued amount in the past for overnight-indexed coupon...");
 
-    using namespace overnight_indexed_coupon_tests;
+BOOST_AUTO_TEST_CASE(testAccruedAmountInThePast) {
+    BOOST_TEST_MESSAGE("Testing accrued amount in the past for overnight-indexed coupon...");
 
     CommonVars vars;
 
@@ -186,10 +176,8 @@ void OvernightIndexedCouponTest::testAccruedAmountInThePast() {
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(Date(18, November, 2021)), expectedAmount, 1e-8);
 }
 
-void OvernightIndexedCouponTest::testAccruedAmountSpanningToday() {
+BOOST_AUTO_TEST_CASE(testAccruedAmountSpanningToday) {
     BOOST_TEST_MESSAGE("Testing accrued amount spanning today for current overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -211,10 +199,8 @@ void OvernightIndexedCouponTest::testAccruedAmountSpanningToday() {
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(Date(10, December, 2021)), expectedAmount, 1e-8);
 }
 
-void OvernightIndexedCouponTest::testAccruedAmountInTheFuture() {
+BOOST_AUTO_TEST_CASE(testAccruedAmountInTheFuture) {
     BOOST_TEST_MESSAGE("Testing accrued amount in the future for overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -231,10 +217,8 @@ void OvernightIndexedCouponTest::testAccruedAmountInTheFuture() {
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
 }
 
-void OvernightIndexedCouponTest::testAccruedAmountOnPastHoliday() {
+BOOST_AUTO_TEST_CASE(testAccruedAmountOnPastHoliday) {
     BOOST_TEST_MESSAGE("Testing accrued amount on a past holiday for overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -247,11 +231,8 @@ void OvernightIndexedCouponTest::testAccruedAmountOnPastHoliday() {
     Real expectedAmount = vars.notional * 0.000074724810;
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
 }
-
-void OvernightIndexedCouponTest::testAccruedAmountOnFutureHoliday() {
+BOOST_AUTO_TEST_CASE(testAccruedAmountOnFutureHoliday) {
     BOOST_TEST_MESSAGE("Testing accrued amount on a future holiday for overnight-indexed coupon...");
-
-    using namespace overnight_indexed_coupon_tests;
 
     CommonVars vars;
 
@@ -266,18 +247,7 @@ void OvernightIndexedCouponTest::testAccruedAmountOnFutureHoliday() {
     Real expectedAmount = vars.notional * 0.000100005012;
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
 }
-    
-test_suite* OvernightIndexedCouponTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Overnight-indexed coupon tests");
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testPastCouponRate));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testCurrentCouponRate));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testFutureCouponRate));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testRateWhenTodayIsHoliday));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountInThePast));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountSpanningToday));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountInTheFuture));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountOnPastHoliday));
-    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountOnFutureHoliday));
 
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE_END()

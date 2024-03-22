@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 32)
+set(QUANTLIB_VERSION_MINOR 34)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01320000")
+set(PACKAGE_VERSION_HEX   "0x01340000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -42,6 +42,7 @@ set(QL_INSTALL_CMAKEDIR "lib/cmake/${PACKAGE_NAME}" CACHE STRING
 option(QL_BUILD_BENCHMARK "Build benchmark" ON)
 option(QL_BUILD_EXAMPLES "Build examples" ON)
 option(QL_BUILD_TEST_SUITE "Build test suite" ON)
+option(QL_BUILD_FUZZ_TEST_SUITE "Build fuzz test suite" OFF) 
 option(QL_ENABLE_OPENMP "Detect and use OpenMP" OFF)
 option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner" OFF)
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
@@ -229,6 +230,9 @@ set(exec_prefix "\${prefix}")
 set(includedir "\${prefix}/include")
 set(libdir "\${exec_prefix}/lib")
 configure_file(quantlib-config.in quantlib-config @ONLY)
+configure_file(quantlib.pc.in quantlib.pc @ONLY)
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/quantlib-config TYPE BIN)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/quantlib.pc DESTINATION lib/pkgconfig)
 
 include(Platform)
 
@@ -267,6 +271,10 @@ if (QL_BUILD_EXAMPLES)
 endif()
 if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
     add_subdirectory(test-suite)
+endif()
+
+if ('${CMAKE_CXX_COMPILER_ID}' MATCHES 'Clang' AND  QL_BUILD_FUZZ_TEST_SUITE)
+    add_subdirectory(fuzz-test-suite)
 endif()
 
 # CPack support (make package, make package_source)

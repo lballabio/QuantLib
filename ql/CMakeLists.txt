@@ -173,6 +173,7 @@ set(QL_SOURCES
     experimental/math/fireflyalgorithm.cpp
     experimental/math/gaussiancopulapolicy.cpp
     experimental/math/gaussiannoncentralchisquaredpolynomial.cpp
+    experimental/math/laplaceinterpolation.cpp
     experimental/math/multidimintegrator.cpp
     experimental/math/multidimquadrature.cpp
     experimental/math/particleswarmoptimization.cpp
@@ -285,6 +286,7 @@ set(QL_SOURCES
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
     instruments/europeanoption.cpp
+    instruments/fixedvsfloatingswap.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
     instruments/forward.cpp
@@ -363,6 +365,7 @@ set(QL_SOURCES
     math/distributions/normaldistribution.cpp
     math/distributions/studenttdistribution.cpp
     math/errorfunction.cpp
+    math/expm1.cpp
     math/factorial.cpp
     math/incompletegamma.cpp
     math/integrals/discreteintegrals.cpp
@@ -412,6 +415,7 @@ set(QL_SOURCES
     math/polynomialmathfunction.cpp
     math/primenumbers.cpp
     math/quadratic.cpp
+    math/randomnumbers/burley2020sobolrsg.cpp
     math/randomnumbers/faurersg.cpp
     math/randomnumbers/haltonrsg.cpp
     math/randomnumbers/knuthuniformrng.cpp
@@ -424,6 +428,7 @@ set(QL_SOURCES
     math/randomnumbers/sobolbrownianbridgersg.cpp
     math/randomnumbers/sobolrsg.cpp
     math/randomnumbers/stochasticcollocationinvcdf.cpp
+    math/randomnumbers/xoshiro256starstaruniformrng.cpp
     math/richardsonextrapolation.cpp
     math/rounding.cpp
     math/sampledcurve.cpp
@@ -986,9 +991,6 @@ set(QL_HEADERS
     event.hpp
     exchangerate.hpp
     exercise.hpp
-    experimental/amortizingbonds/amortizingcmsratebond.hpp
-    experimental/amortizingbonds/amortizingfixedratebond.hpp
-    experimental/amortizingbonds/amortizingfloatingratebond.hpp
     experimental/asian/analytic_cont_geom_av_price_heston.hpp
     experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/arithmeticaverageois.hpp
@@ -1086,7 +1088,6 @@ set(QL_HEADERS
     experimental/credit/recursivelossmodel.hpp
     experimental/credit/riskyassetswap.hpp
     experimental/credit/riskyassetswapoption.hpp
-    experimental/credit/riskybond.hpp
     experimental/credit/saddlepointlossmodel.hpp
     experimental/credit/spotlosslatentmodel.hpp
     experimental/credit/spreadedhazardratecurve.hpp
@@ -1338,6 +1339,7 @@ set(QL_HEADERS
     instruments/equitytotalreturnswap.hpp
     instruments/europeanoption.hpp
     instruments/fixedratebondforward.hpp
+    instruments/fixedvsfloatingswap.hpp
     instruments/floatfloatswap.hpp
     instruments/floatfloatswaption.hpp
     instruments/forward.hpp
@@ -1425,6 +1427,7 @@ set(QL_HEADERS
     math/distributions/poissondistribution.hpp
     math/distributions/studenttdistribution.hpp
     math/errorfunction.hpp
+    math/expm1.hpp
     math/factorial.hpp
     math/fastfouriertransform.hpp
     math/functional.hpp
@@ -1432,6 +1435,7 @@ set(QL_HEADERS
     math/incompletegamma.hpp
     math/integrals/discreteintegrals.hpp
     math/integrals/exponentialintegrals.hpp
+    math/integrals/expsinhintegral.hpp
     math/integrals/filonintegral.hpp
     math/integrals/gaussianorthogonalpolynomial.hpp
     math/integrals/gaussianquadratures.hpp
@@ -1515,6 +1519,7 @@ set(QL_HEADERS
     math/primenumbers.hpp
     math/quadratic.hpp
     math/randomnumbers/boxmullergaussianrng.hpp
+    math/randomnumbers/burley2020sobolrsg.hpp
     math/randomnumbers/centrallimitgaussianrng.hpp
     math/randomnumbers/faurersg.hpp
     math/randomnumbers/haltonrsg.hpp
@@ -1534,6 +1539,7 @@ set(QL_HEADERS
     math/randomnumbers/sobolbrownianbridgersg.hpp
     math/randomnumbers/sobolrsg.hpp
     math/randomnumbers/stochasticcollocationinvcdf.hpp
+    math/randomnumbers/xoshiro256starstaruniformrng.hpp
     math/richardsonextrapolation.hpp
     math/rounding.hpp
     math/sampledcurve.hpp
@@ -2231,7 +2237,6 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/cashflows/all.hpp
     ${PROJECT_BINARY_DIR}/ql/currencies/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/all.hpp
-    ${PROJECT_BINARY_DIR}/ql/experimental/amortizingbonds/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/asian/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/averageois/all.hpp
     ${PROJECT_BINARY_DIR}/ql/experimental/barrieroption/all.hpp

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "callablebonds.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/treecallablebondengine.hpp>
@@ -40,61 +40,62 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-    struct Globals {
-        // global data
-        Date today, settlement;
-        Calendar calendar;
-        DayCounter dayCounter;
-        BusinessDayConvention rollingConvention;
+BOOST_AUTO_TEST_SUITE(CallableBondTests)
 
-        RelinkableHandle<YieldTermStructure> termStructure;
-        RelinkableHandle<ShortRateModel> model;
+struct Globals {
+    // global data
+    Date today, settlement;
+    Calendar calendar;
+    DayCounter dayCounter;
+    BusinessDayConvention rollingConvention;
 
-        Date issueDate() const {
-            // ensure that we're in mid-coupon
-            return calendar.adjust(today - 100*Days);
-        }
+    RelinkableHandle<YieldTermStructure> termStructure;
+    RelinkableHandle<ShortRateModel> model;
 
-        Date maturityDate() const {
-            // ensure that we're in mid-coupon
-            return calendar.advance(issueDate(),10,Years);
-        }
+    Date issueDate() const {
+        // ensure that we're in mid-coupon
+        return calendar.adjust(today - 100*Days);
+    }
 
-        std::vector<Date> evenYears() const {
-            std::vector<Date> dates;
-            for (Size i=2; i<10; i+=2)
-                dates.push_back(calendar.advance(issueDate(),i,Years));
-            return dates;
-        }
+    Date maturityDate() const {
+        // ensure that we're in mid-coupon
+        return calendar.advance(issueDate(),10,Years);
+    }
 
-        std::vector<Date> oddYears() const {
-            std::vector<Date> dates;
-            for (Size i=1; i<10; i+=2)
-                dates.push_back(calendar.advance(issueDate(),i,Years));
-            return dates;
-        }
+    std::vector<Date> evenYears() const {
+        std::vector<Date> dates;
+        for (Size i=2; i<10; i+=2)
+            dates.push_back(calendar.advance(issueDate(),i,Years));
+        return dates;
+    }
 
-        template <class R>
-        ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
-            return ext::shared_ptr<YieldTermStructure>(
+    std::vector<Date> oddYears() const {
+        std::vector<Date> dates;
+        for (Size i=1; i<10; i+=2)
+            dates.push_back(calendar.advance(issueDate(),i,Years));
+        return dates;
+    }
+
+    template <class R>
+    ext::shared_ptr<YieldTermStructure> makeFlatCurve(const R& r) const {
+        return ext::shared_ptr<YieldTermStructure>(
                                   new FlatForward(settlement, r, dayCounter));
-        }
+    }
 
-        Globals() {
-            calendar = TARGET();
-            dayCounter = Actual365Fixed();
-            rollingConvention = ModifiedFollowing;
+    Globals() {
+        calendar = TARGET();
+        dayCounter = Actual365Fixed();
+        rollingConvention = ModifiedFollowing;
 
-            today = Settings::instance().evaluationDate();
-            settlement = calendar.advance(today,2,Days);
-        }
-    };
+        today = Settings::instance().evaluationDate();
+        settlement = calendar.advance(today,2,Days);
+    }
+};
 
-}
 
-void CallableBondTest::testInterplay() {
+BOOST_AUTO_TEST_CASE(testInterplay) {
 
     BOOST_TEST_MESSAGE("Testing interplay of callability and puttability for callable bonds...");
 
@@ -220,8 +221,7 @@ void CallableBondTest::testInterplay() {
             << "    difference:     " << bond.settlementValue()-expected);
 }
 
-
-void CallableBondTest::testConsistency() {
+BOOST_AUTO_TEST_CASE(testConsistency) {
 
     BOOST_TEST_MESSAGE("Testing consistency of callable bonds...");
 
@@ -297,8 +297,7 @@ void CallableBondTest::testConsistency() {
             << " (should be higher)");
 }
 
-
-void CallableBondTest::testObservability() {
+BOOST_AUTO_TEST_CASE(testObservability) {
 
     BOOST_TEST_MESSAGE("Testing observability of callable bonds...");
 
@@ -357,7 +356,7 @@ void CallableBondTest::testObservability() {
 
 }
 
-void CallableBondTest::testDegenerate() {
+BOOST_AUTO_TEST_CASE(testDegenerate) {
 
     BOOST_TEST_MESSAGE("Repricing bonds using degenerate callable bonds...");
 
@@ -470,7 +469,7 @@ void CallableBondTest::testDegenerate() {
             << "    expected:   " << couponBond.cleanPrice());
 }
 
-void CallableBondTest::testCached() {
+BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE("Testing callable-bond value against cached values...");
 
@@ -569,7 +568,7 @@ void CallableBondTest::testCached() {
 
 }
 
-void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
+BOOST_AUTO_TEST_CASE(testSnappingExerciseDate2ClosestCouponDate) {
 
     BOOST_TEST_MESSAGE("Testing snap of callability dates to the closest coupon date...");
 
@@ -671,8 +670,7 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     }
 }
 
-
-void CallableBondTest::testBlackEngine() {
+BOOST_AUTO_TEST_CASE(testBlackEngine) {
 
     BOOST_TEST_MESSAGE("Testing Black engine for European callable bonds...");
 
@@ -711,8 +709,7 @@ void CallableBondTest::testBlackEngine() {
             << "    difference:     " << calculated - expected);
 }
 
-
-void CallableBondTest::testImpliedVol() {
+BOOST_AUTO_TEST_CASE(testImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing implied-volatility calculation for callable bonds...");
 
@@ -781,33 +778,9 @@ void CallableBondTest::testImpliedVol() {
             << "    calculated price: " << bond.cleanPrice() << "\n"
             << "    expected:         " << targetPrice.amount() << "\n"
             << "    difference:       " << bond.cleanPrice() - targetPrice.amount());
-
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    Real targetNPV = 7850.0;
-    volatility = bond.impliedVolatility(targetNPV,
-                                        vars.termStructure,
-                                        1e-8,  // accuracy
-                                        200,   // max evaluations
-                                        1e-4,  // min vol
-                                        1.0);  // max vol
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
-
-    if (std::fabs(bond.NPV() - targetNPV) > 1.0e-4)
-        BOOST_ERROR(
-            "failed to reproduce target NPV with implied volatility:\n"
-            << std::setprecision(5)
-            << "    calculated NPV: " << bond.NPV() << "\n"
-            << "    expected:       " << targetNPV << "\n"
-            << "    difference:     " << bond.NPV() - targetNPV);
 }
 
-void CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule() {
+BOOST_AUTO_TEST_CASE(testCallableFixedRateBondWithArbitrarySchedule) {
     BOOST_TEST_MESSAGE("Testing callable fixed-rate bond with arbitrary schedule...");
 
     Globals vars;
@@ -848,17 +821,6 @@ void CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule() {
     BOOST_CHECK_NO_THROW(callableBond.cleanPrice());
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* CallableBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Callable-bond tests");
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testInterplay));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testDegenerate));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCached));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testBlackEngine));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testImpliedVol));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCallableFixedRateBondWithArbitrarySchedule));
-    return suite;
-}
+BOOST_AUTO_TEST_SUITE_END()

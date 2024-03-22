@@ -543,10 +543,6 @@
     <ClInclude Include="ql\currencies\exchangeratemanager.hpp" />
     <ClInclude Include="ql\currencies\oceania.hpp" />
     <ClInclude Include="ql\experimental\all.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\all.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingcmsratebond.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfixedratebond.hpp" />
-    <ClInclude Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\experimental\asian\all.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp" />
@@ -653,7 +649,6 @@
     <ClInclude Include="ql\experimental\credit\recursivelossmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\riskyassetswap.hpp" />
     <ClInclude Include="ql\experimental\credit\riskyassetswapoption.hpp" />
-    <ClInclude Include="ql\experimental\credit\riskybond.hpp" />
     <ClInclude Include="ql\experimental\credit\saddlepointlossmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spotlosslatentmodel.hpp" />
     <ClInclude Include="ql\experimental\credit\spreadedhazardratecurve.hpp" />
@@ -923,6 +918,7 @@
     <ClInclude Include="ql\instruments\equitytotalreturnswap.hpp" />
     <ClInclude Include="ql\instruments\europeanoption.hpp" />
     <ClInclude Include="ql\instruments\fixedratebondforward.hpp" />
+    <ClInclude Include="ql\instruments\fixedvsfloatingswap.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswap.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswaption.hpp" />
     <ClInclude Include="ql\instruments\forward.hpp" />
@@ -1014,6 +1010,7 @@
     <ClInclude Include="ql\math\distributions\poissondistribution.hpp" />
     <ClInclude Include="ql\math\distributions\studenttdistribution.hpp" />
     <ClInclude Include="ql\math\errorfunction.hpp" />
+    <ClInclude Include="ql\math\expm1.hpp" />
     <ClInclude Include="ql\math\factorial.hpp" />
     <ClInclude Include="ql\math\fastfouriertransform.hpp" />
     <ClInclude Include="ql\math\functional.hpp" />
@@ -1022,6 +1019,7 @@
     <ClInclude Include="ql\math\integrals\all.hpp" />
     <ClInclude Include="ql\math\integrals\discreteintegrals.hpp" />
     <ClInclude Include="ql\math\integrals\exponentialintegrals.hpp" />
+    <ClInclude Include="ql\math\integrals\expsinhintegral.hpp" />
     <ClInclude Include="ql\math\integrals\filonintegral.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianorthogonalpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\gaussianquadratures.hpp" />
@@ -1110,6 +1108,7 @@
     <ClInclude Include="ql\math\quadratic.hpp" />
     <ClInclude Include="ql\math\randomnumbers\all.hpp" />
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\burley2020sobolrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\faurersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\haltonrsg.hpp" />
@@ -1129,6 +1128,7 @@
     <ClInclude Include="ql\math\randomnumbers\sobolbrownianbridgersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.hpp" />
     <ClInclude Include="ql\math\richardsonextrapolation.hpp" />
     <ClInclude Include="ql\math\rounding.hpp" />
     <ClInclude Include="ql\math\sampledcurve.hpp" />
@@ -2073,6 +2073,7 @@
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp" />
+    <ClCompile Include="ql\experimental\math\laplaceinterpolation.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp" />
@@ -2183,6 +2184,7 @@
     <ClCompile Include="ql\instruments\doublebarriertype.cpp" />
     <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp" />
     <ClCompile Include="ql\instruments\europeanoption.cpp" />
+    <ClCompile Include="ql\instruments\fixedvsfloatingswap.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswap.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswaption.cpp" />
     <ClCompile Include="ql\instruments\forward.cpp" />
@@ -2260,6 +2262,7 @@
     <ClCompile Include="ql\math\distributions\normaldistribution.cpp" />
     <ClCompile Include="ql\math\distributions\studenttdistribution.cpp" />
     <ClCompile Include="ql\math\errorfunction.cpp" />
+    <ClCompile Include="ql\math\expm1.cpp" />
     <ClCompile Include="ql\math\factorial.cpp" />
     <ClCompile Include="ql\math\incompletegamma.cpp" />
     <ClCompile Include="ql\math\integrals\discreteintegrals.cpp" />
@@ -2309,6 +2312,7 @@
     <ClCompile Include="ql\math\polynomialmathfunction.cpp" />
     <ClCompile Include="ql\math\primenumbers.cpp" />
     <ClCompile Include="ql\math\quadratic.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\burley2020sobolrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\faurersg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\haltonrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\knuthuniformrng.cpp" />
@@ -2321,6 +2325,7 @@
     <ClCompile Include="ql\math\randomnumbers\sobolbrownianbridgersg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\sobolrsg.cpp" />
     <ClCompile Include="ql\math\randomnumbers\stochasticcollocationinvcdf.cpp" />
+    <ClCompile Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.cpp" />
     <ClCompile Include="ql\math\richardsonextrapolation.cpp" />
     <ClCompile Include="ql\math\rounding.cpp" />
     <ClCompile Include="ql\math\sampledcurve.cpp" />

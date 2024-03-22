@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	boxmullergaussianrng.hpp \
+	burley2020sobolrsg.hpp \
 	centrallimitgaussianrng.hpp \
 	faurersg.hpp \
 	haltonrsg.hpp \
@@ -23,11 +24,13 @@ this_include_HEADERS = \
 	seedgenerator.hpp \
 	sobolbrownianbridgersg.hpp \
 	sobolrsg.hpp \
-	stochasticcollocationinvcdf.hpp
+	stochasticcollocationinvcdf.hpp \
+	xoshiro256starstaruniformrng.hpp
 
 cpp_files = \
-    faurersg.cpp \
-    haltonrsg.cpp \
+	faurersg.cpp \
+	haltonrsg.cpp \
+	burley2020sobolrsg.cpp \
 	knuthuniformrng.cpp \
 	latticersg.cpp \
 	latticerules.cpp \
@@ -37,7 +40,8 @@ cpp_files = \
 	seedgenerator.cpp \
 	sobolbrownianbridgersg.cpp \
 	sobolrsg.cpp \
-	stochasticcollocationinvcdf.cpp
+	stochasticcollocationinvcdf.cpp \
+	xoshiro256starstaruniformrng.cpp
 
 if UNITY_BUILD
 

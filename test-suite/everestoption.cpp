@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "everestoption.hpp"
+#include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/mceverestengine.hpp>
@@ -28,7 +28,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void EverestOptionTest::testCached() {
+BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
+
+BOOST_AUTO_TEST_SUITE(EverestOptionTests)
+
+BOOST_AUTO_TEST_CASE(testCached) {
 
     BOOST_TEST_MESSAGE("Testing Everest option against cached values...");
 
@@ -129,10 +133,6 @@ void EverestOptionTest::testCached() {
                    << "    expected:         " << tolerance);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 
-test_suite* EverestOptionTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Everest-option tests");
-    suite->add(QUANTLIB_TEST_CASE(&EverestOptionTest::testCached));
-    return suite;
-}
-
+BOOST_AUTO_TEST_SUITE_END()

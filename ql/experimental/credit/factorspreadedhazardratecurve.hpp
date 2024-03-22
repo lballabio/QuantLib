@@ -35,7 +35,7 @@ namespace QuantLib {
               structure, i.e., any changes in the latter will be
               reflected in this structure as well.
 
-        \ingroup termstructures
+        \ingroup defaultprobabilitytermstructures
     */
     class FactorSpreadedHazardRateCurve : public HazardRateStructure {
       public:

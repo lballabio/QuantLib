@@ -104,7 +104,7 @@ namespace QuantLib {
     typedef boost::posix_time::time_duration::fractional_seconds_type
         Millisecond;
 
-    //! Millisecond number
+    //! Microsecond number
     /*! \ingroup datetime */
     typedef boost::posix_time::time_duration::fractional_seconds_type
         Microsecond;
