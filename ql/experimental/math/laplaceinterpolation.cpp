@@ -152,7 +152,7 @@ namespace QuantLib {
                             if (i != j)
                                 weight += corner_h[i];
                         }
-                        weight = dim.size() == 1 ? 1.0 : weight / sum_corner_h;
+                        weight = dim.size() == 1 ? Real(1.0) : Real(weight / sum_corner_h);
                         g(count, layout_->index(coord_j)) = -weight;
                     }
                     g(count, count) = 1.0;
