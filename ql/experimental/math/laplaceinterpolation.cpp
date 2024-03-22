@@ -143,7 +143,7 @@ namespace QuantLib {
                     // handling of the "corners", all second derivs are zero in the op
                     // this directly generalizes Numerical Recipes, 3rd ed, eq 3.8.6
                     Real sum_corner_h =
-                        std::accumulate(corner_h.begin(), corner_h.end(), 0.0, std::plus<Real>());
+                        std::accumulate(corner_h.begin(), corner_h.end(), Real(0.0), std::plus<Real>());
                     for (Size j = 0; j < dim.size(); ++j) {
                         std::vector<Size> coord_j(coord);
                         coord_j[j] = corner_neighbour_index[j];
@@ -152,7 +152,7 @@ namespace QuantLib {
                             if (i != j)
                                 weight += corner_h[i];
                         }
-                        weight = dim.size() == 1 ? 1.0 : weight / sum_corner_h;
+                        weight = dim.size() == 1 ? Real(1.0) : Real(weight / sum_corner_h);
                         g(count, layout_->index(coord_j)) = -weight;
                     }
                     g(count, count) = 1.0;
