@@ -44,7 +44,7 @@ namespace QuantLib {
         /*! Missing values y should be encoded as Null<Real>(). */
         LaplaceInterpolation(std::function<Real(const std::vector<Size>&)> y,
                              std::vector<std::vector<Real>> x,
-                             const Real relTol = 1E-6);
+                             Real relTol = 1E-6);
         Real operator()(const std::vector<Size>& coordinates) const;
 
       private:
