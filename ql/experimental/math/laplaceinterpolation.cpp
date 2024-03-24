@@ -61,9 +61,9 @@ namespace QuantLib {
         layout_ = ext::make_shared<FdmLinearOpLayout>(dim);
 
         std::vector<ext::shared_ptr<Fdm1dMesher>> meshers;
-        for (Size i = 0; i < x_.size(); ++i) {
-            if (x_[i].size() > 1)
-                meshers.push_back(ext::make_shared<Predefined1dMesher>(x_[i]));
+        for (auto & i : x_) {
+            if (i.size() > 1)
+                meshers.push_back(ext::make_shared<Predefined1dMesher>(i));
         }
 
         auto mesher = ext::make_shared<FdmMesherComposite>(layout_, meshers);
@@ -92,7 +92,8 @@ namespace QuantLib {
             Array preconditioner(const Array& r, Real s) const override { QL_FAIL("no impl"); }
             std::vector<SparseMatrix> toMatrixDecomp() const override {
                 std::vector<SparseMatrix> decomp;
-                for (auto const& m : map_)
+                decomp.reserve(map_.size());
+for (auto const& m : map_)
                     decomp.push_back(m.toMatrix());
                 return decomp;
             }
