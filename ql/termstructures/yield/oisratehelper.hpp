@@ -30,9 +30,37 @@
 #include <ql/optional.hpp>
 
 namespace QuantLib {
+    namespace detail {
+        class OISRateHelperBase : public SwapRateHelperBase {
+          public:
+            OISRateHelperBase(const Handle<Quote>& fixedRate,
+                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                              Handle<YieldTermStructure> discountingCurve = {},
+                              Pillar::Choice pillar = Pillar::LastRelevantDate,
+                              Date customPillarDate = Date());
+            //! \name RateHelper interface
+            //@{
+            Real impliedQuote() const override;
+            //@}
+            //! \name OISRateHelperBase inspectors
+            //@{
+            // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+            ext::shared_ptr<OvernightIndexedSwap> swap() const {
+                return ext::static_pointer_cast<OvernightIndexedSwap>(swap_);
+            }
+            //@}
+          protected:
+            ext::shared_ptr<OvernightIndex> overnightIndex() const {
+                return ext::static_pointer_cast<OvernightIndex>(iborIndex_);
+            }
+        };
+    }
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
-    class OISRateHelper : public RelativeDateRateHelper {
+    class OISRateHelper : public RelativeDateBootstrapHelper<YieldTermStructure,
+                                                             detail::OISRateHelperBase> {
+        typedef RelativeDateBootstrapHelper<YieldTermStructure, detail::OISRateHelperBase>
+            base_type;
       public:
         OISRateHelper(Natural settlementDays,
                       const Period& tenor, // swap maturity
@@ -53,35 +81,16 @@ namespace QuantLib {
                       ext::optional<bool> endOfMonth = ext::nullopt,
                       ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                       Calendar fixedCalendar = Calendar());
-        //! \name RateHelper interface
-        //@{
-        Real impliedQuote() const override;
-        void setTermStructure(YieldTermStructure*) override;
-        //@}
-        //! \name inspectors
-        //@{
-        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
-        ext::shared_ptr<OvernightIndexedSwap> swap() const { return swap_; }
-        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
     protected:
       void initializeDates() override;
-      Pillar::Choice pillarChoice_;
 
       Natural settlementDays_;
       Period tenor_;
-      ext::shared_ptr<OvernightIndex> overnightIndex_;
-
-      ext::shared_ptr<OvernightIndexedSwap> swap_;
-      RelinkableHandle<YieldTermStructure> termStructureHandle_;
-
-      Handle<YieldTermStructure> discountHandle_;
       bool telescopicValueDates_;
-      RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
-
       Integer paymentLag_;
       BusinessDayConvention paymentConvention_;
       Frequency paymentFrequency_;
@@ -95,7 +104,8 @@ namespace QuantLib {
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
-    class DatedOISRateHelper : public RateHelper {
+    class DatedOISRateHelper : public detail::OISRateHelperBase {
+        typedef detail::OISRateHelperBase base_type;
       public:
         DatedOISRateHelper(const Date& startDate,
                            const Date& endDate,
@@ -113,24 +123,13 @@ namespace QuantLib {
                            Spread overnightSpread = 0.0,
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                           const Calendar& fixedCalendar = Calendar());
-        //! \name RateHelper interface
-        //@{
-        Real impliedQuote() const override;
-        void setTermStructure(YieldTermStructure*) override;
-        //@}
+                           const Calendar& fixedCalendar = Calendar(),
+                           Pillar::Choice pillar = Pillar::LastRelevantDate,
+                           Date customPillarDate = Date());
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-      protected:
-        ext::shared_ptr<OvernightIndexedSwap> swap_;
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
-
-        Handle<YieldTermStructure> discountHandle_;
-        bool telescopicValueDates_;
-        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
-        RateAveraging::Type averagingMethod_;
     };
 
 }

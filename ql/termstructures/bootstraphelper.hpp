@@ -125,11 +125,11 @@ namespace QuantLib {
     /*! Derived classes must takes care of rebuilding the date schedule when
         the global evaluation date changes
     */
-    template <class TS>
-    class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {
+    template <class TS, class Base = BootstrapHelper<TS>>
+    class RelativeDateBootstrapHelper : public Base {
       public:
-        explicit RelativeDateBootstrapHelper(const Handle<Quote>& quote);
-        explicit RelativeDateBootstrapHelper(Real quote);
+        template <class... Args>
+        explicit RelativeDateBootstrapHelper(Args&&... args);
         //! \name Observer interface
         //@{
         void update() override {
@@ -137,7 +137,7 @@ namespace QuantLib {
                 evaluationDate_ = Settings::instance().evaluationDate();
                 initializeDates();
             }
-            BootstrapHelper<TS>::update();
+            Base::update();
         }
         //@}
       protected:
@@ -210,17 +210,10 @@ namespace QuantLib {
             QL_FAIL("not a bootstrap-helper visitor");
     }
 
-    template <class TS>
-    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
-                                                    const Handle<Quote>& quote)
-    : BootstrapHelper<TS>(quote) {
-        this->registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
-    }
-
-    template <class TS>
-    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(Real quote)
-    : BootstrapHelper<TS>(quote) {
+    template <class TS, class Base>
+    template <class... Args>
+    RelativeDateBootstrapHelper<TS, Base>::RelativeDateBootstrapHelper(Args&&... args)
+    : Base(std::forward<Args>(args)...) {
         this->registerWith(Settings::instance().evaluationDate());
         evaluationDate_ = Settings::instance().evaluationDate();
     }

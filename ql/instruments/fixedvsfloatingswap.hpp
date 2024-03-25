@@ -90,6 +90,7 @@ namespace QuantLib {
 
         const Leg& fixedLeg() const;
         const Leg& floatingLeg() const;
+        virtual Date latestRelevantDate() const = 0;
         //@}
 
         //! \name Results

@@ -76,6 +76,7 @@ namespace QuantLib {
                     ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
                     ext::optional<bool> useIndexedCoupons = ext::nullopt);
 
+        Date latestRelevantDate() const override;
       private:
         void setupFloatingArguments(arguments* args) const override;
     };
