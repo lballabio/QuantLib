@@ -1,0 +1,66 @@
+name: Windows build with non-default configuration
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+jobs:
+  msbuild:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        vsversion: [2019, 2022]
+        platform: [x64, Win32]
+        unity: [unity, singles]
+        include:
+          - vsversion: 2019
+            os: windows-2019
+            toolset: "14.2"
+            boost_version: 77
+          - vsversion: 2022
+            os: windows-2022
+            toolset: "14.3"
+            boost_version: 84
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup MSVC++ environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+        toolset: ${{ matrix.toolset }}
+        vsversion: ${{ matrix.vsversion }}
+    - name: Setup Boost
+      run: |
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.${{ matrix.boost_version }}.0/source/boost_1_${{ matrix.boost_version }}_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_${{ matrix.boost_version }}_0" -NewName "boost"
+    - name: Setup local properties
+      shell: cmd
+      run: |
+        COPY .ci\VS${{ matrix.vsversion }}.alt.props .\Build.props
+        COPY .ci\userconfig${{ matrix.vsversion }}.alt.hpp .\ql\userconfig.hpp
+    - name: Setup unity build
+      if: ${{ matrix.unity == 'unity' }}
+      shell: cmd
+      run: |
+        COPY .ci\Unity.props .\Directory.Build.props
+    - name: Setup MSVC++ environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+        toolset: ${{ matrix.toolset }}
+        vsversion: ${{ matrix.vsversion }}
+    - name: Build
+      run: |
+        msbuild ./QuantLib.sln /verbosity:normal /property:Configuration=Release /property:Platform=${{ matrix.platform }}
+    - name: Test
+      run: |
+        .\test-suite\bin\QuantLib-test-suite*.exe --log_level=message
+    - name: Run examples
+      run: |
+        foreach ($file in Get-ChildItem -Path .\Examples\*.exe -Recurse)
+        {
+          & $file.FullName
+          if (!$?) { Exit $LASTEXITCODE }
+        }
