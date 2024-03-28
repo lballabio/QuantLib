@@ -22,7 +22,7 @@ jobs:
             toolset: "14.3"
             boost_version: 84
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup MSVC++ environment
       uses: ilammy/msvc-dev-cmd@v1
       with:
