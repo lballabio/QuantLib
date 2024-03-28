@@ -59,7 +59,7 @@ namespace QuantLib {
         std::vector<Real> annuityWeights_;
 
       public:
-        SwapCashFlows(const ext::shared_ptr<VanillaSwap>& swap,
+        SwapCashFlows(const ext::shared_ptr<FixedVsFloatingSwap>& swap,
                       const Handle<YieldTermStructure>& discountCurve,
                       bool contTenorSpread = true);
         SwapCashFlows() = default;

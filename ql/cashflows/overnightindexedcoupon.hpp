@@ -71,6 +71,8 @@ namespace QuantLib {
         const std::vector<Rate>& indexFixings() const;
         //! value dates for the rates to be compounded
         const std::vector<Date>& valueDates() const { return valueDates_; }
+        //! averaging method
+        const RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -87,6 +89,7 @@ namespace QuantLib {
         mutable std::vector<Rate> fixings_;
         Size n_;
         std::vector<Time> dt_;
+        RateAveraging::Type averagingMethod_;
 
         Rate averageRate(const Date& date) const;
     };
