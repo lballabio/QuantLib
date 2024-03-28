@@ -59,6 +59,12 @@ namespace QuantLib {
     //! %Swaption class
     /*! \ingroup instruments
 
+        \warning it's possible to pass an overnight-indexed swap to
+                 the constructor, but the only engine to fully support
+                 it is BlackSwaptionEngine; other engines will treat
+                 it as a vanilla swap.  This is at best a decent
+                 proxy, at worst simply wrong.  Use with caution.
+
         \test
         - the correctness of the returned value is tested by checking
           that the price of a payer (resp. receiver) swaption

@@ -32,8 +32,13 @@
 
 namespace QuantLib {
 
-    //! calibration helper for ATM swaption
-
+    //! calibration helper for interest-rate swaptions
+    /*! \warning passing an overnight index to the constructor will
+                 result in an overnight-indexed swap being built, but
+                 model-based engines will treat it as a vanilla swap.
+                 This is at best a decent proxy, at worst simply wrong.
+                 Use with caution.
+    */
     class SwaptionHelper : public BlackCalibrationHelper {
       public:
         SwaptionHelper(const Period& maturity,
