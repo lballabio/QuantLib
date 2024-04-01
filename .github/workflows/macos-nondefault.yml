@@ -9,28 +9,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [macos-12, macos-13]
+        classes: [boost, std]
         include:
-          - os: [macos-11]
-            shortname: default-11
-          - os: [macos-11]
-            shortname: stdclasses-11
-            cxxflags: "-std=c++17"
-            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional --enable-std-any
-          - os: [macos-12]
-            shortname: default-12
-          - os: [macos-12]
-            shortname: stdclasses-12
-            cxxflags: "-std=c++17"
-            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional --enable-std-any
-          - os: [macos-13]
-            shortname: default-13
-          - os: [macos-13]
-            shortname: stdclasses-13
+          - classes: std
             cxxflags: "-std=c++17"
             configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional --enable-std-any
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install automake boost
     - name: Compiler version

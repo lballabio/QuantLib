@@ -73,7 +73,7 @@ int main(int, char* []) {
         // unknown what fincad is using. this may affect accrued calculation
         Integer bondSettlementDays = 0;
         BusinessDayConvention bondBusinessDayConvention = Unadjusted;
-        Real bondCleanPrice = 89.97693786;
+        Bond::Price bondCleanPrice(89.97693786, Bond::Price::Clean);
         Real bondRedemption = 100.0;
         Real faceAmount = 100.0;
 

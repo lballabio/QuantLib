@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(testConventions) {
         //Unadjusted
         SingleCase(SouthAfrica(), Unadjusted, Date(3,February,2015), Period(1,Months), false, Date(3,March,2015)),
         SingleCase(SouthAfrica(), Unadjusted, Date(3,February,2015), Period(4,Days), false, Date(9,February,2015)),
-        SingleCase(SouthAfrica(), Unadjusted, Date(31,January,2015), Period(1,Months), true, Date(27,February,2015)),
+        SingleCase(SouthAfrica(), Unadjusted, Date(31,January,2015), Period(1,Months), true, Date(28,February,2015)),
         SingleCase(SouthAfrica(), Unadjusted, Date(31,January,2015), Period(1,Months), false, Date(28,February,2015)),
 
         //HalfMonthModifiedFollowing

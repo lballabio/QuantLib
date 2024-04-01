@@ -6,26 +6,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: [macos-11]
-            shortname: default-11
-          - os: [macos-12]
-            shortname: default-12
-          - os: [macos-13]
-            shortname: default-13
+        os: [macos-12, macos-13]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install automake boost ccache
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: macos-ci-build-${{ matrix.shortname }}-${{ github.ref }}
+        key: macos-ci-build-${{ matrix.os }}-${{ github.ref }}
         restore-keys: |
-          macos-ci-build-${{ matrix.shortname }}-${{ github.ref }}
-          macos-ci-build-${{ matrix.shortname }}-refs/heads/master
-          macos-ci-build-${{ matrix.shortname }}-
+          macos-ci-build-${{ matrix.os }}-${{ github.ref }}
+          macos-ci-build-${{ matrix.os }}-refs/heads/master
+          macos-ci-build-${{ matrix.os }}-
     - name: Compiler version
       run: |
         clang --version

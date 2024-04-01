@@ -25,6 +25,7 @@
 #include <ql/experimental/basismodels/tenoroptionletvts.hpp>
 #include <ql/experimental/basismodels/tenorswaptionvts.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>

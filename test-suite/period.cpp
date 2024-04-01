@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(testConvertToYears) {
     BOOST_TEST(years(Period(1, Years)) == 1);
     BOOST_TEST(years(Period(5, Years)) == 5);
 
-    const auto tol = boost::test_tools::tolerance(1e-15);
+    const auto tol = boost::test_tools::tolerance<Real>(1e-15);
     BOOST_TEST(years(Period(1, Months)) == 1.0/12.0, tol);
     BOOST_TEST(years(Period(8, Months)) == 8.0/12.0, tol);
     BOOST_TEST(years(Period(12, Months)) == 1);
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(testConvertToWeeks) {
     BOOST_TEST(weeks(Period(1, Weeks)) == 1);
     BOOST_TEST(weeks(Period(5, Weeks)) == 5);
 
-    const auto tol = boost::test_tools::tolerance(1e-15);
+    const auto tol = boost::test_tools::tolerance<Real>(1e-15);
     BOOST_TEST(weeks(Period(1, Days)) == 1.0/7.0, tol);
     BOOST_TEST(weeks(Period(3, Days)) == 3.0/7.0, tol);
     BOOST_TEST(weeks(Period(11, Days)) == 11.0/7.0, tol);

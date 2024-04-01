@@ -72,7 +72,10 @@ namespace QuantLib {
             Real npv, bps;
             std::tie(npv, bps) = CashFlows::npvbps(iborLeg, discountRef, includeSettleDtFlows, refDt, refDt);
             // Include NPV of the notional exchange at start and maturity.
-            npv += discountRef.discount(iborLeg.back()->date()) - 1.0;
+            // on the settlement date
+            npv += (-1.0) * discountRef.discount(CashFlows::startDate(iborLeg));
+            // on maturity date  
+            npv += discountRef.discount(CashFlows::maturityDate(iborLeg));
             bps /= basisPoint;
             return { npv, bps };
         }

@@ -32,6 +32,7 @@ cpp_files = \
     fireflyalgorithm.cpp \
     gaussiancopulapolicy.cpp \
     gaussiannoncentralchisquaredpolynomial.cpp \
+    laplaceinterpolation.cpp \
     multidimintegrator.cpp \
     multidimquadrature.cpp \
     particleswarmoptimization.cpp \

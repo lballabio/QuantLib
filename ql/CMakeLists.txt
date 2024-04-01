@@ -173,6 +173,7 @@ set(QL_SOURCES
     experimental/math/fireflyalgorithm.cpp
     experimental/math/gaussiancopulapolicy.cpp
     experimental/math/gaussiannoncentralchisquaredpolynomial.cpp
+    experimental/math/laplaceinterpolation.cpp
     experimental/math/multidimintegrator.cpp
     experimental/math/multidimquadrature.cpp
     experimental/math/particleswarmoptimization.cpp

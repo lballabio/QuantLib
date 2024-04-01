@@ -6,10 +6,10 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1440997.svg)](https://doi.org/10.5281/zenodo.1440997)
 [![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/lballabio/QuantLib/blob/master/CONTRIBUTING.md)
 
-[![Linux build status](https://github.com/lballabio/QuantLib/workflows/Linux%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22Linux+build%22)
-[![Windows build status](https://ci.appveyor.com/api/projects/status/bmpiucu74eldfkm0/branch/master?svg=true)](https://ci.appveyor.com/project/lballabio/quantlib/branch/master)
-[![Mac OS build status](https://github.com/lballabio/QuantLib/workflows/Mac%20OS%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22Mac+OS+build%22)
-[![CMake build status](https://github.com/lballabio/QuantLib/workflows/CMake%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22CMake+build%22)
+[![Linux build status](https://github.com/lballabio/QuantLib/actions/workflows/linux.yml/badge.svg)](https://github.com/lballabio/QuantLib/actions/workflows/linux.yml)
+[![Windows build status](https://github.com/lballabio/QuantLib/actions/workflows/msvc.yml/badge.svg)](https://github.com/lballabio/QuantLib/actions/workflows/msvc.yml)
+[![Mac OS build status](https://github.com/lballabio/QuantLib/actions/workflows/macos.yml/badge.svg)](https://github.com/lballabio/QuantLib/actions/workflows/macos.yml)
+[![CMake build status](https://github.com/lballabio/QuantLib/actions/workflows/cmake.yml/badge.svg)](https://github.com/lballabio/QuantLib/actions/workflows/cmake.yml)
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b4bc1058db994f24aa931b119a885eea)](https://www.codacy.com/gh/lballabio/QuantLib/dashboard)
 [![Coverage Status](https://coveralls.io/repos/github/lballabio/QuantLib/badge.svg?branch=master)](https://coveralls.io/github/lballabio/QuantLib?branch=master)
