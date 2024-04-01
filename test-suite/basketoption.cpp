@@ -26,10 +26,12 @@
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/basket/bjerksundstenslandspreadengine.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
+#include <ql/pricingengines/basket/denglizhouspreadengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -1095,7 +1097,7 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandSpreadEngine) {
     callOption.setPricingEngine(engine);
     const Real callNPV = callOption.NPV();
 
-    // reference value was calculated with python packages pyfeng 0.2.6
+    // reference value was calculated with python packages PyFENG 0.2.6
     const Real expectedPutNPV = 17.850835947276213;
 
     BasketOption putOption(ext::make_shared<SpreadBasketPayoff>(
@@ -1305,11 +1307,224 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
                    << "\n    stdev     : " << statOs.standardDeviation()
                    << "\n    tolerance : " << 0.02);
     }
-    std::cout << std::setprecision(18)
-            << statKirk.standardDeviation() << " "
-            << statBS2014.standardDeviation() << " "
-            << statOs.standardDeviation() << std::endl;
 }
+
+BOOST_AUTO_TEST_CASE(testNdimPDEvs2dimPDE) {
+    BOOST_TEST_MESSAGE("Testing n-dimensional PDE engine vs two dimensional engine...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(25, February, 2024);
+    const Date maturity = today + Period(6, Months);
+
+    const ext::shared_ptr<SimpleQuote> s1 = ext::make_shared<SimpleQuote>(110);
+    const ext::shared_ptr<SimpleQuote> s2 = ext::make_shared<SimpleQuote>(100);
+
+    const Handle<YieldTermStructure> rTS
+        = Handle<YieldTermStructure>(flatRate(today, 0.1, dc));
+
+    const ext::shared_ptr<SimpleQuote> v1 = ext::make_shared<SimpleQuote>(0.5);
+    const ext::shared_ptr<SimpleQuote> v2 = ext::make_shared<SimpleQuote>(0.3);
+
+    const ext::shared_ptr<BlackProcess> p1 =
+        ext::make_shared<BlackProcess>(
+            Handle<Quote>(s1), rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, v1, dc))
+    );
+
+    const Handle<YieldTermStructure> qTS
+        = Handle<YieldTermStructure>(flatRate(today, 0.075, dc));
+
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> p2 =
+        ext::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(s2), qTS, rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, v2, dc))
+    );
+
+    const Real rho = 0.75;
+
+    const ext::shared_ptr<PricingEngine> twoDimEngine
+        = ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho, 25, 25, 15);
+
+    const ext::shared_ptr<PricingEngine> nDimEngine
+        = ext::make_shared<FdndimBlackScholesVanillaEngine>(
+            std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> >({p1, p2}),
+            Matrix({{1, rho}, {rho, 1}}),
+            std::vector<Size>({25, 25}), 15
+        );
+
+    const Real tol = 1e-4;
+    for (const auto& exercise: std::vector<ext::shared_ptr<Exercise> >(
+            { ext::make_shared<EuropeanExercise>(maturity),
+              ext::make_shared<AmericanExercise>(today, maturity)})) {
+
+        for (Option::Type type: {Option::Call, Option::Put}) {
+            BasketOption option(
+                ext::make_shared<SpreadBasketPayoff>(
+                    ext::make_shared<PlainVanillaPayoff>(type, 5)
+                ),
+                exercise
+            );
+
+            option.setPricingEngine(twoDimEngine);
+            const Real sb2dNPV = option.NPV();
+
+            option.setPricingEngine(nDimEngine);
+            const Real sbndNPV = option.NPV();
+
+            if (std::abs(sb2dNPV - sbndNPV) > tol) {
+                BOOST_FAIL("failed to reproduce spread option prices"
+                    " with multidimensional PDE engine."
+                       << std::fixed << std::setprecision(5)
+                       << "\n    calculated: " << sbndNPV
+                       << "\n    expected:   " << sb2dNPV
+                       << "\n    diff:       " << std::abs(sb2dNPV - sbndNPV)
+                       << "\n    tolerance : " << tol);
+
+            }
+
+            BasketOption avgOption(
+                ext::make_shared<AverageBasketPayoff>(
+                    ext::make_shared<PlainVanillaPayoff>(type, 200), Array({1.5, 0.5})
+                ),
+                exercise
+            );
+            avgOption.setPricingEngine(twoDimEngine);
+            const Real avg2dNPV =  avgOption.NPV();
+
+            avgOption.setPricingEngine(nDimEngine);
+            const Real avgndNPV = avgOption.NPV();
+            std::cout << avg2dNPV << " " << avgndNPV << std::endl;
+
+            if (std::abs(avg2dNPV - avgndNPV) > tol) {
+                BOOST_FAIL("failed to reproduce average option prices"
+                    " with multidimensional PDE engine."
+                       << std::fixed << std::setprecision(5)
+                       << "\n    calculated: " << avgndNPV
+                       << "\n    expected:   " << avg2dNPV
+                       << "\n    diff:       " << std::abs(avg2dNPV - avgndNPV)
+                       << "\n    tolerance : " << tol);
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNdimPDEinDifferentDims) {
+    BOOST_TEST_MESSAGE("Testing n-dimensional PDE engine in different dimensions...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(25, February, 2024);
+    const Date maturity = today + Period(6, Months);
+
+    const std::vector<Real> underlyings({100, 50, 75, 120});
+    const std::vector<Real> volatilities({0.3, 0.2, 0.6, 0.4});
+
+    Real strike = 5.0;
+
+    const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
+        flatRate(today, 0.05, dc));
+    const ext::shared_ptr<Exercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    const std::vector<Real> expected = {7.38391, 9.84887, 19.96825, 30.87275};
+
+    std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+    for (Size d=1; d <= 4; ++d) {
+        processes.push_back(
+            ext::make_shared<BlackScholesProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d-1])),
+                rTS,
+                Handle<BlackVolTermStructure>(flatVol(today, volatilities[d-1], dc))
+            )
+        );
+
+        strike += underlyings[d-1];
+
+        Matrix rho(d, d);
+        for (Size i=0; i < d; ++i)
+            for (Size j=0; j < d; ++j)
+                rho(i, j) = std::exp(-0.5*std::abs(Real(i-j)));
+
+        BasketOption option(
+            ext::make_shared<AverageBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+                Array(d, 1.0)
+            ),
+            exercise
+        );
+
+        option.setPricingEngine(
+            ext::make_shared<FdndimBlackScholesVanillaEngine>(
+                processes, rho, std::vector<Size>(d, 20), 7
+            )
+        );
+
+        const Real calculated = option.NPV();
+        const Real diff = std::abs(calculated - expected[d-1]);
+        const Real tol = 0.047;
+
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce precalculated " << d << "-dim option price"
+                   << std::fixed << std::setprecision(5)
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected[d-1]
+                   << "\n    diff:       " << diff
+                   << "\n    tolerance : " << tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(25, March, 2024);
+    const Date maturity = today + Period(6, Months);
+
+    const std::vector<Real> underlyings({200, 50, 55, 110});
+    const std::vector<Real> volatilities({0.3, 0.2, 0.6, 0.4});
+    const std::vector<Real> q({0.04, 0.075, 0.05, 0.08});
+
+    const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
+        flatRate(today, 0.05, dc));
+    const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturity);
+
+    std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+    for (Size d=0; d < 4; ++d)
+        processes.push_back(
+            ext::make_shared<BlackScholesMertonProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d])),
+                Handle<YieldTermStructure>(flatRate(today, q[d], dc)), rTS,
+                Handle<BlackVolTermStructure>(flatVol(today, volatilities[d], dc))
+            )
+        );
+
+    Matrix rho(4, 4);
+    for (Size i=0; i < 4; ++i)
+        for (Size j=i; j < 4; ++j)
+            rho[i][j] = rho[j][i] =
+                std::exp(-0.5*std::abs(Real(i)-Real(j)) - ((i!=j) ? 0.02*(i+j): 0.0));
+
+    const Real strike = 5.0;
+
+    BasketOption option(
+        ext::make_shared<AverageBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+            Array({1.0, -1.0, -1.0, -1.0})
+        ),
+        exercise
+    );
+
+    option.setPricingEngine(
+        ext::make_shared<DengLiZhouSpreadEngine>(processes, rho)
+    );
+    std::cout << option.NPV() << std::endl;
+
+    option.setPricingEngine(
+        ext::make_shared<FdndimBlackScholesVanillaEngine>(
+            processes, rho, std::vector<Size>(4, 20), 10
+        )
+    );
+    std::cout << option.NPV() << std::endl;
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -447,6 +447,7 @@ set(QL_SOURCES
     methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.cpp
     methods/finitedifferences/meshers/uniformgridmesher.cpp
     methods/finitedifferences/operators/fdm2dblackscholesop.cpp
+    methods/finitedifferences/operators/fdmndimblackscholesop.cpp
     methods/finitedifferences/operators/fdmbatesop.cpp
     methods/finitedifferences/operators/fdmblackscholesfwdop.cpp
     methods/finitedifferences/operators/fdmblackscholesop.cpp
@@ -675,7 +676,9 @@ set(QL_SOURCES
     pricingengines/barrier/fdhestonrebateengine.cpp
     pricingengines/barrier/mcbarrierengine.cpp
     pricingengines/basket/bjerksundstenslandspreadengine.cpp
+    pricingengines/basket/denglizhouspreadengine.cpp
     pricingengines/basket/fd2dblackscholesvanillaengine.cpp
+    pricingengines/basket/fdndimblackscholesvanillaengine.cpp
     pricingengines/basket/kirkengine.cpp
     pricingengines/basket/mcamericanbasketengine.cpp
     pricingengines/basket/mceuropeanbasketengine.cpp
@@ -1592,6 +1595,7 @@ set(QL_HEADERS
     methods/finitedifferences/meshers/uniformgridmesher.hpp
     methods/finitedifferences/mixedscheme.hpp
     methods/finitedifferences/operators/fdm2dblackscholesop.hpp
+    methods/finitedifferences/operators/fdmndimblackscholesop.hpp
     methods/finitedifferences/operators/fdmbatesop.hpp
     methods/finitedifferences/operators/fdmblackscholesfwdop.hpp
     methods/finitedifferences/operators/fdmblackscholesop.hpp
@@ -1885,7 +1889,9 @@ set(QL_HEADERS
     pricingengines/barrier/fdhestonrebateengine.hpp
     pricingengines/barrier/mcbarrierengine.hpp
     pricingengines/basket/bjerksundstenslandspreadengine.hpp
+    pricingengines/basket/denglizhouspreadengine.hpp
     pricingengines/basket/fd2dblackscholesvanillaengine.hpp
+    pricingengines/basket/fdndimblackscholesvanillaengine.hpp    
     pricingengines/basket/kirkengine.hpp
     pricingengines/basket/mcamericanbasketengine.hpp
     pricingengines/basket/mceuropeanbasketengine.hpp

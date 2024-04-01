@@ -775,14 +775,19 @@ BOOST_AUTO_TEST_CASE(testSparseMatrixMemory) {
 
 }
 
-#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+#define QL_CHECK_CLOSE_MATRIX_TOL(actual, expected, tol)                    \
     BOOST_REQUIRE(actual.rows() == expected.rows() &&                       \
                   actual.columns() == expected.columns());                  \
     for (auto i = 0u; i < actual.rows(); i++) {                             \
         for (auto j = 0u; j < actual.columns(); j++) {                      \
-            QL_CHECK_CLOSE(actual(i, j), expected(i, j), 100 * QL_EPSILON); \
+            QL_CHECK_CLOSE(actual(i, j), expected(i, j), tol);              \
         }                                                                   \
     }                                                                       \
+
+
+#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+        QL_CHECK_CLOSE_MATRIX_TOL(actual, expected, 100 * QL_EPSILON)       \
+
 
 BOOST_AUTO_TEST_CASE(testOperators) {
 
@@ -841,6 +846,57 @@ BOOST_AUTO_TEST_CASE(testOperators) {
     QL_CHECK_CLOSE_MATRIX(lvalue_real_quotient, scalar_quotient);
     QL_CHECK_CLOSE_MATRIX(rvalue_real_quotient, scalar_quotient);
 }
+
+namespace MatrixTests {
+    Matrix createTestCorrelationMatrix(Size n) {
+        Matrix rho(n, n);
+        for (Size i=0; i < n; ++i)
+            for (Size j=i; j < n; ++j)
+                rho[i][j] = rho[j][i] =
+                    std::exp(-0.1*std::abs(Real(i)-Real(j)) - ((i!=j) ? 0.02*(i+j): 0.0));
+
+        return rho;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPrincipalMatrixSqrt) {
+    BOOST_TEST_MESSAGE("Testing principal matrix pseudo sqrt...");
+
+    std::vector<Real> dims = {1, 4, 10, 40};
+    for (auto n: dims) {
+        const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
+        const Matrix sqrtRho = pseudoSqrt(rho, SalvagingAlgorithm::Principal);
+
+        // matrix is symmetric
+        QL_CHECK_CLOSE_MATRIX_TOL(sqrtRho, transpose(sqrtRho), 1e3*QL_EPSILON);
+
+        // matrix is square root of original matrix
+        QL_CHECK_CLOSE_MATRIX_TOL((sqrtRho*sqrtRho), rho, 1e5*QL_EPSILON);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testCholeskySolverFor) {
+    BOOST_TEST_MESSAGE("Testing CholeskySolverFor...");
+
+    MersenneTwisterUniformRng rng(1234);
+
+    std::vector<Real> dims = {1, 4, 10, 25, 50};
+    for (auto n: dims) {
+
+        Array b(n);
+        for (Size i=0; i < n; ++i)
+            b[i] = rng.nextReal();
+
+        const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
+        const Array x = CholeskySolveFor(CholeskyDecomposition(rho), b);
+
+        const Array diff = Abs(rho*x - b);
+
+        BOOST_CHECK_SMALL(std::sqrt(DotProduct(diff, diff)), 20*std::sqrt(n)*QL_EPSILON);
+    }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

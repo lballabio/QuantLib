@@ -416,6 +416,33 @@ namespace QuantLib {
               result = CholeskyDecomposition(result, true);
             }
             break;
+          case SalvagingAlgorithm::Principal: {
+              QL_REQUIRE(jd.eigenvalues().back()>=-10*QL_EPSILON,
+                         "negative eigenvalue(s) ("
+                         << std::scientific << jd.eigenvalues().back()
+                         << ")");
+
+              Array sqrtEigenvalues(size);
+              std::transform(
+                  jd.eigenvalues().begin(), jd.eigenvalues().end(),
+                  sqrtEigenvalues.begin(),
+                  [](Real lambda) -> Real {
+                      return std::sqrt(std::max<Real>(lambda, 0.0));
+                  }
+              );
+
+              for (Size i=0; i < size; ++i)
+                  std::transform(
+                       sqrtEigenvalues.begin(), sqrtEigenvalues.end(),
+                       jd.eigenvectors().row_begin(i),
+                       diagonal.column_begin(i),
+                       std::multiplies<Real>()
+                   );
+
+              result = jd.eigenvectors()*diagonal;
+              result = 0.5*(result + transpose(result));
+            }
+            break;
           default:
             QL_FAIL("unknown salvaging algorithm");
         }

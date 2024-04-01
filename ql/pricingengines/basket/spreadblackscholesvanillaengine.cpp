@@ -41,12 +41,9 @@ namespace QuantLib {
     }
 
     void SpreadBlackScholesVanillaEngine::calculate() const {
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not a European option");
-
         const ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
-        QL_REQUIRE(exercise, "not a European exercise");
+        QL_REQUIRE(exercise, "not an European exercise");
 
         const ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
             ext::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff);
