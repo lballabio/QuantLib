@@ -146,6 +146,8 @@ namespace QuantLib {
         // wouldn't recalculate.  To avoid this, we override the
         // default behavior of the underlying swap.
         swap_->alwaysForwardNotifications();
+
+        vanilla_ = ext::dynamic_pointer_cast<VanillaSwap>(swap_);
     }
 
     void Swaption::deepUpdate() {

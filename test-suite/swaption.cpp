@@ -510,7 +510,7 @@ BOOST_AUTO_TEST_CASE(testVega) {
                                            << "\n  strike:          " << io::rate(strike)
                                            << "\n  settlement:      " << types[h]
                                            << "\n  nominal:         "
-                                           << swaption->underlyingSwap()->nominal()
+                                           << swaption->underlying()->nominal()
                                            << "\n  npv:             " << swaptionNPV
                                            << "\n  calculated vega: " << analyticalVegaPerPoint
                                            << "\n  expected vega:   " << numericalVegaPerPoint
@@ -1107,7 +1107,7 @@ void checkSwaptionDelta(bool useBachelierVol)
                                 << "\n  swap tenor:       " << length << "\n  strike:           "
                                 << strike << "\n  settlement:       " << types[h]
                                 << "\n  method:           " << methods[h]
-                                << "\n  nominal:          " << swaption->underlyingSwap()->nominal()
+                                << "\n  nominal:          " << swaption->underlying()->nominal()
                                 << "\n  npv:              " << value << "\n  calculated delta: "
                                 << delta << "\n  expected delta:   " << approxDelta);
                     }
