@@ -210,8 +210,8 @@ struct CommonVars {
                                "\nactual option date: " << exerciseDate <<
                                "\n  exp. option date: " << vol->optionDates()[i]);
 
-                Date start = swaption.underlyingSwap()->startDate();
-                Date end = swaption.underlyingSwap()->maturityDate();
+                Date start = swaption.underlying()->startDate();
+                Date end = swaption.underlying()->maturityDate();
                 Time swapLength2 = vol->swapLength(start, end);
                 if (!close(swapLength2,swapLength))
                     BOOST_FAIL("\nswapLength failure for " <<

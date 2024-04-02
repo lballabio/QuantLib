@@ -64,10 +64,10 @@ void printBasket(
                  "==================" << std::endl;
     for (const auto& j : basket) {
         auto helper = ext::dynamic_pointer_cast<SwaptionHelper>(j);
-        Date endDate = helper->underlyingSwap()->fixedSchedule().dates().back();
-        Real nominal = helper->underlyingSwap()->nominal();
+        Date endDate = helper->underlying()->fixedSchedule().dates().back();
+        Real nominal = helper->underlying()->nominal();
         Real vol = helper->volatility()->value();
-        Real rate = helper->underlyingSwap()->fixedRate();
+        Real rate = helper->underlying()->fixedRate();
         Date expiry = helper->swaption()->exercise()->date(0);
         Swap::Type type = helper->swaption()->type();
         std::ostringstream expiryString, endDateString;

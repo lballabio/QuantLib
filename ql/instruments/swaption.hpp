@@ -31,6 +31,7 @@
 
 #include <ql/option.hpp>
 #include <ql/instruments/fixedvsfloatingswap.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
 
@@ -108,8 +109,16 @@ namespace QuantLib {
             return settlementMethod_;
         }
         Swap::Type type() const { return swap_->type(); }
-        const ext::shared_ptr<FixedVsFloatingSwap>& underlyingSwap() const {
+        const ext::shared_ptr<FixedVsFloatingSwap>& underlying() const {
             return swap_;
+        }
+        /*! \deprecated Use the Swaption::underlying method instead.
+                        Deprecated in version 1.34.
+        */
+        [[deprecated("Use the Swaption::underlying method instead")]]
+        const ext::shared_ptr<VanillaSwap>& underlyingSwap() const {
+            QL_REQUIRE(vanilla_, "underlying is not a vanilla swap");
+            return vanilla_;
         }
         //@}
         //! implied volatility
@@ -129,6 +138,8 @@ namespace QuantLib {
         //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
         Settlement::Method settlementMethod_;
+        // until we remove underlyingSwap();
+        ext::shared_ptr<VanillaSwap> vanilla_;
     };
 
     //! %Arguments for swaption calculation
