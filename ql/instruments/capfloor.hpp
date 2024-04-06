@@ -62,6 +62,15 @@ namespace QuantLib {
                  std::vector<Rate> capRates,
                  std::vector<Rate> floorRates);
         CapFloor(Type type, Leg floatingLeg, const std::vector<Rate>& strikes);
+        CapFloor(Type type,
+                 Leg floatingLeg,
+                 std::vector<Rate> capRates,
+                 std::vector<Rate> floorRates,
+                 bool backwardLooking);
+        CapFloor(Type type,
+                 Leg floatingLeg,
+                 const std::vector<Rate>& strikes,
+                 bool backwardLooking);
         //! \name Observable interface
         //@{
         void deepUpdate() override;
@@ -101,6 +110,7 @@ namespace QuantLib {
         Leg floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
+        bool backwardLooking_;
     };
 
     //! Concrete cap class

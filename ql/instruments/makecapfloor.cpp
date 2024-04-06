@@ -73,7 +73,7 @@ namespace QuantLib {
         }
 
         ext::shared_ptr<CapFloor> capFloor(new
-            CapFloor(capFloorType_, leg, strikeVector));
+            CapFloor(capFloorType_, leg, strikeVector, backwardLooking_));
         capFloor->setPricingEngine(engine_);
         return capFloor;
     }
@@ -149,6 +149,11 @@ namespace QuantLib {
     MakeCapFloor& MakeCapFloor::withPricingEngine(
                              const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::backwardLooking(bool backwardLooking) {
+        backwardLooking_ = backwardLooking;
         return *this;
     }
 

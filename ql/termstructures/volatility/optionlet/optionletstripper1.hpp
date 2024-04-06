@@ -52,7 +52,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& discount = {},
             VolatilityType type = ShiftedLognormal,
             Real displacement = 0.0,
-            bool dontThrow = false);
+            bool dontThrow = false,
+            bool backwardLooking = false);
 
         const Matrix& capFloorPrices() const;
         const Matrix &capletVols() const;
@@ -75,6 +76,7 @@ namespace QuantLib {
         Real accuracy_;
         Natural maxIter_;
         bool dontThrow_;
+        bool backwardLooking_;
     };
 
 }

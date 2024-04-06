@@ -63,10 +63,13 @@ namespace QuantLib {
 
         MakeCapFloor& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
+        MakeCapFloor& backwardLooking(bool backwardLooking);
+
       private:
         CapFloor::Type capFloorType_;
         Rate strike_;
         bool firstCapletExcluded_, asOptionlet_ = false;
+        bool backwardLooking_;
 
         MakeVanillaSwap makeVanillaSwap_;
 

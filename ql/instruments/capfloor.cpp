@@ -146,6 +146,15 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
+    CapFloor::CapFloor(CapFloor::Type type,
+        Leg floatingLeg,
+        std::vector<Rate> capRates,
+        std::vector<Rate> floorRates,
+        bool backwardLooking)
+        : CapFloor(type, floatingLeg, capRates, floorRates) {
+        backwardLooking_ = backwardLooking;
+    }
+
     CapFloor::CapFloor(CapFloor::Type type, Leg floatingLeg, const std::vector<Rate>& strikes)
     : type_(type), floatingLeg_(std::move(floatingLeg)) {
         QL_REQUIRE(!strikes.empty(), "no strikes given");
@@ -167,6 +176,14 @@ namespace QuantLib {
             registerWith(*i);
 
         registerWith(Settings::instance().evaluationDate());
+    }
+
+       CapFloor::CapFloor(CapFloor::Type type,
+                       Leg floatingLeg,
+                       const std::vector<Rate>& strikes,
+                       bool backwardLooking)
+    : CapFloor(type, floatingLeg, strikes) {
+        backwardLooking_ = backwardLooking;
     }
 
     bool CapFloor::isExpired() const {

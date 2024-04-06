@@ -43,7 +43,8 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& discount,
         const VolatilityType type,
         const Real displacement,
-        bool dontThrow)
+        bool dontThrow,
+        bool backwardLooking)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
       floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
@@ -55,6 +56,7 @@ namespace QuantLib {
 
         Real firstGuess = 0.14; // guess is only used for shifted lognormal vols
         optionletStDevs_ = Matrix(nOptionletTenors_, nStrikes_, firstGuess);
+        backwardLooking_ = backwardLooking;
     }
 
     void OptionletStripper1::performCalculations() const {
@@ -72,10 +74,14 @@ namespace QuantLib {
                                          iborIndex_,
                                          0.04, // dummy strike
                                          0*Days)
-                .withPricingEngine(dummy);
+                .withPricingEngine(dummy).backwardLooking(backwardLooking_);
             ext::shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
-            optionletDates_[i] = lFRC->fixingDate();
+            if (backwardLooking_) {
+                optionletDates_[i] = lFRC->accrualEndDate();
+            } else {
+                optionletDates_[i] = lFRC->fixingDate();
+            }
             optionletPaymentDates_[i] = lFRC->date();
             optionletAccrualPeriods_[i] = lFRC->accrualPeriod();
             optionletTimes_[i] = dc.yearFraction(referenceDate,
@@ -131,7 +137,7 @@ namespace QuantLib {
                 ext::shared_ptr<CapFloor> capFloor =
                     MakeCapFloor(capFloorType, capFloorLengths_[i],
                                  iborIndex_, strikes[j], -0 * Days)
-                        .withPricingEngine(capFloorEngine);
+                        .withPricingEngine(capFloorEngine).backwardLooking(backwardLooking_);
                 capFloorPrices_[i][j] = capFloor->NPV();
                 optionletPrices_[i][j] = capFloorPrices_[i][j] -
                                                         previousCapFloorPrice;
