@@ -120,7 +120,7 @@ namespace QuantLib {
     //! helper class building a sequence of overnight coupons
     class SubPeriodsLeg {
       public:
-        SubPeriodsLeg(const Schedule &schedule, ext::shared_ptr<IborIndex> index);
+        SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> index);
         SubPeriodsLeg& withNotionals(Real notional);
         SubPeriodsLeg& withNotionals(const std::vector<Real>& notionals);
         SubPeriodsLeg& withPaymentDayCounter(const DayCounter&);

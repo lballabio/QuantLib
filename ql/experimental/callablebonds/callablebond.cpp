@@ -357,7 +357,7 @@ namespace QuantLib {
                                  dayCounter,
                                  compounding,
                                  frequency);
-            
+
         if ( P == 0.0 )
             return 0;
         else
@@ -389,13 +389,13 @@ namespace QuantLib {
                                  dayCounter,
                                  compounding,
                                  frequency);
-            
+
         if ( P == 0.0 )
             return 0;
         else
             {
                 return (Ppp + Pmm - 2*P) / ( std::pow(bump,2) * P);
-            }        
+            }
 
     }
 
@@ -482,7 +482,7 @@ namespace QuantLib {
     CallableFixedRateBond::CallableFixedRateBond(
                               Natural settlementDays,
                               Real faceAmount,
-                              const Schedule& schedule,
+                              Schedule schedule,
                               const std::vector<Rate>& coupons,
                               const DayCounter& accrualDayCounter,
                               BusinessDayConvention paymentConvention,
@@ -499,7 +499,7 @@ namespace QuantLib {
         frequency_ = schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency;
 
         cashflows_ =
-            FixedRateLeg(schedule)
+            FixedRateLeg(std::move(schedule))
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
             .withPaymentAdjustment(paymentConvention)
@@ -533,4 +533,3 @@ namespace QuantLib {
     }
 
 }
-

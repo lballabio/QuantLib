@@ -27,11 +27,11 @@ namespace QuantLib {
 
     ArithmeticAverageOIS::ArithmeticAverageOIS(Type type,
                                                Real nominal,
-                                               const Schedule& fixedLegSchedule,
+                                               Schedule fixedLegSchedule,
                                                Rate fixedRate,
                                                DayCounter fixedDC,
                                                ext::shared_ptr<OvernightIndex> overnightIndex,
-                                               const Schedule& overnightLegSchedule,
+                                               Schedule overnightLegSchedule,
                                                Spread spread,
                                                Real meanReversionSpeed,
                                                Real volatility,
@@ -43,16 +43,16 @@ namespace QuantLib {
       overnightIndex_(std::move(overnightIndex)), spread_(spread), byApprox_(byApprox),
       mrs_(meanReversionSpeed), vol_(volatility) {
 
-        initialize(fixedLegSchedule, overnightLegSchedule);
+        initialize(std::move(fixedLegSchedule), std::move(overnightLegSchedule));
     }
 
     ArithmeticAverageOIS::ArithmeticAverageOIS(Type type,
                                                std::vector<Real> nominals,
-                                               const Schedule& fixedLegSchedule,
+                                               Schedule fixedLegSchedule,
                                                Rate fixedRate,
                                                DayCounter fixedDC,
                                                ext::shared_ptr<OvernightIndex> overnightIndex,
-                                               const Schedule& overnightLegSchedule,
+                                               Schedule overnightLegSchedule,
                                                Spread spread,
                                                Real meanReversionSpeed,
                                                Real volatility,
@@ -64,18 +64,18 @@ namespace QuantLib {
       overnightIndex_(std::move(overnightIndex)), spread_(spread), byApprox_(byApprox),
       mrs_(meanReversionSpeed), vol_(volatility) {
 
-        initialize(fixedLegSchedule, overnightLegSchedule);
+        initialize(std::move(fixedLegSchedule), std::move(overnightLegSchedule));
     }
 
-    void ArithmeticAverageOIS::initialize(const Schedule& fixedLegSchedule,
-                                          const Schedule& overnightLegSchedule) {
+    void ArithmeticAverageOIS::initialize(Schedule fixedLegSchedule,
+                                          Schedule overnightLegSchedule) {
         if (fixedDC_==DayCounter())
             fixedDC_ = overnightIndex_->dayCounter();
-        legs_[0] = FixedRateLeg(fixedLegSchedule)
+        legs_[0] = FixedRateLeg(std::move(fixedLegSchedule))
             .withNotionals(nominals_)
             .withCouponRates(fixedRate_, fixedDC_);
 
-        legs_[1] = OvernightLeg(overnightLegSchedule, overnightIndex_)
+        legs_[1] = OvernightLeg(std::move(overnightLegSchedule), overnightIndex_)
             .withNotionals(nominals_)
             .withSpreads(spread_);
 

@@ -128,7 +128,7 @@ struct CommonVars {
         return instruments;
     }
 
-    Schedule legSchedule(const Period& tenor, 
+    Schedule legSchedule(const Period& tenor,
                          const ext::shared_ptr<IborIndex>& idx) const {
         return MakeSchedule()
             .from(instrumentSettlementDt)
@@ -140,15 +140,15 @@ struct CommonVars {
             .backwards();
     }
 
-    Leg constantNotionalLeg(const Schedule& schedule,
+    Leg constantNotionalLeg(Schedule schedule,
                             const ext::shared_ptr<IborIndex>& idx,
                             Real notional,
                             Spread basis) const {
-        Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
-        
+        Leg leg = IborLeg(std::move(schedule), idx).withNotionals(notional).withSpreads(basis);
+
         Date initialPaymentDate = CashFlows::startDate(leg);
         leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
-        
+
         Date lastPaymentDate = CashFlows::maturityDate(leg);
         leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
         return leg;
@@ -216,7 +216,7 @@ struct CommonVars {
 
         today = calendar.adjust(Date(6, September, 2013));
         Settings::instance().evaluationDate() = today;
-        
+
         instrumentSettlementDt = calendar.advance(today, instrumentSettlementDays, Days);
         curveSettlementDt = calendar.advance(today, curveSettlementDays, Days);
 
@@ -292,7 +292,7 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
         vars.buildResettingXccyRateHelpers(
             vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
             isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable);
-    
+
     std::vector<ext::shared_ptr<RateHelper> > constNotionalInstruments =
         vars.buildConstantNotionalXccyRateHelpers(vars.basisData, collateralHandle,
                                                   isFxBaseCurrencyCollateralCurrency,
@@ -427,7 +427,7 @@ BOOST_AUTO_TEST_CASE(testExceptionWhenInstrumentTenorShorterThanIndexFrequency) 
 
     std::vector<XccyTestDatum> data{{1, Months, 10.0}};
     Handle<YieldTermStructure> collateralHandle;
-    
+
     BOOST_CHECK_THROW(
         std::vector<ext::shared_ptr<RateHelper> > resettingInstruments =
             vars.buildConstantNotionalXccyRateHelpers(data, collateralHandle, true, true),

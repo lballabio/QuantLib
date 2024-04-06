@@ -27,13 +27,13 @@ namespace QuantLib {
     BMASwap::BMASwap(Type type,
                      Real nominal,
                      // Libor leg
-                     const Schedule& liborSchedule,
+                     Schedule liborSchedule,
                      Real liborFraction,
                      Spread liborSpread,
                      const ext::shared_ptr<IborIndex>& liborIndex,
                      const DayCounter& liborDayCount,
                      // BMA leg
-                     const Schedule& bmaSchedule,
+                     Schedule bmaSchedule,
                      const ext::shared_ptr<BMAIndex>& bmaIndex,
                      const DayCounter& bmaDayCount)
     : Swap(2), type_(type), nominal_(nominal),
@@ -42,7 +42,7 @@ namespace QuantLib {
         BusinessDayConvention convention =
             liborSchedule.businessDayConvention();
 
-        legs_[0] = IborLeg(liborSchedule, liborIndex)
+        legs_[0] = IborLeg(std::move(liborSchedule), liborIndex)
             .withNotionals(nominal)
             .withPaymentDayCounter(liborDayCount)
             .withPaymentAdjustment(convention)
@@ -50,10 +50,12 @@ namespace QuantLib {
             .withGearings(liborFraction)
             .withSpreads(liborSpread);
 
-        legs_[1] = AverageBMALeg(bmaSchedule, bmaIndex)
+        auto bmaConvention = bmaSchedule.businessDayConvention();
+
+        legs_[1] = AverageBMALeg(std::move(bmaSchedule), bmaIndex)
             .withNotionals(nominal)
             .withPaymentDayCounter(bmaDayCount)
-            .withPaymentAdjustment(bmaSchedule.businessDayConvention());
+            .withPaymentAdjustment(bmaConvention);
 
         for (Size j=0; j<2; ++j) {
             for (auto& i : legs_[j])

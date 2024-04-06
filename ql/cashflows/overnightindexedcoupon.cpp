@@ -146,7 +146,7 @@ namespace QuantLib {
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
-                    bool telescopicValueDates, 
+                    bool telescopicValueDates,
                     RateAveraging::Type averagingMethod)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex ? overnightIndex->fixingDays() : 0,
@@ -269,8 +269,8 @@ namespace QuantLib {
         }
     }
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
-    : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()) {
+    OvernightLeg::OvernightLeg(Schedule schedule, ext::shared_ptr<OvernightIndex> i)
+    : schedule_(std::move(schedule)), overnightIndex_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
 
@@ -370,7 +370,7 @@ namespace QuantLib {
                                        detail::get(spreads_, i, 0.0),
                                        refStart, refEnd,
                                        paymentDayCounter_,
-                                       telescopicValueDates_, 
+                                       telescopicValueDates_,
                                        averagingMethod_)));
         }
         return cashflows;

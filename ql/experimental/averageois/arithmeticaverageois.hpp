@@ -37,22 +37,22 @@ namespace QuantLib {
       public:
         ArithmeticAverageOIS(Type type,
                              Real nominal,
-                             const Schedule& fixedLegSchedule,
+                             Schedule fixedLegSchedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
                              ext::shared_ptr<OvernightIndex> overnightIndex,
-                             const Schedule& overnightLegSchedule,
+                             Schedule overnightLegSchedule,
                              Spread spread = 0.0,
                              Real meanReversionSpeed = 0.03,
                              Real volatility = 0.00, // NO convexity adjustment by default
                              bool byApprox = false); // TRUE to use Katsumi Takada approximation
         ArithmeticAverageOIS(Type type,
                              std::vector<Real> nominals,
-                             const Schedule& fixedLegSchedule,
+                             Schedule fixedLegSchedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
                              ext::shared_ptr<OvernightIndex> overnightIndex,
-                             const Schedule& overnightLegSchedule,
+                             Schedule overnightLegSchedule,
                              Spread spread = 0.0,
                              Real meanReversionSpeed = 0.03,
                              Real volatility = 0.00, // NO convexity adjustment by default
@@ -88,8 +88,7 @@ namespace QuantLib {
         Spread fairSpread() const;
         //@}
       private:
-        void initialize(const Schedule& fixedLegSchedule,
-                        const Schedule& overnightLegSchedule);
+        void initialize(Schedule fixedLegSchedule, Schedule overnightLegSchedule);
         Type type_;
         std::vector<Real> nominals_;
 
