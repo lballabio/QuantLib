@@ -94,7 +94,7 @@ namespace QuantLib {
       public:
         FloatingCatBond(Natural settlementDays,
                         Real faceAmount,
-                        const Schedule& schedule,
+                        Schedule schedule,
                         const ext::shared_ptr<IborIndex>& iborIndex,
                         const DayCounter& accrualDayCounter,
                         const ext::shared_ptr<NotionalRisk>& notionalRisk,

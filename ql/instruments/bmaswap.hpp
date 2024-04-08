@@ -40,13 +40,13 @@ namespace QuantLib {
         BMASwap(Type type,
                 Real nominal,
                 // Libor leg
-                const Schedule& liborSchedule,
+                Schedule liborSchedule,
                 Rate liborFraction,
                 Rate liborSpread,
                 const ext::shared_ptr<IborIndex>& liborIndex,
                 const DayCounter& liborDayCount,
                 // BMA leg
-                const Schedule& bmaSchedule,
+                Schedule bmaSchedule,
                 const ext::shared_ptr<BMAIndex>& bmaIndex,
                 const DayCounter& bmaDayCount);
 
@@ -82,4 +82,3 @@ namespace QuantLib {
 }
 
 #endif
-

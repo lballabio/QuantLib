@@ -166,21 +166,21 @@ namespace QuantLib {
                          Real bondCleanPrice,
                          const ext::shared_ptr<IborIndex>& iborIndex,
                          Spread spread,
-                         const Schedule& floatSchedule,
+                         Schedule floatSchedule,
                          const DayCounter& floatingDayCounter,
                          bool parSwap)
     : Swap(2), bond_(std::move(bond)), bondCleanPrice_(bondCleanPrice), nonParRepayment_(100),
       spread_(spread), parSwap_(parSwap) {
-        Schedule schedule = floatSchedule;
-        if (floatSchedule.empty())
-            schedule = Schedule(bond_->settlementDate(),
-                                bond_->maturityDate(),
-                                iborIndex->tenor(),
-                                iborIndex->fixingCalendar(),
-                                iborIndex->businessDayConvention(),
-                                iborIndex->businessDayConvention(),
-                                DateGeneration::Backward,
-                                false); // endOfMonth
+        Schedule schedule = floatSchedule.empty()
+            ? Schedule(bond_->settlementDate(),
+                       bond_->maturityDate(),
+                       iborIndex->tenor(),
+                       iborIndex->fixingCalendar(),
+                       iborIndex->businessDayConvention(),
+                       iborIndex->businessDayConvention(),
+                       DateGeneration::Backward,
+                       false) // endOfMonth
+            : std::move(floatSchedule);
 
         // the following might become an input parameter
         BusinessDayConvention paymentAdjustment = Following;
@@ -210,12 +210,12 @@ namespace QuantLib {
             notional *= dirtyPrice/100.0;
 
         if (floatingDayCounter==DayCounter())
-            legs_[1] = IborLeg(schedule, iborIndex)
+            legs_[1] = IborLeg(std::move(schedule), iborIndex)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment)
                 .withSpreads(spread);
         else
-            legs_[1] = IborLeg(schedule, iborIndex)
+            legs_[1] = IborLeg(std::move(schedule), iborIndex)
                 .withNotionals(notional)
                 .withPaymentDayCounter(floatingDayCounter)
                 .withPaymentAdjustment(paymentAdjustment)
@@ -372,7 +372,7 @@ namespace QuantLib {
             QL_REQUIRE(endDiscounts_[1]!=Null<DiscountFactor>(),
                        "fair non par repayment not available for expired leg");
             Real notional = bond_->notional(upfrontDate_);
-            fairNonParRepayment_ = nonParRepayment_ - payer_[0] * 
+            fairNonParRepayment_ = nonParRepayment_ - payer_[0] *
                 NPV_*npvDateDiscount_/endDiscounts_[1]/(notional/100.0);
             return fairNonParRepayment_;
         }

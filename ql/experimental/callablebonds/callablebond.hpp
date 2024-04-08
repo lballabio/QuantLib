@@ -200,7 +200,7 @@ namespace QuantLib {
       public:
         CallableFixedRateBond(Natural settlementDays,
                               Real faceAmount,
-                              const Schedule& schedule,
+                              Schedule schedule,
                               const std::vector<Rate>& coupons,
                               const DayCounter& accrualDayCounter,
                               BusinessDayConvention paymentConvention = Following,

@@ -49,7 +49,7 @@ namespace QuantLib {
                 const Period& observationLag,
                 ext::shared_ptr<ZeroInflationIndex> cpiIndex,
                 CPI::InterpolationType observationInterpolation,
-                const Schedule& schedule,
+                Schedule schedule,
                 const std::vector<Rate>& coupons,
                 const DayCounter& accrualDayCounter,
                 BusinessDayConvention paymentConvention = ModifiedFollowing,

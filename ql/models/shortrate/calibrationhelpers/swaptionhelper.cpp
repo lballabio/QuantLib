@@ -198,19 +198,19 @@ namespace QuantLib {
         BlackCalibrationHelper::performCalculations();
     }
 
-    ext::shared_ptr<FixedVsFloatingSwap> SwaptionHelper::makeSwap(const Schedule& fixedSchedule,
-                                                                  const Schedule& floatSchedule,
+    ext::shared_ptr<FixedVsFloatingSwap> SwaptionHelper::makeSwap(Schedule fixedSchedule,
+                                                                  Schedule floatSchedule,
                                                                   Rate exerciseRate,
                                                                   Swap::Type type) const {
         auto onIndex = ext::dynamic_pointer_cast<OvernightIndex>(index_);
         if (onIndex) {
             return ext::make_shared<OvernightIndexedSwap>(
-                type, nominal_, fixedSchedule, exerciseRate, fixedLegDayCounter_,
-                floatSchedule, onIndex, 0.0, 0, Following,
+                type, nominal_, std::move(fixedSchedule), exerciseRate, fixedLegDayCounter_,
+                std::move(floatSchedule), onIndex, 0.0, 0, Following,
                 Calendar(), true, averagingMethod_);
         } else {
-            return ext::make_shared<VanillaSwap>(type, nominal_, fixedSchedule, exerciseRate,
-                                                 fixedLegDayCounter_, floatSchedule, index_, 0.0,
+            return ext::make_shared<VanillaSwap>(type, nominal_, std::move(fixedSchedule), exerciseRate,
+                                                 fixedLegDayCounter_, std::move(floatSchedule), index_, 0.0,
                                                  floatingLegDayCounter_);
         }
     }

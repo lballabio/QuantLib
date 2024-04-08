@@ -111,8 +111,8 @@ namespace QuantLib {
 
       private:
         void performCalculations() const override;
-        ext::shared_ptr<FixedVsFloatingSwap> makeSwap(const Schedule& fixedSchedule,
-                                                      const Schedule& floatSchedule,
+        ext::shared_ptr<FixedVsFloatingSwap> makeSwap(Schedule fixedSchedule,
+                                                      Schedule floatSchedule,
                                                       Rate exerciseRate,
                                                       Swap::Type type) const;
         mutable Date exerciseDate_, endDate_;

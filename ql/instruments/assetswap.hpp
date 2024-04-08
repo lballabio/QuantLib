@@ -58,7 +58,7 @@ namespace QuantLib {
                   Real bondCleanPrice,
                   const ext::shared_ptr<IborIndex>& iborIndex,
                   Spread spread,
-                  const Schedule& floatSchedule = Schedule(),
+                  Schedule floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
 

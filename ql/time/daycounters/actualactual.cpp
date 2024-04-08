@@ -124,13 +124,12 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<DayCounter::Impl>
-    ActualActual::implementation(ActualActual::Convention c,
-                                 const Schedule& schedule) {
+    ActualActual::implementation(ActualActual::Convention c, Schedule schedule) {
         switch (c) {
           case ISMA:
           case Bond:
             if (!schedule.empty())
-                return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(schedule));
+                return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl(std::move(schedule)));
             else
                 return ext::shared_ptr<DayCounter::Impl>(new Old_ISMA_Impl);
           case ISDA:

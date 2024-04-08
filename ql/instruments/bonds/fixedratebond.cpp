@@ -30,7 +30,7 @@ namespace QuantLib {
 
     FixedRateBond::FixedRateBond(Natural settlementDays,
                                  Real faceAmount,
-                                 const Schedule& schedule,
+                                 Schedule schedule,
                                  const std::vector<Rate>& coupons,
                                  const DayCounter& accrualDayCounter,
                                  BusinessDayConvention paymentConvention,
@@ -51,7 +51,7 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = FixedRateLeg(schedule)
+        cashflows_ = FixedRateLeg(std::move(schedule))
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
             .withFirstPeriodDayCounter(firstPeriodDayCounter)

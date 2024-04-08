@@ -42,7 +42,7 @@ namespace QuantLib {
                                        const Date& exCouponDate)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
-                         refPeriodStart, refPeriodEnd, dayCounter, 
+                         refPeriodStart, refPeriodEnd, dayCounter,
                          false, exCouponDate),
       rateSpread_(rateSpread) {
         Schedule sch = MakeSchedule()
@@ -107,7 +107,7 @@ namespace QuantLib {
         }
     }
 
-    Real SubPeriodsPricer::swapletPrice() const { 
+    Real SubPeriodsPricer::swapletPrice() const {
         QL_FAIL("SubPeriodsPricer::swapletPrice not implemented");
     }
 
@@ -155,8 +155,8 @@ namespace QuantLib {
         return coupon_->gearing() * rate + coupon_->spread();
     }
 
-    SubPeriodsLeg::SubPeriodsLeg(const Schedule& schedule, ext::shared_ptr<IborIndex> i)
-    : schedule_(schedule), index_(std::move(i)), paymentCalendar_(schedule.calendar()) {
+    SubPeriodsLeg::SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> i)
+    : schedule_(std::move(schedule)), index_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(index_, "no index provided");
     }
 
@@ -306,4 +306,3 @@ namespace QuantLib {
         return cashflows;
     }
 }
-
