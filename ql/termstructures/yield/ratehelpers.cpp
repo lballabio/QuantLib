@@ -617,7 +617,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        swap_ = swapBuilder_;
+        swap_ = swapBuilder_.withDiscountingTermStructure(discountRelinkableHandle_);
         SwapRateHelper::initializeDates();
     }
 
