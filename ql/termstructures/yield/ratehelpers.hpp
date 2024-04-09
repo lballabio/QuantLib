@@ -316,16 +316,22 @@ namespace QuantLib {
                        const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
         SwapRateHelper(const Handle<Quote>& rate,
                        const MakeVanillaSwap& swapBuilder,
-                       Handle<YieldTermStructure> discountingCurve = {},
                        Handle<Quote> spread = {},
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date());
         SwapRateHelper(Rate rate,
                        const MakeVanillaSwap& swapBuilder,
-                       Handle<YieldTermStructure> discountingCurve = {},
                        Handle<Quote> spread = {},
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date());
+        // private:
+        // SwapRateHelper(const Handle<Quote>& rate,
+        //                const MakeVanillaSwap& swapBuilder,
+        //                Handle<YieldTermStructure> discountingCurve = {},
+        //                Handle<Quote> spread = {},
+        //                Pillar::Choice pillar = Pillar::LastRelevantDate,
+        //                Date customPillarDate = Date());
+        // public:
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -346,12 +352,18 @@ namespace QuantLib {
         void initializeDates() override;
 
         Pillar::Choice pillarChoice_;
+        ext::shared_ptr<IborIndex> iborIndex_;
         ext::shared_ptr<VanillaSwap> swap_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
-        Handle<YieldTermStructure> discountHandle_;
-        RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
-        MakeVanillaSwap swapBuilder_;
+        Period forwardStart_;
+
+        struct DiscountHandles {
+            Handle<YieldTermStructure> handle_;
+            RelinkableHandle<YieldTermStructure> relinkableHandle_;
+            DiscountHandles(Handle<YieldTermStructure>&& h) : handle_(std::move(h)) {}
+        };
+        ext::optional<DiscountHandles> discountHandles_;
     };
 
 
@@ -493,7 +505,7 @@ namespace QuantLib {
     }
 
     inline const Period& SwapRateHelper::forwardStart() const {
-        return swapBuilder_.forwardStart_;
+        return forwardStart_;
     }
 
 }
