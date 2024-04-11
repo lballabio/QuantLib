@@ -136,6 +136,8 @@ namespace QuantLib {
                                      floatingSchedule().calendar() :
                                      paymentCalendar)
                 .withAveragingMethod(averagingMethod_);
+        for (const auto& c : legs_[1])
+            registerWith(c);
     }
 
     void OvernightIndexedSwap::setupFloatingArguments(arguments* args) const {
