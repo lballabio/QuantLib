@@ -532,6 +532,17 @@ namespace QuantLib {
         std::move(discount), Null<Natural>(), pillarChoice, customPillarDate, endOfMonth,
         useIndexedCoupons) {}
 
+    SwapRateHelper::Handles::Handles(const ext::shared_ptr<IborIndex>& iborIndex,
+                                     Handle<YieldTermStructure>&& discount)
+    : discount_(std::move(discount)) {
+        // take fixing into account
+        iborIndex_ = iborIndex->clone(termStructure_);
+        // We want to be notified of changes of fixings, but we don't
+        // want notifications from termStructureHandle_ (they would
+        // interfere with bootstrapping.)
+        iborIndex_->unregisterWith(termStructure_);
+    }
+
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const Period& tenor,
                                    Calendar calendar,
@@ -548,20 +559,13 @@ namespace QuantLib {
                                    bool endOfMonth,
                                    const ext::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), pillarChoice_(pillarChoice), spread_(std::move(spread)),
-      forwardStart_(fwdStart), discountHandles_(DiscountHandles(std::move(discount))) {
-        // take fixing into account
-        iborIndex_ = iborIndex->clone(termStructureHandle_);
-        // We want to be notified of changes of fixings, but we don't
-        // want notifications from termStructureHandle_ (they would
-        // interfere with bootstrapping.)
-        iborIndex_->unregisterWith(termStructureHandle_);
-
-        registerWith(iborIndex_);
+      forwardStart_(fwdStart), handles_(Handles(iborIndex, std::move(discount))) {
+        registerWith(handles_->iborIndex_);
         registerWith(spread_);
-        registerWith(discountHandles_->handle_);
+        registerWith(handles_->discount_);
 
         pillarDate_ = customPillarDate;
-        swap_ = MakeVanillaSwap(tenor, iborIndex_, 0.0, fwdStart)
+        swap_ = MakeVanillaSwap(tenor, handles_->iborIndex_, 0.0, fwdStart)
                     .withSettlementDays(settlementDays)
                     .withFixedLegDayCount(fixedDayCount)
                     .withFixedLegTenor(Period(fixedFrequency))
@@ -572,7 +576,7 @@ namespace QuantLib {
                     .withFloatingLegCalendar(calendar)
                     .withFloatingLegEndOfMonth(endOfMonth)
                     .withIndexedCoupons(useIndexedCoupons)
-                    .withDiscountingTermStructure(discountHandles_->relinkableHandle_);
+                    .withDiscountingTermStructure(handles_->relinkableDiscount_);
         SwapRateHelper::initializeDates();
     }
 
@@ -614,18 +618,10 @@ namespace QuantLib {
                                    Date customPillarDate)
     : RelativeDateRateHelper(rate), pillarChoice_(pillar), spread_(std::move(spread)),
       forwardStart_(swapBuilder.forwardStart_) {
-        swap_ = swapBuilder;
-        // take fixing into account
-        iborIndex_ = swap_->iborIndex()->clone(termStructureHandle_);
-        // We want to be notified of changes of fixings, but we don't
-        // want notifications from termStructureHandle_ (they would
-        // interfere with bootstrapping.)
-        iborIndex_->unregisterWith(termStructureHandle_);
-
-        registerWith(iborIndex_);
         registerWith(spread_);
 
         pillarDate_ = customPillarDate;
+        swap_ = swapBuilder;
         SwapRateHelper::initializeDates();
     }
 
@@ -680,13 +676,13 @@ namespace QuantLib {
         // force recalculation when needed
         bool observer = false;
 
-        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
-        termStructureHandle_.linkTo(temp, observer);
+        if (handles_) {
+            ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+            handles_->termStructure_.linkTo(temp, observer);
 
-        if (discountHandles_) {
-          Handle<YieldTermStructure>& h = discountHandles_->handle_;
-          RelinkableHandle<YieldTermStructure>& rh = discountHandles_->relinkableHandle_;
-          rh.linkTo((h.empty() ? temp : *h), observer);
+            Handle<YieldTermStructure>& dh = handles_->discount_;
+            RelinkableHandle<YieldTermStructure>& rdh = handles_->relinkableDiscount_;
+            rdh.linkTo((dh.empty() ? temp : *dh), observer);
         }
 
         RelativeDateRateHelper::setTermStructure(t);

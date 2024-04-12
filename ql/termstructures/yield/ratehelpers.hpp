@@ -352,18 +352,20 @@ namespace QuantLib {
         void initializeDates() override;
 
         Pillar::Choice pillarChoice_;
-        ext::shared_ptr<IborIndex> iborIndex_;
         ext::shared_ptr<VanillaSwap> swap_;
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
         Handle<Quote> spread_;
         Period forwardStart_;
 
-        struct DiscountHandles {
-            Handle<YieldTermStructure> handle_;
-            RelinkableHandle<YieldTermStructure> relinkableHandle_;
-            DiscountHandles(Handle<YieldTermStructure>&& h) : handle_(std::move(h)) {}
+        struct Handles {
+            ext::shared_ptr<IborIndex> iborIndex_;
+            RelinkableHandle<YieldTermStructure> termStructure_;
+            Handle<YieldTermStructure> discount_;
+            RelinkableHandle<YieldTermStructure> relinkableDiscount_;
+
+            Handles(const ext::shared_ptr<IborIndex>& iborIndex, Handle<YieldTermStructure>&& discountingCurve);
         };
-        ext::optional<DiscountHandles> discountHandles_;
+        // only set if iborIndex explicitly given in ctor
+        ext::optional<Handles> handles_;
     };
 
 
