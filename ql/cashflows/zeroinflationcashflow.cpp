@@ -38,7 +38,7 @@ namespace QuantLib {
       zeroInflationIndex_(index), observationInterpolation_(observationInterpolation),
       startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
 
-    Real ZeroInflationCashFlow::amount() const {
+    void ZeroInflationCashFlow::performCalculations() const {
 
         Real I0, I1;
 
@@ -51,9 +51,9 @@ namespace QuantLib {
         }
 
         if (growthOnly())
-            return notional() * (I1 / I0 - 1.0);
+            amount_ = notional() * (I1 / I0 - 1.0);
         else
-            return notional() * (I1 / I0);
+            amount_ = notional() * (I1 / I0);
     }
 
     void ZeroInflationCashFlow::accept(AcyclicVisitor& v) {

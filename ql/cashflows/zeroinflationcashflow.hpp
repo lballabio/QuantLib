@@ -61,7 +61,7 @@ namespace QuantLib {
 
         //! \name CashFlow interface
         //@{
-        Real amount() const override;
+        void performCalculations() const override;
         //@}
         //! \name Visitability
         //@{
