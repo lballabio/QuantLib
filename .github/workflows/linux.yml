@@ -39,11 +39,12 @@ jobs:
             cc: clang
             cxx: clang++
             tests: true
-          - name: "Clang 17"
-            shortname: clang17
+          - name: "Clang 18"
+            shortname: clang18
             tag: noble
             cc: clang
             cxx: clang++
+            cxxflags: -Wno-deprecated-declarations
             tests: true
           - name: "C++14 mode"
             shortname: c++14
