@@ -173,6 +173,8 @@ namespace QuantLib {
         if (!l2_.empty()) {
             QL_REQUIRE(l2_.size() == size(),
                        "Given penalty factors do not cover all parameters");
+
+            QL_REQUIRE(!curve_->guessSolution_.empty(), "L2 penalty requires a guess");
         }
     }
 
