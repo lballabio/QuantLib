@@ -29,7 +29,7 @@ namespace QuantLib {
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                                                Real nominal,
-                                               Schedule schedule,
+                                               const Schedule& schedule,
                                                Rate fixedRate,
                                                DayCounter fixedDC,
                                                const ext::shared_ptr<OvernightIndex>& overnightIndex,
@@ -41,7 +41,7 @@ namespace QuantLib {
                                                RateAveraging::Type averagingMethod)
     : OvernightIndexedSwap(type,
                            std::vector<Real>(1, nominal),
-                           std::move(schedule),
+                           schedule,
                            fixedRate,
                            std::move(fixedDC),
                            overnightIndex,
