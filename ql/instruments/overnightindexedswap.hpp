@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         OvernightIndexedSwap(Type type,
                              Real nominal,
-                             Schedule schedule,
+                             const Schedule& schedule,
                              Rate fixedRate,
                              DayCounter fixedDC,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
