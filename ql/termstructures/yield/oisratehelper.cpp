@@ -168,7 +168,6 @@ namespace QuantLib {
                                            BusinessDayConvention paymentConvention,
                                            Frequency paymentFrequency,
                                            const Calendar& paymentCalendar,
-                                           const Period& forwardStart,
                                            Spread overnightSpread,
                                            ext::optional<bool> endOfMonth,
                                            ext::optional<Frequency> fixedPaymentFrequency,
@@ -188,7 +187,7 @@ namespace QuantLib {
 
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        auto tmp = MakeOIS(Period(), clonedOvernightIndex, 0.0, forwardStart)
+        auto tmp = MakeOIS(Period(), clonedOvernightIndex, 0.0)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withEffectiveDate(startDate)
             .withTerminationDate(endDate)
