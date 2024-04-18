@@ -625,7 +625,7 @@ namespace QuantLib {
                      customPillarDate) {}
 
     void SwapRateHelper::initializeDates() {
-        if (not swapBuiltViaGivenBuilder)
+        if (!swapBuiltViaGivenBuilder)
             // 1. do not pass the spread here, as it might be a Quote
             //    i.e. it can dynamically change
             // 2. input discount curve Handle might be empty now but it could
