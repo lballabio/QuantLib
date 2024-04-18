@@ -553,6 +553,7 @@ namespace QuantLib {
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
       useIndexedCoupons_(useIndexedCoupons), swapBuiltViaGivenBuilder(false) {
+
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -675,6 +676,7 @@ namespace QuantLib {
         }
 
         latestDate_ = pillarDate_; // backward compatibility
+
     }
 
     void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -687,6 +689,7 @@ namespace QuantLib {
 
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
         termStructureHandle_.linkTo(temp, observer);
+
         if (discountHandle_.empty())
             discountRelinkableHandle_.linkTo(temp, observer);
         else

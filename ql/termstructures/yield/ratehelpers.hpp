@@ -342,10 +342,8 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates() override;
-
         Natural settlementDays_;
         Period tenor_;
-
         Pillar::Choice pillarChoice_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
@@ -360,7 +358,6 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
         ext::optional<bool> useIndexedCoupons_;
-
         bool swapBuiltViaGivenBuilder;
     };
 
