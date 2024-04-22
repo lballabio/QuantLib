@@ -37,7 +37,6 @@
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/optional.hpp>
 #include <ql/settings.hpp>
-#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -393,11 +392,6 @@ BOOST_AUTO_TEST_CASE(testIrregularFirstCouponReferenceDatesAtEndOfCalendarMonth)
     Leg leg = FixedRateLeg(schedule)
         .withNotionals(100.0)
         .withCouponRates(0.01875, ActualActual(ActualActual::ISMA));
-
-    for (const auto& elem : leg) {
-        BOOST_TEST_MESSAGE("Reference Period: " << ext::dynamic_pointer_cast<Coupon>(elem)->referencePeriodStart() << " - " << ext::dynamic_pointer_cast<Coupon>(elem)->referencePeriodEnd());
-        BOOST_TEST_MESSAGE("Amount: " << ext::dynamic_pointer_cast<Coupon>(elem)->amount());
-    }
 
     ext::shared_ptr<Coupon> firstCoupon =
         ext::dynamic_pointer_cast<Coupon>(leg.front());

@@ -326,6 +326,50 @@ BOOST_AUTO_TEST_CASE(testThirdWednesdayAdjustment) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testNotifications) {
+    BOOST_TEST_MESSAGE("Testing cash-flow notifications for vanilla swap...");
+
+    CommonVars vars;
+
+    Date spot = vars.calendar.advance(vars.today, 2*Days);
+    Real nominal = 100000.0;
+
+    Schedule schedule = MakeSchedule()
+        .from(spot)
+        .to(vars.calendar.advance(spot, 2*Years))
+        .withCalendar(vars.calendar)
+        .withFrequency(Semiannual);
+
+    RelinkableHandle<YieldTermStructure> forecast_handle;
+    forecast_handle.linkTo(flatRate(0.02, Actual365Fixed()));
+
+    RelinkableHandle<YieldTermStructure> discount_handle;
+    discount_handle.linkTo(flatRate(0.02, Actual365Fixed()));
+    
+    auto index = ext::make_shared<Euribor6M>(forecast_handle);
+    
+    auto swap = ext::make_shared<VanillaSwap>(Swap::Payer,
+                                              nominal,
+                                              schedule,
+                                              0.03,
+                                              Actual365Fixed(),
+                                              schedule,
+                                              index,
+                                              0.0,
+                                              Actual365Fixed());
+    swap->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discount_handle));
+    swap->NPV();
+
+    Flag flag;
+    flag.registerWith(swap);
+    flag.lower();
+
+    forecast_handle.linkTo(flatRate(0.03, Actual365Fixed()));
+
+    if (!flag.isUp())
+        BOOST_FAIL("swap was not notified of curve change");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

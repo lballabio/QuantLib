@@ -197,6 +197,36 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
     
 }
 
+BOOST_AUTO_TEST_CASE(testRequiredGuess) {
+
+    BOOST_TEST_MESSAGE("Testing that fitted bond curves require a guess when given an L2 penalty...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto bond1 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(1, Years));
+    auto bond2 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(2, Years));
+    auto bond3 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(5, Years));
+    auto bond4 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(10, Years));
+
+    std::vector<ext::shared_ptr<BondHelper> > helpers(4);
+    helpers[0] = ext::make_shared<BondHelper>(makeQuoteHandle(99.0), bond1);
+    helpers[1] = ext::make_shared<BondHelper>(makeQuoteHandle(98.0), bond2);
+    helpers[2] = ext::make_shared<BondHelper>(makeQuoteHandle(95.0), bond3);
+    helpers[3] = ext::make_shared<BondHelper>(makeQuoteHandle(90.0), bond4);
+
+    Array weights = {};
+    ext::shared_ptr<OptimizationMethod> optimizer = {};
+    Array l2 = { 0.25, 0.25, 0.25, 0.25 };
+    NelsonSiegelFitting fittingMethod(weights, optimizer, l2);
+
+    Real accuracy = 1e-10;
+    Size maxIterations = 10000;
+    FittedBondDiscountCurve curve(0, TARGET(), helpers, Actual365Fixed(),
+                                  fittingMethod, accuracy, maxIterations);
+
+    BOOST_CHECK_EXCEPTION(curve.discount(3.0), Error,
+                          ExpectedErrorMessage("L2 penalty requires a guess"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

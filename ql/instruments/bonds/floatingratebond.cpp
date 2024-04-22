@@ -30,7 +30,7 @@ namespace QuantLib {
     FloatingRateBond::FloatingRateBond(
                            Natural settlementDays,
                            Real faceAmount,
-                           const Schedule& schedule,
+                           Schedule schedule,
                            const ext::shared_ptr<IborIndex>& iborIndex,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
@@ -50,7 +50,7 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = IborLeg(schedule, iborIndex)
+        cashflows_ = IborLeg(std::move(schedule), iborIndex)
             .withNotionals(faceAmount)
             .withPaymentDayCounter(paymentDayCounter)
             .withPaymentAdjustment(paymentConvention)

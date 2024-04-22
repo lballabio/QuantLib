@@ -27,7 +27,7 @@ namespace QuantLib {
     AmortizingFixedRateBond::AmortizingFixedRateBond(
                                       Natural settlementDays,
                                       const std::vector<Real>& notionals,
-                                      const Schedule& schedule,
+                                      Schedule schedule,
                                       const std::vector<Rate>& coupons,
                                       const DayCounter& accrualDayCounter,
                                       BusinessDayConvention paymentConvention,
@@ -44,7 +44,7 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = FixedRateLeg(schedule)
+        cashflows_ = FixedRateLeg(std::move(schedule))
             .withNotionals(notionals)
             .withCouponRates(coupons, accrualDayCounter)
             .withPaymentAdjustment(paymentConvention)

@@ -40,6 +40,7 @@
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/zeroinflationcashflow.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <functional>
 
@@ -1600,6 +1601,42 @@ BOOST_AUTO_TEST_CASE(testCpiAsIndexInterpolation) {
                         "failed to retrieve inflation fixing" <<
                         "\n    expected:   " << expected <<
                         "\n    calculated: " << calculated);
+}
+
+BOOST_AUTO_TEST_CASE(testNotifications) {
+    BOOST_TEST_MESSAGE("Testing notifications from zero-inflation cash flow...");
+
+    Date today = Settings::instance().evaluationDate();
+    Real nominal = 10000.0;
+
+    std::vector<Date> dates = { today - 3*Months, today + 5*Years };
+    std::vector<Rate> rates = { 0.02, 0.02 };
+
+    RelinkableHandle<ZeroInflationTermStructure> inflation_handle;
+    inflation_handle.linkTo(
+            ext::make_shared<ZeroInflationCurve>(today, dates, rates, Monthly, Actual360()));
+
+    auto index = ext::make_shared<UKRPI>(inflation_handle);
+    index->addFixing(inflationPeriod(today - 3 * Months, index->frequency()).first, 100.0);
+    auto cashflow =
+        ext::make_shared<ZeroInflationCashFlow>(nominal,
+                                                index,
+                                                CPI::Flat,
+                                                today,
+                                                today + 1 * Years,
+                                                3 * Months,
+                                                today + 1 * Years);
+    cashflow->amount();
+
+    Flag flag;
+    flag.registerWith(cashflow);
+    flag.lower();
+
+    inflation_handle.linkTo(
+            ext::make_shared<ZeroInflationCurve>(today, dates, rates, Monthly, Actual360()));
+
+    if (!flag.isUp())
+        BOOST_FAIL("cash flow did not notify observer of curve change");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

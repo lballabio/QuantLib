@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-12, macos-13]
+        os: [macos-12, macos-13, macos-14]
         classes: [boost, std]
         include:
           - classes: std
@@ -21,14 +21,14 @@ jobs:
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
-        brew install automake boost
+        brew install automake autoconf libtool boost
     - name: Compiler version
       run: |
         clang --version
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --disable-faster-lazy-objects --enable-throwing-in-cycles --enable-null-as-functions ${{ matrix.configureflags }}  CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror ${{ matrix.cxxflags }}"
+        ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --disable-faster-lazy-objects --enable-throwing-in-cycles --enable-null-as-functions ${{ matrix.configureflags }} CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror ${{ matrix.cxxflags }}"
         make -j 3
     - name: Run tests
       run: |

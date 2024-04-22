@@ -40,7 +40,7 @@ namespace QuantLib {
                      const Period& observationLag,
                      ext::shared_ptr<ZeroInflationIndex> cpiIndex,
                      CPI::InterpolationType observationInterpolation,
-                     const Schedule& schedule,
+                     Schedule schedule,
                      const std::vector<Rate>& fixedRate,
                      const DayCounter& accrualDayCounter,
                      BusinessDayConvention paymentConvention,
@@ -60,7 +60,7 @@ namespace QuantLib {
         maturityDate_ = schedule.endDate();
 
         // a CPIleg know about zero legs and inclusion of base inflation notional
-        cashflows_ = CPILeg(schedule, cpiIndex_,
+        cashflows_ = CPILeg(std::move(schedule), cpiIndex_,
                             baseCPI_, observationLag_)
             .withNotionals(faceAmount)
             .withFixedRates(fixedRate)
@@ -86,4 +86,3 @@ namespace QuantLib {
         }
     }
 }
-

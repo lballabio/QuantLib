@@ -34,6 +34,7 @@
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
+#include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/fedfunds.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
@@ -629,6 +630,47 @@ BOOST_AUTO_TEST_CASE(testConstructorsAndNominals) {
     BOOST_CHECK_EQUAL(ois_4.overnightNominals()[1], nominal);
     BOOST_CHECK_EQUAL(ois_4.overnightNominals()[2], nominal/2);
     BOOST_CHECK_EQUAL(ois_4.overnightNominals()[3], nominal/2);
+}
+
+BOOST_AUTO_TEST_CASE(testNotifications) {
+    BOOST_TEST_MESSAGE("Testing cash-flow notifications for OIS...");
+
+    CommonVars vars;
+
+    Date spot = vars.calendar.advance(vars.today, 2*Days);
+    Real nominal = 100000.0;
+
+    Schedule schedule = MakeSchedule()
+        .from(spot)
+        .to(vars.calendar.advance(spot, 2*Years))
+        .withCalendar(vars.calendar)
+        .withFrequency(Annual);
+
+    RelinkableHandle<YieldTermStructure> forecast_handle;
+    forecast_handle.linkTo(flatRate(0.02, Actual360()));
+
+    RelinkableHandle<YieldTermStructure> discount_handle;
+    discount_handle.linkTo(flatRate(0.02, Actual360()));
+    
+    auto index = ext::make_shared<Estr>(forecast_handle);
+    
+    auto ois = ext::make_shared<OvernightIndexedSwap>(Swap::Payer,
+                                                      nominal,
+                                                      schedule,
+                                                      0.03,
+                                                      Actual360(),
+                                                      index);
+    ois->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discount_handle));
+    ois->NPV();
+
+    Flag flag;
+    flag.registerWith(ois);
+    flag.lower();
+
+    forecast_handle.linkTo(flatRate(0.03, Actual360()));
+
+    if (!flag.isUp())
+        BOOST_FAIL("OIS was not notified of curve change");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
