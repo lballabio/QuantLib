@@ -1,13 +1,46 @@
-commit 0b457201e4d411b56dd9dd03833991f0535a36ff
+commit d3fe049dfd501250ec09513174b95aedd9243816
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.34 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 9a9c15480a1de15708267c16b345c517ee65155b
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Wed, 17 Apr 2024 13:43:28 +0000
+
+    Automated fixes by clang-tidy
+
+ ql/instruments/overnightindexedswap.cpp | 4 ++--
+ ql/instruments/overnightindexedswap.hpp | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 5ea96972bae030909c8ba564247f4d0f02665693
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.34-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit e448f8d8fc16497209707a529667e0059dca0b57
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 15 Apr 2024 14:56:57 +0200
 
-    Update news and contributors
+    Update news and changelog
 
- Contributors.txt        |   4 ++
- Docs/pages/history.docs | 105 +++++++++++++++++++++++++++++-
- News.md                 | 169 +++++++++++++++++++++++++++++-------------------
- 3 files changed, 209 insertions(+), 69 deletions(-)
+ ChangeLog.txt           | 6844 +++++++++--------------------------------------
+ Contributors.txt        |    4 +
+ Docs/pages/history.docs |  106 +-
+ News.md                 |  169 +-
+ 4 files changed, 1526 insertions(+), 5597 deletions(-)
 
 commit e8bd858c87df8b7c199b5b3df20bb04acf04f2a2
 Merge: acc3b125e 1e6247489
