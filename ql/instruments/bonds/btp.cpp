@@ -83,9 +83,9 @@ namespace QuantLib {
                     Date settlementDate,
                     Real accuracy,
                     Size maxEvaluations) const {
-        return Bond::yield(cleanPrice, ActualActual(ActualActual::ISMA),
-                           Compounded, Annual,
-                           settlementDate, accuracy, maxEvaluations);
+        return Bond::yield({cleanPrice, Bond::Price::Clean},
+                           ActualActual(ActualActual::ISMA), Compounded, Annual, settlementDate,
+                           accuracy, maxEvaluations);
     }
 
 
@@ -160,9 +160,8 @@ namespace QuantLib {
         Date bondSettlementDate = btps[0]->settlementDate();
         for (Size i=0; i<basket_->size(); ++i) {
             yields_[i] = BondFunctions::yield(
-                *btps[i], quotes[i]->value(),
-                ActualActual(ActualActual::ISMA), Compounded, Annual,
-                bondSettlementDate,
+                *btps[i], {quotes[i]->value(), Bond::Price::Clean},
+                ActualActual(ActualActual::ISMA), Compounded, Annual, bondSettlementDate,
                 // accuracy, maxIterations, guess
                 1.0e-10, 100, yields_[i]);
             durations_[i] = BondFunctions::duration(
@@ -186,7 +185,7 @@ namespace QuantLib {
                                Following, // paymentConvention
                                100.0);    // redemption
         swapBondYields_[0] = BondFunctions::yield(swapBond,
-            100.0, // floating leg NPV including end payment
+            {100.0, Bond::Price::Clean}, // floating leg NPV including end payment
             ActualActual(ActualActual::ISMA), Compounded, Annual,
             bondSettlementDate,
             // accuracy, maxIterations, guess
@@ -205,7 +204,7 @@ namespace QuantLib {
                                    Following, // paymentConvention
                                    100.0);    // redemption
             swapBondYields_[i] = BondFunctions::yield(swapBond,
-                100.0, // floating leg NPV including end payment
+                {100.0, Bond::Price::Clean}, // floating leg NPV including end payment
                 ActualActual(ActualActual::ISMA), Compounded, Annual,
                 bondSettlementDate,
                 // accuracy, maxIterations, guess

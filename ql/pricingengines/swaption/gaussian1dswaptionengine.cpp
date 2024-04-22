@@ -47,11 +47,11 @@ namespace QuantLib {
                              arguments_.exercise->dates().end(), settlement) -
             arguments_.exercise->dates().begin());
 
-        VanillaSwap swap = *arguments_.swap;
+        auto swap = arguments_.swap;
         Option::Type type =
             arguments_.type == Swap::Payer ? Option::Call : Option::Put;
-        const Schedule& fixedSchedule = swap.fixedSchedule();
-        const Schedule& floatSchedule = swap.floatingSchedule();
+        const Schedule& fixedSchedule = swap->fixedSchedule();
+        const Schedule& floatSchedule = swap->floatingSchedule();
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);

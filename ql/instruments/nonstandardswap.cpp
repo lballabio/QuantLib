@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    NonstandardSwap::NonstandardSwap(const VanillaSwap &fromVanilla)
+    NonstandardSwap::NonstandardSwap(const FixedVsFloatingSwap &fromVanilla)
         : Swap(2), type_(fromVanilla.type()),
           fixedNominal_(std::vector<Real>(fromVanilla.fixedLeg().size(),
                                           fromVanilla.nominal())),

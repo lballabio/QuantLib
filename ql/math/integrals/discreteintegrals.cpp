@@ -101,7 +101,7 @@ namespace QuantLib {
             sum *= 2;
 
             sum += f(a);
-            if(n&1)
+            if((n&1) != 0U)
                 sum += 1.5*f(b)+2.5*f(b-d);
             else
                 sum += f(b);

@@ -27,7 +27,7 @@ namespace QuantLib {
         : Option(ext::shared_ptr<Payoff>(),
                  const_cast<Swaption &>(fromSwaption).exercise()),
           swap_(ext::make_shared<NonstandardSwap>(
-              *fromSwaption.underlyingSwap())),
+              *fromSwaption.underlying())),
           settlementType_(fromSwaption.settlementType()),
           settlementMethod_(fromSwaption.settlementMethod()) {
 

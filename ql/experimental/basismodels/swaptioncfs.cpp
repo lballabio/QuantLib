@@ -91,7 +91,7 @@ namespace QuantLib {
             floatWeights_.push_back(k->amount());
     }
 
-    SwapCashFlows::SwapCashFlows(const ext::shared_ptr<VanillaSwap>& swap,
+    SwapCashFlows::SwapCashFlows(const ext::shared_ptr<FixedVsFloatingSwap>& swap,
                                  const Handle<YieldTermStructure>& discountCurve,
                                  bool contTenorSpread)
     : IborLegCashFlows(swap->floatingLeg(), discountCurve, contTenorSpread) {
@@ -119,7 +119,7 @@ namespace QuantLib {
     SwaptionCashFlows::SwaptionCashFlows(const ext::shared_ptr<Swaption>& swaption,
                                          const Handle<YieldTermStructure>& discountCurve,
                                          bool contTenorSpread)
-    : SwapCashFlows(swaption->underlyingSwap(), discountCurve, contTenorSpread),
+    : SwapCashFlows(swaption->underlying(), discountCurve, contTenorSpread),
       swaption_(swaption) {
         // assemble raw cash flow data...
         Actual365Fixed dc;

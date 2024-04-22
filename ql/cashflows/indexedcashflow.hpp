@@ -73,12 +73,13 @@ namespace QuantLib {
         //@{
         void performCalculations() const override;
         //@}
+      protected:
+        mutable Real amount_;
       private:
         Real notional_;
         ext::shared_ptr<Index> index_;
         Date baseDate_, fixingDate_, paymentDate_;
         bool growthOnly_;
-        mutable Real amount_;
     };
 
 

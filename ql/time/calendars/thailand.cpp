@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2018 Matthias Groncki
- Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2023, 2024 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -288,6 +288,7 @@ namespace QuantLib {
 
         if ((y == 2024) && ((d == 26 && m == February)    // Substitution for Makha Bucha Day (Saturday 24th February 2024)
                             || (d == 8 && m == April)     // Substitution for Chakri Memorial Day (Saturday 6th April 2024)
+                            || (d == 12 && m == April)    // Additional holiday in relation to the Songkran festival
                             || (d == 6 && m == May)       // Substitution for Coronation Day (Saturday 4th May 2024)
                             || (d == 22 && m == May)      // Wisakha Bucha Day
                             || (d == 22 && m == July)     // Substitution for Asarnha Bucha Day (Saturday 20th July 2024)

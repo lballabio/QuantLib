@@ -41,7 +41,7 @@ namespace QuantLib {
       public:
         FdmAffineModelSwapInnerValue(ext::shared_ptr<ModelType> disModel,
                                      ext::shared_ptr<ModelType> fwdModel,
-                                     const ext::shared_ptr<VanillaSwap>& swap,
+                                     const ext::shared_ptr<FixedVsFloatingSwap>& swap,
                                      std::map<Time, Date> exerciseDates,
                                      ext::shared_ptr<FdmMesher> mesher,
                                      Size direction);
@@ -58,7 +58,7 @@ namespace QuantLib {
         const ext::shared_ptr<ModelType> disModel_, fwdModel_;
 
         const ext::shared_ptr<IborIndex> index_;
-        const ext::shared_ptr<VanillaSwap> swap_;
+        const ext::shared_ptr<FixedVsFloatingSwap> swap_;
         const std::map<Time, Date> exerciseDates_;
         const ext::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
@@ -68,21 +68,21 @@ namespace QuantLib {
     inline FdmAffineModelSwapInnerValue<ModelType>::FdmAffineModelSwapInnerValue(
         ext::shared_ptr<ModelType> disModel,
         ext::shared_ptr<ModelType> fwdModel,
-        const ext::shared_ptr<VanillaSwap>& swap,
+        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
         std::map<Time, Date> exerciseDates,
         ext::shared_ptr<FdmMesher> mesher,
         Size direction)
     : disModel_(std::move(disModel)), fwdModel_(std::move(fwdModel)), index_(swap->iborIndex()),
-      swap_(ext::shared_ptr<VanillaSwap>(new VanillaSwap(swap->type(),
-                                                         swap->nominal(),
-                                                         swap->fixedSchedule(),
-                                                         swap->fixedRate(),
-                                                         swap->fixedDayCount(),
-                                                         swap->floatingSchedule(),
-                                                         swap->iborIndex()->clone(fwdTs_),
-                                                         swap->spread(),
-                                                         swap->floatingDayCount(),
-                                                         swap->paymentConvention()))),
+      swap_(ext::make_shared<VanillaSwap>(swap->type(),
+                                          swap->nominal(),
+                                          swap->fixedSchedule(),
+                                          swap->fixedRate(),
+                                          swap->fixedDayCount(),
+                                          swap->floatingSchedule(),
+                                          swap->iborIndex()->clone(fwdTs_),
+                                          swap->spread(),
+                                          swap->floatingDayCount(),
+                                          swap->paymentConvention())),
       exerciseDates_(std::move(exerciseDates)), mesher_(std::move(mesher)), direction_(direction) {}
 
     template <class ModelType> inline

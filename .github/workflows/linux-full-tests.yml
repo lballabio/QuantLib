@@ -110,11 +110,17 @@ jobs:
             tag: mantic
             cc: clang
             cxx: clang++
-          - name: "Clang 17"
+          - name: "Clang 17 (Boost 1.84)"
             shortname: clang17
+            tag: clang-17
+            cc: clang
+            cxx: clang++
+          - name: "Clang 18"
+            shortname: clang18
             tag: noble
             cc: clang
             cxx: clang++
+            cxxflags: -Wno-deprecated-declarations
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling

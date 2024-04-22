@@ -2073,6 +2073,7 @@
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp" />
+    <ClCompile Include="ql\experimental\math\laplaceinterpolation.cpp" />
     <ClCompile Include="ql\experimental\math\multidimintegrator.cpp" />
     <ClCompile Include="ql\experimental\math\multidimquadrature.cpp" />
     <ClCompile Include="ql\experimental\math\particleswarmoptimization.cpp" />

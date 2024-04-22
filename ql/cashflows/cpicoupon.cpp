@@ -255,14 +255,13 @@ namespace QuantLib {
             return notional() * (I1 / I0);
     }
 
-    CPILeg::CPILeg(const Schedule& schedule,
+    CPILeg::CPILeg(Schedule schedule,
                    ext::shared_ptr<ZeroInflationIndex> index,
                    const Real baseCPI,
                    const Period& observationLag)
-    : schedule_(schedule), index_(std::move(index)), baseCPI_(baseCPI),
+    : schedule_(std::move(schedule)), index_(std::move(index)), baseCPI_(baseCPI),
       observationLag_(observationLag), paymentDayCounter_(Thirty360(Thirty360::BondBasis)),
-      paymentCalendar_(schedule.calendar()),
-
+      paymentCalendar_(schedule_.calendar()),
       spreads_(std::vector<Real>(1, 0)), baseDate_(Null<Date>()) {}
 
 
@@ -366,15 +365,15 @@ namespace QuantLib {
         Size n = schedule_.size()-1;
         Leg leg;
         leg.reserve(n+1);   // +1 for notional, we always have some sort ...
-        
+
         Date baseDate = baseDate_;
         // BaseDate and baseCPI are not given, use the first date as startDate and the baseFixingg
         // should be at startDate - observationLag
-        
+
         if (n>0) {
             QL_REQUIRE(!fixedRates_.empty() || !spreads_.empty(),
                        "no fixedRates or spreads given");
-            
+
             if (baseDate_ == Null<Date>() && baseCPI_ == Null<Real>()) {
                 baseDate = schedule_.date(0) - observationLag_;
             }
@@ -435,7 +434,7 @@ namespace QuantLib {
         Date paymentDate = paymentCalendar_.adjust(schedule_.date(n), paymentAdjustment_);
         leg.push_back(ext::make_shared<CPICashFlow>
                           (detail::get(notionals_, n, 0.0), index_,
-                           baseDate, baseCPI_, 
+                           baseDate, baseCPI_,
                            schedule_.date(n), observationLag_, observationInterpolation_,
                            paymentDate, subtractInflationNominal_));
 
@@ -446,4 +445,3 @@ namespace QuantLib {
     }
 
 }
-

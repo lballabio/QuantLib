@@ -11,8 +11,8 @@ set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANT
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
-set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01340000")
+set(PACKAGE_VERSION       "${QUANTLIB_VERSION}")
+set(PACKAGE_VERSION_HEX   "0x013400f0")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -230,6 +230,9 @@ set(exec_prefix "\${prefix}")
 set(includedir "\${prefix}/include")
 set(libdir "\${exec_prefix}/lib")
 configure_file(quantlib-config.in quantlib-config @ONLY)
+configure_file(quantlib.pc.in quantlib.pc @ONLY)
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/quantlib-config TYPE BIN)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/quantlib.pc DESTINATION lib/pkgconfig)
 
 include(Platform)
 

@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         AmortizingFloatingRateBond(Natural settlementDays,
                                    const std::vector<Real>& notional,
-                                   const Schedule& schedule,
+                                   Schedule schedule,
                                    const ext::shared_ptr<IborIndex>& index,
                                    const DayCounter& accrualDayCounter,
                                    BusinessDayConvention paymentConvention = Following,
@@ -54,7 +54,7 @@ namespace QuantLib {
                                    const std::vector<Real>& redemptions = { 100.0 },
                                    Integer paymentLag = 0);
     };
-  
+
 }
 
 #endif

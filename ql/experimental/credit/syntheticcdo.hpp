@@ -42,8 +42,8 @@ namespace QuantLib {
 
     //! Synthetic Collateralized Debt Obligation
     /*!
-      The instrument prices a mezzanine CDO tranche with loss given default 
-      between attachment point \f$ D_1\f$ and detachment point 
+      The instrument prices a mezzanine CDO tranche with loss given default
+      between attachment point \f$ D_1\f$ and detachment point
       \f$ D_2 > D_1 \f$.
 
       For purchased protection, the instrument value is given by the difference
@@ -53,12 +53,12 @@ namespace QuantLib {
 
       The protection leg is priced as follows:
 
-      - Build the probability distribution for volume of defaults \f$ L \f$ 
-      (before recovery) or Loss Given Default \f$ LGD = (1-r)\,L \f$ at 
+      - Build the probability distribution for volume of defaults \f$ L \f$
+      (before recovery) or Loss Given Default \f$ LGD = (1-r)\,L \f$ at
       times/dates \f$ t_i, i=1, ..., N\f$ (premium schedule times with
       intermediate steps)
 
-      - Determine the expected value 
+      - Determine the expected value
       \f$ E_i = E_{t_i}\,\left[Pay(LGD)\right] \f$
       of the protection payoff \f$ Pay(LGD) \f$  at each time \f$ t_i\f$ where
       \f[
@@ -76,7 +76,7 @@ namespace QuantLib {
       where \f$ d_i\f$ is the discount factor at time/date \f$ t_i \f$
 
       The premium is paid on the protected notional amount, initially
-      \f$ D_2 - D_1. \f$ This notional amount is reduced by the expected 
+      \f$ D_2 - D_1. \f$ This notional amount is reduced by the expected
       protection
       payments \f$ E_i \f$ at times \f$ t_i, \f$ so that the premium value is
       calculated as
@@ -117,7 +117,7 @@ namespace QuantLib {
         */
         SyntheticCDO (const ext::shared_ptr<Basket>& basket,
                       Protection::Side side,
-                      const Schedule& schedule,
+                      Schedule schedule,
                       Rate upfrontRate,
                       Rate runningRate,
                       const DayCounter& dayCounter,
@@ -137,7 +137,7 @@ namespace QuantLib {
           Total outstanding tranche notional, not wiped out
         */
         Real remainingNotional() const;
-        /*! The number of times the contract contains the portfolio tranched 
+        /*! The number of times the contract contains the portfolio tranched
                 notional.
         */
         Real leverageFactor() const {
@@ -148,12 +148,12 @@ namespace QuantLib {
             return ext::dynamic_pointer_cast<FixedRateCoupon>(
                 normalizedLeg_.back())->accrualEndDate();
         }
-        /*! The Gaussian Copula LHP implied correlation that makes the 
+        /*! The Gaussian Copula LHP implied correlation that makes the
             contract zero value. This is for a flat correlation along
             time and portfolio loss level.
         */
         Real implicitCorrelation(const std::vector<Real>& recoveries,
-            const Handle<YieldTermStructure>& discountCurve, 
+            const Handle<YieldTermStructure>& discountCurve,
             Real targetNPV = 0.,
             Real accuracy = 1.0e-3) const;
 
@@ -222,8 +222,8 @@ namespace QuantLib {
 
 
     //! CDO base engine
-    class SyntheticCDO::engine : 
-        public GenericEngine<SyntheticCDO::arguments, 
+    class SyntheticCDO::engine :
+        public GenericEngine<SyntheticCDO::arguments,
                              SyntheticCDO::results> { };
 
 }

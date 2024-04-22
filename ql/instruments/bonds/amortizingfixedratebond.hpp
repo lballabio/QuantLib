@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         AmortizingFixedRateBond(Natural settlementDays,
                                 const std::vector<Real>& notionals,
-                                const Schedule& schedule,
+                                Schedule schedule,
                                 const std::vector<Rate>& coupons,
                                 const DayCounter& accrualDayCounter,
                                 BusinessDayConvention paymentConvention = Following,

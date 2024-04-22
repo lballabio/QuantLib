@@ -89,7 +89,7 @@ namespace QuantLib {
     //! helper class building a sequence of fixed rate coupons
     class FixedRateLeg {
       public:
-        FixedRateLeg(const Schedule& schedule);
+        FixedRateLeg(Schedule schedule);
         FixedRateLeg& withNotionals(Real);
         FixedRateLeg& withNotionals(const std::vector<Real>&);
         FixedRateLeg& withCouponRates(Rate,

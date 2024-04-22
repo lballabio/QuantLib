@@ -4,7 +4,7 @@ jobs:
   cmake-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
       run: |
         sudo apt update
@@ -31,7 +31,7 @@ jobs:
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
       run: |
         sudo apt update
@@ -56,7 +56,7 @@ jobs:
   cmake-win:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -68,10 +68,13 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
         Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
-        choco install -y ninja
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -90,7 +93,7 @@ jobs:
   cmake-win-dynamic-runtime:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -102,10 +105,13 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
         Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
-        choco install -y ninja
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -124,7 +130,7 @@ jobs:
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -136,10 +142,13 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.84.0/binaries/boost_1_84_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
         Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
-        choco install -y ninja
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -156,8 +165,10 @@ jobs:
   cmake-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
         brew install boost ccache ninja
     - name: Cache

@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/legacy/libormarketmodels/lfmhullwhiteparam.hpp>
 #include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>

@@ -48,7 +48,14 @@ namespace QuantLib {
         Real value_;
     };
 
+    RelinkableHandle<Quote> makeQuoteHandle(Real value);
+
+
     // inline definitions
+
+    inline RelinkableHandle<Quote> makeQuoteHandle(Real value) {
+        return RelinkableHandle<Quote>(ext::make_shared<SimpleQuote>(value));
+    }
 
     inline SimpleQuote::SimpleQuote(Real value)
     : value_(value) {}

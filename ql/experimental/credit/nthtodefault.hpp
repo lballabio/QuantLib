@@ -73,12 +73,12 @@ namespace QuantLib {
         class results;
         class engine;
 
-        //! This product is 'digital'; the basket might be tranched but this is 
+        //! This product is 'digital'; the basket might be tranched but this is
         //  not relevant to it.
         NthToDefault(const ext::shared_ptr<Basket>& basket,
                 Size n,
                 Protection::Side side,
-                const Schedule& premiumSchedule,
+                Schedule premiumSchedule,
                 Rate upfrontRate,
                 Rate premiumRate,
                 const DayCounter& dayCounter,
@@ -162,8 +162,8 @@ namespace QuantLib {
     };
 
     //! NTD base engine
-    class NthToDefault::engine : 
-        public GenericEngine<NthToDefault::arguments, 
+    class NthToDefault::engine :
+        public GenericEngine<NthToDefault::arguments,
                              NthToDefault::results> { };
 
 }

@@ -30,7 +30,7 @@ namespace QuantLib {
     CmsRateBond::CmsRateBond(
                            Natural settlementDays,
                            Real faceAmount,
-                           const Schedule& schedule,
+                           Schedule schedule,
                            const ext::shared_ptr<SwapIndex>& index,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        cashflows_ = CmsLeg(schedule, index)
+        cashflows_ = CmsLeg(std::move(schedule), index)
             .withNotionals(faceAmount)
             .withPaymentDayCounter(paymentDayCounter)
             .withPaymentAdjustment(paymentConvention)

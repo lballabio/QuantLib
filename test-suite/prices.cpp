@@ -35,10 +35,10 @@ BOOST_AUTO_TEST_CASE(testMidEquivalent) {
 
     using boost::test_tools::tolerance;
 
-    BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 4), tolerance(1e-14));
-    BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 4), tolerance(1e-14));
-    BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 0), tolerance(1e-14));
-    BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 0), tolerance(1e-14));
+    BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 4), tolerance<Real>(1e-14));
+    BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 4), tolerance<Real>(1e-14));
+    BOOST_TEST(1.5 == midEquivalent(1, 2, 3, 0), tolerance<Real>(1e-14));
+    BOOST_TEST(1.5 == midEquivalent(1, 2, 0, 0), tolerance<Real>(1e-14));
 
     BOOST_TEST(1 == midEquivalent(1, 0, 3, 4));
     BOOST_TEST(1 == midEquivalent(1, 0, 0, 4));
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(testMidSafe) {
 
     using boost::test_tools::tolerance;
 
-    BOOST_TEST(1.5 == midSafe(1, 2), tolerance(1e-14));
+    BOOST_TEST(1.5 == midSafe(1, 2), tolerance<Real>(1e-14));
 
     BOOST_CHECK_THROW(midSafe(0, 0), QuantLib::Error);
     BOOST_CHECK_THROW(midSafe(1, 0), QuantLib::Error);
