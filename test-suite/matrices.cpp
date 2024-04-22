@@ -898,6 +898,20 @@ BOOST_AUTO_TEST_CASE(testCholeskySolverFor) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testCholeskySolverForIncomplete) {
+    BOOST_TEST_MESSAGE("Testing CholeskySolverFor with incomplete matrix...");
+
+    const Size n = 4;
+
+    Matrix rho(n, n, 0.0);
+    rho[0][0] = rho[1][1] = Real(1);
+    rho[0][1] = rho[1][0] = 0.9;
+
+    const Matrix L = CholeskyDecomposition(rho, true);
+    QL_CHECK_CLOSE_MATRIX((L*transpose(L)), rho);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

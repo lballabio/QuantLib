@@ -66,8 +66,7 @@ namespace QuantLib {
                 -> Array {
 
                 Array x(processes_.size());
-                for (Size i=0; i < x.size(); ++i)
-                    x[i] = f(processes_[i]);
+                std::transform(processes_.begin(), processes_.end(), x.begin(), f);
 
                 return x;
             };
@@ -100,14 +99,14 @@ namespace QuantLib {
         );
 
         results_.value =
-            DengLiZhouSpreadEngine::calculate_vanilla_call(s, dr, dq, v, rho_, strike);
+            DengLiZhouSpreadEngine::calculate_vanilla_call(Log(s), dr, dq, v, rho_, strike);
     }
 
     Real DengLiZhouSpreadEngine::calculate_vanilla_call(
-        const Array& s, const Array& dr, const Array& dq,
+        const Array& x, const Array& dr, const Array& dq,
         const Array& v, const Matrix& rho, Real K) {
 
-        const Array mu = Log(s*dq/dr[0]) - 0.5 * v;
+        const Array mu = x + Log(dq/dr[0]) - 0.5 * v;
         const Array nu = Sqrt(v);
 
         const Real R = std::accumulate(
@@ -115,27 +114,68 @@ namespace QuantLib {
             [](Real a, Real b) -> Real { return a + std::exp(b); }
         );
 
-        const Size N = s.size()-1;
+        const Size N = x.size()-1;
 
         Matrix sig11(N, N);
         for (Size i=0; i < N; ++i)
             std::copy(rho.row_begin(i+1)+1, rho.row_end(i+1), sig11.row_begin(i));
+        const Array sig10(rho.row_begin(0)+1, rho.row_end(0));
 
-        const Matrix c = CholeskyDecomposition(sig11, true);
+        const Matrix sqSig11 = pseudoSqrt(sig11, SalvagingAlgorithm::Principal);
 
+        const Array sig11Inv10 = CholeskySolveFor(CholeskyDecomposition(sig11), sig10);
 
-        const Matrix sq_sig11 = pseudoSqrt(sig11, SalvagingAlgorithm::Principal);
+        const Real sqSig_xy = std::sqrt(1.0 - DotProduct(sig10, sig11Inv10));
 
-        //const Real a = -0.5/std::sqrt( sig11)
+        const Real a = -0.5/sqSig_xy;
         Matrix E(N, N);
         for (Size i=1; i <= N; ++i)
             for (Size j=i; j <= N; ++j)
                 E(i-1, j-1) = E(j-1, i-1) =
-                    - nu[i]*nu[j]*std::exp(mu[i]+mu[j])/(nu[0]*squared(R + K))
-                    + ((i==j)? squared(nu[j])*std::exp(mu[j])/(nu[0]*(R+K)) : 0.0);
+                     a*(((i==j)? squared(nu[j])*std::exp(mu[j])/(nu[0]*(R+K)) : 0.0)
+                        -nu[i]*nu[j]*std::exp(mu[i]+mu[j])/(nu[0]*squared(R + K)) );
 
-        std::cout << std::setprecision(16) << E << std::endl
-                << sq_sig11 << std::endl;
+        const Matrix F = sqSig11*E*sqSig11;
+
+        Real trF(0), trF2(0);
+        for (Size i=0; i < N; ++i) {
+            trF += F[i][i];
+            trF2 += squared(F[i][i]) +
+                 2.0*std::accumulate(
+                     F.row_begin(i)+i+1, F.row_end(i), Real(0),
+                     [](Real a, Real b) -> Real {return a+b*b;}
+                 );
+        }
+
+        const Real c = -(std::log(R + K) - mu[0])/(nu[0]*sqSig_xy);
+
+        const Array d = (sig11Inv10
+            - Exp(Array(mu.begin()+1, mu.end()))*Array(nu.begin()+1,nu.end())/(nu[0]*(R+K)))/sqSig_xy;
+
+        const Array Esig10 = E*sig10;
+        const Matrix Esig11 = E*sig11;
+        const Array sig11d = sig11*d;
+
+        Array C(N+2);
+        C[0] = c + trF + nu[0]*sqSig_xy + nu[0]*DotProduct(sig10, d)
+             + squared(nu[0])*DotProduct(sig10, Esig10);
+        C[N+1] = c + trF;
+
+        for (Size k=1; k < N+1; ++k)
+            C[k] = c + trF + nu[k]*sig11d[k-1] + squared(nu[k])
+                * std::inner_product(sig11.row_begin(k-1), sig11.row_end(k-1),
+                                     Esig11.column_begin(k-1), 0.0);
+
+        std::vector<Array> D(N+2);
+        D[0] = sqSig11*(d + 2*nu[0]*Esig10);
+        D[N+1] = sqSig11*d;
+        for (Size k=1; k < N+1; ++k)
+            D[k] = sqSig11*(d + 2*nu[k]*Array(Esig11.column_begin(k-1), Esig11.column_end(k-1)));
+
+        std::cout << std::setprecision(16);
+        for (Size i=0; i < N+2; ++i)
+            std::cout << D[i] << std::endl;
+
         return 1.0;
     }
 }
