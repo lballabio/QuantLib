@@ -427,6 +427,7 @@ set(QL_SOURCES
     math/randomnumbers/sobolrsg.cpp
     math/randomnumbers/stochasticcollocationinvcdf.cpp
     math/randomnumbers/xoshiro256starstaruniformrng.cpp
+    math/randomnumbers/zigguratgaussianrng.cpp
     math/richardsonextrapolation.cpp
     math/rounding.cpp
     math/sampledcurve.cpp
@@ -1537,6 +1538,7 @@ set(QL_HEADERS
     math/randomnumbers/sobolrsg.hpp
     math/randomnumbers/stochasticcollocationinvcdf.hpp
     math/randomnumbers/xoshiro256starstaruniformrng.hpp
+    math/randomnumbers/zigguratgaussianrng.hpp
     math/richardsonextrapolation.hpp
     math/rounding.hpp
     math/sampledcurve.hpp
