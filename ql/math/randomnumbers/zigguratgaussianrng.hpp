@@ -25,6 +25,8 @@
 #define quantlib_ziggurat_gaussian_rng_h
 
 #include <ql/methods/montecarlo/sample.hpp>
+#include <functional>
+#include <utility>
 
 namespace QuantLib {
 
@@ -46,10 +48,13 @@ namespace QuantLib {
 
         Class RNG must implement the following interface:
         \code
+            Real nextReal() const;
             std::uint64_t nextInt64() const;
         \endcode
         Currently, Xoshiro256StarStarUniformRng is the only RNG supporting this.
     */
+    class ZigguratGaussianRngUtils;
+
     template <class RNG>
     class ZigguratGaussianRng {
       public:
@@ -62,15 +67,42 @@ namespace QuantLib {
         sample_type next() const { return {nextReal(), 1.0}; }
 
         //! return a random number from a Gaussian distribution
-        Real nextReal() const;
+        [[noreturn]] Real nextReal() const;
 
       private:
         RNG uint64Generator_;
+        ZigguratGaussianRngUtils utils_;
     };
+
     template <class RNG>
     inline Real ZigguratGaussianRng<RNG>::nextReal() const {
-        return 0.0;
+        while (true) {
+            std::uint64_t randomU64 = uint64Generator_.nextInt64();
+            auto i = randomU64;
+            return 0.0;
+        }
     }
+
+    class ZigguratGaussianRngUtils {
+        template <class RNG>
+        friend class ZigguratGaussianRng;
+
+        typedef Real ZigguratTable[257];
+
+      private:
+        Real pdf(Real x) const;
+
+        //! compute a random number in the tail by hand
+        Real zeroCase(Real u, const std::function<Real(void)>& uniformNextReal) const;
+
+        Real normR() const;
+        Real normX(int i) const;
+        Real normF(int i) const;
+
+        Real expR() const;
+        Real expX(int i) const;
+        Real expF(int i) const;
+    };
 }
 
 #endif
