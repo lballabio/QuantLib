@@ -28,6 +28,7 @@ jobs:
     # Set up build environment
     - name: Setup
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install -y libboost-dev
 

@@ -7,6 +7,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Setup
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install -y libboost-dev ccache ninja-build
     - name: Cache
@@ -34,6 +35,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Setup
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install -y libboost-all-dev ccache ninja-build
     - name: Cache
