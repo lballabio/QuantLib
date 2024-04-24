@@ -185,7 +185,7 @@ jobs:
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -GNinja -L
         cmake --build . --verbose
-        cmake --install .
+        sudo cmake --install .
     - name: Test
       run: |
-        quantlib-test-suite --log_level=message
+        DYLD_LIBRARY_PATH=/usr/local/lib quantlib-test-suite --log_level=message

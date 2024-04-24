@@ -9,9 +9,9 @@ jobs:
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       run: |
-        brew install automake boost doxygen graphviz
+        brew install automake autoconf libtool boost doxygen graphviz
         ./autogen.sh
-        ./configure
+        ./configure --with-boost-include=$(brew --prefix)/include
     - name: Doxygen version
       run: |
         doxygen --version
