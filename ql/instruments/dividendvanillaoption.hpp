@@ -17,67 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file dividendvanillaoption.hpp
-    \brief Vanilla option on a single asset with discrete dividends
-*/
-
 #ifndef quantlib_dividend_vanilla_option_hpp
 #define quantlib_dividend_vanilla_option_hpp
 
-#include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/dividendschedule.hpp>
-#include <ql/instruments/payoffs.hpp>
+/* Deprecated in version 1.35 */
 
-namespace QuantLib {
-
-    class GeneralizedBlackScholesProcess;
-
-    //! Single-asset vanilla option (no barriers) with discrete dividends
-    /*! \deprecated Use VanillaOption instead and pass the dividends
-                    to the desired engine.
-                    Deprecated in version 1.30.
-    */
-    class QL_DEPRECATED DividendVanillaOption : public OneAssetOption {
-      public:
-        class arguments;
-        class engine;
-        DividendVanillaOption(
-                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                      const ext::shared_ptr<Exercise>& exercise,
-                      const std::vector<Date>& dividendDates,
-                      const std::vector<Real>& dividends);
-        /*! \warning see VanillaOption for notes on implied-volatility
-                     calculation.
-        */
-        Volatility impliedVolatility(
-             Real price,
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Real accuracy = 1.0e-4,
-             Size maxEvaluations = 100,
-             Volatility minVol = 1.0e-7,
-             Volatility maxVol = 4.0) const;
-      protected:
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      private:
-        DividendSchedule cashFlow_;
-    };
-
-    class DividendVanillaOption::arguments : public OneAssetOption::arguments {
-      public:
-        DividendSchedule cashFlow;
-        arguments() = default;
-        void validate() const override;
-    };
-
-    QL_DEPRECATED_DISABLE_WARNING
-    class DividendVanillaOption::engine
-        : public GenericEngine<DividendVanillaOption::arguments,
-                               DividendVanillaOption::results> {};
-    QL_DEPRECATED_ENABLE_WARNING
-
-}
-
+#pragma message("Warning: this file will disappear in a future release; do not include it.")
 
 #endif
 

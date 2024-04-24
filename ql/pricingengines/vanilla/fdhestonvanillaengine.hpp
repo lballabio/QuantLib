@@ -26,7 +26,7 @@
 #ifndef quantlib_fd_heston_vanilla_engine_hpp
 #define quantlib_fd_heston_vanilla_engine_hpp
 
-#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
@@ -37,8 +37,6 @@ namespace QuantLib {
 
     class FdmQuantoHelper;
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     //! Finite-differences Heston vanilla option engine
     /*! \ingroup vanillaengines
 
@@ -48,9 +46,8 @@ namespace QuantLib {
     */
     class FdHestonVanillaEngine
         : public GenericModelEngine<HestonModel,
-                                    DividendVanillaOption::arguments,
-                                    DividendVanillaOption::results> {
-        QL_DEPRECATED_ENABLE_WARNING
+                                    VanillaOption::arguments,
+                                    VanillaOption::results> {
       public:
         explicit
         FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
@@ -104,7 +101,6 @@ namespace QuantLib {
 
       private:
         DividendSchedule dividends_;
-        bool explicitDividends_;
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
@@ -112,11 +108,9 @@ namespace QuantLib {
         const Real mixingFactor_;
 
         std::vector<Real> strikes_;
-        QL_DEPRECATED_DISABLE_WARNING
-        mutable std::vector<std::pair<DividendVanillaOption::arguments,
-                                      DividendVanillaOption::results> >
+        mutable std::vector<std::pair<VanillaOption::arguments,
+                                      VanillaOption::results> >
                                                             cachedArgs2results_;
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
     class MakeFdHestonVanillaEngine {
@@ -147,7 +141,6 @@ namespace QuantLib {
       private:
         ext::shared_ptr<HestonModel> hestonModel_;
         DividendSchedule dividends_;
-        bool explicitDividends_ = false;
         Size tGrid_ = 100, xGrid_ = 100, vGrid_ = 50, dampingSteps_ = 0;
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
         ext::shared_ptr<LocalVolTermStructure> leverageFct_;

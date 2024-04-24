@@ -45,7 +45,7 @@ namespace QuantLib {
         const FdmSchemeDesc& schemeDesc,
         bool localVol,
         Real illegalLocalVolOverwrite)
-    : process_(std::move(process)), explicitDividends_(false),
+    : process_(std::move(process)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
@@ -62,7 +62,7 @@ namespace QuantLib {
         const FdmSchemeDesc& schemeDesc,
         bool localVol,
         Real illegalLocalVolOverwrite)
-    : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
+    : process_(std::move(process)), dividends_(std::move(dividends)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
@@ -71,11 +71,6 @@ namespace QuantLib {
     }
 
     void FdBlackScholesBarrierEngine::calculate() const {
-
-        // dividends will eventually be moved out of arguments, but for now we need the switch
-        QL_DEPRECATED_DISABLE_WARNING
-        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -109,7 +104,7 @@ namespace QuantLib {
                 xGrid_, process_, maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividendSchedule));
+                dividends_));
         
         const ext::shared_ptr<FdmMesher> mesher (
             ext::make_shared<FdmMesherComposite>(equityMesher));
@@ -124,11 +119,11 @@ namespace QuantLib {
 
         // 3.1 Step condition if discrete dividends
         ext::shared_ptr<FdmDividendHandler> dividendCondition(
-            ext::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
+            ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process_->riskFreeRate()->referenceDate(),
                                    process_->riskFreeRate()->dayCounter(), 0));
 
-        if (!dividendSchedule.empty()) {
+        if (!dividends_.empty()) {
             stepConditions.push_back(dividendCondition);
             std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
             // this effectively excludes times after maturity
@@ -185,7 +180,7 @@ namespace QuantLib {
             
             vanillaOption.setPricingEngine(
                 ext::make_shared<FdBlackScholesVanillaEngine>(
-                        process_, dividendSchedule, tGrid_, xGrid_,
+                        process_, dividends_, tGrid_, xGrid_,
                         0, // dampingSteps
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
 
@@ -200,7 +195,7 @@ namespace QuantLib {
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
 
             rebateOption.setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
-                            process_, dividendSchedule, tGrid_, std::max(min_grid_size, xGrid_/5), 
+                            process_, dividends_, tGrid_, std::max(min_grid_size, xGrid_/5), 
                             rebateDampingSteps, schemeDesc_, localVol_, 
                             illegalLocalVolOverwrite_));
 

@@ -35,8 +35,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
                                                  Size tGrid,
                                                  Size xGrid,
@@ -46,9 +44,9 @@ namespace QuantLib {
                                                  ext::shared_ptr<LocalVolTermStructure> leverageFct,
                                                  const Real mixingFactor)
     : GenericModelEngine<HestonModel,
-                         DividendBarrierOption::arguments,
-                         DividendBarrierOption::results>(model),
-      explicitDividends_(false), tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
+                         BarrierOption::arguments,
+                         BarrierOption::results>(model),
+      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
     FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
@@ -61,20 +59,13 @@ namespace QuantLib {
                                                  ext::shared_ptr<LocalVolTermStructure> leverageFct,
                                                  const Real mixingFactor)
     : GenericModelEngine<HestonModel,
-                         DividendBarrierOption::arguments,
-                         DividendBarrierOption::results>(model),
-      dividends_(std::move(dividends)), explicitDividends_(true),
+                         BarrierOption::arguments,
+                         BarrierOption::results>(model),
+      dividends_(std::move(dividends)),
       tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
-    QL_DEPRECATED_ENABLE_WARNING
-
     void FdHestonBarrierEngine::calculate() const {
-
-        // dividends will eventually be moved out of arguments, but for now we need the switch
-        QL_DEPRECATED_DISABLE_WARNING
-        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<HestonProcess>& process = model_->process();
@@ -112,7 +103,7 @@ namespace QuantLib {
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividendSchedule));
+                dividends_));
 
         const ext::shared_ptr<FdmMesher> mesher (
 			ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
@@ -127,11 +118,11 @@ namespace QuantLib {
 
         // 3.1 Step condition if discrete dividends
         ext::shared_ptr<FdmDividendHandler> dividendCondition(
-			ext::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
+			ext::make_shared<FdmDividendHandler>(dividends_, mesher,
                                    process->riskFreeRate()->referenceDate(),
                                    process->riskFreeRate()->dayCounter(), 0));
 
-        if (!dividendSchedule.empty()) {
+        if (!dividends_.empty()) {
             stepConditions.push_back(dividendCondition);
             std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
             // this effectively excludes times after maturity
@@ -187,7 +178,7 @@ namespace QuantLib {
             // Calculate the vanilla option
             VanillaOption vanillaOption(payoff, arguments_.exercise);
             vanillaOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-				ext::make_shared<FdHestonVanillaEngine>(*model_, dividendSchedule,
+				ext::make_shared<FdHestonVanillaEngine>(*model_, dividends_,
                                                         tGrid_, xGrid_,
                                                         vGrid_, dampingSteps_,
                                                         schemeDesc_)));
@@ -201,7 +192,7 @@ namespace QuantLib {
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
             rebateOption.setPricingEngine(
-                ext::make_shared<FdHestonRebateEngine>(*model_, dividendSchedule,
+                ext::make_shared<FdHestonRebateEngine>(*model_, dividends_,
                                                        tGrid_,
                                                        std::max(xGridMin, xGrid_/4), 
                                                        std::max(vGridMin, vGrid_/4),

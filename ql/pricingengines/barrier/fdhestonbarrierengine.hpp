@@ -31,11 +31,9 @@
 #include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
-#include <ql/instruments/dividendbarrieroption.hpp>
+#include <ql/instruments/barrieroption.hpp>
 
 namespace QuantLib {
-
-    QL_DEPRECATED_DISABLE_WARNING
 
     //! Finite-differences Heston barrier-option engine
     /*! \ingroup barrierengines
@@ -46,9 +44,8 @@ namespace QuantLib {
     */
     class FdHestonBarrierEngine
         : public GenericModelEngine<HestonModel,
-                                    DividendBarrierOption::arguments,
-                                    DividendBarrierOption::results> {
-        QL_DEPRECATED_ENABLE_WARNING
+                                    BarrierOption::arguments,
+                                    BarrierOption::results> {
       public:
         explicit FdHestonBarrierEngine(
             const ext::shared_ptr<HestonModel>& model,
@@ -75,7 +72,6 @@ namespace QuantLib {
 
       private:
         DividendSchedule dividends_;
-        bool explicitDividends_;
         Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         FdmSchemeDesc schemeDesc_;
         ext::shared_ptr<LocalVolTermStructure> leverageFct_;

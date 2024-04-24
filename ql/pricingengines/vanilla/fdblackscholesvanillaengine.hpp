@@ -27,15 +27,13 @@
 #define quantlib_fd_black_scholes_vanilla_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
     class FdmQuantoHelper;
     class GeneralizedBlackScholesProcess;
-
-    QL_DEPRECATED_DISABLE_WARNING
 
     //! Finite-differences Black Scholes vanilla option engine
     /*! \ingroup vanillaengines
@@ -44,8 +42,7 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
-    class FdBlackScholesVanillaEngine : public DividendVanillaOption::engine {
-        QL_DEPRECATED_ENABLE_WARNING
+    class FdBlackScholesVanillaEngine : public VanillaOption::engine {
       public:
         enum CashDividendModel { Spot, Escrowed };
 
@@ -98,7 +95,6 @@ namespace QuantLib {
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         DividendSchedule dividends_;
-        bool explicitDividends_;
         Size tGrid_, xGrid_, dampingSteps_;
         FdmSchemeDesc schemeDesc_;
         bool localVol_;
@@ -139,7 +135,6 @@ namespace QuantLib {
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         DividendSchedule dividends_;
-        bool explicitDividends_ = false;
         Size tGrid_ = 100, xGrid_ = 100, dampingSteps_ = 0;
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
         bool localVol_ = false;

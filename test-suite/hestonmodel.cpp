@@ -22,8 +22,8 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-#include <ql/instruments/dividendbarrieroption.hpp>
-#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
@@ -715,33 +715,8 @@ BOOST_AUTO_TEST_CASE(testFdVanillaWithDividendsVsCached, *precondition(if_speed(
         dividends.push_back(1.0);
     }
 
-    QL_DEPRECATED_DISABLE_WARNING
-    DividendVanillaOption divOption(payoff, exercise,
-                                    dividendDates, dividends);
-    QL_DEPRECATED_ENABLE_WARNING
     auto process = ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.04, 1.0, 0.04, 0.001, 0.0);
-    divOption.setPricingEngine(
-        MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
-            .withTGrid(200)
-            .withXGrid(400)
-            .withVGrid(100)
-        );
-
-    Real calculated = divOption.NPV();
-    // Value calculated with an independent FD framework, validated with
-    // an independent MC framework
-    Real expected = 12.946;
-    Real error = std::fabs(calculated - expected);
-    Real tolerance = 5.0e-3;
-
-    if (error > tolerance) {
-        BOOST_FAIL("failed to reproduce discrete dividend price with FD engine"
-                   << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected
-                   << "\n    error:      " << std::scientific << error);
-    }
-
 
     VanillaOption option(payoff, exercise);
     option.setPricingEngine(
@@ -752,8 +727,12 @@ BOOST_AUTO_TEST_CASE(testFdVanillaWithDividendsVsCached, *precondition(if_speed(
         .withVGrid(100)
     );
 
-    calculated = option.NPV();
-    error = std::fabs(calculated - expected);
+    Real calculated = option.NPV();
+    // Value calculated with an independent FD framework, validated with
+    // an independent MC framework
+    Real expected = 12.946;
+    Real error = std::fabs(calculated - expected);
+    Real tolerance = 5.0e-3;
 
     if (error > tolerance) {
         BOOST_FAIL("failed to reproduce discrete dividend price with FD engine"
