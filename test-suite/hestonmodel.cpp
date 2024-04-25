@@ -689,7 +689,7 @@ BOOST_AUTO_TEST_CASE(testFdVanillaVsCached) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testFdVanillaWithDividendsVsCached, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testFdVanillaWithDividendsVsCached) {
     BOOST_TEST_MESSAGE("Testing FD vanilla Heston engine for discrete dividends...");
 
     Date settlementDate(27, December, 2004);
