@@ -18,9 +18,10 @@
 */
 
 #include "toplevelfixture.hpp"
-#include "utilities.hpp"
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <ql/math/randomnumbers/zigguratgaussianrng.hpp>
+#include <bitset>
+#include <iostream>
 #include <numeric>
 
 using namespace QuantLib;
@@ -57,6 +58,14 @@ BOOST_AUTO_TEST_CASE(testMeanAndStdDevOfNextReal) {
     if (stdDevError > 0.00005) {
         BOOST_ERROR("Standard deviation " << stdDev << " for seed 1 is not close to 1.");
     }
+}
+
+BOOST_AUTO_TEST_CASE(testBitsShifting) {
+    std::uint64_t uint64 = 0xffffffffffffffff - 0xffffffffffffff - 1 + 25;
+    BOOST_TEST_MESSAGE("" << std::bitset<64>(uint64) << " : " << uint64);
+    BOOST_TEST_MESSAGE("" << std::bitset<64>(uint64 >> 8) << " : " << (uint64 >> 8));
+    BOOST_TEST_MESSAGE("" << std::bitset<64>(uint64 & 0xff) << " : " << (uint64 & 0xff));
+    BOOST_TEST_MESSAGE("" << std::bitset<64>(uint64 & 0xff) << " : " << (int)(uint64 & 0xff));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
