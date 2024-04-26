@@ -132,7 +132,7 @@ namespace QuantLib {
         bool isFloored_, isCapped_;
         Rate cap_, floor_;
       private:
-        virtual void setCommon(Rate cap, Rate floor);
+        void setCommon(Rate cap, Rate floor);
     };
 
 }
