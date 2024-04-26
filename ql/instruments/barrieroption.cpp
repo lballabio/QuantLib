@@ -21,7 +21,6 @@
 
 #include <ql/exercise.hpp>
 #include <ql/instruments/barrieroption.hpp>
-#include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
@@ -47,16 +46,6 @@ namespace QuantLib {
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier = barrier_;
         moreArgs->rebate = rebate_;
-
-        /* this is a workaround in case an engine is used for both barrier
-           and dividend options.  The dividends might have been set by another
-           instrument and need to be cleared. */
-        QL_DEPRECATED_DISABLE_WARNING
-        auto* arguments = dynamic_cast<DividendBarrierOption::arguments*>(args);
-        if (arguments != nullptr) {
-            arguments->cashFlow.clear();
-        }
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
 

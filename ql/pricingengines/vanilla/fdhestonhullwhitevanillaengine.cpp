@@ -33,8 +33,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     FdHestonHullWhiteVanillaEngine::FdHestonHullWhiteVanillaEngine(
         const ext::shared_ptr<HestonModel>& hestonModel,
         ext::shared_ptr<HullWhiteProcess> hwProcess,
@@ -47,9 +45,9 @@ namespace QuantLib {
         bool controlVariate,
         const FdmSchemeDesc& schemeDesc)
     : GenericModelEngine<HestonModel,
-                         DividendVanillaOption::arguments,
-                         DividendVanillaOption::results>(hestonModel),
-      hwProcess_(std::move(hwProcess)), explicitDividends_(false),
+                         VanillaOption::arguments,
+                         VanillaOption::results>(hestonModel),
+      hwProcess_(std::move(hwProcess)),
       corrEquityShortRate_(corrEquityShortRate), tGrid_(tGrid),
       xGrid_(xGrid), vGrid_(vGrid), rGrid_(rGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), controlVariate_(controlVariate) {}
@@ -67,21 +65,14 @@ namespace QuantLib {
         bool controlVariate,
         const FdmSchemeDesc& schemeDesc)
     : GenericModelEngine<HestonModel,
-                         DividendVanillaOption::arguments,
-                         DividendVanillaOption::results>(hestonModel),
-      hwProcess_(std::move(hwProcess)), dividends_(std::move(dividends)), explicitDividends_(true),
+                         VanillaOption::arguments,
+                         VanillaOption::results>(hestonModel),
+      hwProcess_(std::move(hwProcess)), dividends_(std::move(dividends)),
       corrEquityShortRate_(corrEquityShortRate), tGrid_(tGrid),
       xGrid_(xGrid), vGrid_(vGrid), rGrid_(rGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), controlVariate_(controlVariate) {}
 
-    QL_DEPRECATED_ENABLE_WARNING
-
     void FdHestonHullWhiteVanillaEngine::calculate() const {
-
-        // dividends will eventually be moved out of arguments, but for now we need the switch
-        QL_DEPRECATED_DISABLE_WARNING
-        const DividendSchedule& passedDividends = explicitDividends_ ? dividends_ : arguments_.cashFlow;
-        QL_DEPRECATED_ENABLE_WARNING
   
         // 1. cache lookup for precalculated results
         for (auto& cachedArgs2result : cachedArgs2results_) {
@@ -95,7 +86,7 @@ namespace QuantLib {
 
                 if ((p1 != nullptr) && p1->strike() == p2->strike() &&
                     p1->optionType() == p2->optionType()) {
-                    QL_REQUIRE(passedDividends.empty(),
+                    QL_REQUIRE(dividends_.empty(),
                                "multiple strikes engine does not work with discrete dividends");
                     results_ = cachedArgs2result.second;
                     return;
@@ -130,10 +121,10 @@ namespace QuantLib {
                       maturity, payoff->strike(),
                       Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                       std::pair<Real, Real>(payoff->strike(), 0.1),
-                      passedDividends));
+                      dividends_));
         }
         else {
-            QL_REQUIRE(passedDividends.empty(),
+            QL_REQUIRE(dividends_.empty(),
                        "multiple strikes engine does not work with discrete dividends");
             equityMesher = ext::shared_ptr<Fdm1dMesher>(
                 new FdmBlackScholesMultiStrikeMesher(
@@ -163,7 +154,7 @@ namespace QuantLib {
         // 4. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
-                                passedDividends, arguments_.exercise, 
+                                dividends_, arguments_.exercise, 
                                 mesher, calculator, 
                                 hestonProcess->riskFreeRate()->referenceDate(),
                                 hestonProcess->riskFreeRate()->dayCounter());
@@ -197,10 +188,7 @@ namespace QuantLib {
                     payoff->optionType(), strikes_[i]);
             const Real d = payoff->strike()/strikes_[i];
 
-            QL_DEPRECATED_DISABLE_WARNING
-            DividendVanillaOption::results& 
-                                results = cachedArgs2results_[i].second;
-            QL_DEPRECATED_ENABLE_WARNING
+            VanillaOption::results& results = cachedArgs2results_[i].second;
             results.value = solver->valueAt(spot*d, v0, 0)/d;
             results.delta = solver->deltaAt(spot*d, v0, 0, spot*d*0.01);
             results.gamma = solver->gammaAt(spot*d, v0, 0, spot*d*0.01)*d;
@@ -243,11 +231,9 @@ namespace QuantLib {
     
     void FdHestonHullWhiteVanillaEngine::update() {
         cachedArgs2results_.clear();
-        QL_DEPRECATED_DISABLE_WARNING
         GenericModelEngine<HestonModel,
-                           DividendVanillaOption::arguments,
-                           DividendVanillaOption::results>::update();
-        QL_DEPRECATED_ENABLE_WARNING
+                           VanillaOption::arguments,
+                           VanillaOption::results>::update();
     }
 
     void FdHestonHullWhiteVanillaEngine::enableMultipleStrikesCaching(

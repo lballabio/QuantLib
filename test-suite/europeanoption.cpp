@@ -1696,47 +1696,6 @@ BOOST_AUTO_TEST_CASE(testDouglasVsCrankNicolson) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testVanillaAndDividendEngine) {
-    BOOST_TEST_MESSAGE("Testing the use of a single engine for vanilla and dividend options...");
-
-    auto today = Date(1, January, 2023);
-    Settings::instance().evaluationDate() = today;
-
-    auto u = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
-    auto r = Handle<YieldTermStructure>(ext::make_shared<FlatForward>(today, 0.01, Actual360()));
-    auto sigma = Handle<BlackVolTermStructure>(
-        ext::make_shared<BlackConstantVol>(today, TARGET(), 0.20, Actual360()));
-    auto process = ext::make_shared<BlackScholesProcess>(u, r, sigma);
-
-    auto engine = ext::make_shared<FdBlackScholesVanillaEngine>(process);
-
-    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 100.0);
-
-    auto option1 =
-        VanillaOption(payoff, ext::make_shared<AmericanExercise>(today, Date(1, June, 2023)));
-    QL_DEPRECATED_DISABLE_WARNING
-    auto option2 = DividendVanillaOption(
-        payoff, ext::make_shared<AmericanExercise>(today, Date(1, June, 2023)),
-        {Date(1, February, 2023)}, {1.0});
-    QL_DEPRECATED_ENABLE_WARNING
-
-    option1.setPricingEngine(engine);
-    option2.setPricingEngine(engine);
-
-    auto npv_before = option1.NPV();
-    option2.NPV();
-
-    option1.recalculate();
-    auto npv_after = option1.NPV();
-
-    if (npv_after != npv_before) {
-        BOOST_FAIL("Failed to price vanilla option correctly "
-                   "after using the engine on a dividend option: "
-                   << "\n    before usage: " << npv_before
-                   << "\n    after usage:  " << npv_after);
-    }
-}
-
 BOOST_AUTO_TEST_CASE(testFFTEngines) {
 
     BOOST_TEST_MESSAGE("Testing FFT European engines "

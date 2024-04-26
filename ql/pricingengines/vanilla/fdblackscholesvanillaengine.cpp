@@ -43,7 +43,7 @@ namespace QuantLib {
         bool localVol,
         Real illegalLocalVolOverwrite,
         CashDividendModel cashDividendModel)
-    : process_(std::move(process)), explicitDividends_(false), tGrid_(tGrid), xGrid_(xGrid),
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid),
       dampingSteps_(dampingSteps), schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite), cashDividendModel_(cashDividendModel) {
         registerWith(process_);
@@ -59,7 +59,7 @@ namespace QuantLib {
         bool localVol,
         Real illegalLocalVolOverwrite,
         CashDividendModel cashDividendModel)
-    : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
+    : process_(std::move(process)), dividends_(std::move(dividends)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps), schemeDesc_(schemeDesc),
       localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
       cashDividendModel_(cashDividendModel) {
@@ -76,7 +76,7 @@ namespace QuantLib {
         bool localVol,
         Real illegalLocalVolOverwrite,
         CashDividendModel cashDividendModel)
-    : process_(std::move(process)), explicitDividends_(false),
+    : process_(std::move(process)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite), quantoHelper_(std::move(quantoHelper)),
@@ -96,7 +96,7 @@ namespace QuantLib {
         bool localVol,
         Real illegalLocalVolOverwrite,
         CashDividendModel cashDividendModel)
-    : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
+    : process_(std::move(process)), dividends_(std::move(dividends)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite), quantoHelper_(std::move(quantoHelper)),
@@ -107,11 +107,6 @@ namespace QuantLib {
 
 
     void FdBlackScholesVanillaEngine::calculate() const {
-
-        // dividends will eventually be moved out of arguments, but for now we need the switch
-        QL_DEPRECATED_DISABLE_WARNING
-        const DividendSchedule& passedDividends = explicitDividends_ ? dividends_ : arguments_.cashFlow;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // 0. Cash dividend model
         const Date exerciseDate = arguments_.exercise->lastDate();
@@ -125,12 +120,12 @@ namespace QuantLib {
 
         switch (cashDividendModel_) {
           case Spot:
-            dividendSchedule = passedDividends;
+            dividendSchedule = dividends_;
             break;
           case Escrowed:
             if  (arguments_.exercise->type() != Exercise::European)
                 // add dividend dates as stopping times
-                for (const auto& cf: passedDividends)
+                for (const auto& cf: dividends_)
                     dividendSchedule.push_back(
                         ext::make_shared<FixedDividend>(0.0, cf->date()));
 
@@ -138,7 +133,7 @@ namespace QuantLib {
                 "Escrowed dividend model is not supported for Quanto-Options");
 
             escrowedDivAdj = ext::make_shared<EscrowedDividendAdjustment>(
-                passedDividends,
+                dividends_,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
                 [&](Date d){ return process_->time(d); },
@@ -271,7 +266,6 @@ namespace QuantLib {
             const std::vector<Date>& dividendDates,
             const std::vector<Real>& dividendAmounts) {
         dividends_ = DividendVector(dividendDates, dividendAmounts);
-        explicitDividends_ = true;
         return *this;
     }
 
@@ -284,8 +278,7 @@ namespace QuantLib {
 
     MakeFdBlackScholesVanillaEngine::operator
     ext::shared_ptr<PricingEngine>() const {
-        if (explicitDividends_) {
-            return ext::make_shared<FdBlackScholesVanillaEngine>(
+        return ext::make_shared<FdBlackScholesVanillaEngine>(
                 process_,
                 dividends_,
                 quantoHelper_,
@@ -294,16 +287,6 @@ namespace QuantLib {
                 localVol_,
                 illegalLocalVolOverwrite_,
                 cashDividendModel_);
-        } else {
-            return ext::make_shared<FdBlackScholesVanillaEngine>(
-                process_,
-                quantoHelper_,
-                tGrid_, xGrid_, dampingSteps_,
-                *schemeDesc_,
-                localVol_,
-                illegalLocalVolOverwrite_,
-                cashDividendModel_);
-        }
     }
 
 }
