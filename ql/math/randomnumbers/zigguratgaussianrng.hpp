@@ -72,50 +72,55 @@ namespace QuantLib {
         Real nextReal() const;
 
       private:
-        class Utils;
-
         RNG uint64Generator_;
-        std::unique_ptr<Utils> utils_ = std::make_unique<Utils>();
 
-        class Utils {
-          public:
-            typedef Real ZigguratTable[257];
+        typedef Real ZigguratTable[257];
 
-            Real pdf(Real x) const;
+        Real pdf(Real x) const;
 
-            //! compute a random number in the tail by hand
-            Real zeroCase(Real u, const std::function<Real(void)>& uniformNextReal) const;
+        //! compute a random number in the tail by hand
+        Real zeroCase(Real u, const std::function<Real(void)>& uniformNextReal) const;
 
-            Real normR() const;
-            Real normX(int i) const;
-            Real normF(int i) const;
+        Real normR() const;
+        Real normX(int i) const;
+        Real normF(int i) const;
 
-            Real expR() const;
-            Real expX(int i) const;
-            Real expF(int i) const;
-        };
+        Real expR() const;
+        Real expX(int i) const;
+        Real expF(int i) const;
     };
 
     template <class RNG>
     inline Real ZigguratGaussianRng<RNG>::nextReal() const {
         while (true) {
+            // As an optimisation we re-implement the conversion to a f64.
+            // From the remaining 12 most significant bits we use 8 to construct `i`.
+            // This saves us generating a whole extra random number, while the added
+            // precision of using 64 bits for f64 does not buy us much.
             std::uint64_t randomU64 = uint64Generator_.nextInt64();
-            int i = (int)(randomU64 & 0xff);
-            //            auto zeroCase =
-            //                utils_->zeroCase(0.5, [&rng = uint64Generator_]() { return
-            //                rng.nextReal(); });
+
+            auto i = (int)(randomU64 & 0xff);
+
+            // Convert to a value in the range [2,4) and subtract to get [-1,1)
+            // We can't convert to an open range directly, that would require
+            // subtracting `3.0 - EPSILON`, which is not representable.
+            // It is possible with an extra step, but an open range does not
+            // seem necessary for the ziggurat algorithm anyway.
+            Real u = (Real(randomU64 >> 11) + 0.5) * (2.0 / Real(1ULL << 53)) - 1.0;
+
             return 0.0;
         }
     }
 
     template <class RNG>
-    inline Real ZigguratGaussianRng<RNG>::Utils::pdf(Real x) const {
+    inline Real ZigguratGaussianRng<RNG>::pdf(Real x) const {
         return std::exp(-x * x / 2.0);
     }
 
     template <class RNG>
-    inline Real ZigguratGaussianRng<RNG>::Utils::zeroCase(
-        Real u, const std::function<Real(void)>& uniformNextReal) const {
+    inline Real
+    ZigguratGaussianRng<RNG>::zeroCase(Real u,
+                                       const std::function<Real(void)>& uniformNextReal) const {
         // compute a random number in the tail by hand
         Real x, y;
         do {
@@ -127,13 +132,13 @@ namespace QuantLib {
     }
 
     template <class RNG>
-    inline Real ZigguratGaussianRng<RNG>::Utils::normR() const {
+    inline Real ZigguratGaussianRng<RNG>::normR() const {
         return 3.654152885361008796;
     }
 
     template <class RNG>
-    Real ZigguratGaussianRng<RNG>::Utils::normX(int i) const {
-        static const Utils::ZigguratTable normX = {
+    Real ZigguratGaussianRng<RNG>::normX(int i) const {
+        static const ZigguratTable normX = {
             3.910757959537090045, 3.654152885361008796, 3.449278298560964462, 3.320244733839166074,
             3.224575052047029100, 3.147889289517149969, 3.083526132001233044, 3.027837791768635434,
             2.978603279880844834, 2.934366867207854224, 2.894121053612348060, 2.857138730872132548,
@@ -203,8 +208,8 @@ namespace QuantLib {
     }
 
     template <class RNG>
-    Real ZigguratGaussianRng<RNG>::Utils::normF(int i) const {
-        static const ZigguratGaussianRng<RNG>::Utils::ZigguratTable normF = {
+    Real ZigguratGaussianRng<RNG>::normF(int i) const {
+        static const ZigguratGaussianRng<RNG>::ZigguratTable normF = {
             0.000477467764586655, 0.001260285930498598, 0.002609072746106363, 0.004037972593371872,
             0.005522403299264754, 0.007050875471392110, 0.008616582769422917, 0.010214971439731100,
             0.011842757857943104, 0.013497450601780807, 0.015177088307982072, 0.016880083152595839,
@@ -274,13 +279,13 @@ namespace QuantLib {
     }
 
     template <class RNG>
-    Real ZigguratGaussianRng<RNG>::Utils::expR() const {
+    Real ZigguratGaussianRng<RNG>::expR() const {
         return 7.697117470131050077;
     }
 
     template <class RNG>
-    Real ZigguratGaussianRng<RNG>::Utils::expX(int i) const {
-        static const ZigguratGaussianRng<RNG>::Utils::ZigguratTable expX = {
+    Real ZigguratGaussianRng<RNG>::expX(int i) const {
+        static const ZigguratGaussianRng<RNG>::ZigguratTable expX = {
             8.697117470131052741, 7.697117470131050077, 6.941033629377212577, 6.478378493832569696,
             6.144164665772472667, 5.882144315795399869, 5.666410167454033697, 5.482890627526062488,
             5.323090505754398016, 5.181487281301500047, 5.054288489981304089, 4.938777085901250530,
@@ -350,8 +355,8 @@ namespace QuantLib {
     }
 
     template <class RNG>
-    Real ZigguratGaussianRng<RNG>::Utils::expF(int i) const {
-        static const ZigguratGaussianRng<RNG>::Utils::ZigguratTable expF = {
+    Real ZigguratGaussianRng<RNG>::expF(int i) const {
+        static const ZigguratGaussianRng<RNG>::ZigguratTable expF = {
             0.000167066692307963, 0.000454134353841497, 0.000967269282327174, 0.001536299780301573,
             0.002145967743718907, 0.002788798793574076, 0.003460264777836904, 0.004157295120833797,
             0.004877655983542396, 0.005619642207205489, 0.006381905937319183, 0.007163353183634991,
