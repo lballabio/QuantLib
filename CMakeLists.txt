@@ -39,7 +39,6 @@ set(QL_INSTALL_CMAKEDIR "lib/cmake/${PACKAGE_NAME}" CACHE STRING
     "Installation directory for CMake scripts")
 
 # Options
-option(QL_BUILD_BENCHMARK "Build benchmark" ON)
 option(QL_BUILD_EXAMPLES "Build examples" ON)
 option(QL_BUILD_TEST_SUITE "Build test suite" ON)
 option(QL_BUILD_FUZZ_TEST_SUITE "Build fuzz test suite" OFF) 
@@ -270,7 +269,7 @@ add_subdirectory(ql)
 if (QL_BUILD_EXAMPLES)
     add_subdirectory(Examples)
 endif()
-if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
+if (QL_BUILD_TEST_SUITE)
     add_subdirectory(test-suite)
 endif()
 
