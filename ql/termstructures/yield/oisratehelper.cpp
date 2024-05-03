@@ -215,6 +215,26 @@ namespace QuantLib {
         latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
     }
 
+    DatedOISRateHelper::DatedOISRateHelper(const Date& startDate,
+                                           const Date& endDate,
+                                           const Handle<Quote>& fixedRate,
+                                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                                           Handle<YieldTermStructure> discount,
+                                           bool telescopicValueDates,
+                                           RateAveraging::Type averagingMethod,
+                                           Integer paymentLag,
+                                           BusinessDayConvention paymentConvention,
+                                           Frequency paymentFrequency,
+                                           const Calendar& paymentCalendar,
+                                           const Period&,
+                                           Spread overnightSpread,
+                                           ext::optional<bool> endOfMonth,
+                                           ext::optional<Frequency> fixedPaymentFrequency,
+                                           const Calendar& fixedCalendar)
+    : DatedOISRateHelper(startDate, endDate, fixedRate, overnightIndex, discount, telescopicValueDates,
+                         averagingMethod, paymentLag, paymentConvention, paymentFrequency, paymentCalendar,
+                         overnightSpread, endOfMonth, fixedPaymentFrequency, fixedCalendar) {}
+    
     void DatedOISRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
