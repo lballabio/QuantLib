@@ -79,7 +79,7 @@ namespace QuantLib {
         Real pdf(Real x) const;
 
         //! compute a random number in the tail by hand
-        Real zeroCase(Real u, const std::function<Real(void)>& uniformNextReal) const;
+        Real zeroCase(Real u) const;
 
         Real normR() const;
         Real normX(int i) const;
@@ -106,9 +106,19 @@ namespace QuantLib {
             // subtracting `3.0 - EPSILON`, which is not representable.
             // It is possible with an extra step, but an open range does not
             // seem necessary for the ziggurat algorithm anyway.
-            Real u = (Real(randomU64 >> 11) + 0.5) * (2.0 / Real(1ULL << 53)) - 1.0;
+            auto u = (Real(randomU64 >> 11) + 0.5) * (2.0 / Real(1ULL << 53)) - 1.0;
 
-            return 0.0;
+            auto x = u * normX(i);
+
+            if (std::abs(x) < normX(i + 1)) {
+                return x;
+            }
+            if (i == 0) {
+                return zeroCase(u);
+            }
+            if (normF(i + 1) + (normF(i) - normF(i + 1) * uint64Generator_.nextInt64()) < pdf(x)) {
+                return x;
+            }
         }
     }
 
@@ -118,14 +128,12 @@ namespace QuantLib {
     }
 
     template <class RNG>
-    inline Real
-    ZigguratGaussianRng<RNG>::zeroCase(Real u,
-                                       const std::function<Real(void)>& uniformNextReal) const {
+    inline Real ZigguratGaussianRng<RNG>::zeroCase(Real u) const {
         // compute a random number in the tail by hand
         Real x, y;
         do {
-            x = std::log(uniformNextReal()) / normR();
-            y = std::log(uniformNextReal());
+            x = std::log(uint64Generator_.nextReal()) / normR();
+            y = std::log(uint64Generator_.nextReal());
         } while (-2.0 * y < x * x);
 
         return (u < 0.0) ? x - normR() : normR() - x;
