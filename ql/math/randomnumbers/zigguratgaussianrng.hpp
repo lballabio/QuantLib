@@ -25,9 +25,7 @@
 #define quantlib_ziggurat_gaussian_rng_h
 
 #include <ql/methods/montecarlo/sample.hpp>
-#include <functional>
-#include <memory>
-#include <utility>
+#include <cstdint>
 
 namespace QuantLib {
 
