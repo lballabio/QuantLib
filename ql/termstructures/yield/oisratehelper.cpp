@@ -231,7 +231,7 @@ namespace QuantLib {
                                            ext::optional<bool> endOfMonth,
                                            ext::optional<Frequency> fixedPaymentFrequency,
                                            const Calendar& fixedCalendar)
-    : DatedOISRateHelper(startDate, endDate, fixedRate, overnightIndex, discount, telescopicValueDates,
+    : DatedOISRateHelper(startDate, endDate, fixedRate, overnightIndex, std::move(discount), telescopicValueDates,
                          averagingMethod, paymentLag, paymentConvention, paymentFrequency, paymentCalendar,
                          overnightSpread, endOfMonth, fixedPaymentFrequency, fixedCalendar) {}
     
