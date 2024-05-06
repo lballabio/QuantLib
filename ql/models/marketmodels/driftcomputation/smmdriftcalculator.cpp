@@ -83,6 +83,11 @@ namespace QuantLib {
         // assuming terminal bond measure
         // eq 5.4-5.7
         const std::vector<Time>& taus=cs.rateTaus();
+        std::vector<Real> annuities(numberOfRates_);
+
+        for (Size j=0; j<numberOfRates_; ++j) {
+            annuities[j] = cs.coterminalSwapAnnuity(numberOfRates_, j);
+        }
         for (Size k=0; k<numberOfFactors_; ++k) {
                 // taken care in the constructor
                 // wkpj1_[k][numberOfRates_-1]= 0.0;
@@ -90,7 +95,7 @@ namespace QuantLib {
             for (Integer j=numberOfRates_-2; j>=static_cast<Integer>(alive_)-1; --j) {
                  // < W(k) | P(j+1)/P(n) > =
                  // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
-                Real annuity = cs.coterminalSwapAnnuity(numberOfRates_,j+1);
+                Real annuity = annuities[j+1];
                 wkpj_[k][j+1]= SR[j+1] *
                             ( pseudo_[j+1][k] * annuity +  wkaj_[k][j+1] )+
                             pseudo_[j+1][k]*displacements_[j+1]* annuity;
@@ -108,7 +113,7 @@ namespace QuantLib {
             // compute < Wk, PN/pn>
             for (Size j=alive_; j<numberOfRates_; ++j)
             {
-                wkajshifted_[k][j] = -wkaj_[k][j]/cs.coterminalSwapAnnuity(numberOfRates_,j)
+                wkajshifted_[k][j] = -wkaj_[k][j]/annuities[j]
                                     + wkpj_[k][numeraire_]
                                                 *numeraireRatio;
             }
