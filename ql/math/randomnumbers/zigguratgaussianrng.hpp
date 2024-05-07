@@ -52,8 +52,6 @@ namespace QuantLib {
         \endcode
         Currently, Xoshiro256StarStarUniformRng is the only RNG supporting this.
     */
-    class ZigguratGaussianRngUtils;
-
     template <class RNG>
     class ZigguratGaussianRng {
       public:
@@ -100,11 +98,11 @@ namespace QuantLib {
             // subtracting `3.0 - EPSILON`, which is not representable.
             // It is possible with an extra step, but an open range does not
             // seem necessary for the ziggurat algorithm anyway.
-            auto u = (Real(randomU64 >> 11) + 0.5) * (2.0 / Real(1ULL << 53)) - 1.0;
+            auto u = 2.0 * (Real(randomU64 >> 11) + 0.5) * (1.0 / Real(1ULL << 53)) - 1.0;
 
             auto x = u * normX(i);
 
-            if (std::abs(x) < normX(i + 1)) {
+            if (std::abs(u) < normX(i + 1)) {
                 return x;
             }
             if (i == 0) {

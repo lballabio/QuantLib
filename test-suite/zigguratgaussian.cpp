@@ -20,6 +20,12 @@
 #include "toplevelfixture.hpp"
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <ql/math/randomnumbers/zigguratgaussianrng.hpp>
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/count.hpp>
+#include <boost/accumulators/statistics/kurtosis.hpp>
+#include <boost/accumulators/statistics/mean.hpp>
+#include <boost/accumulators/statistics/skewness.hpp>
+#include <boost/accumulators/statistics/variance.hpp>
 #include <bitset>
 #include <iostream>
 #include <numeric>
@@ -33,30 +39,43 @@ BOOST_AUTO_TEST_SUITE(ZigguratGaussianTests)
 BOOST_AUTO_TEST_CASE(testMeanAndStdDevOfNextReal) {
     BOOST_TEST_MESSAGE("Testing ZigguratGaussianRng<Xoshiro256StarStarUniformRng>::nextReal() for "
                        "mean=0.0 and stddev=1.0...");
+    using namespace boost::accumulators;
 
-    auto uniformRandom = Xoshiro256StarStarUniformRng(1);
+    auto uniformRandom = Xoshiro256StarStarUniformRng();
     auto random = ZigguratGaussianRng<Xoshiro256StarStarUniformRng>(uniformRandom);
 
     const auto iterations = 10'000'000;
-    auto randoms = std::vector<Real>();
-    randoms.reserve(iterations);
+
+    accumulator_set<Real,
+                    features<tag::count, tag::mean, tag::variance, tag::skewness, tag::kurtosis>>
+        randoms;
+
     for (auto j = 0; j < iterations; ++j) {
-        auto next = random.nextReal();
-        randoms.push_back(next);
+        Real next = random.next().value;
+        randoms(next);
     }
-    Real mean = std::accumulate(randoms.begin(), randoms.end(), Real(0.0)) / randoms.size();
-    Real meanError = std::fabs(0.0 - mean);
-    if (meanError > 0.005) {
+
+    Real mean = boost::accumulators::mean(randoms);
+    Real variance = boost::accumulators::variance(randoms);
+    Real skewness = boost::accumulators::skewness(randoms);
+    Real kurtosis = boost::accumulators::kurtosis(randoms);
+
+    BOOST_TEST_MESSAGE("Mean:     " << mean);
+    BOOST_TEST_MESSAGE("Variance: " << variance);
+    BOOST_TEST_MESSAGE("Skewness: " << skewness);
+    BOOST_TEST_MESSAGE("Kurtosis: " << kurtosis);
+
+    if (std::fabs(mean) > 0.005) {
         BOOST_ERROR("Mean " << mean << " for seed 1 is not close to 0.");
     }
-    std::vector<Real> diff(randoms.size());
-    std::transform(randoms.begin(), randoms.end(), diff.begin(),
-                   [mean](Real x) -> Real { return x - mean; });
-    Real stdDev =
-        std::inner_product(diff.begin(), diff.end(), diff.begin(), Real(0.0)) / randoms.size();
-    Real stdDevError = std::fabs(1.0 - stdDev);
-    if (stdDevError > 0.00005) {
-        BOOST_ERROR("Standard deviation " << stdDev << " for seed 1 is not close to 1.");
+    if (std::fabs(1.0 - variance) > 0.005) {
+        BOOST_ERROR("Variance " << variance << " for seed 1 is not close to 1.");
+    }
+    if (std::fabs(skewness) > 0.005) {
+        BOOST_ERROR("Skewness " << skewness << " for seed 1 is not close to 0.");
+    }
+    if (std::fabs(kurtosis) > 0.05) {
+        BOOST_ERROR("Kurtosis " << kurtosis << " for seed 1 is not close to 0.");
     }
 }
 
