@@ -23,6 +23,7 @@
 #include <ql/settings.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/schedule.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
