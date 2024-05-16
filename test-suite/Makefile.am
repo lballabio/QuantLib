@@ -210,23 +210,25 @@ unity.cpp: Makefile.am
 		echo "#include \"test-suite/$$i\"" >> $@; \
 	done
 
-quantlib_test_suite_SOURCES = unity.cpp
-quantlib_benchmark_SOURCES = unity.cpp
-EXTRA_DIST = $(QL_TESTS) 
+nodist_quantlib_test_suite_SOURCES = unity.cpp
+quantlib_test_suite_SOURCES = quantlibtestsuite.cpp 
+
+nodist_quantlib_benchmark_SOURCES = unity.cpp
+quantlib_benchmark_SOURCES = quantlibbenchmark.cpp 
+
+EXTRA_DIST = $(QL_TESTS)
 
 else
 
-quantlib_test_suite_SOURCES = $(QL_TESTS) 
-quantlib_benchmark_SOURCES = $(QL_TESTS) 
+quantlib_test_suite_SOURCES = $(QL_TESTS) quantlibtestsuite.cpp 
+quantlib_benchmark_SOURCES = $(QL_TESTS) quantlibbenchmark.cpp 
 EXTRA_DIST =
 
 endif 
 
-quantlib_test_suite_SOURCES += quantlibtestsuite.cpp 
 quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la \
                             ${PTHREAD_LIB} ${BOOST_INTERPROCESS_LIB}
 
-quantlib_benchmark_SOURCES += quantlibbenchmark.cpp 
 quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la \
                            ${PTHREAD_LIB} ${BOOST_INTERPROCESS_LIB}
 
