@@ -114,7 +114,7 @@ namespace {
                         CALLABLE &&body,                // the "body" of the test we want to run
                         double cost                     // how expensive (runtime) this test is relative to others
                         )
-                : name_(std::move(name)), test_(nullptr), cost_(cost), totalRuntime_(0), testBody_(std::forward<CALLABLE>(body)) {}
+                : name_(std::move(name)),  cost_(cost),  testBody_(std::forward<CALLABLE>(body)) {}
 
             Benchmark(const Benchmark& copy) = default;        
             Benchmark(Benchmark&& move) = default;        
@@ -175,9 +175,9 @@ namespace {
 
         private:
             std::string name_;
-            const boost::unit_test::test_unit * test_;
+            const boost::unit_test::test_unit * test_ = nullptr;
             double cost_; 
-            double totalRuntime_;
+            double totalRuntime_ = 0;
             std::function<void(void)> testBody_;
     };
 
@@ -192,10 +192,10 @@ namespace {
     struct BenchmarkResult : public boost::unit_test::test_observer
     {
         public: 
-            BenchmarkResult() : passed_(true) {
+            BenchmarkResult()  {
                 boost::unit_test::framework::register_observer(*this);
             }
-            ~BenchmarkResult() {
+            ~BenchmarkResult() override {
                 boost::unit_test::framework::deregister_observer(*this);
             }
             BenchmarkResult(const BenchmarkResult&) = delete;
@@ -212,7 +212,7 @@ namespace {
             void reset() { passed_ = true; }
 
         private:
-            bool passed_;
+            bool passed_ = true;
     };
 
 
@@ -415,7 +415,7 @@ namespace {
         struct AddBenchmark {
             template<class CALLABLE>
                 AddBenchmark(std::vector<Benchmark> &bm, CALLABLE && test_body, const char* name, double cost) {
-                    bm.push_back( Benchmark(name, std::move(test_body), cost) );
+                    bm.push_back( Benchmark(name, std::forward<CALLABLE>(test_body), cost) );
                 }
         };
     };
