@@ -44,7 +44,8 @@ namespace QuantLib {
         /*! Missing values y should be encoded as Null<Real>(). */
         LaplaceInterpolation(std::function<Real(const std::vector<Size>&)> y,
                              std::vector<std::vector<Real>> x,
-                             Real relTol = 1E-6);
+                             Real relTol = 1E-6,
+                             Size maxIterMultiplier = 10);
         Real operator()(const std::vector<Size>& coordinates) const;
 
       private:
@@ -54,6 +55,7 @@ namespace QuantLib {
         std::function<Real(const std::vector<Size>&)> y_;
         std::vector<std::vector<Real>> x_;
         Real relTol_;
+        Size maxIterMultiplier_;
 
         std::vector<bool> coordinateIncluded_;
         Size numberOfCoordinatesIncluded_;
@@ -68,7 +70,8 @@ namespace QuantLib {
     void laplaceInterpolation(Matrix& A,
                               const std::vector<Real>& x = {},
                               const std::vector<Real>& y = {},
-                              Real relTol = 1E-6);
+                              Real relTol = 1E-6,
+                              Size maxIterMultiplier = 10);
 }
 
 #endif
