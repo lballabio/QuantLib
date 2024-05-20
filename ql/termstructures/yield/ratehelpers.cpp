@@ -134,6 +134,9 @@ namespace QuantLib {
             maturityDate_ = determineMaturityDate(
                 [](const Date date) -> Date { return ASX::nextDate(date, false); });
             break;
+          case Futures::Custom:
+            maturityDate_ = iborEndDate;
+            break;
           default:
             QL_FAIL("unsupported futures type (" << type << ')');
         }
