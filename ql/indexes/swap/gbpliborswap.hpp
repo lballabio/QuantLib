@@ -41,10 +41,10 @@ namespace QuantLib {
     class GbpLiborSwapIsdaFix : public SwapIndex {
       public:
         GbpLiborSwapIsdaFix(const Period& tenor,
-                            const Handle<YieldTermStructure>& h = {});
+                            Handle<YieldTermStructure> h = {});
         GbpLiborSwapIsdaFix(const Period& tenor,
-                            const Handle<YieldTermStructure>& forwarding,
-                            const Handle<YieldTermStructure>& discounting);
+                            Handle<YieldTermStructure> forwarding,
+                            Handle<YieldTermStructure> discounting);
     };
 
 }

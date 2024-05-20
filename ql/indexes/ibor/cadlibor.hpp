@@ -45,23 +45,23 @@ namespace QuantLib {
     class CADLibor : public Libor {
       public:
         CADLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+                 Handle<YieldTermStructure> h = {})
         : Libor("CADLibor", tenor,
                 0,
                 CADCurrency(),
                 Canada(),
-                Actual365Fixed(), h) {}
+                Actual365Fixed(), std::move(h)) {}
     };
 
     //! Overnight %CAD %Libor index
     class CADLiborON : public DailyTenorLibor {
       public:
-        explicit CADLiborON(const Handle<YieldTermStructure>& h = {})
+        explicit CADLiborON(Handle<YieldTermStructure> h = {})
         : DailyTenorLibor("CADLibor",
                           0,
                           CADCurrency(),
                           Canada(),
-                          Actual365Fixed(), h) {}
+                          Actual365Fixed(), std::move(h)) {}
     };
 
 }

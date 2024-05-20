@@ -40,30 +40,30 @@ namespace QuantLib {
     class GBPLibor : public Libor {
       public:
         GBPLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+                 Handle<YieldTermStructure> h = {})
         : Libor("GBPLibor", tenor,
                 0,
                 GBPCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
-                Actual365Fixed(), h) {}
+                Actual365Fixed(), std::move(h)) {}
     };
 
     //! Base class for the one day deposit ICE %GBP %LIBOR indexes
     class DailyTenorGBPLibor : public DailyTenorLibor {
       public:
         DailyTenorGBPLibor(Natural settlementDays,
-                           const Handle<YieldTermStructure>& h = {})
+                           Handle<YieldTermStructure> h = {})
         : DailyTenorLibor("GBPLibor", settlementDays,
                           GBPCurrency(),
                           UnitedKingdom(UnitedKingdom::Exchange),
-                          Actual365Fixed(), h) {}
+                          Actual365Fixed(), std::move(h)) {}
     };
 
     //! Overnight %GBP %Libor index
     class GBPLiborON : public DailyTenorGBPLibor {
       public:
-        explicit GBPLiborON(const Handle<YieldTermStructure>& h = {})
-        : DailyTenorGBPLibor(0, h) {}
+        explicit GBPLiborON(Handle<YieldTermStructure> h = {})
+        : DailyTenorGBPLibor(0, std::move(h)) {}
     };
 
 }

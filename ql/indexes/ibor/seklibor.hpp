@@ -39,12 +39,12 @@ namespace QuantLib {
     class SEKLibor : public Libor {
       public:
         SEKLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+                 Handle<YieldTermStructure> h = {})
         : Libor("SEKLibor", tenor,
                 2,
                 SEKCurrency(),
                 Sweden(),
-                Actual360(), h) {}
+                Actual360(), std::move(h)) {}
     };
 
 }
