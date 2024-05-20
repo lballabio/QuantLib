@@ -2760,6 +2760,32 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     LaplaceInterpolation l0([](const std::vector<Size>& x) { return Null<Real>(); }, {});
     BOOST_CHECK_CLOSE(l0({}), 0.0, tol);
+
+    // single test cases from actual issues observed in the field
+
+    std::vector<Real> tx = {0.0849315, 0.257534, 0.509589, 1.00548, 2.00274, 3.00274, 4.00274,
+                            5.00548,   7.00822,  10.0082,  15.011,  20.0137, 30.0219, 70.0493};
+    std::vector<Real> ty = {0.25, 1, 2, 3, 4, 5, 7, 10, 15, 20, 30, 100};
+    Matrix m52 = {{na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na},
+                  {na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na, na},
+                  {na, na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na, na},
+                  {na, na, na, na, na, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, na, na},
+                  {na, na, na, na, na, na, na, na, na, na, na, na, na, na}};
+
+    // we need to allow for more iterations to achieve the desired accuracy
+    laplaceInterpolation(m52, tx, ty, 1E-6, 100);
+
+    for (auto const& v : m52) {
+        BOOST_CHECK_CLOSE(v, 1.0, 0.1);
+    }
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
