@@ -1471,6 +1471,79 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     QL_CHECK_SMALL(calcFwd - expFwd, 1e-10);
 }
 
+BOOST_AUTO_TEST_CASE(testCustomFuturesHelpers) {
+
+    BOOST_TEST_MESSAGE("Testing futures rate helpers with custom dates...");
+
+    CommonVars vars;
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+
+    Date startDate1 = vars.today + 60;
+    Real price1 = 97.0;
+    Natural length1 = 2;
+    auto convention = ModifiedFollowing;
+    bool endOfMonth = true;
+    auto dayCounter = Actual360();
+
+    helpers.push_back(ext::make_shared<FuturesRateHelper>(price1, startDate1, length1,
+                                                          TARGET(), convention, endOfMonth,
+                                                          dayCounter, 0.0, Futures::Custom));
+
+    Date startDate2 = vars.today + 120;
+    Date endDate2 = startDate2 + 45;
+    Real price2 = 96.5;
+
+    helpers.push_back(ext::make_shared<FuturesRateHelper>(price2, startDate2, endDate2,
+                                                          dayCounter, 0.0, Futures::Custom));
+
+    Date startDate3 = vars.today + 180;
+    auto index = ext::make_shared<Euribor3M>();
+    Real price3 = 96.0;
+
+    helpers.push_back(ext::make_shared<FuturesRateHelper>(price3, startDate3, index,
+                                                          0.0, Futures::Custom));
+
+    ext::shared_ptr<YieldTermStructure> curve =
+        ext::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat> >(
+                                            vars.today, helpers, Actual360());
+
+    Date endDate1 = TARGET().advance(startDate1, length1, Months, convention, endOfMonth);
+
+    Rate calculated = curve->forwardRate(startDate1, endDate1, dayCounter, Simple).rate();
+    Rate expected = (100-price1)/100;
+    Real error = std::fabs(expected - calculated);
+    Real tolerance = 1e-8;
+    if (error > tolerance) {
+        BOOST_ERROR(" first helper:\n"
+                    << std::setprecision(8)
+                    << "\n estimated rate: " << io::rate(calculated)
+                    << "\n expected rate:  " << io::rate(expected));
+    }
+
+    calculated = curve->forwardRate(startDate2, endDate2, dayCounter, Simple).rate();
+    expected = (100-price2)/100;
+    error = std::fabs(expected - calculated);
+    if (error > tolerance) {
+        BOOST_ERROR(" second helper:\n"
+                    << std::setprecision(8)
+                    << "\n estimated rate: " << io::rate(calculated)
+                    << "\n expected rate:  " << io::rate(expected));
+    }
+
+    Date endDate3 = index->fixingCalendar().advance(startDate3, index->tenor(), index->businessDayConvention());
+
+    calculated = curve->forwardRate(startDate3, endDate3, dayCounter, Simple).rate();
+    expected = (100-price3)/100;
+    error = std::fabs(expected - calculated);
+    if (error > tolerance) {
+        BOOST_ERROR(" third helper:\n"
+                    << std::setprecision(8)
+                    << "\n estimated rate: " << io::rate(calculated)
+                    << "\n expected rate:  " << io::rate(expected));
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
