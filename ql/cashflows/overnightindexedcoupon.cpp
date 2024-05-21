@@ -133,6 +133,14 @@ namespace QuantLib {
           protected:
             const OvernightIndexedCoupon* coupon_;
         };
+
+        Date getFixingDate(const ext::shared_ptr<InterestRateIndex>& index,
+                           const Date& valueDate,
+                           Natural fixingDays) {
+            Date fixingDate =
+                index->fixingCalendar().advance(valueDate, -static_cast<Integer>(fixingDays), Days);
+            return fixingDate;
+        }
     }
 
     OvernightIndexedCoupon::OvernightIndexedCoupon(
@@ -147,13 +155,18 @@ namespace QuantLib {
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
                     bool telescopicValueDates,
-                    RateAveraging::Type averagingMethod)
+                    RateAveraging::Type averagingMethod,
+                    ext::optional<Natural> fixingDays,
+                    Natural lockoutDays,
+                    bool applyObservationShift)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         overnightIndex ? overnightIndex->fixingDays() : 0,
+                         fixingDays ? *fixingDays : overnightIndex ? overnightIndex->fixingDays() : 0,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
-                         dayCounter, false), averagingMethod_(averagingMethod) {
+                         dayCounter, false), 
+        averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
+        applyObservationShift_(applyObservationShift) {
 
         // value dates
         Date tmpEndDate = endDate;
@@ -207,8 +220,36 @@ namespace QuantLib {
                                         valueDates_.end() - 1);
         } else {
             fixingDates_.resize(n_);
-            for (Size i=0; i<n_; ++i)
-                fixingDates_[i] = overnightIndex->fixingDate(valueDates_[i]);
+            for (Size i = 0; i < n_; ++i)
+            {   // Lookback (fixing days) without observation shift:  
+                // The date that the fixing rate is pulled  from (the observation date) is k 
+                // business days before the date that interest is applied (the interest date) 
+                // and is applied for the number of calendar days until the next business 
+                // day following the interest date.
+                fixingDates_[i] = getFixingDate(overnightIndex, valueDates_[i], fixingDays_);
+                
+                // Lookback (fixing days) with observation shift:
+                // The date that the fixing rate is pulled from (the observation date) 
+                // is k business days before the date that interest is applied 
+                // (the interest date) and is applied for the number of calendar 
+                // days until the next business day following the observation date.
+                // This means that the fixing dates periods align with value dates.
+                if (applyObservationShift_)
+                    valueDates_[i] = fixingDates_[i];
+            }
+            if (applyObservationShift_)
+                valueDates_[n_] = getFixingDate(overnightIndex, valueDates_[n_], fixingDays_);
+        }
+
+        // When lockout is used the fixing rate applied for the last k days of the 
+        // interest period is frozen at the rate observed k days before the period ends. 
+        if (lockoutDays_ != 0)
+        {
+            QL_REQUIRE(lockoutDays_ > 0 && lockoutDays_ < n_,
+                       "Lockout period cannot be negative or exceed the number of fixing days.");
+            Date lockoutDate = fixingDates_[n_ - 1 - lockoutDays_];
+            for (Size i = n_ - 1; i > n_ - 1 - lockoutDays_; --i)
+                fixingDates_[i] = lockoutDate;
         }
 
         // accrual (compounding) periods

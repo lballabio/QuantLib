@@ -60,7 +60,10 @@ namespace QuantLib {
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
                     bool telescopicValueDates = false,
-                    RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                    RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                    ext::optional<Natural> fixingDays = ext::nullopt,
+                    Natural lockoutDays = 0,
+                    bool applyObservationShift = false);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -90,6 +93,8 @@ namespace QuantLib {
         Size n_;
         std::vector<Time> dt_;
         RateAveraging::Type averagingMethod_;
+        Natural lockoutDays_;
+        bool applyObservationShift_;
 
         Rate averageRate(const Date& date) const;
     };
