@@ -150,7 +150,7 @@ namespace QuantLib {
     class ZeroInflationIndex : public InflationIndex {
       public:
         ZeroInflationIndex(
-            const std::string& familyName,
+            std::string familyName,
             const Region& region,
             bool revised,
             Frequency frequency,
@@ -169,7 +169,7 @@ namespace QuantLib {
         //@{
         Date lastFixingDate() const;
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-        ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
+        ext::shared_ptr<ZeroInflationIndex> clone(Handle<ZeroInflationTermStructure> h) const;
         //@}
       private:
         bool needsForecast(const Date& fixingDate) const;
@@ -202,7 +202,7 @@ namespace QuantLib {
             via the `addFixing` or `addFixings` method.
         */
         YoYInflationIndex(
-            const std::string& familyName,
+            std::string familyName,
             const Region& region,
             bool revised,
             bool interpolated,
@@ -224,7 +224,7 @@ namespace QuantLib {
         */
         QL_DEPRECATED
         YoYInflationIndex(
-            const std::string& familyName,
+            std::string familyName,
             const Region& region,
             bool revised,
             bool interpolated,
@@ -251,7 +251,7 @@ namespace QuantLib {
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
-        ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
+        ext::shared_ptr<YoYInflationIndex> clone(Handle<YoYInflationTermStructure> h) const;
         //@}
 
       protected:

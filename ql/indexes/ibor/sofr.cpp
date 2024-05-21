@@ -24,9 +24,9 @@
 
 namespace QuantLib {
 
-    Sofr::Sofr(const Handle<YieldTermStructure>& h)
+    Sofr::Sofr(Handle<YieldTermStructure> h)
     : OvernightIndex("SOFR", 0, USDCurrency(),
                      UnitedStates(UnitedStates::SOFR),
-                     Actual360(), h) {}
+                     Actual360(), std::move(h)) {}
 
 }

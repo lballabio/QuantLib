@@ -33,59 +33,58 @@ namespace QuantLib {
     */
     class Bibor : public IborIndex {
       public:
-        Bibor(const Period& tenor,
-              const Handle<YieldTermStructure>& h = {});
+        Bibor(const Period& tenor, Handle<YieldTermStructure> h = {});
     };
 
 
     //! 1-week %Bibor index
     class BiborSW : public Bibor {
       public:
-        explicit BiborSW(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(1, Weeks), h) {}
+        explicit BiborSW(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(1, Weeks), std::move(h)) {}
     };
 
 
     //! 1-month %Euribor index
     class Bibor1M : public Bibor {
       public:
-        explicit Bibor1M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(1, Months), h) {}
+        explicit Bibor1M(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(1, Months), std::move(h)) {}
     };
 
     //! 2-months %Euribor index
     class Bibor2M : public Bibor {
       public:
-        explicit Bibor2M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(2, Months), h) {}
+        explicit Bibor2M(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(2, Months), std::move(h)) {}
     };
 
     //! 3-months %Bibor index
     class Bibor3M : public Bibor {
       public:
-        explicit Bibor3M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(3, Months), h) {}
+        explicit Bibor3M(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(3, Months), std::move(h)) {}
     };
 
     //! 6-months %Bibor index
     class Bibor6M : public Bibor {
       public:
-        explicit Bibor6M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(6, Months), h) {}
+        explicit Bibor6M(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(6, Months), std::move(h)) {}
     };
 
     //! 9-months %Bibor index
     class Bibor9M : public Bibor {
       public:
-        explicit Bibor9M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(9, Months), h) {}
+        explicit Bibor9M(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(9, Months), std::move(h)) {}
     };
 
     //! 1-year %Bibor index
     class Bibor1Y : public Bibor {
       public:
-        explicit Bibor1Y(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(1, Years), h) {}
+        explicit Bibor1Y(Handle<YieldTermStructure> h = {})
+        : Bibor(Period(1, Years), std::move(h)) {}
     };
 
 }

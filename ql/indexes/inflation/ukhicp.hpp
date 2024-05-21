@@ -32,9 +32,9 @@ namespace QuantLib {
     //! UK HICP index
     class UKHICP : public ZeroInflationIndex {
       public:
-        explicit UKHICP(const Handle<ZeroInflationTermStructure>& ts = {})
+        explicit UKHICP(Handle<ZeroInflationTermStructure> ts = {})
         : ZeroInflationIndex(
-              "HICP", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
+              "HICP", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), std::move(ts)) {}
     };
 }
 

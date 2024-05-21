@@ -34,8 +34,8 @@ namespace QuantLib {
     //! %Destr (Denmark Short-Term Rate) index.
     class Destr : public OvernightIndex {
       public:
-        explicit Destr(const Handle<YieldTermStructure>& h = {})
-        : OvernightIndex("DESTR", 0, DKKCurrency(), Denmark(), Actual360(), h) {}
+        explicit Destr(Handle<YieldTermStructure> h = {})
+        : OvernightIndex("DESTR", 0, DKKCurrency(), Denmark(), Actual360(), std::move(h)) {}
     };
 
 }

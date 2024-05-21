@@ -22,6 +22,6 @@
 #include <ql/time/calendars/canada.hpp>
 
 namespace QuantLib {
-    Corra::Corra(const Handle<YieldTermStructure>& h)
-    : OvernightIndex("CORRA", 0, CADCurrency(), Canada(), Actual365Fixed(), h) {}
+    Corra::Corra(Handle<YieldTermStructure> h)
+    : OvernightIndex("CORRA", 0, CADCurrency(), Canada(), Actual365Fixed(), std::move(h)) {}
 }

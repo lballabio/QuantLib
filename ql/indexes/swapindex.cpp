@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    SwapIndex::SwapIndex(const std::string& familyName,
+    SwapIndex::SwapIndex(std::string familyName,
                          const Period& tenor,
                          Natural settlementDays,
                          const Currency& currency,
@@ -36,13 +36,13 @@ namespace QuantLib {
                          const DayCounter& fixedLegDayCounter,
                          ext::shared_ptr<IborIndex> iborIndex)
     : InterestRateIndex(
-          familyName, tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
+          std::move(familyName), tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
       tenor_(tenor), iborIndex_(std::move(iborIndex)), fixedLegTenor_(fixedLegTenor),
       fixedLegConvention_(fixedLegConvention), exogenousDiscount_(false) {
         registerWith(iborIndex_);
     }
 
-    SwapIndex::SwapIndex(const std::string& familyName,
+    SwapIndex::SwapIndex(std::string familyName,
                          const Period& tenor,
                          Natural settlementDays,
                          const Currency& currency,
@@ -53,7 +53,7 @@ namespace QuantLib {
                          ext::shared_ptr<IborIndex> iborIndex,
                          Handle<YieldTermStructure> discount)
     : InterestRateIndex(
-          familyName, tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
+          std::move(familyName), tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
       tenor_(tenor), iborIndex_(std::move(iborIndex)), fixedLegTenor_(fixedLegTenor),
       fixedLegConvention_(fixedLegConvention), exogenousDiscount_(true),
       discount_(std::move(discount)) {
@@ -109,7 +109,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<SwapIndex>
-    SwapIndex::clone(const Handle<YieldTermStructure>& forwarding) const {
+    SwapIndex::clone(Handle<YieldTermStructure> forwarding) const {
 
         if (exogenousDiscount_)
             return ext::make_shared<SwapIndex>(familyName(),
@@ -120,7 +120,7 @@ namespace QuantLib {
                           fixedLegTenor(),
                           fixedLegConvention(),
                           dayCounter(),
-                          iborIndex_->clone(forwarding),
+                          iborIndex_->clone(std::move(forwarding)),
                           discount_);
         else
             return ext::make_shared<SwapIndex>(familyName(),
@@ -131,12 +131,12 @@ namespace QuantLib {
                           fixedLegTenor(),
                           fixedLegConvention(),
                           dayCounter(),
-                          iborIndex_->clone(forwarding));
+                          iborIndex_->clone(std::move(forwarding)));
     }
 
     ext::shared_ptr<SwapIndex>
-    SwapIndex::clone(const Handle<YieldTermStructure>& forwarding,
-                     const Handle<YieldTermStructure>& discounting) const {
+    SwapIndex::clone(Handle<YieldTermStructure> forwarding,
+                     Handle<YieldTermStructure> discounting) const {
         return ext::make_shared<SwapIndex>(familyName(),
                        tenor(),
                        fixingDays(),
@@ -145,8 +145,8 @@ namespace QuantLib {
                        fixedLegTenor(),
                        fixedLegConvention(),
                        dayCounter(),
-                       iborIndex_->clone(forwarding),
-                       discounting);
+                       iborIndex_->clone(std::move(forwarding)),
+                       std::move(discounting));
     }
 
     ext::shared_ptr<SwapIndex>
@@ -177,14 +177,14 @@ namespace QuantLib {
     }
 
     OvernightIndexedSwapIndex::OvernightIndexedSwapIndex(
-        const std::string& familyName,
+        std::string familyName,
         const Period& tenor,
         Natural settlementDays,
         const Currency& currency,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         bool telescopicValueDates,
         RateAveraging::Type averagingMethod)
-    : SwapIndex(familyName,
+    : SwapIndex(std::move(familyName),
                 tenor,
                 settlementDays,
                 currency,
@@ -193,8 +193,8 @@ namespace QuantLib {
                 ModifiedFollowing,
                 overnightIndex->dayCounter(),
                 overnightIndex),
-      overnightIndex_(overnightIndex), 
-      telescopicValueDates_(telescopicValueDates), 
+      overnightIndex_(overnightIndex),
+      telescopicValueDates_(telescopicValueDates),
       averagingMethod_(averagingMethod) {}
 
 

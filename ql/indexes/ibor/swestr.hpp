@@ -34,8 +34,8 @@ namespace QuantLib {
     //! %Swestr (Swedish krona Short Term Rate) index.
     class Swestr : public OvernightIndex {
       public:
-        explicit Swestr(const Handle<YieldTermStructure>& h = {})
-        : OvernightIndex("SWESTR", 0, SEKCurrency(), Sweden(), Actual360(), h) {}
+        explicit Swestr(Handle<YieldTermStructure> h = {})
+        : OvernightIndex("SWESTR", 0, SEKCurrency(), Sweden(), Actual360(), std::move(h)) {}
     };
 
 }
