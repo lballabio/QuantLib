@@ -45,14 +45,14 @@ namespace QuantLib {
     };
 
 
-    //! 1-month %Euribor index
+    //! 1-month %Bibor index
     class Bibor1M : public Bibor {
       public:
         explicit Bibor1M(Handle<YieldTermStructure> h = {})
         : Bibor(Period(1, Months), std::move(h)) {}
     };
 
-    //! 2-months %Euribor index
+    //! 2-months %Bibor index
     class Bibor2M : public Bibor {
       public:
         explicit Bibor2M(Handle<YieldTermStructure> h = {})
@@ -73,8 +73,10 @@ namespace QuantLib {
         : Bibor(Period(6, Months), std::move(h)) {}
     };
 
-    //! 9-months %Bibor index
-    class Bibor9M : public Bibor {
+    /*! \deprecated If needed, use the Bibor class with an explicit tenor instead.
+                    Deprecated in version 1.35.
+    */
+    class [[deprecated("If needed, use the Bibor class with an explicit tenor instead")]] Bibor9M : public Bibor {
       public:
         explicit Bibor9M(Handle<YieldTermStructure> h = {})
         : Bibor(Period(9, Months), std::move(h)) {}
