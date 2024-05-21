@@ -61,7 +61,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter = DayCounter(),
                     bool telescopicValueDates = false,
                     RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                    ext::optional<Natural> fixingDays = ext::nullopt,
+                    Natural fixingDays = Null<Natural>(),
                     Natural lockoutDays = 0,
                     bool applyObservationShift = false);
         //! \name Inspectors

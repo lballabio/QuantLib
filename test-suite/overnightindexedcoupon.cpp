@@ -38,8 +38,15 @@ struct CommonVars {
     ext::shared_ptr<OvernightIndex> sofr;
     RelinkableHandle<YieldTermStructure> forecastCurve;
 
-    ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate, Date endDate) {
-        return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, sofr);
+    ext::shared_ptr<OvernightIndexedCoupon>
+    makeCoupon(Date startDate,
+               Date endDate,
+               Natural fixingDays = Null<Natural>(),
+               Natural lockoutDays = 0,
+               bool applyObservationShift = false) {
+        return ext::make_shared<OvernightIndexedCoupon>(
+            endDate, notional, startDate, endDate, sofr, 1.0, 0.0, Date(), Date(), DayCounter(),
+            false, RateAveraging::Compound, fixingDays, lockoutDays, applyObservationShift);
     }
 
     CommonVars() {
@@ -50,6 +57,18 @@ struct CommonVars {
         sofr = ext::make_shared<Sofr>(forecastCurve);
 
         std::vector<Date> pastDates = {
+            Date(21, June, 2019),    Date(24, June, 2019),    Date(25, June, 2019),
+            Date(26, June, 2019),    Date(27, June, 2019),    Date(28, June, 2019),
+            Date(1, July, 2019),     Date(2, July, 2019),     Date(3, July, 2019),
+            Date(5, July, 2019),     Date(8, July, 2019),     Date(9, July, 2019),
+            Date(10, July, 2019),    Date(11, July, 2019),    Date(12, July, 2019),
+            Date(15, July, 2019),    Date(16, July, 2019),    Date(17, July, 2019),
+            Date(18, July, 2019),    Date(19, July, 2019),    Date(22, July, 2019),
+            Date(23, July, 2019),    Date(24, July, 2019),    Date(25, July, 2019),
+            Date(26, July, 2019),    Date(29, July, 2019),    Date(30, July, 2019),
+            Date(31, July, 2019),    Date(1, August, 2019),   Date(2, August, 2019),
+            Date(5, August, 2019),
+
             Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),
             Date(21, October, 2021), Date(22, October, 2021), Date(25, October, 2021),
             Date(26, October, 2021), Date(27, October, 2021), Date(28, October, 2021),
@@ -61,6 +80,18 @@ struct CommonVars {
             Date(22, November, 2021)
         };
         std::vector<Rate> pastRates = {
+            0.0237, 0.0239, 0.0241, 
+            0.0243, 0.0242, 0.025,  
+            0.0242, 0.0251, 0.0256, 
+            0.0259, 0.0248, 0.0245, 
+            0.0246, 0.0241, 0.0236, 
+            0.0246, 0.0247, 0.0247, 
+            0.0246, 0.0241, 0.024,  
+            0.024,  0.0241, 0.0242, 
+            0.0241, 0.024,  0.0239, 
+            0.0255, 0.0219, 0.0219, 
+            0.0213,
+
             0.0008, 0.0009, 0.0008,
             0.0010, 0.0012, 0.0011,
             0.0013, 0.0012, 0.0012,
@@ -246,6 +277,21 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountOnFutureHoliday) {
     Date accrualDate = Date(15, January, 2022);
     Real expectedAmount = vars.notional * 0.000100005012;
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
+}
+BOOST_AUTO_TEST_CASE(testPastCouponRateWithLookback) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with lookback period...");
+
+    CommonVars vars;
+
+    // coupon entirely in the past with lookback period
+    // this unit test replicates an example available on NY FED website:
+    // https://www.newyorkfed.org/medialibrary/Microsites/arrc/files/2020/ARRC-BWLG-Examples-Other-Lookback-Options.xlsx
+
+    auto pastCoupon = vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), 5);
+
+    // expected values here and below come from manual calculations based on past dates and rates
+    Rate expectedRate = 0.024977948076;
+    CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

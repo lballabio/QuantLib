@@ -137,9 +137,8 @@ namespace QuantLib {
         Date getFixingDate(const ext::shared_ptr<InterestRateIndex>& index,
                            const Date& valueDate,
                            Natural fixingDays) {
-            Date fixingDate =
-                index->fixingCalendar().advance(valueDate, -static_cast<Integer>(fixingDays), Days);
-            return fixingDate;
+            return index->fixingCalendar().advance(valueDate, -static_cast<Integer>(fixingDays),
+                                                   Days);
         }
     }
 
@@ -156,11 +155,11 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     bool telescopicValueDates,
                     RateAveraging::Type averagingMethod,
-                    ext::optional<Natural> fixingDays,
+                    Natural fixingDays,
                     Natural lockoutDays,
                     bool applyObservationShift)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays ? *fixingDays : overnightIndex ? overnightIndex->fixingDays() : 0,
+                         fixingDays,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
