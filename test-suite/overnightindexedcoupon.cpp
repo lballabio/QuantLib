@@ -314,6 +314,13 @@ BOOST_AUTO_TEST_CASE(testPastCouponRateWithLookbackAndObservationShift) {
     CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
 }
 
+#define CHECK_OIS_COUPON_DATES(what, actual, expected)   \
+    if (actual != expected) {                            \
+        BOOST_ERROR("Failed to reproduce " what ":"      \
+                    << "\n    expected:   " << expected  \
+                    << "\n    actual: " << actual);      \
+    }
+
 BOOST_AUTO_TEST_CASE(testPastCouponRateWithLockout) {
     BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with lockout...");
 
@@ -325,10 +332,28 @@ BOOST_AUTO_TEST_CASE(testPastCouponRateWithLockout) {
     const Size n = fixingDates.size();
 
     Date expectedLockoutDate = Date(25, July, 2019);
-    CHECK_OIS_COUPON_RESULT("lockout date", fixingDates[n - 4], expectedLockoutDate, 1e-12);
-    CHECK_OIS_COUPON_RESULT("day T - 2 fixing", fixingDates[n - 3], expectedLockoutDate, 1e-12);
-    CHECK_OIS_COUPON_RESULT("day T - 1 fixing", fixingDates[n - 2], expectedLockoutDate, 1e-12);
-    CHECK_OIS_COUPON_RESULT("day T fixing", fixingDates[n - 1], expectedLockoutDate, 1e-12);
+    CHECK_OIS_COUPON_DATES("lockout date", fixingDates[n - 4], expectedLockoutDate);
+    CHECK_OIS_COUPON_DATES("day T - 2 fixing", fixingDates[n - 3], expectedLockoutDate);
+    CHECK_OIS_COUPON_DATES("day T - 1 fixing", fixingDates[n - 2], expectedLockoutDate);
+    CHECK_OIS_COUPON_DATES("day T fixing", fixingDates[n - 1], expectedLockoutDate);
+}
+
+BOOST_AUTO_TEST_CASE(testPastCouponRateWithLookbackObservationShiftAndLockout) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with lookback period, "
+                       "observation shift and lockout...");
+
+    CommonVars vars;
+
+    // coupon entirely in the past with lookback period with observation shift
+    // and lockout this unit test replicates an example available on NY FED website:
+    // https://www.newyorkfed.org/medialibrary/Microsites/arrc/files/2020/ARRC-BWLG-Examples-Other-Lookback-Options.xlsx
+
+    auto pastCoupon = vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), 5, 3, true);
+
+    // expected values here and below come from manual calculations based on past dates and rates
+    Rate expectedRate = 0.024693783702;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
 }
 
 BOOST_AUTO_TEST_CASE(testIncorrectNumberOfLockoutDays) {
