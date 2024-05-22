@@ -290,8 +290,64 @@ BOOST_AUTO_TEST_CASE(testPastCouponRateWithLookback) {
     auto pastCoupon = vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), 5);
 
     // expected values here and below come from manual calculations based on past dates and rates
-    Rate expectedRate = 0.024977948076;
+    Rate expectedRate = 0.024781644454;
+
     CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testPastCouponRateWithLookbackAndObservationShift) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with lookback period and "
+                       "observation shift...");
+
+    CommonVars vars;
+
+    // coupon entirely in the past with lookback period with observation shift
+    // this unit test replicates an example available on NY FED website:
+    // https://www.newyorkfed.org/medialibrary/Microsites/arrc/files/2020/ARRC-BWLG-Examples-Other-Lookback-Options.xlsx
+
+    auto pastCoupon =
+        vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), 5, 0, true);
+
+    // expected values here and below come from manual calculations based on past dates and rates
+    Rate expectedRate = 0.024603611707;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testPastCouponRateWithLockout) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with lockout...");
+
+    CommonVars vars;
+
+    auto couponWithLockout =
+        vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), 3);
+    const std::vector<Date>& fixingDates = couponWithLockout->fixingDates();
+    const Size n = fixingDates.size();
+
+    Date expectedLockoutDate = Date(25, July, 2019);
+    CHECK_OIS_COUPON_RESULT("lockout date", fixingDates[n - 4], expectedLockoutDate, 1e-12);
+    CHECK_OIS_COUPON_RESULT("day T - 2 fixing", fixingDates[n - 3], expectedLockoutDate, 1e-12);
+    CHECK_OIS_COUPON_RESULT("day T - 1 fixing", fixingDates[n - 2], expectedLockoutDate, 1e-12);
+    CHECK_OIS_COUPON_RESULT("day T fixing", fixingDates[n - 1], expectedLockoutDate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testIncorrectNumberOfLockoutDays) {
+    BOOST_TEST_MESSAGE("Testing incorrect number of lockout days...");
+
+    CommonVars vars;
+
+    auto couponWithoutLockout = vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019));
+    const Size numberOfFixings = couponWithoutLockout->fixingDates().size();
+
+    // Lockout days equal to the number of daily fixings
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(),
+                                      numberOfFixings),
+                      Error);
+
+    // Negative number of lockout days
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(),
+                                      numberOfFixings),
+                      Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

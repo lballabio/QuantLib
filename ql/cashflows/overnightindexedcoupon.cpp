@@ -35,6 +35,19 @@ namespace QuantLib {
 
     namespace {
 
+        Size determineNumberOfFixings(const vector<Date>& valueDates,
+                                      const Date& date,
+                                      bool applyObservationShift) {
+            Size n =
+                std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
+            // When using the observation shift, it may happen that
+            // that the end of accrual period will fall later than the last
+            // value date. In which case, n will be equal to the number of
+            // value dates, while we know that the number of fixing dates is
+            // always one less than the number of value dates.
+            return n == valueDates.size() && applyObservationShift ? n - 1 : n;
+        }
+
         class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
           public:
             void initialize(const FloatingRateCoupon& coupon) override {
@@ -53,9 +66,11 @@ namespace QuantLib {
                 const vector<Date>& fixingDates = coupon_->fixingDates();
                 const vector<Date>& valueDates = coupon_->valueDates();
                 const vector<Time>& dt = coupon_->dt();
+                bool applyObservationShift = coupon_->applyObservationShift();
 
                 Size i = 0;
-                const size_t n = std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
+                const Size n = determineNumberOfFixings(valueDates, date, applyObservationShift);
+
                 Real compoundFactor = 1.0;
 
                 // already fixed part
@@ -214,7 +229,7 @@ namespace QuantLib {
 
         // fixing dates
         n_ = valueDates_.size()-1;
-        if (overnightIndex->fixingDays()==0) {
+        if (fixingDays_==0) {
             fixingDates_ = vector<Date>(valueDates_.begin(),
                                         valueDates_.end() - 1);
         } else {

@@ -76,6 +76,10 @@ namespace QuantLib {
         const std::vector<Date>& valueDates() const { return valueDates_; }
         //! averaging method
         const RateAveraging::Type averagingMethod() const { return averagingMethod_; }
+        //! lockout days
+        const Natural lockoutDays() const { return lockoutDays_; }
+        //! apply observation shift
+        const bool applyObservationShift() const { return applyObservationShift_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
