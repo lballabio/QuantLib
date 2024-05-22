@@ -370,8 +370,7 @@ BOOST_AUTO_TEST_CASE(testIncorrectNumberOfLockoutDays) {
                       Error);
 
     // Negative number of lockout days
-    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(),
-                                      numberOfFixings),
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), -1),
                       Error);
 }
 
