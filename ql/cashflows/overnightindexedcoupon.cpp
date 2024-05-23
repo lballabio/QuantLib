@@ -229,36 +229,35 @@ namespace QuantLib {
 
         // fixing dates
         n_ = valueDates_.size()-1;
-        if (fixingDays_==0) {
-            fixingDates_ = vector<Date>(valueDates_.begin(),
-                                        valueDates_.end() - 1);
+        if (fixingDays_==0 || applyObservationShift_) {
+            // Lookback (fixing days) with observation shift:
+            // The date that the fixing rate is pulled from (the observation date)
+            // is k business days before the date that interest is applied
+            // (the interest date) and is applied for the number of calendar
+            // days until the next business day following the observation date.
+            // This means that the fixing dates periods align with value dates.
+            if (fixingDays_ != 0) {
+                for (Size i = 0; i <= n_; ++i)
+                {
+                    valueDates_[i] = getFixingDate(overnightIndex, valueDates_[i], fixingDays_);
+                }
+            }
+            fixingDates_ = vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
         } else {
             fixingDates_.resize(n_);
             for (Size i = 0; i < n_; ++i)
-            {   // Lookback (fixing days) without observation shift:  
-                // The date that the fixing rate is pulled  from (the observation date) is k 
-                // business days before the date that interest is applied (the interest date) 
-                // and is applied for the number of calendar days until the next business 
+            {   // Lookback (fixing days) without observation shift:
+                // The date that the fixing rate is pulled  from (the observation date) is k
+                // business days before the date that interest is applied (the interest date)
+                // and is applied for the number of calendar days until the next business
                 // day following the interest date.
                 fixingDates_[i] = getFixingDate(overnightIndex, valueDates_[i], fixingDays_);
-                
-                // Lookback (fixing days) with observation shift:
-                // The date that the fixing rate is pulled from (the observation date) 
-                // is k business days before the date that interest is applied 
-                // (the interest date) and is applied for the number of calendar 
-                // days until the next business day following the observation date.
-                // This means that the fixing dates periods align with value dates.
-                if (applyObservationShift_)
-                    valueDates_[i] = fixingDates_[i];
             }
-            if (applyObservationShift_)
-                valueDates_[n_] = getFixingDate(overnightIndex, valueDates_[n_], fixingDays_);
         }
 
         // When lockout is used the fixing rate applied for the last k days of the 
         // interest period is frozen at the rate observed k days before the period ends. 
-        if (lockoutDays_ != 0)
-        {
+        if (lockoutDays_ != 0) {
             QL_REQUIRE(lockoutDays_ > 0 && lockoutDays_ < n_,
                        "Lockout period cannot be negative or exceed the number of fixing days.");
             Date lockoutDate = fixingDates_[n_ - 1 - lockoutDays_];
