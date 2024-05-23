@@ -74,6 +74,8 @@ namespace QuantLib {
         const std::vector<Rate>& indexFixings() const;
         //! value dates for the rates to be compounded
         const std::vector<Date>& valueDates() const { return valueDates_; }
+        //! value dates for the rates to be compounded
+        const std::vector<Date>& interestDates() const { return interestDates_; }
         //! averaging method
         const RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         //! lockout days
@@ -92,7 +94,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        std::vector<Date> valueDates_, fixingDates_;
+        std::vector<Date> valueDates_, interestDates_, fixingDates_;
         mutable std::vector<Rate> fixings_;
         Size n_;
         std::vector<Time> dt_;

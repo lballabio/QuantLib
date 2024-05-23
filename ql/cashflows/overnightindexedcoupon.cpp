@@ -28,6 +28,7 @@
 #include <ql/utilities/vectors.hpp>
 #include <utility>
 #include <algorithm>
+#include <iostream>
 
 using std::vector;
 
@@ -35,17 +36,17 @@ namespace QuantLib {
 
     namespace {
 
-        Size determineNumberOfFixings(const vector<Date>& valueDates,
+        Size determineNumberOfFixings(const vector<Date>& interestDates,
                                       const Date& date,
                                       bool applyObservationShift) {
             Size n =
-                std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
+                std::lower_bound(interestDates.begin(), interestDates.end(), date) - interestDates.begin();
             // When using the observation shift, it may happen that
             // that the end of accrual period will fall later than the last
-            // value date. In which case, n will be equal to the number of
-            // value dates, while we know that the number of fixing dates is
-            // always one less than the number of value dates.
-            return n == valueDates.size() && applyObservationShift ? n - 1 : n;
+            // interest date. In which case, n will be equal to the number of
+            // interest dates, while we know that the number of fixing dates is
+            // always one less than the number of interest dates.
+            return n == interestDates.size() && applyObservationShift ? n - 1 : n;
         }
 
         class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
@@ -65,11 +66,12 @@ namespace QuantLib {
 
                 const vector<Date>& fixingDates = coupon_->fixingDates();
                 const vector<Date>& valueDates = coupon_->valueDates();
+                const vector<Date>& interestDates = coupon_->interestDates();
                 const vector<Time>& dt = coupon_->dt();
                 bool applyObservationShift = coupon_->applyObservationShift();
 
                 Size i = 0;
-                const Size n = determineNumberOfFixings(valueDates, date, applyObservationShift);
+                const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
 
                 Real compoundFactor = 1.0;
 
@@ -80,9 +82,9 @@ namespace QuantLib {
                     QL_REQUIRE(fixing != Null<Real>(),
                                "Missing " << index->name() <<
                                " fixing for " << fixingDates[i]);
-                    Time span = (date >= valueDates[i+1] ?
+                    Time span = (date >= interestDates[i + 1] ?
                                  dt[i] :
-                                 index->dayCounter().yearFraction(valueDates[i], date));
+                                 index->dayCounter().yearFraction(interestDates[i], date));
                     compoundFactor *= (1.0 + fixing * span);
                     ++i;
                 }
@@ -93,9 +95,9 @@ namespace QuantLib {
                     try {
                         Rate fixing = pastFixings[fixingDates[i]];
                         if (fixing != Null<Real>()) {
-                            Time span = (date >= valueDates[i+1] ?
+                            Time span = (date >= interestDates[i + 1] ?
                                          dt[i] :
-                                         index->dayCounter().yearFraction(valueDates[i], date));
+                                         index->dayCounter().yearFraction(interestDates[i], date));
                             compoundFactor *= (1.0 + fixing * span);
                             ++i;
                         } else {
@@ -114,7 +116,7 @@ namespace QuantLib {
                                "null term structure set to this instance of " << index->name());
 
                     const DiscountFactor startDiscount = curve->discount(valueDates[i]);
-                    if (valueDates[n] == date) {
+                    if (interestDates[n] == date) {
                         // full telescopic formula
                         const DiscountFactor endDiscount = curve->discount(valueDates[n]);
                         compoundFactor *= startDiscount / endDiscount;
@@ -126,7 +128,7 @@ namespace QuantLib {
                         compoundFactor *= startDiscount / endDiscount;
 
                         Rate fixing = index->fixing(fixingDates[n-1]);
-                        Time span = index->dayCounter().yearFraction(valueDates[n-1], date);
+                        Time span = index->dayCounter().yearFraction(interestDates[n - 1], date);
                         compoundFactor *= (1.0 + fixing * span);
                     }
                 }
@@ -149,10 +151,10 @@ namespace QuantLib {
             const OvernightIndexedCoupon* coupon_;
         };
 
-        Date getFixingDate(const ext::shared_ptr<InterestRateIndex>& index,
-                           const Date& valueDate,
-                           Natural fixingDays) {
-            return index->fixingCalendar().advance(valueDate, -static_cast<Integer>(fixingDays),
+        Date applyLookbackPeriod(const ext::shared_ptr<InterestRateIndex>& index,
+                                 const Date& valueDate,
+                                 Natural lookbackDays) {
+            return index->fixingCalendar().advance(valueDate, -static_cast<Integer>(lookbackDays),
                                                    Days);
         }
     }
@@ -227,34 +229,38 @@ namespace QuantLib {
 
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
 
-        // fixing dates
-        n_ = valueDates_.size()-1;
-        if (fixingDays_==0 || applyObservationShift_) {
-            // Lookback (fixing days) with observation shift:
-            // The date that the fixing rate is pulled from (the observation date)
-            // is k business days before the date that interest is applied
-            // (the interest date) and is applied for the number of calendar
-            // days until the next business day following the observation date.
-            // This means that the fixing dates periods align with value dates.
-            if (fixingDays_ != 0) {
-                for (Size i = 0; i <= n_; ++i)
-                {
-                    valueDates_[i] = getFixingDate(overnightIndex, valueDates_[i], fixingDays_);
-                }
-            }
+        n_ = valueDates_.size() - 1;
+        interestDates_ = vector<Date>(valueDates_.begin(), valueDates_.end());
+        if (fixingDays_ == overnightIndex->fixingDays() && fixingDays_ == 0) {
             fixingDates_ = vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
-        } else {
+        } else if (fixingDays_ == overnightIndex->fixingDays()) {
+            // No observation shift, but value dates need to be adjusted for fixing days
+            // from the index to arrive at fixing dates.
             fixingDates_.resize(n_);
             for (Size i = 0; i < n_; ++i)
-            {   // Lookback (fixing days) without observation shift:
-                // The date that the fixing rate is pulled  from (the observation date) is k
-                // business days before the date that interest is applied (the interest date)
-                // and is applied for the number of calendar days until the next business
-                // day following the interest date.
-                fixingDates_[i] = getFixingDate(overnightIndex, valueDates_[i], fixingDays_);
+                fixingDates_[i] = overnightIndex->fixingDate(valueDates_[i]);
+        } else {
+            // Lookback (fixing days) without observation shift:
+            // The date that the fixing rate is pulled  from (the observation date) is k
+            // business days before the date that interest is applied (the interest date)
+            // and is applied for the number of calendar days until the next business
+            // day following the interest date.
+            fixingDates_.resize(n_);
+            for (Size i = 0; i <= n_; ++i) {
+                Date tmp = applyLookbackPeriod(overnightIndex, valueDates_[i], fixingDays_);
+                if (i < n_)
+                    fixingDates_[i] = tmp;
+                if (applyObservationShift_)
+                    // Lookback (fixing days) with observation shift:
+                    // The date that the fixing rate is pulled from (the observation date)
+                    // is k business days before the date that interest is applied
+                    // (the interest date) and is applied for the number of calendar
+                    // days until the next business day following the observation date.
+                    // This means that the fixing dates periods align with value dates.
+                    interestDates_[i] = tmp;
+                valueDates_[i] = overnightIndex->valueDate(tmp);
             }
         }
-
         // When lockout is used the fixing rate applied for the last k days of the 
         // interest period is frozen at the rate observed k days before the period ends. 
         if (lockoutDays_ != 0) {
@@ -269,7 +275,7 @@ namespace QuantLib {
         dt_.resize(n_);
         const DayCounter& dc = overnightIndex->dayCounter();
         for (Size i=0; i<n_; ++i)
-            dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
+            dt_[i] = dc.yearFraction(interestDates_[i], interestDates_[i + 1]);
 
         switch (averagingMethod) {
             case RateAveraging::Simple:
