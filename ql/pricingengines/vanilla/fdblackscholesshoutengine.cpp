@@ -38,7 +38,7 @@ namespace QuantLib {
         Size xGrid,
         Size dampingSteps,
         const FdmSchemeDesc& schemeDesc)
-    : process_(std::move(process)), explicitDividends_(false),
+    : process_(std::move(process)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc) {
         registerWith(process_);
@@ -51,7 +51,7 @@ namespace QuantLib {
         Size xGrid,
         Size dampingSteps,
         const FdmSchemeDesc& schemeDesc)
-    : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
+    : process_(std::move(process)), dividends_(std::move(dividends)),
       tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc) {
         registerWith(process_);
@@ -59,18 +59,13 @@ namespace QuantLib {
 
     void FdBlackScholesShoutEngine::calculate() const {
 
-        // dividends will eventually be moved out of arguments, but for now we need the switch
-        QL_DEPRECATED_DISABLE_WARNING
-        const DividendSchedule& passedDividends = explicitDividends_ ? dividends_ : arguments_.cashFlow;
-        QL_DEPRECATED_ENABLE_WARNING
-
         const Date exerciseDate = arguments_.exercise->lastDate();
         const Time maturity = process_->time(exerciseDate);
         const Date settlementDate = process_->riskFreeRate()->referenceDate();
 
         const auto escrowedDividendAdj =
             ext::make_shared<EscrowedDividendAdjustment>(
-                passedDividends,
+                dividends_,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
                 [&](Date d){ return process_->time(d); },
@@ -104,7 +99,7 @@ namespace QuantLib {
                 escrowedDividendAdj, maturity, payoff, mesher, 0);
 
         DividendSchedule zeroDividendSchedule = DividendSchedule();
-        for (const auto& cf: passedDividends)
+        for (const auto& cf: dividends_)
             zeroDividendSchedule.push_back(
                 ext::make_shared<FixedDividend>(0.0, cf->date()));
 

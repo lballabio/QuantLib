@@ -41,10 +41,10 @@ namespace QuantLib {
     class EuriborSwapIsdaFixA : public SwapIndex {
       public:
         EuriborSwapIsdaFixA(const Period& tenor,
-                            const Handle<YieldTermStructure>& h = {});
+                            Handle<YieldTermStructure> h = {});
         EuriborSwapIsdaFixA(const Period& tenor,
-                            const Handle<YieldTermStructure>& forwarding,
-                            const Handle<YieldTermStructure>& discounting);
+                            Handle<YieldTermStructure> forwarding,
+                            Handle<YieldTermStructure> discounting);
     };
 
     //! %EuriborSwapIsdaFixB index base class
@@ -60,10 +60,10 @@ namespace QuantLib {
     class EuriborSwapIsdaFixB : public SwapIndex {
       public:
         EuriborSwapIsdaFixB(const Period& tenor,
-                            const Handle<YieldTermStructure>& h = {});
+                            Handle<YieldTermStructure> h = {});
         EuriborSwapIsdaFixB(const Period& tenor,
-                            const Handle<YieldTermStructure>& forwarding,
-                            const Handle<YieldTermStructure>& discounting);
+                            Handle<YieldTermStructure> forwarding,
+                            Handle<YieldTermStructure> discounting);
     };
 
     //! %EuriborSwapIfrFix index base class
@@ -76,10 +76,10 @@ namespace QuantLib {
     class EuriborSwapIfrFix : public SwapIndex {
       public:
         EuriborSwapIfrFix(const Period& tenor,
-                          const Handle<YieldTermStructure>& h = {});
+                          Handle<YieldTermStructure> h = {});
         EuriborSwapIfrFix(const Period& tenor,
-                          const Handle<YieldTermStructure>& forwarding,
-                          const Handle<YieldTermStructure>& discounting);
+                          Handle<YieldTermStructure> forwarding,
+                          Handle<YieldTermStructure> discounting);
     };
 
 }

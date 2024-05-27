@@ -111,6 +111,18 @@ namespace QuantLib {
         return c1.name() == c2.name();
     }
 
+    inline const CommodityType& CommodityCurve::commodityType() const {
+        return commodityType_;
+    }
+
+    inline const UnitOfMeasure& CommodityCurve::unitOfMeasure() const {
+        return unitOfMeasure_;
+    }
+
+    inline const Currency& CommodityCurve::currency() const {
+        return currency_;
+    }
+
     inline const std::string& CommodityCurve::name() const {
         return name_;
     }

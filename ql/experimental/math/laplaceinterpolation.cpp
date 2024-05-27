@@ -37,8 +37,9 @@ namespace QuantLib {
 
     LaplaceInterpolation::LaplaceInterpolation(std::function<Real(const std::vector<Size>&)> y,
                                                std::vector<std::vector<Real>> x,
-                                               const Real relTol)
-    : y_(std::move(y)), x_(std::move(x)), relTol_(relTol) {
+                                               Real relTol,
+                                               Size maxIterMultiplier)
+    : y_(std::move(y)), x_(std::move(x)), relTol_(relTol), maxIterMultiplier_(maxIterMultiplier) {
 
         // set up the mesher
 
@@ -173,7 +174,7 @@ for (auto const& m : map_)
             ++rowit;
         }
 
-        interpolatedValues_ = BiCGstab(f_A(g), 10 * N, relTol_).solve(rhs, guess).x;
+        interpolatedValues_ = BiCGstab(f_A(g), maxIterMultiplier_ * N, relTol_).solve(rhs, guess).x;
     }
 
     std::vector<Size>
@@ -213,7 +214,8 @@ for (auto const& m : map_)
     void laplaceInterpolation(Matrix& A,
                               const std::vector<Real>& x,
                               const std::vector<Real>& y,
-                              Real relTol) {
+                              Real relTol,
+                              Size maxIterMultiplier) {
 
         std::vector<std::vector<Real>> tmp;
         tmp.push_back(y);
@@ -233,7 +235,7 @@ for (auto const& m : map_)
             [&A](const std::vector<Size>& coordinates) {
                 return A(coordinates[0], coordinates[1]);
             },
-            tmp, relTol);
+            tmp, relTol, maxIterMultiplier);
 
         for (Size i = 0; i < A.rows(); ++i) {
             for (Size j = 0; j < A.columns(); ++j) {

@@ -43,9 +43,9 @@ namespace QuantLib {
                                                ext::shared_ptr<LocalVolTermStructure> leverageFct,
                                                const Real mixingFactor)
     : GenericModelEngine<HestonModel,
-                         DividendBarrierOption::arguments,
-                         DividendBarrierOption::results>(model),
-      explicitDividends_(false), tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
+                         BarrierOption::arguments,
+                         BarrierOption::results>(model),
+      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
     FdHestonRebateEngine::FdHestonRebateEngine(const ext::shared_ptr<HestonModel>& model,
@@ -58,20 +58,15 @@ namespace QuantLib {
                                                ext::shared_ptr<LocalVolTermStructure> leverageFct,
                                                const Real mixingFactor)
     : GenericModelEngine<HestonModel,
-                         DividendBarrierOption::arguments,
-                         DividendBarrierOption::results>(model),
-      dividends_(std::move(dividends)), explicitDividends_(true),
+                         BarrierOption::arguments,
+                         BarrierOption::results>(model),
+      dividends_(std::move(dividends)),
       tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
     QL_DEPRECATED_ENABLE_WARNING
 
     void FdHestonRebateEngine::calculate() const {
-
-        // dividends will eventually be moved out of arguments, but for now we need the switch
-        QL_DEPRECATED_DISABLE_WARNING
-        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
-        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<HestonProcess>& process = model_->process();
@@ -109,7 +104,7 @@ namespace QuantLib {
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                dividendSchedule));
+                dividends_));
 
         const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, vMesher));
@@ -126,7 +121,7 @@ namespace QuantLib {
 
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
              FdmStepConditionComposite::vanillaComposite(
-                                 dividendSchedule, arguments_.exercise, 
+                                 dividends_, arguments_.exercise, 
                                  mesher, calculator, 
                                  process->riskFreeRate()->referenceDate(),
                                  process->riskFreeRate()->dayCounter());

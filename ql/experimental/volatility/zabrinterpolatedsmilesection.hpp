@@ -172,6 +172,12 @@ inline Real ZabrInterpolatedSmileSection<Evaluation>::rho() const {
 }
 
 template <typename Evaluation>
+inline Real ZabrInterpolatedSmileSection<Evaluation>::gamma() const {
+    calculate();
+    return zabrInterpolation_->gamma();
+}
+
+template <typename Evaluation>
 inline Real ZabrInterpolatedSmileSection<Evaluation>::rmsError() const {
     calculate();
     return zabrInterpolation_->rmsError();

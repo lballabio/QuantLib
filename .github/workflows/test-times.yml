@@ -15,6 +15,7 @@ jobs:
           linux-ci-test-times-
     - name: Setup
       run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install -y libboost-dev autoconf automake libtool ccache
     - name: Build

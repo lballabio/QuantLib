@@ -23,7 +23,6 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -111,24 +110,17 @@ BOOST_AUTO_TEST_CASE(testEuropeanValues) {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                QL_DEPRECATED_DISABLE_WARNING
-                ext::shared_ptr<PricingEngine> engine1(new AnalyticDividendEuropeanEngine(stochProcess));
+                auto engine1 =
+                    ext::make_shared<AnalyticDividendEuropeanEngine>(stochProcess, DividendVector(dividendDates, dividends));
 
-                DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
-                QL_DEPRECATED_ENABLE_WARNING
+                VanillaOption option1(payoff, exercise);
                 option1.setPricingEngine(engine1);
 
                 auto engine2 =
-                    ext::make_shared<AnalyticDividendEuropeanEngine>(stochProcess, DividendVector(dividendDates, dividends));
+                    ext::make_shared<AnalyticDividendEuropeanEngine>(stochProcess, DividendVector({ exDate + 6*Months }, { 1.0 }));
 
                 VanillaOption option2(payoff, exercise);
                 option2.setPricingEngine(engine2);
-
-                auto engine3 =
-                    ext::make_shared<AnalyticDividendEuropeanEngine>(stochProcess, DividendVector({ exDate + 6*Months }, { 1.0 }));
-
-                VanillaOption option3(payoff, exercise);
-                option3.setPricingEngine(engine3);
 
                 for (Real u : underlyings) {
                     for (Real m : qRates) {
@@ -143,10 +135,8 @@ BOOST_AUTO_TEST_CASE(testEuropeanValues) {
                                 Real expected = ref_option.NPV();
                                 Real calculated1 = option1.NPV();
                                 Real calculated2 = option2.NPV();
-                                Real calculated3 = option2.NPV();
                                 Real error1 = std::fabs(calculated1 - expected);
                                 Real error2 = std::fabs(calculated2 - expected);
-                                Real error3 = std::fabs(calculated3 - expected);
                                 if (error1 > tolerance) {
                                     REPORT_FAILURE("value start limit", payoff, exercise, u, q, r,
                                                    today, v, expected, calculated1, error1,
@@ -155,11 +145,6 @@ BOOST_AUTO_TEST_CASE(testEuropeanValues) {
                                 if (error2 > tolerance) {
                                     REPORT_FAILURE("value start limit", payoff, exercise, u, q, r,
                                                    today, v, expected, calculated2, error2,
-                                                   tolerance);
-                                }
-                                if (error3 > tolerance) {
-                                    REPORT_FAILURE("value start limit", payoff, exercise, u, q, r,
-                                                   today, v, expected, calculated3, error3,
                                                    tolerance);
                                 }
                             }
@@ -206,20 +191,11 @@ BOOST_AUTO_TEST_CASE(testEuropeanKnownValue) {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-    QL_DEPRECATED_DISABLE_WARNING
-    ext::shared_ptr<PricingEngine> engine1(
-                            new AnalyticDividendEuropeanEngine(stochProcess));
-
-    DividendVanillaOption option1(payoff, exercise,
-                                  dividendDates, dividends);
-    QL_DEPRECATED_ENABLE_WARNING
-    option1.setPricingEngine(engine1);
-
-    auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
+    auto engine = ext::make_shared<AnalyticDividendEuropeanEngine>(
         stochProcess, DividendVector(dividendDates, dividends));
 
-    VanillaOption option2(payoff, exercise);
-    option2.setPricingEngine(engine2);
+    VanillaOption option(payoff, exercise);
+    option.setPricingEngine(engine);
 
     Real u = 40.0;
     Rate q = 0.0, r = 0.09;
@@ -229,18 +205,8 @@ BOOST_AUTO_TEST_CASE(testEuropeanKnownValue) {
     rRate->setValue(r);
     vol->setValue(v);
 
-    Real calculated = option1.NPV();
+    Real calculated = option.NPV();
     Real error = std::fabs(calculated-expected);
-    if (error > tolerance) {
-        REPORT_FAILURE("value start limit",
-                       payoff, exercise,
-                       u, q, r, today, v,
-                       expected, calculated,
-                       error, tolerance);
-    }
-
-    calculated = option1.NPV();
-    error = std::fabs(calculated-expected);
     if (error > tolerance) {
         REPORT_FAILURE("value start limit",
                        payoff, exercise,
@@ -297,19 +263,11 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                QL_DEPRECATED_DISABLE_WARNING
-                ext::shared_ptr<PricingEngine> engine1(
-                    new AnalyticDividendEuropeanEngine(stochProcess));
-
-                DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
-                QL_DEPRECATED_ENABLE_WARNING
-                option1.setPricingEngine(engine1);
-
-                auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
+                auto engine = ext::make_shared<AnalyticDividendEuropeanEngine>(
                     stochProcess, DividendVector(dividendDates, dividends));
 
-                VanillaOption option2(payoff, exercise);
-                option2.setPricingEngine(engine2);
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
 
                 for (Real u : underlyings) {
                     for (Real m : qRates) {
@@ -321,19 +279,13 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
                                 rRate->setValue(r);
                                 vol->setValue(v);
 
-                                Real calculated1 = option1.NPV();
-                                Real calculated2 = option2.NPV();
+                                Real calculated = option.NPV();
                                 spot->setValue(u - dividendValue);
                                 Real expected = ref_option.NPV();
-                                Real error = std::fabs(calculated1 - expected);
+                                Real error = std::fabs(calculated - expected);
                                 if (error > tolerance) {
                                     REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
-                                                   expected, calculated1, error, tolerance);
-                                }
-                                error = std::fabs(calculated2 - expected);
-                                if (error > tolerance) {
-                                    REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
-                                                   expected, calculated2, error, tolerance);
+                                                   expected, calculated, error, tolerance);
                                 }
                             }
                         }
@@ -440,140 +392,6 @@ BOOST_AUTO_TEST_CASE(testEuropeanStartLimit) {
 //        }
 //    }
 //}
-
-BOOST_AUTO_TEST_CASE(testOldEuropeanGreeks) {
-
-    BOOST_TEST_MESSAGE("Testing old-style dividend European option greeks...");
-
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"] = 1.0e-5;
-    tolerance["gamma"] = 1.0e-5;
-    tolerance["theta"] = 1.0e-5;
-    tolerance["rho"]   = 1.0e-5;
-    tolerance["vega"]  = 1.0e-5;
-
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.00, 0.10, 0.30 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Integer lengths[] = { 1, 2 };
-    Volatility vols[] = { 0.05, 0.20, 0.40 };
-
-    DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
-
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
-
-    for (auto& type : types) {
-        for (Real strike : strikes) {
-            for (int length : lengths) {
-                Date exDate = today + length * Years;
-                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-
-                std::vector<Date> dividendDates;
-                std::vector<Real> dividends;
-                for (Date d = today + 3 * Months; d < exercise->lastDate(); d += 6 * Months) {
-                    dividendDates.push_back(d);
-                    dividends.push_back(5.0);
-                }
-
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
-
-                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
-                    new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
-
-                QL_DEPRECATED_DISABLE_WARNING
-                ext::shared_ptr<PricingEngine> engine(
-                    new AnalyticDividendEuropeanEngine(stochProcess));
-
-                DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
-                QL_DEPRECATED_ENABLE_WARNING
-                option.setPricingEngine(engine);
-
-                for (Real u : underlyings) {
-                    for (Real m : qRates) {
-                        for (Real n : rRates) {
-                            for (Real v : vols) {
-                                Rate q = m, r = n;
-                                spot->setValue(u);
-                                qRate->setValue(q);
-                                rRate->setValue(r);
-                                vol->setValue(v);
-
-                                Real value = option.NPV();
-                                calculated["delta"] = option.delta();
-                                calculated["gamma"] = option.gamma();
-                                calculated["theta"] = option.theta();
-                                calculated["rho"] = option.rho();
-                                calculated["vega"] = option.vega();
-
-                                if (value > spot->value() * 1.0e-5) {
-                                    // perturb spot and get delta and gamma
-                                    Real du = u * 1.0e-4;
-                                    spot->setValue(u + du);
-                                    Real value_p = option.NPV(), delta_p = option.delta();
-                                    spot->setValue(u - du);
-                                    Real value_m = option.NPV(), delta_m = option.delta();
-                                    spot->setValue(u);
-                                    expected["delta"] = (value_p - value_m) / (2 * du);
-                                    expected["gamma"] = (delta_p - delta_m) / (2 * du);
-
-                                    // perturb risk-free rate and get rho
-                                    Spread dr = r * 1.0e-4;
-                                    rRate->setValue(r + dr);
-                                    value_p = option.NPV();
-                                    rRate->setValue(r - dr);
-                                    value_m = option.NPV();
-                                    rRate->setValue(r);
-                                    expected["rho"] = (value_p - value_m) / (2 * dr);
-
-                                    // perturb volatility and get vega
-                                    Spread dv = v * 1.0e-4;
-                                    vol->setValue(v + dv);
-                                    value_p = option.NPV();
-                                    vol->setValue(v - dv);
-                                    value_m = option.NPV();
-                                    vol->setValue(v);
-                                    expected["vega"] = (value_p - value_m) / (2 * dv);
-
-                                    // perturb date and get theta
-                                    Time dT = dc.yearFraction(today - 1, today + 1);
-                                    Settings::instance().evaluationDate() = today - 1;
-                                    value_m = option.NPV();
-                                    Settings::instance().evaluationDate() = today + 1;
-                                    value_p = option.NPV();
-                                    Settings::instance().evaluationDate() = today;
-                                    expected["theta"] = (value_p - value_m) / dT;
-
-                                    // compare
-                                    std::map<std::string, Real>::iterator it;
-                                    for (it = calculated.begin(); it != calculated.end(); ++it) {
-                                        std::string greek = it->first;
-                                        Real expct = expected[greek], calcl = calculated[greek],
-                                             tol = tolerance[greek];
-                                        Real error = relativeError(expct, calcl, u);
-                                        if (error > tol) {
-                                            REPORT_FAILURE(greek, payoff, exercise, u, q, r, today,
-                                                           v, expct, calcl, error, tol);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 BOOST_AUTO_TEST_CASE(testEuropeanGreeks) {
 
@@ -760,26 +578,15 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanValues) {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                ext::shared_ptr<PricingEngine> engine1 =
-                    MakeFdBlackScholesVanillaEngine(stochProcess)
-                        .withTGrid(timeSteps)
-                        .withXGrid(gridPoints)
-                        .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed);
-
-                QL_DEPRECATED_DISABLE_WARNING
-                DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
-                QL_DEPRECATED_ENABLE_WARNING
-                option1.setPricingEngine(engine1);
-
-                ext::shared_ptr<PricingEngine> engine2 =
+                ext::shared_ptr<PricingEngine> engine =
                     MakeFdBlackScholesVanillaEngine(stochProcess)
                         .withTGrid(timeSteps)
                         .withXGrid(gridPoints)
                         .withCashDividends(dividendDates, dividends)
                         .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed);
 
-                VanillaOption option2(payoff, exercise);
-                option2.setPricingEngine(engine2);
+                VanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
 
                 for (Real u : underlyings) {
                     for (Real m : qRates) {
@@ -790,16 +597,7 @@ BOOST_AUTO_TEST_CASE(testFdEuropeanValues) {
                                 qRate->setValue(q);
                                 rRate->setValue(r);
                                 vol->setValue(v);
-                                Real calculated = option1.NPV();
-                                if (calculated > spot->value() * 1.0e-5) {
-                                    Real expected = ref_option.NPV();
-                                    Real error = std::fabs(calculated - expected);
-                                    if (error > tolerance) {
-                                        REPORT_FAILURE("value", payoff, exercise, u, q, r, today, v,
-                                                       expected, calculated, error, tolerance);
-                                    }
-                                }
-                                calculated = option2.NPV();
+                                Real calculated = option.NPV();
                                 if (calculated > spot->value() * 1.0e-5) {
                                     Real expected = ref_option.NPV();
                                     Real error = std::fabs(calculated - expected);
@@ -869,16 +667,6 @@ void testFdGreeks(const Date& today,
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(engine);
 
-            ext::shared_ptr<PricingEngine> engine2 =
-                MakeFdBlackScholesVanillaEngine(stochProcess)
-                .withCashDividendModel(model);
-
-            QL_DEPRECATED_DISABLE_WARNING
-                DividendVanillaOption option2(payoff, exercise,
-                                              dividendDates, dividends);
-            QL_DEPRECATED_ENABLE_WARNING
-                option2.setPricingEngine(engine2);
-
             for (Real u : underlyings) {
                 for (Real m : qRates) {
                     for (Real n : rRates) {
@@ -892,26 +680,6 @@ void testFdGreeks(const Date& today,
                             Real value = option.NPV();
                             calculated["delta"] = option.delta();
                             calculated["gamma"] = option.gamma();
-
-                            Real value2 = option2.NPV();
-                            Real delta2 = option2.delta();
-                            Real gamma2 = option2.gamma();
-
-                            if (std::fabs(value - value2) > 1e-8) {
-                                BOOST_ERROR("discrepancy between old- and new-style engine"
-                                            << "\n    old value: " << value2
-                                            << "\n    new value: " << value);
-                            }
-                            if (std::fabs(calculated["delta"] - delta2) > 1e-8) {
-                                BOOST_ERROR("discrepancy between old- and new-style engine"
-                                            << "\n    old delta: " << delta2
-                                            << "\n    new delta: " << calculated["delta"]);
-                            }
-                            if (std::fabs(calculated["gamma"] - gamma2) > 1e-8) {
-                                BOOST_ERROR("discrepancy between old- and new-style engine"
-                                            << "\n    old gamma: " << gamma2
-                                            << "\n    new gamma: " << calculated["gamma"]);
-                            }
 
                             if (value > spot->value() * 1.0e-5) {
                                 // perturb spot and get delta and gamma
@@ -1104,45 +872,22 @@ void testFdDividendAtTZero(const Date& today,
     std::vector<Rate> dividends(1, 1.0);
     std::vector<Date> dividendDates(1, today);
 
-    QL_DEPRECATED_DISABLE_WARNING
-        DividendVanillaOption option1(payoff, exercise,
-                                      dividendDates, dividends);
-    QL_DEPRECATED_ENABLE_WARNING
-        ext::shared_ptr<PricingEngine> engine1 =
-        MakeFdBlackScholesVanillaEngine(process)
-        .withTGrid(timeSteps)
-        .withXGrid(gridPoints)
-        .withCashDividendModel(model);
-    option1.setPricingEngine(engine1);
-    Real calculated1 = option1.NPV();
-
-    switch(model) {
-      case FdBlackScholesVanillaEngine::Spot:
-        BOOST_CHECK_THROW(option1.theta(), QuantLib::Error);
-        break;
-      case FdBlackScholesVanillaEngine::Escrowed:
-        BOOST_CHECK_NO_THROW(option1.theta());
-        break;
-      default:
-        QL_FAIL("unknown dividend model type");
-    }
-
-    VanillaOption option2(payoff, exercise);
-    ext::shared_ptr<PricingEngine> engine2 =
+    VanillaOption option(payoff, exercise);
+    ext::shared_ptr<PricingEngine> engine =
         MakeFdBlackScholesVanillaEngine(process)
         .withTGrid(timeSteps)
         .withXGrid(gridPoints)
         .withCashDividends(dividendDates, dividends)
         .withCashDividendModel(model);
-    option2.setPricingEngine(engine2);
-    Real calculated2 = option2.NPV();
+    option.setPricingEngine(engine);
+    Real calculated = option.NPV();
 
     switch(model) {
       case FdBlackScholesVanillaEngine::Spot:
-        BOOST_CHECK_THROW(option2.theta(), QuantLib::Error);
+        BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
         break;
       case FdBlackScholesVanillaEngine::Escrowed:
-        BOOST_CHECK_NO_THROW(option2.theta());
+        BOOST_CHECK_NO_THROW(option.theta());
         break;
       default:
         QL_FAIL("unknown dividend model type");
@@ -1159,17 +904,10 @@ void testFdDividendAtTZero(const Date& today,
 
     const Real tol = 1e-4;
 
-    if (std::fabs(calculated1-expected) > tol) {
+    if (std::fabs(calculated-expected) > tol) {
         BOOST_ERROR("Can not reproduce reference values "
                     "from analytic dividend engine :\n"
-                    << "    calculated: " << calculated1 << "\n"
-                    << "    expected  : " << expected << "\n"
-                    << "    diff:       " << tol);
-    }
-    if (std::fabs(calculated2-expected) > tol) {
-        BOOST_ERROR("Can not reproduce reference values "
-                    "from analytic dividend engine :\n"
-                    << "    calculated: " << calculated2 << "\n"
+                    << "    calculated: " << calculated << "\n"
                     << "    expected  : " << expected << "\n"
                     << "    diff:       " << tol);
     }
@@ -1242,43 +980,8 @@ BOOST_AUTO_TEST_CASE(testEscrowedDividendModel) {
     const Real analyticNPV = ref_option.NPV();
     const Real analyticDelta = ref_option.delta();
 
-    QL_DEPRECATED_DISABLE_WARNING
-    DividendVanillaOption option(payoff, exercise, dividendDates, dividendAmounts);
-    QL_DEPRECATED_ENABLE_WARNING
+    VanillaOption option(payoff, exercise);
     option.setPricingEngine(
-        MakeFdBlackScholesVanillaEngine(process)
-            .withTGrid(50)
-            .withXGrid(200)
-            .withDampingSteps(1)
-            .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed)
-        );
-
-    Real pdeNPV = option.NPV();
-    Real pdeDelta = option.delta();
-
-    const Real tol = 0.0025;
-    if (std::fabs(pdeNPV - analyticNPV) > tol) {
-        BOOST_FAIL("Failed to reproduce European option values "
-                   "with the escrowed dividend model and the "
-                   "FdBlackScholesVanillaEngine engine"
-                   << "\n    calculated: " << pdeNPV
-                   << "\n    expected:   " << analyticNPV
-                   << "\n    difference: " << std::fabs(pdeNPV - analyticNPV)
-                   << "\n    tolerance:  " << tol);
-    }
-
-    if (std::fabs(pdeDelta - analyticDelta) > tol) {
-        BOOST_FAIL("Failed to reproduce European option deltas "
-                   "with the escrowed dividend model and the "
-                   "FdBlackScholesVanillaEngine engine"
-                   << "\n    calculated: " << pdeNPV
-                   << "\n    expected:   " << analyticNPV
-                   << "\n    difference: " << std::fabs(pdeNPV - analyticNPV)
-                   << "\n    tolerance:  " << tol);
-    }
-
-    VanillaOption option2(payoff, exercise);
-    option2.setPricingEngine(
         MakeFdBlackScholesVanillaEngine(process)
         .withTGrid(50)
         .withXGrid(200)
@@ -1287,8 +990,10 @@ BOOST_AUTO_TEST_CASE(testEscrowedDividendModel) {
         .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed)
     );
 
-    pdeNPV = option2.NPV();
-    pdeDelta = option2.delta();
+    Real pdeNPV = option.NPV();
+    Real pdeDelta = option.delta();
+
+    const Real tol = 0.0025;
 
     if (std::fabs(pdeNPV - analyticNPV) > tol) {
         BOOST_FAIL("Failed to reproduce European option values "

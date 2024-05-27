@@ -38,7 +38,7 @@ namespace QuantLib {
         term structure, or just the interest rate term structure
         in which case one can provide a term structure of equity
         forwards implied from, e.g. option prices.
-        
+
         In case of the first method, the forward is calculated as:
         \f[
         I(t, T) = I(t, t) \frac{P_{D}(t, T)}{P_{R}(t, T)},
@@ -98,9 +98,9 @@ namespace QuantLib {
         //@{
         //! returns a copy of itself linked to different interest, dividend curves
         //! or spot quote
-        virtual ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
-                                                   const Handle<YieldTermStructure>& dividend,
-                                                   const Handle<Quote>& spot) const;
+        virtual ext::shared_ptr<EquityIndex> clone(Handle<YieldTermStructure> interest,
+                                                   Handle<YieldTermStructure> dividend,
+                                                   Handle<Quote> spot) const;
         // @}
       private:
         std::string name_;

@@ -25,21 +25,18 @@
 #define quantlib_fd_bates_vanilla_engine_hpp
 
 #include <ql/models/equity/batesmodel.hpp>
-#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     //! Partial integro finite-differences Bates vanilla option engine
     /*! \ingroup vanillaengines */
     class FdBatesVanillaEngine
         : public GenericModelEngine<BatesModel,
-                                    DividendVanillaOption::arguments,
-                                    DividendVanillaOption::results> {
-        QL_DEPRECATED_ENABLE_WARNING
+                                    VanillaOption::arguments,
+                                    VanillaOption::results> {
       public:
         explicit
         FdBatesVanillaEngine(
@@ -59,7 +56,6 @@ namespace QuantLib {
 
       private:
         DividendSchedule dividends_;
-        bool explicitDividends_;
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
     };

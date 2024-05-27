@@ -24,7 +24,7 @@
 #ifndef quantlib_fd_heston_hull_white_vanilla_engine_hpp
 #define quantlib_fd_heston_hull_white_vanilla_engine_hpp
 
-#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
@@ -32,8 +32,6 @@
 #include <ql/methods/finitedifferences/solvers/fdmhestonhullwhitesolver.hpp>
 
 namespace QuantLib {
-
-    QL_DEPRECATED_DISABLE_WARNING
 
     //! Finite-differences Heston Hull-White vanilla option engine
     /*! \ingroup vanillaengines
@@ -44,9 +42,8 @@ namespace QuantLib {
     */
     class FdHestonHullWhiteVanillaEngine
         : public GenericModelEngine<HestonModel,
-                                    DividendVanillaOption::arguments,
-                                    DividendVanillaOption::results> {
-        QL_DEPRECATED_ENABLE_WARNING
+                                    VanillaOption::arguments,
+                                    VanillaOption::results> {
       public:
         FdHestonHullWhiteVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
@@ -82,7 +79,6 @@ namespace QuantLib {
       private:
         const ext::shared_ptr<HullWhiteProcess> hwProcess_;
         DividendSchedule dividends_;
-        bool explicitDividends_;
         const Real corrEquityShortRate_;
         const Size tGrid_, xGrid_, vGrid_, rGrid_;
         const Size dampingSteps_;
@@ -90,11 +86,9 @@ namespace QuantLib {
         const bool controlVariate_;
         
         std::vector<Real> strikes_;
-        QL_DEPRECATED_DISABLE_WARNING
-        mutable std::vector<std::pair<DividendVanillaOption::arguments,
-                                      DividendVanillaOption::results> >
+        mutable std::vector<std::pair<VanillaOption::arguments,
+                                      VanillaOption::results> >
                                                             cachedArgs2results_;
-        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }

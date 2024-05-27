@@ -34,27 +34,27 @@ namespace QuantLib {
     //! EU HICP index
     class EUHICP : public ZeroInflationIndex {
       public:
-        explicit EUHICP(const Handle<ZeroInflationTermStructure>& ts = {})
+        explicit EUHICP(Handle<ZeroInflationTermStructure> ts = {})
         : ZeroInflationIndex("HICP",
                              EURegion(),
                              false,
                              Monthly,
                              Period(1, Months), // availability
                              EURCurrency(),
-                             ts) {}
+                             std::move(ts)) {}
     };
 
     //! EU HICPXT index
     class EUHICPXT : public ZeroInflationIndex {
       public:
-        explicit EUHICPXT(const Handle<ZeroInflationTermStructure>& ts = {})
+        explicit EUHICPXT(Handle<ZeroInflationTermStructure> ts = {})
         : ZeroInflationIndex("HICPXT",
                              EURegion(),
                              false,
                              Monthly,
                              Period(1, Months), // availability
                              EURCurrency(),
-                             ts) {}
+                             std::move(ts)) {}
     };
 
 
@@ -63,7 +63,7 @@ namespace QuantLib {
       public:
         explicit YYEUHICP(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
+            Handle<YoYInflationTermStructure> ts = {})
         : YoYInflationIndex("YY_HICP",
                             EURegion(),
                             false,
@@ -71,7 +71,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
-                            ts) {}
+                            std::move(ts)) {}
     };
 
     //! Quoted year-on-year EU HICPXT
@@ -79,7 +79,7 @@ namespace QuantLib {
       public:
         explicit YYEUHICPXT(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
+            Handle<YoYInflationTermStructure> ts = {})
         : YoYInflationIndex("YY_HICPXT",
                             EURegion(),
                             false,
@@ -87,7 +87,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
-                            ts) {}
+                            std::move(ts)) {}
     };
 
 
@@ -101,7 +101,7 @@ namespace QuantLib {
       public:
         explicit YYEUHICPr(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
+            Handle<YoYInflationTermStructure> ts = {})
         : YoYInflationIndex("YYR_HICP",
                             EURegion(),
                             false,
@@ -110,7 +110,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
-                            ts) {}
+                            std::move(ts)) {}
     };
 
     QL_DEPRECATED_ENABLE_WARNING

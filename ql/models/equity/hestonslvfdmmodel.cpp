@@ -259,7 +259,7 @@ namespace QuantLib {
                                          std::vector<Date> mandatoryDates,
                                          const Real mixingFactor)
     : localVol_(std::move(localVol)), hestonModel_(std::move(hestonModel)), endDate_(endDate),
-      params_(std::move(params)), mandatoryDates_(std::move(mandatoryDates)),
+      params_(params), mandatoryDates_(std::move(mandatoryDates)),
       mixingFactor_(mixingFactor), logging_(logging) {
 
         registerWith(localVol_);

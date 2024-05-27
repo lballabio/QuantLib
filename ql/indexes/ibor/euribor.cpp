@@ -57,24 +57,24 @@ namespace QuantLib {
     }
 
     Euribor::Euribor(const Period& tenor,
-                     const Handle<YieldTermStructure>& h)
+                     Handle<YieldTermStructure> h)
     : IborIndex("Euribor", tenor,
                 2, // settlement days
                 EURCurrency(), TARGET(),
                 euriborConvention(tenor), euriborEOM(tenor),
-                Actual360(), h) {
+                Actual360(), std::move(h)) {
         QL_REQUIRE(this->tenor().units()!=Days,
                    "for daily tenors (" << this->tenor() <<
                    ") dedicated DailyTenor constructor must be used");
     }
 
     Euribor365::Euribor365(const Period& tenor,
-                           const Handle<YieldTermStructure>& h)
+                           Handle<YieldTermStructure> h)
     : IborIndex("Euribor365", tenor,
                 2, // settlement days
                 EURCurrency(), TARGET(),
                 euriborConvention(tenor), euriborEOM(tenor),
-                Actual365Fixed(), h) {
+                Actual365Fixed(), std::move(h)) {
         QL_REQUIRE(this->tenor().units()!=Days,
                    "for daily tenors (" << this->tenor() <<
                    ") dedicated DailyTenor constructor must be used");

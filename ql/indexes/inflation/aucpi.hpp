@@ -35,9 +35,9 @@ namespace QuantLib {
       public:
         AUCPI(Frequency frequency,
               bool revised,
-              const Handle<ZeroInflationTermStructure>& ts = {})
+              Handle<ZeroInflationTermStructure> ts = {})
         : ZeroInflationIndex(
-              "CPI", AustraliaRegion(), revised, frequency, Period(2, Months), AUDCurrency(), ts) {}
+              "CPI", AustraliaRegion(), revised, frequency, Period(2, Months), AUDCurrency(), std::move(ts)) {}
     };
 
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts = {})
+                Handle<YoYInflationTermStructure> ts = {})
         : YoYInflationIndex("YY_CPI",
                             AustraliaRegion(),
                             revised,
@@ -55,7 +55,7 @@ namespace QuantLib {
                             frequency,
                             Period(2, Months),
                             AUDCurrency(),
-                            ts) {}
+                            std::move(ts)) {}
     };
 
 
@@ -70,7 +70,7 @@ namespace QuantLib {
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts = {})
+                 Handle<YoYInflationTermStructure> ts = {})
         : YoYInflationIndex("YYR_CPI",
                             AustraliaRegion(),
                             revised,
@@ -79,7 +79,7 @@ namespace QuantLib {
                             frequency,
                             Period(2, Months),
                             AUDCurrency(),
-                            ts) {}
+                            std::move(ts)) {}
     };
 
     QL_DEPRECATED_ENABLE_WARNING

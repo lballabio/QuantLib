@@ -40,7 +40,7 @@ namespace QuantLib {
     //! base class for swap-rate indexes
     class SwapIndex : public InterestRateIndex {
       public:
-        SwapIndex(const std::string& familyName,
+        SwapIndex(std::string familyName,
                   const Period& tenor,
                   Natural settlementDays,
                   const Currency& currency,
@@ -49,7 +49,7 @@ namespace QuantLib {
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
                   ext::shared_ptr<IborIndex> iborIndex);
-        SwapIndex(const std::string& familyName,
+        SwapIndex(std::string familyName,
                   const Period& tenor,
                   Natural settlementDays,
                   const Currency& currency,
@@ -81,11 +81,11 @@ namespace QuantLib {
         //@{
         //! returns a copy of itself linked to a different forwarding curve
         virtual ext::shared_ptr<SwapIndex> clone(
-                        const Handle<YieldTermStructure>& forwarding) const;
+                        Handle<YieldTermStructure> forwarding) const;
         //! returns a copy of itself linked to different curves
         virtual ext::shared_ptr<SwapIndex> clone(
-                        const Handle<YieldTermStructure>& forwarding,
-                        const Handle<YieldTermStructure>& discounting) const;
+                        Handle<YieldTermStructure> forwarding,
+                        Handle<YieldTermStructure> discounting) const;
         //! returns a copy of itself with different tenor
         virtual ext::shared_ptr<SwapIndex> clone(
                         const Period& tenor) const;
@@ -109,7 +109,7 @@ namespace QuantLib {
     class OvernightIndexedSwapIndex : public SwapIndex {
       public:
         OvernightIndexedSwapIndex(
-                  const std::string& familyName,
+                  std::string familyName,
                   const Period& tenor,
                   Natural settlementDays,
                   const Currency& currency,

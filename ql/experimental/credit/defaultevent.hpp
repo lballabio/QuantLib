@@ -107,8 +107,8 @@ namespace QuantLib {
                      Currency curr,
                      Seniority bondsSen,
                      // Settlement information:
-                     const Date& settleDate = Null<Date>(),
-                     Real recoveryRate = 0.4);
+                     const Date& settleDate,
+                     Real recoveryRate);
 
         Date date() const override;
         bool isRestructuring() const { return eventType_.isRestructuring(); }

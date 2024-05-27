@@ -37,13 +37,13 @@ namespace QuantLib {
     */
     class Libor : public IborIndex {
       public:
-        Libor(const std::string& familyName,
+        Libor(std::string familyName,
               const Period& tenor,
               Natural settlementDays,
               const Currency& currency,
               const Calendar& financialCenterCalendar,
               const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h = {});
+              Handle<YieldTermStructure> h = {});
         /*! \name Date calculations
 
             See <https://www.theice.com/marketdata/reports/170>.
@@ -54,7 +54,7 @@ namespace QuantLib {
         // @}
         //! \name Other methods
         //@{
-        ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+        ext::shared_ptr<IborIndex> clone(Handle<YieldTermStructure> h) const override;
         // @}
         //! \name Other inspectors
         //@{
@@ -72,12 +72,12 @@ namespace QuantLib {
     */
     class DailyTenorLibor : public IborIndex {
       public:
-        DailyTenorLibor(const std::string& familyName,
+        DailyTenorLibor(std::string familyName,
                         Natural settlementDays,
                         const Currency& currency,
                         const Calendar& financialCenterCalendar,
                         const DayCounter& dayCounter,
-                        const Handle<YieldTermStructure>& h = {});
+                        Handle<YieldTermStructure> h = {});
     };
 
 }

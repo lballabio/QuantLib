@@ -25,17 +25,14 @@
 #define quantlib_fd_black_scholes_shout_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
     class GeneralizedBlackScholesProcess;
 
-    QL_DEPRECATED_DISABLE_WARNING
-
-    class FdBlackScholesShoutEngine : public DividendVanillaOption::engine {
-        QL_DEPRECATED_ENABLE_WARNING
+    class FdBlackScholesShoutEngine : public VanillaOption::engine {
       public:
         // Constructor
         explicit FdBlackScholesShoutEngine(
@@ -58,7 +55,6 @@ namespace QuantLib {
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         DividendSchedule dividends_;
-        bool explicitDividends_;
         const Size tGrid_, xGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
     };

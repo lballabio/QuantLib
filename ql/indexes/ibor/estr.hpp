@@ -31,7 +31,7 @@ namespace QuantLib {
     //! %ESTR (Euro Short-Term Rate) rate fixed by the ECB.
     class Estr : public OvernightIndex {
       public:
-        explicit Estr(const Handle<YieldTermStructure>& h = {});
+        explicit Estr(Handle<YieldTermStructure> h = {});
     };
 
 }

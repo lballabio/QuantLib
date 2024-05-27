@@ -70,9 +70,7 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd()),
       underlying_(underlying), isFloored_(false), isCapped_(false) {
-        QL_DEPRECATED_DISABLE_WARNING
         CappedFlooredYoYInflationCoupon::setCommon(cap, floor);
-        QL_DEPRECATED_ENABLE_WARNING
         registerWith(underlying);
     }
 

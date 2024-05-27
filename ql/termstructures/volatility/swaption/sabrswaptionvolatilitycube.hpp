@@ -1157,12 +1157,6 @@ namespace QuantLib {
         return result;
     }
 
-    /*! \deprecated Renamed to XabrSwaptionVolatilityCube.
-                    Deprecated in version 1.30.
-    */    
-    template <class Model>
-    using SwaptionVolCube1x [[deprecated("renamed to XabrSwaptionVolatilityCube")]] = XabrSwaptionVolatilityCube<Model>;
-
     //======================================================================//
     //                      SabrSwaptionVolatilityCube                      //
     //======================================================================//
@@ -1180,12 +1174,6 @@ namespace QuantLib {
 
     //! SABR volatility cube for swaptions
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SabrSwaptionVolatilityCube;
-
-    /*! \deprecated Renamed to SabrSwaptionVolatilityCube.
-                    Deprecated in version 1.30.
-    */
-    [[deprecated("renamed to SabrSwaptionVolatilityCube")]]
-    typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SwaptionVolCube1;
 
 }
 
