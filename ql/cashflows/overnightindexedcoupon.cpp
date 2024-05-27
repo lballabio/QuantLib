@@ -28,7 +28,6 @@
 #include <ql/utilities/vectors.hpp>
 #include <utility>
 #include <algorithm>
-#include <iostream>
 
 using std::vector;
 
@@ -110,24 +109,41 @@ namespace QuantLib {
 
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
-                if (i<n) {
+                if (i < n) {
                     const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
                                "null term structure set to this instance of " << index->name());
 
-                    const DiscountFactor startDiscount = curve->discount(valueDates[i]);
+                    const Size nLockout = n - coupon_->lockoutDays();
+                    const bool isLockoutApplied = coupon_->lockoutDays() > 0;
+                    const bool isLookbackApplied = coupon_->fixingDays() != index->fixingDays();
+
+                    const DiscountFactor startDiscount =
+                        curve->discount(valueDates[std::min<Size>(nLockout, i)]);
                     if (interestDates[n] == date) {
                         // full telescopic formula
-                        const DiscountFactor endDiscount = curve->discount(valueDates[n]);
+                        const DiscountFactor endDiscount =
+                            curve->discount(valueDates[std::min<Size>(nLockout, n)]);
                         compoundFactor *= startDiscount / endDiscount;
-                    } else {
+                    }
+                    if (isLockoutApplied || isLookbackApplied) {
+                        Size iCorrected = isLookbackApplied ? i : std::max(nLockout, i);
+                        while (iCorrected < n) {
+                            const Rate fixing = index->fixing(fixingDates[iCorrected]);
+                            Time span = (date >= interestDates[iCorrected + 1] ?
+                                             dt[iCorrected] :
+                                             index->dayCounter().yearFraction(
+                                                 interestDates[iCorrected], date));
+                            compoundFactor *= (1.0 + fixing * span);
+                            ++iCorrected;
+                        }
+                    } else if (interestDates[n] != date) {
                         // The last fixing is not used for its full period (the date is between its
-                        // start and end date).  We can use the telescopic formula until the previous
-                        // date, then we'll add the missing bit.
-                        const DiscountFactor endDiscount = curve->discount(valueDates[n-1]);
+                        // start and end date).  We can use the telescopic formula until the
+                        // previous date, then we'll add the missing bit.
+                        const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
                         compoundFactor *= startDiscount / endDiscount;
-
-                        Rate fixing = index->fixing(fixingDates[n-1]);
+                        Rate fixing = index->fixing(fixingDates[n - 1]);
                         Time span = index->dayCounter().yearFraction(interestDates[n - 1], date);
                         compoundFactor *= (1.0 + fixing * span);
                     }
@@ -215,30 +231,28 @@ namespace QuantLib {
         valueDates_ = sch.dates();
 
         if (telescopicValueDates) {
-            // build optimised value dates schedule: back stub
-            // contains at least two dates
-            Date tmp = overnightIndex->fixingCalendar().advance(
-                endDate, -1, Days, Preceding);
-            if (tmp != valueDates_.back())
-                valueDates_.push_back(tmp);
-            tmp = overnightIndex->fixingCalendar().adjust(
+            // if lockout days are defined, we need to ensure that
+            // the lockout period is covered by the value dates
+            tmpEndDate = overnightIndex->fixingCalendar().adjust(
                 endDate, overnightIndex->businessDayConvention());
-            if (tmp != valueDates_.back())
-                valueDates_.push_back(tmp);
+            Date tmpLockoutDate = overnightIndex->fixingCalendar().advance(
+                endDate, -std::max<Integer>(lockoutDays_, 1), Days, Preceding);
+            while (tmpLockoutDate <= tmpEndDate)
+            {
+                if (tmpLockoutDate > valueDates_.back())
+                    valueDates_.push_back(tmpLockoutDate);
+                tmpLockoutDate =
+                    overnightIndex->fixingCalendar().advance(tmpLockoutDate, 1, Days, Following);
+            }
         }
 
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
 
         n_ = valueDates_.size() - 1;
         interestDates_ = vector<Date>(valueDates_.begin(), valueDates_.end());
+
         if (fixingDays_ == overnightIndex->fixingDays() && fixingDays_ == 0) {
             fixingDates_ = vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
-        } else if (fixingDays_ == overnightIndex->fixingDays()) {
-            // No observation shift, but value dates need to be adjusted for fixing days
-            // from the index to arrive at fixing dates.
-            fixingDates_.resize(n_);
-            for (Size i = 0; i < n_; ++i)
-                fixingDates_[i] = overnightIndex->fixingDate(valueDates_[i]);
         } else {
             // Lookback (fixing days) without observation shift:
             // The date that the fixing rate is pulled  from (the observation date) is k
@@ -258,7 +272,14 @@ namespace QuantLib {
                     // days until the next business day following the observation date.
                     // This means that the fixing dates periods align with value dates.
                     interestDates_[i] = tmp;
-                valueDates_[i] = overnightIndex->valueDate(tmp);
+                if (fixingDays_ != overnightIndex->fixingDays())
+                    // If fixing dates of the coupon deviate from fixing days in the index
+                    // we need to correct the value dates such that they reflect dates
+                    // corresponding to a deposit instrument linked to the index.
+                    // This is to ensure that future projections (which are computed 
+                    // based on the value dates) of the index do not
+                    // yield any additional convexity corrections. 
+                    valueDates_[i] = overnightIndex->valueDate(tmp);
             }
         }
         // When lockout is used the fixing rate applied for the last k days of the 
