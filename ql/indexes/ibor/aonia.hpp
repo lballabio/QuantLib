@@ -38,10 +38,10 @@ namespace QuantLib {
     */
     class Aonia : public OvernightIndex {
       public:
-        explicit Aonia(Handle<YieldTermStructure> h = {})
+        explicit Aonia(const Handle<YieldTermStructure>& h = {})
         : OvernightIndex("Aonia", 0, AUDCurrency(),
                          Australia(),
-                         Actual365Fixed(), std::move(h)) {}
+                         Actual365Fixed(), h) {}
     };
 
 }

@@ -60,12 +60,12 @@ namespace QuantLib {
         if (result != Null<Real>())
             // if historical fixing is present use it
             return result;
-
+        
         if (fixingDate == today && !spot_.empty())
             // Today's fixing is missing, but spot is
             // provided, so use it as proxy
             return spot_->value();
-
+        
         QL_FAIL("Missing " << name() << " fixing for " << fixingDate);
     }
 
@@ -92,9 +92,9 @@ namespace QuantLib {
         return forward;
     }
 
-    ext::shared_ptr<EquityIndex> EquityIndex::clone(Handle<YieldTermStructure> interest,
-                                                    Handle<YieldTermStructure> dividend,
-                                                    Handle<Quote> spot) const {
-        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), std::move(interest), std::move(dividend), std::move(spot));
+    ext::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
+                                                    const Handle<YieldTermStructure>& dividend,
+                                                    const Handle<Quote>& spot) const {
+        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend, spot);
     }
 }

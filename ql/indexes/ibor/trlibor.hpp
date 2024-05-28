@@ -41,13 +41,14 @@ namespace QuantLib {
     class TRLibor : public IborIndex {
       public:
         TRLibor(const Period& tenor,
-                Handle<YieldTermStructure> h = {})
+                const Handle<YieldTermStructure>& h = {})
         : IborIndex("TRLibor", tenor, 0, TRYCurrency(),
                     Turkey(), ModifiedFollowing, false,
-                    Actual360(), std::move(h)) {}
+                    Actual360(), h) {}
     };
 
 }
 
 
 #endif
+

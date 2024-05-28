@@ -25,7 +25,7 @@
 namespace QuantLib {
     class Corra : public OvernightIndex {
       public:
-        explicit Corra(Handle<YieldTermStructure> h = {});
+        explicit Corra(const Handle<YieldTermStructure>& h = {});
     };
 }
 

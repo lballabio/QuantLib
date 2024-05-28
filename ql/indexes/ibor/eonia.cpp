@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    Eonia::Eonia(Handle<YieldTermStructure> h)
-    : OvernightIndex("Eonia", 0, EURCurrency(), TARGET(), Actual360(), std::move(h)) {}
+    Eonia::Eonia(const Handle<YieldTermStructure>& h)
+    : OvernightIndex("Eonia", 0, EURCurrency(), TARGET(), Actual360(), h) {}
 
 }

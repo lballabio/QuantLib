@@ -42,7 +42,7 @@ namespace QuantLib {
     class EURLibor : public IborIndex {
       public:
         EURLibor(const Period& tenor,
-                 Handle<YieldTermStructure> h = {});
+                 const Handle<YieldTermStructure>& h = {});
         /*! \name Date calculations
 
             See <https://www.theice.com/marketdata/reports/170>.
@@ -67,14 +67,14 @@ namespace QuantLib {
     class DailyTenorEURLibor : public IborIndex {
       public:
         DailyTenorEURLibor(Natural settlementDays,
-                           Handle<YieldTermStructure> h = {});
+                           const Handle<YieldTermStructure>& h = {});
     };
 
     //! Overnight %EUR %Libor index
     class EURLiborON : public DailyTenorEURLibor {
       public:
-        explicit EURLiborON(Handle<YieldTermStructure> h = {})
-        : DailyTenorEURLibor(0, std::move(h)) {}
+        explicit EURLiborON(const Handle<YieldTermStructure>& h = {})
+        : DailyTenorEURLibor(0, h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -82,8 +82,8 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLiborSW : public EURLibor {
       public:
-        explicit EURLiborSW(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(1, Weeks), std::move(h)) {}
+        explicit EURLiborSW(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(1, Weeks), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -91,15 +91,15 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor2W : public EURLibor {
       public:
-        explicit EURLibor2W(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(2, Weeks), std::move(h)) {}
+        explicit EURLibor2W(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(2, Weeks), h) {}
     };
 
     //! 1-month %EUR %Libor index
     class EURLibor1M : public EURLibor {
       public:
-        explicit EURLibor1M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(1, Months), std::move(h)) {}
+        explicit EURLibor1M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(1, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -107,15 +107,15 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor2M : public EURLibor {
       public:
-        explicit EURLibor2M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(2, Months), std::move(h)) {}
+        explicit EURLibor2M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(2, Months), h) {}
     };
 
     //! 3-months %EUR %Libor index
     class EURLibor3M : public EURLibor {
       public:
-        explicit EURLibor3M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(3, Months), std::move(h)) {}
+        explicit EURLibor3M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(3, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -123,8 +123,8 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor4M : public EURLibor {
       public:
-        explicit EURLibor4M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(4, Months), std::move(h)) {}
+        explicit EURLibor4M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(4, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -132,15 +132,15 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor5M : public EURLibor {
       public:
-        explicit EURLibor5M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(5, Months), std::move(h)) {}
+        explicit EURLibor5M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(5, Months), h) {}
     };
 
     //! 6-months %EUR %Libor index
     class EURLibor6M : public EURLibor {
       public:
-        explicit EURLibor6M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(6, Months), std::move(h)) {}
+        explicit EURLibor6M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(6, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -148,8 +148,8 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor7M : public EURLibor{
       public:
-        explicit EURLibor7M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(7, Months), std::move(h)) {}
+        explicit EURLibor7M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(7, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -157,8 +157,8 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor8M : public EURLibor {
       public:
-        explicit EURLibor8M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(8, Months), std::move(h)) {}
+        explicit EURLibor8M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(8, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -166,8 +166,8 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor9M : public EURLibor {
       public:
-        explicit EURLibor9M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(9, Months), std::move(h)) {}
+        explicit EURLibor9M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(9, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -175,8 +175,8 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor10M : public EURLibor {
       public:
-        explicit EURLibor10M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(10, Months), std::move(h)) {}
+        explicit EURLibor10M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(10, Months), h) {}
     };
 
     /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
@@ -184,15 +184,15 @@ namespace QuantLib {
     */
     class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor11M : public EURLibor {
       public:
-        explicit EURLibor11M(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(11, Months), std::move(h)) {}
+        explicit EURLibor11M(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(11, Months), h) {}
     };
 
     //! 1-year %EUR %Libor index
     class EURLibor1Y : public EURLibor {
       public:
-        explicit EURLibor1Y(Handle<YieldTermStructure> h = {})
-        : EURLibor(Period(1, Years), std::move(h)) {}
+        explicit EURLibor1Y(const Handle<YieldTermStructure>& h = {})
+        : EURLibor(Period(1, Years), h) {}
     };
 
 
