@@ -30,7 +30,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ZigguratGaussianTests)
 
-BOOST_AUTO_TEST_CASE(testMeanAndStdDevOfNextReal) {
+BOOST_AUTO_TEST_CASE(testStatisticsOfNextReal) {
     BOOST_TEST_MESSAGE("Testing ZigguratGaussianRng<Xoshiro256StarStarUniformRng>::nextReal() for "
                        "mean, variance, skewness and kurtosis...");
     auto seed = 42UL;
