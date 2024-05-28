@@ -427,7 +427,7 @@ set(QL_SOURCES
     math/randomnumbers/sobolrsg.cpp
     math/randomnumbers/stochasticcollocationinvcdf.cpp
     math/randomnumbers/xoshiro256starstaruniformrng.cpp
-        math/richardsonextrapolation.cpp
+    math/richardsonextrapolation.cpp
     math/rounding.cpp
     math/sampledcurve.cpp
     math/statistics/discrepancystatistics.cpp
