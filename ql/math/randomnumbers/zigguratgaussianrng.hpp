@@ -85,38 +85,29 @@ namespace QuantLib {
     template <class RNG>
     inline Real ZigguratGaussianRng<RNG>::nextReal() const {
         while (true) {
-            // As an optimisation we re-implement the conversion to a f64.
+            // As an optimisation we re-implement the conversion
+            // to a double in the interval (-1,1).
             // From the remaining 12 most significant bits we use 8 to construct `i`.
+            //
             // This saves us generating a whole extra random number, while the added
-            // precision of using 64 bits for f64 does not buy us much.
+            // precision of using 64 bits for double does not buy us much.
             std::uint64_t randomU64 = uint64Generator_.nextInt64();
-
-            auto i = (int)(randomU64 & 0xff);
-
-            // Convert to a value in the range [2,4) and subtract to get [-1,1)
-            // We can't convert to an open range directly, that would require
-            // subtracting `3.0 - EPSILON`, which is not representable.
-            // It is possible with an extra step, but an open range does not
-            // seem necessary for the ziggurat algorithm anyway.
             auto u = 2.0 * (Real(randomU64 >> 11) + 0.5) * (1.0 / Real(1ULL << 53)) - 1.0;
+            auto i = (int)(randomU64 & 0xff);
 
             auto x = u * normX(i);
 
-            if (std::abs(u) < normX(i + 1)) {
+            if (std::fabs(x) < normX(i + 1)) {
                 return x;
             }
             if (i == 0) {
+                // compute a random number in the tail by hand
                 return zeroCase(u);
             }
             if (normF(i + 1) + (normF(i) - normF(i + 1) * uint64Generator_.nextReal()) < pdf(x)) {
                 return x;
             }
         }
-    }
-
-    template <class RNG>
-    inline Real ZigguratGaussianRng<RNG>::pdf(Real x) const {
-        return std::exp(-x * x / 2.0);
     }
 
     template <class RNG>
@@ -129,6 +120,11 @@ namespace QuantLib {
         } while (-2.0 * y < x * x);
 
         return (u < 0.0) ? x - normR() : normR() - x;
+    }
+
+    template <class RNG>
+    inline Real ZigguratGaussianRng<RNG>::pdf(Real x) const {
+        return std::exp(-x * x / 2.0);
     }
 
     template <class RNG>
