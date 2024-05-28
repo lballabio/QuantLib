@@ -109,43 +109,70 @@ namespace QuantLib {
 
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
+                // where possible.
                 if (i < n) {
                     const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
                                "null term structure set to this instance of " << index->name());
 
-                    const Size nLockout = n - coupon_->lockoutDays();
-                    const bool isLockoutApplied = coupon_->lockoutDays() > 0;
                     const bool isLookbackApplied = coupon_->fixingDays() != index->fixingDays();
 
-                    const DiscountFactor startDiscount =
-                        curve->discount(valueDates[std::min<Size>(nLockout, i)]);
-                    if (interestDates[n] == date) {
-                        // full telescopic formula
-                        const DiscountFactor endDiscount =
-                            curve->discount(valueDates[std::min<Size>(nLockout, n)]);
-                        compoundFactor *= startDiscount / endDiscount;
-                    }
-                    if (isLockoutApplied || isLookbackApplied) {
-                        Size iCorrected = isLookbackApplied ? i : std::max(nLockout, i);
-                        while (iCorrected < n) {
-                            const Rate fixing = index->fixing(fixingDates[iCorrected]);
-                            Time span = (date >= interestDates[iCorrected + 1] ?
-                                             dt[iCorrected] :
-                                             index->dayCounter().yearFraction(
-                                                 interestDates[iCorrected], date));
-                            compoundFactor *= (1.0 + fixing * span);
-                            ++iCorrected;
+                    auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
+                                          &dt](Size position) {
+                        Rate fixing = index->fixing(fixingDates[position]);
+                        Time span =
+                            (date >= interestDates[position + 1] ?
+                                 dt[position] :
+                                 index->dayCounter().yearFraction(interestDates[position], date));
+                        return span * fixing;
+                    };
+
+                    if (isLookbackApplied) {
+                        // With lookback applied, the telescopic formula cannot be used,
+                        // we need to project each fixing in the coupon.
+                        // A potential lockout, which may occur in tandem with a lookback
+                        // setting, will be handled automatically based on fixing dates.
+                        // Same applies to a case when accrual calculation date does or
+                        // does not occur on an interest date.
+                        while (i < n) {
+                            compoundFactor *= (1.0 + effectiveRate(i));
+                            ++i;
                         }
-                    } else if (interestDates[n] != date) {
-                        // The last fixing is not used for its full period (the date is between its
-                        // start and end date).  We can use the telescopic formula until the
-                        // previous date, then we'll add the missing bit.
-                        const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
-                        compoundFactor *= startDiscount / endDiscount;
-                        Rate fixing = index->fixing(fixingDates[n - 1]);
-                        Time span = index->dayCounter().yearFraction(interestDates[n - 1], date);
-                        compoundFactor *= (1.0 + fixing * span);
+                    } else {
+                        // No lookback, we can partially apply the telescopic formula.
+                        // But we need to make a correction for a potential lockout.
+                        const Size nLockout = n - coupon_->lockoutDays();
+                        const bool isLockoutApplied = coupon_->lockoutDays() > 0;
+                        
+                        // Lockout could already start at or before i.
+                        // In such case the ratio of discount factors will be equal to 1.
+                        const DiscountFactor startDiscount =
+                            curve->discount(valueDates[std::min<Size>(nLockout, i)]);
+                        if (interestDates[n] == date) {
+                            // telescopic formula up to potential lockout dates.
+                            const DiscountFactor endDiscount =
+                                curve->discount(valueDates[std::min<Size>(nLockout, n)]);
+                            compoundFactor *= startDiscount / endDiscount;
+                        }
+                        if (isLockoutApplied) {
+                            // For the lockout periods the telescopic formula does not apply.
+                            // The value dates (at which the projection is calculated) correspond 
+                            // to the locked-out fixing, while the interest dates (at which the
+                            // interest over that fixing is accrued) are not fixed at lockout,
+                            // hence they do not cancel out.
+                            Size iCorrected = std::max(nLockout, i);
+                            while (iCorrected < n) {
+                                compoundFactor *= (1.0 + effectiveRate(iCorrected));
+                                ++iCorrected;
+                            }
+                        } else if (interestDates[n] != date) {
+                            // The last fixing is not used for its full period (the date is between
+                            // its start and end date).  We can use the telescopic formula until the
+                            // previous date, then we'll add the missing bit.
+                            const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
+                            compoundFactor *= startDiscount / endDiscount;
+                            compoundFactor *= (1.0 + effectiveRate(n - 1));
+                        }
                     }
                 }
 
@@ -249,6 +276,7 @@ namespace QuantLib {
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
 
         n_ = valueDates_.size() - 1;
+
         interestDates_ = vector<Date>(valueDates_.begin(), valueDates_.end());
 
         if (fixingDays_ == overnightIndex->fixingDays() && fixingDays_ == 0) {

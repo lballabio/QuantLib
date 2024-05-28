@@ -49,8 +49,8 @@ struct CommonVars {
             false, RateAveraging::Compound, fixingDays, lockoutDays, applyObservationShift);
     }
 
-    CommonVars() {
-        today = Date(23, November, 2021);
+    CommonVars(const Date& evaluationDate) {
+        today = evaluationDate;
 
         Settings::instance().evaluationDate() = today;
 
@@ -105,6 +105,8 @@ struct CommonVars {
 
         sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
     }
+
+    CommonVars() : CommonVars(Date(23, November, 2021)) {}
 };
 
 #define CHECK_OIS_COUPON_RESULT(what, calculated, expected, tolerance)   \
@@ -372,6 +374,57 @@ BOOST_AUTO_TEST_CASE(testIncorrectNumberOfLockoutDays) {
     // Negative number of lockout days
     BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), -1),
                       Error);
+}
+
+BOOST_AUTO_TEST_CASE(testFutureCouponRateWithLookback) {
+    BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon with lookback period...");
+
+    CommonVars vars(Date(12, March, 2019));
+
+    vars.forecastCurve.linkTo(flatRate(0.0250, Actual360()));
+
+    auto coupon8July = vars.makeCoupon(Date(1, July, 2019), Date(8, July, 2019), 5, 0, false);
+    Rate expectedRate8July = 0.0250050849311315;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate", coupon8July->rate(), expectedRate8July, 1e-12);
+
+    auto coupon15July = vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), 5, 0, false);
+    Rate expectedRate15July = 0.0250118464503275;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate", coupon15July->rate(), expectedRate15July, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testFutureCouponRateWithLookbackAndObservationShift) {
+    BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon with lookback period and "
+                       "observation shift...");
+
+    CommonVars vars(Date(12, March, 2019));
+
+    vars.forecastCurve.linkTo(flatRate(0.0250, Actual360()));
+
+    auto futureCoupon = vars.makeCoupon(Date(1, July, 2019), Date(8, July, 2019), 5, 0, true);
+
+    // The discrepancies between the results with and without observation shift,
+    // especially in the short term horizon, show that interest-period weighted 
+    // overnight cumulative compounded annualized rates are considered as an
+    // alternative.
+    Rate expectedRate = 0.0142876985964208;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate", futureCoupon->rate(), expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testFutureCouponRateWithLookout) {
+    BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon with lockout...");
+
+    CommonVars vars(Date(12, March, 2019));
+
+    vars.forecastCurve.linkTo(flatRate(0.0250, Actual360()));
+
+    auto coupon15July =
+        vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), Null<Natural>(), 2, false);
+    Rate expectedRate15July = 0.025011784374543;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate", coupon15July->rate(), expectedRate15July, 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
