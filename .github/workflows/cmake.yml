@@ -32,6 +32,32 @@ jobs:
     - name: Run benchmark
       run: |
         quantlib-benchmark --size=1
+  cmake-linux-with-options:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup
+      run: |
+        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+        sudo apt update
+        sudo apt install -y libboost-all-dev ccache ninja-build
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-linux-ci-opts-${{ github.ref }}
+        restore-keys: |
+          cmake-linux-ci-opts-${{ github.ref }}
+          cmake-linux-ci-opts-refs/heads/master
+          cmake-linux-ci-opts-
+    - name: Compile
+      run: |
+        cmake --preset linux-ci-build-with-nonstandard-options -L
+        cd build/linux-ci-build-with-nonstandard-options
+        cmake --build . --verbose
+        sudo cmake --build . --target install
+    - name: Test
+      run: |
+        quantlib-test-suite --log_level=message
   cmake-win:
     runs-on: windows-2022
     steps:
@@ -66,6 +92,78 @@ jobs:
         cmake --build . --verbose
         cmake --install .
         dir ql\*.lib
+    - name: Test
+      run: |
+        & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
+  cmake-win-dynamic-runtime:
+    runs-on: windows-2022
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-windows-ci-dyn-build-${{ github.ref }}
+        restore-keys: |
+          cmake-windows-ci-dyn-build-${{ github.ref }}
+          cmake-windows-ci-dyn-build-refs/heads/master
+          cmake-windows-ci-dyn-build-
+        variant: sccache
+    - name: Setup
+      run: |
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
+    - name: Compile
+      env:
+        BOOST_ROOT: C:\local\boost
+      shell: cmd
+      run: |
+        mkdir build
+        cd build
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
+        cmake .. -GNinja -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
+        cmake --build . --verbose
+        cmake --install .
+        dir ql\*.lib
+    - name: Test
+      run: |
+        & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
+  cmake-win-with-options:
+    runs-on: windows-2022
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-windows-ci-opts-${{ github.ref }}
+        restore-keys: |
+          cmake-windows-ci-opts-${{ github.ref }}
+          cmake-windows-ci-opts-refs/heads/master
+          cmake-windows-ci-opts-
+        variant: sccache
+    - name: Setup
+      run: |
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
+        Add-Content $env:GITHUB_PATH "C:\local\ninja"
+    - name: Compile
+      env:
+        BOOST_ROOT: C:\local\boost
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
+        cmake --preset windows-ci-build-with-nonstandard-options -L
+        cd build/windows-ci-build-with-nonstandard-options
+        cmake --build . --verbose
+        cmake --build . --target install
     - name: Test
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
