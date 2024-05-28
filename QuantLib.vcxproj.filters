@@ -1302,6 +1302,9 @@
     <ClInclude Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\zigguratgaussianrng.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\solvers1d\all.hpp">
       <Filter>math\solvers1D</Filter>
     </ClInclude>

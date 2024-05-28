@@ -1128,6 +1128,7 @@
     <ClInclude Include="ql\math\randomnumbers\sobolrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\stochasticcollocationinvcdf.hpp" />
     <ClInclude Include="ql\math\randomnumbers\xoshiro256starstaruniformrng.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\zigguratgaussianrng.hpp" />
     <ClInclude Include="ql\math\richardsonextrapolation.hpp" />
     <ClInclude Include="ql\math\rounding.hpp" />
     <ClInclude Include="ql\math\sampledcurve.hpp" />
