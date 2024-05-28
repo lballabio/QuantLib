@@ -461,6 +461,9 @@
     <ClCompile Include="xoshiro256starstar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zigguratgaussian.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="quantlibtestsuite.cpp" />
     <ClCompile Include="binaryoption.cpp">
       <Filter>Source Files</Filter>

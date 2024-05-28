@@ -25,7 +25,8 @@ this_include_HEADERS = \
 	sobolbrownianbridgersg.hpp \
 	sobolrsg.hpp \
 	stochasticcollocationinvcdf.hpp \
-	xoshiro256starstaruniformrng.hpp
+	xoshiro256starstaruniformrng.hpp \
+	zigguratgaussianrng.hpp
 
 cpp_files = \
 	faurersg.cpp \

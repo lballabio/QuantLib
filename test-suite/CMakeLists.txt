@@ -171,6 +171,7 @@ set(QL_TEST_SOURCES
     xoshiro256starstar.cpp
     zabr.cpp
     zerocouponswap.cpp
+    zigguratgaussian.cpp
 )
 
 set(QL_TEST_HEADERS

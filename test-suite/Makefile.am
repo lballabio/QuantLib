@@ -171,7 +171,8 @@ QL_TEST_SRCS = \
 	vpp.cpp \
 	xoshiro256starstar.cpp \
 	zabr.cpp \
-	zerocouponswap.cpp
+	zerocouponswap.cpp \
+	zigguratgaussian.cpp
 
 
 QL_TEST_HDRS = \

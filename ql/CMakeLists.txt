@@ -1537,6 +1537,7 @@ set(QL_HEADERS
     math/randomnumbers/sobolrsg.hpp
     math/randomnumbers/stochasticcollocationinvcdf.hpp
     math/randomnumbers/xoshiro256starstaruniformrng.hpp
+    math/randomnumbers/zigguratgaussianrng.hpp
     math/richardsonextrapolation.hpp
     math/rounding.hpp
     math/sampledcurve.hpp
