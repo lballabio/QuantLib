@@ -55,12 +55,13 @@ namespace QuantLib {
 
     }
 
-    Bibor::Bibor(const Period& tenor, Handle<YieldTermStructure> h)
+    Bibor::Bibor(const Period& tenor,
+                     const Handle<YieldTermStructure>& h)
     : IborIndex("Bibor", tenor,
                 2, // settlement days
                 THBCurrency(), Thailand(),
                 BiborConvention(tenor), BiborEOM(tenor),
-                Actual365Fixed(), std::move(h)) {
+                Actual365Fixed(), h) {
         QL_REQUIRE(this->tenor().units()!=Days,
                    "for daily tenors (" << this->tenor() <<
                    ") dedicated DailyTenor constructor must be used");

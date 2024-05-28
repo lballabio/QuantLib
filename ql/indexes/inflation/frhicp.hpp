@@ -33,9 +33,9 @@ namespace QuantLib {
     //! FR HICP index
     class FRHICP : public ZeroInflationIndex {
       public:
-        explicit FRHICP(Handle<ZeroInflationTermStructure> ts = {})
+        explicit FRHICP(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
-              "HICP", FranceRegion(), false, Monthly, Period(1, Months), EURCurrency(), std::move(ts)) {}
+              "HICP", FranceRegion(), false, Monthly, Period(1, Months), EURCurrency(), ts) {}
     };
 
 
@@ -44,7 +44,7 @@ namespace QuantLib {
       public:
         explicit YYFRHICP(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_HICP",
                             FranceRegion(),
                             false,
@@ -52,7 +52,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
 
@@ -66,7 +66,7 @@ namespace QuantLib {
       public:
         explicit YYFRHICPr(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_HICP",
                             FranceRegion(),
                             false,
@@ -75,7 +75,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             EURCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
     QL_DEPRECATED_ENABLE_WARNING

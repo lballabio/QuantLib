@@ -32,10 +32,10 @@ namespace QuantLib {
       public:
         Shibor(
             const Period& tenor,
-            Handle<YieldTermStructure> h = {});
+            const Handle<YieldTermStructure>& h = {});
 
         ext::shared_ptr<IborIndex>
-        clone(Handle<YieldTermStructure> forwarding) const override;
+        clone(const Handle<YieldTermStructure>& forwarding) const override;
     };
 
 }
