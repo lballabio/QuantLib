@@ -58,7 +58,7 @@ namespace QuantLib {
     }
 
     EURLibor::EURLibor(const Period& tenor,
-                       const Handle<YieldTermStructure>& h)
+                       Handle<YieldTermStructure> h)
     : IborIndex("EURLibor", tenor,
                 2,
                 EURCurrency(),
@@ -69,7 +69,7 @@ namespace QuantLib {
                               TARGET(),
                               JoinBusinessDays),
                 eurliborConvention(tenor), eurliborEOM(tenor),
-                Actual360(), h),
+                Actual360(), std::move(h)),
       target_(TARGET()) {
         QL_REQUIRE(this->tenor().units()!=Days,
                    "for daily tenors (" << this->tenor() <<
@@ -95,7 +95,7 @@ namespace QuantLib {
     }
 
     DailyTenorEURLibor::DailyTenorEURLibor(Natural settlementDays,
-                                           const Handle<YieldTermStructure>& h)
+                                           Handle<YieldTermStructure> h)
     : IborIndex("EURLibor", 1*Days,
                 settlementDays,
                 EURCurrency(),
@@ -105,6 +105,6 @@ namespace QuantLib {
                 // closed but London is open on the fixing day.
                 TARGET(),
                 eurliborConvention(1*Days), eurliborEOM(1*Days),
-                Actual360(), h) {}
+                Actual360(), std::move(h)) {}
 
 }

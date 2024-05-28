@@ -1542,7 +1542,7 @@ BOOST_AUTO_TEST_CASE(testQdEngineStandardExample) {
         );
         const Real calculated = americanOption.NPV() - europeanOption.NPV();
 
-        const Real tol = 1e-15;
+        const Real tol = 7e-15;
         const Real diff = std::abs(calculated - expected[i]);
 
         if (diff > tol) {

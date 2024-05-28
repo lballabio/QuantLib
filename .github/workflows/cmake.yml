@@ -29,6 +29,9 @@ jobs:
     - name: Test
       run: |
         quantlib-test-suite --log_level=message
+    - name: Run benchmark
+      run: |
+        quantlib-benchmark --size=1
   cmake-win:
     runs-on: windows-2022
     steps:

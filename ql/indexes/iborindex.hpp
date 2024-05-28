@@ -34,7 +34,7 @@ namespace QuantLib {
     //! base class for Inter-Bank-Offered-Rate indexes (e.g. %Libor, etc.)
     class IborIndex : public InterestRateIndex {
       public:
-        IborIndex(const std::string& familyName,
+        IborIndex(std::string familyName,
                   const Period& tenor,
                   Natural settlementDays,
                   const Currency& currency,
@@ -58,8 +58,7 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         //! returns a copy of itself linked to a different forwarding curve
-        virtual ext::shared_ptr<IborIndex> clone(
-                        const Handle<YieldTermStructure>& forwarding) const;
+        virtual ext::shared_ptr<IborIndex> clone(Handle<YieldTermStructure> forwarding) const;
         // @}
       protected:
         BusinessDayConvention convention_;
@@ -87,14 +86,14 @@ namespace QuantLib {
 
     class OvernightIndex : public IborIndex {
       public:
-        OvernightIndex(const std::string& familyName,
+        OvernightIndex(std::string familyName,
                        Natural settlementDays,
                        const Currency& currency,
                        const Calendar& fixingCalendar,
                        const DayCounter& dayCounter,
-                       const Handle<YieldTermStructure>& h = {});
+                       Handle<YieldTermStructure> h = {});
         //! returns a copy of itself linked to a different forwarding curve
-        ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+        ext::shared_ptr<IborIndex> clone(Handle<YieldTermStructure> h) const override;
     };
 
 

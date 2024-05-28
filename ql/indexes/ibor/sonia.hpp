@@ -31,7 +31,7 @@ namespace QuantLib {
     //! %Sonia (Sterling Overnight Index Average) rate.
     class Sonia : public OvernightIndex {
       public:
-        explicit Sonia(const Handle<YieldTermStructure>& h = {});
+        explicit Sonia(Handle<YieldTermStructure> h = {});
     };
 
 }

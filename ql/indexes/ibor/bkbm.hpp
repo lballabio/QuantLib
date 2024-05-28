@@ -38,13 +38,12 @@ namespace QuantLib {
     */
     class Bkbm : public IborIndex {
       public:
-        Bkbm(const Period& tenor,
-             const Handle<YieldTermStructure>& h = {})
+        Bkbm(const Period& tenor, Handle<YieldTermStructure> h = {})
         : IborIndex("Bkbm", tenor,
                     0, // settlement days
                     NZDCurrency(), NewZealand(),
                     ModifiedFollowing, true,
-                    Actual365Fixed(), h) {
+                    Actual365Fixed(), std::move(h)) {
             QL_REQUIRE(this->tenor().units() != Days,
                        "for daily tenors (" << this->tenor() <<
                        ") dedicated DailyTenor constructor must be used");
@@ -54,43 +53,43 @@ namespace QuantLib {
     //! 1-month %Bkbm index
     class Bkbm1M : public Bkbm {
       public:
-        explicit Bkbm1M(const Handle<YieldTermStructure>& h = {})
-        : Bkbm(Period(1, Months), h) {}
+        explicit Bkbm1M(Handle<YieldTermStructure> h = {})
+        : Bkbm(Period(1, Months), std::move(h)) {}
     };
 
     //! 2-months %Bkbm index
     class Bkbm2M : public Bkbm {
       public:
-        explicit Bkbm2M(const Handle<YieldTermStructure>& h = {})
-        : Bkbm(Period(2, Months), h) {}
+        explicit Bkbm2M(Handle<YieldTermStructure> h = {})
+        : Bkbm(Period(2, Months), std::move(h)) {}
     };
 
     //! 3-months %Bkbm index
     class Bkbm3M : public Bkbm {
       public:
-        explicit Bkbm3M(const Handle<YieldTermStructure>& h = {})
-        : Bkbm(Period(3, Months), h) {}
+        explicit Bkbm3M(Handle<YieldTermStructure> h = {})
+        : Bkbm(Period(3, Months), std::move(h)) {}
     };
 
     //! 4-months %Bkbm index
     class Bkbm4M : public Bkbm {
       public:
-        explicit Bkbm4M(const Handle<YieldTermStructure>& h = {})
-        : Bkbm(Period(4, Months), h) {}
+        explicit Bkbm4M(Handle<YieldTermStructure> h = {})
+        : Bkbm(Period(4, Months), std::move(h)) {}
     };
 
     //! 5-months %Bkbm index
     class Bkbm5M : public Bkbm {
       public:
-        explicit Bkbm5M(const Handle<YieldTermStructure>& h = {})
-        : Bkbm(Period(5, Months), h) {}
+        explicit Bkbm5M(Handle<YieldTermStructure> h = {})
+        : Bkbm(Period(5, Months), std::move(h)) {}
     };
 
     //! 6-months %Bkbm index
     class Bkbm6M : public Bkbm {
       public:
-        explicit Bkbm6M(const Handle<YieldTermStructure>& h = {})
-        : Bkbm(Period(6, Months), h) {}
+        explicit Bkbm6M(Handle<YieldTermStructure> h = {})
+        : Bkbm(Period(6, Months), std::move(h)) {}
     };
 
 }

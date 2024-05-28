@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    IborIndex::IborIndex(const std::string& familyName,
+    IborIndex::IborIndex(std::string familyName,
                          const Period& tenor,
                          Natural settlementDays,
                          const Currency& currency,
@@ -34,7 +34,7 @@ namespace QuantLib {
                          bool endOfMonth,
                          const DayCounter& dayCounter,
                          Handle<YieldTermStructure> h)
-    : InterestRateIndex(familyName, tenor, settlementDays, currency, fixingCalendar, dayCounter),
+    : InterestRateIndex(std::move(familyName), tenor, settlementDays, currency, fixingCalendar, dayCounter),
       convention_(convention), termStructure_(std::move(h)), endOfMonth_(endOfMonth) {
         registerWith(termStructure_);
     }
@@ -58,8 +58,7 @@ namespace QuantLib {
                                         endOfMonth_);
     }
 
-    ext::shared_ptr<IborIndex> IborIndex::clone(
-                               const Handle<YieldTermStructure>& h) const {
+    ext::shared_ptr<IborIndex> IborIndex::clone(Handle<YieldTermStructure> h) const {
         return ext::make_shared<IborIndex>(
                                         familyName(),
                                                       tenor(),
@@ -69,28 +68,27 @@ namespace QuantLib {
                                                       businessDayConvention(),
                                                       endOfMonth(),
                                                       dayCounter(),
-                                                      h);
+                                                      std::move(h));
     }
 
 
-    OvernightIndex::OvernightIndex(const std::string& familyName,
+    OvernightIndex::OvernightIndex(std::string familyName,
                                    Natural settlementDays,
                                    const Currency& curr,
                                    const Calendar& fixCal,
                                    const DayCounter& dc,
-                                   const Handle<YieldTermStructure>& h)
-   : IborIndex(familyName, 1*Days, settlementDays, curr,
-               fixCal, Following, false, dc, h) {}
+                                   Handle<YieldTermStructure> h)
+   : IborIndex(std::move(familyName), 1*Days, settlementDays, curr,
+               fixCal, Following, false, dc, std::move(h)) {}
 
-    ext::shared_ptr<IborIndex> OvernightIndex::clone(
-                               const Handle<YieldTermStructure>& h) const {
+    ext::shared_ptr<IborIndex> OvernightIndex::clone(Handle<YieldTermStructure> h) const {
         return ext::shared_ptr<IborIndex>(
                                         new OvernightIndex(familyName(),
                                                            fixingDays(),
                                                            currency(),
                                                            fixingCalendar(),
                                                            dayCounter(),
-                                                           h));
+                                                           std::move(h)));
     }
 
 }

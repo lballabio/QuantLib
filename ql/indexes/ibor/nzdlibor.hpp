@@ -38,12 +38,12 @@ namespace QuantLib {
     class NZDLibor : public Libor {
       public:
         NZDLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h = {})
+                 Handle<YieldTermStructure> h = {})
         : Libor("NZDLibor", tenor,
                 2,
                 NZDCurrency(),
                 NewZealand(),
-                Actual360(), h) {}
+                Actual360(), std::move(h)) {}
     };
 
 }
