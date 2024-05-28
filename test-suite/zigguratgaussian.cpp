@@ -20,12 +20,7 @@
 #include "toplevelfixture.hpp"
 #include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <ql/math/randomnumbers/zigguratgaussianrng.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/count.hpp>
-#include <boost/accumulators/statistics/kurtosis.hpp>
-#include <boost/accumulators/statistics/mean.hpp>
-#include <boost/accumulators/statistics/skewness.hpp>
-#include <boost/accumulators/statistics/variance.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
 #include <iostream>
 #include <numeric>
 
@@ -38,27 +33,22 @@ BOOST_AUTO_TEST_SUITE(ZigguratGaussianTests)
 BOOST_AUTO_TEST_CASE(testMeanAndStdDevOfNextReal) {
     BOOST_TEST_MESSAGE("Testing ZigguratGaussianRng<Xoshiro256StarStarUniformRng>::nextReal() for "
                        "mean, variance, skewness and kurtosis...");
-    using namespace boost::accumulators;
-
     auto seed = 42UL;
     auto uniformRandom = Xoshiro256StarStarUniformRng(seed);
     auto random = ZigguratGaussianRng<Xoshiro256StarStarUniformRng>(uniformRandom);
 
-    const auto iterations = 10'000'000;
+    auto randoms = IncrementalStatistics();
 
-    accumulator_set<Real,
-                    features<tag::count, tag::mean, tag::variance, tag::skewness, tag::kurtosis>>
-        randoms;
-
+    auto iterations = 10'000'000;
     for (auto j = 0; j < iterations; ++j) {
         Real next = random.next().value;
-        randoms(next);
+        randoms.add(next);
     }
 
-    Real mean = boost::accumulators::mean(randoms);
-    Real variance = boost::accumulators::variance(randoms);
-    Real skewness = boost::accumulators::skewness(randoms);
-    Real kurtosis = boost::accumulators::kurtosis(randoms);
+    auto mean = randoms.mean();
+    auto variance = randoms.variance();
+    auto skewness = randoms.skewness();
+    auto kurtosis = randoms.kurtosis();
 
     if (std::abs(mean) > 0.001) {
         BOOST_ERROR("Mean " << mean << " for seed " << seed << " is not close to 0.");
