@@ -57,7 +57,6 @@ namespace QuantLib {
       public:
         typedef Sample<Real> sample_type;
 
-
         explicit ZigguratGaussianRng(const RNG& uint64Generator)
         : uint64Generator_(uint64Generator) {}
 
@@ -97,7 +96,7 @@ namespace QuantLib {
 
             auto x = u * normX(i);
 
-            if (std::fabs(x) < normX(i + 1)) {
+            if (std::abs(x) < normX(i + 1)) {
                 return x;
             }
             if (i == 0) {
