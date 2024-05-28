@@ -40,15 +40,15 @@ namespace QuantLib {
 
     }
 
-    BMAIndex::BMAIndex(Handle<YieldTermStructure> h)
+    BMAIndex::BMAIndex(const Handle<YieldTermStructure>& h)
     : InterestRateIndex("BMA",
                         1 * Weeks,
                         1,
                         USDCurrency(),
                         UnitedStates(UnitedStates::GovernmentBond),
                         ActualActual(ActualActual::ISDA)),
-      termStructure_(std::move(h)) {
-        registerWith(termStructure_);
+      termStructure_(h) {
+        registerWith (h);
     }
 
     bool BMAIndex::isValidFixingDate(const Date& date) const {

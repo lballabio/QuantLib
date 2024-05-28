@@ -42,10 +42,10 @@ namespace QuantLib {
     class Tibor : public IborIndex {
       public:
         Tibor(const Period& tenor,
-              Handle<YieldTermStructure> h = {})
+              const Handle<YieldTermStructure>& h = {})
         : IborIndex("Tibor", tenor, 2, JPYCurrency(),
                     Japan(), ModifiedFollowing,
-                    false, Actual365Fixed(), std::move(h)) {}
+                    false, Actual365Fixed(), h) {}
     };
 
 }

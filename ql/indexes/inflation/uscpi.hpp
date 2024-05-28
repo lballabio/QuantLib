@@ -33,14 +33,14 @@ namespace QuantLib {
     //! US CPI index
     class USCPI : public ZeroInflationIndex {
       public:
-        explicit USCPI(Handle<ZeroInflationTermStructure> ts = {})
+        explicit USCPI(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex("CPI",
                              USRegion(),
                              false,
                              Monthly,
                              Period(1, Months), // availability
                              USDCurrency(),
-                             std::move(ts)) {}
+                             ts) {}
     };
 
 
@@ -49,7 +49,7 @@ namespace QuantLib {
       public:
         explicit YYUSCPI(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             USRegion(),
                             false,
@@ -57,7 +57,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             USDCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
 
@@ -71,7 +71,7 @@ namespace QuantLib {
       public:
         explicit YYUSCPIr(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             USRegion(),
                             false,
@@ -80,7 +80,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             USDCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
     QL_DEPRECATED_ENABLE_WARNING

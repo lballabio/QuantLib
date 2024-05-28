@@ -42,10 +42,10 @@ namespace QuantLib {
 	class Robor : public IborIndex {
 	public:
 		Robor(const Period& tenor,
-              Handle<YieldTermStructure> h = {})
+              const Handle<YieldTermStructure>& h = {})
 			: IborIndex("ROBOR", tenor, (tenor == 1 * Days ? 0 : 2), RONCurrency(),
 				Romania(), ModifiedFollowing, false,
-				Actual360(), std::move(h)) {}
+				Actual360(), h) {}
 	};
 
 }

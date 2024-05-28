@@ -24,10 +24,10 @@
 
 namespace QuantLib {
 
-    FedFunds::FedFunds(Handle<YieldTermStructure> h)
+    FedFunds::FedFunds(const Handle<YieldTermStructure>& h)
     : OvernightIndex("FedFunds", 0,
                      USDCurrency(),
                      UnitedStates(UnitedStates::FederalReserve),
-                     Actual360(), std::move(h)) {}
+                     Actual360(), h) {}
 
 }

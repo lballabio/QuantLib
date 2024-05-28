@@ -38,12 +38,12 @@ namespace QuantLib {
     class DKKLibor : public Libor {
       public:
         DKKLibor(const Period& tenor,
-                 Handle<YieldTermStructure> h = {})
+                 const Handle<YieldTermStructure>& h = {})
         : Libor("DKKLibor", tenor,
                 2,
                 DKKCurrency(),
                 Denmark(),
-                Actual360(), std::move(h)) {}
+                Actual360(), h) {}
     };
 
 }

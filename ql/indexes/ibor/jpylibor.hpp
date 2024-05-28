@@ -44,23 +44,23 @@ namespace QuantLib {
     class JPYLibor : public Libor {
       public:
         JPYLibor(const Period& tenor,
-                 Handle<YieldTermStructure> h = {})
+                 const Handle<YieldTermStructure>& h = {})
         : Libor("JPYLibor", tenor,
                 2,
                 JPYCurrency(),
                 Japan(),
-                Actual360(), std::move(h)) {}
+                Actual360(), h) {}
     };
 
     //! base class for the one day deposit ICE %JPY %LIBOR indexes
     class DailyTenorJPYLibor : public DailyTenorLibor {
       public:
         DailyTenorJPYLibor(Natural settlementDays,
-                           Handle<YieldTermStructure> h = {})
+                           const Handle<YieldTermStructure>& h = {})
         : DailyTenorLibor("JPYLibor", settlementDays,
                           JPYCurrency(),
                           Japan(),
-                          Actual360(), std::move(h)) {}
+                          Actual360(), h) {}
     };
 
 }
