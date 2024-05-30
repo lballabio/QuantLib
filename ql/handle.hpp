@@ -42,8 +42,10 @@ namespace QuantLib {
       protected:
         class Link : public Observable, public Observer {
           public:
-            explicit Link(ext::shared_ptr<T> h,
-                          bool registerAsObserver);
+            Link(const ext::shared_ptr<T>& h,
+                 bool registerAsObserver);
+            Link(ext::shared_ptr<T>&& h,
+                 bool registerAsObserver);
             void linkTo(ext::shared_ptr<T>,
                         bool registerAsObserver);
             bool empty() const { return !h_; }
@@ -133,7 +135,9 @@ namespace QuantLib {
         explicit RelinkableHandle(
                        T* p,
                        bool registerAsObserver = true);
-        void linkTo(ext::shared_ptr<T> h,
+        void linkTo(const ext::shared_ptr<T>& h,
+                    bool registerAsObserver = true);
+        void linkTo(ext::shared_ptr<T>&& h,
                     bool registerAsObserver = true);
     };
 
@@ -141,7 +145,12 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline Handle<T>::Link::Link(ext::shared_ptr<T> h, bool registerAsObserver) {
+    inline Handle<T>::Link::Link(const ext::shared_ptr<T>& h, bool registerAsObserver) {
+        linkTo(h, registerAsObserver);
+    }
+
+    template <class T>
+    inline Handle<T>::Link::Link(ext::shared_ptr<T>&& h, bool registerAsObserver) {
         linkTo(std::move(h), registerAsObserver);
     }
 
@@ -205,7 +214,13 @@ namespace QuantLib {
     : Handle<T>(p,registerAsObserver) {}
 
     template <class T>
-    inline void RelinkableHandle<T>::linkTo(ext::shared_ptr<T> h,
+    inline void RelinkableHandle<T>::linkTo(const ext::shared_ptr<T>& h,
+                                            bool registerAsObserver) {
+        this->link_->linkTo(h, registerAsObserver);
+    }
+
+    template <class T>
+    inline void RelinkableHandle<T>::linkTo(ext::shared_ptr<T>&& h,
                                             bool registerAsObserver) {
         this->link_->linkTo(std::move(h), registerAsObserver);
     }
