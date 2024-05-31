@@ -74,7 +74,7 @@ namespace QuantLib {
         const std::vector<Rate>& indexFixings() const;
         //! value dates for the rates to be compounded
         const std::vector<Date>& valueDates() const { return valueDates_; }
-        //! value dates for the rates to be compounded
+        //! interest dates for the rates to be compounded
         const std::vector<Date>& interestDates() const { return interestDates_; }
         //! averaging method
         const RateAveraging::Type averagingMethod() const { return averagingMethod_; }
