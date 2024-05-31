@@ -422,9 +422,44 @@ BOOST_AUTO_TEST_CASE(testFutureCouponRateWithLookout) {
 
     auto coupon15July =
         vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), Null<Natural>(), 2, false);
-    Rate expectedRate15July = 0.025011784374543;
+    
+    // expected = 0.025011784374543
+    Rate lockoutFixing = vars.sofr->fixing(Date(10, July, 2019));
+    Rate expectedRate15July =
+        (vars.forecastCurve->discount(Date(1, July, 2019)) /
+             vars.forecastCurve->discount(Date(11, July, 2019)) *
+             (1.0 + 1.0 / 360.0 * lockoutFixing) * (1.0 + 3.0 / 360.0 * lockoutFixing) -
+         1.0) *
+        360.0 / 14;
 
     CHECK_OIS_COUPON_RESULT("coupon rate", coupon15July->rate(), expectedRate15July, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testAccruedAmountOfFutureCouponWithLookoutAndPartialAccrual) {
+    BOOST_TEST_MESSAGE("Testing accrued amount for future overnight-indexed coupon with lockout "
+                       "and partial accrual ...");
+
+    CommonVars vars(Date(12, March, 2019));
+
+    vars.forecastCurve.linkTo(flatRate(0.0250, Actual360()));
+
+    auto coupon15July =
+        vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), Null<Natural>(), 2, false);
+
+    Rate lockoutFixing = vars.sofr->fixing(Date(10, July, 2019));
+    Rate expectedRate15July =
+        (vars.forecastCurve->discount(Date(1, July, 2019)) /
+             vars.forecastCurve->discount(Date(11, July, 2019)) *
+             (1.0 + 1.0 / 360.0 * lockoutFixing) * (1.0 + 2.0 / 360.0 * lockoutFixing) -
+         1.0) *
+        360.0 / 13;
+
+    Real expectedAccruedAmount = coupon15July->nominal() *
+                                 coupon15July->accruedPeriod(Date(14, July, 2019)) *
+                                 expectedRate15July;
+    
+    CHECK_OIS_COUPON_RESULT("accrued amount", coupon15July->accruedAmount(Date(14, July, 2019)),
+                            expectedAccruedAmount, 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

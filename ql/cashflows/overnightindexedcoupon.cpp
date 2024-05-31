@@ -67,7 +67,7 @@ namespace QuantLib {
                 const vector<Date>& valueDates = coupon_->valueDates();
                 const vector<Date>& interestDates = coupon_->interestDates();
                 const vector<Time>& dt = coupon_->dt();
-                bool applyObservationShift = coupon_->applyObservationShift();
+                const bool applyObservationShift = coupon_->applyObservationShift();
 
                 Size i = 0;
                 const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
@@ -143,29 +143,27 @@ namespace QuantLib {
                         // But we need to make a correction for a potential lockout.
                         const Size nLockout = n - coupon_->lockoutDays();
                         const bool isLockoutApplied = coupon_->lockoutDays() > 0;
-                        
+
                         // Lockout could already start at or before i.
                         // In such case the ratio of discount factors will be equal to 1.
                         const DiscountFactor startDiscount =
                             curve->discount(valueDates[std::min<Size>(nLockout, i)]);
-                        if (interestDates[n] == date) {
+                        if (interestDates[n] == date || isLockoutApplied) {
                             // telescopic formula up to potential lockout dates.
                             const DiscountFactor endDiscount =
                                 curve->discount(valueDates[std::min<Size>(nLockout, n)]);
                             compoundFactor *= startDiscount / endDiscount;
-                        }
-                        if (isLockoutApplied) {
                             // For the lockout periods the telescopic formula does not apply.
-                            // The value dates (at which the projection is calculated) correspond 
+                            // The value dates (at which the projection is calculated) correspond
                             // to the locked-out fixing, while the interest dates (at which the
                             // interest over that fixing is accrued) are not fixed at lockout,
                             // hence they do not cancel out.
-                            Size iCorrected = std::max(nLockout, i);
-                            while (iCorrected < n) {
-                                compoundFactor *= (1.0 + effectiveRate(iCorrected));
-                                ++iCorrected;
+                            i = std::max(nLockout, i);
+                            while (i < n) {
+                                compoundFactor *= (1.0 + effectiveRate(i));
+                                ++i;
                             }
-                        } else if (interestDates[n] != date) {
+                        } else {
                             // The last fixing is not used for its full period (the date is between
                             // its start and end date).  We can use the telescopic formula until the
                             // previous date, then we'll add the missing bit.
@@ -237,6 +235,9 @@ namespace QuantLib {
            the front stub of valuation dates we build here (which incorporates
            a grace period of 7 business after the evaluation date). This will
            lead to false coupon projections (see the warning the class header). */
+
+        QL_REQUIRE(!(fixingDays_ != overnightIndex->fixingDays() && telescopicValueDates),
+                   "Telescopic formula cannot be applied for a coupon with lookback.");
 
         if (telescopicValueDates) {
             // build optimised value dates schedule: front stub goes
