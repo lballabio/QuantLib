@@ -159,11 +159,14 @@ namespace QuantLib {
                             // interest over that fixing is accrued) are not fixed at lockout,
                             // hence they do not cancel out.
                             i = std::max(nLockout, i);
+                            
+                            // With no lockout, the loop is skipped because i = n.
                             while (i < n) {
                                 compoundFactor *= (1.0 + effectiveRate(i));
                                 ++i;
                             }
                         } else {
+                            // No lockout and date is different than last interest date.
                             // The last fixing is not used for its full period (the date is between
                             // its start and end date).  We can use the telescopic formula until the
                             // previous date, then we'll add the missing bit.
@@ -307,7 +310,7 @@ namespace QuantLib {
                     // corresponding to a deposit instrument linked to the index.
                     // This is to ensure that future projections (which are computed 
                     // based on the value dates) of the index do not
-                    // yield any additional convexity corrections. 
+                    // yield any convexity corrections. 
                     valueDates_[i] = overnightIndex->valueDate(tmp);
             }
         }

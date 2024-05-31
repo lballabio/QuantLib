@@ -43,11 +43,11 @@ struct CommonVars {
                                                        Natural fixingDays = Null<Natural>(),
                                                        Natural lockoutDays = 0,
                                                        bool applyObservationShift = false,
-                                                       bool telescopicValueDates = false) {
+                                                       bool telescopicValueDates = false,
+                                                       RateAveraging::Type averaging = RateAveraging::Compound) {
         return ext::make_shared<OvernightIndexedCoupon>(
             endDate, notional, startDate, endDate, sofr, 1.0, 0.0, Date(), Date(), DayCounter(),
-            telescopicValueDates, RateAveraging::Compound, fixingDays, lockoutDays,
-            applyObservationShift);
+            telescopicValueDates, averaging, fixingDays, lockoutDays, applyObservationShift);
     }
 
     CommonVars(const Date& evaluationDate) {
@@ -469,6 +469,24 @@ BOOST_AUTO_TEST_CASE(testErrorWhenTelescopicSeriesEnforcedWithLookback) {
     CommonVars vars;
 
     BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), 2, 0, false, true),
+                      Error);
+}
+
+BOOST_AUTO_TEST_CASE(testErrorWhenLookbackOrLockoutAppliedForSimpleAveraging) {
+    BOOST_TEST_MESSAGE("Testing error when lookback or lockout applied for simple averaging...");
+
+    CommonVars vars;
+
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), 2, 0, false, false,
+                                      RateAveraging::Simple),
+                      Error);
+
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), 2,
+                                      false, false, RateAveraging::Simple),
+                      Error);
+
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), 0,
+                                      true, false, RateAveraging::Simple),
                       Error);
 }
 
