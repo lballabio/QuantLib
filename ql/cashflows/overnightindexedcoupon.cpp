@@ -213,11 +213,11 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     bool telescopicValueDates,
                     RateAveraging::Type averagingMethod,
-                    Natural fixingDays,
+                    Natural lookbackDays,
                     Natural lockoutDays,
                     bool applyObservationShift)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays,
+                         lookbackDays,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
@@ -329,6 +329,11 @@ namespace QuantLib {
 
         switch (averagingMethod) {
             case RateAveraging::Simple:
+                QL_REQUIRE(
+                    fixingDays_ == overnightIndex->fixingDays() && !applyObservationShift_ &&
+                        lockoutDays_ == 0,
+                    "Cannot price an overnight coupon with simple averaging with lookback or "
+                    "lockout.");
                 setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
                     new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
                 break;
@@ -445,6 +450,19 @@ namespace QuantLib {
         return *this;
     }
 
+    OvernightLeg& OvernightLeg::withLookbackDays(Natural lookbackDays) {
+        lookbackDays_ = lookbackDays;
+        return *this;
+    }
+    OvernightLeg& OvernightLeg::withLockoutDays(Natural lockoutDays) {
+        lockoutDays_ = lockoutDays;
+        return *this;
+    }
+    OvernightLeg& OvernightLeg::withApplyObservationShift(bool applyObservationShift) {
+        applyObservationShift_ = applyObservationShift;
+        return *this;
+    }
+
     OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
@@ -481,7 +499,10 @@ namespace QuantLib {
                                        refStart, refEnd,
                                        paymentDayCounter_,
                                        telescopicValueDates_,
-                                       averagingMethod_)));
+                                       averagingMethod_,
+                                       lookbackDays_,
+                                       lockoutDays_,
+                                       applyObservationShift_)));
         }
         return cashflows;
     }

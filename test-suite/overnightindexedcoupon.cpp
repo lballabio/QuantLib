@@ -38,15 +38,16 @@ struct CommonVars {
     ext::shared_ptr<OvernightIndex> sofr;
     RelinkableHandle<YieldTermStructure> forecastCurve;
 
-    ext::shared_ptr<OvernightIndexedCoupon>
-    makeCoupon(Date startDate,
-               Date endDate,
-               Natural fixingDays = Null<Natural>(),
-               Natural lockoutDays = 0,
-               bool applyObservationShift = false) {
+    ext::shared_ptr<OvernightIndexedCoupon> makeCoupon(Date startDate,
+                                                       Date endDate,
+                                                       Natural fixingDays = Null<Natural>(),
+                                                       Natural lockoutDays = 0,
+                                                       bool applyObservationShift = false,
+                                                       bool telescopicValueDates = false) {
         return ext::make_shared<OvernightIndexedCoupon>(
             endDate, notional, startDate, endDate, sofr, 1.0, 0.0, Date(), Date(), DayCounter(),
-            false, RateAveraging::Compound, fixingDays, lockoutDays, applyObservationShift);
+            telescopicValueDates, RateAveraging::Compound, fixingDays, lockoutDays,
+            applyObservationShift);
     }
 
     CommonVars(const Date& evaluationDate) {
@@ -435,9 +436,9 @@ BOOST_AUTO_TEST_CASE(testFutureCouponRateWithLookout) {
     CHECK_OIS_COUPON_RESULT("coupon rate", coupon15July->rate(), expectedRate15July, 1e-12);
 }
 
-BOOST_AUTO_TEST_CASE(testAccruedAmountOfFutureCouponWithLookoutAndPartialAccrual) {
-    BOOST_TEST_MESSAGE("Testing accrued amount for future overnight-indexed coupon with lockout "
-                       "and partial accrual ...");
+BOOST_AUTO_TEST_CASE(testPartiallyAccruedAmountOfFutureCouponWithLookout) {
+    BOOST_TEST_MESSAGE(
+        "Testing partially accrued amount for future overnight-indexed coupon with lockout...");
 
     CommonVars vars(Date(12, March, 2019));
 
@@ -460,6 +461,15 @@ BOOST_AUTO_TEST_CASE(testAccruedAmountOfFutureCouponWithLookoutAndPartialAccrual
     
     CHECK_OIS_COUPON_RESULT("accrued amount", coupon15July->accruedAmount(Date(14, July, 2019)),
                             expectedAccruedAmount, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testErrorWhenTelescopicSeriesEnforcedWithLookback) {
+    BOOST_TEST_MESSAGE("Testing error when telescopic series enforced with lookback...");
+
+    CommonVars vars;
+
+    BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), 2, 0, false, true),
+                      Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

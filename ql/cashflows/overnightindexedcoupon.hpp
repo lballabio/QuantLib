@@ -61,7 +61,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter = DayCounter(),
                     bool telescopicValueDates = false,
                     RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                    Natural fixingDays = Null<Natural>(),
+                    Natural lookbackDays = Null<Natural>(),
                     Natural lockoutDays = 0,
                     bool applyObservationShift = false);
         //! \name Inspectors
@@ -122,6 +122,9 @@ namespace QuantLib {
         OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
         OvernightLeg& withTelescopicValueDates(bool telescopicValueDates);
         OvernightLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
+        OvernightLeg& withLookbackDays(Natural lookbackDays);
+        OvernightLeg& withLockoutDays(Natural lockoutDays);
+        OvernightLeg& withApplyObservationShift(bool applyObservationShift);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -135,6 +138,9 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         bool telescopicValueDates_ = false;
         RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        Natural lookbackDays_ = Null<Natural>();
+        Natural lockoutDays_ = 0;
+        bool applyObservationShift_ = false;
     };
 
 }
