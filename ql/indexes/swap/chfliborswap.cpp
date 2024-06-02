@@ -28,7 +28,7 @@ namespace QuantLib {
 
     ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(
                                 const Period& tenor,
-                                Handle<YieldTermStructure> h)
+                                const Handle<YieldTermStructure>& h)
     : SwapIndex("ChfLiborSwapIsdaFix", // familyName
                 tenor,
                 2, // settlementDays
@@ -38,13 +38,13 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, std::move(h))) :
-                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, std::move(h)))) {}
+                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, h)) :
+                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, h))) {}
 
     ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(
                                 const Period& tenor,
-                                Handle<YieldTermStructure> forwarding,
-                                Handle<YieldTermStructure> discounting)
+                                const Handle<YieldTermStructure>& forwarding,
+                                const Handle<YieldTermStructure>& discounting)
     : SwapIndex("ChfLiborSwapIsdaFix", // familyName
                 tenor,
                 2, // settlementDays
@@ -54,8 +54,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, std::move(forwarding))) :
-                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, std::move(forwarding))),
-                std::move(discounting)) {}
+                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, forwarding)) :
+                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, forwarding)),
+                discounting) {}
 
 }

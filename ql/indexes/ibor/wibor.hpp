@@ -42,10 +42,10 @@ namespace QuantLib {
 	class Wibor : public IborIndex {
 	public:
 		Wibor(const Period& tenor,
-              Handle<YieldTermStructure> h = {})
+              const Handle<YieldTermStructure>& h = {})
 			: IborIndex("WIBOR", tenor, (tenor == 1 * Days ? 0 : 2), PLNCurrency(),
 				Poland(), ModifiedFollowing, false,
-				Actual365Fixed(), std::move(h)) {}
+				Actual365Fixed(), h) {}
 	};
 
 }

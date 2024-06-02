@@ -33,9 +33,9 @@ namespace QuantLib {
     //! South African Consumer Price Inflation Index
     class ZACPI : public ZeroInflationIndex {
       public:
-        explicit ZACPI(Handle<ZeroInflationTermStructure> ts = {})
+        explicit ZACPI(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
-              "CPI", ZARegion(), false, Monthly, Period(1, Months), ZARCurrency(), std::move(ts)) {}
+              "CPI", ZARegion(), false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
     };
 
 
@@ -44,7 +44,7 @@ namespace QuantLib {
       public:
         explicit YYZACPI(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             ZARegion(),
                             false,
@@ -52,7 +52,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             ZARCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
 
@@ -66,7 +66,7 @@ namespace QuantLib {
       public:
         explicit YYZACPIr(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             ZARegion(),
                             false,
@@ -75,7 +75,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             ZARCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
     QL_DEPRECATED_ENABLE_WARNING

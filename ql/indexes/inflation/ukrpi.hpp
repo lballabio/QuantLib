@@ -33,9 +33,9 @@ namespace QuantLib {
     //! UK Retail Price Inflation Index
     class UKRPI : public ZeroInflationIndex {
       public:
-        explicit UKRPI(Handle<ZeroInflationTermStructure> ts = {})
+        explicit UKRPI(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex(
-              "RPI", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), std::move(ts)) {}
+              "RPI", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
     };
 
 
@@ -44,7 +44,7 @@ namespace QuantLib {
       public:
         explicit YYUKRPI(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_RPI",
                             UKRegion(),
                             false,
@@ -52,7 +52,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             GBPCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
 
@@ -66,7 +66,7 @@ namespace QuantLib {
       public:
         explicit YYUKRPIr(
             bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {})
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_RPI",
                             UKRegion(),
                             false,
@@ -75,7 +75,7 @@ namespace QuantLib {
                             Monthly,
                             Period(1, Months),
                             GBPCurrency(),
-                            std::move(ts)) {}
+                            ts) {}
     };
 
     QL_DEPRECATED_ENABLE_WARNING

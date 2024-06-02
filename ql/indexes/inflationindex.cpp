@@ -98,14 +98,14 @@ namespace QuantLib {
                           rates.begin(), forceOverwrite);
     }
 
-    ZeroInflationIndex::ZeroInflationIndex(std::string familyName,
+    ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
                                            const Region& region,
                                            bool revised,
                                            Frequency frequency,
                                            const Period& availabilityLag,
                                            const Currency& currency,
                                            Handle<ZeroInflationTermStructure> zeroInflation)
-    : InflationIndex(std::move(familyName), region, revised, frequency, availabilityLag, currency),
+    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       zeroInflation_(std::move(zeroInflation)) {
         registerWith(zeroInflation_);
     }
@@ -185,9 +185,10 @@ namespace QuantLib {
     }
 
 
-    ext::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(Handle<ZeroInflationTermStructure> h) const {
+    ext::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(
+                          const Handle<ZeroInflationTermStructure>& h) const {
         return ext::make_shared<ZeroInflationIndex>(
-            familyName_, region_, revised_, frequency_, availabilityLag_, currency_, std::move(h));
+            familyName_, region_, revised_, frequency_, availabilityLag_, currency_, h);
     }
 
 
@@ -205,7 +206,7 @@ namespace QuantLib {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    YoYInflationIndex::YoYInflationIndex(std::string familyName,
+    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
                                          bool interpolated,
@@ -213,12 +214,12 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(std::move(familyName), region, revised, interpolated, false,
+    : YoYInflationIndex(familyName, region, revised, interpolated, false,
                         frequency, availabilityLag, currency, std::move(yoyInflation)) {}
 
     QL_DEPRECATED_ENABLE_WARNING
 
-    YoYInflationIndex::YoYInflationIndex(std::string familyName,
+    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
                                          bool interpolated,
@@ -227,10 +228,10 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : InflationIndex(std::move(familyName), region, revised, frequency, availabilityLag, currency),
+    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
       interpolated_(interpolated), ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
         if (ratio)
-            underlyingIndex_ = ext::make_shared<ZeroInflationIndex>(familyName_, region, revised,
+            underlyingIndex_ = ext::make_shared<ZeroInflationIndex>(familyName, region, revised,
                                                                     frequency, availabilityLag, currency);
         registerWith(yoyInflation_);
     }
@@ -312,13 +313,14 @@ namespace QuantLib {
         return yoyInflation_->yoyRate(d,0*Days);
     }
 
-    ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(Handle<YoYInflationTermStructure> h) const {
+    ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
+                           const Handle<YoYInflationTermStructure>& h) const {
         if (ratio_) {
-            return ext::make_shared<YoYInflationIndex>(underlyingIndex_, interpolated_, std::move(h));
+            return ext::make_shared<YoYInflationIndex>(underlyingIndex_, interpolated_, h);
         } else {
             return ext::make_shared<YoYInflationIndex>(familyName_, region_, revised_,
                                                        interpolated_, frequency_,
-                                                       availabilityLag_, currency_, std::move(h));
+                                                       availabilityLag_, currency_, h);
         }
     }
 

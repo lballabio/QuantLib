@@ -44,10 +44,10 @@ namespace QuantLib {
     class Cdor : public IborIndex {
       public:
         Cdor(const Period& tenor,
-             Handle<YieldTermStructure> h = {})
+             const Handle<YieldTermStructure>& h = {})
         : IborIndex("CDOR", tenor, 0, CADCurrency(),
                     Canada(), ModifiedFollowing, false,
-                    Actual365Fixed(), std::move(h)) {}
+                    Actual365Fixed(), h) {}
     };
 
 }

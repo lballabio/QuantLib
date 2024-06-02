@@ -42,30 +42,30 @@ namespace QuantLib {
     class USDLibor : public Libor {
       public:
         USDLibor(const Period& tenor,
-                 Handle<YieldTermStructure> h = {})
+                 const Handle<YieldTermStructure>& h = {})
         : Libor("USDLibor", tenor,
                 2,
                 USDCurrency(),
                 UnitedStates(UnitedStates::LiborImpact),
-                Actual360(), std::move(h)) {}
+                Actual360(), h) {}
     };
 
     //! base class for the one day deposit ICE %USD %LIBOR indexes
     class DailyTenorUSDLibor : public DailyTenorLibor {
       public:
         DailyTenorUSDLibor(Natural settlementDays,
-                           Handle<YieldTermStructure> h = {})
+                           const Handle<YieldTermStructure>& h = {})
         : DailyTenorLibor("USDLibor", settlementDays,
                           USDCurrency(),
                           UnitedStates(UnitedStates::LiborImpact),
-                          Actual360(), std::move(h)) {}
+                          Actual360(), h) {}
     };
 
     //! Overnight %USD %Libor index
     class USDLiborON : public DailyTenorUSDLibor {
       public:
-        explicit USDLiborON(Handle<YieldTermStructure> h = {})
-        : DailyTenorUSDLibor(0, std::move(h)) {}
+        explicit USDLiborON(const Handle<YieldTermStructure>& h = {})
+        : DailyTenorUSDLibor(0, h) {}
     };
 }
 

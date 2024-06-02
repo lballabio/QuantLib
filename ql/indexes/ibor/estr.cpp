@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    Estr::Estr(Handle<YieldTermStructure> h)
-    : OvernightIndex("ESTR", 0, EURCurrency(), TARGET(), Actual360(), std::move(h)) {}
+    Estr::Estr(const Handle<YieldTermStructure>& h)
+    : OvernightIndex("ESTR", 0, EURCurrency(), TARGET(), Actual360(), h) {}
 
 }

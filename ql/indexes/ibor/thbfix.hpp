@@ -50,13 +50,13 @@ namespace QuantLib {
     class THBFIX : public IborIndex {
       public:
         THBFIX(const Period& tenor,
-               Handle<YieldTermStructure> h = {})
+               const Handle<YieldTermStructure>& h = {})
         : IborIndex("THBFIX", tenor,
                     2,
                     THBCurrency(),
                     Thailand(),
                     ModifiedFollowing, true,
-                    Actual365Fixed(), std::move(h)) {}
+                    Actual365Fixed(), h) {}
     };
 }
 
