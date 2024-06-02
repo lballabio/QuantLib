@@ -1393,7 +1393,6 @@ BOOST_AUTO_TEST_CASE(testNdimPDEvs2dimPDE) {
 
             avgOption.setPricingEngine(nDimEngine);
             const Real avgndNPV = avgOption.NPV();
-            std::cout << avg2dNPV << " " << avgndNPV << std::endl;
 
             if (std::abs(avg2dNPV - avgndNPV) > tol) {
                 BOOST_FAIL("failed to reproduce average option prices"
@@ -1478,9 +1477,9 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
     const Date today = Date(25, March, 2024);
     const Date maturity = today + Period(6, Months);
 
-    const std::vector<Real> underlyings({200, 50, 55, 110});
-    const std::vector<Real> volatilities({0.3, 0.2, 0.6, 0.4});
-    const std::vector<Real> q({0.04, 0.075, 0.05, 0.08});
+    const std::vector<Real> underlyings({50, 11, 55, 200});
+    const std::vector<Real> volatilities({0.2, 0.6, 0.4, 0.3});
+    const std::vector<Real> q({0.075, 0.05, 0.08, 0.04});
 
     const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
         flatRate(today, 0.05, dc));
@@ -1506,23 +1505,89 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
 
     BasketOption option(
         ext::make_shared<AverageBasketPayoff>(
-            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-            Array({1.0, -1.0, -1.0, -1.0})
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+            Array({-1.0, -5.0, -2.0, 1.0})
         ),
         exercise
     );
 
-    option.setPricingEngine(
-        ext::make_shared<DengLiZhouSpreadEngine>(processes, rho)
-    );
-    std::cout << option.NPV() << std::endl;
+    option.setPricingEngine(ext::make_shared<DengLiZhouSpreadEngine>(processes, rho));
+    const Real calculated = option.NPV();
 
     option.setPricingEngine(
         ext::make_shared<FdndimBlackScholesVanillaEngine>(
-            processes, rho, std::vector<Size>(4, 20), 10
+            processes, rho, std::vector<Size>(4, 30), 20
         )
     );
-    std::cout << option.NPV() << std::endl;
+    const Real expected = option.NPV();
+    const Real diff = std::abs(calculated - expected);
+    const Real tol = 0.03;
+
+    if (diff > tol) {
+        BOOST_FAIL("failed to compare basket option prices"
+               << std::fixed << std::setprecision(5)
+               << "\n    Deng-Li-Zhou: " << calculated
+               << "\n    PDE:          " << expected
+               << "\n    diff:         " << diff
+               << "\n    tolerance:    " << tol);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(27, May, 2024);
+    const Date maturity = today + Period(6, Months);
+
+    const std::vector<Real> underlyings({220, 105, 45, 1e-12});
+    const std::vector<Real> volatilities({0.4, 0.25, 0.3, 0.25});
+    const std::vector<Real> q({0.04, 0.075, 0.05, 0.1});
+
+    const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
+        flatRate(today, 0.03, dc));
+    const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturity);
+
+    std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+    for (Size d=0; d < 4; ++d)
+        processes.push_back(
+            ext::make_shared<BlackScholesMertonProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d])),
+                Handle<YieldTermStructure>(flatRate(today, q[d], dc)), rTS,
+                Handle<BlackVolTermStructure>(flatVol(today, volatilities[d], dc))
+            )
+        );
+
+    Matrix rho(4, 4, 0.0);
+    rho[0][1] = rho[1][0] = 0.8;
+    rho[0][2] = rho[2][0] =-0.2;
+    rho[1][2] = rho[2][1] = 0.3;
+    rho[0][0] = rho[1][1] = rho[2][2] = rho[3][3] = 1.0;
+    rho[1][3] = rho[3][1] = 0.3;
+
+    const Real strike = -2.0;
+
+    BasketOption option(
+        ext::make_shared<AverageBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+            Array({0.5, -2.0, 2.0, -0.75})
+        ),
+        exercise
+    );
+
+    option.setPricingEngine(ext::make_shared<DengLiZhouSpreadEngine>(processes, rho));
+
+    const Real calculated = option.NPV();
+    const Real expected = 3.34412;
+    const Real tol = 1e-5;
+    const Real diff = std::abs(calculated - expected);
+
+    if (diff > tol)
+            BOOST_FAIL("failed to reproduce Deng-Li-Zhou value with negative strike"
+                   << std::fixed << std::setprecision(5)
+                   << "\n    Deng-Li-Zhou: " << calculated
+                   << "\n    Expected:     " << expected
+                   << "\n    diff:         " << diff
+                   << "\n    tolerance:    " << tol);
 }
 
 

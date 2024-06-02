@@ -80,6 +80,8 @@ namespace QuantLib {
                                       a.begin(), Real(0.0));
         }
 
+        Array weights() const { return weights_; }
+
       private:
         Array weights_;
     };

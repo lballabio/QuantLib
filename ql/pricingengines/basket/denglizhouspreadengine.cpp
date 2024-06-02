@@ -20,25 +20,25 @@
 #include <ql/exercise.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include "ql/pricingengines/basket/denglizhouspreadengine.hpp"
-
-#include <iostream>
 
 namespace QuantLib {
 
     DengLiZhouSpreadEngine::DengLiZhouSpreadEngine(
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
         Matrix rho)
-    : processes_(std::move(processes)),
+    : n_(processes.size()),
+      processes_(std::move(processes)),
       rho_(std::move(rho)) {
 
-        QL_REQUIRE(!processes_.empty(), "No Black-Scholes process is given.");
-        QL_REQUIRE(processes_.size() == rho_.size1() && rho_.size1() == rho_.size2(),
+        QL_REQUIRE(n_ > 0, "No Black-Scholes process is given.");
+        QL_REQUIRE(n_ == rho_.size1() && rho_.size1() == rho_.size2(),
             "process and correlation matrix must have the same size.");
 
-        for (Size i=0; i < processes_.size(); ++i)
+        for (Size i=0; i < n_; ++i)
             registerWith(processes_[i]);
     }
 
@@ -46,26 +46,13 @@ namespace QuantLib {
         const ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European exercise");
-
-        const ext::shared_ptr<AverageBasketPayoff> avgPayoff =
-            ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff);
-        QL_REQUIRE(avgPayoff, " average basket payoff expected");
-
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
-        QL_REQUIRE(payoff, "non-plain vanilla payoff given");
-
-        const Real strike = payoff->strike();
-        const Option::Type optionType = payoff->optionType();
-
         const Date maturityDate = exercise->lastDate();
-        const Time T = processes_[0]->time(maturityDate);
 
         const auto extractProcesses =
             [this](const std::function<Real(const decltype(processes_)::value_type&)>& f)
                 -> Array {
 
-                Array x(processes_.size());
+                Array x(n_);
                 std::transform(processes_.begin(), processes_.end(), x.begin(), f);
 
                 return x;
@@ -84,6 +71,7 @@ namespace QuantLib {
             ),
             "interest rates need to be the same for all underlyings"
         );
+        const DiscountFactor dr0 = dr[0];
 
         const Array s = extractProcesses([](const auto& p) -> Real { return p->x0(); });
 
@@ -98,15 +86,155 @@ namespace QuantLib {
             }
         );
 
-        results_.value =
-            DengLiZhouSpreadEngine::calculate_vanilla_call(Log(s), dr, dq, v, rho_, strike);
+        const ext::shared_ptr<AverageBasketPayoff> avgPayoff =
+            ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff);
+        QL_REQUIRE(avgPayoff, "average basket payoff expected");
+
+        // sort assets by their weight
+        const Array weights = avgPayoff->weights();
+        QL_REQUIRE(n_ == weights.size() && n_ > 1,
+             "wrong number of weights arguments in payoff");
+
+        std::vector< std::tuple<Real, Size, Real, Real, Real> > p;
+        p.reserve(n_);
+
+        for (Size i=0; i < n_; ++i)
+            p.emplace_back(std::make_tuple(weights[i], i, s[i], dq[i], v[i]));
+
+        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+             ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
+        QL_REQUIRE(payoff, "non-plain vanilla payoff given");
+
+        Matrix rho;
+        if (payoff->strike() < 0.0) {
+            p.emplace_back(std::make_tuple(1.0, n_, -payoff->strike(), dr0, 0.0));
+            rho = Matrix(n_+1, n_+1);
+            for (Size i=0; i < n_; ++i) {
+                std::copy(rho_.row_begin(i), rho_.row_end(i), rho.row_begin(i));
+                rho[n_][i] = rho[i][n_] = 0.0;
+            }
+            rho[n_][n_] = 1.0;
+        }
+        else
+            rho = rho_;
+
+        const Real strike = std::max(0.0, payoff->strike());
+
+        // positive weights first
+        std::sort(p.begin(), p.end(), std::greater<>());
+
+        const Size M = std::distance(
+            p.begin(),
+            std::lower_bound(p.begin(), p.end(), Real(0),
+                [](const auto& p, const Real& value) -> bool { return std::get<0>(p) > value;}            )
+        );
+
+        QL_REQUIRE(M > 0, "at least one positive asset weight must be given");
+        QL_REQUIRE(M < p.size(), "at least one negative asset weight must be given");
+
+        const Size N = p.size() - M;
+
+        Matrix nRho(N+1, N+1);
+        Array _s(N+1), _dq(N+1), _v(N+1);
+
+        if (M > 1) {
+            Array F(M), vol(M);
+            for (Size i=0; i < M; ++i) {
+                vol[i] = std::sqrt(std::get<4>(p[i]));
+                F[i] = std::get<0>(p[i])*std::get<2>(p[i])*std::get<3>(p[i])/dr0;
+            }
+
+            const Real S0 = std::accumulate(
+                p.begin(), p.begin()+M, Real(0.0),
+                [](const Real& value, const auto& p) -> Real {
+                    return value + std::get<0>(p)*std::get<2>(p);
+            });
+            const Real F0 = std::accumulate(F.begin(), F.end(), 0.0);
+            const DiscountFactor dq_S0 = F0/S0*dr0;
+
+            Real v_s = 0.0;
+            for (Size i=0; i < M; ++i)
+                for (Size j=0; j < M; ++j)
+                    v_s += vol[i]*vol[j]*F[i]*F[j]
+                        *rho[std::get<1>(p[i])][std::get<1>(p[j])];
+
+            v_s /= F0*F0;
+            _s[0] = S0; _dq[0] = dq_S0; _v[0] = v_s;
+
+            nRho[0][0] = 1.0;
+
+            for (Size i=0; i < N; ++i) {
+                Real rhoHat = 0.0;
+                for (Size j=0; j < M; ++j)
+                    rhoHat += rho[std::get<1>(p[M+i])][std::get<1>(p[j])]*vol[j]*F[j];
+
+                nRho[i+1][0] = nRho[0][i+1]
+                      = std::min(1.0, std::max(-1.0, rhoHat/(std::sqrt(v_s)*F0)));
+            }
+        }
+        else {
+            _s[0]  = std::abs(std::get<0>(p[0])*std::get<2>(p[0]));
+            _dq[0] = std::get<3>(p[0]);
+            _v[0]  = std::get<4>(p[0]);
+            for (Size i=0; i < N+1; ++i)
+                nRho[0][i] = nRho[i][0] = rho[std::get<1>(p[i])][std::get<1>(p[0])];
+        }
+
+        for (Size i=0; i < N; ++i) {
+            _s[i+1]  = std::abs(std::get<0>(p[M+i])*std::get<2>(p[M+i]));
+            _dq[i+1] = std::get<3>(p[M+i]);
+            _v[i+1]  = std::get<4>(p[M+i]);
+
+            const Size idx = std::get<1>(p[M+i]);
+            for (Size j=0; j < N; ++j)
+                nRho[i+1][j+1] = rho[idx][std::get<1>(p[M+j])];
+        }
+
+        //std::cout << N << std::endl << _s << std::endl << _dq << std::endl
+        //        << _v << std::endl << nRho << std::endl << strike << std::endl << std::endl;
+
+        const Real callValue
+            = DengLiZhouSpreadEngine::calculate_vanilla_call(Log(_s), dr0, _dq, _v, nRho, strike);
+
+        if (payoff->optionType() == Option::Call)
+            results_.value = std::max(0.0, callValue);
+        else {
+            const Real fwd = _s[0]*_dq[0] - dr[0]*strike
+                - std::inner_product(_s.begin()+1, _s.end(), _dq.begin()+1, 0.0);
+            results_.value = std::max(0.0, callValue - fwd);
+        }
+    }
+
+    Real DengLiZhouSpreadEngine::I(Real u, Real tF2, const Matrix& D, const Matrix& DF, Size i) {
+        const Real psi = 1.0/
+            (1.0 + std::inner_product(
+                 D.row_begin(i), D.row_end(i), D.row_begin(i), 0.0));
+        const Real sqrtPsi = std::sqrt(psi);
+
+        const Real n_uSqrtPsi = NormalDistribution()(u*sqrtPsi);
+        const Real J_0 = CumulativeNormalDistribution()(u*sqrtPsi);
+
+        const Real vFv = std::inner_product(
+            DF.row_begin(i), DF.row_end(i), D.row_begin(i), 0.0);
+        const Real J_1 = psi*sqrtPsi*(psi*u*u - 1.0) * vFv * n_uSqrtPsi;
+
+        const Real vFFv = std::inner_product(
+            DF.row_begin(i), DF.row_end(i), DF.row_begin(i), 0.0);
+        const Real J_2 = u*psi*sqrtPsi*n_uSqrtPsi*(
+                2 * tF2
+                + vFv*vFv*(squared(squared(psi*u))
+                           - 10.0*psi*psi*psi*u*u + 15*psi*psi)
+                + vFFv * (4*psi*psi*u*u - 12*psi)
+        );
+
+        return J_0 + J_1 - 0.5*J_2;
     }
 
     Real DengLiZhouSpreadEngine::calculate_vanilla_call(
-        const Array& x, const Array& dr, const Array& dq,
+        const Array& x, DiscountFactor dr, const Array& dq,
         const Array& v, const Matrix& rho, Real K) {
 
-        const Array mu = x + Log(dq/dr[0]) - 0.5 * v;
+        const Array mu = x + Log(dq/dr) - 0.5 * v;
         const Array nu = Sqrt(v);
 
         const Real R = std::accumulate(
@@ -122,10 +250,11 @@ namespace QuantLib {
         const Array sig10(rho.row_begin(0)+1, rho.row_end(0));
 
         const Matrix sqSig11 = pseudoSqrt(sig11, SalvagingAlgorithm::Principal);
-
         const Array sig11Inv10 = CholeskySolveFor(CholeskyDecomposition(sig11), sig10);
 
-        const Real sqSig_xy = std::sqrt(1.0 - DotProduct(sig10, sig11Inv10));
+        const Real sig_xy = 1.0 - DotProduct(sig10, sig11Inv10);
+        QL_REQUIRE(sig_xy > 0.0, "approximation loses validity");
+        const Real sqSig_xy = std::sqrt(sig_xy);
 
         const Real a = -0.5/sqSig_xy;
         Matrix E(N, N);
@@ -172,10 +301,18 @@ namespace QuantLib {
         for (Size k=1; k < N+1; ++k)
             D[k] = sqSig11*(d + 2*nu[k]*Array(Esig11.column_begin(k-1), Esig11.column_end(k-1)));
 
-        std::cout << std::setprecision(16);
-        for (Size i=0; i < N+2; ++i)
-            std::cout << D[i] << std::endl;
+        Matrix DM(N+2, N);
+        for (Size k=0; k < N+2; ++k)
+            std::copy(D[k].begin(), D[k].end(), DM.row_begin(k));
 
-        return 1.0;
+        const Matrix DF = DM*F;
+
+        Real npv = dr*std::exp(mu[0] + 0.5*squared(nu[0])) * I(C[0], trF2, DM, DF, 0)
+            - K*dr*I(C.back(), trF2, DM, DF, N+1);
+
+        for (Size k=1; k <= N; ++k)
+            npv -= dr*std::exp(mu[k] + 0.5*squared(nu[k])) * I(C[k], trF2, DM, DF, k);
+
+        return npv;
     }
 }

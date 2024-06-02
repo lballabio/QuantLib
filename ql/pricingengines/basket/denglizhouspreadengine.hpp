@@ -30,11 +30,24 @@
 namespace QuantLib {
 
     //! Pricing engine for basket option on two futures
-    /*! This class implements formulae from
+    /*! This class implements the pricing formula from
         "Multi-asset Spread Option Pricing and Hedging",
-        S. Deng, M. Li, J.Zhou,
+        S. Deng, M. Li, J.Zhou, 2008
         https://mpra.ub.uni-muenchen.de/8259/1/MPRA_paper_8259.pdf
-        Typo in formula (37) for J^2 is corrected.
+
+        The Typo in formula (37) for J^2 is corrected
+
+        This pricing formula works only if exactly one asset weight is positive.
+        If more than one weight is positive then a mapping of the sum of correlated
+        log-normal processes onto one log-normal process has to has be carried out.
+        This implementation is using
+
+        "WKB Approximation for the Sum of Two Correlated Lognormal Random Variables",
+        C.F. Lo 2013
+        https://www.m-hikari.com/ams/ams-2013/ams-125-128-2013/loAMS125-128-2013.pdf
+
+        for this task.
+
         \ingroup basketengines
 
         \test the correctness of the returned value is tested by
@@ -48,11 +61,14 @@ namespace QuantLib {
 
         void calculate() const override;
 
+      private:
         static Real calculate_vanilla_call(
-            const Array& s, const Array& dr, const Array& dq,
+            const Array& s, DiscountFactor dr, const Array& dq,
             const Array& v, const Matrix& rho, Time T);
 
-      private:
+        static Real I(Real u, Real tF2, const Matrix& D, const Matrix& DF, Size i);
+
+        const Size n_;
         const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes_;
         const Matrix rho_;
     };
