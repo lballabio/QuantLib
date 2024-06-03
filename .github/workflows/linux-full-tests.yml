@@ -52,7 +52,7 @@ jobs:
             cxx: g++
           - name: "gcc 13.x"
             shortname: gcc13
-            tag: mantic
+            tag: noble
             cc: gcc
             cxx: g++
           - name: "Clang 6 (Boost 1.72)"
