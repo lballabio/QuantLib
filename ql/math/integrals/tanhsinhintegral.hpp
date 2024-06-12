@@ -27,7 +27,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/math/integrals/integral.hpp>
 
-#if BOOST_VERSION >= 106900
+#if BOOST_VERSION >= 106900 && (!defined(_MSC_VER) || _MSC_VER < 1940)
 #define QL_BOOST_HAS_TANH_SINH
 
 #include <boost/math/quadrature/tanh_sinh.hpp>
