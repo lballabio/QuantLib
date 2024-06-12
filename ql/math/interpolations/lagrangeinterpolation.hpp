@@ -113,7 +113,7 @@ namespace QuantLib {
           private:
             template <class Iterator>
             inline Real _value(const Iterator& yBegin, Real x) const {
-
+                std::cout << "value for " << x << std::endl;
                 const Real eps = 10*QL_EPSILON*std::abs(x);
                 const auto iter = std::lower_bound(
                     this->xBegin_, this->xEnd_, x - eps);
