@@ -116,9 +116,11 @@ namespace QuantLib {
                                "null term structure set to this instance of " << index->name());
 
                     const bool isLookbackApplied = coupon_->fixingDays() != index->fixingDays();
+                    const bool isObservationShiftWithNoIntrinsicIndexFixingDelay =
+                        coupon_->applyObservationShift() && index->fixingDays() == 0;
 
-                    auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
-                                          &dt](Size position) {
+                    const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
+                                                &dt](Size position) {
                         Rate fixing = index->fixing(fixingDates[position]);
                         Time span =
                             (date >= interestDates[position + 1] ?
@@ -127,9 +129,13 @@ namespace QuantLib {
                         return span * fixing;
                     };
 
-                    if (isLookbackApplied) {
+                    if (isLookbackApplied && !isObservationShiftWithNoIntrinsicIndexFixingDelay) {
                         // With lookback applied, the telescopic formula cannot be used,
                         // we need to project each fixing in the coupon.
+                        // Only in one particular case when observation shift is used and
+                        // no intrinsic index fixing delay is applied, the telescopic formula
+                        // holds, because regardless of the fixing delay in the coupon,
+                        // in such configuration value dates will be equal to interest dates.
                         // A potential lockout, which may occur in tandem with a lookback
                         // setting, will be handled automatically based on fixing dates.
                         // Same applies to a case when accrual calculation date does or

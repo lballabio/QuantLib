@@ -463,6 +463,44 @@ BOOST_AUTO_TEST_CASE(testPartiallyAccruedAmountOfFutureCouponWithLookout) {
                             expectedAccruedAmount, 1e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testTelescopicFormulaWhenLookbackWithObservationShiftAndNoIndexFixingDelay) {
+    BOOST_TEST_MESSAGE("Testing telescopic formula when lookback with observation shift is applied "
+                       "and the index has no fixing delay...");
+
+    CommonVars vars(Date(12, March, 2019));
+
+    vars.forecastCurve.linkTo(flatRate(0.0250, Actual360()));
+
+    auto coupon15July =
+        vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), 3, 0, true);
+
+    Rate actualRate = coupon15July->rate();
+
+    Rate expectedRateTelescopicSeries =
+        (vars.forecastCurve->discount(Date(26, June, 2019)) /
+             vars.forecastCurve->discount(Date(10, July, 2019)) - 1.0) * 360.0 / 14;
+
+    auto& fixingDates = coupon15July->fixingDates();
+    auto& dts = coupon15July->dt();
+    Size n = fixingDates.size();
+    
+    Rate expectedRateIterativeFormula = 1.0;
+    for (Size i = 0; i < n; ++i) {
+        expectedRateIterativeFormula *=
+            (1.0 + dts[i] * coupon15July->index()->fixing(fixingDates[i]));
+	}
+    expectedRateIterativeFormula -= 1.0;
+    expectedRateIterativeFormula /= coupon15July->accrualPeriod();
+
+    CHECK_OIS_COUPON_RESULT("coupon rate using telescopic formula", actualRate,
+                            expectedRateTelescopicSeries, 1e-12);
+
+    CHECK_OIS_COUPON_RESULT("coupon rate using iterative formula", actualRate,
+                            expectedRateIterativeFormula, 1e-12);
+
+
+}
+
 BOOST_AUTO_TEST_CASE(testErrorWhenTelescopicSeriesEnforcedWithLookback) {
     BOOST_TEST_MESSAGE("Testing error when telescopic series enforced with lookback...");
 
