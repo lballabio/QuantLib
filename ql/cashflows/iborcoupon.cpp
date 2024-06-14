@@ -88,8 +88,24 @@ namespace QuantLib {
         return fixingDate_;
     }
 
-    Rate IborCoupon::indexFixing() const {
+    bool IborCoupon::hasFixed() const {
+        Date today = QuantLib::Settings::instance().evaluationDate();
 
+        if (fixingDate_ > today) {
+            return false;
+        } else if (fixingDate_ < today) {
+            return true;
+        } else {
+            // fixingDate_ == today
+            if (QuantLib::Settings::instance().enforcesTodaysHistoricFixings()) {
+                return true;
+            } else {
+                return index_->hasHistoricalFixing(fixingDate_);
+            }
+        }
+    }
+
+    Rate IborCoupon::indexFixing() const {
         initializeCachedData();
 
         /* instead of just returning index_->fixing(fixingValueDate_)

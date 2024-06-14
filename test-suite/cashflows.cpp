@@ -563,6 +563,66 @@ BOOST_AUTO_TEST_CASE(testFixedIborCouponWithoutForecastCurve) {
     }
 }
 
+IborCoupon iborCouponForFixingDate(const ext::shared_ptr<IborIndex>& index, Date fixingDate) {
+    Date startDate = index->valueDate(fixingDate);
+    Date endDate = index->maturityDate(fixingDate);
+
+    IborCoupon coupon(endDate, 100.0, startDate, endDate, index->fixingDays(), index);
+    coupon.setPricer(ext::make_shared<BlackIborCouponPricer>());
+
+    return coupon;
+}
+
+BOOST_AUTO_TEST_CASE(testIborCouponKnowsWhenitHasFixed) {
+    BOOST_TEST_MESSAGE("Testing ibor coupon knowing when it has fixed...");
+
+    Date today = Settings::instance().evaluationDate();
+
+    auto index = ext::make_shared<Euribor3M>();
+    index->clearFixings();
+    auto calendar = index->fixingCalendar();
+
+    bool defaultEnforcesTodaysHistoricFixings =
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings();
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, -1, Days));
+        // this should not throw an exception if the fixing is missing
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() =
+            defaultEnforcesTodaysHistoricFixings;
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        index->addFixing(coupon.fixingDate(), 0.01);
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() =
+            defaultEnforcesTodaysHistoricFixings;
+        index->addFixing(coupon.fixingDate(), Null<Real>(), true);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = true;
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() =
+            defaultEnforcesTodaysHistoricFixings;
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, 1, Days));
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
