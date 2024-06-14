@@ -117,7 +117,7 @@ namespace QuantLib {
 
                     const bool isLookbackApplied = coupon_->fixingDays() != index->fixingDays();
                     const bool isObservationShiftWithNoIntrinsicIndexFixingDelay =
-                        coupon_->applyObservationShift() && index->fixingDays() == 0;
+                        applyObservationShift && index->fixingDays() == 0;
 
                     const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
                                                 &dt](Size position) {
@@ -245,7 +245,8 @@ namespace QuantLib {
            a grace period of 7 business after the evaluation date). This will
            lead to false coupon projections (see the warning the class header). */
 
-        QL_REQUIRE(!(fixingDays_ != overnightIndex->fixingDays() && telescopicValueDates),
+        QL_REQUIRE(!(fixingDays_ != overnightIndex->fixingDays() && telescopicValueDates &&
+                     !(applyObservationShift_ && overnightIndex->fixingDays() == 0)),
                    "Telescopic formula cannot be applied for a coupon with lookback.");
 
         if (telescopicValueDates) {

@@ -476,9 +476,18 @@ BOOST_AUTO_TEST_CASE(testTelescopicFormulaWhenLookbackWithObservationShiftAndNoI
 
     Rate actualRate = coupon15July->rate();
 
+    auto coupon15JulyWithTelescopicDates =
+        vars.makeCoupon(Date(1, July, 2019), Date(15, July, 2019), 3, 0, true, true);
+
+    CHECK_OIS_COUPON_RESULT("telescopic value dates coupon rate", actualRate,
+                            coupon15JulyWithTelescopicDates->rate(), 1e-12);
+
     Rate expectedRateTelescopicSeries =
         (vars.forecastCurve->discount(Date(26, June, 2019)) /
              vars.forecastCurve->discount(Date(10, July, 2019)) - 1.0) * 360.0 / 14;
+
+    CHECK_OIS_COUPON_RESULT("coupon rate using telescopic formula", actualRate,
+                            expectedRateTelescopicSeries, 1e-12);
 
     auto& fixingDates = coupon15July->fixingDates();
     auto& dts = coupon15July->dt();
@@ -491,9 +500,6 @@ BOOST_AUTO_TEST_CASE(testTelescopicFormulaWhenLookbackWithObservationShiftAndNoI
 	}
     expectedRateIterativeFormula -= 1.0;
     expectedRateIterativeFormula /= coupon15July->accrualPeriod();
-
-    CHECK_OIS_COUPON_RESULT("coupon rate using telescopic formula", actualRate,
-                            expectedRateTelescopicSeries, 1e-12);
 
     CHECK_OIS_COUPON_RESULT("coupon rate using iterative formula", actualRate,
                             expectedRateIterativeFormula, 1e-12);
