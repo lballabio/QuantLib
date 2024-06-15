@@ -115,10 +115,6 @@ namespace QuantLib {
                     QL_REQUIRE(!curve.empty(),
                                "null term structure set to this instance of " << index->name());
 
-                    const bool isLookbackApplied = coupon_->fixingDays() != index->fixingDays();
-                    const bool isObservationShiftWithNoIntrinsicIndexFixingDelay =
-                        applyObservationShift && index->fixingDays() == 0;
-
                     const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
                                                 &dt](Size position) {
                         Rate fixing = index->fixing(fixingDates[position]);
