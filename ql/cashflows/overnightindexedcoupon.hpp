@@ -93,6 +93,14 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+        //! \name Telescopic property
+        //! Telescopic formula cannot be used with lookback days
+        //! being different than intrinsic index fixing delay.
+        //! Only when index fixing delay is 0 and observation shift is used,
+        //! we can apply telescopic formula, when applying lookback period.
+        //@{
+        const bool canApplyTelescopicFormula() const;
+        //@}
       private:
         std::vector<Date> valueDates_, interestDates_, fixingDates_;
         mutable std::vector<Rate> fixings_;
@@ -104,6 +112,11 @@ namespace QuantLib {
 
         Rate averageRate(const Date& date) const;
     };
+
+    inline const bool OvernightIndexedCoupon::canApplyTelescopicFormula() const {
+        return fixingDays_ == index_->fixingDays() ||
+               (applyObservationShift_ && index_->fixingDays() == 0);
+    }
 
 
     //! helper class building a sequence of overnight coupons

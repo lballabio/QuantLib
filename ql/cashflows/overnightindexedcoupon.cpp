@@ -129,7 +129,7 @@ namespace QuantLib {
                         return span * fixing;
                     };
 
-                    if (isLookbackApplied && !isObservationShiftWithNoIntrinsicIndexFixingDelay) {
+                    if (!coupon_->canApplyTelescopicFormula()) {
                         // With lookback applied, the telescopic formula cannot be used,
                         // we need to project each fixing in the coupon.
                         // Only in one particular case when observation shift is used and
@@ -245,8 +245,7 @@ namespace QuantLib {
            a grace period of 7 business after the evaluation date). This will
            lead to false coupon projections (see the warning the class header). */
 
-        QL_REQUIRE(!(fixingDays_ != overnightIndex->fixingDays() && telescopicValueDates &&
-                     !(applyObservationShift_ && overnightIndex->fixingDays() == 0)),
+        QL_REQUIRE(canApplyTelescopicFormula() || !telescopicValueDates,
                    "Telescopic formula cannot be applied for a coupon with lookback.");
 
         if (telescopicValueDates) {
