@@ -507,8 +507,8 @@ BOOST_AUTO_TEST_CASE(testTelescopicFormulaWhenLookbackWithObservationShiftAndNoI
 
 }
 
-BOOST_AUTO_TEST_CASE(testErrorWhenTelescopicSeriesEnforcedWithLookback) {
-    BOOST_TEST_MESSAGE("Testing error when telescopic series enforced with lookback...");
+BOOST_AUTO_TEST_CASE(testErrorWhenTelescopicValueDatesEnforcedWithLookback) {
+    BOOST_TEST_MESSAGE("Testing error when telescopic value dates enforced with lookback...");
 
     CommonVars vars;
 
