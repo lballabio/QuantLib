@@ -24,6 +24,7 @@
 #ifndef quantlib_ziggurat_gaussian_rng_h
 #define quantlib_ziggurat_gaussian_rng_h
 
+#include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
 #include <cstdint>
 
@@ -79,6 +80,18 @@ namespace QuantLib {
         Real normR() const;
         Real normX(int i) const;
         Real normF(int i) const;
+    };
+
+
+    //! Gaussian random number generator
+    /*! As Xoshiro256StarStarUniformRng is currently the only RNG supporting the above interface,
+        we provide a convenience class that uses it.
+     */
+    class ZigguratXoshiro256StarStarGaussianRng
+    : public ZigguratGaussianRng<Xoshiro256StarStarUniformRng> {
+      public:
+        explicit ZigguratXoshiro256StarStarGaussianRng(BigNatural seed = 0)
+        : ZigguratGaussianRng<Xoshiro256StarStarUniformRng>(Xoshiro256StarStarUniformRng(seed)) {}
     };
 
     template <class RNG>
