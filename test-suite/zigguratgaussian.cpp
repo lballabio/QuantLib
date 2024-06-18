@@ -18,7 +18,6 @@
 */
 
 #include "toplevelfixture.hpp"
-#include <ql/math/randomnumbers/xoshiro256starstaruniformrng.hpp>
 #include <ql/math/randomnumbers/zigguratgaussianrng.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <iostream>
@@ -31,11 +30,10 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(ZigguratGaussianTests)
 
 BOOST_AUTO_TEST_CASE(testStatisticsOfNextReal) {
-    BOOST_TEST_MESSAGE("Testing ZigguratGaussianRng<Xoshiro256StarStarUniformRng>::nextReal() for "
+    BOOST_TEST_MESSAGE("Testing ZigguratXoshiro256StarStarGaussianRng::nextReal() for "
                        "mean, variance, skewness and kurtosis...");
     auto seed = 42UL;
-    auto uniformRandom = Xoshiro256StarStarUniformRng(seed);
-    auto random = ZigguratGaussianRng<Xoshiro256StarStarUniformRng>(uniformRandom);
+    auto random = ZigguratXoshiro256StarStarGaussianRng(seed);
 
     auto randoms = IncrementalStatistics();
 
