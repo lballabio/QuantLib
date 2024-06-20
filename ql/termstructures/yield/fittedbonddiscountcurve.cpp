@@ -193,6 +193,7 @@ namespace QuantLib {
         // start with the guess solution, if it exists
         Array x(size(), 0.0);
         if (!curve_->guessSolution_.empty()) {
+            QL_REQUIRE(curve_->guessSolution_.size() == size(), "wrong size for guess");
             x = curve_->guessSolution_;
         }
 
