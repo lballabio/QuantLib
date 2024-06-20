@@ -86,6 +86,13 @@ namespace QuantLib {
     }
 
 
+    void FittedBondDiscountCurve::resetGuess(const Array& guess) {
+        QL_REQUIRE(guess.empty() || guess.size() == fittingMethod_->size(), "guess is of wrong size");
+        guessSolution_ = guess;
+        update();
+    }
+
+    
     void FittedBondDiscountCurve::performCalculations() const {
 
         QL_REQUIRE(!bondHelpers_.empty(), "no bondHelpers given");

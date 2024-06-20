@@ -117,6 +117,12 @@ namespace QuantLib {
         const FittingMethod& fitResults() const;
         //@}
 
+        //! \name Other utilities
+        //@{
+        /*! This allows to try out multiple guesses and avoid local minima */
+        void resetGuess(const Array& guess);
+        //@}
+
         //! \name Observer interface
         //@{
         void update() override;
