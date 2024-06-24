@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(testBootstrap) {
 }
 
 
-BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteen) {
+BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
     BOOST_TEST_MESSAGE(
         "Testing bootstrap over SOFR futures when third Wednesday falls on Juneteenth...");
 
