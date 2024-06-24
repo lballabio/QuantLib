@@ -28,19 +28,19 @@ namespace QuantLib {
     namespace {
 
         Date getValidSofrStart(Month month, Year year, Frequency freq) {
-            return freq == Monthly ?
-                UnitedStates(UnitedStates::GovernmentBond).adjust(Date(1, month, year)) :
-                Date::nthWeekday(3, Wednesday, month, year);
+            static auto calendar = UnitedStates(UnitedStates::SOFR);
+            return calendar.adjust(freq == Monthly ? Date(1, month, year) :
+                                   Date::nthWeekday(3, Wednesday, month, year));
         }
 
         Date getValidSofrEnd(Month month, Year year, Frequency freq) {
+            static auto calendar = UnitedStates(UnitedStates::SOFR);
             if (freq == Monthly) {
-                Calendar dc = UnitedStates(UnitedStates::GovernmentBond);
-                Date d = dc.endOfMonth(Date(1, month, year));
-                return dc.advance(d, 1*Days);
+                Date d = calendar.endOfMonth(Date(1, month, year));
+                return calendar.advance(d, 1*Days);
             } else {
                 Date d = getValidSofrStart(month, year, freq) + Period(freq);
-                return Date::nthWeekday(3, Wednesday, d.month(), d.year());
+                return calendar.adjust(Date::nthWeekday(3, Wednesday, d.month(), d.year()));
             }
 
         }
