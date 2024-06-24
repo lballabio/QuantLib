@@ -137,7 +137,7 @@ namespace QuantLib {
         OvernightLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
         OvernightLeg& withLookbackDays(Natural lookbackDays);
         OvernightLeg& withLockoutDays(Natural lockoutDays);
-        OvernightLeg& withApplyObservationShift(bool applyObservationShift);
+        OvernightLeg& withObservationShift(bool applyObservationShift = true);
         operator Leg() const;
       private:
         Schedule schedule_;

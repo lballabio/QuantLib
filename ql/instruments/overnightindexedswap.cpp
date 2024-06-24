@@ -161,7 +161,7 @@ namespace QuantLib {
                 .withAveragingMethod(averagingMethod_)
                 .withLookbackDays(lookbackDays_)
                 .withLockoutDays(lockoutDays_)
-                .withApplyObservationShift(applyObservationShift_);
+                .withObservationShift(applyObservationShift_);
         for (const auto& c : legs_[1])
             registerWith(c);
     }

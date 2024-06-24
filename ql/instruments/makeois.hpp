@@ -90,7 +90,7 @@ namespace QuantLib {
 
         MakeOIS& withLookbackDays(Natural lookbackDays);
         MakeOIS& withLockoutDays(Natural lockoutDays);
-        MakeOIS& withApplyObservationShift(bool applyObservationShift);
+        MakeOIS& withObservationShift(bool applyObservationShift = true);
 
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);

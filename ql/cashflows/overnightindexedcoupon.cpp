@@ -463,7 +463,7 @@ namespace QuantLib {
         lockoutDays_ = lockoutDays;
         return *this;
     }
-    OvernightLeg& OvernightLeg::withApplyObservationShift(bool applyObservationShift) {
+    OvernightLeg& OvernightLeg::withObservationShift(bool applyObservationShift) {
         applyObservationShift_ = applyObservationShift;
         return *this;
     }

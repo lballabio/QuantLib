@@ -342,8 +342,9 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withApplyObservationShift(bool applyObservationShift) {
+    MakeOIS& MakeOIS::withObservationShift(bool applyObservationShift) {
         applyObservationShift_ = applyObservationShift;
         return *this;
     }
+
 }
