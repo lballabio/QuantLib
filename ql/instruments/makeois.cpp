@@ -148,7 +148,8 @@ namespace QuantLib {
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
                                  paymentCalendar_, telescopicValueDates_, 
-                                 averagingMethod_));
+                                 averagingMethod_, lookbackDays_,
+                                 lockoutDays_, applyObservationShift_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
@@ -331,4 +332,18 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withLookbackDays(Natural lookbackDays) {
+        lookbackDays_ = lookbackDays;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withLockoutDays(Natural lockoutDays) {
+        lockoutDays_ = lockoutDays;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withApplyObservationShift(bool applyObservationShift) {
+        applyObservationShift_ = applyObservationShift;
+        return *this;
+    }
 }
