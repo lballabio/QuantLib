@@ -574,29 +574,27 @@ IborCoupon iborCouponForFixingDate(const ext::shared_ptr<IborIndex>& index, Date
 }
 
 BOOST_AUTO_TEST_CASE(testIborCouponKnowsWhenitHasFixed) {
-    BOOST_TEST_MESSAGE("Testing ibor coupon knowing when it has fixed...");
+    BOOST_TEST_MESSAGE("Testing that ibor coupon knows when it has fixed...");
 
     Date today = Settings::instance().evaluationDate();
 
     auto index = ext::make_shared<Euribor3M>();
-    index->clearFixings();
     auto calendar = index->fixingCalendar();
-
-    bool defaultEnforcesTodaysHistoricFixings =
-        QuantLib::Settings::instance().enforcesTodaysHistoricFixings();
 
     {
         IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, -1, Days));
+        index->clearFixings();
         // this should not throw an exception if the fixing is missing
         BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        // but this should
+        BOOST_CHECK_THROW(coupon.rate(), Error);
     }
 
     {
         IborCoupon coupon = iborCouponForFixingDate(index, today);
         QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        index->clearFixings();
         BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
-        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() =
-            defaultEnforcesTodaysHistoricFixings;
     }
 
     {
@@ -604,17 +602,14 @@ BOOST_AUTO_TEST_CASE(testIborCouponKnowsWhenitHasFixed) {
         QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
         index->addFixing(coupon.fixingDate(), 0.01);
         BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
-        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() =
-            defaultEnforcesTodaysHistoricFixings;
-        index->addFixing(coupon.fixingDate(), Null<Real>(), true);
     }
 
     {
         IborCoupon coupon = iborCouponForFixingDate(index, today);
         QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = true;
+        index->clearFixings();
         BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
-        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() =
-            defaultEnforcesTodaysHistoricFixings;
+        BOOST_CHECK_THROW(coupon.rate(), Error);
     }
 
     {
