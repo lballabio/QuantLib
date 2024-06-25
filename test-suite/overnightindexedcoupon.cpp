@@ -489,8 +489,8 @@ BOOST_AUTO_TEST_CASE(testTelescopicFormulaWhenLookbackWithObservationShiftAndNoI
     CHECK_OIS_COUPON_RESULT("coupon rate using telescopic formula", actualRate,
                             expectedRateTelescopicSeries, 1e-12);
 
-    auto& fixingDates = coupon15July->fixingDates();
-    auto& dts = coupon15July->dt();
+    const auto& fixingDates = coupon15July->fixingDates();
+    const auto& dts = coupon15July->dt();
     Size n = fixingDates.size();
     
     Rate expectedRateIterativeFormula = 1.0;
