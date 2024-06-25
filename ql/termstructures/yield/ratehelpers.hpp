@@ -32,6 +32,7 @@
 
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
@@ -313,6 +314,16 @@ namespace QuantLib {
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
                        const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+        SwapRateHelper(const Handle<Quote>& rate,
+                       const MakeVanillaSwap& swapBuilder,
+                       Handle<Quote> spread = {},
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
+        SwapRateHelper(Rate rate,
+                       const MakeVanillaSwap& swapBuilder,
+                       Handle<Quote> spread = {},
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date());
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -347,6 +358,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
         ext::optional<bool> useIndexedCoupons_;
+        bool swapBuiltViaGivenBuilder;
     };
 
 
