@@ -877,7 +877,7 @@ BOOST_AUTO_TEST_CASE(testCallableBondOasWithDifferentNotinals) {
     Real cleanPrice = 96.0;
     Real oas100 = callableBond100.OAS(cleanPrice, vars.termStructure, dc, compounding, frequency);
     Real oas25 = callableBond25.OAS(cleanPrice, vars.termStructure, dc, compounding, frequency);
-    if (std::fabs(oas100 - oas25) > 1.0e-8)
+    if (oas100 != oas25)
         BOOST_ERROR("failed to reproduce equal OAS with different notionals:\n"
                     << std::setprecision(2)
                     << "    OAS(bps) with notional 100.0:   " << oas100 * 10000 << "\n"
@@ -886,7 +886,7 @@ BOOST_AUTO_TEST_CASE(testCallableBondOasWithDifferentNotinals) {
     Real oas = 0.0300;
     Real cleanPrice100 = callableBond100.cleanPriceOAS(oas, vars.termStructure, dc, compounding, frequency);
     Real cleanPrice25 = callableBond25.cleanPriceOAS(oas, vars.termStructure, dc, compounding, frequency);
-    if (std::fabs(cleanPrice100 - cleanPrice25) > 1.0e-8)
+    if (cleanPrice100 != cleanPrice25)
         BOOST_ERROR("failed to reproduce equal clean price given OAS with different notionals:\n"
                     << std::setprecision(2)
                     << "    clean price with notional 100.0:   " << cleanPrice100 << "\n"
