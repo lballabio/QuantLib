@@ -44,14 +44,18 @@ namespace QuantLib {
                                  RateAveraging::Type averagingMethod,
                                  ext::optional<bool> endOfMonth,
                                  ext::optional<Frequency> fixedPaymentFrequency,
-                                 Calendar fixedCalendar)
+                                 Calendar fixedCalendar,
+                                 Natural lookbackDays,
+                                 Natural lockoutDays,
+                                 bool applyObservationShift)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays), tenor_(tenor),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
       forwardStart_(forwardStart), overnightSpread_(overnightSpread),
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
-      fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)) {
+      fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
+      lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift) {
 
         overnightIndex_ =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
@@ -80,7 +84,10 @@ namespace QuantLib {
             .withPaymentFrequency(paymentFrequency_)
             .withPaymentCalendar(paymentCalendar_)
             .withOvernightLegSpread(overnightSpread_)
-            .withAveragingMethod(averagingMethod_);
+            .withAveragingMethod(averagingMethod_)
+            .withLookbackDays(lookbackDays_)
+            .withLockoutDays(lockoutDays_)
+            .withObservationShift(applyObservationShift_);
         if (endOfMonth_) {
             tmp.withEndOfMonth(*endOfMonth_);
         }
@@ -171,7 +178,10 @@ namespace QuantLib {
                                            Spread overnightSpread,
                                            ext::optional<bool> endOfMonth,
                                            ext::optional<Frequency> fixedPaymentFrequency,
-                                           const Calendar& fixedCalendar)
+                                           const Calendar& fixedCalendar,
+                                           Natural lookbackDays,
+                                           Natural lockoutDays,
+                                           bool applyObservationShift)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
       telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
@@ -197,7 +207,10 @@ namespace QuantLib {
             .withPaymentFrequency(paymentFrequency)
             .withPaymentCalendar(paymentCalendar)
             .withOvernightLegSpread(overnightSpread)
-            .withAveragingMethod(averagingMethod_);
+            .withAveragingMethod(averagingMethod_)
+            .withLookbackDays(lookbackDays)
+            .withLockoutDays(lockoutDays)
+            .withObservationShift(applyObservationShift);
         if (endOfMonth) {
             tmp.withEndOfMonth(*endOfMonth);
         }
