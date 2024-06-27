@@ -37,15 +37,19 @@ namespace QuantLib {
     */
     class OperatorSplittingSpreadEngine : public SpreadBlackScholesVanillaEngine {
       public:
+        enum Order {First, Second};
         OperatorSplittingSpreadEngine(
             ext::shared_ptr<BlackProcess> process1,
             ext::shared_ptr<BlackProcess> process2,
-            Real correlation);
+            Real correlation,
+            Order order = Second);
 
       protected:
         Real calculate(
           Real strike, Option::Type optionType,
           Real variance1, Real variance2, DiscountFactor df) const override;
+
+        const Order order_;
     };
 }
 

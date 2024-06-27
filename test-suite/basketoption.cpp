@@ -1136,7 +1136,7 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandSpreadEngine) {
 }
 
 BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
-    BOOST_TEST_MESSAGE("Testing Operator Splitting spread engine...");
+    BOOST_TEST_MESSAGE("Testing Strang Operator Splitting spread engine...");
 
     // Example taken from
     // Chi-Fai Lo, Pricing Spread Options by the Operator Splitting Method,
@@ -1212,6 +1212,120 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testStrangSplittingSpreadEngineVsMathematica) {
+    BOOST_TEST_MESSAGE("Testing Strang Operator Splitting spread engine"
+        "vs Mathematica results...");
+
+    // Example taken from
+    // Chi-Fai Lo, Pricing Spread Options by the Operator Splitting Method,
+    // https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2429696
+    // Reference results have been calculated with a Mathematica script.
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(27, May, 2024);
+
+    const auto rTS = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
+    const auto volTS2 = Handle<BlackVolTermStructure>(flatVol(today, 0.2, dc));
+
+    struct TestData {
+        Real T, K, vol1, rho, kirkNPV, strang1, strang2;
+    };
+
+    const TestData testCases[] = {
+         {5.0, 20, 0.1, 0.6, 15.39520956886349, 15.39641179190707, 15.41992212706643},
+         {10., 20, 0.1, 0.6, 22.91537136258191, 22.89480115264337, 22.95919510928365},
+         {20., 20, 0.1, 0.6, 33.69859018569740, 33.59697949481467, 33.73582501903848},
+         {1.0, 20, 0.3, 0.6, 10.9751711157804 , 10.97662152028116, 10.97661321814579},
+         {2.0, 20, 0.3, 0.6, 15.68896063758723, 15.69277461480688, 15.69275497617036},
+         {3.0, 20, 0.3, 0.6, 19.33110275816226, 19.33760645637910, 19.33758123861756},
+         {4.0, 20, 0.3, 0.6, 22.40185479100672, 22.41113452093983, 22.41111679131122},
+         {5.0, 20, 0.3, 0.6, 25.09737848235137, 25.10937922536118, 25.10938819057636},
+         {1.0, 10, 0.3, 0.6, 16.10447007803242, 16.10494344785443, 16.10494658134660},
+         {1.0, 40, 0.3, 0.6, 4.657519189575983, 4.657079657030094, 4.656973008981588},
+         {1.0, 60, 0.3, 0.6, 1.837359067901817, 1.831230481909945, 1.831241843743509},
+         {1.0, 20, 0.5, 0.6, 18.79838447214884, 18.79674735337080, 18.79654551825391},
+         {1.0, 20, 0.3,-0.9, 20.17112122874686, 20.14780367419582, 20.15151348149147},
+         {1.0, 20, 0.3, 0.0, 15.38036208157481, 15.37697052349819, 15.37728179978961},
+         {2.0, 20, 0.3,-0.5, 25.80847626931109, 25.77323435009942, 25.77810550213640}
+     };
+
+    const Real s1 = 110.0, s2 = 90.0;
+    const Real tol = 100*QL_EPSILON;
+
+    for (const auto& testCase: testCases) {
+        const Real rho = testCase.rho;;
+        const Real strike = testCase.K;
+        const Date maturityDate = yearFractionToDate(dc, today, testCase.T);
+        const auto volTS1 = Handle<BlackVolTermStructure>(flatVol(today, testCase.vol1, dc));
+
+        BasketOption option(
+            ext::make_shared<SpreadBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike)),
+            ext::make_shared<EuropeanExercise>(maturityDate));
+
+        const DiscountFactor dr = rTS->discount(maturityDate);
+
+        const Real F1 = s1/dr;
+        const Real F2 = s2/dr;
+
+        const ext::shared_ptr<BlackProcess> p1
+            = ext::make_shared<BlackProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(F1)), rTS, volTS1
+        );
+
+        const ext::shared_ptr<BlackProcess> p2
+            = ext::make_shared<BlackProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(F2)), rTS, volTS2
+        );
+
+        option.setPricingEngine(ext::make_shared<KirkEngine>(p1, p2, rho));
+
+        const Real kirkCalculated = option.NPV();
+        Real diff = std::abs(testCase.kirkNPV - kirkCalculated);
+        if (diff > tol*testCase.kirkNPV) {
+            BOOST_FAIL("failed to reproduce Kirk reference values "
+                       << std::fixed << std::setprecision(16)
+                       << "\n    calculated: " << kirkCalculated
+                       << "\n    expected  : " << testCase.kirkNPV
+                       << "\n    diff      : " << diff
+                       << "\n    tolerance : " << tol);
+        }
+
+        option.setPricingEngine(
+            ext::make_shared<OperatorSplittingSpreadEngine>(
+                p1, p2, rho, OperatorSplittingSpreadEngine::First)
+        );
+
+        const Real strang1Calculated = option.NPV();
+        diff = std::abs(testCase.strang1 - strang1Calculated);
+        if (diff > tol*testCase.strang1) {
+            BOOST_FAIL("failed to reproduce Operator Splitting reference values "
+                       << std::fixed << std::setprecision(16)
+                       << "\n    calculated: " << strang1Calculated
+                       << "\n    expected  : " << testCase.strang1
+                       << "\n    diff      : " << diff
+                       << "\n    tolerance : " << tol);
+        }
+
+        option.setPricingEngine(
+            ext::make_shared<OperatorSplittingSpreadEngine>(
+                p1, p2, rho, OperatorSplittingSpreadEngine::Second)
+        );
+
+        const Real strang2Calculated = option.NPV();
+        diff = std::abs(testCase.strang2 - strang2Calculated);
+        if (diff > tol*testCase.strang2) {
+            BOOST_FAIL("failed to reproduce Operator Splitting reference values "
+                       << std::fixed << std::setprecision(16)
+                       << "\n    calculated: " << strang2Calculated
+                       << "\n    expected  : " << testCase.strang2
+                       << "\n    diff      : " << diff
+                       << "\n    tolerance : " << tol);
+        }
+    }
+}
+
+
 BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
     BOOST_TEST_MESSAGE("Testing two-dimensional PDE engine "
             "vs analytical approximations...");
@@ -1243,7 +1357,7 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
 
     const Real strike = 5;
 
-    IncrementalStatistics statKirk, statBS2014, statOs;
+    IncrementalStatistics statKirk, statBS2014, statOs1, statOs2;
 
     for (Option::Type type: {Option::Call, Option::Put}) {
         BasketOption option(
@@ -1258,8 +1372,13 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
             const ext::shared_ptr<PricingEngine> bs2014Engine
                 = ext::make_shared<BjerksundStenslandSpreadEngine>(p1, p2, rho);
 
-            const ext::shared_ptr<PricingEngine> osEngine
-                = ext::make_shared<OperatorSplittingSpreadEngine>(p1, p2, rho);
+            const ext::shared_ptr<PricingEngine> osEngine1
+                = ext::make_shared<OperatorSplittingSpreadEngine>(
+                    p1, p2, rho, OperatorSplittingSpreadEngine::First);
+
+            const ext::shared_ptr<PricingEngine> osEngine2
+                = ext::make_shared<OperatorSplittingSpreadEngine>(
+                    p1, p2, rho, OperatorSplittingSpreadEngine::Second);
 
             const ext::shared_ptr<PricingEngine> fdEngine
                 = ext::make_shared<Fd2dBlackScholesVanillaEngine>(
@@ -1279,8 +1398,11 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
                     option.setPricingEngine(bs2014Engine);
                     statBS2014.add(option.NPV() - fdNPV);
 
-                    option.setPricingEngine(osEngine);
-                    statOs.add(option.NPV() - fdNPV);
+                    option.setPricingEngine(osEngine1);
+                    statOs1.add(option.NPV() - fdNPV);
+
+                    option.setPricingEngine(osEngine2);
+                    statOs2.add(option.NPV() - fdNPV);
                 }
             }
         }
@@ -1300,11 +1422,19 @@ BOOST_AUTO_TEST_CASE(testPDEvsApproximations) {
                    << "\n    stdev     : " << statBS2014.standardDeviation()
                    << "\n    tolerance : " << 0.02);
     }
-    if (statOs.standardDeviation() > 0.02) {
+    if (statOs1.standardDeviation() > 0.02) {
         BOOST_FAIL("failed to reproduce PDE spread option prices"
-                " with Operator-Splitting engine."
+                " with Operator-Splitting engine (first order)."
                    << std::fixed << std::setprecision(5)
-                   << "\n    stdev     : " << statOs.standardDeviation()
+                   << "\n    stdev     : " << statOs1.standardDeviation()
+                   << "\n    tolerance : " << 0.02);
+    }
+
+    if (statOs2.standardDeviation() > 0.02) {
+        BOOST_FAIL("failed to reproduce PDE spread option prices"
+                " with Operator-Splitting engine (second order)."
+                   << std::fixed << std::setprecision(5)
+                   << "\n    stdev     : " << statOs2.standardDeviation()
                    << "\n    tolerance : " << 0.02);
     }
 }
@@ -1473,6 +1603,8 @@ BOOST_AUTO_TEST_CASE(testNdimPDEinDifferentDims) {
 }
 
 BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
+    BOOST_TEST_MESSAGE("Testing Deng-Li-Zhou basket engine vs PDE engine...");
+
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(25, March, 2024);
     const Date maturity = today + Period(6, Months);
@@ -1535,6 +1667,8 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
 
 
 BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
+    BOOST_TEST_MESSAGE("Testing Deng-Li-Zhou basket engine with negative strike...");
+
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(27, May, 2024);
     const Date maturity = today + Period(6, Months);

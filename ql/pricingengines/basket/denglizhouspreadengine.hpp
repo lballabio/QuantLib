@@ -35,7 +35,7 @@ namespace QuantLib {
         S. Deng, M. Li, J.Zhou, 2008
         https://mpra.ub.uni-muenchen.de/8259/1/MPRA_paper_8259.pdf
 
-        The Typo in formula (37) for J^2 is corrected
+        The typo in formula (37) for J^2 is corrected
 
         This pricing formula works only if exactly one asset weight is positive.
         If more than one weight is positive then a mapping of the sum of correlated
