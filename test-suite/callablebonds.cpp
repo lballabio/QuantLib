@@ -807,8 +807,8 @@ BOOST_AUTO_TEST_CASE(testCallableFixedRateBondWithArbitrarySchedule) {
 
     CallabilitySchedule callabilities = {
         ext::make_shared<Callability>(
-                         Bond::Price(100.0, Bond::Price::Clean), 
-                         Callability::Call, 
+                         Bond::Price(100.0, Bond::Price::Clean),
+                         Callability::Call,
                          dates[2])
     };
 
@@ -819,6 +819,78 @@ BOOST_AUTO_TEST_CASE(testCallableFixedRateBondWithArbitrarySchedule) {
     callableBond.setPricingEngine(engine);
 
     BOOST_CHECK_NO_THROW(callableBond.cleanPrice());
+}
+
+BOOST_AUTO_TEST_CASE(testCallableBondOasWithDifferentNotinals) {
+    BOOST_TEST_MESSAGE("Testing callable fixed-rate bond OAS with different notionals...");
+
+    Globals vars;
+
+    Natural settlementDays = 2;
+    vars.today = Date(10, Jan, 2020);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = vars.calendar.advance(vars.today, settlementDays, Days);
+
+    std::vector<Rate> coupons(1, 0.055);
+    DayCounter dc = vars.dayCounter;
+    Compounding compounding = Compounded;
+    Frequency frequency = Semiannual;
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
+    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+
+    Size timeSteps = 240;
+    ext::shared_ptr<PricingEngine> engine = ext::make_shared<TreeCallableFixedRateBondEngine>(
+        *(vars.model), timeSteps, vars.termStructure);
+
+    Schedule schedule = MakeSchedule()
+                            .from(vars.issueDate())
+                            .to(vars.maturityDate())
+                            .withCalendar(vars.calendar)
+                            .withFrequency(frequency)
+                            .withConvention(vars.rollingConvention)
+                            .withRule(DateGeneration::Backward);
+
+    Date firstCallDate = schedule.at(schedule.size() - 5);
+    Date lastCallDate = schedule.at(schedule.size() - 2);
+    auto callability_dates = schedule.after(firstCallDate);
+    callability_dates = callability_dates.until(lastCallDate);
+
+    CallabilitySchedule callSchedule;
+    for (auto call_date : callability_dates) {
+        Bond::Price call_price(100, Bond::Price::Clean);
+        callSchedule.push_back(
+            ext::make_shared<Callability>(call_price, Callability::Call, call_date));
+    }
+
+
+    CallableFixedRateBond callableBond100(settlementDays, 100.0, schedule, coupons, vars.dayCounter,
+                                          vars.rollingConvention, 100.0, vars.issueDate(),
+                                          callSchedule);
+    callableBond100.setPricingEngine(engine);
+
+    CallableFixedRateBond callableBond25(settlementDays, 25.0, schedule, coupons, vars.dayCounter,
+                                         vars.rollingConvention, 100.0, vars.issueDate(),
+                                         callSchedule);
+    callableBond25.setPricingEngine(engine);
+
+    Real cleanPrice = 96.0;
+    Real oas100 = callableBond100.OAS(cleanPrice, vars.termStructure, dc, compounding, frequency);
+    Real oas25 = callableBond25.OAS(cleanPrice, vars.termStructure, dc, compounding, frequency);
+    if (oas100 != oas25)
+        BOOST_ERROR("failed to reproduce equal OAS with different notionals:\n"
+                    << std::setprecision(2)
+                    << "    OAS(bps) with notional 100.0:   " << oas100 * 10000 << "\n"
+                    << "    OAS(bps) with notional 25.0:    " << oas25 * 10000 << "\n");
+
+    Real oas = 0.0300;
+    Real cleanPrice100 = callableBond100.cleanPriceOAS(oas, vars.termStructure, dc, compounding, frequency);
+    Real cleanPrice25 = callableBond25.cleanPriceOAS(oas, vars.termStructure, dc, compounding, frequency);
+    if (cleanPrice100 != cleanPrice25)
+        BOOST_ERROR("failed to reproduce equal clean price given OAS with different notionals:\n"
+                    << std::setprecision(2)
+                    << "    clean price with notional 100.0:   " << cleanPrice100 << "\n"
+                    << "    clean price with notional 25.0:    " << cleanPrice25 << "\n");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
