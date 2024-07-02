@@ -56,7 +56,7 @@ int main(int, char* []) {
 
         Date settlementDate(18, September, 2008);
 
-        Natural settlementDays = 3;
+        Integer settlementDays = 3;
 
         Date todaysDate = calendar.advance(settlementDate, -settlementDays, Days);
         Settings::instance().evaluationDate() = todaysDate;
