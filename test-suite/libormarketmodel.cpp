@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(testCapletPricing) {
                     << "\n    expected:   " << expected);
 }
 
-BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Slow))) {
+BOOST_AUTO_TEST_CASE(testCalibration, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing calibration of a Libor forward model...");
 
     const Size size = 14;

@@ -40,10 +40,12 @@ namespace QuantLib {
         using std::tuple;                   // NOLINT(misc-unused-using-decls)
         using std::make_tuple;              // NOLINT(misc-unused-using-decls)
         using std::get;                     // NOLINT(misc-unused-using-decls)
+        using std::tie;                     // NOLINT(misc-unused-using-decls)
         #else
         using boost::tuple;                 // NOLINT(misc-unused-using-decls)
         using boost::make_tuple;            // NOLINT(misc-unused-using-decls)
         using boost::get;                   // NOLINT(misc-unused-using-decls)
+        using boost::tie;                   // NOLINT(misc-unused-using-decls)
         #endif
 
     }

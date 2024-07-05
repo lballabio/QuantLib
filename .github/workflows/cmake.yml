@@ -80,6 +80,11 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
         Add-Content $env:GITHUB_PATH "C:\local\ninja"
+    - name: Setup MSVC++ environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -87,7 +92,6 @@ jobs:
       run: |
         mkdir build
         cd build
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
         cmake --build . --verbose
         cmake --install .
@@ -117,6 +121,11 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
         Add-Content $env:GITHUB_PATH "C:\local\ninja"
+    - name: Setup MSVC++ environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -124,7 +133,6 @@ jobs:
       run: |
         mkdir build
         cd build
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake .. -GNinja -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
         cmake --build . --verbose
         cmake --install .
@@ -154,12 +162,16 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
         Add-Content $env:GITHUB_PATH "C:\local\ninja"
+    - name: Setup MSVC++ environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
       shell: cmd
       run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake --preset windows-ci-build-with-nonstandard-options -L
         cd build/windows-ci-build-with-nonstandard-options
         cmake --build . --verbose

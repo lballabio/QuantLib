@@ -152,6 +152,25 @@ struct CommonVars {
             .withAveragingMethod(averagingMethod);
     }
 
+    ext::shared_ptr<OvernightIndexedSwap>
+    makeSwapWithLookback(Period length,
+                         Rate fixedRate,
+                         Integer paymentLag,
+                         Natural lookbackDays,
+                         Natural lockoutDays,
+                         bool applyObservationShift,
+                         bool telescopicValueDates) {
+        return MakeOIS(length, eoniaIndex, fixedRate, 0 * Days)
+            .withEffectiveDate(settlement)
+            .withNominal(nominal)
+            .withPaymentLag(paymentLag)
+            .withDiscountingTermStructure(eoniaTermStructure)
+            .withLookbackDays(lookbackDays)
+            .withLockoutDays(lockoutDays)
+            .withObservationShift(applyObservationShift)
+            .withTelescopicValueDates(telescopicValueDates);
+    }
+
     CommonVars() {
         type = Swap::Payer;
         settlementDays = 2;
@@ -388,6 +407,131 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDatesAndArithmeticAverage) {
     // is needed.
     testBootstrap(true, RateAveraging::Simple, 1.0e-5);
 }
+
+
+void testBootstrapWithLookback(Natural lookbackDays,
+                               Natural lockoutDays,
+                               bool applyObservationShift,
+                               bool telescopicValueDates,
+                               Natural paymentLag) {
+
+    CommonVars vars;
+
+    std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
+
+    ext::shared_ptr<Eonia> eonia(new Eonia);
+
+    for (auto& i : eoniaSwapData) {
+        Real rate = 0.01 * i.rate;
+        auto quote = ext::make_shared<SimpleQuote>(rate);
+        Period term = i.n * i.unit;
+        auto helper = ext::make_shared<OISRateHelper>(i.settlementDays,
+                                                      term,
+                                                      Handle<Quote>(quote),
+                                                      eonia,
+                                                      Handle<YieldTermStructure>(),
+                                                      telescopicValueDates,
+                                                      paymentLag,
+                                                      Following,
+                                                      Annual,
+                                                      Calendar(),
+                                                      0 * Days,
+                                                      0.0,
+                                                      Pillar::LastRelevantDate,
+                                                      Date(),
+                                                      RateAveraging::Compound,
+                                                      ext::nullopt,
+                                                      ext::nullopt,
+                                                      Calendar(),
+                                                      lookbackDays,
+                                                      lockoutDays,
+                                                      applyObservationShift);
+        eoniaHelpers.push_back(helper);
+    }
+
+    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<ForwardRate, BackwardFlat>>(vars.today, eoniaHelpers, Actual365Fixed());
+
+    vars.eoniaTermStructure.linkTo(eoniaTS);
+
+    // test curve consistency
+    for (auto& i : eoniaSwapData) {
+        Rate expected = i.rate / 100;
+        Period term = i.n * i.unit;
+        ext::shared_ptr<OvernightIndexedSwap> swap =
+            vars.makeSwapWithLookback(term, 0.0, paymentLag, lookbackDays, lockoutDays,
+                                      applyObservationShift, telescopicValueDates);
+        Rate calculated = swap->fairRate();
+        Rate error = std::fabs(expected-calculated);
+        Real tolerance = 1e-8;
+
+        if (error>tolerance)
+            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
+                       "\n swap length:     " << term <<
+                       "\n quoted rate:     " << expected <<
+                       "\n calculated rate: " << calculated <<
+                       "\n error:           " << error <<
+                       "\n tolerance:       " << tolerance);
+    }
+}
+
+
+
+BOOST_AUTO_TEST_CASE(testBootstrapWithLookbackDays) {
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with lookback days...");
+
+    auto lookbackDays = 2;
+    auto lockoutDays = 0;
+    auto applyObservationShift = false;
+    auto paymentLag = 2;
+
+    testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, false, paymentLag);
+
+    BOOST_CHECK_EXCEPTION(
+        testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, true, paymentLag),
+        Error, ExpectedErrorMessage("Telescopic formula cannot be applied"));
+}
+
+BOOST_AUTO_TEST_CASE(testBootstrapWithLookbackDaysAndShift) {
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with lookback days and observation shift...");
+
+    auto lookbackDays = 2;
+    auto lockoutDays = 0;
+    auto applyObservationShift = true;
+    auto paymentLag = 2;
+
+    testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, false, paymentLag);
+
+    testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, true, paymentLag);
+}
+
+BOOST_AUTO_TEST_CASE(testBootstrapWithLockoutDays) {
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with lookback and lockout days...");
+
+    auto lookbackDays = 2;
+    auto lockoutDays = 2;
+    auto applyObservationShift = false;
+    auto paymentLag = 0;
+
+    testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, false, paymentLag);
+
+    BOOST_CHECK_EXCEPTION(
+        testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, true, paymentLag),
+        Error, ExpectedErrorMessage("Telescopic formula cannot be applied"));
+}
+
+BOOST_AUTO_TEST_CASE(testBootstrapWithLockoutDaysAndShift) {
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with lookback and lockout days and observation shift...");
+
+    auto lookbackDays = 2;
+    auto lockoutDays = 2;
+    auto applyObservationShift = true;
+    auto paymentLag = 0;
+
+    testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, false, paymentLag);
+
+    testBootstrapWithLookback(lookbackDays, lockoutDays, applyObservationShift, true, paymentLag);
+}
+
 
 BOOST_AUTO_TEST_CASE(testSeasonedSwaps) {
 

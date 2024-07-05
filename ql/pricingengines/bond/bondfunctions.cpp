@@ -578,8 +578,8 @@ namespace QuantLib {
         dirtyPrice /= 100.0 / bond.notional(settlement);
 
         return CashFlows::zSpread(bond.cashflows(),
-                                  d,
                                   dirtyPrice,
+                                  d,
                                   dayCounter, compounding, frequency,
                                   false, settlement, settlement,
                                   accuracy, maxIterations, guess);

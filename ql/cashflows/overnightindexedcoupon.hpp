@@ -60,7 +60,10 @@ namespace QuantLib {
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
                     bool telescopicValueDates = false,
-                    RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                    RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                    Natural lookbackDays = Null<Natural>(),
+                    Natural lockoutDays = 0,
+                    bool applyObservationShift = false);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -71,8 +74,14 @@ namespace QuantLib {
         const std::vector<Rate>& indexFixings() const;
         //! value dates for the rates to be compounded
         const std::vector<Date>& valueDates() const { return valueDates_; }
+        //! interest dates for the rates to be compounded
+        const std::vector<Date>& interestDates() const { return interestDates_; }
         //! averaging method
         const RateAveraging::Type averagingMethod() const { return averagingMethod_; }
+        //! lockout days
+        const Natural lockoutDays() const { return lockoutDays_; }
+        //! apply observation shift
+        const bool applyObservationShift() const { return applyObservationShift_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -84,15 +93,30 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+        //! \name Telescopic property
+        //! Telescopic formula cannot be used with lookback days
+        //! being different than intrinsic index fixing delay.
+        //! Only when index fixing delay is 0 and observation shift is used,
+        //! we can apply telescopic formula, when applying lookback period.
+        //@{
+        const bool canApplyTelescopicFormula() const;
+        //@}
       private:
-        std::vector<Date> valueDates_, fixingDates_;
+        std::vector<Date> valueDates_, interestDates_, fixingDates_;
         mutable std::vector<Rate> fixings_;
         Size n_;
         std::vector<Time> dt_;
         RateAveraging::Type averagingMethod_;
+        Natural lockoutDays_;
+        bool applyObservationShift_;
 
         Rate averageRate(const Date& date) const;
     };
+
+    inline const bool OvernightIndexedCoupon::canApplyTelescopicFormula() const {
+        return fixingDays_ == index_->fixingDays() ||
+               (applyObservationShift_ && index_->fixingDays() == 0);
+    }
 
 
     //! helper class building a sequence of overnight coupons
@@ -111,6 +135,9 @@ namespace QuantLib {
         OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
         OvernightLeg& withTelescopicValueDates(bool telescopicValueDates);
         OvernightLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
+        OvernightLeg& withLookbackDays(Natural lookbackDays);
+        OvernightLeg& withLockoutDays(Natural lockoutDays);
+        OvernightLeg& withObservationShift(bool applyObservationShift = true);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -124,6 +151,9 @@ namespace QuantLib {
         std::vector<Spread> spreads_;
         bool telescopicValueDates_ = false;
         RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        Natural lookbackDays_ = Null<Natural>();
+        Natural lockoutDays_ = 0;
+        bool applyObservationShift_ = false;
     };
 
 }
