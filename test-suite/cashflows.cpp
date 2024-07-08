@@ -563,6 +563,61 @@ BOOST_AUTO_TEST_CASE(testFixedIborCouponWithoutForecastCurve) {
     }
 }
 
+IborCoupon iborCouponForFixingDate(const ext::shared_ptr<IborIndex>& index, Date fixingDate) {
+    Date startDate = index->valueDate(fixingDate);
+    Date endDate = index->maturityDate(fixingDate);
+
+    IborCoupon coupon(endDate, 100.0, startDate, endDate, index->fixingDays(), index);
+    coupon.setPricer(ext::make_shared<BlackIborCouponPricer>());
+
+    return coupon;
+}
+
+BOOST_AUTO_TEST_CASE(testIborCouponKnowsWhenitHasFixed) {
+    BOOST_TEST_MESSAGE("Testing that ibor coupon knows when it has fixed...");
+
+    Date today = Settings::instance().evaluationDate();
+
+    auto index = ext::make_shared<Euribor3M>();
+    auto calendar = index->fixingCalendar();
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, -1, Days));
+        index->clearFixings();
+        // this should not throw an exception if the fixing is missing
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        // but this should
+        BOOST_CHECK_THROW(coupon.rate(), Error);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        index->clearFixings();
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = false;
+        index->addFixing(coupon.fixingDate(), 0.01);
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, today);
+        QuantLib::Settings::instance().enforcesTodaysHistoricFixings() = true;
+        index->clearFixings();
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), true);
+        BOOST_CHECK_THROW(coupon.rate(), Error);
+    }
+
+    {
+        IborCoupon coupon = iborCouponForFixingDate(index, calendar.advance(today, 1, Days));
+        BOOST_CHECK_EQUAL(coupon.hasFixed(), false);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

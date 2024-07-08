@@ -24,7 +24,7 @@
 #ifndef quantlib_compounding_hpp
 #define quantlib_compounding_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
@@ -36,6 +36,22 @@ namespace QuantLib {
                        CompoundedThenSimple //!< Compounded up to the first period then Simple
     };
 
+    inline std::ostream& operator<<(std::ostream& out, const Compounding& compounding) {
+        switch (compounding) {
+            case Compounding::Simple:
+                return out << "Simple";
+            case Compounding::Compounded:
+                return out << "Compounded";
+            case Compounding::Continuous:
+                return out << "Continuous";
+            case Compounding::SimpleThenCompounded:
+                return out << "SimpleThenCompounded";
+            case Compounding::CompoundedThenSimple:
+                return out << "CompoundedThenSimple";
+            default:
+                QL_FAIL("unknown compounding type");
+        }
+    }
 }
 
 #endif

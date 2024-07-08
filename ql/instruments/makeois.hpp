@@ -88,6 +88,10 @@ namespace QuantLib {
 
         MakeOIS& withAveragingMethod(RateAveraging::Type averagingMethod);
 
+        MakeOIS& withLookbackDays(Natural lookbackDays);
+        MakeOIS& withLockoutDays(Natural lockoutDays);
+        MakeOIS& withObservationShift(bool applyObservationShift = true);
+
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
       private:
@@ -124,6 +128,9 @@ namespace QuantLib {
 
         bool telescopicValueDates_ = false;
         RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        Natural lookbackDays_ = Null<Natural>();
+        Natural lockoutDays_ = 0;
+        bool applyObservationShift_ = false;
     };
 
 }

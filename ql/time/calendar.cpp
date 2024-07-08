@@ -197,7 +197,7 @@ namespace QuantLib {
     }
 
     Day Calendar::WesternImpl::easterMonday(Year y) {
-        static const Day EasterMonday[] = {
+        static const unsigned char EasterMonday[] = {
                   98,  90, 103,  95, 114, 106,  91, 111, 102,   // 1901-1909
              87, 107,  99,  83, 103,  95, 115,  99,  91, 111,   // 1910-1919
              96,  87, 107,  92, 112, 103,  95, 108, 100,  91,   // 1920-1929
@@ -239,7 +239,7 @@ namespace QuantLib {
     }
 
     Day Calendar::OrthodoxImpl::easterMonday(Year y) {
-        static const Day EasterMonday[] = {
+        static const unsigned char EasterMonday[] = {
                  105, 118, 110, 102, 121, 106, 126, 118, 102,   // 1901-1909
             122, 114,  99, 118, 110,  95, 115, 106, 126, 111,   // 1910-1919
             103, 122, 107,  99, 119, 110, 123, 115, 107, 126,   // 1920-1929

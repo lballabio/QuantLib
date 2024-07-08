@@ -56,6 +56,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
+        bool hasFixed() const;
         //@}
         //! \name FloatingRateCoupon interface
         //@{

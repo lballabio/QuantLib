@@ -19,7 +19,7 @@ jobs:
             cxx: g++
           - name: "gcc 13.x"
             shortname: gcc13
-            tag: mantic
+            tag: noble
             cc: gcc
             cxx: g++
             tests: true
@@ -33,12 +33,6 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
-          - name: "Clang 16"
-            shortname: clang16
-            tag: mantic
-            cc: clang
-            cxx: clang++
-            tests: true
           - name: "Clang 18"
             shortname: clang18
             tag: noble
