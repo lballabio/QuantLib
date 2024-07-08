@@ -119,14 +119,13 @@ namespace QuantLib {
         Integer fractionsPerUnit;
         Rounding rounding;
         Currency triangulated;
-        QL_DEPRECATED
+        /*! \deprecated Do not use this data member.
+                        Deprecated in version 1.33.
+        */
+        [[deprecated("Do not use this data member")]]
         std::string formatString;
         std::set<std::string> minorUnitCodes;
 
-        /*! \deprecated Use the constructor without formatString.
-                        Deprecated in version 1.33.
-        */
-        QL_DEPRECATED
         Data(std::string name,
              std::string code,
              Integer numericCode,
@@ -137,6 +136,10 @@ namespace QuantLib {
              Currency triangulationCurrency = Currency(),
              std::set<std::string> minorUnitCodes = {});
 
+        /*! \deprecated Use the constructor without formatString.
+                        Deprecated in version 1.33.
+        */
+        QL_DEPRECATED
         Data(std::string name,
              std::string code,
              Integer numericCode,

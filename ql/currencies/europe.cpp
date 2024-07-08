@@ -27,6 +27,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     // Bulgarian lev
     /* The ISO three-letter code is BGL; the numeric code is 100.
        It is divided in 100 stotinki.
@@ -552,6 +554,8 @@ namespace QuantLib {
             new Data("Georgian lari", "GEL", 981, "GEL", "", 100, Rounding(), "1$.2F %3%"));
         data_ = gelData;
     }
-}
 
+    QL_DEPRECATED_ENABLE_WARNING
+
+}
 
