@@ -20,27 +20,23 @@
 
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        Date getValidSofrStart(Month month, Year year, Frequency freq) {
-            static auto calendar = UnitedStates(UnitedStates::SOFR);
-            return calendar.adjust(freq == Monthly ? Date(1, month, year) :
-                                   Date::nthWeekday(3, Wednesday, month, year));
+        Date getSofrStart(Month month, Year year, Frequency freq) {
+            return freq == Monthly ? Date(1, month, year) :
+                   Date::nthWeekday(3, Wednesday, month, year);
         }
 
-        Date getValidSofrEnd(Month month, Year year, Frequency freq) {
-            static auto calendar = UnitedStates(UnitedStates::SOFR);
+        Date getSofrEnd(Month month, Year year, Frequency freq) {
             if (freq == Monthly) {
-                Date d = calendar.endOfMonth(Date(1, month, year));
-                return calendar.advance(d, 1*Days);
+                return Date::endOfMonth(Date(1, month, year)) + 1;
             } else {
-                Date d = getValidSofrStart(month, year, freq) + Period(freq);
-                return calendar.adjust(Date::nthWeekday(3, Wednesday, d.month(), d.year()));
+                Date d = getSofrStart(month, year, freq) + Period(freq);
+                return Date::nthWeekday(3, Wednesday, d.month(), d.year());
             }
 
         }
@@ -102,8 +98,8 @@ namespace QuantLib {
         Frequency referenceFreq,
         const Handle<Quote>& convexityAdjustment)
     : OvernightIndexFutureRateHelper(price,
-            getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
-            getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
+            getSofrStart(referenceMonth, referenceYear, referenceFreq),
+            getSofrEnd(referenceMonth, referenceYear, referenceFreq),
             ext::make_shared<Sofr>(),
             convexityAdjustment,
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
@@ -119,8 +115,8 @@ namespace QuantLib {
         Real convexityAdjustment)
     : OvernightIndexFutureRateHelper(
             Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
-            getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
-            getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
+            getSofrStart(referenceMonth, referenceYear, referenceFreq),
+            getSofrEnd(referenceMonth, referenceYear, referenceFreq),
             ext::make_shared<Sofr>(),
             Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
