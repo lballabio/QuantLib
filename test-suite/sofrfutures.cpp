@@ -117,11 +117,10 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
     BOOST_TEST_MESSAGE(
         "Testing bootstrap over SOFR futures when third Wednesday falls on Juneteenth...");
 
-    Date today = Date(27, February, 2024);
+    Date today = Date(27, June, 2024);
     Settings::instance().evaluationDate() = today;
 
     const SofrQuotes sofrQuotes[] = {
-        {Quarterly, Mar, 2024, 97.295},
         {Quarterly, Jun, 2024, 97.220},
         {Quarterly, Sep, 2024, 97.170},
         {Quarterly, Dec, 2024, 97.160},
@@ -130,6 +129,13 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
     };
 
     ext::shared_ptr<OvernightIndex> index = ext::make_shared<Sofr>();
+    index->addFixing(Date(18, June, 2024), 0.02);
+    index->addFixing(Date(20, June, 2024), 0.02);
+    index->addFixing(Date(21, June, 2024), 0.02);
+    index->addFixing(Date(24, June, 2024), 0.02);
+    index->addFixing(Date(25, June, 2024), 0.02);
+    index->addFixing(Date(26, June, 2024), 0.02);
+    index->addFixing(Date(27, June, 2024), 0.02);
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     for (const auto& sofrQuote : sofrQuotes) {
@@ -143,9 +149,9 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
 
     ext::shared_ptr<OvernightIndex> sofr =
         ext::make_shared<Sofr>(Handle<YieldTermStructure>(curve));
-    OvernightIndexFuture sf(sofr, Date(20, March, 2024), Date(20, June, 2024));
+    OvernightIndexFuture sf(sofr, Date(19, June, 2024), Date(18, September, 2024));
 
-    Real expected_price = 97.295;
+    Real expected_price = 97.220;
     Real tolerance = 1.0e-9;
 
     Real error = std::fabs(sf.NPV() - expected_price);
