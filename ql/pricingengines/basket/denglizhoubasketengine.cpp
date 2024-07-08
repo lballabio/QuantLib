@@ -17,17 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include "denglizhoubasketengine.hpp"
+
 #include <ql/exercise.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/comparison.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
-#include "ql/pricingengines/basket/denglizhouspreadengine.hpp"
+#include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
 
 namespace QuantLib {
 
-    DengLiZhouSpreadEngine::DengLiZhouSpreadEngine(
+    DengLiZhouBasketEngine::DengLiZhouBasketEngine(
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
         Matrix rho)
     : n_(processes.size()),
@@ -42,49 +43,11 @@ namespace QuantLib {
             registerWith(processes_[i]);
     }
 
-    void DengLiZhouSpreadEngine::calculate() const {
+    void DengLiZhouBasketEngine::calculate() const {
         const ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European exercise");
         const Date maturityDate = exercise->lastDate();
-
-        const auto extractProcesses =
-            [this](const std::function<Real(const decltype(processes_)::value_type&)>& f)
-                -> Array {
-
-                Array x(n_);
-                std::transform(processes_.begin(), processes_.end(), x.begin(), f);
-
-                return x;
-            };
-
-        const Array dr = extractProcesses(
-            [maturityDate](const auto& p) -> DiscountFactor {
-                return p->riskFreeRate()->discount(maturityDate);
-            }
-        );
-
-        QL_REQUIRE(
-            std::equal(
-                dr.begin()+1, dr.end(), dr.begin(),
-                std::pointer_to_binary_function<Real, Real, bool>(close_enough)
-            ),
-            "interest rates need to be the same for all underlyings"
-        );
-        const DiscountFactor dr0 = dr[0];
-
-        const Array s = extractProcesses([](const auto& p) -> Real { return p->x0(); });
-
-        const Array dq = extractProcesses(
-            [maturityDate](const auto& p) -> DiscountFactor {
-                return p->dividendYield()->discount(maturityDate);
-            }
-        );
-        const Array v = extractProcesses(
-            [maturityDate](const auto& p) -> Volatility {
-                return p->blackVolatility()->blackVariance(maturityDate, p->x0());
-            }
-        );
 
         const ext::shared_ptr<AverageBasketPayoff> avgPayoff =
             ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff);
@@ -94,6 +57,12 @@ namespace QuantLib {
         const Array weights = avgPayoff->weights();
         QL_REQUIRE(n_ == weights.size() && n_ > 1,
              "wrong number of weights arguments in payoff");
+
+        const detail::VectorBsmProcessExtractor pExtractor(processes_);
+        const Array s = pExtractor.getSpot();
+        const Array dq = pExtractor.getDividendYield(maturityDate);
+        const Array v = pExtractor.getBlackVariance(maturityDate);
+        const DiscountFactor dr0 = pExtractor.getInterestRate(maturityDate);
 
         std::vector< std::tuple<Real, Size, Real, Real, Real> > p;
         p.reserve(n_);
@@ -194,18 +163,18 @@ namespace QuantLib {
         //        << _v << std::endl << nRho << std::endl << strike << std::endl << std::endl;
 
         const Real callValue
-            = DengLiZhouSpreadEngine::calculate_vanilla_call(Log(_s), dr0, _dq, _v, nRho, strike);
+            = DengLiZhouBasketEngine::calculate_vanilla_call(Log(_s), dr0, _dq, _v, nRho, strike);
 
         if (payoff->optionType() == Option::Call)
             results_.value = std::max(0.0, callValue);
         else {
-            const Real fwd = _s[0]*_dq[0] - dr[0]*strike
+            const Real fwd = _s[0]*_dq[0] - dr0*strike
                 - std::inner_product(_s.begin()+1, _s.end(), _dq.begin()+1, 0.0);
             results_.value = std::max(0.0, callValue - fwd);
         }
     }
 
-    Real DengLiZhouSpreadEngine::I(Real u, Real tF2, const Matrix& D, const Matrix& DF, Size i) {
+    Real DengLiZhouBasketEngine::I(Real u, Real tF2, const Matrix& D, const Matrix& DF, Size i) {
         const Real psi = 1.0/
             (1.0 + std::inner_product(
                  D.row_begin(i), D.row_end(i), D.row_begin(i), 0.0));
@@ -230,7 +199,7 @@ namespace QuantLib {
         return J_0 + J_1 - 0.5*J_2;
     }
 
-    Real DengLiZhouSpreadEngine::calculate_vanilla_call(
+    Real DengLiZhouBasketEngine::calculate_vanilla_call(
         const Array& x, DiscountFactor dr, const Array& dq,
         const Array& v, const Matrix& rho, Real K) {
 

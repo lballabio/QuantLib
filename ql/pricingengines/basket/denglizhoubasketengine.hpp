@@ -21,8 +21,8 @@
     \brief Deng, Li and Zhou: Closed-Form Approximation for Spread option pricing
 */
 
-#ifndef quantlib_deng_li_zhou_spread_engine_hpp
-#define quantlib_deng_li_zhou_spread_engine_hpp
+#ifndef quantlib_deng_li_zhou_basket_engine_hpp
+#define quantlib_deng_li_zhou_basket_engine_hpp
 
 #include <ql/instruments/basketoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -53,9 +53,9 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
     */
-    class DengLiZhouSpreadEngine : public BasketOption::engine {
+    class DengLiZhouBasketEngine : public BasketOption::engine {
       public:
-        DengLiZhouSpreadEngine(
+        DengLiZhouBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
             Matrix rho);
 

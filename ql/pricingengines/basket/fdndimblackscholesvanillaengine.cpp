@@ -54,6 +54,9 @@ namespace QuantLib {
                 "correlation matrix has the wrong size.");
         QL_REQUIRE(xGrids_.size() == processes_.size(),
                 "wrong number of xGrids is given.");
+
+        for (const auto& process: processes_)
+            registerWith(process);
     }
 
 

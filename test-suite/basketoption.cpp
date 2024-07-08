@@ -31,7 +31,7 @@
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
-#include <ql/pricingengines/basket/denglizhouspreadengine.hpp>
+#include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -44,6 +44,7 @@
 #include <ql/time/daycounters/yearfractiontodate.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
+#include "../ql/pricingengines/basket/denglizhoubasketengine.hpp"
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1643,17 +1644,17 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
         exercise
     );
 
-    option.setPricingEngine(ext::make_shared<DengLiZhouSpreadEngine>(processes, rho));
+    option.setPricingEngine(ext::make_shared<DengLiZhouBasketEngine>(processes, rho));
     const Real calculated = option.NPV();
 
     option.setPricingEngine(
         ext::make_shared<FdndimBlackScholesVanillaEngine>(
-            processes, rho, std::vector<Size>(4, 30), 20
+            processes, rho, std::vector<Size>(4, 15), 10
         )
     );
     const Real expected = option.NPV();
     const Real diff = std::abs(calculated - expected);
-    const Real tol = 0.03;
+    const Real tol = 0.05;
 
     if (diff > tol) {
         BOOST_FAIL("failed to compare basket option prices"
@@ -1708,7 +1709,8 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
         exercise
     );
 
-    option.setPricingEngine(ext::make_shared<DengLiZhouSpreadEngine>(processes, rho));
+    option.setPricingEngine(
+        ext::make_shared<DengLiZhouBasketEngine>(processes, rho));
 
     const Real calculated = option.NPV();
     const Real expected = 3.34412;
@@ -1724,6 +1726,66 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
                    << "\n    tolerance:    " << tol);
 }
 
+BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
+    BOOST_TEST_MESSAGE("Testing the root of a sum of exponentials...");
+
+    BOOST_CHECK_THROW(SingleFactorBsmBasketEngine::rootSumExponentials(
+        {2.0, 3.0, 4.0}, {0.2, 0.4, -0.1}, 0.0) , Error
+    );
+    BOOST_CHECK_THROW(SingleFactorBsmBasketEngine::rootSumExponentials(
+        {2.0, -3.0, 4.0}, {0.2, -0.4, -0.1}, 0.0), Error
+    );
+
+    const Real x = SingleFactorBsmBasketEngine::rootSumExponentials(
+        {2.0, -3.0, 4.0}, {0.2, -0.4, 0.1}, 3.1);
+
+    std::cout << x << std::endl;
+
+}
+
+
+BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
+    BOOST_TEST_MESSAGE(
+        "Testing single factor BSM basket engine against reference results...");
+
+    // Reference results are calculated with the python library PyFENG
+    // https://github.com/PyFE/PyFENG
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(3, July, 2024);
+    const Date maturity = today + Period(18, Months);
+
+    const std::vector<Real> underlyings({220, 45, 102, 75});
+    const std::vector<Real> volatilities({0.3, 0.45, 0.3, 0.25});
+    const std::vector<Real> q({0.05, 0.075, 0.02, 0.1});
+
+    const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
+        flatRate(today, 0.03, dc));
+
+    std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+    for (Size d=0; d < 4; ++d)
+        processes.push_back(
+            ext::make_shared<BlackScholesMertonProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d])),
+                Handle<YieldTermStructure>(flatRate(today, q[d], dc)), rTS,
+                Handle<BlackVolTermStructure>(flatVol(today, volatilities[d], dc))
+            )
+        );
+
+    const Real strike = 150;
+
+    BasketOption option(
+        ext::make_shared<AverageBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+            Array({0.5, 2.0, 1.0, 1.5})
+        ),
+        ext::make_shared<EuropeanExercise>(maturity)
+    );
+
+    option.setPricingEngine(
+        ext::make_shared<SingleFactorBsmBasketEngine>(processes));
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

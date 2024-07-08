@@ -675,13 +675,15 @@ set(QL_SOURCES
     pricingengines/barrier/fdhestonrebateengine.cpp
     pricingengines/barrier/mcbarrierengine.cpp
     pricingengines/basket/bjerksundstenslandspreadengine.cpp
-    pricingengines/basket/denglizhouspreadengine.cpp
+    pricingengines/basket/vectorbsmprocessextractor.cpp
+    pricingengines/basket/denglizhoubasketengine.cpp
     pricingengines/basket/fd2dblackscholesvanillaengine.cpp
     pricingengines/basket/fdndimblackscholesvanillaengine.cpp
     pricingengines/basket/kirkengine.cpp
     pricingengines/basket/mcamericanbasketengine.cpp
     pricingengines/basket/mceuropeanbasketengine.cpp
     pricingengines/basket/operatorsplittingspreadengine.cpp
+    pricingengines/basket/singlefactorbsmbasketengine.cpp
     pricingengines/basket/spreadblackscholesvanillaengine.cpp
     pricingengines/basket/stulzengine.cpp
     pricingengines/blackcalculator.cpp
@@ -1888,13 +1890,15 @@ set(QL_HEADERS
     pricingengines/barrier/fdhestonrebateengine.hpp
     pricingengines/barrier/mcbarrierengine.hpp
     pricingengines/basket/bjerksundstenslandspreadengine.hpp
-    pricingengines/basket/denglizhouspreadengine.hpp
+    pricingengines/basket/vectorbsmprocessextractor.hpp
+    pricingengines/basket/denglizhoubasketengine.hpp
     pricingengines/basket/fd2dblackscholesvanillaengine.hpp
     pricingengines/basket/fdndimblackscholesvanillaengine.hpp    
     pricingengines/basket/kirkengine.hpp
     pricingengines/basket/mcamericanbasketengine.hpp
     pricingengines/basket/mceuropeanbasketengine.hpp
     pricingengines/basket/operatorsplittingspreadengine.hpp
+    pricingengines/basket/singlefactorbsmbasketengine.hpp
     pricingengines/basket/spreadblackscholesvanillaengine.hpp
     pricingengines/basket/stulzengine.hpp
     pricingengines/blackcalculator.hpp
