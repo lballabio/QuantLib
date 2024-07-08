@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! Indian calendars
-    /*! Holidays for the National Stock Exchange
+    /*! Clearing holidays for the National Stock Exchange
         (data from <http://www.nse-india.com/>):
         <ul>
         <li>Saturdays</li>
@@ -64,7 +64,7 @@ namespace QuantLib {
         <li>Guru Nanak Jayanti</li>
         </ul>
 
-        Note: The holidays Ramzan Id, Bakri Id and Id-E-Milad rely on estimates for 2023-2025.
+        Note: The holidays Ramzan Id, Bakri Id and Id-E-Milad rely on estimates for 2024-2025.
         \ingroup calendars
     */
     class India : public Calendar {
