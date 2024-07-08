@@ -20,7 +20,6 @@
 
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
@@ -28,13 +27,11 @@ namespace QuantLib {
     namespace {
 
         Date getSofrStart(Month month, Year year, Frequency freq) {
-            static auto calendar = UnitedStates(UnitedStates::SOFR);
             return freq == Monthly ? Date(1, month, year) :
                    Date::nthWeekday(3, Wednesday, month, year);
         }
 
         Date getSofrEnd(Month month, Year year, Frequency freq) {
-            static auto calendar = UnitedStates(UnitedStates::SOFR);
             if (freq == Monthly) {
                 return Date::endOfMonth(Date(1, month, year)) + 1;
             } else {
