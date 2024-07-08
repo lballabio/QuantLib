@@ -27,6 +27,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     // Bangladesh taka
     /* The ISO three-letter code is BDT; the numeric code is 50.
        It is divided in 100 paisa.
@@ -343,6 +345,8 @@ namespace QuantLib {
             new Data("Sri Lankan rupee", "LKR", 144, "LKR", "", 100, Rounding(), "1$.2f %3%"));
         data_ = lkrData;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

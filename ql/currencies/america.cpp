@@ -27,6 +27,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     // Argentinian peso
     /* The ISO three-letter code is ARS; the numeric code is 32.
        It is divided in 100 centavos.
@@ -213,6 +215,8 @@ namespace QuantLib {
             new Data("Uruguayan peso", "UYU", 858, "UYU", "", 1, Rounding(), "1$.2f %3%"));
         data_ = uyuData;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
