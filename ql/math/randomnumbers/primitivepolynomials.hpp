@@ -1,6 +1,6 @@
 /* -*- mode: c; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
-/* this file is a slightly edited version of
+/* This file is a slightly edited version of
  * PrimitivePolynomialsModuloTwoUpToDegree27.h
  * © 2002 "Monte Carlo Methods in Finance"
  * as provided ready for compilation in the directory
@@ -16,7 +16,14 @@
  * Permission to use, copy, modify, and distribute this software is freely
  * granted, provided that this notice is preserved.
  * ===========================================================================
- */
+ *
+ *
+ * The polynomials up to degree 18 were taken from the above source.
+ *
+ * The polynomials up to degree 27 were generated using
+ * https://github.com/mhostetter/galois
+*/
+
 #ifndef primitivepolynomials_hpp
 #define primitivepolynomials_hpp
 
@@ -25,16 +32,7 @@
  * virtually any size you ever might need by the aid of the table of
  * primitive polynomials modulo two.
  * It is up to you to define a macro PPMT_MAX_DIM to a positive integer
- * less than or equal to 8129334. If you don't define it, it will be set
- * below to N_PRIMITIVES_UP_TO_DEGREE_18 which is 21200. That's how many
- * primitive polynomials are provided by the standard primitivepolynomial.c
- * distributed with QuantLib and that will be compiled into a static array.
- * Should you need more, get the original version of primitivepolynomial.c
- * as provided ready for compilation in the directory
- * "PrimitivePolynomialsModuloTwo" on the CD accompanying the book
- * "Monte Carlo Methods in Finance" by Peter Jäckel.
- * The file provides polynomials up to degree 27
- * for a grand total of 8129334 dimensions.
+ * less than or equal to 8129334.
  * Since 8129334 longs compile into an object file of at least 32517336 byte
  * size (in fact, gcc -c -O0 PrimitivePolynomialsModuloTwoUpToDegree27.c
  * produced a file PrimitivePolynomialsModuloTwoUpToDegree27.o with 32519920
@@ -81,19 +79,7 @@
  * encoded as  13  [ (1)1101(1) ]  in the array for degree 5.
  */
 
-/* Example: replace primitivepolynomials.cpp provided by QuantLib standard
- * distribution with the 8129334 polinomials version and
- * comment out the line below if you want absolutely all of the
- * provided primitive polynomials modulo two.
- *
- * #define PPMT_MAX_DIM 8129334
- *
- * Note that PPMT_MAX_DIM will be redefined to be the nearest equal or larger
- * number of polynomials up to one of the predefined macros
- * N_PRIMITIVES_UP_TO_DEGREE_XX
- * below.
- */
-
+#define PPMT_MAX_DIM 8129334
 
 #define N_PRIMITIVES_UP_TO_DEGREE_01         1
 #define N_PRIMITIVES_UP_TO_DEGREE_02         2
@@ -124,10 +110,6 @@
 #define N_PRIMITIVES_UP_TO_DEGREE_27   8129334
 
 #define N_PRIMITIVES N_PRIMITIVES_UP_TO_DEGREE_27
-
-#ifndef  PPMT_MAX_DIM
-# define PPMT_MAX_DIM N_PRIMITIVES_UP_TO_DEGREE_18
-#endif
 
 #if      PPMT_MAX_DIM > N_PRIMITIVES
 # error  PPMT_MAX_DIM cannot be greater than N_PRIMITIVES
