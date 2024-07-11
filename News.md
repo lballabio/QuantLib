@@ -1,7 +1,7 @@
 Changes for QuantLib 1.35:
 ==========================
 
-QuantLib 1.35 includes 28 pull requests from several contributors.
+QuantLib 1.35 includes 29 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -44,6 +44,8 @@ Calendars
 
 - Updated Indian NSE holidays for 2024; thanks to Fredrik Gerdin
   Börjesson (@gbfredrik).
+
+- Some fixes for the Mexican calendar; thanks to Lucas Dias (@lukedays).
 
 
 Cash flows

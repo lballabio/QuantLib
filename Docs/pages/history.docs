@@ -45,6 +45,7 @@
       calendar; thanks to Eugene Toder.
     - Updated Indian NSE holidays for 2024; thanks to Fredrik Gerdin
       Börjesson.
+    - Some fixes for the Mexican calendar; thanks to Lucas Dias.
 
     CASH FLOWS
     - Added lookback days, lockout days and observation shift to
