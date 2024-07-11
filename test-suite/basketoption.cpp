@@ -32,6 +32,7 @@
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
+#include <ql/pricingengines/basket/denglizhoubasketengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -44,7 +45,8 @@
 #include <ql/time/daycounters/yearfractiontodate.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
-#include "../ql/pricingengines/basket/denglizhoubasketengine.hpp"
+
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1729,18 +1731,45 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
 BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
     BOOST_TEST_MESSAGE("Testing the root of a sum of exponentials...");
 
-    BOOST_CHECK_THROW(SingleFactorBsmBasketEngine::rootSumExponentials(
-        {2.0, 3.0, 4.0}, {0.2, 0.4, -0.1}, 0.0) , Error
+    BOOST_CHECK_THROW(SumExponentialsRootSolver(
+        {2.0, 3.0, 4.0}, {0.2, 0.4, -0.1}, 0.0).rootSumExponentials() , Error
     );
-    BOOST_CHECK_THROW(SingleFactorBsmBasketEngine::rootSumExponentials(
-        {2.0, -3.0, 4.0}, {0.2, -0.4, -0.1}, 0.0), Error
+    BOOST_CHECK_THROW(SumExponentialsRootSolver(
+        {2.0, -3.0, 4.0}, {0.2, -0.4, -0.1}, 0.0).rootSumExponentials(), Error
     );
 
-    const Real x = SingleFactorBsmBasketEngine::rootSumExponentials(
-        {2.0, -3.0, 4.0}, {0.2, -0.4, 0.1}, 3.1);
+    MersenneTwisterUniformRng mt(42);
 
-    std::cout << x << std::endl;
+    for (auto strategy: {
+    	SumExponentialsRootSolver::Brent,
+		SumExponentialsRootSolver::Newton,
+		SumExponentialsRootSolver::Ridder,
+		SumExponentialsRootSolver::Halley}) {
 
+    	Size fCtr = 0;
+
+		// first test arbitrary problem
+		for (Size i=0; i < 1000; ++i) {
+			// problem size
+			const Size n = (mt.nextInt32() % 10)+1;
+			Array a(n), sig(n);
+			for (Size j=0; j < n; ++j) {
+				a[j] = mt.nextReal() - 1.0;
+				sig[j] = copysign(1.0, a[j])*mt.nextReal();
+			}
+			const Real kMin = SumExponentialsRootSolver(a, sig, 0.0)(-10.0);
+			const Real kMax = SumExponentialsRootSolver(a, sig, 0.0)( 10.0);
+			const Real K = (kMax - kMin)*mt.nextReal() + kMin;
+
+			const SumExponentialsRootSolver solver(a, sig, K);
+			const Real xRoot = solver.rootSumExponentials(
+				1e1*QL_EPSILON, strategy);
+
+			fCtr += solver.getFCtr() + solver.getDerivativeCtr() + solver.getSecondDerivativeCtr();
+		}
+
+		std::cout << fCtr << std::endl;
+    }
 }
 
 

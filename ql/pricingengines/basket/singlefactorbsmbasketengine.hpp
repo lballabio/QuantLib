@@ -38,13 +38,36 @@ namespace QuantLib {
 
         \ingroup basketengines
     */
+
+	class SumExponentialsRootSolver {
+	  public:
+		enum Strategy {Ridder, Newton, Brent, Halley, SuperHalley};
+
+		SumExponentialsRootSolver(Array a, Array sig, Real K);
+
+		Real operator()(Real x) const;
+		Real derivative(Real x) const;
+		Real secondDerivative(Real x) const;
+
+		Real rootSumExponentials(
+			Real xTol = 1e4*QL_EPSILON, Strategy strategy = Brent) const;
+
+		Size getFCtr() const;
+		Size getDerivativeCtr() const;
+		Size getSecondDerivativeCtr() const;
+
+	  private:
+		const Array a_, sig_;
+		const Real K_;
+		mutable Size fCtr_, fPrimeCtr_, fDoublePrimeCtr_;
+	};
+
     class SingleFactorBsmBasketEngine : public BasketOption::engine {
       public:
         SingleFactorBsmBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p);
 
         void calculate() const override;
-        static Real rootSumExponentials(const Array& a, const Array& sig, Real K);
 
       private:
         const Size n_;
