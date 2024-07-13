@@ -10,21 +10,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "gcc 5.4 (Boost 1.66)"
-            shortname: gcc5
-            tag: xenial
-            cc: gcc
-            cxx: g++
-          - name: "gcc 6.3 (Boost 1.66)"
-            shortname: gcc6
-            tag: zesty
-            cc: gcc
-            cxx: g++
-          - name: "gcc 7.4 (Boost 1.72)"
-            shortname: gcc7
-            tag: bionic
-            cc: gcc
-            cxx: g++
           - name: "gcc 8.3 (Boost 1.72)"
             shortname: gcc8
             tag: cosmic
@@ -55,11 +40,6 @@ jobs:
             tag: noble
             cc: gcc
             cxx: g++
-          - name: "Clang 6 (Boost 1.72)"
-            shortname: clang6
-            tag: bionic
-            cc: clang
-            cxx: clang++
           - name: "Clang 7 (Boost 1.72)"
             shortname: clang7
             tag: cosmic
@@ -201,7 +181,7 @@ jobs:
             configureflags: --enable-null-as-functions
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version

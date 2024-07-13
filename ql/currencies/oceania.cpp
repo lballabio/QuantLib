@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     // Australian dollar
     /* The ISO three-letter code is AUD; the numeric code is 36.
        It is divided into 100 cents.
@@ -51,5 +53,7 @@ namespace QuantLib {
                                          "%3% %1$.2f"));
         data_ = nzdData;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }

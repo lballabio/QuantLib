@@ -98,7 +98,7 @@ namespace QuantLib {
             // Labor Day
             || (d == 1 && m == May)
             // Revolution Day
-            || (d == 9 && m == July)
+            || (d == 9 && m == July && y < 2022)
             // Independence Day
             || (d == 7 && m == September)
             // Nossa Sra. Aparecida Day
@@ -108,7 +108,7 @@ namespace QuantLib {
             // Republic Day
             || (d == 15 && m == November)
             // Black Consciousness Day
-            || (d == 20 && m == November && y >= 2007)
+            || (d == 20 && m == November && y >= 2007 && y != 2022 && y != 2023)
             // Christmas Eve
             || (d == 24 && m == December)
             // Christmas

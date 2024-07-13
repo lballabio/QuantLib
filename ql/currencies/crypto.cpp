@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     // Bitcoin
     /* https://bitcoin.org/
     */
@@ -121,5 +123,8 @@ namespace QuantLib {
                                                "%3% %1$.5f"));
         data_ = zecData;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 

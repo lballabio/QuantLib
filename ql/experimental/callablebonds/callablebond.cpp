@@ -290,6 +290,7 @@ namespace QuantLib {
             settlement = settlementDate();
 
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
+        dirtyPrice /= 100.0 / notional(settlement);
 
         ext::function<Real(Real)> f = NPVSpreadHelper(*this);
         OASHelper obj(f, dirtyPrice);
@@ -329,7 +330,7 @@ namespace QuantLib {
 
         ext::function<Real(Real)> f = NPVSpreadHelper(*this);
 
-        Real P = f(oas) - accruedAmount(settlement);
+        Real P = f(oas) * 100.0 / notional(settlement) - accruedAmount(settlement);
 
         return P;
     }

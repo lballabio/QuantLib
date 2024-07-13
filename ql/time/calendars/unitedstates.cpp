@@ -281,9 +281,18 @@ namespace QuantLib {
                 && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
-            // Good Friday (2015, 2021, 2023 are half day due to NFP/SIFMA;
-            // see <https://www.sifma.org/resources/general/holiday-schedule/>)
-            || (dd == em-3 && y != 2015 && y != 2021 && y != 2023)
+            // Good Friday. Since 1996 it's an early close and not a full market
+            // close when it coincides with the NFP release date, which is the
+            // first Friday of the month(*).
+            // See <https://www.sifma.org/resources/general/holiday-schedule/>
+            //
+            // (*) The full rule is "the third Friday after the conclusion of the
+            // week which includes the 12th of the month". This is usually the
+            // first Friday of the next month, but can be the second Friday if the
+            // month has fewer than 31 days. Since Good Friday is always between
+            // March 20th and April 23rd, it can only coincide with the April NFP,
+            // which is always on the first Friday, because March has 31 days.
+            || (dd == em-3 && (y < 1996 || d > 7))
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
             // Juneteenth (Monday if Sunday or Friday if Saturday)
@@ -308,7 +317,7 @@ namespace QuantLib {
         if (// President Bush's Funeral
             (y == 2018 && m == December && d == 5)
             // Hurricane Sandy
-            || (y == 2012 && m == October && (d == 30))
+            || (y == 2012 && m == October && d == 30)
             // President Reagan's funeral
             || (y == 2004 && m == June && d == 11)
             ) return false;

@@ -23,6 +23,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     // Angolan kwanza
     AOACurrency::AOACurrency() {
         static ext::shared_ptr<Data> aoaData(
@@ -120,5 +122,7 @@ namespace QuantLib {
             new Data("Zambian kwacha", "ZMW", 967, "ZMW", "", 100, Rounding(), "1$.2f %3%"));
         data_ = zmwData;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
