@@ -68,6 +68,13 @@ namespace QuantLib {
                     Handle<YieldTermStructure> dividend = {},
                     Handle<Quote> spot = {});
 
+        EquityIndex(std::string name,
+                    Calendar fixingCalendar,
+                    Currency currency,
+                    Handle<YieldTermStructure> interest = {},
+                    Handle<YieldTermStructure> dividend = {},
+                    Handle<Quote> spot = {});
+
         //! \name Index interface
         //@{
         std::string name() const override { return name_; }
@@ -81,6 +88,8 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
+        //! The index currency
+        Currency currency() const { return currency_; }
         //! the rate curve used to forecast fixings
         Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
@@ -105,6 +114,7 @@ namespace QuantLib {
       private:
         std::string name_;
         Calendar fixingCalendar_;
+        Currency currency_;
         Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
         Handle<Quote> spot_;

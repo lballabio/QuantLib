@@ -36,8 +36,22 @@ namespace QuantLib {
                              Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend,
                              Handle<Quote> spot)
+    : EquityIndex(std::move(name),
+                  std::move(fixingCalendar),
+                  Currency(),
+                  std::move(interest),
+                  std::move(dividend),
+                  std::move(spot)) {}
+
+    EquityIndex::EquityIndex(std::string name,
+                             Calendar fixingCalendar,
+                             Currency currency,
+                             Handle<YieldTermStructure> interest,
+                             Handle<YieldTermStructure> dividend,
+                             Handle<Quote> spot)
     : name_(std::move(name)), fixingCalendar_(std::move(fixingCalendar)),
-      interest_(std::move(interest)), dividend_(std::move(dividend)), spot_(std::move(spot)) {
+      currency_(std::move(currency)), interest_(std::move(interest)),
+      dividend_(std::move(dividend)), spot_(std::move(spot)) {
 
         registerWith(interest_);
         registerWith(dividend_);
@@ -95,6 +109,7 @@ namespace QuantLib {
     ext::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
                                                     const Handle<YieldTermStructure>& dividend,
                                                     const Handle<Quote>& spot) const {
-        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend, spot);
+        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), currency(), interest,
+                                             dividend, spot);
     }
 }
