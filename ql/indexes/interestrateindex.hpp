@@ -79,7 +79,6 @@ namespace QuantLib {
         //@{
         //! It can be overridden to implement particular conventions
         virtual Rate forecastFixing(const Date& fixingDate) const = 0;
-        virtual Rate pastFixing(const Date& fixingDate) const;
         // @}
       protected:
         std::string familyName_;
@@ -122,13 +121,6 @@ namespace QuantLib {
                    fixingDate << " is not a valid fixing date");
         return fixingCalendar().advance(fixingDate, fixingDays_, Days);
     }
-
-    inline Rate InterestRateIndex::pastFixing(const Date& fixingDate) const {
-        QL_REQUIRE(isValidFixingDate(fixingDate),
-                   fixingDate << " is not a valid fixing date");
-        return timeSeries()[fixingDate];
-    }
-
 }
 
 #endif

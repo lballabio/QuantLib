@@ -92,7 +92,6 @@ namespace QuantLib {
         //@{
         //! It can be overridden to implement particular conventions
         virtual Real forecastFixing(const Date& fixingDate) const;
-        virtual Real pastFixing(const Date& fixingDate) const;
         // @}
         //! \name Other methods
         //@{
