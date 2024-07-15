@@ -62,7 +62,7 @@ namespace QuantLib {
 
 
     //! Base class for inflation-rate indexes,
-    class InflationIndex : public Index, public Observer {
+    class InflationIndex : public Index {
       public:
         InflationIndex(std::string familyName,
                        Region region,
@@ -101,11 +101,6 @@ namespace QuantLib {
             the same value in every calendar day in the month.
         */
         void addFixing(const Date& fixingDate, Rate fixing, bool forceOverwrite = false) override;
-        //@}
-
-        //! \name Observer interface
-        //@{
-        void update() override;
         //@}
 
         //! \name Inspectors
@@ -285,10 +280,6 @@ namespace QuantLib {
 
     inline std::string InflationIndex::name() const {
         return name_;
-    }
-
-    inline void InflationIndex::update() {
-        notifyObservers();
     }
 
     inline std::string InflationIndex::familyName() const {

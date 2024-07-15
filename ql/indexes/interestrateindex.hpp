@@ -36,8 +36,7 @@ namespace QuantLib {
 
     //! base class for interest rate indexes
     /*! \todo add methods returning InterestRate */
-    class InterestRateIndex : public Index,
-                              public Observer {
+    class InterestRateIndex : public Index {
       public:
         InterestRateIndex(std::string familyName,
                           const Period& tenor,
@@ -51,10 +50,6 @@ namespace QuantLib {
         Calendar fixingCalendar() const override;
         bool isValidFixingDate(const Date& fixingDate) const override;
         Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() override;
         //@}
         //! \name Inspectors
         //@{
@@ -104,10 +99,6 @@ namespace QuantLib {
 
     inline bool InterestRateIndex::isValidFixingDate(const Date& d) const {
         return fixingCalendar().isBusinessDay(d);
-    }
-
-    inline void InterestRateIndex::update() {
-        notifyObservers();
     }
 
     inline Date InterestRateIndex::fixingDate(const Date& valueDate) const {

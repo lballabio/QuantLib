@@ -42,7 +42,7 @@ namespace QuantLib {
                  possible inconsistencies due to "seeing in the
                  future"
     */
-    class Index : public Observable {
+    class Index : public Observable, public Observer {
       public:
         ~Index() override = default;
         //! Returns the name of the index.
@@ -80,6 +80,10 @@ namespace QuantLib {
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
+        //! \name Observer interface
+        //@{
+        void update() override;
+        //@}
         virtual void addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite = false);
         //! stores historical fixings from a TimeSeries
         /*! the dates in the TimeSeries must be the actual calendar
@@ -150,6 +154,9 @@ namespace QuantLib {
         return timeSeries()[fixingDate];
     }
 
+    inline void Index::update() {
+        notifyObservers();
+    }
 
 }
 
