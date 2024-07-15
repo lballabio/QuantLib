@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006, 2008, 2010, 2018, 2023 Klaus Spanderen
+ Copyright (C) 2024 Jacques du Toit
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -352,6 +353,7 @@ namespace {
         {
             std::cout     << "\033[0m\n";
             std::cout     << "Benchmark Size        = " << BenchmarkSupport::bmSizeAsString(nSize) << std::endl;
+            std::cout     << "Number of processes   = " << workerLifetimes.size() << std::endl;
             std::cout     << "System Throughput     = " << (double(nSize) * bm.size() ) / masterLifetime << " tasks/s" << std::endl;
             std::cout     << "Benchmark Runtime     = " << masterLifetime<< "s" << std::endl;
 
@@ -440,8 +442,8 @@ namespace {
     // The messages sent from master to workers across boost IPC queues
     struct IPCInstructionMsg
     {
-        unsigned j = 0;             // the benchmark to run
-        bool validate = false;      // whether to run in validation mode or not
+        unsigned j = 0;               // the benchmark to run
+        bool validate = false;        // whether to run in validation mode or not
     };
 
 
@@ -707,23 +709,24 @@ int main(int argc, char* argv[] )
 
 
 
+        // Sequential benchmark, useful for debugging
         if (nProc == 1 && !clientMode) {        
-            // Sequential benchmark, useful for debugging
+
+            // First we run the validation to ensure that the 
+            // benchmark binary is computing the correct results
+            for(unsigned int j=0; j<bm.size(); j++) {
+                bmResult.reset();
+                bm[j].runValidation();
+                if( !bmResult.pass() ) {
+                    BenchmarkSupport::terminateBenchmark();
+                }
+             }
+
+            // Now run the benchmark proper
             auto startTime = std::chrono::steady_clock::now();
             for (unsigned i=0; i < nSize; ++i) {
                 for(unsigned int j=0; j<bm.size(); j++) {
-                    double time;
-                    // First run the validation for each benchmark
-                    if(i == 0) {
-                        bmResult.reset();
-                        time = bm[j].runValidation();
-                        if( !bmResult.pass() ) {
-                            BenchmarkSupport::terminateBenchmark();
-                        }
-                    }
-                    else {
-                        time = bm[j].runBenchmark();
-                    }
+                    double time = bm[j].runBenchmark();
                     bm[j].getTotalRuntime() += time;
                     LOG_MESSAGE("MASTER  :  completed benchmarkId=" << j << ", time=" << time);              
                 }
@@ -742,6 +745,7 @@ int main(int argc, char* argv[] )
             message_queue::size_type recvd_size;
             unsigned int priority=0;
             const unsigned int terminateId=-1;
+            const unsigned int startTimerId = terminateId - 1;
             const char* const testUnitIdQueueName = "test_unit_queue";
             const char* const testResultQueueName = "test_result_queue";
 
@@ -760,7 +764,7 @@ int main(int argc, char* argv[] )
 
                 message_queue mq(
                         open_or_create, testUnitIdQueueName,
-                        nSize*bm.size(), sizeof(IPCInstructionMsg)
+                        nSize*bm.size()+nProc, sizeof(IPCInstructionMsg)
                         );
                 message_queue rq(                
                         open_or_create, testResultQueueName,                 
@@ -768,9 +772,6 @@ int main(int argc, char* argv[] )
                         sizeof(IPCResultMsg)
                         );
 
-
-                // Start timer for the benchmark
-                auto startTime = std::chrono::steady_clock::now();
 
                 // Create the thread group and start each worker process, giving it a unique threadId (useful for debugging)
                 std::vector<std::thread> threadGroup;            
@@ -787,12 +788,39 @@ int main(int argc, char* argv[] )
 
                 IPCInstructionMsg msg;
                 IPCResultMsg r;
-                // Fire off all the benchmarks
+
+                // Do a full validation run first to ensure the benchmark binary is computing 
+                // the correct values
+                for (unsigned j=0; j < bm.size(); ++j) {
+                    msg = {j, true};
+                    // Will be non-blocking send since send buffer is big enough 
+                    LOG_MESSAGE("MASTER    : sending benchmarkId=" << msg.j << " with validation=" << msg.validate);                   
+                    mq.send(&msg, sizeof(IPCInstructionMsg), 0);
+                }
+                // Receive all results from workers
+                for (unsigned i=0; i < bm.size(); ++i) {                
+                    rq.receive(&r, sizeof(IPCResultMsg), recvd_size, priority);
+                    LOG_MESSAGE("MASTER     : received result : threadId=" << r.threadId << ", benchmarkId=" << r.bmId 
+                            << ", time=" << r.time << " : " << bm.size()-1-i << " results pending");    
+                    if(r.time < 0) {
+                        // A benchmark test has failed
+                        BenchmarkSupport::terminateBenchmark();
+                    }               
+                }
+
+                // Start timer for the benchmark
+                auto startTime = std::chrono::steady_clock::now();
+                // Tell all workers to start their timers
+                for(unsigned j=0; j<nProc; j++) {
+                    msg = {startTimerId, false};
+                    LOG_MESSAGE("MASTER    : sending worker=" << j << " command to restart timer");
+                    mq.send(&msg, sizeof(IPCInstructionMsg), 0);
+                }
+                // Now do the benchmark run proper
                 for (unsigned j=0; j < bm.size(); ++j) {
                     // Enqueue nSize copies of each task to even out load balance
                     for (unsigned i=0; i < nSize; ++i) {
-                        // Do validation for the first run of each benchmark
-                        msg = {j, (i==0)};
+                        msg = {j, false};
                         // Will be non-blocking send since send buffer is big enough 
                         LOG_MESSAGE("MASTER    : sending benchmarkId=" << msg.j << " with validation=" << msg.validate);                   
                         mq.send(&msg, sizeof(IPCInstructionMsg), 0);
@@ -804,7 +832,7 @@ int main(int argc, char* argv[] )
                     LOG_MESSAGE("MASTER     : received result : threadId=" << r.threadId << ", benchmarkId=" << r.bmId 
                             << ", time=" << r.time << " : " << nSize*bm.size()-1-i << " results pending");    
                     if(r.time < 0) {
-                        // A benchmark test has failed
+                        // A benchmark test has failed - should be impossible here
                         BenchmarkSupport::terminateBenchmark();
                     }               
                     bm[r.bmId].getTotalRuntime() += r.time;                             
@@ -843,15 +871,19 @@ int main(int argc, char* argv[] )
 
                 // Record start of this process's lifetime.  We keep tack of lifetimes
                 // in order to monitor tail effects
-                auto startTime = std::chrono::steady_clock::now();
-                // If this worker has nothing to do, we still want a non-zero lifetime
-                auto stopTime = std::chrono::steady_clock::now();;
+                std::chrono::time_point<std::chrono::steady_clock> startTime, stopTime;
 
                 for(;;) {
                     IPCInstructionMsg id;
                     mq.receive(&id, sizeof(IPCInstructionMsg), recvd_size, priority);                
 
-                    if(id.j == terminateId) {
+                    if(id.j == startTimerId) {
+                        // The benchmark run proper is starting - start the timer for this worker.
+                        // If this worker has nothing to do, we still want a non-zero lifetime
+                        startTime = std::chrono::steady_clock::now();
+                        stopTime = std::chrono::steady_clock::now();
+                    }
+                    else if(id.j == terminateId) {
                         // Worker process being told to terminate.  Report our lifetime.  
                         // Lifetime is how long it took until we completed our final task                    
                         double workerLifetime = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6;
