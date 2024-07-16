@@ -152,6 +152,8 @@ namespace QuantLib {
         OvernightLeg& withLookbackDays(Natural lookbackDays);
         OvernightLeg& withLockoutDays(Natural lockoutDays);
         OvernightLeg& withObservationShift(bool applyObservationShift = true);
+        OvernightLeg& withOvernightIndexedCouponPricer(
+            const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -168,6 +170,8 @@ namespace QuantLib {
         Natural lookbackDays_ = Null<Natural>();
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
+        ext::shared_ptr<OvernightIndexedCouponPricer> couponPricer_ =
+            ext::make_shared<OvernightIndexedCouponPricer>();
     };
 
     inline const bool OvernightIndexedCoupon::canApplyTelescopicFormula() const {
