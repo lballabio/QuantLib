@@ -28,6 +28,7 @@
 #ifndef quantlib_overnight_indexed_coupon_hpp
 #define quantlib_overnight_indexed_coupon_hpp
 
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -113,11 +114,24 @@ namespace QuantLib {
         Rate averageRate(const Date& date) const;
     };
 
-    inline const bool OvernightIndexedCoupon::canApplyTelescopicFormula() const {
-        return fixingDays_ == index_->fixingDays() ||
-               (applyObservationShift_ && index_->fixingDays() == 0);
-    }
+    //! OvernightIndexedCoupon pricer
+    class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+      public:
+        //! \name FloatingRateCoupon interface
+        //@{
+        void initialize(const FloatingRateCoupon& coupon) override;
+        Rate swapletRate() const override;
+        Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
+        Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
+        Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
+        Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
+        Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
+        //@}
+        Rate averageRate(const Date& date) const;
 
+      protected:
+        const OvernightIndexedCoupon* coupon_ = nullptr;
+    };
 
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
@@ -155,6 +169,11 @@ namespace QuantLib {
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
     };
+
+    inline const bool OvernightIndexedCoupon::canApplyTelescopicFormula() const {
+        return fixingDays_ == index_->fixingDays() ||
+               (applyObservationShift_ && index_->fixingDays() == 0);
+    }
 
 }
 
