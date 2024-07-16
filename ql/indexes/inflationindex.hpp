@@ -96,6 +96,9 @@ namespace QuantLib {
         */
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override = 0;
 
+        //! returns a past fixing at the given date
+        Real pastFixing(const Date& fixingDate) const override = 0;
+
         /*! this method creates all the "fixings" for the relevant
             period of the index.  E.g. for monthly indices it will put
             the same value in every calendar day in the month.
@@ -159,6 +162,8 @@ namespace QuantLib {
                      the Index interface) is currently ignored.
         */
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
+        //! returns a past fixing at the given date
+        Real pastFixing(const Date& fixingDate) const override;
         //@}
         //! \name Other methods
         //@{
@@ -237,6 +242,12 @@ namespace QuantLib {
         */
         Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
 
+        /*! returns a past fixing at the given date
+         *  \warning This is only supported for flat YOY indices providing their own timeseries
+         *           via the `addFixing` or `addFixings` method,
+         *           aka where ratio() == interpolated() == false.
+         */
+        Real pastFixing(const Date& fixingDate) const override;
         //@}
         //! \name Other methods
         //@{
