@@ -188,8 +188,9 @@ namespace QuantLib {
                                            Volatility maxVol,
                                            VolatilityType type,
                                            Real displacement) const {
-        //calculate();
+
         QL_REQUIRE(!isExpired(), "instrument expired");
+        QL_REQUIRE(exercise_->type() == Exercise::European, "not a European option");
 
         ImpliedSwaptionVolHelper f(*this, d, targetValue, displacement, type);
         //Brent solver;
