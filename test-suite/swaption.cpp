@@ -831,6 +831,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::ParYieldCurve };
+    Swaption::PriceType priceTypes[] = { Swaption::Spot, Swaption::Forward };
     // test data
     Rate strikes[] = { 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.20, 0.30, 0.70, 0.90 };
@@ -851,12 +852,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
                             .withFloatingLegSpread(0.0)
                             .withType(k);
                     for (Size h=0; h<LENGTH(types); h++) {
+                      for (auto priceType : priceTypes) {
                         for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
                                 vars.makeSwaption(swap, exerciseDate, vol, types[h], methods[h],
                                                   BlackSwaptionEngine::DiscountCurve);
                             // Black price
-                            Real value = swaption->NPV();
+                            Real value = priceType == Swaption::Spot? swaption->NPV() : swaption->result<Real>("forwardPrice");
                             Volatility implVol = 0.0;
                             try {
                                 implVol =
@@ -868,11 +870,12 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
                                                               1.0e-7,
                                                               4.0,
                                                               ShiftedLognormal,
-                                                              0.0);
+                                                              0.0,
+                                                              priceType);
                             } catch (std::exception& e) {
                                 // couldn't bracket?
                                 swaption->setPricingEngine(vars.makeEngine(0.0, BlackSwaptionEngine::DiscountCurve));
-                                Real value2 = swaption->NPV();
+                                Real value2 = priceType == Swaption::Spot? swaption->NPV() : swaption->result<Real>("forwardPrice");
                                 if (std::fabs(value-value2) < tolerance) {
                                     // ok, just skip:
                                     continue;
@@ -885,12 +888,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
                                             << "\natm level:  " << io::rate(swap->fairRate())
                                             << "\nvol:        " << io::volatility(vol)
                                             << "\nprice:      " << value << "\n"
+                                            << "\ntype:       " << (priceType == Swaption::Spot? "spot" : "forward") << "\n"
                                             << e.what());
                             }
                             if (std::fabs(implVol - vol) > tolerance) {
                                 // the difference might not matter
                                 swaption->setPricingEngine(vars.makeEngine(implVol, BlackSwaptionEngine::DiscountCurve));
-                                Real value2 = swaption->NPV();
+                                Real value2 = priceType == Swaption::Spot? swaption->NPV() : swaption->result<Real>("forwardPrice");
                                 if (std::fabs(value-value2) > tolerance) {
                                     BOOST_ERROR("implied vol failure: "
                                                 << exercise << "x" << length << " " << k
@@ -899,11 +903,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
                                                 << "\natm level:     " << io::rate(swap->fairRate())
                                                 << "\nvol:           " << io::volatility(vol)
                                                 << "\nprice:         " << value
+                                                << "\ntype:          " << (priceType == Swaption::Spot? "spot" : "forward") << "\n"
                                                 << "\nimplied vol:   " << io::volatility(implVol)
                                                 << "\nimplied price: " << value2);
                                 }
                             }
                         }
+                      }
                     }
                 }
             }
@@ -923,6 +929,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     Settlement::Method methods[] = { Settlement::PhysicalOTC, Settlement::ParYieldCurve };
+    Swaption::PriceType priceTypes[] = { Swaption::Spot, Swaption::Forward };
     // test data
     Rate strikes[] = { 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.20, 0.30, 0.70, 0.90 };
@@ -942,12 +949,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withType(k);
                     for (Size h=0; h<LENGTH(types); h++) {
+                      for (auto priceType : priceTypes) {
                         for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
                                 vars.makeOISwaption(swap, exerciseDate, vol, types[h], methods[h],
                                                     BlackSwaptionEngine::DiscountCurve);
                             // Black price
-                            Real value = swaption->NPV();
+                            Real value = priceType == Swaption::Spot? swaption->NPV() : swaption->result<Real>("forwardPrice");
                             Volatility implVol = 0.0;
                             try {
                                 implVol =
@@ -959,11 +967,12 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
                                                               1.0e-7,
                                                               4.0,
                                                               ShiftedLognormal,
-                                                              0.0);
+                                                              0.0,
+                                                              priceType);
                             } catch (std::exception& e) {
                                 // couldn't bracket?
                                 swaption->setPricingEngine(vars.makeEngine(0.0, BlackSwaptionEngine::DiscountCurve));
-                                Real value2 = swaption->NPV();
+                                Real value2 = priceType == Swaption::Spot? swaption->NPV() : swaption->result<Real>("forwardPrice");
                                 if (std::fabs(value-value2) < tolerance) {
                                     // ok, just skip:
                                     continue;
@@ -976,12 +985,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
                                             << "\natm level:  " << io::rate(swap->fairRate())
                                             << "\nvol:        " << io::volatility(vol)
                                             << "\nprice:      " << value << "\n"
+                                            << "\ntype:       " << (priceType == Swaption::Spot? "spot" : "forward") << "\n"
                                             << e.what());
                             }
                             if (std::fabs(implVol - vol) > tolerance) {
                                 // the difference might not matter
                                 swaption->setPricingEngine(vars.makeEngine(implVol, BlackSwaptionEngine::DiscountCurve));
-                                Real value2 = swaption->NPV();
+                                Real value2 = priceType == Swaption::Spot? swaption->NPV() : swaption->result<Real>("forwardPrice");
                                 if (std::fabs(value-value2) > tolerance) {
                                     BOOST_ERROR("implied vol failure: "
                                                 << exercise << "x" << length << " " << k
@@ -990,11 +1000,13 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
                                                 << "\natm level:     " << io::rate(swap->fairRate())
                                                 << "\nvol:           " << io::volatility(vol)
                                                 << "\nprice:         " << value
+                                                << "\ntype:          " << (priceType == Swaption::Spot? "spot" : "forward") << "\n"
                                                 << "\nimplied vol:   " << io::volatility(implVol)
                                                 << "\nimplied price: " << value2);
                                 }
                             }
                         }
+                      }
                     }
                 }
             }
