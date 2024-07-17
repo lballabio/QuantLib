@@ -714,9 +714,9 @@ int main(int argc, char* argv[] )
 
             // First we run the validation to ensure that the 
             // benchmark binary is computing the correct results
-            for(unsigned int j=0; j<bm.size(); j++) {
+            for(auto & j : bm) {
                 bmResult.reset();
-                bm[j].runValidation();
+                j.runValidation();
                 if( !bmResult.pass() ) {
                     BenchmarkSupport::terminateBenchmark();
                 }
