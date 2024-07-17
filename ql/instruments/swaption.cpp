@@ -180,19 +180,25 @@ namespace QuantLib {
     }
 
     Volatility Swaption::impliedVolatility(Real targetValue,
-                                           const Handle<YieldTermStructure>& d,
+                                           const Handle<YieldTermStructure>& discountCurve,
                                            Volatility guess,
                                            Real accuracy,
                                            Natural maxEvaluations,
                                            Volatility minVol,
                                            Volatility maxVol,
                                            VolatilityType type,
-                                           Real displacement) const {
-        //calculate();
-        QL_REQUIRE(!isExpired(), "instrument expired");
+                                           Real displacement,
+                                           PriceType priceType) const {
 
-        ImpliedSwaptionVolHelper f(*this, d, targetValue, displacement, type);
-        //Brent solver;
+        QL_REQUIRE(!isExpired(), "instrument expired");
+        QL_REQUIRE(exercise_->type() == Exercise::European, "not a European option");
+
+        if (priceType == Forward) {
+            // convert to spot
+            targetValue *= discountCurve->discount(exercise_->date(0));
+        }
+
+        ImpliedSwaptionVolHelper f(*this, discountCurve, targetValue, displacement, type);
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);

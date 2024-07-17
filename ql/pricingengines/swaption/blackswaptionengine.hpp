@@ -79,7 +79,7 @@ namespace QuantLib {
 
     // shifted lognormal type engine
     struct Black76Spec {
-        static const VolatilityType type = ShiftedLognormal;
+        static constexpr VolatilityType type = ShiftedLognormal;
         Real value(const Option::Type type, const Real strike,
                    const Real atmForward, const Real stdDev, const Real annuity,
                    const Real displacement) {
@@ -103,7 +103,7 @@ namespace QuantLib {
 
     // normal type engine
     struct BachelierSpec {
-        static const VolatilityType type = Normal;
+        static constexpr VolatilityType type = Normal;
         Real value(const Option::Type type, const Real strike,
                    const Real atmForward, const Real stdDev, const Real annuity,
                    const Real) {
@@ -221,6 +221,9 @@ namespace QuantLib {
     void BlackStyleSwaptionEngine<Spec>::calculate() const {
         static const Spread basisPoint = 1.0e-4;
 
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "not a European option");
+
         Date exerciseDate = arguments_.exercise->date(0);
 
         // The part of the swap preceding exerciseDate should be truncated to avoid taking into
@@ -320,6 +323,7 @@ namespace QuantLib {
             w, strike, atmForward, stdDev, annuity, displacement);
         results_.additionalResults["timeToExpiry"] = exerciseTime;
         results_.additionalResults["impliedVolatility"] = Real(stdDev / std::sqrt(exerciseTime));
+        results_.additionalResults["forwardPrice"] = results_.value / discountCurve_->discount(exerciseDate);
     }
 
     }  // namespace detail
