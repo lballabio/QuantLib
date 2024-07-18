@@ -323,7 +323,7 @@ namespace QuantLib {
             w, strike, atmForward, stdDev, annuity, displacement);
         results_.additionalResults["timeToExpiry"] = exerciseTime;
         results_.additionalResults["impliedVolatility"] = Real(stdDev / std::sqrt(exerciseTime));
-        results_.additionalResults["forwardPrice"] = results_.value / discountCurve_->discount(exerciseDate);
+        results_.additionalResults["forwardPrice"] = Real(results_.value / discountCurve_->discount(exerciseDate));
     }
 
     }  // namespace detail
