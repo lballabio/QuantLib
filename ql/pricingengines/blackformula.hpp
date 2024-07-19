@@ -8,7 +8,7 @@
  Copyright (C) 2007 Cristina Duminuco
  Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2013 Gary Kennedy
- Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015, 2024 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
  Copyright (C) 2019 Wojciech Ślusarski
  Copyright (C) 2020 Marcin Rybacki
@@ -371,6 +371,18 @@ namespace QuantLib {
                                          Real tte,
                                          Real bachelierPrice,
                                          Real discount = 1.0);
+
+    /*! Exact Bachelier implied volatility
+
+        It is calculated using the analytic implied volatility formula
+        of Jaeckel (2017), "Implied Normal Volatility"
+    */
+    Real bachelierBlackFormulaImpliedVolExact(Option::Type optionType,
+                                              Real strike,
+                                              Real forward,
+                                              Real tte,
+                                              Real bachelierPrice,
+                                              Real discount = 1.0);
 
     /*! Bachelier formula for standard deviation derivative
         \warning instead of volatility it uses standard deviation, i.e.

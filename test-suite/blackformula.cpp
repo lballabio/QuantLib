@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2013 Gary Kennedy
- Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015, 2024 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
  Copyright (C) 2020 Marcin Rybacki
 
@@ -35,7 +35,6 @@ BOOST_AUTO_TEST_SUITE(BlackFormulaTests)
 
 BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
 
-
     BOOST_TEST_MESSAGE("Testing Bachelier implied vol...");
 
     Real forward = 1.0;
@@ -55,9 +54,16 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
 
         Real impliedBpVol = bachelierBlackFormulaImpliedVol(optionType,strike, forward, tte, callPrem, discount);
 
-        if (std::fabs(bpvol-impliedBpVol)>1.0e-12){
+        if (std::fabs(bpvol - impliedBpVol) > 1.0e-12) {
             BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol );
         }
+
+        Real impliedBpVolExact = bachelierBlackFormulaImpliedVolExact(optionType,strike, forward, tte, callPrem, discount);
+
+        if (std::fabs(bpvol - impliedBpVolExact) > 1.0e-15) {
+            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVolExact );
+        }
+
     }
 }
 
