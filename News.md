@@ -1,7 +1,7 @@
 Changes for QuantLib 1.35:
 ==========================
 
-QuantLib 1.35 includes 29 pull requests from several contributors.
+QuantLib 1.35 includes 32 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -70,6 +70,12 @@ Instruments
 
 - Callable bonds didn't account for nominal when calculating OAS; this
   is now fixed.  Thanks to Hristo Raykov (@HristoRaykov).
+
+- For European swaption, sometimes the price is quoted as a forward
+  price to be paid at exercise time.  Such a quoted price can now be
+  used for implied-volatility calculation. The forward price is also
+  returned by the Black and Bachelier swaption engines as an
+  additional result (@lballabio).
 
 
 Random numbers
@@ -145,5 +151,6 @@ Deprecated features
 
 **Thanks go also** to Dmitri Goloubentsev (@DmitriGoloubentsev),
  Eleanor Green (@eleanorTurintech), Tom Anderson (@tomwhoiscontrary),
- Peter Caspers (@pcaspers), Jonghee Lee (@nistick21) and Ralf Konrad
- Eckel (@ralfkonrad) for miscellaneous fixes, improvements or reports.
+ Peter Caspers (@pcaspers), Jonghee Lee (@nistick21), Ralf Konrad
+ Eckel (@ralfkonrad) and the XAD team (@auto-differentiation-dev) for
+ miscellaneous fixes, improvements or reports.
