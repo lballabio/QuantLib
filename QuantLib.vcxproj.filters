@@ -981,9 +981,6 @@
     <ClInclude Include="ql\math\comparison.hpp">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\curve.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="ql\math\errorfunction.hpp">
       <Filter>math</Filter>
     </ClInclude>
@@ -1009,9 +1006,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\kernelfunctions.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\math\lexicographicalview.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\linearleastsquaresregression.hpp">
@@ -1438,9 +1432,6 @@
       <Filter>math\copulas</Filter>
     </ClInclude>
     <ClInclude Include="ql\patterns\all.hpp">
-      <Filter>patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\patterns\composite.hpp">
       <Filter>patterns</Filter>
     </ClInclude>
     <ClInclude Include="ql\patterns\curiouslyrecurring.hpp">
@@ -2134,9 +2125,6 @@
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\discountcurve.hpp">
-      <Filter>termstructures\yield</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\termstructures\yield\drifttermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\yield\fittedbonddiscountcurve.hpp">

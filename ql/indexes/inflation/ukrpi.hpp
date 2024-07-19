@@ -55,30 +55,6 @@ namespace QuantLib {
                             ts) {}
     };
 
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    //! Year-on-year UK RPI (i.e. a ratio of UK RPI)
-    /*! \deprecated Pass the UKRPI index to YoYInflationIndex instead.
-                    Deprecated in version 1.31.
-    */
-    class [[deprecated("Pass the UKRPI index to YoYInflationIndex instead")]] YYUKRPIr : public YoYInflationIndex {
-      public:
-        explicit YYUKRPIr(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YYR_RPI",
-                            UKRegion(),
-                            false,
-                            interpolated,
-                            true,
-                            Monthly,
-                            Period(1, Months),
-                            GBPCurrency(),
-                            ts) {}
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

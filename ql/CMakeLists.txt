@@ -1414,7 +1414,6 @@ set(QL_HEADERS
     math/copulas/maxcopula.hpp
     math/copulas/mincopula.hpp
     math/copulas/plackettcopula.hpp
-    math/curve.hpp
     math/distributions/binomialdistribution.hpp
     math/distributions/bivariatenormaldistribution.hpp
     math/distributions/bivariatestudenttdistribution.hpp
@@ -1469,7 +1468,6 @@ set(QL_HEADERS
     math/interpolations/sabrinterpolation.hpp
     math/interpolations/xabrinterpolation.hpp
     math/kernelfunctions.hpp
-    math/lexicographicalview.hpp
     math/linearleastsquaresregression.hpp
     math/matrix.hpp
     math/matrixutilities/basisincompleteordered.hpp
@@ -1845,7 +1843,6 @@ set(QL_HEADERS
     numericalmethod.hpp
     option.hpp
     optional.hpp
-    patterns/composite.hpp
     patterns/curiouslyrecurring.hpp
     patterns/lazyobject.hpp
     patterns/observable.hpp
@@ -2116,7 +2113,6 @@ set(QL_HEADERS
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
     termstructures/yield/discountcurve.hpp
-    termstructures/yield/drifttermstructure.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
     termstructures/yield/flatforward.hpp
     termstructures/yield/forwardcurve.hpp
