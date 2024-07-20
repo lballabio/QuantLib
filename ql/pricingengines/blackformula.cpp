@@ -892,7 +892,7 @@ namespace QuantLib {
 
         // handle case strike = forward
 
-        if (std::abs(strike - forward) < 1E-15) {
+        if (close_enough(strike, forward)) {
             return bachelierPrice / (std::sqrt(tte) * phi(0.0));
         }
 
@@ -900,7 +900,7 @@ namespace QuantLib {
 
         Real timeValue = bachelierPrice - std::max(theta * (forward - strike), 0.0);
 
-        if (std::abs(timeValue) < 1E-15)
+        if (close_enough(timeValue, 0.0))
             return 0.0;
 
         QL_REQUIRE(timeValue > 0.0, "bachelierBlackFormulaImpliedVolExact(theta="
