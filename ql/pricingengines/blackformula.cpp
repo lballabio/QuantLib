@@ -835,10 +835,13 @@ namespace QuantLib {
     }
 
     namespace {
+
         static boost::math::normal_distribution<double> normal_dist;
+
         Real phi(const Real x) {
             return boost::math::pdf(normal_dist, x);
         }
+
         Real Phi(const Real x) {
             return boost::math::cdf(normal_dist, x);
         }
@@ -875,6 +878,7 @@ namespace QuantLib {
                                 xbar * (6.0 * q + xbar * (-6.0 + q * xbar * (3.0 + xbar * xbar)))));
             return xstar;
         }
+
     } // namespace
 
     Real bachelierBlackFormulaImpliedVolExact(Option::Type optionType,

@@ -33,14 +33,14 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BlackFormulaTests)
 
-BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier implied vol...");
 
     Real forward = 1.0;
     Real bpvol = 0.01;
     Real tte = 10.0;
-    Real stdDev = bpvol*std::sqrt(tte);
+    Real stdDev = bpvol * std::sqrt(tte);
     Option::Type optionType = Option::Call;
     Real discount = 0.95;
 
@@ -52,18 +52,19 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
 
         Real callPrem = bachelierBlackFormula(optionType, strike, forward, stdDev, discount);
 
-        Real impliedBpVol = bachelierBlackFormulaImpliedVol(optionType,strike, forward, tte, callPrem, discount);
+        Real impliedBpVol =
+            bachelierBlackFormulaImpliedVol(optionType, strike, forward, tte, callPrem, discount);
 
         if (std::fabs(bpvol - impliedBpVol) > 1.0e-12) {
-            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol );
+            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol);
         }
 
-        Real impliedBpVolExact = bachelierBlackFormulaImpliedVolExact(optionType,strike, forward, tte, callPrem, discount);
+        Real impliedBpVolExact = bachelierBlackFormulaImpliedVolExact(optionType, strike, forward,
+                                                                      tte, callPrem, discount);
 
         if (std::fabs(bpvol - impliedBpVolExact) > 1.0e-15) {
-            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVolExact );
+            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVolExact);
         }
-
     }
 }
 
