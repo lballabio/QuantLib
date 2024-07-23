@@ -107,27 +107,6 @@ BOOST_AUTO_TEST_CASE(testIteratingDefaultContainer) {
         const std::vector<Real> expected{prices[2], prices[0], prices[1]};
         BOOST_TEST(tsValues == expected);
     }
-
-    // == deprecated ==
-    QL_DEPRECATED_DISABLE_WARNING
-
-    // accessing dates
-    {
-        std::vector<Date> tsDates;
-        std::copy(ts.cbegin_time(), ts.cend_time(), std::back_inserter(tsDates));
-        const std::vector<Date> expected{dates[2], dates[0], dates[1]};
-        BOOST_TEST(tsDates == expected);
-    }
-
-    // accessing values
-    {
-        std::vector<Real> tsValues;
-        std::copy(ts.cbegin_values(), ts.cend_values(), std::back_inserter(tsValues));
-        const std::vector<Real> expected{prices[2], prices[0], prices[1]};
-        BOOST_TEST(tsValues == expected);
-    }
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 BOOST_AUTO_TEST_CASE(testCustomContainer) {

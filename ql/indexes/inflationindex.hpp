@@ -211,28 +211,6 @@ namespace QuantLib {
             const Currency& currency,
             Handle<YoYInflationTermStructure> ts = {});
 
-        //! Old generic constructor for year-on-year indices.
-        /*! An index built with this constructor needs its past
-            fixings to be stored via the `addFixing` or `addFixings`
-            method.  Care must be taken about what to store: if
-            `ratio` is false, the stored values must be the
-            year-on-year values; if `ratio` is true, they must be the
-            past fixings of the underlying index.
-
-            \deprecated Use one of the other constructors instead.
-                        Deprecated in version 1.31.
-        */
-        QL_DEPRECATED
-        YoYInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
-            bool ratio, // is this one a genuine index or a ratio?
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            Handle<YoYInflationTermStructure> ts = {});
         //@}
 
         //! \name Index interface

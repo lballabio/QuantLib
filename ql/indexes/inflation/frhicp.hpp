@@ -55,30 +55,6 @@ namespace QuantLib {
                             ts) {}
     };
 
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    //! Year-on-year FR HICP (i.e. a ratio)
-    /*! \deprecated Pass the FRHICP index to YoYInflationIndex instead.
-                    Deprecated in version 1.31.
-    */
-    class [[deprecated("Pass the FRHICP index to YoYInflationIndex instead")]] YYFRHICPr : public YoYInflationIndex {
-      public:
-        explicit YYFRHICPr(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YYR_HICP",
-                            FranceRegion(),
-                            false,
-                            interpolated,
-                            true,
-                            Monthly,
-                            Period(1, Months),
-                            EURCurrency(),
-                            ts) {}
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 #endif

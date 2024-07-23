@@ -72,32 +72,6 @@ namespace QuantLib {
                             ts) {}
     };
 
-    QL_DEPRECATED_DISABLE_WARNING
-
-    //! Year-on-year GenericCPI (i.e. a ratio)
-    /*! \deprecated Pass a zero-inflation index to YoYInflationIndex instead.
-                    Deprecated in version 1.31.
-    */
-    class [[deprecated("Pass a zero-inflation index to YoYInflationIndex instead")]] YYGenericCPIr : public YoYInflationIndex {
-      public:
-        YYGenericCPIr(Frequency frequency,
-                      bool revised,
-                      bool interpolated,
-                      const Period &lag,
-                      const Currency &ccy,
-                      const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YYR_CPI",
-                            GenericRegion(),
-                            revised,
-                            interpolated,
-                            true,
-                            frequency,
-                            lag,
-                            ccy,
-                            ts) {}
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 #endif

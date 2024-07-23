@@ -204,35 +204,16 @@ namespace QuantLib {
         registerWith(yoyInflation_);
     }
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
                                          bool interpolated,
-                                         Frequency frequency,
-                                         const Period& availabilityLag,
-                                         const Currency& currency,
-                                         Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(familyName, region, revised, interpolated, false,
-                        frequency, availabilityLag, currency, std::move(yoyInflation)) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
-                                         const Region& region,
-                                         bool revised,
-                                         bool interpolated,
-                                         bool ratio,
                                          Frequency frequency,
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
     : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
-      interpolated_(interpolated), ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
-        if (ratio)
-            underlyingIndex_ = ext::make_shared<ZeroInflationIndex>(familyName, region, revised,
-                                                                    frequency, availabilityLag, currency);
+      interpolated_(interpolated), ratio_(false), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
     }
 

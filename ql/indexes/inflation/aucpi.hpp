@@ -58,31 +58,6 @@ namespace QuantLib {
                             ts) {}
     };
 
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    //! Year-on-year AUCPI (i.e. a ratio)
-    /*! \deprecated Pass the AUCPI index to YoYInflationIndex instead.
-                    Deprecated in version 1.31.
-    */
-    class [[deprecated("Pass the AUCPI index to YoYInflationIndex instead")]] YYAUCPIr : public YoYInflationIndex {
-      public:
-        YYAUCPIr(Frequency frequency,
-                 bool revised,
-                 bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YYR_CPI",
-                            AustraliaRegion(),
-                            revised,
-                            interpolated,
-                            true,
-                            frequency,
-                            Period(2, Months),
-                            AUDCurrency(),
-                            ts) {}
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 #endif

@@ -61,12 +61,6 @@ namespace QuantLib {
         ext::shared_ptr<SmileSection> smile_;
     };
 
-    /*! \deprecated Renamed to MarketQuotedOptionPricer.
-         Deprecated in version 1.31.
-    */
-    [[deprecated("Renamed to MarketQuotedOptionPricer")]]
-    typedef MarketQuotedOptionPricer BlackVanillaOptionPricer;
-
     class GFunction {
       public:
         virtual ~GFunction() = default;

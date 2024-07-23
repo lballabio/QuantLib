@@ -23,8 +23,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     CPICouponPricer::CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure)
     : nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(nominalTermStructure_);
@@ -36,8 +34,6 @@ namespace QuantLib {
         registerWith(capletVol_);
         registerWith(nominalTermStructure_);
     }
-
-    QL_DEPRECATED_ENABLE_WARNING
 
     void CPICouponPricer::setCapletVolatility(
        const Handle<CPIVolatilitySurface>& capletVol) {
@@ -103,30 +99,17 @@ namespace QuantLib {
             Real stdDev =
             std::sqrt(capletVolatility()->totalVariance(fixingDate,
                                                         effStrike));
-            QL_DEPRECATED_DISABLE_WARNING
             return optionletPriceImp(optionType,
                                      effStrike,
-                                     adjustedFixing(),
+                                     coupon_->indexRatio(coupon_->accrualEndDate()),
                                      stdDev);
-            QL_DEPRECATED_ENABLE_WARNING
         }
-    }
-
-
-    Rate CPICouponPricer::adjustedFixing(Rate fixing) const {
-        if (fixing != Null<Rate>())
-            return fixing;
-
-        return coupon_->indexRatio(coupon_->accrualEndDate());
     }
 
 
     void CPICouponPricer::initialize(const InflationCoupon& coupon) {
         coupon_ = dynamic_cast<const CPICoupon*>(&coupon);
         gearing_ = coupon_->fixedRate();
-        QL_DEPRECATED_DISABLE_WARNING
-        spread_ = coupon_->spread();
-        QL_DEPRECATED_ENABLE_WARNING
         paymentDate_ = coupon_->date();
 
         // past or future fixing is managed in YoYInflationIndex::fixing()
@@ -150,18 +133,12 @@ namespace QuantLib {
 
 
     Rate CPICouponPricer::swapletRate() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return gearing_ * adjustedFixing() + spread_;
-        QL_DEPRECATED_ENABLE_WARNING
-        // after deprecating and removing adjustedFixing:
-        // return accruedRate(coupon_->accrualEndDate());
+        return accruedRate(coupon_->accrualEndDate());
     }
 
 
     Rate CPICouponPricer::accruedRate(Date settlementDate) const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return gearing_ * coupon_->indexRatio(settlementDate) + spread_;
-        QL_DEPRECATED_ENABLE_WARNING
+        return gearing_ * coupon_->indexRatio(settlementDate);
     }
 
 }
