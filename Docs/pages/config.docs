@@ -128,20 +128,6 @@
     does not check access and can cause segmentation faults.
 
     \code
-    #define QL_USE_STD_FUNCTION
-    \endcode
-    If defined (the default), `std::function`, `std::bind` and related
-    classes and functions are used. If disabled, the corresponding
-    Boost facilities are used instead.
-
-    \code
-    #define QL_USE_STD_TUPLE
-    \endcode
-    If defined (the default), `std::tuple` and related classes and
-    functions are used. If disabled, the corresponding Boost
-    facilities are used instead..
-
-    \code
     #define QL_USE_STD_ANY
     \endcode
     If enabled, `std::any` and related classes and functions will be

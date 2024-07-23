@@ -25,28 +25,16 @@
 #define quantlib_tuple_hpp
 
 #include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_TUPLE)
 #include <tuple>
-#else
-#include <boost/tuple/tuple.hpp>
-#endif
 
 namespace QuantLib {
 
     namespace ext {
 
-        #if defined(QL_USE_STD_TUPLE)
         using std::tuple;                   // NOLINT(misc-unused-using-decls)
         using std::make_tuple;              // NOLINT(misc-unused-using-decls)
         using std::get;                     // NOLINT(misc-unused-using-decls)
         using std::tie;                     // NOLINT(misc-unused-using-decls)
-        #else
-        using boost::tuple;                 // NOLINT(misc-unused-using-decls)
-        using boost::make_tuple;            // NOLINT(misc-unused-using-decls)
-        using boost::get;                   // NOLINT(misc-unused-using-decls)
-        using boost::tie;                   // NOLINT(misc-unused-using-decls)
-        #endif
 
     }
 
