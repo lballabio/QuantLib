@@ -31,13 +31,34 @@ namespace QuantLib {
 
     namespace ext {
 
-        using std::function;                       // NOLINT(misc-unused-using-decls)
+        /*! \deprecated Use std::function instead.
+                        Deprecated in version 1.36.
+        */
+        template <typename... Ts>
+        using function [[deprecated("Use std::function instead")]] = std::function<Ts...>;     // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::bind instead.
+                        Deprecated in version 1.36.
+        */
         using std::bind;                           // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::ref instead.
+                        Deprecated in version 1.36.
+        */
         using std::ref;                            // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::cref instead.
+                        Deprecated in version 1.36.
+        */
         using std::cref;                           // NOLINT(misc-unused-using-decls)
-        namespace placeholders {
+
+        /*! \deprecated Use the std::placeholders namespace instead.
+                        Deprecated in version 1.36.
+        */
+        namespace [[deprecated("Use the std::placeholders namespace instead")]] placeholders {
             using namespace std::placeholders;     // NOLINT(misc-unused-using-decls)
         }
+
         /*! \deprecated To check if a function is empty, use it in a bool context
                         instead of comparing it to QL_NULL_FUNCTION.
                         Deprecated in version 1.32.

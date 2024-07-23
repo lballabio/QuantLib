@@ -31,9 +31,25 @@ namespace QuantLib {
 
     namespace ext {
 
-        using std::tuple;                   // NOLINT(misc-unused-using-decls)
+        /*! \deprecated Use std::tuple instead.
+                        Deprecated in version 1.36.
+        */
+        template <typename... Ts>
+        using tuple [[deprecated("Use std::tuple instead")]] = std::tuple<Ts...>;    // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::make_tuple instead.
+                        Deprecated in version 1.36.
+        */
         using std::make_tuple;              // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::get instead.
+                        Deprecated in version 1.36.
+        */
         using std::get;                     // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::tie or structured bindings instead.
+                        Deprecated in version 1.36.
+        */
         using std::tie;                     // NOLINT(misc-unused-using-decls)
 
     }
