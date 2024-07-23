@@ -52,12 +52,21 @@ namespace QuantLib {
         */
         using std::cref;                           // NOLINT(misc-unused-using-decls)
 
+#if defined(__GNUC__) && (__GNUC__ <= 9)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
         /*! \deprecated Use the std::placeholders namespace instead.
                         Deprecated in version 1.36.
         */
         namespace [[deprecated("Use the std::placeholders namespace instead")]] placeholders {
             using namespace std::placeholders;     // NOLINT(misc-unused-using-decls)
         }
+
+#if defined(__GNUC__) && (__GNUC__ <= 9)
+#pragma GCC diagnostic pop
+#endif
 
         /*! \deprecated To check if a function is empty, use it in a bool context
                         instead of comparing it to QL_NULL_FUNCTION.
