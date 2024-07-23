@@ -64,8 +64,8 @@ if test "$ql_openmp" = "yes" ; then
    AC_SUBST([CXXFLAGS],["${CXXFLAGS} ${OPENMP_CXXFLAGS}"])
 fi
 
-# Check for C++14 support
-QL_CHECK_CPP14
+# Check for C++17 support
+QL_CHECK_CPP17
 
 # Check for other compiler flags
 QL_CHECK_SYSTEM_HEADER_PREFIX

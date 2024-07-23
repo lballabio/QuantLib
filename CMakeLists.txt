@@ -72,16 +72,16 @@ set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source
 # set -lpapi here
 set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
-# Require C++14 or higher
+# Require C++17 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 14)
-elseif(CMAKE_CXX_STANDARD LESS 14)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
+    set(CMAKE_CXX_STANDARD 17)
+elseif(CMAKE_CXX_STANDARD LESS 17)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 17 or higher")
 endif()
 if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
-# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
+# Avoid use of compiler language extensions, i.e. -std=c++17 not -std=gnu++17
 if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()

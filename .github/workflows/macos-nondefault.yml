@@ -13,7 +13,6 @@ jobs:
         classes: [boost, std]
         include:
           - classes: std
-            cxxflags: "-std=c++17"
             configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-optional --enable-std-any
     steps:
     - uses: actions/checkout@v4
@@ -28,7 +27,7 @@ jobs:
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --disable-faster-lazy-objects --enable-throwing-in-cycles --enable-null-as-functions ${{ matrix.configureflags }} CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror ${{ matrix.cxxflags }}"
+        ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --disable-faster-lazy-objects --enable-throwing-in-cycles --enable-null-as-functions ${{ matrix.configureflags }} CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror"
         make -j 3
     - name: Run tests
       run: |

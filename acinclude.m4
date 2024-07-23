@@ -1,24 +1,22 @@
 
-# QL_CHECK_CPP14
+# QL_CHECK_CPP17
 # --------------------
-# Check whether C++14 features are supported by default.
-# If not (e.g., with Clang on Mac OS) add -std=c++14
-AC_DEFUN([QL_CHECK_CPP14],
-[AC_MSG_CHECKING([for C++14 support])
+# Check whether C++17 features are supported by default.
+# If not (e.g., with Clang on Mac OS) add -std=c++17
+AC_DEFUN([QL_CHECK_CPP17],
+[AC_MSG_CHECKING([for C++17 support])
  AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM(
-        [[@%:@include <memory>
-          class C {
-            public:
-              C(int) noexcept;
-              auto f() { return std::make_unique<C>(1); }
-          };
+        [[@%:@include <optional>
+          int main() {
+              auto x = std::optional<int>{42};
+          }
           ]],
         [[]])],
     [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no: adding -std=c++14 to CXXFLAGS])
-     AC_SUBST([CPP14_CXXFLAGS],["-std=c++14"])
-     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++14"])
+    [AC_MSG_RESULT([no: adding -std=c++17 to CXXFLAGS])
+     AC_SUBST([CPP17_CXXFLAGS],["-std=c++17"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++17"])
     ])
 ])
 
