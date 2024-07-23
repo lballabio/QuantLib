@@ -24,7 +24,7 @@
 namespace QuantLib {
     FdmMesherIntegral::FdmMesherIntegral(
         const ext::shared_ptr<FdmMesherComposite>& mesher,
-        const ext::function<Real(const Array&, const Array&)>& integrator1d)
+        const std::function<Real(const Array&, const Array&)>& integrator1d)
     : meshers_(mesher->getFdm1dMeshers().begin(),
                mesher->getFdm1dMeshers().end()),
       integrator1d_(integrator1d) {

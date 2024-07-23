@@ -113,7 +113,7 @@ namespace QuantLib {
         Array state(const MultiPath& path, Size t) const override;
         Real operator()(const MultiPath& path, Size t) const override;
 
-        std::vector<ext::function<Real(Array)> > basisSystem() const override;
+        std::vector<std::function<Real(Array)> > basisSystem() const override;
 
       protected:
         Real payoff(const Array& state) const;
@@ -122,7 +122,7 @@ namespace QuantLib {
         const ext::shared_ptr<Payoff> payoff_;
 
         Real scalingValue_ = 1.0;
-        std::vector<ext::function<Real(Array)> > v_;
+        std::vector<std::function<Real(Array)> > v_;
     };
 
     template <class RNG> inline

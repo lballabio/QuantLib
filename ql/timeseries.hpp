@@ -169,9 +169,9 @@ namespace QuantLib {
 
       private:
         typedef typename Container::value_type container_value_type;
-        typedef ext::function<Date(const container_value_type&)>
+        typedef std::function<Date(const container_value_type&)>
                                                               projection_time;
-        typedef ext::function<T(const container_value_type&)>
+        typedef std::function<T(const container_value_type&)>
                                                              projection_value;
 
       public:

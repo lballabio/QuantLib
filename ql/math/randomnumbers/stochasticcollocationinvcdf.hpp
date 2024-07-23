@@ -42,7 +42,7 @@ namespace QuantLib {
     class StochasticCollocationInvCDF {
       public:
         StochasticCollocationInvCDF(
-            const ext::function<Real(Real)>& invCDF,
+            const std::function<Real(Real)>& invCDF,
             Size lagrangeOrder,
             Real pMax = Null<Real>(),
             Real pMin = Null<Real>());

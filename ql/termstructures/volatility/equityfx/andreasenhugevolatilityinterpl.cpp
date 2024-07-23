@@ -467,11 +467,11 @@ namespace QuantLib {
         return rTS_;
     }
 
-    ext::tuple<Real, Real, Real>
+    std::tuple<Real, Real, Real>
     AndreasenHugeVolatilityInterpl::calibrationError() const {
         calculate();
 
-        return ext::make_tuple(minError_, maxError_, avgError_);
+        return std::make_tuple(minError_, maxError_, avgError_);
     }
 
     Size AndreasenHugeVolatilityInterpl::getExerciseTimeIdx(Time t) const {
@@ -484,13 +484,13 @@ namespace QuantLib {
     Real AndreasenHugeVolatilityInterpl::getCacheValue(
         Real strike, const TimeValueCacheType::const_iterator& f) const {
 
-        const Real fwd = ext::get<0>(f->second);
+        const Real fwd = std::get<0>(f->second);
         const Real k = std::log(strike / fwd);
 
         const Real s = std::max(gridPoints_[1],
             std::min(*(gridPoints_.end()-2), k));
 
-        return (*(ext::get<2>(f->second)))(s);
+        return (*(std::get<2>(f->second)))(s);
     }
 
     Array AndreasenHugeVolatilityInterpl::getPriceSlice(
@@ -513,7 +513,7 @@ namespace QuantLib {
         const DiscountFactor df = rTS_->discount(t);
 
         if (f != priceCache_.end()) {
-            const Real fwd = ext::get<0>(f->second);
+            const Real fwd = std::get<0>(f->second);
 
             Real price = getCacheValue(strike, f);
 
@@ -546,7 +546,7 @@ namespace QuantLib {
 
         Real fwd = spot_->value()*qTS_->discount(t)/df;
 
-        priceCache_[t] = ext::make_tuple(
+        priceCache_[t] = std::make_tuple(
                 fwd, prices,
                 ext::make_shared<CubicNaturalSpline>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
@@ -622,7 +622,7 @@ namespace QuantLib {
 
         Real fwd = spot_->value()*qTS_->discount(t)/rTS_->discount(t);
 
-        localVolCache_[t] = ext::make_tuple(
+        localVolCache_[t] = std::make_tuple(
                 fwd, localVol,
                 ext::make_shared<LinearInterpolation>(
                     gridPoints_.begin()+1, gridPoints_.end()-1,
