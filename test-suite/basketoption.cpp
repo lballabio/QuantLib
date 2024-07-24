@@ -912,7 +912,7 @@ BOOST_AUTO_TEST_CASE(testOddSamples) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testLocalVolatilitySpreadOption, *precondition(if_speed(Fast))) {
+BOOST_AUTO_TEST_CASE(testLocalVolatilitySpreadOption) {
 
     BOOST_TEST_MESSAGE("Testing 2D local-volatility spread-option pricing...");
 
