@@ -3386,6 +3386,11 @@ BOOST_AUTO_TEST_CASE(testStartOfMonth) {
         // check that som is in the same month as counter
         if (som.month() != counter.month())
             BOOST_FAIL("\n  " << som << " is not in the same month as " << counter);
+        // Check that previous business day is in a different month
+        if (c.advance(som, -1, Days, Unadjusted).month() == som.month())
+            BOOST_FAIL("\n  " << c.advance(som, -1, Days, Unadjusted)
+                              << " is in the same month as "
+                              << som);
         counter = counter + 1;
     }
 }
@@ -3407,6 +3412,11 @@ BOOST_AUTO_TEST_CASE(testEndOfMonth) {
         // check that eom is in the same month as counter
         if (eom.month() != counter.month())
             BOOST_FAIL("\n  " << eom << " is not in the same month as " << counter);
+        // Check that next business day is in a different month
+        if (c.advance(eom, 1, Days, Unadjusted).month() == eom.month())
+            BOOST_FAIL("\n  " << c.advance(eom, 1, Days, Unadjusted) 
+                              << " is in the same month as "
+                              << eom);
         counter = counter + 1;
     }
 }
