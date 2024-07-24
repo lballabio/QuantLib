@@ -1,0 +1,30 @@
+name: Fix deprecated uses of ext namespace
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  namespaces:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check
+      run: |
+        shopt -s globstar
+        sed -i -e 's/ext::function\b/std::function/g' **/*.[hc]pp
+        sed -i -e 's/ext::bind\b/std::bind/g' **/*.[hc]pp
+        sed -i -e 's/ext::ref\b/std::ref/g' **/*.[hc]pp
+        sed -i -e 's/ext::cref\b/std::cref/g' **/*.[hc]pp
+        sed -i -e 's/ext::placeholders\b/std::placeholders/g' **/*.[hc]pp
+        sed -i -e 's/ext::tuple\b/std::tuple/g' **/*.[hc]pp
+        sed -i -e 's/ext::make_tuple\b/std::make_tuple/g' **/*.[hc]pp
+        sed -i -e 's/ext::get\b/std::get/g' **/*.[hc]pp
+        sed -i -e 's/ext::tie\b/std::tie/g' **/*.[hc]pp
+    - uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: fix-ext-namespace-${{ github.ref_name }}
+        delete-branch: true
+        commit-message: 'Fix deprecated uses of ext namespace'
+        title: 'Fix deprecated uses of ext namespace'
+        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

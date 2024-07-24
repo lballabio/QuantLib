@@ -200,7 +200,7 @@ namespace QuantLib {
 
     Real IvopTwoDim(Real eps, Real chi, Real theta, Real /*rho*/,
                     Real v0, Time tau, Real rtax,
-                    const ext::function<Real(Real)>& payoff) {
+                    const std::function<Real(Real)>& payoff) {
 
         Real ss=0.0;
         std::unique_ptr<double[]> xiv(new double[2048*2048+1]);

@@ -181,7 +181,7 @@ namespace QuantLib {
         Real percentile(const Date& d, Real percentile) const override;
         /*! Returns the VaR value for a given percentile and the 95 confidence
         interval of that value. */
-        virtual ext::tuple<Real, Real, Real> percentileAndInterval(
+        virtual std::tuple<Real, Real, Real> percentileAndInterval(
             const Date& d, Real percentile) const;
         /*! Distributes the total VaR amount along the portfolio counterparties.
             The passed loss amount is in loss units.
@@ -524,7 +524,7 @@ namespace QuantLib {
     template<template <class, class> class D, class C, class URNG>
     Real RandomLM<D, C, URNG>::percentile(const Date& d, Real perc) const {
         // need to specify return type in tuples' get is parametric
-        return ext::get<0>(percentileAndInterval(d, perc));
+        return std::get<0>(percentileAndInterval(d, perc));
     }
 
 
@@ -535,7 +535,7 @@ namespace QuantLib {
     of the stimator just computed. See the reference for a discussion.
     */
     template<template <class, class> class D, class C, class URNG>
-    ext::tuple<Real, Real, Real> RandomLM<D, C, URNG>::percentileAndInterval(const Date& d,
+    std::tuple<Real, Real, Real> RandomLM<D, C, URNG>::percentileAndInterval(const Date& d,
                                                                              Real percentile) const {
 
         QL_REQUIRE(percentile >= 0. && percentile <= 1.,
@@ -613,7 +613,7 @@ namespace QuantLib {
         lowerPercentile = rankLosses[r];
         upperPercentile = rankLosses[s];
 
-        return ext::make_tuple(quantileValue, lowerPercentile, upperPercentile);
+        return std::make_tuple(quantileValue, lowerPercentile, upperPercentile);
     }
 
 

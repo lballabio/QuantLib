@@ -140,7 +140,7 @@ namespace QuantLib {
 
     Concentrating1dMesher::Concentrating1dMesher(
         Real start, Real end, Size size,
-        const std::vector<ext::tuple<Real, Real, bool> >& cPoints,
+        const std::vector<std::tuple<Real, Real, bool> >& cPoints,
         Real tol)
     : Fdm1dMesher(size) {
 
@@ -148,8 +148,8 @@ namespace QuantLib {
 
         std::vector<Real> points, betas;
         for (const auto& cPoint : cPoints) {
-            points.push_back(ext::get<0>(cPoint));
-            betas.push_back(squared(ext::get<1>(cPoint) * (end - start)));
+            points.push_back(std::get<0>(cPoint));
+            betas.push_back(squared(std::get<1>(cPoint) * (end - start)));
         }
 
         // get scaling factor a so that y(1) = end
@@ -186,7 +186,7 @@ namespace QuantLib {
         std::vector<std::pair<Real, Real> > w(1, std::make_pair(0.0, 0.0));
 
         for (Size i=0; i < points.size(); ++i) {
-            if (ext::get<2>(cPoints[i]) && points[i] > start && points[i] < end) {
+            if (std::get<2>(cPoints[i]) && points[i] > start && points[i] < end) {
 
                 const Size j = std::distance(y.begin(),
                         std::lower_bound(y.begin(), y.end(), points[i]));

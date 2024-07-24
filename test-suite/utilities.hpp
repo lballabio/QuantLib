@@ -75,7 +75,7 @@ namespace QuantLib {
 
         // used to avoid no-assertion messages in Boost 1.35
         class quantlib_test_case {
-            ext::function<void()> test_;
+            std::function<void()> test_;
           public:
             template <class F>
             explicit quantlib_test_case(F test) : test_(test) {}

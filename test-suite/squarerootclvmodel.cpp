@@ -62,13 +62,13 @@ BOOST_AUTO_TEST_SUITE(SquareRootCLVModelTests)
 
 class CLVModelPayoff : public PlainVanillaPayoff {
   public:
-    CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+    CLVModelPayoff(Option::Type type, Real strike, std::function<Real(Real)> g)
     : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
     Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
   private:
-    const ext::function<Real(Real)> g_;
+    const std::function<Real(Real)> g_;
 };
 
 typedef boost::math::non_central_chi_squared_distribution<Real> chi_squared_type;
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVVanillaPricing) {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const ext::function<Real(Real)> f = [&](Real xi) -> Real {
+        const std::function<Real(Real)> f = [&](Real xi) -> Real {
             return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
         };
 
@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
     const SquareRootCLVModel model(
         bsProcess, sqrtProcess, calibrationDates, 14, 1-1e-10, 1e-10);
 
-    const ext::function<Real(Time, Real)> g = model.g();
+    const std::function<Real(Time, Real)> g = model.g();
 
     const Real strikes[] = { 80, 100, 120 };
     const Size offsets[] = { 92, 182, 183, 184, 185, 186, 365 };
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
 
             const CLVModelPayoff clvModelPayoff(optionType, strike, [&](Real x) { return g(t, x); });
 
-            const ext::function<Real(Real)> f = [&](Real xi) -> Real {
+            const std::function<Real(Real)> f = [&](Real xi) -> Real {
                 return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
             };
 
@@ -306,7 +306,7 @@ class SquareRootCLVCalibrationFunction : public CostFunction {
                 bsProcess_, sqrtProcess, calibrationDates_,
                 14, 1-1e-14, 1e-14);
 
-        const ext::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
+        const std::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
 
         Array retVal(resetDates_.size()*strikes_.size());
 
@@ -508,7 +508,7 @@ class NonZeroConstraint : public Constraint {
 //            clvCalibrationDates.begin(), clvCalibrationDates.end()),
 //        14, 1-1e-14, 1e-14);
 //
-//    const ext::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
+//    const std::function<Real(Time, Real)> gSqrt = clvSqrtModel.g();
 //
 //    const ext::shared_ptr<SimpleQuote> vol(
 //        ext::make_shared<SimpleQuote>(0.1));

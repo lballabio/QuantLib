@@ -1820,7 +1820,7 @@ BOOST_AUTO_TEST_CASE(testCosHestonCumulants) {
 
     for (Time t=0.01; t < 41.0; t+=t) {
         const Real nc1 = NumericalDifferentiation(
-            ext::function<Real(Real)>(
+            std::function<Real(Real)>(
                 LogCharacteristicFunction(1, t, cosEngine)),
             1, 1e-5, 5, central)(0.0);
 
@@ -1834,7 +1834,7 @@ BOOST_AUTO_TEST_CASE(testCosHestonCumulants) {
         }
 
         const Real nc2 = NumericalDifferentiation(
-            ext::function<Real(Real)>(
+            std::function<Real(Real)>(
                 LogCharacteristicFunction(2, t, cosEngine)),
             2, 1e-2, 5, central)(0.0);
 
@@ -1848,7 +1848,7 @@ BOOST_AUTO_TEST_CASE(testCosHestonCumulants) {
         }
 
         const Real nc3 = NumericalDifferentiation(
-            ext::function<Real(Real)>(
+            std::function<Real(Real)>(
                 LogCharacteristicFunction(3, t, cosEngine)),
             3, 5e-3, 7, central)(0.0);
 
@@ -1862,7 +1862,7 @@ BOOST_AUTO_TEST_CASE(testCosHestonCumulants) {
         }
 
         const Real nc4 = NumericalDifferentiation(
-            ext::function<Real(Real)>(
+            std::function<Real(Real)>(
                 LogCharacteristicFunction(4, t, cosEngine)),
             4, 5e-2, 9, central)(0.0);
 

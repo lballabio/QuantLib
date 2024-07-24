@@ -366,7 +366,7 @@ namespace QuantLib {
 
               const Real c_inf = -(C_u_inf + D_u_inf*v0).real();
 
-              const ext::function<Real()> uM = [=](){
+              const std::function<Real()> uM = [=](){
                   return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
               };
 

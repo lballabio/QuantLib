@@ -59,8 +59,8 @@ template <class Curve> class GlobalBootstrap {
       Traits::minValueAfter(), Traits::maxValueAfter() in this class against them.
     */
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
-                    ext::function<std::vector<Date>()> additionalDates,
-                    ext::function<Array()> additionalErrors,
+                    std::function<std::vector<Date>()> additionalDates,
+                    std::function<Array()> additionalErrors,
                     Real accuracy = Null<Real>());
     void setup(Curve *ts);
     void calculate() const;
@@ -70,8 +70,8 @@ template <class Curve> class GlobalBootstrap {
     Curve *ts_;
     Real accuracy_;
     mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
-    ext::function<std::vector<Date>()> additionalDates_;
-    ext::function<Array()> additionalErrors_;
+    std::function<std::vector<Date>()> additionalDates_;
+    std::function<Array()> additionalErrors_;
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_, numberHelpers_;
     mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
@@ -85,8 +85,8 @@ GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy) : ts_(0), accuracy_(accur
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
     std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
-    ext::function<std::vector<Date>()> additionalDates,
-    ext::function<Array()> additionalErrors,
+    std::function<std::vector<Date>()> additionalDates,
+    std::function<Array()> additionalErrors,
     Real accuracy)
 : ts_(nullptr), accuracy_(accuracy), additionalHelpers_(std::move(additionalHelpers)),
   additionalDates_(std::move(additionalDates)), additionalErrors_(std::move(additionalErrors)) {}
@@ -240,7 +240,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
       public:
         TargetFunction(const Size firstHelper,
                        const Size numberHelpers,
-                       ext::function<Array()> additionalErrors,
+                       std::function<Array()> additionalErrors,
                        Curve* ts,
                        std::vector<Real> lowerBounds,
                        std::vector<Real> upperBounds)
@@ -284,7 +284,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
       private:
         Size firstHelper_, numberHelpers_;
-        ext::function<Array()> additionalErrors_;
+        std::function<Array()> additionalErrors_;
         Curve *ts_;
         const std::vector<Real> lowerBounds_, upperBounds_;
     };

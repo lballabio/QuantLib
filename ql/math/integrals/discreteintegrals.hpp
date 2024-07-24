@@ -50,7 +50,7 @@ namespace QuantLib {
         : Integrator(Null<Real>(), evaluations) {}
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override;
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b) const override;
     };
 
     class DiscreteSimpsonIntegrator: public Integrator {
@@ -59,7 +59,7 @@ namespace QuantLib {
         : Integrator(Null<Real>(), evaluations) {}
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override;
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b) const override;
     };
 }
 #endif

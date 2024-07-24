@@ -1205,11 +1205,11 @@ BOOST_AUTO_TEST_CASE(testBiCGstab) {
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const ext::function<Array(const Array&)> matmult
+    const std::function<Array(const Array&)> matmult
         = [&](const Array& _x) { return axpy(a, _x); };
 
     SparseILUPreconditioner ilu(a, 4);
-    ext::function<Array(const Array&)> precond
+    std::function<Array(const Array&)> precond
         = [&](const Array& _x) { return ilu.apply(_x); };
 
     Array b(n*m);
@@ -1241,11 +1241,11 @@ BOOST_AUTO_TEST_CASE(testGMRES) {
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const ext::function<Array(const Array&)> matmult
+    const std::function<Array(const Array&)> matmult
         = [&](const Array& _x) { return axpy(a, _x); };
     
     SparseILUPreconditioner ilu(a, 4);
-    ext::function<Array(const Array&)> precond
+    std::function<Array(const Array&)> precond
         = [&](const Array& _x) { return ilu.apply(_x); };
     
     Array b(n*m);

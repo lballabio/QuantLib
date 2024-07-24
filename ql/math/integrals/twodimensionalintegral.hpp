@@ -43,7 +43,7 @@ namespace QuantLib {
                                ext::shared_ptr<Integrator> integratorY)
         : integratorX_(std::move(integratorX)), integratorY_(std::move(integratorY)) {}
 
-        Real operator()(const ext::function<Real (Real, Real)>& f,
+        Real operator()(const std::function<Real (Real, Real)>& f,
                         const std::pair<Real, Real>& a,
                         const std::pair<Real, Real>& b) const {
             return (*integratorX_)([&](Real x) { return g(f, x, a.second, b.second); },
@@ -51,7 +51,7 @@ namespace QuantLib {
         }
 
       private:
-        Real g(const ext::function<Real (Real, Real)>& f,
+        Real g(const std::function<Real (Real, Real)>& f,
                Real x, Real a, Real b) const {
             return (*integratorY_)([&](Real y) { return f(x, y); }, a, b);
         }

@@ -218,7 +218,7 @@ namespace QuantLib {
             ext::shared_ptr<Integration> getIntegration() const { return integration_; }
 
           private:
-            Real integrate(const ext::function<Real (Real)>& f,
+            Real integrate(const std::function<Real (Real)>& f,
                                            Real a,
                                            Real b) const override;
 
