@@ -86,21 +86,10 @@ endif()
 
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
-    if (CMAKE_CXX_STANDARD GREATER_EQUAL 17)
-        set(QL_USE_STD_ANY ON)
-        set(QL_USE_STD_OPTIONAL ON)
-    endif()
+    set(QL_USE_STD_ANY ON)
+    set(QL_USE_STD_OPTIONAL ON)
     set(QL_USE_STD_SHARED_PTR ON)
 endif()
-
-if (CMAKE_CXX_STANDARD LESS 17)
-    if (QL_USE_STD_ANY)
-        message(FATAL_ERROR "QL_USE_STD_ANY requires at least C++17")
-    endif()
-    if (QL_USE_STD_OPTIONAL)
-        message(FATAL_ERROR "QL_USE_STD_OPTIONAL requires at least C++17")
-    endif()
-endif ()
 
 # Set the default warning level we use to pass the GitHub workflows
 if (QL_ENABLE_DEFAULT_WARNING_LEVEL)

@@ -13,7 +13,7 @@ jobs:
         classes: [boost, std]
         include:
           - classes: std
-            configureflags: --enable-std-pointers --enable-std-optional --enable-std-any
+            configureflags: --enable-std-classes
     steps:
     - uses: actions/checkout@v4
     - name: Setup
@@ -28,6 +28,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --disable-faster-lazy-objects --enable-throwing-in-cycles --enable-null-as-functions ${{ matrix.configureflags }} CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror"
+        cat ql/config.hpp
         make -j 3
     - name: Run tests
       run: |

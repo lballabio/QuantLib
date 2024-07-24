@@ -388,8 +388,8 @@ AC_ARG_ENABLE([std-any],
               AS_HELP_STRING([--enable-std-any],
                              [If enabled, std::any and related classes and
                               functions will be used instead of boost::any.
-                              This requires C++17. If disabled (the default)
-                              the Boost facilities are used.]),
+                              If disabled (the default) the Boost facilities
+                              are used.]),
               [ql_use_std_any=$enableval],
               [ql_use_std_any=no])
 if test "$ql_use_std_any" = "yes" ; then
@@ -403,9 +403,8 @@ AC_ARG_ENABLE([std-optional],
               AS_HELP_STRING([--enable-std-optional],
                              [If enabled, std::optional and related
                               classes and functions will be used instead
-                              of boost::optional. This requires C++17.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
+                              of boost::optional. If disabled (the default)
+                              the Boost facilities are used.]),
               [ql_use_std_optional=$enableval],
               [ql_use_std_optional=no])
 if test "$ql_use_std_optional" = "yes" ; then
@@ -442,6 +441,10 @@ AC_ARG_ENABLE([std-classes],
               [ql_use_std_classes=$enableval],
               [ql_use_std_classes=no])
 if test "$ql_use_std_classes" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_ANY],[1],
+             [Define this if you want to use std::any.])
+   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
+             [Define this if you want to use std::optional.])
    AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
              [Define this if you want to use standard smart pointers.])
 fi
