@@ -3369,6 +3369,26 @@ BOOST_AUTO_TEST_CASE(testMexicoInaugurationDay) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testStartOfMonth) {
+    BOOST_TEST_MESSAGE("Testing start-of-month calculation...");
+
+    Calendar c = TARGET(); // any calendar would be OK
+
+    Date som, counter = Date::minDate() + 2 * Months;
+    Date last = Date::maxDate();
+
+    while (counter < last) {
+        som = c.startOfMonth(counter);
+        // check that som is som
+        if (!c.isStartOfMonth(som))
+            BOOST_FAIL("\n  " << som.weekday() << " " << som << " is not the first business day in "
+                              << som.month() << " " << som.year() << " according to " << c.name());
+        // check that som is in the same month as counter
+        if (som.month() != counter.month())
+            BOOST_FAIL("\n  " << som << " is not in the same month as " << counter);
+        counter = counter + 1;
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
