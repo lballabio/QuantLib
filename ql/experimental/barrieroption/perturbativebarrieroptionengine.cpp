@@ -83,11 +83,11 @@ namespace QuantLib {
                     Real taumax,
                     int iord,
                     int igm,
-                    const ext::function<Real(Real, Real)>& integr,
-                    const ext::function<Real(Real, Real)>& integalpha,
-                    const ext::function<Real(Real, Real)>& integs,
-                    const ext::function<Real(Real)>& alpha,
-                    const ext::function<Real(Real)>& sigmaq) {
+                    const std::function<Real(Real, Real)>& integr,
+                    const std::function<Real(Real, Real)>& integalpha,
+                    const std::function<Real(Real, Real)>& integs,
+                    const std::function<Real(Real)>& alpha,
+                    const std::function<Real(Real)>& sigmaq) {
         Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;
         Real tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;

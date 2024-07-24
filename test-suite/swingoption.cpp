@@ -53,7 +53,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SwingOptionTests)
 
-ext::function<Real(Real)> constant_b(Real b) {
+std::function<Real(Real)> constant_b(Real b) {
     return [=](Real x){ return b; };
 }
 
@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE(testExtendedOrnsteinUhlenbeckProcess) {
         ExtendedOrnsteinUhlenbeckProcess::Trapezodial,
         ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
 
-    ext::function<Real (Real)> f[] 
+    std::function<Real (Real)> f[] 
         = { [=](Real x) -> Real { return level; },
             [ ](Real x) -> Real { return x + 1.0; },
             [ ](Real x) -> Real { return std::sin(x); }}; 

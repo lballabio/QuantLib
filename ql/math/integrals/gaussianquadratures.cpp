@@ -69,7 +69,7 @@ namespace QuantLib {
 
         template <class Integration>
         Real GaussianQuadratureIntegrator<Integration>::integrate(
-            const ext::function<Real (Real)>& f, Real a, Real b) const {
+            const std::function<Real (Real)>& f, Real a, Real b) const {
 
             const Real c1 = 0.5*(b-a);
             const Real c2 = 0.5*(a+b);

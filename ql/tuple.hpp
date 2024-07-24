@@ -25,28 +25,32 @@
 #define quantlib_tuple_hpp
 
 #include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_TUPLE)
 #include <tuple>
-#else
-#include <boost/tuple/tuple.hpp>
-#endif
 
 namespace QuantLib {
 
     namespace ext {
 
-        #if defined(QL_USE_STD_TUPLE)
-        using std::tuple;                   // NOLINT(misc-unused-using-decls)
+        /*! \deprecated Use std::tuple instead.
+                        Deprecated in version 1.36.
+        */
+        template <typename... Ts>
+        using tuple [[deprecated("Use std::tuple instead")]] = std::tuple<Ts...>;    // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::make_tuple instead.
+                        Deprecated in version 1.36.
+        */
         using std::make_tuple;              // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::get instead.
+                        Deprecated in version 1.36.
+        */
         using std::get;                     // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::tie or structured bindings instead.
+                        Deprecated in version 1.36.
+        */
         using std::tie;                     // NOLINT(misc-unused-using-decls)
-        #else
-        using boost::tuple;                 // NOLINT(misc-unused-using-decls)
-        using boost::make_tuple;            // NOLINT(misc-unused-using-decls)
-        using boost::get;                   // NOLINT(misc-unused-using-decls)
-        using boost::tie;                   // NOLINT(misc-unused-using-decls)
-        #endif
 
     }
 

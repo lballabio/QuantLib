@@ -130,7 +130,7 @@ namespace QuantLib {
             ext::make_shared<CEVCalculator>(upperBound, alpha_, beta_));
 
         boundaries.push_back(ext::make_shared<FdmTimeDepDirichletBoundary>(
-            mesher, ext::function<Real (Real)>(upperBoundPrice),
+            mesher, std::function<Real (Real)>(upperBoundPrice),
             0, FdmTimeDepDirichletBoundary::Upper));
 
         const Real delta = (1-2*beta_)/(1-beta_);

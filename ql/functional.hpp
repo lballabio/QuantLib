@@ -25,58 +25,54 @@
 #define quantlib_functional_hpp
 
 #include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_FUNCTION)
 #include <functional>
-#else
-#include <boost/function.hpp>
-#include <boost/bind/bind.hpp>
-#include <boost/ref.hpp>
-#endif
 
 namespace QuantLib {
 
     namespace ext {
 
-        #if defined(QL_USE_STD_FUNCTION)
-        using std::function;                       // NOLINT(misc-unused-using-decls)
+        /*! \deprecated Use std::function instead.
+                        Deprecated in version 1.36.
+        */
+        template <typename... Ts>
+        using function [[deprecated("Use std::function instead")]] = std::function<Ts...>;     // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::bind instead.
+                        Deprecated in version 1.36.
+        */
         using std::bind;                           // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::ref instead.
+                        Deprecated in version 1.36.
+        */
         using std::ref;                            // NOLINT(misc-unused-using-decls)
+
+        /*! \deprecated Use std::cref instead.
+                        Deprecated in version 1.36.
+        */
         using std::cref;                           // NOLINT(misc-unused-using-decls)
-        namespace placeholders {
+
+#if defined(__GNUC__) && (__GNUC__ <= 9)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif
+
+        /*! \deprecated Use the std::placeholders namespace instead.
+                        Deprecated in version 1.36.
+        */
+        namespace [[deprecated("Use the std::placeholders namespace instead")]] placeholders {
             using namespace std::placeholders;     // NOLINT(misc-unused-using-decls)
         }
+
+#if defined(__GNUC__) && (__GNUC__ <= 9)
+#pragma GCC diagnostic pop
+#endif
+
         /*! \deprecated To check if a function is empty, use it in a bool context
                         instead of comparing it to QL_NULL_FUNCTION.
                         Deprecated in version 1.32.
         */
         #define QL_NULL_FUNCTION nullptr
-        #else
-        using boost::function;                     // NOLINT(misc-unused-using-decls)
-        using boost::bind;                         // NOLINT(misc-unused-using-decls)
-        using boost::ref;                          // NOLINT(misc-unused-using-decls)
-        using boost::cref;                         // NOLINT(misc-unused-using-decls)
-        namespace placeholders {
-            #if BOOST_VERSION >= 106000
-            using namespace boost::placeholders;   // NOLINT(misc-unused-using-decls)
-            #else
-            using ::_1;                            // NOLINT(misc-unused-using-decls)
-            using ::_2;                            // NOLINT(misc-unused-using-decls)
-            using ::_3;                            // NOLINT(misc-unused-using-decls)
-            using ::_4;                            // NOLINT(misc-unused-using-decls)
-            using ::_5;                            // NOLINT(misc-unused-using-decls)
-            using ::_6;                            // NOLINT(misc-unused-using-decls)
-            using ::_7;                            // NOLINT(misc-unused-using-decls)
-            using ::_8;                            // NOLINT(misc-unused-using-decls)
-            using ::_9;                            // NOLINT(misc-unused-using-decls)
-            #endif
-        }
-        /*! \deprecated To check if a function is empty, use it in a bool context
-                        instead of comparing it to QL_NULL_FUNCTION.
-                        Deprecated in version 1.32.
-        */
-        #define QL_NULL_FUNCTION 0
-        #endif
 
     }
 

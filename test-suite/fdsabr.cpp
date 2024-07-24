@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(testFdmSabrOp, *precondition(if_speed(Fast))) {
         const Real putPdeImplVol =
             optionPut.impliedVolatility(optionPut.NPV(), bsProcess, 1e-6);
 
-        const ext::function<Real(Real)> mcSabr(
+        const std::function<Real(Real)> mcSabr(
             SabrMonteCarloPricer(f0, maturityTime, putPayoff,
                                  alpha, beta, nu, rho));
 
@@ -405,7 +405,7 @@ BOOST_AUTO_TEST_CASE(testOosterleeTestCaseIV) {
             const OsterleeReferenceResults referenceResuts(i*3+j);
 
             const Real expected = RichardsonExtrapolation(
-                ext::function<Real(Real)>(referenceResuts), 1/16., 1)(2.);
+                std::function<Real(Real)>(referenceResuts), 1/16., 1)(2.);
 
             const Real diff = std::fabs(calculated - expected);
             if (diff > tol) {

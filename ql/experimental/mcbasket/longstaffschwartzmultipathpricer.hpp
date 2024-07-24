@@ -79,7 +79,7 @@ namespace QuantLib {
         const Array dF_;
 
         mutable std::vector<PathInfo> paths_;
-        const std::vector<ext::function<Real(Array)> > v_;
+        const std::vector<std::function<Real(Array)> > v_;
     };
 
 }

@@ -27,10 +27,10 @@ namespace QuantLib {
     namespace {
 
         class integrand {
-            ext::function<Real (Real)> b;
+            std::function<Real (Real)> b;
             Real speed;
           public:
-            integrand(ext::function<Real(Real)> b, Real speed) : b(std::move(b)), speed(speed) {}
+            integrand(std::function<Real(Real)> b, Real speed) : b(std::move(b)), speed(speed) {}
             Real operator()(Real x) const {
                 return b(x) * std::exp(speed*x);
             }
@@ -42,7 +42,7 @@ namespace QuantLib {
         Real speed,
         Volatility vol,
         Real x0,
-        ext::function<Real(Real)> b,
+        std::function<Real(Real)> b,
         Discretization discretization,
         Real intEps)
     : speed_(speed), vol_(vol), b_(std::move(b)), intEps_(intEps),

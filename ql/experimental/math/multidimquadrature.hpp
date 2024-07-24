@@ -96,7 +96,7 @@ namespace QuantLib {
         matrix too.
          */
         template<class RetType_T>
-        RetType_T operator()(const ext::function<RetType_T (
+        RetType_T operator()(const std::function<RetType_T (
             const std::vector<Real>& arg)>& f) const 
         {
             return integrate<RetType_T>(f);
@@ -109,7 +109,7 @@ namespace QuantLib {
 
         // Declare, spezializations follow.
         template<class RetType_T>
-        RetType_T integrate(const ext::function<RetType_T (
+        RetType_T integrate(const std::function<RetType_T (
             const std::vector<Real>& v1)>& f) const;
 
     private:
@@ -128,11 +128,11 @@ namespace QuantLib {
         template<Size levelSpawn>
         void spawnFcts() const {
             integrationEntries_[levelSpawn-1] =
-                [&](ext::function<Real (const std::vector<Real>&)> f, Real x){
+                [&](std::function<Real (const std::vector<Real>&)> f, Real x){
                     return scalarIntegrator<levelSpawn>(f, x);
                 };
             integrationEntriesVR_[levelSpawn-1] =
-                [&](const ext::function<std::vector<Real>(const std::vector<Real>&)>& f, Real x){
+                [&](const std::function<std::vector<Real>(const std::vector<Real>&)>& f, Real x){
                     return vectorIntegratorVR<levelSpawn>(f, x);
                 };
             spawnFcts<levelSpawn-1>();
@@ -143,7 +143,7 @@ namespace QuantLib {
 
         template <int intgDepth>
         Real scalarIntegrator(
-            const ext::function<Real (const std::vector<Real>& arg1)>& f,
+            const std::function<Real (const std::vector<Real>& arg1)>& f,
             const Real mFctr) const 
         {
             varBuffer_[intgDepth-1] = mFctr;
@@ -152,7 +152,7 @@ namespace QuantLib {
 
         template <int intgDepth>
         std::vector<Real> vectorIntegratorVR(
-            const ext::function<std::vector<Real>(const std::vector<Real>& arg1)>& f,
+            const std::function<std::vector<Real>(const std::vector<Real>& arg1)>& f,
             const Real mFctr) const 
         {
             varBuffer_[intgDepth-1] = mFctr;
@@ -169,11 +169,11 @@ namespace QuantLib {
         //    level/dimension we are going to start integration
         // \todo Declare typedefs for traits
         mutable std::vector<
-        ext::function<Real (ext::function<Real (
+        std::function<Real (std::function<Real (
             const std::vector<Real>& varg2)> f1, 
             const Real r3)> > integrationEntries_;
         mutable std::vector<
-        ext::function<std::vector<Real> (const ext::function<std::vector<Real>(
+        std::function<std::vector<Real> (const std::function<std::vector<Real>(
             const std::vector<Real>& vvarg2)>& vf1, 
             const Real vr3)> > integrationEntriesVR_;
 
@@ -187,36 +187,36 @@ namespace QuantLib {
 
     template<>
     inline Real GaussianQuadMultidimIntegrator::operator()(
-        const ext::function<Real (const std::vector<Real>& v1)>& f) const
+        const std::function<Real (const std::vector<Real>& v1)>& f) const
     {
         // integration entry level is selected now
-        return integral_([&](Real x){ return integrationEntries_[dimension_-1](ext::cref(f), x); });
+        return integral_([&](Real x){ return integrationEntries_[dimension_-1](std::cref(f), x); });
     }
 
     // Scalar integrand version (merge with vector case?)
     template<>
     inline Real GaussianQuadMultidimIntegrator::integrate<Real>(
-        const ext::function<Real (const std::vector<Real>& v1)>& f) const 
+        const std::function<Real (const std::vector<Real>& v1)>& f) const 
     {
         // integration variables
         // call vector quadrature integration with the function and start 
         // values, kicks in recursion over the dimensions of the integration
         // variable.
-        return integral_([&](Real x){ return integrationEntries_[dimension_-1](ext::cref(f), x); });
+        return integral_([&](Real x){ return integrationEntries_[dimension_-1](std::cref(f), x); });
     }
 
     // Vector integrand version
     template<>
     inline std::vector<Real> GaussianQuadMultidimIntegrator::integrate<std::vector<Real>>(
-        const ext::function<std::vector<Real> (const std::vector<Real>& v1)>& f) const
+        const std::function<std::vector<Real> (const std::vector<Real>& v1)>& f) const
     {
-        return integralV_([&](Real x){ return integrationEntriesVR_[dimension_-1](ext::cref(f), x); });
+        return integralV_([&](Real x){ return integrationEntriesVR_[dimension_-1](std::cref(f), x); });
     } 
 
     //! Terminal integrand; scalar function version
     template<> 
     inline Real GaussianQuadMultidimIntegrator::scalarIntegrator<1>(
-        const ext::function<Real (const std::vector<Real>& arg1)>& f,
+        const std::function<Real (const std::vector<Real>& arg1)>& f,
         const Real mFctr) const
     {
         varBuffer_[0] = mFctr;
@@ -227,7 +227,7 @@ namespace QuantLib {
     template<>
     inline std::vector<Real>
         GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>(
-        const ext::function<std::vector<Real> (const std::vector<Real>& arg1)>& f,
+        const std::function<std::vector<Real> (const std::vector<Real>& arg1)>& f,
         const Real mFctr) const 
     {
         varBuffer_[0] = mFctr;
@@ -237,10 +237,10 @@ namespace QuantLib {
     //! Terminal level:
     template<>
     inline void GaussianQuadMultidimIntegrator::spawnFcts<1>() const {
-        integrationEntries_[0] = [&](const ext::function<Real(const std::vector<Real>&)>& f,
+        integrationEntries_[0] = [&](const std::function<Real(const std::vector<Real>&)>& f,
                                      Real x) { return scalarIntegrator<1>(f, x); };
         integrationEntriesVR_[0] =
-            [&](const ext::function<std::vector<Real>(const std::vector<Real>&)>& f, Real x) {
+            [&](const std::function<std::vector<Real>(const std::vector<Real>&)>& f, Real x) {
                 return vectorIntegratorVR<1>(f, x);
             };
     }

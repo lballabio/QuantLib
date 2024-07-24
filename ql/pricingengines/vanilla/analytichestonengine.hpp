@@ -226,12 +226,12 @@ namespace QuantLib {
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
-                       const ext::function<Real(Real)>& f,
-                       const ext::function<Real()>& maxBound = {},
+                       const std::function<Real(Real)>& f,
+                       const std::function<Real()>& maxBound = {},
                        Real scaling = 1.0) const;
 
         Real calculate(Real c_inf,
-                       const ext::function<Real(Real)>& f,
+                       const std::function<Real(Real)>& f,
                        Real maxBound) const;
 
         Size numberOfEvaluations() const;

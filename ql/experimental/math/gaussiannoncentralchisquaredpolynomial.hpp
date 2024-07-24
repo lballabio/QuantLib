@@ -40,7 +40,7 @@ namespace QuantLib {
       private:
         const Real nu_, lambda_;
 
-        static std::vector<ext::function<Real(Real, Real)> > moments;
+        static std::vector<std::function<Real(Real, Real)> > moments;
     };
 }
 

@@ -73,7 +73,7 @@ namespace QuantLib {
             && absoluteError_ <= absoluteAccuracy_;
     }
 
-    Real Integrator::operator()(const ext::function<Real (Real)>& f,
+    Real Integrator::operator()(const std::function<Real (Real)>& f,
                                 Real a,
                                 Real b) const {
         evaluations_ = 0;
