@@ -27,9 +27,7 @@
 #include <ql/qldefines.hpp>
 #include <functional>
 
-namespace QuantLib {
-
-    namespace ext {
+namespace QuantLib::ext {
 
         /*! \deprecated Use std::function instead.
                         Deprecated in version 1.36.
@@ -60,7 +58,7 @@ namespace QuantLib {
         /*! \deprecated Use the std::placeholders namespace instead.
                         Deprecated in version 1.36.
         */
-        namespace [[deprecated("Use the std::placeholders namespace instead")]] placeholders {
+        namespace [[deprecated("Use the std::placeholders namespace instead")]] placeholders {  // NOLINT(modernize-concat-nested-namespaces)
             using namespace std::placeholders;     // NOLINT(misc-unused-using-decls)
         }
 
@@ -75,8 +73,6 @@ namespace QuantLib {
         #define QL_NULL_FUNCTION nullptr
 
     }
-
-}
 
 
 #endif

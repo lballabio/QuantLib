@@ -34,9 +34,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #endif
 
-namespace QuantLib {
-
-    namespace ext {
+namespace QuantLib::ext {
 
         #if defined(QL_USE_STD_SHARED_PTR)
         using std::shared_ptr;                   // NOLINT(misc-unused-using-decls)
@@ -55,8 +53,6 @@ namespace QuantLib {
         #endif
 
     }
-
-}
 
 
 #endif

@@ -106,7 +106,7 @@ namespace QuantLib {
 
         calculateSecondaryCostAmounts(quantity_.commodityType(),
                                       quantity_.amount(), evaluationDate);
-        for (SecondaryCostAmounts::const_iterator i = secondaryCostAmounts_.begin(); i != secondaryCostAmounts_.end(); ++i) {
+        for (auto i = secondaryCostAmounts_.begin(); i != secondaryCostAmounts_.end(); ++i) {
             Real amount = i->second.value();
             NPV_ -= amount;
         }

@@ -971,7 +971,7 @@ BOOST_AUTO_TEST_CASE(testDifferentIntegrals, *precondition(if_speed(Fast))) {
     };
     const Real tol[] = { 1e-3, 1e-3, 0.2, 0.01, 1e-3 };
 
-    for (std::vector<HestonParameter>::const_iterator iter = params.begin();
+    for (auto iter = params.begin();
          iter != params.end(); ++iter) {
 
         Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));

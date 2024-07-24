@@ -277,7 +277,7 @@ namespace QuantLib {
                         events[iEvt].nameIdx));
             }
             if(namesDefaulting.size() >= n) {
-                std::map<unsigned short, unsigned short>::const_iterator
+                auto
                     itdefs = namesDefaulting.begin();
                 // locate nth default in time:
                 std::advance(itdefs, n-1);

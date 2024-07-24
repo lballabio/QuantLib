@@ -27,7 +27,7 @@ namespace QuantLib {
 
     CommodityType::CommodityType(const std::string& name,
                                  const std::string& code) {
-        std::map<std::string, ext::shared_ptr<CommodityType::Data> >::const_iterator i = commodityTypes_.find(code);
+        auto i = commodityTypes_.find(code);
         if (i != commodityTypes_.end())
             data_ = i->second;
         else {

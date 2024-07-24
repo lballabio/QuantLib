@@ -1103,7 +1103,7 @@ BOOST_AUTO_TEST_CASE(testPDEOptionValues)  {
         expected["gamma"] = option.delta();
         expected["theta"] = option.delta();
 
-        for (std::map<std::string,Real>::const_iterator it = calculated.begin();
+        for (auto it = calculated.begin();
              it != calculated.end(); ++it) {
 
             const std::string greek = it->first;

@@ -27,9 +27,7 @@
 #include <ql/qldefines.hpp>
 #include <tuple>
 
-namespace QuantLib {
-
-    namespace ext {
+namespace QuantLib::ext {
 
         /*! \deprecated Use std::tuple instead.
                         Deprecated in version 1.36.
@@ -53,8 +51,6 @@ namespace QuantLib {
         using std::tie;                     // NOLINT(misc-unused-using-decls)
 
     }
-
-}
 
 
 #endif

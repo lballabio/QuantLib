@@ -190,7 +190,7 @@ namespace QuantLib {
     inline const Period& Schedule::tenor() const {
         QL_REQUIRE(hasTenor(),
                    "full interface (tenor) not available");
-        return *tenor_;
+        return *tenor_;  // NOLINT(bugprone-unchecked-optional-access)
     }
 
     inline BusinessDayConvention Schedule::businessDayConvention() const {
@@ -206,7 +206,7 @@ namespace QuantLib {
     Schedule::terminationDateBusinessDayConvention() const {
         QL_REQUIRE(hasTerminationDateBusinessDayConvention(),
                    "full interface (termination date bdc) not available");
-        return *terminationDateConvention_;
+        return *terminationDateConvention_;  // NOLINT(bugprone-unchecked-optional-access)
     }
 
     inline bool Schedule::hasRule() const {
@@ -215,7 +215,7 @@ namespace QuantLib {
 
     inline DateGeneration::Rule Schedule::rule() const {
         QL_REQUIRE(hasRule(), "full interface (rule) not available");
-        return *rule_;
+        return *rule_;  // NOLINT(bugprone-unchecked-optional-access)
     }
 
     inline bool Schedule::hasEndOfMonth() const {
@@ -225,7 +225,7 @@ namespace QuantLib {
     inline bool Schedule::endOfMonth() const {
         QL_REQUIRE(hasEndOfMonth(),
                    "full interface (end of month) not available");
-        return *endOfMonth_;
+        return *endOfMonth_;  // NOLINT(bugprone-unchecked-optional-access)
     }
 
 }

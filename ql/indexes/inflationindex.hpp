@@ -244,8 +244,7 @@ namespace QuantLib {
     };
 
 
-    namespace detail {
-        namespace CPI {
+    namespace detail::CPI {
             // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
             // CPI::InterpolationType.
             QuantLib::CPI::InterpolationType effectiveInterpolationType(
@@ -256,7 +255,6 @@ namespace QuantLib {
             // effectively in CPI::Linear
             bool isInterpolated(const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
         }
-    }
 
 
     // inline

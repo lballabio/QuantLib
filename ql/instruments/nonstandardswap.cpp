@@ -210,7 +210,7 @@ namespace QuantLib {
             floatingNominal_.push_back(floatingNominal_.back());
         }
 
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
         switch (type_) {
@@ -259,7 +259,7 @@ namespace QuantLib {
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
                     ext::dynamic_pointer_cast<CashFlow>(fixedCoupons[i]);
-                std::vector<Date>::const_iterator j =
+                auto j =
                     std::find(arguments->fixedPayDates.begin(),
                               arguments->fixedPayDates.end(), cashflow->date());
                 QL_REQUIRE(j != arguments->fixedPayDates.end(),
@@ -308,7 +308,7 @@ namespace QuantLib {
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
                     ext::dynamic_pointer_cast<CashFlow>(floatingCoupons[i]);
-                std::vector<Date>::const_iterator j = std::find(
+                auto j = std::find(
                     arguments->floatingPayDates.begin(),
                     arguments->floatingPayDates.end(), cashflow->date());
                 QL_REQUIRE(j != arguments->floatingPayDates.end(),
