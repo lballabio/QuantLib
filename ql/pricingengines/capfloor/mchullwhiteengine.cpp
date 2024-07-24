@@ -21,9 +21,7 @@
 #include <ql/pricingengines/capfloor/mchullwhiteengine.hpp>
 #include <utility>
 
-namespace QuantLib {
-
-    namespace detail {
+namespace QuantLib::detail {
 
         HullWhiteCapFloorPricer::HullWhiteCapFloorPricer(const CapFloor::arguments& args,
                                                          ext::shared_ptr<HullWhite> model,
@@ -109,6 +107,4 @@ namespace QuantLib {
         }
 
     }
-
-}
 

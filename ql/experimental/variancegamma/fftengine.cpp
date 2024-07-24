@@ -101,7 +101,7 @@ namespace QuantLib {
         std::complex<Real> i1(0, 1);
         Real alpha = 1.25;
 
-        for (PayoffMap::const_iterator payIt = payoffMap.begin(); payIt != payoffMap.end(); ++payIt)
+        for (auto payIt = payoffMap.begin(); payIt != payoffMap.end(); ++payIt)
         {
             Date expiryDate = payIt->first;
 

@@ -94,7 +94,7 @@ namespace QuantLib {
         //@{
         //! returns the (possibly null) datum corresponding to the given date
         T operator[](const Date& d) const {
-            typename Container::const_iterator found = values_.find(d);
+            auto found = values_.find(d);
             if (found == values_.cend())
                 return Null<T>();
             return found->second;
@@ -233,7 +233,7 @@ namespace QuantLib {
     template <class T, class C>
     inline typename TimeSeries<T,C>::const_iterator
     TimeSeries<T,C>::find(const Date& d) {
-        const_iterator i = values_.find(d);
+        auto i = values_.find(d);
         if (i == values_.end()) {
             values_[d] = Null<T>();
             i = values_.find(d);

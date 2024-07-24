@@ -508,7 +508,7 @@ namespace QuantLib {
     Real AndreasenHugeVolatilityInterpl::optionPrice(
         Time t, Real strike, Option::Type optionType) const {
 
-        TimeValueCacheType::const_iterator f = priceCache_.find(t);
+        auto f = priceCache_.find(t);
 
         const DiscountFactor df = rTS_->discount(t);
 
@@ -590,7 +590,7 @@ namespace QuantLib {
 
     Volatility AndreasenHugeVolatilityInterpl::localVol(Time t, Real strike)
     const {
-        TimeValueCacheType::const_iterator f = localVolCache_.find(t);
+        auto f = localVolCache_.find(t);
 
         if (f != localVolCache_.end())
             return getCacheValue(strike, f);

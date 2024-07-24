@@ -296,7 +296,7 @@ BOOST_AUTO_TEST_CASE(testMcPerformance) {
             for (int length : lengths) {
                 for (auto& frequencie : frequencies) {
 
-                    Period tenor = Period(frequencie);
+                    auto tenor = Period(frequencie);
                     ext::shared_ptr<EuropeanExercise> maturity(
                         new EuropeanExercise(today + length * tenor));
 

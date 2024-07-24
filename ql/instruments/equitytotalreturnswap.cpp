@@ -91,7 +91,7 @@ namespace QuantLib {
 
         legs_[0].push_back(createEquityCashFlow(schedule_, equityIndex_, nominal_, paymentCalendar_,
                                                 paymentConvention_, paymentDelay_));
-        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i)
+        for (auto i = legs_[0].begin(); i < legs_[0].end(); ++i)
             registerWith(*i);
 
         switch (type_) {
@@ -133,7 +133,7 @@ namespace QuantLib {
         legs_[1] = createInterestLeg<IborIndex, IborLeg>(
             schedule_, interestRateIndex, nominal_, dayCounter_, margin_, gearing_,
             paymentCalendar_, paymentConvention_, paymentDelay_);
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
     }
 
@@ -162,7 +162,7 @@ namespace QuantLib {
         legs_[1] = createInterestLeg<OvernightIndex, OvernightLeg>(
             schedule_, interestRateIndex, nominal_, dayCounter_, margin_, gearing_,
             paymentCalendar_, paymentConvention_, paymentDelay_);
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
     }
 

@@ -221,7 +221,7 @@ namespace QuantLib {
                 .withPaymentAdjustment(paymentAdjustment)
                 .withSpreads(spread);
 
-        for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
+        for (auto i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);
 
         const Leg& bondLeg = bond_->cashflows();
@@ -257,7 +257,7 @@ namespace QuantLib {
         }
 
         QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
-        for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
+        for (auto i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
 
         if (payBondCoupon) {

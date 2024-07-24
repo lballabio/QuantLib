@@ -368,10 +368,10 @@ namespace QuantLib {
             nominal2_.push_back(nominal2_.back());
         }
 
-        for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i)
+        for (auto i = legs_[0].begin(); i < legs_[0].end(); ++i)
             registerWith(*i);
 
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
         switch (type_) {
@@ -457,7 +457,7 @@ namespace QuantLib {
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
                     ext::dynamic_pointer_cast<CashFlow>(leg1Coupons[i]);
-                std::vector<Date>::const_iterator j =
+                auto j =
                     std::find(arguments->leg1PayDates.begin(),
                               arguments->leg1PayDates.end(), cashflow->date());
                 QL_REQUIRE(j != arguments->leg1PayDates.end(),
@@ -503,7 +503,7 @@ namespace QuantLib {
             } else {
                 ext::shared_ptr<CashFlow> cashflow =
                     ext::dynamic_pointer_cast<CashFlow>(leg2Coupons[i]);
-                std::vector<Date>::const_iterator j =
+                auto j =
                     std::find(arguments->leg2PayDates.begin(),
                               arguments->leg2PayDates.end(), cashflow->date());
                 QL_REQUIRE(j != arguments->leg2PayDates.end(),

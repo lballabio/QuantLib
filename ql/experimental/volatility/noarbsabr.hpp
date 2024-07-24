@@ -58,8 +58,7 @@
 
 namespace QuantLib {
 
-namespace detail {
-namespace NoArbSabrModel {
+namespace detail::NoArbSabrModel {
 // parameter bounds
 const Real beta_min = 0.01;
 const Real beta_max = 0.99;
@@ -96,7 +95,6 @@ const Real forward_search_step = 0.0010;
 const Real density_lower_bound = 1E-50;
 // threshold to identify a zero density
 const Real density_threshold = 1E-100;
-}
 }
 
 class NoArbSabrModel {

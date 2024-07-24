@@ -27,9 +27,7 @@
 #include <ql/types.hpp>
 #include <vector>
 
-namespace QuantLib {
-
-    namespace detail {
+namespace QuantLib::detail {
 
         template <class T, class U>
         T get(const std::vector<T>& v,
@@ -45,8 +43,6 @@ namespace QuantLib {
         }
 
     }
-
-}
 
 
 #endif
