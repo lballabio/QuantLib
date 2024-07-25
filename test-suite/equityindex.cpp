@@ -18,6 +18,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/currencies/europe.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -48,7 +49,7 @@ struct CommonVars {
         calendar = TARGET();
         dayCount = Actual365Fixed();
 
-        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, EURCurrency(), interestHandle,
                                                     dividendHandle, spotHandle);
 
         today = calendar.adjust(Date(27, January, 2023));
@@ -247,14 +248,14 @@ BOOST_AUTO_TEST_CASE(testFixingObservability) {
     CommonVars vars;
 
     ext::shared_ptr<EquityIndex> i1 =
-        ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar);
+        ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar, EURCurrency());
 
     Flag flag;
     flag.registerWith(i1);
     flag.lower();
 
     ext::shared_ptr<Index> i2 =
-        ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar);
+        ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar, EURCurrency());
 
     i2->addFixing(vars.today, 100.0);
     if (!flag.isUp())
