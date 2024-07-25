@@ -23,6 +23,7 @@ jobs:
         mkdir build
         cd build
         cmake .. -GNinja -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -L
+        cat ql/config.hpp
         cmake --build . --verbose
         sudo cmake --install .
         sudo ldconfig
@@ -53,6 +54,7 @@ jobs:
       run: |
         cmake --preset linux-ci-build-with-nonstandard-options -L
         cd build/linux-ci-build-with-nonstandard-options
+        cat ql/config.hpp
         cmake --build . --verbose
         sudo cmake --build . --target install
     - name: Test
@@ -93,6 +95,7 @@ jobs:
         mkdir build
         cd build
         cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
+        type ql\config.hpp
         cmake --build . --verbose
         cmake --install .
         dir ql\*.lib
@@ -134,6 +137,7 @@ jobs:
         mkdir build
         cd build
         cmake .. -GNinja -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -L
+        type ql\config.hpp
         cmake --build . --verbose
         cmake --install .
         dir ql\*.lib
@@ -174,6 +178,7 @@ jobs:
       run: |
         cmake --preset windows-ci-build-with-nonstandard-options -L
         cd build/windows-ci-build-with-nonstandard-options
+        type ql\config.hpp
         cmake --build . --verbose
         cmake --build . --target install
     - name: Test
@@ -201,6 +206,7 @@ jobs:
         mkdir build
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release -DQL_COMPILE_WARNING_AS_ERROR=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -GNinja -L
+        cat ql/config.hpp
         cmake --build . --verbose
         sudo cmake --install .
     - name: Test

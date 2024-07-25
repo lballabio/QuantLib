@@ -40,12 +40,6 @@ jobs:
             cxx: clang++
             cxxflags: -Wno-deprecated-declarations
             tests: true
-          - name: "C++14 mode"
-            shortname: c++14
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            cxxflags: "-std=c++14"
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling
@@ -85,12 +79,12 @@ jobs:
             cxx: g++
             configureflags: --enable-indexed-coupons
             tests: true
-          - name: "Standard Library classes enabled/disabled"
+          - name: "Standard Library classes enabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-std-pointers --enable-std-any --enable-std-optional
+            configureflags: --enable-std-classes
             tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
@@ -145,6 +139,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-static ${{ matrix.configureflags }} CC="ccache ${{ matrix.cc }}" CXX="ccache ${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
+        cat ql/config.hpp
         make -j 4
     - name: Run tests
       if: ${{ matrix.tests }}

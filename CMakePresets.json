@@ -293,7 +293,6 @@
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
         "BUILD_SHARED_LIBS": false,
-        "CMAKE_CXX_STANDARD": "17",
         "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
@@ -302,9 +301,7 @@
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_SHARED_PTR": "ON",
-        "QL_USE_STD_ANY": "ON",
-        "QL_USE_STD_OPTIONAL": "ON",
+        "QL_USE_STD_CLASSES": "ON",
         "QL_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
@@ -314,7 +311,6 @@
         "windows-msvc-release"
       ],
       "cacheVariables": {
-        "CMAKE_CXX_STANDARD": "17",
         "CMAKE_UNITY_BUILD": "ON",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
@@ -323,9 +319,7 @@
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_SHARED_PTR": "ON",
-        "QL_USE_STD_ANY": "ON",
-        "QL_USE_STD_OPTIONAL": "ON",
+        "QL_USE_STD_CLASSES": "ON",
         "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       }

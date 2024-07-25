@@ -70,37 +70,26 @@ set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source
 # set -lpapi here
 set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
-# Require C++14 or higher
+# Require C++17 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 14)
-elseif(CMAKE_CXX_STANDARD LESS 14)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
+    set(CMAKE_CXX_STANDARD 17)
+elseif(CMAKE_CXX_STANDARD LESS 17)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 17 or higher")
 endif()
 if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
-# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
+# Avoid use of compiler language extensions, i.e. -std=c++17 not -std=gnu++17
 if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()
 
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
-    if (CMAKE_CXX_STANDARD GREATER_EQUAL 17)
-        set(QL_USE_STD_ANY ON)
-        set(QL_USE_STD_OPTIONAL ON)
-    endif()
+    set(QL_USE_STD_ANY ON)
+    set(QL_USE_STD_OPTIONAL ON)
     set(QL_USE_STD_SHARED_PTR ON)
 endif()
-
-if (CMAKE_CXX_STANDARD LESS 17)
-    if (QL_USE_STD_ANY)
-        message(FATAL_ERROR "QL_USE_STD_ANY requires at least C++17")
-    endif()
-    if (QL_USE_STD_OPTIONAL)
-        message(FATAL_ERROR "QL_USE_STD_OPTIONAL requires at least C++17")
-    endif()
-endif ()
 
 # Set the default warning level we use to pass the GitHub workflows
 if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
