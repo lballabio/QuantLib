@@ -142,23 +142,22 @@ namespace QuantLib {
             const Currency& baseCurrency =
                 CommoditySettings::instance().currency();
             try {
-                for (SecondaryCosts::const_iterator i = secondaryCosts_->begin();
-                     i != secondaryCosts_->end(); ++i) {
-                    if (ext::any_cast<CommodityUnitCost>(&i->second) != nullptr) {
+                for (auto & i : *secondaryCosts_) {
+                    if (ext::any_cast<CommodityUnitCost>(&i.second) != nullptr) {
                         Real value =
                             calculateUnitCost(
                                 commodityType,
-                                ext::any_cast<CommodityUnitCost>(i->second),
+                                ext::any_cast<CommodityUnitCost>(i.second),
                                 evaluationDate) * totalQuantityValue;
-                        secondaryCostAmounts_[i->first] =
+                        secondaryCostAmounts_[i.first] =
                             Money(baseCurrency, value);
-                    } else if (ext::any_cast<Money>(&i->second) != nullptr) {
-                        const Money& amount = ext::any_cast<Money>(i->second);
+                    } else if (ext::any_cast<Money>(&i.second) != nullptr) {
+                        const Money& amount = ext::any_cast<Money>(i.second);
                         Real fxConversionFactor =
                             calculateFxConversionFactor(amount.currency(),
                                                         baseCurrency,
                                                         evaluationDate);
-                        secondaryCostAmounts_[i->first] =
+                        secondaryCostAmounts_[i.first] =
                             Money(baseCurrency,
                                   amount.value() * fxConversionFactor);
                     }

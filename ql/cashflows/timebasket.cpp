@@ -49,7 +49,7 @@ namespace QuantLib {
             Real value = j.second;
             Date pDate = Null<Date>(), nDate = Null<Date>();
 
-            std::vector<Date>::const_iterator bi =
+            auto bi =
                 std::lower_bound(sbuckets.begin(), sbuckets.end(), date);
 
             if (bi == sbuckets.end())

@@ -160,7 +160,7 @@ namespace QuantLib {
     }
 
     Real SquareRootCLVModel::MappingFunction::operator()(Time t,Real x) const {
-        const interpl_type::const_iterator ge = interpl.lower_bound(t);
+        const auto ge = interpl.lower_bound(t);
 
         if (close_enough(ge->first, t)) {
             return (*ge->second)(x, true);

@@ -62,7 +62,7 @@ namespace QuantLib {
 
         legs_[1].push_back(compoundedSubPeriodicCoupon(paymentDate_, startDate, maturityDate,
                                                        baseNominal_, iborIndex_));
-        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+        for (auto i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
         switch (type_) {

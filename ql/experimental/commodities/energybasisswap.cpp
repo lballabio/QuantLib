@@ -290,10 +290,8 @@ namespace QuantLib {
 
             QL_REQUIRE(!paymentCashFlows_.empty(), "no cashflows");
 
-            for (SecondaryCostAmounts::const_iterator i =
-                     secondaryCostAmounts_.begin();
-                 i != secondaryCostAmounts_.end(); ++i) {
-                Real amount = i->second.value();
+            for (auto & secondaryCostAmount : secondaryCostAmounts_) {
+                Real amount = secondaryCostAmount.second.value();
                 NPV_ -= amount;
             }
 

@@ -32,9 +32,7 @@
 #include <boost/optional.hpp>
 #endif
 
-namespace QuantLib {
-
-    namespace ext {
+namespace QuantLib::ext {
 
         #if defined(QL_USE_STD_OPTIONAL)
         using std::optional;                    // NOLINT(misc-unused-using-decls)
@@ -47,7 +45,5 @@ namespace QuantLib {
         #endif
 
     }
-
-}
 
 #endif
