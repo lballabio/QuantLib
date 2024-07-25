@@ -83,11 +83,6 @@ namespace QuantLib {
         QL_FAIL("Missing " << name() << " fixing for " << fixingDate);
     }
 
-    Real EquityIndex::pastFixing(const Date& fixingDate) const {
-        QL_REQUIRE(isValidFixingDate(fixingDate), fixingDate << " is not a valid fixing date");
-        return timeSeries()[fixingDate];
-    }
-
     Real EquityIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(!interest_.empty(),
                    "null interest rate term structure set to this instance of " << name());

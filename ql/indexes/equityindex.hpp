@@ -60,7 +60,7 @@ namespace QuantLib {
         handle to the current index spot. If spot handle is empty,
         today's fixing will be used, instead.
     */
-    class EquityIndex : public Index, public Observer {
+    class EquityIndex : public Index {
       public:
         EquityIndex(std::string name,
                     Calendar fixingCalendar,
@@ -86,10 +86,6 @@ namespace QuantLib {
         bool isValidFixingDate(const Date& fixingDate) const override;
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
-        //! \name Observer interface
-        //@{
-        void update() override;
-        //@}
         //! \name Inspectors
         //@{
         //! The index currency
@@ -105,7 +101,6 @@ namespace QuantLib {
         //@{
         //! It can be overridden to implement particular conventions
         virtual Real forecastFixing(const Date& fixingDate) const;
-        virtual Real pastFixing(const Date& fixingDate) const;
         // @}
         //! \name Other methods
         //@{
@@ -127,8 +122,6 @@ namespace QuantLib {
     inline bool EquityIndex::isValidFixingDate(const Date& d) const {
         return fixingCalendar().isBusinessDay(d);
     }
-
-    inline void EquityIndex::update() { notifyObservers(); }
 }
 
 #endif
