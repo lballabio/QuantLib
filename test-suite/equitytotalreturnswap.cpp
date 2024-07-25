@@ -19,13 +19,13 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/equitytotalreturnswap.hpp>
+#include <ql/currencies/america.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
-#include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-
 #include <string>
 
 using namespace QuantLib;
@@ -53,13 +53,13 @@ struct CommonVars {
     // utilities
 
     CommonVars() {
-        calendar = TARGET();
+        calendar = UnitedStates(UnitedStates::GovernmentBond);
         dayCount = Actual365Fixed();
 
         today = calendar.adjust(Date(27, January, 2023));
         Settings::instance().evaluationDate() = today;
 
-        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+        equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, USDCurrency(), interestHandle,
                                                     dividendHandle, spotHandle);
         equityIndex->addFixing(Date(5, January, 2023), 9010.0);
         equityIndex->addFixing(today, 8690.0);
