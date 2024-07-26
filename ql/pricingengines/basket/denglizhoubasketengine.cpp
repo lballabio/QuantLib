@@ -159,9 +159,6 @@ namespace QuantLib {
                 nRho[i+1][j+1] = rho[idx][std::get<1>(p[M+j])];
         }
 
-        //std::cout << N << std::endl << _s << std::endl << _dq << std::endl
-        //        << _v << std::endl << nRho << std::endl << strike << std::endl << std::endl;
-
         const Real callValue
             = DengLiZhouBasketEngine::calculate_vanilla_call(Log(_s), dr0, _dq, _v, nRho, strike);
 
