@@ -112,9 +112,9 @@ namespace QuantLib {
                     + probabilityInterpolation(0, x)*(t - tMin)/deltaT;
         }
         else {
-            const TimeGrid::const_iterator lb
+            const auto lb
                 = std::lower_bound(timeGrid_->begin(), timeGrid_->end(), t);
-            const TimeGrid::const_iterator llb = lb-1;
+            const auto llb = lb-1;
 
             const Size idx = std::distance(timeGrid_->begin(), lb)-1;
 

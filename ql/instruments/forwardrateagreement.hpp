@@ -65,32 +65,6 @@ namespace QuantLib {
     */
     class ForwardRateAgreement: public Instrument {
       public:
-        /*! \deprecated Use one of the other constructors.
-                        Deprecated in version 1.31.
-        */
-        QL_DEPRECATED
-        ForwardRateAgreement(
-            const Date& valueDate,
-            const Date& maturityDate,
-            Position::Type type,
-            Rate strikeForwardRate,
-            Real notionalAmount,
-            const ext::shared_ptr<IborIndex>& index,
-            Handle<YieldTermStructure> discountCurve = {},
-            bool useIndexedCoupon = true);
-
-        /*! \deprecated Use one of the other constructors.
-                        Deprecated in version 1.31.
-        */
-        QL_DEPRECATED
-        ForwardRateAgreement(
-            const Date& valueDate,
-            Position::Type type,
-            Rate strikeForwardRate,
-            Real notionalAmount,
-            const ext::shared_ptr<IborIndex>& index,
-            Handle<YieldTermStructure> discountCurve = {});
-
         /*! When using this constructor, the forward rate will be
             forecast by the passed index.  This corresponds to
             useIndexedCoupon=true in the FraRateHelper class.

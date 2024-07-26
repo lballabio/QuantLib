@@ -113,17 +113,21 @@ namespace QuantLib {
     Real ZeroInflationIndex::fixing(const Date& fixingDate,
                                     bool /*forecastTodaysFixing*/) const {
         if (!needsForecast(fixingDate)) {
-            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
-            const TimeSeries<Real>& ts = timeSeries();
-
-            Real I1 = ts[p.first];
-            QL_REQUIRE(I1 != Null<Real>(),
-                       "Missing " << name() << " fixing for " << p.first);
+            const Real I1 = pastFixing(fixingDate);
+            QL_REQUIRE(I1 != Null<Real>(), "Missing "
+                                               << name() << " fixing for "
+                                               << inflationPeriod(fixingDate, frequency_).first);
 
             return I1;
         } else {
             return forecastFixing(fixingDate);
         }
+    }
+
+    Real ZeroInflationIndex::pastFixing(const Date& fixingDate) const {
+        const auto p = inflationPeriod(fixingDate, frequency_);
+        const auto& ts = timeSeries();
+        return ts[p.first];
     }
 
     Date ZeroInflationIndex::lastFixingDate() const {
@@ -204,35 +208,16 @@ namespace QuantLib {
         registerWith(yoyInflation_);
     }
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
                                          const Region& region,
                                          bool revised,
                                          bool interpolated,
-                                         Frequency frequency,
-                                         const Period& availabilityLag,
-                                         const Currency& currency,
-                                         Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(familyName, region, revised, interpolated, false,
-                        frequency, availabilityLag, currency, std::move(yoyInflation)) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
-                                         const Region& region,
-                                         bool revised,
-                                         bool interpolated,
-                                         bool ratio,
                                          Frequency frequency,
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
     : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
-      interpolated_(interpolated), ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
-        if (ratio)
-            underlyingIndex_ = ext::make_shared<ZeroInflationIndex>(familyName, region, revised,
-                                                                    frequency, availabilityLag, currency);
+      interpolated_(interpolated), ratio_(false), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
     }
 
@@ -256,7 +241,6 @@ namespace QuantLib {
             return forecastFixing(fixingDate);
         }
 
-        const TimeSeries<Real>& ts = timeSeries();
         if (ratio()) {
 
             auto interpolationType = interpolated() ? CPI::Linear : CPI::Flat;
@@ -269,6 +253,7 @@ namespace QuantLib {
         } else {  // NOT ratio
 
             if (interpolated()) { // NOT ratio, IS interpolated
+                const TimeSeries<Real>& ts = timeSeries();
 
                 std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
                 Real dp = lim.second + 1 - lim.first;
@@ -288,16 +273,24 @@ namespace QuantLib {
             } else { // NOT ratio, NOT interpolated
                      // so just flat
 
-                std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-                Rate pastFixing = ts[lim.first];
+                Rate pastFixing = this->pastFixing(fixingDate);
                 QL_REQUIRE(pastFixing != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.first);
+                           "Missing " << name() << " fixing for "
+                                      << inflationPeriod(fixingDate, frequency_).first);
                 return pastFixing;
 
             }
         }
     }
 
+    Real YoYInflationIndex::pastFixing(const Date& fixingDate) const {
+        if (!ratio() && !interpolated()) {
+            const auto& ts = timeSeries();
+            std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
+            return ts[lim.first];
+        }
+        QL_FAIL("pastFixing is only supported for non-ratio and non-interpolated YOY indices");
+    }
 
     Real YoYInflationIndex::forecastFixing(const Date& fixingDate) const {
 

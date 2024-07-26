@@ -140,7 +140,7 @@ namespace QuantLib {
             // For each offset, look up the value in the map and only evaluate function if it's not there
             for (int offset=1; offset<5; offset++) {
                 int location = n-offset;
-                std::map<int, std::complex<Real> >::const_iterator position = fLookupTable_.find(location);
+                auto position = fLookupTable_.find(location);
                 if (position != fLookupTable_.end()) {
                     std::complex<Real> value = position->second;
                     fMinusN[offset-1] = value;

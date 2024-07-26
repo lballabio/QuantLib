@@ -41,10 +41,10 @@ namespace QuantLib {
             Legendre, Chebyshev, Chebyshev2nd
         };
 
-        static std::vector<ext::function<Real(Real)> >
+        static std::vector<std::function<Real(Real)> >
         pathBasisSystem(Size order, PolynomialType type);
 
-        static std::vector<ext::function<Real(Array)> >
+        static std::vector<std::function<Real(Array)> >
         multiPathBasisSystem(Size dim, Size order, PolynomialType type);
     };
 

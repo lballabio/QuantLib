@@ -1,3 +1,178 @@
+commit c3b52ca9e2101d7a908d1fbb449c9fbfb7d5aef3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.35 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 2f863fbd6545161c71cc9994534493554caf5b73
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jul 2024 11:14:18 +0200
+
+    Update news
+
+ Docs/pages/history.docs | 11 ++++++++---
+ News.md                 | 13 ++++++++++---
+ 2 files changed, 18 insertions(+), 6 deletions(-)
+
+commit 6d931d4c327a6a78e350263b87359a920afe0df9
+Merge: d8d875307 52b76ef69
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 18 Jul 2024 12:09:53 +0200
+
+    Explicit type conversion in `additionalResults` (#2027)
+
+commit 52b76ef69befc65a458e10cf49399eb21ec8f012
+Author: Auto Differentiation Dev Team <107129969+auto-differentiation-dev@users.noreply.github.com>
+Date:   Thu, 18 Jul 2024 07:37:50 +0000
+
+    Correct type conversion in additionalResults
+
+ ql/pricingengines/swaption/blackswaptionengine.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d8d87530741621c7e49ce6de204de0a24744abb1
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Wed, 17 Jul 2024 13:33:07 +0000
+
+    Automated fixes by clang-tidy
+
+ test-suite/quantlibbenchmark.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit ee934e43c10898e8aed39c5055966ac9f9e98ca0
+Merge: 617a490bc c1241da7e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jul 2024 13:56:58 +0200
+
+    Optionally allow using forward price for swaption implied-volatility calculation (#2025)
+
+commit c1241da7e2938daa45e36fdaf005d70716405008
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jul 2024 11:02:32 +0200
+
+    Allow forward price as additional result and in implied vol calculation
+
+ ql/instruments/swaption.cpp | 13 +++++++++----
+ ql/instruments/swaption.hpp |  4 +++-
+ test-suite/swaption.cpp     | 28 ++++++++++++++++++++--------
+ 3 files changed, 32 insertions(+), 13 deletions(-)
+
+commit 351feff1a7ef9f686b7e2bab7bfd6cf21e1f2b81
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jul 2024 10:38:12 +0200
+
+    Add missing checks
+
+ ql/instruments/swaption.cpp                        | 3 ++-
+ ql/pricingengines/swaption/blackswaptionengine.hpp | 7 +++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+commit 6a0590cf3fe60e7c283d3b07d1f6b9291c1a2ad9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jul 2024 10:11:17 +0200
+
+    Swaption forward price as additional result from Black-like engines
+
+ ql/pricingengines/swaption/blackswaptionengine.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 617a490bc4bacf0eff8bd5f9bac13c0bd1b8a274
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jul 2024 16:35:12 +0200
+
+    Fix comment
+
+ ql/methods/finitedifferences/boundarycondition.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a70094f5652857dd2c6edbf8280d65e234ee4ced
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Tue, 16 Jul 2024 11:26:06 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 435cfe70eb74c88c3ba4289774d69bc5d36d82f0
+Merge: 5781ab269 47aa913ee
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jul 2024 13:25:48 +0200
+
+    Separate validation from benchmarking run (#2021)
+
+commit 47aa913eea8a18e624178a78dc45ba161c21d754
+Author: Jacques du Toit <jadutoit@amd.com>
+Date:   Mon, 15 Jul 2024 12:33:43 +0000
+
+    Add copyright and separate validation from benchmarking
+    
+    Validation run has very different characteristics from benchmarking
+    run.  This produced unintuitive scaling results as number of threads
+    was kept fixed and problem size increased.
+    
+    This patch separates validation from benchmarking and ensures that
+    validation time does not affect the benchmark results
+
+ test-suite/quantlibbenchmark.cpp | 86 +++++++++++++++++++++++++++-------------
+ 1 file changed, 59 insertions(+), 27 deletions(-)
+
+commit 5781ab26942731862cbd6966722ca9bca14335d6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Jul 2024 10:11:46 +0200
+
+    Update news and contributors
+
+ Contributors.txt        | 1 +
+ Docs/pages/history.docs | 1 +
+ News.md                 | 4 +++-
+ 3 files changed, 5 insertions(+), 1 deletion(-)
+
+commit 7d70bd1fcb43cc6b7413db947b396642cac59769
+Merge: 87951d40a 830f4466c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Jul 2024 10:07:46 +0200
+
+    Fix Brazilian holidays (São Paulo city holidays) (#2018)
+
+commit 830f4466cc28d38d70940024c64745e5dbb6c5ad
+Author: Lucas Dias <lucasgdias@gmail.com>
+Date:   Wed, 10 Jul 2024 18:00:13 -0300
+
+    fix municipal holidays
+
+ ql/time/calendars/brazil.cpp | 4 ++--
+ ql/time/calendars/brazil.hpp | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 87951d40a29b257a834728e17396d48ae59de657
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.35-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 3edfeded74ba4b1be1db0be05a129f6361fb0999
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jul 2024 15:25:22 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 2534 +++++++++++++++++++++--------------------------
+ Contributors.txt        |    9 +-
+ Docs/pages/history.docs |   97 +-
+ News.md                 |  196 ++--
+ 4 files changed, 1317 insertions(+), 1519 deletions(-)
+
 commit 1378d4989810cfa5f8024bd3664d14c8fff2d583
 Merge: 9e4ef24e8 4ded3b0be
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>

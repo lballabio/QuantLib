@@ -61,6 +61,11 @@
       `JustCallMeDavid` for the heads-up.
     - Callable bonds didn't account for nominal when calculating OAS; this
       is now fixed.  Thanks to Hristo Raykov.
+    - For European swaption, sometimes the price is quoted as a forward
+      price to be paid at exercise time.  Such a quoted price can now be
+      used for implied-volatility calculation. The forward price is also
+      returned by the Black and Bachelier swaption engines as an
+      additional result.
 
     RANDOM NUMBERS
     - Added the fast `ZigguratGaussianRng` generator; thanks to Ralf
@@ -109,9 +114,9 @@
     - Deprecated the constructor of `RelinkableHandle` taking a raw
       pointer.
 
-    Thanks go also to Dmitri Goloubentsev, Eleanor Green, Tom Anderson,
-    Peter Caspers, Jonghee Lee and Ralf Konrad Eckel for miscellaneous
-    fixes, improvements or reports.
+    Thanks go also to Dmitri Goloubentsev, Eleanor Green, Tom
+    Anderson, Peter Caspers, Jonghee Lee, Ralf Konrad Eckel and the
+    XAD team for miscellaneous fixes, improvements or reports.
 
     <strong>Release 1.34 - April 24th, 2024</strong>
 

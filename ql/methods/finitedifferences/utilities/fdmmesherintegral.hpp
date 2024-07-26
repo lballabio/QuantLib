@@ -32,14 +32,14 @@ namespace QuantLib {
       public:
         FdmMesherIntegral(
             const ext::shared_ptr<FdmMesherComposite>& mesher,
-            const ext::function<Real(const Array&, const Array&)>&
+            const std::function<Real(const Array&, const Array&)>&
                 integrator1d);
 
         Real integrate(const Array& f) const;
 
       private:
         const std::vector<ext::shared_ptr<Fdm1dMesher> > meshers_;
-        const ext::function<Real(const Array&, const Array&)>& integrator1d_;
+        const std::function<Real(const Array&, const Array&)>& integrator1d_;
     };
 }
 #endif

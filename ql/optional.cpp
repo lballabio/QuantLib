@@ -19,15 +19,11 @@
 
 #include <ql/optional.hpp>
 
-namespace QuantLib {
-
-    namespace ext {
+namespace QuantLib::ext {
 
         #if !defined(QL_USE_STD_OPTIONAL)
         const boost::none_t& nullopt = boost::none;
         #endif
 
     }
-
-}
 

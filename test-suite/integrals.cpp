@@ -51,7 +51,7 @@ Real tolerance = 1.0e-6;
 
 template <class T>
 void testSingle(const T& I, const std::string& tag,
-                const ext::function<Real (Real)>& f,
+                const std::function<Real (Real)>& f,
                 Real xMin, Real xMax, Real expected) {
     Real calculated = I(f,xMin,xMax);
     if (std::fabs(calculated-expected) > tolerance) {

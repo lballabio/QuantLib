@@ -101,14 +101,14 @@ namespace QuantLib {
         }
     }
 
-    NumericalDifferentiation::NumericalDifferentiation(ext::function<Real(Real)> f,
+    NumericalDifferentiation::NumericalDifferentiation(std::function<Real(Real)> f,
                                                        Size orderOfDerivative,
                                                        Array x_offsets)
     : offsets_(std::move(x_offsets)), w_(calcWeights(offsets_, orderOfDerivative)),
       f_(std::move(f)) {}
 
 
-    NumericalDifferentiation::NumericalDifferentiation(ext::function<Real(Real)> f,
+    NumericalDifferentiation::NumericalDifferentiation(std::function<Real(Real)> f,
                                                        Size orderOfDerivative,
                                                        Real stepSize,
                                                        Size steps,

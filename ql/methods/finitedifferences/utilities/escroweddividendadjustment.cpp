@@ -27,7 +27,7 @@ namespace QuantLib {
         DividendSchedule dividendSchedule,
         Handle<YieldTermStructure> rTS,
         Handle<YieldTermStructure> qTS,
-        ext::function<Real(Date)> toTime,
+        std::function<Real(Date)> toTime,
         Time maturity)
     : dividendSchedule_(std::move(dividendSchedule)),
       rTS_(std::move(rTS)), qTS_(std::move(qTS)),

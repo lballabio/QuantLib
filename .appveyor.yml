@@ -1,27 +1,14 @@
-image:
-  - Visual Studio 2015
-  - Visual Studio 2017
+image: Visual Studio 2017
 
 platform: x64
 configuration: Release
 
 version: ci.{build}
 
+before_build:
+  - COPY .ci\VS2017.props .\Build.props
+
 build:
   parallel: false
   project: QuantLib.sln
   verbosity: normal
-
-for:
--
-  matrix:
-    only:
-      - image: Visual Studio 2015
-  before_build:
-    - COPY .ci\VS2015.props .\Build.props
--
-  matrix:
-    only:
-      - image: Visual Studio 2017
-  before_build:
-    - COPY .ci\VS2017.props .\Build.props

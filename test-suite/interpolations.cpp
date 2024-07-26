@@ -2312,24 +2312,24 @@ BOOST_AUTO_TEST_CASE(testBSplines) {
     const Natural p = 2;
     const BSpline bspline(p, knots.size()-p-2, knots);
 
-    std::vector<ext::tuple<Natural, Real, Real>> referenceValues = {
-        ext::make_tuple(0, -0.95, 9.5238095238e-04),
-        ext::make_tuple(0, -0.01, 0.37337142857),
-        ext::make_tuple(0, 0.49, 0.84575238095),
-        ext::make_tuple(0, 1.21, 0.0),
-        ext::make_tuple(1, 1.49, 0.562987654321),
-        ext::make_tuple(1, 1.59, 0.490888888889),
-        ext::make_tuple(2, 1.99, 0.62429409171),
-        ext::make_tuple(3, 1.19, 0.0),
-        ext::make_tuple(3, 1.99, 0.12382936508),
-        ext::make_tuple(3, 3.59, 0.765914285714)
+    std::vector<std::tuple<Natural, Real, Real>> referenceValues = {
+        std::make_tuple(0, -0.95, 9.5238095238e-04),
+        std::make_tuple(0, -0.01, 0.37337142857),
+        std::make_tuple(0, 0.49, 0.84575238095),
+        std::make_tuple(0, 1.21, 0.0),
+        std::make_tuple(1, 1.49, 0.562987654321),
+        std::make_tuple(1, 1.59, 0.490888888889),
+        std::make_tuple(2, 1.99, 0.62429409171),
+        std::make_tuple(3, 1.19, 0.0),
+        std::make_tuple(3, 1.99, 0.12382936508),
+        std::make_tuple(3, 3.59, 0.765914285714)
     };
 
     const Real tol = 1e-10;
     for (auto& referenceValue : referenceValues) {
-        const Natural idx = ext::get<0>(referenceValue);
-        const Real x = ext::get<1>(referenceValue);
-        const Real expected = ext::get<2>(referenceValue);
+        const Natural idx = std::get<0>(referenceValue);
+        const Real x = std::get<1>(referenceValue);
+        const Real expected = std::get<2>(referenceValue);
 
         const Real calculated = bspline(idx, x);
 

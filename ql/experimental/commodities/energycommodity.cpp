@@ -142,7 +142,7 @@ namespace QuantLib {
             const Currency& baseCurrency =
                 CommoditySettings::instance().currency();
             try {
-                for (SecondaryCosts::const_iterator i = secondaryCosts_->begin();
+                for (auto i = secondaryCosts_->begin();
                      i != secondaryCosts_->end(); ++i) {
                     if (ext::any_cast<CommodityUnitCost>(&i->second) != nullptr) {
                         Real value =

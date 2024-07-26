@@ -47,7 +47,7 @@ namespace QuantLib {
     }
 
     void FdmSimpleStorageCondition::applyTo(Array& a, Time t) const {
-        const std::vector<Time>::const_iterator iter
+        const auto iter
             = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
 
         if (iter != exerciseTimes_.end()) {

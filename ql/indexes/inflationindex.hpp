@@ -62,7 +62,7 @@ namespace QuantLib {
 
 
     //! Base class for inflation-rate indexes,
-    class InflationIndex : public Index, public Observer {
+    class InflationIndex : public Index {
       public:
         InflationIndex(std::string familyName,
                        Region region,
@@ -96,16 +96,14 @@ namespace QuantLib {
         */
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override = 0;
 
+        //! returns a past fixing at the given date
+        Real pastFixing(const Date& fixingDate) const override = 0;
+
         /*! this method creates all the "fixings" for the relevant
             period of the index.  E.g. for monthly indices it will put
             the same value in every calendar day in the month.
         */
         void addFixing(const Date& fixingDate, Rate fixing, bool forceOverwrite = false) override;
-        //@}
-
-        //! \name Observer interface
-        //@{
-        void update() override;
         //@}
 
         //! \name Inspectors
@@ -164,6 +162,8 @@ namespace QuantLib {
                      the Index interface) is currently ignored.
         */
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
+        //! returns a past fixing at the given date
+        Real pastFixing(const Date& fixingDate) const override;
         //@}
         //! \name Other methods
         //@{
@@ -211,28 +211,6 @@ namespace QuantLib {
             const Currency& currency,
             Handle<YoYInflationTermStructure> ts = {});
 
-        //! Old generic constructor for year-on-year indices.
-        /*! An index built with this constructor needs its past
-            fixings to be stored via the `addFixing` or `addFixings`
-            method.  Care must be taken about what to store: if
-            `ratio` is false, the stored values must be the
-            year-on-year values; if `ratio` is true, they must be the
-            past fixings of the underlying index.
-
-            \deprecated Use one of the other constructors instead.
-                        Deprecated in version 1.31.
-        */
-        QL_DEPRECATED
-        YoYInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
-            bool ratio, // is this one a genuine index or a ratio?
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            Handle<YoYInflationTermStructure> ts = {});
         //@}
 
         //! \name Index interface
@@ -242,6 +220,12 @@ namespace QuantLib {
         */
         Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
 
+        /*! returns a past fixing at the given date
+         *  \warning This is only supported for flat YOY indices providing their own timeseries
+         *           via the `addFixing` or `addFixings` method,
+         *           aka where ratio() == interpolated() == false.
+         */
+        Real pastFixing(const Date& fixingDate) const override;
         //@}
         //! \name Other methods
         //@{
@@ -266,8 +250,7 @@ namespace QuantLib {
     };
 
 
-    namespace detail {
-        namespace CPI {
+    namespace detail::CPI {
             // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
             // CPI::InterpolationType.
             QuantLib::CPI::InterpolationType effectiveInterpolationType(
@@ -278,17 +261,12 @@ namespace QuantLib {
             // effectively in CPI::Linear
             bool isInterpolated(const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
         }
-    }
 
 
     // inline
 
     inline std::string InflationIndex::name() const {
         return name_;
-    }
-
-    inline void InflationIndex::update() {
-        notifyObservers();
     }
 
     inline std::string InflationIndex::familyName() const {

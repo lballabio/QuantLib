@@ -152,7 +152,7 @@ namespace QuantLib {
             // omega_tilde calls itself recursivly, use lookup map to avoid extreme slowdown when k large
             std::complex<Real> omega_kp1 = 0.0;
 
-            std::map<Size, std::complex<Real> >::const_iterator position = omegaTildeLookupTable_.find(k+1);
+            auto position = omegaTildeLookupTable_.find(k+1);
 
             if (position != omegaTildeLookupTable_.end()) {
                 std::complex<Real> value = position->second;

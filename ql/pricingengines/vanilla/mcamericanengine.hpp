@@ -91,14 +91,14 @@ namespace QuantLib {
         Real state(const Path& path, Size t) const override;
         Real operator()(const Path& path, Size t) const override;
 
-        std::vector<ext::function<Real(Real)> > basisSystem() const override;
+        std::vector<std::function<Real(Real)> > basisSystem() const override;
 
       protected:
         Real payoff(Real state) const;
 
         Real scalingValue_ = 1.0;
         const ext::shared_ptr<Payoff> payoff_;
-        std::vector<ext::function<Real(Real)> > v_;
+        std::vector<std::function<Real(Real)> > v_;
     };
 
 
