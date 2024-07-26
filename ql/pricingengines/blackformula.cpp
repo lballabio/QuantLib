@@ -795,12 +795,12 @@ namespace QuantLib {
 
     }
 
-    Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
-                                   Real strike,
-                                   Real forward,
-                                   Real tte,
-                                   Real bachelierPrice,
-                                   Real discount) {
+    Real bachelierBlackFormulaImpliedVolChoi(Option::Type optionType,
+                                             Real strike,
+                                             Real forward,
+                                             Real tte,
+                                             Real bachelierPrice,
+                                             Real discount) {
 
         const static Real SQRT_QL_EPSILON = std::sqrt(QL_EPSILON);
 
@@ -881,12 +881,12 @@ namespace QuantLib {
 
     } // namespace
 
-    Real bachelierBlackFormulaImpliedVolExact(Option::Type optionType,
-                                              Real strike,
-                                              Real forward,
-                                              Real tte,
-                                              Real bachelierPrice,
-                                              Real discount) {
+    Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
+                                         Real strike,
+                                         Real forward,
+                                         Real tte,
+                                         Real bachelierPrice,
+                                         Real discount) {
 
         Real theta = optionType == Option::Call ? 1.0 : -1.0;
 

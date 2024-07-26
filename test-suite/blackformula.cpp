@@ -52,15 +52,15 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVol) {
 
         Real callPrem = bachelierBlackFormula(optionType, strike, forward, stdDev, discount);
 
-        Real impliedBpVol =
-            bachelierBlackFormulaImpliedVol(optionType, strike, forward, tte, callPrem, discount);
+        Real impliedBpVol = bachelierBlackFormulaImpliedVolChoi(optionType, strike, forward, tte,
+                                                                callPrem, discount);
 
         if (std::fabs(bpvol - impliedBpVol) > 1.0e-12) {
             BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol);
         }
 
-        Real impliedBpVolExact = bachelierBlackFormulaImpliedVolExact(optionType, strike, forward,
-                                                                      tte, callPrem, discount);
+        Real impliedBpVolExact =
+            bachelierBlackFormulaImpliedVol(optionType, strike, forward, tte, callPrem, discount);
 
         if (std::fabs(bpvol - impliedBpVolExact) > 1.0e-15) {
             BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVolExact);

@@ -365,24 +365,24 @@ namespace QuantLib {
         Implied Volatility Under Arithmetic Brownian Motion”,
         Applied Math. Finance, 16(3), pp. 261-268.
     */
-    Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
-                                         Real strike,
-                                         Real forward,
-                                         Real tte,
-                                         Real bachelierPrice,
-                                         Real discount = 1.0);
+    Real bachelierBlackFormulaImpliedVolChoi(Option::Type optionType,
+                                             Real strike,
+                                             Real forward,
+                                             Real tte,
+                                             Real bachelierPrice,
+                                             Real discount = 1.0);
 
     /*! Exact Bachelier implied volatility
 
         It is calculated using the analytic implied volatility formula
         of Jaeckel (2017), "Implied Normal Volatility"
     */
-    Real bachelierBlackFormulaImpliedVolExact(Option::Type optionType,
-                                              Real strike,
-                                              Real forward,
-                                              Real tte,
-                                              Real bachelierPrice,
-                                              Real discount = 1.0);
+    Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
+                                         Real strike,
+                                         Real forward,
+                                         Real tte,
+                                         Real bachelierPrice,
+                                         Real discount = 1.0);
 
     /*! Bachelier formula for standard deviation derivative
         \warning instead of volatility it uses standard deviation, i.e.
