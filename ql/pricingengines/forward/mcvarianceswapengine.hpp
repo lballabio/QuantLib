@@ -92,7 +92,7 @@ namespace QuantLib {
             results_.value =
                 multiplier * (results_.variance - arguments_.strike);
 
-            if (RNG::allowsErrorEstimate) {
+            if constexpr (RNG::allowsErrorEstimate) {
                 Real varianceError =
                     this->mcModel_->sampleAccumulator().errorEstimate();
                 results_.errorEstimate = multiplier * varianceError;
