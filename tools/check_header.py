@@ -11,7 +11,7 @@ def check(header):
     source_file = header + ".cpp"
     shutil.copy(header, source_file)
     object_file = header + ".o"
-    command = f"{cxx} -std=c++14 -c -Wno-unknown-pragmas -Wall -Werror -I. {source_file} -o {object_file}"
+    command = f"{cxx} -std=c++17 -c -Wno-unknown-pragmas -Wall -Werror -I. {source_file} -o {object_file}"
     print(command, file=sys.stderr)
     code = os.system(command)
     try:
