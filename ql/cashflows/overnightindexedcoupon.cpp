@@ -194,8 +194,8 @@ namespace QuantLib {
                     new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
                 break;
             case RateAveraging::Compound:
-                setPricer(
-                    ext::shared_ptr<FloatingRateCouponPricer>(new OvernightIndexedCouponPricer));
+                setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
+                    new CompoudingOvernightIndexedCouponPricer));
                 break;
             default:
                 QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
@@ -217,10 +217,10 @@ namespace QuantLib {
     Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-        const auto overnightIndexPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
-        if (overnightIndexPricer)
-            return overnightIndexPricer->averageRate(d);
-
+        if (const auto compoudingPricer =
+                ext::dynamic_pointer_cast<CompoudingOvernightIndexedCouponPricer>(pricer_)) {
+            return compoudingPricer->averageRate(d);
+        }
         return pricer_->swapletRate();
     }
 
@@ -240,16 +240,16 @@ namespace QuantLib {
         }
     }
 
-    void OvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+    void CompoudingOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
         QL_ENSURE(coupon_, "wrong coupon type");
     }
 
-    Rate OvernightIndexedCouponPricer::swapletRate() const {
+    Rate CompoudingOvernightIndexedCouponPricer::swapletRate() const {
         return averageRate(coupon_->accrualEndDate());
     }
 
-    Rate OvernightIndexedCouponPricer::averageRate(const Date& date) const {
+    Rate CompoudingOvernightIndexedCouponPricer::averageRate(const Date& date) const {
         const Date today = Settings::instance().evaluationDate();
 
         const ext::shared_ptr<OvernightIndex> index =
