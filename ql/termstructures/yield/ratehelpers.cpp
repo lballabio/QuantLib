@@ -555,7 +555,7 @@ namespace QuantLib {
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons), swapBuiltViaGivenBuilder(false) {
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -603,24 +603,49 @@ namespace QuantLib {
                      std::move(fixedDayCount), iborIndex, std::move(spread), fwdStart, std::move(discount), settlementDays,
                      pillarChoice, customPillarDate, endOfMonth, useIndexedCoupons) {}
 
-    void SwapRateHelper::initializeDates() {
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   const MakeVanillaSwap& swapBuilder,
+                                   Handle<Quote> spread,
+                                   Pillar::Choice pillar,
+                                   Date customPillarDate)
+    : RelativeDateRateHelper(rate), pillarChoice_(pillar), spread_(std::move(spread)),
+      fwdStart_(swapBuilder.forwardStart_), swapBuiltViaGivenBuilder(true) {
+        registerWith(spread_);
 
-        // 1. do not pass the spread here, as it might be a Quote
-        //    i.e. it can dynamically change
-        // 2. input discount curve Handle might be empty now but it could
-        //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
-            .withSettlementDays(settlementDays_)
-            .withDiscountingTermStructure(discountRelinkableHandle_)
-            .withFixedLegDayCount(fixedDayCount_)
-            .withFixedLegTenor(Period(fixedFrequency_))
-            .withFixedLegConvention(fixedConvention_)
-            .withFixedLegTerminationDateConvention(fixedConvention_)
-            .withFixedLegCalendar(calendar_)
-            .withFixedLegEndOfMonth(endOfMonth_)
-            .withFloatingLegCalendar(calendar_)
-            .withFloatingLegEndOfMonth(endOfMonth_)
-            .withIndexedCoupons(useIndexedCoupons_);
+        pillarDate_ = customPillarDate;
+        swap_ = swapBuilder;
+        SwapRateHelper::initializeDates();
+    }
+
+    SwapRateHelper::SwapRateHelper(Rate rate,
+                                   const MakeVanillaSwap& swapBuilder,
+                                   Handle<Quote> spread,
+                                   Pillar::Choice pillar,
+                                   Date customPillarDate)
+    : SwapRateHelper(makeQuoteHandle(rate),
+                     swapBuilder,
+                     std::move(spread),
+                     pillar,
+                     customPillarDate) {}
+
+    void SwapRateHelper::initializeDates() {
+        if (!swapBuiltViaGivenBuilder)
+            // 1. do not pass the spread here, as it might be a Quote
+            //    i.e. it can dynamically change
+            // 2. input discount curve Handle might be empty now but it could
+            //    be assigned a curve later; use a RelinkableHandle here
+            swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
+                .withSettlementDays(settlementDays_)
+                .withDiscountingTermStructure(discountRelinkableHandle_)
+                .withFixedLegDayCount(fixedDayCount_)
+                .withFixedLegTenor(Period(fixedFrequency_))
+                .withFixedLegConvention(fixedConvention_)
+                .withFixedLegTerminationDateConvention(fixedConvention_)
+                .withFixedLegCalendar(calendar_)
+                .withFixedLegEndOfMonth(endOfMonth_)
+                .withFloatingLegCalendar(calendar_)
+                .withFloatingLegEndOfMonth(endOfMonth_)
+                .withIndexedCoupons(useIndexedCoupons_);
 
         simplifyNotificationGraph(*swap_, true);
 
@@ -658,6 +683,9 @@ namespace QuantLib {
     }
 
     void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
+        if (swapBuiltViaGivenBuilder)
+            return;
+
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         bool observer = false;
