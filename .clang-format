@@ -1,6 +1,6 @@
 ---
 Language:        Cpp
-Standard:        c++14
+Standard:        c++17
 
 
 # The following is close to the style we've been using all these years
@@ -33,7 +33,7 @@ PointerAlignment: Left
 
 SortIncludes: true
 IncludeBlocks: Merge
-IncludeCategories: 
+IncludeCategories:
   - Regex:           '^"'
     Priority:        1
   - Regex:           '^<ql/'
