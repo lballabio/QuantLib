@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2013 Gary Kennedy
- Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2015, 2024 Peter Caspers
  Copyright (C) 2017 Klaus Spanderen
  Copyright (C) 2020 Marcin Rybacki
 
@@ -33,15 +33,14 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BlackFormulaTests)
 
-BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
-
+BOOST_AUTO_TEST_CASE(testBachelierImpliedVol) {
 
     BOOST_TEST_MESSAGE("Testing Bachelier implied vol...");
 
     Real forward = 1.0;
     Real bpvol = 0.01;
     Real tte = 10.0;
-    Real stdDev = bpvol*std::sqrt(tte);
+    Real stdDev = bpvol * std::sqrt(tte);
     Option::Type optionType = Option::Call;
     Real discount = 0.95;
 
@@ -53,10 +52,18 @@ BOOST_AUTO_TEST_CASE(testBachelierImpliedVol){
 
         Real callPrem = bachelierBlackFormula(optionType, strike, forward, stdDev, discount);
 
-        Real impliedBpVol = bachelierBlackFormulaImpliedVol(optionType,strike, forward, tte, callPrem, discount);
+        Real impliedBpVol = bachelierBlackFormulaImpliedVolChoi(optionType, strike, forward, tte,
+                                                                callPrem, discount);
 
-        if (std::fabs(bpvol-impliedBpVol)>1.0e-12){
-            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol );
+        if (std::fabs(bpvol - impliedBpVol) > 1.0e-12) {
+            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVol);
+        }
+
+        Real impliedBpVolExact =
+            bachelierBlackFormulaImpliedVol(optionType, strike, forward, tte, callPrem, discount);
+
+        if (std::fabs(bpvol - impliedBpVolExact) > 1.0e-15) {
+            BOOST_ERROR("Failed, expected " << bpvol << " realised " << impliedBpVolExact);
         }
     }
 }

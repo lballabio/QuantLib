@@ -33,10 +33,6 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
-#if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 4
-#define QL_ARRAY_EXPRESSIONS
-#endif
-
 namespace QuantLib {
 
     namespace {
@@ -64,13 +60,7 @@ namespace QuantLib {
             Size dimensions = values_.size() - 1;
             Real factor1 = (1.0 - factor)/dimensions;
             Real factor2 = factor1 - factor;
-            #if defined(QL_ARRAY_EXPRESSIONS)
             pTry = sum_*factor1 - vertices_[iHighest]*factor2;
-            #else
-            // composite expressions fail to compile with gcc 3.4 on windows
-            pTry = sum_*factor1;
-            pTry -= vertices_[iHighest]*factor2;
-            #endif
             factor *= 0.5;
         } while (!P.constraint().test(pTry) && std::fabs(factor) > QL_EPSILON);
         if (std::fabs(factor) <= QL_EPSILON) {
@@ -80,12 +70,7 @@ namespace QuantLib {
         Real vTry = P.value(pTry);
         if (vTry < values_[iHighest]) {
             values_[iHighest] = vTry;
-            #if defined(QL_ARRAY_EXPRESSIONS)
             sum_ += pTry - vertices_[iHighest];
-            #else
-            sum_ += pTry;
-            sum_ -= vertices_[iHighest];
-            #endif
             vertices_[iHighest] = pTry;
         }
         return vTry;
@@ -186,13 +171,8 @@ namespace QuantLib {
                     if (vTry >= vSave && std::fabs(factor) > QL_EPSILON) {
                         for (Size i=0; i<=n; i++) {
                             if (i!=iLowest) {
-                                #if defined(QL_ARRAY_EXPRESSIONS)
                                 vertices_[i] =
                                     0.5*(vertices_[i] + vertices_[iLowest]);
-                                #else
-                                vertices_[i] += vertices_[iLowest];
-                                vertices_[i] *= 0.5;
-                                #endif
                                 values_[i] = P.value(vertices_[i]);
                             }
                         }
