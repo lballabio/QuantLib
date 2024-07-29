@@ -24,10 +24,9 @@
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/experimental/math/hybridsimulatedannealing.hpp>
 #include <ql/experimental/math/particleswarmoptimization.hpp>
-#include <ql/functional.hpp>
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/simulatedannealing.hpp>
-#include <ql/tuple.hpp>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <utility>

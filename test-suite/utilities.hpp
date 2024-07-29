@@ -28,7 +28,6 @@
 #include <ql/quote.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/functional.hpp>
 #include <boost/test/unit_test.hpp>
 #if BOOST_VERSION < 105900
 #include <boost/test/floating_point_comparison.hpp>
@@ -36,6 +35,7 @@
 #include <boost/test/tools/floating_point_comparison.hpp>
 #endif
 #include <cmath>
+#include <functional>
 #include <iomanip>
 #include <numeric>
 #include <string>
