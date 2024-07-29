@@ -75,7 +75,6 @@ cpp_files = \
     instrument.cpp \
     interestrate.cpp \
     money.cpp \
-    optional.cpp \
     position.cpp \
     prices.cpp \
 	rebatedexercise.cpp \
