@@ -452,11 +452,6 @@ namespace QuantLib {
         applyObservationShift_ = applyObservationShift;
         return *this;
     }
-    OvernightLeg& OvernightLeg::withOvernightIndexedCouponPricer(
-        const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
-        couponPricer_ = couponPricer;
-        return *this;
-    }
 
     OvernightLeg::operator Leg() const {
 
@@ -488,7 +483,6 @@ namespace QuantLib {
                 overnightIndex_, detail::get(gearings_, i, 1.0), detail::get(spreads_, i, 0.0),
                 refStart, refEnd, paymentDayCounter_, telescopicValueDates_, averagingMethod_,
                 lookbackDays_, lockoutDays_, applyObservationShift_);
-            overnightIndexedCoupon->setPricer(couponPricer_);
 
             cashflows.push_back(overnightIndexedCoupon);
         }
