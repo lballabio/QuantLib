@@ -45,11 +45,11 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
-#include <ql/tuple.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <cmath>
 #include <utility>
+#include <tuple>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -2313,23 +2313,20 @@ BOOST_AUTO_TEST_CASE(testBSplines) {
     const BSpline bspline(p, knots.size()-p-2, knots);
 
     std::vector<std::tuple<Natural, Real, Real>> referenceValues = {
-        std::make_tuple(0, -0.95, 9.5238095238e-04),
-        std::make_tuple(0, -0.01, 0.37337142857),
-        std::make_tuple(0, 0.49, 0.84575238095),
-        std::make_tuple(0, 1.21, 0.0),
-        std::make_tuple(1, 1.49, 0.562987654321),
-        std::make_tuple(1, 1.59, 0.490888888889),
-        std::make_tuple(2, 1.99, 0.62429409171),
-        std::make_tuple(3, 1.19, 0.0),
-        std::make_tuple(3, 1.99, 0.12382936508),
-        std::make_tuple(3, 3.59, 0.765914285714)
+        {0, -0.95, 9.5238095238e-04},
+        {0, -0.01, 0.37337142857},
+        {0, 0.49, 0.84575238095},
+        {0, 1.21, 0.0},
+        {1, 1.49, 0.562987654321},
+        {1, 1.59, 0.490888888889},
+        {2, 1.99, 0.62429409171},
+        {3, 1.19, 0.0},
+        {3, 1.99, 0.12382936508},
+        {3, 3.59, 0.765914285714}
     };
 
     const Real tol = 1e-10;
-    for (auto& referenceValue : referenceValues) {
-        const Natural idx = std::get<0>(referenceValue);
-        const Real x = std::get<1>(referenceValue);
-        const Real expected = std::get<2>(referenceValue);
+    for (const auto& [idx, x, expected] : referenceValues) {
 
         const Real calculated = bspline(idx, x);
 
@@ -2758,7 +2755,7 @@ BOOST_AUTO_TEST_CASE(testLaplaceInterpolation) {
 
     // no point
 
-    LaplaceInterpolation l0([](const std::vector<Size>& x) { return Null<Real>(); }, {});
+    LaplaceInterpolation l0([](const std::vector<Size>&) { return Null<Real>(); }, {});
     BOOST_CHECK_CLOSE(l0({}), 0.0, tol);
 
     // single test cases from actual issues observed in the field

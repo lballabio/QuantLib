@@ -20,7 +20,6 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/functional.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
@@ -34,6 +33,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
+#include <functional>
 #include <utility>
 
 using namespace QuantLib;

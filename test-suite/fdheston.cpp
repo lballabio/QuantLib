@@ -41,7 +41,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/tuple.hpp>
+#include <tuple>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -907,19 +907,18 @@ BOOST_AUTO_TEST_CASE(testSpuriousOscillations) {
     option.setupArguments(hestonEngine->getArguments());
 
     const std::tuple<FdmSchemeDesc, std::string, bool> descs[] = {
-        std::make_tuple(FdmSchemeDesc::CraigSneyd(), "Craig-Sneyd", true),
-        std::make_tuple(FdmSchemeDesc::Hundsdorfer(), "Hundsdorfer", true),
-        std::make_tuple(
-           FdmSchemeDesc::ModifiedHundsdorfer(), "Mod. Hundsdorfer", true),
-        std::make_tuple(FdmSchemeDesc::Douglas(), "Douglas", true),
-        std::make_tuple(FdmSchemeDesc::CrankNicolson(), "Crank-Nicolson", true),
-        std::make_tuple(FdmSchemeDesc::ImplicitEuler(), "Implicit", false),
-        std::make_tuple(FdmSchemeDesc::TrBDF2(), "TR-BDF2", false)
+        {FdmSchemeDesc::CraigSneyd(), "Craig-Sneyd", true},
+        {FdmSchemeDesc::Hundsdorfer(), "Hundsdorfer", true},
+        {FdmSchemeDesc::ModifiedHundsdorfer(), "Mod. Hundsdorfer", true},
+        {FdmSchemeDesc::Douglas(), "Douglas", true},
+        {FdmSchemeDesc::CrankNicolson(), "Crank-Nicolson", true},
+        {FdmSchemeDesc::ImplicitEuler(), "Implicit", false},
+        {FdmSchemeDesc::TrBDF2(), "TR-BDF2", false}
     };
 
-    for (const auto& desc : descs) {
+    for (const auto & [desc, name, spurious] : descs) {
         const ext::shared_ptr<FdmHestonSolver> solver = ext::make_shared<FdmHestonSolver>(
-            Handle<HestonProcess>(process), hestonEngine->getSolverDesc(1.0), std::get<0>(desc));
+            Handle<HestonProcess>(process), hestonEngine->getSolverDesc(1.0), desc);
 
         std::vector<Real> gammas;
         for (Real x=99; x < 101.001; x+=0.1) {
@@ -936,11 +935,11 @@ BOOST_AUTO_TEST_CASE(testSpuriousOscillations) {
         const Real tol = 0.01;
         const bool hasSpuriousOscillations = maximum > tol;
 
-        if (hasSpuriousOscillations != std::get<2>(desc)) {
+        if (hasSpuriousOscillations != spurious) {
             BOOST_ERROR("unable to reproduce spurious oscillation behaviour "
-                        << "\n   scheme name          : " << std::get<1>(desc)
+                        << "\n   scheme name          : " << name
                         << "\n   oscillations observed: " << hasSpuriousOscillations
-                        << "\n   oscillations expected: " << std::get<2>(desc));
+                        << "\n   oscillations expected: " << spurious);
         }
     }
 }

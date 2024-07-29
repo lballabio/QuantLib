@@ -25,9 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/math/multidimquadrature.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/patterns/singleton.hpp>
-#include <ql/functional.hpp>
-
-
+#include <functional>
 #include <iostream>
 #include <iomanip>
 
