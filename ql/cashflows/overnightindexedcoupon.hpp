@@ -114,8 +114,8 @@ namespace QuantLib {
         Rate averageRate(const Date& date) const;
     };
 
-    //! OvernightIndexedCoupon pricer
-    class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    //! CompoudAveragedOvernightIndexedCouponPricer pricer
+    class CompoudingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
       public:
         //! \name FloatingRateCoupon interface
         //@{
