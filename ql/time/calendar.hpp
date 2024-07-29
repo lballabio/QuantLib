@@ -247,7 +247,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isStartOfMonth(const Date& d) const {
-        return (d.month() != adjust(d-1, Preceding).month());
+        return d <= startOfMonth(d);
     }
 
     inline Date Calendar::startOfMonth(const Date& d) const {
@@ -255,7 +255,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isEndOfMonth(const Date& d) const {
-        return (d.month() != adjust(d+1).month());
+        return d >= endOfMonth(d);
     }
 
     inline Date Calendar::endOfMonth(const Date& d) const {
