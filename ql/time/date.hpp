@@ -393,9 +393,19 @@ namespace QuantLib {
 
     #endif
 
-#ifndef QL_HIGH_RESOLUTION_DATE
     // inline definitions
 
+    inline Date Date::startOfMonth(const Date& d) {
+        Month m = d.month();
+        Year y = d.year();
+        return Date(1, m, y);
+    }
+
+    inline bool Date::isStartOfMonth(const Date& d) {
+       return (d.dayOfMonth() == 1);
+    }
+
+#ifndef QL_HIGH_RESOLUTION_DATE
     inline Weekday Date::weekday() const {
         Integer w = serialNumber_ % 7;
         return Weekday(w == 0 ? 7 : w);
@@ -427,16 +437,6 @@ namespace QuantLib {
 
     inline Date Date::operator-(const Period& p) const {
         return advance(*this,-p.length(),p.units());
-    }
-
-    inline Date Date::startOfMonth(const Date& d) {
-        Month m = d.month();
-        Year y = d.year();
-        return Date(1, m, y);
-    }
-
-    inline bool Date::isStartOfMonth(const Date& d) {
-       return (d.dayOfMonth() == 1);
     }
 
     inline Date Date::endOfMonth(const Date& d) {
