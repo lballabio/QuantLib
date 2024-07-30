@@ -88,14 +88,14 @@ namespace QuantLib {
             }
 
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            
+
             if (this->controlVariate_) {
                 // control variate might lead to small negative
                 // option values for deep OTM options
                 this->results_.value = std::max(0.0, this->results_.value);
             }
-                
-            if (RNG::allowsErrorEstimate)
+
+            if constexpr (RNG::allowsErrorEstimate)
                 results_.errorEstimate =
                     this->mcModel_->sampleAccumulator().errorEstimate();
 

@@ -116,7 +116,7 @@ CalibrationData AndreasenHugeExampleData() {
     const Size nStrikes = LENGTH(raw);
     const Size nMaturities = LENGTH(maturityTimes);
 
-    QL_REQUIRE(nMaturities == LENGTH(raw[1])-1, "check raw data");
+    static_assert(nMaturities == LENGTH(raw[1])-1, "check raw data");
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 

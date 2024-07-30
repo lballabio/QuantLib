@@ -22,8 +22,8 @@
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
-#include <ql/functional.hpp>
 #include <boost/circular_buffer.hpp>
+#include <functional>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
