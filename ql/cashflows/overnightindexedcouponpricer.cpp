@@ -4,6 +4,7 @@
  Copyright (C) 2009 Roland Lichters
  Copyright (C) 2009 Ferdinando Ametrano
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2016 Stefano Fondi
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
 
@@ -23,13 +24,11 @@
 
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
 
-using std::vector;
-
 namespace QuantLib {
 
     namespace {
 
-        Size determineNumberOfFixings(const vector<Date>& interestDates,
+        Size determineNumberOfFixings(const std::vector<Date>& interestDates,
                                       const Date& date,
                                       bool applyObservationShift) {
             Size n = std::lower_bound(interestDates.begin(), interestDates.end(), date) -
@@ -59,10 +58,10 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
         const auto& pastFixings = IndexManager::instance().getHistory(index->name());
 
-        const vector<Date>& fixingDates = coupon_->fixingDates();
-        const vector<Date>& valueDates = coupon_->valueDates();
-        const vector<Date>& interestDates = coupon_->interestDates();
-        const vector<Time>& dt = coupon_->dt();
+        const auto& fixingDates = coupon_->fixingDates();
+        const auto& valueDates = coupon_->valueDates();
+        const auto& interestDates = coupon_->interestDates();
+        const auto& dt = coupon_->dt();
         const bool applyObservationShift = coupon_->applyObservationShift();
 
         Size i = 0;
@@ -175,5 +174,106 @@ namespace QuantLib {
 
         const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
         return coupon_->gearing() * rate + coupon_->spread();
+    }
+
+    void
+    ArithmeticAveragedOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+        coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
+        QL_ENSURE(coupon_, "wrong coupon type");
+    }
+
+    Rate ArithmeticAveragedOvernightIndexedCouponPricer::swapletRate() const {
+
+        ext::shared_ptr<OvernightIndex> index =
+            ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+
+        const auto& fixingDates = coupon_->fixingDates();
+        const auto& dt = coupon_->dt();
+
+        Size n = dt.size(), i = 0;
+
+        Real accumulatedRate = 0.0;
+
+        // already fixed part
+        Date today = Settings::instance().evaluationDate();
+        while (i < n && fixingDates[i] < today) {
+            // rate must have been fixed
+            Rate pastFixing = IndexManager::instance().getHistory(index->name())[fixingDates[i]];
+            QL_REQUIRE(pastFixing != Null<Real>(),
+                       "Missing " << index->name() << " fixing for " << fixingDates[i]);
+            accumulatedRate += pastFixing * dt[i];
+            ++i;
+        }
+
+        // today is a border case
+        if (i < n && fixingDates[i] == today) {
+            // might have been fixed
+            try {
+                Rate pastFixing =
+                    IndexManager::instance().getHistory(index->name())[fixingDates[i]];
+                if (pastFixing != Null<Real>()) {
+                    accumulatedRate += pastFixing * dt[i];
+                    ++i;
+                } else {
+                    ; // fall through and forecast
+                }
+            } catch (Error&) {
+                ; // fall through and forecast
+            }
+        }
+
+        /* forward part using telescopic property in order
+        to avoid the evaluation of multiple forward fixings
+        (approximation proposed by Katsumi Takada)*/
+        if (byApprox_ && i < n) {
+            Handle<YieldTermStructure> curve = index->forwardingTermStructure();
+            QL_REQUIRE(!curve.empty(),
+                       "null term structure set to this instance of " << index->name());
+
+            const auto& dates = coupon_->valueDates();
+            DiscountFactor startDiscount = curve->discount(dates[i]);
+            DiscountFactor endDiscount = curve->discount(dates[n]);
+
+            accumulatedRate +=
+                log(startDiscount / endDiscount) -
+                convAdj1(curve->timeFromReference(dates[i]), curve->timeFromReference(dates[n])) -
+                convAdj2(curve->timeFromReference(dates[i]), curve->timeFromReference(dates[n]));
+        }
+        // otherwise
+        else if (i < n) {
+            Handle<YieldTermStructure> curve = index->forwardingTermStructure();
+            QL_REQUIRE(!curve.empty(),
+                       "null term structure set to this instance of " << index->name());
+
+            const auto& dates = coupon_->valueDates();
+            Time te = curve->timeFromReference(dates[n]);
+            while (i < n) {
+                // forcast fixing
+                Rate forecastFixing = index->fixing(fixingDates[i]);
+                Time ti1 = curve->timeFromReference(dates[i]);
+                Time ti2 = curve->timeFromReference(dates[i + 1]);
+                /*convexity adjustment due to payment dalay of each
+                overnight fixing, supposing an Hull-White short rate model*/
+                Real convAdj = exp(
+                    0.5 * pow(vol_, 2.0) / pow(mrs_, 3.0) * (exp(2 * mrs_ * ti1) - 1) *
+                    (exp(-mrs_ * ti2) - exp(-mrs_ * te)) * (exp(-mrs_ * ti2) - exp(-mrs_ * ti1)));
+                accumulatedRate += convAdj * (1 + forecastFixing * dt[i]) - 1;
+                ++i;
+            }
+        }
+
+        Rate rate = accumulatedRate / coupon_->accrualPeriod();
+        return coupon_->gearing() * rate + coupon_->spread();
+    }
+
+    Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj1(Time ts, Time te) const {
+        return vol_ * vol_ / (4.0 * pow(mrs_, 3.0)) * (1.0 - exp(-2.0 * mrs_ * ts)) *
+               pow((1.0 - exp(-mrs_ * (te - ts))), 2.0);
+    }
+
+    Real ArithmeticAveragedOvernightIndexedCouponPricer::convAdj2(Time ts, Time te) const {
+        return vol_ * vol_ / (2.0 * pow(mrs_, 2.0)) *
+               ((te - ts) - pow(1.0 - exp(-mrs_ * (te - ts)), 2.0) / mrs_ -
+                (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
     }
 }
