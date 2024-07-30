@@ -195,7 +195,7 @@ namespace QuantLib {
                 break;
             case RateAveraging::Compound:
                 setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
-                    new CompoudingOvernightIndexedCouponPricer));
+                    new CompoundingOvernightIndexedCouponPricer));
                 break;
             default:
                 QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
@@ -218,7 +218,7 @@ namespace QuantLib {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
         if (const auto compoudingPricer =
-                ext::dynamic_pointer_cast<CompoudingOvernightIndexedCouponPricer>(pricer_)) {
+                ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer_)) {
             return compoudingPricer->averageRate(d);
         }
         return pricer_->swapletRate();
@@ -240,16 +240,16 @@ namespace QuantLib {
         }
     }
 
-    void CompoudingOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+    void CompoundingOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
         QL_ENSURE(coupon_, "wrong coupon type");
     }
 
-    Rate CompoudingOvernightIndexedCouponPricer::swapletRate() const {
+    Rate CompoundingOvernightIndexedCouponPricer::swapletRate() const {
         return averageRate(coupon_->accrualEndDate());
     }
 
-    Rate CompoudingOvernightIndexedCouponPricer::averageRate(const Date& date) const {
+    Rate CompoundingOvernightIndexedCouponPricer::averageRate(const Date& date) const {
         const Date today = Settings::instance().evaluationDate();
 
         const ext::shared_ptr<OvernightIndex> index =

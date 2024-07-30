@@ -115,7 +115,7 @@ namespace QuantLib {
     };
 
     //! CompoudAveragedOvernightIndexedCouponPricer pricer
-    class CompoudingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
       public:
         //! \name FloatingRateCoupon interface
         //@{
