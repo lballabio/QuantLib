@@ -114,25 +114,6 @@ namespace QuantLib {
         Rate averageRate(const Date& date) const;
     };
 
-    //! CompoudAveragedOvernightIndexedCouponPricer pricer
-    class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
-      public:
-        //! \name FloatingRateCoupon interface
-        //@{
-        void initialize(const FloatingRateCoupon& coupon) override;
-        Rate swapletRate() const override;
-        Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
-        Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
-        Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
-        Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
-        Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
-        //@}
-        Rate averageRate(const Date& date) const;
-
-      protected:
-        const OvernightIndexedCoupon* coupon_ = nullptr;
-    };
-
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
       public:

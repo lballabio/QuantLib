@@ -25,6 +25,7 @@ set(QL_SOURCES
     cashflows/inflationcouponpricer.cpp
     cashflows/lineartsrpricer.cpp
     cashflows/overnightindexedcoupon.cpp
+    cashflows/overnightindexedcouponpricer.cpp
     cashflows/rangeaccrual.cpp
     cashflows/replication.cpp
     cashflows/simplecashflow.cpp
@@ -961,6 +962,7 @@ set(QL_HEADERS
     cashflows/inflationcouponpricer.hpp
     cashflows/lineartsrpricer.hpp
     cashflows/overnightindexedcoupon.hpp
+    cashflows/overnightindexedcouponpricer.hpp
     cashflows/rangeaccrual.hpp
     cashflows/rateaveraging.hpp
     cashflows/replication.hpp
