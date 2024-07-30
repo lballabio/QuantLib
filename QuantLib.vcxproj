@@ -534,6 +534,7 @@
     <ClInclude Include="ql\cashflows\inflationcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\lineartsrpricer.hpp" />
     <ClInclude Include="ql\cashflows\overnightindexedcoupon.hpp" />
+    <ClInclude Include="ql\cashflows\overnightindexedcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp" />
     <ClInclude Include="ql\cashflows\rateaveraging.hpp" />
     <ClInclude Include="ql\cashflows\replication.hpp" />
@@ -1933,6 +1934,7 @@
     <ClCompile Include="ql\cashflows\inflationcouponpricer.cpp" />
     <ClCompile Include="ql\cashflows\lineartsrpricer.cpp" />
     <ClCompile Include="ql\cashflows\overnightindexedcoupon.cpp" />
+    <ClCompile Include="ql\cashflows\overnightindexedcouponpricer.cpp" />
     <ClCompile Include="ql\cashflows\rangeaccrual.cpp" />
     <ClCompile Include="ql\cashflows\replication.cpp" />
     <ClCompile Include="ql\cashflows\simplecashflow.cpp" />
