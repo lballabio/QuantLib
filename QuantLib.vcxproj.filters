@@ -6596,9 +6596,6 @@
     <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
       <Filter>experimental\averageois</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp">
-      <Filter>experimental\averageois</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp">
       <Filter>experimental\averageois</Filter>
     </ClCompile>

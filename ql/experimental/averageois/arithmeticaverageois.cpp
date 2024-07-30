@@ -19,8 +19,8 @@
 
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/experimental/averageois/arithmeticaverageois.hpp>
-#include <ql/experimental/averageois/averageoiscouponpricer.hpp>
 #include <utility>
 
 namespace QuantLib {

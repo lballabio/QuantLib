@@ -23,7 +23,6 @@
 
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
-#include <ql/experimental/averageois/averageoiscouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/vectors.hpp>
