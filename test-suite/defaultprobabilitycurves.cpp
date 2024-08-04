@@ -491,6 +491,7 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
 
     // Create the CDS spread helpers.
     vector<ext::shared_ptr<DefaultProbabilityHelper> > instruments;
+    instruments.reserve(cdsSpreads.size());
     for (auto & cdsSpread : cdsSpreads) {
         instruments.push_back(ext::make_shared<SpreadCdsHelper>(
             cdsSpread.second, cdsSpread.first, settlementDays, calendar,
