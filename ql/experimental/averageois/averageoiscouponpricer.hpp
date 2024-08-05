@@ -17,17 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file averageoiscouponpricer.hpp
-    \brief pricer for arithmetically-averaged overnight-indexed coupons
-*/
-
 #ifndef quantlib_average_ois_coupon_pricer_hpp
 #define quantlib_average_ois_coupon_pricer_hpp
 
-/* the class ArithmeticAveragedOvernightIndexedCouponPricer is moved to
- * ql/cashflows/overnightindexedcouponpricer.hpp */
-#include <ql/cashflows/overnightindexedcouponpricer.hpp>
+// Deprecated in version 1.36
+#pragma message("Warning: this file will disappear in a future release; include <ql/cashflows/overnightindexedcouponpricer.hpp> instead")
 
-#pragma message("Warning: this file will disappear in a future release; do not include it.")
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
 
 #endif
