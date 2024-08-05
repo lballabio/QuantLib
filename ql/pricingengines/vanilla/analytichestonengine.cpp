@@ -175,7 +175,7 @@ namespace QuantLib {
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
         t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
-        
+
         engine_(engine)
     {
     }
@@ -488,9 +488,11 @@ namespace QuantLib {
                         *(v0 + kappa*theta*term)
                   - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
                           /(sigma*sigma);
+            [[fallthrough]];
           case AngledContour:
             vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
                       /(kappa*term) + theta;
+            [[fallthrough]];
           case AngledContourNoCV:
             {
               const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);

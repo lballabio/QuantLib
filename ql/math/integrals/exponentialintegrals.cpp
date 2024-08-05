@@ -170,8 +170,6 @@ namespace QuantLib {
                 }
                 return (acc + std::complex<Real>(0.0, sign(z.imag())*M_PI))
                         - std::exp(z)/ (1.0 - z + ei);
-
-                QL_FAIL("series conversion issue for Ei(" << z << ")");
             }
 
             std::complex<Real> s(0.0), sn=z;

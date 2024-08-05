@@ -32,7 +32,13 @@ if (MSVC)
     # /w34127
     # Enable warning under W3: conditional expression is constant
 
-    add_compile_options(/wd4267 /wd4819 /wd26812 /w34127)
+    # /w34702
+    # Enable warning under W3: unreachable code
+
+    # /w35262
+    # Enable warning under W3: implicit fall-through occurs here; are you missing a break statement?
+
+    add_compile_options(/wd4267 /wd4819 /wd26812 /w34127 /w34702 /w35262)
 
     # Silence all C++17 deprecation warnings, same as in the vcxproj files
     add_compile_definitions(_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
