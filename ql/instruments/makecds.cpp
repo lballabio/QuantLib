@@ -64,7 +64,8 @@ namespace QuantLib {
                 end = tradeDate + *tenor_;
             }
         } else {
-            end = *termDate_;
+            // we have two exclusive constructors; if we don't have a tenor, we have a term date
+            end = *termDate_; // NOLINT(bugprone-unchecked-optional-access)
         }
 
         Schedule schedule(protectionStart, end, couponTenor_, WeekendsOnly(), Following,

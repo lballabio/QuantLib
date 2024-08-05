@@ -121,6 +121,7 @@ namespace {
             Benchmark(Benchmark&& move) = default;        
             Benchmark& operator=(const Benchmark &other) = default;
             Benchmark& operator=(Benchmark &&other) = default;
+            ~Benchmark() = default;
 
             double getCost() const          { return cost_; }
             std::string getName() const     { return name_; }
@@ -262,8 +263,7 @@ namespace {
                         std::string msg = "Unable to find the Boost test unit for Benchmark '";
                         msg += b.getName();
                         msg += "'";
-                        std::runtime_error err(msg);
-                        throw err;
+                        throw std::runtime_error(msg);
                     }
                 }
             }
@@ -575,7 +575,7 @@ QL_BENCHMARK_DECLARE(RoundingTests, testClosest, 100000, 0.1);
 
 
 
-int main(int argc, char* argv[] ) 
+int main(int argc, char* argv[] )  // NOLINT(bugprone-exception-escape)
 {
     const std::string clientModeStr = "--client_mode=true";
     bool clientMode = false;

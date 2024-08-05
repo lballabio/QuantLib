@@ -103,7 +103,7 @@ QuantLibGlobalFixture::QuantLibGlobalFixture() {
                    ? "reference date events are included,\n"
                    : "reference date events are excluded,\n")
            << (settings.includeTodaysCashFlows()
-                   ? (*settings.includeTodaysCashFlows()
+                   ? (*settings.includeTodaysCashFlows() // NOLINT(bugprone-unchecked-optional-access)
                         ? "today's cashflows are included,\n"
                         : "today's cashflows are excluded,\n")
                    : "")

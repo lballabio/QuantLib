@@ -836,7 +836,7 @@ namespace QuantLib {
 
     namespace {
 
-        static boost::math::normal_distribution<double> normal_dist;
+        boost::math::normal_distribution<double> normal_dist;
 
         Real phi(const Real x) {
             return boost::math::pdf(normal_dist, x);

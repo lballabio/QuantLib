@@ -40,6 +40,11 @@ jobs:
             tag: noble
             cc: gcc
             cxx: g++
+          - name: "gcc 14.x"
+            shortname: gcc14
+            tag: oracular
+            cc: gcc
+            cxx: g++
           - name: "Clang 7 (Boost 1.72)"
             shortname: clang7
             tag: cosmic

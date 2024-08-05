@@ -106,9 +106,14 @@ namespace QuantLib {
                 std::adjacent_difference(mandatoryTimes_.begin(),
                                          mandatoryTimes_.end(),
                                          std::back_inserter(diff));
+                QL_REQUIRE(!diff.empty(), "at least two distinct points required in time grid");
+
                 if (diff.front()==0.0)
                     diff.erase(diff.begin());
-                dtMax = *(std::min_element(diff.begin(), diff.end()));
+
+                auto i = std::min_element(diff.begin(), diff.end());
+                QL_REQUIRE(i != diff.end(), "not enough distinct points in time grid");
+                dtMax = *i;
             } else {
                 dtMax = last/steps;
             }

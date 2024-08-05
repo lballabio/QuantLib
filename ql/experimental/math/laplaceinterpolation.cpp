@@ -145,7 +145,7 @@ for (auto const& m : map_)
                     // handling of the "corners", all second derivs are zero in the op
                     // this directly generalizes Numerical Recipes, 3rd ed, eq 3.8.6
                     Real sum_corner_h =
-                        std::accumulate(corner_h.begin(), corner_h.end(), Real(0.0), std::plus<Real>());
+                        std::accumulate(corner_h.begin(), corner_h.end(), Real(0.0), std::plus<>());
                     for (Size j = 0; j < dim.size(); ++j) {
                         std::vector<Size> coord_j(coord);
                         coord_j[j] = corner_neighbour_index[j];
