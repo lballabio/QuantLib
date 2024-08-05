@@ -170,21 +170,17 @@ namespace QuantLib {
             dt_[i] = dc.yearFraction(interestDates_[i], interestDates_[i + 1]);
 
         switch (averagingMethod) {
-            case RateAveraging::Simple:
-                QL_REQUIRE(
-                    fixingDays_ == overnightIndex->fixingDays() && !applyObservationShift_ &&
-                        lockoutDays_ == 0,
-                    "Cannot price an overnight coupon with simple averaging with lookback or "
-                    "lockout.");
-                setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
-                    new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
-                break;
-            case RateAveraging::Compound:
-                setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
-                    new CompoundingOvernightIndexedCouponPricer));
-                break;
-            default:
-                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+          case RateAveraging::Simple:
+            QL_REQUIRE(
+                fixingDays_ == overnightIndex->fixingDays() && !applyObservationShift_ && lockoutDays_ == 0,
+                "Cannot price an overnight coupon with simple averaging with lookback or lockout.");
+            setPricer(ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(telescopicValueDates));
+            break;
+          case RateAveraging::Compound:
+            setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+            break;
+          default:
+            QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
         }
     }
 
