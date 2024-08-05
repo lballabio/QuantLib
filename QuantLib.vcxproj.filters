@@ -561,6 +561,9 @@
     <ClInclude Include="ql\cashflows\overnightindexedcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\overnightindexedcouponpricer.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -4544,6 +4547,9 @@
     <ClCompile Include="ql\cashflows\overnightindexedcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
+    <ClCompile Include="ql\cashflows\overnightindexedcouponpricer.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
     <ClCompile Include="ql\cashflows\rangeaccrual.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
@@ -6588,9 +6594,6 @@
       <Filter>experimental\commodities</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
-      <Filter>experimental\averageois</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp">
       <Filter>experimental\averageois</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp">

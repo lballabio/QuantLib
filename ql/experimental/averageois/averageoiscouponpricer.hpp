@@ -17,53 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file averageoiscouponpricer.hpp
-    \brief pricer for arithmetically-averaged overnight-indexed coupons
-*/
-
 #ifndef quantlib_average_ois_coupon_pricer_hpp
 #define quantlib_average_ois_coupon_pricer_hpp
 
-#include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/cashflows/couponpricer.hpp>
+// Deprecated in version 1.36
+#pragma message("Warning: this file will disappear in a future release; include <ql/cashflows/overnightindexedcouponpricer.hpp> instead")
 
-namespace QuantLib {
-
-    /*! pricer for arithmetically averaged overnight indexed coupons
-    Reference: Katsumi Takada 2011, Valuation of Arithmetically Average of
-    Fed Funds Rates and Construction of the US Dollar Swap Yield Curve
-    */
-    class ArithmeticAveragedOvernightIndexedCouponPricer
-                                         : public FloatingRateCouponPricer {
-    public:
-        explicit ArithmeticAveragedOvernightIndexedCouponPricer(
-            Real meanReversion = 0.03,
-            Real volatility = 0.00, // NO convexity adjustment by default
-            bool byApprox = false) // TRUE to use Katsumi Takada approximation
-        : byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}
-
-        explicit ArithmeticAveragedOvernightIndexedCouponPricer(
-            bool byApprox)  // Simplified constructor assuming no convexity correction
-        : ArithmeticAveragedOvernightIndexedCouponPricer(0.03, 0.0, byApprox) {}
-
-        void initialize(const FloatingRateCoupon& coupon) override;
-        Rate swapletRate() const override;
-        Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
-        Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
-        Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
-        Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
-        Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
-
-      protected:
-        Real convAdj1(Time ts, Time te) const;
-        Real convAdj2(Time ts, Time te) const;
-        const OvernightIndexedCoupon* coupon_;
-        bool byApprox_;
-        Real mrs_;
-        Real vol_;
-
-    };
-
-}
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
 
 #endif

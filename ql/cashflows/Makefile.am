@@ -29,6 +29,7 @@ this_include_HEADERS = \
     inflationcouponpricer.hpp \
     lineartsrpricer.hpp \
     overnightindexedcoupon.hpp \
+    overnightindexedcouponpricer.hpp \
     rangeaccrual.hpp \
     rateaveraging.hpp \
     replication.hpp \
@@ -64,6 +65,7 @@ cpp_files = \
     inflationcouponpricer.cpp \
     lineartsrpricer.cpp \
     overnightindexedcoupon.cpp \
+    overnightindexedcouponpricer.cpp \
     rangeaccrual.cpp \
     replication.cpp \
     simplecashflow.cpp \

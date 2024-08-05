@@ -10,7 +10,6 @@ this_include_HEADERS = \
     makearithmeticaverageois.hpp
 
 cpp_files = \
-    averageoiscouponpricer.cpp \
     arithmeticaverageois.cpp \
     arithmeticoisratehelper.cpp \
     makearithmeticaverageois.cpp
