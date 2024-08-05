@@ -78,11 +78,11 @@ namespace QuantLib {
         //! interest dates for the rates to be compounded
         const std::vector<Date>& interestDates() const { return interestDates_; }
         //! averaging method
-        const RateAveraging::Type averagingMethod() const { return averagingMethod_; }
+        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         //! lockout days
-        const Natural lockoutDays() const { return lockoutDays_; }
+        Natural lockoutDays() const { return lockoutDays_; }
         //! apply observation shift
-        const bool applyObservationShift() const { return applyObservationShift_; }
+        bool applyObservationShift() const { return applyObservationShift_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -100,7 +100,10 @@ namespace QuantLib {
         //! Only when index fixing delay is 0 and observation shift is used,
         //! we can apply telescopic formula, when applying lookback period.
         //@{
-        const bool canApplyTelescopicFormula() const;
+        bool canApplyTelescopicFormula() const {
+            return fixingDays_ == index_->fixingDays() ||
+                (applyObservationShift_ && index_->fixingDays() == 0);
+        }
         //@}
       private:
         std::vector<Date> valueDates_, interestDates_, fixingDates_;
@@ -150,11 +153,6 @@ namespace QuantLib {
         Natural lockoutDays_ = 0;
         bool applyObservationShift_ = false;
     };
-
-    inline const bool OvernightIndexedCoupon::canApplyTelescopicFormula() const {
-        return fixingDays_ == index_->fixingDays() ||
-               (applyObservationShift_ && index_->fixingDays() == 0);
-    }
 
 }
 
