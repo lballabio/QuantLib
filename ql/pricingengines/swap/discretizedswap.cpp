@@ -59,7 +59,7 @@ namespace QuantLib {
 
         // NOLINTNEXTLINE(readability-implicit-bool-conversion)
         auto includeTodaysCashFlows = Settings::instance().includeTodaysCashFlows() &&
-                                      *Settings::instance().includeTodaysCashFlows();
+                                      *Settings::instance().includeTodaysCashFlows(); // NOLINT(bugprone-unchecked-optional-access)
 
         auto nrOfFixedCoupons = args.fixedResetDates.size();
         fixedResetTimes_.resize(nrOfFixedCoupons);
