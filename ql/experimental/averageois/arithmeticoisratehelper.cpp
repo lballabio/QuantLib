@@ -25,6 +25,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     ArithmeticOISRateHelper::ArithmeticOISRateHelper(Natural settlementDays,
                                                      const Period& tenor, // swap maturity
                                                      Frequency fixedLegPaymentFrequency,
@@ -105,5 +107,7 @@ namespace QuantLib {
         else
             RateHelper::accept(v);
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
