@@ -29,9 +29,12 @@
 
 namespace QuantLib {
 
-    //! Rate helper for bootstrapping over Overnight Indexed Swap rates
-    class ArithmeticOISRateHelper : public RelativeDateRateHelper {
+    /*! \deprecated Use OISRateHelper instead.
+                        Deprecated in version 1.36.
+    */
+    class [[deprecated("Use OISRateHelper instead")]] ArithmeticOISRateHelper : public RelativeDateRateHelper {
       public:
+        QL_DEPRECATED_DISABLE_WARNING
         ArithmeticOISRateHelper(
             Natural settlementDays,
             const Period& tenor, // swap maturity
@@ -80,6 +83,7 @@ namespace QuantLib {
           Real vol_;
           bool byApprox_;
  
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }

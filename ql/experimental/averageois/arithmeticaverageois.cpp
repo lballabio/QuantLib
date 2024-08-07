@@ -25,6 +25,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     ArithmeticAverageOIS::ArithmeticAverageOIS(Type type,
                                                Real nominal,
                                                Schedule fixedLegSchedule,
@@ -142,5 +144,7 @@ namespace QuantLib {
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
