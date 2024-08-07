@@ -257,12 +257,12 @@ void testBootstrap(bool telescopicValueDates,
         Rate error = std::fabs(expected-calculated);
 
         if (error>tolerance)
-            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
-                       "\n swap length:     " << term <<
-                       "\n quoted rate:     " << expected <<
-                       "\n calculated rate: " << calculated <<
-                       "\n error:           " << error <<
-                       "\n tolerance:       " << tolerance);
+            BOOST_ERROR("curve inconsistency:" << std::setprecision(10) <<
+                        "\n swap length:     " << term <<
+                        "\n quoted rate:     " << expected <<
+                        "\n calculated rate: " << calculated <<
+                        "\n error:           " << error <<
+                        "\n tolerance:       " << tolerance);
     }
 }
 
@@ -535,12 +535,12 @@ void testBootstrapWithLookback(Natural lookbackDays,
         Real tolerance = 1e-8;
 
         if (error>tolerance)
-            BOOST_FAIL("curve inconsistency:" << std::setprecision(10) <<
-                       "\n swap length:     " << term <<
-                       "\n quoted rate:     " << expected <<
-                       "\n calculated rate: " << calculated <<
-                       "\n error:           " << error <<
-                       "\n tolerance:       " << tolerance);
+            BOOST_ERROR("curve inconsistency:" << std::setprecision(10) <<
+                        "\n swap length:     " << term <<
+                        "\n quoted rate:     " << expected <<
+                        "\n calculated rate: " << calculated <<
+                        "\n error:           " << error <<
+                        "\n tolerance:       " << tolerance);
     }
 }
 
