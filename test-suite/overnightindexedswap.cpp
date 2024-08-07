@@ -41,6 +41,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -406,6 +407,79 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithTelescopicDatesAndArithmeticAverage) {
     // the required convexity correction, a lower tolerance
     // is needed.
     testBootstrap(true, RateAveraging::Simple, 1.0e-5);
+}
+
+BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
+    BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with custom pricer...");
+
+    CommonVars vars;
+
+    Natural paymentLag = 2;
+    bool telescopicValueDates = false;
+    auto averagingMethod = RateAveraging::Simple;
+    auto pricer =
+        ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(0.02, 0.15, true);
+
+    std::vector<ext::shared_ptr<RateHelper> > eoniaHelpers;
+
+    ext::shared_ptr<IborIndex> euribor3m(new Euribor3M);
+    ext::shared_ptr<Eonia> eonia(new Eonia);
+
+    for (auto& i : eoniaSwapData) {
+        Real rate = 0.01 * i.rate;
+        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+        ext::shared_ptr<Quote> quote (simple);
+        Period term = i.n * i.unit;
+        ext::shared_ptr<RateHelper> helper(new OISRateHelper(i.settlementDays,
+                                                             term,
+                                                             Handle<Quote>(quote),
+                                                             eonia,
+                                                             Handle<YieldTermStructure>(),
+                                                             telescopicValueDates,
+                                                             paymentLag,
+                                                             Following,
+                                                             Annual,
+                                                             Calendar(),
+                                                             0 * Days,
+                                                             0.0,
+                                                             Pillar::LastRelevantDate,
+                                                             Date(),
+                                                             averagingMethod,
+                                                             ext::nullopt,
+                                                             ext::nullopt,
+                                                             Calendar(),
+                                                             Null<Natural>(),
+                                                             0,
+                                                             false,
+                                                             pricer));
+        eoniaHelpers.push_back(helper);
+    }
+
+    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
+
+    vars.eoniaTermStructure.linkTo(eoniaTS);
+
+    // test curve consistency
+    for (auto& i : eoniaSwapData) {
+        Rate expected = i.rate / 100;
+        Period term = i.n * i.unit;
+
+        ext::shared_ptr<OvernightIndexedSwap> swap =
+            vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
+        setCouponPricer(swap->overnightLeg(), pricer);
+
+        Rate calculated = swap->fairRate();
+        Rate error = std::fabs(expected-calculated);
+        Real tolerance = 1.0e-8;
+
+        if (error>tolerance)
+            BOOST_ERROR("curve inconsistency:" << std::setprecision(10) <<
+                        "\n swap length:     " << term <<
+                        "\n quoted rate:     " << expected <<
+                        "\n calculated rate: " << calculated <<
+                        "\n error:           " << error <<
+                        "\n tolerance:       " << tolerance);
+    }
 }
 
 
@@ -795,9 +869,9 @@ BOOST_AUTO_TEST_CASE(testNotifications) {
 
     RelinkableHandle<YieldTermStructure> discount_handle;
     discount_handle.linkTo(flatRate(0.02, Actual360()));
-    
+
     auto index = ext::make_shared<Estr>(forecast_handle);
-    
+
     auto ois = ext::make_shared<OvernightIndexedSwap>(Swap::Payer,
                                                       nominal,
                                                       schedule,

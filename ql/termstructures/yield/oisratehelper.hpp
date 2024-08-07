@@ -31,6 +31,8 @@
 
 namespace QuantLib {
 
+    class FloatingRateCouponPricer;
+
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
     class OISRateHelper : public RelativeDateRateHelper {
       public:
@@ -55,7 +57,8 @@ namespace QuantLib {
                       Calendar fixedCalendar = Calendar(),
                       Natural lookbackDays = Null<Natural>(),
                       Natural lockoutDays = 0,
-                      bool applyObservationShift = false);
+                      bool applyObservationShift = false,
+                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -98,6 +101,7 @@ namespace QuantLib {
       Natural lookbackDays_;
       Natural lockoutDays_;
       bool applyObservationShift_;
+      ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
@@ -121,8 +125,9 @@ namespace QuantLib {
                            const Calendar& fixedCalendar = Calendar(),
                            Natural lookbackDays = Null<Natural>(),
                            Natural lockoutDays = 0,
-                           bool applyObservationShift = false);
-        
+                           bool applyObservationShift = false,
+                           ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
+
         /*! \deprecated Use the overload without forward start.
                         Deprecated in version 1.35.
         */
