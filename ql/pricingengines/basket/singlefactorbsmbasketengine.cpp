@@ -25,6 +25,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/math/solvers1d/ridder.hpp>
+#include <ql/math/solvers1d/halley.hpp>
 #include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
 
@@ -103,47 +104,20 @@ namespace QuantLib {
         // linear approximation
         const Real denom = std::accumulate(attr.begin(), attr.end(), 0.0);
         const Real xInit = (std::abs(denom) > 1000*QL_EPSILON)
-            ? std::max(5.0, std::min(-5.0,
-                    (K_ - std::accumulate(a_.begin(), a_.end(), 0.0))/denom)
+            ? std::min(10.0, std::max(-10.0,
+                  (K_ - std::accumulate(a_.begin(), a_.end(), 0.0))/denom)
               )
             : 0.0;
 
         switch(strategy) {
           case Brent:
-            return QuantLib::Brent().solve(*this, xTol, xInit, 0.1);
+            return QuantLib::Brent().solve(*this, xTol, xInit, 1.0);
           case Newton:
-        	return QuantLib::Newton().solve(*this, xTol, xInit, 0.1);
+        	return QuantLib::Newton().solve(*this, xTol, xInit, 1.0);
           case Ridder:
-        	return QuantLib::Ridder().solve(*this, xTol, xInit, 0.1);
+        	return QuantLib::Ridder().solve(*this, xTol, xInit, 1.0);
           case Halley:
-          case SuperHalley: {
-        	const Size maxIter = 100;
-        	Size nIter = 0;
-            bool resultCloseEnough;
-            Real x = xInit;
-            Real xOld, fx;
-
-            do {
-                xOld = x;
-                fx = (*this)(x);
-                const Real fPrime = derivative(x);
-                const Real lf = fx*secondDerivative(x)/(fPrime*fPrime);
-                const Real step = (strategy == Halley)
-                    ? Real(1/(1 - 0.5*lf)*fx/fPrime)
-                    : Real((1 + 0.5*lf/(1-lf))*fx/fPrime);
-
-                x -= step;
-                resultCloseEnough = std::fabs(x-xOld) < 0.5*xTol;
-            }
-            while (!resultCloseEnough && ++nIter < maxIter);
-
-            if (!resultCloseEnough && !close(std::fabs(fx), 0.0)) {
-            	std::cout << "ouch" << std::endl;
-                x = QuantLib::Brent().solve(*this, xTol, xInit, 0.1);
-
-            }
-            return x;
-          }
+            return QuantLib::Halley().solve(*this, xTol, xInit, 1.0);
           default:
         	QL_FAIL("unknown strategy type");
         }
@@ -161,6 +135,10 @@ namespace QuantLib {
         const ext::shared_ptr<AverageBasketPayoff> avgPayoff =
             ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(avgPayoff, "average basket payoff expected");
+        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+             ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
+        QL_REQUIRE(payoff, "non-plain vanilla payoff given");
+        const Real strike =
 
         // sort assets by their weight
         const Array weights = avgPayoff->weights();
@@ -178,6 +156,9 @@ namespace QuantLib {
         const Array v = pExtractor.getBlackVariance(maturityDate);
         const DiscountFactor dr0 = pExtractor.getInterestRate(maturityDate);
 
+        const Array fwd = s*Exp(dq)/dr0;
+        const Array a = weights*fwd*Exp(-0.5*v)
+        const SumExponentialsRootSolver solver(a, Sqrt(v), );
 
 
     }

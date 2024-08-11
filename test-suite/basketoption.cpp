@@ -1741,34 +1741,51 @@ BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
     MersenneTwisterUniformRng mt(42);
 
     for (auto strategy: {
-    	SumExponentialsRootSolver::Brent,
-		SumExponentialsRootSolver::Newton,
-		SumExponentialsRootSolver::Ridder,
-		SumExponentialsRootSolver::Halley}) {
+    	std::make_tuple("Brent", SumExponentialsRootSolver::Brent),
+		std::make_tuple("Newton", SumExponentialsRootSolver::Newton),
+		std::make_tuple("Ridder", SumExponentialsRootSolver::Ridder),
+		std::make_tuple("Halley", SumExponentialsRootSolver::Halley)
+		}) {
 
     	Size fCtr = 0;
+    	const Size n = 10000;
+    	const Real tol = 1e8*QL_EPSILON;
+    	const Real acc = 1e-4*tol;
+    	IncrementalStatistics stats;
 
-		// first test arbitrary problem
-		for (Size i=0; i < 1000; ++i) {
-			// problem size
+		for (Size i=0; i < n; ++i) {
 			const Size n = (mt.nextInt32() % 10)+1;
 			Array a(n), sig(n);
+			const Real offset = (mt.nextReal() < 0.3)? -1.0 : 0.0;
 			for (Size j=0; j < n; ++j) {
-				a[j] = mt.nextReal() - 1.0;
+				a[j] = mt.nextReal() + offset;
 				sig[j] = copysign(1.0, a[j])*mt.nextReal();
 			}
 			const Real kMin = SumExponentialsRootSolver(a, sig, 0.0)(-10.0);
 			const Real kMax = SumExponentialsRootSolver(a, sig, 0.0)( 10.0);
 			const Real K = (kMax - kMin)*mt.nextReal() + kMin;
 
-			const SumExponentialsRootSolver solver(a, sig, K);
-			const Real xRoot = solver.rootSumExponentials(
-				1e1*QL_EPSILON, strategy);
+			const Real xValue = SumExponentialsRootSolver(a, sig, K)
+			    .rootSumExponentials(acc, SumExponentialsRootSolver::Brent);
 
+            const SumExponentialsRootSolver solver(a, sig, K);
+			const Real xRoot = solver.rootSumExponentials(tol, std::get<1>(strategy));
+
+			stats.add(xValue - xRoot);
 			fCtr += solver.getFCtr() + solver.getDerivativeCtr() + solver.getSecondDerivativeCtr();
 		}
 
-		std::cout << fCtr << std::endl;
+		if (fCtr > 15*n) {
+            BOOST_FAIL("too many function calls needed for solver " << std::get<0>(strategy));
+		}
+
+		if (stats.standardDeviation() > 10*tol) {
+            BOOST_FAIL("failed to find root of sum of exponentials"
+                   << "\n    solver   : " << std::get<0>(strategy)
+                   << std::fixed << std::setprecision(15)
+                   << "\n    stdev    : " << stats.standardDeviation()
+                   << "\n    tolerance: " << tol);
+		}
     }
 }
 

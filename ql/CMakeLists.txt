@@ -1554,6 +1554,7 @@ set(QL_HEADERS
     math/solvers1d/brent.hpp
     math/solvers1d/falseposition.hpp
     math/solvers1d/finitedifferencenewtonsafe.hpp
+    math/solvers1d/halley.hpp
     math/solvers1d/newton.hpp
     math/solvers1d/newtonsafe.hpp
     math/solvers1d/ridder.hpp

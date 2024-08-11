@@ -41,7 +41,7 @@ namespace QuantLib {
 
 	class SumExponentialsRootSolver {
 	  public:
-		enum Strategy {Ridder, Newton, Brent, Halley, SuperHalley};
+		enum Strategy {Ridder, Newton, Brent, Halley};
 
 		SumExponentialsRootSolver(Array a, Array sig, Real K);
 
@@ -50,7 +50,7 @@ namespace QuantLib {
 		Real secondDerivative(Real x) const;
 
 		Real rootSumExponentials(
-			Real xTol = 1e4*QL_EPSILON, Strategy strategy = Brent) const;
+			Real xTol = 1e6*QL_EPSILON, Strategy strategy = Brent) const;
 
 		Size getFCtr() const;
 		Size getDerivativeCtr() const;
