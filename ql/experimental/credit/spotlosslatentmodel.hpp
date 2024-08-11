@@ -185,7 +185,7 @@ namespace QuantLib {
     {
         Real sumMs = 
             std::inner_product(this->factorWeights_[iName].begin(), 
-                               this->factorWeights_[iName].end(), m.begin(), 0.);
+                               this->factorWeights_[iName].end(), m.begin(), Real(0.));
         Real res = this->cumulativeZ((invCumYProb - sumMs) / 
                 this->idiosyncFctrs_[iName] );
         #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -236,12 +236,12 @@ namespace QuantLib {
         //Size iRR = iName + basket_->size();// should be live pool
         const Real sumMs =
           std::inner_product(fctrs_[iName].begin(), fctrs_[iName].end(), 
-              mktFactors.begin(), 0.);
+              mktFactors.begin(), Real(0.));
         const Real sumBetaLoss = 
           std::inner_product(fctrs_[iName + numNames_].begin(),
               fctrs_[iName + numNames_].end(),
               fctrs_[iName + numNames_].begin(), 
-              0.);
+              Real(0.));
         return this->cumulativeZ((sumMs + std::sqrt(1.-crossIdiosyncFctrs_[iName])
                  * std::sqrt(1.+modelA_*modelA_) * 
                    invUncondRR
@@ -264,7 +264,7 @@ namespace QuantLib {
                 basket_->defaultKeys()[iName]);
         const Probability pdef = dfts->defaultProbability(d, true);
         // before asking for -\infty
-        if (pdef < 1.e-10) return 0.;
+        if (pdef < 1.e-10) return Real(0.);
 
         Size iRecovery = iName + numNames_;// should be live pool
         return cumulativeY(
@@ -361,7 +361,7 @@ namespace QuantLib {
                 \sum_k a^2_{i,k} a^2_{N+i,k}
             */
         {
-            Real cumul = 0.;
+            Real cumul = Real(0.);
             for(Size iB=0; iB<factorWeights[iName].size(); iB++)
                 // actually this size is unique
                 cumul += factorWeights[iName][iB] * 
