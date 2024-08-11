@@ -188,7 +188,7 @@ namespace QuantLib {
                                            Natural lookbackDays,
                                            Natural lockoutDays,
                                            bool applyObservationShift,
-                                           ext::shared_ptr<FloatingRateCouponPricer> pricer)
+                                           const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
       telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 

@@ -126,7 +126,7 @@ namespace QuantLib {
                            Natural lookbackDays = Null<Natural>(),
                            Natural lockoutDays = 0,
                            bool applyObservationShift = false,
-                           ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
+                           const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
 
         /*! \deprecated Use the overload without forward start.
                         Deprecated in version 1.35.
