@@ -32,7 +32,7 @@ namespace QuantLib {
 
     FdmTimeDepDirichletBoundary::FdmTimeDepDirichletBoundary(
         const ext::shared_ptr<FdmMesher>& mesher,
-        ext::function<Real(Real)> valueOnBoundary,
+        std::function<Real(Real)> valueOnBoundary,
         Size direction,
         Side side)
     : indices_(FdmIndicesOnBoundary(mesher->layout(), direction, side).getIndices()),
@@ -40,7 +40,7 @@ namespace QuantLib {
 
     FdmTimeDepDirichletBoundary::FdmTimeDepDirichletBoundary(
         const ext::shared_ptr<FdmMesher>& mesher,
-        ext::function<Array(Real)> valuesOnBoundary,
+        std::function<Array(Real)> valuesOnBoundary,
         Size direction,
         Side side)
     : indices_(FdmIndicesOnBoundary(mesher->layout(), direction, side).getIndices()),

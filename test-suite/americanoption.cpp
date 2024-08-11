@@ -1989,7 +1989,7 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandAmericanGreeks) {
                             const Real rho = option.rho();
                             const Real vega = option.vega();
                             const Real theta = option.theta();
-                            const std::string exerciseType = ext::any_cast<std::string>(
+                            const auto exerciseType = ext::any_cast<std::string>(
                                 option.additionalResults().find("exerciseType")->second);
 
                             OneAssetOption::results numericalResults;
@@ -2145,7 +2145,7 @@ BOOST_AUTO_TEST_CASE(testSingleBjerksundStenslandGreeks) {
     const Real vega = option.vega();
     const Real theta = option.theta();
     const Real thetaPerDay = option.thetaPerDay();
-    const std::string exerciseType = ext::any_cast<std::string>(
+    const auto exerciseType = ext::any_cast<std::string>(
         option.additionalResults().find("exerciseType")->second);
 
     const Real expectedNpv = 17.9251834488399169;

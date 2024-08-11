@@ -47,7 +47,7 @@ namespace QuantLib {
            \param delta_h step size
            \param n if known, n is the order of convergence
          */
-        RichardsonExtrapolation(const ext::function<Real (Real)>& f,
+        RichardsonExtrapolation(const std::function<Real (Real)>& f,
                                 Real delta_h, Real n = Null<Real>());
 
 
@@ -66,7 +66,7 @@ namespace QuantLib {
         const Real delta_h_;
         const Real fdelta_h_;
         const Real n_;
-        const ext::function<Real (Real)> f_;
+        const std::function<Real (Real)> f_;
     };
 }
 

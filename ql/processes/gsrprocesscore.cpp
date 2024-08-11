@@ -23,9 +23,7 @@
 using std::exp;
 using std::pow;
 
-namespace QuantLib {
-
-namespace detail {
+namespace QuantLib::detail {
 
 GsrProcessCore::GsrProcessCore(const Array &times, const Array &vols,
                                const Array &reversions, const Real T)
@@ -70,7 +68,7 @@ Real GsrProcessCore::expectation_x0dep_part(const Time w, const Real xw,
     Real t = w + dt;
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
-    std::map<std::pair<Real, Real>, Real>::const_iterator k = cache1_.find(key);
+    auto k = cache1_.find(key);
     if (k != cache1_.end())
         return xw * (k->second);
     // A(w,t)x(w)
@@ -89,7 +87,7 @@ Real GsrProcessCore::expectation_rn_part(const Time w,
 
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
-    std::map<std::pair<Real, Real>, Real>::const_iterator k =
+    auto k =
         cache2a_.find(key);
     if (k != cache2a_.end())
         return k->second;
@@ -162,7 +160,7 @@ Real GsrProcessCore::expectation_tf_part(const Time w,
 
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
-    std::map<std::pair<Real, Real>, Real>::const_iterator k =
+    auto k =
         cache2b_.find(key);
     if (k != cache2b_.end())
         return k->second;
@@ -239,7 +237,7 @@ Real GsrProcessCore::variance(const Time w, const Time dt) const {
 
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
-    std::map<std::pair<Real, Real>, Real>::const_iterator k = cache3_.find(key);
+    auto k = cache3_.find(key);
     if (k != cache3_.end())
         return k->second;
 
@@ -266,7 +264,7 @@ Real GsrProcessCore::variance(const Time w, const Time dt) const {
 Real GsrProcessCore::y(const Time t) const {
     Real key;
     key = t;
-    std::map<Real, Real>::const_iterator k = cache4_.find(key);
+    auto k = cache4_.find(key);
     if (k != cache4_.end())
         return k->second;
 
@@ -290,7 +288,7 @@ Real GsrProcessCore::y(const Time t) const {
 Real GsrProcessCore::G(const Time t, const Time w) const {
     std::pair<Real, Real> key;
     key = std::make_pair(w, t);
-    std::map<std::pair<Real, Real>, Real>::const_iterator k = cache5_.find(key);
+    auto k = cache5_.find(key);
     if (k != cache5_.end())
         return k->second;
 
@@ -361,7 +359,5 @@ bool GsrProcessCore::revZero(const Size index) const {
         return revZero_.back();
     return revZero_[index];
 }
-
-} // namespace detail
 
 } // namesapce QuantLib

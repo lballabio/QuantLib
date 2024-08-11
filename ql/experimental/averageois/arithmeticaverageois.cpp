@@ -19,11 +19,13 @@
 
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/experimental/averageois/arithmeticaverageois.hpp>
-#include <ql/experimental/averageois/averageoiscouponpricer.hpp>
 #include <utility>
 
 namespace QuantLib {
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     ArithmeticAverageOIS::ArithmeticAverageOIS(Type type,
                                                Real nominal,
@@ -142,5 +144,7 @@ namespace QuantLib {
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }

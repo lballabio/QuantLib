@@ -3369,6 +3369,31 @@ BOOST_AUTO_TEST_CASE(testMexicoInaugurationDay) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testStartOfMonth) {
+    BOOST_TEST_MESSAGE("Testing start-of-month calculation...");
+
+    Calendar c = TARGET(); // any calendar would be OK
+
+    Date som, counter = Date::minDate() + 2 * Months;
+    Date last = Date::maxDate();
+
+    while (counter < last) {
+        som = c.startOfMonth(counter);
+        // check that som is som
+        if (!c.isStartOfMonth(som))
+            BOOST_FAIL("\n  " << som.weekday() << " " << som << " is not the first business day in "
+                              << som.month() << " " << som.year() << " according to " << c.name());
+        // check that som is in the same month as counter
+        if (som.month() != counter.month())
+            BOOST_FAIL("\n  " << som << " is not in the same month as " << counter);
+        // Check that previous business day is in a different month
+        if (c.advance(som, -1, Days, Unadjusted).month() == som.month())
+            BOOST_FAIL("\n  " << c.advance(som, -1, Days, Unadjusted)
+                              << " is in the same month as "
+                              << som);
+        counter = counter + 1;
+    }
+}
 
 BOOST_AUTO_TEST_CASE(testEndOfMonth) {
     BOOST_TEST_MESSAGE("Testing end-of-month calculation...");
@@ -3387,6 +3412,11 @@ BOOST_AUTO_TEST_CASE(testEndOfMonth) {
         // check that eom is in the same month as counter
         if (eom.month() != counter.month())
             BOOST_FAIL("\n  " << eom << " is not in the same month as " << counter);
+        // Check that next business day is in a different month
+        if (c.advance(eom, 1, Days, Unadjusted).month() == eom.month())
+            BOOST_FAIL("\n  " << c.advance(eom, 1, Days, Unadjusted) 
+                              << " is in the same month as "
+                              << eom);
         counter = counter + 1;
     }
 }

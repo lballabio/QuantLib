@@ -40,6 +40,11 @@ jobs:
             tag: noble
             cc: gcc
             cxx: g++
+          - name: "gcc 14.x"
+            shortname: gcc14
+            tag: oracular
+            cc: gcc
+            cxx: g++
           - name: "Clang 7 (Boost 1.72)"
             shortname: clang7
             tag: cosmic
@@ -101,12 +106,6 @@ jobs:
             cc: clang
             cxx: clang++
             cxxflags: -Wno-deprecated-declarations
-          - name: "C++14 mode"
-            shortname: c++14
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            cxxflags: "-std=c++14"
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling
@@ -119,6 +118,12 @@ jobs:
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++20"
+          - name: "C++23 mode"
+            shortname: c++23
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            cxxflags: "-std=c++23"
           - name: "Unity build enabled"
             shortname: unity
             tag: rolling
@@ -143,12 +148,12 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-indexed-coupons
-          - name: "Standard Library classes enabled/disabled"
+          - name: "Standard Library classes enabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --disable-std-function --disable-std-tuple --enable-std-pointers --enable-std-any --enable-std-optional
+            configureflags: --enable-std-classes
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling
@@ -189,6 +194,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-static ${{ matrix.configureflags }} CC="${{ matrix.cc }}" CXX="${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
+        cat ql/config.hpp
         make -j 4
     - name: Run tests
       run: |

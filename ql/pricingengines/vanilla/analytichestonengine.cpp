@@ -56,9 +56,9 @@ namespace QuantLib {
         class integrand1 {
           private:
             const Real c_inf_;
-            const ext::function<Real(Real)> f_;
+            const std::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf, ext::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
+            integrand1(Real c_inf, std::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
             Real operator()(Real x) const {
                 if ((1.0-x)*c_inf_ > QL_EPSILON)
                     return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
@@ -70,9 +70,9 @@ namespace QuantLib {
         class integrand2 {
           private:
             const Real c_inf_;
-            const ext::function<Real(Real)> f_;
+            const std::function<Real(Real)> f_;
           public:
-            integrand2(Real c_inf, ext::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
+            integrand2(Real c_inf, std::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
             Real operator()(Real x) const {
                 if (x*c_inf_ > QL_EPSILON) {
                     return f_(-std::log(x)/c_inf_)/(x*c_inf_);
@@ -86,7 +86,7 @@ namespace QuantLib {
           private:
             const integrand2 int_;
           public:
-            integrand3(Real c_inf, const ext::function<Real(Real)>& f)
+            integrand3(Real c_inf, const std::function<Real(Real)>& f)
             : int_(c_inf, f) {}
 
             Real operator()(Real x) const { return int_(1.0-x); }
@@ -175,7 +175,7 @@ namespace QuantLib {
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
         t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
-        
+
         engine_(engine)
     {
     }
@@ -488,9 +488,11 @@ namespace QuantLib {
                         *(v0 + kappa*theta*term)
                   - 2*kappa*theta*std::atan(rho/std::sqrt(1-rho*rho))))
                           /(sigma*sigma);
+            [[fallthrough]];
           case AngledContour:
             vAvg_ = (1-std::exp(-kappa*term))*(v0 - theta)
                       /(kappa*term) + theta;
+            [[fallthrough]];
           case AngledContourNoCV:
             {
               const Real r = rho - sigma*freq_ / (v0 + kappa*theta*term);
@@ -812,7 +814,7 @@ namespace QuantLib {
             const Real epsilon = andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strike*fwd)*dr);
 
-            const ext::function<Real()> uM = [&](){
+            const std::function<Real()> uM = [&](){
                 return Integration::andersenPiterbargIntegrationLimit(
                     c_inf, epsilon, v0, maturity);
             };
@@ -991,8 +993,8 @@ namespace QuantLib {
 
     Real AnalyticHestonEngine::Integration::calculate(
         Real c_inf,
-        const ext::function<Real(Real)>& f,
-        const ext::function<Real()>& maxBound,
+        const std::function<Real(Real)>& f,
+        const std::function<Real()>& maxBound,
         const Real scaling) const {
 
         Real retVal;
@@ -1036,7 +1038,7 @@ namespace QuantLib {
 
     Real AnalyticHestonEngine::Integration::calculate(
         Real c_inf,
-        const ext::function<Real(Real)>& f,
+        const std::function<Real(Real)>& f,
         Real maxBound) const {
 
         return AnalyticHestonEngine::Integration::calculate(
@@ -1125,7 +1127,7 @@ namespace QuantLib {
             const Real epsilon = enginePtr->andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-            const ext::function<Real()> uM = [&](){
+            const std::function<Real()> uM = [&](){
                 return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
             };
 

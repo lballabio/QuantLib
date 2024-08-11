@@ -33,8 +33,8 @@ namespace QuantLib {
     namespace {
 
         // makes typing a little easier
-        typedef std::vector<ext::function<Real(Real)> > VF_R;
-        typedef std::vector<ext::function<Real(Array)> > VF_A;
+        typedef std::vector<std::function<Real(Real)> > VF_R;
+        typedef std::vector<std::function<Real(Array)> > VF_A;
         typedef std::vector<std::vector<Size> > VV;
 
         // pow(x, order)

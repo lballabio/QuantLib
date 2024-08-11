@@ -20,7 +20,6 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/functional.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
@@ -34,6 +33,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
+#include <functional>
 #include <utility>
 
 using namespace QuantLib;
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(testFdmSabrOp, *precondition(if_speed(Fast))) {
         const Real putPdeImplVol =
             optionPut.impliedVolatility(optionPut.NPV(), bsProcess, 1e-6);
 
-        const ext::function<Real(Real)> mcSabr(
+        const std::function<Real(Real)> mcSabr(
             SabrMonteCarloPricer(f0, maturityTime, putPayoff,
                                  alpha, beta, nu, rho));
 
@@ -405,7 +405,7 @@ BOOST_AUTO_TEST_CASE(testOosterleeTestCaseIV) {
             const OsterleeReferenceResults referenceResuts(i*3+j);
 
             const Real expected = RichardsonExtrapolation(
-                ext::function<Real(Real)>(referenceResuts), 1/16., 1)(2.);
+                std::function<Real(Real)>(referenceResuts), 1/16., 1)(2.);
 
             const Real diff = std::fabs(calculated - expected);
             if (diff > tol) {

@@ -92,7 +92,7 @@ namespace QuantLib {
     }
 
 
-    ext::function<Real(Time, Real)> NormalCLVModel::g() const {
+    std::function<Real(Time, Real)> NormalCLVModel::g() const {
         calculate();
         return g_;
     }
@@ -132,6 +132,6 @@ namespace QuantLib {
     }
 
     void NormalCLVModel::performCalculations() const {
-        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = std::function<Real(Time, Real)>(MappingFunction(*this));
     }
 }

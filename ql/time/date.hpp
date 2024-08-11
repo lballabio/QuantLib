@@ -207,6 +207,10 @@ namespace QuantLib {
         static Date maxDate();
         //! whether the given year is a leap one
         static bool isLeap(Year y);
+        //! first day of the month to which the given date belongs
+        static Date startOfMonth(const Date& d);
+        //! whether a date is the first day of its month
+        static bool isStartOfMonth(const Date& d);
         //! last day of the month to which the given date belongs
         static Date endOfMonth(const Date& d);
         //! whether a date is the last day of its month
@@ -389,9 +393,19 @@ namespace QuantLib {
 
     #endif
 
-#ifndef QL_HIGH_RESOLUTION_DATE
     // inline definitions
 
+    inline Date Date::startOfMonth(const Date& d) {
+        Month m = d.month();
+        Year y = d.year();
+        return Date(1, m, y);
+    }
+
+    inline bool Date::isStartOfMonth(const Date& d) {
+       return (d.dayOfMonth() == 1);
+    }
+
+#ifndef QL_HIGH_RESOLUTION_DATE
     inline Weekday Date::weekday() const {
         Integer w = serialNumber_ % 7;
         return Weekday(w == 0 ? 7 : w);

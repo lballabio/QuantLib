@@ -89,7 +89,7 @@ namespace QuantLib {
                                   requiredSamples_,
                                   maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
+            if constexpr (RNG::allowsErrorEstimate)
                 results_.errorEstimate =
                     this->mcModel_->sampleAccumulator().errorEstimate();
         }
@@ -248,4 +248,3 @@ namespace QuantLib {
 
 
 #endif
-

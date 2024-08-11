@@ -60,8 +60,19 @@ namespace QuantLib {
         handle to the current index spot. If spot handle is empty,
         today's fixing will be used, instead.
     */
-    class EquityIndex : public Index, public Observer {
+    class EquityIndex : public Index {
       public:
+        EquityIndex(std::string name,
+                    Calendar fixingCalendar,
+                    Currency currency,
+                    Handle<YieldTermStructure> interest = {},
+                    Handle<YieldTermStructure> dividend = {},
+                    Handle<Quote> spot = {});
+
+        /*! \deprecated Use the constructor taking a currency.
+                        Deprecated in version 1.36.
+        */
+        [[deprecated("Use the constructor taking a currency")]]
         EquityIndex(std::string name,
                     Calendar fixingCalendar,
                     Handle<YieldTermStructure> interest = {},
@@ -75,12 +86,10 @@ namespace QuantLib {
         bool isValidFixingDate(const Date& fixingDate) const override;
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
-        //! \name Observer interface
-        //@{
-        void update() override;
-        //@}
         //! \name Inspectors
         //@{
+        //! The index currency
+        Currency currency() const { return currency_; }
         //! the rate curve used to forecast fixings
         Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
@@ -92,7 +101,6 @@ namespace QuantLib {
         //@{
         //! It can be overridden to implement particular conventions
         virtual Real forecastFixing(const Date& fixingDate) const;
-        virtual Real pastFixing(const Date& fixingDate) const;
         // @}
         //! \name Other methods
         //@{
@@ -105,6 +113,7 @@ namespace QuantLib {
       private:
         std::string name_;
         Calendar fixingCalendar_;
+        Currency currency_;
         Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
         Handle<Quote> spot_;
@@ -113,8 +122,6 @@ namespace QuantLib {
     inline bool EquityIndex::isValidFixingDate(const Date& d) const {
         return fixingCalendar().isBusinessDay(d);
     }
-
-    inline void EquityIndex::update() { notifyObservers(); }
 }
 
 #endif

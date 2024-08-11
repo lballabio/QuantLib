@@ -60,30 +60,6 @@ namespace QuantLib {
                             ts) {}
     };
 
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    //! Year-on-year US CPI (i.e. a ratio of US CPI)
-    /*! \deprecated Pass the USCPI index to YoYInflationIndex instead.
-                    Deprecated in version 1.31.
-    */
-    class [[deprecated("Pass the USCPI index to YoYInflationIndex instead")]] YYUSCPIr : public YoYInflationIndex {
-      public:
-        explicit YYUSCPIr(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YYR_CPI",
-                            USRegion(),
-                            false,
-                            interpolated,
-                            true,
-                            Monthly,
-                            Period(1, Months),
-                            USDCurrency(),
-                            ts) {}
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

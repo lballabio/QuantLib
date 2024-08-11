@@ -88,7 +88,7 @@ namespace QuantLib {
         Side side_;
     };
 
-    //! Neumann boundary condition (i.e., constant value)
+    //! Dirichlet boundary condition (i.e., constant value)
     /*! \todo generalize to time-dependent conditions.
 
         \ingroup findiff

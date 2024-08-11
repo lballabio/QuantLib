@@ -39,8 +39,8 @@ namespace QuantLib {
     template <class T = Real>
     class AdaptiveRungeKutta {
       public:
-        typedef ext::function<std::vector<T>(const Real, const std::vector<T>&)> OdeFct;
-        typedef ext::function<T(const Real, const T)> OdeFct1d;
+        typedef std::function<std::vector<T>(const Real, const std::vector<T>&)> OdeFct;
+        typedef std::function<T(const Real, const T)> OdeFct1d;
 
         /*! The class is constructed with the following inputs:
             - eps       prescribed error for the solution

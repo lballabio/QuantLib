@@ -90,30 +90,6 @@ namespace QuantLib {
                             ts) {}
     };
 
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    //! Year-on-year EU HICP (i.e. a ratio of EU HICP)
-    /*! \deprecated Pass the EUHICP index to YoYInflationIndex instead.
-                    Deprecated in version 1.31.
-    */
-    class [[deprecated("Pass the EUHICP index to YoYInflationIndex instead")]] YYEUHICPr : public YoYInflationIndex {
-      public:
-        explicit YYEUHICPr(
-            bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = {})
-        : YoYInflationIndex("YYR_HICP",
-                            EURegion(),
-                            false,
-                            interpolated,
-                            true,
-                            Monthly,
-                            Period(1, Months),
-                            EURCurrency(),
-                            ts) {}
-    };
-
-    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

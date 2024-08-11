@@ -20,6 +20,7 @@
 
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/utilities/null_deleter.hpp>
@@ -47,7 +48,8 @@ namespace QuantLib {
                                  Calendar fixedCalendar,
                                  Natural lookbackDays,
                                  Natural lockoutDays,
-                                 bool applyObservationShift)
+                                 bool applyObservationShift,
+                                 ext::shared_ptr<FloatingRateCouponPricer> pricer)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays), tenor_(tenor),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
@@ -55,7 +57,8 @@ namespace QuantLib {
       forwardStart_(forwardStart), overnightSpread_(overnightSpread),
       averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
       fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
-      lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift) {
+      lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
+      pricer_(std::move(pricer)) {
 
         overnightIndex_ =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
@@ -98,6 +101,9 @@ namespace QuantLib {
             tmp.withFixedLegCalendar(fixedCalendar_);
         }
         swap_ = tmp;
+
+        if (pricer_)
+            setCouponPricer(swap_->overnightLeg(), pricer_);
 
         simplifyNotificationGraph(*swap_, true);
 
@@ -181,7 +187,8 @@ namespace QuantLib {
                                            const Calendar& fixedCalendar,
                                            Natural lookbackDays,
                                            Natural lockoutDays,
-                                           bool applyObservationShift)
+                                           bool applyObservationShift,
+                                           ext::shared_ptr<FloatingRateCouponPricer> pricer)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
       telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
@@ -222,6 +229,9 @@ namespace QuantLib {
         }
         swap_ = tmp;
 
+        if (pricer)
+            setCouponPricer(swap_->overnightLeg(), pricer);
+
         earliestDate_ = swap_->startDate();
         Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
                                         swap_->fixedLeg().back()->date());
@@ -247,7 +257,7 @@ namespace QuantLib {
     : DatedOISRateHelper(startDate, endDate, fixedRate, overnightIndex, std::move(discount), telescopicValueDates,
                          averagingMethod, paymentLag, paymentConvention, paymentFrequency, paymentCalendar,
                          overnightSpread, endOfMonth, fixedPaymentFrequency, fixedCalendar) {}
-    
+
     void DatedOISRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed

@@ -23,7 +23,6 @@
 #include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
-#include <ql/functional.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
@@ -46,6 +45,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <functional>
 #include <utility>
 
 using namespace QuantLib;
@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE(testIllustrative1DExample) {
     };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturityDates, 4);
-    const ext::function<Real(Real, Real)> g = m.g();
+    const std::function<Real(Real, Real)> g = m.g();
 
     // test collocation points in x_ij
     std::vector<Date> maturities = { maturityDates[0], maturityDates[2], maturityDates[4] };
@@ -267,13 +267,13 @@ BOOST_AUTO_TEST_CASE(testIllustrative1DExample) {
 
 class CLVModelPayoff : public PlainVanillaPayoff {
   public:
-    CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+    CLVModelPayoff(Option::Type type, Real strike, std::function<Real(Real)> g)
     : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
     Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
   private:
-    const ext::function<Real(Real)> g_;
+    const std::function<Real(Real)> g_;
 };
 
 
@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloBSOptionPricing) {
     std::vector<Date> maturities = { today + Period(6, Months), maturity };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
-    const ext::function<Real(Real, Real)> g = m.g();
+    const std::function<Real(Real, Real)> g = m.g();
 
     const Size nSims = 32767;
     const LowDiscrepancy::rsg_type ld
@@ -451,7 +451,7 @@ BOOST_AUTO_TEST_CASE(testMoustacheGraph, *precondition(if_speed(Slow))) {
         maturities.push_back(maturities.back() + Period(2, Weeks));
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
-    const ext::function<Real(Real, Real)> g = m.g();
+    const std::function<Real(Real, Real)> g = m.g();
 
     const Size n = 18;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n);

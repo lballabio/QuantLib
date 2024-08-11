@@ -25,28 +25,6 @@
 
 namespace QuantLib {
 
-    ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
-                                               const Date& maturityDate,
-                                               Position::Type type,
-                                               Rate strikeForwardRate,
-                                               Real notionalAmount,
-                                               const ext::shared_ptr<IborIndex>& index,
-                                               Handle<YieldTermStructure> discountCurve,
-                                               bool useIndexedCoupon)
-    : ForwardRateAgreement(index, valueDate, maturityDate, type, strikeForwardRate,
-                           notionalAmount, std::move(discountCurve)) {
-        useIndexedCoupon_ = useIndexedCoupon;
-    }
-
-    ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
-                                               Position::Type type,
-                                               Rate strikeForwardRate,
-                                               Real notionalAmount,
-                                               const ext::shared_ptr<IborIndex>& index,
-                                               Handle<YieldTermStructure> discountCurve)
-    : ForwardRateAgreement(index, valueDate, type, strikeForwardRate,
-                           notionalAmount, std::move(discountCurve)) {}
-
     ForwardRateAgreement::ForwardRateAgreement(const ext::shared_ptr<IborIndex>& index,
                                                const Date& valueDate,
                                                Position::Type type,

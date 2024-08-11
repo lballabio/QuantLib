@@ -50,7 +50,7 @@ namespace QuantLib {
         tanh_sinh_(maxRefinements, minComplement) {}
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b)
         const override {
             Real error;
             Real value = tanh_sinh_.integrate(
@@ -82,7 +82,7 @@ namespace QuantLib {
         }
 
       protected:
-        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override {
+        Real integrate(const std::function<Real(Real)>& f, Real a, Real b) const override {
             QL_FAIL("boost version 1.69 or higher is required in order to use TanhSinhIntegral");
         }
     };

@@ -303,7 +303,6 @@ namespace QuantLib {
             if (incrementAndCheckForOverlow(nextCodeStr[4]))
                 incrementAndCheckForOverlow(nextCodeStr[3]);
         }
-        return nextCodeStr;
 
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_ENSURE(isECBcode(nextCodeStr),

@@ -125,7 +125,7 @@ namespace QuantLib {
 
 
 
-        for (std::vector<Real>::const_iterator k=strikes.begin();
+        for (auto k=strikes.begin();
              // added end-strike discarded
              k<strikes.end()-1;
              ++k) {

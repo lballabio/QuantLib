@@ -50,6 +50,7 @@ Checks: >
           -modernize-return-braced-init-list,
           -modernize-use-trailing-return-type,
           -modernize-use-using,
+          -modernize-use-nodiscard,
         performance-*,
           -performance-avoid-endl,
           -performance-enum-size,

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.35-dev],
+AC_INIT([QuantLib], [1.36-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -64,8 +64,8 @@ if test "$ql_openmp" = "yes" ; then
    AC_SUBST([CXXFLAGS],["${CXXFLAGS} ${OPENMP_CXXFLAGS}"])
 fi
 
-# Check for C++14 support
-QL_CHECK_CPP14
+# Check for C++17 support
+QL_CHECK_CPP17
 
 # Check for other compiler flags
 QL_CHECK_SYSTEM_HEADER_PREFIX
@@ -388,8 +388,8 @@ AC_ARG_ENABLE([std-any],
               AS_HELP_STRING([--enable-std-any],
                              [If enabled, std::any and related classes and
                               functions will be used instead of boost::any.
-                              This requires C++17. If disabled (the default)
-                              the Boost facilities are used.]),
+                              If disabled (the default) the Boost facilities
+                              are used.]),
               [ql_use_std_any=$enableval],
               [ql_use_std_any=no])
 if test "$ql_use_std_any" = "yes" ; then
@@ -403,9 +403,8 @@ AC_ARG_ENABLE([std-optional],
               AS_HELP_STRING([--enable-std-optional],
                              [If enabled, std::optional and related
                               classes and functions will be used instead
-                              of boost::optional. This requires C++17.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
+                              of boost::optional. If disabled (the default)
+                              the Boost facilities are used.]),
               [ql_use_std_optional=$enableval],
               [ql_use_std_optional=no])
 if test "$ql_use_std_optional" = "yes" ; then
@@ -432,36 +431,6 @@ if test "$ql_use_std_pointers" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_pointers])
 
-AC_MSG_CHECKING([whether to enable std::function])
-AC_ARG_ENABLE([std-function],
-              AS_HELP_STRING([--enable-std-function],
-                             [If enabled (the default), std::function
-                              and std::bind will be used.  If
-                              disabled, the corresponding Boost
-                              classes will be used instead.]),
-              [ql_use_std_function=$enableval],
-              [ql_use_std_function=yes])
-if test "$ql_use_std_function" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
-             [Define this if you want to use std::function and std::bind.])
-fi
-AC_MSG_RESULT([$ql_use_std_function])
-
-AC_MSG_CHECKING([whether to enable std::tuple])
-AC_ARG_ENABLE([std-tuple],
-              AS_HELP_STRING([--enable-std-tuple],
-                             [If enabled (the default), std::tuple and
-                              related functions will be used.  If
-                              disabled, the corresponding Boost
-                              facilities will be used instead.]),
-              [ql_use_std_tuple=$enableval],
-              [ql_use_std_tuple=yes])
-if test "$ql_use_std_tuple" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_TUPLE],[1],
-             [Define this if you want to use std::tuple.])
-fi
-AC_MSG_RESULT([$ql_use_std_tuple])
-
 AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
               AS_HELP_STRING([--enable-std-classes],
@@ -472,12 +441,12 @@ AC_ARG_ENABLE([std-classes],
               [ql_use_std_classes=$enableval],
               [ql_use_std_classes=no])
 if test "$ql_use_std_classes" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_ANY],[1],
+             [Define this if you want to use std::any.])
+   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
+             [Define this if you want to use std::optional.])
    AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
              [Define this if you want to use standard smart pointers.])
-   AC_DEFINE([QL_USE_STD_FUNCTION],[1],
-             [Define this if you want to use std::function and std::bind.])
-   AC_DEFINE([QL_USE_STD_TUPLE],[1],
-             [Define this if you want to use std::tuple.])
 fi
 AC_MSG_RESULT([$ql_use_std_classes])
 

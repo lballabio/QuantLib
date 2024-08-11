@@ -29,12 +29,17 @@ if (MSVC)
     # /wd26812
     # Suppress warnings: "Prefer enum class over enum" (Enum.3)
 
-    add_compile_options(/wd4267 /wd4819 /wd26812)
+    # /w34127
+    # Enable warning under W3: conditional expression is constant
 
-    # prevent warnings when using /std:c++17 and above
-    if(CMAKE_CXX_STANDARD GREATER_EQUAL 17)
-        # E.g. caused by #include <boost/numeric/ublas/matrix.hpp>
-        # In c++17 std::iterator is deprecated. As of boost 1.81 boost::ublas has not provided a fix for this.
-        add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
-    endif()
+    # /w34702
+    # Enable warning under W3: unreachable code
+
+    # /w35262
+    # Enable warning under W3: implicit fall-through occurs here; are you missing a break statement?
+
+    add_compile_options(/wd4267 /wd4819 /wd26812 /w34127 /w34702 /w35262)
+
+    # Silence all C++17 deprecation warnings, same as in the vcxproj files
+    add_compile_definitions(_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
 endif()

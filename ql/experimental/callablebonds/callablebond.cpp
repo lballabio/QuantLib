@@ -157,7 +157,7 @@ namespace QuantLib {
 
     class OASHelper {
     public:
-        OASHelper(const ext::function<Real(Real)>& npvhelper,
+        OASHelper(const std::function<Real(Real)>& npvhelper,
                   Real targetValue):
             npvhelper_(npvhelper),
             targetValue_(targetValue)
@@ -169,7 +169,7 @@ namespace QuantLib {
             return targetValue_ - npvhelper_(x);
         }
     private:
-        const ext::function<Real(Real)>& npvhelper_;
+        const std::function<Real(Real)>& npvhelper_;
         Real targetValue_;
     };
 
@@ -292,7 +292,7 @@ namespace QuantLib {
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
         dirtyPrice /= 100.0 / notional(settlement);
 
-        ext::function<Real(Real)> f = NPVSpreadHelper(*this);
+        std::function<Real(Real)> f = NPVSpreadHelper(*this);
         OASHelper obj(f, dirtyPrice);
 
         Brent solver;
@@ -328,7 +328,7 @@ namespace QuantLib {
                              compounding,
                              frequency);
 
-        ext::function<Real(Real)> f = NPVSpreadHelper(*this);
+        std::function<Real(Real)> f = NPVSpreadHelper(*this);
 
         Real P = f(oas) * 100.0 / notional(settlement) - accruedAmount(settlement);
 

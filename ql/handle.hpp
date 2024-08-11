@@ -127,11 +127,7 @@ namespace QuantLib {
         /*! \deprecated Use one of the constructors taking shared_ptr.
                         Deprecated in version 1.35.
         */
-#if defined(_MSC_VER) && (_MSC_VER < 1916)
-        QL_DEPRECATED
-#else
         [[deprecated("Use one of the constructors taking shared_ptr.")]]
-#endif
         explicit RelinkableHandle(
                        T* p,
                        bool registerAsObserver = true);

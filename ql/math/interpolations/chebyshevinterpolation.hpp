@@ -42,7 +42,7 @@ namespace QuantLib {
         explicit ChebyshevInterpolation(
             const Array& y, PointsType pointsType = SecondKind);
         ChebyshevInterpolation(
-            Size n, const ext::function<Real(Real)>& f,
+            Size n, const std::function<Real(Real)>& f,
             PointsType pointsType = SecondKind);
 
         explicit ChebyshevInterpolation(const ChebyshevInterpolation&) = delete;

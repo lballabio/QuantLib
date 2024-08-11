@@ -1434,9 +1434,9 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
 
     // Create the FX swap rate helpers for the ARS in USD curve.
     vector<ext::shared_ptr<RateHelper> > instruments;
-    for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); ++it) {
-        Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(it->second));
-        instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
+    for (auto & arsFwdPoint : arsFwdPoints) {
+        Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(arsFwdPoint.second));
+        instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, arsFwdPoint.first, 2,
             UnitedStates(UnitedStates::GovernmentBond), Following, false, true, usdYts));
     }
 

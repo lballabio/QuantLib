@@ -22,8 +22,8 @@
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
-#include <ql/functional.hpp>
 #include <boost/circular_buffer.hpp>
+#include <functional>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -41,14 +41,14 @@ BOOST_AUTO_TEST_CASE(testRegression) {
     const Size nr=100000;
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
-    std::vector<ext::function<Real(Real)>> v = {
+    std::vector<std::function<Real(Real)>> v = {
         [](Real x) -> Real { return 1.0; },
         [](Real x) -> Real { return x; },
         [](Real x) -> Real { return x*x; },
         [](Real x) -> Real { return std::sin(x); }
     };
 
-    std::vector<ext::function<Real(Real)>> w(v);
+    std::vector<std::function<Real(Real)>> w(v);
     w.emplace_back([](Real x){ return x*x; });
 
     for (Size k=0; k<3; ++k) {
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(testMultiDimRegression) {
     const Real tolerance = 0.01;
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
-    std::vector<ext::function<Real(Array)> > v;
+    std::vector<std::function<Real(Array)> > v;
     v.emplace_back([](const Array& x) { return 1.0; });
     for (Size i=0; i < dims; ++i) {
         v.emplace_back(get_item(i));
@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(test1dLinearRegression) {
     std::vector<Real> x = {2.4, 1.8, 2.5, 3.0, 2.1, 1.2, 2.0, 2.7, 3.6};
     std::vector<Real> y = {7.8, 5.5, 8.0, 9.0, 6.5, 4.0, 6.3, 8.4, 10.2};
 
-    std::vector<ext::function<Real(Real)>> v = {
+    std::vector<std::function<Real(Real)>> v = {
         [](Real x) { return 1.0; },
         [](Real x) { return x; }
     };

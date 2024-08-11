@@ -20,9 +20,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ostream>
 
-namespace QuantLib {
-
-    namespace detail {
+namespace QuantLib::detail {
 
         std::ostream& operator<<(std::ostream& out,
                                  const ordinal_holder& holder) {
@@ -57,6 +55,4 @@ namespace QuantLib {
         }
 
     }
-
-}
 

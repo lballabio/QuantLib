@@ -30,9 +30,7 @@
 #include <boost/current_function.hpp>
 #include <iosfwd>
 
-namespace QuantLib {
-
-    namespace detail {
+namespace QuantLib::detail {
 
         class Tracing : public Singleton<Tracing> {
             friend class QuantLib::Singleton<Tracing>;
@@ -60,8 +58,6 @@ namespace QuantLib {
         };
 
     }
-
-}
 
 /*! \addtogroup macros
     @{

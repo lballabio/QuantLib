@@ -118,13 +118,13 @@ namespace QuantLib {
         return s;
     }
 
-    ext::function<Real(Time, Real)> SquareRootCLVModel::g() const {
+    std::function<Real(Time, Real)> SquareRootCLVModel::g() const {
         calculate();
         return g_;
     }
 
     void SquareRootCLVModel::performCalculations() const {
-        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = std::function<Real(Time, Real)>(MappingFunction(*this));
     }
 
     SquareRootCLVModel::MappingFunction::MappingFunction(
@@ -160,7 +160,7 @@ namespace QuantLib {
     }
 
     Real SquareRootCLVModel::MappingFunction::operator()(Time t,Real x) const {
-        const interpl_type::const_iterator ge = interpl.lower_bound(t);
+        const auto ge = interpl.lower_bound(t);
 
         if (close_enough(ge->first, t)) {
             return (*ge->second)(x, true);

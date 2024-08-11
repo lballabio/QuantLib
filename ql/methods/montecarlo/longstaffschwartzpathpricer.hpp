@@ -78,7 +78,7 @@ namespace QuantLib {
         std::unique_ptr<DiscountFactor[]> dF_;
 
         mutable std::vector<PathType> paths_;
-        const   std::vector<ext::function<Real(StateType)> > v_;
+        const   std::vector<std::function<Real(StateType)> > v_;
 
         const Size len_;
     };

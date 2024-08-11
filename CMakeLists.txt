@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 35)
+set(QUANTLIB_VERSION_MINOR 36)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01350000")
+set(PACKAGE_VERSION_HEX   "0x01360000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -64,47 +64,32 @@ option(QL_USE_CLANG_TIDY "Use clang-tidy when building" OFF)
 option(QL_USE_INDEXED_COUPON "Use indexed coupons instead of par coupons" OFF)
 option(QL_USE_STD_ANY "Use std::any instead of boost::any" OFF)
 option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
-option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" ON)
 option(QL_USE_STD_OPTIONAL "Use std::optional instead of boost::optional" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
-option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" ON)
 set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source directories to be added to the build (semicolon-separated)")
 # set -lpapi here
 set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
-# Require C++14 or higher
+# Require C++17 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 14)
-elseif(CMAKE_CXX_STANDARD LESS 14)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
+    set(CMAKE_CXX_STANDARD 17)
+elseif(CMAKE_CXX_STANDARD LESS 17)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 17 or higher")
 endif()
 if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
-# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
+# Avoid use of compiler language extensions, i.e. -std=c++17 not -std=gnu++17
 if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()
 
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
-    if (CMAKE_CXX_STANDARD GREATER_EQUAL 17)
-        set(QL_USE_STD_ANY ON)
-        set(QL_USE_STD_OPTIONAL ON)
-    endif()
-    set(QL_USE_STD_FUNCTION ON)
+    set(QL_USE_STD_ANY ON)
+    set(QL_USE_STD_OPTIONAL ON)
     set(QL_USE_STD_SHARED_PTR ON)
-    set(QL_USE_STD_TUPLE ON)
 endif()
-
-if (CMAKE_CXX_STANDARD LESS 17)
-    if (QL_USE_STD_ANY)
-        message(FATAL_ERROR "QL_USE_STD_ANY requires at least C++17")
-    endif()
-    if (QL_USE_STD_OPTIONAL)
-        message(FATAL_ERROR "QL_USE_STD_OPTIONAL requires at least C++17")
-    endif()
-endif ()
 
 # Set the default warning level we use to pass the GitHub workflows
 if (QL_ENABLE_DEFAULT_WARNING_LEVEL)

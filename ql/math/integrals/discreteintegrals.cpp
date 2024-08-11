@@ -64,7 +64,7 @@ namespace QuantLib {
     }
 
     Real DiscreteTrapezoidIntegrator::integrate(
-        const ext::function<Real (Real)>& f, Real a, Real b) const {
+        const std::function<Real (Real)>& f, Real a, Real b) const {
             const Size n=maxEvaluations()-1;
             const Real d=(b-a)/n;
             
@@ -82,7 +82,7 @@ namespace QuantLib {
     }
 
     Real DiscreteSimpsonIntegrator::integrate(
-        const ext::function<Real (Real)>& f, Real a, Real b) const {
+        const std::function<Real (Real)>& f, Real a, Real b) const {
             const Size n=maxEvaluations()-1;
             const Real d=(b-a)/n, d2=d*2;
             

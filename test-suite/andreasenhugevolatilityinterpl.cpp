@@ -116,7 +116,7 @@ CalibrationData AndreasenHugeExampleData() {
     const Size nStrikes = LENGTH(raw);
     const Size nMaturities = LENGTH(maturityTimes);
 
-    QL_REQUIRE(nMaturities == LENGTH(raw[1])-1, "check raw data");
+    static_assert(nMaturities == LENGTH(raw[1])-1, "check raw data");
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
@@ -171,11 +171,11 @@ void testAndreasenHugeVolatilityInterpolation(const CalibrationData& data, const
                     expected.interpolationType,
                     expected.calibrationType));
 
-    const ext::tuple<Real, Real, Real> error =
+    const std::tuple<Real, Real, Real> error =
         andreasenHugeVolInterplation->calibrationError();
 
-    const Real maxError = ext::get<1>(error);
-    const Real avgError = ext::get<2>(error);
+    const Real maxError = std::get<1>(error);
+    const Real avgError = std::get<2>(error);
 
     if (maxError > expected.maxError || avgError > expected.avgError) {
         BOOST_FAIL("Failed to reproduce calibration error"
@@ -865,7 +865,7 @@ BOOST_AUTO_TEST_CASE(testDifferentOptimizers) {
     };
 
     for (const auto& optimizationMethod : optimizationMethods) {
-        const Real avgError = ext::get<2>(
+        const Real avgError = std::get<2>(
             AndreasenHugeVolatilityInterpl(data.calibrationSet, data.spot, data.rTS, data.qTS,
                                            AndreasenHugeVolatilityInterpl::CubicSpline,
                                            AndreasenHugeVolatilityInterpl::Call, 400, Null<Real>(),

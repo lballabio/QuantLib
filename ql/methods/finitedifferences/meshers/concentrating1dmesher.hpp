@@ -47,7 +47,7 @@ namespace QuantLib {
 
         Concentrating1dMesher(
             Real start, Real end, Size size,
-            const std::vector<ext::tuple<Real, Real, bool> >& cPoints,
+            const std::vector<std::tuple<Real, Real, bool> >& cPoints,
             Real tol = 1e-8);
     };
 }
