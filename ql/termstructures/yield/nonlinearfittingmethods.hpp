@@ -114,7 +114,7 @@ namespace QuantLib {
     /*! Fits a discount function to the form
         \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_0 + c_1)(\frac {1 - exp^{-\kappa t}}{\kappa t})
+        r \equiv c_0 + (c_1 + c_2)(\frac {1 - exp^{-\kappa t}}{\kappa t})
         - c_2exp^{ - \kappa t}
         + c_3{(\frac{1 - exp^{-\kappa_1 t}}{\kappa_1 t} -exp^{-\kappa_1 t})}.
         \f]
