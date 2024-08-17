@@ -87,7 +87,7 @@ namespace QuantLib {
                                  ResetScheme resetScheme = ResetToBestPoint,
                                  Size resetSteps = 150,
                                  ext::shared_ptr<OptimizationMethod> localOptimizer =
-                                     ext::shared_ptr<OptimizationMethod>(),
+                                     ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
                                  LocalOptimizeScheme optimizeScheme = EveryBestPoint)
         : sampler_(sampler), probability_(probability), temperature_(std::move(temperature)),
           reannealing_(reannealing), startTemperature_(startTemperature),
@@ -96,8 +96,6 @@ namespace QuantLib {
           resetScheme_(resetScheme), resetSteps_(resetSteps == 0 ? QL_MAX_INTEGER : resetSteps),
           localOptimizer_(localOptimizer),
           optimizeScheme_(localOptimizer != nullptr ? optimizeScheme : NoLocalOptimize) {
-            if (!localOptimizer)
-                localOptimizer.reset(new LevenbergMarquardt);
         }
 
         EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;
