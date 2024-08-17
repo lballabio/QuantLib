@@ -41,7 +41,9 @@ template <class Curve> class GlobalBootstrap {
     typedef typename Curve::interpolator_type Interpolator; // Linear, LogLinear, ...
 
   public:
-    GlobalBootstrap(Real accuracy = Null<Real>());
+    GlobalBootstrap(Real accuracy = Null<Real>(),
+                    ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                    ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     /*! The set of (alive) additional dates is added to the interpolation grid. The set of additional dates must only
       depend on the current global evaluation date.  The additionalErrors functor must yield at least as many values
       such that
@@ -61,7 +63,9 @@ template <class Curve> class GlobalBootstrap {
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     std::function<Array()> additionalErrors,
-                    Real accuracy = Null<Real>());
+                    Real accuracy = Null<Real>(),
+                    ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                    ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     void setup(Curve *ts);
     void calculate() const;
 
@@ -69,6 +73,8 @@ template <class Curve> class GlobalBootstrap {
     void initialize() const;
     Curve *ts_;
     Real accuracy_;
+    ext::shared_ptr<OptimizationMethod> optimizer_;
+    ext::shared_ptr<EndCriteria> endCriteria_;
     mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
     std::function<std::vector<Date>()> additionalDates_;
     std::function<Array()> additionalErrors_;
@@ -80,15 +86,23 @@ template <class Curve> class GlobalBootstrap {
 // template definitions
 
 template <class Curve>
-GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy) : ts_(0), accuracy_(accuracy) {}
+GlobalBootstrap<Curve>::GlobalBootstrap(
+    Real accuracy,
+    ext::shared_ptr<OptimizationMethod> optimizer,
+    ext::shared_ptr<EndCriteria> endCriteria)
+: ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
+  endCriteria_(std::move(endCriteria)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
     std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
     std::function<std::vector<Date>()> additionalDates,
     std::function<Array()> additionalErrors,
-    Real accuracy)
-: ts_(nullptr), accuracy_(accuracy), additionalHelpers_(std::move(additionalHelpers)),
+    Real accuracy,
+    ext::shared_ptr<OptimizationMethod> optimizer,
+    ext::shared_ptr<EndCriteria> endCriteria)
+: ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
+  endCriteria_(std::move(endCriteria)), additionalHelpers_(std::move(additionalHelpers)),
   additionalDates_(std::move(additionalDates)), additionalErrors_(std::move(additionalErrors)) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
@@ -97,6 +111,15 @@ template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
         ts_->registerWithObservables(ts_->instruments_[j]);
     for (Size j = 0; j < additionalHelpers_.size(); ++j)
         ts_->registerWithObservables(additionalHelpers_[j]);
+
+    // setup optimizer and EndCriteria
+    Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
+    if (!optimizer_) {
+        optimizer_ = ext::make_shared<LevenbergMarquardt>(accuracy, accuracy, accuracy);
+    }
+    if (!endCriteria_) {
+        endCriteria_ = ext::make_shared<EndCriteria>(1000, 10, accuracy, accuracy, accuracy);
+    }
 
     // do not initialize yet: instruments could be invalid here
     // but valid later when bootstrapping is actually required
@@ -213,13 +236,6 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
         helper->setTermStructure(const_cast<Curve *>(ts_));
     }
 
-    Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
-
-    // setup optimizer and EndCriteria
-    Real optEps = accuracy;
-    LevenbergMarquardt optimizer(optEps, optEps, optEps); // FIXME hardcoded tolerances
-    EndCriteria ec(1000, 10, optEps, optEps, optEps);      // FIXME hardcoded values here as well
-
     // setup interpolation
     if (!validCurve_) {
         ts_->interpolation_ =
@@ -302,14 +318,11 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     Problem problem(cost, noConstraint, guess);
 
     // run optimization
-    optimizer.minimize(problem, ec);
+    EndCriteria::Type endType = optimizer_->minimize(problem, *endCriteria_);
 
-    // evaluate target function on best value found to ensure that data_ contains the optimal value
-    Real finalTargetError = cost.value(problem.currentValue());
-
-    // check final error
-    QL_REQUIRE(finalTargetError <= accuracy,
-               "global bootstrap failed, error is " << finalTargetError << ", accuracy is " << accuracy);
+    // check the end criteria
+    QL_REQUIRE(EndCriteria::succeeded(endType),
+               "global bootstrap failed to minimize to required accuracy: " << endType);
 
     // set valid flag
     validCurve_ = true;

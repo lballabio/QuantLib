@@ -40,7 +40,7 @@ namespace QuantLib {
         of the problem is used instead. Note that
         the default implementation of the jacobian
         in CostFunction uses a central difference
-        (oder 2, but requiring more function
+        (order 2, but requiring more function
         evaluations) compared to the forward
         difference implemented here (order 1).
 
@@ -53,10 +53,7 @@ namespace QuantLib {
                            Real gtol = 1.0e-8,
                            bool useCostFunctionsJacobian = false);
         EndCriteria::Type minimize(Problem& P,
-                                   const EndCriteria& endCriteria //= EndCriteria()
-                                   ) override;
-        //      = EndCriteria(400, 1.0e-8, 1.0e-8)
-        virtual Integer getInfo() const;
+                                   const EndCriteria& endCriteria) override;
         void fcn(int m,
                  int n,
                  Real* x,
@@ -72,9 +69,8 @@ namespace QuantLib {
         Problem* currentProblem_;
         Array initCostValues_;
         Matrix initJacobian_;
-        mutable Integer info_ = 0;
         const Real epsfcn_, xtol_, gtol_;
-        bool useCostFunctionsJacobian_;
+        const bool useCostFunctionsJacobian_;
     };
 
 }
