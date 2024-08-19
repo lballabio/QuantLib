@@ -272,6 +272,63 @@ BOOST_AUTO_TEST_CASE(testGuessSize) {
                           ExpectedErrorMessage("wrong size for guess"));
 }
 
+
+
+
+BOOST_AUTO_TEST_CASE(testConstraint) {
+
+    BOOST_TEST_MESSAGE("Testing that fitted bond curves check the guess size when given...");
+    
+    class FlatZero : public FittedBondDiscountCurve::FittingMethod {
+      public:
+        FlatZero(bool forcePositive)
+        : FittedBondDiscountCurve::FittingMethod(true,        // constrainAtZero
+                                                 Array(),     // weights
+                                                 ext::shared_ptr<OptimizationMethod>(),
+                                                 Array(),     // l2
+                                                 0.0,         // minCutoffTime
+                                                 QL_MAX_REAL, //maxCutoffTime
+                                                 forcePositive ?
+                                                     ext::shared_ptr<Constraint>(ext::make_shared<PositiveConstraint>()) :
+                                                     ext::shared_ptr<Constraint>(ext::make_shared<NoConstraint>())){}; 
+
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override {
+            return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(new FlatZero(*this));
+        }
+
+      private:
+        Size size() const override { return 1; }
+
+        DiscountFactor discountFunction(const Array& x, Time t) const override {
+            Real zeroRate = x[0];
+            DiscountFactor d = std::exp(-zeroRate * t);
+            return d;
+        }
+    };
+
+    Date today = Settings::instance().evaluationDate();
+    auto bond1 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(1, Years));
+    auto bond2 = ext::make_shared<ZeroCouponBond>(3, TARGET(), 100.0, today + Period(2, Years));
+
+    std::vector<ext::shared_ptr<BondHelper>> helpers(2);
+    helpers[0] = ext::make_shared<BondHelper>(makeQuoteHandle(101.0), bond1);
+    helpers[1] = ext::make_shared<BondHelper>(makeQuoteHandle(102.0), bond2);
+
+    Real accuracy = 1e-10;      // default value
+    Size maxIterations = 10000; // default value
+    Array guess = {0.01};       // something positive so that initial value is in feasible region
+    
+    FlatZero unconstrainedMethod(false);
+    FittedBondDiscountCurve unconstrainedCurve(0, TARGET(), helpers, Actual365Fixed(), unconstrainedMethod, 
+                                               accuracy, maxIterations, guess);
+    BOOST_CHECK_LT(unconstrainedCurve.fitResults().solution()[0], 0.0);
+
+    FlatZero positiveMethod(true);
+    FittedBondDiscountCurve positiveCurve(0, TARGET(), helpers, Actual365Fixed(), positiveMethod,
+                                          accuracy, maxIterations, guess);
+    BOOST_CHECK_GT(positiveCurve.fitResults().solution()[0], 0.0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

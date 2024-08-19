@@ -130,9 +130,11 @@ namespace QuantLib {
         ext::shared_ptr<OptimizationMethod> optimizationMethod,
         Array l2,
         const Real minCutoffTime,
-        const Real maxCutoffTime)
+        const Real maxCutoffTime,
+        ext::shared_ptr<Constraint> constraint)
     : constrainAtZero_(constrainAtZero), weights_(weights), l2_(std::move(l2)),
       calculateWeights_(weights.empty()), optimizationMethod_(std::move(optimizationMethod)),
+      constraint_(std::move(constraint)),
       minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime) {}
 
     void FittedBondDiscountCurve::FittingMethod::init() {
@@ -188,7 +190,6 @@ namespace QuantLib {
     void FittedBondDiscountCurve::FittingMethod::calculate() {
 
         FittingCost& costFunction = *costFunction_;
-        Constraint constraint = NoConstraint();
 
         // start with the guess solution, if it exists
         Array x(size(), 0.0);
@@ -221,7 +222,11 @@ namespace QuantLib {
         if(!optimization){
             optimization = ext::make_shared<Simplex>(curve_->simplexLambda_);
         }
-        Problem problem(costFunction, constraint, x);
+        ext::shared_ptr<Constraint> constraint = constraint_;
+        if (!constraint) {
+            constraint = ext::make_shared<NoConstraint>();
+        }
+        Problem problem(costFunction, *constraint, x);
 
         Real rootEpsilon = curve_->accuracy_;
         Real functionEpsilon =  curve_->accuracy_;

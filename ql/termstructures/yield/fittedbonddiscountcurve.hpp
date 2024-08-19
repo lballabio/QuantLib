@@ -31,6 +31,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 
@@ -209,6 +210,8 @@ namespace QuantLib {
         Array l2() const;
         //! return optimization method being used
         ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
+        //! return optimization contraint
+        ext::shared_ptr<Constraint> constraint() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
@@ -219,7 +222,8 @@ namespace QuantLib {
                           ext::shared_ptr<OptimizationMethod>(),
                       Array l2 = Array(),
                       Real minCutoffTime = 0.0,
-                      Real maxCutoffTime = QL_MAX_REAL);
+                      Real maxCutoffTime = QL_MAX_REAL,
+                      ext::shared_ptr<Constraint> constraint = ext::shared_ptr<Constraint>());
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve
@@ -257,6 +261,8 @@ namespace QuantLib {
         EndCriteria::Type errorCode_ = EndCriteria::None;
         // optimization method to be used, if none provided use Simplex
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
+        // optimization constraint, if none provided use NoConstraint
+        ext::shared_ptr<Constraint> constraint_;
         // flat extrapolation of instantaneous forward before / after cutoff
         Real minCutoffTime_, maxCutoffTime_;
     };
@@ -327,6 +333,11 @@ namespace QuantLib {
     inline ext::shared_ptr<OptimizationMethod> 
     FittedBondDiscountCurve::FittingMethod::optimizationMethod() const {
         return optimizationMethod_;
+    }
+
+    inline ext::shared_ptr<Constraint> 
+    FittedBondDiscountCurve::FittingMethod::constraint() const {
+        return constraint_;
     }
 
     inline DiscountFactor FittedBondDiscountCurve::FittingMethod::discount(const Array& x, Time t) const {
