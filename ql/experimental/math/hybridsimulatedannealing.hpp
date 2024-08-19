@@ -30,6 +30,7 @@ Mathl. Comput. Modelling, 967-973, 1989
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/problem.hpp>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -97,7 +98,7 @@ namespace QuantLib {
           localOptimizer_(localOptimizer),
           optimizeScheme_(localOptimizer != nullptr ? optimizeScheme : NoLocalOptimize) {
             if (!localOptimizer)
-                localOptimizer.reset(new LevenbergMarquardt);
+                localOptimizer = ext::make_shared<LevenbergMarquardt>();
         }
 
         EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;

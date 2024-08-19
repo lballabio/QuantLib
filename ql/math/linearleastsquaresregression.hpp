@@ -40,7 +40,7 @@ namespace QuantLib {
           public:
             explicit LinearFct(Size i) : i_(i) {}
 
-            inline Real operator()(const Container& x) const {
+            Real operator()(const Container& x) const {
                 return x[i_];
             }
 
