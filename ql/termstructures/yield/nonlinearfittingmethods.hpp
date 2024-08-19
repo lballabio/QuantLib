@@ -34,7 +34,7 @@ namespace QuantLib {
     //! Exponential-splines fitting method
     /*! Fits a discount function to the exponential form
         \f[
-        d(t) = \sum_{i=1}^9 c_i \exp^{-kappa i t}
+        d(t) = \sum_{i=1}^9 c_i e^{-\kappa_i t}
         \f]
         where the constants \f$ c_i \f$ and \f$ \kappa \f$ are to be
         determined.  See:Li, B., E. DeWetering, G. Lucas, R. Brenner
@@ -82,10 +82,10 @@ namespace QuantLib {
 
     //! Nelson-Siegel fitting method
     /*! Fits a discount function to the form
-        \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
+        \f$ d(t) = e^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_1 + c_2)*(1 - exp^{-\kappa*t})/(\kappa t) -
-        c_2 exp^{ - \kappa t}.
+        r \equiv c_0 + (c_1 + c_2) \left( \frac{1 - e^{-\kappa t}}{\kappa t} \right) -
+        c_2 e^{ - \kappa t}.
         \f]
         See: Nelson, C. and A. Siegel (1985): "Parsimonious modeling of yield
         curves for US Treasury bills." NBER Working Paper Series, no 1594.
@@ -112,11 +112,11 @@ namespace QuantLib {
 
     //! Svensson Fitting method
     /*! Fits a discount function to the form
-        \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
+        \f$ d(t) = e^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_0 + c_1)(\frac {1 - exp^{-\kappa t}}{\kappa t})
-        - c_2exp^{ - \kappa t}
-        + c_3{(\frac{1 - exp^{-\kappa_1 t}}{\kappa_1 t} -exp^{-\kappa_1 t})}.
+        r \equiv c_0 + (c_1 + c_2) \left( \frac {1 - e^{-\kappa t}}{\kappa t} \right)
+        - c_2 e^{ - \kappa t}
+        + c_3 \left( \frac{1 - e^{-\kappa_1 t}}{\kappa_1 t} -e^{-\kappa_1 t} \right).
         \f]
         See: Svensson, L. (1994). Estimating and interpreting forward
         interest rates: Sweden 1992-4.
@@ -146,7 +146,7 @@ namespace QuantLib {
     /*! Fits a discount function to a set of cubic B-splines
         \f$ N_{i,3}(t) \f$, i.e.,
         \f[
-        d(t) = \sum_{i=0}^{n}  c_i * N_{i,3}(t)
+        d(t) = \sum_{i=0}^{n}  c_i \times N_{i,3}(t)
         \f]
 
         See: McCulloch, J. 1971, "Measuring the Term Structure of
@@ -192,9 +192,9 @@ namespace QuantLib {
 
 
     //! Simple polynomial fitting method
-    /*  Fits a discount function to the simple polynomial form:
+    /*! Fits a discount function to the simple polynomial form:
         \f[
-        d(t) = \sum_{i=0}^{degree}  c_i * t^{i}
+        d(t) = \sum_{i=0}^{degree} c_i t^{i}
         \f]
         where the constants \f$ c_i \f$ are to be determined.
 
@@ -227,7 +227,8 @@ namespace QuantLib {
 
 
     //! Spread fitting method helper
-    /*  Fits a spread curve on top of a discount function according to given parametric method
+    /*! Fits a spread curve on top of a discount function according
+        to the given parametric method
     */
     class SpreadFittingMethod
         : public FittedBondDiscountCurve::FittingMethod {
