@@ -48,7 +48,7 @@ namespace QuantLib {
         for (Size k=n-1; k >=1; --k) {
             while (!offDiagIsZero(k, e)) {
                 Size l = k;
-                while (--l > 0 && !offDiagIsZero(l,e));
+                while (--l > 0 && !offDiagIsZero(l,e)); // NOLINT(bugprone-inc-dec-in-conditions)
                 iter_++;
 
                 Real q = d_[l];

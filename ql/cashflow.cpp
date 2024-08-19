@@ -42,8 +42,8 @@ namespace QuantLib {
             // specified in the settings (if any)
             ext::optional<bool> includeToday =
                 Settings::instance().includeTodaysCashFlows();
-            if (includeToday) // NOLINT(readability-implicit-bool-conversion)
-                includeRefDate = *includeToday;
+            if (includeToday.has_value())
+                includeRefDate = includeToday;
         }
         return Event::hasOccurred(refDate, includeRefDate);
     }

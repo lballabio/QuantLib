@@ -787,7 +787,7 @@ namespace QuantLib {
             mutable std::vector<Real> dx_, S_;
             mutable TridiagonalOperator L_;
 
-            inline Real cubicInterpolatingPolynomialDerivative(
+            Real cubicInterpolatingPolynomialDerivative(
                                Real a, Real b, Real c, Real d,
                                Real u, Real v, Real w, Real z, Real x) const {
                 return (-((((a-c)*(b-c)*(c-x)*z-(a-d)*(b-d)*(d-x)*w)*(a-x+b-x)

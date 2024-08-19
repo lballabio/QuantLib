@@ -19,6 +19,7 @@ Copyright (C) 2015 Thema Consulting SA
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -194,9 +195,9 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
         Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise;
         if (value.barrierType == DoubleBarrier::KIKO || value.barrierType == DoubleBarrier::KOKI)
-            exercise.reset(new AmericanExercise(today, exDate));
+            exercise = ext::make_shared<AmericanExercise>(today, exDate);
         else
-            exercise.reset(new EuropeanExercise(exDate));
+            exercise = ext::make_shared<EuropeanExercise>(exDate);
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
