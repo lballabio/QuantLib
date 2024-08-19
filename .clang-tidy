@@ -66,6 +66,7 @@ Checks: >
           -readability-magic-numbers,
           -readability-make-member-function-const,
           -readability-named-parameter,
+          -readability-redundant-casting,
           -readability-redundant-declaration,
           -readability-simplify-boolean-expr,
           -readability-suspicious-call-argument,
