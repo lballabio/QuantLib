@@ -46,7 +46,7 @@ namespace QuantLib
         explicit SamplerLogNormal(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed), distribution_(0.0, 1.0) {};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
+        void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++)
@@ -67,7 +67,7 @@ namespace QuantLib
         explicit SamplerGaussian(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed), distribution_(0.0, 1.0) {};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
+        void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++)
@@ -92,7 +92,7 @@ namespace QuantLib
       : generator_(seed), distribution_(0.0, 1.0),
         lower_(std::move(lower)), upper_(std::move(upper)){};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
+        void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++){
@@ -126,7 +126,7 @@ namespace QuantLib
       : generator_(seed), distribution_(0.0, 1.0),
         lower_(std::move(lower)), upper_(std::move(upper)){};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
+        void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++){
@@ -158,7 +158,7 @@ namespace QuantLib
         explicit SamplerCauchy(unsigned long seed = SeedGenerator::instance().get()) :
             generator_(seed), distribution_(0.0, 1.0) {};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
+        void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++)
@@ -183,7 +183,7 @@ namespace QuantLib
             QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
         };
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
+        void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == lower_.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
@@ -210,7 +210,7 @@ namespace QuantLib
     optimizer will be able to escape a local optimum.
     */
     struct ProbabilityAlwaysDownhill {
-        inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
+        bool operator()(Real currentValue, Real newValue, const Array &temp) {
             return currentValue > newValue; //return true if new value is lower than old value
         }
     };
@@ -224,7 +224,7 @@ namespace QuantLib
     public:
         explicit ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) : generator_(seed) {};
 
-        inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
+        bool operator()(Real currentValue, Real newValue, const Array &temp) {
             Real temperature = *std::max_element(temp.begin(), temp.end());
             return (1.0 / (1.0 + exp((newValue - currentValue) / temperature))) > distribution_(generator_);
         }
@@ -241,7 +241,7 @@ namespace QuantLib
     public:
         explicit ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) : generator_(seed) {};
 
-        inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
+        bool operator()(Real currentValue, Real newValue, const Array &temp) {
             if (newValue < currentValue)
                 return true;
             Real mTemperature = *std::max_element(temp.begin(), temp.end());
@@ -258,7 +258,7 @@ namespace QuantLib
     public:
         TemperatureBoltzmann(Real initialTemp, Size dimension)
             : initialTemp_(dimension, initialTemp) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
+        void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -274,7 +274,7 @@ namespace QuantLib
     public:
         TemperatureCauchy(Real initialTemp, Size dimension)
             : initialTemp_(dimension, initialTemp) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
+        void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -289,7 +289,7 @@ namespace QuantLib
         TemperatureCauchy1D(Real initialTemp, Size dimension) :
             inverseN_(1.0 / dimension),
             initialTemp_(dimension, initialTemp) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
+        void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -304,7 +304,7 @@ namespace QuantLib
     public:
         TemperatureExponential(Real initialTemp, Size dimension, Real power = 0.95)
             : initialTemp_(dimension, initialTemp), power_(power) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
+        void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -326,7 +326,7 @@ namespace QuantLib
             for (Size i = 0; i < initialTemp_.size(); i++)
                 exponent_[i] = -std::log(finalTemp_[i] / initialTemp_[i])*coeff;
         }
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
+        void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -342,8 +342,8 @@ namespace QuantLib
     struct ReannealingTrivial {
         ReannealingTrivial() = default;
         ;
-        inline void setProblem(Problem &P) {};
-        inline void operator()(Array & steps, const Array &currentPoint,
+        void setProblem(Problem &P) {};
+        void operator()(Array & steps, const Array &currentPoint,
             Real aCurrentValue, const Array & currTemp) {};
     };
     //! Reannealing Finite Difference
@@ -375,8 +375,8 @@ namespace QuantLib
               }
           }
       }
-        inline void setProblem(Problem &P) { problem_ = &P; };
-        inline void operator()(Array & steps, const Array &currentPoint,
+        void setProblem(Problem &P) { problem_ = &P; };
+        void operator()(Array & steps, const Array &currentPoint,
             Real currentValue, const Array & currTemp) {
             QL_REQUIRE(currTemp.size() == N_, "Incompatible input");
             QL_REQUIRE(steps.size() == N_, "Incompatible input");

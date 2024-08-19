@@ -145,8 +145,8 @@ namespace QuantLib {
         // The following typedef enables reverse iterators for
         // bidirectional_iterator_tag category.
         typedef std::conditional_t<
-                std::is_same<iterator_category, std::bidirectional_iterator_tag>::value ||
-                std::is_base_of<std::bidirectional_iterator_tag, iterator_category>::value,
+                std::is_same_v<iterator_category, std::bidirectional_iterator_tag> ||
+                std::is_base_of_v<std::bidirectional_iterator_tag, iterator_category>,
             std::bidirectional_iterator_tag, std::input_iterator_tag> enable_reverse;
 
         typedef typename
