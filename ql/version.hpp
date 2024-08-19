@@ -34,7 +34,6 @@
 #define QL_VERSION "1.36-dev"
 
 //! version hexadecimal number
-// NOLINTNEXTLINE(cppcoreguidelines-macro-to-enum)
 #define QL_HEX_VERSION 0x01360000
 
 /*! @}  */

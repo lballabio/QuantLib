@@ -25,6 +25,7 @@ Checks: >
           -cppcoreguidelines-avoid-magic-numbers,
           -cppcoreguidelines-avoid-non-const-global-variables,
           -cppcoreguidelines-init-variables,
+          -cppcoreguidelines-macro-to-enum,
           -cppcoreguidelines-macro-usage,
           -cppcoreguidelines-narrowing-conversions,
           -cppcoreguidelines-non-private-member-variables-in-classes,
