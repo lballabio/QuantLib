@@ -291,7 +291,7 @@ BOOST_AUTO_TEST_CASE(testConstraint) {
                                                  std::move(constraint)) {}
 
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override {
-            return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(new FlatZero(*this));
+            return std::make_unique<FlatZero>(*this);
         }
 
       private:

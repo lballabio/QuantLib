@@ -63,8 +63,7 @@ namespace QuantLib {
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     ExponentialSplinesFitting::clone() const {
-        return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(
-                                        new ExponentialSplinesFitting(*this)); 
+        return std::make_unique<ExponentialSplinesFitting>(*this); 
     }
 
     Size ExponentialSplinesFitting::size() const {
@@ -122,8 +121,7 @@ namespace QuantLib {
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     NelsonSiegelFitting::clone() const {
-        return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(
-                                              new NelsonSiegelFitting(*this));
+        return std::make_unique<NelsonSiegelFitting>(*this);
     }
 
     Size NelsonSiegelFitting::size() const {
@@ -161,8 +159,7 @@ namespace QuantLib {
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     SvenssonFitting::clone() const {
-        return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(
-                                              new SvenssonFitting(*this));
+        return std::make_unique<SvenssonFitting>(*this);
     }
 
     Size SvenssonFitting::size() const {
@@ -233,8 +230,7 @@ namespace QuantLib {
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     CubicBSplinesFitting::clone() const {
-        return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(
-                                             new CubicBSplinesFitting(*this));
+        return std::make_unique<CubicBSplinesFitting>(*this);
     }
 
     Size CubicBSplinesFitting::size() const {
@@ -296,8 +292,7 @@ namespace QuantLib {
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     SimplePolynomialFitting::clone() const {
-        return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(
-                                          new SimplePolynomialFitting(*this));
+        return std::make_unique<SimplePolynomialFitting>(*this);
     }
 
     Size SimplePolynomialFitting::size() const {
@@ -337,8 +332,7 @@ namespace QuantLib {
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
     SpreadFittingMethod::clone() const {
-        return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(
-                                          new SpreadFittingMethod(*this));
+        return std::make_unique<SpreadFittingMethod>(*this);
     }
 
     Size SpreadFittingMethod::size() const {
