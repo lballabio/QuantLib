@@ -211,7 +211,7 @@ namespace QuantLib {
         //! return optimization method being used
         ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
         //! return optimization contraint
-        ext::shared_ptr<Constraint> constraint() const;
+        const Constraint& constraint() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
       protected:
@@ -223,7 +223,7 @@ namespace QuantLib {
                       Array l2 = Array(),
                       Real minCutoffTime = 0.0,
                       Real maxCutoffTime = QL_MAX_REAL,
-                      ext::shared_ptr<Constraint> constraint = ext::shared_ptr<Constraint>());
+                      Constraint constraint = NoConstraint());
         //! rerun every time instruments/referenceDate changes
         virtual void init();
         //! discount function called by FittedBondDiscountCurve
@@ -262,7 +262,7 @@ namespace QuantLib {
         // optimization method to be used, if none provided use Simplex
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         // optimization constraint, if none provided use NoConstraint
-        ext::shared_ptr<Constraint> constraint_;
+        Constraint constraint_;
         // flat extrapolation of instantaneous forward before / after cutoff
         Real minCutoffTime_, maxCutoffTime_;
     };
@@ -335,8 +335,7 @@ namespace QuantLib {
         return optimizationMethod_;
     }
 
-    inline ext::shared_ptr<Constraint> 
-    FittedBondDiscountCurve::FittingMethod::constraint() const {
+    inline const Constraint& FittedBondDiscountCurve::FittingMethod::constraint() const {
         return constraint_;
     }
 

@@ -288,9 +288,7 @@ BOOST_AUTO_TEST_CASE(testConstraint) {
                                                  Array(),     // l2
                                                  0.0,         // minCutoffTime
                                                  QL_MAX_REAL, //maxCutoffTime
-                                                 forcePositive ?
-                                                     ext::shared_ptr<Constraint>(ext::make_shared<PositiveConstraint>()) :
-                                                     ext::shared_ptr<Constraint>(ext::make_shared<NoConstraint>())){}; 
+                                                 forcePositive ? Constraint(PositiveConstraint()) : Constraint(NoConstraint())){};
 
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override {
             return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(new FlatZero(*this));
