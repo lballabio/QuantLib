@@ -24,7 +24,6 @@ namespace QuantLib {
 
     Poland::Poland(Poland::Market market) {
         // all calendar instances share the same implementation instance
-        // static ext::shared_ptr<Calendar::Impl> impl(new Poland::Impl);
         static auto settlementImpl = ext::make_shared<Poland::SettlementImpl>();
         static auto wseImpl = ext::make_shared<Poland::WseImpl>();
         switch (market) {
