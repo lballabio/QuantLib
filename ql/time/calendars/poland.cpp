@@ -18,16 +18,27 @@
 */
 
 #include <ql/time/calendars/poland.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    Poland::Poland() {
+    Poland::Poland(Poland::Market market) {
         // all calendar instances share the same implementation instance
-        static ext::shared_ptr<Calendar::Impl> impl(new Poland::Impl);
-        impl_ = impl;
+        static auto settlementImpl = ext::make_shared<Poland::SettlementImpl>();
+        static auto wseImpl = ext::make_shared<Poland::WseImpl>();
+        switch (market) {
+          case Settlement:
+            impl_ = settlementImpl;
+            break;
+          case WSE:
+            impl_ = wseImpl;
+            break;
+          default:
+            QL_FAIL("unknown market");
+        }
     }
 
-    bool Poland::Impl::isBusinessDay(const Date& date) const {
+    bool Poland::SettlementImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -58,6 +69,21 @@ namespace QuantLib {
             || (d == 26 && m == December))
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
+    }
+
+    
+    bool Poland::WseImpl::isBusinessDay(const Date& date) const {
+        // Additional holidays for Warsaw Stock Exchange
+        // see https://www.gpw.pl/session-details
+        Day d = date.dayOfMonth();
+        Month m = date.month();
+
+        if (
+            (d == 24  && m == December)
+            || (d == 31  && m == December)
+            ) return false; // NOLINT(readability-simplify-boolean-expr)
+
+        return SettlementImpl::isBusinessDay(date);
     }
 
 }
