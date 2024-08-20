@@ -277,18 +277,18 @@ BOOST_AUTO_TEST_CASE(testGuessSize) {
 
 BOOST_AUTO_TEST_CASE(testConstraint) {
 
-    BOOST_TEST_MESSAGE("Testing that fitted bond curves check the guess size when given...");
-    
+    BOOST_TEST_MESSAGE("Testing that fitted bond curves respect passed constraint...");
+
     class FlatZero : public FittedBondDiscountCurve::FittingMethod {
       public:
-        FlatZero(bool forcePositive)
+        FlatZero(Constraint constraint = NoConstraint())
         : FittedBondDiscountCurve::FittingMethod(true,        // constrainAtZero
                                                  Array(),     // weights
                                                  ext::shared_ptr<OptimizationMethod>(),
                                                  Array(),     // l2
                                                  0.0,         // minCutoffTime
                                                  QL_MAX_REAL, //maxCutoffTime
-                                                 forcePositive ? Constraint(PositiveConstraint()) : Constraint(NoConstraint())){};
+                                                 std::move(constraint)) {}
 
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override {
             return std::unique_ptr<FittedBondDiscountCurve::FittingMethod>(new FlatZero(*this));
@@ -316,12 +316,12 @@ BOOST_AUTO_TEST_CASE(testConstraint) {
     Size maxIterations = 10000; // default value
     Array guess = {0.01};       // something positive so that initial value is in feasible region
     
-    FlatZero unconstrainedMethod(false);
+    FlatZero unconstrainedMethod;
     FittedBondDiscountCurve unconstrainedCurve(0, TARGET(), helpers, Actual365Fixed(), unconstrainedMethod, 
                                                accuracy, maxIterations, guess);
     BOOST_CHECK_LT(unconstrainedCurve.fitResults().solution()[0], 0.0);
 
-    FlatZero positiveMethod(true);
+    FlatZero positiveMethod{PositiveConstraint()};
     FittedBondDiscountCurve positiveCurve(0, TARGET(), helpers, Actual365Fixed(), positiveMethod,
                                           accuracy, maxIterations, guess);
     BOOST_CHECK_GT(positiveCurve.fitResults().solution()[0], 0.0);
