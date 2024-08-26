@@ -37,9 +37,10 @@ namespace QuantLib {
       \warning the input correlation matrix is not checked for positive
       definiteness
 
+      \deprecated Out of scope; copy this class in your codebase if needed.
+                  Deprecated in version 1.36.
     */
-
-    class CreditRiskPlus {
+    class [[deprecated("Out of scope; copy this class in your codebase if needed")]] CreditRiskPlus {
 
       public:
         CreditRiskPlus(std::vector<Real> exposure,
