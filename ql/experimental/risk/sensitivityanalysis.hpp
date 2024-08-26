@@ -38,16 +38,29 @@ namespace QuantLib {
     class Instrument;
 
     //! Finite differences calculation
-    enum SensitivityAnalysis {
-        OneSide, /*!<  */
-        Centered /*!<  */
+    /*! \deprecated Out of scope; copy this enumeration in your codebase if needed.
+                    Deprecated in version 1.36.
+    */
+    enum [[deprecated("Out of scope; copy this enumeration in your codebase if needed")]] SensitivityAnalysis {
+        OneSide,
+        Centered
     };
 
-    /*! \relates SensitivityAnalysis */
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \relates SensitivityAnalysis
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
+    */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     std::ostream& operator<<(std::ostream&,
                              SensitivityAnalysis);
 
     //! utility fuction for weighted sum of NPVs
+    /*! \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
+    */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     Real aggregateNPV(const std::vector<ext::shared_ptr<Instrument> >&,
                       const std::vector<Real>& quantities);
 
@@ -60,7 +73,11 @@ namespace QuantLib {
         the vector is just one single element equal to one.
 
         All SimpleQuotes are tweaked together in a parallel fashion.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     std::pair<Real, Real>
     parallelAnalysis(const std::vector<Handle<SimpleQuote> >&,
                      const std::vector<ext::shared_ptr<Instrument> >&,
@@ -78,7 +95,11 @@ namespace QuantLib {
         the vector is of size one.
 
         All SimpleQuotes are tweaked together in a parallel fashion.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     std::pair<Real, Real>
     parallelAnalysis(const std::vector<std::vector<Handle<SimpleQuote> > >&,
                      const std::vector<ext::shared_ptr<Instrument> >&,
@@ -94,7 +115,11 @@ namespace QuantLib {
 
         Empty quantities vector is considered as unit vector. The same if
         the vector is of size one.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     std::pair<Real, Real> bucketAnalysis(const Handle<SimpleQuote>& quote,
                                          const std::vector<ext::shared_ptr<Instrument> >&,
                                          const std::vector<Real>& quantities,
@@ -110,7 +135,11 @@ namespace QuantLib {
 
         Empty quantities vector is considered as unit vector. The same if
         the vector is of size one.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     void bucketAnalysis(std::vector<Real>& deltaVector, // result
                         std::vector<Real>& gammaVector, // result
                         std::vector<Real>& referenceValues,
@@ -128,7 +157,11 @@ namespace QuantLib {
         the vector is of size one.
 
         The (bucket) SimpleQuotes are tweaked one by one separately.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     std::pair<std::vector<Real>, std::vector<Real> >
     bucketAnalysis(const std::vector<Handle<SimpleQuote> >& quotes,
                    const std::vector<ext::shared_ptr<Instrument> >&,
@@ -146,7 +179,11 @@ namespace QuantLib {
         the vector is of size one.
 
         The (bucket) SimpleQuotes are tweaked one by one separately.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     void
     bucketAnalysis(std::vector<std::vector<Real> >& deltaMatrix, // result
                    std::vector<std::vector<Real> >& gammaMatrix, // result
@@ -165,7 +202,11 @@ namespace QuantLib {
         the vector is of size one.
 
         The (bucket) SimpleQuotes are tweaked one by one separately.
+
+        \deprecated Out of scope; copy this function in your codebase if needed.
+                    Deprecated in version 1.36.
     */
+    [[deprecated("Out of scope; copy this function in your codebase if needed")]]
     std::pair<std::vector<std::vector<Real> >, std::vector<std::vector<Real> > >
     bucketAnalysis(const std::vector<std::vector<Handle<SimpleQuote> > >&,
                    const std::vector<ext::shared_ptr<Instrument> >&,
@@ -173,6 +214,7 @@ namespace QuantLib {
                    Real shift = 0.0001,
                    SensitivityAnalysis type = Centered);
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 #endif
