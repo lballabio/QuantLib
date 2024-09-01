@@ -1732,10 +1732,10 @@ BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
     BOOST_TEST_MESSAGE("Testing the root of a sum of exponentials...");
 
     BOOST_CHECK_THROW(SumExponentialsRootSolver(
-        {2.0, 3.0, 4.0}, {0.2, 0.4, -0.1}, 0.0).rootSumExponentials() , Error
+        {2.0, 3.0, 4.0}, {0.2, 0.4, -0.1}, 0.0).getRoot() , Error
     );
     BOOST_CHECK_THROW(SumExponentialsRootSolver(
-        {2.0, -3.0, 4.0}, {0.2, -0.4, -0.1}, 0.0).rootSumExponentials(), Error
+        {2.0, -3.0, 4.0}, {0.2, -0.4, -0.1}, 0.0).getRoot(), Error
     );
 
     MersenneTwisterUniformRng mt(42);
@@ -1766,10 +1766,10 @@ BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
 			const Real K = (kMax - kMin)*mt.nextReal() + kMin;
 
 			const Real xValue = SumExponentialsRootSolver(a, sig, K)
-			    .rootSumExponentials(acc, SumExponentialsRootSolver::Brent);
+			    .getRoot(acc, SumExponentialsRootSolver::Brent);
 
             const SumExponentialsRootSolver solver(a, sig, K);
-			const Real xRoot = solver.rootSumExponentials(tol, std::get<1>(strategy));
+			const Real xRoot = solver.getRoot(tol, std::get<1>(strategy));
 
 			stats.add(xValue - xRoot);
 			fCtr += solver.getFCtr() + solver.getDerivativeCtr() + solver.getSecondDerivativeCtr();
@@ -1794,43 +1794,105 @@ BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
     BOOST_TEST_MESSAGE(
         "Testing single factor BSM basket engine against reference results...");
 
-    // Reference results are calculated with the python library PyFENG
-    // https://github.com/PyFE/PyFENG
-
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(3, July, 2024);
     const Date maturity = today + Period(18, Months);
+    const Time deltaT = dc.yearFraction(today,  maturity);
+    const Real sqrtDeltaT = std::sqrt(deltaT);
 
-    const std::vector<Real> underlyings({220, 45, 102, 75});
-    const std::vector<Real> volatilities({0.3, 0.45, 0.3, 0.25});
-    const std::vector<Real> q({0.05, 0.075, 0.02, 0.1});
+    struct TestCase {
+        const Array underlyings;
+        const Array volatilities;
+        const Array q;
+        const Rate r;
+        const Array weights;
+        Option::Type optionType;
+    };
 
-    const Handle<YieldTermStructure> rTS = Handle<YieldTermStructure>(
-        flatRate(today, 0.03, dc));
+    const std::vector<TestCase> testCases = {
+        { {200, 50, -125}, {0.4, 0.3, -0.5}, {0.03, 0.075, 0.04},
+          0.05, {0.5, 0.25, 1.0}, Option::Call },
+        { {200, 50, -125}, {0.4, 0.3, -0.5}, {0.03, 0.075, 0.04},
+          0.05, {0.5, 0.25, 1.0}, Option::Put },
+        { {100, 50}, {0.4, -0.3}, {0.03, 0.075}, 0.025, {1.0, -2.0}, Option::Put },
+        { {100, 50}, {0.4, -0.3}, {0.03, 0.075}, 0.025, {1.0, -2.0}, Option::Call },
+        { {100}, {0.4}, {0.03}, 0.045, {1.0}, Option::Call },
+        { {100, 50, 100, 150}, {0.4, 0.0, 0.2, 0.1}, {0.03, 0.05, 0.02, 0}, 0.045,
+          {1.0, 2.0, 1.0, 1.0}, Option::Call },
+        { {100, 50}, {0.0, 0.0}, {0.03, 0.05}, 0.055, {1.0, 1.95}, Option::Call }
+    };
 
-    std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
-    for (Size d=0; d < 4; ++d)
-        processes.push_back(
-            ext::make_shared<BlackScholesMertonProcess>(
-                Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d])),
-                Handle<YieldTermStructure>(flatRate(today, q[d], dc)), rTS,
-                Handle<BlackVolTermStructure>(flatVol(today, volatilities[d], dc))
-            )
+    for (const auto& t: testCases) {
+        const Handle<YieldTermStructure> rTS
+            = Handle<YieldTermStructure>(flatRate(today, t.r, dc));
+
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+        for (Size d=0; d < t.underlyings.size(); ++d)
+            processes.push_back(
+                ext::make_shared<BlackScholesMertonProcess>(
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(t.underlyings[d])),
+                    Handle<YieldTermStructure>(flatRate(today, t.q[d], dc)), rTS,
+                    Handle<BlackVolTermStructure>(flatVol(today, t.volatilities[d], dc))
+                )
+            );
+
+        const Real strike = std::inner_product(
+            t.weights.begin(), t.weights.end(), t.underlyings.begin(), 0.0
         );
 
-    const Real strike = 150;
+        const ext::shared_ptr<PlainVanillaPayoff> payoff
+            = ext::make_shared<PlainVanillaPayoff>(t.optionType, strike);
 
-    BasketOption option(
-        ext::make_shared<AverageBasketPayoff>(
-            ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-            Array({0.5, 2.0, 1.0, 1.5})
-        ),
-        ext::make_shared<EuropeanExercise>(maturity)
-    );
+        BasketOption option(
+            ext::make_shared<AverageBasketPayoff>(payoff, t.weights),
+            ext::make_shared<EuropeanExercise>(maturity)
+        );
 
-    option.setPricingEngine(
-        ext::make_shared<SingleFactorBsmBasketEngine>(processes));
+        option.setPricingEngine(
+            ext::make_shared<SingleFactorBsmBasketEngine>(processes));
 
+        const Real calculated = option.NPV();
+
+        Array f(processes.size());
+        for (Size i=0; i < f.size(); ++i) {
+            f[i] = t.weights[i]
+                 * processes[i]->stateVariable()->value()
+                 * processes[i]->dividendYield()->discount(maturity)
+                 / rTS->discount(maturity)
+                 * std::exp(-0.5*processes[i]->blackVolatility()->blackVariance(maturity, 0));
+        }
+
+        const SobolRsg rsg(1);
+        const InverseCumulativeNormal invCumNormal;
+        IncrementalStatistics stats;
+
+        const Size nPath = 10000;
+        const DiscountFactor df = rTS->discount(maturity);
+        for (Size i = 0; i < nPath; ++i) {
+            const Real z = sqrtDeltaT*invCumNormal(rsg.nextSequence().value[0]);
+            Real s = 0.0;
+            for (Size j=0; j < processes.size(); ++j)
+                s += f[j] * std::exp(t.volatilities[j]*z);
+
+            stats.add(df * payoff->operator()(s));
+        }
+
+        const Real expected = stats.mean();
+        std::cout << std::setprecision(6) << calculated << " " << expected << std::endl;
+        const Real diff = std::abs(expected - calculated);
+
+        const Real errorEstimate = stats.errorEstimate();
+        const Real tol = std::max(1e-10, 0.1*errorEstimate);
+
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce single factor basket prices"
+                   << std::fixed << std::setprecision(8)
+                   << "\n    calculated: " << calculated
+                   << "\n    expected:   " << expected
+                   << "\n    diff:       " << diff
+                   << "\n    tolerance:  " << tol);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

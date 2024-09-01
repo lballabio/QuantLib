@@ -60,9 +60,9 @@ namespace QuantLib {
 
         const detail::VectorBsmProcessExtractor pExtractor(processes_);
         const Array s = pExtractor.getSpot();
-        const Array dq = pExtractor.getDividendYield(maturityDate);
+        const Array dq = pExtractor.getDividendYieldDf(maturityDate);
         const Array v = pExtractor.getBlackVariance(maturityDate);
-        const DiscountFactor dr0 = pExtractor.getInterestRate(maturityDate);
+        const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
 
         std::vector< std::tuple<Real, Size, Real, Real, Real> > p;
         p.reserve(n_);

@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/math/matrix.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
@@ -322,6 +323,140 @@ BOOST_AUTO_TEST_CASE(testNonCentralChiSquaredSumOfNodes) {
          }
     }
 }
+
+
+BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
+    BOOST_TEST_MESSAGE("Testing multi-dimensional Gaussian quadrature...");
+
+    const auto normal = [](const Array& x) -> Real {
+        return std::exp(-DotProduct(x, x));
+    };
+
+    for (Size n=1; n < 5; ++n) {
+        std::vector<Size> ns(n);
+        std::iota(ns.begin(), ns.end(), Size(1));
+
+        MulitDimGaussianIntegration quad(
+            ns,
+            [](const Size n) {
+               return ext::make_shared<GaussHermiteIntegration>(n);
+            }
+        );
+
+        const Real calculated = quad(normal);
+        const Real expected = std::sqrt(std::pow(M_PI, Real(n)));
+        const Real tol = 1e4*QL_EPSILON;
+        const Real diff = std::abs(expected-calculated);
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce multi dimensional Gaussian quadrature"
+                        << std::setprecision(12)
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected
+                        << "\n    diff:       " << diff);
+        }
+    }
+
+    // testing some Gaussian Integrals
+    // https://en.wikipedia.org/wiki/Gaussian_integral
+    MersenneTwisterUniformRng rng(1234);
+    const std::vector<Size> ns = {20, 28, 16, 22};
+    const std::vector<Real> tols = {1e-8, 1e-6, 1e-2, 5e-2};
+    for (Size n=1; n < 5; ++n) {
+        // create symmetric positive-definite matrix
+        Matrix a(n, n);
+        for (Size i=0; i < n; ++i)
+            for (Size j=0; j < n; ++j)
+                a[i][j] = (i==j) ? (i+1) : rng.nextReal();
+
+        const Matrix A = a*transpose(a);
+        const Matrix invA = inverse(A);
+        const Real det_2piA = std::sqrt(determinant(M_TWOPI*invA));
+
+        const MulitDimGaussianIntegration quad(
+            std::vector<Size>(ns.begin(), ns.begin()+n),
+            [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
+        );
+
+        const Real calculated = quad(
+            [&A](const Array& x) -> Real { return std::exp(-0.5*DotProduct(x, A*x)); }
+        );
+
+        const Real expected = det_2piA;
+        const Real diff = std::abs(calculated - expected);
+        if (diff > tols[n-1]) {
+            BOOST_ERROR("failed to reproduce multi dimensional Gaussian quadrature"
+                        << "\n    dimensions: " << n
+                        << std::setprecision(12)
+                        << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected
+                        << "\n    diff:       " << diff
+                        << "\n    tolerance:  " << tols[n-1]);
+        }
+    }
+
+
+    Matrix a(3, 3);
+    for (Size i=0; i < 3; ++i)
+        for (Size j=0; j < 3; ++j)
+            a[i][j] = (i==j) ? (i+1) : rng.nextReal();
+
+    const Matrix A = a*transpose(a);
+    const Matrix invA = inverse(A);
+    const Real sqrt_det_2piA = std::sqrt(determinant(M_TWOPI*invA));
+
+    const MulitDimGaussianIntegration quadHigh(
+        std::vector<Size>({22, 18, 26}),
+        [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
+    );
+    const MulitDimGaussianIntegration quad2(
+        std::vector<Size>(3, 2),
+        [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
+    );
+
+    for (Size i=0; i < 3; ++i)
+        for (Size j=0; j < 3; ++j) {
+            const Real expected = sqrt_det_2piA*invA[i][j];
+
+            Real calculated = quadHigh(
+                [&A, i, j](const Array& x) -> Real {
+                    return x[i]*x[j]*std::exp(-0.5*DotProduct(x, A*x));
+                }
+            );
+
+            Real diff = std::abs(calculated - expected);
+            Real tol = 1e-4;
+            if (diff > tol) {
+                BOOST_ERROR("failed to reproduce multi dimensional Gaussian quadrature"
+                            << std::setprecision(12)
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected
+                            << "\n    diff:       " << diff
+                            << "\n    tolerance:  " << tol);
+            }
+
+            Matrix inva = inverse(transpose(a));
+            calculated = quad2(
+                [&inva, i, j](const Array& x) -> Real {
+                    const Array f = M_SQRT2*inva*x;
+                    return f[i]*f[j]*std::exp(-DotProduct(x, x));
+                }
+            );
+
+            calculated *= determinant(M_SQRT2*inva);
+            diff = std::abs(calculated - expected);
+            tol = QL_EPSILON*1e4;
+            if (diff > tol) {
+                BOOST_ERROR("failed to reproduce multi dimensional Gaussian quadrature"
+                            << std::setprecision(12)
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected
+                            << "\n    diff:       " << diff
+                            << "\n    tolerance:  " << tol);
+            }
+        }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

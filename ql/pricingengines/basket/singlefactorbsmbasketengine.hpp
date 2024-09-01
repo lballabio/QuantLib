@@ -49,8 +49,7 @@ namespace QuantLib {
 		Real derivative(Real x) const;
 		Real secondDerivative(Real x) const;
 
-		Real rootSumExponentials(
-			Real xTol = 1e6*QL_EPSILON, Strategy strategy = Brent) const;
+		Real getRoot(Real xTol = 1e6*QL_EPSILON, Strategy strategy = Brent) const;
 
 		Size getFCtr() const;
 		Size getDerivativeCtr() const;
@@ -65,11 +64,13 @@ namespace QuantLib {
     class SingleFactorBsmBasketEngine : public BasketOption::engine {
       public:
         SingleFactorBsmBasketEngine(
-            std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p);
+            std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p,
+            Real xTol = 1e6*QL_EPSILON);
 
         void calculate() const override;
 
       private:
+        const Real xTol_;
         const Size n_;
         const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes_;
     };

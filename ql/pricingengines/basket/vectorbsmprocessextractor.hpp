@@ -36,8 +36,9 @@ namespace QuantLib {
 
             Array getSpot() const;
             Array getBlackVariance(const Date& maturityDate) const;
-            Array getDividendYield(const Date& maturityDate) const;
-            DiscountFactor getInterestRate(const Date& maturityDate) const;
+            Array getBlackStdDev(const Date& maturityDate) const;
+            Array getDividendYieldDf(const Date& maturityDate) const;
+            DiscountFactor getInterestRateDf(const Date& maturityDate) const;
 
           private:
             Array extractProcesses(

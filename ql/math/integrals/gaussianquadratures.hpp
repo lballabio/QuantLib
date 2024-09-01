@@ -76,6 +76,19 @@ namespace QuantLib {
         Array x_, w_;
     };
 
+    class MulitDimGaussianIntegration {
+      public:
+        MulitDimGaussianIntegration(
+            const std::vector<Size>& ns,
+            const std::function<ext::shared_ptr<GaussianQuadrature>(Size)>& genQuad);
+
+        Real operator()(const std::function<Real(Array)>& f) const;
+
+      private:
+        Array weights_;
+        std::vector<Array> x_;
+    };
+
 
     //! generalized Gauss-Laguerre integration
     /*! This class performs a 1-dimensional Gauss-Laguerre integration.

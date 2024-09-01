@@ -26,10 +26,9 @@
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/math/solvers1d/ridder.hpp>
 #include <ql/math/solvers1d/halley.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
-
-#include <iostream>
 
 namespace QuantLib {
 
@@ -80,9 +79,7 @@ namespace QuantLib {
     	return fDoublePrimeCtr_;
     }
 
-    Real SumExponentialsRootSolver::rootSumExponentials(
-    	Real xTol, Strategy strategy) const {
-
+    Real SumExponentialsRootSolver::getRoot(Real xTol, Strategy strategy) const {
         const Array attr = a_*sig_;
         QL_REQUIRE(
             std::all_of(
@@ -125,8 +122,10 @@ namespace QuantLib {
 
 
     SingleFactorBsmBasketEngine::SingleFactorBsmBasketEngine(
-        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p)
-      : n_(p.size()), processes_(std::move(p)) {
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p,
+        Real xTol)
+      : xTol_(xTol),
+        n_(p.size()), processes_(std::move(p)) {
         for (const auto& process: processes_)
             registerWith(process);
     }
@@ -138,7 +137,8 @@ namespace QuantLib {
         const ext::shared_ptr<PlainVanillaPayoff> payoff =
              ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain vanilla payoff given");
-        const Real strike =
+        const Real cp = (payoff->optionType() == Option::Call) ? 1.0 : -1.0;
+        const Real strike = payoff->strike();
 
         // sort assets by their weight
         const Array weights = avgPayoff->weights();
@@ -152,15 +152,38 @@ namespace QuantLib {
 
         const detail::VectorBsmProcessExtractor pExtractor(processes_);
         const Array s = pExtractor.getSpot();
-        const Array dq = pExtractor.getDividendYield(maturityDate);
-        const Array v = pExtractor.getBlackVariance(maturityDate);
-        const DiscountFactor dr0 = pExtractor.getInterestRate(maturityDate);
+        const Array dq = pExtractor.getDividendYieldDf(maturityDate);
+        const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
 
-        const Array fwd = s*Exp(dq)/dr0;
-        const Array a = weights*fwd*Exp(-0.5*v)
-        const SumExponentialsRootSolver solver(a, Sqrt(v), );
+        const Array stdDev = pExtractor.getBlackStdDev(maturityDate);
+        const Array v = stdDev*stdDev;
 
 
+        const Array fwdBasket = weights * s * dq /dr0;
+
+        // first check if all vols are zero -> intrinsic case
+        if (std::all_of(
+                stdDev.begin(), stdDev.end(),
+                [](Real x) -> bool { return close_enough(x, 0.0); }
+            )) {
+            results_.value = dr0*payoff->operator()(
+                std::accumulate(fwdBasket.begin(), fwdBasket.end(), 0.0));
+        }
+        else {
+            const Real d = -cp * SumExponentialsRootSolver(
+                fwdBasket*Exp(-0.5*v), stdDev, strike)
+                    .getRoot(xTol_, SumExponentialsRootSolver::Halley);
+
+            const CumulativeNormalDistribution N;
+
+            results_.value = cp * dr0 *
+                std::inner_product(
+                    fwdBasket.begin(), fwdBasket.end(), stdDev.begin(),
+                    -strike*N(d),
+                    std::plus<>(),
+                    [d, cp, &N](Real x, Real y) -> Real { return x*N(d+cp*y); }
+                );
+        }
     }
 }
 

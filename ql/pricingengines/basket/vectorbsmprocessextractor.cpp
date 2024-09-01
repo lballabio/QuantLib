@@ -41,7 +41,7 @@ namespace QuantLib {
             return x;
         }
 
-        DiscountFactor VectorBsmProcessExtractor::getInterestRate(
+        DiscountFactor VectorBsmProcessExtractor::getInterestRateDf(
             const Date& maturityDate) const {
             const Array dr = extractProcesses(
                 [maturityDate](const auto& p) -> DiscountFactor {
@@ -64,7 +64,7 @@ namespace QuantLib {
             return extractProcesses([](const auto& p) -> Real { return p->x0(); });
         }
 
-        Array VectorBsmProcessExtractor::getDividendYield(
+        Array VectorBsmProcessExtractor::getDividendYieldDf(
             const Date& maturityDate) const {
             return extractProcesses(
                 [maturityDate](const auto& p) -> DiscountFactor {
@@ -80,6 +80,17 @@ namespace QuantLib {
                     return p->blackVolatility()->blackVariance(maturityDate, p->x0());
                 }
             );
+        }
+
+        Array VectorBsmProcessExtractor::getBlackStdDev(
+            const Date& maturityDate) const {
+            return extractProcesses(
+                [maturityDate](const auto& p) -> Volatility {
+                    const Time maturity = p->blackVolatility()->timeFromReference(maturityDate);
+                    return p->blackVolatility()->blackVol(maturityDate, p->x0())*std::sqrt(maturity);
+                }
+            );
+
         }
     }
 }
