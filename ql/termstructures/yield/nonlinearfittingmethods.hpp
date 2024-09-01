@@ -34,7 +34,7 @@ namespace QuantLib {
     //! Exponential-splines fitting method
     /*! Fits a discount function to the exponential form
         \f[
-        d(t) = \sum_{i=1}^9 c_i \exp^{-kappa i t}
+        d(t) = \sum_{i=1}^9 c_i e^{-\kappa_i t}
         \f]
         where the constants \f$ c_i \f$ and \f$ \kappa \f$ are to be
         determined.  See:Li, B., E. DeWetering, G. Lucas, R. Brenner
@@ -51,24 +51,26 @@ namespace QuantLib {
       public:
         ExponentialSplinesFitting(bool constrainAtZero = true,
                                   const Array& weights = Array(),
-                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                      ext::shared_ptr<OptimizationMethod>(),
+                                  const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                   const Array& l2 = Array(),
                                   Real minCutoffTime = 0.0,
                                   Real maxCutoffTime = QL_MAX_REAL,
                                   Size numCoeffs = 9,
-                                  Real fixedKappa = Null<Real>());
+                                  Real fixedKappa = Null<Real>(),
+                                  Constraint constraint = NoConstraint());
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
                                   Real minCutoffTime = 0.0,
                                   Real maxCutoffTime = QL_MAX_REAL,
                                   Size numCoeffs = 9,
-                                  Real fixedKappa = Null<Real>());
+                                  Real fixedKappa = Null<Real>(),
+                                  Constraint constraint = NoConstraint());
         ExponentialSplinesFitting(bool constrainAtZero, 
                                   Size numCoeffs, 
                                   Real fixedKappa, 
-                                  const Array& weights = Array() );
+                                  const Array& weights = Array(),
+                                  Constraint constraint = NoConstraint());
 
 
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
@@ -82,10 +84,10 @@ namespace QuantLib {
 
     //! Nelson-Siegel fitting method
     /*! Fits a discount function to the form
-        \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
+        \f$ d(t) = e^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_1 + c_2)*(1 - exp^{-\kappa*t})/(\kappa t) -
-        c_2 exp^{ - \kappa t}.
+        r \equiv c_0 + (c_1 + c_2) \left( \frac{1 - e^{-\kappa t}}{\kappa t} \right) -
+        c_2 e^{ - \kappa t}.
         \f]
         See: Nelson, C. and A. Siegel (1985): "Parsimonious modeling of yield
         curves for US Treasury bills." NBER Working Paper Series, no 1594.
@@ -94,15 +96,16 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         NelsonSiegelFitting(const Array& weights = Array(),
-                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                ext::shared_ptr<OptimizationMethod>(),
+                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                             const Array& l2 = Array(),
                             Real minCutoffTime = 0.0,
-                            Real maxCutoffTime = QL_MAX_REAL);
+                            Real maxCutoffTime = QL_MAX_REAL,
+                            Constraint constraint = NoConstraint());
         NelsonSiegelFitting(const Array& weights,
                             const Array& l2,
                             Real minCutoffTime = 0.0,
-                            Real maxCutoffTime = QL_MAX_REAL);
+                            Real maxCutoffTime = QL_MAX_REAL,
+                            Constraint constraint = NoConstraint());
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
       private:
         Size size() const override;
@@ -112,11 +115,11 @@ namespace QuantLib {
 
     //! Svensson Fitting method
     /*! Fits a discount function to the form
-        \f$ d(t) = \exp^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
+        \f$ d(t) = e^{-r t}, \f$ where the zero rate \f$r\f$ is defined as
         \f[
-        r \equiv c_0 + (c_0 + c_1)(\frac {1 - exp^{-\kappa t}}{\kappa t})
-        - c_2exp^{ - \kappa t}
-        + c_3{(\frac{1 - exp^{-\kappa_1 t}}{\kappa_1 t} -exp^{-\kappa_1 t})}.
+        r \equiv c_0 + (c_1 + c_2) \left( \frac {1 - e^{-\kappa t}}{\kappa t} \right)
+        - c_2 e^{ - \kappa t}
+        + c_3 \left( \frac{1 - e^{-\kappa_1 t}}{\kappa_1 t} -e^{-\kappa_1 t} \right).
         \f]
         See: Svensson, L. (1994). Estimating and interpreting forward
         interest rates: Sweden 1992-4.
@@ -126,15 +129,16 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         SvenssonFitting(const Array& weights = Array(),
-                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                            ext::shared_ptr<OptimizationMethod>(),
+                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                         const Array& l2 = Array(),
                         Real minCutoffTime = 0.0,
-                        Real maxCutoffTime = QL_MAX_REAL);
+                        Real maxCutoffTime = QL_MAX_REAL,
+                        Constraint constraint = NoConstraint());
         SvenssonFitting(const Array& weights,
                         const Array& l2,
                         Real minCutoffTime = 0.0,
-                        Real maxCutoffTime = QL_MAX_REAL);
+                        Real maxCutoffTime = QL_MAX_REAL,
+                        Constraint constraint = NoConstraint());
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
       private:
         Size size() const override;
@@ -146,7 +150,7 @@ namespace QuantLib {
     /*! Fits a discount function to a set of cubic B-splines
         \f$ N_{i,3}(t) \f$, i.e.,
         \f[
-        d(t) = \sum_{i=0}^{n}  c_i * N_{i,3}(t)
+        d(t) = \sum_{i=0}^{n}  c_i \times N_{i,3}(t)
         \f]
 
         See: McCulloch, J. 1971, "Measuring the Term Structure of
@@ -167,17 +171,18 @@ namespace QuantLib {
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero = true,
                              const Array& weights = Array(),
-                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                 ext::shared_ptr<OptimizationMethod>(),
+                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                              const Array& l2 = Array(),
                              Real minCutoffTime = 0.0,
-                             Real maxCutoffTime = QL_MAX_REAL);
+                             Real maxCutoffTime = QL_MAX_REAL,
+                             Constraint constraint = NoConstraint());
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero,
                              const Array& weights,
                              const Array& l2,
                              Real minCutoffTime = 0.0,
-                             Real maxCutoffTime = QL_MAX_REAL);
+                             Real maxCutoffTime = QL_MAX_REAL,
+                             Constraint constraint = NoConstraint());
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
@@ -192,9 +197,9 @@ namespace QuantLib {
 
 
     //! Simple polynomial fitting method
-    /*  Fits a discount function to the simple polynomial form:
+    /*! Fits a discount function to the simple polynomial form:
         \f[
-        d(t) = \sum_{i=0}^{degree}  c_i * t^{i}
+        d(t) = \sum_{i=0}^{degree} c_i t^{i}
         \f]
         where the constants \f$ c_i \f$ are to be determined.
 
@@ -207,17 +212,18 @@ namespace QuantLib {
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero = true,
                                 const Array& weights = Array(),
-                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                                    ext::shared_ptr<OptimizationMethod>(),
+                                const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                 const Array& l2 = Array(),
                                 Real minCutoffTime = 0.0,
-                                Real maxCutoffTime = QL_MAX_REAL);
+                                Real maxCutoffTime = QL_MAX_REAL,
+                                Constraint constraint = NoConstraint());
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero,
                                 const Array& weights,
                                 const Array& l2,
                                 Real minCutoffTime = 0.0,
-                                Real maxCutoffTime = QL_MAX_REAL);
+                                Real maxCutoffTime = QL_MAX_REAL,
+                                Constraint constraint = NoConstraint());
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
       private:
         Size size() const override;
@@ -227,7 +233,8 @@ namespace QuantLib {
 
 
     //! Spread fitting method helper
-    /*  Fits a spread curve on top of a discount function according to given parametric method
+    /*! Fits a spread curve on top of a discount function according
+        to the given parametric method
     */
     class SpreadFittingMethod
         : public FittedBondDiscountCurve::FittingMethod {

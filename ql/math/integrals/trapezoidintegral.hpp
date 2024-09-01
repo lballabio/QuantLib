@@ -82,7 +82,7 @@ namespace QuantLib {
 
     // Integration policies
     struct Default {
-        inline static Real integrate(const std::function<Real (Real)>& f, 
+        static Real integrate(const std::function<Real (Real)>& f, 
                                      Real a, 
                                      Real b, 
                                      Real I, 
@@ -95,11 +95,11 @@ namespace QuantLib {
                 sum += f(x);
             return (I + dx*sum)/2.0;
         }
-        inline static Size nbEvalutions(){ return 2;}
+        static Size nbEvalutions(){ return 2;}
     };
 
     struct MidPoint {
-        inline static Real integrate(const std::function<Real (Real)>& f,
+        static Real integrate(const std::function<Real (Real)>& f,
                                      Real a, 
                                      Real b, 
                                      Real I, 
@@ -113,7 +113,7 @@ namespace QuantLib {
                 sum += f(x) + f(x+D);
             return (I + dx*sum)/3.0;
         }
-        inline static Size nbEvalutions(){ return 3;}
+        static Size nbEvalutions(){ return 3;}
     };
 
 }

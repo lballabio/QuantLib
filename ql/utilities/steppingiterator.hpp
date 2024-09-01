@@ -61,8 +61,8 @@ namespace QuantLib {
 
         template <class OtherIterator>
         step_iterator(const step_iterator<OtherIterator>& i,
-                      std::enable_if_t<std::is_convertible
-                      <OtherIterator, Iterator>::value>* = nullptr)
+                      std::enable_if_t<std::is_convertible_v
+                      <OtherIterator, Iterator>>* = nullptr)
         : base_(i.base_), step_(static_cast<BigInteger>(i.step())) {}
 
         Size step() const { return static_cast<Size>(this->step_); }

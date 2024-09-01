@@ -329,7 +329,7 @@ namespace QuantLib {
 
 
     inline Real VariancePathPricer::operator()(const Path& path) const {
-        QL_REQUIRE(path.length() > 0, "the path cannot be empty");
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
         Time t0 = path.timeGrid().front();
         Time t = path.timeGrid().back();
         Time dt = path.timeGrid().dt(0);

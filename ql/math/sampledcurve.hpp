@@ -138,14 +138,14 @@ namespace QuantLib {
 
         QL_DEPRECATED_DISABLE_WARNING
         template <class T>
-        inline const SampledCurve& transform(T x) {
+        const SampledCurve& transform(T x) {
             std::transform(values_.begin(), values_.end(),
                            values_.begin(), x);
             return *this;
         }
 
         template <class T>
-        inline const SampledCurve& transformGrid(T x) {
+        const SampledCurve& transformGrid(T x) {
             std::transform(grid_.begin(), grid_.end(),
                            grid_.begin(), x);
             return *this;

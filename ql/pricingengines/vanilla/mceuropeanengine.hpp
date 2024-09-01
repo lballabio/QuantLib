@@ -252,7 +252,7 @@ namespace QuantLib {
     }
 
     inline Real EuropeanPathPricer::operator()(const Path& path) const {
-        QL_REQUIRE(path.length() > 0, "the path cannot be empty");
+        QL_REQUIRE(!path.empty(), "the path cannot be empty");
         return payoff_(path.back()) * discount_;
     }
 
