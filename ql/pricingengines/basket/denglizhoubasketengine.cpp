@@ -39,8 +39,8 @@ namespace QuantLib {
         QL_REQUIRE(n_ == rho_.size1() && rho_.size1() == rho_.size2(),
             "process and correlation matrix must have the same size.");
 
-        for (Size i=0; i < n_; ++i)
-            registerWith(processes_[i]);
+        std::for_each(processes_.begin(), processes_.end(),
+            [this](const auto& p) { registerWith(p); });
     }
 
     void DengLiZhouBasketEngine::calculate() const {
