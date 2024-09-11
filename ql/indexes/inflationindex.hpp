@@ -75,34 +75,27 @@ namespace QuantLib {
         //@{
         std::string name() const override;
 
-        /*! Inflation indices do not have fixing calendars.  An
-            inflation index value is valid for every day (including
-            weekends) of a calendar period.  I.e. it uses the
-            NullCalendar as its fixing calendar.
+        /*! Inflation indices are not associated to a particular day,
+            but to months or quarters.  Therefore, they do not have
+            fixing calendars.  Since we're forced by the base `Index`
+            interface to add one, this method returns a NullCalendar
+            instance.
         */
         Calendar fixingCalendar() const override;
         bool isValidFixingDate(const Date&) const override { return true; }
 
         /*! Forecasting index values requires an inflation term
-            structure.  The inflation term structure (ITS) defines the
-            usual lag (not the index).  I.e.  an ITS is always relatve
-            to a base date that is earlier than its asof date.  This
-            must be so because indices are available only with a lag.
-            However, the index availability lag only sets a minimum
-            lag for the ITS.  An ITS may be relative to an earlier
-            date, e.g. an index may have a 2-month delay in
-            publication but the inflation swaps may take as their base
-            the index 3 months before.
+            structure, with a base date that is earlier than its asof
+            date.  This must be so because indices are available only
+            with a lag.  Usually, it makes sense for the base date to
+            be the first day of the month of the last published
+            fixing.
         */
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override = 0;
 
         //! returns a past fixing at the given date
         Real pastFixing(const Date& fixingDate) const override = 0;
 
-        /*! this method creates all the "fixings" for the relevant
-            period of the index.  E.g. for monthly indices it will put
-            the same value in every calendar day in the month.
-        */
         void addFixing(const Date& fixingDate, Rate fixing, bool forceOverwrite = false) override;
         //@}
 
@@ -111,20 +104,13 @@ namespace QuantLib {
         std::string familyName() const;
         Region region() const;
         bool revised() const;
-        /*! Forecasting index values using an inflation term structure
-            uses the interpolation of the inflation term structure
-            unless interpolation is set to false.  In this case the
-            extrapolated values are constant within each period taking
-            the mid-period extrapolated value.
-        */
-
         Frequency frequency() const;
-        /*! The availability lag describes when the index is
-            <i>available</i>, not how it is used.  Specifically the
-            fixing for, say, January, may only be available in April
-            but the index will always return the index value
-            applicable for January as its January fixing (independent
-            of the lag in availability).
+        /*! The availability lag describes when the index might be
+            available; for instance, the inflation value for January
+            may only be available in April.  This doesn't mean that
+            that inflation value is considered as the April fixing; it
+            remains the January fixing, independently of the lag in
+            availability.
         */
         Period availabilityLag() const;
         Currency currency() const;
@@ -187,7 +173,7 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! Constructor for year-on-year indices defined as a ratio.
-        /*! An index build with this constructor doesn't need to store
+        /*! An index build with this constructor won't store
             past fixings of its own; they will be calculated as a
             ratio from the past fixings stored in the underlying index.
         */
@@ -227,9 +213,9 @@ namespace QuantLib {
          */
         Real pastFixing(const Date& fixingDate) const override;
         //@}
-        //! \name Other methods
+
+        //! \name Inspectors
         //@{
-        // Override the deprecation above
         bool interpolated() const;
         bool ratio() const;
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
@@ -239,7 +225,6 @@ namespace QuantLib {
         //@}
 
       protected:
-        // Override the deprecation above
         bool interpolated_;
 
       private:
