@@ -228,6 +228,7 @@ namespace QuantLib {
         bool interpolated_;
 
       private:
+        bool needsForecast(const Date& fixingDate) const;
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex_;
