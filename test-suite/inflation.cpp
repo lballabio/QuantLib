@@ -733,35 +733,47 @@ BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
 BOOST_AUTO_TEST_CASE(testZeroIndexFutureFixing) {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
+    // we create an index without a term structure, so
+    // it won't be able to forecast fixings
     EUHICP euhicp;
 
-    Date sample_date = Date(1,December,2013);
-    Real sample_fixing = 117.48;
-    euhicp.addFixing(sample_date, sample_fixing);
+    // let's say we're at some point in April 2024...
+    Settings::instance().evaluationDate() = {10, April, 2024};
 
-    // fixing date in the past
-    Date evaluationDate = euhicp.fixingCalendar().adjust(sample_date + 2*Weeks);
-    Settings::instance().evaluationDate() = evaluationDate;
-    Real fixing = euhicp.fixing(sample_date);
-    if (std::fabs(fixing - sample_fixing) > 1e-12)
+    // ..and the last available fixing is February 2024, we don't have March yet
+    euhicp.addFixing({1,December,2023}, 100.0);
+    euhicp.addFixing({1,January,2024}, 100.1);
+    euhicp.addFixing({1,February,2024}, 100.2);
+
+    // Asking for the February fixing works, it's stored
+    Real fixing = euhicp.fixing({1,February,2024});
+    Real expected = 100.2;
+    if (std::fabs(fixing - expected) > 1e-12)
         BOOST_ERROR("Failed to retrieve correct fixing: "
                     << "\n    returned: " << fixing
-                    << "\n    expected: " << sample_fixing);
+                    << "\n    expected: " << expected);
 
-    // fixing date in the future
-    evaluationDate = euhicp.fixingCalendar().adjust(sample_date - 2*Weeks);
-    Settings::instance().evaluationDate() = evaluationDate;
-    bool retrieved = false;
-    try {
-        fixing = euhicp.fixing(sample_date);
-        // the above should throw for lack of a forecast curve, so
-        // this shouldn't be executed and retrieved should stay false
-        retrieved = true;
-    } catch (Error&) {}
+    // Asking for the March fixing doesn't (because we can't forecast)
+    BOOST_CHECK_EXCEPTION(euhicp.fixing({1,March,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
 
-    if (retrieved)
-        BOOST_ERROR("Retrieved future fixing: "
-                    << "\n    returned: " << fixing);
+    // but it works once it gets published:
+    euhicp.addFixing({1,March,2024}, 100.3);
+    fixing = euhicp.fixing({1,March,2024});
+    expected = 100.3;
+    if (std::fabs(fixing - expected) > 1e-12)
+        BOOST_ERROR("Failed to retrieve correct fixing: "
+                    << "\n    returned: " << fixing
+                    << "\n    expected: " << expected);
+
+    // On the other hand, April would be forecast...
+    BOOST_CHECK_EXCEPTION(euhicp.fixing({1,April,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
+
+    // ...even if it's stored:
+    euhicp.addFixing({1,April,2024}, 100.4);
+    BOOST_CHECK_EXCEPTION(euhicp.fixing({1,April,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
 }
 
 BOOST_AUTO_TEST_CASE(testInterpolatedZeroTermStructure) {
@@ -838,6 +850,48 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndex) {
                     << yyukrpi.ratio() << ", "
                     << yyukrpi.availabilityLag() << ")");
     }
+}
+
+BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
+    BOOST_TEST_MESSAGE("Testing that quoted year-on-year inflation indices forecast future fixings...");
+
+    // we create indexes without a term structure, so
+    // they won't be able to forecast fixings
+    YYEUHICP quoted_flat(false);
+    YYEUHICP quoted_linear(true);
+
+    // let's say we're at some point in April 2024...
+    Settings::instance().evaluationDate() = {10, April, 2024};
+
+    // ..and the last available fixing is February 2024, we don't have March yet
+    quoted_flat.addFixing({1,December,2023}, 100.0);
+    quoted_flat.addFixing({1,January,2024}, 100.1);
+    quoted_flat.addFixing({1,February,2024}, 100.2);
+
+    // mid-January fixing: ok for both flat and interpolated
+    BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,January,2024}));
+    BOOST_CHECK_NO_THROW(quoted_linear.fixing({15,January,2024}));
+
+    // mid-February fixing: ok for flat, interpolated needs March
+    BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,February,2024}));
+    BOOST_CHECK_EXCEPTION(quoted_linear.fixing({15,February,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
+
+    // but February 1st works (special case, March would have null
+    // weight in the interpolation)
+    BOOST_CHECK_NO_THROW(quoted_linear.fixing({1,February,2024}));
+
+    // both ok after March is published:
+    quoted_flat.addFixing({1,March,2024}, 100.3);
+    BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,February,2024}));
+    BOOST_CHECK_NO_THROW(quoted_linear.fixing({15,February,2024}));
+
+    // April can't be available now, both fail even if it's stored:
+    quoted_flat.addFixing({1,April,2024}, 100.4);
+    BOOST_CHECK_EXCEPTION(quoted_flat.fixing({1,April,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
+    BOOST_CHECK_EXCEPTION(quoted_linear.fixing({1,April,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
 }
 
 BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
@@ -956,6 +1010,54 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
             }
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testRatioYYIndexFutureFixing) {
+    BOOST_TEST_MESSAGE("Testing that ratio year-on-year inflation indices forecast future fixings...");
+
+    // we create indexes without a term structure, so
+    // they won't be able to forecast fixings
+    auto euhicp = ext::make_shared<EUHICP>();
+    YoYInflationIndex ratio_flat(euhicp, false);
+    YoYInflationIndex ratio_linear(euhicp, true);
+
+    // let's say we're at some point in April 2024...
+    Settings::instance().evaluationDate() = {10, April, 2024};
+
+    // ..and the last available fixing is February 2024, we don't have March yet
+    euhicp->addFixing({1,December,2022}, 98.0);
+    euhicp->addFixing({1,January,2023}, 98.1);
+    euhicp->addFixing({1,February,2023}, 98.2);
+    euhicp->addFixing({1,March,2023}, 98.3);
+    // ...
+    euhicp->addFixing({1,December,2023}, 100.0);
+    euhicp->addFixing({1,January,2024}, 100.1);
+    euhicp->addFixing({1,February,2024}, 100.2);
+
+    // mid-January fixing: ok for both flat and interpolated
+    BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,January,2024}));
+    BOOST_CHECK_NO_THROW(ratio_linear.fixing({15,January,2024}));
+
+    // mid-February fixing: ok for flat, interpolated needs March
+    BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,February,2024}));
+    BOOST_CHECK_EXCEPTION(ratio_linear.fixing({15,February,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
+
+    // but February 1st works (special case, March would have null
+    // weight in the interpolation)
+    BOOST_CHECK_NO_THROW(ratio_linear.fixing({1,February,2024}));
+
+    // both ok after March is published:
+    euhicp->addFixing({1,March,2024}, 100.3);
+    BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,February,2024}));
+    BOOST_CHECK_NO_THROW(ratio_linear.fixing({15,February,2024}));
+
+    // April can't be available now, both fail even if it's stored:
+    euhicp->addFixing({1,April,2024}, 100.4);
+    BOOST_CHECK_EXCEPTION(ratio_flat.fixing({1,April,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
+    BOOST_CHECK_EXCEPTION(ratio_linear.fixing({1,April,2024}), Error,
+                          ExpectedErrorMessage("empty Handle"));
 }
 
 BOOST_AUTO_TEST_CASE(testYYTermStructure) {

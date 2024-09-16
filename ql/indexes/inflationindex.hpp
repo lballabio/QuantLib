@@ -148,7 +148,6 @@ namespace QuantLib {
                      the Index interface) is currently ignored.
         */
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
-        //! returns a past fixing at the given date
         Real pastFixing(const Date& fixingDate) const override;
         //@}
         //! \name Other methods
@@ -156,9 +155,9 @@ namespace QuantLib {
         Date lastFixingDate() const;
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
         ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
+        bool needsForecast(const Date& fixingDate) const;
         //@}
       private:
-        bool needsForecast(const Date& fixingDate) const;
         Real forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
@@ -205,16 +204,10 @@ namespace QuantLib {
                      the Index interface) is currently ignored.
         */
         Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
-
-        /*! returns a past fixing at the given date
-         *  \warning This is only supported for flat YOY indices providing their own timeseries
-         *           via the `addFixing` or `addFixings` method,
-         *           aka where ratio() == interpolated() == false.
-         */
         Real pastFixing(const Date& fixingDate) const override;
         //@}
 
-        //! \name Inspectors
+        //! \name Other methods
         //@{
         bool interpolated() const;
         bool ratio() const;
@@ -222,13 +215,13 @@ namespace QuantLib {
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
         ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
+        bool needsForecast(const Date& fixingDate) const;
         //@}
 
       protected:
         bool interpolated_;
 
       private:
-        bool needsForecast(const Date& fixingDate) const;
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex_;

@@ -139,27 +139,20 @@ namespace QuantLib {
 
     bool ZeroInflationIndex::needsForecast(const Date& fixingDate) const {
 
-        // Stored fixings are always non-interpolated.
-        // If an interpolated fixing is required then
-        // the availability lag + one inflation period
-        // must have passed to use historical fixings
-        // (because you need the next one to interpolate).
-        // The interpolation is calculated (linearly) on demand.
-
         Date today = Settings::instance().evaluationDate();
-        Date todayMinusLag = today - availabilityLag_;
 
-        Date historicalFixingKnown =
-            inflationPeriod(todayMinusLag, frequency_).first-1;
+        auto latestPossibleHistoricalFixingPeriod =
+            inflationPeriod(today - availabilityLag_, frequency_);
+
+        // Zero-index fixings are always non-interpolated.
         Date latestNeededDate = fixingDate;
 
-        if (latestNeededDate <= historicalFixingKnown) {
+        if (latestNeededDate < latestPossibleHistoricalFixingPeriod.first) {
             // the fixing date is well before the availability lag, so
-            // we know that fixings were provided.
+            // we know that fixings must be provided.
             return false;
-        } else if (latestNeededDate > today) {
-            // the fixing can't be available, no matter what's in the
-            // time series
+        } else if (latestNeededDate > latestPossibleHistoricalFixingPeriod.second) {
+            // the fixing can't be available yet
             return true;
         } else {
             // we're not sure, but the fixing might be there so we
@@ -233,14 +226,36 @@ namespace QuantLib {
 
     bool YoYInflationIndex::needsForecast(const Date& fixingDate) const {
         Date today = Settings::instance().evaluationDate();
-        auto [periodStart, periodEnd] = inflationPeriod(today - availabilityLag_, frequency_);
-        Date lastFix = periodStart-1;
 
-        Date flatMustForecastOn = lastFix+1;
-        Date interpMustForecastOn = lastFix+1 - Period(frequency_);
+        auto fixingPeriod = inflationPeriod(fixingDate, frequency_);
+        Date latestNeededDate;
+        if (!interpolated() || fixingDate == fixingPeriod.first)
+            latestNeededDate = fixingPeriod.first;
+        else
+            latestNeededDate = fixingPeriod.second + 1;
 
-        return (interpolated() && fixingDate >= interpMustForecastOn)
-            || (!interpolated() && fixingDate >= flatMustForecastOn);
+        if (ratio()) {
+            return underlyingIndex_->needsForecast(latestNeededDate);
+        } else {
+            auto latestPossibleHistoricalFixingPeriod =
+                inflationPeriod(today - availabilityLag_, frequency_);
+
+            if (latestNeededDate < latestPossibleHistoricalFixingPeriod.first) {
+                // the fixing date is well before the availability lag, so
+                // we know that fixings must be provided.
+                return false;
+            } else if (latestNeededDate > latestPossibleHistoricalFixingPeriod.second) {
+                // the fixing can't be available yet
+                return true;
+            } else {
+                // we're not sure, but the fixing might be there so we
+                // check.  Todo: check which fixings are not possible, to
+                // avoid using fixings in the future
+                Date first = Date(1, latestNeededDate.month(), latestNeededDate.year());
+                Real f = timeSeries()[first];
+                return (f == Null<Real>());
+            }
+        }
     }
 
     Real YoYInflationIndex::pastFixing(const Date& fixingDate) const {
