@@ -262,7 +262,11 @@ namespace QuantLib {
             QL_REQUIRE(YY0 != Null<Rate>(),
                        "Missing " << name() << " fixing for " << periodStart);
 
-            if (interpolated()) { // NOT ratio, IS interpolated
+            if (!interpolated() || /* degenerate case */ fixingDate == periodStart) {
+
+                return YY0;
+
+            } else {
 
                 Real dp = periodEnd + 1 - periodStart;
                 Real dl = fixingDate - periodStart;
@@ -270,10 +274,6 @@ namespace QuantLib {
                 QL_REQUIRE(YY1 != Null<Rate>(),
                            "Missing " << name() << " fixing for " << periodEnd+1);
                 return YY0 + (YY1 - YY0) * dl / dp;
-
-            } else { // NOT ratio, NOT interpolated
-
-                return YY0;
 
             }
         }
