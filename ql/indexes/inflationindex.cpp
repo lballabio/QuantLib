@@ -145,7 +145,8 @@ namespace QuantLib {
             inflationPeriod(today - availabilityLag_, frequency_);
 
         // Zero-index fixings are always non-interpolated.
-        Date latestNeededDate = fixingDate;
+        auto fixingPeriod = inflationPeriod(fixingDate, frequency_);
+        Date latestNeededDate = fixingPeriod.first;
 
         if (latestNeededDate < latestPossibleHistoricalFixingPeriod.first) {
             // the fixing date is well before the availability lag, so
@@ -155,11 +156,8 @@ namespace QuantLib {
             // the fixing can't be available yet
             return true;
         } else {
-            // we're not sure, but the fixing might be there so we
-            // check.  Todo: check which fixings are not possible, to
-            // avoid using fixings in the future
-            Date first = Date(1, latestNeededDate.month(), latestNeededDate.year());
-            Real f = timeSeries()[first];
+            // we're not sure, but the fixing might be there so we check.
+            Real f = timeSeries()[latestNeededDate];
             return (f == Null<Real>());
         }
     }
@@ -248,11 +246,8 @@ namespace QuantLib {
                 // the fixing can't be available yet
                 return true;
             } else {
-                // we're not sure, but the fixing might be there so we
-                // check.  Todo: check which fixings are not possible, to
-                // avoid using fixings in the future
-                Date first = Date(1, latestNeededDate.month(), latestNeededDate.year());
-                Real f = timeSeries()[first];
+                // we're not sure, but the fixing might be there so we check.
+                Real f = timeSeries()[latestNeededDate];
                 return (f == Null<Real>());
             }
         }
