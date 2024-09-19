@@ -31,9 +31,7 @@ namespace QuantLib {
                            CPI::InterpolationType interpolationType) {
 
         switch (interpolationType) {
-          case AsIndex: {
-              return index->fixing(date - observationLag);
-          }
+          case AsIndex:
           case Flat: {
               auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
               return index->fixing(fixingPeriod.first);
