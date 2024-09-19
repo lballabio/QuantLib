@@ -210,7 +210,7 @@ struct CommonVars {
         std::vector<Rate> gearingVector(length, gearing);
         std::vector<Spread> spreadVector(length, spread);
 
-        Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag)
+        Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag, CPI::Flat)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
@@ -285,7 +285,7 @@ struct CommonVars {
                           Unadjusted,Unadjusted,// ref periods & acc periods
                           DateGeneration::Forward, false);
 
-        Leg yoyLeg =  yoyInflationLeg(schedule, calendar, ii, observationLag)
+        Leg yoyLeg =  yoyInflationLeg(schedule, calendar, ii, observationLag, CPI::Flat)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withPaymentAdjustment(convention)
@@ -725,6 +725,7 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
                                                  yoySchedule,
                                                  vars.iir,
                                                  vars.observationLag,
+                                                 CPI::Flat,
                                                  0.0,        //spread on index
                                                  vars.dc,
                                                  UnitedKingdom());

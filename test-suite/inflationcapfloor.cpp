@@ -195,7 +195,7 @@ struct CommonVars {
         Schedule schedule(startDate, endDate, Period(frequency), calendar,
                           Unadjusted,Unadjusted,// ref periods & acc periods
                           DateGeneration::Forward, false);
-        return yoyInflationLeg(schedule, calendar, ii, observationLag)
+        return yoyInflationLeg(schedule, calendar, ii, observationLag, CPI::Flat)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withPaymentAdjustment(convention);
@@ -424,7 +424,7 @@ BOOST_AUTO_TEST_CASE(testParity) {
                     YearOnYearInflationSwap swap(Swap::Payer, 1000000.0,
                                                  yoySchedule, // fixed schedule, but same as yoy
                                                  strike, vars.dc, yoySchedule, vars.iir,
-                                                 vars.observationLag,
+                                                 vars.observationLag, CPI::Flat,
                                                  0.0, // spread on index
                                                  vars.dc, UnitedKingdom());
 

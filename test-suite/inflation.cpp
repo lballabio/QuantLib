@@ -1164,6 +1164,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1200,6 +1201,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1320,6 +1322,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1356,6 +1359,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());

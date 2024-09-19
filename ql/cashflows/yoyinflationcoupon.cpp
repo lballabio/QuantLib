@@ -28,21 +28,39 @@ namespace QuantLib {
 
     YoYInflationCoupon::
     YoYInflationCoupon(const Date& paymentDate,
-                   Real nominal,
-                   const Date& startDate,
-                   const Date& endDate,
-                   Natural fixingDays,
-                   const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
-                   const Period& observationLag,
-                   const DayCounter& dayCounter,
-                   Real gearing,
-                   Spread spread,
-                   const Date& refPeriodStart,
-                   const Date& refPeriodEnd)
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
+                       const Period& observationLag,
+                       CPI::InterpolationType interpolation,
+                       const DayCounter& dayCounter,
+                       Real gearing,
+                       Spread spread,
+                       const Date& refPeriodStart,
+                       const Date& refPeriodEnd)
     : InflationCoupon(paymentDate, nominal, startDate, endDate,
-                  fixingDays, yoyIndex, observationLag,
-                  dayCounter, refPeriodStart, refPeriodEnd),
-    yoyIndex_(yoyIndex), gearing_(gearing), spread_(spread) {}
+                      fixingDays, yoyIndex, observationLag,
+                      dayCounter, refPeriodStart, refPeriodEnd),
+      yoyIndex_(yoyIndex), interpolation_(interpolation), gearing_(gearing), spread_(spread) {}
+
+    YoYInflationCoupon::
+    YoYInflationCoupon(const Date& paymentDate,
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
+                       const Period& observationLag,
+                       const DayCounter& dayCounter,
+                       Real gearing,
+                       Spread spread,
+                       const Date& refPeriodStart,
+                       const Date& refPeriodEnd)
+    : YoYInflationCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDays, yoyIndex, observationLag, CPI::AsIndex,
+                         dayCounter, gearing, spread, refPeriodStart, refPeriodEnd) {}
 
 
     void YoYInflationCoupon::accept(AcyclicVisitor& v) {
@@ -60,16 +78,23 @@ namespace QuantLib {
     }
 
     Rate YoYInflationCoupon::indexFixing() const {
-        return CPI::laggedYoYRate(yoyIndex(), accrualEndDate(), observationLag(), CPI::AsIndex);
+        return CPI::laggedYoYRate(yoyIndex(), accrualEndDate(), observationLag(), interpolation_);
     }
 
 
     yoyInflationLeg::yoyInflationLeg(Schedule schedule,
                                      Calendar paymentCalendar,
                                      ext::shared_ptr<YoYInflationIndex> index,
-                                     const Period& observationLag)
+                                     const Period& observationLag,
+                                     CPI::InterpolationType interpolation)
     : schedule_(std::move(schedule)), index_(std::move(index)), observationLag_(observationLag),
-      paymentCalendar_(std::move(paymentCalendar)) {}
+      interpolation_(interpolation), paymentCalendar_(std::move(paymentCalendar)) {}
+
+    yoyInflationLeg::yoyInflationLeg(Schedule schedule,
+                                     Calendar paymentCalendar,
+                                     ext::shared_ptr<YoYInflationIndex> index,
+                                     const Period& observationLag)
+    : yoyInflationLeg(schedule, paymentCalendar, index, observationLag, CPI::AsIndex) {}
 
 
     yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {
@@ -199,6 +224,7 @@ namespace QuantLib {
                             detail::get(fixingDays_, i, 0),
                             index_,
                             observationLag_,
+                            interpolation_,
                             paymentDayCounter_,
                             detail::get(gearings_, i, 1.0),
                             detail::get(spreads_, i, 0.0),
@@ -211,6 +237,7 @@ namespace QuantLib {
                             detail::get(fixingDays_, i, 0),
                             index_,
                             observationLag_,
+                            interpolation_,
                             paymentDayCounter_,
                             detail::get(gearings_, i, 1.0),
                             detail::get(spreads_, i, 0.0),
