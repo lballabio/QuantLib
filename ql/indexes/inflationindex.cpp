@@ -42,20 +42,75 @@ namespace QuantLib {
               auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
               auto interpolationPeriod = inflationPeriod(date, index->frequency());
 
+              auto I0 = index->fixing(fixingPeriod.first);
+
               if (date == interpolationPeriod.first) {
                   // special case; no interpolation.  This avoids asking for
                   // the fixing at the end of the period, which might need a
                   // forecast curve to be set.
-                  return index->fixing(fixingPeriod.first);
+                  return I0;
               }
 
               static const auto oneDay = Period(1, Days);
 
-              auto I0 = index->fixing(fixingPeriod.first);
               auto I1 = index->fixing(fixingPeriod.second + oneDay);
 
               return I0 + (I1 - I0) * (date - interpolationPeriod.first) /
                   (Real)((interpolationPeriod.second + oneDay) - interpolationPeriod.first);
+          }
+          default:
+            QL_FAIL("unknown CPI interpolation type: " << int(interpolationType));
+        }
+    }
+
+
+    Real CPI::laggedYoYRate(const ext::shared_ptr<YoYInflationIndex>& index,
+                            const Date& date,
+                            const Period& observationLag,
+                            CPI::InterpolationType interpolationType) {
+
+        switch (interpolationType) {
+          case AsIndex: {
+              return index->fixing(date - observationLag);
+          }
+          case Flat: {
+              auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
+              return index->fixing(fixingPeriod.first);
+          }
+          case Linear: {
+              if (index->ratio() && !index->needsForecast(date)) {
+                  // in the case of a ratio, the convention seems to be to interpolate
+                  // the underlying index fixings first, then take the ratio.  This is
+                  // not the same as taking the ratios and then interpolate, which is
+                  // equivalent to what the else clause does.
+                  // However, we can only do this if the fixings we need are in the past,
+                  // because forecasts need to be done through the YoY forecast curve,
+                  // and not the underlying index.
+
+                  auto underlying = index->underlyingIndex();
+                  Rate Z1 = CPI::laggedFixing(underlying, date, observationLag, interpolationType);
+                  Rate Z0 = CPI::laggedFixing(underlying, date - 1*Years, observationLag, interpolationType);
+
+                  return Z1/Z0 - 1.0;
+
+              } else {
+                  static const auto oneDay = Period(1, Days);
+
+                  auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
+                  auto interpolationPeriod = inflationPeriod(date, index->frequency());
+
+                  auto Y0 = index->fixing(fixingPeriod.first);
+
+                  if (date == interpolationPeriod.first) {
+                      // special case; no interpolation anyway.
+                      return Y0;
+                  }
+
+                  auto Y1 = index->fixing(fixingPeriod.second + oneDay);
+
+                  return Y0 + (Y1 - Y0) * (date - interpolationPeriod.first) /
+                      (Real)((interpolationPeriod.second + oneDay) - interpolationPeriod.first);
+              }
           }
           default:
             QL_FAIL("unknown CPI interpolation type: " << int(interpolationType));

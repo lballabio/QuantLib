@@ -34,8 +34,10 @@
 namespace QuantLib {
 
     class ZeroInflationIndex;
+    class YoYInflationIndex;
 
     struct CPI {
+
         //! when you observe an index, how do you interpolate between fixings?
         enum InterpolationType {
             AsIndex, //!< same interpolation as index
@@ -58,6 +60,23 @@ namespace QuantLib {
                                  const Date& date,
                                  const Period& observationLag,
                                  InterpolationType interpolationType);
+
+
+        //! interpolated year-on-year inflation rate
+        /*! \param index              The index whose fixing should be retrieved
+            \param date               The date without lag; usually, the payment
+                                      date for some inflation-based coupon.
+            \param observationLag     The observation lag to be subtracted from the
+                                      passed date; for instance, if the passed date is
+                                      in May and the lag is three months, the year-on-year
+                                      rate from February (and March, in case of
+                                      interpolation) will be observed.
+            \param interpolationType  The interpolation type (flat or linear)
+        */
+        static Real laggedYoYRate(const ext::shared_ptr<YoYInflationIndex>& index,
+                                  const Date& date,
+                                  const Period& observationLag,
+                                  InterpolationType interpolationType);
     };
 
 
