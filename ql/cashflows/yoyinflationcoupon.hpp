@@ -55,11 +55,13 @@ namespace QuantLib {
         //! spread paid over the fixing of the underlying index
         Spread spread() const { return spread_; }
 
+        Rate indexFixing() const override;
+
         Rate adjustedFixing() const;
 
         const ext::shared_ptr<YoYInflationIndex>& yoyIndex() const;
-
         //@}
+
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;

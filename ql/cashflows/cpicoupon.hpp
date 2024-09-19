@@ -191,8 +191,6 @@ namespace QuantLib {
 
         Real indexFixing() const override;
 
-        Real amount() const override;
-
       protected:
         Real baseFixing_;
         Date observationDate_;

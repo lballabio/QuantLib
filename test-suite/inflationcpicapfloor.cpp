@@ -401,8 +401,8 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
     Calendar fixCalendar = UnitedKingdom(), payCalendar = UnitedKingdom();
     BusinessDayConvention fixConvention(Unadjusted), payConvention(ModifiedFollowing);
     Rate strike(0.03);
-    Real baseCPI = common.ii->fixing(fixCalendar.adjust(startDate-common.observationLag,fixConvention));
     CPI::InterpolationType observationInterpolation = CPI::AsIndex;
+    Real baseCPI = CPI::laggedFixing(common.ii, startDate, common.observationLag, observationInterpolation);
     CPICapFloor aCap(Option::Call,
                      nominal,
                      startDate,   // start date of contract (only)
