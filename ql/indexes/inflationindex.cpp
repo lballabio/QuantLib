@@ -377,4 +377,23 @@ namespace QuantLib {
         }
     }
 
+    CPI::InterpolationType
+    detail::CPI::effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type,
+                                            const ext::shared_ptr<YoYInflationIndex>& index) {
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
+        } else {
+            return type;
+        }
+    }
+
+    bool detail::CPI::isInterpolated(const QuantLib::CPI::InterpolationType& type) {
+        return detail::CPI::effectiveInterpolationType(type) == QuantLib::CPI::Linear;
+    }
+
+    bool detail::CPI::isInterpolated(const QuantLib::CPI::InterpolationType& type,
+                                     const ext::shared_ptr<YoYInflationIndex>& index) {
+        return detail::CPI::effectiveInterpolationType(type, index) == QuantLib::CPI::Linear;
+    }
+
 }

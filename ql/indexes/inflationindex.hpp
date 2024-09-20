@@ -249,16 +249,24 @@ namespace QuantLib {
 
 
     namespace detail::CPI {
-            // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
-            // CPI::InterpolationType.
-            QuantLib::CPI::InterpolationType effectiveInterpolationType(
-                const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
 
+        // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
+        // CPI::InterpolationType.
+        QuantLib::CPI::InterpolationType
+        effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type);
 
-            // checks whether the combination of index and CPI::InterpolationType results
-            // effectively in CPI::Linear
-            bool isInterpolated(const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
-        }
+        QuantLib::CPI::InterpolationType
+        effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type,
+                                   const ext::shared_ptr<YoYInflationIndex>& index);
+
+        // checks whether the combination of index and CPI::InterpolationType results
+        // effectively in CPI::Linear
+        bool isInterpolated(const QuantLib::CPI::InterpolationType& type);
+
+        bool isInterpolated(const QuantLib::CPI::InterpolationType& type,
+                            const ext::shared_ptr<YoYInflationIndex>& index);
+
+    }
 
 
     // inline
@@ -311,10 +319,6 @@ namespace QuantLib {
     inline Handle<YoYInflationTermStructure>
     YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
-    }
-
-    inline bool detail::CPI::isInterpolated(const QuantLib::CPI::InterpolationType& type) {
-        return detail::CPI::effectiveInterpolationType(type) == QuantLib::CPI::Linear;
     }
 
 }

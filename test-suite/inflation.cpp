@@ -1121,7 +1121,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     // now build the helpers ...
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, iir,
+            quote, observationLag, maturity, calendar, bdc, dc, iir, CPI::AsIndex,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
@@ -1278,7 +1278,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
     // now build the helpers ...
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, iir,
+            quote, observationLag, maturity, calendar, bdc, dc, iir, CPI::AsIndex,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
