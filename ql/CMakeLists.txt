@@ -1486,6 +1486,7 @@ set(QL_HEADERS
     math/matrixutilities/expm.hpp
     math/matrixutilities/getcovariance.hpp
     math/matrixutilities/gmres.hpp
+    math/matrixutilities/householder.hpp    
     math/matrixutilities/pseudosqrt.hpp
     math/matrixutilities/qrdecomposition.hpp
     math/matrixutilities/sparseilupreconditioner.hpp
