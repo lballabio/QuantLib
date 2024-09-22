@@ -36,8 +36,23 @@ namespace QuantLib {
         : public BootstrapHelper<YoYOptionletVolatilitySurface> {
       public:
         YoYOptionletHelper(const Handle<Quote>& price,
-                           Real notional, // get the price level right
-                                          // (e.g. bps = 10,000)
+                           Real notional, // get the price level right, e.g., bps = 10,000
+                           YoYInflationCapFloor::Type capFloorType,
+                           Period& lag,
+                           DayCounter yoyDayCounter,
+                           Calendar paymentCalendar,
+                           Natural fixingDays,
+                           ext::shared_ptr<YoYInflationIndex> index,
+                           CPI::InterpolationType interpolation,
+                           Rate strike,
+                           Size n,
+                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer);
+        /*! \deprecated Use the overload that passes an interpolation type instead.
+                        Deprecated in version 1.36.
+        */
+        [[deprecated("Use the overload that passes an interpolation type instead")]]
+        YoYOptionletHelper(const Handle<Quote>& price,
+                           Real notional,
                            YoYInflationCapFloor::Type capFloorType,
                            Period& lag,
                            DayCounter yoyDayCounter,
@@ -55,8 +70,7 @@ namespace QuantLib {
         YoYInflationCapFloor::Type capFloorType_;
         Period lag_;
         Natural fixingDays_;
-        ext::shared_ptr<YoYInflationIndex> index_;  // VERY important - has
-                                                      // nominal & yoy curves
+        ext::shared_ptr<YoYInflationIndex> index_;
         Rate strike_;
         Size n_;  // how many payments
         DayCounter yoyDayCounter_;

@@ -26,12 +26,12 @@
 #define quantlib_yyiis_hpp
 
 #include <ql/instruments/swap.hpp>
+#include <ql/indexes/inflationindex.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
-    class YoYInflationIndex;
 
     //! Year-on-year inflation-indexed swap
     /*! Quoted as a fixed rate \f$ K \f$.  At start:
@@ -49,6 +49,24 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
+        YearOnYearInflationSwap(
+            Type type,
+            Real nominal,
+            Schedule fixedSchedule,
+            Rate fixedRate,
+            DayCounter fixedDayCount,
+            Schedule yoySchedule,
+            ext::shared_ptr<YoYInflationIndex> yoyIndex,
+            const Period& observationLag,
+            CPI::InterpolationType interpolation,
+            Spread spread,
+            DayCounter yoyDayCount,
+            Calendar paymentCalendar, // inflation index does not have a calendar
+            BusinessDayConvention paymentConvention = ModifiedFollowing);
+        /*! \deprecated Use the overload that passes an interpolation type instead.
+                        Deprecated in version 1.36.
+        */
+        [[deprecated("Use the overload that passes an interpolation type instead")]]
         YearOnYearInflationSwap(
             Type type,
             Real nominal,
@@ -142,7 +160,7 @@ namespace QuantLib {
     };
 
     class YearOnYearInflationSwap::engine : public GenericEngine<YearOnYearInflationSwap::arguments,
-    YearOnYearInflationSwap::results> {};
+                                                                 YearOnYearInflationSwap::results> {};
 
 
     // inline definitions

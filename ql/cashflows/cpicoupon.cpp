@@ -166,33 +166,14 @@ namespace QuantLib {
     }
 
     Real CPICashFlow::baseFixing() const {
-        return baseFixing_;
+        if (baseFixing_ != Null<Rate>())
+            return baseFixing_;
+        else
+            return CPI::laggedFixing(cpiIndex(), baseDate(), 0 * Months, interpolation_);
     }
 
     Real CPICashFlow::indexFixing() const {
-        if (observationDate_ != Date()) {
-            return CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
-        } else {
-            // we get to this branch when the deprecated constructor was used; it will be phased out
-            return CPI::laggedFixing(cpiIndex(), fixingDate() + observationLag_, observationLag_,
-                                     interpolation_);
-        }
-    }
-
-    Real CPICashFlow::amount() const {
-        Rate I0 = baseFixing();
-
-        // If BaseFixing is null, use the observed index fixing
-        if (I0 == Null<Rate>()) {
-            I0 = IndexedCashFlow::baseFixing();
-        }
-
-        Rate I1 = indexFixing();
-
-        if (growthOnly())
-            return notional() * (I1 / I0 - 1.0);
-        else
-            return notional() * (I1 / I0);
+        return CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
     }
 
     CPILeg::CPILeg(Schedule schedule,

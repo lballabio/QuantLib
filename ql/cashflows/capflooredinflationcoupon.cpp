@@ -64,6 +64,7 @@ namespace QuantLib {
                          underlying->fixingDays(),
                          underlying->yoyIndex(),
                          underlying->observationLag(),
+                         underlying->interpolation(),
                          underlying->dayCounter(),
                          underlying->gearing(),
                          underlying->spread(),

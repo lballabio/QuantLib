@@ -34,8 +34,10 @@
 namespace QuantLib {
 
     class ZeroInflationIndex;
+    class YoYInflationIndex;
 
     struct CPI {
+
         //! when you observe an index, how do you interpolate between fixings?
         enum InterpolationType {
             AsIndex, //!< same interpolation as index
@@ -58,6 +60,23 @@ namespace QuantLib {
                                  const Date& date,
                                  const Period& observationLag,
                                  InterpolationType interpolationType);
+
+
+        //! interpolated year-on-year inflation rate
+        /*! \param index              The index whose fixing should be retrieved
+            \param date               The date without lag; usually, the payment
+                                      date for some inflation-based coupon.
+            \param observationLag     The observation lag to be subtracted from the
+                                      passed date; for instance, if the passed date is
+                                      in May and the lag is three months, the year-on-year
+                                      rate from February (and March, in case of
+                                      interpolation) will be observed.
+            \param interpolationType  The interpolation type (flat or linear)
+        */
+        static Real laggedYoYRate(const ext::shared_ptr<YoYInflationIndex>& index,
+                                  const Date& date,
+                                  const Period& observationLag,
+                                  InterpolationType interpolationType);
     };
 
 
@@ -230,16 +249,24 @@ namespace QuantLib {
 
 
     namespace detail::CPI {
-            // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
-            // CPI::InterpolationType.
-            QuantLib::CPI::InterpolationType effectiveInterpolationType(
-                const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
 
+        // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
+        // CPI::InterpolationType.
+        QuantLib::CPI::InterpolationType
+        effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type);
 
-            // checks whether the combination of index and CPI::InterpolationType results
-            // effectively in CPI::Linear
-            bool isInterpolated(const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
-        }
+        QuantLib::CPI::InterpolationType
+        effectiveInterpolationType(const QuantLib::CPI::InterpolationType& type,
+                                   const ext::shared_ptr<YoYInflationIndex>& index);
+
+        // checks whether the combination of index and CPI::InterpolationType results
+        // effectively in CPI::Linear
+        bool isInterpolated(const QuantLib::CPI::InterpolationType& type);
+
+        bool isInterpolated(const QuantLib::CPI::InterpolationType& type,
+                            const ext::shared_ptr<YoYInflationIndex>& index);
+
+    }
 
 
     // inline
@@ -292,10 +319,6 @@ namespace QuantLib {
     inline Handle<YoYInflationTermStructure>
     YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
-    }
-
-    inline bool detail::CPI::isInterpolated(const QuantLib::CPI::InterpolationType& type) {
-        return detail::CPI::effectiveInterpolationType(type) == QuantLib::CPI::Linear;
     }
 
 }

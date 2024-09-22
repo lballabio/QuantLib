@@ -1121,7 +1121,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     // now build the helpers ...
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, iir,
+            quote, observationLag, maturity, calendar, bdc, dc, iir, CPI::AsIndex,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
@@ -1164,6 +1164,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1200,6 +1201,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1276,7 +1278,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
     // now build the helpers ...
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<YearOnYearInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, iir,
+            quote, observationLag, maturity, calendar, bdc, dc, iir, CPI::AsIndex,
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
@@ -1320,6 +1322,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1356,6 +1359,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
                                      yoySchedule,
                                      iir,
                                      observationLag,
+                                     CPI::Flat,
                                      0.0,        //spread on index
                                      dc,
                                      UnitedKingdom());
@@ -1448,7 +1452,7 @@ BOOST_AUTO_TEST_CASE(testPeriod) {
 }
 
 BOOST_AUTO_TEST_CASE(testCpiFlatInterpolation) {
-    BOOST_TEST_MESSAGE("Testing CPI flat interpolation...");
+    BOOST_TEST_MESSAGE("Testing CPI flat interpolation for inflation fixings...");
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
@@ -1463,30 +1467,21 @@ BOOST_AUTO_TEST_CASE(testCpiFlatInterpolation) {
     Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Flat);
     Real expected = 293.5;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 
     calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::Flat);
     expected = 296.0;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 
     calculated = CPI::laggedFixing(testIndex, Date(25, June, 2021), 3 * Months, CPI::Flat);
     expected = 296.9;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testCpiLinearInterpolation) {
-    BOOST_TEST_MESSAGE("Testing CPI linear interpolation...");
+    BOOST_TEST_MESSAGE("Testing CPI linear interpolation for inflation fixings...");
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
@@ -1501,18 +1496,12 @@ BOOST_AUTO_TEST_CASE(testCpiLinearInterpolation) {
     Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Linear);
     Real expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 
     calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::Linear);
     expected = 296.0 * (20/31.0) + 296.9 * (11/31.0);
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 
     // this would require April's fixing
     BOOST_CHECK_THROW(
@@ -1523,14 +1512,11 @@ BOOST_AUTO_TEST_CASE(testCpiLinearInterpolation) {
     calculated = CPI::laggedFixing(testIndex, Date(1, June, 2021), 3 * Months, CPI::Linear);
     expected = 296.9;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testCpiAsIndexInterpolation) {
-    BOOST_TEST_MESSAGE("Testing CPI as-index interpolation...");
+    BOOST_TEST_MESSAGE("Testing CPI as-index interpolation for inflation fixings...");
 
     Date today = Date(10, February, 2022);
     Settings::instance().evaluationDate() = today;
@@ -1551,27 +1537,209 @@ BOOST_AUTO_TEST_CASE(testCpiAsIndexInterpolation) {
     Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::AsIndex);
     Real expected = 293.5;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 
     calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::AsIndex);
     expected = 296.0;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 
     calculated = CPI::laggedFixing(testIndex, Date(25, June, 2021), 3 * Months, CPI::AsIndex);
     expected = 296.9;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
 }
+
+BOOST_AUTO_TEST_CASE(testCpiYoYQuotedFlatInterpolation) {
+    BOOST_TEST_MESSAGE("Testing CPI flat interpolation for year-on-year quoted rates...");
+
+    Settings::instance().evaluationDate() = Date(10, February, 2022);
+
+    auto testIndex1 = ext::make_shared<YYUKRPI>(false);
+    auto testIndex2 = ext::make_shared<YYUKRPI>(true);
+
+    testIndex1->addFixing(Date(1, November, 2020), 0.02935);
+    testIndex1->addFixing(Date(1, December, 2020), 0.02954);
+    testIndex1->addFixing(Date(1, January,  2021), 0.02946);
+    testIndex1->addFixing(Date(1, February, 2021), 0.02960);
+    testIndex1->addFixing(Date(1, March,    2021), 0.02969);
+
+    Real calculated = CPI::laggedYoYRate(testIndex1, Date(10, February, 2021), 3 * Months, CPI::Flat);
+    Real expected = 0.02935;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    // same expected flat fixing for interpolated and not interpolated
+    calculated = CPI::laggedYoYRate(testIndex2, Date(10, February, 2021), 3 * Months, CPI::Flat);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex1, Date(25, June, 2021), 3 * Months, CPI::Flat);
+    expected = 0.02969;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(25, June, 2021), 3 * Months, CPI::Flat);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testCpiYoYQuotedLinearInterpolation) {
+    BOOST_TEST_MESSAGE("Testing CPI linear interpolation for year-on-year quoted rates...");
+
+    Settings::instance().evaluationDate() = Date(10, February, 2022);
+
+    auto testIndex1 = ext::make_shared<YYUKRPI>(false);
+    auto testIndex2 = ext::make_shared<YYUKRPI>(true);
+
+    testIndex1->addFixing(Date(1, November, 2020), 0.02935);
+    testIndex1->addFixing(Date(1, December, 2020), 0.02954);
+    testIndex1->addFixing(Date(1, January,  2021), 0.02946);
+    testIndex1->addFixing(Date(1, February, 2021), 0.02960);
+    testIndex1->addFixing(Date(1, March,    2021), 0.02969);
+
+    Real calculated = CPI::laggedYoYRate(testIndex1, Date(10, February, 2021), 3 * Months, CPI::Linear);
+    Real expected = 0.02935 * (19/28.0) + 0.02954 * (9/28.0);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(10, February, 2021), 3 * Months, CPI::Linear);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex1, Date(12, May, 2021), 3 * Months, CPI::Linear);
+    expected = 0.02960 * (20/31.0) + 0.02969 * (11/31.0);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(12, May, 2021), 3 * Months, CPI::Linear);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    // this would require April's fixing
+    BOOST_CHECK_EXCEPTION(
+        CPI::laggedYoYRate(testIndex1, Date(25, June, 2021), 3 * Months, CPI::Linear),
+        Error, ExpectedErrorMessage("Missing UK YY_RPI fixing"));
+
+    BOOST_CHECK_EXCEPTION(
+        CPI::laggedYoYRate(testIndex2, Date(25, June, 2021), 3 * Months, CPI::Linear),
+        Error, ExpectedErrorMessage("Missing UK YY_RPI fixing"));
+
+    // however, this is a special case
+    calculated = CPI::laggedYoYRate(testIndex1, Date(1, June, 2021), 3 * Months, CPI::Linear);
+    expected = 0.02969;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(1, June, 2021), 3 * Months, CPI::Linear);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+}
+
+
+BOOST_AUTO_TEST_CASE(testCpiYoYRatioFlatInterpolation) {
+    BOOST_TEST_MESSAGE("Testing CPI flat interpolation for year-on-year ratios...");
+
+    Settings::instance().evaluationDate() = Date(10, February, 2022);
+
+    auto underlying = ext::make_shared<UKRPI>();
+
+    auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying, false);
+    auto testIndex2 = ext::make_shared<YoYInflationIndex>(underlying, true);
+
+    underlying->addFixing(Date(1, November, 2019), 291.0);
+    underlying->addFixing(Date(1, December, 2019), 291.9);
+    underlying->addFixing(Date(1, January,  2020), 290.6);
+    underlying->addFixing(Date(1, February, 2020), 292.0);
+    underlying->addFixing(Date(1, March,    2020), 292.6);
+
+    underlying->addFixing(Date(1, November, 2020), 293.5);
+    underlying->addFixing(Date(1, December, 2020), 295.4);
+    underlying->addFixing(Date(1, January,  2021), 294.6);
+    underlying->addFixing(Date(1, February, 2021), 296.0);
+    underlying->addFixing(Date(1, March,    2021), 296.9);
+
+    Real calculated = CPI::laggedYoYRate(testIndex1, Date(10, February, 2021), 3 * Months, CPI::Flat);
+    Real expected = 293.5/291.0 - 1;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    // same expected flat fixing for interpolated and not interpolated
+    calculated = CPI::laggedYoYRate(testIndex2, Date(10, February, 2021), 3 * Months, CPI::Flat);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex1, Date(25, June, 2021), 3 * Months, CPI::Flat);
+    expected = 296.9/292.6 - 1;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(25, June, 2021), 3 * Months, CPI::Flat);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testCpiYoYRatioLinearInterpolation) {
+    BOOST_TEST_MESSAGE("Testing CPI linear interpolation for year-on-year ratios...");
+
+    Settings::instance().evaluationDate() = Date(10, February, 2022);
+
+    auto underlying = ext::make_shared<UKRPI>();
+
+    auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying, false);
+    auto testIndex2 = ext::make_shared<YoYInflationIndex>(underlying, true);
+
+    underlying->addFixing(Date(1, November, 2019), 291.0);
+    underlying->addFixing(Date(1, December, 2019), 291.9);
+    underlying->addFixing(Date(1, January,  2020), 290.6);
+    underlying->addFixing(Date(1, February, 2020), 292.0);
+    underlying->addFixing(Date(1, March,    2020), 292.6);
+
+    underlying->addFixing(Date(1, November, 2020), 293.5);
+    underlying->addFixing(Date(1, December, 2020), 295.4);
+    underlying->addFixing(Date(1, January,  2021), 294.6);
+    underlying->addFixing(Date(1, February, 2021), 296.0);
+    underlying->addFixing(Date(1, March,    2021), 296.9);
+
+    Real calculated = CPI::laggedYoYRate(testIndex1, Date(10, February, 2021), 3 * Months, CPI::Linear);
+    // interpolate, then take ratio
+    Real expected = (293.5 * (19/28.0) + 295.4 * (9/28.0)) / (291.0 * (20/29.0) + 291.9 * (9/29.0)) - 1;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(10, February, 2021), 3 * Months, CPI::Linear);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex1, Date(12, May, 2021), 3 * Months, CPI::Linear);
+    expected = (296.0 * (20/31.0) + 296.9 * (11/31.0)) / (292.0 * (20/31.0) + 292.6 * (11/31.0)) - 1;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(12, May, 2021), 3 * Months, CPI::Linear);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    // this would require April's fixing
+    BOOST_CHECK_EXCEPTION(
+        CPI::laggedYoYRate(testIndex1, Date(25, June, 2021), 3 * Months, CPI::Linear),
+        Error, ExpectedErrorMessage("Missing UK RPI fixing"));
+
+    BOOST_CHECK_EXCEPTION(
+        CPI::laggedYoYRate(testIndex2, Date(25, June, 2021), 3 * Months, CPI::Linear),
+        Error, ExpectedErrorMessage("Missing UK RPI fixing"));
+
+    // however, this is a special case
+    calculated = CPI::laggedYoYRate(testIndex1, Date(1, June, 2021), 3 * Months, CPI::Linear);
+    expected = 296.9/292.6 - 1;
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+
+    calculated = CPI::laggedYoYRate(testIndex2, Date(1, June, 2021), 3 * Months, CPI::Linear);
+
+    QL_CHECK_CLOSE(calculated, expected, 1e-8);
+}
+
 
 BOOST_AUTO_TEST_CASE(testNotifications) {
     BOOST_TEST_MESSAGE("Testing notifications from zero-inflation cash flow...");
