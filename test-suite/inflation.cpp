@@ -868,6 +868,9 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
     quoted_flat.addFixing({1,January,2024}, 100.1);
     quoted_flat.addFixing({1,February,2024}, 100.2);
 
+    BOOST_CHECK_EQUAL(quoted_flat.lastFixingDate(), Date(1,February,2024));
+    BOOST_CHECK_EQUAL(quoted_linear.lastFixingDate(), Date(1,February,2024));
+
     // mid-January fixing: ok for both flat and interpolated
     BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,January,2024}));
     BOOST_CHECK_NO_THROW(quoted_linear.fixing({15,January,2024}));
@@ -883,6 +886,10 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
 
     // both ok after March is published:
     quoted_flat.addFixing({1,March,2024}, 100.3);
+
+    BOOST_CHECK_EQUAL(quoted_flat.lastFixingDate(), Date(1,March,2024));
+    BOOST_CHECK_EQUAL(quoted_linear.lastFixingDate(), Date(1,March,2024));
+
     BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,February,2024}));
     BOOST_CHECK_NO_THROW(quoted_linear.fixing({15,February,2024}));
 
@@ -1034,6 +1041,9 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndexFutureFixing) {
     euhicp->addFixing({1,January,2024}, 100.1);
     euhicp->addFixing({1,February,2024}, 100.2);
 
+    BOOST_CHECK_EQUAL(ratio_flat.lastFixingDate(), Date(1,February,2024));
+    BOOST_CHECK_EQUAL(ratio_linear.lastFixingDate(), Date(1,February,2024));
+
     // mid-January fixing: ok for both flat and interpolated
     BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,January,2024}));
     BOOST_CHECK_NO_THROW(ratio_linear.fixing({15,January,2024}));
@@ -1049,6 +1059,10 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndexFutureFixing) {
 
     // both ok after March is published:
     euhicp->addFixing({1,March,2024}, 100.3);
+
+    BOOST_CHECK_EQUAL(ratio_flat.lastFixingDate(), Date(1,March,2024));
+    BOOST_CHECK_EQUAL(ratio_linear.lastFixingDate(), Date(1,March,2024));
+
     BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,February,2024}));
     BOOST_CHECK_NO_THROW(ratio_linear.fixing({15,February,2024}));
 

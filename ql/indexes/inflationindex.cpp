@@ -275,6 +275,17 @@ namespace QuantLib {
         }
     }
 
+    Date YoYInflationIndex::lastFixingDate() const {
+        if (ratio()) {
+            return underlyingIndex_->lastFixingDate();
+        } else {
+            const auto& fixings = timeSeries();
+            QL_REQUIRE(!fixings.empty(), "no fixings stored for " << name());
+            // attribute fixing to first day of the underlying period
+            return inflationPeriod(fixings.lastDate(), frequency_).first;
+        }
+    }
+
     bool YoYInflationIndex::needsForecast(const Date& fixingDate) const {
         Date today = Settings::instance().evaluationDate();
 
