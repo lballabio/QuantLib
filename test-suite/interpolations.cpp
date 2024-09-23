@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE(testSplineErrorOnGaussianValues) {
     // results from the paper
     Real scaleFactor = 1.9;
 
-    for (Size i=0; i<LENGTH(points); i++) {
+    for (Size i=0; i<std::size(points); i++) {
         Size n = points[i];
         std::vector<Real> x = xRange(-1.7, 1.9, n);
         std::vector<Real> y = gaussian(x);
@@ -538,7 +538,7 @@ BOOST_AUTO_TEST_CASE(testSplineOnGenericValues) {
     const Real generic_natural_y2[] = { 0.0, 1.5, -1.5, 0.0 };
 
     Real interpolated, error;
-    Size i, n = LENGTH(generic_x);
+    Size i, n = std::size(generic_x);
     std::vector<Real> x35(3);
 
     // Natural spline
@@ -939,7 +939,7 @@ BOOST_AUTO_TEST_CASE(testAsFunctor) {
     f.update();
 
     const Real x2[] = { -2.0, -1.0, 0.0, 1.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
-    Size N = LENGTH(x2);
+    Size N = std::size(x2);
     std::vector<Real> y2(N);
     Real tolerance = 1.0e-12;
 
@@ -1017,7 +1017,7 @@ BOOST_AUTO_TEST_CASE(testBackwardFlat) {
     Interpolation f = BackwardFlatInterpolation(std::begin(x), std::end(x), std::begin(y));
     f.update();
 
-    Size N = LENGTH(x);
+    Size N = std::size(x);
     Size i;
     Real tolerance = 1.0e-12;
 
@@ -1135,7 +1135,7 @@ BOOST_AUTO_TEST_CASE(testForwardFlat) {
     Interpolation f = ForwardFlatInterpolation(std::begin(x), std::end(x), std::begin(y));
     f.update();
 
-    Size N = LENGTH(x);
+    Size N = std::size(x);
     Size i;
     Real tolerance = 1.0e-12;
 
@@ -1881,7 +1881,7 @@ BOOST_AUTO_TEST_CASE(testNoArbSabrInterpolation, *precondition(if_speed(Fast))){
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
         for (bool i : vegaWeighted) {
             for (bool k_a : isAlphaFixed) {
-                for (Size k_b=0; k_b<1/*LENGTH(isBetaFixed)*/; ++k_b) { // keep beta fixed (all 4 params free is a problem for this kind of test)
+                for (Size k_b=0; k_b<1/*std::size(isBetaFixed)*/; ++k_b) { // keep beta fixed (all 4 params free is a problem for this kind of test)
                     for (bool k_n : isNuFixed) {
                         for (bool k_r : isRhoFixed) {
                             NoArbSabrInterpolation noarbSabrInterpolation(
@@ -2116,7 +2116,7 @@ BOOST_AUTO_TEST_CASE(testLeFlochKennedySabrExample) {
 
     const Real expected[] = {0.408702473958, 0.428489933046, 0.585701651161};
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
+    for (Size i=0; i < std::size(strikes); ++i) {
         const Real strike = strikes[i];
         const Real vol =
             sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, nu, rho);

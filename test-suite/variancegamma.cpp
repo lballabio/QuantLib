@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
         { Option::Put,  5550, 1.0}
     };
 
-    Real results[LENGTH(processes)][LENGTH(options)] = {
+    Real results[std::size(processes)][std::size(options)] = {
         {
             955.1637, 922.7529, 890.9872, 859.8739, 829.4197, 799.6303, 770.5104, 742.0640,
             714.2943, 687.2032, 660.7921, 635.0613, 610.0103, 585.6379, 561.9416, 538.9186,
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    for (Size i=0; i<LENGTH(processes); i++) {
+    for (Size i=0; i<std::size(processes); i++) {
         ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
         ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
         ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
         std::vector<ext::shared_ptr<Instrument> > optionList;
 
         std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs;
-        for (Size j=0; j<LENGTH(options); j++)
+        for (Size j=0; j<std::size(options); j++)
         {
             Date exDate = today + timeToDays(options[j].t);
             ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(testVarianceGamma) {
         // Test FFT engine
         // FFT engine is extremely efficient when sent a list of options to calculate first
         fftEngine->precalculate(optionList);
-        for (Size j=0; j<LENGTH(options); j++)
+        for (Size j=0; j<std::size(options); j++)
         {
             ext::shared_ptr<VanillaOption> option = ext::static_pointer_cast<VanillaOption>(optionList[j]);
             option->setPricingEngine(fftEngine);

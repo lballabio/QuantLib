@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBond) {
 
     const Real tolerance = 1.0e-6;
 
-    for (Size i=0; i<LENGTH(rates); ++i) {
+    for (Size i=0; i<std::size(rates); ++i) {
 
         auto schedule = sinkingSchedule(refDate, Period(30, Years), freq, NullCalendar());
         auto notionals = sinkingNotionals(Period(30, Years), freq, rates[i], 100.0);

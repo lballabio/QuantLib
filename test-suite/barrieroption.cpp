@@ -915,8 +915,8 @@ BOOST_AUTO_TEST_CASE(testDividendBarrierOption) {
     };
 
     Real relTol = 2e-4;
-    for (Size i=0; i < LENGTH(barriers); ++i) {
-        for (Size j=0; j < LENGTH(engines); ++j) {
+    for (Size i=0; i < std::size(barriers); ++i) {
+        for (Size j=0; j < std::size(engines); ++j) {
             Real barrier = barriers[i];
             Barrier::Type barrierType = barrierTypes[i];
 
@@ -995,8 +995,8 @@ BOOST_AUTO_TEST_CASE(testDividendBarrierOptionWithDividendsPastMaturity) {
     auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
     auto exercise = ext::make_shared<EuropeanExercise>(maturity);
 
-    for (Size i=0; i < LENGTH(barriers); ++i) {
-        for (Size j=0; j < LENGTH(engines); ++j) {
+    for (Size i=0; i < std::size(barriers); ++i) {
+        for (Size j=0; j < std::size(engines); ++j) {
             Real barrier = barriers[i];
             Barrier::Type barrierType = barrierTypes[i];
 
@@ -1062,7 +1062,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility) {
     Real targetWithDividends[] = { 8.0, 12.0, 9.0, 8.0 };
     Real tolerance = 1e-5;
 
-    for (Size i=0; i < LENGTH(barriers); ++i) {
+    for (Size i=0; i < std::size(barriers); ++i) {
         Real barrier = barriers[i];
         Barrier::Type barrierType = barrierTypes[i];
 

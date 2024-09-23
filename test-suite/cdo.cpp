@@ -164,14 +164,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
 
     ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
     Handle<Quote> hCorrelation(correlation);
-    QL_REQUIRE(LENGTH(hwAttachment) == LENGTH(hwDetachment), "data length does not match");
+    QL_REQUIRE(std::size(hwAttachment) == std::size(hwDetachment), "data length does not match");
 
     ext::shared_ptr<PricingEngine> midPCDOEngine(new MidPointCDOEngine(yieldHandle));
     ext::shared_ptr<PricingEngine> integralCDOEngine(new IntegralCDOEngine(yieldHandle));
 
     const Size i = dataSet;
     correlation->setValue(hwData7[i].correlation);
-    QL_REQUIRE(LENGTH(hwAttachment) == LENGTH(hwData7[i].trancheSpread),
+    QL_REQUIRE(std::size(hwAttachment) == std::size(hwData7[i].trancheSpread),
                "data length does not match");
     std::vector<ext::shared_ptr<DefaultLossModel>> basketModels;
     std::vector<std::string> modelNames;
@@ -319,7 +319,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
         return;
     }
 
-    for (Size j = 0; j < LENGTH(hwAttachment); j++) {
+    for (Size j = 0; j < std::size(hwAttachment); j++) {
         ext::shared_ptr<Basket> basketPtr(
             new Basket(asofDate, names, nominals, pool, hwAttachment[j], hwDetachment[j]));
         std::ostringstream trancheId;

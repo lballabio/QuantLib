@@ -1379,13 +1379,13 @@ BOOST_AUTO_TEST_CASE(testAlanLewisReferencePrices) {
     const Real tol = 1e-12; // 3e-15 works on linux/ia32,
                             // but keep some buffer for other platforms
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
+    for (Size i=0; i < std::size(strikes); ++i) {
         const Real strike = strikes[i];
 
-        for (Size j=0; j < LENGTH(types); ++j) {
+        for (Size j=0; j < std::size(types); ++j) {
             const Option::Type type = types[j];
 
-            for (Size k=0; k < LENGTH(engines); ++k) {
+            for (Size k=0; k < std::size(engines); ++k) {
                 const ext::shared_ptr<PricingEngine> engine = engines[k];
 
                 const ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -1467,13 +1467,13 @@ BOOST_AUTO_TEST_CASE(testExpansionOnAlanLewisReference) {
 
     const Real tol[2] = {1.003e-2, 3.645e-3};
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
+    for (Size i=0; i < std::size(strikes); ++i) {
         const Real strike = strikes[i];
 
-        for (Size j=0; j < LENGTH(types); ++j) {
+        for (Size j=0; j < std::size(types); ++j) {
             const Option::Type type = types[j];
 
-            for (Size k=0; k < LENGTH(engines); ++k) {
+            for (Size k=0; k < std::size(engines); ++k) {
                 const ext::shared_ptr<PricingEngine> engine = engines[k];
 
                 const ext::shared_ptr<StrikedTypePayoff> payoff =
@@ -1530,7 +1530,7 @@ BOOST_AUTO_TEST_CASE(testExpansionOnFordeReference) {
         {7e-6, 4e-4, 9e-4, 4e-4},
         {4e-4, 3e-2, 0.28, 1.0}
     };
-    for (Size j=0; j < LENGTH(terms); ++j) {
+    for (Size j=0; j < std::size(terms); ++j) {
         const Real term = terms[j];
         const ext::shared_ptr<HestonExpansion> lpp2 =
             ext::make_shared<LPP2HestonExpansion>(kappa, theta, sigma,
@@ -1542,9 +1542,9 @@ BOOST_AUTO_TEST_CASE(testExpansionOnFordeReference) {
             ext::make_shared<FordeHestonExpansion>(kappa, theta, sigma,
                                                      v0, rho, term);
         const ext::shared_ptr<HestonExpansion> expansions[] = { lpp2, lpp3, forde };
-        for (Size i=0; i < LENGTH(strikes); ++i) {
+        for (Size i=0; i < std::size(strikes); ++i) {
             const Real strike = strikes[i];
-            for (Size k=0; k < LENGTH(expansions); ++k) {
+            for (Size k=0; k < std::size(expansions); ++k) {
                 const ext::shared_ptr<HestonExpansion> expansion = expansions[k];
 
                 const Real expected = referenceVols[j][i];
@@ -1922,7 +1922,7 @@ BOOST_AUTO_TEST_CASE(testCosHestonEngine) {
 
     const Real tol = 1e-10;
 
-    for (Size i=0; i < LENGTH(payoffs); ++i) {
+    for (Size i=0; i < std::size(payoffs); ++i) {
         VanillaOption option(payoffs[i], exercise);
 
         option.setPricingEngine(cosEngine);
@@ -2141,7 +2141,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargPricing) {
                 option.setPricingEngine(analyticEngine);
                 const Real expected = option.NPV();
 
-                for (Size k=0; k < LENGTH(engines); ++k) {
+                for (Size k=0; k < std::size(engines); ++k) {
                     option.setPricingEngine(engines[k]);
                     const Real calculated = option.NPV();
 
@@ -2261,7 +2261,7 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargControlVariateIntegrand) {
         -8.0*std::log(engine->chF(std::complex<Real>(0, -0.5), maturity).real())
     };
 
-    for (Size i=0; i < LENGTH(variances); ++i) {
+    for (Size i=0; i < std::size(variances); ++i) {
         const Real sigmaBS = std::sqrt(variances[i]/maturity);
 
         for (Real u =0.001; u < 15; u*=1.05) {
@@ -2957,7 +2957,7 @@ BOOST_AUTO_TEST_CASE(testExponentialFitting4StrikesAndMaturities) {
         const DiscountFactor df = rTS->discount(t);
         const Real fwd = s0->value()*qTS->discount(t)/df;
 
-        for (Size j=0; j < LENGTH(moneyness); ++j, ++idx) {
+        for (Size j=0; j < std::size(moneyness); ++j, ++idx) {
             const Real strike =
                 std::exp(-moneyness[j]*std::sqrt(theta*t))*fwd;
 
@@ -3104,8 +3104,8 @@ BOOST_AUTO_TEST_CASE(testAsymptoticControlVariate) {
         ext::make_shared<ExponentialFittingHestonEngine>(model)
     };
 
-    for (Size j=0; j < LENGTH(engines); ++j) {
-        for (Size i=0; i < LENGTH(moneynesses); ++i) {
+    for (Size j=0; j < std::size(engines); ++j) {
+        for (Size i=0; i < std::size(moneynesses); ++i) {
             const Real moneyness = moneynesses[i];
 
             const Real strike = std::exp(-moneyness*std::sqrt(theta*t));

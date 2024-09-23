@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE(testReplicatingVarianceSwap) {
         qRate->setValue(value.q);
         rRate->setValue(value.r);
 
-        Size options = LENGTH(replicatingOptionData);
+        Size options = std::size(replicatingOptionData);
         std::vector<Real> callStrikes, putStrikes, callVols, putVols;
 
         // Assumes ascending strikes and same min call and max put strikes

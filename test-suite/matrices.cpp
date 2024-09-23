@@ -397,7 +397,7 @@ BOOST_AUTO_TEST_CASE(testDeterminant) {
     // expected results calculated with octave
     Real expected[] = { 0.044, -0.012, 5.0, 5.7621e-11, 1.0};
 
-    for (Size j=0; j<LENGTH(testMatrices); ++j) {
+    for (Size j=0; j<std::size(testMatrices); ++j) {
         const Real calculated = determinant(testMatrices[j]);
         if (std::fabs(expected[j] - calculated) > tol)
             BOOST_FAIL("determinant calculation failed "

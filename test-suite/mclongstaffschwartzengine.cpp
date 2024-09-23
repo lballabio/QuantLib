@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(testAmericanOption, *precondition(if_speed(Fast))) {
                   .withAbsoluteTolerance(0.02)
                   .withSeed(42)
                   .withPolynomialOrder(3)
-                  .withBasisSystem(polynomialTypes[0*(i*3+j)%LENGTH(polynomialTypes)]);
+                  .withBasisSystem(polynomialTypes[0*(i*3+j)%std::size(polynomialTypes)]);
 
             americanOption.setPricingEngine(mcengine);
             const Real calculated = americanOption.NPV();

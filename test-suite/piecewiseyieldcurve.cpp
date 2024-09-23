@@ -221,13 +221,13 @@ struct CommonVars {
         bmaConvention = Following;
         bmaDayCounter = ActualActual(ActualActual::ISDA);
 
-        deposits = LENGTH(depositData);
-        fras = LENGTH(fraData);
-        immFuts = LENGTH(immFutData);
-        asxFuts = LENGTH(asxFutData);
-        swaps = LENGTH(swapData);
-        bonds = LENGTH(bondData);
-        bmas = LENGTH(bmaData);
+        deposits = std::size(depositData);
+        fras = std::size(fraData);
+        immFuts = std::size(immFutData);
+        asxFuts = std::size(asxFutData);
+        swaps = std::size(swapData);
+        bonds = std::size(bondData);
+        bmas = std::size(bmaData);
 
         // market elements
         rates = std::vector<ext::shared_ptr<SimpleQuote> >(deposits+swaps);
@@ -1356,12 +1356,12 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
     curve->enableExtrapolation();
 
     // check expected pillar dates
-    for (Size i = 0; i < LENGTH(refDate); ++i) {
+    for (Size i = 0; i < std::size(refDate); ++i) {
         BOOST_CHECK_EQUAL(refDate[i], helpers[i]->pillarDate());
     }
 
     // check expected zero rates
-    for (Size i = 0; i < LENGTH(refZeroRate); ++i) {
+    for (Size i = 0; i < std::size(refZeroRate); ++i) {
         // 0.01 basis points tolerance
         QL_CHECK_SMALL(std::fabs(refZeroRate[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate()),
                           1E-6);

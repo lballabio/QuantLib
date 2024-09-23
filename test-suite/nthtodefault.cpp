@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
     Period timeUnit = 1*Weeks; // required to reach accuracy
 
     Size names = 10;
-    QL_REQUIRE (LENGTH(hwData) == names, "hwData length does not match");
+    QL_REQUIRE (std::size(hwData) == names, "hwData length does not match");
 
     Real rate = 0.05;
     DayCounter dc = Actual365Fixed();
@@ -211,19 +211,19 @@ BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
         ntd.back().setPricingEngine(engine);
     }
 
-    static_assert(LENGTH(hwCorrelation) == 3,
+    static_assert(std::size(hwCorrelation) == 3,
                 "correlation length does not match");
 
     Real diff, maxDiff = 0;
 
     basket->setLossModel(copula);
 
-    for (Size j = 0; j < LENGTH(hwCorrelation); j++) {
+    for (Size j = 0; j < std::size(hwCorrelation); j++) {
         simpleQuote->setValue (hwCorrelation[j]);
         for (Size i = 0; i < ntd.size(); i++) {
-            QL_REQUIRE (ntd[i].rank() == hwData[i].rank, "rank does not match");
-            static_assert(LENGTH(hwCorrelation) == LENGTH(hwData[i].spread),
-                        "vector length does not match");
+            QL_REQUIRE(ntd[i].rank() == hwData[i].rank, "rank does not match");
+            QL_REQUIRE(std::size(hwCorrelation) == std::size(hwData[i].spread),
+                       "vector length does not match");
             diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
             maxDiff = std::max(maxDiff, fabs (diff));
             BOOST_CHECK_MESSAGE (fabs(diff/hwData[i].spread[j]) < relTolerance
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
     Period timeUnit = 1*Weeks; // required to reach accuracy
 
     Size names = 10;
-    QL_REQUIRE (LENGTH(hwDataDist) == names, "hwDataDist length does not match");
+    QL_REQUIRE (std::size(hwDataDist) == names, "hwDataDist length does not match");
 
     Real rate = 0.05;
     DayCounter dc = Actual365Fixed();
@@ -334,7 +334,7 @@ BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
         ntd.back().setPricingEngine(engine);
     }
 
-    static_assert(LENGTH(hwCorrelation) == 3,
+    static_assert(std::size(hwCorrelation) == 3,
                 "correlation length does not match");
 
     Real maxDiff = 0;
@@ -343,11 +343,11 @@ BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
 
     // This is the necessary code, but a proper hwData for the t copula is needed.
     // Real diff;
-    // for (Size j = 0; j < LENGTH(hwCorrelation); j++) {
+    // for (Size j = 0; j < std::size(hwCorrelation); j++) {
     //     simpleQuote->setValue (hwCorrelation[j]);
     //     for (Size i = 0; i < ntd.size(); i++) {
     //         QL_REQUIRE (ntd[i].rank() == hwData[i].rank, "rank does not match");
-    //         static_assert(LENGTH(hwCorrelation) == LENGTH(hwData[i].spread),
+    //         static_assert(std::size(hwCorrelation) == std::size(hwData[i].spread),
     //                     "vector length does not match");
     //         diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
     //         maxDiff = std::max(maxDiff, fabs (diff));
