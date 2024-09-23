@@ -680,7 +680,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
                                             index->endOfMonth(),
                                             index->dayCounter()));
 
-    for (Size i=1; i<LENGTH(data); ++i) {
+    for (Size i=1; i<std::size(data); ++i) {
         helpers.push_back(
             ext::make_shared<OISRateHelper>(
                                   data[i].settlementDays,

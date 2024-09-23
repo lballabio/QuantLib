@@ -274,7 +274,7 @@ BOOST_AUTO_TEST_CASE(testZeroIndex) {
     };
 
     auto iir = ext::make_shared<UKRPI>();
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -341,7 +341,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     auto ii = ext::make_shared<UKRPI>(hz);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -509,7 +509,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithLag) {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     auto ii = ext::make_shared<UKRPI>(hz);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -677,7 +677,7 @@ BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     auto ii = ext::make_shared<UKRPI>(hz);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -955,7 +955,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3 };
 
-    for (Size i=0; i<LENGTH(fixData);i++) {
+    for (Size i=0; i<std::size(fixData);i++) {
         ukrpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -1090,7 +1090,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     bool interp = false;
     auto rpi = ext::make_shared<UKRPI>();
     auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -1247,7 +1247,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
     bool interp = false;
     auto rpi = ext::make_shared<UKRPI>();
     auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 

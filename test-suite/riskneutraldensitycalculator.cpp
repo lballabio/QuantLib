@@ -756,7 +756,7 @@ BOOST_AUTO_TEST_CASE(testCEVCDF) {
     const Real betas[] = { 0.45, 1.25 };
 
     const Real tol = 1e-6;
-    for (Size i = 1; i < LENGTH(betas); ++i) {
+    for (Size i = 1; i < std::size(betas); ++i) {
         const Real beta = betas[i];
         const ext::shared_ptr<CEVRNDCalculator> calculator =
             ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);

@@ -548,7 +548,7 @@ class NonZeroConstraint : public Constraint {
 //    };
 //
 //    const Size nScenarios = 20000;
-//    Array refVols(resetIndices.size()*LENGTH(strikes));
+//    Array refVols(resetIndices.size()*std::size(strikes));
 //
 //    // finite difference calibration of Heston SLV model
 //
@@ -584,7 +584,7 @@ class NonZeroConstraint : public Constraint {
 //
 //    std::vector<std::vector<GeneralStatistics> > slvStats(
 //        calibrationDates.size()-2,
-//            std::vector<GeneralStatistics>(LENGTH(strikes)));
+//            std::vector<GeneralStatistics>(std::size(strikes)));
 //
 //    typedef SobolBrownianBridgeRsg rsg_type;
 //    typedef MultiPathGenerator<rsg_type>::sample_type sample_type;
@@ -602,7 +602,7 @@ class NonZeroConstraint : public Constraint {
 //            const Real S_t1 = path.value[0][resetIndices[i]];
 //            const Real S_T1 = path.value[0][maturityIndices[i]];
 //
-//            for (Size j=0; j < LENGTH(strikes); ++j) {
+//            for (Size j=0; j < std::size(strikes); ++j) {
 //                const Real strike = strikes[j];
 //                    slvStats[i][j].add((strike < 1.0)
 //                        ? Real(S_t1 * std::max(0.0, strike - S_T1/S_t1))
@@ -620,7 +620,7 @@ class NonZeroConstraint : public Constraint {
 //        const ext::shared_ptr<Exercise> exercise(
 //            ext::make_shared<EuropeanExercise>(maturityDate));
 //
-//        for (Size j=0; j < LENGTH(strikes); ++j) {
+//        for (Size j=0; j < std::size(strikes); ++j) {
 //            const Real strike = strikes[j];
 //            const Real npv = slvStats[i][j].mean()*df;
 //
@@ -636,13 +636,13 @@ class NonZeroConstraint : public Constraint {
 //                QuantLib::detail::ImpliedVolatilityHelper::calculate(
 //                    *fwdOption, *fwdEngine, *vol, npv, 1e-8, 200, 1e-4, 2.0);
 //
-//            const Size idx = j + i*LENGTH(strikes);
+//            const Size idx = j + i*std::size(strikes);
 //            refVols[idx] = implVol;
 //        }
 //    }
 //
 //    SquareRootCLVCalibrationFunction costFunction(
-//        Array(strikes, strikes+LENGTH(strikes)),
+//        Array(strikes, strikes+std::size(strikes)),
 //        resetDates,
 //        maturityDates,
 //        bsProcess,

@@ -380,7 +380,7 @@ BOOST_AUTO_TEST_CASE(testOosterleeTestCaseIV) {
     const Real strikes[] = { 0.4*f0, f0, 1.6*f0 };
 
     const Real tol = 0.00035;
-    for (Size i=0; i < LENGTH(maturities); ++i) {
+    for (Size i=0; i < std::size(maturities); ++i) {
         const Date maturityDate = today + maturities[i];
         const Time maturityTime = dc.yearFraction(today, maturityDate);
 
@@ -393,7 +393,7 @@ BOOST_AUTO_TEST_CASE(testOosterleeTestCaseIV) {
         const ext::shared_ptr<Exercise> exercise =
             ext::make_shared<EuropeanExercise>(maturityDate);
 
-        for (Size j=0; j < LENGTH(strikes); ++j) {
+        for (Size j=0; j < std::size(strikes); ++j) {
             const ext::shared_ptr<StrikedTypePayoff> payoff =
                 ext::make_shared<PlainVanillaPayoff>(Option::Call, strikes[j]);
 
@@ -462,7 +462,7 @@ BOOST_AUTO_TEST_CASE(testBenchOpSabrCase) {
 
     const Real tol = 2e-4;
 
-    for (Size i=0; i < LENGTH(f0s); ++i) {
+    for (Size i=0; i < std::size(f0s); ++i) {
 
         const Date maturity = today + Period(maturityInYears[i]*365, Days);
         const Time T = dc.yearFraction(today, maturity);
@@ -477,7 +477,7 @@ BOOST_AUTO_TEST_CASE(testBenchOpSabrCase) {
             f0*std::exp(-0.1*std::sqrt(T)), f0, f0*std::exp(0.1*std::sqrt(T))
         };
 
-        for (Size j=0; j < LENGTH(strikes); ++j) {
+        for (Size j=0; j < std::size(strikes); ++j) {
             const Real strike = strikes[j];
 
             VanillaOption option(

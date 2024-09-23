@@ -561,7 +561,7 @@ BOOST_AUTO_TEST_CASE(testCashAtHitOrNothingAmericanGreeks) {
     ext::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
     bool knockin=true;
-    for (Size j=0; j<LENGTH(engines); j++) {
+    for (Size j=0; j<std::size(engines); j++) {
         for (auto& type : types) {
             for (Real strike : strikes) {
                 ext::shared_ptr<StrikedTypePayoff> payoff(

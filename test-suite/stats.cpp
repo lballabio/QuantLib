@@ -47,32 +47,32 @@ template <class S>
 void check(const std::string& name) {
 
     S s;
-    for (Size i=0; i<LENGTH(data); i++)
+    for (Size i=0; i<std::size(data); i++)
         s.add(data[i],weights[i]);
 
     Real calculated, expected;
     Real tolerance;
 
-    if (s.samples() != LENGTH(data))
+    if (s.samples() != std::size(data))
         BOOST_FAIL(name << ": wrong number of samples\n"
                    << "    calculated: " << s.samples() << "\n"
-                   << "    expected:   " << LENGTH(data));
+                   << "    expected:   " << std::size(data));
 
-    expected = std::accumulate(weights,weights+LENGTH(weights),Real(0.0));
+    expected = std::accumulate(weights,weights+std::size(weights),Real(0.0));
     calculated = s.weightSum();
     if (calculated != expected)
         BOOST_FAIL(name << ": wrong sum of weights\n"
                    << "    calculated: " << calculated << "\n"
                    << "    expected:   " << expected);
 
-    expected = *std::min_element(data,data+LENGTH(data));
+    expected = *std::min_element(data,data+std::size(data));
     calculated = s.min();
     if (calculated != expected)
         BOOST_FAIL(name << ": wrong minimum value\n"
                    << "    calculated: " << calculated << "\n"
                    << "    expected:   " << expected);
 
-    expected = *std::max_element(data,data+LENGTH(data));
+    expected = *std::max_element(data,data+std::size(data));
     calculated = s.max();
     if (calculated != expected)
         BOOST_FAIL(name << ": wrong maximum value\n"
@@ -121,7 +121,7 @@ void checkSequence(const std::string& name, Size dimension) {
 
     GenericSequenceStatistics<S> ss(dimension);
     Size i;
-    for (i = 0; i<LENGTH(data); i++) {
+    for (i = 0; i<std::size(data); i++) {
         std::vector<Real> temp(dimension, data[i]);
         ss.add(temp, weights[i]);
     }
@@ -129,20 +129,20 @@ void checkSequence(const std::string& name, Size dimension) {
     std::vector<Real> calculated;
     Real expected, tolerance;
 
-    if (ss.samples() != LENGTH(data))
+    if (ss.samples() != std::size(data))
         BOOST_FAIL("SequenceStatistics<" << name << ">: "
                    << "wrong number of samples\n"
                    << "    calculated: " << ss.samples() << "\n"
-                   << "    expected:   " << LENGTH(data));
+                   << "    expected:   " << std::size(data));
 
-    expected = std::accumulate(weights,weights+LENGTH(weights),Real(0.0));
+    expected = std::accumulate(weights,weights+std::size(weights),Real(0.0));
     if (ss.weightSum() != expected)
         BOOST_FAIL("SequenceStatistics<" << name << ">: "
                    << "wrong sum of weights\n"
                    << "    calculated: " << ss.weightSum() << "\n"
                    << "    expected:   " << expected);
 
-    expected = *std::min_element(data,data+LENGTH(data));
+    expected = *std::min_element(data,data+std::size(data));
     calculated = ss.min();
     for (i=0; i<dimension; i++) {
         if (calculated[i] != expected)
@@ -153,7 +153,7 @@ void checkSequence(const std::string& name, Size dimension) {
                        << "    expected:   " << expected);
     }
 
-    expected = *std::max_element(data,data+LENGTH(data));
+    expected = *std::max_element(data,data+std::size(data));
     calculated = ss.max();
     for (i=0; i<dimension; i++) {
         if (calculated[i] != expected)

@@ -101,7 +101,7 @@ struct CommonVars {
         Settings::instance().evaluationDate() = today;
         settlement = calendar.advance(today, settlementDays, Days);
 
-        Size nInstruments = LENGTH(swapData);
+        Size nInstruments = std::size(swapData);
         std::vector<ext::shared_ptr<RateHelper> > instruments(nInstruments);
         for (Size i = 0; i < nInstruments; i++) {
             instruments[i] = ext::shared_ptr<RateHelper>(new SwapRateHelper(
@@ -122,7 +122,7 @@ ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const
     Time cutOff = ts->timeFromReference(ts->referenceDate() + fsp);
 
     LLFRWeight llfrWeights[] = {{25.0, 1.0}, {30.0, 0.5}, {40.0, 0.25}, {50.0, 0.125}};
-    Size nWeights = LENGTH(llfrWeights);
+    Size nWeights = std::size(llfrWeights);
     Rate llfr = 0.0;
     for (Size j = 0; j < nWeights; j++) {
         LLFRWeight w = llfrWeights[j];
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE(testDutchCentralBankRates) {
                               {100, Years, 0.01939}};
 
     Real tolerance = 1.0e-4;
-    Size nRates = LENGTH(expectedZeroes);
+    Size nRates = std::size(expectedZeroes);
 
     for (Size i = 0; i < nRates; ++i) {
         Period p = expectedZeroes[i].n * expectedZeroes[i].units;
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {
         70 * Years, 80 * Years, 90 * Years, 100 * Years,
     };
 
-    Size nTenors = LENGTH(tenors);
+    Size nTenors = std::size(tenors);
 
     for (Size i = 0; i < nTenors; ++i) {
         Date maturity = vars.settlement + tenors[i];

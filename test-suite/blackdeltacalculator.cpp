@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(testDeltaValues){
     Real error;
     Real tolerance;
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (Size i=0; i<std::size(values); i++) {
 
         currOt      =values[i].ot;
         currDt      =values[i].dt;
@@ -550,7 +550,7 @@ BOOST_AUTO_TEST_CASE(testAtmCalcs){
     Real currPutDelta;
     Real currFwd;
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (Size i=0; i<std::size(values); i++) {
 
         currDt      =values[i].dt;
         currSpot    =values[i].spot;

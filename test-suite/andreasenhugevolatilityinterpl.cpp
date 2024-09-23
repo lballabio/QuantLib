@@ -113,10 +113,10 @@ CalibrationData AndreasenHugeExampleData() {
     const Handle<YieldTermStructure> rTS(flatRate(today, 0.0, dc));
     const Handle<YieldTermStructure> qTS(flatRate(today, 0.0, dc));
 
-    const Size nStrikes = LENGTH(raw);
-    const Size nMaturities = LENGTH(maturityTimes);
+    const Size nStrikes = std::size(raw);
+    const Size nMaturities = std::size(maturityTimes);
 
-    static_assert(nMaturities == LENGTH(raw[1])-1, "check raw data");
+    static_assert(nMaturities == std::size(raw[1])-1, "check raw data");
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
@@ -127,7 +127,7 @@ CalibrationData AndreasenHugeExampleData() {
     for (const auto & i : raw) {
         const Real strike = spot->value()*i[0];
 
-        for (Size j=1; j < LENGTH(i); ++j) {
+        for (Size j=1; j < std::size(i); ++j) {
             if (i[j] > QL_EPSILON) {
                 const Date maturity
                     = today + Period(Size(365*maturityTimes[j-1]), Days);
@@ -328,7 +328,7 @@ CalibrationData arbitrageData() {
     const Volatility vols[] = { 0.25, 0.35, 0.05, 0.35 };
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
+    for (Size i=0; i < std::size(strikes); ++i) {
         const Real strike = strikes[i];
         const Date maturityDate = today + Period(maturities[i], Months);
         const Volatility vol = vols[i];

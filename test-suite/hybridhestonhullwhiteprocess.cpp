@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(testBsmHullWhiteEngine) {
     const Volatility expectedVol[] = { 0.217064577, 0.243995801,
                                        0.256402830, 0.268236596, 0.290461343 };
 
-    for (Size i=0; i < LENGTH(corr); ++i) {
+    for (Size i=0; i < std::size(corr); ++i) {
         ext::shared_ptr<PricingEngine> bsmhwEngine(
                          new AnalyticBSMHullWhiteEngine(corr[i], stochProcess,
                                                         hullWhiteModel));
@@ -1011,7 +1011,7 @@ BOOST_AUTO_TEST_CASE(testBsmHullWhitePricing) {
 
     Real tolWithCV[]    = { 2e-4, 2e-4, 2e-4, 2e-4, 0.01 };
     Real tolWithOutCV[] = { 5e-3, 5e-3, 5e-3, 5e-3, 0.02 };
-    for (Size l=0; l < LENGTH(schemes); ++l) {
+    for (Size l=0; l < std::size(schemes); ++l) {
         SchemeData scheme = schemes[l];
         for (bool i : controlVariate) {
             for (unsigned long u : listOfTimeStepsPerYear) {
@@ -1066,7 +1066,7 @@ BOOST_AUTO_TEST_CASE(testSpatialDiscretizatinError, *precondition(if_speed(Fast)
 
     const Real tol[] = { 0.02, 0.02, 0.02, 0.02, 0.05 };
     for (unsigned long u : listOfTimeStepsPerYear) {
-        for (Size i=0; i < LENGTH(schemes); ++i) {
+        for (Size i=0; i < std::size(schemes); ++i) {
             for (auto& j : hestonModels) {
                 Real avgPriceDiff = 0;
                 ext::shared_ptr<HestonProcess> hestonProcess(makeHestonProcess(j));
@@ -1378,18 +1378,18 @@ BOOST_AUTO_TEST_CASE(testH1HWPricingEngine) {
 
     const Real tol = 0.0001;
     const Real strikes[] = {40, 80, 100, 120, 180 };
-    const Real expected[LENGTH(sigma_v)][LENGTH(strikes)]
+    const Real expected[std::size(sigma_v)][std::size(strikes)]
         = { { 0.267503, 0.235742, 0.228223, 0.223461, 0.217855 },
             { 0.263626, 0.211625, 0.199907, 0.193502, 0.190025 } };
 
-    for (Size j=0; j < LENGTH(sigma_v); ++j) {
+    for (Size j=0; j < std::size(sigma_v); ++j) {
         const ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, v0, kappa_v, theta,
                               sigma_v[j], rho_sv));
         const ext::shared_ptr<HestonModel> hestonModel(
             new HestonModel(hestonProcess));
 
-        for (Size i=0; i < LENGTH(strikes); ++i) {
+        for (Size i=0; i < std::size(strikes); ++i) {
             const ext::shared_ptr<StrikedTypePayoff> payoff(
                 new PlainVanillaPayoff(Option::Call, strikes[i]));
 

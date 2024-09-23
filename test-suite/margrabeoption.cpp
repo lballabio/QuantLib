@@ -356,10 +356,10 @@ BOOST_AUTO_TEST_CASE(testGreeks) {
             // analytic engine
             margrabeOption.setPricingEngine(engine);
 
-            for (Size l = 0; l < LENGTH(underlyings1); l++) {
-                for (Size m=0; m<LENGTH(qRates1); m++) {
+            for (Size l = 0; l < std::size(underlyings1); l++) {
+                for (Size m=0; m < std::size(qRates1); m++) {
                     for (Real n : rRates) {
-                        for (Size p = 0; p < LENGTH(vols1); p++) {
+                        for (Size p = 0; p < std::size(vols1); p++) {
                             Real u1 = underlyings1[l], u2 = underlyings2[l], u;
                             Rate q1 = qRates1[m], q2 = qRates2[m], r = n;
                             Volatility v1 = vols1[p], v2 = vols2[p];

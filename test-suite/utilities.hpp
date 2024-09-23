@@ -62,10 +62,6 @@ using QuantLib::value;
 #define QL_CHECK_CLOSE(L, R, T) BOOST_CHECK_CLOSE(value(L), value(R), value(T))
 #define QL_CHECK_CLOSE_FRACTION(L, R, T) BOOST_CHECK_CLOSE_FRACTION(value(L), value(R), value(T))
 
-
-// This makes it easier to use array literals (for new code, use std::vector though)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 namespace QuantLib {
 
     std::string payoffTypeToString(const ext::shared_ptr<Payoff>&);

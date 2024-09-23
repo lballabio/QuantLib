@@ -511,7 +511,7 @@ BOOST_AUTO_TEST_CASE(testVPPIntrinsicValue) {
     const Real expected[] = { 0.0, 2056.04, 11145.577778, 26452.04,
                               44512.461818, 62000.626667, 137591.911111};
 
-    for (Size i=0; i < LENGTH(efficiency); ++i) {
+    for (Size i=0; i < std::size(efficiency); ++i) {
         const Real heatRate = 1.0/efficiency[i];
 
         VanillaVPPOption option(heatRate, pMin, pMax, tMinUp, tMinDown,

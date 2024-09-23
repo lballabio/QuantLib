@@ -112,7 +112,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
             210.1, 211.4, 211.3, 211.5, 212.8, 213.4,
             213.4, 213.4, 214.4
         };
-        for (Size i=0; i<LENGTH(fixData); ++i) {
+        for (Size i=0; i<std::size(fixData); ++i) {
             ii->addFixing(rpiSchedule[i], fixData[i]);
         }
 

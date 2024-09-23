@@ -1289,7 +1289,7 @@ BOOST_AUTO_TEST_CASE(testQdAmericanEngines) {
         17.05087,26.89157,64.64923,0,390.87453,124.55406,0.01018,94.23963};
 
     std::vector<OptionSpec> testCaseSpecs;
-    testCaseSpecs.reserve(LENGTH(pde_values) + LENGTH(edgeTestCases));
+    testCaseSpecs.reserve(std::size(pde_values) + std::size(edgeTestCases));
 
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
 
@@ -1467,7 +1467,7 @@ BOOST_AUTO_TEST_CASE(testAndersenLakeHighPrecisionExample) {
             QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
         };
 
-        for (Size i=0; i < LENGTH(schemes); ++i) {
+        for (Size i=0; i < std::size(schemes); ++i) {
 
             americanOption.setPricingEngine(
                 ext::make_shared<QdFpAmericanEngine>(
@@ -1533,7 +1533,7 @@ BOOST_AUTO_TEST_CASE(testQdEngineStandardExample) {
     };
     const Real expected[] = { 0.2386475283369327, 0.2386596962737606 };
 
-    for (Size i=0; i < LENGTH(schemes); ++i) {
+    for (Size i=0; i < std::size(schemes); ++i) {
         americanOption.setPricingEngine(
             ext::make_shared<QdFpAmericanEngine>(
                 bsProcess,

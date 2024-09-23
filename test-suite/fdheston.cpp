@@ -473,7 +473,7 @@ BOOST_AUTO_TEST_CASE(testFdmHestonIkonenToivanen) {
     Real expected[] = { 2.00000, 1.10763, 0.520038, 0.213681, 0.082046 };
     const Real tol = 0.001;
     
-    for (Size i=0; i < LENGTH(strikes); ++i) {
+    for (Size i=0; i < std::size(strikes); ++i) {
         Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strikes[i])));
         ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, s0, 0.0625, 5, 0.16, 0.9, 0.1));
