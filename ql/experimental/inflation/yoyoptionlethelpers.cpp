@@ -32,6 +32,7 @@ namespace QuantLib {
                                            Calendar paymentCalendar,
                                            Natural fixingDays,
                                            ext::shared_ptr<YoYInflationIndex> index,
+                                           CPI::InterpolationType interpolation,
                                            Rate strike,
                                            Size n,
                                            ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
@@ -43,7 +44,7 @@ namespace QuantLib {
         // build the instrument to reprice (only need do this once)
         yoyCapFloor_ =
             MakeYoYInflationCapFloor(capFloorType_, index_,
-                                     n_, calendar_, lag_)
+                                     n_, calendar_, lag_, interpolation)
             .withNominal(notional)
             .withFixingDays(fixingDays_)
             .withPaymentDayCounter(yoyDayCounter_)
@@ -62,6 +63,20 @@ namespace QuantLib {
         yoyCapFloor_->setPricingEngine(pricer_);
         // haven't yet set the vol (term structure = surface)
     }
+
+    YoYOptionletHelper::YoYOptionletHelper(const Handle<Quote>& price,
+                                           Real notional,
+                                           YoYInflationCapFloor::Type capFloorType,
+                                           Period& lag,
+                                           DayCounter yoyDayCounter,
+                                           Calendar paymentCalendar,
+                                           Natural fixingDays,
+                                           ext::shared_ptr<YoYInflationIndex> index,
+                                           Rate strike,
+                                           Size n,
+                                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
+    : YoYOptionletHelper(price, notional, capFloorType, lag, yoyDayCounter, paymentCalendar,
+                         fixingDays, index, CPI::AsIndex, strike, n, pricer) {}
 
 
     Real YoYOptionletHelper::impliedQuote() const {

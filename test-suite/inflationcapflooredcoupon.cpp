@@ -62,23 +62,24 @@ struct Datum {
     Rate rate;
 };
 
-template <class T, class U, class I>
-std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                                                               const std::vector<Datum>& iiData,
-                                                               const ext::shared_ptr<I> &ii, const Period &observationLag,
-                                                               const Calendar &calendar,
-                                                               const BusinessDayConvention &bdc,
-                                                               const DayCounter &dc,
-                                                               const Handle<YieldTermStructure>& discountCurve) {
+std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >
+makeHelpers(const std::vector<Datum>& iiData,
+            const ext::shared_ptr<YoYInflationIndex> &ii,
+            const Period &observationLag,
+            CPI::InterpolationType interpolation,
+            const Calendar &calendar,
+            const BusinessDayConvention &bdc,
+            const DayCounter &dc,
+            const Handle<YieldTermStructure>& discountCurve) {
 
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
+    std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > instruments;
     for (Datum datum : iiData) {
         Date maturity = datum.date;
         Handle<Quote> quote(ext::shared_ptr<Quote>(
                             new SimpleQuote(datum.rate/100.0)));
-        ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
+        auto anInstrument = ext::make_shared<YearOnYearInflationSwapHelper>(
                             quote, observationLag, maturity,
-                            calendar, bdc, dc, ii, discountCurve));
+                            calendar, bdc, dc, ii, interpolation, discountCurve);
         instruments.push_back(anInstrument);
     }
 
@@ -177,11 +178,11 @@ struct CommonVars {
 
             // now build the helpers ...
         std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
-            makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
-            YoYInflationIndex>(yyData, iir,
-                               observationLag,
-                               calendar, convention, dc,
-                               Handle<YieldTermStructure>(nominalTS));
+            makeHelpers(yyData, iir,
+                        observationLag,
+                        CPI::Flat,
+                        calendar, convention, dc,
+                        Handle<YieldTermStructure>(nominalTS));
 
         Date baseDate = rpi->lastFixingDate();
         Rate baseYYRate = yyData[0].rate/100.0;
@@ -210,7 +211,7 @@ struct CommonVars {
         std::vector<Rate> gearingVector(length, gearing);
         std::vector<Spread> spreadVector(length, spread);
 
-        Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag)
+        Leg yoyLeg = yoyInflationLeg(schedule, calendar, ii, observationLag, CPI::Flat)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withGearings(gearingVector)
@@ -285,7 +286,7 @@ struct CommonVars {
                           Unadjusted,Unadjusted,// ref periods & acc periods
                           DateGeneration::Forward, false);
 
-        Leg yoyLeg =  yoyInflationLeg(schedule, calendar, ii, observationLag)
+        Leg yoyLeg =  yoyInflationLeg(schedule, calendar, ii, observationLag, CPI::Flat)
             .withNotionals(nominals)
             .withPaymentDayCounter(dc)
             .withPaymentAdjustment(convention)
@@ -725,6 +726,7 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
                                                  yoySchedule,
                                                  vars.iir,
                                                  vars.observationLag,
+                                                 CPI::Flat,
                                                  0.0,        //spread on index
                                                  vars.dc,
                                                  UnitedKingdom());

@@ -41,6 +41,16 @@ namespace QuantLib {
                                  ext::shared_ptr<YoYInflationIndex> index,
                                  const Size& length,
                                  Calendar cal,
+                                 const Period& observationLag,
+                                 CPI::InterpolationType interpolation);
+        /*! \deprecated Use the overload that passes an interpolation type instead.
+                        Deprecated in version 1.36.
+        */
+        [[deprecated("Use the overload that passes an interpolation type instead")]]
+        MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
+                                 ext::shared_ptr<YoYInflationIndex> index,
+                                 const Size& length,
+                                 Calendar cal,
                                  const Period& observationLag);
         MakeYoYInflationCapFloor& withNominal(Real n);
         MakeYoYInflationCapFloor& withEffectiveDate(const Date& effectiveDate);
@@ -66,6 +76,7 @@ namespace QuantLib {
         Calendar calendar_;
         ext::shared_ptr<YoYInflationIndex> index_;
         Period observationLag_;
+        CPI::InterpolationType interpolation_;
         Rate strike_;
         bool firstCapletExcluded_ = false, asOptionlet_ = false;
         Date effectiveDate_;

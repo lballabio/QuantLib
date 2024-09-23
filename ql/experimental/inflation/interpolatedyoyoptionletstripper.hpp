@@ -58,8 +58,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        mutable std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface> >
-        volCurves_;
+        mutable std::vector<ext::shared_ptr<YoYOptionletVolatilitySurface> > volCurves_;
 
         // used to set up the first point on each vol curve
         // using assumptions on unobserved vols at start
@@ -114,7 +113,7 @@ namespace QuantLib {
         capfloor_ =
             MakeYoYInflationCapFloor(type, anIndex,
                                      (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
-                                     surf->calendar(), lag)
+                                     surf->calendar(), lag, CPI::AsIndex)
             .withNominal(10000.0)
             .withStrike(K);
 
@@ -238,7 +237,8 @@ namespace QuantLib {
                                                  lag_,
                                                  dc, cal,
                                                  fixingDays_,
-                                                 anIndex, K, nT, p_)));
+                                                 anIndex, CPI::Flat,
+                                                 K, nT, p_)));
 
                 ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK(
                           new ConstantYoYOptionletVolatility(found, settlementDays,

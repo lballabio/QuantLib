@@ -39,6 +39,7 @@ namespace QuantLib {
                                                      Schedule yoySchedule,
                                                      ext::shared_ptr<YoYInflationIndex> yoyIndex,
                                                      const Period& observationLag,
+                                                     CPI::InterpolationType interpolation,
                                                      Spread spread,
                                                      DayCounter yoyDayCount,
                                                      Calendar paymentCalendar,
@@ -54,7 +55,8 @@ namespace QuantLib {
         .withCouponRates(fixedRate_, fixedDayCount_) // Simple compounding by default
         .withPaymentAdjustment(paymentConvention_);
 
-        Leg yoyLeg = yoyInflationLeg(yoySchedule_, paymentCalendar_, yoyIndex_, observationLag_)
+        Leg yoyLeg = yoyInflationLeg(yoySchedule_, paymentCalendar_, yoyIndex_,
+                                     observationLag_, interpolation)
         .withNotionals(nominal_)
         .withPaymentDayCounter(yoyDayCount_)
         .withPaymentAdjustment(paymentConvention_)
@@ -75,6 +77,21 @@ namespace QuantLib {
         }
     }
 
+    YearOnYearInflationSwap::YearOnYearInflationSwap(Type type,
+                                                     Real nominal,
+                                                     Schedule fixedSchedule,
+                                                     Rate fixedRate,
+                                                     DayCounter fixedDayCount,
+                                                     Schedule yoySchedule,
+                                                     ext::shared_ptr<YoYInflationIndex> yoyIndex,
+                                                     const Period& observationLag,
+                                                     Spread spread,
+                                                     DayCounter yoyDayCount,
+                                                     Calendar paymentCalendar,
+                                                     BusinessDayConvention paymentConvention)
+    : YearOnYearInflationSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
+                              yoySchedule, yoyIndex, observationLag, CPI::AsIndex,
+                              spread, yoyDayCount, paymentCalendar, paymentConvention) {}
 
      void YearOnYearInflationSwap::setupArguments(PricingEngine::arguments* args) const {
 

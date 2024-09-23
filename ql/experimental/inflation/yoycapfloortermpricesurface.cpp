@@ -26,7 +26,7 @@ namespace QuantLib {
         Natural fixingDays,
         const Period& lag,
         const ext::shared_ptr<YoYInflationIndex>& yii,
-        Rate baseRate,
+        CPI::InterpolationType interpolation,
         Handle<YieldTermStructure> nominal,
         const DayCounter& dc,
         const Calendar& cal,
@@ -39,7 +39,7 @@ namespace QuantLib {
     : TermStructure(0, cal, dc),
       fixingDays_(fixingDays), bdc_(bdc), yoyIndex_(yii), observationLag_(lag), nominalTS_(std::move(nominal)),
       cStrikes_(cStrikes), fStrikes_(fStrikes), cfMaturities_(cfMaturities), cPrice_(cPrice),
-      fPrice_(fPrice), indexIsInterpolated_(yii->interpolated()) {
+      fPrice_(fPrice), indexIsInterpolated_(detail::CPI::isInterpolated(interpolation, yoyIndex_)) {
 
         // data consistency checking, enough data?
         QL_REQUIRE(fStrikes_.size() > 1, "not enough floor strikes");
@@ -99,6 +99,23 @@ namespace QuantLib {
             QL_REQUIRE( cfStrikes_[i] > cfStrikes_[i-1],
                         "cfStrikes not increasing");
     }
+
+    YoYCapFloorTermPriceSurface::YoYCapFloorTermPriceSurface(
+        Natural fixingDays,
+        const Period& yyLag,
+        const ext::shared_ptr<YoYInflationIndex>& yii,
+        Rate baseRate,
+        Handle<YieldTermStructure> nominal,
+        const DayCounter& dc,
+        const Calendar& cal,
+        const BusinessDayConvention& bdc,
+        const std::vector<Rate>& cStrikes,
+        const std::vector<Rate>& fStrikes,
+        const std::vector<Period>& cfMaturities,
+        const Matrix& cPrice,
+        const Matrix& fPrice)
+    : YoYCapFloorTermPriceSurface(fixingDays, yyLag, yii, CPI::AsIndex, nominal, dc, cal, bdc,
+                                  cStrikes, fStrikes, cfMaturities, cPrice, fPrice) {}
 
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
     {

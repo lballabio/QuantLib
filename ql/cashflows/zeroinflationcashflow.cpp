@@ -35,25 +35,15 @@ namespace QuantLib {
     : IndexedCashFlow(notional, index,
                       startDate - observationLag, endDate - observationLag,
                       paymentDate, growthOnly),
-      zeroInflationIndex_(index), observationInterpolation_(observationInterpolation),
+      zeroInflationIndex_(index), interpolation_(observationInterpolation),
       startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
 
-    void ZeroInflationCashFlow::performCalculations() const {
+    Real ZeroInflationCashFlow::baseFixing() const {
+        return CPI::laggedFixing(zeroInflationIndex_, startDate_, observationLag_, interpolation_);
+    }
 
-        Real I0, I1;
-
-        if (observationInterpolation_ == CPI::AsIndex) {
-            I0 = zeroInflationIndex_->fixing(baseDate());
-            I1 = zeroInflationIndex_->fixing(fixingDate());
-        } else {
-            I0 = CPI::laggedFixing(zeroInflationIndex_, startDate_, observationLag_, observationInterpolation_);
-            I1 = CPI::laggedFixing(zeroInflationIndex_, endDate_, observationLag_, observationInterpolation_);
-        }
-
-        if (growthOnly())
-            amount_ = notional() * (I1 / I0 - 1.0);
-        else
-            amount_ = notional() * (I1 / I0);
+    Real ZeroInflationCashFlow::indexFixing() const {
+        return CPI::laggedFixing(zeroInflationIndex_, endDate_, observationLag_, interpolation_);
     }
 
     void ZeroInflationCashFlow::accept(AcyclicVisitor& v) {

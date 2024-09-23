@@ -247,7 +247,6 @@ void setupPriceSurface() {
     Natural fixingDays = 0;
     Size lag = 3;// must be 3 because we use an interpolated index (EU)
     Period yyLag = Period(lag,Months);
-    Rate baseRate = 1; // not really used
     DayCounter dc = Actual365Fixed();
     TARGET cal;
     BusinessDayConvention bdc = ModifiedFollowing;
@@ -256,7 +255,7 @@ void setupPriceSurface() {
     ext::shared_ptr<InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic> >
         cfEUprices(new InterpolatedYoYCapFloorTermPriceSurface<Bicubic,Cubic>(
                                        fixingDays,
-                                       yyLag, yoyIndexEU, baseRate,
+                                       yyLag, yoyIndexEU, CPI::Linear,
                                        n, dc,
                                        cal,    bdc,
                                        cStrikesEU, fStrikesEU, cfMaturitiesEU,
