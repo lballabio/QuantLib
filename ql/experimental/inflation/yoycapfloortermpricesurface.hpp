@@ -606,8 +606,6 @@ namespace QuantLib {
         }
 
         Date baseDate =
-            yoyIndex()->interpolated() ?
-            nominalTS_->referenceDate() - observationLag() :
             inflationPeriod(nominalTS_->referenceDate() - observationLag(),
                             yoyIndex()->frequency()).first;
         // usually this base rate is known
@@ -619,8 +617,7 @@ namespace QuantLib {
         auto pYITS =
             ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
                       nominalTS_->referenceDate(), baseDate, baseYoYRate,
-                      yoyIndex()->frequency(), yoyIndex()->interpolated(),
-                      dayCounter(), YYhelpers);
+                      yoyIndex()->frequency(), dayCounter(), YYhelpers);
         pYITS->recalculate();
         yoy_ = pYITS;   // store
 
