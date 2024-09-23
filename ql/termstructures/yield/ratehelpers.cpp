@@ -613,7 +613,7 @@ namespace QuantLib {
             .withSettlementDays(settlementDays_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withFixedLegDayCount(fixedDayCount_)
-            .withFixedLegTenor(Period(fixedFrequency_))
+            .withFixedLegTenor(fixedFrequency_ == Once ? tenor_ : Period(fixedFrequency_))
             .withFixedLegConvention(fixedConvention_)
             .withFixedLegTerminationDateConvention(fixedConvention_)
             .withFixedLegCalendar(calendar_)

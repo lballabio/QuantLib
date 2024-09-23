@@ -943,6 +943,21 @@ BOOST_AUTO_TEST_CASE(testFourWeeksTenor) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testOnceFrequency) {
+    BOOST_TEST_MESSAGE(
+        "Testing that Once frequency works...");
+
+    Schedule s =
+        MakeSchedule().from(Date(13,January,2016))
+                      .to(Date(13,January,2019))
+                      .withFrequency(Once)
+                      .forwards();
+
+    BOOST_CHECK(s.size() == 2);
+    BOOST_CHECK(s[0] == Date(13,January,2016));
+    BOOST_CHECK(s[1] == Date(13,January,2019));
+}
+
 BOOST_AUTO_TEST_CASE(testScheduleAlwaysHasAStartDate) {
     BOOST_TEST_MESSAGE("Testing that variations of MakeSchedule "
                        "always produce a schedule with a start date...");
