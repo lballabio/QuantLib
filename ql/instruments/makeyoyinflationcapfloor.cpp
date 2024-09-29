@@ -43,7 +43,7 @@ namespace QuantLib {
                                                        const Size& length,
                                                        Calendar cal,
                                                        const Period& observationLag)
-    : MakeYoYInflationCapFloor(capFloorType, index, length, cal, observationLag, CPI::AsIndex)  {}
+    : MakeYoYInflationCapFloor(capFloorType, std::move(index), length, std::move(cal), observationLag, CPI::AsIndex)  {}
 
     MakeYoYInflationCapFloor::operator YoYInflationCapFloor() const {
         ext::shared_ptr<YoYInflationCapFloor> capfloor = *this;

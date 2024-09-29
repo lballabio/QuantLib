@@ -75,8 +75,8 @@ namespace QuantLib {
                                            Rate strike,
                                            Size n,
                                            ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
-    : YoYOptionletHelper(price, notional, capFloorType, lag, yoyDayCounter, paymentCalendar,
-                         fixingDays, index, CPI::AsIndex, strike, n, pricer) {}
+    : YoYOptionletHelper(price, notional, capFloorType, lag, std::move(yoyDayCounter), std::move(paymentCalendar),
+                         fixingDays, std::move(index), CPI::AsIndex, strike, n, std::move(pricer)) {}
 
 
     Real YoYOptionletHelper::impliedQuote() const {

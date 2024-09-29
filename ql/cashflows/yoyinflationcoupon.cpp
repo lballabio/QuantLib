@@ -94,7 +94,7 @@ namespace QuantLib {
                                      Calendar paymentCalendar,
                                      ext::shared_ptr<YoYInflationIndex> index,
                                      const Period& observationLag)
-    : yoyInflationLeg(schedule, paymentCalendar, index, observationLag, CPI::AsIndex) {}
+    : yoyInflationLeg(std::move(schedule), std::move(paymentCalendar), std::move(index), observationLag, CPI::AsIndex) {}
 
 
     yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {
