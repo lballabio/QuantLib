@@ -114,7 +114,7 @@ namespace QuantLib {
         const std::vector<Period>& cfMaturities,
         const Matrix& cPrice,
         const Matrix& fPrice)
-    : YoYCapFloorTermPriceSurface(fixingDays, yyLag, yii, CPI::AsIndex, nominal, dc, cal, bdc,
+    : YoYCapFloorTermPriceSurface(fixingDays, yyLag, yii, CPI::AsIndex, std::move(nominal), dc, cal, bdc,
                                   cStrikes, fStrikes, cfMaturities, cPrice, fPrice) {}
 
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
