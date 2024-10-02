@@ -139,7 +139,7 @@ namespace QuantLib {
         /*! \deprecated Use the constructor without formatString.
                         Deprecated in version 1.33.
         */
-        QL_DEPRECATED
+        [[deprecated("Use the constructor without formatString")]]
         Data(std::string name,
              std::string code,
              Integer numericCode,

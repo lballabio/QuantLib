@@ -89,16 +89,10 @@ namespace QuantLib {
                        const std::string& formatString,
                        const Currency& triangulationCurrency,
                        const std::set<std::string>& minorUnitCodes)
-    : data_(ext::make_shared<Currency::Data>(name,
-                                             code,
-                                             numericCode,
-                                             symbol,
-                                             fractionSymbol,
-                                             fractionsPerUnit,
-                                             rounding,
-                                             formatString,
-                                             triangulationCurrency,
-                                             minorUnitCodes)) {}
+    : Currency(name, code, numericCode, symbol, fractionSymbol, fractionsPerUnit,
+               rounding, triangulationCurrency, minorUnitCodes) {
+        data_->formatString = formatString;
+    }
 
     QL_DEPRECATED_ENABLE_WARNING
 
