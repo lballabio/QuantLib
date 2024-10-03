@@ -194,7 +194,7 @@ namespace QuantLib {
             Q0 = Q1;
         }
         protectionNpv *= arguments_.claim->amount(
-            Null<Date>(), arguments_.notional, recoveryRate_);
+            Date(), arguments_.notional, recoveryRate_);
 
         results_.defaultLegNPV = protectionNpv;
 

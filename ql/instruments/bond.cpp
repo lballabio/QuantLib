@@ -149,7 +149,7 @@ namespace QuantLib {
     }
 
     Date Bond::maturityDate() const {
-        if (maturityDate_!=Null<Date>())
+        if (maturityDate_ != Date())
             return maturityDate_;
         else
             return BondFunctions::maturityDate(*this);

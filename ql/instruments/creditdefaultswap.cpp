@@ -53,7 +53,7 @@ namespace QuantLib {
     : side_(side), notional_(notional), upfront_(ext::nullopt), runningSpread_(spread),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
       claim_(std::move(claim)),
-      protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
+      protectionStart_(protectionStart == Date() ? schedule[0] : protectionStart),
       tradeDate_(tradeDate), cashSettlementDays_(cashSettlementDays) {
 
         init(schedule, convention, dayCounter, lastPeriodDayCounter, rebatesAccrual);
@@ -78,7 +78,7 @@ namespace QuantLib {
     : side_(side), notional_(notional), upfront_(upfront), runningSpread_(runningSpread),
       settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
       claim_(std::move(claim)),
-      protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
+      protectionStart_(protectionStart == Date() ? schedule[0] : protectionStart),
       tradeDate_(tradeDate), cashSettlementDays_(cashSettlementDays) {
 
         init(schedule, convention, dayCounter, lastPeriodDayCounter, rebatesAccrual, upfrontDate);
@@ -460,10 +460,8 @@ namespace QuantLib {
         QL_REQUIRE(!leg.empty(), "coupons not set");
         QL_REQUIRE(upfrontPayment, "upfront payment not set");
         QL_REQUIRE(claim, "claim not set");
-        QL_REQUIRE(protectionStart != Null<Date>(),
-                   "protection start date not set");
-        QL_REQUIRE(maturity != Null<Date>(),
-                   "maturity date not set");
+        QL_REQUIRE(protectionStart != Date(), "protection start date not set");
+        QL_REQUIRE(maturity != Date(), "maturity date not set");
     }
 
     void CreditDefaultSwap::results::reset() {
@@ -494,7 +492,7 @@ namespace QuantLib {
         if (rule == DateGeneration::CDS2015 && (anchorDate == Date(20, Dec, anchorDate.year()) ||
             anchorDate == Date(20, Jun, anchorDate.year()))) {
             if (tenor.length() == 0) {
-                return Null<Date>();
+                return Date();
             } else {
                 anchorDate -= 3 * Months;
             }
