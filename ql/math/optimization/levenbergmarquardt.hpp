@@ -54,6 +54,7 @@ namespace QuantLib {
                            bool useCostFunctionsJacobian = false);
         EndCriteria::Type minimize(Problem& P,
                                    const EndCriteria& endCriteria) override;
+
         void fcn(int m,
                  int n,
                  Real* x,
@@ -65,10 +66,16 @@ namespace QuantLib {
                  Real* fjac,
                  int* iflag);
 
+        /*! \deprecated Don't use this method; inspect the result of minimize instead.
+                        Deprecated in version 1.36.
+        */
+        [[deprecated("Don't use this method; inspect the result of minimize instead")]]
+        virtual Integer getInfo() const { return info_; }
       private:
         Problem* currentProblem_;
         Array initCostValues_;
         Matrix initJacobian_;
+        mutable Integer info_ = 0; // remove together with getInfo
         const Real epsfcn_, xtol_, gtol_;
         const bool useCostFunctionsJacobian_;
     };

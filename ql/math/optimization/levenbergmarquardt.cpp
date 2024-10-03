@@ -101,6 +101,8 @@ namespace QuantLib {
                        wa1.get(), wa2.get(), wa3.get(), wa4.get(),
                        lmdifCostFunction,
                        lmdifJacFunction);
+        // for the time being
+        info_ = info;
         // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
         QL_REQUIRE(info != 7, "MINPACK: xtol is too small. no further "
