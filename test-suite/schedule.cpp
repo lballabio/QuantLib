@@ -865,7 +865,7 @@ BOOST_AUTO_TEST_CASE(testCDS2015ZeroMonthsMatured) {
     };
 
     for (const Date& input: inputs) {
-        BOOST_CHECK_EQUAL(cdsMaturity(input, tenor, rule), Null<Date>());
+        BOOST_CHECK_EQUAL(cdsMaturity(input, tenor, rule), Date());
     }
 }
 

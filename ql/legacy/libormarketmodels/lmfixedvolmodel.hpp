@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         LmFixedVolatilityModel(Array volatilities, const std::vector<Time>& startTimes);
 
-        Array volatility(Time t, const Array& x = Null<Array>()) const override;
+        Array volatility(Time t, const Array& x = {}) const override;
         Volatility volatility(Size i, Time t, const Array& x) const override;
 
       private:

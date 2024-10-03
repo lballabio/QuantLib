@@ -36,7 +36,7 @@ namespace QuantLib {
                                Rate strike)
     : swapIndex_(std::move(swapIndex)), delivery_(Settlement::Physical),
       settlementMethod_(Settlement::PhysicalOTC), optionTenor_(optionTenor),
-      optionConvention_(ModifiedFollowing), fixingDate_(Null<Date>()), strike_(strike),
+      optionConvention_(ModifiedFollowing), strike_(strike),
       underlyingType_(Swap::Payer), nominal_(1.0) {}
 
     MakeSwaption::MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
@@ -58,10 +58,10 @@ namespace QuantLib {
         // if the evaluation date is not a business day
         // then move to the next business day
         refDate = fixingCalendar.adjust(refDate);
-        if (fixingDate_ == Null<Date>())
+        if (fixingDate_ == Date())
             fixingDate_ = fixingCalendar.advance(refDate, optionTenor_,
                                                  optionConvention_);
-        if (exerciseDate_ == Null<Date>()) {
+        if (exerciseDate_ == Date()) {
             exercise_ = ext::shared_ptr<Exercise>(new
                 EuropeanExercise(fixingDate_));
         } else {

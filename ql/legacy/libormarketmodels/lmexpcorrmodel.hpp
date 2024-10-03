@@ -46,8 +46,8 @@ namespace QuantLib {
       public:
         LmExponentialCorrelationModel(Size size, Real rho);
 
-        Matrix correlation(Time t, const Array& x = Null<Array>()) const override;
-        Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const override;
+        Matrix correlation(Time t, const Array& x = {}) const override;
+        Matrix pseudoSqrt(Time t, const Array& x = {}) const override;
         Real correlation(Size i, Size j, Time t, const Array& x) const override;
         bool isTimeIndependent() const override;
 

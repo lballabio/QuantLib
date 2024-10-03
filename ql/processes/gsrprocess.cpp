@@ -43,7 +43,7 @@ namespace QuantLib {
 
     Real GsrProcess::time(const Date &d) const {
         QL_REQUIRE(
-            referenceDate_ != Null<Date>() && dc_ != DayCounter(),
+            referenceDate_ != Date() && dc_ != DayCounter(),
             "time can not be computed without reference date and day counter");
         return dc_.yearFraction(referenceDate_, d);
     }

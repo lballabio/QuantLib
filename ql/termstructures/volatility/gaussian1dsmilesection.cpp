@@ -37,9 +37,9 @@ namespace QuantLib {
       fixingDate_(fixingDate), swapIndex_(std::move(swapIndex)), model_(model),
       engine_(swaptionEngine) {
 
-        atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
+        atm_ = model_->swapRate(fixingDate_, swapIndex_->tenor(), Date(), 0.0, swapIndex_);
         annuity_ =
-            model_->swapAnnuity(fixingDate_, swapIndex_->tenor(), Null<Date>(), 0.0, swapIndex_);
+            model_->swapAnnuity(fixingDate_, swapIndex_->tenor(), Date(), 0.0, swapIndex_);
 
         if (engine_ == nullptr) {
             engine_ = ext::make_shared<Gaussian1dSwaptionEngine>(
@@ -56,7 +56,7 @@ namespace QuantLib {
     : SmileSection(fixingDate, dc, model->termStructure()->referenceDate()),
       fixingDate_(fixingDate), iborIndex_(std::move(iborIndex)), model_(model), engine_(capEngine) {
 
-        atm_ = model_->forwardRate(fixingDate_, Null<Date>(), 0.0, iborIndex_);
+        atm_ = model_->forwardRate(fixingDate_, Date(), 0.0, iborIndex_);
         CapFloor c =
             MakeCapFloor(CapFloor::Cap, iborIndex_->tenor(), iborIndex_, Null<Real>(), 0 * Days)
                 .withEffectiveDate(fixingDate_, false);

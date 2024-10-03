@@ -166,7 +166,7 @@ namespace QuantLib {
         }
         // end probability computation
 
-        Date event1 = Null<Date>(), event0;
+        Date event1 = Date(), event0;
         Time event1Time = Null<Real>(), event0Time;
 
         ext::shared_ptr<IborIndex> ibor1 =

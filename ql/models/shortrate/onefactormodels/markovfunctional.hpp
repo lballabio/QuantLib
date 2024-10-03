@@ -437,7 +437,7 @@ namespace QuantLib {
 
         Real forwardRateInternal(
             const Date& fixing,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
@@ -445,7 +445,7 @@ namespace QuantLib {
         Real
         swapRateInternal(const Date& fixing,
                          const Period& tenor,
-                         const Date& referenceDate = Null<Date>(),
+                         const Date& referenceDate = Date(),
                          Real y = 0.0,
                          bool zeroFixingDays = false,
                          ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
@@ -453,7 +453,7 @@ namespace QuantLib {
         Real swapAnnuityInternal(
             const Date& fixing,
             const Period& tenor,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
@@ -462,7 +462,7 @@ namespace QuantLib {
             const Option::Type& type,
             const Date& expiry,
             Rate strike,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
@@ -472,7 +472,7 @@ namespace QuantLib {
             const Date& expiry,
             const Period& tenor,
             Rate strike,
-            const Date& referenceDate = Null<Date>(),
+            const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
             const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
