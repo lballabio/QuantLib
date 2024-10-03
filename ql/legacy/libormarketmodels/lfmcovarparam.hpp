@@ -45,9 +45,9 @@ namespace QuantLib {
         Size size() const { return size_; }
         Size factors() const { return factors_; }
 
-        virtual Matrix diffusion(Time t, const Array& x = Null<Array>()) const = 0;
-        virtual Matrix covariance(Time t, const Array& x = Null<Array>()) const;
-        virtual Matrix integratedCovariance(Time t, const Array& x = Null<Array>()) const;
+        virtual Matrix diffusion(Time t, const Array& x = {}) const = 0;
+        virtual Matrix covariance(Time t, const Array& x = {}) const;
+        virtual Matrix integratedCovariance(Time t, const Array& x = {}) const;
 
       protected:
         const Size size_;

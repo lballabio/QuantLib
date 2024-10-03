@@ -43,9 +43,9 @@ namespace QuantLib {
         std::vector<Parameter>& params();
         void setParams(const std::vector<Parameter> & arguments);
 
-        virtual Matrix correlation(Time t, const Array& x = Null<Array>()) const = 0;
-        virtual Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const;
-        virtual Real correlation(Size i, Size j, Time t, const Array& x = Null<Array>()) const;
+        virtual Matrix correlation(Time t, const Array& x = {}) const = 0;
+        virtual Matrix pseudoSqrt(Time t, const Array& x = {}) const;
+        virtual Real correlation(Size i, Size j, Time t, const Array& x = {}) const;
         virtual bool isTimeIndependent() const;
 
     protected:
