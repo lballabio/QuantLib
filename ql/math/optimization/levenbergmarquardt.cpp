@@ -128,6 +128,8 @@ namespace QuantLib {
           case 6:
             ecType = EndCriteria::FunctionEpsilonTooSmall;
             break;
+          default:
+            QL_FAIL("unknown MINPACK result: " << info);
         }
         // set problem
         std::copy(xx.get(), xx.get()+n, x_.begin());
