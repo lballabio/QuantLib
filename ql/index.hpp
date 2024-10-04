@@ -100,8 +100,8 @@ namespace QuantLib {
                         ValueIterator vBegin,
                         bool forceOverwrite = false) {
             checkNativeFixingsAllowed();
-            std::string tag = name();
-            TimeSeries<Real>& h = IndexManager::instance().getHistoryRef(tag);
+            auto& obsValue = IndexManager::instance().getHistoryObservableValueRef(name());
+            auto& h = obsValue.ref();
             bool noInvalidFixing = true, noDuplicatedFixing = true;
             Date invalidDate, duplicatedDate;
             Real nullValue = Null<Real>();
@@ -128,6 +128,7 @@ namespace QuantLib {
                     invalidValue = *(vBegin++);
                 }
             }
+            obsValue.notifyObservers();
             QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
                                             << invalidDate.weekday() << " " << invalidDate << ", "
                                             << invalidValue);

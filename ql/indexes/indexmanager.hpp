@@ -45,8 +45,8 @@ namespace QuantLib {
         bool hasHistory(const std::string& name) const;
         //! returns the (possibly empty) history of the index fixings
         const TimeSeries<Real>& getHistory(const std::string& name) const;
-        //! returns a ref to the (possibly empty) history of the index fixings
-         TimeSeries<Real>& getHistoryRef(const std::string& name);
+        //! returns the observable value for a history
+        ObservableValue<TimeSeries<Real>>& getHistoryObservableValueRef(const std::string& name);
         //! stores the historical fixings of the index
         void setHistory(const std::string& name, TimeSeries<Real> history);
         //! observer notifying of changes in the index fixings
