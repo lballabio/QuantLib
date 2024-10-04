@@ -52,7 +52,7 @@
     \code
     #define QL_ENABLE_TRACING
     \endcode
-    If enabled, tracing messages might be emitted by the library
+    If defined, tracing messages might be emitted by the library
     depending on run-time settings. Enabling this option can degrade
     performance. Undefined by default.
 
@@ -81,16 +81,15 @@
     #define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
     \endcode
     If defined, a thread-safe (but less performant) version of the
-    observer pattern is used. You should define it if you want to
-    use %QuantLib via the SWIG layer within the JVM or .NET eco system
-    or any environment with an async garbage collector.  Undefined by
-    default.  If defined together with `QL_USE_STD_SHARED_PTR`, it requires
-    at least C++17.
+    observer pattern is used. You should define it if you want to use
+    %QuantLib via the SWIG layer within the JVM or .NET ecosystem or
+    any other environment with an async garbage collector.  Undefined
+    by default.
 
     \code
     #define QL_HIGH_RESOLUTION_DATE
     \endcode
-    If defined, date objects support an intraday datetime
+    If defined, date objects willsupport an intraday datetime
     resolution down to microseconds.  Strictly monotone daycounters
     (`Actual360`, `Actual365Fixed` and `ActualActual`) will take the
     additional information into account and allow for accurate
@@ -120,40 +119,43 @@
     thus is the current default.
 
     \code
-    #define QL_USE_STD_SHARED_PTR
-    \endcode
-    If defined, `std::shared_ptr` and related classes and functions are
-    used instead of `boost::shared_ptr`. If disabled (the
-    default) the Boost facilities are used. Note that `std::shared_ptr`
-    does not check access and can cause segmentation faults.
-
-    \code
     #define QL_USE_STD_ANY
     \endcode
-    If enabled, `std::any` and related classes and functions will be
-    used instead of `boost::any`. This requires C++17. If disabled
-    (the default) the Boost facilities are used.
+    If defined, `std::any` and related classes and functions will be
+    used instead of `boost::any`. If undefined (the default) the Boost
+    facilities will be used.
 
     \code
     #define QL_USE_STD_OPTIONAL
     \endcode
-    If enabled, `std::optional` and related classes and functions will
-    be used instead of `boost::optional`. This requires C++17. If
-    disabled (the default) the Boost facilities are used.
+    If defined, `std::optional` and related classes and functions will
+    be used instead of `boost::optional`. If undefined (the default)
+    the Boost facilities will be used.
+
+    \code
+    #define QL_USE_STD_SHARED_PTR
+    \endcode
+    If defined, `std::shared_ptr` and related classes and functions
+    will used instead of `boost::shared_ptr`. If undefined (the
+    default) the Boost facilities will be used. Note that
+    `std::shared_ptr` does not check access and can cause segmentation
+    faults.
 
     \code
     #define QL_NULL_AS_FUNCTIONS
     \endcode
-    If defined, `Null` will be implemented as a set of template
-    functions.  This allows the code to work with user-defined `Real`
-    types but was reported to cause internal compiler errors with
-    Visual C++ 2022 in some cases.  If disabled (the default) `Null`
-    will be implemented as a class template, as in previous releases.
+    If defined, `Null` will be implemented as a template function.
+    This allows the code to work with user-defined `Real` types but
+    was reported to cause internal compiler errors with Visual C++
+    2022 in some cases.  If undefined (the default) `Null` will be
+    implemented as a class template, as in previous releases.
 
     \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
     \endcode
-    Define this to enable the parallel unit test runner. Undefined by
-    default.
+    If defined, a parallel unit test runner will be used to execute
+    the C++ test suite. This will reduce the runtime on multi core
+    CPUs. Undefined by default.
+
 */
 

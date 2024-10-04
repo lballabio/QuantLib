@@ -88,70 +88,11 @@ AC_PATH_PROG([DVIPS], [dvips])
 
 # site configuration
 
-# AC_ARG_WITH([real],
-#             AS_HELP_STRING([--with-real=type],
-#                            [The given type will be used for floating-point
-#                             calculations.
-#                             In case this option is not invoked, double
-#                             will be used.]),
-#             [AC_DEFINE_UNQUOTED([QL_REAL],[$withval],
-#                                 [Define this as the type to be used for
-#                                  floating-point calculations.])],
-#             [AC_DEFINE_UNQUOTED([QL_REAL],[double],
-#                                 [Define this as the type to be used for
-#                                  floating-point calculations.])])
-
-# AC_ARG_WITH([integer],
-#             AS_HELP_STRING([--with-integer=type],
-#                            [The given type will be used for integer
-#                             calculations. At least an int is required.
-#                             In case this option is not invoked, int
-#                             will be used.]),
-#             [AC_DEFINE_UNQUOTED([QL_INTEGER],[$withval],
-#                                 [Define this as the type to be used for
-#                                  integer calculations. At least an int
-#                                  is required.])],
-#             [AC_DEFINE_UNQUOTED([QL_INTEGER],[int],
-#                                 [Define this as the type to be used for
-#                                  integer calculations. At least an int
-#                                  is required.])])
-
-# AC_ARG_WITH([big-integer],
-#             AS_HELP_STRING([--with-big-integer=type],
-#                            [The given type will be used for large integer
-#                             calculations. At least 4 bytes are required.
-#                             In case this option is not invoked, long
-#                             will be used.]),
-#             [AC_DEFINE_UNQUOTED([QL_BIG_INTEGER],[$withval],
-#                                 [Define this as the type to be used for
-#                                  large integer calculations. At least
-#                                  4 bytes are required.])],
-#             [AC_DEFINE_UNQUOTED([QL_BIG_INTEGER],[long],
-#                                 [Define this as the type to be used for
-#                                  large integer calculations. At least
-#                                  4 bytes are required.])])
-
-
-AC_ARG_ENABLE([error-lines],
-              AS_HELP_STRING([--enable-error-lines],
-                             [If enabled, file and line information is
-                              added to the error messages thrown by
-                              the library.]),
-              [ql_error_lines=$enableval],
-              [ql_error_lines=no])
-AC_MSG_CHECKING([whether to add file and line information to errors])
-if test "$ql_error_lines" = "yes" ; then
-   AC_DEFINE([QL_ERROR_LINES],[1],
-             [Define this if error messages should include file and line
-              information.])
-fi
-AC_MSG_RESULT([$ql_error_lines])
-
 AC_ARG_ENABLE([error-functions],
               AS_HELP_STRING([--enable-error-functions],
                              [If enabled, current function information
                               is added to the error messages thrown by
-                              the library.]),
+                              the library. Disabled by default.]),
               [ql_error_functions=$enableval],
               [ql_error_functions=no])
 AC_MSG_CHECKING([whether to add function information to errors])
@@ -162,21 +103,52 @@ if test "$ql_error_functions" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_error_functions])
 
+AC_ARG_ENABLE([error-lines],
+              AS_HELP_STRING([--enable-error-lines],
+                             [If enabled, file and line information is
+                              added to the error messages thrown by
+                              the library. Disabled by default.]),
+              [ql_error_lines=$enableval],
+              [ql_error_lines=no])
+AC_MSG_CHECKING([whether to add file and line information to errors])
+if test "$ql_error_lines" = "yes" ; then
+   AC_DEFINE([QL_ERROR_LINES],[1],
+             [Define this if error messages should include file and line
+              information.])
+fi
+AC_MSG_RESULT([$ql_error_lines])
+
 AC_ARG_ENABLE([tracing],
               AS_HELP_STRING([--enable-tracing],
                              [If enabled, tracing messages might be emitted
                               by the library depending on run-time
                               settings. Enabling this option can degrade
-                              performance.]),
+                              performance. Disabled by default.]),
               [ql_tracing=$enableval],
               [ql_tracing=no])
 AC_MSG_CHECKING([whether to enable tracing])
 if test "$ql_tracing" = "yes" ; then
    AC_DEFINE([QL_ENABLE_TRACING],[1],
-             [Define this if tracing messages should allowed (whether they
+             [Define this if tracing messages should be allowed (whether they
               are actually emitted will depend on run-time settings.)])
 fi
 AC_MSG_RESULT([$ql_tracing])
+
+AC_MSG_CHECKING([whether to enable extra safety checks])
+AC_ARG_ENABLE([extra-safety-checks],
+              AS_HELP_STRING([--enable-extra-safety-checks],
+                             [If enabled, extra run-time checks are added
+                              to a few functions. This can prevent their
+                              inlining and degrade performance.
+                              Disabled by default.]),
+              [ql_belt_and_braces=$enableval],
+              [ql_belt_and_braces=no])
+if test "$ql_belt_and_braces" = "yes" ; then
+   AC_DEFINE([QL_EXTRA_SAFETY_CHECKS],[1],
+             [Define this if extra safety checks should be performed.
+              This can degrade performance.])
+fi
+AC_MSG_RESULT([$ql_belt_and_braces])
 
 AC_MSG_CHECKING([whether to enable indexed coupons])
 AC_ARG_ENABLE([indexed-coupons],
@@ -194,21 +166,6 @@ if test "$ql_indexed_coupon" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_indexed_coupon])
 
-AC_MSG_CHECKING([whether to enable extra safety checks])
-AC_ARG_ENABLE([extra-safety-checks],
-              AS_HELP_STRING([--enable-extra-safety-checks],
-                             [If enabled, extra run-time checks are added
-                              to a few functions. This can prevent their
-                              inlining and degrade performance.]),
-              [ql_belt_and_braces=$enableval],
-              [ql_belt_and_braces=no])
-if test "$ql_belt_and_braces" = "yes" ; then
-   AC_DEFINE([QL_EXTRA_SAFETY_CHECKS],[1],
-             [Define this if extra safety checks should be performed.
-              This can degrade performance.])
-fi
-AC_MSG_RESULT([$ql_belt_and_braces])
-
 AC_MSG_CHECKING([whether to enable sessions])
 AC_ARG_ENABLE([sessions],
               AS_HELP_STRING([--enable-sessions],
@@ -217,7 +174,7 @@ AC_ARG_ENABLE([sessions],
                               threads; in particular, this means that
                               the evaluation date, the stored index
                               fixings and any other settings will be
-                              per-thread. Undefined by default.]),
+                              per-thread. Disabled by default.]),
               [ql_use_sessions=$enableval],
               [ql_use_sessions=no])
 if test "$ql_use_sessions" = "yes" ; then
@@ -229,14 +186,13 @@ AC_MSG_RESULT([$ql_use_sessions])
 AC_MSG_CHECKING([whether to enable thread-safe observer pattern])
 AC_ARG_ENABLE([thread-safe-observer-pattern],
               AS_HELP_STRING([--enable-thread-safe-observer-pattern],
-                             [If enabled, thread-safe version of the 
-                              observer pattern will be used. You should 
-                              enable it if you want to use QuantLib 
-                              via the SWIG layer within the JVM or .NET 
-                              eco system or any environment with an 
-                              async garbage collector. C++-17 is required
-                              if this option is used together with 
-                              --enable-std-pointers]),
+                             [If enabled, a thread-safe (but less
+                              performant) version of the observer pattern
+                              will be used. You should enable it if you
+                              want to use QuantLib via the SWIG layer
+                              within the JVM or .NET ecosystem or any
+                              other environment with an async garbage
+                              collector. Disabled by default.]),
               [ql_use_tsop=$enableval],
               [ql_use_tsop=no])
 AC_MSG_RESULT([$ql_use_tsop])
@@ -253,12 +209,162 @@ else
    AC_SUBST([PTHREAD_LIB],[""])
 fi
 
+AC_MSG_CHECKING([whether to enable intraday date and daycounters])
+AC_ARG_ENABLE([intraday],
+              AS_HELP_STRING([--enable-intraday],
+                             [If enabled, date objects will support an intraday 
+                              datetime resolution down to microseconds. 
+                              Strickly monotone daycounters (Actual360, 
+                              Actual365Fixed and ActualActual) will take 
+                              the additional information into account 
+                              and allow for accurate intraday pricing. 
+                              If disabled (the default) the smallest 
+                              resolution of date objects will be a single day.
+                              Intraday datetime resolution is experimental.]),
+              [ql_use_intraday=$enableval],
+              [ql_use_intraday=no])
+if test "$ql_use_intraday" = "yes" ; then
+   AC_DEFINE([QL_HIGH_RESOLUTION_DATE],[1],
+             [Define this if you want to enable high resolution date class.])
+fi
+AC_MSG_RESULT([$ql_use_intraday])
+
+AC_MSG_CHECKING([whether to throw exceptions for notification cycles])
+AC_ARG_ENABLE([throwing-in-cycles],
+              AS_HELP_STRING([--enable-throwing-in-cycles],
+                             [If enabled, lazy objects will raise an
+                              exception when they detect a
+                              notification cycle which would result in
+                              an infinite recursion loop. If disabled
+                              (the default), they will break the
+                              recursion without throwing.  Enabling
+                              this option is recommended but might
+                              cause existing code to throw.]),
+              [ql_throw_in_cycles=$enableval],
+              [ql_throw_in_cycles=no])
+if test "$ql_throw_in_cycles" = "yes" ; then
+   AC_DEFINE([QL_THROW_IN_CYCLES],[1],
+             [Define this if you want to throw an exception when a notification loop is detected.])
+fi
+AC_MSG_RESULT([$ql_throw_in_cycles])
+
+AC_MSG_CHECKING([whether to reduce the number of notifications from lazy objects])
+AC_ARG_ENABLE([faster-lazy-objects],
+              AS_HELP_STRING([--enable-faster-lazy-objects],
+                             [If enabled (the default), lazy objects
+                              will forward the first notification
+                              received, and discard the others until
+                              recalculated; the rationale is that
+                              observers were already notified, and
+                              don't need further notifications until
+                              they recalculate, at which point this
+                              object would be recalculated too.  After
+                              recalculation, this object would again
+                              forward the first notification received.
+                              Although not always correct, this
+                              behavior is a lot faster and thus is the
+                              current default.]),
+              [ql_faster_lazy_objects=$enableval],
+              [ql_faster_lazy_objects=yes])
+if test "$ql_faster_lazy_objects" = "yes" ; then
+   AC_DEFINE([QL_FASTER_LAZY_OBJECTS],[1],
+             [Define this if you want lazy objects to forward fewer notifications.])
+fi
+AC_MSG_RESULT([$ql_faster_lazy_objects])
+
+AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
+AC_ARG_ENABLE([std-any],
+              AS_HELP_STRING([--enable-std-any],
+                             [If enabled, std::any and related classes and
+                              functions will be used instead of boost::any.
+                              If disabled (the default) the Boost facilities
+                              will be used.]),
+              [ql_use_std_any=$enableval],
+              [ql_use_std_any=no])
+if test "$ql_use_std_any" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_ANY],[1],
+             [Define this if you want to use std::any.])
+fi
+AC_MSG_RESULT([$ql_use_std_any])
+
+AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
+AC_ARG_ENABLE([std-optional],
+              AS_HELP_STRING([--enable-std-optional],
+                             [If enabled, std::optional and related
+                              classes and functions will be used instead
+                              of boost::optional. If disabled (the default)
+                              the Boost facilities will be used.]),
+              [ql_use_std_optional=$enableval],
+              [ql_use_std_optional=no])
+if test "$ql_use_std_optional" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
+             [Define this if you want to use std::optional.])
+fi
+AC_MSG_RESULT([$ql_use_std_optional])
+
+AC_MSG_CHECKING([whether to enable standard smart pointers])
+AC_ARG_ENABLE([std-pointers],
+              AS_HELP_STRING([--enable-std-pointers],
+                             [If enabled, std::shared_ptr and related
+                              classes and functions will be used instead
+                              of boost::shared_ptr.
+                              If disabled (the default) the Boost facilities
+                              will be used.
+                              Note that std::shared_ptr does not check
+                              access and can cause segmentation faults.]),
+              [ql_use_std_pointers=$enableval],
+              [ql_use_std_pointers=no])
+if test "$ql_use_std_pointers" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+fi
+AC_MSG_RESULT([$ql_use_std_pointers])
+
+AC_MSG_CHECKING([whether to enable available std classes])
+AC_ARG_ENABLE([std-classes],
+              AS_HELP_STRING([--enable-std-classes],
+                             [This is a shortcut for --enable-std-pointers
+                              --enable-std-function --enable-std-tuple.
+                              If enabled, this supersedes any --disable
+                              option passed for the above.]),
+              [ql_use_std_classes=$enableval],
+              [ql_use_std_classes=no])
+if test "$ql_use_std_classes" = "yes" ; then
+   AC_DEFINE([QL_USE_STD_ANY],[1],
+             [Define this if you want to use std::any.])
+   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
+             [Define this if you want to use std::optional.])
+   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
+             [Define this if you want to use standard smart pointers.])
+fi
+AC_MSG_RESULT([$ql_use_std_classes])
+
+AC_MSG_CHECKING([whether to enable the implementation of Null as template functions])
+AC_ARG_ENABLE([null-as-functions],
+              AS_HELP_STRING([--enable-null-as-functions],
+                             [If enabled, Null will be implemented as a
+                              template function.  This allows the code
+                              to work with user-defined Real types but was
+                              reported to cause internal compiler errors
+                              with Visual C++ 2022 in some cases.
+                              If disabled (the default) Null will be
+                              implemented as a class template, as in
+                              previous releases.]),
+              [ql_use_null_functions=$enableval],
+              [ql_use_null_functions=no])
+if test "$ql_use_null_functions" = "yes" ; then
+   AC_DEFINE([QL_NULL_AS_FUNCTIONS],[1],
+             [Define this if you want to enable the implementation of Null as template functions.])
+fi
+AC_MSG_RESULT([$ql_use_null_functions])
+
 AC_MSG_CHECKING([whether to enable parallel unit test runner])
 AC_ARG_ENABLE([parallel-unit-test-runner],
               AS_HELP_STRING([--enable-parallel-unit-test-runner],
-                             [If enabled, a parallel unit test runner is used 
-                              to execute the C++ test suite. This will reduce 
-                              the runtime on multi core CPUs.]),
+                             [If enabled, a parallel unit test runner will be
+                              used to execute the C++ test suite. This will
+                              reduce the runtime on multi core CPUs.
+                              Disabled by default.]),
               [ql_use_parallel_test=$enableval],
               [ql_use_parallel_test=no])
 AC_MSG_RESULT([$ql_use_parallel_test])
@@ -319,155 +425,6 @@ AC_ARG_ENABLE([unity-build],
               [ql_use_unity_build=no])
 AM_CONDITIONAL(UNITY_BUILD, test "$ql_use_unity_build" != "no")
 AC_MSG_RESULT([$ql_use_unity_build])
-
-AC_MSG_CHECKING([whether to enable intraday date and daycounters])
-AC_ARG_ENABLE([intraday],
-              AS_HELP_STRING([--enable-intraday],
-                             [If enabled, date objects will support an intraday 
-                              datetime resolution down to microseconds. 
-                              Strickly monotone daycounters (Actual360, 
-                              Actual365Fixed and ActualActual) will take 
-                              the additional information into account 
-                              and allow for accurate intraday pricing. 
-                              If disabled (the default) the smallest 
-                              resolution of date objects will be a single day.
-                              Intraday datetime resolution is experimental.]),
-              [ql_use_intraday=$enableval],
-              [ql_use_intraday=no])
-if test "$ql_use_intraday" = "yes" ; then
-   AC_DEFINE([QL_HIGH_RESOLUTION_DATE],[1],
-             [Define this if you want to enable high resolution date class.])
-fi
-AC_MSG_RESULT([$ql_use_intraday])
-
-AC_MSG_CHECKING([whether to throw exceptions for notification cycles])
-AC_ARG_ENABLE([throwing-in-cycles],
-              AS_HELP_STRING([--enable-throwing-in-cycles],
-                             [If enabled, lazy objects will raise an
-                              exception when they detect a
-                              notification cycle which would result in
-                              an infinite recursion loop. If disabled
-                              (the default), they will break the
-                              recursion without throwing.  Enabling
-                              this option is recommended but might
-                              cause existing code to throw.]),
-              [ql_throw_in_cycles=$enableval],
-              [ql_throw_in_cycles=no])
-if test "$ql_throw_in_cycles" = "yes" ; then
-   AC_DEFINE([QL_THROW_IN_CYCLES],[1],
-             [Define this if you want to throw an exception when a notification loop is detected.])
-fi
-AC_MSG_RESULT([$ql_throw_in_cycles])
-
-AC_MSG_CHECKING([whether to reduce the number of notifications from lazy objects])
-AC_ARG_ENABLE([faster-lazy-objects],
-              AS_HELP_STRING([--enable-faster-lazy-objects],
-                             [If enabled, lazy objects will forward
-                              the first notification received, and
-                              discard the others until recalculated;
-                              the rationale is that observers were
-                              already notified, and don't need further
-                              notifications until they recalculate, at
-                              which point this object would be
-                              recalculated too.  After recalculation,
-                              this object would again forward the
-                              first notification received.  Although
-                              not always correct, this behavior is a
-                              lot faster and thus is the current
-                              default.]),
-              [ql_faster_lazy_objects=$enableval],
-              [ql_faster_lazy_objects=yes])
-if test "$ql_faster_lazy_objects" = "yes" ; then
-   AC_DEFINE([QL_FASTER_LAZY_OBJECTS],[1],
-             [Define this if you want lazy objects to forward fewer notifications.])
-fi
-AC_MSG_RESULT([$ql_faster_lazy_objects])
-
-AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
-AC_ARG_ENABLE([std-any],
-              AS_HELP_STRING([--enable-std-any],
-                             [If enabled, std::any and related classes and
-                              functions will be used instead of boost::any.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
-              [ql_use_std_any=$enableval],
-              [ql_use_std_any=no])
-if test "$ql_use_std_any" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_ANY],[1],
-             [Define this if you want to use std::any.])
-fi
-AC_MSG_RESULT([$ql_use_std_any])
-
-AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
-AC_ARG_ENABLE([std-optional],
-              AS_HELP_STRING([--enable-std-optional],
-                             [If enabled, std::optional and related
-                              classes and functions will be used instead
-                              of boost::optional. If disabled (the default)
-                              the Boost facilities are used.]),
-              [ql_use_std_optional=$enableval],
-              [ql_use_std_optional=no])
-if test "$ql_use_std_optional" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
-             [Define this if you want to use std::optional.])
-fi
-AC_MSG_RESULT([$ql_use_std_optional])
-
-AC_MSG_CHECKING([whether to enable standard smart pointers])
-AC_ARG_ENABLE([std-pointers],
-              AS_HELP_STRING([--enable-std-pointers],
-                             [If enabled, std::shared_ptr and related
-                              classes and functions will be used instead
-                              of boost::shared_ptr.
-                              If disabled (the default) the Boost facilities
-                              are used.
-                              Note that std::shared_ptr does not check
-                              access and can cause segmentation faults.]),
-              [ql_use_std_pointers=$enableval],
-              [ql_use_std_pointers=no])
-if test "$ql_use_std_pointers" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
-             [Define this if you want to use standard smart pointers.])
-fi
-AC_MSG_RESULT([$ql_use_std_pointers])
-
-AC_MSG_CHECKING([whether to enable available std classes])
-AC_ARG_ENABLE([std-classes],
-              AS_HELP_STRING([--enable-std-classes],
-                             [This is a shortcut for --enable-std-pointers
-                              --enable-std-function --enable-std-tuple.
-                              If enabled, this supersedes any --disable
-                              option passed for the above.]),
-              [ql_use_std_classes=$enableval],
-              [ql_use_std_classes=no])
-if test "$ql_use_std_classes" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_ANY],[1],
-             [Define this if you want to use std::any.])
-   AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
-             [Define this if you want to use std::optional.])
-   AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
-             [Define this if you want to use standard smart pointers.])
-fi
-AC_MSG_RESULT([$ql_use_std_classes])
-
-AC_MSG_CHECKING([whether to enable the implementation of Null as template functions])
-AC_ARG_ENABLE([null-as-functions],
-              AS_HELP_STRING([--enable-null-as-functions],
-                             [If enabled, Null will be implemented as a set
-                              of template functions.  This allows the code
-                              to work with user-defined Real types but was
-                              reported to cause internal compiler errors
-                              with Visual C++ 2022 in some cases.
-                              If disabled (the default) Null will be
-                              implemented as a class template, as in
-                              previous releases.]),
-              [ql_use_null_functions=$enableval],
-              [ql_use_null_functions=no])
-if test "$ql_use_null_functions" = "yes" ; then
-   AC_DEFINE([QL_NULL_AS_FUNCTIONS],[1],
-             [Define this if you want to enable the implementation of Null as template functions.])
-fi
-AC_MSG_RESULT([$ql_use_null_functions])
 
 AC_MSG_CHECKING([whether to compile the test suite])
 AC_ARG_ENABLE([test-suite],
