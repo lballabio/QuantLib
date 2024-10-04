@@ -29,6 +29,10 @@ namespace QuantLib {
         return data_[name].value();
     }
 
+    TimeSeries<Real>& IndexManager::getHistoryRef(const std::string& name) {
+        return data_[name].ref();
+    }
+
     void IndexManager::setHistory(const std::string& name, TimeSeries<Real> history) {
         data_[name] = std::move(history);
     }

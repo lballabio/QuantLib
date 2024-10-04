@@ -57,6 +57,8 @@ namespace QuantLib {
         operator ext::shared_ptr<Observable>() const;
         //! explicit inspector
         const T& value() const;
+        //! explicit reference
+        T& ref();
       private:
         T value_;
         ext::shared_ptr<Observable> observable_;
@@ -118,6 +120,10 @@ namespace QuantLib {
         return value_;
     }
 
+    template <class T>
+    T& ObservableValue<T>::ref() {
+        return value_;
+    }
 }
 
 #endif

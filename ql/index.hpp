@@ -101,7 +101,7 @@ namespace QuantLib {
                         bool forceOverwrite = false) {
             checkNativeFixingsAllowed();
             std::string tag = name();
-            TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
+            TimeSeries<Real>& h = IndexManager::instance().getHistoryRef(tag);
             bool noInvalidFixing = true, noDuplicatedFixing = true;
             Date invalidDate, duplicatedDate;
             Real nullValue = Null<Real>();
@@ -128,7 +128,6 @@ namespace QuantLib {
                     invalidValue = *(vBegin++);
                 }
             }
-            IndexManager::instance().setHistory(tag, h);
             QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
                                             << invalidDate.weekday() << " " << invalidDate << ", "
                                             << invalidValue);
