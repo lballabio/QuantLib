@@ -250,7 +250,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_ = Following;
         bool exCouponEndOfMonth_ = false;
-        Date baseDate_ = Date();
+        Date baseDate_;
     };
 
 
