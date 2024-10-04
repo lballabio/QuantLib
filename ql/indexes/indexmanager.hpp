@@ -64,7 +64,6 @@ namespace QuantLib {
             bool noDuplicatedFixing = true;
             Date duplicatedDate;
             Real nullValue = Null<Real>();
-            Real invalidValue = Null<Real>();
             Real duplicatedValue = Null<Real>();
             while (dBegin != dEnd) {
                 Real currentValue = h[*dBegin];

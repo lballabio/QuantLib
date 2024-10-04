@@ -30,6 +30,7 @@ namespace QuantLib {
     }
 
     void IndexManager::setHistory(const std::string& name, TimeSeries<Real> history) {
+        notifier(name)->notifyObservers();
         data_[name] = std::move(history);
     }
 
@@ -57,9 +58,16 @@ namespace QuantLib {
         return temp;
     }
 
-    void IndexManager::clearHistory(const std::string& name) { data_.erase(name); }
+    void IndexManager::clearHistory(const std::string& name) {
+        notifier(name)->notifyObservers();
+        data_.erase(name);
+    }
 
-    void IndexManager::clearHistories() { data_.clear(); }
+    void IndexManager::clearHistories() {
+        for (auto const& d : data_)
+            notifier(d.first)->notifyObservers();
+        data_.clear();
+    }
 
     bool IndexManager::hasHistoricalFixing(const std::string& name, const Date& fixingDate) const {
         auto const& indexIter = data_.find(name);

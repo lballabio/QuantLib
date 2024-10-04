@@ -117,6 +117,7 @@ namespace QuantLib {
     const T& ObservableValue<T>::value() const {
         return value_;
     }
+
 }
 
 #endif
