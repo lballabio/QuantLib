@@ -100,42 +100,16 @@ namespace QuantLib {
                         ValueIterator vBegin,
                         bool forceOverwrite = false) {
             checkNativeFixingsAllowed();
-            auto& obsValue = IndexManager::instance().getHistoryObservableValueRef(name());
-            auto& h = obsValue.ref();
-            bool noInvalidFixing = true, noDuplicatedFixing = true;
-            Date invalidDate, duplicatedDate;
-            Real nullValue = Null<Real>();
-            Real invalidValue = Null<Real>();
-            Real duplicatedValue = Null<Real>();
+            DateIterator dBegin2 = dBegin, dEnd2 = dEnd;
+            ValueIterator vBegin2 = vBegin;
             while (dBegin != dEnd) {
-                bool validFixing = isValidFixingDate(*dBegin);
-                Real currentValue = h[*dBegin];
-                bool missingFixing = forceOverwrite || currentValue == nullValue;
-                if (validFixing) {
-                    if (missingFixing)
-                        h[*(dBegin++)] = *(vBegin++);
-                    else if (close(currentValue, *(vBegin))) {
-                        ++dBegin;
-                        ++vBegin;
-                    } else {
-                        noDuplicatedFixing = false;
-                        duplicatedDate = *(dBegin++);
-                        duplicatedValue = *(vBegin++);
-                    }
-                } else {
-                    noInvalidFixing = false;
-                    invalidDate = *(dBegin++);
-                    invalidValue = *(vBegin++);
-                }
+                QL_REQUIRE(isValidFixingDate(*dBegin),
+                           "At least on invalid fixing provided: " << dBegin->weekday() << *dBegin
+                                                                   << ", " << *vBegin);
+                ++dBegin;
+                ++vBegin;
             }
-            obsValue.notifyObservers();
-            QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
-                                            << invalidDate.weekday() << " " << invalidDate << ", "
-                                            << invalidValue);
-            QL_REQUIRE(noDuplicatedFixing, "At least one duplicated fixing provided: "
-                                               << duplicatedDate << ", " << duplicatedValue
-                                               << " while " << h[duplicatedDate]
-                                               << " value is already present");
+            IndexManager::instance().addFixings(name(), dBegin2, dEnd2, vBegin2, forceOverwrite);
         }
         //! clears all stored historical fixings
         void clearFixings();

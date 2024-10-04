@@ -26,6 +26,7 @@
 
 #include <ql/patterns/singleton.hpp>
 #include <ql/timeseries.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/utilities/observablevalue.hpp>
 #include <algorithm>
 #include <cctype>
@@ -45,11 +46,47 @@ namespace QuantLib {
         bool hasHistory(const std::string& name) const;
         //! returns the (possibly empty) history of the index fixings
         const TimeSeries<Real>& getHistory(const std::string& name) const;
-        //! returns the observable value for a history
-        ObservableValue<TimeSeries<Real>>& getHistoryObservableValueRef(const std::string& name);
         //! stores the historical fixings of the index
         void setHistory(const std::string& name, TimeSeries<Real> history);
-        //! observer notifying of changes in the index fixings
+        //! add a fixing
+        void addFixing(const std::string& name,
+                       const Date& fixingDate,
+                       Real fixing,
+                       bool forceOverwrite = false);
+        //! add fixings
+        template <class DateIterator, class ValueIterator>
+        void addFixings(const std::string& name,
+                        DateIterator dBegin,
+                        DateIterator dEnd,
+                        ValueIterator vBegin,
+                        bool forceOverwrite = false) {
+            auto& h = data_[name];
+            bool noDuplicatedFixing = true;
+            Date duplicatedDate;
+            Real nullValue = Null<Real>();
+            Real invalidValue = Null<Real>();
+            Real duplicatedValue = Null<Real>();
+            while (dBegin != dEnd) {
+                Real currentValue = h[*dBegin];
+                bool missingFixing = forceOverwrite || currentValue == nullValue;
+                if (missingFixing)
+                    h[*(dBegin++)] = *(vBegin++);
+                else if (close(currentValue, *(vBegin))) {
+                    ++dBegin;
+                    ++vBegin;
+                } else {
+                    noDuplicatedFixing = false;
+                    duplicatedDate = *(dBegin++);
+                    duplicatedValue = *(vBegin++);
+                }
+            }
+            notifier(name)->notifyObservers();
+            QL_REQUIRE(noDuplicatedFixing, "At least one duplicated fixing provided: "
+                                               << duplicatedDate << ", " << duplicatedValue
+                                               << " while " << h[duplicatedDate]
+                                               << " value is already present");
+        }
+        //! observer notifying of changes in the index fixings_
         ext::shared_ptr<Observable> notifier(const std::string& name) const;
         //! returns all names of the indexes for which fixings were stored
         std::vector<std::string> histories() const;
@@ -69,7 +106,8 @@ namespace QuantLib {
           }
         };
 
-        mutable std::map<std::string, ObservableValue<TimeSeries<Real>>, CaseInsensitiveCompare> data_;
+        mutable std::map<std::string, TimeSeries<Real>, CaseInsensitiveCompare> data_;
+        mutable std::map<std::string, ext::shared_ptr<Observable>> notifiers_;
     };
 
 }

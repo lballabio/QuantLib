@@ -26,11 +26,6 @@ namespace QuantLib {
     }
 
     const TimeSeries<Real>& IndexManager::getHistory(const std::string& name) const {
-        return data_[name].value();
-    }
-
-    ObservableValue<TimeSeries<Real>>&
-    IndexManager::getHistoryObservableValueRef(const std::string& name) {
         return data_[name];
     }
 
@@ -38,8 +33,20 @@ namespace QuantLib {
         data_[name] = std::move(history);
     }
 
+    void IndexManager::addFixing(const std::string& name,
+                                 const Date& fixingDate,
+                                 Real fixing,
+                                 bool forceOverwrite) {
+        addFixings(name, &fixingDate, (&fixingDate) + 1, &fixing, forceOverwrite);
+    }
+
     ext::shared_ptr<Observable> IndexManager::notifier(const std::string& name) const {
-        return data_[name];
+        auto n = notifiers_.find(name);
+        if(n != notifiers_.end())
+            return n->second;
+        auto o = ext::make_shared<Observable>();
+        notifiers_[name] = o;
+        return o;
     }
 
     std::vector<std::string> IndexManager::histories() const {
@@ -57,7 +64,7 @@ namespace QuantLib {
     bool IndexManager::hasHistoricalFixing(const std::string& name, const Date& fixingDate) const {
         auto const& indexIter = data_.find(name);
         return (indexIter != data_.end()) &&
-               ((*indexIter).second.value()[fixingDate] != Null<Real>());
+               ((*indexIter).second[fixingDate] != Null<Real>());
     }
 
 }
