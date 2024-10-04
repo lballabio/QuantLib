@@ -25,7 +25,6 @@ namespace QuantLib {
                           Real fixing,
                           bool forceOverwrite) {
         checkNativeFixingsAllowed();
-        std::cout << "adding fixing " << fixingDate << " " << name() << " " << std::endl;
         addFixings(&fixingDate, (&fixingDate) + 1, &fixing, forceOverwrite);
     }
 
