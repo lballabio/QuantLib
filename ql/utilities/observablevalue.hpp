@@ -57,10 +57,6 @@ namespace QuantLib {
         operator ext::shared_ptr<Observable>() const;
         //! explicit inspector
         const T& value() const;
-        //! explicit reference
-        T& ref();
-        //! explicit notification of observers
-        void notifyObservers() const;
       private:
         T value_;
         ext::shared_ptr<Observable> observable_;
@@ -120,16 +116,6 @@ namespace QuantLib {
     template <class T>
     const T& ObservableValue<T>::value() const {
         return value_;
-    }
-
-    template <class T>
-    T& ObservableValue<T>::ref() {
-        return value_;
-    }
-
-    template <class T>
-    void ObservableValue<T>::notifyObservers() const {
-        observable_->notifyObservers();
     }
 }
 
