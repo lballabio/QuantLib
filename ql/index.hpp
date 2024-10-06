@@ -100,16 +100,9 @@ namespace QuantLib {
                         ValueIterator vBegin,
                         bool forceOverwrite = false) {
             checkNativeFixingsAllowed();
-            DateIterator dBegin2 = dBegin, dEnd2 = dEnd;
-            ValueIterator vBegin2 = vBegin;
-            while (dBegin != dEnd) {
-                QL_REQUIRE(isValidFixingDate(*dBegin),
-                           "At least on invalid fixing provided: " << dBegin->weekday() << *dBegin
-                                                                   << ", " << *vBegin);
-                ++dBegin;
-                ++vBegin;
-            }
-            IndexManager::instance().addFixings(name(), dBegin2, dEnd2, vBegin2, forceOverwrite);
+            IndexManager::instance().addFixings(
+                name(), dBegin, dEnd, vBegin, forceOverwrite,
+                [this](const Date& d) { return isValidFixingDate(d); });
         }
         //! clears all stored historical fixings
         void clearFixings();

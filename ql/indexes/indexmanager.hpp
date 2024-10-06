@@ -59,27 +59,39 @@ namespace QuantLib {
                         DateIterator dBegin,
                         DateIterator dEnd,
                         ValueIterator vBegin,
-                        bool forceOverwrite = false) {
+                        bool forceOverwrite = false,
+                        const std::function<bool(const Date& d)>& isValidFixingDate = {}) {
             auto& h = data_[name];
-            bool noDuplicatedFixing = true;
-            Date duplicatedDate;
+            bool noInvalidFixing = true, noDuplicatedFixing = true;
+            Date invalidDate, duplicatedDate;
             Real nullValue = Null<Real>();
+            Real invalidValue = Null<Real>();
             Real duplicatedValue = Null<Real>();
             while (dBegin != dEnd) {
+                bool validFixing = isValidFixingDate ? isValidFixingDate(*dBegin) : true;
                 Real currentValue = h[*dBegin];
                 bool missingFixing = forceOverwrite || currentValue == nullValue;
-                if (missingFixing)
-                    h[*(dBegin++)] = *(vBegin++);
-                else if (close(currentValue, *(vBegin))) {
-                    ++dBegin;
-                    ++vBegin;
+                if (validFixing) {
+                    if (missingFixing)
+                        h[*(dBegin++)] = *(vBegin++);
+                    else if (close(currentValue, *(vBegin))) {
+                        ++dBegin;
+                        ++vBegin;
+                    } else {
+                        noDuplicatedFixing = false;
+                        duplicatedDate = *(dBegin++);
+                        duplicatedValue = *(vBegin++);
+                    }
                 } else {
-                    noDuplicatedFixing = false;
-                    duplicatedDate = *(dBegin++);
-                    duplicatedValue = *(vBegin++);
+                    noInvalidFixing = false;
+                    invalidDate = *(dBegin++);
+                    invalidValue = *(vBegin++);
                 }
             }
             notifier(name)->notifyObservers();
+            QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
+                                            << invalidDate.weekday() << " " << invalidDate << ", "
+                                            << invalidValue);
             QL_REQUIRE(noDuplicatedFixing, "At least one duplicated fixing provided: "
                                                << duplicatedDate << ", " << duplicatedValue
                                                << " while " << h[duplicatedDate]
