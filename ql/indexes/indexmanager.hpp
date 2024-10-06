@@ -40,14 +40,7 @@ namespace QuantLib {
 
       private:
         IndexManager() = default;
-
-      public:
-        //! returns whether historical fixings were stored for the index
-        bool hasHistory(const std::string& name) const;
-        //! returns the (possibly empty) history of the index fixings
-        const TimeSeries<Real>& getHistory(const std::string& name) const;
-        //! stores the historical fixings of the index
-        void setHistory(const std::string& name, TimeSeries<Real> history);
+        friend class Index;
         //! add a fixing
         void addFixing(const std::string& name,
                        const Date& fixingDate,
@@ -97,6 +90,14 @@ namespace QuantLib {
                                                << " while " << h[duplicatedDate]
                                                << " value is already present");
         }
+
+      public:
+        //! returns whether historical fixings were stored for the index
+        bool hasHistory(const std::string& name) const;
+        //! returns the (possibly empty) history of the index fixings
+        const TimeSeries<Real>& getHistory(const std::string& name) const;
+        //! stores the historical fixings of the index
+        void setHistory(const std::string& name, TimeSeries<Real> history);
         //! observer notifying of changes in the index fixings_
         ext::shared_ptr<Observable> notifier(const std::string& name) const;
         //! returns all names of the indexes for which fixings were stored
