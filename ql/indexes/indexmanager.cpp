@@ -61,14 +61,12 @@ namespace QuantLib {
     void IndexManager::clearHistory(const std::string& name) {
         notifier(name)->notifyObservers();
         data_.erase(name);
-        notifiers_.erase(name);
     }
 
     void IndexManager::clearHistories() {
         for (auto const& d : data_)
             notifier(d.first)->notifyObservers();
         data_.clear();
-        notifiers_.clear();
     }
 
     bool IndexManager::hasHistoricalFixing(const std::string& name, const Date& fixingDate) const {
