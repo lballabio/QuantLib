@@ -32,9 +32,11 @@ namespace QuantLib {
     //! Pricing engine for basket option on multiple underlyings
     /*! This class implements the pricing formula from
         "Sum of all Black-Scholes-Merton Models: An efficient Pricing Method for
-        Spread, Basket and Asian Options",
-        Jaehyuk Choi, 2018
+        Spread, Basket and Asian Options", Jaehyuk Choi, 2018
         https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2913048
+
+        Python implementation from the author of the paper is also available
+        https://github.com/PyFE/PyFENG
 
         \ingroup basketengines
 
@@ -45,7 +47,8 @@ namespace QuantLib {
       public:
         ChoiBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
-            Matrix rho);
+            Matrix rho,
+            Real lambda = 4.0);
 
         void calculate() const override;
 
@@ -53,6 +56,7 @@ namespace QuantLib {
         const Size n_;
         const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes_;
         const Matrix rho_;
+        const Real lambda_;
     };
 }
 

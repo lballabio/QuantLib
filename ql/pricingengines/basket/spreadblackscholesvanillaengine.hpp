@@ -32,22 +32,20 @@ namespace QuantLib {
     class SpreadBlackScholesVanillaEngine : public BasketOption::engine {
       public:
         SpreadBlackScholesVanillaEngine(
-            ext::shared_ptr<BlackProcess> process1,
-            ext::shared_ptr<BlackProcess> process2,
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
             Real correlation);
 
-        void update() override;
         void calculate() const override;
 
       protected:
         virtual Real calculate(
-           Real strike, Option::Type optionType,
+           Real f1, Real f2, Real strike, Option::Type optionType,
            Real variance1, Real variance2, DiscountFactor df) const = 0;
 
-        const ext::shared_ptr<BlackProcess> process1_;
-        const ext::shared_ptr<BlackProcess> process2_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> process1_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> process2_;
         const Real rho_;
-        Real f1_, f2_;
     };
 }
 

@@ -23,20 +23,20 @@
 namespace QuantLib {
 
     BjerksundStenslandSpreadEngine::BjerksundStenslandSpreadEngine(
-        ext::shared_ptr<BlackProcess> process1,
-        ext::shared_ptr<BlackProcess> process2,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation)
     : SpreadBlackScholesVanillaEngine(process1, process2, correlation) {
     }
 
     Real BjerksundStenslandSpreadEngine::calculate(
-        Real k, Option::Type optionType,
+        Real f1, Real f2, Real k, Option::Type optionType,
         Real variance1, Real variance2, DiscountFactor df) const {
 
         const Real cp = (optionType == Option::Call) ? 1 : -1;
 
-        const Real a = f2_ + k;
-        const Real b = f2_/a;
+        const Real a = f2 + k;
+        const Real b = f2/a;
 
         const Real sigma1 = std::sqrt(variance1);
         const Real sigma2 = std::sqrt(variance2);
@@ -44,7 +44,7 @@ namespace QuantLib {
         const Real stdev = std::sqrt(
             variance1 + b*b*variance2 - 2*rho_*b*sigma1*sigma2);
 
-        const Real lfa = std::log(f1_/a);
+        const Real lfa = std::log(f1/a);
 
         const Real d1 =
             (lfa + (0.5*variance1 + 0.5*b*b*variance2 - b*rho_*sigma1*sigma2))/stdev;
@@ -53,7 +53,7 @@ namespace QuantLib {
         const Real d3 = (lfa + (-0.5*variance1 + 0.5*b*b*variance2))/stdev;
 
         const CumulativeNormalDistribution phi;
-        return df*cp*(f1_*phi(cp*d1) - f2_*phi(cp*d2) - k*phi(cp*d3));
+        return df*cp*(f1*phi(cp*d1) - f2*phi(cp*d2) - k*phi(cp*d3));
     }
 }
 

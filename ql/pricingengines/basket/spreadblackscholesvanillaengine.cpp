@@ -23,21 +23,14 @@
 namespace QuantLib {
 
     SpreadBlackScholesVanillaEngine::SpreadBlackScholesVanillaEngine(
-        ext::shared_ptr<BlackProcess> process1,
-        ext::shared_ptr<BlackProcess> process2,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation)
-    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
-        update();
-
+    : process1_(std::move(process1)),
+      process2_(std::move(process2)),
+      rho_(correlation) {
         registerWith(process1_);
         registerWith(process2_);
-    }
-
-    void SpreadBlackScholesVanillaEngine::update() {
-        f1_ = process1_->stateVariable()->value();
-        f2_ = process2_->stateVariable()->value();
-
-        BasketOption::engine::update();
     }
 
     void SpreadBlackScholesVanillaEngine::calculate() const {
@@ -56,14 +49,24 @@ namespace QuantLib {
         const Real strike = payoff->strike();
         const Option::Type optionType = payoff->optionType();
 
+
+        const Date maturityDate = exercise->lastDate();
+        const Real f1 = process1_->stateVariable()->value()
+            / process1_->riskFreeRate()->discount(maturityDate)
+            * process1_->dividendYield()->discount(maturityDate);
+
+        const Real f2 = process2_->stateVariable()->value()
+            / process2_->riskFreeRate()->discount(maturityDate)
+            * process2_->dividendYield()->discount(maturityDate);
+
         const Real variance1 =
-            process1_->blackVolatility()->blackVariance(exercise->lastDate(), f1_);
+            process1_->blackVolatility()->blackVariance(maturityDate, f1);
         const Real variance2 =
-            process2_->blackVolatility()->blackVariance(exercise->lastDate(), f2_);
+            process2_->blackVolatility()->blackVariance(maturityDate, f2);
 
         const DiscountFactor df =
             process1_->riskFreeRate()->discount(exercise->lastDate());
 
-        results_.value = calculate(strike, optionType, variance1, variance2, df);
+        results_.value = calculate(f1, f2, strike, optionType, variance1, variance2, df);
     }
 }

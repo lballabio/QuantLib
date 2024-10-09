@@ -27,8 +27,8 @@
 namespace QuantLib {
 
     OperatorSplittingSpreadEngine::OperatorSplittingSpreadEngine(
-        ext::shared_ptr<BlackProcess> process1,
-        ext::shared_ptr<BlackProcess> process2,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation,
         Order order)
     : SpreadBlackScholesVanillaEngine(process1, process2, correlation),
@@ -36,32 +36,32 @@ namespace QuantLib {
     }
 
     Real OperatorSplittingSpreadEngine::calculate(
-        Real k, Option::Type optionType,
+        Real f1, Real f2, Real k, Option::Type optionType,
         Real variance1, Real variance2, DiscountFactor df) const {
 
-        const auto callPutParityPrice = [this, df, k, optionType](Real callPrice) -> Real {
+        const auto callPutParityPrice = [this, f1, f2, df, k, optionType](Real callPrice) -> Real {
             if (optionType == Option::Call)
                 return callPrice;
             else
-                return callPrice - df*(f1_-f2_-k);
+                return callPrice - df*(f1-f2-k);
         };
 
         const Real vol1 = std::sqrt(variance1);
         const Real vol2 = std::sqrt(variance2);
-        const Real sig2 = vol2*f2_/(f2_+k);
+        const Real sig2 = vol2*f2/(f2+k);
         const Real sig_m = std::sqrt(variance1 +sig2*(sig2 - 2*rho_*vol1));
 
-        const Real d1 = (std::log(f1_) - std::log(f2_ + k))/sig_m + 0.5*sig_m;
+        const Real d1 = (std::log(f1) - std::log(f2 + k))/sig_m + 0.5*sig_m;
         const Real d2 = d1 - sig_m;
 
         const CumulativeNormalDistribution N;
 
-        const Real kirkCallNPV = df*(f1_*N(d1) - (f2_ + k)*N(d2));
+        const Real kirkCallNPV = df*(f1*N(d1) - (f2 + k)*N(d2));
 
         const Real vv = (rho_*vol1 - sig2)*vol2/(sig_m*sig_m);
         const Real oPlt = -sig2*sig2 * k * df * NormalDistribution()(d2) * vv
                 *( d2*(1 - rho_*vol1/sig2)
-                   - 0.5*sig_m * vv * k / (f2_+k)
+                   - 0.5*sig_m * vv * k / (f2+k)
                      * ( d1*d2 + (1-rho_*rho_)*squared(vol1/(rho_*vol1-sig2))));
 
         if (order_ == First)
@@ -86,9 +86,9 @@ namespace QuantLib {
            pStrange2[R1_, R2_] := pStrange1[R1, R2] + (t/2)^2/Factorial[2]*opt[R1, R2][opt[R1, R2][pLT[R1, R2]]]
          */
 
-        const Real R2 = f2_+k;
-        const Real R1 = f1_/R2;
-        const Real F2 = f2_;
+        const Real R2 = f2+k;
+        const Real R1 = f1/R2;
+        const Real F2 = f2;
 
         const Real F22 = F2*F2;
         const Real F23 = F22*F2;

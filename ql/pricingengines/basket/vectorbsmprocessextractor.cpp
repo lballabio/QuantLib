@@ -90,7 +90,6 @@ namespace QuantLib {
                     return p->blackVolatility()->blackVol(maturityDate, p->x0())*std::sqrt(maturity);
                 }
             );
-
         }
     }
 }

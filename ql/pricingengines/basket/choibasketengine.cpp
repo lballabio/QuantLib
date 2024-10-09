@@ -20,16 +20,31 @@
 /*! \file choibasketengine.cpp
 */
 
+#include <ql/exercise.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/math/matrixutilities/svd.hpp>
+#include <ql/math/matrixutilities/householder.hpp>
+#include <ql/math/matrixutilities/getcovariance.hpp>
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/pricingengines/basket/choibasketengine.hpp>
+#include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
+#include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+
+#include <boost/math/special_functions/sign.hpp>
+#include <cmath>
+#include <iostream>
 
 namespace QuantLib {
 
     ChoiBasketEngine::ChoiBasketEngine(
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
-        Matrix rho)
+        Matrix rho, Real lambda)
     : n_(processes.size()),
       processes_(std::move(processes)),
-      rho_(std::move(rho)) {
+      rho_(std::move(rho)),
+      lambda_(lambda) {
 
         QL_REQUIRE(n_ > 0, "No Black-Scholes process is given.");
         QL_REQUIRE(n_ == rho_.size1() && rho_.size1() == rho_.size2(),
@@ -40,6 +55,137 @@ namespace QuantLib {
     }
 
     void ChoiBasketEngine::calculate() const {
+        const ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        QL_REQUIRE(exercise, "not an European exercise");
 
+        const Date maturityDate = exercise->lastDate();
+
+        const detail::VectorBsmProcessExtractor pExtractor(processes_);
+        const Array s = pExtractor.getSpot();
+        const Array dq = pExtractor.getDividendYieldDf(maturityDate);
+        const Array vol = pExtractor.getBlackStdDev(maturityDate);
+        const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
+
+        const Array fwd = s * dq/dr0;
+
+        const ext::shared_ptr<AverageBasketPayoff> avgPayoff =
+            ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff);
+        QL_REQUIRE(avgPayoff, "average basket payoff expected");
+
+        const Array weights = avgPayoff->weights();
+        QL_REQUIRE(n_ == weights.size() && n_ > 1,
+             "wrong number of weights arguments in payoff");
+
+        const Array g = weights*fwd / Norm2(weights*fwd);
+
+        const Matrix Sigma = getCovariance(vol.begin(), vol.end(), rho_);
+        Array vStar1 = Sigma*g;
+        vStar1 /= std::sqrt(DotProduct(g, vStar1));
+
+        const Matrix C = CholeskyDecomposition(Sigma);
+
+        // todo: this needs to be scaled with sqrt(maturity)
+        constexpr Real eps = 100*std::sqrt(QL_EPSILON);
+        // publication sets tol=0, pyfeng implementation sets tol=0.01
+        constexpr Real tol = 100*std::sqrt(QL_EPSILON);
+
+        bool flip = false;
+        for (Size i=0; i < n_; ++i)
+            if (boost::math::sign(g[i])*vStar1[i] < tol*vol[i]) {
+                flip = true;
+                vStar1[i] = eps * boost::math::sign(g[i]) * vol[i];
+            }
+
+        Array q1(n_);
+        if (flip) {
+            //q1 = inverse(C)*vStar1;
+            for (Size i=0; i < n_; ++i)
+                q1[i] = (vStar1[i] - std::inner_product(
+                    C.row_begin(i), C.row_begin(i) + i, q1.begin(), 0.0))/C[i][i];
+
+            vStar1 /= Norm2(q1);
+        }
+        else {
+            q1 = transpose(C)*g;
+        }
+        q1 /= Norm2(q1);
+
+        Array e1(n_, 0.0);
+        e1[0] = 1.0;
+
+        const Matrix R = HouseholderTransformation(
+            HouseholderReflection(e1).reflectionVector(q1)).getMatrix();
+        Matrix R_2_n = Matrix(n_, n_-1);
+        for (Size i=0; i < n_; ++i)
+            std::copy(R.row_begin(i)+1, R.row_end(i), R_2_n.row_begin(i));
+
+        const SVD svd(C*R_2_n);
+        const Matrix U = svd.U();
+        const Array sv = svd.singularValues();
+
+        Matrix v(n_, n_-1);
+        for (Size i=0; i < n_-1; ++i)
+            std::transform(
+                U.column_begin(i), U.column_end(i), v.column_begin(i),
+                [i, &sv](Real x) -> Real { return sv[i]*x; }
+            );
+
+        std::vector<Size> nIntOrder(n_-1);
+        const Real intScale = lambda_ / std::abs(DotProduct(g, vStar1));
+        for (Size i=0; i < n_-1; ++i)
+            nIntOrder[i] = Size(std::lround(1 + intScale*sv[i]));
+
+        std::vector<ext::shared_ptr<SimpleQuote> > quotes;
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p;
+        for (Size i=0; i < n_; ++i) {
+            quotes.push_back(ext::make_shared<SimpleQuote>(fwd[i]));
+
+            const Handle<BlackVolTermStructure> bv = processes_[i]->blackVolatility();
+            const Volatility vol = vStar1[i] / std::sqrt(
+                bv->dayCounter().yearFraction(bv->referenceDate(), maturityDate)
+            );
+            p.push_back(
+                ext::make_shared<BlackProcess>(
+                    Handle<Quote>(quotes[i]),
+                    processes_[i]->riskFreeRate(),
+                    Handle<BlackVolTermStructure>(
+                       ext::make_shared<BlackConstantVol>(
+                          bv->referenceDate(), bv->calendar(),
+                          Handle<Quote>(ext::make_shared<SimpleQuote>(vol)),
+                          bv->dayCounter()
+                       )
+                    )
+                )
+            );
+        }
+
+        BasketOption option(avgPayoff, exercise);
+        option.setPricingEngine(
+            ext::make_shared<SingleFactorBsmBasketEngine>(p)
+        );
+
+        Array vq(n_, n_);
+        for (Size i=0; i < n_; ++i)
+            vq[i] = 0.5*std::accumulate(
+                v.row_begin(i), v.row_end(i), 0.0,
+                [](Real acc, Real x) -> Real { return acc + x*x; }
+            );
+
+        const auto bsm1dPricer = [&](const Array& x) -> Real {
+            const Array f = Exp(-M_SQRT2*v*x - vq) * fwd;
+
+            for (Size i=0; i < f.size(); ++i)
+                quotes[i]->setValue(f[i]);
+
+            return std::exp(-DotProduct(x, x)) * option.NPV();
+        };
+
+        MulitDimGaussianIntegration ghq(
+            nIntOrder,
+            [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
+        );
+
+        results_.value = ghq(bsm1dPricer) * std::pow(M_PI, -0.5*nIntOrder.size());
     }
 }

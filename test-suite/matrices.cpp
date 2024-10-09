@@ -959,23 +959,46 @@ BOOST_AUTO_TEST_CASE(testHouseholderReflection) {
     	return e;
     };
 
-//    for (Size i=0; i < 5; ++i) {
-//		QL_CHECK_CLOSE_ARRAY_TOL(
-//			HouseholderReflection(e(5))(e(5, i)), e(5), tol);
-//		QL_CHECK_CLOSE_ARRAY_TOL(
-//			HouseholderReflection(e(5))(M_PI*e(5, i)), M_PI*e(5), tol);
-//		QL_CHECK_CLOSE_ARRAY_TOL(
-//			HouseholderReflection(e(5))(
-//				e(5, i) + e(5)),
-//				((i==0)? 2.0 : M_SQRT2)*e(5), tol);
-//    }
+    for (Size i=0; i < 5; ++i) {
+		QL_CHECK_CLOSE_ARRAY_TOL(
+			HouseholderReflection(e(5))(e(5, i)), e(5), tol);
+		QL_CHECK_CLOSE_ARRAY_TOL(
+			HouseholderReflection(e(5))(M_PI*e(5, i)), M_PI*e(5), tol);
+		QL_CHECK_CLOSE_ARRAY_TOL(
+			HouseholderReflection(e(5))(
+				e(5, i) + e(5)),
+				((i==0)? 2.0 : M_SQRT2)*e(5), tol);
+    }
 
     // limits
-	QL_CHECK_CLOSE_ARRAY_TOL(
-		HouseholderReflection(e(3))(Array({10.0, 1e-50, 0.0})), 10.0*e(3), tol);
+	for (Real x=10; x > 1e-50; x*=0.1) {
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(3))(
+                Array({10.0, x, 0})),
+                std::sqrt(10.0*10.0+x*x)*e(3), tol
+        );
 
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(3))(
+                Array({10.0, x, 1e-3})),
+                std::sqrt(10.0*10.0+x*x+1e-3*1e-3)*e(3), tol
+        );
+	}
 
+    MersenneTwisterUniformRng rng(1234);
 
+    for (Size i=0; i < 100; ++i) {
+        const Array v = Array({rng.nextReal(), rng.nextReal(), rng.nextReal()}) - 0.5;
+        const Matrix u = HouseholderTransformation(v / Norm2(v)).getMatrix();
+
+        const Array eu = u*e(3, i%3);
+        const Array a = Array({rng.nextReal(), rng.nextReal(), rng.nextReal()}) - 0.5;
+
+        const Matrix H = HouseholderTransformation(
+            HouseholderReflection(eu).reflectionVector(a)).getMatrix();
+
+        QL_CHECK_CLOSE_ARRAY_TOL(u*H*a, Norm2(a)*e(3, i%3), tol);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

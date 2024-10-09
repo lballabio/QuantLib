@@ -24,10 +24,12 @@
 #include "utilities.hpp"
 #include <ql/instruments/basketoption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/pricingengines/basket/bjerksundstenslandspreadengine.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
+#include <ql/pricingengines/basket/choibasketengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
 #include <ql/pricingengines/basket/operatorsplittingspreadengine.hpp>
@@ -1173,38 +1175,57 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
             ext::make_shared<PlainVanillaPayoff>(Option::Call, 20.0)),
         ext::make_shared<EuropeanExercise>(maturity));
 
-    const Real testData[][2] = {
-            {-0.9, 18.9323},
-            {-0.7, 18.0092},
-            {-0.5, 17.0325},
-            {-0.4, 16.5211},
-            {-0.3, 15.9925},
-            {-0.2, 15.4449},
-            {-0.1, 14.8762},
-            { 0.0, 14.284},
-            { 0.1, 13.6651},
-            { 0.2, 13.016},
-            { 0.3, 12.3319},
-            { 0.4, 11.6067},
-            { 0.5, 10.8323},
-            { 0.7, 9.0863},
-            { 0.9, 6.9148}
+    const Real testData[][3] = {
+            {-0.9, 18.9323, 18.9361},
+            {-0.7, 18.0092, 18.012},
+            {-0.5, 17.0325, 17.0344},
+            {-0.4, 16.5211, 16.5227},
+            {-0.3, 15.9925, 15.9937},
+            {-0.2, 15.4449, 15.4458},
+            {-0.1, 14.8762, 14.8768},
+            { 0.0, 14.284, 14.2843},
+            { 0.1, 13.6651, 13.6654},
+            { 0.2, 13.016, 13.0161},
+            { 0.3, 12.3319, 12.3319},
+            { 0.4, 11.6067, 11.6067},
+            { 0.5, 10.8323, 10.8323},
+            { 0.7, 9.0863, 9.0862},
+            { 0.9, 6.9148, 6.9134}
     };
     for (Size i = 0; i < LENGTH(testData); ++i) {
         const Real rho = testData[i][0];
-        const Real expected = testData[i][1];
+        Real expected = testData[i][1];
 
-        const ext::shared_ptr<PricingEngine> osEngine
-            = ext::make_shared<OperatorSplittingSpreadEngine>(p1, p2, rho);
+        option.setPricingEngine(
+            ext::make_shared<OperatorSplittingSpreadEngine>(
+                p1, p2, rho, OperatorSplittingSpreadEngine::First)
+        );
 
-        option.setPricingEngine(osEngine);
-
-        const Real diff = std::abs(option.NPV() - expected);
-        const Real tol = 0.0001;
+        Real diff = std::abs(option.NPV() - expected);
+        Real tol = 0.0001;
 
         if (diff > tol) {
             BOOST_FAIL("failed to reproduce reference values "
-                    "using the operator splitting spread engine."
+                    "using the first order operator splitting spread engine."
+                       << std::fixed << std::setprecision(5)
+                       << "\n    calculated: " << option.NPV()
+                       << "\n    expected  : " << expected
+                       << "\n    diff          : " << diff
+                       << "\n    tolerance     : " << tol);
+        }
+
+        option.setPricingEngine(
+            ext::make_shared<OperatorSplittingSpreadEngine>(
+                p1, p2, rho, OperatorSplittingSpreadEngine::Second)
+        );
+
+        expected = testData[i][2];
+        diff = std::abs(option.NPV() - expected);
+        tol = 0.0005;
+
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce reference values "
+                    "using the second order operator splitting spread engine."
                        << std::fixed << std::setprecision(5)
                        << "\n    calculated: " << option.NPV()
                        << "\n    expected  : " << expected
@@ -1216,7 +1237,7 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
 
 
 BOOST_AUTO_TEST_CASE(testStrangSplittingSpreadEngineVsMathematica) {
-    BOOST_TEST_MESSAGE("Testing Strang Operator Splitting spread engine"
+    BOOST_TEST_MESSAGE("Testing Strang Operator Splitting spread engine "
         "vs Mathematica results...");
 
     // Example taken from
@@ -1878,7 +1899,6 @@ BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
         }
 
         const Real expected = stats.mean();
-        std::cout << std::setprecision(6) << calculated << " " << expected << std::endl;
         const Real diff = std::abs(expected - calculated);
 
         const Real errorEstimate = stats.errorEstimate();
@@ -1893,6 +1913,235 @@ BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
                    << "\n    tolerance:  " << tol);
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
+    BOOST_TEST_MESSAGE(
+        "Testing BSM Choi basket engine against reference results...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(26, September, 2024);
+
+    const Handle<YieldTermStructure> rTS
+        = Handle<YieldTermStructure>(flatRate(today, 0.05, dc));
+
+    const Real strike = 20;
+    const Date maturity = today + Period(18, Months);
+
+    BasketOption option(
+        ext::make_shared<AverageBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+            Array({1, -2, -1, 4})
+        ),
+        ext::make_shared<EuropeanExercise>(maturity)
+    );
+
+    const auto processGen = [&rTS, &today, &dc](Real spot, Rate q, Volatility vol)
+        -> ext::shared_ptr<GeneralizedBlackScholesProcess> {
+        return ext::make_shared<GeneralizedBlackScholesProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
+                Handle<YieldTermStructure>(flatRate(today, q, dc)),
+                rTS,
+                Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
+            );
+    };
+
+    const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> >
+        processes({
+            processGen(100, 0.075, 0.45),
+            processGen(50,  0.035, 0.4),
+            processGen(75,  0.08 , 0.35),
+            processGen(25,  0.02 , 0.2)
+        }
+    );
+
+    const Matrix rho = {
+        { 1.0,  0.2,  0.3, 0.0 },
+        { 0.2,  1.0, -0.3, 0.1 },
+        { 0.3, -0.3,  1.0, 0.7 },
+        { 0.0,  0.1,  0.7, 1.0 },
+    };
+
+    option.setPricingEngine(
+        ext::make_shared<ChoiBasketEngine>(processes, rho, 10)
+    );
+
+    const Real expected = 15.9200853315129;
+    const Real calculated = option.NPV();
+    const Real diff = std::abs(expected - calculated);
+    const Real tol = 1e-10;
+
+    if (diff > tol)
+        BOOST_FAIL("failed to reproduce reference price with Choi engine"
+               << std::fixed << std::setprecision(12)
+               << "\n    calculated: " << calculated
+               << "\n    expected:   " << expected
+               << "\n    diff:       " << diff
+               << "\n    tolerance:  " << tol);
+}
+
+BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
+    BOOST_TEST_MESSAGE(
+        "Testing benchmark spread- and basket options from the literature...");
+
+    // Benchmark set is derived from
+    // "Sum of all Black-Scholes-Merton Models: An efficient Pricing Method for
+    //  Spread, Basket and Asian Options", Jaehyuk Choi, 2018
+
+    struct SobolBrownianBridgeRsgType {
+        enum { allowsErrorEstimate = 0 };
+        typedef SobolBrownianBridgeRsg rsg_type;
+
+        static rsg_type make_sequence_generator(Size dim, BigNatural seed) {
+            return rsg_type(
+                dim, 1,
+                SobolBrownianGenerator::Diagonal,
+                seed,
+                SobolRsg::JoeKuoD7
+            );
+        }
+    };
+
+    struct Benchmark {
+        const Array underlyings;
+        const Array volatilities;
+        const Array q;
+        const Rate r;
+        const Matrix rho;
+        const Array weights;
+        const Array maturities;
+        const Array strikes;
+        Option::Type optionType;
+        const Array referenceNPVs;
+    };
+
+    const std::vector<Benchmark> benchmarks = {
+        {
+          {100.0, 96.0}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{0.5}},
+          {1.0, -1.0}, {1.0},
+          {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Call,
+          {8.312460732881519,8.114993760660171,7.920819775954081,7.729932490363331,7.542323895849758,7.35798429885716,7.176902356575362,6.999065115204262,6.824458050072985,6.653065107468672}
+        }
+    };
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(26, September, 2024);
+
+    for (const auto& b: benchmarks) {
+        const Size n = b.underlyings.size();
+
+        const Handle<YieldTermStructure> rTS
+            = Handle<YieldTermStructure>(flatRate(today, b.r, dc));
+
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+        for (Size i=0; i < n; ++i)
+            processes.push_back(
+                ext::make_shared<BlackScholesMertonProcess>(
+                    Handle<Quote>(ext::make_shared<SimpleQuote>(b.underlyings[i])),
+                    Handle<YieldTermStructure>(flatRate(today, b.q[i], dc)), rTS,
+                    Handle<BlackVolTermStructure>(flatVol(today, b.volatilities[i], dc))
+                )
+            );
+
+        Matrix rho(n, n);
+        for (Size i=0; i < n; ++i)
+            for (Size j=0; j < n; ++j)
+                rho[i][j] = (i == j) ? 1.0 : b.rho[0][0];
+
+
+        const ext::shared_ptr<PricingEngine> choiEngine =
+            ext::make_shared<ChoiBasketEngine>(processes, rho, 20);
+
+        const ext::shared_ptr<PricingEngine> dengLiZhou =
+            ext::make_shared<DengLiZhouBasketEngine>(processes, rho);
+
+        const ext::shared_ptr<PricingEngine> kirkEngine =
+            ext::make_shared<KirkEngine>(processes[0], processes[1], rho[0][1]);
+
+        std::vector<Real> calculated;
+        for (Real t: b.maturities) {
+            const Date maturityDate = yearFractionToDate(dc, today, t);
+            const ext::shared_ptr<Exercise> exercise =
+                ext::make_shared<EuropeanExercise>(maturityDate);
+
+            for (Real K: b.strikes) {
+                const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                    ext::make_shared<PlainVanillaPayoff>(b.optionType, K);
+
+                const ext::shared_ptr<AverageBasketPayoff> basketPayoff =
+                    ext::make_shared<AverageBasketPayoff>(payoff, b.weights);
+
+                const ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
+                    ext::make_shared<SpreadBasketPayoff>(payoff);
+
+                BasketOption option(spreadPayoff, exercise);
+                option.setPricingEngine(kirkEngine);
+
+                calculated.push_back(option.NPV());
+
+                //std::cout << std::setprecision(16) << option.NPV() << "," ;
+            }
+        }
+
+        const Array calculatedNPVs(calculated.begin(), calculated.end());
+        const Array diff = b.referenceNPVs - calculatedNPVs;
+        const Array absDiff = Abs(diff);
+
+        const Real rmse = std::sqrt(DotProduct(diff, diff))/n;
+        const Real mae  = std::accumulate(absDiff.begin(), absDiff.end(), 0.0)/n;
+
+        std::cout << diff << std::endl;
+        std::cout << rmse << " " << mae << std::endl;
+
+        std::cout << std::endl;
+
+    }
+//        const Real strike = std::inner_product(
+//            b.weights.begin(), b.weights.end(), b.underlyings.begin(), 0.0
+//        );
+//
+//        const ext::shared_ptr<PlainVanillaPayoff> payoff
+//            = ext::make_shared<PlainVanillaPayoff>(t.optionType, strike);
+//
+//        BasketOption option(
+//            ext::make_shared<AverageBasketPayoff>(payoff, d.weights),
+//            ext::make_shared<EuropeanExercise>(maturity)
+//        );
+
+
+//
+//    Size i=1024;
+//    for (; i < 1000000000; i*=2) {
+//        option.setPricingEngine(
+//            MakeMCEuropeanBasketEngine<SobolBrownianBridgeRsgType>(
+//            //MakeMCEuropeanBasketEngine<PseudoRandom>(
+//                ext::make_shared<StochasticProcessArray>(
+//                    std::vector<ext::shared_ptr<StochasticProcess1D> >(
+//                        processes.begin(), processes.end()
+//                    ),
+//                    rho
+//                )
+//            )
+//            .withSteps(1)
+//            .withSamples(i)
+//            .withSeed(1234ul)
+//        );
+//
+//        std::cout << i << " " << option.NPV() << std::endl;
+//    }
+//
+//    option.setPricingEngine(
+//        ext::make_shared<DengLiZhouBasketEngine>(processes, rho));
+//    std::cout << option.NPV() << std::endl;
+//
+//
+//    option.setPricingEngine(
+//        ext::make_shared<FdndimBlackScholesVanillaEngine>(
+//            processes, rho,
+//            std::vector<Size>({25, 25, 25, 25}), 75
+//        )
+//    );
+//    std::cout << option.NPV() << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

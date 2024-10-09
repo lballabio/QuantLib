@@ -35,8 +35,9 @@ namespace QuantLib {
                 std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p);
 
             Array getSpot() const;
-            Array getBlackVariance(const Date& maturityDate) const;
             Array getBlackStdDev(const Date& maturityDate) const;
+            Array getBlackVariance(const Date& maturityDate) const;
+            Array getBlackVolatility(const Date& maturityDate) const;
             Array getDividendYieldDf(const Date& maturityDate) const;
             DiscountFactor getInterestRateDf(const Date& maturityDate) const;
 
