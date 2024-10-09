@@ -137,7 +137,6 @@ QL_TEST_SRCS = \
 	riskstats.cpp \
 	rngtraits.cpp \
 	rounding.cpp \
-	sampledcurve.cpp \
 	schedule.cpp \
 	settings.cpp \
 	shortratemodels.cpp \

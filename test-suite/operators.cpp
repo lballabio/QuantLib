@@ -24,7 +24,7 @@
 #include <ql/methods/finitedifferences/dzero.hpp>
 #include <ql/methods/finitedifferences/dplusdminus.hpp>
 #include <ql/methods/finitedifferences/bsmoperator.hpp>
-#include <ql/methods/finitedifferences/bsmtermoperator.hpp>
+#include <ql/methods/finitedifferences/pdebsm.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
