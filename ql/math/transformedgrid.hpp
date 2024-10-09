@@ -30,11 +30,11 @@
 
 namespace QuantLib {
 
-    //! transformed grid
-    /*! This package encapuslates an array of grid points.  It is used primarily
-     in PDE calculations.
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.37.
     */
-    class TransformedGrid {
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] TransformedGrid {
     public:
         TransformedGrid (const Array &grid) :
             grid_(grid), transformedGrid_(grid),
@@ -93,13 +93,22 @@ namespace QuantLib {
         Array dx_;
     };
 
-    class LogGrid : public TransformedGrid {
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.37.
+    */
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] LogGrid : public TransformedGrid {
     public:
         LogGrid(const Array &grid) :
             TransformedGrid(grid, [](Real x) -> Real { return std::log(x); }){};
         const Array & logGridArray() const { return transformedGridArray();}
         Real logGrid(Size i) const { return transformedGrid(i);}
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

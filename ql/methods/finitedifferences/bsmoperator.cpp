@@ -24,6 +24,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     BSMOperator::BSMOperator(Size size, Real dx, Rate r,
                              Rate q, Volatility sigma)
     : TridiagonalOperator(size) {
@@ -48,5 +50,7 @@ namespace QuantLib {
             setMidRow(i,pd,pm,pu);
         }
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
