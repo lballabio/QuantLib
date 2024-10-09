@@ -20,6 +20,7 @@
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/indexes/ibor/jibar.hpp>
 #include <ql/indexes/ibor/jpylibor.hpp>
+#include <ql/indexes/ibor/kofr.hpp>
 #include <ql/indexes/ibor/libor.hpp>
 #include <ql/indexes/ibor/mosprime.hpp>
 #include <ql/indexes/ibor/nzdlibor.hpp>
@@ -38,4 +39,3 @@
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/indexes/ibor/wibor.hpp>
 #include <ql/indexes/ibor/zibor.hpp>
-

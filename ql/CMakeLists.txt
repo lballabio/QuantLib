@@ -235,6 +235,7 @@ set(QL_SOURCES
     indexes/ibor/euribor.cpp
     indexes/ibor/eurlibor.cpp
     indexes/ibor/fedfunds.cpp
+    indexes/ibor/kofr.cpp
     indexes/ibor/libor.cpp
     indexes/ibor/shibor.cpp
     indexes/ibor/sofr.cpp
@@ -1261,6 +1262,7 @@ set(QL_HEADERS
     indexes/ibor/gbplibor.hpp
     indexes/ibor/jibar.hpp
     indexes/ibor/jpylibor.hpp
+    indexes/ibor/kofr.hpp
     indexes/ibor/libor.hpp
     indexes/ibor/mosprime.hpp
     indexes/ibor/nzdlibor.hpp
