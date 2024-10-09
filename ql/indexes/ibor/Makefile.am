@@ -23,6 +23,7 @@ this_include_HEADERS = \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
+    kofr.hpp \
     libor.hpp \
     mosprime.hpp \
     nzdlibor.hpp \
@@ -50,6 +51,7 @@ cpp_files = \
     euribor.cpp \
     eurlibor.cpp \
     fedfunds.cpp \
+    kofr.cpp \
     libor.cpp \
     shibor.cpp \
     sofr.cpp \
