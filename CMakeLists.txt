@@ -99,7 +99,7 @@ if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
         add_compile_options(-W3)
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
         # lots of warnings
-        add_compile_options(-Wall -Wno-unknown-pragmas)
+        add_compile_options(-Wall -Wno-unknown-pragmas -Wno-array-bounds)
     endif()
 endif()
 
