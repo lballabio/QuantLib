@@ -1,3 +1,30 @@
+commit 85e9489fd486c00fb624fb4c8f10ab227ac2e9e8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 22:55:21 +0200
+
+    Ignore lcov error
+
+ .github/workflows/coveralls.yml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 4bae7919925f54076c6f7bcb44a15bd8c1d1fb2a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 22:38:07 +0200
+
+    Avoid occasional warning from std::enable_shared_from_this
+
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3074bd85d60aaf477b4c4f609e4da4f0c0d1f553
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 20:45:08 +0200
+
+    Update changelog
+
+ ChangeLog.txt | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
 commit 814c9cf074ce4dcb9b8777c03d205856769e6b86
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 12 Jul 2021 09:46:54 +0200
