@@ -1,3 +1,45 @@
+commit 814c9cf074ce4dcb9b8777c03d205856769e6b86
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.36 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 10be1e1ab186950dcd05147b1676ee048893f99d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 20:29:39 +0200
+
+    Updated release history
+
+ Docs/pages/history.docs | 129 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 128 insertions(+), 1 deletion(-)
+
+commit 4cf029617169cfc1985527a5187113ba105655a2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.36-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit fc6f3919ba1c85427332f38db5d69be85439d8fd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Oct 2024 12:30:47 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt    | 2733 ++++++++++++++++++++++++++++--------------------------
+ Contributors.txt |    4 +
+ News.md          |  244 ++---
+ 3 files changed, 1551 insertions(+), 1430 deletions(-)
+
 commit 3d27c6b27d232c42965b7afb1684f181219cbc81
 Merge: a5d2197cc 64acfbbe2
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
