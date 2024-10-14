@@ -124,78 +124,9 @@ struct CommonVars {
             .withCouponSpreads(couponSpread)
             .withAveragingMethod(averaging);
     }
+
 };
 
-Real compoundedIborLegPayment(const Leg& leg) {
-    Real compound = 1.0;
-    std::for_each(leg.begin(), leg.end(), [&compound](const ext::shared_ptr<CashFlow>& cf) {
-        auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
-        Real yearFraction = cpn->accrualPeriod();
-        Rate fixing = cpn->indexFixing();
-        compound *= (1.0 + yearFraction * (fixing + cpn->spread()));
-    });
-    return (compound - 1.0);
-}
-
-Real averagedIborLegPayment(const Leg& leg) {
-    Real acc = 0.0;
-    std::for_each(leg.begin(), leg.end(), [&acc](const ext::shared_ptr<CashFlow>& cf) {
-        auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
-        Real yearFraction = cpn->accrualPeriod();
-        Rate fixing = cpn->indexFixing();
-        acc += yearFraction * (fixing + cpn->spread());
-    });
-    return acc;
-}
-
-
-void testMultipleCompoundedSubPeriodsCouponReplication(const Date& start,
-                                                       const Date& end,
-                                                       Spread rateSpread) {
-    CommonVars vars;
-
-    Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
-
-    Spread couponSpread = 0.0;
-    ext::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
-        start, end, rateSpread, couponSpread, RateAveraging::Compound);
-
-    const Real tolerance = 1.0e-14;
-
-    Real actualPayment = subPeriodCpn->amount();
-    Real expectedPayment = compoundedIborLegPayment(iborLeg);
-
-    if (std::fabs(actualPayment - expectedPayment) > tolerance)
-        BOOST_ERROR("unable to replicate compounded multiple sub-period coupon payment\n"
-                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
-                    << "    expected:    " << expectedPayment << "\n"
-                    << "    start:    " << start << "\n"
-                    << "    end:    " << end << "\n");
-}
-
-void testMultipleAveragedSubPeriodsCouponReplication(const Date& start,
-                                                     const Date& end,
-                                                     Spread rateSpread) {
-    CommonVars vars;
-
-    Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
-    
-    Spread couponSpread = 0.0;
-    ext::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
-        start, end, rateSpread, couponSpread, RateAveraging::Simple);
-
-    const Real tolerance = 1.0e-14;
-
-    Real actualPayment = subPeriodCpn->amount();
-    Real expectedPayment = averagedIborLegPayment(iborLeg);
-
-    if (std::fabs(actualPayment - expectedPayment) > tolerance)
-        BOOST_ERROR("unable to replicate averaged multiple sub-period coupon payment\n"
-                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
-                    << "    expected:    " << expectedPayment << "\n"
-                    << "    start:    " << start << "\n"
-                    << "    end:    " << end << "\n");
-}
 
 void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
     CommonVars vars;
@@ -231,21 +162,74 @@ void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
 BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods) {
     BOOST_TEST_MESSAGE("Testing regular forward starting coupon with multiple compounded sub-periods...");
 
+    CommonVars vars;
+
     Date start(15, April, 2021);
     Date end(15, April, 2022);
 
     Spread spread = 0.001;
-    testMultipleCompoundedSubPeriodsCouponReplication(start, end, spread);
+
+    Leg iborLeg = vars.createIborLeg(start, end, spread);
+
+    Spread couponSpread = 0.0;
+    ext::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
+        start, end, spread, couponSpread, RateAveraging::Compound);
+
+    const Real tolerance = 1.0e-14;
+
+    Real actualPayment = subPeriodCpn->amount();
+
+    Real compound = 1.0;
+    for (const auto& cf : iborLeg) {
+        auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
+        Real yearFraction = cpn->accrualPeriod();
+        Rate fixing = cpn->indexFixing();
+        compound *= (1.0 + yearFraction * (fixing + cpn->spread()));
+    }
+    Real expectedPayment = compound - 1.0;
+
+    if (std::fabs(actualPayment - expectedPayment) > tolerance)
+        BOOST_ERROR("unable to replicate compounded multiple sub-period coupon payment\n"
+                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
+                    << "    expected:    " << expectedPayment << "\n"
+                    << "    start:    " << start << "\n"
+                    << "    end:    " << end << "\n");
 }
 
 BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeriods) {
     BOOST_TEST_MESSAGE("Testing regular forward starting coupon with multiple averaged sub-periods...");
 
+    CommonVars vars;
+
     Date start(15, April, 2021);
     Date end(15, April, 2022);
 
     Spread spread = 0.001;
-    testMultipleAveragedSubPeriodsCouponReplication(start, end, spread);
+
+    Leg iborLeg = vars.createIborLeg(start, end, spread);
+
+    Spread couponSpread = 0.0;
+    ext::shared_ptr<CashFlow> subPeriodCpn = vars.createSubPeriodsCoupon(
+        start, end, spread, couponSpread, RateAveraging::Simple);
+
+    const Real tolerance = 1.0e-14;
+
+    Real actualPayment = subPeriodCpn->amount();
+
+    Real expectedPayment = 0.0;
+    for (const auto& cf : iborLeg) {
+        auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
+        Real yearFraction = cpn->accrualPeriod();
+        Rate fixing = cpn->indexFixing();
+        expectedPayment += yearFraction * (fixing + cpn->spread());
+    }
+
+    if (std::fabs(actualPayment - expectedPayment) > tolerance)
+        BOOST_ERROR("unable to replicate averaged multiple sub-period coupon payment\n"
+                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
+                    << "    expected:    " << expectedPayment << "\n"
+                    << "    start:    " << start << "\n"
+                    << "    end:    " << end << "\n");
 }
 
 BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
