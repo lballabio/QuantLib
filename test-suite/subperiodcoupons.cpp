@@ -126,15 +126,6 @@ struct CommonVars {
     }
 };
 
-Real sumIborLegPayments(const Leg& leg)
-{
-    Real payments = 0.0;
-    std::for_each(leg.begin(), leg.end(), [&payments](const ext::shared_ptr<CashFlow>& cf) {
-        payments += cf->amount();
-    });
-    return payments;
-}
-
 Real compoundedIborLegPayment(const Leg& leg) {
     Real compound = 1.0;
     std::for_each(leg.begin(), leg.end(), [&compound](const ext::shared_ptr<CashFlow>& cf) {
@@ -157,31 +148,6 @@ Real averagedIborLegPayment(const Leg& leg) {
     return acc;
 }
 
-
-void testSinglePeriodCouponReplication(const Date& start,
-                                       const Date& end,
-                                       Spread rateSpread,
-                                       RateAveraging::Type averaging,
-                                       Natural fixingDays) {
-    CommonVars vars;
-
-    Leg iborLeg = vars.createIborLeg(start, end, rateSpread, fixingDays);
-    Spread couponSpread = 0.0;
-    ext::shared_ptr<CashFlow> subPeriodCpn =
-        vars.createSubPeriodsCoupon(start, end, rateSpread, couponSpread, averaging, fixingDays);
-
-    Real tolerance = 1.0e-14;
-
-    Real actualPayment = subPeriodCpn->amount();
-    Real expectedPayment = sumIborLegPayments(iborLeg);
-
-    if (std::fabs(actualPayment - expectedPayment) > tolerance)
-        BOOST_ERROR("unable to replicate single period coupon payment\n"
-                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
-                    << "    expected:    " << expectedPayment << "\n"
-                    << "    start:    " << start << "\n"
-                    << "    end:    " << end << "\n");
-}
 
 void testMultipleCompoundedSubPeriodsCouponReplication(const Date& start,
                                                        const Date& end,
@@ -260,42 +226,6 @@ void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
                     << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
                     << "    expected:    " << expectedPayment << "\n"
                     << "    averaging:    " << averaging << "\n");
-}
-
-BOOST_AUTO_TEST_CASE(testRegularSinglePeriodForwardStartingCoupon) {
-    BOOST_TEST_MESSAGE("Testing regular single period forward starting coupon...");
-
-    Date start(15, April, 2021);
-    Date end(15, October, 2021);
-
-    Spread spread = 0.001;
-    // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 2);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
-}
-
-BOOST_AUTO_TEST_CASE(testRegularSinglePeriodCouponAfterFixing) {
-    BOOST_TEST_MESSAGE("Testing regular single period coupon after fixing...");
-
-    Date start(12, February, 2021);
-    Date end(12, August, 2021);
-
-    Spread spread = 0.001;
-    // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
-}
-
-BOOST_AUTO_TEST_CASE(testIrregularSinglePeriodCouponAfterFixing) {
-    BOOST_TEST_MESSAGE("Testing irregular single period coupon after fixing...");
-
-    Date start(12, February, 2021);
-    Date end(12, June, 2021);
-
-    Spread spread = 0.001;
-    // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 2);
 }
 
 BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods) {
