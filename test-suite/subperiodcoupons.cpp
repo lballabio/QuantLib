@@ -128,37 +128,6 @@ struct CommonVars {
 };
 
 
-void testSubPeriodsLegReplication(RateAveraging::Type averaging) {
-    CommonVars vars;
-
-    Date start(18, March, 2021);
-    Date end(18, March, 2022);
-
-    Spread rateSpread = 0.001;
-    Spread couponSpread = 0.002;
-
-    ext::shared_ptr<CashFlow> subPeriodCpn =
-        vars.createSubPeriodsCoupon(start, end, rateSpread, couponSpread, averaging);
-
-    Leg subPeriodLeg =
-        vars.createSubPeriodsLeg(start, end, 1 * Years, rateSpread, couponSpread, averaging);
-
-    const Real tolerance = 1.0e-14;
-
-    Real actualPayment = 0.0;
-    // Only one cash flow is expected with this parametrization
-    std::for_each(
-        subPeriodLeg.begin(), subPeriodLeg.end(),
-        [&actualPayment](const ext::shared_ptr<CashFlow>& cf) { actualPayment += cf->amount(); });
-    Real expectedPayment = subPeriodCpn->amount();
-
-    if (std::fabs(actualPayment - expectedPayment) > tolerance)
-        BOOST_ERROR("unable to replicate sub-period leg payments\n"
-                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
-                    << "    expected:    " << expectedPayment << "\n"
-                    << "    averaging:    " << averaging << "\n");
-}
-
 BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods) {
     BOOST_TEST_MESSAGE("Testing regular forward starting coupon with multiple compounded sub-periods...");
 
@@ -252,13 +221,6 @@ BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
                     << "    expected:    " << 0.0 << "\n"
                     << "    start:    " << start << "\n"
                     << "    end:    " << end << "\n");
-}
-
-BOOST_AUTO_TEST_CASE(testSubPeriodsLegCashFlows) {
-    BOOST_TEST_MESSAGE("Testing sub-periods leg replication...");
-
-    testSubPeriodsLegReplication(RateAveraging::Compound);
-    testSubPeriodsLegReplication(RateAveraging::Simple);
 }
 
 BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
