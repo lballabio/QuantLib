@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   coverage:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - name: Setup
@@ -22,7 +22,7 @@ jobs:
     - name: Capture baseline
       run: |
         mkdir -p coverage tmp
-        lcov --no-external --capture --ignore-errors mismatch --initial --directory . --output-file ./tmp/lcov_base.info
+        lcov --no-external --capture --initial --directory . --output-file ./tmp/lcov_base.info
     - name: Run tests
       run: |
         ./test-suite/quantlib-test-suite --log_level=message
@@ -31,7 +31,7 @@ jobs:
         make -C Examples check-examples
     - name: Capture coverage
       run: |
-        lcov --no-external --capture --ignore-errors mismatch --directory . --output-file ./tmp/lcov_run.info
+        lcov --no-external --capture --directory . --output-file ./tmp/lcov_run.info
         lcov --add-tracefile ./tmp/lcov_base.info --add-tracefile ./tmp/lcov_run.info --output-file ./tmp/lcov_total.info
         lcov --remove ./tmp/lcov_total.info "$PWD/Examples/*" "$PWD/test-suite/*" --output-file ./coverage/lcov.info
     - name: Upload coverage to Coveralls
