@@ -838,6 +838,7 @@
     <ClInclude Include="ql\indexes\ibor\gbplibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\jibar.hpp" />
     <ClInclude Include="ql\indexes\ibor\jpylibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\kofr.hpp" />
     <ClInclude Include="ql\indexes\ibor\libor.hpp" />
     <ClInclude Include="ql\indexes\ibor\mosprime.hpp" />
     <ClInclude Include="ql\indexes\ibor\nzdlibor.hpp" />
@@ -2121,6 +2122,7 @@
     <ClCompile Include="ql\indexes\ibor\euribor.cpp" />
     <ClCompile Include="ql\indexes\ibor\eurlibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\fedfunds.cpp" />
+    <ClCompile Include="ql\indexes\ibor\kofr.cpp" />
     <ClCompile Include="ql\indexes\ibor\libor.cpp" />
     <ClCompile Include="ql\indexes\ibor\shibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\sofr.cpp" />
