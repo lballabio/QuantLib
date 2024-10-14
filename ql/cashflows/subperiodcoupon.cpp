@@ -29,6 +29,43 @@ namespace QuantLib {
 
     SubPeriodsCoupon::SubPeriodsCoupon(const Date& paymentDate,
                                        Real nominal,
+                                       const Schedule& resetSchedule,
+                                       Natural fixingDays,
+                                       const ext::shared_ptr<IborIndex>& index,
+                                       Real gearing,
+                                       Rate couponSpread,
+                                       Rate rateSpread,
+                                       const Date& refPeriodStart,
+                                       const Date& refPeriodEnd,
+                                       const DayCounter& dayCounter,
+                                       const Date& exCouponDate)
+    : FloatingRateCoupon(paymentDate, nominal,
+                         resetSchedule.front(), resetSchedule.back(),
+                         fixingDays, index, gearing, couponSpread,
+                         refPeriodStart, refPeriodEnd, dayCounter,
+                         false, exCouponDate),
+      rateSpread_(rateSpread) {
+        valueDates_ = resetSchedule.dates();
+
+        // fixing dates
+        n_ = valueDates_.size() - 1;
+        if (fixingDays_ == 0) {
+            fixingDates_ = std::vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
+        } else {
+            fixingDates_.resize(n_);
+            for (Size i = 0; i < n_; ++i)
+                fixingDates_[i] = fixingDate(valueDates_[i]);
+        }
+
+        // accrual times of sub-periods
+        dt_.resize(n_);
+        const DayCounter& dc = index->dayCounter();
+        for (Size i = 0; i < n_; ++i)
+            dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i + 1]);
+    }
+
+    SubPeriodsCoupon::SubPeriodsCoupon(const Date& paymentDate,
+                                       Real nominal,
                                        const Date& startDate,
                                        const Date& endDate,
                                        Natural fixingDays,
@@ -154,6 +191,160 @@ namespace QuantLib {
         Real rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
         return coupon_->gearing() * rate + coupon_->spread();
     }
+
+
+
+    MultipleResetsLeg::MultipleResetsLeg(Schedule schedule,
+                                         ext::shared_ptr<IborIndex> index,
+                                         Size resetsPerCoupon)
+    : schedule_(std::move(schedule)), index_(std::move(index)), resetsPerCoupon_(resetsPerCoupon),
+      paymentCalendar_(schedule_.calendar()) {
+        QL_REQUIRE(index_, "no index provided");
+        QL_REQUIRE(!schedule_.empty(), "empty schedule provided");
+        QL_REQUIRE((schedule_.size() - 1) % resetsPerCoupon_ == 0,
+                   "number of resets per coupon does not divide exactly number of periods in schedule");
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withNotionals(Real notional) {
+        notionals_ = std::vector<Real>(1, notional);
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withNotionals(const std::vector<Real>& notionals) {
+        notionals_ = notionals;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withPaymentDayCounter(const DayCounter& dc) {
+        paymentDayCounter_ = dc;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withPaymentAdjustment(BusinessDayConvention convention) {
+        paymentAdjustment_ = convention;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withPaymentCalendar(const Calendar& cal) {
+        paymentCalendar_ = cal;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withPaymentLag(Integer lag) {
+        paymentLag_ = lag;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withFixingDays(Natural fixingDays) {
+        fixingDays_ = std::vector<Natural>(1, fixingDays);
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withFixingDays(const std::vector<Natural>& fixingDays) {
+        fixingDays_ = fixingDays;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withGearings(Real gearing) {
+        gearings_ = std::vector<Real>(1, gearing);
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withGearings(const std::vector<Real>& gearings) {
+        gearings_ = gearings;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withCouponSpreads(Spread spread) {
+        couponSpreads_ = std::vector<Spread>(1, spread);
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withCouponSpreads(const std::vector<Spread>& spreads) {
+        couponSpreads_ = spreads;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withRateSpreads(Spread spread) {
+        rateSpreads_ = std::vector<Spread>(1, spread);
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withRateSpreads(const std::vector<Spread>& spreads) {
+        rateSpreads_ = spreads;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withAveragingMethod(RateAveraging::Type averagingMethod) {
+        averagingMethod_ = averagingMethod;
+        return *this;
+    }
+
+    MultipleResetsLeg& MultipleResetsLeg::withExCouponPeriod(const Period& period,
+                                                     const Calendar& cal,
+                                                     BusinessDayConvention convention,
+                                                     bool endOfMonth) {
+        exCouponPeriod_ = period;
+        exCouponCalendar_ = cal;
+        exCouponAdjustment_ = convention;
+        exCouponEndOfMonth_ = endOfMonth;
+        return *this;
+    }
+
+    MultipleResetsLeg::operator Leg() const {
+        Leg cashflows;
+        Calendar calendar = schedule_.calendar();
+
+        Size n = (schedule_.size() - 1) / resetsPerCoupon_;
+        QL_REQUIRE(!notionals_.empty(), "no notional given");
+        QL_REQUIRE(notionals_.size() <= n,
+                   "too many nominals (" << notionals_.size() << "), only " << n << " required");
+        QL_REQUIRE(gearings_.size() <= n,
+                   "too many gearings (" << gearings_.size() << "), only " << n << " required");
+        QL_REQUIRE(couponSpreads_.size() <= n,
+                   "too many coupon spreads (" << couponSpreads_.size() << "), only " << n << " required");
+        QL_REQUIRE(rateSpreads_.size() <= n,
+                   "too many rate spreads (" << rateSpreads_.size() << "), only " << n << " required");
+        QL_REQUIRE(fixingDays_.size() <= n,
+                   "too many fixing days (" << fixingDays_.size() << "), only " << n << " required");
+
+        for (Size i = 0; i < n; ++i) {
+            Date start = schedule_.date(i * resetsPerCoupon_);
+            Date end = schedule_.date((i + 1) * resetsPerCoupon_);
+            auto subSchedule = schedule_.after(start).until(end);
+            Date paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
+            Date exCouponDate;
+            if (exCouponPeriod_ != Period()) {
+                if (exCouponCalendar_.empty()) {
+                    exCouponDate = calendar.advance(paymentDate, -exCouponPeriod_,
+                                                    exCouponAdjustment_, exCouponEndOfMonth_);
+                } else {
+                    exCouponDate = exCouponCalendar_.advance(
+                        paymentDate, -exCouponPeriod_, exCouponAdjustment_, exCouponEndOfMonth_);
+                }
+            }
+
+            cashflows.push_back(ext::make_shared<SubPeriodsCoupon>(
+                paymentDate, detail::get(notionals_, i, notionals_.back()), subSchedule,
+                detail::get(fixingDays_, i, index_->fixingDays()), index_,
+                detail::get(gearings_, i, 1.0), detail::get(couponSpreads_, i, 0.0),
+                detail::get(rateSpreads_, i, 0.0), start, end, paymentDayCounter_,
+                exCouponDate));
+        }
+
+        switch (averagingMethod_) {
+          case RateAveraging::Simple:
+            setCouponPricer(cashflows, ext::make_shared<AveragingRatePricer>());
+            break;
+          case RateAveraging::Compound:
+            setCouponPricer(cashflows, ext::make_shared<CompoundingRatePricer>());
+            break;
+          default:
+            QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
+        }
+        return cashflows;
+    }
+
 
     SubPeriodsLeg::SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> i)
     : schedule_(std::move(schedule)), index_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
@@ -305,4 +496,5 @@ namespace QuantLib {
         }
         return cashflows;
     }
+
 }

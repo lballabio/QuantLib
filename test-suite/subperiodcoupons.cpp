@@ -341,8 +341,7 @@ BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
 }
 
 BOOST_AUTO_TEST_CASE(testSubPeriodsLegCashFlows) {
-    BOOST_TEST_MESSAGE(
-        "Testing sub-periods leg replication...");
+    BOOST_TEST_MESSAGE("Testing sub-periods leg replication...");
 
     testSubPeriodsLegReplication(RateAveraging::Compound);
     testSubPeriodsLegReplication(RateAveraging::Simple);
@@ -380,6 +379,29 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
                                  .withRateSpreads(std::vector<Spread>(11, 0.0))),
                       Error);
 }
+
+BOOST_AUTO_TEST_CASE(testSubPeriodsLegRegression) {
+    BOOST_TEST_MESSAGE("Testing number of fixing dates in sub-periods coupons...");
+
+    Schedule schedule = MakeSchedule()
+        .from({1, August, 2024})
+        .to({1, August, 2025})
+        .withFrequency(Monthly)
+        .withCalendar(TARGET());
+
+    Size resetsPerCoupon = 3;
+    Leg leg = MultipleResetsLeg(schedule, ext::make_shared<Euribor1M>(), resetsPerCoupon)
+        .withNotionals(100.0)
+        .withAveragingMethod(RateAveraging::Compound);
+
+    for (const auto& cf : leg) {
+        auto c = ext::dynamic_pointer_cast<SubPeriodsCoupon>(cf);
+        if (c->fixingDates().size() != 3)
+            BOOST_ERROR("Unexpected number of fixing dates (" << c->fixingDates().size() << ") "
+                        "in coupon paying on " << c->date());
+    }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

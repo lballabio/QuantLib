@@ -35,18 +35,35 @@ namespace QuantLib {
 
     class IborIndex;
 
-    //! sub-periods coupon
-    /*! %Coupon paying the interest, depending on the averaging convention,
-        due to possible multiple fixing resets in one accrual period.
+    //! multiple-reset coupon
+    /*! %Coupon paying a rate calculated by compounding or averaging
+        multiple fixings during its accrual period.
     */
     class SubPeriodsCoupon: public FloatingRateCoupon {
       public:
-          // The index object passed in has a tenor significantly less than the
-          // start/end dates.
-          // Thus endDate-startDate may equal 3M
-          // The Tenor used within the index object should be 1M for
-          // averaging/compounding across three coupons within the
-          // coupon period.
+        /*! \param resetSchedule the schedule for the multiple resets. The first and last
+                                 dates are also the start and end dates of the coupon.
+                                 Each period specified by the schedule is the underlying
+                                 period for one fixing; the corresponding fixing date is
+                                 the passed number of fixing days before the start of
+                                 the period.
+            \param couponSpread  an optional spread added to the final coupon rate.
+            \param rateSpread    an optional spread added to each of the underlying fixings.
+            \param gearing       an optional multiplier for the final coupon rate.
+        */
+        SubPeriodsCoupon(const Date& paymentDate,
+                         Real nominal,
+                         const Schedule& resetSchedule,
+                         Natural fixingDays,
+                         const ext::shared_ptr<IborIndex>& index,
+                         Real gearing = 1.0,
+                         Rate couponSpread = 0.0,
+                         Rate rateSpread = 0.0,
+                         const Date& refPeriodStart = Date(),
+                         const Date& refPeriodEnd = Date(),
+                         const DayCounter& dayCounter = DayCounter(),
+                         const Date& exCouponDate = Date());
+
         SubPeriodsCoupon(const Date& paymentDate,
                          Real nominal,
                          const Date& startDate,
@@ -54,11 +71,8 @@ namespace QuantLib {
                          Natural fixingDays,
                          const ext::shared_ptr<IborIndex>& index,
                          Real gearing = 1.0,
-                         Rate couponSpread = 0.0, // Spread added to the computed
-                                                  // averaging/compounding rate.
-                         Rate rateSpread = 0.0,   // Spread to be added onto each
-                                                  // fixing within the
-                                                  // averaging/compounding calculation
+                         Rate couponSpread = 0.0,
+                         Rate rateSpread = 0.0,
                          const Date& refPeriodStart = Date(),
                          const Date& refPeriodEnd = Date(),
                          const DayCounter& dayCounter = DayCounter(),
@@ -117,7 +131,61 @@ namespace QuantLib {
         Real swapletRate() const override;
     };
 
-    //! helper class building a sequence of overnight coupons
+
+    //! helper class building a sequence of multiple-reset coupons
+    class MultipleResetsLeg {
+      public:
+        /*! \param fullResetSchedule the full schedule specifying reset periods for all coupons.
+            \param index             the index whose fixings will be used; it should have the
+                                     same tenor as the resets.
+            \param resetsPerCoupon   the number of resets for each coupon; the number of periods
+                                     in the schedule should be divided exactly by this number.
+        */
+        MultipleResetsLeg(Schedule fullResetSchedule,
+                          ext::shared_ptr<IborIndex> index,
+                          Size resetsPerCoupon);
+        MultipleResetsLeg& withNotionals(Real notional);
+        MultipleResetsLeg& withNotionals(const std::vector<Real>& notionals);
+        MultipleResetsLeg& withPaymentDayCounter(const DayCounter&);
+        MultipleResetsLeg& withPaymentAdjustment(BusinessDayConvention);
+        MultipleResetsLeg& withPaymentCalendar(const Calendar&);
+        MultipleResetsLeg& withPaymentLag(Integer lag);
+        MultipleResetsLeg& withFixingDays(Natural fixingDays);
+        MultipleResetsLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+        MultipleResetsLeg& withGearings(Real gearing);
+        MultipleResetsLeg& withGearings(const std::vector<Real>& gearings);
+        MultipleResetsLeg& withCouponSpreads(Spread spread);
+        MultipleResetsLeg& withCouponSpreads(const std::vector<Spread>& spreads);
+        MultipleResetsLeg& withRateSpreads(Spread spread);
+        MultipleResetsLeg& withRateSpreads(const std::vector<Spread>& spreads);
+        MultipleResetsLeg& withExCouponPeriod(const Period&,
+                                              const Calendar&,
+                                              BusinessDayConvention,
+                                              bool endOfMonth = false);
+        MultipleResetsLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
+        operator Leg() const;
+
+      private:
+        Schedule schedule_;
+        ext::shared_ptr<IborIndex> index_;
+        Size resetsPerCoupon_;
+        std::vector<Real> notionals_;
+        DayCounter paymentDayCounter_;
+        Calendar paymentCalendar_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Integer paymentLag_ = 0;
+        std::vector<Natural> fixingDays_;
+        std::vector<Real> gearings_;
+        std::vector<Spread> couponSpreads_;
+        std::vector<Spread> rateSpreads_;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
+        Period exCouponPeriod_;
+        Calendar exCouponCalendar_;
+        BusinessDayConvention exCouponAdjustment_ = Unadjusted;
+        bool exCouponEndOfMonth_ = false;
+    };
+
+
     class SubPeriodsLeg {
       public:
         SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> index);
