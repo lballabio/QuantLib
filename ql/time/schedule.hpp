@@ -64,22 +64,24 @@ namespace QuantLib {
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
         Schedule() = default;
-        //! \name Date access
+        //! \name Element access
         //@{
         Size size() const { return dates_.size(); }
         const Date& operator[](Size i) const;
         const Date& at(Size i) const;
         const Date& date(Size i) const;
-        Date previousDate(const Date& refDate) const;
-        Date nextDate(const Date& refDate) const;
         const std::vector<Date>& dates() const { return dates_; }
-        bool hasIsRegular() const;
-        bool isRegular(Size i) const;
-        const std::vector<bool>& isRegular() const;
+        bool empty() const { return dates_.empty(); }
+        const Date& front() const;
+        const Date& back() const;
         //@}
         //! \name Other inspectors
         //@{
-        bool empty() const { return dates_.empty(); }
+        Date previousDate(const Date& refDate) const;
+        Date nextDate(const Date& refDate) const;
+        bool hasIsRegular() const;
+        bool isRegular(Size i) const;
+        const std::vector<bool>& isRegular() const;
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;
@@ -171,6 +173,16 @@ namespace QuantLib {
 
     inline const Date& Schedule::at(Size i) const {
         return dates_.at(i);
+    }
+
+    inline const Date& Schedule::front() const {
+        QL_REQUIRE(!dates_.empty(), "no front date for empty schedule");
+        return dates_.front();
+    }
+
+    inline const Date& Schedule::back() const {
+        QL_REQUIRE(!dates_.empty(), "no back date for empty schedule");
+        return dates_.back();
     }
 
     inline const Calendar& Schedule::calendar() const {
