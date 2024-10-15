@@ -474,12 +474,14 @@ namespace QuantLib {
                         paymentDate, -exCouponPeriod_, exCouponAdjustment_, exCouponEndOfMonth_);
                 }
             }
+            QL_DEPRECATED_DISABLE_WARNING
             cashflows.push_back(ext::shared_ptr<CashFlow>(new SubPeriodsCoupon(
                 paymentDate, detail::get(notionals_, i, notionals_.back()), start, end,
                 detail::get(fixingDays_, i, index_->fixingDays()), index_,
                 detail::get(gearings_, i, 1.0), detail::get(couponSpreads_, i, 0.0),
                 detail::get(rateSpreads_, i, 0.0), refStart, refEnd, paymentDayCounter_,
                 exCouponDate)));
+            QL_DEPRECATED_ENABLE_WARNING
         }
 
         switch (averagingMethod_) {

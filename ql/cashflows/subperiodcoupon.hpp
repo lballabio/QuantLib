@@ -64,6 +64,10 @@ namespace QuantLib {
                          const DayCounter& dayCounter = DayCounter(),
                          const Date& exCouponDate = Date());
 
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use the other constructor")]]
         SubPeriodsCoupon(const Date& paymentDate,
                          Real nominal,
                          const Date& startDate,

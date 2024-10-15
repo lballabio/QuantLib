@@ -69,8 +69,12 @@ struct CommonVars {
 
     ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
         Date paymentDate = calendar.advance(end, paymentDelay * Days, businessConvention);
-        ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
-                paymentDate, baseNominal, start, end, settlementDays, euribor));
+        Schedule schedule = MakeSchedule()
+            .from(start).to(end)
+            .withTenor(euribor->tenor())
+            .withCalendar(euribor->fixingCalendar());
+        auto cpn = ext::make_shared<SubPeriodsCoupon>(
+                paymentDate, baseNominal, schedule, settlementDays, euribor);
         cpn->setPricer(ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
         return cpn;
     }

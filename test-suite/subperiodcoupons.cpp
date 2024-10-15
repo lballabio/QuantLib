@@ -70,9 +70,8 @@ struct CommonVars {
         return s;
     }
 
-    Leg createIborLeg(const Date& start, const Date& end, Spread spread) {
-        Schedule sch = createSchedule(start, end);
-        return IborLeg(sch, euribor)
+    Leg createIborLeg(const Schedule& schedule, Spread spread) {
+        return IborLeg(schedule, euribor)
             .withNotionals(1.0)
             .withSpreads(spread)
             .withExCouponPeriod(2 * Days, calendar, businessConvention)
@@ -80,17 +79,16 @@ struct CommonVars {
             .withFixingDays(euribor->fixingDays());
     }
 
-    ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start,
-                                                     const Date& end,
+    ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Schedule& schedule,
                                                      Spread rateSpread = 0.0,
                                                      RateAveraging::Type averaging = RateAveraging::Compound) {
         Calendar paymentCalendar = euribor->fixingCalendar();
         BusinessDayConvention paymentBdc = euribor->businessDayConvention();
-        Date paymentDate = paymentCalendar.advance(end, 1 * Days, paymentBdc);
+        Date paymentDate = paymentCalendar.advance(schedule.back(), 1 * Days, paymentBdc);
         Date exCouponDate = paymentCalendar.advance(paymentDate, -2 * Days, paymentBdc);
-        ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
-                paymentDate, 1.0, start, end, euribor->fixingDays(), euribor, 1.0, 0.0,
-                rateSpread, Date(), Date(), DayCounter(), exCouponDate));
+        auto cpn = ext::make_shared<SubPeriodsCoupon>(
+                paymentDate, 1.0, schedule, euribor->fixingDays(), euribor, 1.0, 0.0,
+                rateSpread, Date(), Date(), DayCounter(), exCouponDate);
         if (averaging == RateAveraging::Compound)
             cpn->setPricer(ext::make_shared<CompoundingRatePricer>());
         else
@@ -124,9 +122,10 @@ BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPe
 
     Spread spread = 0.001;
 
-    Leg iborLeg = vars.createIborLeg(start, end, spread);
+    Schedule schedule = vars.createSchedule(start, end);
 
-    auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end, spread, RateAveraging::Compound);
+    Leg iborLeg = vars.createIborLeg(schedule, spread);
+    auto subPeriodCpn = vars.createSubPeriodsCoupon(schedule, spread, RateAveraging::Compound);
 
     const Real tolerance = 1.0e-14;
 
@@ -159,9 +158,10 @@ BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeri
 
     Spread spread = 0.001;
 
-    Leg iborLeg = vars.createIborLeg(start, end, spread);
+    Schedule schedule = vars.createSchedule(start, end);
 
-    auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end, spread, RateAveraging::Simple);
+    Leg iborLeg = vars.createIborLeg(schedule, spread);
+    auto subPeriodCpn = vars.createSubPeriodsCoupon(schedule, spread, RateAveraging::Simple);
 
     const Real tolerance = 1.0e-14;
 
@@ -190,13 +190,14 @@ BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
 
     Date start = vars.calendar.advance(vars.today, - 6 * Months);
     Date end = vars.today;
+    auto schedule = vars.createSchedule(start, end);
 
     Calendar paymentCalendar = vars.euribor->fixingCalendar();
     Date paymentDate = paymentCalendar.advance(end, 2 * Days);
     Date exCouponDate = paymentCalendar.advance(end, -2 * Days);
 
     auto cpn = ext::make_shared<SubPeriodsCoupon>(
-                paymentDate, 1.0, start, end, 2, vars.euribor,
+                paymentDate, 1.0, schedule, 2, vars.euribor,
                 1.0, 0.0, 0.0, Date(), Date(), DayCounter(), exCouponDate);
     cpn->setPricer(ext::make_shared<CompoundingRatePricer>());
 
