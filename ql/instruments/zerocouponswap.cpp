@@ -33,8 +33,16 @@ namespace QuantLib {
                                     const Date& maturityDate,
                                     Real nominal,
                                     const ext::shared_ptr<IborIndex>& index) {
+            Schedule schedule = MakeSchedule()
+                           .from(startDate)
+                           .to(maturityDate)
+                           .withTenor(index->tenor())
+                           .withCalendar(index->fixingCalendar())
+                           .withConvention(index->businessDayConvention())
+                           .backwards()
+                           .endOfMonth(index->endOfMonth());
             auto floatCpn = ext::make_shared<SubPeriodsCoupon>(
-                paymentDate, nominal, startDate, maturityDate, index->fixingDays(), index);
+                paymentDate, nominal, schedule, index->fixingDays(), index);
             floatCpn->setPricer(
                 ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
             return floatCpn;

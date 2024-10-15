@@ -290,6 +290,8 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
     Date start(18, March, 2021);
     Date end(18, March, 2031);
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     Leg validLeg = vars.createSubPeriodsLeg(start, end);
     Size N = validLeg.size();
 
@@ -326,6 +328,7 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
                .withRateSpreads(std::vector<Spread>(N + 1, 0.0))),
         Error);
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 

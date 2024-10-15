@@ -346,6 +346,8 @@ namespace QuantLib {
     }
 
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     SubPeriodsLeg::SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> i)
     : schedule_(std::move(schedule)), index_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(index_, "no index provided");
@@ -474,14 +476,12 @@ namespace QuantLib {
                         paymentDate, -exCouponPeriod_, exCouponAdjustment_, exCouponEndOfMonth_);
                 }
             }
-            QL_DEPRECATED_DISABLE_WARNING
             cashflows.push_back(ext::shared_ptr<CashFlow>(new SubPeriodsCoupon(
                 paymentDate, detail::get(notionals_, i, notionals_.back()), start, end,
                 detail::get(fixingDays_, i, index_->fixingDays()), index_,
                 detail::get(gearings_, i, 1.0), detail::get(couponSpreads_, i, 0.0),
                 detail::get(rateSpreads_, i, 0.0), refStart, refEnd, paymentDayCounter_,
                 exCouponDate)));
-            QL_DEPRECATED_ENABLE_WARNING
         }
 
         switch (averagingMethod_) {
@@ -498,5 +498,7 @@ namespace QuantLib {
         }
         return cashflows;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
