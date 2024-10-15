@@ -155,6 +155,12 @@ namespace QuantLib {
         Real impliedQuote() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
+        //! \name inspectors
+        //@{
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<OvernightIndexedSwap> swap() const { return swap_; }
+        //@}
+        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
