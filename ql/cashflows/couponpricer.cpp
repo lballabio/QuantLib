@@ -253,7 +253,7 @@ namespace QuantLib {
                              public Visitor<DigitalCmsCoupon>,
                              public Visitor<DigitalCmsSpreadCoupon>,
                              public Visitor<RangeAccrualFloatersCoupon>,
-                             public Visitor<SubPeriodsCoupon> {
+                             public Visitor<MultipleResetsCoupon> {
           private:
             ext::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
@@ -274,7 +274,7 @@ namespace QuantLib {
             void visit(DigitalCmsCoupon& c) override;
             void visit(DigitalCmsSpreadCoupon& c) override;
             void visit(RangeAccrualFloatersCoupon& c) override;
-            void visit(SubPeriodsCoupon& c) override;
+            void visit(MultipleResetsCoupon& c) override;
         };
 
         void PricerSetter::visit(CashFlow&) {
@@ -386,12 +386,11 @@ namespace QuantLib {
             c.setPricer(rangeAccrualPricer);
         }
 
-        void PricerSetter::visit(SubPeriodsCoupon& c) {
-            const ext::shared_ptr<SubPeriodsPricer> subPeriodsPricer =
-                ext::dynamic_pointer_cast<SubPeriodsPricer>(pricer_);
-            QL_REQUIRE(subPeriodsPricer,
-                       "pricer not compatible with sub-period coupon");
-            c.setPricer(subPeriodsPricer);
+        void PricerSetter::visit(MultipleResetsCoupon& c) {
+            const ext::shared_ptr<MultipleResetsPricer> pricer =
+                ext::dynamic_pointer_cast<MultipleResetsPricer>(pricer_);
+            QL_REQUIRE(pricer, "pricer not compatible with multiple-resets coupon");
+            c.setPricer(pricer);
         }
 
         void setCouponPricersFirstMatching(const Leg& leg,

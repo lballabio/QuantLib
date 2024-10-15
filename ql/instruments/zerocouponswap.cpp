@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     namespace {       
+
         ext::shared_ptr<CashFlow>
         compoundedSubPeriodicCoupon(const Date& paymentDate,
                                     const Date& startDate,
@@ -41,12 +42,12 @@ namespace QuantLib {
                            .withConvention(index->businessDayConvention())
                            .backwards()
                            .endOfMonth(index->endOfMonth());
-            auto floatCpn = ext::make_shared<SubPeriodsCoupon>(
+            auto floatCpn = ext::make_shared<MultipleResetsCoupon>(
                 paymentDate, nominal, schedule, index->fixingDays(), index);
-            floatCpn->setPricer(
-                ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
+            floatCpn->setPricer(ext::make_shared<CompoundingMultipleResetsPricer>());
             return floatCpn;
         }
+
     }
 
     ZeroCouponSwap::ZeroCouponSwap(Type type,

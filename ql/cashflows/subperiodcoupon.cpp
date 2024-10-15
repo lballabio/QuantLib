@@ -27,18 +27,18 @@
 
 namespace QuantLib {
 
-    SubPeriodsCoupon::SubPeriodsCoupon(const Date& paymentDate,
-                                       Real nominal,
-                                       const Schedule& resetSchedule,
-                                       Natural fixingDays,
-                                       const ext::shared_ptr<IborIndex>& index,
-                                       Real gearing,
-                                       Rate couponSpread,
-                                       Rate rateSpread,
-                                       const Date& refPeriodStart,
-                                       const Date& refPeriodEnd,
-                                       const DayCounter& dayCounter,
-                                       const Date& exCouponDate)
+    MultipleResetsCoupon::MultipleResetsCoupon(const Date& paymentDate,
+                                               Real nominal,
+                                               const Schedule& resetSchedule,
+                                               Natural fixingDays,
+                                               const ext::shared_ptr<IborIndex>& index,
+                                               Real gearing,
+                                               Rate couponSpread,
+                                               Rate rateSpread,
+                                               const Date& refPeriodStart,
+                                               const Date& refPeriodEnd,
+                                               const DayCounter& dayCounter,
+                                               const Date& exCouponDate)
     : FloatingRateCoupon(paymentDate, nominal,
                          resetSchedule.front(), resetSchedule.back(),
                          fixingDays, index, gearing, couponSpread,
@@ -64,19 +64,19 @@ namespace QuantLib {
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i + 1]);
     }
 
-    SubPeriodsCoupon::SubPeriodsCoupon(const Date& paymentDate,
-                                       Real nominal,
-                                       const Date& startDate,
-                                       const Date& endDate,
-                                       Natural fixingDays,
-                                       const ext::shared_ptr<IborIndex>& index,
-                                       Real gearing,
-                                       Rate couponSpread,
-                                       Rate rateSpread,
-                                       const Date& refPeriodStart,
-                                       const Date& refPeriodEnd,
-                                       const DayCounter& dayCounter,
-                                       const Date& exCouponDate)
+    MultipleResetsCoupon::MultipleResetsCoupon(const Date& paymentDate,
+                                               Real nominal,
+                                               const Date& startDate,
+                                               const Date& endDate,
+                                               Natural fixingDays,
+                                               const ext::shared_ptr<IborIndex>& index,
+                                               Real gearing,
+                                               Rate couponSpread,
+                                               Rate rateSpread,
+                                               const Date& refPeriodStart,
+                                               const Date& refPeriodEnd,
+                                               const DayCounter& dayCounter,
+                                               const Date& exCouponDate)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
                          refPeriodStart, refPeriodEnd, dayCounter,
@@ -109,22 +109,22 @@ namespace QuantLib {
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i + 1]);
      }
 
-    void SubPeriodsCoupon::accept(AcyclicVisitor& v) {
-        auto* v1 = dynamic_cast<Visitor<SubPeriodsCoupon>*>(&v);
+    void MultipleResetsCoupon::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<MultipleResetsCoupon>*>(&v);
         if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
     }
 
-    Date SubPeriodsCoupon::fixingDate(const Date& valueDate) const {
+    Date MultipleResetsCoupon::fixingDate(const Date& valueDate) const {
         Date fixingDate =
             index_->fixingCalendar().advance(valueDate, -static_cast<Integer>(fixingDays_), Days);
         return fixingDate;
     }
 
-    void SubPeriodsPricer::initialize(const FloatingRateCoupon& coupon) {
-        coupon_ = dynamic_cast<const SubPeriodsCoupon*>(&coupon);
+    void MultipleResetsPricer::initialize(const FloatingRateCoupon& coupon) {
+        coupon_ = dynamic_cast<const MultipleResetsCoupon*>(&coupon);
         QL_REQUIRE(coupon_, "sub-periods coupon required");
 
         ext::shared_ptr<IborIndex> index = ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
@@ -144,27 +144,27 @@ namespace QuantLib {
         }
     }
 
-    Real SubPeriodsPricer::swapletPrice() const {
-        QL_FAIL("SubPeriodsPricer::swapletPrice not implemented");
+    Real MultipleResetsPricer::swapletPrice() const {
+        QL_FAIL("MultipleResetsPricer::swapletPrice not implemented");
     }
 
-    Real SubPeriodsPricer::capletPrice(Rate) const {
-        QL_FAIL("SubPeriodsPricer::capletPrice not implemented");
+    Real MultipleResetsPricer::capletPrice(Rate) const {
+        QL_FAIL("MultipleResetsPricer::capletPrice not implemented");
     }
 
-    Rate SubPeriodsPricer::capletRate(Rate) const {
-        QL_FAIL("SubPeriodsPricer::capletRate not implemented");
+    Rate MultipleResetsPricer::capletRate(Rate) const {
+        QL_FAIL("MultipleResetsPricer::capletRate not implemented");
     }
 
-    Real SubPeriodsPricer::floorletPrice(Rate) const {
-        QL_FAIL("SubPeriodsPricer::floorletPrice not implemented");
+    Real MultipleResetsPricer::floorletPrice(Rate) const {
+        QL_FAIL("MultipleResetsPricer::floorletPrice not implemented");
     }
 
-    Rate SubPeriodsPricer::floorletRate(Rate) const {
-        QL_FAIL("SubPeriodsPricer::floorletRate not implemented");
+    Rate MultipleResetsPricer::floorletRate(Rate) const {
+        QL_FAIL("MultipleResetsPricer::floorletRate not implemented");
     }
 
-    Real AveragingRatePricer::swapletRate() const {
+    Real AveragingMultipleResetsPricer::swapletRate() const {
         // past or future fixing is managed in InterestRateIndex::fixing()
 
         Size nCount = subPeriodFixings_.size();
@@ -178,7 +178,7 @@ namespace QuantLib {
         return coupon_->gearing() * rate + coupon_->spread();
     }
 
-    Real CompoundingRatePricer::swapletRate() const {
+    Real CompoundingMultipleResetsPricer::swapletRate() const {
         // past or future fixing is managed in InterestRateIndex::fixing()
 
         Real compoundFactor = 1.0;
@@ -324,7 +324,7 @@ namespace QuantLib {
                 }
             }
 
-            cashflows.push_back(ext::make_shared<SubPeriodsCoupon>(
+            cashflows.push_back(ext::make_shared<MultipleResetsCoupon>(
                 paymentDate, detail::get(notionals_, i, notionals_.back()), subSchedule,
                 detail::get(fixingDays_, i, index_->fixingDays()), index_,
                 detail::get(gearings_, i, 1.0), detail::get(couponSpreads_, i, 0.0),
@@ -334,10 +334,10 @@ namespace QuantLib {
 
         switch (averagingMethod_) {
           case RateAveraging::Simple:
-            setCouponPricer(cashflows, ext::make_shared<AveragingRatePricer>());
+            setCouponPricer(cashflows, ext::make_shared<AveragingMultipleResetsPricer>());
             break;
           case RateAveraging::Compound:
-            setCouponPricer(cashflows, ext::make_shared<CompoundingRatePricer>());
+            setCouponPricer(cashflows, ext::make_shared<CompoundingMultipleResetsPricer>());
             break;
           default:
             QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
@@ -476,7 +476,7 @@ namespace QuantLib {
                         paymentDate, -exCouponPeriod_, exCouponAdjustment_, exCouponEndOfMonth_);
                 }
             }
-            cashflows.push_back(ext::shared_ptr<CashFlow>(new SubPeriodsCoupon(
+            cashflows.push_back(ext::shared_ptr<CashFlow>(new MultipleResetsCoupon(
                 paymentDate, detail::get(notionals_, i, notionals_.back()), start, end,
                 detail::get(fixingDays_, i, index_->fixingDays()), index_,
                 detail::get(gearings_, i, 1.0), detail::get(couponSpreads_, i, 0.0),
@@ -485,16 +485,14 @@ namespace QuantLib {
         }
 
         switch (averagingMethod_) {
-            case RateAveraging::Simple:
-                setCouponPricer(cashflows,
-                                ext::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer));
-                break;
-            case RateAveraging::Compound:
-                setCouponPricer(cashflows, ext::shared_ptr<FloatingRateCouponPricer>(
-                                               new CompoundingRatePricer));
-                break;
-            default:
-                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
+          case RateAveraging::Simple:
+            setCouponPricer(cashflows, ext::make_shared<AveragingMultipleResetsPricer>());
+            break;
+          case RateAveraging::Compound:
+            setCouponPricer(cashflows, ext::make_shared<CompoundingMultipleResetsPricer>());
+            break;
+          default:
+            QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
         }
         return cashflows;
     }

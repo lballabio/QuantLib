@@ -29,7 +29,7 @@ using namespace boost::unit_test_framework;
 
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
-BOOST_AUTO_TEST_SUITE(SubPeriodsCouponTests)
+BOOST_AUTO_TEST_SUITE(MultipleResetsCouponTests)
 
 struct CommonVars {
 
@@ -78,20 +78,20 @@ struct CommonVars {
             .withFixingDays(euribor->fixingDays());
     }
 
-    ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Schedule& schedule,
-                                                     Spread rateSpread = 0.0,
-                                                     RateAveraging::Type averaging = RateAveraging::Compound) {
+    ext::shared_ptr<CashFlow> createMultipleResetsCoupon(const Schedule& schedule,
+                                                         Spread rateSpread = 0.0,
+                                                         RateAveraging::Type averaging = RateAveraging::Compound) {
         Calendar paymentCalendar = euribor->fixingCalendar();
         BusinessDayConvention paymentBdc = euribor->businessDayConvention();
         Date paymentDate = paymentCalendar.advance(schedule.back(), 1 * Days, paymentBdc);
         Date exCouponDate = paymentCalendar.advance(paymentDate, -2 * Days, paymentBdc);
-        auto cpn = ext::make_shared<SubPeriodsCoupon>(
+        auto cpn = ext::make_shared<MultipleResetsCoupon>(
                 paymentDate, 1.0, schedule, euribor->fixingDays(), euribor, 1.0, 0.0,
                 rateSpread, Date(), Date(), DayCounter(), exCouponDate);
         if (averaging == RateAveraging::Compound)
-            cpn->setPricer(ext::make_shared<CompoundingRatePricer>());
+            cpn->setPricer(ext::make_shared<CompoundingMultipleResetsPricer>());
         else
-            cpn->setPricer(ext::make_shared<AveragingRatePricer>());
+            cpn->setPricer(ext::make_shared<AveragingMultipleResetsPricer>());
         return cpn;
     }
 
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPe
     Schedule schedule = vars.createSchedule(start, end);
 
     Leg iborLeg = vars.createIborLeg(schedule, spread);
-    auto subPeriodCpn = vars.createSubPeriodsCoupon(schedule, spread, RateAveraging::Compound);
+    auto subPeriodCpn = vars.createMultipleResetsCoupon(schedule, spread, RateAveraging::Compound);
 
     const Real tolerance = 1.0e-14;
 
@@ -183,7 +183,7 @@ BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeri
     Schedule schedule = vars.createSchedule(start, end);
 
     Leg iborLeg = vars.createIborLeg(schedule, spread);
-    auto subPeriodCpn = vars.createSubPeriodsCoupon(schedule, spread, RateAveraging::Simple);
+    auto subPeriodCpn = vars.createMultipleResetsCoupon(schedule, spread, RateAveraging::Simple);
 
     const Real tolerance = 1.0e-14;
 
@@ -218,10 +218,10 @@ BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
     Date paymentDate = paymentCalendar.advance(end, 2 * Days);
     Date exCouponDate = paymentCalendar.advance(end, -2 * Days);
 
-    auto cpn = ext::make_shared<SubPeriodsCoupon>(
+    auto cpn = ext::make_shared<MultipleResetsCoupon>(
                 paymentDate, 1.0, schedule, 2, vars.euribor,
                 1.0, 0.0, 0.0, Date(), Date(), DayCounter(), exCouponDate);
-    cpn->setPricer(ext::make_shared<CompoundingRatePricer>());
+    cpn->setPricer(ext::make_shared<CompoundingMultipleResetsPricer>());
 
     Real npv = CashFlows::npv({cpn}, **vars.euriborHandle, false, vars.today, vars.today);
 
@@ -347,7 +347,7 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegRegression) {
         .withAveragingMethod(RateAveraging::Compound);
 
     for (const auto& cf : leg) {
-        auto c = ext::dynamic_pointer_cast<SubPeriodsCoupon>(cf);
+        auto c = ext::dynamic_pointer_cast<MultipleResetsCoupon>(cf);
         if (c->fixingDates().size() != 3)
             BOOST_ERROR("Unexpected number of fixing dates (" << c->fixingDates().size() << ") "
                         "in coupon paying on " << c->date());

@@ -39,7 +39,7 @@ namespace QuantLib {
     /*! %Coupon paying a rate calculated by compounding or averaging
         multiple fixings during its accrual period.
     */
-    class SubPeriodsCoupon: public FloatingRateCoupon {
+    class MultipleResetsCoupon : public FloatingRateCoupon {
       public:
         /*! \param resetSchedule the schedule for the multiple resets. The first and last
                                  dates are also the start and end dates of the coupon.
@@ -51,36 +51,36 @@ namespace QuantLib {
             \param rateSpread    an optional spread added to each of the underlying fixings.
             \param gearing       an optional multiplier for the final coupon rate.
         */
-        SubPeriodsCoupon(const Date& paymentDate,
-                         Real nominal,
-                         const Schedule& resetSchedule,
-                         Natural fixingDays,
-                         const ext::shared_ptr<IborIndex>& index,
-                         Real gearing = 1.0,
-                         Rate couponSpread = 0.0,
-                         Rate rateSpread = 0.0,
-                         const Date& refPeriodStart = Date(),
-                         const Date& refPeriodEnd = Date(),
-                         const DayCounter& dayCounter = DayCounter(),
-                         const Date& exCouponDate = Date());
+        MultipleResetsCoupon(const Date& paymentDate,
+                             Real nominal,
+                             const Schedule& resetSchedule,
+                             Natural fixingDays,
+                             const ext::shared_ptr<IborIndex>& index,
+                             Real gearing = 1.0,
+                             Rate couponSpread = 0.0,
+                             Rate rateSpread = 0.0,
+                             const Date& refPeriodStart = Date(),
+                             const Date& refPeriodEnd = Date(),
+                             const DayCounter& dayCounter = DayCounter(),
+                             const Date& exCouponDate = Date());
 
         /*! \deprecated Use the other constructor.
                         Deprecated in version 1.37.
         */
         [[deprecated("Use the other constructor")]]
-        SubPeriodsCoupon(const Date& paymentDate,
-                         Real nominal,
-                         const Date& startDate,
-                         const Date& endDate,
-                         Natural fixingDays,
-                         const ext::shared_ptr<IborIndex>& index,
-                         Real gearing = 1.0,
-                         Rate couponSpread = 0.0,
-                         Rate rateSpread = 0.0,
-                         const Date& refPeriodStart = Date(),
-                         const Date& refPeriodEnd = Date(),
-                         const DayCounter& dayCounter = DayCounter(),
-                         const Date& exCouponDate = Date());
+        MultipleResetsCoupon(const Date& paymentDate,
+                             Real nominal,
+                             const Date& startDate,
+                             const Date& endDate,
+                             Natural fixingDays,
+                             const ext::shared_ptr<IborIndex>& index,
+                             Real gearing = 1.0,
+                             Rate couponSpread = 0.0,
+                             Rate rateSpread = 0.0,
+                             const Date& refPeriodStart = Date(),
+                             const Date& refPeriodEnd = Date(),
+                             const DayCounter& dayCounter = DayCounter(),
+                             const Date& exCouponDate = Date());
 
         //! \name Inspectors
         //@{
@@ -111,7 +111,14 @@ namespace QuantLib {
         Rate rateSpread_;
     };
 
-    class SubPeriodsPricer: public FloatingRateCouponPricer {
+    /*! \deprecated Renamed to MultipleResetsCoupon.
+                    Deprecated in version 1.37.
+    */
+    [[deprecated("Renamed to MultipleResetsCoupon")]]
+    typedef MultipleResetsCoupon SubPeriodsCoupon;
+
+
+    class MultipleResetsPricer: public FloatingRateCouponPricer {
       public:
         Rate swapletPrice() const override;
         Real capletPrice(Rate effectiveCap) const override;
@@ -121,19 +128,37 @@ namespace QuantLib {
         void initialize(const FloatingRateCoupon& coupon) override;
 
       protected:
-        const SubPeriodsCoupon* coupon_;
+        const MultipleResetsCoupon* coupon_;
         std::vector<Real> subPeriodFixings_;
     };
 
-    class AveragingRatePricer: public SubPeriodsPricer {
+    /*! \deprecated Renamed to MultipleResetsPricer.
+                    Deprecated in version 1.37.
+    */
+    [[deprecated("Renamed to MultipleResetsPricer")]]
+    typedef MultipleResetsPricer SubPeriodsPricer;
+
+    class AveragingMultipleResetsPricer: public MultipleResetsPricer {
       public:
         Real swapletRate() const override;
     };
 
-    class CompoundingRatePricer: public SubPeriodsPricer {
+    /*! \deprecated Renamed to AveragingMultipleResetsPricer.
+                    Deprecated in version 1.37.
+    */
+    [[deprecated("Renamed to AveragingMultipleResetsPricer")]]
+    typedef AveragingMultipleResetsPricer AveragingRatePricer;
+
+    class CompoundingMultipleResetsPricer: public MultipleResetsPricer {
       public:
         Real swapletRate() const override;
     };
+
+    /*! \deprecated Renamed to CompoundingMultipleResetsPricer.
+                    Deprecated in version 1.37.
+    */
+    [[deprecated("Renamed to CompoundingMultipleResetsPricer")]]
+    typedef CompoundingMultipleResetsPricer CompoundingRatePricer;
 
 
     //! helper class building a sequence of multiple-reset coupons
