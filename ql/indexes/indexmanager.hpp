@@ -37,10 +37,67 @@ namespace QuantLib {
     /*! \note index names are case insensitive */
     class IndexManager : public Singleton<IndexManager> {
         friend class Singleton<IndexManager>;
+        friend class Index;
 
       private:
         IndexManager() = default;
-        friend class Index;
+
+      public:
+        //! returns all names of the indexes for which fixings were stored
+        std::vector<std::string> histories() const;
+        //! clears all stored fixings
+        void clearHistories();
+
+        // deprecated in order to be moved into the private section
+
+        /*! \deprecated Use Index::hasHistoricalFixing instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use Index::hasHistoricalFixing instead")]]
+        bool hasHistory(const std::string& name) const;
+
+        /*! \deprecated Use Index::timeSeries instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use Index::timeSeries instead")]]
+        const TimeSeries<Real>& getHistory(const std::string& name) const;
+
+        /*! \deprecated Use Index::clearFixings instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use Index::clearFixings instead")]]
+        void clearHistory(const std::string& name);
+
+        /*! \deprecated Use Index::hasHistoricalFixing instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use Index::hasHistoricalFixing instead")]]
+        bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
+
+        /*! \deprecated Use Index::addFixings instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use Index::addFixings instead")]]
+        void setHistory(const std::string& name, TimeSeries<Real> history);
+
+        /*! \deprecated Register with the relevant index instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Register with the relevant index instead")]]
+        ext::shared_ptr<Observable> notifier(const std::string& name) const;
+
+      private:
+        struct CaseInsensitiveCompare {
+          bool operator()(const std::string& s1, const std::string& s2) const {
+            return std::lexicographical_compare(s1.begin(), s1.end(), s2.begin(), s2.end(), [](const auto& c1, const auto& c2) {
+              return std::toupper(static_cast<unsigned char>(c1)) < std::toupper(static_cast<unsigned char>(c2));
+            });
+          }
+        };
+
+        mutable std::map<std::string, TimeSeries<Real>, CaseInsensitiveCompare> data_;
+        mutable std::map<std::string, ext::shared_ptr<Observable>> notifiers_;
+
         //! add a fixing
         void addFixing(const std::string& name,
                        const Date& fixingDate,
@@ -81,7 +138,9 @@ namespace QuantLib {
                     invalidValue = *(vBegin++);
                 }
             }
+            QL_DEPRECATED_DISABLE_WARNING
             notifier(name)->notifyObservers();
+            QL_DEPRECATED_ENABLE_WARNING
             QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
                                             << invalidDate.weekday() << " " << invalidDate << ", "
                                             << invalidValue);
@@ -90,36 +149,6 @@ namespace QuantLib {
                                                << " while " << h[duplicatedDate]
                                                << " value is already present");
         }
-
-      public:
-        //! returns whether historical fixings were stored for the index
-        bool hasHistory(const std::string& name) const;
-        //! returns the (possibly empty) history of the index fixings
-        const TimeSeries<Real>& getHistory(const std::string& name) const;
-        //! stores the historical fixings of the index
-        void setHistory(const std::string& name, TimeSeries<Real> history);
-        //! observer notifying of changes in the index fixings_
-        ext::shared_ptr<Observable> notifier(const std::string& name) const;
-        //! returns all names of the indexes for which fixings were stored
-        std::vector<std::string> histories() const;
-        //! clears the historical fixings of the index
-        void clearHistory(const std::string& name);
-        //! clears all stored fixings
-        void clearHistories();
-        //! returns whether a specific historical fixing was stored for the index and date
-        bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
-
-      private:
-        struct CaseInsensitiveCompare {
-          bool operator()(const std::string& s1, const std::string& s2) const {
-            return std::lexicographical_compare(s1.begin(), s1.end(), s2.begin(), s2.end(), [](const auto& c1, const auto& c2) {
-              return std::toupper(static_cast<unsigned char>(c1)) < std::toupper(static_cast<unsigned char>(c2));
-            });
-          }
-        };
-
-        mutable std::map<std::string, TimeSeries<Real>, CaseInsensitiveCompare> data_;
-        mutable std::map<std::string, ext::shared_ptr<Observable>> notifiers_;
     };
 
 }

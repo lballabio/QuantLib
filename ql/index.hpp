@@ -69,7 +69,9 @@ namespace QuantLib {
         virtual Real pastFixing(const Date& fixingDate) const;
         //! returns the fixing TimeSeries
         const TimeSeries<Real>& timeSeries() const {
+            QL_DEPRECATED_DISABLE_WARNING
             return IndexManager::instance().getHistory(name());
+            QL_DEPRECATED_ENABLE_WARNING
         }
         //! check if index allows for native fixings.
         /*! If this returns false, calls to addFixing and similar
@@ -107,13 +109,23 @@ namespace QuantLib {
         //! clears all stored historical fixings
         void clearFixings();
 
+      protected:
+        ext::shared_ptr<Observable> notifier() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return IndexManager::instance().notifier(name());
+            QL_DEPRECATED_ENABLE_WARNING
+        }
+
       private:
         //! check if index allows for native fixings
         void checkNativeFixingsAllowed();
+
     };
 
     inline bool Index::hasHistoricalFixing(const Date& fixingDate) const {
+        QL_DEPRECATED_DISABLE_WARNING
         return IndexManager::instance().hasHistoricalFixing(name(), fixingDate);
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Real Index::pastFixing(const Date& fixingDate) const {

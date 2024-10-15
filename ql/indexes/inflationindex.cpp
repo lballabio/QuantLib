@@ -126,7 +126,7 @@ namespace QuantLib {
       frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(InflationIndex::name()));
+        registerWith(notifier());
     }
 
     Calendar InflationIndex::fixingCalendar() const {
