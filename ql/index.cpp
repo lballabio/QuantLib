@@ -25,9 +25,7 @@ namespace QuantLib {
                           Real fixing,
                           bool forceOverwrite) {
         checkNativeFixingsAllowed();
-        addFixings(&fixingDate, (&fixingDate)+1,
-                   &fixing,
-                   forceOverwrite);
+        addFixings(&fixingDate, (&fixingDate) + 1, &fixing, forceOverwrite);
     }
 
     void Index::addFixings(const TimeSeries<Real>& t,

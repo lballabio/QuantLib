@@ -100,42 +100,9 @@ namespace QuantLib {
                         ValueIterator vBegin,
                         bool forceOverwrite = false) {
             checkNativeFixingsAllowed();
-            std::string tag = name();
-            TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
-            bool noInvalidFixing = true, noDuplicatedFixing = true;
-            Date invalidDate, duplicatedDate;
-            Real nullValue = Null<Real>();
-            Real invalidValue = Null<Real>();
-            Real duplicatedValue = Null<Real>();
-            while (dBegin != dEnd) {
-                bool validFixing = isValidFixingDate(*dBegin);
-                Real currentValue = h[*dBegin];
-                bool missingFixing = forceOverwrite || currentValue == nullValue;
-                if (validFixing) {
-                    if (missingFixing)
-                        h[*(dBegin++)] = *(vBegin++);
-                    else if (close(currentValue, *(vBegin))) {
-                        ++dBegin;
-                        ++vBegin;
-                    } else {
-                        noDuplicatedFixing = false;
-                        duplicatedDate = *(dBegin++);
-                        duplicatedValue = *(vBegin++);
-                    }
-                } else {
-                    noInvalidFixing = false;
-                    invalidDate = *(dBegin++);
-                    invalidValue = *(vBegin++);
-                }
-            }
-            IndexManager::instance().setHistory(tag, h);
-            QL_REQUIRE(noInvalidFixing, "At least one invalid fixing provided: "
-                                            << invalidDate.weekday() << " " << invalidDate << ", "
-                                            << invalidValue);
-            QL_REQUIRE(noDuplicatedFixing, "At least one duplicated fixing provided: "
-                                               << duplicatedDate << ", " << duplicatedValue
-                                               << " while " << h[duplicatedDate]
-                                               << " value is already present");
+            IndexManager::instance().addFixings(
+                name(), dBegin, dEnd, vBegin, forceOverwrite,
+                [this](const Date& d) { return isValidFixingDate(d); });
         }
         //! clears all stored historical fixings
         void clearFixings();
