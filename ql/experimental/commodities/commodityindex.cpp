@@ -38,7 +38,7 @@ namespace QuantLib {
       forwardCurve_(std::move(forwardCurve)), exchangeContracts_(std::move(exchangeContracts)),
       nearbyOffset_(nearbyOffset) {
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(name()));
+        registerWith(notifier());
 
         if (forwardCurve_ != nullptr)
             // registerWith(forwardCurve_);

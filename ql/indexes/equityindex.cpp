@@ -57,7 +57,7 @@ namespace QuantLib {
         registerWith(dividend_);
         registerWith(spot_);
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(EquityIndex::name()));
+        registerWith(notifier());
     }
 
     Real EquityIndex::fixing(const Date& fixingDate, bool forecastTodaysFixing) const {
