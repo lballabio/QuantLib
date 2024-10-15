@@ -65,8 +65,7 @@ struct CommonVars {
             .to(end)
             .withTenor(euribor->tenor())
             .withCalendar(euribor->fixingCalendar())
-            .withConvention(euribor->businessDayConvention())
-            .backwards();
+            .withConvention(euribor->businessDayConvention());
         return s;
     }
 
@@ -96,9 +95,30 @@ struct CommonVars {
         return cpn;
     }
 
+    MultipleResetsLeg createMultipleResetsLeg(const Date& start,
+                                              const Date& end) {
+        Schedule s = createSchedule(start, end);
+        return MultipleResetsLeg(s, euribor, 6)
+            .withNotionals(1.0)
+            .withExCouponPeriod(2 * Days, calendar, businessConvention)
+            .withPaymentLag(1)
+            .withFixingDays(2)
+            .withRateSpreads(0.0)
+            .withCouponSpreads(0.0)
+            .withAveragingMethod(RateAveraging::Compound);
+    }
+
+    QL_DEPRECATED_DISABLE_WARNING
+
     SubPeriodsLeg createSubPeriodsLeg(const Date& start,
                                       const Date& end) {
-        Schedule s = createSchedule(start, end);
+        Schedule s = MakeSchedule()
+            .from(start)
+            .to(end)
+            .withTenor(6 * Months)
+            .withCalendar(euribor->fixingCalendar())
+            .withConvention(euribor->businessDayConvention())
+            .backwards();
         return SubPeriodsLeg(s, euribor)
             .withNotionals(1.0)
             .withExCouponPeriod(2 * Days, calendar, businessConvention)
@@ -108,6 +128,8 @@ struct CommonVars {
             .withCouponSpreads(0.0)
             .withAveragingMethod(RateAveraging::Compound);
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 };
 
@@ -213,6 +235,53 @@ BOOST_AUTO_TEST_CASE(testExCouponCashFlow) {
                     << "    end:    " << end << "\n");
 }
 
+BOOST_AUTO_TEST_CASE(testMultipleResetsLegConsistencyChecks) {
+    BOOST_TEST_MESSAGE("Testing multiple-resets leg consistency checks...");
+
+    CommonVars vars;
+
+    Date start(18, March, 2021);
+    Date end(18, March, 2031);
+
+    Leg validLeg = vars.createMultipleResetsLeg(start, end);
+    Size N = validLeg.size();
+
+    BOOST_CHECK_THROW(
+        Leg l0(vars.createMultipleResetsLeg(start, end)
+               .withNotionals(std::vector<Real>())),
+        Error);
+
+    BOOST_CHECK_THROW(
+        Leg l1(vars.createMultipleResetsLeg(start, end)
+               .withNotionals(std::vector<Real>(N + 1, 1.0))),
+        Error);
+
+    BOOST_CHECK_THROW(
+        Leg l2(vars.createMultipleResetsLeg(start, end)
+               .withFixingDays(std::vector<Natural>(N + 1, 2))),
+        Error);
+
+    BOOST_CHECK_THROW(
+        Leg l3(vars.createMultipleResetsLeg(start, end)
+               .withGearings(0.0)),
+        Error);
+
+    BOOST_CHECK_THROW(
+        Leg l4(vars.createMultipleResetsLeg(start, end)
+               .withGearings(std::vector<Real>(N + 1, 1.0))),
+        Error);
+
+    BOOST_CHECK_THROW(
+        Leg l5(vars.createMultipleResetsLeg(start, end)
+               .withCouponSpreads(std::vector<Spread>(N + 1, 0.0))),
+        Error);
+
+    BOOST_CHECK_THROW(
+        Leg l6(vars.createMultipleResetsLeg(start, end)
+               .withRateSpreads(std::vector<Spread>(N + 1, 0.0))),
+        Error);
+}
+
 BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
     BOOST_TEST_MESSAGE("Testing sub-periods leg consistency checks...");
 
@@ -256,7 +325,9 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
         Leg l6(vars.createSubPeriodsLeg(start, end)
                .withRateSpreads(std::vector<Spread>(N + 1, 0.0))),
         Error);
+
 }
+
 
 BOOST_AUTO_TEST_CASE(testSubPeriodsLegRegression) {
     BOOST_TEST_MESSAGE("Testing number of fixing dates in sub-periods coupons...");

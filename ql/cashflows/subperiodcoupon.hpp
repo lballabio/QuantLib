@@ -190,7 +190,10 @@ namespace QuantLib {
     };
 
 
-    class SubPeriodsLeg {
+    /*! \deprecated Use MultipleResetsLeg instead.
+                    Deprecated in version 1.37.
+    */
+    class [[deprecated("Use MultipleResetsLeg instead")]] SubPeriodsLeg {
       public:
         SubPeriodsLeg(Schedule schedule, ext::shared_ptr<IborIndex> index);
         SubPeriodsLeg& withNotionals(Real notional);
