@@ -56,7 +56,7 @@ namespace QuantLib {
 
         const ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
-        const auto& pastFixings = IndexManager::instance().getHistory(index->name());
+        const auto& pastFixings = index->timeSeries();
 
         const auto& fixingDates = coupon_->fixingDates();
         const auto& valueDates = coupon_->valueDates();
@@ -194,11 +194,13 @@ namespace QuantLib {
 
         Real accumulatedRate = 0.0;
 
+        const auto& pastFixings = index->timeSeries();
+
         // already fixed part
         Date today = Settings::instance().evaluationDate();
         while (i < n && fixingDates[i] < today) {
             // rate must have been fixed
-            Rate pastFixing = IndexManager::instance().getHistory(index->name())[fixingDates[i]];
+            Rate pastFixing = pastFixings[fixingDates[i]];
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
             accumulatedRate += pastFixing * dt[i];
@@ -209,8 +211,7 @@ namespace QuantLib {
         if (i < n && fixingDates[i] == today) {
             // might have been fixed
             try {
-                Rate pastFixing =
-                    IndexManager::instance().getHistory(index->name())[fixingDates[i]];
+                Rate pastFixing = pastFixings[fixingDates[i]];
                 if (pastFixing != Null<Real>()) {
                     accumulatedRate += pastFixing * dt[i];
                     ++i;

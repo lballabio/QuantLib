@@ -83,11 +83,6 @@ namespace QuantLib {
         DigitalIborLeg& withPutPayoffs(Rate payoff);
         DigitalIborLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalIborLeg& withReplication(const ext::shared_ptr<DigitalReplication>&);
-        /*! \deprecated Use the overload that passes a replication instead.
-                        Deprecated in version 1.32.
-        */
-        [[deprecated("Use the overload that passes a replication instead")]]
-        DigitalIborLeg& withReplication();
         DigitalIborLeg& withNakedOption(bool nakedOption = true);
 
         operator Leg() const;

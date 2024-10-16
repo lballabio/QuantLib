@@ -782,7 +782,6 @@
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
     <ClCompile Include="rounding.cpp" />
-    <ClCompile Include="sampledcurve.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="shortratemodels.cpp" />

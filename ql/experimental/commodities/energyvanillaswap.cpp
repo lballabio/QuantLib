@@ -140,7 +140,7 @@ namespace QuantLib {
                     Real quoteValue = 0;
 
                     if (stepDate <= lastQuoteDate) {
-                        quoteValue = index_->price(stepDate);
+                        quoteValue = index_->fixing(stepDate);
                     } else {
                         quoteValue = index_->forwardPrice(stepDate);
                     }

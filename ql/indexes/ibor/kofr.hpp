@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Dimitri Reiswich
+ Copyright (C) 2024 Jongbong An
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,7 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-// Deprecated in version 1.32
-#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp> instead.")
+/*! \file kofr.hpp
+    \brief %KOFR index
+*/
 
-#include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
+#ifndef quantlib_kofr_hpp
+#define quantlib_kofr_hpp
+
+#include <ql/indexes/iborindex.hpp>
+
+namespace QuantLib {
+
+    //! %KOFR index.
+    /*! Korea Overnight Financing Repo Rate (KOFR) published by Korea Securities Depository (KSD)
+    Please refer to
+    (1) https://www.bok.or.kr/eng/main/contents.do?menuNo=400399 (Overview)
+    (2) https://www.kofr.kr/main.jsp (Detailed information)
+    */
+   class Kofr : public OvernightIndex {
+      public:
+        explicit Kofr(const Handle<YieldTermStructure>& h = {});
+    };
+    
+}
+
+#endif

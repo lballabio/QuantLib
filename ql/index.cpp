@@ -25,9 +25,7 @@ namespace QuantLib {
                           Real fixing,
                           bool forceOverwrite) {
         checkNativeFixingsAllowed();
-        addFixings(&fixingDate, (&fixingDate)+1,
-                   &fixing,
-                   forceOverwrite);
+        addFixings(&fixingDate, (&fixingDate) + 1, &fixing, forceOverwrite);
     }
 
     void Index::addFixings(const TimeSeries<Real>& t,
@@ -44,7 +42,9 @@ namespace QuantLib {
 
     void Index::clearFixings() {
         checkNativeFixingsAllowed();
+        QL_DEPRECATED_DISABLE_WARNING
         IndexManager::instance().clearHistory(name());
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     void Index::checkNativeFixingsAllowed() {

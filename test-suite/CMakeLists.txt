@@ -137,7 +137,6 @@ set(QL_TEST_SOURCES
     riskstats.cpp
     rngtraits.cpp
     rounding.cpp
-    sampledcurve.cpp
     schedule.cpp
     settings.cpp
     shortratemodels.cpp

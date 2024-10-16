@@ -83,11 +83,6 @@ namespace QuantLib {
         DigitalCmsLeg& withPutPayoffs(Rate payoff);
         DigitalCmsLeg& withPutPayoffs(const std::vector<Rate>& payoffs);
         DigitalCmsLeg& withReplication(const ext::shared_ptr<DigitalReplication>&);
-        /*! \deprecated Use the overload that passes a replication instead.
-                        Deprecated in version 1.32.
-        */
-        [[deprecated("Use the overload that passes a replication instead")]]
-        DigitalCmsLeg& withReplication();
         DigitalCmsLeg& withNakedOption(bool nakedOption = true);
 
         operator Leg() const;

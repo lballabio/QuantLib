@@ -112,7 +112,7 @@ namespace QuantLib {
 
         Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
                                         swap_->fixedLeg().back()->date());
-        latestRelevantDate_ = std::max(maturityDate_, lastPaymentDate);
+        latestRelevantDate_ = latestDate_ = std::max(maturityDate_, lastPaymentDate);
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
@@ -135,8 +135,6 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown Pillar::Choice(" << Integer(pillarChoice_) << ")");
         }
-
-        latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
     }
 
     void OISRateHelper::setTermStructure(YieldTermStructure* t) {
@@ -233,9 +231,10 @@ namespace QuantLib {
             setCouponPricer(swap_->overnightLeg(), pricer);
 
         earliestDate_ = swap_->startDate();
+        maturityDate_ = swap_->maturityDate();
         Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
                                         swap_->fixedLeg().back()->date());
-        latestDate_ = std::max(swap_->maturityDate(), lastPaymentDate);
+        latestRelevantDate_ = latestDate_ = std::max(maturityDate_, lastPaymentDate);
     }
 
     DatedOISRateHelper::DatedOISRateHelper(const Date& startDate,
