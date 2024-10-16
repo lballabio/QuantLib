@@ -53,6 +53,8 @@ namespace QuantLib {
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<Swap> swap() const { return swap_; }
       private:
         void initializeDates() override;
         void setTermStructure(YieldTermStructure*) override;
@@ -94,6 +96,8 @@ namespace QuantLib {
 
         Real impliedQuote() const override;
         void accept(AcyclicVisitor&) override;
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<Swap> swap() const { return swap_; }
       private:
         void initializeDates() override;
         void setTermStructure(YieldTermStructure*) override;
