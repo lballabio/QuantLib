@@ -61,6 +61,7 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "duffsdeviceinnerproduct.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "dividendvanillaoption.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "averageoiscouponpricer.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "subperiodcoupon.hpp")
 
     file(GLOB children_dir RELATIVE ${source_dir} "${source_dir}/*")
     list(FILTER children_dir EXCLUDE REGEX "CMakeFiles")

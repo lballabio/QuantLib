@@ -507,7 +507,7 @@
     <ClCompile Include="crosscurrencyratehelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="subperiodcoupons.cpp">
+    <ClCompile Include="multipleresetscoupons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zerocouponswap.cpp">

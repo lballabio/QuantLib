@@ -18,7 +18,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -134,8 +134,8 @@ struct CommonVars {
 };
 
 
-BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods) {
-    BOOST_TEST_MESSAGE("Testing coupon with multiple compounded sub-periods...");
+BOOST_AUTO_TEST_CASE(testCompoundedCouponWithMultipleResets) {
+    BOOST_TEST_MESSAGE("Testing coupon with multiple compounded resets...");
 
     CommonVars vars;
 
@@ -147,11 +147,11 @@ BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPe
     Schedule schedule = vars.createSchedule(start, end);
 
     Leg iborLeg = vars.createIborLeg(schedule, spread);
-    auto subPeriodCpn = vars.createMultipleResetsCoupon(schedule, spread, RateAveraging::Compound);
+    auto testCpn = vars.createMultipleResetsCoupon(schedule, spread, RateAveraging::Compound);
 
     const Real tolerance = 1.0e-14;
 
-    Real actualPayment = subPeriodCpn->amount();
+    Real actualPayment = testCpn->amount();
 
     Real compound = 1.0;
     for (const auto& cf : iborLeg) {
@@ -163,15 +163,15 @@ BOOST_AUTO_TEST_CASE(testRegularCompoundedForwardStartingCouponWithMultipleSubPe
     Real expectedPayment = compound - 1.0;
 
     if (std::fabs(actualPayment - expectedPayment) > tolerance)
-        BOOST_ERROR("unable to replicate compounded multiple sub-period coupon payment\n"
+        BOOST_ERROR("unable to replicate compounded multiple-resets coupon payment\n"
                     << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
                     << "    expected:    " << expectedPayment << "\n"
                     << "    start:    " << start << "\n"
                     << "    end:    " << end << "\n");
 }
 
-BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeriods) {
-    BOOST_TEST_MESSAGE("Testing coupon with multiple averaged sub-periods...");
+BOOST_AUTO_TEST_CASE(testAveragedCouponWithMultipleResets) {
+    BOOST_TEST_MESSAGE("Testing coupon with multiple averaged resets...");
 
     CommonVars vars;
 
@@ -183,11 +183,11 @@ BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeri
     Schedule schedule = vars.createSchedule(start, end);
 
     Leg iborLeg = vars.createIborLeg(schedule, spread);
-    auto subPeriodCpn = vars.createMultipleResetsCoupon(schedule, spread, RateAveraging::Simple);
+    auto testCpn = vars.createMultipleResetsCoupon(schedule, spread, RateAveraging::Simple);
 
     const Real tolerance = 1.0e-14;
 
-    Real actualPayment = subPeriodCpn->amount();
+    Real actualPayment = testCpn->amount();
 
     Real expectedPayment = 0.0;
     for (const auto& cf : iborLeg) {
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE(testRegularAveragedForwardStartingCouponWithMultipleSubPeri
     }
 
     if (std::fabs(actualPayment - expectedPayment) > tolerance)
-        BOOST_ERROR("unable to replicate averaged multiple sub-period coupon payment\n"
+        BOOST_ERROR("unable to replicate averaged multiple-resets coupon payment\n"
                     << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
                     << "    expected:    " << expectedPayment << "\n"
                     << "    start:    " << start << "\n"
@@ -332,8 +332,8 @@ BOOST_AUTO_TEST_CASE(testSubPeriodsLegConsistencyChecks) {
 }
 
 
-BOOST_AUTO_TEST_CASE(testSubPeriodsLegRegression) {
-    BOOST_TEST_MESSAGE("Testing number of fixing dates in sub-periods coupons...");
+BOOST_AUTO_TEST_CASE(testMultipleResetsLegRegression) {
+    BOOST_TEST_MESSAGE("Testing number of fixing dates in multiple-resets coupons...");
 
     Schedule schedule = MakeSchedule()
         .from({1, August, 2024})

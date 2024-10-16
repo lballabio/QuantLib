@@ -19,7 +19,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/zerocouponswap.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/calendars/target.hpp>

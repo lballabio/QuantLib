@@ -26,7 +26,7 @@
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>        /* internal */
 #include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp> /* internal */
 #include <ql/pricingengines/blackformula.hpp>
