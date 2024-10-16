@@ -24,13 +24,13 @@ set(QL_SOURCES
     cashflows/inflationcoupon.cpp
     cashflows/inflationcouponpricer.cpp
     cashflows/lineartsrpricer.cpp
+    cashflows/multipleresetscoupon.cpp
     cashflows/overnightindexedcoupon.cpp
     cashflows/overnightindexedcouponpricer.cpp
     cashflows/rangeaccrual.cpp
     cashflows/replication.cpp
     cashflows/simplecashflow.cpp
     cashflows/timebasket.cpp
-    cashflows/subperiodcoupon.cpp
     cashflows/yoyinflationcoupon.cpp
     cashflows/zeroinflationcashflow.cpp
     currencies/africa.cpp
@@ -959,6 +959,7 @@ set(QL_HEADERS
     cashflows/inflationcoupon.hpp
     cashflows/inflationcouponpricer.hpp
     cashflows/lineartsrpricer.hpp
+    cashflows/multipleresetscoupon.hpp
     cashflows/overnightindexedcoupon.hpp
     cashflows/overnightindexedcouponpricer.hpp
     cashflows/rangeaccrual.hpp

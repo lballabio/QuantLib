@@ -533,6 +533,7 @@
     <ClInclude Include="ql\cashflows\inflationcoupon.hpp" />
     <ClInclude Include="ql\cashflows\inflationcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\lineartsrpricer.hpp" />
+    <ClInclude Include="ql\cashflows\multipleresetscoupon.hpp" />
     <ClInclude Include="ql\cashflows\overnightindexedcoupon.hpp" />
     <ClInclude Include="ql\cashflows\overnightindexedcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp" />
@@ -1918,12 +1919,12 @@
     <ClCompile Include="ql\cashflows\inflationcoupon.cpp" />
     <ClCompile Include="ql\cashflows\inflationcouponpricer.cpp" />
     <ClCompile Include="ql\cashflows\lineartsrpricer.cpp" />
+    <ClCompile Include="ql\cashflows\multipleresetscoupon.cpp" />
     <ClCompile Include="ql\cashflows\overnightindexedcoupon.cpp" />
     <ClCompile Include="ql\cashflows\overnightindexedcouponpricer.cpp" />
     <ClCompile Include="ql\cashflows\rangeaccrual.cpp" />
     <ClCompile Include="ql\cashflows\replication.cpp" />
     <ClCompile Include="ql\cashflows\simplecashflow.cpp" />
-    <ClCompile Include="ql\cashflows\subperiodcoupon.cpp" />
     <ClCompile Include="ql\cashflows\timebasket.cpp" />
     <ClCompile Include="ql\cashflows\yoyinflationcoupon.cpp" />
     <ClCompile Include="ql\cashflows\zeroinflationcashflow.cpp" />

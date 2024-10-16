@@ -25,13 +25,13 @@
 #include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/cashflows/lineartsrpricer.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/cashflows/replication.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
 #include <ql/cashflows/timebasket.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/cashflows/zeroinflationcashflow.hpp>

@@ -40,6 +40,7 @@ function(generate_dir_headers source_dir binary_dir)
 
     list(FILTER children_hpp EXCLUDE REGEX "dividendvanillaoption.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "averageoiscouponpricer.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "subperiodcoupon.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fdmultiperiodengine.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fdvanillaengine.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "sampledcurve.hpp")

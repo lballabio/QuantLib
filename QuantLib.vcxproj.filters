@@ -552,6 +552,9 @@
     <ClInclude Include="ql\cashflows\inflationcouponpricer.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\multipleresetscoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\overnightindexedcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -4499,6 +4502,9 @@
     <ClCompile Include="ql\cashflows\inflationcouponpricer.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
+    <ClCompile Include="ql\cashflows\multipleresetscoupon.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
     <ClCompile Include="ql\cashflows\overnightindexedcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
@@ -4512,9 +4518,6 @@
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\simplecashflow.cpp">
-      <Filter>cashflows</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\cashflows\subperiodcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\timebasket.cpp">
