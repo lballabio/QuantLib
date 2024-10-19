@@ -280,7 +280,7 @@ BOOST_AUTO_TEST_CASE(testFolinIntegration) {
 
     const Real tol = 1e-12;
 
-    for (Size i=0; i < LENGTH(nr); ++i) {
+    for (Size i=0; i < std::size(nr); ++i) {
         const Size n = nr[i];
         const Real calculatedCosine
             = FilonIntegral(FilonIntegral::Cosine, t, n)(cosineF(),0,2*M_PI);

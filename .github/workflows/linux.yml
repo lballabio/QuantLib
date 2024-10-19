@@ -44,7 +44,12 @@ jobs:
             tag: noble
             cc: clang
             cxx: clang++
-            cxxflags: -Wno-deprecated-declarations
+            tests: true
+          - name: "Clang 19"
+            shortname: clang19
+            tag: oracular
+            cc: clang
+            cxx: clang++
             tests: true
           - name: "C++17 mode"
             shortname: c++17

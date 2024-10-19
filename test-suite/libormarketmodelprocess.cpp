@@ -155,7 +155,7 @@ BOOST_AUTO_TEST_CASE(testLambdaBootstrapping) {
 
     ext::shared_ptr<LiborForwardModelProcess> process = makeProcess();
 
-    Matrix covar = process->covariance(0.0, Null<Array>(), 1.0);
+    Matrix covar = process->covariance(0.0, {}, 1.0);
 
     for (Size i=0; i<9; ++i) {
         const Real calculated = std::sqrt(covar[i+1][i+1]);

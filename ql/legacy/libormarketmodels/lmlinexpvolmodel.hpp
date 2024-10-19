@@ -45,15 +45,13 @@ namespace QuantLib {
 
     class LmLinearExponentialVolatilityModel : public LmVolatilityModel {
       public:
-        LmLinearExponentialVolatilityModel(
-                                         const std::vector<Time>& fixingTimes,
-                                         Real a, Real b, Real c, Real d);
+        LmLinearExponentialVolatilityModel(const std::vector<Time>& fixingTimes,
+                                           Real a, Real b, Real c, Real d);
 
-        Array volatility(Time t, const Array& x = Null<Array>()) const override;
-        Volatility volatility(Size i, Time t, const Array& x = Null<Array>()) const override;
+        Array volatility(Time t, const Array& x = {}) const override;
+        Volatility volatility(Size i, Time t, const Array& x = {}) const override;
 
-        Real
-        integratedVariance(Size i, Size j, Time u, const Array& x = Null<Array>()) const override;
+        Real integratedVariance(Size i, Size j, Time u, const Array& x = {}) const override;
 
       private:
         void generateArguments() override;

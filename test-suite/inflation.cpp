@@ -274,7 +274,7 @@ BOOST_AUTO_TEST_CASE(testZeroIndex) {
     };
 
     auto iir = ext::make_shared<UKRPI>();
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -341,7 +341,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     auto ii = ext::make_shared<UKRPI>(hz);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -509,7 +509,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithLag) {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     auto ii = ext::make_shared<UKRPI>(hz);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -677,7 +677,7 @@ BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
     auto ii = ext::make_shared<UKRPI>(hz);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         ii->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -868,6 +868,9 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
     quoted_flat.addFixing({1,January,2024}, 100.1);
     quoted_flat.addFixing({1,February,2024}, 100.2);
 
+    BOOST_CHECK_EQUAL(quoted_flat.lastFixingDate(), Date(1,February,2024));
+    BOOST_CHECK_EQUAL(quoted_linear.lastFixingDate(), Date(1,February,2024));
+
     // mid-January fixing: ok for both flat and interpolated
     BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,January,2024}));
     BOOST_CHECK_NO_THROW(quoted_linear.fixing({15,January,2024}));
@@ -883,6 +886,10 @@ BOOST_AUTO_TEST_CASE(testQuotedYYIndexFutureFixing) {
 
     // both ok after March is published:
     quoted_flat.addFixing({1,March,2024}, 100.3);
+
+    BOOST_CHECK_EQUAL(quoted_flat.lastFixingDate(), Date(1,March,2024));
+    BOOST_CHECK_EQUAL(quoted_linear.lastFixingDate(), Date(1,March,2024));
+
     BOOST_CHECK_NO_THROW(quoted_flat.fixing({15,February,2024}));
     BOOST_CHECK_NO_THROW(quoted_linear.fixing({15,February,2024}));
 
@@ -955,7 +962,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3 };
 
-    for (Size i=0; i<LENGTH(fixData);i++) {
+    for (Size i=0; i<std::size(fixData);i++) {
         ukrpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -1034,6 +1041,9 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndexFutureFixing) {
     euhicp->addFixing({1,January,2024}, 100.1);
     euhicp->addFixing({1,February,2024}, 100.2);
 
+    BOOST_CHECK_EQUAL(ratio_flat.lastFixingDate(), Date(1,February,2024));
+    BOOST_CHECK_EQUAL(ratio_linear.lastFixingDate(), Date(1,February,2024));
+
     // mid-January fixing: ok for both flat and interpolated
     BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,January,2024}));
     BOOST_CHECK_NO_THROW(ratio_linear.fixing({15,January,2024}));
@@ -1049,6 +1059,10 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndexFutureFixing) {
 
     // both ok after March is published:
     euhicp->addFixing({1,March,2024}, 100.3);
+
+    BOOST_CHECK_EQUAL(ratio_flat.lastFixingDate(), Date(1,March,2024));
+    BOOST_CHECK_EQUAL(ratio_linear.lastFixingDate(), Date(1,March,2024));
+
     BOOST_CHECK_NO_THROW(ratio_flat.fixing({15,February,2024}));
     BOOST_CHECK_NO_THROW(ratio_linear.fixing({15,February,2024}));
 
@@ -1090,7 +1104,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     bool interp = false;
     auto rpi = ext::make_shared<UKRPI>();
     auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 
@@ -1131,8 +1145,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
     auto pYYTS =
         ext::make_shared<PiecewiseYoYInflationCurve<Linear>>(
                 evaluationDate, baseDate, baseYYRate,
-                iir->frequency(),iir->interpolated(), dc,
-                helpers);
+                iir->frequency(), dc, helpers);
 
     // validation
     // yoy swaps should reprice to zero
@@ -1247,7 +1260,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
     bool interp = false;
     auto rpi = ext::make_shared<UKRPI>();
     auto iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
-    for (Size i=0; i<LENGTH(fixData); i++) {
+    for (Size i=0; i<std::size(fixData); i++) {
         rpi->addFixing(rpiSchedule[i], fixData[i]);
     }
 

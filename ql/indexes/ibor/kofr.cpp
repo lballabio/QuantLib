@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
-/*!
- Copyright (C) 2016 Michael von den Driesch
+/*
+ Copyright (C) 2024 Jongbong An
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,10 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_multicurve_sensitivity_hpp
-#define quantlib_multicurve_sensitivity_hpp
+#include <ql/currencies/asia.hpp>
+#include <ql/indexes/ibor/kofr.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/calendars/southkorea.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
-// Deprecated in version 1.32
-#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
+namespace QuantLib {
+    Kofr::Kofr(const Handle<YieldTermStructure>& h)
+    : OvernightIndex(
+          "KOFR", 0, KRWCurrency(), SouthKorea(SouthKorea::Settlement), Actual365Fixed(), h) {}
 
-#endif
+}

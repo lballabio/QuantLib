@@ -45,6 +45,7 @@ namespace QuantLib {
                    StationaryFunctionValue,
                    StationaryFunctionAccuracy,
                    ZeroGradientNorm,
+                   FunctionEpsilonTooSmall,
                    Unknown};
 
         //! Initialization constructor
@@ -95,6 +96,7 @@ namespace QuantLib {
         /*! Test if the gradient norm value is below gradientNormEpsilon */
         bool checkZeroGradientNorm(Real gNorm, EndCriteria::Type& ecType) const;
 
+        static bool succeeded(EndCriteria::Type ecType);
       protected:
         //! Maximum number of iterations
         Size maxIterations_;

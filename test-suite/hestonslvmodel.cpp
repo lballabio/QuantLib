@@ -432,7 +432,7 @@ void hestonFokkerPlanckFwdEquationTest(const FokkerPlanckFwdTestCase& testCase) 
             }
         }
 
-        avg/=LENGTH(strikes); // NOLINT(bugprone-integer-division)
+        avg/=std::size(strikes); // NOLINT(bugprone-integer-division)
 
         if (avg > testCase.avgEps) {
             BOOST_FAIL("failed to reproduce Heston SLV prices"
@@ -1532,7 +1532,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesFokkerPlanckFwdEquationLocalVol, *precondit
 //    };
 //
 //
-//    for (Size i=0; i < LENGTH(testCases); ++i) {
+//    for (Size i=0; i < std::size(testCases); ++i) {
 //        BOOST_TEST_MESSAGE("Testing stochastic local volatility calibration case " << i << " ...");
 //        lsvCalibrationTest(testCases[i]);
 //    }
@@ -1826,7 +1826,7 @@ BOOST_AUTO_TEST_CASE(testBarrierPricingViaHestonLocalVol) {
 //        -0.390616, -0.380888, -0.371156, -0.361425,
 //        -0.351699, -0.341995 };
 //
-//    for (Size i=0; i < LENGTH(eta); ++i) {
+//    for (Size i=0; i < std::size(eta); ++i) {
 //        const Handle<HestonModel> modHestonModel(
 //            ext::make_shared<HestonModel>(
 //                ext::make_shared<HestonProcess>(
@@ -2175,7 +2175,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //    };
 //
 //    std::vector<std::vector<GeneralStatistics> >
-//        stats(2, std::vector<GeneralStatistics>(LENGTH(strikes)));
+//        stats(2, std::vector<GeneralStatistics>(std::size(strikes)));
 //
 //    for (Size i=0; i < 5*nSim; ++i) {
 //        for (Size k= 0; k < 2; ++k) {
@@ -2188,7 +2188,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //            const Real S_t2 = antiPath.value[0][resetIndex-1];
 //            const Real S_T2 = antiPath.value[0][tSteps-1];
 //
-//            for (Size j=0; j < LENGTH(strikes); ++j) {
+//            for (Size j=0; j < std::size(strikes); ++j) {
 //                const Real strike = strikes[j];
 //                if (strike < 1.0)
 //                    stats[k][j].add(0.5*(
@@ -2223,7 +2223,7 @@ BOOST_AUTO_TEST_CASE(testMonteCarloCalibration, *precondition(if_speed(Fast))) {
 //
 //    const DiscountFactor df = rTS->discount(grid.back());
 //
-//    for (Size j=0; j < LENGTH(strikes); ++j) {
+//    for (Size j=0; j < std::size(strikes); ++j) {
 //        for (Size k= 0; k < 2; ++k) {
 //            const Real strike = strikes[j];
 //            const Real npv = stats[k][j].mean() * df;

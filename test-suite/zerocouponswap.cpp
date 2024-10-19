@@ -19,7 +19,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/zerocouponswap.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -67,11 +67,15 @@ struct CommonVars {
             ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
     }
 
-    ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
+    ext::shared_ptr<CashFlow> createMultipleResetsCoupon(const Date& start, const Date& end) const {
         Date paymentDate = calendar.advance(end, paymentDelay * Days, businessConvention);
-        ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
-                paymentDate, baseNominal, start, end, settlementDays, euribor));
-        cpn->setPricer(ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
+        Schedule schedule = MakeSchedule()
+            .from(start).to(end)
+            .withTenor(euribor->tenor())
+            .withCalendar(euribor->fixingCalendar());
+        auto cpn = ext::make_shared<MultipleResetsCoupon>(
+                paymentDate, baseNominal, schedule, settlementDays, euribor);
+        cpn->setPricer(ext::make_shared<CompoundingMultipleResetsPricer>());
         return cpn;
     }
 
@@ -129,7 +133,7 @@ void checkReplicationOfZeroCouponSwapNPV(const Date& start,
         paymentDate < vars.settlement ? 0.0 : vars.euriborHandle->discount(paymentDate);
     Real expectedFixedLegNPV = -type * discountAtPayment * vars.finalPayment;
 
-    auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end);
+    auto subPeriodCpn = vars.createMultipleResetsCoupon(start, end);
     Real expectedFloatLegNPV =
         paymentDate < vars.settlement ? 0.0 : Real(Integer(type) * discountAtPayment * subPeriodCpn->amount());
 
@@ -283,7 +287,7 @@ BOOST_AUTO_TEST_CASE(testExpectedCashFlowsInLegs) {
 
     Date paymentDate =
         vars.calendar.advance(end, vars.paymentDelay * Days, vars.businessConvention);
-    auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end);
+    auto subPeriodCpn = vars.createMultipleResetsCoupon(start, end);
 
     if ((std::fabs(fixedCashFlow->amount() - zcSwap->fixedPayment()) > tolerance) ||
         (fixedCashFlow->date() != paymentDate))

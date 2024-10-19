@@ -51,8 +51,7 @@ namespace QuantLib {
     PartialTimeBarrierOption::arguments::arguments()
     : barrierType(PartialBarrier::Type(-1)),
       barrierRange(PartialBarrier::Range(-1)),
-      barrier(Null<Real>()), rebate(Null<Real>()),
-      coverEventDate(Null<Date>()) {}
+      barrier(Null<Real>()), rebate(Null<Real>()) {}
 
     void PartialTimeBarrierOption::arguments::validate() const {
         OneAssetOption::arguments::validate();
@@ -78,7 +77,7 @@ namespace QuantLib {
 
         QL_REQUIRE(barrier != Null<Real>(), "no barrier given");
         QL_REQUIRE(rebate != Null<Real>(), "no rebate given");
-        QL_REQUIRE(coverEventDate != Null<Date>(), "no cover event date given");
+        QL_REQUIRE(coverEventDate != Date(), "no cover event date given");
         QL_REQUIRE(coverEventDate < exercise->lastDate(),
                    "cover event date equal or later than exercise date");
     }

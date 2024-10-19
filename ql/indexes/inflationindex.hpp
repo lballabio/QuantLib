@@ -228,6 +228,7 @@ namespace QuantLib {
 
         //! \name Other methods
         //@{
+        Date lastFixingDate() const;
         bool interpolated() const;
         bool ratio() const;
         ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;

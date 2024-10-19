@@ -596,7 +596,7 @@ void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine
     Real runningAccumulator = 1.0;
     Size pastFixings = 0;
 
-    for (Size i=0; i<LENGTH(strikes); i++) {
+    for (Size i=0; i<std::size(strikes); i++) {
         Real strike = strikes[i];
         int day = days[i];
         Real expected = prices[i];
@@ -986,7 +986,7 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePriceHeston, *precondition(i
     ext::shared_ptr<Exercise> exercise(new
         EuropeanExercise(fixingDates[119]));
 
-    for (Size i=0; i<LENGTH(prices); i++) {
+    for (Size i=0; i<std::size(prices); i++) {
         Real strike = strikes[i];
         Real expected = prices[i];
 
@@ -2087,7 +2087,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePriceHeston) {
     ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine(new
                                                                                      AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess));
 
-    for (Size i=0; i<LENGTH(strikes); i++) {
+    for (Size i=0; i<std::size(strikes); i++) {
         Real strike = strikes[i];
         Time day = days[i];
         Real expected = prices[i];
@@ -2123,7 +2123,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePriceHeston) {
     ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine_2(new
                                                                                        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess_2));
 
-    for (Size i=0; i<LENGTH(strikes); i++) {
+    for (Size i=0; i<std::size(strikes); i++) {
         Real strike = strikes[i];
         Time day = days[i];
         Real expected = prices_2[i];
@@ -2182,7 +2182,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticContinuousGeometricAveragePriceHeston) {
     ext::shared_ptr<AnalyticContinuousGeometricAveragePriceAsianHestonEngine> engine_3(new
                                                                                        AnalyticContinuousGeometricAveragePriceAsianHestonEngine(hestonProcess_3));
 
-    for (Size i=0; i<LENGTH(strikes_3); i++) {
+    for (Size i=0; i<std::size(strikes_3); i++) {
         Real strike = strikes_3[i];
         Time day = days_3[i];
         Real expected = prices_3[i];
@@ -2346,9 +2346,9 @@ BOOST_AUTO_TEST_CASE(testDiscreteGeometricAveragePriceHestonPastFixings) {
     Option::Type type(Option::Call);
     Average::Type averageType = Average::Geometric;
 
-    for (Size strike_index = 0; strike_index < LENGTH(strikes); strike_index++) {
+    for (Size strike_index = 0; strike_index < std::size(strikes); strike_index++) {
 
-        for (Size day_index = 0; day_index < LENGTH(days); day_index++) {
+        for (Size day_index = 0; day_index < std::size(days); day_index++) {
 
             for (Size k=0; k<2; k++) {
 

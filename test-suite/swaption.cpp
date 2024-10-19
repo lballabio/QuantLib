@@ -474,7 +474,7 @@ BOOST_AUTO_TEST_CASE(testVega) {
                                            vars.settlementDays*Days);
         for (auto& length : lengths) {
             for (Real strike : strikes) {
-                for (Size h=0; h<LENGTH(type); h++) {
+                for (Size h=0; h<std::size(type); h++) {
                     ext::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
                             .withEffectiveDate(startDate)
@@ -851,7 +851,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatility, *precondition(if_speed(Faster))) {
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withFloatingLegSpread(0.0)
                             .withType(k);
-                    for (Size h=0; h<LENGTH(types); h++) {
+                    for (Size h=0; h<std::size(types); h++) {
                       for (auto priceType : priceTypes) {
                         for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
@@ -948,7 +948,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
                             .withPaymentFrequency(Annual)
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withType(k);
-                    for (Size h=0; h<LENGTH(types); h++) {
+                    for (Size h=0; h<std::size(types); h++) {
                       for (auto priceType : priceTypes) {
                         for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
@@ -1061,7 +1061,7 @@ void checkSwaptionDelta(bool useBachelierVol)
         for (auto exercise : exercises) {
             for (auto& length : lengths) {
                 for (Real& strike : strikes) {
-                    for (Size h=0; h<LENGTH(type); h++) {
+                    for (Size h=0; h<std::size(type); h++) {
                         Volatility volatility = useBachelierVol ? vol / 100.0 : vol;
                         ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(
                             discountHandle, volatility);

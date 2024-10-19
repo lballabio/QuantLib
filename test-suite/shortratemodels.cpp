@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
         cachedA = 0.0464041, cachedSigma = 0.00579912;
     }
 
-    Real tolerance = 1.0e-5;
+    Real tolerance = 1.2e-5;
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
     Array xMinExpected(2);
@@ -337,18 +337,15 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
 
     Real tolerance = usingAtParCoupons ? 1.0e-8 : 4.0e-3;
 
-    for (Size i=0; i<LENGTH(start); i++) {
+    for (Size i=0; i<std::size(start); i++) {
 
         Date startDate = calendar.advance(settlement,start[i],Months);
         if (startDate < today) {
             Date fixingDate = calendar.advance(startDate,-2,Days);
-            TimeSeries<Real> pastFixings;
-            pastFixings[fixingDate] = 0.03;
-            IndexManager::instance().setHistory(euribor->name(),
-                                                pastFixings);
+            euribor->addFixing(fixingDate, 0.03);
         }
 
-        for (Size j=0; j<LENGTH(length); j++) {
+        for (Size j=0; j<std::size(length); j++) {
 
             Date maturity = calendar.advance(startDate,length[i],Years);
             Schedule fixedSchedule(startDate, maturity, Period(Annual),

@@ -33,8 +33,6 @@
 
 #include <iostream>
 
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 using namespace std;
 using namespace QuantLib;
 
@@ -171,7 +169,7 @@ int main(int, char* []) {
              << endl;
 
         Size i;
-        for (i=0; i<LENGTH(monthsToStart); i++) {
+        for (i=0; i<std::size(monthsToStart); i++) {
 
             Date fraValueDate = fraCalendar.advance(
                                        settlementDate,monthsToStart[i],Months,
@@ -229,7 +227,7 @@ int main(int, char* []) {
         fra9x12Rate->setValue(threeMonthFraQuote[9]);
 
 
-        for (i=0; i<LENGTH(monthsToStart); i++) {
+        for (i=0; i<std::size(monthsToStart); i++) {
 
             Date fraValueDate = fraCalendar.advance(
                                        settlementDate,monthsToStart[i],Months,

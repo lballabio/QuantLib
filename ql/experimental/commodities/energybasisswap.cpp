@@ -170,8 +170,8 @@ namespace QuantLib {
                     Real receiveQuoteValue = 0;
 
                     if (stepDate <= lastQuoteDate) {
-                        payQuoteValue = payIndex_->price(stepDate);
-                        receiveQuoteValue = receiveIndex_->price(stepDate);
+                        payQuoteValue = payIndex_->fixing(stepDate);
+                        receiveQuoteValue = receiveIndex_->fixing(stepDate);
                     } else {
                         payQuoteValue = payIndex_->forwardPrice(stepDate);
                         receiveQuoteValue =

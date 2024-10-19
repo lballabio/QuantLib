@@ -31,8 +31,6 @@
 #include <iostream>
 #include <iomanip>
 
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 using namespace QuantLib;
 
 int main(int, char* []) {
@@ -86,7 +84,7 @@ int main(int, char* []) {
         Real putPrices[]= { 105.0 };
 
         // Load call schedules
-        for (Size i=0; i<LENGTH(callLength); i++) {
+        for (Size i=0; i<std::size(callLength); i++) {
             callability.push_back(
                    ext::make_shared<SoftCallability>(Bond::Price(callPrices[i],
                                                                  Bond::Price::Clean),
@@ -94,7 +92,7 @@ int main(int, char* []) {
                                                      1.20));
         }
 
-        for (Size j=0; j<LENGTH(putLength); j++) {
+        for (Size j=0; j<std::size(putLength); j++) {
             callability.push_back(
                    ext::make_shared<Callability>(Bond::Price(putPrices[j],
                                                              Bond::Price::Clean),

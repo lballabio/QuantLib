@@ -47,8 +47,8 @@ BOOST_AUTO_TEST_CASE(testResults) {
     Real dataMin, dataMax;
     std::vector<Real> data(N), weights(N);
 
-    for (i=0; i<LENGTH(averages); i++) {
-        for (j=0; j<LENGTH(sigmas); j++) {
+    for (i=0; i<std::size(averages); i++) {
+        for (j=0; j<std::size(sigmas); j++) {
 
             NormalDistribution normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);

@@ -240,7 +240,7 @@ void setup() {
     volatilities = std::vector<Volatility>(todaysForwards.size());
     blackVols = std::vector<Volatility>(todaysForwards.size());
     normalVols = std::vector<Volatility>(todaysForwards.size());
-    for (Size i=0; i<std::min(LENGTH(mktVols),todaysForwards.size()); i++) {
+    for (Size i=0; i<std::min(std::size(mktVols),todaysForwards.size()); i++) {
         volatilities[i] = todaysForwards[i]*mktVols[i]/
             (todaysForwards[i]+displacement);
         blackVols[i]= mktVols[i];
@@ -751,7 +751,7 @@ BOOST_AUTO_TEST_CASE(testOneStepForwardsAndOptionlets) {
                 EvolverType evolvers[] = {Pc, Balland, Ipc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -835,7 +835,7 @@ BOOST_AUTO_TEST_CASE(testOneStepNormalForwardsAndOptionlets) {
                 EvolverType evolvers[] = {NormalPc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1034,7 +1034,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                 Size stop =
                     isInTerminalMeasure(evolution, numeraires) ? 0 :
                     1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         // MTBrownianGeneratorFactory
@@ -1445,7 +1445,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapNaif, *precondition(if_speed(Slow))) {
                 EvolverType evolvers[] = {Pc, Balland, Ipc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         // MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1598,7 +1598,7 @@ BOOST_AUTO_TEST_CASE(testCallableSwapLS, *precondition(if_speed(Slow))) {
                 EvolverType evolvers[] = {Pc, Balland, Ipc};
                 ext::shared_ptr<MarketModelEvolver> evolver;
                 Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-                for (Size i = 0; i < LENGTH(evolvers) - stop; i++) {
+                for (Size i = 0; i < std::size(evolvers) - stop; i++) {
 
                     for (Size n = 0; n < 1; n++) {
                         // MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1774,7 +1774,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testCallableSwapAnderson, T, slices) {
         ext::shared_ptr<MarketModelEvolver> evolver;
         Size stop =
             isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-        for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+        for (Size i=0; i<std::size(evolvers)-stop; i++) {
             for (Size n=0; n<1; n++) {
                 //MTBrownianGeneratorFactory generatorFactory(seed_);
                 SobolBrownianGeneratorFactory generatorFactory(
@@ -2732,7 +2732,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
 
     /////////////////////////////////////
 
-    for (Size j=0; j<LENGTH(marketModels); j++)
+    for (Size j=0; j<std::size(marketModels); j++)
     {
 
         Size testedFactors[] = { 
@@ -3702,8 +3702,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
                 << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // test numerically differentiated swaptions against analytically done ones
     // we require equality on very path so we don't need many paths
@@ -3804,8 +3804,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
             }
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
 
     /////////////////////////////////////
 
@@ -3949,8 +3949,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
                            << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
 
     /////////////////////////////////////
     /////////////////////////////////////
@@ -4112,8 +4112,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseMarketVegas) {
                            << " and " << numberDiagonalFailures << " on the diagonal." );
 
 
-        } // end of  for (Size m=0; m<LENGTH(testedFactors); ++m)
-    }     // end of   for (Size j=0; j<LENGTH(marketModels); j++)
+        } // end of  for (Size m=0; m<std::size(testedFactors); ++m)
+    }     // end of   for (Size j=0; j<std::size(marketModels); j++)
 
     /////////////////////////////////////
 

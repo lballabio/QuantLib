@@ -139,11 +139,11 @@ struct CommonVars {
              Rate fixedRate,
              Spread spread,
              bool telescopicValueDates,
-             Date effectiveDate = Null<Date>(),
+             Date effectiveDate = Date(),
              Integer paymentLag = 0,
              RateAveraging::Type averagingMethod = RateAveraging::Compound) {
         return MakeOIS(length, estrIndex, fixedRate, 0 * Days)
-            .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
+            .withEffectiveDate(effectiveDate == Date() ? settlement : effectiveDate)
             .withOvernightLegSpread(spread)
             .withNominal(nominal)
             .withPaymentLag(paymentLag)
@@ -252,7 +252,7 @@ void testBootstrap(bool telescopicValueDates,
         Period term = i.n * i.unit;
         // test telescopic value dates (in bootstrap) against non telescopic value dates (swap here)
         ext::shared_ptr<OvernightIndexedSwap> swap =
-            vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
+            vars.makeSwap(term, 0.0, 0.0, false, Date(), paymentLag, averagingMethod);
         Rate calculated = swap->fairRate();
         Rate error = std::fabs(expected-calculated);
 
@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
         Period term = i.n * i.unit;
 
         ext::shared_ptr<OvernightIndexedSwap> swap =
-            vars.makeSwap(term, 0.0, 0.0, false, Null<Date>(), paymentLag, averagingMethod);
+            vars.makeSwap(term, 0.0, 0.0, false, Date(), paymentLag, averagingMethod);
         setCouponPricer(swap->overnightLeg(), pricer);
 
         Rate calculated = swap->fairRate();
@@ -680,7 +680,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
                                             index->endOfMonth(),
                                             index->dayCounter()));
 
-    for (Size i=1; i<LENGTH(data); ++i) {
+    for (Size i=1; i<std::size(data); ++i) {
         helpers.push_back(
             ext::make_shared<OISRateHelper>(
                                   data[i].settlementDays,

@@ -124,7 +124,7 @@ void checkBivariate(const char* tag) {
         { -30,  1.0,   1.0, 0.000000 }
     };
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (Size i=0; i<std::size(values); i++) {
         Bivariate bcd(values[i].rho);
         Real value = bcd(values[i].a, values[i].b);
 
@@ -425,7 +425,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoisson) {
                     0.99999999
     };
 
-    for (Size i=0; i<LENGTH(data); i++) {
+    for (Size i=0; i<std::size(data); i++) {
         if (!close(icp(data[i]), static_cast<Real>(i))) {
             BOOST_ERROR(std::setprecision(8)
                         << "failed to reproduce known value for x = "
@@ -490,14 +490,14 @@ BOOST_AUTO_TEST_CASE(testBivariateCumulativeStudent) {
     };
 
     Real tolerance = 1.0e-5;
-    for (Size i=0; i < LENGTH(ns); ++i) {
+    for (Size i=0; i < std::size(ns); ++i) {
 		BivariateCumulativeStudentDistribution f1(ns[i],  0.5);
 		BivariateCumulativeStudentDistribution f2(ns[i], -0.5);
-        for (Size j=0; j < LENGTH(xs); ++j) {
+        for (Size j=0; j < std::size(xs); ++j) {
 			Real calculated1 = f1(xs[j], xs[j]);
-            Real reference1 = expected1[i*LENGTH(xs)+j];
+            Real reference1 = expected1[i*std::size(xs)+j];
 			Real calculated2 = f2(xs[j], xs[j]);
-            Real reference2 = expected2[i*LENGTH(xs)+j];
+            Real reference2 = expected2[i*std::size(xs)+j];
             if (std::fabs(calculated1 - reference1) > tolerance)
                 BOOST_ERROR("Failed to reproduce CDF value at " << xs[j] <<
                             "\n    calculated: " << calculated1 <<

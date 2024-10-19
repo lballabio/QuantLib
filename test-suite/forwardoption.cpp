@@ -520,7 +520,7 @@ BOOST_AUTO_TEST_CASE(testMCPrices) {
 
    Real moneyness[] = { 0.8, 0.9, 1.0, 1.1, 1.2 };
 
-   for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
+   for (Size moneyness_index = 0; moneyness_index < std::size(moneyness); ++moneyness_index) {
 
        ForwardVanillaOption option(moneyness[moneyness_index], reset, payoff, exercise);
 
@@ -564,7 +564,7 @@ BOOST_AUTO_TEST_CASE(testHestonMCPrices) {
                      0.002,   // Put, moneyness=1.1
                      0.002}}; // Put, moneyness=1.2
 
-   for (Size type_index = 0; type_index < LENGTH(optionTypes); ++type_index) {
+   for (Size type_index = 0; type_index < std::size(optionTypes); ++type_index) {
 
        Real analyticTolerance = 5e-4;
 
@@ -617,7 +617,7 @@ BOOST_AUTO_TEST_CASE(testHestonMCPrices) {
 
        Real moneyness[] = {0.8, 0.9, 1.0, 1.1, 1.2};
 
-       for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
+       for (Size moneyness_index = 0; moneyness_index < std::size(moneyness); ++moneyness_index) {
 
            ForwardVanillaOption option(moneyness[moneyness_index], reset, payoff, exercise);
 
@@ -662,7 +662,7 @@ BOOST_AUTO_TEST_CASE(testHestonMCPrices) {
        ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticForwardHestonEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcessSmile));
 
-       for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
+       for (Size moneyness_index = 0; moneyness_index < std::size(moneyness); ++moneyness_index) {
 
            Real strike = s * moneyness[moneyness_index];
            ext::shared_ptr<StrikedTypePayoff> vanillaPayoff(new PlainVanillaPayoff(optionTypes[type_index], strike));
@@ -716,7 +716,7 @@ BOOST_AUTO_TEST_CASE(testHestonAnalyticalVsMCPrices, *precondition(if_speed(Fast
                      0.003,   // Put, moneyness=1.2, CV:false
                      0.003}}; // Put, moneyness=1.2, CV:true
 
-   for (Size option_type_index = 0; option_type_index < LENGTH(optionTypes); ++option_type_index) {
+   for (Size option_type_index = 0; option_type_index < std::size(optionTypes); ++option_type_index) {
 
        Size timeSteps = 50;
        Size numberOfSamples = 5000;
@@ -768,7 +768,7 @@ BOOST_AUTO_TEST_CASE(testHestonAnalyticalVsMCPrices, *precondition(if_speed(Fast
 
       Real moneyness[] = { 0.8, 1.0, 1.2 };
 
-      for (Size tol_2nd_index = 0; tol_2nd_index < LENGTH(moneyness); ++tol_2nd_index) {
+      for (Size tol_2nd_index = 0; tol_2nd_index < std::size(moneyness); ++tol_2nd_index) {
 
           auto m = moneyness[tol_2nd_index];
           ForwardVanillaOption option(m, reset, payoff, exercise);

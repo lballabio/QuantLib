@@ -109,6 +109,7 @@ QL_TEST_SRCS = \
 	mclongstaffschwartzengine.cpp \
 	mersennetwister.cpp \
 	money.cpp \
+	multipleresetscoupons.cpp \
 	noarbsabr.cpp \
 	normalclvmodel.cpp \
 	nthorderderivativeop.cpp \
@@ -137,7 +138,6 @@ QL_TEST_SRCS = \
 	riskstats.cpp \
 	rngtraits.cpp \
 	rounding.cpp \
-	sampledcurve.cpp \
 	schedule.cpp \
 	settings.cpp \
 	shortratemodels.cpp \
@@ -146,7 +146,6 @@ QL_TEST_SRCS = \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
-	subperiodcoupons.cpp \
 	svivolatility.cpp \
 	swap.cpp \
 	swapforwardmappings.cpp \

@@ -76,8 +76,8 @@ struct CommonVars {
             { 20, Years, 5.89 },
             { 30, Years, 5.96 }
         };
-        Size deposits = LENGTH(depositData),
-            swaps = LENGTH(swapData);
+        Size deposits = std::size(depositData),
+            swaps = std::size(swapData);
 
         std::vector<ext::shared_ptr<RateHelper> > instruments(deposits+swaps);
         for (Size i=0; i<deposits; i++) {
@@ -132,16 +132,16 @@ BOOST_AUTO_TEST_CASE(testReferenceChange) {
     Integer days[] = { 10, 30, 60, 120, 360, 720 };
     Size i;
 
-    std::vector<DiscountFactor> expected(LENGTH(days));
-    for (i=0; i<LENGTH(days); i++)
+    std::vector<DiscountFactor> expected(std::size(days));
+    for (i=0; i<std::size(days); i++)
         expected[i] = vars.termStructure->discount(today+days[i]);
 
     Settings::instance().evaluationDate() = today+30;
-    std::vector<DiscountFactor> calculated(LENGTH(days));
-    for (i=0; i<LENGTH(days); i++)
+    std::vector<DiscountFactor> calculated(std::size(days));
+    for (i=0; i<std::size(days); i++)
         calculated[i] = vars.termStructure->discount(today+30+days[i]);
 
-    for (i=0; i<LENGTH(days); i++) {
+    for (i=0; i<std::size(days); i++) {
         if (!close(expected[i],calculated[i]))
             BOOST_ERROR("\n  Discount at " << days[i] << " days:\n"
                         << std::setprecision(12)

@@ -47,8 +47,8 @@ namespace QuantLib {
                                    const Real shift,
                                    Natural settlementDays,
                                    RateAveraging::Type averagingMethod)
-    : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(Null<Date>()),
-      endDate_(Null<Date>()), maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor),
+    : BlackCalibrationHelper(volatility, errorType, type, shift),
+      maturity_(maturity), length_(length), fixedLegTenor_(fixedLegTenor),
       index_(std::move(index)), termStructure_(std::move(termStructure)),
       fixedLegDayCounter_(std::move(fixedLegDayCounter)),
       floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal),
@@ -73,7 +73,7 @@ namespace QuantLib {
                                    Natural settlementDays,
                                    RateAveraging::Type averagingMethod)
     : BlackCalibrationHelper(volatility, errorType, type, shift), exerciseDate_(exerciseDate),
-      endDate_(Null<Date>()), maturity_(0 * Days), length_(length), fixedLegTenor_(fixedLegTenor),
+      maturity_(0 * Days), length_(length), fixedLegTenor_(fixedLegTenor),
       index_(std::move(index)), termStructure_(std::move(termStructure)),
       fixedLegDayCounter_(std::move(fixedLegDayCounter)),
       floatingLegDayCounter_(std::move(floatingLegDayCounter)), strike_(strike), nominal_(nominal),
@@ -153,7 +153,7 @@ namespace QuantLib {
 
         Calendar calendar = index_->fixingCalendar();
         Date exerciseDate = exerciseDate_;
-        if (exerciseDate == Null<Date>())
+        if (exerciseDate == Date())
             exerciseDate = calendar.advance(termStructure_->referenceDate(),
                                             maturity_,
                                             index_->businessDayConvention());
@@ -167,7 +167,7 @@ namespace QuantLib {
         }
 
         Date endDate = endDate_;
-        if (endDate == Null<Date>())
+        if (endDate == Date())
             endDate = calendar.advance(startDate, length_,
                                        index_->businessDayConvention());
         Schedule fixedSchedule(startDate, endDate, fixedLegTenor_, calendar,

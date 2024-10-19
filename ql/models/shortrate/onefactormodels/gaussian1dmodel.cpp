@@ -151,7 +151,7 @@ Real Gaussian1dModel::zerobondOption(
 
     Time fixingTime = termStructure()->timeFromReference(expiry);
     Time referenceTime =
-        referenceDate == Null<Date>()
+        referenceDate == Date()
             ? 0.0
             : termStructure()->timeFromReference(referenceDate);
 

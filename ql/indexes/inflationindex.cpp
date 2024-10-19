@@ -126,7 +126,7 @@ namespace QuantLib {
       frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(InflationIndex::name()));
+        registerWith(notifier());
     }
 
     Calendar InflationIndex::fixingCalendar() const {
@@ -272,6 +272,17 @@ namespace QuantLib {
             return forecastFixing(fixingDate);
         } else {
             return pastFixing(fixingDate);
+        }
+    }
+
+    Date YoYInflationIndex::lastFixingDate() const {
+        if (ratio()) {
+            return underlyingIndex_->lastFixingDate();
+        } else {
+            const auto& fixings = timeSeries();
+            QL_REQUIRE(!fixings.empty(), "no fixings stored for " << name());
+            // attribute fixing to first day of the underlying period
+            return inflationPeriod(fixings.lastDate(), frequency_).first;
         }
     }
 

@@ -66,12 +66,6 @@ namespace QuantLib::ext {
 #pragma GCC diagnostic pop
 #endif
 
-        /*! \deprecated To check if a function is empty, use it in a bool context
-                        instead of comparing it to QL_NULL_FUNCTION.
-                        Deprecated in version 1.32.
-        */
-        #define QL_NULL_FUNCTION nullptr
-
     }
 
 

@@ -30,9 +30,11 @@
 
 namespace QuantLib {
 
-    //! Black-Scholes-Merton differential operator
-    /*! \ingroup findiff */
-    class BSMOperator : public TridiagonalOperator {
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.37.
+    */
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] BSMOperator : public TridiagonalOperator {
       public:
         BSMOperator() = default;
         BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);

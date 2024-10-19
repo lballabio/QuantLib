@@ -100,7 +100,11 @@ jobs:
             tag: noble
             cc: clang
             cxx: clang++
-            cxxflags: -Wno-deprecated-declarations
+          - name: "Clang 19"
+            shortname: clang19
+            tag: oracular
+            cc: clang
+            cxx: clang++
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling

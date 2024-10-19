@@ -347,7 +347,7 @@ namespace QuantLib {
 
     /*! Return the CDS maturity date given the CDS trade date, \p tradeDate, the CDS \p tenor and a CDS \p rule.
 
-        A \c Null<Date>() is returned when a \p rule of \c CDS2015 and a \p tenor length of zero fail to yield a valid
+        A null date is returned when a \p rule of \c CDS2015 and a \p tenor length of zero fail to yield a valid
         CDS maturity date.
 
         \warning An exception will be thrown if the \p rule is not \c CDS2015, \c CDS or \c OldCDS.

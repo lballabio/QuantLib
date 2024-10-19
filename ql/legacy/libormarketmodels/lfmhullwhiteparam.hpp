@@ -45,9 +45,9 @@ namespace QuantLib {
             const ext::shared_ptr<OptionletVolatilityStructure> & capletVol,
             const Matrix& correlation = Matrix(), Size factors = 1);
 
-        Matrix diffusion(Time t, const Array& x = Null<Array>()) const override;
-        Matrix covariance(Time t, const Array& x = Null<Array>()) const override;
-        Matrix integratedCovariance(Time t, const Array& x = Null<Array>()) const override;
+        Matrix diffusion(Time t, const Array& x = {}) const override;
+        Matrix covariance(Time t, const Array& x = {}) const override;
+        Matrix integratedCovariance(Time t, const Array& x = {}) const override;
 
       protected:
         Size nextIndexReset(Time t) const;

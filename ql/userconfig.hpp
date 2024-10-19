@@ -30,36 +30,44 @@
    will be provided by running ./configure instead.
 ****************************************************************/
 
-/* Define this if error messages should include current function
-   information. */
+/* If defined, function information is added to the error messages
+   thrown by the library.
+*/
 #ifndef QL_ERROR_FUNCTIONS
 //#   define QL_ERROR_FUNCTIONS
 #endif
 
-/* Define this if error messages should include file and line information. */
+/* If defined, file and line information is added to the error
+   messages thrown by the library.
+*/
 #ifndef QL_ERROR_LINES
 //#   define QL_ERROR_LINES
 #endif
 
-/* Define this if tracing messages should be allowed (whether they are
-   actually emitted will depend on run-time settings.) */
+/* If defined, tracing messages might be emitted by the library
+   depending on run-time settings. Enabling this option can degrade
+   performance.
+*/
 #ifndef QL_ENABLE_TRACING
 //#   define QL_ENABLE_TRACING
 #endif
 
-/* Define this if extra safety checks should be performed. This can degrade
-   performance. */
+/* If defined, extra run-time checks are added to a few
+   functions. This can prevent their inlining and degrade
+   performance.
+*/
 #ifndef QL_EXTRA_SAFETY_CHECKS
 //#   define QL_EXTRA_SAFETY_CHECKS
 #endif
 
-/* Define this to use indexed coupons instead of par coupons in floating
-   legs as the default in 'bool IborCoupon::Settings::usingAtParCoupons();'. */
+/* If defined, indexed coupons (see the documentation) are used in
+   floating legs.  If undefined, par coupons are used.
+*/
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
 #endif
 
-/* Define this to have singletons return different instances for
+/* If defined, singletons will return different instances for
    different threads; in particular, this means that the evaluation
    date, the stored index fixings and any other settings will be
    per-thread.
@@ -68,57 +76,87 @@
 //#   define QL_ENABLE_SESSIONS
 #endif
 
-/* Define this to enable the thread-safe observer pattern. You should
-   enable it if you want to use QuantLib via the SWIG layer within
-   the JVM or .NET eco system or any environment with an
-   async garbage collector */
+/* If defined, a thread-safe (but less performant) version of the
+   observer pattern is used. You should define it if you want to use
+   QuantLib via the SWIG layer within the JVM or .NET ecosystem or
+   any other environment with an async garbage collector.
+*/
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 //#    define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 #endif
 
-/* Define this to enable a date resolution down to microseconds and
-   allow for accurate intraday pricing. */
+/* If defined, date objects willsupport an intraday datetime
+   resolution down to microseconds.  Strictly monotone daycounters
+   (`Actual360`, `Actual365Fixed` and `ActualActual`) will take the
+   additional information into account and allow for accurate intraday
+   pricing.  If undefined, the smallest resolution of date objects is
+   a single day.  Intraday datetime resolution is experimental.
+*/
 #ifndef QL_HIGH_RESOLUTION_DATE
 //#    define QL_HIGH_RESOLUTION_DATE
 #endif
 
-/* Define this if you want to throw an exception when a notification
-   loop is detected.  Enabling this option is recommended but might
-   cause existing code to throw. */
+/* If defined, lazy objects will raise an exception when they detect a
+   notification cycle which would result in an infinite recursion
+   loop. If undefined, they will break the recursion without throwing.
+   Enabling this option is recommended but might cause existing code
+   to throw.
+*/
 #ifndef QL_THROW_IN_CYCLES
 //#    define QL_THROW_IN_CYCLES
 #endif
 
-/* Undefine this if you want lazy objects to forward all notifications
-   instead of just the first.  Disabling this option is safer in some
-   cases but can be a lot slower. */
+/* If defined, lazy objects will forward the first notification
+   received, and discard the others until recalculated; the rationale
+   is that observers were already notified, and don't need further
+   notifications until they recalculate, at which point this object
+   would be recalculated too.  After recalculation, this object would
+   again forward the first notification received.  Although not always
+   correct, this behavior is a lot faster and thus is the current
+   default.
+*/
 #ifndef QL_FASTER_LAZY_OBJECTS
 #    define QL_FASTER_LAZY_OBJECTS
 #endif
 
-/* Define this to use std::any instead of boost::any. */
+/* If defined, `std::any` and related classes and functions will be
+   used instead of `boost::any`. If undefined, the Boost facilities
+   will be used.
+*/
 #ifndef QL_USE_STD_ANY
 //#    define QL_USE_STD_ANY
 #endif
 
-/* Define this to use std::optional instead of boost::optional. */
+/* If defined, `std::optional` and related classes and functions will
+   be used instead of `boost::optional`. If undefined, the Boost
+   facilities will be used.
+*/
 #ifndef QL_USE_STD_OPTIONAL
 //#    define QL_USE_STD_OPTIONAL
 #endif
 
-/* Define this to use standard smart pointers instead of Boost ones.
-   Note that std::shared_ptr does not check access and can
-   cause segmentation faults. */
+/* If defined, `std::shared_ptr` and related classes and functions
+   will used instead of `boost::shared_ptr`. If undefined, the Boost
+   facilities will be used. Note that `std::shared_ptr` does not check
+   access and can cause segmentation faults.
+*/
 #ifndef QL_USE_STD_SHARED_PTR
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Define this to enable the implementation of Null as template functions. */
+/* If defined, `Null` will be implemented as a template function.
+   This allows the code to work with user-defined `Real` types but was
+   reported to cause internal compiler errors with Visual C++ 2022 in
+   some cases.  If undefined, `Null` will be implemented as a class
+   template, as in previous releases.
+*/
 #ifndef QL_NULL_AS_FUNCTIONS
 //#    define QL_NULL_AS_FUNCTIONS
 #endif
 
-/* Define this to enable the parallel unit test runner */
+/* If defined, a parallel unit test runner will be used to execute the
+   C++ test suite. This will reduce the runtime on multi core CPUs.
+*/
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 #endif

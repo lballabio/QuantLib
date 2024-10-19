@@ -42,7 +42,7 @@ namespace QuantLib {
                          const Date& refPeriodStart,
                          const Date& refPeriodEnd,
                          const Date& exCouponDate)
-    : CPICoupon(baseCPI, Null<Date>(), paymentDate, nominal, startDate, endDate,
+    : CPICoupon(baseCPI, Date(), paymentDate, nominal, startDate, endDate,
                 index, observationLag, observationInterpolation, dayCounter,
                 fixedRate, refPeriodStart, refPeriodEnd, exCouponDate) {}
 
@@ -84,7 +84,7 @@ namespace QuantLib {
       observationInterpolation_(observationInterpolation), baseDate_(baseDate) {
 
         QL_REQUIRE(index_, "no index provided");
-        QL_REQUIRE(baseCPI_ != Null<Rate>() || baseDate != Null<Date>(),
+        QL_REQUIRE(baseCPI_ != Null<Rate>() || baseDate != Date(),
                    "baseCPI and baseDate can not be both null, provide a valid baseCPI or baseDate");
         QL_REQUIRE(baseCPI_ == Null<Rate>() || std::fabs(baseCPI_) > 1e-16,
                    "|baseCPI_| < 1e-16, future divide-by-zero problem");
@@ -150,7 +150,7 @@ namespace QuantLib {
       interpolation_(interpolation), frequency_(index ? index->frequency() : NoFrequency) {
         QL_REQUIRE(index, "no index provided");
         QL_REQUIRE(
-            baseFixing_ != Null<Rate>() || baseDate != Null<Date>(),
+            baseFixing_ != Null<Rate>() || baseDate != Date(),
             "baseCPI and baseDate can not be both null, provide a valid baseCPI or baseDate");
         QL_REQUIRE(baseFixing_ == Null<Rate>() || std::fabs(baseFixing_) > 1e-16,
                    "|baseCPI_| < 1e-16, future divide-by-zero problem");
@@ -182,7 +182,7 @@ namespace QuantLib {
                    const Period& observationLag)
     : schedule_(std::move(schedule)), index_(std::move(index)), baseCPI_(baseCPI),
       observationLag_(observationLag), paymentDayCounter_(Thirty360(Thirty360::BondBasis)),
-      paymentCalendar_(schedule_.calendar()), baseDate_(Null<Date>()) {}
+      paymentCalendar_(schedule_.calendar()) {}
 
 
     CPILeg& CPILeg::withObservationInterpolation(CPI::InterpolationType interp) {
@@ -283,7 +283,7 @@ namespace QuantLib {
         if (n>0) {
             QL_REQUIRE(!fixedRates_.empty(), "no fixedRates given");
 
-            if (baseDate_ == Null<Date>() && baseCPI_ == Null<Real>()) {
+            if (baseDate_ == Date() && baseCPI_ == Null<Real>()) {
                 baseDate = schedule_.date(0) - observationLag_;
             }
 
