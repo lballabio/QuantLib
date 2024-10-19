@@ -45,10 +45,15 @@ namespace QuantLib {
     */
     class ChoiBasketEngine : public BasketOption::engine {
       public:
+        // lambda controls the precision,
+        // fast: 2, accurate: 6, high precision: 15
         ChoiBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
             Matrix rho,
-            Real lambda = 4.0);
+            Real lambda = 4.0,
+            Size maxNrIntegrationSteps = std::numeric_limits<Size>::max(),
+            bool calcfwdDelta = false,
+            bool controlVariate = false);
 
         void calculate() const override;
 
@@ -57,6 +62,8 @@ namespace QuantLib {
         const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes_;
         const Matrix rho_;
         const Real lambda_;
+        const Size maxNrIntegrationSteps_;
+        const bool calcFwdDelta_, controlVariate_;
     };
 }
 

@@ -65,7 +65,7 @@ namespace QuantLib {
       public:
         SingleFactorBsmBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p,
-            Real xTol = 1e6*QL_EPSILON);
+            Real xTol = 1e4*QL_EPSILON);
 
         void calculate() const override;
 

@@ -27,7 +27,7 @@
 #include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
 
 #include <boost/preprocessor/iteration/local.hpp>
-
+#include <iostream>
 
 namespace QuantLib {
 
@@ -61,6 +61,15 @@ namespace QuantLib {
 
 
     void FdndimBlackScholesVanillaEngine::calculate() const {
+        #ifndef PDE_MAX_SUPPORTED_DIM
+        #define PDE_MAX_SUPPORTED_DIM 4
+        #endif
+        QL_REQUIRE(processes_.size() <= PDE_MAX_SUPPORTED_DIM,
+            "This engine does not support " << processes_.size() << " underlyings. "
+            << "Max number of underlyings is " << PDE_MAX_SUPPORTED_DIM << ". "
+            << "Please change preprocessor constant PDE_MAX_SUPPORTED_DIM and recompile "
+            << "if a larger number of underlyings is needed.");
+
         const Time maturity = processes_[0]->time(arguments_.exercise->lastDate());
 
         std::vector<ext::shared_ptr<Fdm1dMesher> > meshers;
@@ -103,8 +112,6 @@ namespace QuantLib {
             logX.push_back(std::log(p->x0()));
 
         switch(processes_.size()) {
-            #define PDE_MAX_SUPPORTED_DIM 6
-
             #define BOOST_PP_LOCAL_MACRO(n) \
                 case n : \
                     results_.value = ext::make_shared<FdmNdimSolver<n>>( \
@@ -112,11 +119,6 @@ namespace QuantLib {
                 break;
             #define BOOST_PP_LOCAL_LIMITS (1, PDE_MAX_SUPPORTED_DIM)
             #include BOOST_PP_LOCAL_ITERATE()
-            default:
-                QL_FAIL("This engine does not support " << processes_.size() << " underlyings. "
-                    << "Max number of underlyings is " << PDE_MAX_SUPPORTED_DIM << ". "
-                    << "Change preprocessor constant PDE_MAX_SUPPORTED_DIM and recompile "
-                    << "if a large number of underlyings is needed.");
         }
     }
 }

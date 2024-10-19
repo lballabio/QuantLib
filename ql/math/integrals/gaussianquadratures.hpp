@@ -84,6 +84,9 @@ namespace QuantLib {
 
         Real operator()(const std::function<Real(Array)>& f) const;
 
+        const Array& weights() const { return weights_; }
+        const std::vector<Array>& x() const { return x_; }
+
       private:
         Array weights_;
         std::vector<Array> x_;

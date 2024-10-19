@@ -126,8 +126,9 @@ namespace QuantLib {
         Real xTol)
       : xTol_(xTol),
         n_(p.size()), processes_(std::move(p)) {
-        for (const auto& process: processes_)
-            registerWith(process);
+
+        std::for_each(processes_.begin(), processes_.end(),
+            [this](const auto& p) { registerWith(p); });
     }
 
     void SingleFactorBsmBasketEngine::calculate() const {
@@ -137,7 +138,6 @@ namespace QuantLib {
         const ext::shared_ptr<PlainVanillaPayoff> payoff =
              ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain vanilla payoff given");
-        const Real cp = (payoff->optionType() == Option::Call) ? 1.0 : -1.0;
         const Real strike = payoff->strike();
 
         // sort assets by their weight
@@ -158,7 +158,6 @@ namespace QuantLib {
         const Array stdDev = pExtractor.getBlackStdDev(maturityDate);
         const Array v = stdDev*stdDev;
 
-
         const Array fwdBasket = weights * s * dq /dr0;
 
         // first check if all vols are zero -> intrinsic case
@@ -170,19 +169,22 @@ namespace QuantLib {
                 std::accumulate(fwdBasket.begin(), fwdBasket.end(), 0.0));
         }
         else {
-            const Real d = -cp * SumExponentialsRootSolver(
+            const Real d = -SumExponentialsRootSolver(
                 fwdBasket*Exp(-0.5*v), stdDev, strike)
-                    .getRoot(xTol_, SumExponentialsRootSolver::Halley);
+                    .getRoot(xTol_, SumExponentialsRootSolver::Brent);
 
             const CumulativeNormalDistribution N;
+            const Real cp = (payoff->optionType() == Option::Call) ? 1.0 : -1.0;
 
             results_.value = cp * dr0 *
                 std::inner_product(
                     fwdBasket.begin(), fwdBasket.end(), stdDev.begin(),
-                    -strike*N(d),
+                    -strike*N(cp*d),
                     std::plus<>(),
-                    [d, cp, &N](Real x, Real y) -> Real { return x*N(d+cp*y); }
+                    [d, cp, &N](Real x, Real y) -> Real { return x*N(cp*(d+y)); }
                 );
+
+            results_.additionalResults["d"] = d;
         }
     }
 }

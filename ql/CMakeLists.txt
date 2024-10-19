@@ -384,6 +384,7 @@ set(QL_SOURCES
     math/matrixutilities/factorreduction.cpp
     math/matrixutilities/getcovariance.cpp
     math/matrixutilities/gmres.cpp
+    math/matrixutilities/householder.cpp        
     math/matrixutilities/pseudosqrt.cpp
     math/matrixutilities/qrdecomposition.cpp
     math/matrixutilities/sparseilupreconditioner.cpp

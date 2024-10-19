@@ -48,6 +48,8 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+#include <chrono>
 #include <cmath>
 
 using namespace QuantLib;
@@ -1928,18 +1930,18 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
     const Real strike = 20;
     const Date maturity = today + Period(18, Months);
 
-    BasketOption option(
-        ext::make_shared<AverageBasketPayoff>(
-            ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
-            Array({1, -2, -1, 4})
-        ),
-        ext::make_shared<EuropeanExercise>(maturity)
-    );
+    const std::vector<ext::shared_ptr<SimpleQuote>> spots = {
+        ext::make_shared<SimpleQuote>(100),
+        ext::make_shared<SimpleQuote>(50),
+        ext::make_shared<SimpleQuote>(75),
+        ext::make_shared<SimpleQuote>(25)
+    };
 
-    const auto processGen = [&rTS, &today, &dc](Real spot, Rate q, Volatility vol)
+    const auto processGen = [&rTS, &today, &dc](
+        const ext::shared_ptr<SimpleQuote>& spot, Rate q, Volatility vol)
         -> ext::shared_ptr<GeneralizedBlackScholesProcess> {
         return ext::make_shared<GeneralizedBlackScholesProcess>(
-                Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
+                Handle<Quote>(spot),
                 Handle<YieldTermStructure>(flatRate(today, q, dc)),
                 rTS,
                 Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
@@ -1948,10 +1950,10 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
 
     const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> >
         processes({
-            processGen(100, 0.075, 0.45),
-            processGen(50,  0.035, 0.4),
-            processGen(75,  0.08 , 0.35),
-            processGen(25,  0.02 , 0.2)
+            processGen(spots[0], 0.075, 0.45),
+            processGen(spots[1], 0.035, 0.4),
+            processGen(spots[2], 0.08 , 0.35),
+            processGen(spots[3], 0.02 , 0.2)
         }
     );
 
@@ -1962,23 +1964,69 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
         { 0.0,  0.1,  0.7, 1.0 },
     };
 
-    option.setPricingEngine(
-        ext::make_shared<ChoiBasketEngine>(processes, rho, 10)
-    );
+    const ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<ChoiBasketEngine>(processes, rho, 7.0, true, true);
 
-    const Real expected = 15.9200853315129;
-    const Real calculated = option.NPV();
-    const Real diff = std::abs(expected - calculated);
-    const Real tol = 1e-10;
+    const Array expected = {15.92008513388834, 22.36122704630282};
+    const std::vector<Option::Type> optionTypes = {Option::Put, Option::Call};
 
-    if (diff > tol)
-        BOOST_FAIL("failed to reproduce reference price with Choi engine"
-               << std::fixed << std::setprecision(12)
-               << "\n    calculated: " << calculated
-               << "\n    expected:   " << expected
-               << "\n    diff:       " << diff
-               << "\n    tolerance:  " << tol);
+    for (Size i=0; i < expected.size(); ++i) {
+        BasketOption option(
+            ext::make_shared<AverageBasketPayoff>(
+                ext::make_shared<PlainVanillaPayoff>(optionTypes[i], strike),
+                Array({1, -2, -1, 4})
+            ),
+            ext::make_shared<EuropeanExercise>(maturity)
+        );
+        option.setPricingEngine(engine);
+
+        const Real calculated = option.NPV();
+        const Real npvDiff = std::abs(expected[i] - calculated);
+        const Real npvTol = 1e-5;
+
+        if (npvDiff > npvTol)
+            BOOST_FAIL("failed to reproduce reference price with Choi engine"
+                   << std::fixed << std::setprecision(8)
+                   << "\n    option type: " << optionTypes[i]
+                   << "\n    calculated:  " << calculated
+                   << "\n    expected:    " << expected[i]
+                   << "\n    diff:        " << npvDiff
+                   << "\n    tolerance:   " << npvTol);
+
+        for (Size k=0; k < processes.size(); ++k) {
+            const Real baseSpot = spots[k]->value();
+
+            spots[k]->setValue(baseSpot*1.001);
+            const Real up = option.NPV();
+            spots[k]->setValue(baseSpot*0.999);
+            const Real down = option.NPV();
+
+            spots[k]->setValue(baseSpot);
+
+            const Real expectedDeltaSpot = (up - down) / (0.002*baseSpot);
+            const Real expectedDeltaFwd = expectedDeltaSpot
+                / processes[k]->dividendYield()->discount(maturity)
+                * processes[0]->riskFreeRate()->discount(maturity);
+
+            const std::string deltaName = "forwardDelta " + std::to_string(k);
+            const Real deltaDiff = std::abs(expectedDeltaFwd
+                - ext::any_cast<Real>(option.additionalResults().at(deltaName)));
+            const Real deltaTol = 5e-5;
+
+            if (deltaDiff > deltaTol)
+                BOOST_FAIL("failed to reproduce forward delta with Choi engine"
+                       << std::fixed << std::setprecision(8)
+                       << "\n    option type: " << optionTypes[i]
+                       << "\n    underlying:  " << i
+                       << "\n    calculated:  " << calculated
+                       << "\n    expected:    " << expected[i]
+                       << "\n    diff:        " << npvDiff
+                       << "\n    tolerance:   " << npvTol);
+
+        }
+    }
 }
+
 
 BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
     BOOST_TEST_MESSAGE(
@@ -2007,7 +2055,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
         const Array volatilities;
         const Array q;
         const Rate r;
-        const Matrix rho;
+        const std::vector<Matrix> rhos;
         const Array weights;
         const Array maturities;
         const Array strikes;
@@ -2016,16 +2064,184 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
     };
 
     const std::vector<Benchmark> benchmarks = {
+//        // Dempster and Hong [2002], Hurd and Zhou [2010]
+//        {
+//            {100.0, 96.0}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{{0.5}}},
+//            {1.0, -1.0}, {1.0},
+//            {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Put,
+//            {4.86947800209290982, 5.03394599708595702, 5.20170697959426764, 5.37275466121791023, 5.54708103391874285, 5.72467640414054557, 5.90552942907314105, 6.08962715491644957, 6.27695505699956779, 6.46749708160964865}
+//        },
+//        {
+//            {100, 96}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{{0.5}}},
+//            {1.0, -1.0}, {1.0},
+//            {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Call,
+//            {8.312460732881519, 8.114993760660171, 7.920819775954081,
+//             7.729932490363331, 7.542323895849758, 7.35798429885716, 7.176902356575362,
+//             6.999065115204262, 6.824458050072985, 6.653065107468672}
+//        },
+//        // Choi [2018]
+//        {
+//            {200, 100}, {0.15, 0.3}, {0.0, 0.0}, 0.0,
+//            { {{-0.9}}, {{-0.7}}, {{-0.5}}, {{-0.3}}, {{-0.1}}, {{0.1}}, {{0.3}}, {{0.5}}, {{0.7}}, {{0.9}} },
+//            {1.0, -1.0}, {1.0}, {100}, Option::Call,
+//            {23.1398673777858619, 21.9077989170003313, 20.5982705317786383, 19.1954201364940467,
+//             17.6770248596142956, 16.0102190445729207, 14.1425869461427691, 11.9804918293938165,
+//             9.32094392217566181, 5.47927202785675949}
+//        },
+//        // Krekel et al [2004], Caldana et al. [2016]
+//        {
+//            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 0.4}, {0, 0, 0, 0}, 0, {{{0.5}}},
+//            {0.25, 0.25, 0.25, 0.25}, {5}, {50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150},
+//            Option::Call,
+//            {54.3101760503818554, 47.4811264983728805, 41.5225192321721579, 36.3517843455707421,
+//             31.8768031971830865, 28.0073695445039341, 24.6605295130931736, 21.7625788671709337,
+//             19.2493294434234272, 17.0655419939919533, 15.1640102889333352}
+//        },
+//        {
+//            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 0.4}, {0, 0, 0, 0}, 0,
+//            {{{-0.1}}, {{0.1}}, {{0.3}}, {{0.5}}, {{0.8}}, {{0.95}}},
+//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call,
+//            {17.756916333753729, 21.6920964834602223, 25.029299237118412,
+//             28.0073695445038631, 32.0412264523680363, 33.9186874338078042}
+//        },
+//        {
+//            {100, 100, 100, 100}, {0.05, 0.05, 0.05, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
+//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call, {19.4590949762084549}
+//        },
+//        {
+//            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
+//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call, {36.048540687480191 }
+//        },
+//        {
+//            {100, 100, 100, 100}, {0.8, 0.8, 0.8, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
+//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Put, {56.7772198387342684}
+//        },
+//        // Milevsky and Posner [1998], Zhou and Wnag [2008]
+//        {
+//            {100, 100, 100, 100, 100, 100, 100},
+//            {0.1155, 0.2068, 0.1453, 0.1799, 0.1559, 0.1462, 0.1568},
+//            {0.0169, 0.0239, 0.0136, 0.0192, 0.0081, 0.0362, 0.0166}, 0.063,
+//            {{{1.00, 0.35, 0.10, 0.27, 0.04, 0.17, 0.71},
+//              {0.35, 1.00, 0.39, 0.27, 0.50,-0.08, 0.15},
+//              {0.10, 0.39, 1.00, 0.53, 0.70,-0.23, 0.09},
+//              {0.27, 0.27, 0.53, 1.00, 0.46,-0.22, 0.32},
+//              {0.04, 0.50, 0.70, 0.46, 1.00,-0.29, 0.13},
+//              {0.17,-0.08,-0.23,-0.22,-0.29, 1.00,-0.03},
+//              {0.71, 0.15, 0.09, 0.32, 0.13,-0.03, 1.00}
+//            }},
+//            {0.10, 0.15, 0.15, 0.05, 0.20, 0.10, 0.25},
+//            {0.5, 1, 2, 3}, {80, 100, 120}, Option::Call,
+//            {21.6065524428379092, 3.88986167789384707, 0.0238386363683683114,
+//             23.1411626921050093, 6.2216810431377656, 0.353558402011174056,
+//             26.0424328294544232, 10.2156011934593263, 2.05700439027528237,
+//             28.6992602369071967, 13.7425580125613358, 4.45783894060629216}
+//        }
+//        // Deng, Li and Zhou [2008]
+//        {
+//            {150, 60, 50}, {0.3, 0.3, 0.3}, {0, 0, 0}, 0.05,
+//            {{{1.0, 0.2, 0.8},
+//              {0.2, 1.0, 0.4},
+//              {0.8, 0.4, 1.0}
+//            }},
+//            {1, -1, -1}, {0.25}, {30, 35, 40, 45, 50}, Option::Call,
+//            {13.5670355467464869, 10.3469714924350296, 7.65022045034505815,
+//             5.48080150445291903, 3.80525160380840344}
+//        },
+//        {
+//            {150, 60, 50}, {0.6, 0.6, 0.6}, {0, 0, 0}, 0.05,
+//            {{{1.0, 0.2, 0.8},
+//              {0.2, 1.0, 0.4},
+//              {0.8, 0.4, 1.0}
+//            }},
+//            {1, -1, -1}, {0.25}, {30, 35, 40, 45, 50}, Option::Call,
+//            {20.187167856927644, 17.4567855185085179, 15.0073026904179034,
+//             12.8307539528848373, 10.9140154840369128}
+//        },
         {
-          {100.0, 96.0}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{0.5}},
-          {1.0, -1.0}, {1.0},
-          {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Call,
-          {8.312460732881519,8.114993760660171,7.920819775954081,7.729932490363331,7.542323895849758,7.35798429885716,7.176902356575362,6.999065115204262,6.824458050072985,6.653065107468672}
+            Array(11, 10.0),
+            Array(11, 0.3), Array(11, 0.0), 0.05, {{{0.4}}},
+            {11,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+            {0.25}, {0, 5, 10, 15, 20}, Option::Call,
+            {11.5795246248385411, 8.11486124235371697, 5.36890684803262097,
+             3.35146299782942902, 1.97711593317682488 }
         }
     };
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(26, September, 2024);
+
+    typedef std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess>>
+        BlackScholesProcesses;
+
+    const auto choiEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<ChoiBasketEngine>(p, rho, 3, false, false);
+    };
+
+    const auto dengLiZhouEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<DengLiZhouBasketEngine>(p, rho);
+    };
+
+    const auto kirkEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<KirkEngine>(p[0], p[1], rho[0][1]);
+    };
+
+    const auto bsEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<BjerksundStenslandSpreadEngine>(p[0], p[1], rho[0][1]);
+    };
+
+    const auto osFirstOrderEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<OperatorSplittingSpreadEngine>(
+            p[0], p[1], rho[0][1], OperatorSplittingSpreadEngine::First);
+    };
+
+    const auto osSecondOrderEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<OperatorSplittingSpreadEngine>(
+            p[0], p[1], rho[0][1], OperatorSplittingSpreadEngine::Second);
+    };
+
+    const auto qmcEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return MakeMCEuropeanBasketEngine<SobolBrownianBridgeRsgType>(
+            ext::make_shared<StochasticProcessArray>(
+                std::vector<ext::shared_ptr<StochasticProcess1D> >(
+                    p.begin(), p.end()
+                ),
+                rho
+            )
+        )
+        .withSteps(1)
+        .withSamples(16374*16-1)
+        .withSeed(1234ul);
+    };
+
+    const auto fdmEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time t)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<FdndimBlackScholesVanillaEngine>(
+            p, rho, std::vector<Size>(p.size(), 15),
+            Size(15.0*t)
+        );
+    };
+
+    typedef std::function<ext::shared_ptr<PricingEngine>(
+            const BlackScholesProcesses&, const Matrix&, Time)>
+        PricingEngineFactory;
+
+    const std::vector<std::pair<std::string, PricingEngineFactory>> engines = {
+        {"Choi", choiEngine},
+        {"Deng-Li-Zhou", dengLiZhouEngine},
+//        {"Kirk", kirkEngine},
+        {"Quasi-Monte-Carlo", qmcEngine}
+//        {"Bjerksund-Stensland", bsEngine},
+//        {"Operator Splitting first order", osFirstOrderEngine},
+//        {"Operator Splitting second order", osSecondOrderEngine},
+//        {"FDM", fdmEngine}
+    };
 
     for (const auto& b: benchmarks) {
         const Size n = b.underlyings.size();
@@ -2033,7 +2249,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
         const Handle<YieldTermStructure> rTS
             = Handle<YieldTermStructure>(flatRate(today, b.r, dc));
 
-        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
+        BlackScholesProcesses processes;
         for (Size i=0; i < n; ++i)
             processes.push_back(
                 ext::make_shared<BlackScholesMertonProcess>(
@@ -2043,105 +2259,104 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
                 )
             );
 
-        Matrix rho(n, n);
-        for (Size i=0; i < n; ++i)
-            for (Size j=0; j < n; ++j)
-                rho[i][j] = (i == j) ? 1.0 : b.rho[0][0];
+        for (const auto& engine: engines) {
+            std::vector<Real> calculated, runTimes;
 
+            for (const auto& cor: b.rhos) {
+                Matrix rho(n, n);
+                if (cor.size1() == n && cor.size2() == n)
+                    rho = cor;
+                else
+                    for (Size i=0; i < n; ++i)
+                        for (Size j=0; j < n; ++j)
+                            rho[i][j] = (i == j) ? 1.0 : cor[0][0];
 
-        const ext::shared_ptr<PricingEngine> choiEngine =
-            ext::make_shared<ChoiBasketEngine>(processes, rho, 20);
+                for (Real t: b.maturities) {
+                    const Date maturityDate = yearFractionToDate(dc, today, t);
+                    const ext::shared_ptr<Exercise> exercise =
+                        ext::make_shared<EuropeanExercise>(maturityDate);
 
-        const ext::shared_ptr<PricingEngine> dengLiZhou =
-            ext::make_shared<DengLiZhouBasketEngine>(processes, rho);
+                    const ext::shared_ptr<PricingEngine> pricingEngine =
+                        engine.second(processes, rho, t);
 
-        const ext::shared_ptr<PricingEngine> kirkEngine =
-            ext::make_shared<KirkEngine>(processes[0], processes[1], rho[0][1]);
+                    const bool isSpreadEngine =
+                        ext::dynamic_pointer_cast<SpreadBlackScholesVanillaEngine>(
+                            pricingEngine) != nullptr;
 
-        std::vector<Real> calculated;
-        for (Real t: b.maturities) {
-            const Date maturityDate = yearFractionToDate(dc, today, t);
-            const ext::shared_ptr<Exercise> exercise =
-                ext::make_shared<EuropeanExercise>(maturityDate);
+                    if (isSpreadEngine && b.weights != Array({1, -1}))
+                        // benchmark not suitable for a two asset spread engine
+                        continue;
 
-            for (Real K: b.strikes) {
-                const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                    ext::make_shared<PlainVanillaPayoff>(b.optionType, K);
+                    const bool isDengLiZhouEngine =
+                        ext::dynamic_pointer_cast<DengLiZhouBasketEngine>(
+                            pricingEngine) != nullptr;
 
-                const ext::shared_ptr<AverageBasketPayoff> basketPayoff =
-                    ext::make_shared<AverageBasketPayoff>(payoff, b.weights);
+                    if (isDengLiZhouEngine
+                        && (   std::find_if(b.weights.begin(), b.weights.end(),
+                                   [](Real x) {return x < 0.0;} ) == b.weights.end()
+                            || std::find_if(b.weights.begin(), b.weights.end(),
+                                   [](Real x) {return x > 0.0;} ) == b.weights.end()))
+                        continue;
 
-                const ext::shared_ptr<SpreadBasketPayoff> spreadPayoff =
-                    ext::make_shared<SpreadBasketPayoff>(payoff);
+                    const bool isFDMEngine =
+                        ext::dynamic_pointer_cast<FdndimBlackScholesVanillaEngine>(
+                             pricingEngine) != nullptr;
+                    if (isFDMEngine and n > 4)
+                        continue;
 
-                BasketOption option(spreadPayoff, exercise);
-                option.setPricingEngine(kirkEngine);
+                    for (Real K: b.strikes) {
+                        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                            ext::make_shared<PlainVanillaPayoff>(b.optionType, K);
 
-                calculated.push_back(option.NPV());
+                        const ext::shared_ptr<BasketPayoff> basketPayoff =
+                            (isSpreadEngine)
+                            ? ext::shared_ptr<BasketPayoff>(
+                                ext::make_shared<SpreadBasketPayoff>(payoff))
+                            : ext::shared_ptr<BasketPayoff>(
+                                ext::make_shared<AverageBasketPayoff>(payoff, b.weights));
 
-                //std::cout << std::setprecision(16) << option.NPV() << "," ;
+                        BasketOption option(basketPayoff, exercise);
+                        option.setPricingEngine(pricingEngine);
+
+                        Size npvCalculations = 1;
+                        Size batch = 1;
+                        auto t1 = std::chrono::high_resolution_clock::now(), t2 = t1;
+
+                        calculated.push_back(option.NPV());
+
+//                        while (std::chrono::duration_cast<std::chrono::nanoseconds>(
+//                            (t2 = std::chrono::high_resolution_clock::now()) - t1).count() < 10000000) {
+//                            batch *= 4;
+//                            for (Size i=0; i < batch; ++i, ++npvCalculations) {
+//                                option.update();
+//                                option.NPV();
+//                            }
+//                        }
+                        runTimes.push_back(
+                            std::chrono::duration_cast<std::chrono::nanoseconds>(
+                                    t2-t1).count()/Real(npvCalculations)
+                        );
+                    }
+                }
+            }
+
+            if (calculated.size() > 0) {
+                const Array calculatedNPVs(calculated.begin(), calculated.end());
+                const Array diff = b.referenceNPVs - calculatedNPVs;
+                const Array absDiff = Abs(diff);
+
+                const Real rmse = std::sqrt(DotProduct(diff, diff))/n;
+                const Real mae  = std::accumulate(absDiff.begin(), absDiff.end(), 0.0)/n;
+
+                std::cout << engine.first << std::endl;
+                std::cout << "bla " << std::setprecision(18) << calculatedNPVs << std::endl;
+                std::cout << diff << std::endl;
+                std::cout << rmse << " " << mae << std::endl;
+
+                std::cout << std::endl;
             }
         }
-
-        const Array calculatedNPVs(calculated.begin(), calculated.end());
-        const Array diff = b.referenceNPVs - calculatedNPVs;
-        const Array absDiff = Abs(diff);
-
-        const Real rmse = std::sqrt(DotProduct(diff, diff))/n;
-        const Real mae  = std::accumulate(absDiff.begin(), absDiff.end(), 0.0)/n;
-
-        std::cout << diff << std::endl;
-        std::cout << rmse << " " << mae << std::endl;
-
-        std::cout << std::endl;
-
     }
-//        const Real strike = std::inner_product(
-//            b.weights.begin(), b.weights.end(), b.underlyings.begin(), 0.0
-//        );
-//
-//        const ext::shared_ptr<PlainVanillaPayoff> payoff
-//            = ext::make_shared<PlainVanillaPayoff>(t.optionType, strike);
-//
-//        BasketOption option(
-//            ext::make_shared<AverageBasketPayoff>(payoff, d.weights),
-//            ext::make_shared<EuropeanExercise>(maturity)
-//        );
-
-
-//
-//    Size i=1024;
-//    for (; i < 1000000000; i*=2) {
-//        option.setPricingEngine(
-//            MakeMCEuropeanBasketEngine<SobolBrownianBridgeRsgType>(
-//            //MakeMCEuropeanBasketEngine<PseudoRandom>(
-//                ext::make_shared<StochasticProcessArray>(
-//                    std::vector<ext::shared_ptr<StochasticProcess1D> >(
-//                        processes.begin(), processes.end()
-//                    ),
-//                    rho
-//                )
-//            )
-//            .withSteps(1)
-//            .withSamples(i)
-//            .withSeed(1234ul)
-//        );
-//
-//        std::cout << i << " " << option.NPV() << std::endl;
-//    }
-//
-//    option.setPricingEngine(
-//        ext::make_shared<DengLiZhouBasketEngine>(processes, rho));
-//    std::cout << option.NPV() << std::endl;
-//
-//
-//    option.setPricingEngine(
-//        ext::make_shared<FdndimBlackScholesVanillaEngine>(
-//            processes, rho,
-//            std::vector<Size>({25, 25, 25, 25}), 75
-//        )
-//    );
-//    std::cout << option.NPV() << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

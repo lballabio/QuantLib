@@ -27,24 +27,29 @@
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/basket/choibasketengine.hpp>
 #include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 
 #include <boost/math/special_functions/sign.hpp>
-#include <cmath>
 #include <iostream>
 
 namespace QuantLib {
 
     ChoiBasketEngine::ChoiBasketEngine(
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
-        Matrix rho, Real lambda)
+        Matrix rho, Real lambda,
+        Size maxNrIntegrationSteps,
+        bool calcFwdDelta, bool controlVariate)
     : n_(processes.size()),
       processes_(std::move(processes)),
       rho_(std::move(rho)),
-      lambda_(lambda) {
+      lambda_(lambda),
+      maxNrIntegrationSteps_(maxNrIntegrationSteps),
+      calcFwdDelta_(calcFwdDelta || controlVariate),
+      controlVariate_(controlVariate) {
 
         QL_REQUIRE(n_ > 0, "No Black-Scholes process is given.");
         QL_REQUIRE(n_ == rho_.size1() && rho_.size1() == rho_.size2(),
@@ -64,7 +69,7 @@ namespace QuantLib {
         const detail::VectorBsmProcessExtractor pExtractor(processes_);
         const Array s = pExtractor.getSpot();
         const Array dq = pExtractor.getDividendYieldDf(maturityDate);
-        const Array vol = pExtractor.getBlackStdDev(maturityDate);
+        const Array stdDev = pExtractor.getBlackStdDev(maturityDate);
         const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
 
         const Array fwd = s * dq/dr0;
@@ -79,22 +84,21 @@ namespace QuantLib {
 
         const Array g = weights*fwd / Norm2(weights*fwd);
 
-        const Matrix Sigma = getCovariance(vol.begin(), vol.end(), rho_);
+        const Matrix Sigma = getCovariance(stdDev.begin(), stdDev.end(), rho_);
         Array vStar1 = Sigma*g;
         vStar1 /= std::sqrt(DotProduct(g, vStar1));
 
         const Matrix C = CholeskyDecomposition(Sigma);
 
-        // todo: this needs to be scaled with sqrt(maturity)
         constexpr Real eps = 100*std::sqrt(QL_EPSILON);
         // publication sets tol=0, pyfeng implementation sets tol=0.01
         constexpr Real tol = 100*std::sqrt(QL_EPSILON);
 
         bool flip = false;
         for (Size i=0; i < n_; ++i)
-            if (boost::math::sign(g[i])*vStar1[i] < tol*vol[i]) {
+            if (boost::math::sign(g[i])*vStar1[i] < tol*stdDev[i]) {
                 flip = true;
-                vStar1[i] = eps * boost::math::sign(g[i]) * vol[i];
+                vStar1[i] = eps * boost::math::sign(g[i]) * stdDev[i];
             }
 
         Array q1(n_);
@@ -161,31 +165,82 @@ namespace QuantLib {
         }
 
         BasketOption option(avgPayoff, exercise);
-        option.setPricingEngine(
-            ext::make_shared<SingleFactorBsmBasketEngine>(p)
-        );
+        option.setPricingEngine(ext::make_shared<SingleFactorBsmBasketEngine>(p));
 
-        Array vq(n_, n_);
+        Array vq(n_);
         for (Size i=0; i < n_; ++i)
             vq[i] = 0.5*std::accumulate(
                 v.row_begin(i), v.row_end(i), 0.0,
                 [](Real acc, Real x) -> Real { return acc + x*x; }
             );
 
-        const auto bsm1dPricer = [&](const Array& x) -> Real {
-            const Array f = Exp(-M_SQRT2*v*x - vq) * fwd;
+        for (Size i=0; i < nIntOrder.size(); ++i)
+            std::cout << nIntOrder[i] << " ";
+        std::cout << std::endl;
 
-            for (Size i=0; i < f.size(); ++i)
-                quotes[i]->setValue(f[i]);
-
-            return std::exp(-DotProduct(x, x)) * option.NPV();
-        };
 
         MulitDimGaussianIntegration ghq(
             nIntOrder,
             [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
         );
+        const Real normFactor = std::pow(M_PI, -0.5*nIntOrder.size());
 
-        results_.value = ghq(bsm1dPricer) * std::pow(M_PI, -0.5*nIntOrder.size());
+        std::vector<Real> dStore;
+        dStore.reserve(ghq.weights().size());
+        const auto bsm1dPricer = [&](const Array& z) -> Real {
+            const Array f = Exp(-M_SQRT2*(v*z) - vq) * fwd;
+
+            for (Size i=0; i < f.size(); ++i)
+                quotes[i]->setValue(f[i]);
+
+            dStore.push_back(ext::any_cast<Real>(option.additionalResults().at("d")));
+            return std::exp(-DotProduct(z, z)) * option.NPV();
+        };
+
+        results_.value = ghq(bsm1dPricer) * normFactor;
+
+        if (calcFwdDelta_) {
+            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+                 ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
+            QL_REQUIRE(payoff, "non-plain vanilla payoff given");
+            const Real putIndicator = (payoff->optionType() == Option::Call) ? 0.0 : -1.0;
+
+            Size dStoreCounter;
+            const CumulativeNormalDistribution N;
+
+            Array fwdDelta(n_), fHat(n_);
+            for (Size k=0; k < n_; ++k) {
+                dStoreCounter = 0;
+
+                const auto deltaPricer = [&](const Array& z) -> Real {
+                    const Real d = dStore[dStoreCounter++];
+                    const Real vz = std::inner_product(
+                        v.row_begin(k), v.row_end(k), z.begin(), 0.0);
+                    const Real f = std::exp(-M_SQRT2*vz - vq[k]);
+
+                    return std::exp(-DotProduct(z, z)) * f * N(d + vStar1[k]);
+                };
+
+                fwdDelta[k] = dr0*weights[k]*(ghq(deltaPricer) * normFactor + putIndicator);
+
+                const std::string deltaName = "forwardDelta " + std::to_string(k);
+                results_.additionalResults[deltaName] = fwdDelta[k];
+            }
+
+            if (controlVariate_) {
+                for (Size k=0; k < n_; ++k) {
+                    const auto fHatPricer =  [&](const Array& z) -> Real {
+                        const Real vz = std::inner_product(
+                            v.row_begin(k), v.row_end(k), z.begin(), 0.0);
+                        const Real f = std::exp(-M_SQRT2*vz - vq[k]);
+
+                        return std::exp(-DotProduct(z, z)) * f;
+                    };
+                fHat[k] = ghq(fHatPricer) * normFactor;
+                }
+                const Array cv = fwdDelta*fwd*(fHat-1.0);
+                results_.value -= std::accumulate(cv.begin(), cv.end(), 0.0);
+            }
+        }
     }
 }
