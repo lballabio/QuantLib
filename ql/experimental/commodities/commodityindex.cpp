@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    CommodityIndex::CommodityIndex(const std::string& indexName,
+    CommodityIndex::CommodityIndex(std::string  indexName,
                                    CommodityType commodityType,
                                    Currency currency,
                                    UnitOfMeasure unitOfMeasure,
@@ -32,7 +32,7 @@ namespace QuantLib {
                                    ext::shared_ptr<CommodityCurve> forwardCurve,
                                    ext::shared_ptr<ExchangeContracts> exchangeContracts,
                                    int nearbyOffset)
-    : name_(indexName), commodityType_(std::move(commodityType)),
+    : name_(std::move(indexName)), commodityType_(std::move(commodityType)),
       unitOfMeasure_(std::move(unitOfMeasure)), currency_(std::move(currency)),
       calendar_(std::move(calendar)), lotQuantity_(lotQuantity),
       forwardCurve_(std::move(forwardCurve)), exchangeContracts_(std::move(exchangeContracts)),
