@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmprocessesextractor.cpp
+/*! \file vectorbsmprocessextractor.cpp
 */
 #include <ql/math/functional.hpp>
 #include <ql/math/comparison.hpp>

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmprocessesextractor.hpp
+/*! \file vectorbsmprocessextractor.hpp
     \brief helper class to extract underlying, volatility etc from a vector of processes
 */
 

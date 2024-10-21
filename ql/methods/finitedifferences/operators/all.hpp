@@ -17,6 +17,7 @@
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmndimblackscholesop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmornsteinuhlenbeckop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmsabrop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmsquarerootfwdop.hpp>
