@@ -92,9 +92,9 @@ namespace QuantLib {
 
         const Matrix C = CholeskyDecomposition(Sigma);
 
-        constexpr Real eps = 100*std::sqrt(QL_EPSILON);
+        const Real eps = 100*std::sqrt(QL_EPSILON);
         // publication sets tol=0, pyfeng implementation sets tol=0.01
-        constexpr Real tol = 100*std::sqrt(QL_EPSILON);
+        const Real tol = 100*std::sqrt(QL_EPSILON);
 
         bool flip = false;
         for (Size i=0; i < n_; ++i)

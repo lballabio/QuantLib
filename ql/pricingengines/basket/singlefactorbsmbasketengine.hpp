@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file singlefactorbsmnasketengine.hpp
+/*! \file singlefactorbsmbasketengine.hpp
     \brief Basket engine where all underlyings are driven by one stochastic factor
 */
 

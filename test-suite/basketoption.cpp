@@ -1963,7 +1963,7 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
     };
 
     const ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<ChoiBasketEngine>(processes, rho, 7.0, true, true);
+        ext::make_shared<ChoiBasketEngine>(processes, rho, 7.0, 10000, true, true);
 
     const Array expected = {15.92008513388834, 22.36122704630282};
     const std::vector<Option::Type> optionTypes = {Option::Put, Option::Call};

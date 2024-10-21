@@ -35,17 +35,13 @@ namespace QuantLib {
         Matrix correlation,
         std::vector<Size> xGrids,
         Size tGrid, Size dampingSteps,
-        const FdmSchemeDesc& schemeDesc,
-        bool localVol,
-        Real illegalLocalVolOverwrite)
+        const FdmSchemeDesc& schemeDesc)
     : processes_(std::move(processes)),
       correlation_(std::move(correlation)),
       xGrids_(std::move(xGrids)),
       tGrid_(tGrid),
       dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc),
-      localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+      schemeDesc_(schemeDesc) {
 
         QL_REQUIRE(!processes_.empty(), "no Black-Scholes process is given.");
         QL_REQUIRE(correlation_.size1() == correlation_.size2()

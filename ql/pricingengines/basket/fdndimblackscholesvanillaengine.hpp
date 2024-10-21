@@ -47,9 +47,7 @@ namespace QuantLib {
             Matrix correlation,
             std::vector<Size> xGrids,
             Size tGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const override;
 
@@ -59,8 +57,6 @@ namespace QuantLib {
         const std::vector<Size> xGrids_;
         const Size tGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const bool localVol_;
-        const Real illegalLocalVolOverwrite_;
     };
 }
 

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file singlefactorbsmnasketengine.cpp
+/*! \file singlefactorbsmbasketengine.cpp
 */
 
 #include <ql/exercise.hpp>
