@@ -27,7 +27,6 @@
 #include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
 
 #include <boost/preprocessor/iteration/local.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

@@ -55,6 +55,8 @@ namespace QuantLib {
         QL_REQUIRE(n_ == rho_.size1() && rho_.size1() == rho_.size2(),
             "process and correlation matrix must have the same size.");
 
+        QL_REQUIRE(lambda_ > 0.0, "lambda must be positive");
+
         std::for_each(processes_.begin(), processes_.end(),
             [this](const auto& p) { registerWith(p); });
     }
@@ -136,9 +138,19 @@ namespace QuantLib {
             );
 
         std::vector<Size> nIntOrder(n_-1);
-        const Real intScale = lambda_ / std::abs(DotProduct(g, vStar1));
-        for (Size i=0; i < n_-1; ++i)
-            nIntOrder[i] = Size(std::lround(1 + intScale*sv[i]));
+        Real lambda = lambda_;
+        const Real alpha = 1/std::abs(DotProduct(g, vStar1));
+        do {
+            const Real intScale = lambda * alpha;
+            for (Size i=0; i < n_-1; ++i)
+                nIntOrder[i] = Size(std::lround(1 + intScale*sv[i]));
+
+            lambda*=0.9;
+            QL_REQUIRE(lambda/lambda_ > 1e-10,
+                "can not rescale lambda to fit max integration order");
+        } while (std::accumulate(
+                     nIntOrder.begin(), nIntOrder.end(), 1.0, std::multiplies<>())
+                > Real(maxNrIntegrationSteps_));
 
         std::vector<ext::shared_ptr<SimpleQuote> > quotes;
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p;
@@ -173,11 +185,6 @@ namespace QuantLib {
                 v.row_begin(i), v.row_end(i), 0.0,
                 [](Real acc, Real x) -> Real { return acc + x*x; }
             );
-
-        for (Size i=0; i < nIntOrder.size(); ++i)
-            std::cout << nIntOrder[i] << " ";
-        std::cout << std::endl;
-
 
         MulitDimGaussianIntegration ghq(
             nIntOrder,

@@ -48,8 +48,6 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 
-#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
-#include <chrono>
 #include <cmath>
 
 using namespace QuantLib;
@@ -1194,7 +1192,7 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
             { 0.7, 9.0863, 9.0862},
             { 0.9, 6.9148, 6.9134}
     };
-    for (Size i = 0; i < LENGTH(testData); ++i) {
+    for (Size i = 0; i < std::size(testData); ++i) {
         const Real rho = testData[i][0];
         Real expected = testData[i][1];
 
@@ -2022,7 +2020,6 @@ BOOST_AUTO_TEST_CASE(testGoldenChoiBasketEngineExample) {
                        << "\n    expected:    " << expected[i]
                        << "\n    diff:        " << npvDiff
                        << "\n    tolerance:   " << npvTol);
-
         }
     }
 }
@@ -2064,106 +2061,136 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
     };
 
     const std::vector<Benchmark> benchmarks = {
-//        // Dempster and Hong [2002], Hurd and Zhou [2010]
-//        {
-//            {100.0, 96.0}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{{0.5}}},
-//            {1.0, -1.0}, {1.0},
-//            {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Put,
-//            {4.86947800209290982, 5.03394599708595702, 5.20170697959426764, 5.37275466121791023, 5.54708103391874285, 5.72467640414054557, 5.90552942907314105, 6.08962715491644957, 6.27695505699956779, 6.46749708160964865}
-//        },
-//        {
-//            {100, 96}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{{0.5}}},
-//            {1.0, -1.0}, {1.0},
-//            {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Call,
-//            {8.312460732881519, 8.114993760660171, 7.920819775954081,
-//             7.729932490363331, 7.542323895849758, 7.35798429885716, 7.176902356575362,
-//             6.999065115204262, 6.824458050072985, 6.653065107468672}
-//        },
-//        // Choi [2018]
-//        {
-//            {200, 100}, {0.15, 0.3}, {0.0, 0.0}, 0.0,
-//            { {{-0.9}}, {{-0.7}}, {{-0.5}}, {{-0.3}}, {{-0.1}}, {{0.1}}, {{0.3}}, {{0.5}}, {{0.7}}, {{0.9}} },
-//            {1.0, -1.0}, {1.0}, {100}, Option::Call,
-//            {23.1398673777858619, 21.9077989170003313, 20.5982705317786383, 19.1954201364940467,
-//             17.6770248596142956, 16.0102190445729207, 14.1425869461427691, 11.9804918293938165,
-//             9.32094392217566181, 5.47927202785675949}
-//        },
-//        // Krekel et al [2004], Caldana et al. [2016]
-//        {
-//            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 0.4}, {0, 0, 0, 0}, 0, {{{0.5}}},
-//            {0.25, 0.25, 0.25, 0.25}, {5}, {50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150},
-//            Option::Call,
-//            {54.3101760503818554, 47.4811264983728805, 41.5225192321721579, 36.3517843455707421,
-//             31.8768031971830865, 28.0073695445039341, 24.6605295130931736, 21.7625788671709337,
-//             19.2493294434234272, 17.0655419939919533, 15.1640102889333352}
-//        },
-//        {
-//            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 0.4}, {0, 0, 0, 0}, 0,
-//            {{{-0.1}}, {{0.1}}, {{0.3}}, {{0.5}}, {{0.8}}, {{0.95}}},
-//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call,
-//            {17.756916333753729, 21.6920964834602223, 25.029299237118412,
-//             28.0073695445038631, 32.0412264523680363, 33.9186874338078042}
-//        },
-//        {
-//            {100, 100, 100, 100}, {0.05, 0.05, 0.05, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
-//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call, {19.4590949762084549}
-//        },
-//        {
-//            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
-//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call, {36.048540687480191 }
-//        },
-//        {
-//            {100, 100, 100, 100}, {0.8, 0.8, 0.8, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
-//            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Put, {56.7772198387342684}
-//        },
-//        // Milevsky and Posner [1998], Zhou and Wnag [2008]
-//        {
-//            {100, 100, 100, 100, 100, 100, 100},
-//            {0.1155, 0.2068, 0.1453, 0.1799, 0.1559, 0.1462, 0.1568},
-//            {0.0169, 0.0239, 0.0136, 0.0192, 0.0081, 0.0362, 0.0166}, 0.063,
-//            {{{1.00, 0.35, 0.10, 0.27, 0.04, 0.17, 0.71},
-//              {0.35, 1.00, 0.39, 0.27, 0.50,-0.08, 0.15},
-//              {0.10, 0.39, 1.00, 0.53, 0.70,-0.23, 0.09},
-//              {0.27, 0.27, 0.53, 1.00, 0.46,-0.22, 0.32},
-//              {0.04, 0.50, 0.70, 0.46, 1.00,-0.29, 0.13},
-//              {0.17,-0.08,-0.23,-0.22,-0.29, 1.00,-0.03},
-//              {0.71, 0.15, 0.09, 0.32, 0.13,-0.03, 1.00}
-//            }},
-//            {0.10, 0.15, 0.15, 0.05, 0.20, 0.10, 0.25},
-//            {0.5, 1, 2, 3}, {80, 100, 120}, Option::Call,
-//            {21.6065524428379092, 3.88986167789384707, 0.0238386363683683114,
-//             23.1411626921050093, 6.2216810431377656, 0.353558402011174056,
-//             26.0424328294544232, 10.2156011934593263, 2.05700439027528237,
-//             28.6992602369071967, 13.7425580125613358, 4.45783894060629216}
-//        }
-//        // Deng, Li and Zhou [2008]
-//        {
-//            {150, 60, 50}, {0.3, 0.3, 0.3}, {0, 0, 0}, 0.05,
-//            {{{1.0, 0.2, 0.8},
-//              {0.2, 1.0, 0.4},
-//              {0.8, 0.4, 1.0}
-//            }},
-//            {1, -1, -1}, {0.25}, {30, 35, 40, 45, 50}, Option::Call,
-//            {13.5670355467464869, 10.3469714924350296, 7.65022045034505815,
-//             5.48080150445291903, 3.80525160380840344}
-//        },
-//        {
-//            {150, 60, 50}, {0.6, 0.6, 0.6}, {0, 0, 0}, 0.05,
-//            {{{1.0, 0.2, 0.8},
-//              {0.2, 1.0, 0.4},
-//              {0.8, 0.4, 1.0}
-//            }},
-//            {1, -1, -1}, {0.25}, {30, 35, 40, 45, 50}, Option::Call,
-//            {20.187167856927644, 17.4567855185085179, 15.0073026904179034,
-//             12.8307539528848373, 10.9140154840369128}
-//        },
+        // Dempster and Hong [2002], Hurd and Zhou [2010]
+        {
+            {100.0, 96.0}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{{0.5}}},
+            {1.0, -1.0}, {1.0},
+            {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Put,
+            {4.86947800209290982, 5.03394599708595702, 5.20170697959426764, 5.37275466121791023, 5.54708103391874285, 5.72467640414054557, 5.90552942907314105, 6.08962715491644957, 6.27695505699956779, 6.46749708160964865}
+        },
+        {
+            {100, 96}, {0.2, 0.1}, {0.05, 0.05}, 0.1, {{{0.5}}},
+            {1.0, -1.0}, {1.0},
+            {0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 4.0}, Option::Call,
+            {8.312460732881519, 8.114993760660171, 7.920819775954081,
+             7.729932490363331, 7.542323895849758, 7.35798429885716, 7.176902356575362,
+             6.999065115204262, 6.824458050072985, 6.653065107468672}
+        },
+        // Choi [2018]
+        {
+            {200, 100}, {0.15, 0.3}, {0.0, 0.0}, 0.0,
+            { {{-0.9}}, {{-0.7}}, {{-0.5}}, {{-0.3}}, {{-0.1}}, {{0.1}}, {{0.3}}, {{0.5}}, {{0.7}}, {{0.9}} },
+            {1.0, -1.0}, {1.0}, {100}, Option::Call,
+            {23.1398673777858619, 21.9077989170003313, 20.5982705317786383, 19.1954201364940467,
+             17.6770248596142956, 16.0102190445729207, 14.1425869461427691, 11.9804918293938165,
+             9.32094392217566181, 5.47927202785675949}
+        },
+        // Chi-Fai Lo [2016]
+        {
+            {110, 90}, {0.3, 0.2}, {0.0, 0.0}, 0.05, {{{0.6}}},
+            {1.0, -1.0}, {1, 2, 3, 4, 5}, {10, 20, 60}, Option::Call,
+            {16.1049476565509657, 10.9766115516406035, 1.83123363415313212, 20.2228932552954817,
+             15.6927477228442918, 5.41564349607575757, 23.4547216033491992, 19.3375645886881351,
+             8.93714184429789604, 26.1938805393685357, 22.4110876517984252, 12.2205433053952373,
+             28.6052191202546133, 25.1093443516670014, 15.2670988551783733}
+        },
+        {
+            {110, 90}, {0.3, 0.2}, {0.03, 0.02}, 0.05,
+            {{{0.9}}, {{0.7}}, {{0.5}}, {{0.3}}, {{0.1}}, {{-0.1}}, {{-0.3}}, {{-0.5}}, {{-0.7}}, {{-0.9}}},
+            {1.0, -1.0}, {1}, {20}, Option::Put,
+            {7.40655995328727013, 9.57965665828979596, 11.3257533225283407, 12.8253504634935833,
+             14.1588257209597579, 15.3703653131104065, 16.4873731315140475, 17.5282444792535337,
+             18.5060419239761167, 19.4304406116564437}
+        },
+        // Krekel et al [2004], Caldana et al. [2016]
+        {
+            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 0.4, 0.4}, {0, 0, 0, 0, 0}, 0, {{{0.5}}},
+            {0.25, 0.25, 0.25, 0.25}, {5}, {50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150},
+            Option::Call,
+            {54.3101760503818554, 47.4811264983728805, 41.5225192321721579, 36.3517843455707421,
+             31.8768031971830865, 28.0073695445039341, 24.6605295130931736, 21.7625788671709337,
+             19.2493294434234272, 17.0655419939919533, 15.1640102889333352}
+        },
+        {
+            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 0.4}, {0, 0, 0, 0}, 0,
+            {{{-0.1}}, {{0.1}}, {{0.3}}, {{0.5}}, {{0.8}}, {{0.95}}},
+            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call,
+            {17.756916333753729, 21.6920964834602223, 25.029299237118412,
+             28.0073695445038631, 32.0412264523680363, 33.9186874338078042}
+        },
+        {
+            {100, 100, 100, 100}, {0.05, 0.05, 0.05, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
+            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call, {19.4590949762084549}
+        },
+        {
+            {100, 100, 100, 100}, {0.4, 0.4, 0.4, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
+            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Call, {36.048540687480191 }
+        },
+        {
+            {100, 100, 100, 100}, {0.8, 0.8, 0.8, 1.0}, {0, 0, 0, 0}, 0, {{{0.5}}},
+            {0.25, 0.25, 0.25, 0.25}, {5}, {100}, Option::Put, {56.7772198387342684}
+        },
+        // Milevsky and Posner [1998], Zhou and Wnag [2008]
+        {
+            {100, 100, 100, 100, 100, 100, 100},
+            {0.1155, 0.2068, 0.1453, 0.1799, 0.1559, 0.1462, 0.1568},
+            {0.0169, 0.0239, 0.0136, 0.0192, 0.0081, 0.0362, 0.0166}, 0.063,
+            {{{1.00, 0.35, 0.10, 0.27, 0.04, 0.17, 0.71},
+              {0.35, 1.00, 0.39, 0.27, 0.50,-0.08, 0.15},
+              {0.10, 0.39, 1.00, 0.53, 0.70,-0.23, 0.09},
+              {0.27, 0.27, 0.53, 1.00, 0.46,-0.22, 0.32},
+              {0.04, 0.50, 0.70, 0.46, 1.00,-0.29, 0.13},
+              {0.17,-0.08,-0.23,-0.22,-0.29, 1.00,-0.03},
+              {0.71, 0.15, 0.09, 0.32, 0.13,-0.03, 1.00}
+            }},
+            {0.10, 0.15, 0.15, 0.05, 0.20, 0.10, 0.25},
+            {0.5, 1, 2, 3}, {80, 100, 120}, Option::Call,
+            {21.6065524428379092, 3.88986167789384707, 0.0238386363683683114,
+             23.1411626921050093, 6.2216810431377656, 0.353558402011174056,
+             26.0424328294544232, 10.2156011934593263, 2.05700439027528237,
+             28.6992602369071967, 13.7425580125613358, 4.45783894060629216}
+        },
+        // Deng, Li and Zhou [2008]
+        {
+            {150, 60, 50}, {0.3, 0.3, 0.3}, {0, 0, 0}, 0.05,
+            {{{1.0, 0.2, 0.8},
+              {0.2, 1.0, 0.4},
+              {0.8, 0.4, 1.0}
+            }},
+            {1, -1, -1}, {0.25}, {30, 35, 40, 45, 50}, Option::Call,
+            {13.5670355467464869, 10.3469714924350296, 7.65022045034505815,
+             5.48080150445291903, 3.80525160380840344}
+        },
+        {
+            {150, 60, 50}, {0.6, 0.6, 0.6}, {0, 0, 0}, 0.05,
+            {{{1.0, 0.2, 0.8},
+              {0.2, 1.0, 0.4},
+              {0.8, 0.4, 1.0}
+            }},
+            {1, -1, -1}, {0.25}, {30, 35, 40, 45, 50}, Option::Call,
+            {20.187167856927644, 17.4567855185085179, 15.0073026904179034,
+             12.8307539528848373, 10.9140154840369128}
+        },
         {
             Array(11, 10.0),
             Array(11, 0.3), Array(11, 0.0), 0.05, {{{0.4}}},
             {11,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
             {0.25}, {0, 5, 10, 15, 20}, Option::Call,
-            {11.5795246248385411, 8.11486124235371697, 5.36890684803262097,
-             3.35146299782942902, 1.97711593317682488 }
+            {11.5795246248372834, 8.11486124233140238, 5.36890684802773066,
+             3.35146299782513601, 1.97711593318812251}
+        },
+        // unknown
+        {
+            {80, 120, 100, 100}, {0.3, 0.4, 0.2, 0.35}, {0.01, 0.03, 0.07, 0.04}, 0.03,
+            {{{1.0, 0.5, 0.35, 0.35},
+              {0.5, 1.0, 0.5,  0.6},
+              {0.35, 0.5, 1.0,-0.1},
+              {0.35, 0.6,-0.1, 1.0}
+            }},
+            {2, 1, -1, -1.5}, {1.5}, {-10, -5, 5, 10, 15, 20, 25, 30, 35, 40, 45}, Option::Put,
+            {8.261706095014931, 9.48942603546257, 12.36147376566713, 14.01364513745725,
+             15.81293112893055, 17.75999586876829, 19.85432452565376, 22.09433488973327,
+             24.47750315548787, 27.00049629189819, 29.65930486322155}
         }
     };
 
@@ -2175,7 +2202,12 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
 
     const auto choiEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
         -> ext::shared_ptr<PricingEngine> {
-        return ext::make_shared<ChoiBasketEngine>(p, rho, 3, false, false);
+        return ext::make_shared<ChoiBasketEngine>(p, rho, 20, 2 << 12);
+    };
+
+    const auto choiCvEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
+        -> ext::shared_ptr<PricingEngine> {
+        return ext::make_shared<ChoiBasketEngine>(p, rho, 20, 2 << 12, true, true);
     };
 
     const auto dengLiZhouEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time)
@@ -2216,51 +2248,44 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
             )
         )
         .withSteps(1)
-        .withSamples(16374*16-1)
-        .withSeed(1234ul);
-    };
-
-    const auto fdmEngine = [](const BlackScholesProcesses& p, const Matrix& rho, Time t)
-        -> ext::shared_ptr<PricingEngine> {
-        return ext::make_shared<FdndimBlackScholesVanillaEngine>(
-            p, rho, std::vector<Size>(p.size(), 15),
-            Size(15.0*t)
-        );
+        .withSamples(4096-1)
+        .withSeed(12345ul);
     };
 
     typedef std::function<ext::shared_ptr<PricingEngine>(
             const BlackScholesProcesses&, const Matrix&, Time)>
         PricingEngineFactory;
 
-    const std::vector<std::pair<std::string, PricingEngineFactory>> engines = {
-        {"Choi", choiEngine},
-        {"Deng-Li-Zhou", dengLiZhouEngine},
-//        {"Kirk", kirkEngine},
-        {"Quasi-Monte-Carlo", qmcEngine}
-//        {"Bjerksund-Stensland", bsEngine},
-//        {"Operator Splitting first order", osFirstOrderEngine},
-//        {"Operator Splitting second order", osSecondOrderEngine},
-//        {"FDM", fdmEngine}
+    const std::vector<std::tuple<std::string, PricingEngineFactory, Real>> engines = {
+        {"Choi", choiEngine, 0.000182177},
+        {"Choi Control Variate", choiCvEngine, 0.000228738},
+        {"Deng-Li-Zhou", dengLiZhouEngine, 0.0629703},
+        {"Kirk", kirkEngine, 0.030673},
+        {"Quasi-Monte-Carlo", qmcEngine, 0.28862},
+        {"Bjerksund-Stensland", bsEngine, 0.0222423},
+        {"Operator Splitting first order", osFirstOrderEngine, 0.00406318},
+        {"Operator Splitting second order", osSecondOrderEngine, 0.000317259}
     };
 
-    for (const auto& b: benchmarks) {
-        const Size n = b.underlyings.size();
+    for (const auto& engine: engines) {
+        std::vector<Real> diff, relDiff;
 
-        const Handle<YieldTermStructure> rTS
-            = Handle<YieldTermStructure>(flatRate(today, b.r, dc));
+        for (const auto& b: benchmarks) {
+            std::vector<Real> calculated;
+            const Size n = b.underlyings.size();
 
-        BlackScholesProcesses processes;
-        for (Size i=0; i < n; ++i)
-            processes.push_back(
-                ext::make_shared<BlackScholesMertonProcess>(
-                    Handle<Quote>(ext::make_shared<SimpleQuote>(b.underlyings[i])),
-                    Handle<YieldTermStructure>(flatRate(today, b.q[i], dc)), rTS,
-                    Handle<BlackVolTermStructure>(flatVol(today, b.volatilities[i], dc))
-                )
-            );
+            const Handle<YieldTermStructure> rTS
+                = Handle<YieldTermStructure>(flatRate(today, b.r, dc));
 
-        for (const auto& engine: engines) {
-            std::vector<Real> calculated, runTimes;
+            BlackScholesProcesses processes;
+            for (Size i=0; i < n; ++i)
+                processes.push_back(
+                    ext::make_shared<BlackScholesMertonProcess>(
+                        Handle<Quote>(ext::make_shared<SimpleQuote>(b.underlyings[i])),
+                        Handle<YieldTermStructure>(flatRate(today, b.q[i], dc)), rTS,
+                        Handle<BlackVolTermStructure>(flatVol(today, b.volatilities[i], dc))
+                    )
+                );
 
             for (const auto& cor: b.rhos) {
                 Matrix rho(n, n);
@@ -2277,7 +2302,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
                         ext::make_shared<EuropeanExercise>(maturityDate);
 
                     const ext::shared_ptr<PricingEngine> pricingEngine =
-                        engine.second(processes, rho, t);
+                        std::get<1>(engine)(processes, rho, t);
 
                     const bool isSpreadEngine =
                         ext::dynamic_pointer_cast<SpreadBlackScholesVanillaEngine>(
@@ -2318,42 +2343,32 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
                         BasketOption option(basketPayoff, exercise);
                         option.setPricingEngine(pricingEngine);
 
-                        Size npvCalculations = 1;
-                        Size batch = 1;
-                        auto t1 = std::chrono::high_resolution_clock::now(), t2 = t1;
-
                         calculated.push_back(option.NPV());
-
-//                        while (std::chrono::duration_cast<std::chrono::nanoseconds>(
-//                            (t2 = std::chrono::high_resolution_clock::now()) - t1).count() < 10000000) {
-//                            batch *= 4;
-//                            for (Size i=0; i < batch; ++i, ++npvCalculations) {
-//                                option.update();
-//                                option.NPV();
-//                            }
-//                        }
-                        runTimes.push_back(
-                            std::chrono::duration_cast<std::chrono::nanoseconds>(
-                                    t2-t1).count()/Real(npvCalculations)
-                        );
                     }
                 }
             }
 
             if (calculated.size() > 0) {
-                const Array calculatedNPVs(calculated.begin(), calculated.end());
-                const Array diff = b.referenceNPVs - calculatedNPVs;
-                const Array absDiff = Abs(diff);
+                for (Size i=0; i < calculated.size(); ++i) {
+                    diff.push_back(b.referenceNPVs[i] - calculated[i]);
+                    relDiff.push_back(diff.back()/b.referenceNPVs[i]);
+                }
+            }
+        }
 
-                const Real rmse = std::sqrt(DotProduct(diff, diff))/n;
-                const Real mae  = std::accumulate(absDiff.begin(), absDiff.end(), 0.0)/n;
+        if (diff.size() > 0) {
+            const Real calculatedRmse = std::sqrt(
+                DotProduct(Array(diff.begin(), diff.end()),
+                           Array(diff.begin(), diff.end()) ) /diff.size());
 
-                std::cout << engine.first << std::endl;
-                std::cout << "bla " << std::setprecision(18) << calculatedNPVs << std::endl;
-                std::cout << diff << std::endl;
-                std::cout << rmse << " " << mae << std::endl;
-
-                std::cout << std::endl;
+            const Real expectedRmse = std::get<2>(engine);
+            const Real relTol = 5;
+            if (calculatedRmse / expectedRmse > relTol) {
+                BOOST_FAIL(
+                    "failed to reproduce basket- and spread-option benchmark prices"
+                       << "\n    Engine         : " << std::get<0>(engine)
+                       << "\n    expected RMSE  : " << expectedRmse
+                       << "\n    calculated RMSE: " << calculatedRmse);
             }
         }
     }

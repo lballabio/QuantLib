@@ -22,8 +22,6 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
     OperatorSplittingSpreadEngine::OperatorSplittingSpreadEngine(
