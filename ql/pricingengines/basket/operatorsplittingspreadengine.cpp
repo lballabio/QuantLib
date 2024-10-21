@@ -37,7 +37,7 @@ namespace QuantLib {
         Real f1, Real f2, Real k, Option::Type optionType,
         Real variance1, Real variance2, DiscountFactor df) const {
 
-        const auto callPutParityPrice = [this, f1, f2, df, k, optionType](Real callPrice) -> Real {
+        const auto callPutParityPrice = [f1, f2, df, k, optionType](Real callPrice) -> Real {
             if (optionType == Option::Call)
                 return callPrice;
             else

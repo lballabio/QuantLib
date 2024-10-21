@@ -52,7 +52,7 @@ namespace QuantLib {
             QL_REQUIRE(
                 std::equal(
                     dr.begin()+1, dr.end(), dr.begin(),
-                    std::pointer_to_binary_function<Real, Real, bool>(close_enough)
+                    [](Real a, Real b) -> bool { return close_enough(a, b);}
                 ),
                 "interest rates need to be the same for all underlyings"
             );
