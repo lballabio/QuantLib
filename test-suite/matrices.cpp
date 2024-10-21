@@ -863,8 +863,8 @@ namespace MatrixTests {
 BOOST_AUTO_TEST_CASE(testPrincipalMatrixSqrt) {
     BOOST_TEST_MESSAGE("Testing principal matrix pseudo sqrt...");
 
-    std::vector<Real> dims = {1, 4, 10, 40};
-    for (auto n: dims) {
+    std::vector<Size> dims = {1, 4, 10, 40};
+    for (Size n: dims) {
         const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
         const Matrix sqrtRho = pseudoSqrt(rho, SalvagingAlgorithm::Principal);
 
@@ -882,8 +882,8 @@ BOOST_AUTO_TEST_CASE(testCholeskySolverFor) {
 
     MersenneTwisterUniformRng rng(1234);
 
-    std::vector<Real> dims = {1, 4, 10, 25, 50};
-    for (auto n: dims) {
+    std::vector<Size> dims = {1, 4, 10, 25, 50};
+    for (Size n: dims) {
 
         Array b(n);
         for (Size i=0; i < n; ++i)
