@@ -238,9 +238,7 @@ namespace QuantLib {
             rate_ = underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
         } else if (fixingDate == today) {
             // might have been fixed
-            Rate pastFixing =
-                IndexManager::instance().getHistory((underlying_->index())->name())[fixingDate];
-            if (pastFixing != Null<Real>()) {
+            if (underlying_->index()->hasHistoricalFixing(fixingDate)) {
                 rate_ = underlyingRate + callCsi_ * callPayoff() + putCsi_  * putPayoff();
             } else {
                 rate_ = underlyingRate + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();

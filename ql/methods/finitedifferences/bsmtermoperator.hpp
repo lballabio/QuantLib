@@ -17,26 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmtermoperator.hpp
-    \brief differential operator for Black-Scholes-Merton equation
-*/
-
 #ifndef quantlib_bsm_term_operator_hpp
 #define quantlib_bsm_term_operator_hpp
 
-#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/math/transformedgrid.hpp>
-#include <ql/methods/finitedifferences/pdebsm.hpp>
-
-namespace QuantLib {
-
-    /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.32.
-    */
-    [[deprecated("Use the new finite-differences framework instead")]]
-    typedef PdeOperator<PdeBSM> BSMTermOperator;
-}
+// Deprecated in version 1.37
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

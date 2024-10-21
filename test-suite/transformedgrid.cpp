@@ -39,6 +39,8 @@ BOOST_AUTO_TEST_CASE(testConstruction) {
 
     BOOST_TEST_MESSAGE("Testing transformed grid construction...");
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     PlusOne p1;
     Array grid = BoundedGrid(0, 100, 100);
     TransformedGrid tg(grid, p1);
@@ -48,6 +50,9 @@ BOOST_AUTO_TEST_CASE(testConstruction) {
 
     if (std::fabs(tg.transformedGrid(0) - 1.0) > 1e-5)
         BOOST_ERROR("grid transformation failed");
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

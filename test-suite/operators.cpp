@@ -24,7 +24,7 @@
 #include <ql/methods/finitedifferences/dzero.hpp>
 #include <ql/methods/finitedifferences/dplusdminus.hpp>
 #include <ql/methods/finitedifferences/bsmoperator.hpp>
-#include <ql/methods/finitedifferences/bsmtermoperator.hpp>
+#include <ql/methods/finitedifferences/pdebsm.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -168,6 +168,8 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
 BOOST_AUTO_TEST_CASE(testBSMOperatorConsistency) {
     BOOST_TEST_MESSAGE("Testing consistency of BSM operators...");
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     Array grid(10);
     Real price = 20.0;
     Real factor = 1.1;
@@ -198,6 +200,7 @@ BOOST_AUTO_TEST_CASE(testBSMOperatorConsistency) {
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
+
     PdeOperator<PdeBSM> op2(grid, stochProcess, residualTime);
 
     Real tolerance = 1.0e-6;
@@ -222,6 +225,9 @@ BOOST_AUTO_TEST_CASE(testBSMOperatorConsistency) {
                        << op2.upperDiagonal()[i]);
         }
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

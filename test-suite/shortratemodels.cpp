@@ -342,10 +342,7 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
         Date startDate = calendar.advance(settlement,start[i],Months);
         if (startDate < today) {
             Date fixingDate = calendar.advance(startDate,-2,Days);
-            TimeSeries<Real> pastFixings;
-            pastFixings[fixingDate] = 0.03;
-            IndexManager::instance().setHistory(euribor->name(),
-                                                pastFixings);
+            euribor->addFixing(fixingDate, 0.03);
         }
 
         for (Size j=0; j<std::size(length); j++) {

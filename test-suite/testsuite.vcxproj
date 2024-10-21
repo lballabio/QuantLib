@@ -753,6 +753,7 @@
     <ClCompile Include="mclongstaffschwartzengine.cpp" />
     <ClCompile Include="mersennetwister.cpp" />
     <ClCompile Include="money.cpp" />
+    <ClCompile Include="multipleresetscoupons.cpp" />
     <ClCompile Include="noarbsabr.cpp" />
     <ClCompile Include="normalclvmodel.cpp" />
     <ClCompile Include="nthtodefault.cpp" />
@@ -781,7 +782,6 @@
     <ClCompile Include="riskstats.cpp" />
     <ClCompile Include="rngtraits.cpp" />
     <ClCompile Include="rounding.cpp" />
-    <ClCompile Include="sampledcurve.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
@@ -790,7 +790,6 @@
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
-    <ClCompile Include="subperiodcoupons.cpp" />
     <ClCompile Include="svivolatility.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />

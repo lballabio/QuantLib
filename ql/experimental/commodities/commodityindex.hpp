@@ -25,17 +25,16 @@
 #define quantlib_commodity_index_hpp
 
 #include <ql/experimental/commodities/commoditycurve.hpp>
-#include <ql/indexes/indexmanager.hpp>
+#include <ql/index.hpp>
 
 namespace QuantLib {
 
     class TermStructure;
 
     //! base class for commodity indexes
-    class CommodityIndex : public Observable,
-                           public Observer {
+    class CommodityIndex : public Index {
       public:
-        CommodityIndex(const std::string& name,
+        CommodityIndex(std::string  name,
                        CommodityType commodityType,
                        Currency currency,
                        UnitOfMeasure unitOfMeasure,
@@ -46,7 +45,11 @@ namespace QuantLib {
                        int nearbyOffset);
         //! \name Index interface
         //@{
-        std::string name() const;
+        std::string name() const override;
+        Calendar fixingCalendar() const override;
+        bool isValidFixingDate(const Date& fixingDate) const override;
+        Real fixing(const Date& fixingDate,
+                    bool forecastTodaysFixing = false) const override;
         //@}
         //! \name Observer interface
         //@{
@@ -57,31 +60,71 @@ namespace QuantLib {
         const CommodityType& commodityType() const;
         const Currency& currency() const;
         const UnitOfMeasure& unitOfMeasure() const;
-        const Calendar& calendar() const;
         const ext::shared_ptr<CommodityCurve>& forwardCurve() const;
         Real lotQuantity() const;
-
-        Real price(const Date& date);
         Real forwardPrice(const Date& date) const;
         Date lastQuoteDate() const;
-        //@}
-        void addQuote(const Date& quoteDate, Real quote);
-
-        void addQuotes(const std::map<Date, Real>& quotes) {
-            std::string tag = name();
-            quotes_ = IndexManager::instance().getHistory(tag);
-            for (auto quote : quotes) {
-                quotes_[quote.first] = quote.second;
-            }
-            IndexManager::instance().setHistory(tag, quotes_);
-        }
-
-        void clearQuotes() const;
-        //! returns TRUE if the quote date is valid
-        bool isValidQuoteDate(const Date& quoteDate) const;
         bool empty() const;
         bool forwardCurveEmpty() const;
-        const TimeSeries<Real>& quotes() const;
+        //@}
+
+        /*! \deprecated Use fixingCalendar instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use fixingCalendar instead")]]
+        const Calendar& calendar() const {
+            return calendar_;
+        }
+
+        /*! \deprecated Use fixing instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use fixing instead")]]
+        Real price(const Date& date) {
+            return fixing(date);
+        }
+
+        /*! \deprecated Use addFixing instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use fixing instead")]]
+        void addQuote(const Date& quoteDate, Real quote) {
+            addFixing(quoteDate, quote);
+        }
+
+        /*! \deprecated Use addFixings instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use addFixings instead")]]
+        void addQuotes(const std::map<Date, Real>& quotes) {
+            for (auto quote : quotes) {
+                addFixing(quote.first, quote.second);
+            }
+        }
+
+        /*! \deprecated Use clearFixings instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use clearFixings instead")]]
+        void clearQuotes() {
+            clearFixings();
+        }
+
+        /*! \deprecated Use isValidFixingDate instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use isValidFixingDate instead")]]
+        bool isValidQuoteDate(const Date& quoteDate) const {
+            return isValidFixingDate(quoteDate);
+        }
+
+        /*! \deprecated Use timeSeries instead.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use timeSeries instead")]]
+        const TimeSeries<Real>& quotes() const {
+            return timeSeries();
+        }
 
         friend std::ostream& operator<<(std::ostream&, const CommodityIndex&);
       protected:
@@ -91,7 +134,6 @@ namespace QuantLib {
         Currency currency_;
         Calendar calendar_;
         Real lotQuantity_;
-        TimeSeries<Real> quotes_;
         ext::shared_ptr<CommodityCurve> forwardCurve_;
         Real forwardCurveUomConversionFactor_ = 1;
         ext::shared_ptr<ExchangeContracts> exchangeContracts_;
@@ -113,6 +155,18 @@ namespace QuantLib {
         return name_;
     }
 
+    inline Calendar CommodityIndex::fixingCalendar() const {
+        return calendar_;
+    }
+
+    inline bool CommodityIndex::isValidFixingDate(const Date& fixingDate) const {
+        return fixingCalendar().isBusinessDay(fixingDate);
+    }
+
+    inline Real CommodityIndex::fixing(const Date& date, bool) const {
+        return pastFixing(date);
+    }
+
     inline const CommodityType& CommodityIndex::commodityType() const {
         return commodityType_;
     }
@@ -125,10 +179,6 @@ namespace QuantLib {
         return currency_;
     }
 
-    inline const Calendar& CommodityIndex::calendar() const {
-        return calendar_;
-    }
-
     inline Real CommodityIndex::lotQuantity() const {
         return lotQuantity_;
     }
@@ -136,21 +186,6 @@ namespace QuantLib {
     inline const ext::shared_ptr<CommodityCurve>&
     CommodityIndex::forwardCurve() const {
         return forwardCurve_;
-    }
-
-    inline const TimeSeries<Real>& CommodityIndex::quotes() const {
-        return quotes_;
-    }
-
-    inline Real CommodityIndex::price(const Date& date) {
-        auto hq = quotes_.find(date);
-        if (hq->second == Null<Real>()) {
-            ++hq;
-            if (hq == quotes_.end())
-                //if (hq->second == Null<Real>())
-                return Null<Real>();
-        }
-        return hq->second;
     }
 
     inline Real CommodityIndex::forwardPrice(const Date& date) const {
@@ -165,37 +200,17 @@ namespace QuantLib {
     }
 
     inline Date CommodityIndex::lastQuoteDate() const {
-        if (quotes_.empty())
-            return Date::minDate();
-        return quotes_.lastDate();
+        return timeSeries().lastDate();
     }
 
     inline bool CommodityIndex::empty() const {
-        return quotes_.empty();
+        return timeSeries().empty();
     }
 
     inline bool CommodityIndex::forwardCurveEmpty() const {
         if (forwardCurve_ != nullptr)
             return forwardCurve_->empty();
         return false;
-    }
-
-    inline void CommodityIndex::addQuote(const Date& quoteDate, Real quote) {
-        //QL_REQUIRE(isValidQuoteDate(quoteDate),
-        //           "Quote date " << quoteDate.weekday() << ", " <<
-        //           quoteDate << " is not valid");
-        std::string tag = name();
-        quotes_ = IndexManager::instance().getHistory(tag);
-        quotes_[quoteDate] = quote;
-        IndexManager::instance().setHistory(tag, quotes_);
-    }
-
-    inline void CommodityIndex::clearQuotes() const {
-        IndexManager::instance().clearHistory(name());
-    }
-
-    inline bool CommodityIndex::isValidQuoteDate(const Date& quoteDate) const {
-        return calendar().isBusinessDay(quoteDate);
     }
 
 }

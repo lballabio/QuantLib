@@ -30,10 +30,8 @@
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdmultiperiodengine.hpp>
 #include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
-#include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/pricingengines/vanilla/mcdigitalengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>

@@ -1,3 +1,72 @@
+commit 85e9489fd486c00fb624fb4c8f10ab227ac2e9e8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 22:55:21 +0200
+
+    Ignore lcov error
+
+ .github/workflows/coveralls.yml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 4bae7919925f54076c6f7bcb44a15bd8c1d1fb2a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 22:38:07 +0200
+
+    Avoid occasional warning from std::enable_shared_from_this
+
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3074bd85d60aaf477b4c4f609e4da4f0c0d1f553
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 20:45:08 +0200
+
+    Update changelog
+
+ ChangeLog.txt | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+commit 814c9cf074ce4dcb9b8777c03d205856769e6b86
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.36 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 10be1e1ab186950dcd05147b1676ee048893f99d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Oct 2024 20:29:39 +0200
+
+    Updated release history
+
+ Docs/pages/history.docs | 129 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 128 insertions(+), 1 deletion(-)
+
+commit 4cf029617169cfc1985527a5187113ba105655a2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.36-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit fc6f3919ba1c85427332f38db5d69be85439d8fd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Oct 2024 12:30:47 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt    | 2733 ++++++++++++++++++++++++++++--------------------------
+ Contributors.txt |    4 +
+ News.md          |  244 ++---
+ 3 files changed, 1551 insertions(+), 1430 deletions(-)
+
 commit 3d27c6b27d232c42965b7afb1684f181219cbc81
 Merge: a5d2197cc 64acfbbe2
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>

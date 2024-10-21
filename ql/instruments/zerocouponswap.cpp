@@ -19,7 +19,7 @@
 
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/cashflows/multipleresetscoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/zerocouponswap.hpp>
 #include <utility>
@@ -27,18 +27,27 @@
 namespace QuantLib {
 
     namespace {       
+
         ext::shared_ptr<CashFlow>
         compoundedSubPeriodicCoupon(const Date& paymentDate,
                                     const Date& startDate,
                                     const Date& maturityDate,
                                     Real nominal,
                                     const ext::shared_ptr<IborIndex>& index) {
-            auto floatCpn = ext::make_shared<SubPeriodsCoupon>(
-                paymentDate, nominal, startDate, maturityDate, index->fixingDays(), index);
-            floatCpn->setPricer(
-                ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
+            Schedule schedule = MakeSchedule()
+                           .from(startDate)
+                           .to(maturityDate)
+                           .withTenor(index->tenor())
+                           .withCalendar(index->fixingCalendar())
+                           .withConvention(index->businessDayConvention())
+                           .backwards()
+                           .endOfMonth(index->endOfMonth());
+            auto floatCpn = ext::make_shared<MultipleResetsCoupon>(
+                paymentDate, nominal, schedule, index->fixingDays(), index);
+            floatCpn->setPricer(ext::make_shared<CompoundingMultipleResetsPricer>());
             return floatCpn;
         }
+
     }
 
     ZeroCouponSwap::ZeroCouponSwap(Type type,

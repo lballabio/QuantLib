@@ -185,11 +185,6 @@ namespace QuantLib {
         return *this;
     }
 
-    DigitalIborLeg& DigitalIborLeg::withReplication() {
-        replication_ = ext::make_shared<DigitalReplication>();
-        return *this;
-    }
-
     DigitalIborLeg& DigitalIborLeg::withNakedOption(bool nakedOption) {
         nakedOption_ = nakedOption;
         return *this;

@@ -76,7 +76,7 @@ namespace QuantLib {
 
         Date lastQuoteDate = index_->lastQuoteDate();
         if (lastQuoteDate >= evaluationDate - 1) {
-            quoteValue = index_->price(evaluationDate);
+            quoteValue = index_->fixing(evaluationDate);
         } else {
             quoteValue = index_->forwardPrice(evaluationDate);
             std::ostringstream message;

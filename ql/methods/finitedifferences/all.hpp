@@ -3,19 +3,16 @@
 
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/methods/finitedifferences/bsmoperator.hpp>
-#include <ql/methods/finitedifferences/bsmtermoperator.hpp>
 #include <ql/methods/finitedifferences/cranknicolson.hpp>
 #include <ql/methods/finitedifferences/dminus.hpp>
 #include <ql/methods/finitedifferences/dplus.hpp>
 #include <ql/methods/finitedifferences/dplusdminus.hpp>
 #include <ql/methods/finitedifferences/dzero.hpp>
 #include <ql/methods/finitedifferences/expliciteuler.hpp>
-#include <ql/methods/finitedifferences/fdtypedefs.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/methods/finitedifferences/impliciteuler.hpp>
 #include <ql/methods/finitedifferences/mixedscheme.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
-#include <ql/methods/finitedifferences/parallelevolver.hpp>
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/methods/finitedifferences/pdebsm.hpp>
 #include <ql/methods/finitedifferences/stepcondition.hpp>

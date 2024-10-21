@@ -30,10 +30,15 @@
 
 namespace QuantLib {
 
-    class PdeBSM : public PdeSecondOrderParabolic {
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.37.
+    */
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] PdeBSM : public PdeSecondOrderParabolic {
       public:
-        typedef ext::shared_ptr<GeneralizedBlackScholesProcess>
-                                                                argument_type;
+        typedef ext::shared_ptr<GeneralizedBlackScholesProcess> argument_type;
         typedef LogGrid grid_type;
         PdeBSM(argument_type process) : process_(std::move(process)){};
         Real diffusion(Time t, Real x) const override { return process_->diffusion(t, x); }
@@ -47,6 +52,8 @@ namespace QuantLib {
     private:
         const argument_type process_;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
