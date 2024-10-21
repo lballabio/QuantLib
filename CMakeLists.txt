@@ -153,7 +153,12 @@ if (NOT DEFINED QL_BOOST_VERSION)
     if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
         set(QL_BOOST_VERSION 1.75.0)
     else()
-        set(QL_BOOST_VERSION 1.58.0)
+        if (POLICY CMP0167)
+            # Boost 1.70.0 or greater required for finding config-based boost package
+            set(QL_BOOST_VERSION 1.70.0)
+        else()
+            set(QL_BOOST_VERSION 1.58.0)
+        endif()
     endif()
 endif()
 
@@ -161,7 +166,11 @@ if (CMAKE_CXX_COMPILER STREQUAL "icpx")
     find_package(IntelDPCPP REQUIRED)
 endif()
 
-find_package(Boost ${QL_BOOST_VERSION} REQUIRED)
+if (POLICY CMP0167)
+    find_package(Boost ${QL_BOOST_VERSION} CONFIG REQUIRED)
+else()
+    find_package(Boost ${QL_BOOST_VERSION} REQUIRED)
+endif()
 
 # Do not warn about Boost versions higher than 1.58.0
 set(Boost_NO_WARN_NEW_VERSIONS ON)

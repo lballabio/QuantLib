@@ -90,6 +90,7 @@ jobs:
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
+        CMAKE_PREFIX_PATH: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
       shell: cmd
       run: |
         mkdir build
@@ -132,6 +133,7 @@ jobs:
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
+        CMAKE_PREFIX_PATH: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
       shell: cmd
       run: |
         mkdir build
@@ -174,6 +176,7 @@ jobs:
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
+        CMAKE_PREFIX_PATH: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
       shell: cmd
       run: |
         cmake --preset windows-ci-build-with-nonstandard-options -L
