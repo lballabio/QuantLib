@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Natvis Include="QuantLib.natvis" />
@@ -4413,6 +4413,39 @@
     <ClInclude Include="ql\indexes\ibor\swestr.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\matrixutilities\householder.hpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\solvers1d\halley.hpp">
+      <Filter>math\solvers1D</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmndimblackscholesop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\bjerksundstenslandspreadengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\choibasketengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\denglizhoubasketengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\fdndimblackscholesvanillaengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\operatorsplittingspreadengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\singlefactorbsmbasketengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\spreadblackscholesvanillaengine.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\basket\vectorbsmprocessextractor.hpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7160,6 +7193,36 @@
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\yearfractiontodate.cpp">
       <Filter>time\daycounters</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\matrixutilities\householder.cpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmndimblackscholesop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\bjerksundstenslandspreadengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\choibasketengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\denglizhoubasketengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\fdndimblackscholesvanillaengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\operatorsplittingspreadengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\singlefactorbsmbasketengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\spreadblackscholesvanillaengine.cpp">
+      <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\basket\vectorbsmprocessextractor.cpp">
+      <Filter>pricingengines\basket</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

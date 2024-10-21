@@ -2326,7 +2326,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
                     const bool isFDMEngine =
                         ext::dynamic_pointer_cast<FdndimBlackScholesVanillaEngine>(
                              pricingEngine) != nullptr;
-                    if (isFDMEngine and n > 4)
+                    if (isFDMEngine && n > 4)
                         continue;
 
                     for (Real K: b.strikes) {
