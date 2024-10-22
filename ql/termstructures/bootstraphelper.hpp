@@ -128,12 +128,15 @@ namespace QuantLib {
     template <class TS>
     class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {
       public:
-        explicit RelativeDateBootstrapHelper(const Handle<Quote>& quote);
-        explicit RelativeDateBootstrapHelper(Real quote);
+        explicit RelativeDateBootstrapHelper(const Handle<Quote>& quote,
+                                             bool updateDates = true);
+        explicit RelativeDateBootstrapHelper(Real quote,
+                                             bool updateDates = true);
         //! \name Observer interface
         //@{
         void update() override {
-            if (evaluationDate_ != Settings::instance().evaluationDate()) {
+            if (evaluationDate_ != Date() &&
+                evaluationDate_ != Settings::instance().evaluationDate()) {
                 evaluationDate_ = Settings::instance().evaluationDate();
                 initializeDates();
             }
@@ -212,17 +215,22 @@ namespace QuantLib {
 
     template <class TS>
     RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
-                                                    const Handle<Quote>& quote)
+        const Handle<Quote>& quote, bool updateDates)
     : BootstrapHelper<TS>(quote) {
-        this->registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
+        if (updateDates) {
+            this->registerWith(Settings::instance().evaluationDate());
+            evaluationDate_ = Settings::instance().evaluationDate();
+        }
     }
 
     template <class TS>
-    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(Real quote)
+    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
+        Real quote, bool updateDates)
     : BootstrapHelper<TS>(quote) {
-        this->registerWith(Settings::instance().evaluationDate());
-        evaluationDate_ = Settings::instance().evaluationDate();
+        if (updateDates) {
+            this->registerWith(Settings::instance().evaluationDate());
+            evaluationDate_ = Settings::instance().evaluationDate();
+        }
     }
 
     inline std::ostream& operator<<(std::ostream& out,

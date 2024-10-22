@@ -709,8 +709,8 @@ BOOST_AUTO_TEST_CASE(test131BootstrapRegression) {
     auto estr = ext::make_shared<Estr>();
 
     std::vector<ext::shared_ptr<RateHelper>> helpers;
-    helpers.push_back(ext::make_shared<OISRateHelper>(2, 1 * Weeks, Handle<Quote>(ext::make_shared<SimpleQuote>(0.070/100)), estr));
-    helpers.push_back(ext::make_shared<DatedOISRateHelper>(Date(16, January, 2013), Date(13, February, 2013), Handle<Quote>(ext::make_shared<SimpleQuote>(0.046/100)), estr));
+    helpers.push_back(ext::make_shared<OISRateHelper>(2, 1 * Weeks, makeQuoteHandle(0.070/100), estr));
+    helpers.push_back(ext::make_shared<OISRateHelper>(Date(16, January, 2013), Date(13, February, 2013), makeQuoteHandle(0.046/100), estr));
 
     auto curve = PiecewiseYieldCurve<ForwardRate,BackwardFlat>(0, TARGET(), helpers, Actual365Fixed());
     BOOST_CHECK_NO_THROW(curve.nodes());
