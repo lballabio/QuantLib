@@ -89,8 +89,7 @@ jobs:
         vsversion: 2022
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost
-        CMAKE_PREFIX_PATH: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
+        BOOST_DIR: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
       shell: cmd
       run: |
         mkdir build
@@ -132,8 +131,7 @@ jobs:
         vsversion: 2022
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost
-        CMAKE_PREFIX_PATH: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
+        BOOST_DIR: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
       shell: cmd
       run: |
         mkdir build
@@ -175,8 +173,7 @@ jobs:
         vsversion: 2022
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost
-        CMAKE_PREFIX_PATH: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
+        BOOST_DIR: C:\local\boost\lib64-msvc-14.3\cmake\Boost-1.85.0
       shell: cmd
       run: |
         cmake --preset windows-ci-build-with-nonstandard-options -L
