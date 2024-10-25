@@ -132,7 +132,7 @@ namespace QuantLib {
     /*! \deprecated Use OISRateHelper instead.
                     Deprecated in version 1.37.
     */
-    class QL_DEPRECATED DatedOISRateHelper : public OISRateHelper {
+    class [[deprecated("Use OISRateHelper instead")]] DatedOISRateHelper : public OISRateHelper {
       public:
         DatedOISRateHelper(const Date& startDate,
                            const Date& endDate,
@@ -158,7 +158,7 @@ namespace QuantLib {
         /*! \deprecated Use the overload without forward start.
                         Deprecated in version 1.35.
         */
-        QL_DEPRECATED
+        [[deprecated("Use the overload without forward start")]]
         DatedOISRateHelper(const Date& startDate,
                            const Date& endDate,
                            const Handle<Quote>& fixedRate,
