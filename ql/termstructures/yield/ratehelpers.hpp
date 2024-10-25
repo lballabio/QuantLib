@@ -313,6 +313,23 @@ namespace QuantLib {
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
                        const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+        SwapRateHelper(const Handle<Quote>& rate,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Calendar calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       DayCounter fixedDayCount,
+                       // floating leg
+                       const ext::shared_ptr<IborIndex>& iborIndex,
+                       Handle<Quote> spread = {},
+                       // exogenous discounting curve
+                       Handle<YieldTermStructure> discountingCurve = {},
+                       Pillar::Choice pillar = Pillar::LastRelevantDate,
+                       Date customPillarDate = Date(),
+                       bool endOfMonth = false,
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -330,9 +347,12 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
+        void initialize(const ext::shared_ptr<IborIndex>& iborIndex,
+                        Date customPillarDate);
         void initializeDates() override;
         Natural settlementDays_;
         Period tenor_;
+        Date startDate_, endDate_;
         Pillar::Choice pillarChoice_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
