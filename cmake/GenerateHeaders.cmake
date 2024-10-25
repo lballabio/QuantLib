@@ -47,6 +47,7 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "bsmtermoperator.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fdtypedefs.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "parallelevolver.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "fixedratebondforward.hpp")
 
     file(GLOB children_dir RELATIVE ${source_dir} "${source_dir}/*")
     list(FILTER children_dir EXCLUDE REGEX "CMakeFiles")
