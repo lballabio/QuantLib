@@ -192,7 +192,8 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withTerminationDate(const Date& terminationDate) {
         terminationDate_ = terminationDate;
-        swapTenor_ = Period();
+        if (terminationDate != Date())
+            swapTenor_ = Period();
         return *this;
     }
 
