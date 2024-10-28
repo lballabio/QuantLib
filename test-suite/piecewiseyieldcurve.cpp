@@ -1563,6 +1563,69 @@ BOOST_AUTO_TEST_CASE(testSwapHelpersWithOnceFrequency) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testDatedSwapHelpers) {
+    BOOST_TEST_MESSAGE("Testing dated swap rate helpers...");
+
+    Date today { 28, October, 2024 };
+    Settings::instance().evaluationDate() = today;
+
+    std::tuple<Date, Date, Rate> swapData[] = {
+        {{1, November, 2024}, {1, November, 2025}, 4.54 },
+        {{15, October, 2024}, {15, October, 2026}, 4.63 },
+        {{28, October, 2024}, {1, November, 2029}, 4.99 },
+        {{4, November, 2024}, {4, November, 2034}, 5.47 },
+        {{11, October, 2024}, {11, October, 2044}, 5.89 }
+    };
+
+    auto euribor6m = ext::make_shared<Euribor6M>();
+    euribor6m->addFixing({9, October, 2024}, 0.0447);
+    euribor6m->addFixing({11, October, 2024}, 0.045);
+    euribor6m->addFixing({24, October, 2024}, 0.0442);
+
+    auto calendar = TARGET();
+    auto fixedLegFrequency = Annual;
+    auto fixedLegConvention = Unadjusted;
+    auto fixedLegDayCounter = Thirty360(Thirty360::BondBasis);
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto [start, end, q] : swapData) {
+        Handle<Quote> r(ext::make_shared<SimpleQuote>(q/100));
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+                                   r, start, end,
+                                   calendar,
+                                   fixedLegFrequency, fixedLegConvention,
+                                   fixedLegDayCounter, euribor6m));
+    }
+
+    auto curve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
+                                       today, helpers, Actual365Fixed());
+    Handle<YieldTermStructure> h(curve);
+    euribor6m = ext::make_shared<Euribor6M>(h);
+
+    for (auto [start, end, q] : swapData) {
+        VanillaSwap swap = MakeVanillaSwap(Period(), euribor6m, 0.0)
+            .withEffectiveDate(start)
+            .withTerminationDate(end)
+            .withFixedLegDayCount(fixedLegDayCounter)
+            .withFixedLegTenor(Period(fixedLegFrequency))
+            .withFixedLegConvention(fixedLegConvention)
+            .withFixedLegTerminationDateConvention(fixedLegConvention);
+
+        Rate expectedRate = q/100,
+            estimatedRate = swap.fairRate();
+        Spread error = std::fabs(expectedRate-estimatedRate);
+        Real tolerance = 1e-9;
+        if (error > tolerance) {
+            BOOST_ERROR("swap from " << start << " to " << end << ":\n"
+                        << std::setprecision(8)
+                        << "\n    estimated rate: " << io::rate(estimatedRate)
+                        << "\n    expected rate:  " << io::rate(expectedRate)
+                        << "\n    error:          " << io::rate(error)
+                        << "\n    tolerance:      " << io::rate(tolerance));
+        }
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
