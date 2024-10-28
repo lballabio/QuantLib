@@ -77,7 +77,16 @@ namespace QuantLib {
         const Array fwd = s * dq/dr0;
 
         const ext::shared_ptr<AverageBasketPayoff> avgPayoff =
-            ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff);
+            (ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff) != nullptr)
+            ? ext::dynamic_pointer_cast<AverageBasketPayoff>(arguments_.payoff)
+            : (ext::dynamic_pointer_cast<SpreadBasketPayoff>(arguments_.payoff) != nullptr)
+                ? ext::make_shared<AverageBasketPayoff>(
+                    ext::dynamic_pointer_cast<SpreadBasketPayoff>(
+                        arguments_.payoff)->basePayoff(),
+                    Array({1.0, -1.0})
+                  )
+                : ext::shared_ptr<AverageBasketPayoff>();
+
         QL_REQUIRE(avgPayoff, "average basket payoff expected");
 
         const Array weights = avgPayoff->weights();
