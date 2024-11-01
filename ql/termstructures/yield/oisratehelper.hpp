@@ -82,7 +82,7 @@ namespace QuantLib {
                       Natural lockoutDays = 0,
                       bool applyObservationShift = false,
                       ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
-                      DateGeneration::Rule rule = DateGeneration::Backward));
+                      DateGeneration::Rule rule = DateGeneration::Backward);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
