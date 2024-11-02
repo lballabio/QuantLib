@@ -276,7 +276,7 @@ namespace QuantLib {
         for (Size i=0; i<4; i++)
             for (Size j=0; j<nOptionTenors_; j++)
                 for (Size k=0; k<nSwapTenors_; k++)
-                    privateObserver_->registerWith(parametersGuessQuotes_[j+k*nOptionTenors_][i]);
+                    privateObserver_->registerWith(parametersGuessQuotes_[j*nSwapTenors_+k][i]);
     }
 
     template<class Model> void XabrSwaptionVolatilityCube<Model>::setParameterGuess() const {
@@ -290,7 +290,7 @@ namespace QuantLib {
             for (Size j=0; j<nOptionTenors_ ; j++)
                 for (Size k=0; k<nSwapTenors_; k++) {
                     parametersGuess_.setElement(i, j, k,
-                        parametersGuessQuotes_[j+k*nOptionTenors_][i]->value());
+                        parametersGuessQuotes_[j*nSwapTenors_+k][i]->value());
                 }
         parametersGuess_.updateInterpolators();
 
