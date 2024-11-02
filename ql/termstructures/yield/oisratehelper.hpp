@@ -58,7 +58,8 @@ namespace QuantLib {
                       Natural lookbackDays = Null<Natural>(),
                       Natural lockoutDays = 0,
                       bool applyObservationShift = false,
-                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
+                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
+                      DateGeneration::Rule rule = DateGeneration::Backward);
         OISRateHelper(const Date& startDate,
                       const Date& endDate,
                       const Handle<Quote>& fixedRate,
@@ -80,7 +81,8 @@ namespace QuantLib {
                       Natural lookbackDays = Null<Natural>(),
                       Natural lockoutDays = 0,
                       bool applyObservationShift = false,
-                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
+                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
+                      DateGeneration::Rule rule = DateGeneration::Backward);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -127,6 +129,8 @@ namespace QuantLib {
         Natural lockoutDays_;
         bool applyObservationShift_;
         ext::shared_ptr<FloatingRateCouponPricer> pricer_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+
     };
 
     /*! \deprecated Use OISRateHelper instead.
