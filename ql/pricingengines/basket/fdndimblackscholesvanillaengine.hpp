@@ -25,14 +25,14 @@
 #define quantlib_fd_ndim_black_scholes_vanilla_engine_hpp
 
 #include <ql/math/matrix.hpp>
-#include <ql/pricingengine.hpp>
 #include <ql/instruments/basketoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
 
-    //! n-dimensional dimensional finite-differences Black Scholes vanilla option engine
+    class GeneralizedBlackScholesProcess;
+
+    //! n-dimensional finite-differences Black Scholes vanilla option engine
 
     /*! \ingroup basketengines
 
@@ -44,16 +44,24 @@ namespace QuantLib {
       public:
         FdndimBlackScholesVanillaEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
-            Matrix correlation,
+            Matrix rho,
             std::vector<Size> xGrids,
             Size tGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+
+
+        // Auto-scaling of grids, larges eigenvalue gets xGrid size.
+        FdndimBlackScholesVanillaEngine(
+            std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
+            Matrix rho,
+            Size xGrid, Size tGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         void calculate() const override;
 
       private:
         const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes_;
-        const Matrix correlation_;
+        const Matrix rho_;
         const std::vector<Size> xGrids_;
         const Size tGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;

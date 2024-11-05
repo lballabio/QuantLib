@@ -36,12 +36,13 @@
 #include <ql/pricingengines/basket/singlefactorbsmbasketengine.hpp>
 #include <ql/pricingengines/basket/denglizhoubasketengine.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/yearfractiontodate.hpp>
@@ -1672,7 +1673,7 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
 
     option.setPricingEngine(
         ext::make_shared<FdndimBlackScholesVanillaEngine>(
-            processes, rho, std::vector<Size>(4, 15), 10
+            processes, rho, std::vector<Size>(4, 50), 10
         )
     );
     const Real expected = option.NPV();
@@ -2373,6 +2374,136 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
         }
     }
 }
+
+
+BOOST_AUTO_TEST_CASE(testFdmAmericanBasketOptions) {
+    BOOST_TEST_MESSAGE("Testing American Basket and Spread Options using FDM...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(28, October, 2024);
+    const Date maturity = today + Period(9, Months);
+
+    const Handle<YieldTermStructure> rTS
+        = Handle<YieldTermStructure>(flatRate(today, 0.1, dc));
+
+    const auto processGen = [&](Real spot, Rate q, Volatility vol) {
+        return ext::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
+            Handle<YieldTermStructure>(flatRate(today, q, dc)),
+            rTS,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
+        );
+    };
+
+    const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> >
+        processes({
+            processGen(100, 0.02, 0.4),
+            processGen(25,  0.035, 0.5),
+            processGen(90,  0.08 , 0.25)
+        }
+    );
+
+    const Matrix rho = {
+        { 1.0,  0.2,  0.6 },
+        { 0.2,  1.0, -0.3 },
+        { 0.6, -0.3,  1.0 }
+    };
+
+    BasketOption option(
+        ext::make_shared<AverageBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, -30),
+            Array({1, -2, -1})
+        ),
+        ext::make_shared<AmericanExercise>(today, maturity)
+    );
+
+    option.setPricingEngine(
+        ext::make_shared<ChoiBasketEngine>(
+            processes, rho, 40
+        )
+    );
+    const Real expected = 15.1858;
+
+    option.setPricingEngine(
+        ext::make_shared<FdndimBlackScholesVanillaEngine>(
+            processes, rho, std::vector<Size>(processes.size(), 20), 15
+        )
+    );
+
+    const Real calculated = option.NPV();
+    const Real diff = std::abs(calculated - expected);
+    const Real tol = 0.01;
+    if (diff > tol)
+        BOOST_FAIL("failed to reproduce american spread-basket option price"
+               << std::fixed << std::setprecision(8)
+               << "\n    calculated:  " << calculated
+               << "\n    expected:    " << expected
+               << "\n    diff:        " << diff
+               << "\n    tolerance:   " << tol);
+}
+
+BOOST_AUTO_TEST_CASE(testPrecisionAmericanBasketOptions) {
+    BOOST_TEST_MESSAGE("Testing high precision American Options using multi-dim FDM...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(28, October, 2024);
+    const Date maturity = today + Period(18, Months);
+
+    const ext::shared_ptr<GeneralizedBlackScholesProcess> p =
+        ext::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+            Handle<YieldTermStructure>(
+                ext::make_shared<ZeroCurve>(
+                    std::vector<Date>({today, today + Period(1, Months), today + Period(2, Years)}),
+                    std::vector<Real>({0.05, 0.075, 0.02}),
+                    dc, Calendar()
+                )
+            ),
+            Handle<YieldTermStructure>(
+                ext::make_shared<ZeroCurve>(
+                    std::vector<Date>({today, today + Period(3, Months), today + Period(2, Years)}),
+                    std::vector<Real>({0.15, 0.1, 0.2}),
+                    dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))
+        );
+
+    const ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<AmericanExercise>(today, maturity);
+
+    const ext::shared_ptr<PlainVanillaPayoff> payoff =
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, 120);
+
+    VanillaOption vanillaOption(payoff, exercise);
+    vanillaOption.setPricingEngine(
+        ext::make_shared<FdBlackScholesVanillaEngine>(p, 200, 800)
+    );
+
+    BasketOption basketOption(
+        ext::make_shared<AverageBasketPayoff>(payoff, Array({1})),
+        exercise
+    );
+    basketOption.setPricingEngine(
+        ext::make_shared<FdndimBlackScholesVanillaEngine>(
+            std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess>>({p}),
+            Matrix({{1}}), 200, 800
+        )
+    );
+
+    const Real expected = vanillaOption.NPV();
+    const Real calculated = basketOption.NPV();
+    const Real diff = std::abs(expected - calculated);
+    const Real tol = 0.02;
+    if (diff > tol)
+        BOOST_FAIL("failed to reproduce american vanilla option "
+                "price with multi-dim FDM engine"
+               << std::fixed << std::setprecision(8)
+               << "\n    calculated:  " << calculated
+               << "\n    expected:    " << expected
+               << "\n    diff:        " << diff
+               << "\n    tolerance:   " << tol);
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -71,7 +71,7 @@ namespace QuantLib {
         const detail::VectorBsmProcessExtractor pExtractor(processes_);
         const Array s = pExtractor.getSpot();
         const Array dq = pExtractor.getDividendYieldDf(maturityDate);
-        const Array stdDev = pExtractor.getBlackStdDev(maturityDate);
+        const Array stdDev = Sqrt(pExtractor.getBlackVariance(maturityDate));
         const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
 
         const Array fwd = s * dq/dr0;
@@ -87,7 +87,7 @@ namespace QuantLib {
                   )
                 : ext::shared_ptr<AverageBasketPayoff>();
 
-        QL_REQUIRE(avgPayoff, "average basket payoff expected");
+        QL_REQUIRE(avgPayoff, "average or spread basket payoff expected");
 
         const Array weights = avgPayoff->weights();
         QL_REQUIRE(n_ == weights.size() && n_ > 1,

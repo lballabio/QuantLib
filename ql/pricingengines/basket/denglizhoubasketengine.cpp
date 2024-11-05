@@ -60,7 +60,7 @@ namespace QuantLib {
                   )
                 : ext::shared_ptr<AverageBasketPayoff>();
 
-        QL_REQUIRE(avgPayoff, "average basket payoff expected");
+        QL_REQUIRE(avgPayoff, "average or spread basket payoff expected");
 
         // sort assets by their weight
         const Array weights = avgPayoff->weights();

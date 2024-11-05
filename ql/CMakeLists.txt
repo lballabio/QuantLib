@@ -463,6 +463,7 @@ set(QL_SOURCES
     methods/finitedifferences/operators/fdmornsteinuhlenbeckop.cpp
     methods/finitedifferences/operators/fdmsabrop.cpp
     methods/finitedifferences/operators/fdmsquarerootfwdop.cpp
+    methods/finitedifferences/operators/fdmwienerop.cpp
     methods/finitedifferences/operators/firstderivativeop.cpp
     methods/finitedifferences/operators/ninepointlinearop.cpp
     methods/finitedifferences/operators/nthorderderivativeop.cpp
@@ -1608,6 +1609,7 @@ set(QL_HEADERS
     methods/finitedifferences/operators/fdmornsteinuhlenbeckop.hpp
     methods/finitedifferences/operators/fdmsabrop.hpp
     methods/finitedifferences/operators/fdmsquarerootfwdop.hpp
+    methods/finitedifferences/operators/fdmwienerop.cpp    
     methods/finitedifferences/operators/firstderivativeop.hpp
     methods/finitedifferences/operators/modtriplebandlinearop.hpp
     methods/finitedifferences/operators/ninepointlinearop.hpp
