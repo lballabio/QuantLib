@@ -50,7 +50,7 @@ cpp_files = \
     fdmornsteinuhlenbeckop.cpp \
     fdmsabrop.cpp \
     fdmsquarerootfwdop.cpp \
-    fdmwienerop.hpp \
+    fdmwienerop.cpp \
     firstderivativeop.cpp \
     ninepointlinearop.cpp \
     nthorderderivativeop.cpp \
