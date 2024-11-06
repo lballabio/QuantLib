@@ -447,7 +447,6 @@ set(QL_SOURCES
     methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.cpp
     methods/finitedifferences/meshers/uniformgridmesher.cpp
     methods/finitedifferences/operators/fdm2dblackscholesop.cpp
-    methods/finitedifferences/operators/fdmndimblackscholesop.cpp
     methods/finitedifferences/operators/fdmbatesop.cpp
     methods/finitedifferences/operators/fdmblackscholesfwdop.cpp
     methods/finitedifferences/operators/fdmblackscholesop.cpp
@@ -1590,7 +1589,6 @@ set(QL_HEADERS
     methods/finitedifferences/meshers/uniformgridmesher.hpp
     methods/finitedifferences/mixedscheme.hpp
     methods/finitedifferences/operators/fdm2dblackscholesop.hpp
-    methods/finitedifferences/operators/fdmndimblackscholesop.hpp
     methods/finitedifferences/operators/fdmbatesop.hpp
     methods/finitedifferences/operators/fdmblackscholesfwdop.hpp
     methods/finitedifferences/operators/fdmblackscholesop.hpp

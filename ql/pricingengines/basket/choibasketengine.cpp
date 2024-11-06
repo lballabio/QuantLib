@@ -34,7 +34,6 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 
 #include <boost/math/special_functions/sign.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

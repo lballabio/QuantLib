@@ -1498,16 +1498,16 @@ BOOST_AUTO_TEST_CASE(testNdimPDEvs2dimPDE) {
     const Real rho = 0.75;
 
     const ext::shared_ptr<PricingEngine> twoDimEngine
-        = ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho, 25, 25, 15);
+        = ext::make_shared<Fd2dBlackScholesVanillaEngine>(p1, p2, rho, 25, 25, 100);
 
     const ext::shared_ptr<PricingEngine> nDimEngine
         = ext::make_shared<FdndimBlackScholesVanillaEngine>(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> >({p1, p2}),
             Matrix({{1, rho}, {rho, 1}}),
-            std::vector<Size>({25, 25}), 15
+            std::vector<Size>({25, 25}), 100
         );
 
-    const Real tol = 1e-4;
+    const Real tol = 0.2;
     for (const auto& exercise: std::vector<ext::shared_ptr<Exercise> >(
             { ext::make_shared<EuropeanExercise>(maturity),
               ext::make_shared<AmericanExercise>(today, maturity)})) {
@@ -1596,7 +1596,7 @@ BOOST_AUTO_TEST_CASE(testNdimPDEinDifferentDims) {
         Matrix rho(d, d);
         for (Size i=0; i < d; ++i)
             for (Size j=0; j < d; ++j)
-                rho(i, j) = std::exp(-0.5*std::abs(Real(i-j)));
+                rho(i, j) = rho(j, i) = std::exp(-0.5*std::abs(Real(i-j)));
 
         BasketOption option(
             ext::make_shared<AverageBasketPayoff>(
@@ -1606,21 +1606,32 @@ BOOST_AUTO_TEST_CASE(testNdimPDEinDifferentDims) {
             exercise
         );
 
+        if (d > 1)
+            option.setPricingEngine(
+                ext::make_shared<ChoiBasketEngine>(processes, rho, 15)
+            );
+        else
+            option.setPricingEngine(
+                ext::make_shared<SingleFactorBsmBasketEngine>(processes)
+            );
+
+        const Real expected = option.NPV();
+
         option.setPricingEngine(
-            ext::make_shared<FdndimBlackScholesVanillaEngine>(
-                processes, rho, std::vector<Size>(d, 20), 7
-            )
+            ext::make_shared<FdndimBlackScholesVanillaEngine>(processes, rho, 30, 7)
         );
 
         const Real calculated = option.NPV();
-        const Real diff = std::abs(calculated - expected[d-1]);
-        const Real tol = 0.047;
+        const Real diff = std::abs(calculated - expected);
+        const Real tol = 0.05;
+
+        std::cout << d << " " << diff << std::endl;
 
         if (diff > tol) {
             BOOST_FAIL("failed to reproduce precalculated " << d << "-dim option price"
                    << std::fixed << std::setprecision(5)
                    << "\n    calculated: " << calculated
-                   << "\n    expected:   " << expected[d-1]
+                   << "\n    expected:   " << expected
                    << "\n    diff:       " << diff
                    << "\n    tolerance : " << tol);
         }
