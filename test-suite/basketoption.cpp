@@ -1625,8 +1625,6 @@ BOOST_AUTO_TEST_CASE(testNdimPDEinDifferentDims) {
         const Real diff = std::abs(calculated - expected);
         const Real tol = 0.05;
 
-        std::cout << d << " " << diff << std::endl;
-
         if (diff > tol) {
             BOOST_FAIL("failed to reproduce precalculated " << d << "-dim option price"
                    << std::fixed << std::setprecision(5)
