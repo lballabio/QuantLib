@@ -20,10 +20,10 @@ this_include_HEADERS = \
     fdmlinearopiterator.hpp \
     fdmlinearoplayout.hpp \
     fdmlocalvolfwdop.hpp \
-    fdmndimblackscholesop.hpp \
     fdmornsteinuhlenbeckop.hpp \
     fdmsabrop.hpp \
     fdmsquarerootfwdop.hpp \
+    fdmwienerop.hpp \
     firstderivativeop.hpp \
     modtriplebandlinearop.hpp \
     ninepointlinearop.hpp \
@@ -47,10 +47,10 @@ cpp_files = \
     fdmhullwhiteop.cpp \
     fdmlinearoplayout.cpp \
     fdmlocalvolfwdop.cpp \
-    fdmndimblackscholesop.cpp \
     fdmornsteinuhlenbeckop.cpp \
     fdmsabrop.cpp \
     fdmsquarerootfwdop.cpp \
+    fdmwienerop.hpp \
     firstderivativeop.cpp \
     ninepointlinearop.cpp \
     nthorderderivativeop.cpp \

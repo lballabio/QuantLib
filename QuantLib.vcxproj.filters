@@ -4419,7 +4419,7 @@
     <ClInclude Include="ql\math\solvers1d\halley.hpp">
       <Filter>math\solvers1D</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\operators\fdmndimblackscholesop.hpp">
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmwienerop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\basket\bjerksundstenslandspreadengine.hpp">
@@ -7197,7 +7197,7 @@
     <ClCompile Include="ql\math\matrixutilities\householder.cpp">
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\operators\fdmndimblackscholesop.cpp">
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmwienerop.cpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\bjerksundstenslandspreadengine.cpp">

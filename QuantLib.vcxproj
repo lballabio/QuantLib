@@ -1200,7 +1200,7 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearopiterator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\operators\fdmndimblackscholesop.hpp" />
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmwienerop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmsabrop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmsquarerootfwdop.hpp" />
@@ -2356,7 +2356,7 @@
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmhullwhiteop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlinearoplayout.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.cpp" />
-    <ClCompile Include="ql\methods\finitedifferences\operators\fdmndimblackscholesop.cpp" />
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmwienerop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmornsteinuhlenbeckop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmsabrop.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmsquarerootfwdop.cpp" />
