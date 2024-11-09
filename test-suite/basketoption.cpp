@@ -1682,7 +1682,7 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
 
     option.setPricingEngine(
         ext::make_shared<FdndimBlackScholesVanillaEngine>(
-            processes, rho, std::vector<Size>(4, 50), 10
+            processes, rho, 20, 10
         )
     );
     const Real expected = option.NPV();
