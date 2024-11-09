@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class HouseholderTransformation  {
       public:
-    	HouseholderTransformation(const Array v);
+    	explicit HouseholderTransformation(const Array v);
 
         Matrix getMatrix() const;
     	Array operator()(const Array& x) const;
@@ -46,7 +46,7 @@ namespace QuantLib {
 
     class HouseholderReflection {
       public:
-    	HouseholderReflection(const Array e);
+        explicit HouseholderReflection(const Array e);
 
         Array operator()(const Array& a) const;
     	Array reflectionVector(const Array& a) const;

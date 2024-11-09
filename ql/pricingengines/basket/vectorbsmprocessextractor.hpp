@@ -31,7 +31,7 @@ namespace QuantLib {
     namespace detail {
         class VectorBsmProcessExtractor {
           public:
-            VectorBsmProcessExtractor(
+            explicit VectorBsmProcessExtractor(
                 std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p);
 
             Array getSpot() const;

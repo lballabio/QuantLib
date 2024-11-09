@@ -63,7 +63,7 @@ namespace QuantLib {
 
     class SingleFactorBsmBasketEngine : public BasketOption::engine {
       public:
-        SingleFactorBsmBasketEngine(
+        explicit SingleFactorBsmBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p,
             Real xTol = 1e4*QL_EPSILON);
 
