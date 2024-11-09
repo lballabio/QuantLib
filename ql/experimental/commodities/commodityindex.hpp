@@ -34,7 +34,7 @@ namespace QuantLib {
     //! base class for commodity indexes
     class CommodityIndex : public Index {
       public:
-        CommodityIndex(const std::string& name,
+        CommodityIndex(std::string  name,
                        CommodityType commodityType,
                        Currency currency,
                        UnitOfMeasure unitOfMeasure,

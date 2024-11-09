@@ -18,46 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fixedratebondforward.hpp
-    \brief forward contract on a fixed-rate bond
-*/
-
 #ifndef quantlib_fixed_rate_bond_forward_hpp
 #define quantlib_fixed_rate_bond_forward_hpp
 
-#include <ql/instruments/bondforward.hpp>
-#include <ql/instruments/bonds/fixedratebond.hpp>
+/* Deprecated in version 1.37 */
 
-namespace QuantLib {
-
-    //! %Forward contract on a fixed-rate bond
-    /*! \deprecated Use BondForward instead. */
-    class QL_DEPRECATED FixedRateBondForward : public BondForward {
-      public:
-        FixedRateBondForward(
-            const Date& valueDate,
-            const Date& maturityDate,
-            Position::Type type,
-            Real strike,
-            Natural settlementDays,
-            const DayCounter& dayCounter,
-            const Calendar& calendar,
-            BusinessDayConvention businessDayConvention,
-            const ext::shared_ptr<FixedRateBond>& fixedRateBond,
-            const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
-            const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>())
-        : BondForward(valueDate,
-                      maturityDate,
-                      type,
-                      strike,
-                      settlementDays,
-                      dayCounter,
-                      calendar,
-                      businessDayConvention,
-                      fixedRateBond,
-                      discountCurve,
-                      incomeDiscountCurve) {}
-    };
-}
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 #endif

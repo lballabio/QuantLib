@@ -556,7 +556,11 @@ namespace QuantLib {
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
       useIndexedCoupons_(useIndexedCoupons) {
+        initialize(iborIndex, customPillarDate);
+    }
 
+    void SwapRateHelper::initialize(const ext::shared_ptr<IborIndex>& iborIndex,
+                                    Date customPillarDate) {
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -603,6 +607,31 @@ namespace QuantLib {
                      std::move(fixedDayCount), iborIndex, std::move(spread), fwdStart, std::move(discount), settlementDays,
                      pillarChoice, customPillarDate, endOfMonth, useIndexedCoupons) {}
 
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   const Date& startDate,
+                                   const Date& endDate,
+                                   Calendar calendar,
+                                   Frequency fixedFrequency,
+                                   BusinessDayConvention fixedConvention,
+                                   DayCounter fixedDayCount,
+                                   const ext::shared_ptr<IborIndex>& iborIndex,
+                                   Handle<Quote> spread,
+                                   Handle<YieldTermStructure> discount,
+                                   Pillar::Choice pillarChoice,
+                                   Date customPillarDate,
+                                   bool endOfMonth,
+                                   const ext::optional<bool>& useIndexedCoupons)
+    : RelativeDateRateHelper(rate, false), startDate_(startDate), endDate_(endDate),
+      pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
+      fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
+      fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
+      discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons) {
+        QL_REQUIRE(fixedFrequency != Once,
+            "fixedFrequency == Once is not supported when passing explicit "
+            "startDate and endDate");
+        initialize(iborIndex, customPillarDate);
+    }
+
     void SwapRateHelper::initializeDates() {
 
         // 1. do not pass the spread here, as it might be a Quote
@@ -610,7 +639,9 @@ namespace QuantLib {
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
         swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
-            .withSettlementDays(settlementDays_)
+            .withSettlementDays(settlementDays_)  // resets effectiveDate
+            .withEffectiveDate(startDate_)
+            .withTerminationDate(endDate_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(fixedFrequency_ == Once ? tenor_ : Period(fixedFrequency_))
