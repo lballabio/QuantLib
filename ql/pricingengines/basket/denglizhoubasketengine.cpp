@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "denglizhoubasketengine.hpp"
 
 #include <ql/exercise.hpp>
 #include <ql/math/functional.hpp>
@@ -25,6 +24,7 @@
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
+#include <ql/pricingengines/basket/denglizhoubasketengine.hpp>
 
 namespace QuantLib {
 
@@ -62,7 +62,6 @@ namespace QuantLib {
 
         QL_REQUIRE(avgPayoff, "average or spread basket payoff expected");
 
-        // sort assets by their weight
         const Array weights = avgPayoff->weights();
         QL_REQUIRE(n_ == weights.size() && n_ > 1,
              "wrong number of weights arguments in payoff");

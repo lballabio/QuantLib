@@ -18,7 +18,7 @@
 */
 
 
-/*! \file fdmndimwienerop.cpp
+/*! \file fdmwienerop.cpp
 */
 
 #include <ql/termstructures/yieldtermstructure.hpp>

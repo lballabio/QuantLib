@@ -913,13 +913,13 @@ BOOST_AUTO_TEST_CASE(testCholeskySolverForIncomplete) {
 }
 
 namespace {
-	void QL_CHECK_CLOSE_ARRAY_TOL(
-		const Array& actual, const Array& expected, Real tol) {
-		BOOST_REQUIRE(actual.size() == expected.size());
-		for (auto i = 0u; i < actual.size(); i++) {
-			BOOST_CHECK_SMALL(actual[i] - expected[i], tol);
-		}
-	}
+    void QL_CHECK_CLOSE_ARRAY_TOL(
+        const Array& actual, const Array& expected, Real tol) {
+        BOOST_REQUIRE(actual.size() == expected.size());
+        for (auto i = 0u; i < actual.size(); i++) {
+            BOOST_CHECK_SMALL(actual[i] - expected[i], tol);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testHouseholderTransformation) {
@@ -928,23 +928,23 @@ BOOST_AUTO_TEST_CASE(testHouseholderTransformation) {
     MersenneTwisterUniformRng rng(1234);
 
     const auto I = [](Size i) -> Matrix {
-    	Matrix id(i, i, 0.0);
-    	for (Size j=0; j < i; ++j)
-    		id[j][j] = 1.0;
+        Matrix id(i, i, 0.0);
+        for (Size j=0; j < i; ++j)
+            id[j][j] = 1.0;
 
-    	return id;
+        return id;
     };
 
     for (Size i=1; i < 10; ++i) {
-    	Array v(i), x(i);
-    	for (Size j=0; j < i; ++j) {
-    		v[j] = rng.nextReal()-0.5;
-    		x[j] = rng.nextReal()-0.5;
-    	}
+        Array v(i), x(i);
+        for (Size j=0; j < i; ++j) {
+            v[j] = rng.nextReal()-0.5;
+            x[j] = rng.nextReal()-0.5;
+        }
 
-    	const Array expected = (I(i)- 2.0*outerProduct(v, v))*x;
-    	const Array calculated = HouseholderTransformation(v)(x);
-    	QL_CHECK_CLOSE_ARRAY_TOL(calculated, expected, 1e4*QL_EPSILON);
+        const Array expected = (I(i)- 2.0*outerProduct(v, v))*x;
+        const Array calculated = HouseholderTransformation(v)(x);
+        QL_CHECK_CLOSE_ARRAY_TOL(calculated, expected, 1e4*QL_EPSILON);
     }
 }
 
@@ -954,24 +954,24 @@ BOOST_AUTO_TEST_CASE(testHouseholderReflection) {
     const Real tol=1e4*QL_EPSILON;
 
     const auto e = [](Size n, Size m=0) -> Array {
-    	Array e(n, 0.0);
-    	e[m] = 1.0;
-    	return e;
+        Array e(n, 0.0);
+        e[m] = 1.0;
+        return e;
     };
 
     for (Size i=0; i < 5; ++i) {
-		QL_CHECK_CLOSE_ARRAY_TOL(
-			HouseholderReflection(e(5))(e(5, i)), e(5), tol);
-		QL_CHECK_CLOSE_ARRAY_TOL(
-			HouseholderReflection(e(5))(M_PI*e(5, i)), M_PI*e(5), tol);
-		QL_CHECK_CLOSE_ARRAY_TOL(
-			HouseholderReflection(e(5))(
-				e(5, i) + e(5)),
-				((i==0)? 2.0 : M_SQRT2)*e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(e(5, i)), e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(M_PI*e(5, i)), M_PI*e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(
+                e(5, i) + e(5)),
+                ((i==0)? 2.0 : M_SQRT2)*e(5), tol);
     }
 
     // limits
-	for (Real x=10; x > 1e-50; x*=0.1) {
+    for (Real x=10; x > 1e-50; x*=0.1) {
         QL_CHECK_CLOSE_ARRAY_TOL(
             HouseholderReflection(e(3))(
                 Array({10.0, x, 0})),
@@ -983,7 +983,7 @@ BOOST_AUTO_TEST_CASE(testHouseholderReflection) {
                 Array({10.0, x, 1e-3})),
                 std::sqrt(10.0*10.0+x*x+1e-3*1e-3)*e(3), tol
         );
-	}
+    }
 
     MersenneTwisterUniformRng rng(1234);
 

@@ -35,7 +35,7 @@ namespace QuantLib {
         Spread, Basket and Asian Options", Jaehyuk Choi, 2018
         https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2913048
 
-        Python implementation from the author of the paper is also available
+        A Python implementation from the author of the paper is also available
         https://github.com/PyFE/PyFENG
 
         \ingroup basketengines
@@ -45,8 +45,7 @@ namespace QuantLib {
     */
     class ChoiBasketEngine : public BasketOption::engine {
       public:
-        // lambda controls the precision,
-        // fast: 4, accurate: 8, high precision: 20
+        // lambda controls the integration order and the precision of the result.
         ChoiBasketEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
             Matrix rho,

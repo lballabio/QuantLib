@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for spread option on two futures
+    //! Pricing engine for spread options with two assets
     /*! Chi-Fai Lo,
         Pricing Spread Options by the Operator Splitting Method,
         https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2429696

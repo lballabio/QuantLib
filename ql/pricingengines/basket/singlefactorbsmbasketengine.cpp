@@ -140,7 +140,6 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain vanilla payoff given");
         const Real strike = payoff->strike();
 
-        // sort assets by their weight
         const Array weights = avgPayoff->weights();
         QL_REQUIRE(n_ == weights.size(),
              "wrong number of weights arguments in payoff");

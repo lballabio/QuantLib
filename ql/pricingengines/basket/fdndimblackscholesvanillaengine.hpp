@@ -50,7 +50,7 @@ namespace QuantLib {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
 
-        // Auto-scaling of grids, larges eigenvalue gets xGrid size.
+        // Auto-scaling of grids, largest eigenvalue gets xGrid size.
         FdndimBlackScholesVanillaEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
             Matrix rho,

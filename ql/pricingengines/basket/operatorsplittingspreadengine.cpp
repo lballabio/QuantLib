@@ -68,7 +68,7 @@ namespace QuantLib {
         QL_REQUIRE(order_ == Second, "unknown approximation type");
 
         /*
-           In the original paper the second order was calculated using numerical differentiation.
+           In the original paper, the second-order approximation was computed using numerical differentiation.
            The following Mathematica scripts calculates the approximation to the n'th order.
 
            vol2Hat[R2_] := vol2*(R2 - K)/R2
