@@ -91,6 +91,11 @@ if (QL_USE_STD_CLASSES)
     set(QL_USE_STD_SHARED_PTR ON)
 endif()
 
+if (MSVC)
+    # take advantage of parallel compilation - https://learn.microsoft.com/en-us/cpp/build/reference/mp-build-with-multiple-processes?view=msvc-170
+    add_compile_options(-MP)
+endif()
+
 # Set the default warning level we use to pass the GitHub workflows
 if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
     if (MSVC)
