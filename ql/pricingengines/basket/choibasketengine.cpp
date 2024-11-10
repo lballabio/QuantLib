@@ -194,7 +194,7 @@ namespace QuantLib {
                 [](Real acc, Real x) -> Real { return acc + x*x; }
             );
 
-        MulitDimGaussianIntegration ghq(
+        MultiDimGaussianIntegration ghq(
             nIntOrder,
             [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
         );

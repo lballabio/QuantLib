@@ -61,7 +61,7 @@ namespace QuantLib {
     }
 
 
-    MulitDimGaussianIntegration::MulitDimGaussianIntegration(
+    MultiDimGaussianIntegration::MultiDimGaussianIntegration(
         const std::vector<Size>& ns,
         const std::function<ext::shared_ptr<GaussianQuadrature>(Size)>& genQuad)
     : weights_(std::accumulate(ns.begin(), ns.end(), Size(1), std::multiplies<>()), 1.0),
@@ -93,7 +93,7 @@ namespace QuantLib {
         }
     }
 
-    Real MulitDimGaussianIntegration::operator()(
+    Real MultiDimGaussianIntegration::operator()(
         const std::function<Real(Array)>& f) const {
         Real s = 0.0;
         const Size n = x_.size();

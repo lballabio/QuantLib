@@ -336,7 +336,7 @@ BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
         std::vector<Size> ns(n);
         std::iota(ns.begin(), ns.end(), Size(1));
 
-        MulitDimGaussianIntegration quad(
+        MultiDimGaussianIntegration quad(
             ns,
             [](const Size n) {
                return ext::make_shared<GaussHermiteIntegration>(n);
@@ -372,7 +372,7 @@ BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
         const Matrix invA = inverse(A);
         const Real det_2piA = std::sqrt(determinant(M_TWOPI*invA));
 
-        const MulitDimGaussianIntegration quad(
+        const MultiDimGaussianIntegration quad(
             std::vector<Size>(ns.begin(), ns.begin()+n),
             [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
         );
@@ -404,11 +404,11 @@ BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
     const Matrix invA = inverse(A);
     const Real sqrt_det_2piA = std::sqrt(determinant(M_TWOPI*invA));
 
-    const MulitDimGaussianIntegration quadHigh(
+    const MultiDimGaussianIntegration quadHigh(
         std::vector<Size>({22, 18, 26}),
         [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
     );
-    const MulitDimGaussianIntegration quad2(
+    const MultiDimGaussianIntegration quad2(
         std::vector<Size>(3, 2),
         [](const Size n) { return ext::make_shared<GaussHermiteIntegration>(n); }
     );

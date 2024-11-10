@@ -76,9 +76,9 @@ namespace QuantLib {
         Array x_, w_;
     };
 
-    class MulitDimGaussianIntegration {
+    class MultiDimGaussianIntegration {
       public:
-        MulitDimGaussianIntegration(
+        MultiDimGaussianIntegration(
             const std::vector<Size>& ns,
             const std::function<ext::shared_ptr<GaussianQuadrature>(Size)>& genQuad);
 
