@@ -32,94 +32,95 @@
 
 namespace QuantLib {
 
-    SumExponentialsRootSolver::SumExponentialsRootSolver(
-    	Array a, Array sig, Real K)
-      : a_(std::move(a)), sig_(std::move(sig)), K_(K),
-		fCtr_(0), fPrimeCtr_(0), fDoublePrimeCtr_(0) {
-    	QL_REQUIRE(a_.size() == sig_.size(),
-    			"Arrays must have the same size");
-    }
+    namespace detail {
+        SumExponentialsRootSolver::SumExponentialsRootSolver(
+            Array a, Array sig, Real K)
+          : a_(std::move(a)), sig_(std::move(sig)), K_(K),
+            fCtr_(0), fPrimeCtr_(0), fDoublePrimeCtr_(0) {
+            QL_REQUIRE(a_.size() == sig_.size(),
+                    "Arrays must have the same size");
+        }
 
-    Real SumExponentialsRootSolver::operator()(Real x) const {
-    	++fCtr_;
+        Real SumExponentialsRootSolver::operator()(Real x) const {
+            ++fCtr_;
 
-        Real s = 0.0;
-        for (Size i=0; i < a_.size(); ++i)
-            s += a_[i]*std::exp(sig_[i]*x);
-        return s - K_;
-    }
+            Real s = 0.0;
+            for (Size i=0; i < a_.size(); ++i)
+                s += a_[i]*std::exp(sig_[i]*x);
+            return s - K_;
+        }
 
-    Real SumExponentialsRootSolver::derivative(Real x) const {
-    	++fPrimeCtr_;
+        Real SumExponentialsRootSolver::derivative(Real x) const {
+            ++fPrimeCtr_;
 
-        Real s = 0.0;
-        for (Size i=0; i < a_.size(); ++i)
-            s += a_[i]*sig_[i]*std::exp(sig_[i]*x);
-        return s;
-    }
+            Real s = 0.0;
+            for (Size i=0; i < a_.size(); ++i)
+                s += a_[i]*sig_[i]*std::exp(sig_[i]*x);
+            return s;
+        }
 
-    Real SumExponentialsRootSolver::secondDerivative(Real x) const {
-    	++fDoublePrimeCtr_;
+        Real SumExponentialsRootSolver::secondDerivative(Real x) const {
+            ++fDoublePrimeCtr_;
 
-        Real s = 0.0;
-        for (Size i=0; i < a_.size(); ++i)
-            s += a_[i]*squared(sig_[i])*std::exp(sig_[i]*x);
-        return s;
-    }
+            Real s = 0.0;
+            for (Size i=0; i < a_.size(); ++i)
+                s += a_[i]*squared(sig_[i])*std::exp(sig_[i]*x);
+            return s;
+        }
 
-    Size SumExponentialsRootSolver::getFCtr() const {
-    	return fCtr_;
-    }
+        Size SumExponentialsRootSolver::getFCtr() const {
+            return fCtr_;
+        }
 
-    Size SumExponentialsRootSolver::getDerivativeCtr() const {
-    	return fPrimeCtr_;
-    }
+        Size SumExponentialsRootSolver::getDerivativeCtr() const {
+            return fPrimeCtr_;
+        }
 
-    Size SumExponentialsRootSolver::getSecondDerivativeCtr() const {
-    	return fDoublePrimeCtr_;
-    }
+        Size SumExponentialsRootSolver::getSecondDerivativeCtr() const {
+            return fDoublePrimeCtr_;
+        }
 
-    Real SumExponentialsRootSolver::getRoot(Real xTol, Strategy strategy) const {
-        const Array attr = a_*sig_;
-        QL_REQUIRE(
-            std::all_of(
-                attr.begin(), attr.end(),
-                [](Real x) -> bool { return x >= 0.0; }
-            ),
-            "a*sig should not be negative"
-        );
+        Real SumExponentialsRootSolver::getRoot(Real xTol, Strategy strategy) const {
+            const Array attr = a_*sig_;
+            QL_REQUIRE(
+                std::all_of(
+                    attr.begin(), attr.end(),
+                    [](Real x) -> bool { return x >= 0.0; }
+                ),
+                "a*sig should not be negative"
+            );
 
-        const bool logProb =
-            std::all_of(
-                a_.begin(), a_.end(),
-                [](Real x) -> bool { return x > 0;}
-        );
+            const bool logProb =
+                std::all_of(
+                    a_.begin(), a_.end(),
+                    [](Real x) -> bool { return x > 0;}
+            );
 
-        QL_REQUIRE(K_ > 0 || !logProb,
-            "non-positive strikes only allowed for spread options");
+            QL_REQUIRE(K_ > 0 || !logProb,
+                "non-positive strikes only allowed for spread options");
 
-        // linear approximation
-        const Real denom = std::accumulate(attr.begin(), attr.end(), 0.0);
-        const Real xInit = (std::abs(denom) > 1000*QL_EPSILON)
-            ? std::min(10.0, std::max(-10.0,
-                  (K_ - std::accumulate(a_.begin(), a_.end(), 0.0))/denom)
-              )
-            : 0.0;
+            // linear approximation
+            const Real denom = std::accumulate(attr.begin(), attr.end(), 0.0);
+            const Real xInit = (std::abs(denom) > 1000*QL_EPSILON)
+                ? std::min(10.0, std::max(-10.0,
+                      (K_ - std::accumulate(a_.begin(), a_.end(), 0.0))/denom)
+                  )
+                : 0.0;
 
-        switch(strategy) {
-          case Brent:
-            return QuantLib::Brent().solve(*this, xTol, xInit, 1.0);
-          case Newton:
-        	return QuantLib::Newton().solve(*this, xTol, xInit, 1.0);
-          case Ridder:
-        	return QuantLib::Ridder().solve(*this, xTol, xInit, 1.0);
-          case Halley:
-            return QuantLib::Halley().solve(*this, xTol, xInit, 1.0);
-          default:
-        	QL_FAIL("unknown strategy type");
+            switch(strategy) {
+              case Brent:
+                return QuantLib::Brent().solve(*this, xTol, xInit, 1.0);
+              case Newton:
+                return QuantLib::Newton().solve(*this, xTol, xInit, 1.0);
+              case Ridder:
+                return QuantLib::Ridder().solve(*this, xTol, xInit, 1.0);
+              case Halley:
+                return QuantLib::Halley().solve(*this, xTol, xInit, 1.0);
+              default:
+                QL_FAIL("unknown strategy type");
+            }
         }
     }
-
 
     SingleFactorBsmBasketEngine::SingleFactorBsmBasketEngine(
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p,
@@ -168,9 +169,9 @@ namespace QuantLib {
                 std::accumulate(fwdBasket.begin(), fwdBasket.end(), 0.0));
         }
         else {
-            const Real d = -SumExponentialsRootSolver(
+            const Real d = -detail::SumExponentialsRootSolver(
                 fwdBasket*Exp(-0.5*v), stdDev, strike)
-                    .getRoot(xTol_, SumExponentialsRootSolver::Brent);
+                    .getRoot(xTol_, detail::SumExponentialsRootSolver::Brent);
 
             const CumulativeNormalDistribution N;
             const Real cp = (payoff->optionType() == Option::Call) ? 1.0 : -1.0;

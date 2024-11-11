@@ -1762,20 +1762,20 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
 BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
     BOOST_TEST_MESSAGE("Testing the root of a sum of exponentials...");
 
-    BOOST_CHECK_THROW(SumExponentialsRootSolver(
+    BOOST_CHECK_THROW(detail::SumExponentialsRootSolver(
         {2.0, 3.0, 4.0}, {0.2, 0.4, -0.1}, 0.0).getRoot() , Error
     );
-    BOOST_CHECK_THROW(SumExponentialsRootSolver(
+    BOOST_CHECK_THROW(detail::SumExponentialsRootSolver(
         {2.0, -3.0, 4.0}, {0.2, -0.4, -0.1}, 0.0).getRoot(), Error
     );
 
     MersenneTwisterUniformRng mt(42);
 
     for (auto strategy: {
-        std::make_tuple("Brent", SumExponentialsRootSolver::Brent),
-        std::make_tuple("Newton", SumExponentialsRootSolver::Newton),
-        std::make_tuple("Ridder", SumExponentialsRootSolver::Ridder),
-        std::make_tuple("Halley", SumExponentialsRootSolver::Halley)
+        std::make_tuple("Brent", detail::SumExponentialsRootSolver::Brent),
+        std::make_tuple("Newton", detail::SumExponentialsRootSolver::Newton),
+        std::make_tuple("Ridder", detail::SumExponentialsRootSolver::Ridder),
+        std::make_tuple("Halley", detail::SumExponentialsRootSolver::Halley)
         }) {
 
         Size fCtr = 0;
@@ -1792,14 +1792,14 @@ BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
                 a[j] = mt.nextReal() + offset;
                 sig[j] = copysign(1.0, a[j])*mt.nextReal();
             }
-            const Real kMin = SumExponentialsRootSolver(a, sig, 0.0)(-10.0);
-            const Real kMax = SumExponentialsRootSolver(a, sig, 0.0)( 10.0);
+            const Real kMin = detail::SumExponentialsRootSolver(a, sig, 0.0)(-10.0);
+            const Real kMax = detail::SumExponentialsRootSolver(a, sig, 0.0)( 10.0);
             const Real K = (kMax - kMin)*mt.nextReal() + kMin;
 
-            const Real xValue = SumExponentialsRootSolver(a, sig, K)
-                .getRoot(acc, SumExponentialsRootSolver::Brent);
+            const Real xValue = detail::SumExponentialsRootSolver(a, sig, K)
+                .getRoot(acc, detail::SumExponentialsRootSolver::Brent);
 
-            const SumExponentialsRootSolver solver(a, sig, K);
+            const detail::SumExponentialsRootSolver solver(a, sig, K);
             const Real xRoot = solver.getRoot(tol, std::get<1>(strategy));
 
             stats.add(xValue - xRoot);
