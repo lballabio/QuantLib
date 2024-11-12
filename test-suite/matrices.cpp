@@ -28,6 +28,7 @@
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/math/matrixutilities/householder.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
@@ -775,14 +776,19 @@ BOOST_AUTO_TEST_CASE(testSparseMatrixMemory) {
 
 }
 
-#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+#define QL_CHECK_CLOSE_MATRIX_TOL(actual, expected, tol)                    \
     BOOST_REQUIRE(actual.rows() == expected.rows() &&                       \
                   actual.columns() == expected.columns());                  \
     for (auto i = 0u; i < actual.rows(); i++) {                             \
         for (auto j = 0u; j < actual.columns(); j++) {                      \
-            QL_CHECK_CLOSE(actual(i, j), expected(i, j), 100 * QL_EPSILON); \
+            QL_CHECK_CLOSE(actual(i, j), expected(i, j), tol);              \
         }                                                                   \
     }                                                                       \
+
+
+#define QL_CHECK_CLOSE_MATRIX(actual, expected)                             \
+        QL_CHECK_CLOSE_MATRIX_TOL(actual, expected, 100 * QL_EPSILON)       \
+
 
 BOOST_AUTO_TEST_CASE(testOperators) {
 
@@ -840,6 +846,159 @@ BOOST_AUTO_TEST_CASE(testOperators) {
 
     QL_CHECK_CLOSE_MATRIX(lvalue_real_quotient, scalar_quotient);
     QL_CHECK_CLOSE_MATRIX(rvalue_real_quotient, scalar_quotient);
+}
+
+namespace MatrixTests {
+    Matrix createTestCorrelationMatrix(Size n) {
+        Matrix rho(n, n);
+        for (Size i=0; i < n; ++i)
+            for (Size j=i; j < n; ++j)
+                rho[i][j] = rho[j][i] =
+                    std::exp(-0.1*std::abs(Real(i)-Real(j)) - ((i!=j) ? 0.02*(i+j): 0.0));
+
+        return rho;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPrincipalMatrixSqrt) {
+    BOOST_TEST_MESSAGE("Testing principal matrix pseudo sqrt...");
+
+    std::vector<Size> dims = {1, 4, 10, 40};
+    for (Size n: dims) {
+        const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
+        const Matrix sqrtRho = pseudoSqrt(rho, SalvagingAlgorithm::Principal);
+
+        // matrix is symmetric
+        QL_CHECK_CLOSE_MATRIX_TOL(sqrtRho, transpose(sqrtRho), 1e3*QL_EPSILON);
+
+        // matrix is square root of original matrix
+        QL_CHECK_CLOSE_MATRIX_TOL((sqrtRho*sqrtRho), rho, 1e5*QL_EPSILON);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testCholeskySolverFor) {
+    BOOST_TEST_MESSAGE("Testing CholeskySolverFor...");
+
+    MersenneTwisterUniformRng rng(1234);
+
+    std::vector<Size> dims = {1, 4, 10, 25, 50};
+    for (Size n: dims) {
+
+        Array b(n);
+        for (Size i=0; i < n; ++i)
+            b[i] = rng.nextReal();
+
+        const Matrix rho = MatrixTests::createTestCorrelationMatrix(n);
+        const Array x = CholeskySolveFor(CholeskyDecomposition(rho), b);
+
+        const Array diff = Abs(rho*x - b);
+
+        BOOST_CHECK_SMALL(std::sqrt(DotProduct(diff, diff)), 20*std::sqrt(n)*QL_EPSILON);
+    }
+}
+
+
+BOOST_AUTO_TEST_CASE(testCholeskySolverForIncomplete) {
+    BOOST_TEST_MESSAGE("Testing CholeskySolverFor with incomplete matrix...");
+
+    const Size n = 4;
+
+    Matrix rho(n, n, 0.0);
+    rho[0][0] = rho[1][1] = Real(1);
+    rho[0][1] = rho[1][0] = 0.9;
+
+    const Matrix L = CholeskyDecomposition(rho, true);
+    QL_CHECK_CLOSE_MATRIX((L*transpose(L)), rho);
+}
+
+namespace {
+    void QL_CHECK_CLOSE_ARRAY_TOL(
+        const Array& actual, const Array& expected, Real tol) {
+        BOOST_REQUIRE(actual.size() == expected.size());
+        for (auto i = 0u; i < actual.size(); i++) {
+            BOOST_CHECK_SMALL(actual[i] - expected[i], tol);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testHouseholderTransformation) {
+    BOOST_TEST_MESSAGE("Testing Householder Transformation...");
+
+    MersenneTwisterUniformRng rng(1234);
+
+    const auto I = [](Size i) -> Matrix {
+        Matrix id(i, i, 0.0);
+        for (Size j=0; j < i; ++j)
+            id[j][j] = 1.0;
+
+        return id;
+    };
+
+    for (Size i=1; i < 10; ++i) {
+        Array v(i), x(i);
+        for (Size j=0; j < i; ++j) {
+            v[j] = rng.nextReal()-0.5;
+            x[j] = rng.nextReal()-0.5;
+        }
+
+        const Array expected = (I(i)- 2.0*outerProduct(v, v))*x;
+        const Array calculated = HouseholderTransformation(v)(x);
+        QL_CHECK_CLOSE_ARRAY_TOL(calculated, expected, 1e4*QL_EPSILON);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testHouseholderReflection) {
+    BOOST_TEST_MESSAGE("Testing Householder Reflection...");
+
+    const Real tol=1e4*QL_EPSILON;
+
+    const auto e = [](Size n, Size m=0) -> Array {
+        Array e(n, 0.0);
+        e[m] = 1.0;
+        return e;
+    };
+
+    for (Size i=0; i < 5; ++i) {
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(e(5, i)), e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(M_PI*e(5, i)), M_PI*e(5), tol);
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(5))(
+                e(5, i) + e(5)),
+                ((i==0)? 2.0 : M_SQRT2)*e(5), tol);
+    }
+
+    // limits
+    for (Real x=10; x > 1e-50; x*=0.1) {
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(3))(
+                Array({10.0, x, 0})),
+                std::sqrt(10.0*10.0+x*x)*e(3), tol
+        );
+
+        QL_CHECK_CLOSE_ARRAY_TOL(
+            HouseholderReflection(e(3))(
+                Array({10.0, x, 1e-3})),
+                std::sqrt(10.0*10.0+x*x+1e-3*1e-3)*e(3), tol
+        );
+    }
+
+    MersenneTwisterUniformRng rng(1234);
+
+    for (Size i=0; i < 100; ++i) {
+        const Array v = Array({rng.nextReal(), rng.nextReal(), rng.nextReal()}) - 0.5;
+        const Matrix u = HouseholderTransformation(v / Norm2(v)).getMatrix();
+
+        const Array eu = u*e(3, i%3);
+        const Array a = Array({rng.nextReal(), rng.nextReal(), rng.nextReal()}) - 0.5;
+
+        const Matrix H = HouseholderTransformation(
+            HouseholderReflection(eu).reflectionVector(a)).getMatrix();
+
+        QL_CHECK_CLOSE_ARRAY_TOL(u*H*a, Norm2(a)*e(3, i%3), tol);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

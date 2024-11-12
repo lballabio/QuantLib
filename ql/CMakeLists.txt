@@ -385,6 +385,7 @@ set(QL_SOURCES
     math/matrixutilities/factorreduction.cpp
     math/matrixutilities/getcovariance.cpp
     math/matrixutilities/gmres.cpp
+    math/matrixutilities/householder.cpp        
     math/matrixutilities/pseudosqrt.cpp
     math/matrixutilities/qrdecomposition.cpp
     math/matrixutilities/sparseilupreconditioner.cpp
@@ -461,6 +462,7 @@ set(QL_SOURCES
     methods/finitedifferences/operators/fdmornsteinuhlenbeckop.cpp
     methods/finitedifferences/operators/fdmsabrop.cpp
     methods/finitedifferences/operators/fdmsquarerootfwdop.cpp
+    methods/finitedifferences/operators/fdmwienerop.cpp
     methods/finitedifferences/operators/firstderivativeop.cpp
     methods/finitedifferences/operators/ninepointlinearop.cpp
     methods/finitedifferences/operators/nthorderderivativeop.cpp
@@ -672,10 +674,18 @@ set(QL_SOURCES
     pricingengines/barrier/fdhestondoublebarrierengine.cpp
     pricingengines/barrier/fdhestonrebateengine.cpp
     pricingengines/barrier/mcbarrierengine.cpp
+    pricingengines/basket/bjerksundstenslandspreadengine.cpp
+    pricingengines/basket/choibasketengine.cpp
+    pricingengines/basket/vectorbsmprocessextractor.cpp
+    pricingengines/basket/denglizhoubasketengine.cpp
     pricingengines/basket/fd2dblackscholesvanillaengine.cpp
+    pricingengines/basket/fdndimblackscholesvanillaengine.cpp
     pricingengines/basket/kirkengine.cpp
     pricingengines/basket/mcamericanbasketengine.cpp
     pricingengines/basket/mceuropeanbasketengine.cpp
+    pricingengines/basket/operatorsplittingspreadengine.cpp
+    pricingengines/basket/singlefactorbsmbasketengine.cpp
+    pricingengines/basket/spreadblackscholesvanillaengine.cpp
     pricingengines/basket/stulzengine.cpp
     pricingengines/blackcalculator.cpp
     pricingengines/blackformula.cpp
@@ -1468,6 +1478,7 @@ set(QL_HEADERS
     math/matrixutilities/expm.hpp
     math/matrixutilities/getcovariance.hpp
     math/matrixutilities/gmres.hpp
+    math/matrixutilities/householder.hpp    
     math/matrixutilities/pseudosqrt.hpp
     math/matrixutilities/qrdecomposition.hpp
     math/matrixutilities/sparseilupreconditioner.hpp
@@ -1535,6 +1546,7 @@ set(QL_HEADERS
     math/solvers1d/brent.hpp
     math/solvers1d/falseposition.hpp
     math/solvers1d/finitedifferencenewtonsafe.hpp
+    math/solvers1d/halley.hpp
     math/solvers1d/newton.hpp
     math/solvers1d/newtonsafe.hpp
     math/solvers1d/ridder.hpp
@@ -1595,6 +1607,7 @@ set(QL_HEADERS
     methods/finitedifferences/operators/fdmornsteinuhlenbeckop.hpp
     methods/finitedifferences/operators/fdmsabrop.hpp
     methods/finitedifferences/operators/fdmsquarerootfwdop.hpp
+    methods/finitedifferences/operators/fdmwienerop.hpp    
     methods/finitedifferences/operators/firstderivativeop.hpp
     methods/finitedifferences/operators/modtriplebandlinearop.hpp
     methods/finitedifferences/operators/ninepointlinearop.hpp
@@ -1865,10 +1878,18 @@ set(QL_HEADERS
     pricingengines/barrier/fdhestondoublebarrierengine.hpp
     pricingengines/barrier/fdhestonrebateengine.hpp
     pricingengines/barrier/mcbarrierengine.hpp
+    pricingengines/basket/bjerksundstenslandspreadengine.hpp
+    pricingengines/basket/choibasketengine.hpp
+    pricingengines/basket/vectorbsmprocessextractor.hpp
+    pricingengines/basket/denglizhoubasketengine.hpp
     pricingengines/basket/fd2dblackscholesvanillaengine.hpp
+    pricingengines/basket/fdndimblackscholesvanillaengine.hpp    
     pricingengines/basket/kirkengine.hpp
     pricingengines/basket/mcamericanbasketengine.hpp
     pricingengines/basket/mceuropeanbasketengine.hpp
+    pricingengines/basket/operatorsplittingspreadengine.hpp
+    pricingengines/basket/singlefactorbsmbasketengine.hpp
+    pricingengines/basket/spreadblackscholesvanillaengine.hpp
     pricingengines/basket/stulzengine.hpp
     pricingengines/blackcalculator.hpp
     pricingengines/blackformula.hpp

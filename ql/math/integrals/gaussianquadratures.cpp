@@ -27,6 +27,8 @@
 #include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 
+#include <map>
+
 namespace QuantLib {
 
     GaussianQuadrature::GaussianQuadrature(
@@ -57,6 +59,50 @@ namespace QuantLib {
             w_[i] = mu_0*ev[0][i]*ev[0][i] / orthPoly.w(x_[i]);
         }
     }
+
+
+    MultiDimGaussianIntegration::MultiDimGaussianIntegration(
+        const std::vector<Size>& ns,
+        const std::function<ext::shared_ptr<GaussianQuadrature>(Size)>& genQuad)
+    : weights_(std::accumulate(ns.begin(), ns.end(), Size(1), std::multiplies<>()), 1.0),
+      x_(weights_.size(), Array(ns.size())) {
+
+        const Size m = ns.size();
+        const Size n = x_.size();
+
+        std::vector<Size> spacing(m);
+        spacing[0] = 1;
+        std::partial_sum(ns.begin(), ns.end()-1, spacing.begin()+1, std::multiplies<>());
+
+        std::map<Size, Array> n2weights, n2x;
+        for (auto order: ns) {
+            if (n2x.find(order) == n2x.end()) {
+                const ext::shared_ptr<GaussianQuadrature> quad = genQuad(order);
+                n2x[order] = quad->x();
+                n2weights[order] = quad->weights();
+            }
+        }
+
+        for (Size i=0; i < n; ++i) {
+            for (Size j=0; j < m; ++j) {
+                const Size order = ns[j];
+                const Size nx = (i / spacing[j]) % ns[j];
+                weights_[i] *= n2weights[order][nx];
+                x_[i][j] = n2x[order][nx];
+            }
+        }
+    }
+
+    Real MultiDimGaussianIntegration::operator()(
+        const std::function<Real(Array)>& f) const {
+        Real s = 0.0;
+        const Size n = x_.size();
+        for (Size i=0; i < n; ++i)
+            s += weights_[i]*f(x_[i]);
+
+        return s;
+    }
+
 
 
     namespace detail {

@@ -27,6 +27,7 @@
 #include <ql/math/solvers1d/secant.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/math/solvers1d/halley.hpp>
 #include <ql/math/solvers1d/finitedifferencenewtonsafe.hpp>
 
 using namespace QuantLib;
@@ -40,18 +41,24 @@ class F1 {
   public:
     Real operator()(Real x) const { return x*x-1.0; }
     Real derivative(Real x) const { return 2.0*x; }
+    Real secondDerivative(Real x) const { return 2.0;}
 };
 
 class F2 {
   public:
     Real operator()(Real x) const { return 1.0-x*x; }
     Real derivative(Real x) const { return -2.0*x; }
+    Real secondDerivative(Real x) const { return -2.0;}
 };
 
 class F3 {
   public:
     Real operator()(Real x) const { return std::atan(x-1); }
     Real derivative(Real x) const { return 1.0 / (1.0+(x-1.0)*(x-1.0)); }
+    Real secondDerivative(Real x) const {
+        const Real u = x-1.0;
+        return -2*u/((1.0+u*u)*(1.0+u*u));
+    }
 };
 
 template <class S, class F>
@@ -96,6 +103,7 @@ class Probe {
         return previous_ + offset_ - x*x;
     }
     Real derivative(Real x) const { return 2.0*x; }
+    Real secondDerivative(Real x) const { return 2.0; }
   private:
     Real& result_;
     Real previous_;
@@ -208,6 +216,12 @@ BOOST_AUTO_TEST_CASE(testSecant) {
     BOOST_TEST_MESSAGE("Testing secant solver...");
     test_solver(Secant(), "Secant", 1.0e-6);
 }
+
+BOOST_AUTO_TEST_CASE(testHalley) {
+    BOOST_TEST_MESSAGE("Testing Halley solver...");
+    test_solver(Halley(), "Halley", 1.0e-6);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

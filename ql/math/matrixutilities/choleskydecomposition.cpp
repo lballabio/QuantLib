@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2024 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,5 +61,26 @@ namespace QuantLib {
             }
         }
         return result;
+    }
+
+    Array CholeskySolveFor(const Matrix& L, const Array& b) {
+        const Size n = b.size();
+
+        QL_REQUIRE(L.columns() == n && L.rows() == n,
+            "Size of input matrix and vector does not match.");
+
+        Array x(n);
+        for (Size i=0; i < n; ++i) {
+            x[i] = -std::inner_product(L.row_begin(i), L.row_begin(i)+i, x.begin(), -b[i]);
+            x[i] /= L[i][i];
+        }
+
+        for (Integer i=n-1; i >=0; --i) {
+            x[i] = -std::inner_product(
+                        L.column_begin(i)+i+1, L.column_end(i), x.begin()+i+1, -x[i]);
+            x[i] /= L[i][i];
+        }
+
+        return x;
     }
 }

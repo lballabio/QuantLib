@@ -1,7 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2024 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,21 +17,43 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file choleskydecomposition.hpp
-    \brief Cholesky decomposition
+/*! \file householder.hpp
+    \brief Householder transformation and Householder projection
 */
 
-#ifndef quantlib_cholesky_decomposition_hpp
-#define quantlib_cholesky_decomposition_hpp
+#ifndef quantlib_householder_hpp
+#define quantlib_householder_hpp
 
 #include <ql/math/matrix.hpp>
 
 namespace QuantLib {
 
-    /*! \relates Matrix */
-    Matrix CholeskyDecomposition(const Matrix& m, bool flexible = false);
-    Array CholeskySolveFor(const Matrix& L, const Array& b);
-}
+    /*! References:
+     	 https://en.wikipedia.org/wiki/Householder_transformation
+    */
 
+    class HouseholderTransformation  {
+      public:
+    	explicit HouseholderTransformation(const Array v);
+
+        Matrix getMatrix() const;
+    	Array operator()(const Array& x) const;
+
+      private:
+    	const Array v_;
+    };
+
+
+    class HouseholderReflection {
+      public:
+        explicit HouseholderReflection(const Array e);
+
+        Array operator()(const Array& a) const;
+    	Array reflectionVector(const Array& a) const;
+
+      private:
+    	const Array e_;
+    };
+}
 
 #endif

@@ -69,8 +69,8 @@ namespace QuantLib {
 
     class AverageBasketPayoff : public BasketPayoff {
       public:
-        AverageBasketPayoff(const ext::shared_ptr<Payoff>& p, Array a)
-        : BasketPayoff(p), weights_(std::move(a)) {}
+        AverageBasketPayoff(const ext::shared_ptr<Payoff>& p, Array weights)
+        : BasketPayoff(p), weights_(std::move(weights)) {}
         AverageBasketPayoff(const ext::shared_ptr<Payoff> &p,
                             Size n)
         : BasketPayoff(p), weights_(n, 1.0/static_cast<Real>(n)) {}
@@ -79,6 +79,8 @@ namespace QuantLib {
                                       weights_.end(),
                                       a.begin(), Real(0.0));
         }
+
+        const Array& weights() const { return weights_; }
 
       private:
         Array weights_;

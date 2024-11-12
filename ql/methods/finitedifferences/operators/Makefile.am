@@ -23,6 +23,7 @@ this_include_HEADERS = \
     fdmornsteinuhlenbeckop.hpp \
     fdmsabrop.hpp \
     fdmsquarerootfwdop.hpp \
+    fdmwienerop.hpp \
     firstderivativeop.hpp \
     modtriplebandlinearop.hpp \
     ninepointlinearop.hpp \
@@ -49,6 +50,7 @@ cpp_files = \
     fdmornsteinuhlenbeckop.cpp \
     fdmsabrop.cpp \
     fdmsquarerootfwdop.cpp \
+    fdmwienerop.cpp \
     firstderivativeop.cpp \
     ninepointlinearop.cpp \
     nthorderderivativeop.cpp \
