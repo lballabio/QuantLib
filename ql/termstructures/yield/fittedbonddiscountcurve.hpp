@@ -96,6 +96,7 @@ namespace QuantLib {
                                 Array guess = Array(),
                                 Real simplexLambda = 1.0,
                                 Size maxStationaryStateIterations = 100);
+
         //! curve reference date fixed for life of curve
         FittedBondDiscountCurve(const Date& referenceDate,
                                 std::vector<ext::shared_ptr<BondHelper> > bonds,
@@ -106,6 +107,21 @@ namespace QuantLib {
                                 Array guess = Array(),
                                 Real simplexLambda = 1.0,
                                 Size maxStationaryStateIterations = 100);
+
+        //! don't fit, use precalculated parameters
+        FittedBondDiscountCurve(Natural settlementDays,
+                                const Calendar& calendar,
+                                const FittingMethod& fittingMethod,
+                                Array parameters,
+                                Date maxDate,
+                                const DayCounter& dayCounter);
+
+        //! don't fit, use precalculated parameters
+        FittedBondDiscountCurve(const Date& referenceDate,
+                                const FittingMethod& fittingMethod,
+                                Array parameters,
+                                Date maxDate,
+                                const DayCounter& dayCounter);
         //@}
 
         //! \name Inspectors
