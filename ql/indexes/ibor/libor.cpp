@@ -118,13 +118,13 @@ namespace QuantLib {
 
     ext::shared_ptr<IborIndex> Libor::clone(
                                   const Handle<YieldTermStructure>& h) const {
-        return ext::shared_ptr<IborIndex>(new Libor(familyName(),
-                                                      tenor(),
-                                                      fixingDays(),
-                                                      currency(),
-                                                      financialCenterCalendar_,
-                                                      dayCounter(),
-                                                      h));
+        return ext::make_shared<Libor>(familyName(),
+                                       tenor(),
+                                       fixingDays(),
+                                       currency(),
+                                       financialCenterCalendar_,
+                                       dayCounter(),
+                                       h);
     }
 
 
