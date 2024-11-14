@@ -36,17 +36,16 @@ namespace QuantLib {
     EndCriteria::Type LevenbergMarquardt::minimize(Problem& P,
                                                    const EndCriteria& endCriteria) {
         P.reset();
-        Array x_ = P.currentValue();
+        const Array& initX = P.currentValue();
         currentProblem_ = &P;
-        initCostValues_ = P.costFunction().values(x_);
+        initCostValues_ = P.costFunction().values(initX);
         int m = initCostValues_.size();
-        int n = x_.size();
-        if(useCostFunctionsJacobian_) {
+        int n = initX.size();
+        if (useCostFunctionsJacobian_) {
             initJacobian_ = Matrix(m,n);
-            P.costFunction().jacobian(initJacobian_, x_);
+            P.costFunction().jacobian(initJacobian_, initX);
         }
-        std::unique_ptr<Real[]> xx(new Real[n]);
-        std::copy(x_.begin(), x_.end(), xx.get());
+        Array xx = initX;
         std::unique_ptr<Real[]> fvec(new Real[m]);
         std::unique_ptr<Real[]> diag(new Real[n]);
         int mode = 1;
@@ -81,15 +80,15 @@ namespace QuantLib {
         // in n variables by the Levenberg-Marquardt algorithm.
         MINPACK::LmdifCostFunction lmdifCostFunction =
             [this](const auto m, const auto n, const auto x, const auto fvec, const auto iflag) {
-                this->fcn(m, n, x, fvec, iflag);
+                this->fcn(m, n, x, fvec);
             };
         MINPACK::LmdifCostFunction lmdifJacFunction =
             useCostFunctionsJacobian_
                 ? [this](const auto m, const auto n, const auto x, const auto fjac, const auto iflag) {
-                    this->jacFcn(m, n, x, fjac, iflag);
+                    this->jacFcn(m, n, x, fjac);
                 }
                 : MINPACK::LmdifCostFunction();
-        MINPACK::lmdif(m, n, xx.get(), fvec.get(),
+        MINPACK::lmdif(m, n, xx.begin(), fvec.get(),
                        endCriteria.functionEpsilon(),
                        xtol_,
                        gtol_,
@@ -132,14 +131,13 @@ namespace QuantLib {
             QL_FAIL("unknown MINPACK result: " << info);
         }
         // set problem
-        std::copy(xx.get(), xx.get()+n, x_.begin());
-        P.setCurrentValue(x_);
-        P.setFunctionValue(P.costFunction().value(x_));
+        P.setCurrentValue(std::move(xx));
+        P.setFunctionValue(P.costFunction().value(P.currentValue()));
 
         return ecType;
     }
 
-    void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec, int*) {
+    void LevenbergMarquardt::fcn(int, int n, Real* x, Real* fvec) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
         // constraint handling needs some improvement in the future:
@@ -152,7 +150,7 @@ namespace QuantLib {
         }
     }
 
-    void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac, int*) {
+    void LevenbergMarquardt::jacFcn(int m, int n, Real* x, Real* fjac) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
         // constraint handling needs some improvement in the future:

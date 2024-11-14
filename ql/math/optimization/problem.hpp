@@ -73,8 +73,8 @@ namespace QuantLib {
         //! Cost function
         CostFunction& costFunction() const { return costFunction_; }
 
-        void setCurrentValue(const Array& currentValue) {
-            currentValue_=currentValue;
+        void setCurrentValue(Array currentValue) {
+            currentValue_ = std::move(currentValue);
         }
 
         //! current value of the local minimum

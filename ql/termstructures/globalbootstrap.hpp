@@ -272,12 +272,6 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
             return std::tan((y - lowerBounds_[i]) * M_PI / (upperBounds_[i] - lowerBounds_[i]) - M_PI_2);
         }
 
-        Real value(const Array& x) const override {
-            Array v = values(x);
-            std::transform(v.begin(), v.end(), v.begin(), [](Real x) -> Real { return x*x; });
-            return std::sqrt(std::accumulate(v.begin(), v.end(), Real(0.0)) / static_cast<Real>(v.size()));
-        }
-
         Array values(const Array& x) const override {
             for (Size i = 0; i < x.size(); ++i) {
                 Traits::updateGuess(ts_->data_, transformDirect(x[i], i), i + 1);
@@ -304,7 +298,8 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
         Curve *ts_;
         const std::vector<Real> lowerBounds_, upperBounds_;
     };
-    TargetFunction cost(firstHelper_, numberHelpers_, additionalErrors_, ts_, lowerBounds, upperBounds);
+    TargetFunction cost(firstHelper_, numberHelpers_, additionalErrors_, ts_,
+                        std::move(lowerBounds), std::move(upperBounds));
 
     // setup guess
     Array guess(numberBounds);

@@ -55,23 +55,15 @@ namespace QuantLib {
         EndCriteria::Type minimize(Problem& P,
                                    const EndCriteria& endCriteria) override;
 
-        void fcn(int m,
-                 int n,
-                 Real* x,
-                 Real* fvec,
-                 int* iflag);
-        void jacFcn(int m,
-                 int n,
-                 Real* x,
-                 Real* fjac,
-                 int* iflag);
-
         /*! \deprecated Don't use this method; inspect the result of minimize instead.
                         Deprecated in version 1.36.
         */
         [[deprecated("Don't use this method; inspect the result of minimize instead")]]
         virtual Integer getInfo() const { return info_; }
       private:
+        void fcn(int m, int n, Real* x, Real* fvec);
+        void jacFcn(int m, int n, Real* x, Real* fjac);
+
         Problem* currentProblem_;
         Array initCostValues_;
         Matrix initJacobian_;
