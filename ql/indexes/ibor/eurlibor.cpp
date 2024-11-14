@@ -100,6 +100,10 @@ namespace QuantLib {
         return target_.advance(valueDate, tenor_, convention_, endOfMonth());
     }
 
+    ext::shared_ptr<IborIndex> EURLibor::clone(const Handle<YieldTermStructure>& h) const {
+        return ext::make_shared<EURLibor>(tenor(), h);
+    }
+
     DailyTenorEURLibor::DailyTenorEURLibor(Natural settlementDays,
                                            const Handle<YieldTermStructure>& h)
     : IborIndex("EURLibor", 1*Days,
