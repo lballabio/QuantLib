@@ -35,8 +35,7 @@ namespace QuantLib {
     namespace detail {
         SumExponentialsRootSolver::SumExponentialsRootSolver(
             Array a, Array sig, Real K)
-          : a_(std::move(a)), sig_(std::move(sig)), K_(K),
-            fCtr_(0), fPrimeCtr_(0), fDoublePrimeCtr_(0) {
+          : a_(std::move(a)), sig_(std::move(sig)), K_(K) {
             QL_REQUIRE(a_.size() == sig_.size(),
                     "Arrays must have the same size");
         }

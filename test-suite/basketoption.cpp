@@ -1193,9 +1193,9 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
             { 0.7, 9.0863, 9.0862},
             { 0.9, 6.9148, 6.9134}
     };
-    for (Size i = 0; i < std::size(testData); ++i) {
-        const Real rho = testData[i][0];
-        Real expected = testData[i][1];
+    for (const auto & i : testData) {
+        const Real rho = i[0];
+        Real expected = i[1];
 
         option.setPricingEngine(
             ext::make_shared<OperatorSplittingSpreadEngine>(
@@ -1220,7 +1220,7 @@ BOOST_AUTO_TEST_CASE(testOperatorSplittingSpreadEngine) {
                 p1, p2, rho, OperatorSplittingSpreadEngine::Second)
         );
 
-        expected = testData[i][2];
+        expected = i[2];
         diff = std::abs(option.NPV() - expected);
         tol = 0.0005;
 
@@ -2259,7 +2259,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
         )
         .withSteps(1)
         .withSamples(4096-1)
-        .withSeed(12345ul);
+        .withSeed(12345UL);
     };
 
     typedef std::function<ext::shared_ptr<PricingEngine>(
@@ -2358,7 +2358,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
                 }
             }
 
-            if (calculated.size() > 0) {
+            if (!calculated.empty()) {
                 for (Size i=0; i < calculated.size(); ++i) {
                     diff.push_back(b.referenceNPVs[i] - calculated[i]);
                     relDiff.push_back(diff.back()/b.referenceNPVs[i]);
@@ -2366,7 +2366,7 @@ BOOST_AUTO_TEST_CASE(testSpreadAndBasketBenchmarks) {
             }
         }
 
-        if (diff.size() > 0) {
+        if (!diff.empty()) {
             const Real calculatedRmse = std::sqrt(
                 DotProduct(Array(diff.begin(), diff.end()),
                            Array(diff.begin(), diff.end()) ) /diff.size());

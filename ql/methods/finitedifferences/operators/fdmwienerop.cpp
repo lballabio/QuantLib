@@ -35,8 +35,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmMesher>& mesher,
         ext::shared_ptr<YieldTermStructure> rTS,
         const Array& lambdas)
-    : rTS_(std::move(rTS)),
-      r_(0.0) {
+    : rTS_(std::move(rTS)) {
 
         QL_REQUIRE(mesher->layout()->dim().size() == lambdas.size(),
             "mesher and lambdas need to be of the same dimension");
@@ -86,6 +85,7 @@ namespace QuantLib {
     std::vector<SparseMatrix> FdmWienerOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal;
 
+        retVal.reserve(ops_.size());
         for (const auto& op: ops_)
             retVal.push_back(op->toMatrix());
 
