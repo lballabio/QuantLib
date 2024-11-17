@@ -27,8 +27,8 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <functional>
 
-namespace QuantLib {
-    namespace detail {
+namespace QuantLib::detail {
+
         class VectorBsmProcessExtractor {
           public:
             explicit VectorBsmProcessExtractor(
@@ -46,7 +46,8 @@ namespace QuantLib {
 
             const std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes_;
         };
-    }
+
 }
+
 
 #endif

@@ -76,7 +76,7 @@ namespace QuantLib {
         p.reserve(n_);
 
         for (Size i=0; i < n_; ++i)
-            p.emplace_back(std::make_tuple(weights[i], i, s[i], dq[i], v[i]));
+            p.emplace_back(weights[i], i, s[i], dq[i], v[i]);
 
         const ext::shared_ptr<PlainVanillaPayoff> payoff =
              ext::dynamic_pointer_cast<PlainVanillaPayoff>(avgPayoff->basePayoff());
@@ -84,7 +84,7 @@ namespace QuantLib {
 
         Matrix rho;
         if (payoff->strike() < 0.0) {
-            p.emplace_back(std::make_tuple(1.0, n_, -payoff->strike(), dr0, 0.0));
+            p.emplace_back(1.0, n_, -payoff->strike(), dr0, 0.0);
             rho = Matrix(n_+1, n_+1);
             for (Size i=0; i < n_; ++i) {
                 std::copy(rho_.row_begin(i), rho_.row_end(i), rho.row_begin(i));

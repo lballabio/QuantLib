@@ -73,7 +73,7 @@ namespace QuantLib {
           private:
             const Array a_, sig_;
             const Real K_;
-            mutable Size fCtr_, fPrimeCtr_, fDoublePrimeCtr_;
+            mutable Size fCtr_ = 0, fPrimeCtr_ = 0, fDoublePrimeCtr_ = 0;
         };
     }
 }

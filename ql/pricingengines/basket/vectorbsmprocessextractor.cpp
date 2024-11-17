@@ -24,8 +24,8 @@
 
 #include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
 
-namespace QuantLib {
-    namespace detail {
+namespace QuantLib::detail {
+
         VectorBsmProcessExtractor::VectorBsmProcessExtractor(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > p)
           : processes_(std::move(p)) {
@@ -91,5 +91,6 @@ namespace QuantLib {
                 }
             );
         }
-    }
+
 }
+

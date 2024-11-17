@@ -54,7 +54,7 @@ namespace QuantLib {
       private:
         const ext::shared_ptr<YieldTermStructure> rTS_;
         std::vector<ext::shared_ptr<TripleBandLinearOp> > ops_;
-        Rate r_;
+        Rate r_ = 0.0;
     };
 }
 #endif
