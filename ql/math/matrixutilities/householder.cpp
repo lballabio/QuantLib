@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    HouseholderTransformation::HouseholderTransformation(const Array v)
+    HouseholderTransformation::HouseholderTransformation(Array v)
     : v_(std::move(v)) {}
 
 
@@ -41,7 +41,7 @@ namespace QuantLib {
         return m;
     }
 
-    HouseholderReflection::HouseholderReflection(const Array e)
+    HouseholderReflection::HouseholderReflection(Array e)
     : e_(std::move(e)) {}
 
     Array HouseholderReflection::reflectionVector(const Array& a) const {

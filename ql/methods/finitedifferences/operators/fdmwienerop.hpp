@@ -35,9 +35,9 @@ namespace QuantLib {
     class FdmWienerOp : public FdmLinearOpComposite {
       public:
         FdmWienerOp(
-            ext::shared_ptr<FdmMesher> mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             ext::shared_ptr<YieldTermStructure> rTS,
-            Array lambdas);
+            const Array& lambdas);
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

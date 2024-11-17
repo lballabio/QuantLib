@@ -29,30 +29,30 @@
 namespace QuantLib {
 
     /*! References:
-     	 https://en.wikipedia.org/wiki/Householder_transformation
+        https://en.wikipedia.org/wiki/Householder_transformation
     */
 
     class HouseholderTransformation  {
       public:
-    	explicit HouseholderTransformation(const Array v);
+        explicit HouseholderTransformation(Array v);
 
         Matrix getMatrix() const;
-    	Array operator()(const Array& x) const;
+        Array operator()(const Array& x) const;
 
       private:
-    	const Array v_;
+        const Array v_;
     };
 
 
     class HouseholderReflection {
       public:
-        explicit HouseholderReflection(const Array e);
+        explicit HouseholderReflection(Array e);
 
         Array operator()(const Array& a) const;
-    	Array reflectionVector(const Array& a) const;
+        Array reflectionVector(const Array& a) const;
 
       private:
-    	const Array e_;
+        const Array e_;
     };
 }
 

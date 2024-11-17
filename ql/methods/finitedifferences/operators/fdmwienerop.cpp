@@ -32,11 +32,11 @@
 namespace QuantLib {
 
     FdmWienerOp::FdmWienerOp(
-        ext::shared_ptr<FdmMesher> mesher,
+        const ext::shared_ptr<FdmMesher>& mesher,
         ext::shared_ptr<YieldTermStructure> rTS,
-        Array lambdas)
-        : rTS_(rTS),
-          r_(0.0) {
+        const Array& lambdas)
+    : rTS_(std::move(rTS)),
+      r_(0.0) {
 
         QL_REQUIRE(mesher->layout()->dim().size() == lambdas.size(),
             "mesher and lambdas need to be of the same dimension");
