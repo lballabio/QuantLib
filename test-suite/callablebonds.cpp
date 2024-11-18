@@ -655,8 +655,8 @@ BOOST_AUTO_TEST_CASE(testSnappingExerciseDate2ClosestCouponDate) {
                             << std::setprecision(1) << tolerance);
             }
 
-            auto cleanPrice = callableBond->cleanPrice() - 2.0;
-            auto oas = callableBond->OAS(cleanPrice, termStructure, accrualDCC,
+            Real cleanPrice = callableBond->cleanPrice() - 2.0;
+            Real oas = callableBond->OAS(cleanPrice, termStructure, accrualDCC,
                                          QuantLib::Continuous, frequency);
             if (prevOAS - oas < expectedOasStep) {
                 BOOST_ERROR("failed to get expected change in OAS at "

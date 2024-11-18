@@ -894,7 +894,7 @@ BOOST_AUTO_TEST_CASE(testCholeskySolverFor) {
 
         const Array diff = Abs(rho*x - b);
 
-        BOOST_CHECK_SMALL(std::sqrt(DotProduct(diff, diff)), 20*std::sqrt(n)*QL_EPSILON);
+        QL_CHECK_SMALL(std::sqrt(DotProduct(diff, diff)), 20*std::sqrt(n)*QL_EPSILON);
     }
 }
 
@@ -917,7 +917,7 @@ namespace {
         const Array& actual, const Array& expected, Real tol) {
         BOOST_REQUIRE(actual.size() == expected.size());
         for (auto i = 0U; i < actual.size(); i++) {
-            BOOST_CHECK_SMALL(actual[i] - expected[i], tol);
+            QL_CHECK_SMALL(actual[i] - expected[i], tol);
         }
     }
 }

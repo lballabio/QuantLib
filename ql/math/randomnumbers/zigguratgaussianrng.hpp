@@ -91,10 +91,10 @@ namespace QuantLib {
             // This saves us generating a whole extra random number, while the added
             // precision of using 64 bits for double does not buy us much.
             std::uint64_t randomU64 = uint64Generator_.nextInt64();
-            auto u = 2.0 * (Real(randomU64 >> 11) + 0.5) * (1.0 / Real(1ULL << 53)) - 1.0;
+            Real u = 2.0 * (Real(randomU64 >> 11) + 0.5) * (1.0 / Real(1ULL << 53)) - 1.0;
             auto i = (int)(randomU64 & 0xff);
 
-            auto x = u * normX(i);
+            Real x = u * normX(i);
 
             if (std::abs(x) < normX(i + 1)) {
                 return x;

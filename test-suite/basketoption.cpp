@@ -1790,7 +1790,7 @@ BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
             const Real offset = (mt.nextReal() < 0.3)? -1.0 : 0.0;
             for (Size j=0; j < n; ++j) {
                 a[j] = mt.nextReal() + offset;
-                sig[j] = copysign(1.0, a[j])*mt.nextReal();
+                sig[j] = std::copysign(Real(1.0), a[j])*mt.nextReal();
             }
             const Real kMin = detail::SumExponentialsRootSolver(a, sig, 0.0)(-10.0);
             const Real kMax = detail::SumExponentialsRootSolver(a, sig, 0.0)( 10.0);
@@ -1868,7 +1868,7 @@ BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
             );
 
         const Real strike = std::inner_product(
-            t.weights.begin(), t.weights.end(), t.underlyings.begin(), 0.0
+            t.weights.begin(), t.weights.end(), t.underlyings.begin(), Real(0.0)
         );
 
         const ext::shared_ptr<PlainVanillaPayoff> payoff
