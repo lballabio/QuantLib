@@ -21,6 +21,7 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,7 +30,7 @@ namespace QuantLib {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation,
         Order order)
-    : SpreadBlackScholesVanillaEngine(process1, process2, correlation),
+    : SpreadBlackScholesVanillaEngine(std::move(process1), std::move(process2), correlation),
       order_(order) {
     }
 

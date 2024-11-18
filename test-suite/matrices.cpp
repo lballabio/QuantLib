@@ -916,7 +916,7 @@ namespace {
     void QL_CHECK_CLOSE_ARRAY_TOL(
         const Array& actual, const Array& expected, Real tol) {
         BOOST_REQUIRE(actual.size() == expected.size());
-        for (auto i = 0u; i < actual.size(); i++) {
+        for (auto i = 0U; i < actual.size(); i++) {
             QL_CHECK_SMALL(actual[i] - expected[i], tol);
         }
     }

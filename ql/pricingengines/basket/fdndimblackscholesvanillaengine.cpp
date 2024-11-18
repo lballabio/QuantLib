@@ -30,8 +30,8 @@
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/pricingengines/basket/fdndimblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/basket/vectorbsmprocessextractor.hpp>
-
 #include <boost/preprocessor/iteration/local.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,7 +41,7 @@ namespace QuantLib {
             FdmPCABasketInnerValue(
                 ext::shared_ptr<BasketPayoff> payoff,
                 ext::shared_ptr<FdmMesher> mesher,
-                Array logS0, Array vols,
+                Array logS0, const Array& vols,
                 std::vector<ext::shared_ptr<YieldTermStructure>> qTS,
                 ext::shared_ptr<YieldTermStructure> rTS,
                 Matrix Q, Array l)
@@ -117,7 +117,7 @@ namespace QuantLib {
         Matrix rho, Size xGrid, Size tGrid, Size dampingSteps,
         const FdmSchemeDesc& schemeDesc)
     : FdndimBlackScholesVanillaEngine(
-        processes, rho, std::vector<Size>(1, xGrid), tGrid, dampingSteps, schemeDesc)
+        std::move(processes), std::move(rho), std::vector<Size>(1, xGrid), tGrid, dampingSteps, schemeDesc)
     {}
 
 
@@ -143,8 +143,8 @@ namespace QuantLib {
 
         const SymmetricSchurDecomposition schur(
             getCovariance(vols.begin(), vols.end(), rho_));
-        const Matrix Q = schur.eigenvectors();
-        const Array l = schur.eigenvalues();
+        const Matrix& Q = schur.eigenvectors();
+        const Array& l = schur.eigenvalues();
 
         const Real eps = 1e-4;
         std::vector<ext::shared_ptr<Fdm1dMesher> > meshers;
@@ -215,6 +215,8 @@ namespace QuantLib {
                 break;
             #define BOOST_PP_LOCAL_LIMITS (1, PDE_MAX_SUPPORTED_DIM)
             #include BOOST_PP_LOCAL_ITERATE()
+          default:
+            QL_FAIL("Not implemented for " << processes_.size() << " processes");
         }
 
         if (isEuropean)

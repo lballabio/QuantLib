@@ -20,13 +20,14 @@
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     KirkEngine::KirkEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
                            ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
                            Real correlation)
-    : SpreadBlackScholesVanillaEngine(process1, process2, correlation) {
+    : SpreadBlackScholesVanillaEngine(std::move(process1), std::move(process2), correlation) {
     }
 
     Real KirkEngine::calculate(

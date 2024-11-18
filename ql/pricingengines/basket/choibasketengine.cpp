@@ -135,8 +135,8 @@ namespace QuantLib {
             std::copy(R.row_begin(i)+1, R.row_end(i), R_2_n.row_begin(i));
 
         const SVD svd(C*R_2_n);
-        const Matrix U = svd.U();
-        const Array sv = svd.singularValues();
+        const Matrix& U = svd.U();
+        const Array& sv = svd.singularValues();
 
         Matrix v(n_, n_-1);
         for (Size i=0; i < n_-1; ++i)
