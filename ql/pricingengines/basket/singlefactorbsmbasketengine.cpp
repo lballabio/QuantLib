@@ -100,12 +100,12 @@ namespace QuantLib {
                 "non-positive strikes only allowed for spread options");
 
             // linear approximation
-            const Real denom = std::accumulate(attr.begin(), attr.end(), 0.0);
+            const Real denom = std::accumulate(attr.begin(), attr.end(), Real(0.0));
             const Real xInit = (std::abs(denom) > 1000*QL_EPSILON)
                 ? std::min(10.0, std::max(-10.0,
-                      (K_ - std::accumulate(a_.begin(), a_.end(), 0.0))/denom)
+                      (K_ - std::accumulate(a_.begin(), a_.end(), Real(0.0)))/denom)
                   )
-                : 0.0;
+                : Real(0.0);
 
             switch(strategy) {
               case Brent:
@@ -166,7 +166,7 @@ namespace QuantLib {
                 [](Real x) -> bool { return close_enough(x, 0.0); }
             )) {
             results_.value = dr0*payoff->operator()(
-                std::accumulate(fwdBasket.begin(), fwdBasket.end(), 0.0));
+                std::accumulate(fwdBasket.begin(), fwdBasket.end(), Real(0.0)));
         }
         else {
             const Real d = -detail::SumExponentialsRootSolver(
@@ -179,7 +179,7 @@ namespace QuantLib {
             results_.value = cp * dr0 *
                 std::inner_product(
                     fwdBasket.begin(), fwdBasket.end(), stdDev.begin(),
-                    -strike*N(cp*d),
+                    Real(-strike*N(cp*d)),
                     std::plus<>(),
                     [d, cp, &N](Real x, Real y) -> Real { return x*N(cp*(d+y)); }
                 );
