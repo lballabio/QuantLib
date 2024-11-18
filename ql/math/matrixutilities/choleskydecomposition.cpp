@@ -71,13 +71,13 @@ namespace QuantLib {
 
         Array x(n);
         for (Size i=0; i < n; ++i) {
-            x[i] = -std::inner_product(L.row_begin(i), L.row_begin(i)+i, x.begin(), -b[i]);
+            x[i] = -std::inner_product(L.row_begin(i), L.row_begin(i)+i, x.begin(), Real(-b[i]));
             x[i] /= L[i][i];
         }
 
         for (Integer i=n-1; i >=0; --i) {
             x[i] = -std::inner_product(
-                        L.column_begin(i)+i+1, L.column_end(i), x.begin()+i+1, -x[i]);
+                        L.column_begin(i)+i+1, L.column_end(i), x.begin()+i+1, Real(-x[i]));
             x[i] /= L[i][i];
         }
 
