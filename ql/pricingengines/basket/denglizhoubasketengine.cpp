@@ -126,7 +126,7 @@ namespace QuantLib {
                 [](const Real& value, const auto& p) -> Real {
                     return value + std::get<0>(p)*std::get<2>(p);
             });
-            const Real F0 = std::accumulate(F.begin(), F.end(), 0.0);
+            const Real F0 = std::accumulate(F.begin(), F.end(), Real(0.0));
             const DiscountFactor dq_S0 = F0/S0*dr0;
 
             Real v_s = 0.0;
