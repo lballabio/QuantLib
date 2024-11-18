@@ -436,7 +436,7 @@ namespace QuantLib {
                        sqrtEigenvalues.begin(), sqrtEigenvalues.end(),
                        jd.eigenvectors().row_begin(i),
                        diagonal.column_begin(i),
-                       std::multiplies<Real>()
+                       std::multiplies<>()
                    );
 
               result = jd.eigenvectors()*diagonal;

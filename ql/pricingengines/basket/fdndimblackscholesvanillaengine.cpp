@@ -215,6 +215,8 @@ namespace QuantLib {
                 break;
             #define BOOST_PP_LOCAL_LIMITS (1, PDE_MAX_SUPPORTED_DIM)
             #include BOOST_PP_LOCAL_ITERATE()
+          default:
+            QL_FAIL("Not implemented for " << processes_.size() << " processes");
         }
 
         if (isEuropean)
