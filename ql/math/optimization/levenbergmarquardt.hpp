@@ -60,6 +60,12 @@ namespace QuantLib {
         */
         [[deprecated("Don't use this method; inspect the result of minimize instead")]]
         virtual Integer getInfo() const { return info_; }
+
+        [[deprecated("Don't use this method; it is private")]]
+        void fcn(int m, int n, Real* x, Real* fvec, int*) { fcn(m, n, x, fvec); }
+
+        [[deprecated("Don't use this method; it is private")]]
+        void jacFcn(int m, int n, Real* x, Real* fjac, int*) { jacFcn(m, n, x, fjac); }
       private:
         void fcn(int m, int n, Real* x, Real* fvec);
         void jacFcn(int m, int n, Real* x, Real* fjac);

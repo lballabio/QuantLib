@@ -254,15 +254,21 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     // setup cost function
     class TargetFunction : public CostFunction {
       public:
-        TargetFunction(const Size firstHelper,
-                       const Size numberHelpers,
-                       std::function<Array()> additionalErrors,
+        // NOTE: TargetFunction retains passed pointers, so they must point to objects
+        // that outlive the function. We use pointers instead of const refs to avoid
+        // accidental binding to temporaries.
+        TargetFunction(Size firstHelper,
+                       Size numberHelpers,
+                       const std::function<Array()>* additionalErrors,
                        Curve* ts,
-                       std::vector<Real> lowerBounds,
-                       std::vector<Real> upperBounds)
+                       const std::vector<Real>* lowerBounds,
+                       const std::vector<Real>* upperBounds)
         : firstHelper_(firstHelper), numberHelpers_(numberHelpers),
-          additionalErrors_(std::move(additionalErrors)), ts_(ts),
-          lowerBounds_(std::move(lowerBounds)), upperBounds_(std::move(upperBounds)) {}
+          additionalErrors_(*additionalErrors), ts_(ts),
+          lowerBounds_(*lowerBounds), upperBounds_(*upperBounds) {
+            QL_REQUIRE(additionalErrors != nullptr, "null additionalErrors");
+            QL_REQUIRE(lowerBounds != nullptr && upperBounds != nullptr, "null bounds");
+        }
 
         Real transformDirect(const Real x, const Size i) const {
             return (std::atan(x) + M_PI_2) / M_PI * (upperBounds_[i] - lowerBounds_[i]) + lowerBounds_[i];
@@ -294,12 +300,12 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
       private:
         Size firstHelper_, numberHelpers_;
-        std::function<Array()> additionalErrors_;
-        Curve *ts_;
-        const std::vector<Real> lowerBounds_, upperBounds_;
+        const std::function<Array()>& additionalErrors_;
+        Curve* ts_;
+        const std::vector<Real> &lowerBounds_, &upperBounds_;
     };
-    TargetFunction cost(firstHelper_, numberHelpers_, additionalErrors_, ts_,
-                        std::move(lowerBounds), std::move(upperBounds));
+    TargetFunction cost(firstHelper_, numberHelpers_, &additionalErrors_, ts_,
+                        &lowerBounds, &upperBounds);
 
     // setup guess
     Array guess(numberBounds);
