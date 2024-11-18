@@ -230,7 +230,7 @@ namespace QuantLib {
                 const auto deltaPricer = [&](const Array& z) -> Real {
                     const Real d = dStore[dStoreCounter++];
                     const Real vz = std::inner_product(
-                        v.row_begin(k), v.row_end(k), z.begin(), 0.0);
+                        v.row_begin(k), v.row_end(k), z.begin(), Real(0.0));
                     const Real f = std::exp(-M_SQRT2*vz - vq[k]);
 
                     return std::exp(-DotProduct(z, z)) * f * N(d + vStar1[k]);
