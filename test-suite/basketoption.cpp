@@ -1868,7 +1868,7 @@ BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
             );
 
         const Real strike = std::inner_product(
-            t.weights.begin(), t.weights.end(), t.underlyings.begin(), 0.0
+            t.weights.begin(), t.weights.end(), t.underlyings.begin(), Real(0.0)
         );
 
         const ext::shared_ptr<PlainVanillaPayoff> payoff
