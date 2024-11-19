@@ -96,6 +96,16 @@ namespace QuantLib {
         virtual Real finiteDifferenceEpsilon() const { return 1e-8; }
     };
 
+    template <class ValuesFn>
+    class SimpleCostFunction : public CostFunction {
+      public:
+        explicit SimpleCostFunction(ValuesFn values) : values_(std::move(values)) {}
+
+        Array values(const Array& x) const override { return values_(x); }
+      private:
+        ValuesFn values_;
+    };
+
     class ParametersTransformation {
       public:
         virtual ~ParametersTransformation() = default;

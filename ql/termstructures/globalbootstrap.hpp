@@ -252,66 +252,39 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     }
 
     // setup cost function
-    class TargetFunction : public CostFunction {
-      public:
-        // NOTE: TargetFunction retains passed pointers, so they must point to objects
-        // that outlive the call to optimizer->minimize(). We use pointers instead of
-        // const refs to avoid accidental binding to temporaries.
-        TargetFunction(Size firstHelper,
-                       Size numberHelpers,
-                       const std::function<Array()>* additionalErrors,
-                       Curve* ts,
-                       const std::vector<Real>* lowerBounds,
-                       const std::vector<Real>* upperBounds)
-        : firstHelper_(firstHelper), numberHelpers_(numberHelpers),
-          additionalErrors_(*additionalErrors), ts_(ts),
-          lowerBounds_(*lowerBounds), upperBounds_(*upperBounds) {
-            QL_REQUIRE(additionalErrors != nullptr, "null additionalErrors");
-            QL_REQUIRE(lowerBounds != nullptr && upperBounds != nullptr, "null bounds");
-        }
-
-        Real transformDirect(const Real x, const Size i) const {
-            return (std::atan(x) + M_PI_2) / M_PI * (upperBounds_[i] - lowerBounds_[i]) + lowerBounds_[i];
-        }
-
-        Real transformInverse(const Real y, const Size i) const {
-            return std::tan((y - lowerBounds_[i]) * M_PI / (upperBounds_[i] - lowerBounds_[i]) - M_PI_2);
-        }
-
-        Array values(const Array& x) const override {
-            for (Size i = 0; i < x.size(); ++i) {
-                Traits::updateGuess(ts_->data_, transformDirect(x[i], i), i + 1);
-            }
-            ts_->interpolation_.update();
-            std::vector<Real> result(numberHelpers_);
-            for (Size i = 0; i < numberHelpers_; ++i) {
-                result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
-                            ts_->instruments_[firstHelper_ + i]->impliedQuote();
-            }
-            if (additionalErrors_) {
-                Array tmp = additionalErrors_();
-                result.resize(numberHelpers_ + tmp.size());
-                for (Size i = 0; i < tmp.size(); ++i) {
-                    result[numberHelpers_ + i] = tmp[i];
-                }
-            }
-            return Array(result.begin(), result.end());
-        }
-
-      private:
-        Size firstHelper_, numberHelpers_;
-        const std::function<Array()>& additionalErrors_;
-        Curve* ts_;
-        const std::vector<Real> &lowerBounds_, &upperBounds_;
+    auto transformDirect = [&](const Real x, const Size i) {
+        return (std::atan(x) + M_PI_2) / M_PI * (upperBounds[i] - lowerBounds[i]) + lowerBounds[i];
     };
-    TargetFunction cost(firstHelper_, numberHelpers_, &additionalErrors_, ts_,
-                        &lowerBounds, &upperBounds);
+
+    auto transformInverse = [&](const Real y, const Size i) {
+        return std::tan((y - lowerBounds[i]) * M_PI / (upperBounds[i] - lowerBounds[i]) - M_PI_2);
+    };
+
+    SimpleCostFunction cost([&](const Array& x) {
+        for (Size i = 0; i < x.size(); ++i) {
+            Traits::updateGuess(ts_->data_, transformDirect(x[i], i), i + 1);
+        }
+        ts_->interpolation_.update();
+        std::vector<Real> result(numberHelpers_);
+        for (Size i = 0; i < numberHelpers_; ++i) {
+            result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
+                        ts_->instruments_[firstHelper_ + i]->impliedQuote();
+        }
+        if (additionalErrors_) {
+            Array tmp = additionalErrors_();
+            result.resize(numberHelpers_ + tmp.size());
+            for (Size i = 0; i < tmp.size(); ++i) {
+                result[numberHelpers_ + i] = tmp[i];
+            }
+        }
+        return Array(result.begin(), result.end());
+    });
 
     // setup guess
     Array guess(numberBounds);
     for (Size i = 0; i < numberBounds; ++i) {
         // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
-        guess[i] = cost.transformInverse(Traits::guess(i + 1, ts_, validCurve_, 0), i);
+        guess[i] = transformInverse(Traits::guess(i + 1, ts_, validCurve_, 0), i);
     }
 
     // setup problem
