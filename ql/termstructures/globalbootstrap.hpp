@@ -255,8 +255,8 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     class TargetFunction : public CostFunction {
       public:
         // NOTE: TargetFunction retains passed pointers, so they must point to objects
-        // that outlive the function. We use pointers instead of const refs to avoid
-        // accidental binding to temporaries.
+        // that outlive the call to optimizer->minimize(). We use pointers instead of
+        // const refs to avoid accidental binding to temporaries.
         TargetFunction(Size firstHelper,
                        Size numberHelpers,
                        const std::function<Array()>* additionalErrors,
