@@ -254,15 +254,21 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     // setup cost function
     class TargetFunction : public CostFunction {
       public:
-        TargetFunction(const Size firstHelper,
-                       const Size numberHelpers,
-                       std::function<Array()> additionalErrors,
+        // NOTE: TargetFunction retains passed pointers, so they must point to objects
+        // that outlive the call to optimizer->minimize(). We use pointers instead of
+        // const refs to avoid accidental binding to temporaries.
+        TargetFunction(Size firstHelper,
+                       Size numberHelpers,
+                       const std::function<Array()>* additionalErrors,
                        Curve* ts,
-                       std::vector<Real> lowerBounds,
-                       std::vector<Real> upperBounds)
+                       const std::vector<Real>* lowerBounds,
+                       const std::vector<Real>* upperBounds)
         : firstHelper_(firstHelper), numberHelpers_(numberHelpers),
-          additionalErrors_(std::move(additionalErrors)), ts_(ts),
-          lowerBounds_(std::move(lowerBounds)), upperBounds_(std::move(upperBounds)) {}
+          additionalErrors_(*additionalErrors), ts_(ts),
+          lowerBounds_(*lowerBounds), upperBounds_(*upperBounds) {
+            QL_REQUIRE(additionalErrors != nullptr, "null additionalErrors");
+            QL_REQUIRE(lowerBounds != nullptr && upperBounds != nullptr, "null bounds");
+        }
 
         Real transformDirect(const Real x, const Size i) const {
             return (std::atan(x) + M_PI_2) / M_PI * (upperBounds_[i] - lowerBounds_[i]) + lowerBounds_[i];
@@ -270,12 +276,6 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
         Real transformInverse(const Real y, const Size i) const {
             return std::tan((y - lowerBounds_[i]) * M_PI / (upperBounds_[i] - lowerBounds_[i]) - M_PI_2);
-        }
-
-        Real value(const Array& x) const override {
-            Array v = values(x);
-            std::transform(v.begin(), v.end(), v.begin(), [](Real x) -> Real { return x*x; });
-            return std::sqrt(std::accumulate(v.begin(), v.end(), Real(0.0)) / static_cast<Real>(v.size()));
         }
 
         Array values(const Array& x) const override {
@@ -300,11 +300,12 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
       private:
         Size firstHelper_, numberHelpers_;
-        std::function<Array()> additionalErrors_;
-        Curve *ts_;
-        const std::vector<Real> lowerBounds_, upperBounds_;
+        const std::function<Array()>& additionalErrors_;
+        Curve* ts_;
+        const std::vector<Real> &lowerBounds_, &upperBounds_;
     };
-    TargetFunction cost(firstHelper_, numberHelpers_, additionalErrors_, ts_, lowerBounds, upperBounds);
+    TargetFunction cost(firstHelper_, numberHelpers_, &additionalErrors_, ts_,
+                        &lowerBounds, &upperBounds);
 
     // setup guess
     Array guess(numberBounds);
