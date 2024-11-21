@@ -23,6 +23,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/assetswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
@@ -59,6 +60,12 @@ namespace QuantLib {
                          Date dealMaturity)
     : Swap(2), bond_(std::move(bond)), bondCleanPrice_(bondCleanPrice),
       nonParRepayment_(nonParRepayment), spread_(spread), parSwap_(parSwap) {
+
+        auto overnight = ext::dynamic_pointer_cast<OvernightIndex>(iborIndex);
+        if (overnight) {
+            QL_REQUIRE(!floatSchedule.empty(),
+                       "floating schedule is needed when using an overnight index");
+        }
 
         Schedule schedule = floatSchedule.empty()
             ? Schedule(bond_->settlementDate(),
@@ -102,11 +109,11 @@ namespace QuantLib {
             notional *= dirtyPrice/100.0;
 
         /******** Bond leg ********/
-                 
+
         const Leg& bondLeg = bond_->cashflows();
         QL_REQUIRE(!bondLeg.empty(), "no cashflows from bond");
 
-        bool includeOnUpfrontDate = false; // a cash flow on the upfront 
+        bool includeOnUpfrontDate = false; // a cash flow on the upfront
                                            // date must be discarded
 
         // add coupons for the time being, not the redemption
@@ -143,13 +150,23 @@ namespace QuantLib {
 
         /******** Floating leg ********/
 
-        legs_[1] =
-            IborLeg(std::move(schedule), iborIndex)
-            .withNotionals(notional)
-            .withPaymentAdjustment(paymentAdjustment)
-            .withGearings(gearing)
-            .withSpreads(spread)
-            .withPaymentDayCounter(floatingDayCounter);
+        if (overnight) {
+            legs_[1] =
+                OvernightLeg(std::move(schedule), overnight)
+                .withNotionals(notional)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withGearings(gearing)
+                .withSpreads(spread)
+                .withPaymentDayCounter(floatingDayCounter);
+        } else {
+            legs_[1] =
+                IborLeg(std::move(schedule), iborIndex)
+                .withNotionals(notional)
+                .withPaymentAdjustment(paymentAdjustment)
+                .withGearings(gearing)
+                .withSpreads(spread)
+                .withPaymentDayCounter(floatingDayCounter);
+        }
 
         if (parSwap_) {
             // upfront

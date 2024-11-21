@@ -53,6 +53,11 @@ namespace QuantLib {
         class arguments;
         class results;
 
+        /*! If the passed iborIndex is an overnight rate such as
+            SOFR, ESTR or SONIA, the floatSchedule argument is
+            required and will be used to build overnight-indexed
+            coupons.
+        */
         AssetSwap(bool payBondCoupon,
                   ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
