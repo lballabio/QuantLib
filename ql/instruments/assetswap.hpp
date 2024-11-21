@@ -53,6 +53,11 @@ namespace QuantLib {
         class arguments;
         class results;
 
+        /*! If the passed iborIndex is an overnight rate such as
+            SOFR, ESTR or SONIA, the floatSchedule argument is
+            required and will be used to build overnight-indexed
+            coupons.
+        */
         AssetSwap(bool payBondCoupon,
                   ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
@@ -60,8 +65,15 @@ namespace QuantLib {
                   Spread spread,
                   Schedule floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
-                  bool parAssetSwap = true);
+                  bool parAssetSwap = true,
+                  Real gearing = 1.0,
+                  Real nonParRepayment = Null<Real>(),
+                  Date dealMaturity = Date());
 
+        /*! \deprecated Use the other overload.
+                        Deprecated in version 1.37.
+        */
+        [[deprecated("Use the other overload")]]
         AssetSwap(bool parAssetSwap,
                   ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
@@ -72,6 +84,7 @@ namespace QuantLib {
                   const DayCounter& floatingDayCount = DayCounter(),
                   Date dealMaturity = Date(),
                   bool payBondCoupon = false);
+
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
