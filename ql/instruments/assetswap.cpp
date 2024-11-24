@@ -43,7 +43,7 @@ namespace QuantLib {
                          const DayCounter& floatingDayCounter,
                          Date dealMaturity,
                          bool payBondCoupon)
-    : AssetSwap(payBondCoupon, bond, bondCleanPrice, iborIndex, spread,
+    : AssetSwap(payBondCoupon, std::move(bond), bondCleanPrice, iborIndex, spread,
                 Schedule(), floatingDayCounter, parSwap, gearing,
                 nonParRepayment, dealMaturity) {}
 
