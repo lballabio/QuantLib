@@ -56,9 +56,9 @@ template <class Curve> class GlobalBootstrap {
 
       The additional helpers are treated like the usual rate helpers, but no standard pillar dates are added for them.
 
-      WARNING: This class is known to work with Traits Discount, ZeroYield, Forward (i.e. the usual traits for IR curves
-      in QL), it might fail for other traits - check the usage of Traits::updateGuess(), Traits::guess(),
-      Traits::minValueAfter(), Traits::maxValueAfter() in this class against them.
+      WARNING: This class is known to work with Traits Discount, ZeroYield, Forward, i.e. the usual traits for IR curves
+      in QL. It requires Traits::minValueGlobal() and Traits::maxValueGlobal() to be implemented. Also, check the usage
+      of Traits::updateGuess(), Traits::guess() in this class.
     */
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
@@ -246,9 +246,8 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     const Size numberBounds = ts_->times_.size() - 1;
     std::vector<Real> lowerBounds(numberBounds), upperBounds(numberBounds);
     for (Size i = 0; i < numberBounds; ++i) {
-        // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
-        lowerBounds[i] = Traits::minValueAfter(i + 1, ts_, validCurve_, 0);
-        upperBounds[i] = Traits::maxValueAfter(i + 1, ts_, validCurve_, 0);
+        lowerBounds[i] = Traits::minValueGlobal(i + 1, ts_, validCurve_);
+        upperBounds[i] = Traits::maxValueGlobal(i + 1, ts_, validCurve_);
     }
 
     // setup cost function
@@ -284,7 +283,9 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     Array guess(numberBounds);
     for (Size i = 0; i < numberBounds; ++i) {
         // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
-        guess[i] = transformInverse(Traits::guess(i + 1, ts_, validCurve_, 0), i);
+        // update ts_->data_ since Traits::guess() usually depends on previous values
+        Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
+        guess[i] = transformInverse(ts_->data_[i + 1], i);
     }
 
     // setup problem
