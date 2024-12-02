@@ -237,9 +237,6 @@ BOOST_AUTO_TEST_CASE(testBlackCalibration) {
        smile. expected result is a vanishing volatility of the volatility.
        In addition theta and v0 should be equal to the constant variance */
 
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
-
     DayCounter dayCounter = Actual360();
     Calendar calendar = NullCalendar();
 
@@ -375,8 +372,8 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
 BOOST_AUTO_TEST_CASE(testAnalyticVsBlack) {
     BOOST_TEST_MESSAGE("Testing analytic Heston engine against Black formula...");
 
-    Date settlementDate = Date::todaysDate();
-    Settings::instance().evaluationDate() = settlementDate;
+    Date settlementDate = Settings::instance().evaluationDate();
+
     DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date exerciseDate = settlementDate + 6*Months;
 
@@ -595,7 +592,7 @@ BOOST_AUTO_TEST_CASE(testFdBarrierVsCached, *precondition(if_speed(Fast))) {
     BOOST_TEST_MESSAGE("Testing FD barrier Heston engine against cached values...");
 
     DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
+    Date today = Settings::instance().evaluationDate();
 
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
     Handle<YieldTermStructure> rTS(flatRate(today, 0.08, dc));
