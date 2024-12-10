@@ -26,6 +26,8 @@ using namespace std;
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+    
     KirkSpreadOptionEngine::KirkSpreadOptionEngine(ext::shared_ptr<BlackProcess> process1,
                                                    ext::shared_ptr<BlackProcess> process2,
                                                    Handle<Quote> correlation)
@@ -99,6 +101,8 @@ namespace QuantLib {
         results_.theta = -((log(riskFreeDiscount)/t)*callValue
                            + riskFreeDiscount*(forward1*sigma)/(2*sqrt(t))*pdf(d1));
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
