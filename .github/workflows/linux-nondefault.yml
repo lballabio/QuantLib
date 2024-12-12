@@ -30,7 +30,7 @@ jobs:
             tag: jammy
             cc: gcc
             cxx: g++
-          - name: "gcc 12.x"
+          - name: "gcc 12.3 (Boost 1.86)"
             shortname: gcc12
             tag: lunar
             cc: gcc
@@ -85,12 +85,12 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
-          - name: "Clang 15"
+          - name: "Clang 15 (Boost 1.86)"
             shortname: clang15
             tag: lunar
             cc: clang
             cxx: clang++
-          - name: "Clang 16"
+          - name: "Clang 16 (Boost 1.86)"
             shortname: clang16
             tag: mantic
             cc: clang
