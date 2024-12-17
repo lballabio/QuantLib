@@ -82,7 +82,7 @@ namespace QuantLib {
       public:
         //! NZ calendars
         enum Market { Wellington, Auckland };
-        NewZealand(Market market = Wellington);
+        explicit NewZealand(Market market = Wellington);
     };
 
 }
