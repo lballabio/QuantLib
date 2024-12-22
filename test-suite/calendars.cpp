@@ -3379,7 +3379,7 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
     auto auckland = NewZealand(NewZealand::Auckland);
     auto wellington = NewZealand(NewZealand::Wellington);
 
-    for (auto calendar: { auckland, wellington }) {
+    for (const auto& calendar: { auckland, wellington }) {
         // mid-week New Year's day
         BOOST_TEST(calendar.isHoliday({1, January, 2025}));
         BOOST_TEST(calendar.isHoliday({2, January, 2025}));
