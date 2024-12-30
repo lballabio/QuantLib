@@ -317,10 +317,8 @@ namespace QuantLib {
             return false;
 
         // Special closings
-        if (// President Carter's Funeral
-            (y == 2025 && m == January && d == 9)
-            // President Bush's Funeral
-            || (y == 2018 && m == December && d == 5)
+        if (// President Bush's Funeral
+            (y == 2018 && m == December && d == 5)
             // Hurricane Sandy
             || (y == 2012 && m == October && d == 30)
             // President Reagan's funeral
