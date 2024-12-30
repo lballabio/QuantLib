@@ -2531,36 +2531,36 @@ BOOST_AUTO_TEST_CASE(testNoDivByZeroOperatorSplitting) {
     
     BasketOption basketOption(
         ext::make_shared<SpreadBasketPayoff>(
-	        ext::make_shared<PlainVanillaPayoff>(Option::Put, Real(50))
-	    ),
-	    ext::make_shared<EuropeanExercise>(maturity)
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, Real(50))
+        ),
+        ext::make_shared<EuropeanExercise>(maturity)
     );
 
-	const Real eps = 1e-5;
+    const Real eps = 1e-5;
 
-		
+        
     const auto engineGen  = [&](Volatility vol) {
-		return ext::make_shared<OperatorSplittingSpreadEngine>(
-			processGen(160, 0.25*3),
-			processGen(100, vol*150.0/100.0),
-			1/3.0, OperatorSplittingSpreadEngine::Second
-		);
+        return ext::make_shared<OperatorSplittingSpreadEngine>(
+            processGen(160, 0.25*3),
+            processGen(100, vol*150.0/100.0),
+            1/3.0, OperatorSplittingSpreadEngine::Second
+        );
     };
 
-	basketOption.setPricingEngine(engineGen(0.25 - eps));
-	const Real lNpv = basketOption.NPV();
+    basketOption.setPricingEngine(engineGen(0.25 - eps));
+    const Real lNpv = basketOption.NPV();
 
-	basketOption.setPricingEngine(engineGen(0.25 + eps));
-	const Real rNpv = basketOption.NPV();
-	
-	const Real expected = 0.5*(rNpv + lNpv);
-	
-	basketOption.setPricingEngine(engineGen(0.25));
-	const Real calculated = basketOption.NPV();
-	
-	const Real diff =std::abs(calculated - expected);
-	const Real tol = 5e-8;
-	if (std::isnan(calculated) || diff > tol)
+    basketOption.setPricingEngine(engineGen(0.25 + eps));
+    const Real rNpv = basketOption.NPV();
+    
+    const Real expected = 0.5*(rNpv + lNpv);
+    
+    basketOption.setPricingEngine(engineGen(0.25));
+    const Real calculated = basketOption.NPV();
+    
+    const Real diff =std::abs(calculated - expected);
+    const Real tol = 5e-8;
+    if (std::isnan(calculated) || diff > tol)
         BOOST_FAIL("failed to reproduce spread option price with OperatorSplittingEngine"
            << std::fixed << std::setprecision(8)
            << "\n    calculated:  " << calculated
