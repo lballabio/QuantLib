@@ -60,9 +60,9 @@ namespace QuantLib {
         const Real vs = vol2/(sig_m*sig_m);
         const Real rs = squared(rho_*vol1 - sig2);
 
-		const Real oPlt = -sig2*sig2*k*df*NormalDistribution()(d2)*vs
+        const Real oPlt = -sig2*sig2*k*df*NormalDistribution()(d2)*vs
             *( -d2*rs/sig2 - 0.5*vs*sig_m * k / (f2+k)
-            	*(rs*d1*d2  + (1-rho_*rho_)*variance1));
+                *(rs*d1*d2  + (1-rho_*rho_)*variance1));
 
         if (order_ == First)
             return callPutParityPrice(kirkCallNPV + 0.5*oPlt);
@@ -92,24 +92,24 @@ namespace QuantLib {
         const Real vol22 = vol2*vol2;
         const Real vol23 = vol22*vol2;
 
-        if (rs < 1000*QL_EPSILON) {
-			const Real vol24 = vol22*vol22;
-			const Real vol26 = vol22*vol24;
-			const Real k2 = k*k;
-			const Real R22 = R2*R2;
-			const Real R24 = R22*R22;
-			const Real kmR22 = squared(k-R2);
-			const Real lnR1 = std::log(R1);
-			
-	        const Real ooPlt = -0.0625*(k2*kmR22*vol26*(-8*R22*R24*(7*k2 - 7*k*R2 + R22)*vol12*vol12 
-	        	+ kmR22*R24*vol12*(-112*k*R2 + 16*R22 + k2*(124 + 3*vol12))*vol22 - 2*kmR22*kmR22*R22*
-	        	(-28*k*R2 + 4*R22 +	k2*(34 + 3*vol12))*vol24 + 3*k2*kmR22*kmR22*kmR22*vol26 - 4*k*(k -R2)*
-				R24*lnR1*(-4*R22*vol12 + 4*kmR22*vol22 + 3*k*(k - R2)*vol22*lnR1)))
-				/(std::exp(squared(-(R22*vol12) + kmR22*vol22 +	2*R22*lnR1)/(8*R24*vol12 - 8*kmR22*R22*vol22))*
-				M_SQRTPI*M_SQRT2*R22*R24*R2*squared(R22*vol12 - kmR22*vol22)*std::sqrt(vol12 - (kmR22*vol22)/R22));
+        if (rs < std::pow(QL_EPSILON, 0.625)) {
+            const Real vol24 = vol22*vol22;
+            const Real vol26 = vol22*vol24;
+            const Real k2 = k*k;
+            const Real R22 = R2*R2;
+            const Real R24 = R22*R22;
+            const Real kmR22 = squared(k-R2);
+            const Real lnR1 = std::log(R1);
+            
+            const Real ooPlt = -0.0625*(k2*kmR22*vol26*(-8*R22*R24*(7*k2 - 7*k*R2 + R22)*vol12*vol12 
+                + kmR22*R24*vol12*(-112*k*R2 + 16*R22 + k2*(124 + 3*vol12))*vol22 - 2*kmR22*kmR22*R22*
+                (-28*k*R2 + 4*R22 +    k2*(34 + 3*vol12))*vol24 + 3*k2*kmR22*kmR22*kmR22*vol26 - 4*k*(k -R2)*
+                R24*lnR1*(-4*R22*vol12 + 4*kmR22*vol22 + 3*k*(k - R2)*vol22*lnR1)))
+                /(std::exp(squared(-(R22*vol12) + kmR22*vol22 +    2*R22*lnR1)/(8*R24*vol12 - 8*kmR22*R22*vol22))*
+                M_SQRTPI*M_SQRT2*R22*R24*R2*squared(R22*vol12 - kmR22*vol22)*std::sqrt(vol12 - (kmR22*vol22)/R22));
 
-			return callPutParityPrice(kirkCallNPV + 0.5*oPlt + 0.125*ooPlt);		
-		} 
+            return callPutParityPrice(kirkCallNPV + 0.5*oPlt + 0.125*ooPlt);        
+        } 
                 
         const Real F2 = f2;
 

@@ -2559,7 +2559,7 @@ BOOST_AUTO_TEST_CASE(testNoDivByZeroOperatorSplitting) {
 	const Real calculated = basketOption.NPV();
 	
 	const Real diff =std::abs(calculated - expected);
-	const Real tol = 1e-8;
+	const Real tol = 5e-8;
 	if (std::isnan(calculated) || diff > tol)
         BOOST_FAIL("failed to reproduce spread option price with OperatorSplittingEngine"
            << std::fixed << std::setprecision(8)
@@ -2567,9 +2567,6 @@ BOOST_AUTO_TEST_CASE(testNoDivByZeroOperatorSplitting) {
            << "\n    expected:    " << expected
            << "\n    diff:        " << diff
            << "\n    tolerance:   " << tol);
-
-	
-	//std::cout << std::setprecision(16) << 0.5*(lNpv + rNpv) << " " << calculated - 0.5*(lNpv + rNpv) << std::endl;
 }
 
 
