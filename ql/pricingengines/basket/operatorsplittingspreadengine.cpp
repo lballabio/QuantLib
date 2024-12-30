@@ -103,7 +103,7 @@ namespace QuantLib {
             
             const Real ooPlt = -0.0625*(k2*kmR22*vol26*(-8*R22*R24*(7*k2 - 7*k*R2 + R22)*vol12*vol12 
                 + kmR22*R24*vol12*(-112*k*R2 + 16*R22 + k2*(124 + 3*vol12))*vol22 - 2*kmR22*kmR22*R22*
-                (-28*k*R2 + 4*R22 +    k2*(34 + 3*vol12))*vol24 + 3*k2*kmR22*kmR22*kmR22*vol26 - 4*k*(k -R2)*
+                (-28*k*R2 + 4*R22 + k2*(34 + 3*vol12))*vol24 + 3*k2*kmR22*kmR22*kmR22*vol26 - 4*k*(k -R2)*
                 R24*lnR1*(-4*R22*vol12 + 4*kmR22*vol22 + 3*k*(k - R2)*vol22*lnR1)))
                 /(std::exp(squared(-(R22*vol12) + kmR22*vol22 +    2*R22*lnR1)/(8*R24*vol12 - 8*kmR22*R22*vol22))*
                 M_SQRTPI*M_SQRT2*R22*R24*R2*squared(R22*vol12 - kmR22*vol22)*std::sqrt(vol12 - (kmR22*vol22)/R22));
