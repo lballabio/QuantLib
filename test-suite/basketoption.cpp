@@ -2512,6 +2512,62 @@ BOOST_AUTO_TEST_CASE(testAccurateAmericanBasketOptions) {
                << "\n    tolerance:   " << tol);
 }
 
+BOOST_AUTO_TEST_CASE(testNoDivByZeroOperatorSplitting) {
+    BOOST_TEST_MESSAGE("Testing division by zero issue for the Operator Splitting engine...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, December, 2024);
+    const Date maturity = today + Period(18, Months);
+    
+    const Handle<YieldTermStructure> zeroFlat(flatRate(today, Real(0), dc)); 
+
+    const auto processGen = [&](Real spot, Volatility vol) {
+        return ext::make_shared<GeneralizedBlackScholesProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(spot)),
+            zeroFlat, zeroFlat,
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
+        );
+    };
+    
+    BasketOption basketOption(
+        ext::make_shared<SpreadBasketPayoff>(
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, Real(50))
+        ),
+        ext::make_shared<EuropeanExercise>(maturity)
+    );
+
+    const Real eps = 1e-5;
+
+        
+    const auto engineGen  = [&](Volatility vol) {
+        return ext::make_shared<OperatorSplittingSpreadEngine>(
+            processGen(160, 0.25*3),
+            processGen(100, vol*150.0/100.0),
+            1/3.0, OperatorSplittingSpreadEngine::Second
+        );
+    };
+
+    basketOption.setPricingEngine(engineGen(0.25 - eps));
+    const Real lNpv = basketOption.NPV();
+
+    basketOption.setPricingEngine(engineGen(0.25 + eps));
+    const Real rNpv = basketOption.NPV();
+    
+    const Real expected = 0.5*(rNpv + lNpv);
+    
+    basketOption.setPricingEngine(engineGen(0.25));
+    const Real calculated = basketOption.NPV();
+    
+    const Real diff =std::abs(calculated - expected);
+    const Real tol = 5e-8;
+    if (std::isnan(calculated) || diff > tol)
+        BOOST_FAIL("failed to reproduce spread option price with OperatorSplittingEngine"
+           << std::fixed << std::setprecision(8)
+           << "\n    calculated:  " << calculated
+           << "\n    expected:    " << expected
+           << "\n    diff:        " << diff
+           << "\n    tolerance:   " << tol);
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()
