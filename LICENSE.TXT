@@ -74,13 +74,13 @@ QuantLib is
 
     Copyright (C) 2009 Bernd Engelmann
     Copyright (C) 2009 Bojan Nikolic
-    Copyright (C) 2009 Dirk Eddelbuettel
     Copyright (C) 2009 Frédéric Degraeve
     Copyright (C) 2009 Nathan Abbott
     Copyright (C) 2009 Sun Xiuxin
     Copyright (C) 2009 Sylvain Bertrand
     Copyright (C) 2009, 2010 Dimitri Reiswich
     Copyright (C) 2009, 2010, 2012 Liquidnet Holdings, Inc.
+    Copyright (C) 2009, 2024 Dirk Eddelbuettel
 
     Copyright (C) 2010 Adrian O' Neill
     Copyright (C) 2010 Alessandro Roveda
