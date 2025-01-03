@@ -75,9 +75,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_85_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -117,9 +118,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_85_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -159,9 +161,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.85.0/binaries/boost_1_85_0-msvc-14.3-64.exe"
-        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        $Url = "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_85_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
