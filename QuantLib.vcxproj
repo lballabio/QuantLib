@@ -2551,7 +2551,7 @@
     <ClCompile Include="ql\pricingengines\asian\analytic_cont_geom_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\analytic_discr_geom_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\analytic_discr_geom_av_strike.cpp" />
-    <ClInclude Include="ql\pricingengines\asian\choiasianengine.cpp" />
+    <ClCompile Include="ql\pricingengines\asian\choiasianengine.cpp" />
     <ClCompile Include="ql\pricingengines\asian\fdblackscholesasianengine.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.cpp" />

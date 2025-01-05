@@ -36,8 +36,7 @@ namespace QuantLib {
 
         \ingroup asianengines
     */
-    class ChoiBasketEngine;
-
+    
     class ChoiAsianEngine
             : public GenericEngine<DiscreteAveragingAsianOption::arguments,
                                    DiscreteAveragingAsianOption::results> {
