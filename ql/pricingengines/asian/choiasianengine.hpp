@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discrarithasianreplicationengine.hpp
+/*! \file choiasianengine.hpp
     \brief Black Scholes arithmetic Asian option engine
 */
 
