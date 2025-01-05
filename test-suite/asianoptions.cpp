@@ -30,9 +30,11 @@
 #include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/instruments/asianoption.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
+#include <ql/pricingengines/asian/choiasianengine.hpp>
 #include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price_heston.hpp>
@@ -41,6 +43,8 @@
 #include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
 #include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -751,13 +755,28 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_spee
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
+    const ext::shared_ptr<BlackScholesMertonProcess> stochProcess
+        = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot),
+            Handle<YieldTermStructure>(qTS),
+            Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)
+        );
+
+    const ext::shared_ptr<PricingEngine> fdEngine
+        = ext::make_shared<FdBlackScholesAsianEngine>(stochProcess, 100, 100, 100);
+
+    const ext::shared_ptr<PricingEngine> twEngine
+        = ext::make_shared<TurnbullWakemanAsianEngine>(stochProcess);
+
+    const ext::shared_ptr<PricingEngine> choiEngine
+        = ext::make_shared<ChoiAsianEngine>(stochProcess, 10, 2 << 12);
 
 
     Average::Type averageType = Average::Arithmetic;
     Real runningSum = 0.0;
     Size pastFixings = 0;
     for (auto& l : cases4) {
-
         ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(l.type, l.strike));
 
         Time dt = l.length / (l.fixings - 1);
@@ -776,14 +795,7 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_spee
         rRate->setValue(l.riskFreeRate);
         vol->setValue(l.volatility);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
-            BlackScholesMertonProcess(Handle<Quote>(spot),
-                                      Handle<YieldTermStructure>(qTS),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS)));
-
-
-        ext::shared_ptr<PricingEngine> engine =
+        const ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(stochProcess)
                 .withSamples(2047)
                 .withControlVariate(l.controlVariate);
@@ -804,11 +816,11 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_spee
         }
 
         if (l.fixings < 100) {
-            engine = ext::shared_ptr<PricingEngine>(
-                    new FdBlackScholesAsianEngine(stochProcess, 100, 100, 100));
-            option.setPricingEngine(engine);
+            option.setPricingEngine(fdEngine);
             calculated = option.NPV();
             if (std::fabs(calculated-expected) > tolerance) {
+                BOOST_TEST_MESSAGE(
+                    "The consistency check of the PDE engine failed");
                 REPORT_FAILURE("value", averageType, runningSum, pastFixings,
                             fixingDates, payoff, exercise, spot->value(),
                             qRate->value(), rRate->value(), today,
@@ -816,8 +828,7 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_spee
             }
         }
 
-        engine = ext::make_shared<TurnbullWakemanAsianEngine>(stochProcess);
-        option.setPricingEngine(engine);
+        option.setPricingEngine(twEngine);
         calculated = option.NPV();
         tolerance = 3.0e-2;
         if (std::fabs(calculated - expected) > tolerance) {
@@ -826,6 +837,19 @@ BOOST_AUTO_TEST_CASE(testMCDiscreteArithmeticAveragePrice, *precondition(if_spee
             REPORT_FAILURE("value", averageType, runningSum, pastFixings, fixingDates, payoff,
                            exercise, spot->value(), qRate->value(), rRate->value(), today,
                            vol->value(), expected, calculated, tolerance);
+        }
+
+        if (l.fixings < 100) {
+            option.setPricingEngine(choiEngine);
+            calculated = option.NPV();
+            if (std::fabs(calculated-expected) > tolerance) {
+                BOOST_TEST_MESSAGE(
+                    "The consistency check of the Choi Asian engine failed");
+                REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                            fixingDates, payoff, exercise, spot->value(),
+                            qRate->value(), rRate->value(), today,
+                            vol->value(), expected, calculated, tolerance);
+            }
         }
     }
 }
@@ -1661,6 +1685,11 @@ BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
         MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>(stochProcess)
         .withSamples(2047));
 
+    DiscreteAveragingAsianOption option4(Average::Arithmetic, runningSum,
+                                         pastFixings, fixingDates,
+                                         payoff, exercise);
+    option4.setPricingEngine(ext::make_shared<ChoiAsianEngine>(stochProcess));
+
     // Check that NPV raises a specific exception instead of crashing.
     // (It used to do that.)
 
@@ -1676,7 +1705,7 @@ BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
 
     raised = false;
     try {
-        option1.NPV();
+        option2.NPV();
     } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
@@ -1686,8 +1715,18 @@ BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
 
     raised = false;
     try {
-        option2.NPV();
+        option3.NPV();
     } catch (detail::PastFixingsOnly&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    raised = false;
+    try {
+        option4.NPV();
+    } catch (Error&) {
         raised = true;
     }
     if (!raised) {
@@ -1710,7 +1749,7 @@ BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
 
     raised = false;
     try {
-        option1.NPV();
+        option2.NPV();
     } catch (detail::PastFixingsOnly&) {
         raised = true;
     }
@@ -1720,8 +1759,18 @@ BOOST_AUTO_TEST_CASE(testAllFixingsInThePast) {
 
     raised = false;
     try {
-        option2.NPV();
+        option3.NPV();
     } catch (detail::PastFixingsOnly&) {
+        raised = true;
+    }
+    if (!raised) {
+        BOOST_FAIL("exception expected");
+    }
+
+    raised = false;
+    try {
+        option4.NPV();
+    } catch (Error&) {
         raised = true;
     }
     if (!raised) {
@@ -2394,6 +2443,199 @@ BOOST_AUTO_TEST_CASE(testDiscreteGeometricAveragePriceHestonPastFixings) {
         }
     }
 }
+
+
+BOOST_AUTO_TEST_CASE(testChoiAsianEngineVsMC) {
+    BOOST_TEST_MESSAGE("Testing ChoiAsianEngine against Monte-Carlo pricer...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, January, 2025);
+    const Date maturity = today + Period(13, Months);
+
+    std::vector<Date> fixingDates(1, today + Period(1, Months));
+    while (fixingDates.back() < maturity - Period(1, Months))
+        fixingDates.push_back(fixingDates.back() + Period(1, Months));
+
+    const Size pastFixingsCount = 2;
+    const Real runningAccumulator =  pastFixingsCount*97.0;
+
+    const ext::shared_ptr<PlainVanillaPayoff> payoff
+        = ext::make_shared<PlainVanillaPayoff>(Option::Call, 110);
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    DiscreteAveragingAsianOption option(
+        Average::Arithmetic, runningAccumulator, pastFixingsCount,
+        fixingDates, payoff,  exercise
+    );
+
+    // market data is constant in time
+    ext::shared_ptr<BlackScholesMertonProcess> process
+        = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+            Handle<YieldTermStructure>(flatRate(today, 0.035, dc)),
+            Handle<YieldTermStructure>(flatRate(today, 0.1, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.5, dc))
+    );
+
+    option.setPricingEngine(
+        MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(process)
+           .withSamples(32000).withSeed(43)
+    );
+    Real expected = option.NPV();
+
+    option.setPricingEngine(
+        ext::make_shared<ChoiAsianEngine>(process, 20, 2 << 12)
+    );
+    Real calculated = option.NPV();
+    Real diff = std::abs(calculated-expected);
+    Real tol = 0.01;
+
+    if (diff > tol)
+        REPORT_FAILURE("value", Average::Arithmetic, runningAccumulator, pastFixingsCount,
+                       fixingDates, payoff, exercise, process->x0(),
+                       0.035, 0.1, today, 0.5, expected, calculated, tol);
+
+    // market data is not constant in time
+    process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+        Handle<YieldTermStructure>(
+            ext::make_shared<ZeroCurve>(
+                std::vector<Date>({today, today + Period(3, Months), today + Period(13, Months)}),
+                std::vector<Real>({0.1, 0.0, 0.15}),
+                dc, Calendar()
+            )
+        ),
+        Handle<YieldTermStructure>(
+            ext::make_shared<ZeroCurve>(
+                std::vector<Date>({today, today + Period(3, Months), today + Period(13, Months)}),
+                std::vector<Real>({0.1, 0.2, 0.05}),
+                dc)),
+        Handle<BlackVolTermStructure>(
+            ext::make_shared<BlackVarianceCurve>(
+                today,
+                std::vector<Date>({today + Period(1, Days), today + Period(100, Days), today + Period(13, Months)}),
+                std::vector<Real>({0.25, 0.5, 0.4}),
+                dc
+            )
+        )
+    );
+
+    option.setPricingEngine(
+        MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>(process)
+           .withSamples(32000).withSeed(43)
+    );
+    expected = option.NPV();
+
+    option.setPricingEngine(
+        ext::make_shared<ChoiAsianEngine>(process, 20, 2 << 12)
+    );
+    calculated = option.NPV();
+
+    diff = std::abs(calculated-expected);
+    tol = 0.01;
+
+    if (diff > tol)
+        REPORT_FAILURE(
+            "value", Average::Arithmetic, runningAccumulator, pastFixingsCount,
+            fixingDates, payoff, exercise, process->x0(),
+            0.0, 0.0, today, 0.0, expected, calculated, tol);
+}
+
+BOOST_AUTO_TEST_CASE(testChoiAsianEngineSpecialCases) {
+    BOOST_TEST_MESSAGE("Testing special cases for ChoiAsianEngine...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, January, 2025);
+    const Date maturity = today + Period(1, Years);
+
+    const Size pastFixingsCount = 2;
+    const Real runningAccumulator =  pastFixingsCount*97.0;
+
+    std::vector<Date> fixingDates({today, today + Period(3, Weeks)});
+
+    const Handle<YieldTermStructure> rTS(flatRate(today, 0.2, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.075, dc));
+    const Handle<BlackVolTermStructure> vTS(flatVol(today, 0.5, dc));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process
+        = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+            qTS, rTS, vTS
+    );
+
+    const ext::shared_ptr<PricingEngine> choiEngine
+        = ext::make_shared<ChoiAsianEngine>(process);
+
+    const ext::shared_ptr<PlainVanillaPayoff> payoff
+        = ext::make_shared<PlainVanillaPayoff>(Option::Put, 103);
+    const ext::shared_ptr<EuropeanExercise> exercise
+        = ext::make_shared<EuropeanExercise>(maturity);
+
+    DiscreteAveragingAsianOption asianOption(
+        Average::Arithmetic, runningAccumulator, pastFixingsCount,
+        fixingDates, payoff, exercise
+    );
+    asianOption.setPricingEngine(choiEngine);
+
+    Real calculated = asianOption.NPV();
+
+    Real expected = blackFormula(
+        payoff->optionType(),
+        payoff->strike() - (runningAccumulator + process->x0())/(pastFixingsCount+2),
+        100.0/(pastFixingsCount+2)
+            *qTS->discount(fixingDates.back())/rTS->discount(fixingDates.back()),
+        std::sqrt(vTS->blackVariance(fixingDates.back(), payoff->strike())),
+        rTS->discount(maturity)
+    );
+
+    Real diff = std::abs(calculated - expected);
+    const Real tol = 1000*QL_EPSILON;
+
+    if (diff > tol)
+        REPORT_FAILURE(
+            "value", Average::Arithmetic, runningAccumulator, pastFixingsCount,
+            fixingDates, payoff, exercise, process->x0(),
+            0.075, 0.2, today, 0.5, expected, calculated, tol);
+
+    fixingDates = std::vector<Date>(1, today);
+
+    asianOption = DiscreteAveragingAsianOption(
+        Average::Arithmetic, runningAccumulator, pastFixingsCount,
+        fixingDates, payoff, exercise
+    );
+    asianOption.setPricingEngine(choiEngine);
+    calculated = asianOption.NPV();
+
+    expected = rTS->discount(maturity) * (*payoff)(
+        (runningAccumulator + process->x0())/(pastFixingsCount + 1)
+    );
+
+    diff = std::abs(calculated - expected);
+    if (diff > tol)
+        REPORT_FAILURE(
+            "value", Average::Arithmetic, runningAccumulator, pastFixingsCount,
+            fixingDates, payoff, exercise, process->x0(),
+            0.075, 0.2, today, 0.5, expected, calculated, tol);
+
+    fixingDates.clear();
+    asianOption = DiscreteAveragingAsianOption(
+        Average::Arithmetic, runningAccumulator, pastFixingsCount,
+        fixingDates, payoff, exercise
+    );
+    asianOption.setPricingEngine(choiEngine);
+    calculated = asianOption.NPV();
+    expected = rTS->discount(maturity)
+        * (*payoff)(runningAccumulator/pastFixingsCount);
+
+    diff = std::abs(calculated - expected);
+    if (diff > tol)
+        REPORT_FAILURE(
+            "value", Average::Arithmetic, runningAccumulator, pastFixingsCount,
+            fixingDates, payoff, exercise, process->x0(),
+            0.075, 0.2, today, 0.5, expected, calculated, tol);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

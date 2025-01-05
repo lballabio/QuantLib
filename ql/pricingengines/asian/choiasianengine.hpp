@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2009 Ralph Schreyer
+ Copyright (C) 2025 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,47 +17,43 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdblackscholesasianengine.hpp
-    \brief Finite-Differences Black Scholes arithmentic asian option engine
+/*! \file discrarithasianreplicationengine.hpp
+    \brief Black Scholes arithmetic Asian option engine
 */
 
-#ifndef quantlib_fd_black_scholes_asian_engine_hpp
-#define quantlib_fd_black_scholes_asian_engine_hpp
+#ifndef quantlib_choi_asian_engine_hpp
+#define quantlib_choi_asian_engine_hpp
 
 #include <ql/pricingengine.hpp>
 #include <ql/instruments/asianoption.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
+    //! Pricing engine for arithmetic Asian options
+    /*! This class replicates an arithmetic Asian option using a basket option.
+        The pricing of an arithmetic Asian option is substituted with the pricing
+        of a basket option.
 
-    //! Finite-Differences Black Scholes arithmetic asian option engine
-
-    /*! \ingroup asianengines
+        \ingroup asianengines
     */
+    class ChoiBasketEngine;
 
-    class GeneralizedBlackScholesProcess;
-    
-    class FdBlackScholesAsianEngine
-        : public GenericEngine<DiscreteAveragingAsianOption::arguments,
-                               DiscreteAveragingAsianOption::results> {
+    class ChoiAsianEngine
+            : public GenericEngine<DiscreteAveragingAsianOption::arguments,
+                                   DiscreteAveragingAsianOption::results> {
       public:
-        // Constructor
-        explicit FdBlackScholesAsianEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess>,
-            Size tGrid = 100,
-            Size xGrid = 100,
-            Size aGrid = 50,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+        explicit ChoiAsianEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> p,
+            Real lambda = 15,
+            Size maxNrIntegrationSteps = 2 << 21);
 
         void calculate() const override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        const Size tGrid_, xGrid_, aGrid_;
-        const FdmSchemeDesc schemeDesc_;
+        const Real lambda_;
+        const Size maxNrIntegrationSteps_;
     };
-
-
 }
 
 #endif
