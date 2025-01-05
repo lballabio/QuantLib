@@ -6753,7 +6753,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\fdbatesvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\vanilla\choiasianengine.cpp">
+    <ClCompile Include="ql\pricingengines\asian\choiasianengine.cpp">
       <Filter>pricingengines\asian</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\fdblackscholesasianengine.cpp">
