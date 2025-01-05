@@ -145,6 +145,7 @@ namespace QuantLib {
 
           case Option::Put:
             results_.value = price_symmetric_call_opt(create_symmetric_call_opt());
+            break;
 
           default:
             QL_FAIL("unknown option type");

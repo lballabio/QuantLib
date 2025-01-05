@@ -124,6 +124,89 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
+    BOOST_TEST_MESSAGE(
+        "Testing analytic engine for partial-time put barrier option...");
+
+    Date today = Settings::instance().evaluationDate();
+
+    Option::Type type = Option::Put;
+    DayCounter dc = Actual360();
+    Date maturity = today + 360;
+    ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
+    Real barrier = 100.0;
+    Real rebate = 0.0;
+
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.1);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+
+    Handle<Quote> underlying(spot);
+    Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
+    Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(underlying,
+                                                      dividendTS,
+                                                      riskFreeTS,
+                                                      blackVolTS);
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+
+    TestCase cases[] = {
+        {  95.0,  90.0,   1,  5.4163 },
+        {  95.0,  95.0,   1,  6.6971 },
+        {  90.0,  95.0,   1,  12.5330 },
+        {  99.0,  90.0,   1,  1.3410 },
+
+        {  95.0,  90.0,   90,  8.1702 },
+        {  95.0,  95.0,   90,  10.1678 },
+        {  90.0,  95.0,   90,  14.0314 },
+        {  99.0,  90.0,   90,  6.0043 },
+
+        {  95.0,  90.0,   180,  9.7281 },
+        {  95.0,  95.0,   180,  12.2367 },
+        {  90.0,  95.0,   180,  15.5553 },
+        {  99.0,  90.0,   180,  7.8045 },
+
+        {  95.0,  90.0,   270,  10.6227 },
+        {  95.0,  95.0,   270,  13.5662 },
+        {  90.0,  95.0,   270,  16.6170 },
+        {  99.0,  90.0,   270,  8.8133 },
+
+        {  95.0,  90.0,   359,  10.9186 },
+        {  95.0,  95.0,   359,  14.2270 },
+        {  90.0,  95.0,   359,  17.1611 },
+        {  99.0,  90.0,   359,  9.1440 }
+    };
+
+    for (auto& i : cases) {
+        Date coverEventDate = today + i.days;
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::make_shared<PlainVanillaPayoff>(type, i.strike);
+        PartialTimeBarrierOption option(PartialBarrier::UpOut,
+                                        PartialBarrier::EndB1,
+                                        barrier, rebate,
+                                        coverEventDate,
+                                        payoff, exercise);
+        option.setPricingEngine(engine);
+
+        spot->setValue(i.underlying);
+        Real calculated = option.NPV();
+        Real expected = i.result;
+        Real error = std::fabs(calculated-expected);
+        Real tolerance = 1e-4;
+        if (error > tolerance)
+            BOOST_ERROR("Failed to reproduce partial-time put barrier option value"
+                        << "\n    expected:   " << expected
+                        << "\n    calculated: " << calculated
+                        << "\n    error:      " << error);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
