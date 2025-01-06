@@ -33,13 +33,20 @@ namespace QuantLib {
     /*! This class replicates an arithmetic Asian option using a basket option.
         The pricing of an arithmetic Asian option is substituted with the pricing
         of a basket option.
+    */
+        
+    /*! References:
+        "Sum of all Black-Scholes-Merton Models: An efficient Pricing Method for
+        Spread, Basket and Asian Options", Jaehyuk Choi, 2018
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2913048
+
+        A Python implementation from the author of the paper is also available
+        https://github.com/PyFE/PyFENG
 
         \ingroup asianengines
     */
     
-    class ChoiAsianEngine
-            : public GenericEngine<DiscreteAveragingAsianOption::arguments,
-                                   DiscreteAveragingAsianOption::results> {
+    class ChoiAsianEngine : public DiscreteAveragingAsianOption::engine {
       public:
         explicit ChoiAsianEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> p,
