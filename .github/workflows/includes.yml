@@ -1,0 +1,22 @@
+name: Fix inclusions of ql headers in double quotes
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  namespaces:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check
+      run: |
+        shopt -s globstar
+        sed -i -E -e 's|#include *"(ql/.*\.hpp)"|#include <\1>|g' **/*.[hc]pp
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: fix-include-in-quotes-${{ github.ref_name }}
+        delete-branch: true
+        commit-message: 'Fix inclusions of ql headers in double quotes'
+        title: 'Fix inclusions of ql headers in double quotes'
+        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
