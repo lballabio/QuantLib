@@ -15,7 +15,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.See the license for more details.
 */
 
-#include "ql/timegrid.hpp"
+#include <ql/timegrid.hpp>
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 

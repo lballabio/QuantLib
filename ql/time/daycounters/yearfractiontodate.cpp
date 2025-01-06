@@ -18,7 +18,7 @@
 */
 
 #include <ql/math/comparison.hpp>
-#include "ql/time/daycounters/yearfractiontodate.hpp"
+#include <ql/time/daycounters/yearfractiontodate.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
