@@ -1,176 +1,177 @@
-Changes for QuantLib 1.36:
+Changes for QuantLib 1.37:
 ==========================
 
-QuantLib 1.36 includes 34 pull requests from several contributors.
+QuantLib 1.37 includes 26 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/34?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/35?closed=1>.
 
 
 Portability
 -----------
 
-- **New minimum C++ standard:** starting from this release, a compiler
-  supporting C++17 is required.  Passing `--enable-std-classes` to
-  `configure` now causes `std::any` and `std::optional` to be used.
-
-- **End of support:** related to the above, and as announced since
-  release 1.32, this release drops support Visual C++ 2015, g++ up to
-  version 6.x, and clang up to version 4.  Also, given the testing
-  environments available on GitHub actions, clang 5 and 6 are no
-  longer available to us for testing, and the same holds for g++ 7.
-  Therefore, it is suggested to upgrade to a newer version if
-  possible.
-
-- **End of support:** this release also removes the configure switch
-  that allowed to use `boost::tuple`, `boost::function` and
-  `boost::bind` instead of their `std` counterparts; the `std` classes
-  were already the default since release 1.32.  The corresponding
-  classes in the `ext` namespace are now deprecated.
-
-- **Future change of default:** in a couple of releases, we're going
-  to switch the default for `ext::any` and `ext::optional` from the
-  Boost implementation to the standard one.
-
+- **Future change of default:** as already announced, in the next
+  release we're going to switch the default for `ext::any` and
+  `ext::optional` from the Boost implementation to the standard one.
 
 Dates and calendars
 -------------------
 
-- Added `startOfMonth` and `isStartOfMonth` methods to both `Date` and
-`Calendar`; thanks to Francois Botha (@igitur).
+- Added closure for President Carter's funeral to the NYSE calendar;
+  thanks to Dirk Eddelbuettel (@eddelbuettel).
 
-- Added specialized Warsaw Stock Exchange (WSE) calendar to Poland;
-  thanks to Marcin Bogusz (@marcinfair).
-
-- Added a new one-off holiday to South Korean calendar; thanks to
-  Jongbong An (@jongbongan).
-
-
-Cash flows
-----------
-
-- Made` OvernightIndexedCouponPricer` public and renamed to
-  `CompoundingOvernightIndexedCouponPricer`, and moved
-  `ArithmeticAveragedOvernightIndexedCouponPricer` from experimental
-  to core library; thanks to Ralf Konrad Eckel (@ralfkonrad).
+- Added distinct Wellington and Auckland variants for New Zealand
+  calendar (@lballabio).
 
 
 Indexes
 -------
 
-- **Possibly breaking:** inherited the `Index` class from `Observer`
-  and added a virtual `pastFixing` method.  If you inherited a class
-  from both `Index` and `Observer`, change your code to avoid
-  inheriting twice from `Observer`.  Thanks to Ralf Konrad Eckel
-  (@ralfkonrad).
+- Improved the performance of the `addFixing` and `addFixings` method
+  in the `Index` class; thanks to Peter Caspers (@pcaspers).
 
-- Added currency information to `EquityIndex`; thanks to Ralf Konrad
-  Eckel (@ralfkonrad).
+- Added the KOFR index; thanks to Jongbong An (@jongbongan).
 
 
-Inflation
----------
+Instruments and pricing engines
+-------------------------------
 
-- Inflation indexes are now better at deciding when to forecast
-  (@lballabio); also added a `needsForecast` method that makes the
-  information available.
+- Added Choi pricing engine for Asian options; thanks to Klaus
+  Spanderen (@klausspanderen).
 
-- Added `CPI::laggedYoYRate`; also, `YoYInflationCoupon`,
-  `yoyInflationLeg`, `CappedFlooredYoYInflationCoupon`,
-  `YearOnYearInflationSwap`, `MakeYoYInflationCapFloor`,
-  `YearOnYearInflationSwapHelper`, `YoYOptionletHelper` and the
-  experimental `YoYCapFloorTermPriceSurface` and
-  `InterpolatedYoYCapFloorTermPriceSurface` can now take an explicit
-  `CPI::InterpolationType` parameter instead of relying on the index
-  being defined as interpolated or not (@lballabio).  This is a first
-  step in removing interpolation from `YoYInflationIndex` and moving
-  it into the coupons where it belongs.
+- Passing a risk-free overnight index to an asset swap now implies
+  using OIS-like coupons (@lballabio).
 
-- Added method to YoY inflation index returning the date of the last
-  available fixing (@lballabio).
+- Added Bjerksund-Stensland, Operator-Splitting, Deng-Li-Zhou, Choi
+  and n-dim PDE engines for spread options; thanks to Klaus Spanderen
+  (@klausspanderen).
+
+- Deng-Li-Zhou, Choi and n-dim PDE engines for basket options; thanks
+  to Klaus Spanderen (@klausspanderen).
 
 
 Term structures
 ---------------
 
-- Allow passing a pricer to the constructor of the `OISRateHelper` and
-  `DatedOISRateHelper` classes (@lballabio); this makes it possible to
-  use arithmetic averaging of overnight rates.
+- Better upper and lower bounds for global bootstrap; thanks to Eugene
+  Toder (@eltoder).
 
-- Allow custom constraint in non-linear fitting methods; thanks to Kai
-  Lin (@klin333).
+- Fitted bond curves can now be passed precomputed parameters without
+  the need for bond helpers (@lballabio).
 
-- Allow creating a swap helper with frequency "Once" (@lballabio).
+- Use correct guess in SABR swaption vol cube (@lballabio).
 
-- The `GlobalBootstrap` constructor can now take an optional optimizer
-  and end criteria, allowing for better configuration; thanks to
+- OIS rate helpers can now be passed a date-generation rule; thanks to
+  Sotirios Papathanasopoulos (@sophistis42).
+
+- Swap rate helpers can now be passed explicit start and end dates;
+  thanks to Eugene Toder (@eltoder).
+
+- OIS rate helpers can now be passed explicit start and end dates,
+  making a distinct `DatedOISRateHelper` class unnecessary; thanks to
   Eugene Toder (@eltoder).
 
 
-Volatility
+Cash flows
 ----------
 
-- Added exact Bachelier implied-vol formula from Jäckel's paper; thanks
-  to Peter Caspers (@pcaspers).
+- Added new `MultipleResetsCoupon` and `MultipleResetsLeg` classes to
+  manage coupons with multiple resets (@lballabio).  They fix and
+  replace `SubPeriodsCoupon` and `SubPeriodsLeg`.
 
 
 Deprecated features
 -------------------
 
-- **Removed** features deprecated in version 1.31:
-  - the `BlackVanillaOptionPricer` typedef;
-  - the constructors of `CPICoupon` taking a `spread` parameter, its
-    `spread` method, and its protected `spread_` data member;
-  - the `withSpreads` method of `CPILeg`;
-  - the protected `adjustedFixing` method and `spread_` data member of
-    `CPICouponPricer`;
-  - the `YYAUCPIr`, `YYEUHICPr`, `YYFRHICPr`, `YYUKRPIr`, `YYUSCPIr`
-    and `YYZACPIr` indexes and the experimental `YYGenericCPIr` class;
-  - the constructor of `YoYInflationIndex` taking a `ratio` parameter;
-  - a couple of constructors of `ForwardRateAgreement`;
-  - the empty files `ql/math/curve.hpp`, `ql/math/lexicographicalview.hpp`,
-    `ql/termstructures/yield/drifttermstructure.hpp`
-    and `ql/patterns/composite.hpp`;
-  - the `const_iterator` and `const_value_iterator` typedefs in the
-    `Garch11` class;
-  - the `const_time_iterator`, `const_value_iterator`,
-    `const_reverse_time_iterator` and `const_reverse_value_iterator`
-    typedefs and the `cbegin_values`, `cend_values`, `crbegin_values`,
-    `crend_values`, `cbegin_time`, `cend_time`, `crbegin_time` and
-    `crend_time` methods of the `TimeSeries` class;
-  - the `base`, `increment`, `decrement`, `advance` and `distance_to`
-    method of the `step_iterator` class.
+- **Removed** features deprecated in version 1.32:
+  - the `FixedRateBondForward` class;
+  - the `SampledCurve` and `SampledCurveSet` classes;
+  - the `StepConditionSet` and `BoundaryConditionSet` classes;
+  - the `ParallelEvolver` and `ParallelEvolverTraits` classes;
+  - the `FDVanillaEngine` and `FDMultiPeriodEngine` classes;
+  - the `BSMTermOperator`, `StandardFiniteDifferenceModel`,
+    `StandardSystemFiniteDifferenceModel` and `StandardStepCondition`
+    typedefs;
+  - the `QL_NULL_FUNCTION` macro;
+  - the overloads of `DigitalCmsLeg::withReplication` ,
+    `DigitalCmsSpreadLeg::withReplication` and
+    `DigitalIborLeg::withReplication` taking no arguments;
+  - the empty headers `analyticamericanmargrabeengine.hpp`,
+    `analyticcomplexchooserengine.hpp`,
+    `analyticcomplexchooserengine.hpp`,
+    `analyticcompoundoptionengine.hpp`,
+    `analyticeuropeanmargrabeengine.hpp`,
+    `analyticsimplechooserengine.hpp`, `complexchooseroption.hpp`,
+    `compoundoption.hpp`, `margrabeoption.hpp` and
+    `simplechooseroption.hpp` in the `ql/experimental/exoticoptions`
+    folder;
+  - the empty header `ql/experimental/termstructures/multicurvesensitivities.hpp`;
+  - the empty headers `pdeshortrate.hpp` and `shoutcondition.hpp` in
+    the `ql/methods/finitedifferences` folder;
+  - the empty header `ql/models/marketmodels/duffsdeviceinnerproduct.hpp`;
+  - the empty headers `fdconditions.hpp`, `fddividendengine.hpp` and
+    `fdstepconditionengine.hpp` in the `ql/pricingengines/vanilla`
+    folder.
 
-- Deprecated `ext::function`, `ext::bind`, `ext::ref`, `ext::cref`,
-  `ext::placeholders`, `ext::tuple`, `ext::make_tuple`, `ext::get` and
-  `ext::tie`; use the corresponding `std::` classes and functions
+- Deprecated the `SubPeriodsCoupon`, `SubPeriodsPricer`,
+  `AveragingRatePricer` and `CompoundingRatePricer` classes; renamed
+  to `MultipleResetsCoupon`, `MultipleResetsPricer`,
+  `AveragingMultipleResetsPricer` and
+  `CompoundingMultipleResetsPricer`, respectively.
+
+- Deprecated the `SubPeriodsLeg` class; use `MultipleResetsLeg` instead.
+
+- Deprecated the `MultipleResetsCoupon` constructor without a reset
+  schedule; use the other constructor.
+
+- Deprecated the `calendar`, `price`, `addQuote`, `addQuotes`,
+  `clearQuotes`, `isValidQuoteDate` and `quotes` methods in the
+  `CommodityIndex` class; use `fixingCalendar`, `fixing`, `addFixing`,
+  `addFixings`, `clearFixings`, `isValidFixingDate` and `timeSeries`
   instead.
 
-- Deprecated the `ArithmeticAverageOIS`, `MakeArithmeticAverageOIS`
-  and `ArithmeticOISRateHelper` classes; use `OvernightIndexedSwap`,
-  `MakeOIS` and `OISRateHelper` instead.
+- Deprecated the experimental `SpreadOption` and `KirkSpreadOptionEngine`
+  classes; use `BasketOption` and `KirkEngine` instead.
 
-- Deprecated the `YoYInflationCoupon`, `yoyInflationLeg`,
-  `CappedFlooredYoYInflationCoupon`, `YearOnYearInflationSwap`,
-  `MakeYoYInflationCapFloor`, `YearOnYearInflationSwapHelper`,
-  `YoYOptionletHelper`, `YoYCapFloorTermPriceSurface` and
-  `InterpolatedYoYCapFloorTermPriceSurface` constructors that don't
-  take an explicit CPI interpolation type.
+- Deprecated the `TransformedGrid` and `LogGrid` classes and the
+  `CenteredGrid`, `BoundedGrid` and `BoundedLogGrid` functions; use
+  the new FD framework instead.
 
-- Deprecated the `getInfo` method of `LevenbergMarquardt`; inspect the
-  result of `minimize` instead.
+- Deprecated the `PdeOperator` and `BSMOperator` classes; use the new
+  FD framework instead.
 
-- Deprecated the
-  `ql/experimental/averageois/averageoiscouponpricer.hpp` file;
-  include `ql/cashflows/overnightindexedcouponpricer.hpp` instead.
+- Deprecated the `PdeSecondOrderParabolic`, `PdeConstantCoeff`,
+  `PdeBSM` and `GenericTimeSetter` classes; use the new FD framework
+  instead.
 
-- Deprecated the somewhat out-of-scope and experimental
-  `CreditRiskPlus`, `SensitivityAnalysis`, `aggregateNPV`,
-  `parallelAnalysis` and `bucketAnalysis`.
+- Deprecated the `hasHistory`, `getHistory`, `clearHistory`,
+  `hasHistoricalFixing` and `setHistory` in the `IndexManager` class;
+  use `Index::hasHistoricalFixing`, `Index::timeSeries`,
+  `Index::clearFixings`, `Index::hasHistoricalFixing` and
+  `Index::addFixings` instead.
+
+- Deprecated the `notifier` method in the `IndexManager` class;
+  register with the relevant index instead.
+
+- Deprecated one of the `AssetSwap` constructors; use the other overload.
+
+- Deprecated the `fcn` and `jacFcn` methods in the
+  `LevenbergMarquardt` class; they are for internal use only.
+
+- Deprecated the `indexIsInterpolated` parameter in YoY inflation
+  curve constructors; use another overload.  Fixings will be
+  interpolated by coupons instead, so curves and indexes will only be
+  asked for fixing at the start of a month.
+
+- Deprecated the `indexIsInterpolated` method and the
+  `indexIsInterpolated_` data member in the
+  `YoYInflationTermStructure` class.
+
+- Deprecated the `DatedOISRateHelper` class; use `OISRateHelper`
+  instead.
 
 
-**Thanks go also** to Jonathan Sweemer (@sweemer), Eugene Toder
- (@eltoder), Ralf Konrad Eckel (@ralfkonrad), Tony Wang (@twan3617)
- and the XAD team (@auto-differentiation-dev) for miscellaneous
- smaller fixes, improvements or reports.
+**Thanks go also** to Eugene Toder (@eltoder), Ben Watson (@sonben)
+and the XAD team (@auto-differentiation-dev) for miscellaneous
+smaller fixes, improvements or reports.

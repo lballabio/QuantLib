@@ -87,7 +87,7 @@ namespace QuantLib {
         /*! \deprecated Use addFixing instead.
                         Deprecated in version 1.37.
         */
-        [[deprecated("Use fixing instead")]]
+        [[deprecated("Use addFixing instead")]]
         void addQuote(const Date& quoteDate, Real quote) {
             addFixing(quoteDate, quote);
         }
