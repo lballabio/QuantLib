@@ -32,7 +32,7 @@ namespace QuantLib {
 
     //! Finite-Differences Black Scholes arithmetic asian option engine
 
-    /*! \ingroup vanillaengines
+    /*! \ingroup asianengines
     */
 
     class GeneralizedBlackScholesProcess;

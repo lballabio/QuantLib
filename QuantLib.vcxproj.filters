@@ -3867,6 +3867,9 @@
     <ClInclude Include="ql\pricingengines\asian\fdblackscholesasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\asian\choiasianengine.hpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
@@ -6749,6 +6752,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\fdbatesvanillaengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\asian\choiasianengine.cpp">
+      <Filter>pricingengines\asian</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\fdblackscholesasianengine.cpp">
       <Filter>pricingengines\asian</Filter>
