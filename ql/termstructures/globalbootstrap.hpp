@@ -57,7 +57,7 @@ template <class Curve> class GlobalBootstrap {
       The additional helpers are treated like the usual rate helpers, but no standard pillar dates are added for them.
 
       WARNING: This class is known to work with Traits Discount, ZeroYield, Forward, i.e. the usual traits for IR curves
-      in QL. It requires Traits::minValueGlobal() and Traits::maxValueGlobal() to be implemented. Also, check the usage
+      in QL. It requires Traits::transformDirect() and Traits::transformInverse() to be implemented. Also, check the usage
       of Traits::updateGuess(), Traits::guess() in this class.
     */
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
@@ -200,6 +200,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
         // but reasonable numbers might be needed for the whole data vector
         // because, e.g., of interpolation's early checks
         ts_->data_ = std::vector<Real>(dates.size(), Traits::initialValue(ts_));
+        validCurve_ = false;
     }
     initialized_ = true;
 }
@@ -242,26 +243,10 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
             ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(), ts_->data_.begin());
     }
 
-    // determine bounds, we use an unconstrained optimisation transforming the free variables to [lowerBound,upperBound]
-    const Size numberBounds = ts_->times_.size() - 1;
-    std::vector<Real> lowerBounds(numberBounds), upperBounds(numberBounds);
-    for (Size i = 0; i < numberBounds; ++i) {
-        lowerBounds[i] = Traits::minValueGlobal(i + 1, ts_, validCurve_);
-        upperBounds[i] = Traits::maxValueGlobal(i + 1, ts_, validCurve_);
-    }
-
     // setup cost function
-    auto transformDirect = [&](const Real x, const Size i) {
-        return (std::atan(x) + M_PI_2) / M_PI * (upperBounds[i] - lowerBounds[i]) + lowerBounds[i];
-    };
-
-    auto transformInverse = [&](const Real y, const Size i) {
-        return std::tan((y - lowerBounds[i]) * M_PI / (upperBounds[i] - lowerBounds[i]) - M_PI_2);
-    };
-
     SimpleCostFunction cost([&](const Array& x) {
         for (Size i = 0; i < x.size(); ++i) {
-            Traits::updateGuess(ts_->data_, transformDirect(x[i], i), i + 1);
+            Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
         }
         ts_->interpolation_.update();
         std::vector<Real> result(numberHelpers_);
@@ -280,12 +265,13 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
     });
 
     // setup guess
+    const Size numberBounds = ts_->times_.size() - 1;
     Array guess(numberBounds);
     for (Size i = 0; i < numberBounds; ++i) {
         // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
         // update ts_->data_ since Traits::guess() usually depends on previous values
         Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
-        guess[i] = transformInverse(ts_->data_[i + 1], i);
+        guess[i] = Traits::transformInverse(ts_->data_[i + 1], i + 1, ts_);
     }
 
     // setup problem
