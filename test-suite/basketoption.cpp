@@ -1113,7 +1113,7 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandSpreadEngine) {
     putOption.setPricingEngine(engine);
     const Real putNPV = putOption.NPV();
 
-    const Real tol = QL_EPSILON*100;
+    constexpr double tol = QL_EPSILON*100;
     Real diff = std::abs(putNPV - expectedPutNPV);
 
     if (diff > tol) {
@@ -1275,7 +1275,7 @@ BOOST_AUTO_TEST_CASE(testStrangSplittingSpreadEngineVsMathematica) {
      };
 
     const Real s1 = 110.0, s2 = 90.0;
-    const Real tol = 100*QL_EPSILON;
+    constexpr double tol = 100*QL_EPSILON;
 
     for (const auto& testCase: testCases) {
         const Real rho = testCase.rho;;
@@ -1780,7 +1780,7 @@ BOOST_AUTO_TEST_CASE(testRootOfSumExponentials) {
 
         Size fCtr = 0;
         const Size n = 10000;
-        const Real tol = 1e8*QL_EPSILON;
+        constexpr double tol = 1e8*QL_EPSILON;
         const Real acc = 1e-4*tol;
         IncrementalStatistics stats;
 

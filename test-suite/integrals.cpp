@@ -478,7 +478,8 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegral) {
         {216.311896062465, -665.7395614066049, 6.68861022474796e+285, 6.86204916856497e+285, -6.86204916856497e+285, 6.68861022474796e+285, 4.35129688126332e+89, 1.25283433405018e+91, 9.10599247691995e-98, 1.3494793845188e-97},
         {691.381838416598, -109.50412552816101, -2.38570018769502e+44, -9.72638025849046e+43, 9.72638025849046e+43, -2.38570018769502e+44, -2.15172979114587e+297, -1.50043260461905e+297, -7.44435180959991e-304, 2.26013762375079e-304}
     };
-    const Real tol = 100*QL_EPSILON;
+
+    constexpr double tol = 100*QL_EPSILON;
 
     for (const auto& i : data) {
         const Real x = i[0];
@@ -586,7 +587,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
     const std::complex<Real> largeValuePosImag =
         Ei(std::complex<Real>(largeValue, std::numeric_limits<Real>::min()));
 
-    const Real tol = 1000*QL_EPSILON;
+    constexpr double tol = 1000*QL_EPSILON;
 
     QL_CHECK_CLOSE(largeValuePosImag.imag(), M_PI, tol);
 
@@ -610,7 +611,7 @@ BOOST_AUTO_TEST_CASE(testExponentialIntegralLimits) {
             ei_0 == std::complex<Real>(-std::numeric_limits<Real>::infinity()));
     }
 
-    const Real smallR = QL_EPSILON*QL_EPSILON;
+    constexpr double smallR = QL_EPSILON*QL_EPSILON;
     for (Integer x = -100; x < 100; ++x) {
         const Real phi = x/100.0 * M_PI;
         const std::complex<Real> z = std::polar(smallR, phi);

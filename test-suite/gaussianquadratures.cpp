@@ -343,9 +343,10 @@ BOOST_AUTO_TEST_CASE(testMultiDimensionalGaussIntegration) {
             }
         );
 
+        constexpr double tol = 1e4*QL_EPSILON;
+
         const Real calculated = quad(normal);
         const Real expected = std::sqrt(std::pow(M_PI, Real(n)));
-        const Real tol = 1e4*QL_EPSILON;
         const Real diff = std::abs(expected-calculated);
         if (diff > tol) {
             BOOST_ERROR("failed to reproduce multi dimensional Gaussian quadrature"

@@ -951,7 +951,7 @@ BOOST_AUTO_TEST_CASE(testHouseholderTransformation) {
 BOOST_AUTO_TEST_CASE(testHouseholderReflection) {
     BOOST_TEST_MESSAGE("Testing Householder Reflection...");
 
-    const Real tol=1e4*QL_EPSILON;
+    constexpr double tol = 1e4*QL_EPSILON;
 
     const auto e = [](Size n, Size m=0) -> Array {
         Array e(n, 0.0);
