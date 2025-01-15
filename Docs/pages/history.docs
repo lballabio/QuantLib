@@ -46,8 +46,11 @@
       to Klaus Spanderen.
 
     TERM STRUCTURES
-    - Better upper and lower bounds for global bootstrap; thanks to Eugene
-      Toder.
+    - **Possibly breaking**: better upper and lower bounds for global
+      bootstrap; thanks to Eugene Toder.  If you created your own
+      bootstrap traits, you'll need to add `minValueGlobal` and
+      `maxValueGlobal` methods for them to work with the
+      `GlobalBootstrap` class.
     - Fitted bond curves can now be passed precomputed parameters without
       the need for bond helpers.
     - Use correct guess in SABR swaption vol cube.

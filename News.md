@@ -1,7 +1,7 @@
 Changes for QuantLib 1.37:
 ==========================
 
-QuantLib 1.37 includes 26 pull requests from several contributors.
+QuantLib 1.37 includes 27 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -54,8 +54,11 @@ Instruments and pricing engines
 Term structures
 ---------------
 
-- Better upper and lower bounds for global bootstrap; thanks to Eugene
-  Toder (@eltoder).
+- **Possibly breaking**: better upper and lower bounds for global
+  bootstrap; thanks to Eugene Toder (@eltoder).  If you created your
+  own bootstrap traits, you'll need to add `transformDirect` and
+  `transformInverse` methods for them to work with the `GlobalBootstrap`
+  class.
 
 - Fitted bond curves can now be passed precomputed parameters without
   the need for bond helpers (@lballabio).
