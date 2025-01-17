@@ -38,7 +38,6 @@ namespace QuantLib {
     namespace detail {
         const Real avgRate = 0.05;
         const Real maxRate = 1.0;
-        const Real maxDF = 10.0;
     }
 
     //! Discount-curve traits
@@ -102,16 +101,16 @@ namespace QuantLib {
             return c->data()[i-1] * std::exp(detail::maxRate * dt);
         }
 
-        // possible constraints for global optimization
+        // transformation to add constraints to an unconstrained optimization
         template <class C>
-        static Real minValueGlobal(Size i, const C* c, bool validData)
+        static Real transformDirect(Real x, Size i, const C* c)
         {
-            return 0;
+            return std::exp(x);
         }
         template <class C>
-        static Real maxValueGlobal(Size i, const C* c, bool validData)
+        static Real transformInverse(Real x, Size i, const C* c)
         {
-            return detail::maxDF;
+            return std::log(x);
         }
 
         // root-finding update
@@ -193,16 +192,16 @@ namespace QuantLib {
             return detail::maxRate;
         }
 
-        // possible constraints for global optimization
+        // transformation to add constraints to an unconstrained optimization
         template <class C>
-        static Real minValueGlobal(Size i, const C* c, bool validData)
+        static Real transformDirect(Real x, Size i, const C* c)
         {
-            return -detail::maxRate;
+            return x;
         }
         template <class C>
-        static Real maxValueGlobal(Size i, const C* c, bool validData)
+        static Real transformInverse(Real x, Size i, const C* c)
         {
-            return detail::maxRate;
+            return x;
         }
 
         // root-finding update
@@ -286,16 +285,16 @@ namespace QuantLib {
             return detail::maxRate;
         }
 
-        // possible constraints for global optimization
+        // transformation to add constraints to an unconstrained optimization
         template <class C>
-        static Real minValueGlobal(Size i, const C* c, bool validData)
+        static Real transformDirect(Real x, Size i, const C* c)
         {
-            return -detail::maxRate;
+            return x;
         }
         template <class C>
-        static Real maxValueGlobal(Size i, const C* c, bool validData)
+        static Real transformInverse(Real x, Size i, const C* c)
         {
-            return detail::maxRate;
+            return x;
         }
 
         // root-finding update
@@ -381,16 +380,16 @@ namespace QuantLib {
             return detail::maxRate;
         }
 
-        // possible constraints for global optimization
+        // transformation to add constraints to an unconstrained optimization
         template <class C>
-        static Real minValueGlobal(Size i, const C* c, bool validData)
+        static Real transformDirect(Real x, Size i, const C* c)
         {
-            return std::max(-detail::maxRate, -1.0 / c->times()[i] + 1E-8);
+            return std::exp(x) + (-1.0 / c->times()[i] + 1E-8);
         }
         template <class C>
-        static Real maxValueGlobal(Size i, const C* c, bool validData)
+        static Real transformInverse(Real x, Size i, const C* c)
         {
-            return detail::maxRate;
+            return std::log(x - (-1.0 / c->times()[i] + 1E-8));
         }
 
         // root-finding update
