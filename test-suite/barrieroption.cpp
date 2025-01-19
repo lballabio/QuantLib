@@ -246,6 +246,87 @@ BOOST_AUTO_TEST_CASE(testParity) {
                     << "\n    error:      " << error);
     }
 }
+
+BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
+    BOOST_TEST_MESSAGE(
+        "Testing put-call symmetry for barrier options...");
+
+    Date today = Settings::instance().evaluationDate();
+    Real r = 0.00;
+
+    struct PutCallSymmetryTestCase {
+        Real call_strike;
+        Real call_barrier;
+        Barrier::Type call_type;
+        Real put_strike;
+        Real put_barrier;
+        Barrier::Type put_type;
+    };
+
+    PutCallSymmetryTestCase cases[] = {
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, Barrier::UpOut },
+
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, Barrier::DownOut },
+    };
+
+    DayCounter dc = Actual360();
+    Date maturity = today + 360;
+    ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
+    Real rebate = 0.0;
+
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(r);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+
+    Handle<Quote> underlying(spot);
+    Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
+    Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(underlying,
+                                                      dividendTS,
+                                                      riskFreeTS,
+                                                      blackVolTS);
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<AnalyticBarrierEngine>(process);
+
+    for (auto& i : cases) {
+        ext::shared_ptr<StrikedTypePayoff> put_payoff =
+            ext::make_shared<PlainVanillaPayoff>(Option::Put, i.put_strike);
+        ext::shared_ptr<StrikedTypePayoff> call_payoff =
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, i.call_strike);
+        BarrierOption put_option(i.put_type,
+                                 i.put_barrier, rebate,
+                                 put_payoff, exercise);
+        put_option.setPricingEngine(engine);
+        BarrierOption call_option(i.call_type,
+                                  i.call_barrier, rebate,
+                                  call_payoff, exercise);
+        call_option.setPricingEngine(engine);
+
+        spot->setValue(100.0);
+        Real put_value = put_option.NPV();
+        Real call_value = call_option.NPV();
+        Real call_amount = (i.put_strike / 100.0);
+        Real error = std::fabs(put_value - call_amount * call_value);
+        Real tolerance = 1e-4;
+        if (error > tolerance)
+            BOOST_ERROR("Failed to reproduce the put-call symmetry for the partial-time barrier options "
+                        << "\n    error:      " << error);
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testHaugValues) {
 
     BOOST_TEST_MESSAGE("Testing barrier options against Haug's values...");
