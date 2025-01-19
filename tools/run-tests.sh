@@ -51,20 +51,29 @@ fi
 
 # Validate build type
 if [[ "$BUILD_TYPE" != "Release" && "$BUILD_TYPE" != "Debug" ]]; then
-    echo "Invalid build type. Choose 'RELEASE' or 'DEBUG'."
+    echo "Invalid build type. Choose 'Release' or 'Debug'."
     exit 1
 fi
 
-BUILD_DIR=$BASEDIR/build/
+BUILD_DIR=$BASEDIR/build/$CMAKE_PRESET
 
 if [ ! -d $BUILD_DIR ]
 then
     source $BASEDIR/tools/build-with-cmake.sh -bt $BUILD_TYPE 
 fi
 
-pushd $BUILD_DIR/test-suite/
+CORES=$((`nproc`))
+
+pushd $BUILD_DIR
+
+# Rebuild changed files
+make -j$CORES
+
+pushd test-suite
 
 ./quantlib-test-suite --log_level=message --run_test=*/$TEST_SUITE
+
+popd
 
 popd
 

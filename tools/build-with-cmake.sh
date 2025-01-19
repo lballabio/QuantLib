@@ -4,7 +4,8 @@ BUILD_TYPE=Release
 CMAKE_PRESET=linux-base
 
 help() {
-    echo "build-with-cmake.sh [-bt|--build-type] - the type of build (Debug/Release)
+    echo "build-with-cmake.sh - build the quantlib library using the cmake build system
+                   [-bt|--build-type] - the type of build (Debug/Release)
                    [-p|--preset] - cmake-preset to use
                    [-h|--help] - Output the help message 
     "
@@ -32,10 +33,12 @@ while [[ "$#" -gt 0 ]]; do
             exit 1
             ;;
         *)
-            POSITIONAL_ARGS+=("$1")
+            POSITIONAL_ARGS+=("-D$1")
             shift
     esac
 done
+
+set -- "${POSITIONAL_ARGS[@]}"
 
 # Call basedir.sh
 if [[ -z $BASEDIR ]]; then
@@ -47,7 +50,7 @@ if [[ "$BUILD_TYPE" != "Release" && "$BUILD_TYPE" != "Debug" ]]; then
     echo "Invalid build type. Choose 'Release' or 'Debug'."
 fi
 
-BUILD_DIR=$BASEDIR/build/
+BUILD_DIR=$BASEDIR/build/$CMAKE_PRESET
 
 if [ -d $BUILD_DIR ]
 then
@@ -59,9 +62,10 @@ mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
 echo "Running CMake with build type: $BUILD_TYPE"
-echo "Using compiler: $COMPILER"
-echo "$COMPILER Version: $GCC_VERSION"
-cmake $BASEDIR -G "Unix Makefiles" --preset $CMAKE_PRESET -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DUSE_CLANG=$USE_CLANG
+echo "CMake preset: $CMAKE_PRESET"
+echo "Positional arguments: ${POSITIONAL_ARGS[@]}"
+
+cmake $BASEDIR -G "Unix Makefiles" --preset $CMAKE_PRESET -DCMAKE_BUILD_TYPE=$BUILD_TYPE "${POSITIONAL_ARGS[@]}"
 
 CORES=$((`nproc`))
 
