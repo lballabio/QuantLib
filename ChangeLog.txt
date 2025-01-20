@@ -1,3 +1,103 @@
+commit ede2c4b995b543b1e89ff028682f14ec0cff829f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.37 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 7001df124864e7de9572f6708774b88037a0c98f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 10 Jan 2025 17:59:30 +0100
+
+    Use fallthrough attribute instead of comment
+
+ ql/time/schedule.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 806a6306419732bfadb248f2faa1d43655fd02be
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 10 Jan 2025 17:56:52 +0100
+
+    Make a few variables constexpr
+
+ test-suite/basketoption.cpp        | 6 +++---
+ test-suite/gaussianquadratures.cpp | 3 ++-
+ test-suite/integrals.cpp           | 7 ++++---
+ test-suite/matrices.cpp            | 2 +-
+ 4 files changed, 10 insertions(+), 8 deletions(-)
+
+commit 38d7426c1014ba552f7e49a25253217cd56e59d9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 15 Jan 2025 23:00:56 +0100
+
+    Update news
+
+ Docs/pages/history.docs | 7 +++++--
+ News.md                 | 9 ++++++---
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+commit cd8e69c0b46e00e719a951d91d79d003910f1d04
+Merge: b5ab596a1 c3c27e28f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Jan 2025 11:45:01 +0100
+
+    Move transformation used in GlobalBootstrap into Traits (#2135)
+
+commit c3c27e28fa1f075de0b0907fcdd910b004ca88ce
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Wed, 8 Jan 2025 16:12:44 -0500
+
+    Move transformation used in GlobalBootstrap into Traits
+    
+    Also, use exp instead of atan transformation for discount factors. This
+    is an improvement on #2120 based on these observations:
+    
+    * Rates-based traits don't need any constraints in the optimization, so
+      we don't need any transformation with them. This removes unnecessary
+      computations.
+    
+    * Discount factors are only bounded on one side (have to be positive),
+      so instead of estimating a max value to use atan, we can simply use
+      exp. This is faster and uses fewer magic numbers.
+    
+      Another issue with atan is that it changes the gradients too much when
+      the value is far from the middle of the range. This pushes
+      optimization away from the correct solution when rates are low. This
+      makes it hard to find value of maxDF that works for both very low and
+      very high rates.
+
+ ql/termstructures/globalbootstrap.hpp       | 24 ++++-------------
+ ql/termstructures/yield/bootstraptraits.hpp | 41 ++++++++++++++---------------
+ 2 files changed, 25 insertions(+), 40 deletions(-)
+
+commit b5ab596a1ea68171fe402a3895fbd4372ceaf935
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.37-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit f7a7f693c2b559c16d8e47dfdcd3d52a6a55e3da
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2025 17:25:24 +0100
+
+    Update news and changelog
+
+ ChangeLog.txt                                  | 2759 +++++++++++-------------
+ Contributors.txt                               |    1 +
+ Docs/pages/history.docs                        |  154 +-
+ News.md                                        |  249 +--
+ ql/experimental/commodities/commodityindex.hpp |    2 +-
+ 5 files changed, 1538 insertions(+), 1627 deletions(-)
+
 commit 6a513c7975dd1b31a03e46fee910ddf4c67fa05b
 Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 Date:   Tue, 7 Jan 2025 08:05:40 +0000
