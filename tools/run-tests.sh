@@ -5,13 +5,25 @@ CMAKE_PRESET=linux-base
 TEST_SUITE=""
 
 help() {
-    echo "run-tests.sh -- Run QuantLib tests in the cmake folder
-                   [-bt|--build-type] - the type of build (Debug/Release)
-                   [-p|--preset] - cmake-preset to use
-                   [-ts|--test-suite] - test suite to run
-                   [-h|--help] - Output the help message 
+    echo "run-tests.sh - run the QuantLib library tests (or a subset of the tests)
+    Usage: run-tests.sh [options] [positional arguments]
+    
+    Options:
+        -bt|--build-type <type>    Specify the build type (Debug/Release). Default: Release
+        -p|--preset <preset>       Specify the CMake preset to use. Default: linux-base
+        -h|--help                  Output this help message
+    
+    Positional Arguments:
+        These are additional options passed to CMake as '-D<argument>=<value>' pairs.
+        Examples:
+            QL_BUILD_BENCHMARK=ON   Enable building of benchmarks
+            QL_BUILD_EXAMPLES=OFF   Disable building of examples
+            QL_BUILD_TEST_SUITE=ON  Enable building of the test suite
+    
+    Example Usage:
+        ./run-tests.sh -bt Release -p linux-base QL_BUILD_BENCHMARK=OFF
     "
-    exit 1
+    return
 }
 
 POSITIONAL_ARGS=()
@@ -59,7 +71,17 @@ BUILD_DIR=$BASEDIR/build/$CMAKE_PRESET
 
 if [ ! -d $BUILD_DIR ]
 then
-    source $BASEDIR/tools/build-with-cmake.sh -bt $BUILD_TYPE 
+    BUILD_ARGS=""
+    
+    if [[ -n $BUILD_TYPE ]]; then
+        BUILD_ARGS="-bt $BUILD_TYPE"
+    fi
+
+    if [[ -n $CMAKE_PRESET ]]; then
+        BUILD_ARGS="$BUILD_ARGS -p $CMAKE_PRESET"
+    fi
+
+    source $BASEDIR/tools/build-with-cmake.sh $BUILD_ARGS "${POSITIONAL_ARGS[@]}"
 fi
 
 CORES=$((`nproc`))
@@ -77,7 +99,6 @@ popd
 
 popd
 
-# Echo results of make
 if [[ $? -eq 0 ]]; then
     echo "Testing suit succeeded."
 else

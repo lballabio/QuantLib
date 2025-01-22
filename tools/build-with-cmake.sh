@@ -4,10 +4,23 @@ BUILD_TYPE=Release
 CMAKE_PRESET=linux-base
 
 help() {
-    echo "build-with-cmake.sh - build the quantlib library using the cmake build system
-                   [-bt|--build-type] - the type of build (Debug/Release)
-                   [-p|--preset] - cmake-preset to use
-                   [-h|--help] - Output the help message 
+    echo "build-with-cmake.sh - build the QuantLib library using the CMake build system
+    Usage: build-with-cmake.sh [options] [positional arguments]
+    
+    Options:
+        -bt|--build-type <type>    Specify the build type (Debug/Release). Default: Release
+        -p|--preset <preset>       Specify the CMake preset to use. Default: linux-base
+        -h|--help                  Output this help message
+    
+    Positional Arguments:
+        These are additional options passed to CMake as '-D<argument>=<value>' pairs.
+        Examples:
+            QL_BUILD_BENCHMARK=ON   Enable building of benchmarks
+            QL_BUILD_EXAMPLES=OFF   Disable building of examples
+            QL_BUILD_TEST_SUITE=ON  Enable building of the test suite
+    
+    Example Usage:
+        ./build-with-cmake.sh -bt Release -p linux-base QL_BUILD_BENCHMARK=ON QL_BUILD_TEST_SUITE=ON
     "
     return
 }
@@ -73,7 +86,6 @@ make -j$CORES
 
 popd
 
-# Echo results of make
 if [[ $? -eq 0 ]]; then
     echo "Build succeeded."
 else
