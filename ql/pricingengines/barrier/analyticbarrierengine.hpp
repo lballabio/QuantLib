@@ -64,6 +64,7 @@ namespace QuantLib {
         DiscountFactor dividendDiscount() const;
         Rate mu() const;
         Real muSigma() const;
+        Real costOfCarry() const;
         Real A(Real phi) const;
         Real B(Real phi) const;
         Real C(Real eta, Real phi) const;

@@ -178,13 +178,17 @@ namespace QuantLib {
         return (1 + mu()) * stdDeviation();
     }
 
+    Real AnalyticBarrierEngine::costOfCarry() const {
+        return  dividendDiscount() / riskFreeDiscount();
+    }
+
     Real AnalyticBarrierEngine::A(Real phi) const {
         Real x1 =
             std::log(underlying()/strike())/stdDeviation() + muSigma();
         Real N1 = f_(phi*x1);
         Real N2 = f_(phi*(x1-stdDeviation()));
 
-        return phi*(underlying() * dividendDiscount() * N1
+        return phi*(underlying() * (costOfCarry() * riskFreeDiscount()) * N1
                       - strike() * riskFreeDiscount() * N2);
     }
 
@@ -193,7 +197,7 @@ namespace QuantLib {
             std::log(underlying()/barrier())/stdDeviation() + muSigma();
         Real N1 = f_(phi*x2);
         Real N2 = f_(phi*(x2-stdDeviation()));
-        return phi*(underlying() * dividendDiscount() * N1
+        return phi*(underlying() * (costOfCarry() * riskFreeDiscount()) * N1
                       - strike() * riskFreeDiscount() * N2);
     }
 
@@ -206,7 +210,7 @@ namespace QuantLib {
         Real N2 = f_(eta*(y1-stdDeviation()));
         // when N1 or N2 are zero, the corresponding powHS might
         // be infinity, resulting in a NaN for their products.  The limit should be 0.
-        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
+        return phi*(underlying() * (costOfCarry() * riskFreeDiscount()) * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
                       - strike() * riskFreeDiscount() * (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
     }
 
@@ -219,7 +223,7 @@ namespace QuantLib {
         Real N2 = f_(eta*(y2-stdDeviation()));
         // when N1 or N2 are zero, the corresponding powHS might
         // be infinity, resulting in a NaN for their products.  The limit should be 0.
-        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
+        return phi*(underlying() * (costOfCarry() * riskFreeDiscount()) * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
                       - strike() * riskFreeDiscount() * (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
     }
 
