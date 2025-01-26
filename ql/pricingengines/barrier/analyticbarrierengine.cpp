@@ -178,7 +178,7 @@ namespace QuantLib {
         return (1 + mu()) * stdDeviation();
     }
 
-    Real AnalyticBarrierEngine::costOfCarry() const {
+    DiscountFactor AnalyticBarrierEngine::costOfCarry() const {
         return  dividendDiscount() / riskFreeDiscount();
     }
 

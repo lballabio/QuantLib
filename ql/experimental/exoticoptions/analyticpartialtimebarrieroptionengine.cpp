@@ -44,39 +44,48 @@ namespace QuantLib {
         PartialBarrier::Type barrierType = arguments_.barrierType;
         PartialBarrier::Range barrierRange = arguments_.barrierRange;
 
-        auto get_symmetric_opt_type = [](Barrier::Type barrier_type) -> Barrier::Type {
-          if (barrier_type == Barrier::UpIn) return Barrier::DownIn;
-          if (barrier_type == Barrier::DownIn) return Barrier::UpIn;
-          if (barrier_type == Barrier::UpOut) return Barrier::DownOut;
+        auto getSymmetricBarrierType = [](Barrier::Type barrierType) -> Barrier::Type {
+          if (barrierType == Barrier::UpIn) return Barrier::DownIn;
+          if (barrierType == Barrier::DownIn) return Barrier::UpIn;
+          if (barrierType == Barrier::UpOut) return Barrier::DownOut;
           return Barrier::UpOut;
         };
-        auto create_symmetric_call_opt = [&]() -> PartialTimeBarrierOption {
-          Real spot_sq = spot * spot;
-          Real call_strike = spot_sq / payoff->strike();
-          Option::Type opt_type = Option::Call;
-          ext::shared_ptr<StrikedTypePayoff> call_payoff = 
-            ext::make_shared<PlainVanillaPayoff>(opt_type, call_strike);
+        auto createSymmetricCallOpt = [&]() -> PartialTimeBarrierOption {
+          Real spotSq = spot * spot;
+          Real callStrike = spotSq / payoff->strike();
+          Option::Type optType = Option::Call;
+          ext::shared_ptr<StrikedTypePayoff> callPayoff = 
+            ext::make_shared<PlainVanillaPayoff>(optType, callStrike);
           ext::shared_ptr<Exercise> exercise = arguments_.exercise;
-          Real call_barrier = spot_sq / arguments_.barrier;
+          Real callBarrier = spotSq / arguments_.barrier;
           Real rebate = arguments_.barrier;
           Date coverEventDate = arguments_.coverEventDate;
 
-          PartialTimeBarrierOption symmetric_call_option(
-            get_symmetric_opt_type(barrierType),
+          PartialTimeBarrierOption symmetricCallOption(
+            getSymmetricBarrierType(barrierType),
             arguments_.barrierRange,
-            call_barrier, rebate,
+            callBarrier, rebate,
             coverEventDate,
-            call_payoff, exercise
+            callPayoff, exercise
           );
-          return symmetric_call_option;
+          return symmetricCallOption;
         };
-        auto price_symmetric_call_opt = [&](PartialTimeBarrierOption option) -> Real {
+        auto priceSymmetricCallOpt = [&](PartialTimeBarrierOption option) -> Real {
+          auto rRate = process_->riskFreeRate();
+          auto qYield = process_->dividendYield();
+          const ext::shared_ptr<GeneralizedBlackScholesProcess> callProcess = 
+            ext::make_shared<GeneralizedBlackScholesProcess>(
+              process_->stateVariable(),
+              rRate,
+              qYield,
+              process_->blackVolatility()
+            );
           ext::shared_ptr<PricingEngine> engine = 
-            ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process_);
+            ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(callProcess);
           option.setPricingEngine(engine);
 
-          Real call_value = option.NPV();
-          return payoff->strike() / spot * call_value;
+          Real callValue = option.NPV();
+          return payoff->strike() / spot * callValue;
         };
 
         switch (payoff->optionType()) {
@@ -144,7 +153,7 @@ namespace QuantLib {
             break;
 
           case Option::Put:
-            results_.value = price_symmetric_call_opt(create_symmetric_call_opt());
+            results_.value = priceSymmetricCallOpt(createSymmetricCallOpt());
             break;
 
           default:
