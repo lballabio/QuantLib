@@ -1616,8 +1616,10 @@ BOOST_AUTO_TEST_CASE(testCpiYoYQuotedLinearInterpolation) {
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
-    auto testIndex1 = ext::make_shared<YYUKRPI>(false);
-    auto testIndex2 = ext::make_shared<YYUKRPI>(true);
+    auto testIndex1 = ext::make_shared<YYUKRPI>();
+    QL_DEPRECATED_DISABLE_WARNING
+    auto testIndex2 = ext::shared_ptr<YYUKRPI>(new YYUKRPI(true));
+    QL_DEPRECATED_ENABLE_WARNING
 
     testIndex1->addFixing(Date(1, November, 2020), 0.02935);
     testIndex1->addFixing(Date(1, December, 2020), 0.02954);
@@ -1671,8 +1673,11 @@ BOOST_AUTO_TEST_CASE(testCpiYoYRatioFlatInterpolation) {
 
     auto underlying = ext::make_shared<UKRPI>();
 
-    auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying, false);
-    auto testIndex2 = ext::make_shared<YoYInflationIndex>(underlying, true);
+    auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying);
+    QL_DEPRECATED_DISABLE_WARNING
+    auto testIndex2 = ext::shared_ptr<YoYInflationIndex>(
+                                     new YoYInflationIndex(underlying, true));
+    QL_DEPRECATED_ENABLE_WARNING
 
     underlying->addFixing(Date(1, November, 2019), 291.0);
     underlying->addFixing(Date(1, December, 2019), 291.9);
@@ -1713,8 +1718,11 @@ BOOST_AUTO_TEST_CASE(testCpiYoYRatioLinearInterpolation) {
 
     auto underlying = ext::make_shared<UKRPI>();
 
-    auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying, false);
-    auto testIndex2 = ext::make_shared<YoYInflationIndex>(underlying, true);
+    auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying);
+    QL_DEPRECATED_DISABLE_WARNING
+    auto testIndex2 = ext::shared_ptr<YoYInflationIndex>(
+                                     new YoYInflationIndex(underlying, true));
+    QL_DEPRECATED_ENABLE_WARNING
 
     underlying->addFixing(Date(1, November, 2019), 291.0);
     underlying->addFixing(Date(1, December, 2019), 291.9);
