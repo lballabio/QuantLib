@@ -94,8 +94,12 @@ void setup() {
     Date eval = Date(Day(23), Month(11), Year(2007));
     Settings::instance().evaluationDate() = eval;
 
-    yoyIndexUK = ext::make_shared<YoYInflationIndex>(ext::make_shared<UKRPI>(), true, yoyUK);
-    yoyIndexEU = ext::make_shared<YoYInflationIndex>(ext::make_shared<EUHICP>(), true, yoyEU);
+    QL_DEPRECATED_DISABLE_WARNING
+    yoyIndexUK = ext::shared_ptr<YoYInflationIndex>(
+        new YoYInflationIndex(ext::make_shared<UKRPI>(), true, yoyUK));
+    yoyIndexEU = ext::shared_ptr<YoYInflationIndex>(
+        new YoYInflationIndex(ext::make_shared<EUHICP>(), true, yoyEU));
+    QL_DEPRECATED_ENABLE_WARNING
 
     // nominal yield curve (interpolated; times assume year parts have 365 days)
     Real timesEUR[] = {0.0109589, 0.0684932, 0.263014, 0.317808, 0.567123, 0.816438,
