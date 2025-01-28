@@ -94,12 +94,8 @@ void setup() {
     Date eval = Date(Day(23), Month(11), Year(2007));
     Settings::instance().evaluationDate() = eval;
 
-    QL_DEPRECATED_DISABLE_WARNING
-    yoyIndexUK = ext::shared_ptr<YoYInflationIndex>(
-        new YoYInflationIndex(ext::make_shared<UKRPI>(), true, yoyUK));
-    yoyIndexEU = ext::shared_ptr<YoYInflationIndex>(
-        new YoYInflationIndex(ext::make_shared<EUHICP>(), true, yoyEU));
-    QL_DEPRECATED_ENABLE_WARNING
+    yoyIndexUK = ext::make_shared<YoYInflationIndex>(ext::make_shared<UKRPI>(), yoyUK);
+    yoyIndexEU = ext::make_shared<YoYInflationIndex>(ext::make_shared<EUHICP>(), yoyEU);
 
     // nominal yield curve (interpolated; times assume year parts have 365 days)
     Real timesEUR[] = {0.0109589, 0.0684932, 0.263014, 0.317808, 0.567123, 0.816438,
@@ -322,14 +318,14 @@ BOOST_AUTO_TEST_CASE(testYoYPriceSurfaceToVol) {
 
     // now use it for something ... like stating what the T=const lines look like
     const Real volATyear1[] = {
-          0.0128, 0.0093, 0.0083, 0.0073, 0.0064,
+          0.0129, 0.0094, 0.0083, 0.0073, 0.0064,
           0.0058, 0.0042, 0.0046, 0.0053, 0.0064,
           0.0098
     };
     const Real volATyear3[] = {
-          0.0079, 0.0058, 0.0051, 0.0045, 0.0039,
-          0.0035, 0.0026, 0.0028, 0.0033, 0.0039,
-          0.0060
+          0.0080, 0.0058, 0.0051, 0.0045, 0.0040,
+          0.0035, 0.0026, 0.0028, 0.0033, 0.0040,
+          0.0061
     };
 
     Date d = yoySurf->baseDate() + Period(1,Years);
