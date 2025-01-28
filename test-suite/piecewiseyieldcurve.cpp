@@ -1368,6 +1368,104 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testGlobalBootstrapPenalty, *precondition(usingAtParCoupons())) {
+
+    Settings::instance().evaluationDate() = Date(26, Sep, 2019);
+
+    // market rates
+    Real refMktRate[] = {-0.373,   -0.388,   -0.402,   -0.418,   -0.431,  -0.441,   -0.45,
+                         -0.457,   -0.463,   -0.469,   -0.461,   -0.463,  -0.479,   -0.4511,
+                         -0.45418, -0.439,   -0.4124,  -0.37703, -0.3335, -0.28168, -0.22725,
+                         -0.1745,  -0.12425, -0.07746, 0.0385,   0.1435,  0.17525,  0.17275,
+                         0.1515,   0.1225,   0.095,    0.0644};
+
+    // expected outputs
+    Date refDate[] = {
+        Date(31, Mar, 2020), Date(30, Apr, 2020), Date(29, May, 2020), Date(30, Jun, 2020),
+        Date(31, Jul, 2020), Date(31, Aug, 2020), Date(30, Sep, 2020), Date(30, Oct, 2020),
+        Date(30, Nov, 2020), Date(31, Dec, 2020), Date(29, Jan, 2021), Date(26, Feb, 2021),
+        Date(31, Mar, 2021), Date(30, Sep, 2021), Date(30, Sep, 2022), Date(29, Sep, 2023),
+        Date(30, Sep, 2024), Date(30, Sep, 2025), Date(30, Sep, 2026), Date(30, Sep, 2027),
+        Date(29, Sep, 2028), Date(28, Sep, 2029), Date(30, Sep, 2030), Date(30, Sep, 2031),
+        Date(29, Sep, 2034), Date(30, Sep, 2039), Date(30, Sep, 2044), Date(30, Sep, 2049),
+        Date(30, Sep, 2054), Date(30, Sep, 2059), Date(30, Sep, 2064), Date(30, Sep, 2069)};
+
+    Real refZeroRateNP[] = {
+        -0.00373354, -0.00386194, -0.00395205, -0.00403303, -0.00408033, -0.00410875, -0.00411935,
+        -0.00419161, -0.00424817, -0.00429923, -0.00428029, -0.00429178, -0.00434401, -0.00445243,
+        -0.00448506, -0.0043369, -0.00407401, -0.00372752, -0.0033005, -0.00279139, -0.00225477,
+        -0.00173422, -0.00123688, -0.00077236, 0.00038550, 0.00144208, 0.00175947, 0.00172834,
+        0.00150757, 0.00121131, 0.00093384, 0.00062891};
+
+    Real refZeroRateGP[] = {
+        -0.00377892, -0.00386127, -0.00394737, -0.00402914, -0.00409541, -0.00413252, -0.00415463,
+        -0.00419484, -0.00424238, -0.00427875, -0.00429712, -0.00431898, -0.00436027, -0.00445297,
+        -0.00448502, -0.00433694, -0.00407406, -0.00372755, -0.00330018, -0.00279133, -0.00225491,
+        -0.00173429, -0.00123643, -0.00077298, 0.00038547, 0.00144206, 0.00175948, 0.00172834,
+        0.00150756, 0.00121135, 0.00093379, 0.00062895};
+
+    // build ql helpers
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor>(6 * Months);
+
+    helpers.push_back(ext::make_shared<DepositRateHelper>(
+        refMktRate[0] / 100.0, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
+
+    for (Size i = 0; i < 12; ++i) {
+        helpers.push_back(
+            ext::make_shared<FraRateHelper>(refMktRate[1 + i] / 100.0, (i + 1) * Months, index));
+    }
+
+    Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
+    for (Size i = 0; i < std::size(swapTenors); ++i) {
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+            refMktRate[13 + i] / 100.0, swapTenors[i] * Years, TARGET(), Annual, ModifiedFollowing,
+            Thirty360(Thirty360::BondBasis), index));
+    }
+
+    // build the curve without penalties first
+    typedef PiecewiseYieldCurve<ForwardRate, BackwardFlat, GlobalBootstrap> Curve;
+    auto curve = ext::make_shared<Curve>(
+        2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote>>(), std::vector<Date>(),
+        BackwardFlat(),
+        Curve::bootstrap_type({}, nullptr, std::function<Array()>(), 1.0e-12));
+
+    // check expected pillar dates
+    for (Size i = 0; i < std::size(refDate); ++i) {
+        BOOST_CHECK_EQUAL(refDate[i], helpers[i]->pillarDate());
+    }
+
+    // check expected zero rates
+    for (Size i = 0; i < std::size(refZeroRateNP); ++i) {
+        // 0.01 basis points tolerance
+        QL_CHECK_SMALL(
+            refZeroRateNP[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate(),
+            1E-6);
+    }
+
+    // build the curve with gradient penalties
+    auto gradientPenalty = [](const std::vector<Time>& times, const std::vector<Real>& data) {
+        Array errors(times.size() - 1);
+        for (Size i = 0; i < times.size() - 1; ++i) {
+            errors[i] = 0.01 * (data[i+1] - data[i]) / (times[i+1] - times[i]);
+        }
+        return errors;
+    };
+
+    curve = ext::make_shared<Curve>(
+        2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote>>(), std::vector<Date>(),
+        BackwardFlat(),
+        Curve::bootstrap_type({}, nullptr, gradientPenalty, 1.0e-12));
+
+    // check expected zero rates
+    for (Size i = 0; i < std::size(refZeroRateGP); ++i) {
+        // 0.01 basis points tolerance
+        QL_CHECK_SMALL(
+            refZeroRateGP[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate(),
+            1E-6);
+    }
+}
+
 /* This test attempts to build an ARS collateralised in USD curve as of 25 Sep 2019. Using the default 
    IterativeBootstrap with no retries, the yield curve building fails. Allowing retries, it expands the min and max 
    bounds and passes.

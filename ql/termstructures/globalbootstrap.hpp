@@ -39,13 +39,15 @@ namespace QuantLib {
 template <class Curve> class GlobalBootstrap {
     typedef typename Curve::traits_type Traits;             // ZeroYield, Discount, ForwardRate
     typedef typename Curve::interpolator_type Interpolator; // Linear, LogLinear, ...
+    typedef std::function<Array(const std::vector<Time>&, const std::vector<Real>&)>
+        AdditionalPenalties;
 
   public:
     GlobalBootstrap(Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     /*! The set of (alive) additional dates is added to the interpolation grid. The set of additional dates must only
-      depend on the current global evaluation date.  The additionalErrors functor must yield at least as many values
+      depend on the current global evaluation date.  The additionalPenalties functor must yield at least as many values
       such that
 
       number of (usual, alive) rate helpers + number of (alive) additional values >= number of data points - 1
@@ -62,7 +64,13 @@ template <class Curve> class GlobalBootstrap {
     */
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
-                    std::function<Array()> additionalErrors,
+                    AdditionalPenalties additionalPenalties,
+                    Real accuracy = Null<Real>(),
+                    ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                    ext::shared_ptr<EndCriteria> endCriteria = nullptr);
+    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+                    std::function<std::vector<Date>()> additionalDates,
+                    std::function<Array()> additionalPenalties,
                     Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr);
@@ -77,7 +85,7 @@ template <class Curve> class GlobalBootstrap {
     ext::shared_ptr<EndCriteria> endCriteria_;
     mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
     std::function<std::vector<Date>()> additionalDates_;
-    std::function<Array()> additionalErrors_;
+    AdditionalPenalties additionalPenalties_;
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_, numberHelpers_;
     mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
@@ -97,13 +105,29 @@ template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
     std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
     std::function<std::vector<Date>()> additionalDates,
-    std::function<Array()> additionalErrors,
+    AdditionalPenalties additionalPenalties,
     Real accuracy,
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
   endCriteria_(std::move(endCriteria)), additionalHelpers_(std::move(additionalHelpers)),
-  additionalDates_(std::move(additionalDates)), additionalErrors_(std::move(additionalErrors)) {}
+  additionalDates_(std::move(additionalDates)), additionalPenalties_(std::move(additionalPenalties)) {}
+
+template <class Curve>
+GlobalBootstrap<Curve>::GlobalBootstrap(
+    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+    std::function<std::vector<Date>()> additionalDates,
+    std::function<Array()> additionalPenalties,
+    Real accuracy,
+    ext::shared_ptr<OptimizationMethod> optimizer,
+    ext::shared_ptr<EndCriteria> endCriteria)
+: GlobalBootstrap(std::move(additionalHelpers), std::move(additionalDates),
+                  additionalPenalties
+                    ? [f=std::move(additionalPenalties)](const std::vector<Time>&, const std::vector<Real>&) {
+                        return f();
+                    }
+                    : AdditionalPenalties(),
+                  accuracy, std::move(optimizer), std::move(endCriteria)) {}
 
 template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
     ts_ = ts;
@@ -249,19 +273,16 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
             Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
         }
         ts_->interpolation_.update();
-        std::vector<Real> result(numberHelpers_);
-        for (Size i = 0; i < numberHelpers_; ++i) {
-            result[i] = ts_->instruments_[firstHelper_ + i]->quote()->value() -
-                        ts_->instruments_[firstHelper_ + i]->impliedQuote();
-        }
-        if (additionalErrors_) {
-            Array tmp = additionalErrors_();
+        Array result(numberHelpers_);
+        std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(),
+                       result.begin(),
+                       [](const auto& helper) { return helper->quoteError(); });
+        if (additionalPenalties_) {
+            Array tmp = additionalPenalties_(ts_->times_, ts_->data_);
             result.resize(numberHelpers_ + tmp.size());
-            for (Size i = 0; i < tmp.size(); ++i) {
-                result[numberHelpers_ + i] = tmp[i];
-            }
+            std::copy(tmp.begin(), tmp.end(), result.begin() + numberHelpers_);
         }
-        return Array(result.begin(), result.end());
+        return result;
     });
 
     // setup guess
