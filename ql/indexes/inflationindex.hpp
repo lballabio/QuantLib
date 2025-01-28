@@ -195,7 +195,7 @@ namespace QuantLib {
             past fixings of its own; they will be calculated as a
             ratio from the past fixings stored in the underlying index.
         */
-        YoYInflationIndex(
+        explicit YoYInflationIndex(
             const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
             Handle<YoYInflationTermStructure> ts = {});
 
