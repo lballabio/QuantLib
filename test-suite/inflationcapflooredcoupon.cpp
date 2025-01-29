@@ -148,8 +148,7 @@ struct CommonVars {
             rpi->addFixing(rpiSchedule[i], fixData[i]);
         }
         // link from yoy index to yoy TS
-        bool interp = false;
-        iir = ext::make_shared<YoYInflationIndex>(rpi, interp, hy);
+        iir = ext::make_shared<YoYInflationIndex>(rpi, hy);
 
         ext::shared_ptr<YieldTermStructure> nominalFF(
                         new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));

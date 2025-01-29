@@ -47,6 +47,21 @@ namespace QuantLib {
     //! Quoted year-on-year US CPI (i.e. not a ratio of US CPI)
     class YYUSCPI : public YoYInflationIndex {
       public:
+        explicit YYUSCPI(const Handle<YoYInflationTermStructure>& ts = {})
+        : YoYInflationIndex("YY_CPI",
+                            USRegion(),
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            USDCurrency(),
+                            ts) {}
+
+        QL_DEPRECATED_DISABLE_WARNING
+
+        /*! \deprecated Use the overload without the interpolated parameter.
+                        Deprecated in version 1.38.
+        */
+        [[deprecated("Use the overload without the interpolated parameter")]]
         explicit YYUSCPI(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = {})
@@ -58,6 +73,8 @@ namespace QuantLib {
                             Period(1, Months),
                             USDCurrency(),
                             ts) {}
+
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }

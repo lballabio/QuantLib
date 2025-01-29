@@ -42,6 +42,21 @@ namespace QuantLib {
     //! Quoted year-on-year FR HICP (i.e. not a ratio)
     class YYFRHICP : public YoYInflationIndex {
       public:
+        explicit YYFRHICP(const Handle<YoYInflationTermStructure>& ts = {})
+        : YoYInflationIndex("YY_HICP",
+                            FranceRegion(),
+                            false,
+                            Monthly,
+                            Period(1, Months),
+                            EURCurrency(),
+                            ts) {}
+
+        QL_DEPRECATED_DISABLE_WARNING
+
+        /*! \deprecated Use the overload without the interpolated parameter.
+                        Deprecated in version 1.38.
+        */
+        [[deprecated("Use the overload without the interpolated parameter")]]
         explicit YYFRHICP(
             bool interpolated,
             const Handle<YoYInflationTermStructure>& ts = {})
@@ -53,6 +68,8 @@ namespace QuantLib {
                             Period(1, Months),
                             EURCurrency(),
                             ts) {}
+
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }
