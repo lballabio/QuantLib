@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     Option::Type type = Option::Call;
     DayCounter dc = Actual360();
     Date maturity = today + 360;
-    ext::shared_ptr<Exercise> exercise =
+    auto exercise =
         ext::make_shared<EuropeanExercise>(maturity);
     Real barrier = 100.0;
     Real rebate = 0.0;
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
 
     for (auto& i : cases) {
         Date coverEventDate = today + i.days;
-        ext::shared_ptr<StrikedTypePayoff> payoff =
+        auto payoff =
             ext::make_shared<PlainVanillaPayoff>(type, i.strike);
         PartialTimeBarrierOption option(PartialBarrier::DownOut,
                                         PartialBarrier::EndB1,
@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
     Option::Type type = Option::Put;
     DayCounter dc = Actual360();
     Date maturity = today + 360;
-    ext::shared_ptr<Exercise> exercise =
+    auto exercise =
         ext::make_shared<EuropeanExercise>(maturity);
     Real barrier = 100.0;
     Real rebate = 0.0;
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
 
     for (auto& i : cases) {
         Date coverEventDate = today + i.days;
-        ext::shared_ptr<StrikedTypePayoff> payoff =
+        auto payoff =
             ext::make_shared<PlainVanillaPayoff>(type, i.strike);
         PartialTimeBarrierOption option(PartialBarrier::UpOut,
                                         PartialBarrier::EndB1,
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
 
     DayCounter dc = Actual360();
     Date maturity = today + 360;
-    ext::shared_ptr<Exercise> exercise =
+    auto exercise =
         ext::make_shared<EuropeanExercise>(maturity);
     Real r = 0.01;
     Real rebate = 0.0;
@@ -274,9 +274,9 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
 
     for (auto& i : cases) {
         Date coverEventDate = today + i.days;
-        ext::shared_ptr<StrikedTypePayoff> putPayoff =
+        auto putPayoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Put, i.putStrike);
-        ext::shared_ptr<StrikedTypePayoff> callPayoff =
+        auto callPayoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Call, i.callStrike);
         PartialTimeBarrierOption putOption(i.putType,
                                         PartialBarrier::EndB1,

@@ -122,16 +122,15 @@ namespace QuantLib {
         auto tmp_arguments_ = arguments_;
         if constexpr (OptionType == Option::Put)
         {
-            std::cout << "Put branch" << std::endl;
-            Real spotSq = spot * spot;
-            Real callStrike = spotSq / payoff->strike();
-            ext::shared_ptr<StrikedTypePayoff> callPayoff =
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, callStrike);
-            tmp_arguments_.barrierType = getSymmetricBarrierType(arguments_.barrierType);
-            tmp_arguments_.barrier = spotSq / arguments_.barrier;
-            tmp_arguments_.payoff = callPayoff;
+          Real spotSq = spot * spot;
+          Real callStrike = spotSq / payoff->strike();
+          ext::shared_ptr<StrikedTypePayoff> callPayoff =
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, callStrike);
+          tmp_arguments_.barrierType = getSymmetricBarrierType(arguments_.barrierType);
+          tmp_arguments_.barrier = spotSq / arguments_.barrier;
+          tmp_arguments_.payoff = callPayoff;
 
-            results_.value = payoff->strike() / spot * calculate(tmp_arguments_);
+          results_.value = payoff->strike() / spot * calculate(tmp_arguments_);
         } else 
           results_.value = calculate(tmp_arguments_ );
     }
@@ -229,7 +228,10 @@ namespace QuantLib {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
-        return payoff->strike();
+        if constexpr (OptionType == Option::Put)
+          return underlying() * underlying() / payoff->strike();
+        else
+          return payoff->strike();
     }
 
     template<Option::Type OptionType>
@@ -255,7 +257,10 @@ namespace QuantLib {
 
     template<Option::Type OptionType>
     Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::barrier() const {
-        return arguments_.barrier;
+        if constexpr (OptionType == Option::Put)
+          return underlying() * underlying() / arguments_.barrier;
+        else
+          return arguments_.barrier;
     }
 
     template<Option::Type OptionType>
