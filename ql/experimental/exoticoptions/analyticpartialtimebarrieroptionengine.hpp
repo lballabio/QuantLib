@@ -29,6 +29,7 @@
 
 namespace QuantLib {
 
+    template<Option::Type OptionType = Option::Call>
     class AnalyticPartialTimeBarrierOptionEngine
         : public PartialTimeBarrierOption::engine {
       public:
@@ -38,6 +39,7 @@ namespace QuantLib {
 
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        Real calculate(PartialTimeBarrierOption::arguments& arguments) const;
         Real underlying() const;
         Real strike() const;
         Time residualTime() const;

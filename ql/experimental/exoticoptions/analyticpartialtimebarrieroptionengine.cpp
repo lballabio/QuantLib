@@ -22,16 +22,87 @@
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <utility>
+#include <iostream>
 
 namespace QuantLib {
 
-    AnalyticPartialTimeBarrierOptionEngine::AnalyticPartialTimeBarrierOptionEngine(
+    template<Option::Type OptionType>
+    AnalyticPartialTimeBarrierOptionEngine<OptionType>::AnalyticPartialTimeBarrierOptionEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
 
-    void AnalyticPartialTimeBarrierOptionEngine::calculate() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::calculate(PartialTimeBarrierOption::arguments& arguments) const {
+        PartialBarrier::Type barrierType = arguments.barrierType;
+        PartialBarrier::Range barrierRange = arguments.barrierRange;
+        
+        switch (barrierType) {
+          case PartialBarrier::DownOut:
+            switch (barrierRange) {
+              case PartialBarrier::Start:
+                return CA(1);
+                break;
+              case PartialBarrier::EndB1:
+                return CoB1();
+                break;
+              case PartialBarrier::EndB2:
+                return CoB2(PartialBarrier::DownOut);
+                break;
+              default:
+                QL_FAIL("invalid barrier range");
+            }
+            break;
+
+          case PartialBarrier::DownIn:
+            switch (barrierRange) {
+              case PartialBarrier::Start:
+                return CIA(1);
+                break;
+              case PartialBarrier::End:
+                QL_FAIL("Down-and-in partial-time end barrier is not implemented");
+              default:
+                QL_FAIL("invalid barrier range");
+            }
+            break;
+
+          case PartialBarrier::UpOut:
+            switch (barrierRange) {
+              case PartialBarrier::Start:
+                return CA(-1);
+                break;
+              case PartialBarrier::EndB1:
+                return CoB1();
+                break;
+              case PartialBarrier::EndB2:
+                return CoB2(PartialBarrier::UpOut);
+                break;
+              default:
+                QL_FAIL("invalid barrier range");
+            }
+            break;
+
+            case PartialBarrier::UpIn:
+              switch (barrierRange) {
+                case PartialBarrier::Start:
+                  return CIA(-1);
+                  break;
+                case PartialBarrier::End:
+                  QL_FAIL("Up-and-in partial-time end barrier is not implemented");
+                default:
+                  QL_FAIL("invalid barrier range");
+              }
+              break;
+            default:
+              QL_FAIL("unknown barrier type");
+          }
+
+        return 0.0;
+    }
+
+    template<Option::Type OptionType>
+    void AnalyticPartialTimeBarrierOptionEngine<OptionType>::calculate() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
@@ -41,127 +112,32 @@ namespace QuantLib {
         Real spot = process_->x0();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
-        PartialBarrier::Type barrierType = arguments_.barrierType;
-        PartialBarrier::Range barrierRange = arguments_.barrierRange;
-
         auto getSymmetricBarrierType = [](Barrier::Type barrierType) -> Barrier::Type {
           if (barrierType == Barrier::UpIn) return Barrier::DownIn;
           if (barrierType == Barrier::DownIn) return Barrier::UpIn;
           if (barrierType == Barrier::UpOut) return Barrier::DownOut;
           return Barrier::UpOut;
         };
-        auto createSymmetricCallOpt = [&]() -> PartialTimeBarrierOption {
-          Real spotSq = spot * spot;
-          Real callStrike = spotSq / payoff->strike();
-          Option::Type optType = Option::Call;
-          ext::shared_ptr<StrikedTypePayoff> callPayoff = 
-            ext::make_shared<PlainVanillaPayoff>(optType, callStrike);
-          ext::shared_ptr<Exercise> exercise = arguments_.exercise;
-          Real callBarrier = spotSq / arguments_.barrier;
-          Real rebate = arguments_.barrier;
-          Date coverEventDate = arguments_.coverEventDate;
 
-          PartialTimeBarrierOption symmetricCallOption(
-            getSymmetricBarrierType(barrierType),
-            arguments_.barrierRange,
-            callBarrier, rebate,
-            coverEventDate,
-            callPayoff, exercise
-          );
-          return symmetricCallOption;
-        };
-        auto priceSymmetricCallOpt = [&](PartialTimeBarrierOption option) -> Real {
-          auto rRate = process_->riskFreeRate();
-          auto qYield = process_->dividendYield();
-          const ext::shared_ptr<GeneralizedBlackScholesProcess> callProcess = 
-            ext::make_shared<GeneralizedBlackScholesProcess>(
-              process_->stateVariable(),
-              rRate,
-              qYield,
-              process_->blackVolatility()
-            );
-          ext::shared_ptr<PricingEngine> engine = 
-            ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(callProcess);
-          option.setPricingEngine(engine);
+        auto tmp_arguments_ = arguments_;
+        if constexpr (OptionType == Option::Put)
+        {
+            std::cout << "Put branch" << std::endl;
+            Real spotSq = spot * spot;
+            Real callStrike = spotSq / payoff->strike();
+            ext::shared_ptr<StrikedTypePayoff> callPayoff =
+                ext::make_shared<PlainVanillaPayoff>(Option::Call, callStrike);
+            tmp_arguments_.barrierType = getSymmetricBarrierType(arguments_.barrierType);
+            tmp_arguments_.barrier = spotSq / arguments_.barrier;
+            tmp_arguments_.payoff = callPayoff;
 
-          Real callValue = option.NPV();
-          return payoff->strike() / spot * callValue;
-        };
-
-        switch (payoff->optionType()) {
-          //Call Option
-          case Option::Call:
-            switch (barrierType) {
-              case PartialBarrier::DownOut:
-                switch (barrierRange) {
-                  case PartialBarrier::Start:
-                    results_.value = CA(1);
-                    break;
-                  case PartialBarrier::EndB1:
-                    results_.value = CoB1();
-                    break;
-                  case PartialBarrier::EndB2:
-                    results_.value = CoB2(PartialBarrier::DownOut);
-                    break;
-                  default:
-                    QL_FAIL("invalid barrier range");
-                }
-                break;
-
-              case PartialBarrier::DownIn:
-                switch (barrierRange) {
-                  case PartialBarrier::Start:
-                    results_.value = CIA(1);
-                    break;
-                  case PartialBarrier::End:
-                    QL_FAIL("Down-and-in partial-time end barrier is not implemented");
-                  default:
-                    QL_FAIL("invalid barrier range");
-                }
-                break;
-
-              case PartialBarrier::UpOut:
-                switch (barrierRange) {
-                  case PartialBarrier::Start:
-                    results_.value = CA(-1);
-                    break;
-                  case PartialBarrier::EndB1:
-                    results_.value = CoB1();
-                    break;
-                  case PartialBarrier::EndB2:
-                    results_.value = CoB2(PartialBarrier::UpOut);
-                    break;
-                  default:
-                    QL_FAIL("invalid barrier range");
-                }
-                break;
-
-              case PartialBarrier::UpIn:
-                switch (barrierRange) {
-                  case PartialBarrier::Start:
-                    results_.value = CIA(-1);
-                    break;
-                  case PartialBarrier::End:
-                    QL_FAIL("Up-and-in partial-time end barrier is not implemented");
-                  default:
-                    QL_FAIL("invalid barrier range");
-                }
-                break;
-              default:
-                QL_FAIL("unknown barrier type");
-            }
-            break;
-
-          case Option::Put:
-            results_.value = priceSymmetricCallOpt(createSymmetricCallOpt());
-            break;
-
-          default:
-            QL_FAIL("unknown option type");
-        }
+            results_.value = payoff->strike() / spot * calculate(tmp_arguments_);
+        } else 
+          results_.value = calculate(tmp_arguments_ );
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::CoB2(
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CoB2(
                                       PartialBarrier::Type barrierType) const {
         Real result = 0.0;
         Real b = riskFreeRate()-dividendYield();
@@ -189,7 +165,8 @@ namespace QuantLib {
         }
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::CoB1() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CoB1() const {
         Real result = 0.0;
         Real b = riskFreeRate()-dividendYield();
         if (strike()>barrier()) {
@@ -215,7 +192,8 @@ namespace QuantLib {
 
     // eta = -1: Up-and-In Call
     // eta =  1: Down-and-In Call
-    Real AnalyticPartialTimeBarrierOptionEngine::CIA(Integer eta) const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CIA(Integer eta) const {
         ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
 
@@ -230,7 +208,8 @@ namespace QuantLib {
         return europeanOption.NPV() - CA(eta);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::CA(Integer eta) const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CA(Integer eta) const {
         //Partial-Time-Start- OUT  Call Option calculation
         Real b = riskFreeRate()-dividendYield();
         Real result;
@@ -240,152 +219,195 @@ namespace QuantLib {
         return result;
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::underlying() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::underlying() const {
         return process_->x0();
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::strike() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::strike() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 
-    Time AnalyticPartialTimeBarrierOptionEngine::residualTime() const {
+    template<Option::Type OptionType>
+    Time AnalyticPartialTimeBarrierOptionEngine<OptionType>::residualTime() const {
         return process_->time(arguments_.exercise->lastDate());
     }
 
-    Time AnalyticPartialTimeBarrierOptionEngine::coverEventTime() const {
+    template<Option::Type OptionType>
+    Time AnalyticPartialTimeBarrierOptionEngine<OptionType>::coverEventTime() const {
         return process_->time(arguments_.coverEventDate);
     }
 
-    Volatility AnalyticPartialTimeBarrierOptionEngine::volatility(Time t) const {
+    template<Option::Type OptionType>
+    Volatility AnalyticPartialTimeBarrierOptionEngine<OptionType>::volatility(Time t) const {
         return process_->blackVolatility()->blackVol(t, strike());
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::stdDeviation() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::stdDeviation() const {
         Time T = residualTime();
         return volatility(T) * std::sqrt(T);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::barrier() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::barrier() const {
         return arguments_.barrier;
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::rebate() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::rebate() const {
         return arguments_.rebate;
     }
 
-    Rate AnalyticPartialTimeBarrierOptionEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+    template<Option::Type OptionType>
+    Rate AnalyticPartialTimeBarrierOptionEngine<OptionType>::riskFreeRate() const {
+        if constexpr (OptionType == Option::Put)
+          return process_->dividendYield()->zeroRate(residualTime(), Continuous,
+                                                  NoFrequency);
+        else
+          return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
                                                   NoFrequency);
     }
 
-    DiscountFactor AnalyticPartialTimeBarrierOptionEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
+    template<Option::Type OptionType>
+    DiscountFactor AnalyticPartialTimeBarrierOptionEngine<OptionType>::riskFreeDiscount() const {
+        if constexpr (OptionType == Option::Put)
+          return process_->dividendYield()->discount(residualTime());
+        else
+          return process_->riskFreeRate()->discount(residualTime());
     }
 
-    Rate AnalyticPartialTimeBarrierOptionEngine::dividendYield() const {
-        return process_->dividendYield()->zeroRate(residualTime(), Continuous,
+    template<Option::Type OptionType>
+    Rate AnalyticPartialTimeBarrierOptionEngine<OptionType>::dividendYield() const {
+        if constexpr (OptionType == Option::Put)
+          return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                  NoFrequency);
+        else
+          return process_->dividendYield()->zeroRate(residualTime(), Continuous,
                                                    NoFrequency);
     }
 
-    DiscountFactor AnalyticPartialTimeBarrierOptionEngine::dividendDiscount() const {
-        return process_->dividendYield()->discount(residualTime());
+    template<Option::Type OptionType>
+    DiscountFactor AnalyticPartialTimeBarrierOptionEngine<OptionType>::dividendDiscount() const {
+        if constexpr (OptionType == Option::Put)
+          return process_->riskFreeRate()->discount(residualTime());
+        else
+          return process_->dividendYield()->discount(residualTime());
     }
 
-
-    Real AnalyticPartialTimeBarrierOptionEngine::f1() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::f1() const {
         Real S = underlying();
         Real T = residualTime();
         Real sigma = volatility(T);
         return (std::log(S / strike()) + 2 * std::log(barrier() / S) + ((riskFreeRate()-dividendYield()) + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::f2() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::f2() const {
         Time T = residualTime();
         return f1() - volatility(T)*std::sqrt(T);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::M(Real a,Real b,Real rho) const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::M(Real a,Real b,Real rho) const {
         BivariateCumulativeNormalDistributionDr78 CmlNormDist(rho);
         return CmlNormDist(a,b);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::rho() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::rho() const {
         return std::sqrt(coverEventTime()/residualTime());
     }
 
-    Rate AnalyticPartialTimeBarrierOptionEngine::mu() const {
+    template<Option::Type OptionType>
+    Rate AnalyticPartialTimeBarrierOptionEngine<OptionType>::mu() const {
         Volatility vol = volatility(coverEventTime());
         return ((riskFreeRate() - dividendYield()) - (vol * vol) / 2) / (vol * vol);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::d1() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::d1() const {
         Real b = riskFreeRate()-dividendYield();
         Time T2 = residualTime();
         Volatility vol = volatility(T2);
         return (std::log(underlying()/strike())+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::d2() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::d2() const {
         Time T2 = residualTime();
         Volatility vol = volatility(T2);
         return d1() - vol*std::sqrt(T2);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::e1() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e1() const {
         Real b = riskFreeRate()-dividendYield();
         Time T1 = coverEventTime();
         Volatility vol = volatility(T1);
         return (std::log(underlying()/barrier())+(b+vol*vol/2)*T1)/(std::sqrt(T1)*vol);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::e2() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e2() const {
         Time T1 = coverEventTime();
         Volatility vol = volatility(T1);
         return e1() - vol*std::sqrt(T1);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::e3() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e3() const {
         Time T1 = coverEventTime();
         Real vol = volatility(T1);
         return e1()+(2*std::log(barrier()/underlying()) /(vol*std::sqrt(T1)));
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::e4() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e4() const {
         Time t = coverEventTime();
         return e3()-volatility(t)*std::sqrt(t);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::g1() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g1() const {
         Real b = riskFreeRate()-dividendYield();
         Time T2 = residualTime();
         Volatility vol = volatility(T2);
         return (std::log(underlying()/barrier())+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::g2() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g2() const {
         Time T2 = residualTime();
         Volatility vol = volatility(T2);
         return g1() - vol*std::sqrt(T2);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::g3() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g3() const {
         Time T2 = residualTime();
         Real vol = volatility(T2);
         return g1()+(2*std::log(barrier()/underlying()) /(vol*std::sqrt(T2)));
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::g4() const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g4() const {
         Time T2 = residualTime();
         Real vol = volatility(T2);
         return g3()-vol*std::sqrt(T2);
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::HS(Real S, Real H, Real power) const {
+    template<Option::Type OptionType>
+    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::HS(Real S, Real H, Real power) const {
         return std::pow((H/S),power);
     }
 
+    template class AnalyticPartialTimeBarrierOptionEngine<Option::Call>;
+    template class AnalyticPartialTimeBarrierOptionEngine<Option::Put>;
 }
 

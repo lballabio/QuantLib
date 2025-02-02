@@ -55,23 +55,23 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
     Real barrier = 100.0;
     Real rebate = 0.0;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.1);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    auto spot = ext::make_shared<SimpleQuote>();
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.1);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> process =
+    const auto process =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
                                                       blackVolTS);
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    auto engine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Call>>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  0.0393 },
@@ -138,23 +138,23 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
     Real barrier = 100.0;
     Real rebate = 0.0;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.1);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    auto spot = ext::make_shared<SimpleQuote>();
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.1);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> process =
+    const auto process =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
                                                       blackVolTS);
-    ext::shared_ptr<PricingEngine> engine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    auto engine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Put>>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  1.5551 },
@@ -245,10 +245,10 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
     Real rebate = 0.0;
     Real spotPrice = 100.0;
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(r);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
+    auto spot = ext::make_shared<SimpleQuote>();
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(r);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTSCall(flatRate(today, qRate, dc));
@@ -257,20 +257,20 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
     Handle<YieldTermStructure> riskFreeTSPut(flatRate(today, qRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> callProcess =
+    const auto callProcess =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTSCall,
                                                       riskFreeTSCall,
                                                       blackVolTS);
-    const ext::shared_ptr<BlackScholesMertonProcess> putProcess =
+    const auto putProcess =
         ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTSPut,
                                                       riskFreeTSPut,
                                                       blackVolTS);
-    ext::shared_ptr<PricingEngine> callEngine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(callProcess);
-    ext::shared_ptr<PricingEngine> putEngine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(putProcess);
+    auto callEngine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Call>>(callProcess);
+    auto putEngine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Put>>(putProcess);
 
     for (auto& i : cases) {
         Date coverEventDate = today + i.days;
