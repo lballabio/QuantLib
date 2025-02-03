@@ -545,6 +545,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithLag) {
 
     Rate baseZeroRate = zcData[0].rate/100.0;
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
                         new PiecewiseZeroInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
@@ -977,6 +978,7 @@ BOOST_AUTO_TEST_CASE(testRatioYYIndex) {
 
     auto iir = ext::make_shared<YoYInflationIndex>(ukrpi);
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     auto iirYES = ext::shared_ptr<YoYInflationIndex>(
                                           new YoYInflationIndex(ukrpi, true));
     QL_DEPRECATED_ENABLE_WARNING
@@ -1310,6 +1312,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
 
     Rate baseYYRate = yyData[0].rate/100.0;
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     ext::shared_ptr<PiecewiseYoYInflationCurve<Linear> > pYYTS(
         new PiecewiseYoYInflationCurve<Linear>(
                 evaluationDate, calendar, dc, observationLag,
@@ -1582,6 +1585,7 @@ BOOST_AUTO_TEST_CASE(testCpiYoYQuotedFlatInterpolation) {
 
     auto testIndex1 = ext::make_shared<YYUKRPI>();
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     auto testIndex2 = ext::shared_ptr<YYUKRPI>(new YYUKRPI(true));
     QL_DEPRECATED_ENABLE_WARNING
 
@@ -1618,6 +1622,7 @@ BOOST_AUTO_TEST_CASE(testCpiYoYQuotedLinearInterpolation) {
 
     auto testIndex1 = ext::make_shared<YYUKRPI>();
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     auto testIndex2 = ext::shared_ptr<YYUKRPI>(new YYUKRPI(true));
     QL_DEPRECATED_ENABLE_WARNING
 
@@ -1675,6 +1680,7 @@ BOOST_AUTO_TEST_CASE(testCpiYoYRatioFlatInterpolation) {
 
     auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying);
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     auto testIndex2 = ext::shared_ptr<YoYInflationIndex>(
                                      new YoYInflationIndex(underlying, true));
     QL_DEPRECATED_ENABLE_WARNING
@@ -1720,6 +1726,7 @@ BOOST_AUTO_TEST_CASE(testCpiYoYRatioLinearInterpolation) {
 
     auto testIndex1 = ext::make_shared<YoYInflationIndex>(underlying);
     QL_DEPRECATED_DISABLE_WARNING
+    // NOLINTNEXTLINE(modernize-make-shared)
     auto testIndex2 = ext::shared_ptr<YoYInflationIndex>(
                                      new YoYInflationIndex(underlying, true));
     QL_DEPRECATED_ENABLE_WARNING

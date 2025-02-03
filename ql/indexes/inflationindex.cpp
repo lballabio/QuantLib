@@ -388,9 +388,11 @@ namespace QuantLib {
                            const Handle<YoYInflationTermStructure>& h) const {
         QL_DEPRECATED_DISABLE_WARNING
         if (ratio_) {
+            // NOLINTNEXTLINE(modernize-make-shared)
             return ext::shared_ptr<YoYInflationIndex>(
                 new YoYInflationIndex(underlyingIndex_, interpolated_, h));
         } else {
+            // NOLINTNEXTLINE(modernize-make-shared)
             return ext::shared_ptr<YoYInflationIndex>(
                 new YoYInflationIndex(familyName_, region_, revised_,
                                       interpolated_, frequency_,
