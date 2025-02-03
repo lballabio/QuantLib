@@ -3202,8 +3202,28 @@ BOOST_AUTO_TEST_CASE(testChinaSSE) {
     expectedHol.emplace_back(4, Oct, 2024);
     expectedHol.emplace_back(7, Oct, 2024);
 
+    // China Shanghai Securities Exchange holiday list in the year 2025
+    expectedHol.emplace_back(1, Jan, 2025);
+    expectedHol.emplace_back(28, Jan, 2025);
+    expectedHol.emplace_back(29, Jan, 2025);
+    expectedHol.emplace_back(30, Jan, 2025);
+    expectedHol.emplace_back(31, Jan, 2025);
+    expectedHol.emplace_back(3, Feb, 2025);
+    expectedHol.emplace_back(4, Feb, 2025);
+    expectedHol.emplace_back(4, April, 2025);
+    expectedHol.emplace_back(1, May, 2025);
+    expectedHol.emplace_back(2, May, 2025);
+    expectedHol.emplace_back(5, May, 2025);
+    expectedHol.emplace_back(2, Jun, 2025);
+    expectedHol.emplace_back(1, Oct, 2025);
+    expectedHol.emplace_back(2, Oct, 2025);
+    expectedHol.emplace_back(3, Oct, 2025);
+    expectedHol.emplace_back(6, Oct, 2025);
+    expectedHol.emplace_back(7, Oct, 2025);
+    expectedHol.emplace_back(8, Oct, 2025);
+
     Calendar c = China(China::SSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2024));
+    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2025));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -3311,9 +3331,16 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
     expectedWorkingWeekEnds.emplace_back(29, Sep, 2024);
     expectedWorkingWeekEnds.emplace_back(12, October, 2024);
 
+    // China Inter Bank working weekends list in the year 2025
+    expectedWorkingWeekEnds.emplace_back(26, Jan, 2025);
+    expectedWorkingWeekEnds.emplace_back(8, Feb, 2025);
+    expectedWorkingWeekEnds.emplace_back(27, Apr, 2025);
+    expectedWorkingWeekEnds.emplace_back(28, Sep, 2025);
+    expectedWorkingWeekEnds.emplace_back(11, Oct, 2025);
+
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2024);
+    Date end(31, Dec, 2025);
 
     Size k = 0;
 
