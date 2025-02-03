@@ -254,7 +254,7 @@ namespace QuantLib {
     YoYInflationIndex::YoYInflationIndex(const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
                                          bool interpolated,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(underlyingIndex, yoyInflation) {
+    : YoYInflationIndex(underlyingIndex, std::move(yoyInflation)) {
         interpolated_ = interpolated;
     }
 
@@ -278,7 +278,7 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : YoYInflationIndex(familyName, region, revised, frequency, availabilityLag, currency, yoyInflation) {
+    : YoYInflationIndex(familyName, region, revised, frequency, availabilityLag, currency, std::move(yoyInflation)) {
         interpolated_ = interpolated;
     }
 
