@@ -147,6 +147,7 @@ namespace QuantLib {
       private:
         // methods
         void performCalculations() const override;
+        Rate yoyRateImpl(Time t) const override;
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
@@ -200,6 +201,12 @@ namespace QuantLib {
     template <class I, template <class> class B, class T>
     void PiecewiseYoYInflationCurve<I,B,T>::performCalculations() const {
         bootstrap_.calculate();
+    }
+
+    template <class I, template <class> class B, class T>
+    Rate PiecewiseYoYInflationCurve<I,B,T>::yoyRateImpl(Time t) const {
+        calculate();
+        return base_curve::yoyRateImpl(t);
     }
 
     template <class I, template <class> class B, class T>

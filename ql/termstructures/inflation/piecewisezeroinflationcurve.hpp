@@ -119,6 +119,7 @@ namespace QuantLib {
       private:
         // methods
         void performCalculations() const override;
+        Rate zeroRateImpl(Time t) const override;
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
@@ -172,6 +173,12 @@ namespace QuantLib {
     template <class I, template <class> class B, class T>
     void PiecewiseZeroInflationCurve<I,B,T>::performCalculations() const {
         bootstrap_.calculate();
+    }
+
+    template <class I, template <class> class B, class T>
+    Rate PiecewiseZeroInflationCurve<I,B,T>::zeroRateImpl(Time t) const {
+        calculate();
+        return base_curve::zeroRateImpl(t);
     }
 
     template <class I, template<class> class B, class T>
