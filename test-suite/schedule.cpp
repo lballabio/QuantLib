@@ -82,6 +82,84 @@ BOOST_AUTO_TEST_CASE(testDailySchedule) {
     check_dates(s, expected);
 }
 
+
+BOOST_AUTO_TEST_CASE(testEomAdjustment) {
+    BOOST_TEST_MESSAGE("Testing end-of-month adjustment with different conventions...");
+
+    Date startDate = Date(29, February, 2024);
+    Date endDate = startDate + 1 * Years;
+
+    Schedule s1 =
+        MakeSchedule().from(startDate).to(endDate)
+                      .withCalendar(TARGET())
+                      .withFrequency(Monthly)
+                      .withConvention(Unadjusted)
+                      .endOfMonth();
+
+    check_dates(s1, {
+            {29, February, 2024},
+            {31, March, 2024},
+            {30, April, 2024},
+            {31, May, 2024},
+            {30, June, 2024},
+            {31, July, 2024},
+            {31, August, 2024},
+            {30, September, 2024},
+            {31, October, 2024},
+            {30, November, 2024},
+            {31, December, 2024},
+            {31, January, 2025},
+            {28, February, 2025},
+        });
+
+    Schedule s2 =
+        MakeSchedule().from(startDate).to(endDate)
+                      .withCalendar(TARGET())
+                      .withFrequency(Monthly)
+                      .withConvention(Following)
+                      .endOfMonth();
+
+    check_dates(s2, {
+            {29, February, 2024},
+            {2, April, 2024},
+            {30, April, 2024},
+            {31, May, 2024},
+            {1, July, 2024},
+            {31, July, 2024},
+            {2, September, 2024},
+            {30, September, 2024},
+            {31, October, 2024},
+            {2, December, 2024},
+            {31, December, 2024},
+            {31, January, 2025},
+            {28, February, 2025},
+        });
+
+    Schedule s3 =
+        MakeSchedule().from(startDate).to(endDate)
+                      .withCalendar(TARGET())
+                      .withFrequency(Monthly)
+                      .withConvention(ModifiedPreceding)
+                      .endOfMonth();
+
+    check_dates(s3, {
+            {29, February, 2024},
+            {28, March, 2024},
+            {30, April, 2024},
+            {31, May, 2024},
+            {28, June, 2024},
+            {31, July, 2024},
+            {30, August, 2024},
+            {30, September, 2024},
+            {31, October, 2024},
+            {29, November, 2024},
+            {31, December, 2024},
+            {31, January, 2025},
+            {28, February, 2025},
+        });
+}
+
+
 BOOST_AUTO_TEST_CASE(testEndDateWithEomAdjustment) {
     BOOST_TEST_MESSAGE(
         "Testing end date for schedule with end-of-month adjustment...");
@@ -91,8 +169,8 @@ BOOST_AUTO_TEST_CASE(testEndDateWithEomAdjustment) {
                       .to(Date(15,June,2012))
                       .withCalendar(Japan())
                       .withTenor(6*Months)
-                      .withConvention(Following)
-                      .withTerminationDateConvention(Following)
+                      .withConvention(ModifiedFollowing)
+                      .withTerminationDateConvention(ModifiedFollowing)
                       .forwards()
                       .endOfMonth();
 
@@ -222,7 +300,7 @@ BOOST_AUTO_TEST_CASE(testDoubleFirstDateWithEomAdjustment) {
                       .to(Date(31,August,1997))
                       .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
                       .withTenor(6*Months)
-                      .withConvention(Following)
+                      .withConvention(ModifiedFollowing)
                       .withTerminationDateConvention(Following)
                       .backwards()
                       .endOfMonth();
@@ -245,8 +323,8 @@ BOOST_AUTO_TEST_CASE(testFirstDateWithEomAdjustment) {
                             .withFirstDate(Date(28, February, 1997))
                             .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
                             .withTenor(6 * Months)
-                            .withConvention(Following)
-                            .withTerminationDateConvention(Following)
+                            .withConvention(ModifiedFollowing)
+                            .withTerminationDateConvention(ModifiedFollowing)
                             .forwards()
                             .endOfMonth();
 
@@ -269,8 +347,8 @@ BOOST_AUTO_TEST_CASE(testNextToLastWithEomAdjustment) {
                             .withNextToLastDate(Date(28, February, 1998))
                             .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
                             .withTenor(6 * Months)
-                            .withConvention(Following)
-                            .withTerminationDateConvention(Following)
+                            .withConvention(ModifiedFollowing)
+                            .withTerminationDateConvention(ModifiedFollowing)
                             .backwards()
                             .endOfMonth();
 
@@ -1076,8 +1154,8 @@ BOOST_AUTO_TEST_CASE(testTruncation) {
         .to(Date(15, June, 2020))
         .withCalendar(Japan())
         .withTenor(6 * Months)
-        .withConvention(Following)
-        .withTerminationDateConvention(Following)
+        .withConvention(ModifiedFollowing)
+        .withTerminationDateConvention(ModifiedFollowing)
         .forwards()
         .endOfMonth();
 
