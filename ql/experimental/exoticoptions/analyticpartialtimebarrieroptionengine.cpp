@@ -22,7 +22,6 @@
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <utility>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -43,10 +42,6 @@ namespace QuantLib {
                                                   NoFrequency);
         Real barrier = arguments.barrier;
         Real strike = payoff->strike();
-        std::cout << "Risk Free Rate " << r << std::endl;
-        std::cout << "Dividend Yield " << q << std::endl;
-        std::cout << "Barrier " << barrier << std::endl;
-        std::cout << "Strike " << strike << std::endl;
         
         switch (barrierType) {
           case PartialBarrier::DownOut:
@@ -146,10 +141,8 @@ namespace QuantLib {
             );
 
           results_.value = payoff->strike() / spot * calculate(tmp_arguments_, callPayoff, callProcess);
-        } else {
-          std::cout << "Call " << std::endl;
+        } else
           results_.value = calculate(tmp_arguments_, payoff, process_);
-        }
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::CoB2(
@@ -158,7 +151,7 @@ namespace QuantLib {
         Real result = 0.0;
         Real b = r - q;
         Real T = residualTime();
-        Real underlying_ = underlying();
+        Real S = underlying();
         Real mu_ = mu(strike, b);
         Real g1_ = g1(barrier, strike, b);
         Real g2_ = g2(barrier, strike, b);
@@ -169,26 +162,26 @@ namespace QuantLib {
         Real e3_ = e3(barrier, strike, b);
         Real e4_ = e4(barrier, strike, b);
         Real rho_ = rho();
-        Real HSMu = HS(underlying_, barrier, 2 * mu_);
-        Real HSMu1 = HS(underlying_, barrier, 2 * (mu_ + 1));
-        Real discStrike = strike*std::exp(-r * T);
+        Real HSMu = HS(S, barrier, 2 * mu_);
+        Real HSMu1 = HS(S, barrier, 2 * (mu_ + 1));
+        Real X1 = strike * std::exp(-r * T);
 
         if (strike < barrier){
             switch (barrierType) {
               case PartialBarrier::DownOut:
-                result = underlying_ * std::exp((b - r) * T);
+                result = S * std::exp((b - r) * T);
                 result *= (M(g1_, e1_, rho_) - HSMu1 * M(g3_, -e3_, -rho_));
-                result -= discStrike * (M(g2_, e2_, rho_)-HSMu*M(g4_, -e4_, -rho_));
+                result -= X1 * (M(g2_, e2_, rho_)-HSMu*M(g4_, -e4_, -rho_));
                 return result;
 
               case PartialBarrier::UpOut:
-                result = underlying_ * std::exp((b - r) * T);
+                result = S * std::exp((b - r) * T);
                 result *= (M(-g1_, -e1_, rho_) - HSMu1 * M(-g3_, e3_, -rho_));
-                result -= discStrike * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
-                result -= underlying_ * std::exp((b - r) * T) * 
-                          (M(-d1(barrier, b), -e1_, rho_) - HSMu1 * 
+                result -= X1 * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
+                result -= S * std::exp((b - r) * T) * 
+                          (M(-d1(strike, b), -e1_, rho_) - HSMu1 * 
                           M(e3_, -f1(barrier, strike, b),-rho_));
-                result += discStrike * (M(-d2(barrier, b), -e2_, rho_) - HSMu * 
+                result += X1 * (M(-d2(strike, b), -e2_, rho_) - HSMu * 
                           M(e4_, -f2(barrier, strike, b), -rho_));
                 return result;
 
@@ -204,7 +197,7 @@ namespace QuantLib {
         Real result = 0.0;
         Rate b = r - q;
         Real T = residualTime();
-        Real underlying_ = underlying();
+        Real S = underlying();
         Real mu_ = mu(strike, b);
         Real g1_ = g1(barrier, strike, b);
         Real g2_ = g2(barrier, strike, b);
@@ -215,30 +208,24 @@ namespace QuantLib {
         Real e3_ = e3(barrier, strike, b);
         Real e4_ = e4(barrier, strike, b);
         Real rho_ = rho();
-        Real HSMu = HS(underlying_, barrier, 2 * mu_);
-        Real HSMu1 = HS(underlying_, barrier, 2 * (mu_ + 1));
-        Real discStrike = strike * std::exp(-r * T);
+        Real HSMu = HS(S, barrier, 2 * mu_);
+        Real HSMu1 = HS(S, barrier, 2 * (mu_ + 1));
+        Real X1 = strike * std::exp(-r * T);
 
         if (strike > barrier) {
-            std::cout << "Correct branch" << std::endl;
-            result = underlying_ * std::exp((b - r) * T);
-            std::cout << "res: " << result << std::endl;
+            result = S * std::exp((b - r) * T);
             result *= (M(d1(strike, b), e1_, rho_) - HSMu1 * M(f1(barrier, strike, b), -e3_, -rho_));
-            std::cout << "res: " << result << std::endl;
-            Real tmp = discStrike * (M(d2(barrier, b), e2_, rho_) - HSMu * M(f2(barrier, strike, b), -e4_, -rho_));
-            std::cout << "term to sub " << tmp << std::endl;
-            result -= tmp;
-            std::cout << "Result: " << result << std::endl;
+            result -= X1 * (M(d2(strike, b), e2_, rho_) - HSMu * M(f2(barrier, strike, b), -e4_, -rho_));
             return result;
         } else {
-            Real S1 = underlying_*std::exp((b - r) * T);
+            Real S1 = S * std::exp((b - r) * T);
             result = S1;
             result *= (M(-g1_, -e1_, rho_) - HSMu1 * M(-g3_,e3_,-rho_));
-            result -= discStrike * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
+            result -= X1 * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
             result -= S1 * (M(-d1(strike, b), -e1_, rho_) - HSMu1 * M(-f1(barrier, strike, b), e3_, -rho_));
-            result += discStrike * (M(-d2(strike, b), -e2_, rho_) - HSMu * M(-f2(barrier, strike, b), e4_, -rho_));
+            result += X1 * (M(-d2(strike, b), -e2_, rho_) - HSMu * M(-f2(barrier, strike, b), e4_, -rho_));
             result += S1 * (M(g1_, e1_, rho_) - HSMu1 * M(g3_, -e3_, -rho_));
-            result -= discStrike*(M(g2_, e2_, rho_) - HSMu * M(g4_, -e4_, -rho_));
+            result -= X1 * (M(g2_, e2_, rho_) - HSMu * M(g4_, -e4_, -rho_));
             return result;
         }
     }
@@ -265,22 +252,22 @@ namespace QuantLib {
         Real b = r - q;
         Real rho_ = rho();
         Real T = residualTime();
-        Real underlying_ = underlying();
+        Real S = underlying();
         Real mu_ = mu(strike, b);
         Real e1_ = e1(barrier, strike, b);
         Real e2_ = e2(barrier, strike, b);
         Real e3_ = e3(barrier, strike, b);
         Real e4_ = e4(barrier, strike, b);
-        Real HSMu = HS(underlying_,barrier,2 * mu_);
-        Real HSMu1 = HS(underlying_,barrier,2 * (mu_ + 1));
+        Real HSMu = HS(S, barrier,2 * mu_);
+        Real HSMu1 = HS(S, barrier, 2 * (mu_ + 1));
 
         Real result;
-        result = underlying_*std::exp((b-r) * T);
+        result = S * std::exp((b - r) * T);
         result *= (M(d1(strike, b), eta * e1_, eta * rho_)-HSMu1 * 
                   M(f1(barrier, strike, b), eta * e3_, eta * rho_));
-        result -= (strike*std::exp(-r * T) * 
-                  (M(d2(strike, b),eta*e2_,eta*rho_) - HSMu *
-                  M(f2(barrier, strike, b),eta * e4_, eta * rho_)));
+        result -= (strike * std::exp(-r * T) * 
+                  (M(d2(strike, b),eta * e2_, eta * rho_) - HSMu *
+                  M(f2(barrier, strike, b), eta * e4_, eta * rho_)));
         return result;
     }
 
@@ -342,7 +329,8 @@ namespace QuantLib {
         Real S = underlying();
         Real T = residualTime();
         Real sigma = volatility(T, strike);
-        return (std::log(S / strike) + 2 * std::log(barrier / S) + (b + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
+        return (std::log(S / strike) + 2 * std::log(barrier / S) + 
+              (b + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::f2(Real barrier, Real strike, Rate b) const {
@@ -367,64 +355,64 @@ namespace QuantLib {
     Real AnalyticPartialTimeBarrierOptionEngine::d1(Real strike, Rate b) const {
         Time T2 = residualTime();
         Volatility vol = volatility(T2, strike);
-        return (std::log(underlying()/strike)+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
+        return (std::log(underlying() / strike) + (b + vol * vol / 2) * T2) / (std::sqrt(T2) * vol);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::d2(Real strike, Rate b) const {
         Time T2 = residualTime();
         Volatility vol = volatility(T2, strike);
-        return d1(strike, b) - vol*std::sqrt(T2);
+        return d1(strike, b) - vol * std::sqrt(T2);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::e1(Real barrier, Real strike, Rate b) const {
         Time T1 = coverEventTime();
         Volatility vol = volatility(T1, strike);
-        return (std::log(underlying()/barrier)+(b+vol*vol/2)*T1)/(std::sqrt(T1)*vol);
+        return (std::log(underlying() / barrier) + (b + vol * vol / 2) * T1) / (std::sqrt(T1) * vol);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::e2(Real barrier, Real strike, Rate b) const {
         Time T1 = coverEventTime();
         Volatility vol = volatility(T1, strike);
-        return e1(barrier, strike, b) - vol*std::sqrt(T1);
+        return e1(barrier, strike, b) - vol * std::sqrt(T1);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::e3(Real barrier, Real strike, Rate b) const {
         Time T1 = coverEventTime();
         Real vol = volatility(T1, strike);
-        return e1(barrier, strike, b) + (2*std::log(barrier/underlying()) /(vol*std::sqrt(T1)));
+        return e1(barrier, strike, b) + (2 * std::log(barrier / underlying()) / (vol * std::sqrt(T1)));
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::e4(Real barrier, Real strike, Rate b) const {
         Time t = coverEventTime();
-        return e3(barrier, strike, b) - volatility(t, strike)*std::sqrt(t);
+        return e3(barrier, strike, b) - volatility(t, strike) * std::sqrt(t);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::g1(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
         Volatility vol = volatility(T2, strike);
-        return (std::log(underlying()/barrier)+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
+        return (std::log(underlying() / barrier) + (b + vol * vol / 2) * T2) / (std::sqrt(T2) * vol);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::g2(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
         Volatility vol = volatility(T2, strike);
-        return g1(barrier, strike, b) - vol*std::sqrt(T2);
+        return g1(barrier, strike, b) - vol * std::sqrt(T2);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::g3(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
         Real vol = volatility(T2, strike);
-        return g1(barrier, strike, b)+(2*std::log(barrier/underlying()) /(vol*std::sqrt(T2)));
+        return g1(barrier, strike, b) + (2 * std::log(barrier / underlying()) /(vol * std::sqrt(T2)));
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::g4(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
         Real vol = volatility(T2, strike);
-        return g3(barrier, strike, b) - vol*std::sqrt(T2);
+        return g3(barrier, strike, b) - vol * std::sqrt(T2);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::HS(Real S, Real H, Real power) const {
-        return std::pow((H/S),power);
+        return std::pow((H / S), power);
     }
 
 }
