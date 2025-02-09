@@ -221,10 +221,9 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
         if (error > tolerance)
-            BOOST_ERROR("Failed to reproduce partial-time put barrier option value"
-                        << "\n    expected:   " << expected
-                        << "\n    calculated: " << calculated
-                        << "\n    error:      " << error);
+            REPORT_FAILURE("value", PartialBarrier::UpOut, barrier, rebate, payoff,
+                            exercise, i.underlying, 0.0, 0.1, today, 0.25,
+                            expected, calculated, error, tolerance);
     }
 }
 
