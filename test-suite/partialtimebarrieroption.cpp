@@ -33,6 +33,28 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(PartialTimeBarrierOptionTests)
 
+#undef REPORT_FAILURE
+#define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
+                       exercise, s, q, r, today, v, expected, calculated, \
+                       error, tolerance) \
+    BOOST_ERROR("\n" << barrierTypeToString(barrierType) << " " \
+               << exerciseTypeToString(exercise) << " " \
+               << payoff->optionType() << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    underlying value: " << s << "\n" \
+               << "    strike:           " << payoff->strike() << "\n" \
+               << "    barrier:          " << barrier << "\n" \
+               << "    rebate:           " << rebate << "\n" \
+               << "    dividend yield:   " << io::rate(q) << "\n" \
+               << "    risk-free rate:   " << io::rate(r) << "\n" \
+               << "    reference date:   " << today << "\n" \
+               << "    maturity:         " << exercise->lastDate() << "\n" \
+               << "    volatility:       " << io::volatility(v) << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
+
 struct TestCase {
     Real underlying;
     Real strike;
@@ -71,7 +93,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
                                                       riskFreeTS,
                                                       blackVolTS);
     auto engine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Call>>(process);
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  0.0393 },
@@ -117,10 +139,9 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
         if (error > tolerance)
-            BOOST_ERROR("Failed to reproduce partial-time barrier option value"
-                        << "\n    expected:   " << expected
-                        << "\n    calculated: " << calculated
-                        << "\n    error:      " << error);
+            REPORT_FAILURE("value", PartialBarrier::DownOut, barrier, rebate, payoff,
+                            exercise, i.underlying, 0.0, 0.1, today, 0.25,
+                            expected, calculated, error, tolerance);
     }
 }
 
@@ -154,7 +175,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
                                                       riskFreeTS,
                                                       blackVolTS);
     auto engine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Put>>(process);
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  1.5551 },
@@ -268,9 +289,9 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
                                                       riskFreeTSPut,
                                                       blackVolTS);
     auto callEngine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Call>>(callProcess);
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(callProcess);
     auto putEngine =
-        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine<Option::Put>>(putProcess);
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(putProcess);
 
     for (auto& i : cases) {
         Date coverEventDate = today + i.days;

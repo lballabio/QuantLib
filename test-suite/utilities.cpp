@@ -55,6 +55,21 @@ namespace QuantLib {
         QL_FAIL("unknown exercise type");
     }
 
+    std::string barrierTypeToString(Barrier::Type type) {
+        switch(type){
+        case Barrier::DownIn:
+            return std::string("Down-and-in");
+        case Barrier::UpIn:
+            return std::string("Up-and-in");
+        case Barrier::DownOut:
+            return std::string("Down-and-out");
+        case Barrier::UpOut:
+            return std::string("Up-and-out");
+        default:
+            QL_FAIL("unknown exercise type");
+        }
+    }
+
 
     ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,

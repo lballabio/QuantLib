@@ -26,29 +26,39 @@
 
 namespace QuantLib {
 
-    template<Option::Type OptionType>
-    AnalyticPartialTimeBarrierOptionEngine<OptionType>::AnalyticPartialTimeBarrierOptionEngine(
+    AnalyticPartialTimeBarrierOptionEngine::AnalyticPartialTimeBarrierOptionEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)) {
         registerWith(process_);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::calculate(PartialTimeBarrierOption::arguments& arguments) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::calculate(PartialTimeBarrierOption::arguments& arguments,
+                                                          ext::shared_ptr<PlainVanillaPayoff> payoff,
+                                                          ext::shared_ptr<GeneralizedBlackScholesProcess> process) const {
         PartialBarrier::Type barrierType = arguments.barrierType;
         PartialBarrier::Range barrierRange = arguments.barrierRange;
+        Rate r = process->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                  NoFrequency);
+        Rate q = process->dividendYield()->zeroRate(residualTime(), Continuous,
+                                                  NoFrequency);
+        Real barrier = arguments.barrier;
+        Real strike = payoff->strike();
+        std::cout << "Risk Free Rate " << r << std::endl;
+        std::cout << "Dividend Yield " << q << std::endl;
+        std::cout << "Barrier " << barrier << std::endl;
+        std::cout << "Strike " << strike << std::endl;
         
         switch (barrierType) {
           case PartialBarrier::DownOut:
             switch (barrierRange) {
               case PartialBarrier::Start:
-                return CA(1);
+                return CA(1, barrier, strike, r, q);
                 break;
               case PartialBarrier::EndB1:
-                return CoB1();
+                return CoB1(barrier, strike, r, q);
                 break;
               case PartialBarrier::EndB2:
-                return CoB2(PartialBarrier::DownOut);
+                return CoB2(PartialBarrier::DownOut, barrier, strike, r, q);
                 break;
               default:
                 QL_FAIL("invalid barrier range");
@@ -58,7 +68,7 @@ namespace QuantLib {
           case PartialBarrier::DownIn:
             switch (barrierRange) {
               case PartialBarrier::Start:
-                return CIA(1);
+                return CIA(1, barrier, strike, r, q);
                 break;
               case PartialBarrier::End:
                 QL_FAIL("Down-and-in partial-time end barrier is not implemented");
@@ -70,13 +80,13 @@ namespace QuantLib {
           case PartialBarrier::UpOut:
             switch (barrierRange) {
               case PartialBarrier::Start:
-                return CA(-1);
+                return CA(-1, barrier, strike, r, q);
                 break;
               case PartialBarrier::EndB1:
-                return CoB1();
+                return CoB1(barrier, strike, r, q);
                 break;
               case PartialBarrier::EndB2:
-                return CoB2(PartialBarrier::UpOut);
+                return CoB2(PartialBarrier::UpOut, barrier, strike, r, q);
                 break;
               default:
                 QL_FAIL("invalid barrier range");
@@ -86,7 +96,7 @@ namespace QuantLib {
             case PartialBarrier::UpIn:
               switch (barrierRange) {
                 case PartialBarrier::Start:
-                  return CIA(-1);
+                  return CIA(-1, barrier, strike, r, q);
                   break;
                 case PartialBarrier::End:
                   QL_FAIL("Up-and-in partial-time end barrier is not implemented");
@@ -101,8 +111,7 @@ namespace QuantLib {
         return 0.0;
     }
 
-    template<Option::Type OptionType>
-    void AnalyticPartialTimeBarrierOptionEngine<OptionType>::calculate() const {
+    void AnalyticPartialTimeBarrierOptionEngine::calculate() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
@@ -120,40 +129,67 @@ namespace QuantLib {
         };
 
         auto tmp_arguments_ = arguments_;
-        if constexpr (OptionType == Option::Put)
+        if (payoff->optionType() == Option::Put)
         {
           Real spotSq = spot * spot;
           Real callStrike = spotSq / payoff->strike();
-          ext::shared_ptr<StrikedTypePayoff> callPayoff =
+          ext::shared_ptr<PlainVanillaPayoff> callPayoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Call, callStrike);
           tmp_arguments_.barrierType = getSymmetricBarrierType(arguments_.barrierType);
           tmp_arguments_.barrier = spotSq / arguments_.barrier;
           tmp_arguments_.payoff = callPayoff;
+          auto callProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+              process_->stateVariable(),
+              process_->riskFreeRate(),
+              process_->dividendYield(),
+              process_->blackVolatility()
+            );
 
-          results_.value = payoff->strike() / spot * calculate(tmp_arguments_);
-        } else 
-          results_.value = calculate(tmp_arguments_ );
+          results_.value = payoff->strike() / spot * calculate(tmp_arguments_, callPayoff, callProcess);
+        } else {
+          std::cout << "Call " << std::endl;
+          results_.value = calculate(tmp_arguments_, payoff, process_);
+        }
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CoB2(
-                                      PartialBarrier::Type barrierType) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::CoB2(
+                                      PartialBarrier::Type barrierType, 
+                                      Real barrier, Real strike, Rate r, Rate q) const {
         Real result = 0.0;
-        Real b = riskFreeRate()-dividendYield();
-        if (strike()<barrier()){
+        Real b = r - q;
+        Real T = residualTime();
+        Real underlying_ = underlying();
+        Real mu_ = mu(strike, b);
+        Real g1_ = g1(barrier, strike, b);
+        Real g2_ = g2(barrier, strike, b);
+        Real g3_ = g3(barrier, strike, b);
+        Real g4_ = g4(barrier, strike, b);
+        Real e1_ = e1(barrier, strike, b);
+        Real e2_ = e2(barrier, strike, b);
+        Real e3_ = e3(barrier, strike, b);
+        Real e4_ = e4(barrier, strike, b);
+        Real rho_ = rho();
+        Real HSMu = HS(underlying_, barrier, 2 * mu_);
+        Real HSMu1 = HS(underlying_, barrier, 2 * (mu_ + 1));
+        Real discStrike = strike*std::exp(-r * T);
+
+        if (strike < barrier){
             switch (barrierType) {
               case PartialBarrier::DownOut:
-                result = underlying()*std::exp((b-riskFreeRate())*residualTime());
-                result *= (M(g1(),e1(),rho())-HS(underlying(),barrier(),2*(mu()+1))*M(g3(),-e3(),-rho()));
-                result -= strike()*std::exp(-riskFreeRate()*residualTime())*(M(g2(),e2(),rho())-HS(underlying(),barrier(),2*mu())*M(g4(),-e4(),-rho()));
+                result = underlying_ * std::exp((b - r) * T);
+                result *= (M(g1_, e1_, rho_) - HSMu1 * M(g3_, -e3_, -rho_));
+                result -= discStrike * (M(g2_, e2_, rho_)-HSMu*M(g4_, -e4_, -rho_));
                 return result;
 
               case PartialBarrier::UpOut:
-                result = underlying()*std::exp((b-riskFreeRate())*residualTime());
-                result *= (M(-g1(),-e1(),rho())-HS(underlying(),barrier(),2*(mu()+1))*M(-g3(),e3(),-rho()));
-                result -= strike()*std::exp(-riskFreeRate()*residualTime())*(M(-g2(),-e2(),rho())-HS(underlying(),barrier(),2*mu())*M(-g4(),e4(),-rho()));
-                result -= underlying()*std::exp((b-riskFreeRate())*residualTime())*(M(-d1(),-e1(),rho())-HS(underlying(),barrier(),2*(mu()+1))*M(e3(),-f1(),-rho()));
-                result += strike()*std::exp(-riskFreeRate()*residualTime())*(M(-d2(),-e2(),rho())-HS(underlying(),barrier(),2*mu())*M(e4(),-f2(),-rho()));
+                result = underlying_ * std::exp((b - r) * T);
+                result *= (M(-g1_, -e1_, rho_) - HSMu1 * M(-g3_, e3_, -rho_));
+                result -= discStrike * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
+                result -= underlying_ * std::exp((b - r) * T) * 
+                          (M(-d1(barrier, b), -e1_, rho_) - HSMu1 * 
+                          M(e3_, -f1(barrier, strike, b),-rho_));
+                result += discStrike * (M(-d2(barrier, b), -e2_, rho_) - HSMu * 
+                          M(e4_, -f2(barrier, strike, b), -rho_));
                 return result;
 
               default:
@@ -164,35 +200,52 @@ namespace QuantLib {
         }
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CoB1() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::CoB1(Real barrier, Real strike, Rate r, Rate q) const {
         Real result = 0.0;
-        Real b = riskFreeRate()-dividendYield();
-        if (strike()>barrier()) {
-            result = underlying()*std::exp((b-riskFreeRate())*residualTime());
-            result *= (M(d1(),e1(),rho())-HS(underlying(),barrier(),2*(mu()+1))*M(f1(),-e3(),-rho()));
-            result -= (strike()*std::exp(-riskFreeRate()*residualTime()))*(M(d2(),e2(),rho())-HS(underlying(),barrier(),2*mu())*M(f2(),-e4(),-rho()));
+        Rate b = r - q;
+        Real T = residualTime();
+        Real underlying_ = underlying();
+        Real mu_ = mu(strike, b);
+        Real g1_ = g1(barrier, strike, b);
+        Real g2_ = g2(barrier, strike, b);
+        Real g3_ = g3(barrier, strike, b);
+        Real g4_ = g4(barrier, strike, b);
+        Real e1_ = e1(barrier, strike, b);
+        Real e2_ = e2(barrier, strike, b);
+        Real e3_ = e3(barrier, strike, b);
+        Real e4_ = e4(barrier, strike, b);
+        Real rho_ = rho();
+        Real HSMu = HS(underlying_, barrier, 2 * mu_);
+        Real HSMu1 = HS(underlying_, barrier, 2 * (mu_ + 1));
+        Real discStrike = strike * std::exp(-r * T);
+
+        if (strike > barrier) {
+            std::cout << "Correct branch" << std::endl;
+            result = underlying_ * std::exp((b - r) * T);
+            std::cout << "res: " << result << std::endl;
+            result *= (M(d1(strike, b), e1_, rho_) - HSMu1 * M(f1(barrier, strike, b), -e3_, -rho_));
+            std::cout << "res: " << result << std::endl;
+            Real tmp = discStrike * (M(d2(barrier, b), e2_, rho_) - HSMu * M(f2(barrier, strike, b), -e4_, -rho_));
+            std::cout << "term to sub " << tmp << std::endl;
+            result -= tmp;
+            std::cout << "Result: " << result << std::endl;
             return result;
         } else {
-            Real S1 = underlying()*std::exp((b-riskFreeRate())*residualTime());
-            Real X1 = (strike()*std::exp(-riskFreeRate()*residualTime()));
-            Real HS1 = HS(underlying(),barrier(),2*(mu()+1));
-            Real HS2 = HS(underlying(), barrier(), 2 * mu());
+            Real S1 = underlying_*std::exp((b - r) * T);
             result = S1;
-            result *= (M(-g1(),-e1(),rho())-HS1*M(-g3(),e3(),-rho()));
-            result -= X1*(M(-g2(), -e2(), rho()) - HS2*M(-g4(), e4(), -rho()));
-            result -= S1*(M(-d1(), -e1(), rho()) - HS1*M(-f1(), e3(), -rho()));
-            result += X1*(M(-d2(), -e2(), rho()) - HS2*M(-f2(), e4(), -rho()));
-            result += S1*(M(g1(), e1(), rho()) - HS1*M(g3(), -e3(), -rho()));
-            result -= X1*(M(g2(), e2(), rho()) - HS2*M(g4(), -e4(), -rho()));
+            result *= (M(-g1_, -e1_, rho_) - HSMu1 * M(-g3_,e3_,-rho_));
+            result -= discStrike * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
+            result -= S1 * (M(-d1(strike, b), -e1_, rho_) - HSMu1 * M(-f1(barrier, strike, b), e3_, -rho_));
+            result += discStrike * (M(-d2(strike, b), -e2_, rho_) - HSMu * M(-f2(barrier, strike, b), e4_, -rho_));
+            result += S1 * (M(g1_, e1_, rho_) - HSMu1 * M(g3_, -e3_, -rho_));
+            result -= discStrike*(M(g2_, e2_, rho_) - HSMu * M(g4_, -e4_, -rho_));
             return result;
         }
     }
 
     // eta = -1: Up-and-In Call
     // eta =  1: Down-and-In Call
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CIA(Integer eta) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::CIA(Integer eta, Real barrier, Real strike, Rate r, Rate q) const {
         ext::shared_ptr<EuropeanExercise> exercise =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
 
@@ -204,215 +257,175 @@ namespace QuantLib {
         europeanOption.setPricingEngine(
                         ext::make_shared<AnalyticEuropeanEngine>(process_));
 
-        return europeanOption.NPV() - CA(eta);
+        return europeanOption.NPV() - CA(eta, barrier, strike, r, q);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::CA(Integer eta) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::CA(Integer eta, Real barrier, Real strike, Rate r, Rate q) const {
         //Partial-Time-Start- OUT  Call Option calculation
-        Real b = riskFreeRate()-dividendYield();
+        Real b = r - q;
+        Real rho_ = rho();
+        Real T = residualTime();
+        Real underlying_ = underlying();
+        Real mu_ = mu(strike, b);
+        Real e1_ = e1(barrier, strike, b);
+        Real e2_ = e2(barrier, strike, b);
+        Real e3_ = e3(barrier, strike, b);
+        Real e4_ = e4(barrier, strike, b);
+        Real HSMu = HS(underlying_,barrier,2 * mu_);
+        Real HSMu1 = HS(underlying_,barrier,2 * (mu_ + 1));
+
         Real result;
-        result = underlying()*std::exp((b-riskFreeRate())*residualTime());
-        result *= (M(d1(),eta*e1(),eta*rho())-HS(underlying(),barrier(),2*(mu()+1))*M(f1(),eta*e3(),eta*rho()));
-        result -= (strike()*std::exp(-riskFreeRate()*residualTime())*(M(d2(),eta*e2(),eta*rho())-HS(underlying(),barrier(),2*mu())*M(f2(),eta*e4(),eta*rho())));
+        result = underlying_*std::exp((b-r) * T);
+        result *= (M(d1(strike, b), eta * e1_, eta * rho_)-HSMu1 * 
+                  M(f1(barrier, strike, b), eta * e3_, eta * rho_));
+        result -= (strike*std::exp(-r * T) * 
+                  (M(d2(strike, b),eta*e2_,eta*rho_) - HSMu *
+                  M(f2(barrier, strike, b),eta * e4_, eta * rho_)));
         return result;
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::underlying() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::underlying() const {
         return process_->x0();
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::strike() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::strike() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
-        if constexpr (OptionType == Option::Put)
-          return underlying() * underlying() / payoff->strike();
-        else
-          return payoff->strike();
+        return payoff->strike();
     }
 
-    template<Option::Type OptionType>
-    Time AnalyticPartialTimeBarrierOptionEngine<OptionType>::residualTime() const {
+    Time AnalyticPartialTimeBarrierOptionEngine::residualTime() const {
         return process_->time(arguments_.exercise->lastDate());
     }
 
-    template<Option::Type OptionType>
-    Time AnalyticPartialTimeBarrierOptionEngine<OptionType>::coverEventTime() const {
+    Time AnalyticPartialTimeBarrierOptionEngine::coverEventTime() const {
         return process_->time(arguments_.coverEventDate);
     }
 
-    template<Option::Type OptionType>
-    Volatility AnalyticPartialTimeBarrierOptionEngine<OptionType>::volatility(Time t) const {
-        return process_->blackVolatility()->blackVol(t, strike());
+    Volatility AnalyticPartialTimeBarrierOptionEngine::volatility(Time t, Real strike) const {
+        return process_->blackVolatility()->blackVol(t, strike);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::stdDeviation() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::stdDeviation(Real strike) const {
         Time T = residualTime();
-        return volatility(T) * std::sqrt(T);
+        return volatility(T, strike) * std::sqrt(T);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::barrier() const {
-        if constexpr (OptionType == Option::Put)
-          return underlying() * underlying() / arguments_.barrier;
-        else
-          return arguments_.barrier;
+    Real AnalyticPartialTimeBarrierOptionEngine::barrier() const {
+        return arguments_.barrier;
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::rebate() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::rebate() const {
         return arguments_.rebate;
     }
 
-    template<Option::Type OptionType>
-    Rate AnalyticPartialTimeBarrierOptionEngine<OptionType>::riskFreeRate() const {
-        if constexpr (OptionType == Option::Put)
-          return process_->dividendYield()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency);
-        else
-          return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
+    Rate AnalyticPartialTimeBarrierOptionEngine::riskFreeRate() const {
+        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
                                                   NoFrequency);
     }
 
-    template<Option::Type OptionType>
-    DiscountFactor AnalyticPartialTimeBarrierOptionEngine<OptionType>::riskFreeDiscount() const {
-        if constexpr (OptionType == Option::Put)
-          return process_->dividendYield()->discount(residualTime());
-        else
-          return process_->riskFreeRate()->discount(residualTime());
+    DiscountFactor AnalyticPartialTimeBarrierOptionEngine::riskFreeDiscount() const {
+        return process_->riskFreeRate()->discount(residualTime());
     }
 
-    template<Option::Type OptionType>
-    Rate AnalyticPartialTimeBarrierOptionEngine<OptionType>::dividendYield() const {
-        if constexpr (OptionType == Option::Put)
-          return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency);
-        else
-          return process_->dividendYield()->zeroRate(residualTime(), Continuous,
+    Rate AnalyticPartialTimeBarrierOptionEngine::dividendYield() const {
+        return process_->dividendYield()->zeroRate(residualTime(), Continuous,
                                                    NoFrequency);
     }
 
-    template<Option::Type OptionType>
-    DiscountFactor AnalyticPartialTimeBarrierOptionEngine<OptionType>::dividendDiscount() const {
-        if constexpr (OptionType == Option::Put)
-          return process_->riskFreeRate()->discount(residualTime());
-        else
-          return process_->dividendYield()->discount(residualTime());
+    DiscountFactor AnalyticPartialTimeBarrierOptionEngine::dividendDiscount() const {
+        return process_->dividendYield()->discount(residualTime());
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::f1() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::f1(Real barrier, Real strike, Rate b) const {
         Real S = underlying();
         Real T = residualTime();
-        Real sigma = volatility(T);
-        return (std::log(S / strike()) + 2 * std::log(barrier() / S) + ((riskFreeRate()-dividendYield()) + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
+        Real sigma = volatility(T, strike);
+        return (std::log(S / strike) + 2 * std::log(barrier / S) + (b + (std::pow(sigma, 2) / 2))*T) / (sigma*std::sqrt(T));
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::f2() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::f2(Real barrier, Real strike, Rate b) const {
         Time T = residualTime();
-        return f1() - volatility(T)*std::sqrt(T);
+        return f1(barrier, strike, b) - volatility(T, strike) * std::sqrt(T);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::M(Real a,Real b,Real rho) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::M(Real a, Real b, Real rho) const {
         BivariateCumulativeNormalDistributionDr78 CmlNormDist(rho);
         return CmlNormDist(a,b);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::rho() const {
-        return std::sqrt(coverEventTime()/residualTime());
+    Real AnalyticPartialTimeBarrierOptionEngine::rho() const {
+        return std::sqrt(coverEventTime() / residualTime());
     }
 
-    template<Option::Type OptionType>
-    Rate AnalyticPartialTimeBarrierOptionEngine<OptionType>::mu() const {
-        Volatility vol = volatility(coverEventTime());
-        return ((riskFreeRate() - dividendYield()) - (vol * vol) / 2) / (vol * vol);
+    Rate AnalyticPartialTimeBarrierOptionEngine::mu(Real strike, Rate b) const {
+        Volatility vol = volatility(coverEventTime(), strike);
+        return (b - (vol * vol) / 2) / (vol * vol);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::d1() const {
-        Real b = riskFreeRate()-dividendYield();
+    Real AnalyticPartialTimeBarrierOptionEngine::d1(Real strike, Rate b) const {
         Time T2 = residualTime();
-        Volatility vol = volatility(T2);
-        return (std::log(underlying()/strike())+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
+        Volatility vol = volatility(T2, strike);
+        return (std::log(underlying()/strike)+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::d2() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::d2(Real strike, Rate b) const {
         Time T2 = residualTime();
-        Volatility vol = volatility(T2);
-        return d1() - vol*std::sqrt(T2);
+        Volatility vol = volatility(T2, strike);
+        return d1(strike, b) - vol*std::sqrt(T2);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e1() const {
-        Real b = riskFreeRate()-dividendYield();
+    Real AnalyticPartialTimeBarrierOptionEngine::e1(Real barrier, Real strike, Rate b) const {
         Time T1 = coverEventTime();
-        Volatility vol = volatility(T1);
-        return (std::log(underlying()/barrier())+(b+vol*vol/2)*T1)/(std::sqrt(T1)*vol);
+        Volatility vol = volatility(T1, strike);
+        return (std::log(underlying()/barrier)+(b+vol*vol/2)*T1)/(std::sqrt(T1)*vol);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e2() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::e2(Real barrier, Real strike, Rate b) const {
         Time T1 = coverEventTime();
-        Volatility vol = volatility(T1);
-        return e1() - vol*std::sqrt(T1);
+        Volatility vol = volatility(T1, strike);
+        return e1(barrier, strike, b) - vol*std::sqrt(T1);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e3() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::e3(Real barrier, Real strike, Rate b) const {
         Time T1 = coverEventTime();
-        Real vol = volatility(T1);
-        return e1()+(2*std::log(barrier()/underlying()) /(vol*std::sqrt(T1)));
+        Real vol = volatility(T1, strike);
+        return e1(barrier, strike, b) + (2*std::log(barrier/underlying()) /(vol*std::sqrt(T1)));
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::e4() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::e4(Real barrier, Real strike, Rate b) const {
         Time t = coverEventTime();
-        return e3()-volatility(t)*std::sqrt(t);
+        return e3(barrier, strike, b) - volatility(t, strike)*std::sqrt(t);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g1() const {
-        Real b = riskFreeRate()-dividendYield();
+    Real AnalyticPartialTimeBarrierOptionEngine::g1(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
-        Volatility vol = volatility(T2);
-        return (std::log(underlying()/barrier())+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
+        Volatility vol = volatility(T2, strike);
+        return (std::log(underlying()/barrier)+(b+vol*vol/2)*T2)/(std::sqrt(T2)*vol);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g2() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::g2(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
-        Volatility vol = volatility(T2);
-        return g1() - vol*std::sqrt(T2);
+        Volatility vol = volatility(T2, strike);
+        return g1(barrier, strike, b) - vol*std::sqrt(T2);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g3() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::g3(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
-        Real vol = volatility(T2);
-        return g1()+(2*std::log(barrier()/underlying()) /(vol*std::sqrt(T2)));
+        Real vol = volatility(T2, strike);
+        return g1(barrier, strike, b)+(2*std::log(barrier/underlying()) /(vol*std::sqrt(T2)));
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::g4() const {
+    Real AnalyticPartialTimeBarrierOptionEngine::g4(Real barrier, Real strike, Rate b) const {
         Time T2 = residualTime();
-        Real vol = volatility(T2);
-        return g3()-vol*std::sqrt(T2);
+        Real vol = volatility(T2, strike);
+        return g3(barrier, strike, b) - vol*std::sqrt(T2);
     }
 
-    template<Option::Type OptionType>
-    Real AnalyticPartialTimeBarrierOptionEngine<OptionType>::HS(Real S, Real H, Real power) const {
+    Real AnalyticPartialTimeBarrierOptionEngine::HS(Real S, Real H, Real power) const {
         return std::pow((H/S),power);
     }
 
-    template class AnalyticPartialTimeBarrierOptionEngine<Option::Call>;
-    template class AnalyticPartialTimeBarrierOptionEngine<Option::Put>;
 }
 

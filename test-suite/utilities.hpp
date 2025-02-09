@@ -23,6 +23,7 @@
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/barriertype.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/quote.hpp>
@@ -66,6 +67,7 @@ namespace QuantLib {
 
     std::string payoffTypeToString(const ext::shared_ptr<Payoff>&);
     std::string exerciseTypeToString(const ext::shared_ptr<Exercise>&);
+    std::string barrierTypeToString(Barrier::Type type);
 
 
     ext::shared_ptr<YieldTermStructure>
