@@ -59,21 +59,6 @@ BOOST_AUTO_TEST_SUITE(BinaryOptionTests)
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance << "\n");
 
-std::string barrierTypeToString(Barrier::Type type) {
-    switch(type){
-      case Barrier::DownIn:
-        return std::string("Down-and-in");
-      case Barrier::UpIn:
-        return std::string("Up-and-in");
-      case Barrier::DownOut:
-        return std::string("Down-and-out");
-      case Barrier::UpOut:
-        return std::string("Up-and-out");
-      default:
-        QL_FAIL("unknown exercise type");
-    }
-}
-
 struct BinaryOptionData {
     Barrier::Type barrierType;
     Real barrier;
