@@ -275,13 +275,6 @@ namespace QuantLib {
         return process_->x0();
     }
 
-    Real AnalyticPartialTimeBarrierOptionEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-plain payoff given");
-        return payoff->strike();
-    }
-
     Time AnalyticPartialTimeBarrierOptionEngine::residualTime() const {
         return process_->time(arguments_.exercise->lastDate());
     }
@@ -292,37 +285,6 @@ namespace QuantLib {
 
     Volatility AnalyticPartialTimeBarrierOptionEngine::volatility(Time t, Real strike) const {
         return process_->blackVolatility()->blackVol(t, strike);
-    }
-
-    Real AnalyticPartialTimeBarrierOptionEngine::stdDeviation(Real strike) const {
-        Time T = residualTime();
-        return volatility(T, strike) * std::sqrt(T);
-    }
-
-    Real AnalyticPartialTimeBarrierOptionEngine::barrier() const {
-        return arguments_.barrier;
-    }
-
-    Real AnalyticPartialTimeBarrierOptionEngine::rebate() const {
-        return arguments_.rebate;
-    }
-
-    Rate AnalyticPartialTimeBarrierOptionEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency);
-    }
-
-    DiscountFactor AnalyticPartialTimeBarrierOptionEngine::riskFreeDiscount() const {
-        return process_->riskFreeRate()->discount(residualTime());
-    }
-
-    Rate AnalyticPartialTimeBarrierOptionEngine::dividendYield() const {
-        return process_->dividendYield()->zeroRate(residualTime(), Continuous,
-                                                   NoFrequency);
-    }
-
-    DiscountFactor AnalyticPartialTimeBarrierOptionEngine::dividendDiscount() const {
-        return process_->dividendYield()->discount(residualTime());
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::f1(Real barrier, Real strike, Rate b) const {

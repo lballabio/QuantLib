@@ -42,17 +42,9 @@ namespace QuantLib {
                       ext::shared_ptr<PlainVanillaPayoff> payoff, 
                       ext::shared_ptr<GeneralizedBlackScholesProcess> process) const;
         Real underlying() const;
-        Real strike() const;
         Time residualTime() const;
         Time coverEventTime() const;
         Volatility volatility(Time t, Real strike) const;
-        Real barrier() const;
-        Real rebate() const;
-        Real stdDeviation(Real strike) const;
-        Rate riskFreeRate() const;
-        DiscountFactor riskFreeDiscount() const;
-        Rate dividendYield() const;
-        DiscountFactor dividendDiscount() const;
         Real M(Real a,Real b,Real rho) const;
         Real d1(Real strike, Rate b)const;
         Real d2(Real strike, Rate b)const;
