@@ -32,15 +32,16 @@ namespace QuantLib {
 
     class GeneralizedBlackScholesProcess;
 
-    struct PartialBarrier : public Barrier {
-        enum Range { Start, End, EndB1, EndB2 };
+    struct PartialBarrier {
+        enum Range { Start = 0, EndB1 = 2, EndB2 = 3 };
     };
 
     class PartialTimeBarrierOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
-        PartialTimeBarrierOption(PartialBarrier::Type barrierType,
+        PartialTimeBarrierOption(
+            Barrier::Type barrierType,
             PartialBarrier::Range barrierRange,
             Real barrier,
             Real rebate,
@@ -50,19 +51,19 @@ namespace QuantLib {
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
-        PartialBarrier::Type barrierType_;
+        Barrier::Type barrierType_;
         PartialBarrier::Range barrierRange_;
         Real barrier_;
         Real rebate_;
         Date coverEventDate_;
     };
 
-    //! %Arguments for barrier option calculation
+    //! %Arguments for partial-time %barrier %option calculation
     class PartialTimeBarrierOption::arguments
         : public OneAssetOption::arguments {
       public:
         arguments();
-        PartialBarrier::Type barrierType;
+        Barrier::Type barrierType;
         PartialBarrier::Range barrierRange;
         Real barrier;
         Real rebate;
@@ -70,7 +71,7 @@ namespace QuantLib {
         void validate() const override;
     };
 
-    //! %Partial-Time-Barrier-Option %engine base class
+    //! Base class for partial-time %barrier %option engines
     class PartialTimeBarrierOption::engine
         : public GenericEngine<PartialTimeBarrierOption::arguments,
                                PartialTimeBarrierOption::results> {

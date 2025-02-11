@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
         Date coverEventDate = today + i.days;
         auto payoff =
             ext::make_shared<PlainVanillaPayoff>(type, i.strike);
-        PartialTimeBarrierOption option(PartialBarrier::DownOut,
+        PartialTimeBarrierOption option(Barrier::DownOut,
                                         PartialBarrier::EndB1,
                                         barrier, rebate,
                                         coverEventDate,
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEngine) {
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
         if (error > tolerance)
-            REPORT_FAILURE("value", PartialBarrier::DownOut, barrier, rebate, payoff,
+            REPORT_FAILURE("value", Barrier::DownOut, barrier, rebate, payoff,
                             exercise, i.underlying, 0.0, 0.1, today, 0.25,
                             expected, calculated, error, tolerance);
     }
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
         Date coverEventDate = today + i.days;
         auto payoff =
             ext::make_shared<PlainVanillaPayoff>(type, i.strike);
-        PartialTimeBarrierOption option(PartialBarrier::UpOut,
+        PartialTimeBarrierOption option(Barrier::UpOut,
                                         PartialBarrier::EndB1,
                                         barrier, rebate,
                                         coverEventDate,
@@ -221,7 +221,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticEnginePutOption) {
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
         if (error > tolerance)
-            REPORT_FAILURE("value", PartialBarrier::UpOut, barrier, rebate, payoff,
+            REPORT_FAILURE("value", Barrier::UpOut, barrier, rebate, payoff,
                             exercise, i.underlying, 0.0, 0.1, today, 0.25,
                             expected, calculated, error, tolerance);
     }
@@ -244,17 +244,17 @@ BOOST_AUTO_TEST_CASE(testPutCallSymmetry) {
     };
 
     PutCallSymmetryTestCase cases[] = {
-        { 105.2631, 95.2380, PartialBarrier::DownOut, 95.0, 105.0, 1, PartialBarrier::UpOut },
-        { 105.2631, 95.2380, PartialBarrier::DownOut, 95.0, 105.0, 90, PartialBarrier::UpOut },
-        { 105.2631, 95.2380, PartialBarrier::DownOut, 95.0, 105.0, 180, PartialBarrier::UpOut },
-        { 105.2631, 95.2380, PartialBarrier::DownOut, 95.0, 105.0, 270, PartialBarrier::UpOut },
-        { 105.2631, 95.2380, PartialBarrier::DownOut, 95.0, 105.0, 359, PartialBarrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, 1, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, 90, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, 180, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, 270, Barrier::UpOut },
+        { 105.2631, 95.2380, Barrier::DownOut, 95.0, 105.0, 359, Barrier::UpOut },
 
-        { 110.0, 120.0, PartialBarrier::UpOut, 90.9090, 83.3333, 1, PartialBarrier::DownOut },
-        { 110.0, 120.0, PartialBarrier::UpOut, 90.9090, 83.3333, 90, PartialBarrier::DownOut },
-        { 110.0, 120.0, PartialBarrier::UpOut, 90.9090, 83.3333, 180, PartialBarrier::DownOut },
-        { 110.0, 120.0, PartialBarrier::UpOut, 90.9090, 83.3333, 270, PartialBarrier::DownOut },
-        { 110.0, 120.0, PartialBarrier::UpOut, 90.9090, 83.3333, 359, PartialBarrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, 1, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, 90, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, 180, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, 270, Barrier::DownOut },
+        { 110.0, 120.0, Barrier::UpOut, 90.9090, 83.3333, 359, Barrier::DownOut },
     };
 
     DayCounter dc = Actual360();

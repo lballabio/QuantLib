@@ -34,7 +34,7 @@ namespace QuantLib {
     Real AnalyticPartialTimeBarrierOptionEngine::calculate(PartialTimeBarrierOption::arguments& arguments,
                                                           ext::shared_ptr<PlainVanillaPayoff> payoff,
                                                           ext::shared_ptr<GeneralizedBlackScholesProcess> process) const {
-        PartialBarrier::Type barrierType = arguments.barrierType;
+        Barrier::Type barrierType = arguments.barrierType;
         PartialBarrier::Range barrierRange = arguments.barrierRange;
         Rate r = process->riskFreeRate()->zeroRate(residualTime(), Continuous,
                                                   NoFrequency);
@@ -44,7 +44,7 @@ namespace QuantLib {
         Real strike = payoff->strike();
         
         switch (barrierType) {
-          case PartialBarrier::DownOut:
+          case Barrier::DownOut:
             switch (barrierRange) {
               case PartialBarrier::Start:
                 return CA(1, barrier, strike, r, q);
@@ -53,26 +53,27 @@ namespace QuantLib {
                 return CoB1(barrier, strike, r, q);
                 break;
               case PartialBarrier::EndB2:
-                return CoB2(PartialBarrier::DownOut, barrier, strike, r, q);
+                return CoB2(Barrier::DownOut, barrier, strike, r, q);
                 break;
               default:
                 QL_FAIL("invalid barrier range");
             }
             break;
 
-          case PartialBarrier::DownIn:
+          case Barrier::DownIn:
             switch (barrierRange) {
               case PartialBarrier::Start:
                 return CIA(1, barrier, strike, r, q);
                 break;
-              case PartialBarrier::End:
+              case PartialBarrier::EndB1:
+              case PartialBarrier::EndB2:
                 QL_FAIL("Down-and-in partial-time end barrier is not implemented");
               default:
                 QL_FAIL("invalid barrier range");
             }
             break;
 
-          case PartialBarrier::UpOut:
+          case Barrier::UpOut:
             switch (barrierRange) {
               case PartialBarrier::Start:
                 return CA(-1, barrier, strike, r, q);
@@ -81,19 +82,20 @@ namespace QuantLib {
                 return CoB1(barrier, strike, r, q);
                 break;
               case PartialBarrier::EndB2:
-                return CoB2(PartialBarrier::UpOut, barrier, strike, r, q);
+                return CoB2(Barrier::UpOut, barrier, strike, r, q);
                 break;
               default:
                 QL_FAIL("invalid barrier range");
             }
             break;
 
-            case PartialBarrier::UpIn:
+            case Barrier::UpIn:
               switch (barrierRange) {
                 case PartialBarrier::Start:
                   return CIA(-1, barrier, strike, r, q);
                   break;
-                case PartialBarrier::End:
+                case PartialBarrier::EndB1:
+                case PartialBarrier::EndB2:
                   QL_FAIL("Up-and-in partial-time end barrier is not implemented");
                 default:
                   QL_FAIL("invalid barrier range");
@@ -146,7 +148,7 @@ namespace QuantLib {
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::CoB2(
-                                      PartialBarrier::Type barrierType, 
+                                      Barrier::Type barrierType, 
                                       Real barrier, Real strike, Rate r, Rate q) const {
         Real result = 0.0;
         Real b = r - q;
@@ -168,13 +170,13 @@ namespace QuantLib {
 
         if (strike < barrier){
             switch (barrierType) {
-              case PartialBarrier::DownOut:
+              case Barrier::DownOut:
                 result = S * std::exp((b - r) * T);
                 result *= (M(g1_, e1_, rho_) - HSMu1 * M(g3_, -e3_, -rho_));
                 result -= X1 * (M(g2_, e2_, rho_)-HSMu*M(g4_, -e4_, -rho_));
                 return result;
 
-              case PartialBarrier::UpOut:
+              case Barrier::UpOut:
                 result = S * std::exp((b - r) * T);
                 result *= (M(-g1_, -e1_, rho_) - HSMu1 * M(-g3_, e3_, -rho_));
                 result -= X1 * (M(-g2_, -e2_, rho_) - HSMu * M(-g4_, e4_, -rho_));
