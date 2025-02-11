@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/partialtimebarrieroption.hpp>
+#include <ql/instruments/partialtimebarrieroption.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

@@ -57,6 +57,7 @@ this_include_HEADERS = \
     oneassetoption.hpp \
     overnightindexedswap.hpp \
     overnightindexfuture.hpp \
+    partialtimebarrieroption.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
@@ -123,6 +124,7 @@ cpp_files = \
     oneassetoption.cpp \
     overnightindexedswap.cpp \
     overnightindexfuture.cpp \
+    partialtimebarrieroption.cpp \
     payoffs.cpp \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \

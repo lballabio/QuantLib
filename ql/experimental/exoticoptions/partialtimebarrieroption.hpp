@@ -21,63 +21,12 @@
     \brief Partial-time barrier option
 */
 
-#ifndef quantlib_partial_time_barrier_option_hpp
-#define quantlib_partial_time_barrier_option_hpp
+#ifndef quantlib_experimental_partial_time_barrier_option_hpp
+#define quantlib_experimental_partial_time_barrier_option_hpp
 
-#include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/barriertype.hpp>
-#include <ql/instruments/payoffs.hpp>
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/partialtimebarrieroption.hpp> instead.")
 
-namespace QuantLib {
-
-    class GeneralizedBlackScholesProcess;
-
-    struct PartialBarrier {
-        enum Range { Start = 0, EndB1 = 2, EndB2 = 3 };
-    };
-
-    class PartialTimeBarrierOption : public OneAssetOption {
-      public:
-        class arguments;
-        class engine;
-        PartialTimeBarrierOption(
-            Barrier::Type barrierType,
-            PartialBarrier::Range barrierRange,
-            Real barrier,
-            Real rebate,
-            Date coverEventDate,
-            const ext::shared_ptr<StrikedTypePayoff>& payoff,
-            const ext::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      protected:
-        Barrier::Type barrierType_;
-        PartialBarrier::Range barrierRange_;
-        Real barrier_;
-        Real rebate_;
-        Date coverEventDate_;
-    };
-
-    //! %Arguments for partial-time %barrier %option calculation
-    class PartialTimeBarrierOption::arguments
-        : public OneAssetOption::arguments {
-      public:
-        arguments();
-        Barrier::Type barrierType;
-        PartialBarrier::Range barrierRange;
-        Real barrier;
-        Real rebate;
-        Date coverEventDate;
-        void validate() const override;
-    };
-
-    //! Base class for partial-time %barrier %option engines
-    class PartialTimeBarrierOption::engine
-        : public GenericEngine<PartialTimeBarrierOption::arguments,
-                               PartialTimeBarrierOption::results> {
-    };
-
-}
-
+#include <ql/instruments/partialtimebarrieroption.hpp>
 
 #endif

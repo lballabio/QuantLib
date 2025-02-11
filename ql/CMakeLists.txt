@@ -124,7 +124,6 @@ set(QL_SOURCES
     experimental/credit/riskyassetswapoption.cpp
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticholderextensibleoptionengine.cpp
-    experimental/exoticoptions/analyticpartialtimebarrieroptionengine.cpp
     experimental/exoticoptions/analytictwoassetbarrierengine.cpp
     experimental/exoticoptions/analytictwoassetcorrelationengine.cpp
     experimental/exoticoptions/analyticwriterextensibleoptionengine.cpp
@@ -138,7 +137,6 @@ set(QL_SOURCES
     experimental/exoticoptions/mchimalayaengine.cpp
     experimental/exoticoptions/mcpagodaengine.cpp
     experimental/exoticoptions/pagodaoption.cpp
-    experimental/exoticoptions/partialtimebarrieroption.cpp
     experimental/exoticoptions/twoassetbarrieroption.cpp
     experimental/exoticoptions/twoassetcorrelationoption.cpp
     experimental/exoticoptions/writerextensibleoption.cpp
@@ -308,6 +306,7 @@ set(QL_SOURCES
     instruments/oneassetoption.cpp
     instruments/overnightindexedswap.cpp
     instruments/overnightindexfuture.cpp
+    instruments/partialtimebarrieroption.cpp
     instruments/payoffs.cpp
     instruments/quantobarrieroption.cpp
     instruments/quantoforwardvanillaoption.cpp
@@ -667,6 +666,7 @@ set(QL_SOURCES
     pricingengines/barrier/analyticbinarybarrierengine.cpp
     pricingengines/barrier/analyticdoublebarrierbinaryengine.cpp
     pricingengines/barrier/analyticdoublebarrierengine.cpp
+    pricingengines/barrier/analyticpartialtimebarrieroptionengine.cpp
     pricingengines/barrier/discretizedbarrieroption.cpp
     pricingengines/barrier/fdblackscholesbarrierengine.cpp
     pricingengines/barrier/fdblackscholesrebateengine.cpp
@@ -1362,6 +1362,7 @@ set(QL_HEADERS
     instruments/oneassetoption.hpp
     instruments/overnightindexedswap.hpp
     instruments/overnightindexfuture.hpp
+    instruments/partialtimebarrieroption.hpp
     instruments/payoffs.hpp
     instruments/quantobarrieroption.hpp
     instruments/quantoforwardvanillaoption.hpp
@@ -1872,6 +1873,7 @@ set(QL_HEADERS
     pricingengines/barrier/analyticbinarybarrierengine.hpp
     pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp
     pricingengines/barrier/analyticdoublebarrierengine.hpp
+    pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp
     pricingengines/barrier/binomialbarrierengine.hpp
     pricingengines/barrier/discretizedbarrieroption.hpp
     pricingengines/barrier/fdblackscholesbarrierengine.hpp

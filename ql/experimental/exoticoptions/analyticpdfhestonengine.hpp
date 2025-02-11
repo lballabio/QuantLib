@@ -21,7 +21,7 @@
 #define quantlib_experimental_analytic_pdf_heston_engine_hpp
 
 // Deprecated in version 1.38
-#pragma message("Warning: this file is empty and will disappear in a future release; include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp> instead.")
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp> instead.")
 
 #include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp>
 

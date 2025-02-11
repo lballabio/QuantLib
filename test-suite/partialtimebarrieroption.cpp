@@ -19,8 +19,8 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/partialtimebarrieroption.hpp>
-#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/instruments/partialtimebarrieroption.hpp>
+#include <ql/pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>

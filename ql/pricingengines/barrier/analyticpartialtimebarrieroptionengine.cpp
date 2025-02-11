@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <utility>
