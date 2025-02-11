@@ -17,59 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticpdfhestonengine.hpp
-    \brief Analytic engine for arbitrary European payoffs under the Heston model
-*/
+#ifndef quantlib_experimental_analytic_pdf_heston_engine_hpp
+#define quantlib_experimental_analytic_pdf_heston_engine_hpp
 
-#ifndef quantlib_analytic_pdf_heston_engine_hpp
-#define quantlib_analytic_pdf_heston_engine_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file is empty and will disappear in a future release; include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp> instead.")
 
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
-#include <ql/pricingengines/genericmodelengine.hpp>
-
-namespace QuantLib {
-
-    //! Analytic engine for arbitrary European payoffs under the Heston model
-
-    /*! References:
-
-        The formulas are taken from A. Dragulescu, V. Yakovenko, 2002.
-        Probability distribution of returns in the Heston model
-        with stochastic volatility.
-        http://arxiv.org/pdf/cond-mat/0203046.pdf
-
-        \test the correctness of the returned value is tested by
-              reproducing digital prices using call spreads and the
-              AnalyticHestonEngine.
-
-    */
-    class AnalyticPDFHestonEngine
-       : public GenericModelEngine<HestonModel,
-                                   VanillaOption::arguments,
-                                   VanillaOption::results> {
-      public:
-        explicit AnalyticPDFHestonEngine(ext::shared_ptr<HestonModel> model,
-                                         Real gaussLobattoEps = 1e-6,
-                                         Size gaussLobattoIntegrationOrder = 10000UL);
-        void calculate() const override;
-
-
-        // probability in x_t = ln(s_t)
-        Real Pv(Real x_t, Time t) const;
-
-        // cumulative distribution function Pr(x < X)
-        Real cdf(Real X, Time t) const;
-
-      private:
-        Real weightedPayoff(Real x_t, Time t) const;
-
-        const Size maxIntegrationIterations_;
-        const Real integrationEps_;
-
-        const ext::shared_ptr<HestonModel> model_;
-    };
-}
+#include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp>
 
 
 #endif

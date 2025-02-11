@@ -1595,6 +1595,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\analytich1hwengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analytichestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analytichestonhullwhiteengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\analyticpdfhestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\analyticptdhestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\batesengine.hpp" />
@@ -2026,7 +2027,6 @@
     <ClCompile Include="ql\experimental\credit\syntheticcdo.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticpartialtimebarrieroptionengine.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />
@@ -2642,6 +2642,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\analytich1hwengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analytichestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analytichestonhullwhiteengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\analyticpdfhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticptdhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\batesengine.cpp" />

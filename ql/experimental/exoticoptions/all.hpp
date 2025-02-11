@@ -3,7 +3,6 @@
 
 #include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>

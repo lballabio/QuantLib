@@ -125,7 +125,6 @@ set(QL_SOURCES
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticholderextensibleoptionengine.cpp
     experimental/exoticoptions/analyticpartialtimebarrieroptionengine.cpp
-    experimental/exoticoptions/analyticpdfhestonengine.cpp
     experimental/exoticoptions/analytictwoassetbarrierengine.cpp
     experimental/exoticoptions/analytictwoassetcorrelationengine.cpp
     experimental/exoticoptions/analyticwriterextensibleoptionengine.cpp
@@ -747,6 +746,7 @@ set(QL_SOURCES
     pricingengines/vanilla/analytich1hwengine.cpp
     pricingengines/vanilla/analytichestonengine.cpp
     pricingengines/vanilla/analytichestonhullwhiteengine.cpp
+    pricingengines/vanilla/analyticpdfhestonengine.cpp
     pricingengines/vanilla/analyticptdhestonengine.cpp
     pricingengines/vanilla/baroneadesiwhaleyengine.cpp
     pricingengines/vanilla/batesengine.cpp
@@ -1964,6 +1964,7 @@ set(QL_HEADERS
     pricingengines/vanilla/analytich1hwengine.hpp
     pricingengines/vanilla/analytichestonengine.hpp
     pricingengines/vanilla/analytichestonhullwhiteengine.hpp
+    pricingengines/vanilla/analyticpdfhestonengine.hpp
     pricingengines/vanilla/analyticptdhestonengine.hpp
     pricingengines/vanilla/baroneadesiwhaleyengine.hpp
     pricingengines/vanilla/batesengine.hpp

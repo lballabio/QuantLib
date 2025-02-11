@@ -21,7 +21,7 @@
     \brief Analytic engine for arbitrary European payoffs under the Heston model
 */
 
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
+#include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
 #include <utility>
