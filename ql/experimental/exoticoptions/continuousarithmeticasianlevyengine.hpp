@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file continuousarithmeticasianlevyengine.hpp
-    \brief Levy engine for continuous arithmetic Asian options
-*/
-
 #ifndef quantlib_experimental_continuous_arithmetic_asian_levy_engine_hpp
 #define quantlib_experimental_continuous_arithmetic_asian_levy_engine_hpp
 

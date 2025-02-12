@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticpartialtimebarrieroptionengine.hpp
-    \brief Analytic engine for partial-time barrier options
-*/
-
 #ifndef quantlib_experimental_analytic_partial_time_barrier_option_engine_hpp
 #define quantlib_experimental_analytic_partial_time_barrier_option_engine_hpp
 

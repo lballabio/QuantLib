@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file partialtimebarrieroption.hpp
-    \brief Partial-time barrier option
-*/
-
 #ifndef quantlib_experimental_partial_time_barrier_option_hpp
 #define quantlib_experimental_partial_time_barrier_option_hpp
 
