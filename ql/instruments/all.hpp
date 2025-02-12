@@ -60,6 +60,7 @@
 #include <ql/instruments/stock.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/swaption.hpp>
+#include <ql/instruments/twoassetbarrieroption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
 #include <ql/instruments/vanillaswap.hpp>

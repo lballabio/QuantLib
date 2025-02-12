@@ -52,10 +52,12 @@ function(generate_dir_headers source_dir binary_dir)
     # These headers were moved to another location.
     # Therefore, we can ignore them as they only contain a warning and the new includes.
     if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "exoticoptions")
-        list(FILTER children_hpp EXCLUDE REGEX "analyticpdfhestonengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "analyticpartialtimebarrieroptionengine.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "analyticpdfhestonengine.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "analytictwoassetbarrierengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "continuousarithmeticasianlevyengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "partialtimebarrieroption.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "twoassetbarrieroption.hpp")
     endif ()
 
     file(GLOB children_dir RELATIVE ${source_dir} "${source_dir}/*")

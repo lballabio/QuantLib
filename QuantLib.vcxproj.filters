@@ -918,6 +918,9 @@
     <ClInclude Include="ql\instruments\swaption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\twoassetbarrieroption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\vanillaoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -2416,6 +2419,9 @@
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\analyticpartialtimebarrieroptionengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analytictwoassetbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\mcbarrierengine.hpp">
@@ -4793,6 +4799,9 @@
     <ClCompile Include="ql\instruments\swaption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\twoassetbarrieroption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\vanillaoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -5744,6 +5753,9 @@
     <ClCompile Include="ql\pricingengines\barrier\analyticpartialtimebarrieroptionengine.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\analytictwoassetbarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\barrier\mcbarrierengine.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
@@ -6284,9 +6296,6 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
@@ -6318,9 +6327,6 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\pagodaoption.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\twoassetbarrieroption.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\twoassetcorrelationoption.cpp">

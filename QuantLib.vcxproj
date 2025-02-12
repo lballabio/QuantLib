@@ -953,6 +953,7 @@
     <ClInclude Include="ql\instruments\stock.hpp" />
     <ClInclude Include="ql\instruments\swap.hpp" />
     <ClInclude Include="ql\instruments\swaption.hpp" />
+    <ClInclude Include="ql\instruments\twoassetbarrieroption.hpp" />
     <ClInclude Include="ql\instruments\vanillaoption.hpp" />
     <ClInclude Include="ql\instruments\vanillastorageoption.hpp" />
     <ClInclude Include="ql\instruments\vanillaswap.hpp" />
@@ -1493,6 +1494,7 @@
     <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticpartialtimebarrieroptionengine.hpp" />
+    <ClInclude Include="ql\pricingengines\barrier\analytictwoassetbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\binomialbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\discretizedbarrieroption.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp" />
@@ -2029,7 +2031,6 @@
     <ClCompile Include="ql\experimental\credit\riskyassetswapoption.cpp" />
     <ClCompile Include="ql\experimental\credit\syntheticcdo.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticholderextensibleoptionengine.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp" />
@@ -2041,7 +2042,6 @@
     <ClCompile Include="ql\experimental\exoticoptions\mchimalayaengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\mcpagodaengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\pagodaoption.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\twoassetbarrieroption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\twoassetcorrelationoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\writerextensibleoption.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\dynprogvppintrinsicvalueengine.cpp" />
@@ -2219,6 +2219,7 @@
     <ClCompile Include="ql\instruments\stock.cpp" />
     <ClCompile Include="ql\instruments\swap.cpp" />
     <ClCompile Include="ql\instruments\swaption.cpp" />
+    <ClCompile Include="ql\instruments\twoassetbarrieroption.cpp" />
     <ClCompile Include="ql\instruments\vanillaoption.cpp" />
     <ClCompile Include="ql\instruments\vanillaswap.cpp" />
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp" />
@@ -2566,6 +2567,7 @@
     <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticpartialtimebarrieroptionengine.cpp" />
+    <ClCompile Include="ql\pricingengines\barrier\analytictwoassetbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\fdblackscholesrebateengine.cpp" />

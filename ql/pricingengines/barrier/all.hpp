@@ -6,6 +6,7 @@
 #include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp>
 #include <ql/pricingengines/barrier/binomialbarrierengine.hpp>
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>

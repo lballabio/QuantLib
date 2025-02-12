@@ -17,83 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analytictwoassetbarrierengine.hpp
-    \brief Analytic engine for barrier option on two assets
-*/
+#ifndef quantlib_experimental_analytic_two_asset_barrier_engine_hpp
+#define quantlib_experimental_analytic_two_asset_barrier_engine_hpp
 
-#ifndef quantlib_analytic_two_asset_barrier_engine_hpp
-#define quantlib_analytic_two_asset_barrier_engine_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp> instead.")
 
-#include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-
-namespace QuantLib {
-
-    //! Analytic engine for barrier option on two assets
-    /*! The formulas are taken from "Option pricing formulas",
-        E.G. Haug, McGraw-Hill,
-
-        \ingroup barrierengines
-
-        \test the correctness of the returned value is tested by
-              reproducing results available in literature.
-     */
-    class AnalyticTwoAssetBarrierEngine
-        : public TwoAssetBarrierOption::engine {
-      public:
-        AnalyticTwoAssetBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
-                                      ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
-                                      Handle<Quote> rho);
-        void calculate() const override;
-
-      private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process1_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process2_;
-        Handle<Quote> rho_;
-
-        // helper methods
-        Real underlying1() const;
-        Real underlying2() const;
-
-        Real strike() const;
-        Time residualTime() const;
-
-        Volatility volatility1() const;
-        Volatility volatility2() const;
-
-        Real barrier() const;
-        Real rho() const;
-
-        Rate riskFreeRate() const;
-
-        Rate dividendYield1() const;
-        Rate dividendYield2() const;
-
-        Rate costOfCarry1() const;
-        Rate costOfCarry2() const;
-
-        Real mu(Real b, Real vol) const;
-
-        Real d1() const;
-        Real d2() const;
-        Real d3() const;
-        Real d4() const;
-
-        Real e1() const;
-        Real e2() const;
-        Real e3() const;
-        Real e4() const;
-
-        Real call() const;
-        Real put() const;
-
-        Real A(Real eta, Real phi) const;
-        Real B(Real eta, Real phi) const;
-
-        Real M(Real m_a, Real m_b,Real rho) const;
-    };
-
-}
-
+#include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp>
 
 #endif
