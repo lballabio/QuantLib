@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
+#include <ql/pricingengines/asian/continuousarithmeticasianlevyengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <utility>

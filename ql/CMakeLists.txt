@@ -127,7 +127,6 @@ set(QL_SOURCES
     experimental/exoticoptions/analytictwoassetbarrierengine.cpp
     experimental/exoticoptions/analytictwoassetcorrelationengine.cpp
     experimental/exoticoptions/analyticwriterextensibleoptionengine.cpp
-    experimental/exoticoptions/continuousarithmeticasianlevyengine.cpp
     experimental/exoticoptions/continuousarithmeticasianvecerengine.cpp
     experimental/exoticoptions/everestoption.cpp
     experimental/exoticoptions/himalayaoption.cpp
@@ -654,7 +653,8 @@ set(QL_SOURCES
     pricingengines/asian/analytic_cont_geom_av_price.cpp
     pricingengines/asian/analytic_discr_geom_av_price.cpp
     pricingengines/asian/analytic_discr_geom_av_strike.cpp
-    pricingengines/asian/choiasianengine.cpp    
+    pricingengines/asian/choiasianengine.cpp
+    pricingengines/asian/continuousarithmeticasianlevyengine.cpp
     pricingengines/asian/fdblackscholesasianengine.cpp
     pricingengines/asian/mc_discr_arith_av_price.cpp
     pricingengines/asian/mc_discr_arith_av_price_heston.cpp
@@ -1861,6 +1861,7 @@ set(QL_HEADERS
     pricingengines/asian/analytic_discr_geom_av_price.hpp
     pricingengines/asian/analytic_discr_geom_av_strike.hpp
     pricingengines/asian/choiasianengine.hpp    
+    pricingengines/asian/continuousarithmeticasianlevyengine.hpp
     pricingengines/asian/fdblackscholesasianengine.hpp
     pricingengines/asian/mc_discr_arith_av_price.hpp
     pricingengines/asian/mc_discr_arith_av_price_heston.hpp

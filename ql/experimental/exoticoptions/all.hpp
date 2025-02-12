@@ -5,7 +5,6 @@
 #include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
-#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
 #include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>

@@ -8,6 +8,7 @@ this_include_HEADERS = \
 	analytic_discr_geom_av_price.hpp \
 	analytic_discr_geom_av_strike.hpp \
 	choiasianengine.hpp \
+	continuousarithmeticasianlevyengine.hpp \
 	fdblackscholesasianengine.hpp \
 	mc_discr_arith_av_price.hpp \
 	mc_discr_arith_av_price_heston.hpp \
@@ -22,6 +23,7 @@ cpp_files = \
 	analytic_discr_geom_av_price.cpp \
 	analytic_discr_geom_av_strike.cpp \
 	choiasianengine.cpp \
+	continuousarithmeticasianlevyengine.cpp \
 	fdblackscholesasianengine.cpp \
 	mc_discr_arith_av_price.cpp \
 	mc_discr_arith_av_price_heston.cpp \

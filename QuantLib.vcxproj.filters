@@ -3879,6 +3879,9 @@
     <ClInclude Include="ql\pricingengines\asian\choiasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\asian\continuousarithmeticasianlevyengine.hpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdblackscholesbarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
@@ -6290,9 +6293,6 @@
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
@@ -6763,6 +6763,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\choiasianengine.cpp">
+      <Filter>pricingengines\asian</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\asian\continuousarithmeticasianlevyengine.cpp">
       <Filter>pricingengines\asian</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\asian\fdblackscholesasianengine.cpp">

@@ -1478,6 +1478,7 @@
     <ClInclude Include="ql\pricingengines\asian\analytic_discr_geom_av_price.hpp" />
     <ClInclude Include="ql\pricingengines\asian\analytic_discr_geom_av_strike.hpp" />
     <ClInclude Include="ql\pricingengines\asian\choiasianengine.hpp" />
+    <ClInclude Include="ql\pricingengines\asian\continuousarithmeticasianlevyengine.hpp" />
     <ClInclude Include="ql\pricingengines\asian\fdblackscholesasianengine.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_price.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.hpp" />
@@ -2031,7 +2032,6 @@
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetbarrierengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analytictwoassetcorrelationengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticwriterextensibleoptionengine.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianlevyengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp" />
@@ -2553,6 +2553,7 @@
     <ClCompile Include="ql\pricingengines\asian\analytic_discr_geom_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\analytic_discr_geom_av_strike.cpp" />
     <ClCompile Include="ql\pricingengines\asian\choiasianengine.cpp" />
+    <ClCompile Include="ql\pricingengines\asian\continuousarithmeticasianlevyengine.cpp" />
     <ClCompile Include="ql\pricingengines\asian\fdblackscholesasianengine.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_arith_av_price_heston.cpp" />

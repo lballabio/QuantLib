@@ -54,6 +54,7 @@ function(generate_dir_headers source_dir binary_dir)
     if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "exoticoptions")
         list(FILTER children_hpp EXCLUDE REGEX "analyticpdfhestonengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "analyticpartialtimebarrieroptionengine.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "continuousarithmeticasianlevyengine.hpp")
         list(FILTER children_hpp EXCLUDE REGEX "partialtimebarrieroption.hpp")
     endif ()
 

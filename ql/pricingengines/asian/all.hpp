@@ -5,6 +5,7 @@
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
 #include <ql/pricingengines/asian/choiasianengine.hpp>
+#include <ql/pricingengines/asian/continuousarithmeticasianlevyengine.hpp>
 #include <ql/pricingengines/asian/fdblackscholesasianengine.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_arith_av_price_heston.hpp>
