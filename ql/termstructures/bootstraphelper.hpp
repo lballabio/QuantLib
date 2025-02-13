@@ -144,7 +144,6 @@ namespace QuantLib {
       protected:
         virtual void initializeDates() = 0;
         Date evaluationDate_;
-      private:
         bool updateDates_;
     };
 
