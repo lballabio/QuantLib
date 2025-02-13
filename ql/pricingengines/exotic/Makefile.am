@@ -8,6 +8,7 @@ this_include_HEADERS = \
 	analyticcomplexchooserengine.hpp \
 	analyticcompoundoptionengine.hpp \
 	analyticeuropeanmargrabeengine.hpp \
+	analyticholderextensibleoptionengine.hpp \
 	analyticsimplechooserengine.hpp \
 	analytictwoassetcorrelationengine.hpp
 
@@ -16,6 +17,7 @@ cpp_files = \
 	analyticcomplexchooserengine.cpp \
 	analyticcompoundoptionengine.cpp \
 	analyticeuropeanmargrabeengine.cpp \
+	analyticholderextensibleoptionengine.cpp \
 	analyticsimplechooserengine.cpp \
 	analytictwoassetcorrelationengine.cpp
 

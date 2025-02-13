@@ -19,9 +19,9 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/holderextensibleoption.hpp>
+#include <ql/instruments/holderextensibleoption.hpp>
 #include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
-#include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
+#include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp>
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>

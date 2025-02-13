@@ -123,12 +123,10 @@ set(QL_SOURCES
     experimental/credit/riskyassetswap.cpp
     experimental/credit/riskyassetswapoption.cpp
     experimental/credit/syntheticcdo.cpp
-    experimental/exoticoptions/analyticholderextensibleoptionengine.cpp
     experimental/exoticoptions/analyticwriterextensibleoptionengine.cpp
     experimental/exoticoptions/continuousarithmeticasianvecerengine.cpp
     experimental/exoticoptions/everestoption.cpp
     experimental/exoticoptions/himalayaoption.cpp
-    experimental/exoticoptions/holderextensibleoption.cpp
     experimental/exoticoptions/kirkspreadoptionengine.cpp
     experimental/exoticoptions/mceverestengine.cpp
     experimental/exoticoptions/mchimalayaengine.cpp
@@ -284,6 +282,7 @@ set(QL_SOURCES
     instruments/forwardrateagreement.cpp
     instruments/forwardvanillaoption.cpp
     instruments/futures.cpp
+    instruments/holderextensibleoption.cpp
     instruments/impliedvolatility.cpp
     instruments/inflationcapfloor.cpp
     instruments/lookbackoption.cpp
@@ -710,6 +709,7 @@ set(QL_SOURCES
     pricingengines/exotic/analyticcomplexchooserengine.cpp
     pricingengines/exotic/analyticcompoundoptionengine.cpp
     pricingengines/exotic/analyticeuropeanmargrabeengine.cpp
+    pricingengines/exotic/analyticholderextensibleoptionengine.cpp
     pricingengines/exotic/analyticsimplechooserengine.cpp
     pricingengines/exotic/analytictwoassetcorrelationengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
@@ -1345,6 +1345,7 @@ set(QL_HEADERS
     instruments/forwardrateagreement.hpp
     instruments/forwardvanillaoption.hpp
     instruments/futures.hpp
+    instruments/holderextensibleoption.hpp
     instruments/impliedvolatility.hpp
     instruments/inflationcapfloor.hpp
     instruments/lookbackoption.hpp
@@ -1924,6 +1925,7 @@ set(QL_HEADERS
     pricingengines/exotic/analyticcomplexchooserengine.hpp
     pricingengines/exotic/analyticcompoundoptionengine.hpp
     pricingengines/exotic/analyticeuropeanmargrabeengine.hpp
+    pricingengines/exotic/analyticholderextensibleoptionengine.hpp
     pricingengines/exotic/analyticsimplechooserengine.hpp
     pricingengines/exotic/analytictwoassetcorrelationengine.hpp
     pricingengines/forward/forwardengine.hpp

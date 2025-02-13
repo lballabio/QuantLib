@@ -17,50 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticholderextensibleoptionengine.hpp
-    \brief Analytic engine for holder-extensible options
-*/
+#ifndef quantlib_experimental_analytic_holder_extensible_option_engine_hpp
+#define quantlib_experimental_analytic_holder_extensible_option_engine_hpp
 
-#ifndef quantlib_analytic_holder_extensible_option_engine_hpp
-#define quantlib_analytic_holder_extensible_option_engine_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp> instead.")
 
-#include <ql/experimental/exoticoptions/holderextensibleoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/pricingengines/blackscholescalculator.hpp>
-
-namespace QuantLib {
-
-    class AnalyticHolderExtensibleOptionEngine
-        : public HolderExtensibleOption::engine {
-      public:
-        explicit AnalyticHolderExtensibleOptionEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
-        void calculate() const override;
-
-      private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        Real strike() const;
-        Time firstExpiryTime() const;
-        Time secondExpiryTime() const;
-        Volatility volatility() const;
-        Rate riskFreeRate() const;
-        Rate dividendYield() const;
-        DiscountFactor dividendDiscount(Time t) const;
-        DiscountFactor riskFreeDiscount(Time t) const;
-        Real I1Call() const;
-        Real I2Call() const;
-        Real I1Put() const;
-        Real I2Put() const;
-        BlackScholesCalculator bsCalculator(Real spot, Option::Type optionType) const;
-        Real M2(Real a, Real b, Real c, Real d, Real rho) const;
-        Real N2(Real a, Real b) const;
-        Real y1(Option::Type) const;
-        Real y2(Option::Type) const;
-        Real z1() const;
-        Real z2() const;
-    };
-
-}
-
+#include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp>
 
 #endif

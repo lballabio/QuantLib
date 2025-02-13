@@ -40,6 +40,7 @@ this_include_HEADERS = \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
     futures.hpp \
+    holderextensibleoption.hpp \
     impliedvolatility.hpp \
     inflationcapfloor.hpp \
     lookbackoption.hpp \
@@ -109,6 +110,7 @@ cpp_files = \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
     futures.cpp \
+    holderextensibleoption.cpp \
     impliedvolatility.cpp \
     inflationcapfloor.cpp \
     lookbackoption.cpp \

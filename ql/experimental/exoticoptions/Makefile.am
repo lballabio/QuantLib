@@ -27,12 +27,10 @@ this_include_HEADERS = \
     writerextensibleoption.hpp
 
 cpp_files = \
-    analyticholderextensibleoptionengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
     continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
-    holderextensibleoption.cpp \
     kirkspreadoptionengine.cpp \
     mceverestengine.cpp \
     mchimalayaengine.cpp \
@@ -67,11 +65,13 @@ all.hpp: Makefile.am
 	echo "/* Add the files to be included into Makefile.am instead. */" >> ${srcdir}/$@
 	echo >> ${srcdir}/$@
 	for i in $(filter-out all.hpp \
+	                      analyticholderextensibleoptionengine.hpp \
 	                      analyticpartialtimebarrieroptionengine.hpp \
 	                      analyticpdfhestonengine.hpp \
 	                      analytictwoassetbarrierengine.hpp \
 	                      analytictwoassetcorrelationengine.hpp \
 	                      continuousarithmeticasianlevyengine.hpp \
+	                      holderextensibleoption.hpp \
 	                      partialtimebarrieroption.hpp \
 	                      twoassetbarrieroption.hpp \
 	                      twoassetcorrelationoption.hpp, \
