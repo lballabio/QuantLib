@@ -10,7 +10,8 @@ this_include_HEADERS = \
 	analyticeuropeanmargrabeengine.hpp \
 	analyticholderextensibleoptionengine.hpp \
 	analyticsimplechooserengine.hpp \
-	analytictwoassetcorrelationengine.hpp
+	analytictwoassetcorrelationengine.hpp \
+	analyticwriterextensibleoptionengine.hpp
 
 cpp_files = \
 	analyticamericanmargrabeengine.cpp \
@@ -19,7 +20,8 @@ cpp_files = \
 	analyticeuropeanmargrabeengine.cpp \
 	analyticholderextensibleoptionengine.cpp \
 	analyticsimplechooserengine.cpp \
-	analytictwoassetcorrelationengine.cpp
+	analytictwoassetcorrelationengine.cpp \
+	analyticwriterextensibleoptionengine.cpp
 
 if UNITY_BUILD
 

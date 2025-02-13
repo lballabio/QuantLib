@@ -17,12 +17,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_experimental_analytic_writer_extensible_option_engine_hpp
-#define quantlib_experimental_analytic_writer_extensible_option_engine_hpp
+/*! \file analyticwriterextensibleoptionengine.hpp
+    \brief Analytic engine for writer-extensible options
+*/
 
-// Deprecated in version 1.38
-#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analyticwriterextensibleoptionengine.hpp> instead.")
+#ifndef quantlib_analytic_writer_extensible_option_engine_hpp
+#define quantlib_analytic_writer_extensible_option_engine_hpp
 
-#include <ql/pricingengines/exotic/analyticwriterextensibleoptionengine.hpp>
+#include <ql/instruments/writerextensibleoption.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+
+namespace QuantLib {
+
+    //! Analytic engine for writer-extensible options
+    /*! Formulas from Haug, "Option Pricing Formulas". */
+    class AnalyticWriterExtensibleOptionEngine
+        : public WriterExtensibleOption::engine {
+      public:
+        explicit AnalyticWriterExtensibleOptionEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
+
+      private:
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+    };
+
+}
 
 #endif

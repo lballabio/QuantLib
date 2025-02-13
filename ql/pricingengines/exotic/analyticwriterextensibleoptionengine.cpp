@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
+#include <ql/pricingengines/exotic/analyticwriterextensibleoptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <utility>

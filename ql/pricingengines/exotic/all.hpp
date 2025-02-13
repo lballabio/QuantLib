@@ -8,4 +8,5 @@
 #include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp>
 #include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp>
 #include <ql/pricingengines/exotic/analytictwoassetcorrelationengine.hpp>
+#include <ql/pricingengines/exotic/analyticwriterextensibleoptionengine.hpp>
 

@@ -18,7 +18,7 @@
 */
 
 #include <ql/event.hpp>
-#include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
+#include <ql/instruments/writerextensibleoption.hpp>
 #include <utility>
 
 namespace QuantLib {

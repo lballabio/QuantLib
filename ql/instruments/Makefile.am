@@ -76,6 +76,7 @@ this_include_HEADERS = \
     vanillaswap.hpp \
     vanillaswingoption.hpp \
     varianceswap.hpp \
+    writerextensibleoption.hpp \
     yearonyearinflationswap.hpp \
     zerocouponinflationswap.hpp \
     zerocouponswap.hpp
@@ -145,6 +146,7 @@ cpp_files = \
     vanillaswap.cpp \
     vanillaswingoption.cpp \
     varianceswap.cpp \
+    writerextensibleoption.cpp \
     yearonyearinflationswap.cpp \
     zerocouponinflationswap.cpp \
     zerocouponswap.cpp
