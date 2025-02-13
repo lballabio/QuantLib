@@ -124,7 +124,6 @@ set(QL_SOURCES
     experimental/credit/riskyassetswapoption.cpp
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticholderextensibleoptionengine.cpp
-    experimental/exoticoptions/analytictwoassetcorrelationengine.cpp
     experimental/exoticoptions/analyticwriterextensibleoptionengine.cpp
     experimental/exoticoptions/continuousarithmeticasianvecerengine.cpp
     experimental/exoticoptions/everestoption.cpp
@@ -135,7 +134,6 @@ set(QL_SOURCES
     experimental/exoticoptions/mchimalayaengine.cpp
     experimental/exoticoptions/mcpagodaengine.cpp
     experimental/exoticoptions/pagodaoption.cpp
-    experimental/exoticoptions/twoassetcorrelationoption.cpp
     experimental/exoticoptions/writerextensibleoption.cpp
     experimental/finitedifferences/dynprogvppintrinsicvalueengine.cpp
     experimental/finitedifferences/fdextoujumpvanillaengine.cpp
@@ -315,6 +313,7 @@ set(QL_SOURCES
     instruments/swap.cpp
     instruments/swaption.cpp
     instruments/twoassetbarrieroption.cpp
+    instruments/twoassetcorrelationoption.cpp
     instruments/vanillaoption.cpp
     instruments/vanillaswap.cpp
     instruments/vanillaswingoption.cpp
@@ -712,6 +711,7 @@ set(QL_SOURCES
     pricingengines/exotic/analyticcompoundoptionengine.cpp
     pricingengines/exotic/analyticeuropeanmargrabeengine.cpp
     pricingengines/exotic/analyticsimplechooserengine.cpp
+    pricingengines/exotic/analytictwoassetcorrelationengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
     pricingengines/greeks.cpp
@@ -1374,6 +1374,7 @@ set(QL_HEADERS
     instruments/swap.hpp
     instruments/swaption.hpp
     instruments/twoassetbarrieroption.hpp
+    instruments/twoassetcorrelationoption.hpp
     instruments/vanillaoption.hpp
     instruments/vanillastorageoption.hpp
     instruments/vanillaswap.hpp
@@ -1924,6 +1925,7 @@ set(QL_HEADERS
     pricingengines/exotic/analyticcompoundoptionengine.hpp
     pricingengines/exotic/analyticeuropeanmargrabeengine.hpp
     pricingengines/exotic/analyticsimplechooserengine.hpp
+    pricingengines/exotic/analytictwoassetcorrelationengine.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp
     pricingengines/forward/mcforwardeuropeanbsengine.hpp

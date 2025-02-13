@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
+#include <ql/pricingengines/exotic/analytictwoassetcorrelationengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <utility>
 

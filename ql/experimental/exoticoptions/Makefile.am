@@ -28,7 +28,6 @@ this_include_HEADERS = \
 
 cpp_files = \
     analyticholderextensibleoptionengine.cpp \
-    analytictwoassetcorrelationengine.cpp \
     analyticwriterextensibleoptionengine.cpp \
     continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
@@ -39,7 +38,6 @@ cpp_files = \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \
     pagodaoption.cpp \
-    twoassetcorrelationoption.cpp \
     writerextensibleoption.cpp
 
 if UNITY_BUILD
@@ -72,9 +70,11 @@ all.hpp: Makefile.am
 	                      analyticpartialtimebarrieroptionengine.hpp \
 	                      analyticpdfhestonengine.hpp \
 	                      analytictwoassetbarrierengine.hpp \
+	                      analytictwoassetcorrelationengine.hpp \
 	                      continuousarithmeticasianlevyengine.hpp \
 	                      partialtimebarrieroption.hpp \
-	                      twoassetbarrieroption.hpp, \
+	                      twoassetbarrieroption.hpp \
+	                      twoassetcorrelationoption.hpp, \
 	                      $(this_include_HEADERS)); do \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \
 	done

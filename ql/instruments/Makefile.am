@@ -69,6 +69,7 @@ this_include_HEADERS = \
     swap.hpp \
     swaption.hpp \
     twoassetbarrieroption.hpp \
+    twoassetcorrelationoption.hpp \
     vanillaoption.hpp \
     vanillastorageoption.hpp \
     vanillaswap.hpp \
@@ -137,6 +138,7 @@ cpp_files = \
     swap.cpp \
     swaption.cpp \
     twoassetbarrieroption.cpp \
+    twoassetcorrelationoption.cpp \
     vanillaoption.cpp \
     vanillaswap.cpp \
     vanillaswingoption.cpp \

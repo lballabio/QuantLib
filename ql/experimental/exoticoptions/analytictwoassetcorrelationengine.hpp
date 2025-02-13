@@ -17,34 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analytictwoassetcorrelationengine.hpp
-    \brief Analytic engine for two-asset correlation options
-*/
+#ifndef quantlib_experimental_analytic_two_asset_correlation_option_engine_hpp
+#define quantlib_experimental_analytic_two_asset_correlation_option_engine_hpp
 
-#ifndef quantlib_analytic_two_asset_correlation_option_engine_hpp
-#define quantlib_analytic_two_asset_correlation_option_engine_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/pricingengines/exotic/analytictwoassetcorrelationengine.hpp> instead.")
 
-#include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-
-namespace QuantLib {
-
-    //! Analytic two-asset correlation option engine
-    class AnalyticTwoAssetCorrelationEngine
-        : public TwoAssetCorrelationOption::engine {
-      public:
-        AnalyticTwoAssetCorrelationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> p1,
-                                          ext::shared_ptr<GeneralizedBlackScholesProcess> p2,
-                                          Handle<Quote> correlation);
-        void calculate() const override;
-
-      private:
-        ext::shared_ptr<GeneralizedBlackScholesProcess> p1_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> p2_;
-        Handle<Quote> correlation_;
-    };
-
-}
-
+#include <ql/pricingengines/exotic/analytictwoassetcorrelationengine.hpp>
 
 #endif

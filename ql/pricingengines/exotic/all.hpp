@@ -6,4 +6,5 @@
 #include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
 #include <ql/pricingengines/exotic/analyticeuropeanmargrabeengine.hpp>
 #include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp>
+#include <ql/pricingengines/exotic/analytictwoassetcorrelationengine.hpp>
 
