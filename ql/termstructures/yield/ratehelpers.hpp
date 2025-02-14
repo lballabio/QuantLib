@@ -129,6 +129,9 @@ namespace QuantLib {
                           const ext::shared_ptr<IborIndex>& iborIndex);
         DepositRateHelper(Rate rate,
                           const ext::shared_ptr<IborIndex>& iborIndex);
+        DepositRateHelper(const Handle<Quote>& rate,
+                          Date fixingDate,
+                          const ext::shared_ptr<IborIndex>& iborIndex);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -227,6 +230,13 @@ namespace QuantLib {
         FraRateHelper(Rate rate,
                       Natural immOffsetStart,
                       Natural immOffsetEnd,
+                      const ext::shared_ptr<IborIndex>& iborIndex,
+                      Pillar::Choice pillar = Pillar::LastRelevantDate,
+                      Date customPillarDate = Date(),
+                      bool useIndexedCoupon = true);
+        FraRateHelper(const Handle<Quote>& rate,
+                      Date startDate,
+                      Date endDate,
                       const ext::shared_ptr<IborIndex>& iborIndex,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
