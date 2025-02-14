@@ -19,8 +19,8 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
-#include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
+#include <ql/instruments/twoassetbarrieroption.hpp>
+#include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>

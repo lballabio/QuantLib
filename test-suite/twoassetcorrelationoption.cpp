@@ -19,8 +19,8 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
-#include <ql/experimental/exoticoptions/analytictwoassetcorrelationengine.hpp>
+#include <ql/instruments/twoassetcorrelationoption.hpp>
+#include <ql/pricingengines/exotic/analytictwoassetcorrelationengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/daycounters/actual360.hpp>

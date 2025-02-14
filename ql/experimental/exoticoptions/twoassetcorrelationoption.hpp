@@ -17,48 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file twoassetcorrelationoption.hpp
-    \brief Two-asset correlation option
-*/
+#ifndef quantlib_experimental_two_asset_correlation_option_hpp
+#define quantlib_experimental_two_asset_correlation_option_hpp
 
-#ifndef quantlib_two_asset_correlation_option_hpp
-#define quantlib_two_asset_correlation_option_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/twoassetcorrelationoption.hpp> instead.")
 
-#include <ql/instruments/multiassetoption.hpp>
-#include <ql/instruments/payoffs.hpp>
-
-namespace QuantLib {
-
-    class TwoAssetCorrelationOption : public MultiAssetOption {
-      public:
-        class arguments;
-        class engine;
-        TwoAssetCorrelationOption(Option::Type type,
-                                  Real strike1,
-                                  Real strike2,
-                                  const ext::shared_ptr<Exercise>&);
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      protected:
-        Real X2_;
-    };
-
-    class TwoAssetCorrelationOption::arguments
-        : public MultiAssetOption::arguments {
-      public:
-        arguments() : X2(Null<Real>()) {}
-        void validate() const override {
-            MultiAssetOption::arguments::validate();
-            QL_REQUIRE(X2 != Null<Real>(), "no X2 given");
-        }
-        Real X2;
-    };
-
-    class TwoAssetCorrelationOption::engine
-        : public GenericEngine<TwoAssetCorrelationOption::arguments,
-                               TwoAssetCorrelationOption::results> {};
-
-}
-
+#include <ql/instruments/twoassetcorrelationoption.hpp>
 
 #endif

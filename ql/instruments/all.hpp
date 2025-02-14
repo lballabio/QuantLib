@@ -32,6 +32,7 @@
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/futures.hpp>
+#include <ql/instruments/holderextensibleoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
@@ -49,6 +50,7 @@
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/instruments/overnightindexfuture.hpp>
+#include <ql/instruments/partialtimebarrieroption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
@@ -59,11 +61,14 @@
 #include <ql/instruments/stock.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/swaption.hpp>
+#include <ql/instruments/twoassetbarrieroption.hpp>
+#include <ql/instruments/twoassetcorrelationoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/varianceswap.hpp>
+#include <ql/instruments/writerextensibleoption.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/instruments/zerocouponswap.hpp>

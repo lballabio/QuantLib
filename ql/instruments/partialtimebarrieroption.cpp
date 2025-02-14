@@ -17,13 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/partialtimebarrieroption.hpp>
+#include <ql/instruments/partialtimebarrieroption.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {
 
     PartialTimeBarrierOption::PartialTimeBarrierOption(
-                           PartialBarrier::Type barrierType,
+                           Barrier::Type barrierType,
                            PartialBarrier::Range barrierRange,
                            Real barrier,
                            Real rebate,
@@ -49,31 +49,12 @@ namespace QuantLib {
     }
 
     PartialTimeBarrierOption::arguments::arguments()
-    : barrierType(PartialBarrier::Type(-1)),
+    : barrierType(Barrier::Type(-1)),
       barrierRange(PartialBarrier::Range(-1)),
       barrier(Null<Real>()), rebate(Null<Real>()) {}
 
     void PartialTimeBarrierOption::arguments::validate() const {
         OneAssetOption::arguments::validate();
-        
-        // checking barrier type and suitable barrier range
-        switch (barrierType) {
-          case PartialBarrier::DownIn:
-          case PartialBarrier::UpIn:
-            QL_REQUIRE(barrierRange == PartialBarrier::Start ||
-                       barrierRange == PartialBarrier::End,
-                       "in-barrier requires Start or End range");
-            break;
-          case PartialBarrier::DownOut:
-          case PartialBarrier::UpOut:
-            QL_REQUIRE(barrierRange == PartialBarrier::Start ||
-                       barrierRange == PartialBarrier::EndB1 ||
-                       barrierRange == PartialBarrier::EndB2,
-                       "out-barrier requires Start, EndB1 or EndB2 range");
-            break;
-          default:
-            QL_FAIL("unknown barrier type");
-        }
 
         QL_REQUIRE(barrier != Null<Real>(), "no barrier given");
         QL_REQUIRE(rebate != Null<Real>(), "no rebate given");
@@ -83,4 +64,3 @@ namespace QuantLib {
     }
 
 }
-

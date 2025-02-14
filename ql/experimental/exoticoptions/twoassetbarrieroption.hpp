@@ -17,61 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file twoassetbarrieroption.hpp
-    \brief Barrier option on two assets
-*/
+#ifndef quantlib_experimental_two_asset_barrier_option_hpp
+#define quantlib_experimental_two_asset_barrier_option_hpp
 
-#ifndef quantlib_two_asset_barrier_option_hpp
-#define quantlib_two_asset_barrier_option_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/twoassetbarrieroption.hpp> instead.")
 
-#include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/barriertype.hpp>
-#include <ql/instruments/payoffs.hpp>
-
-namespace QuantLib {
-
-    class GeneralizedBlackScholesProcess;
-
-    //! %Barrier option on two assets
-    /*! \ingroup instruments */
-    class TwoAssetBarrierOption : public Option {
-      public:
-        class arguments;
-        class engine;
-        TwoAssetBarrierOption(
-                      Barrier::Type barrierType,
-                      Real barrier,
-                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                      const ext::shared_ptr<Exercise>& exercise);
-
-        bool isExpired() const override;
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      protected:
-        // arguments
-        Barrier::Type barrierType_;
-        Real barrier_;
-    };
-
-
-    //! %Arguments for two-asset %barrier %option calculation
-    class TwoAssetBarrierOption::arguments : public Option::arguments {
-      public:
-        arguments();
-        Barrier::Type barrierType;
-        Real barrier;
-        void validate() const override;
-    };
-
-    //! %Two-asset barrier-option %engine base class
-    class TwoAssetBarrierOption::engine
-        : public GenericEngine<TwoAssetBarrierOption::arguments,
-                               TwoAssetBarrierOption::results> {
-      protected:
-        bool triggered(Real underlying) const;
-    };
-
-}
+#include <ql/instruments/twoassetbarrieroption.hpp>
 
 
 #endif

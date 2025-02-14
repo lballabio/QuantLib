@@ -21,7 +21,6 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
@@ -70,6 +69,7 @@
 #include <ql/pricingengines/forward/forwardengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/vanilla/analyticpdfhestonengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>

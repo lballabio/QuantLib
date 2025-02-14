@@ -17,66 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file partialtimebarrieroption.hpp
-    \brief Partial-time barrier option
-*/
+#ifndef quantlib_experimental_partial_time_barrier_option_hpp
+#define quantlib_experimental_partial_time_barrier_option_hpp
 
-#ifndef quantlib_partial_time_barrier_option_hpp
-#define quantlib_partial_time_barrier_option_hpp
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/partialtimebarrieroption.hpp> instead.")
 
-#include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/barriertype.hpp>
-#include <ql/instruments/payoffs.hpp>
-
-namespace QuantLib {
-
-    class GeneralizedBlackScholesProcess;
-
-    struct PartialBarrier : public Barrier {
-        enum Range { Start, End, EndB1, EndB2 };
-    };
-
-    class PartialTimeBarrierOption : public OneAssetOption {
-      public:
-        class arguments;
-        class engine;
-        PartialTimeBarrierOption(PartialBarrier::Type barrierType,
-            PartialBarrier::Range barrierRange,
-            Real barrier,
-            Real rebate,
-            Date coverEventDate,
-            const ext::shared_ptr<StrikedTypePayoff>& payoff,
-            const ext::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const override;
-
-      protected:
-        PartialBarrier::Type barrierType_;
-        PartialBarrier::Range barrierRange_;
-        Real barrier_;
-        Real rebate_;
-        Date coverEventDate_;
-    };
-
-    //! %Arguments for barrier option calculation
-    class PartialTimeBarrierOption::arguments
-        : public OneAssetOption::arguments {
-      public:
-        arguments();
-        PartialBarrier::Type barrierType;
-        PartialBarrier::Range barrierRange;
-        Real barrier;
-        Real rebate;
-        Date coverEventDate;
-        void validate() const override;
-    };
-
-    //! %Partial-Time-Barrier-Option %engine base class
-    class PartialTimeBarrierOption::engine
-        : public GenericEngine<PartialTimeBarrierOption::arguments,
-                               PartialTimeBarrierOption::results> {
-    };
-
-}
-
+#include <ql/instruments/partialtimebarrieroption.hpp>
 
 #endif

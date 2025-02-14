@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
+#include <ql/instruments/twoassetbarrieroption.hpp>
 #include <ql/exercise.hpp>
 #include <ql/event.hpp>
 

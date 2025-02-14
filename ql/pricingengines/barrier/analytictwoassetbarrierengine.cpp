@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
+#include <ql/pricingengines/barrier/analytictwoassetbarrierengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <utility>

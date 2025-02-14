@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/exoticoptions/analyticholderextensibleoptionengine.hpp>
+#include <ql/pricingengines/exotic/analyticholderextensibleoptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <utility>
 
