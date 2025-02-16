@@ -32,8 +32,8 @@ namespace QuantLib {
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::calculate(PartialTimeBarrierOption::arguments& arguments,
-                                                          ext::shared_ptr<PlainVanillaPayoff> payoff,
-                                                          ext::shared_ptr<GeneralizedBlackScholesProcess> process) const {
+                                                          const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                                                          const ext::shared_ptr<GeneralizedBlackScholesProcess>& process) const {
         Barrier::Type barrierType = arguments.barrierType;
         PartialBarrier::Range barrierRange = arguments.barrierRange;
         Rate r = process->riskFreeRate()->zeroRate(residualTime(), Continuous,

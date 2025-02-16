@@ -45,8 +45,8 @@ namespace QuantLib {
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Real calculate(PartialTimeBarrierOption::arguments& arguments,
-                      ext::shared_ptr<PlainVanillaPayoff> payoff, 
-                      ext::shared_ptr<GeneralizedBlackScholesProcess> process) const;
+                      const ext::shared_ptr<PlainVanillaPayoff>& payoff, 
+                      const ext::shared_ptr<GeneralizedBlackScholesProcess>& process) const;
         Real underlying() const;
         Time residualTime() const;
         Time coverEventTime() const;
