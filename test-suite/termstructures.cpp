@@ -25,6 +25,7 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
+#include <ql/termstructures/yield/piecewiseforwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -312,6 +313,48 @@ BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
     underlying.linkTo(vars.termStructure);
     // check that we can use it
     spreaded->referenceDate();
+}
+
+BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
+
+    BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
+
+    CommonVars vars;
+
+    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
+    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
+    auto refDate = vars.termStructure->referenceDate();
+
+    std::vector<Date> spreadDates = {vars.calendar.advance(refDate, 1, Years),
+                                     vars.calendar.advance(refDate, 2, Years)};
+
+    Date interpolationDate = vars.calendar.advance(refDate, 300, Days);
+
+    ext::shared_ptr<YieldTermStructure> spreadedTermStructure =
+        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<Linear>>(
+                        Handle<YieldTermStructure>(vars.termStructure),
+                        spreads, spreadDates);
+
+    Date d0 = vars.calendar.advance(refDate, 100,  Days);
+    Date d1 = vars.calendar.advance(refDate, 150,  Days);
+    Date d2 = vars.calendar.advance(refDate, 120,  Days);
+
+    Real m = (0.03-0.02)/vars.dayCount.yearFraction(d0,d1);
+    Real expectedRate = m * vars.dayCount.yearFraction(d0, d2) + 0.054;
+
+    Time t = vars.dayCount.yearFraction(vars.settlementDate, interpolationDate);
+    Rate interpolatedZeroRate = spreadedTermStructure->zeroRate(t,vars.compounding);
+
+    Real tolerance = 1e-9;
+
+    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
+        BOOST_ERROR(
+            "unable to reproduce interpolated rate\n"
+            << std::setprecision(10)
+            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
+            << "    expected: "   << io::rate(expectedRate));
+
 }
 
 BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
