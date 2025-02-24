@@ -10,6 +10,7 @@ this_include_HEADERS = \
 	bootstraphelper.hpp \
 	defaulttermstructure.hpp \
 	globalbootstrap.hpp \
+	globalbootstrapvars.hpp \
 	inflationtermstructure.hpp \
 	interpolatedcurve.hpp \
 	iterativebootstrap.hpp \
@@ -19,6 +20,7 @@ this_include_HEADERS = \
 
 cpp_files = \
 	defaulttermstructure.cpp \
+	globalbootstrapvars.cpp \
 	inflationtermstructure.cpp \
 	voltermstructure.cpp \
 	yieldtermstructure.cpp
