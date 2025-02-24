@@ -1661,6 +1661,98 @@ BOOST_AUTO_TEST_CASE(testSwapHelpersWithOnceFrequency) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testDepositForDates) {
+    BOOST_TEST_MESSAGE("Testing DepositRateHelper with custom fixingDate...");
+
+    CommonVars vars;
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    const Date fixingDate = TARGET().adjust(vars.today);
+    for (Size i = 0; i < vars.deposits; i++) {
+        Handle<Quote> r(vars.rates[i]);
+        helpers.push_back(ext::make_shared<DepositRateHelper>(
+            r, fixingDate, ext::make_shared<Euribor>(depositData[i].n*depositData[i].units)));
+    }
+
+    auto curve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
+                                       vars.settlement, helpers, Actual365Fixed());
+    Handle<YieldTermStructure> h(curve);
+
+    const Real tolerance = 1.0e-9;
+    for (Size i = 0; i < vars.deposits; i++) {
+        Euribor index(depositData[i].n*depositData[i].units, h);
+        Rate expectedRate  = depositData[i].rate/100,
+            estimatedRate = index.fixing(vars.today);
+        if (std::fabs(expectedRate-estimatedRate) > tolerance) {
+            BOOST_ERROR(depositData[i].n << " "
+                        << (depositData[i].units == Weeks ? "week(s)" : "month(s)")
+                        << " deposit:"
+                        << std::setprecision(8)
+                        << "\n    estimated rate: " << io::rate(estimatedRate)
+                        << "\n    expected rate:  " << io::rate(expectedRate));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFraForDates) {
+    BOOST_TEST_MESSAGE("Testing FraRateHelper with custom dates...");
+
+    CommonVars vars;
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    auto euribor6m = ext::make_shared<Euribor6M>();
+    for (Size i = 0; i < vars.fras; i++) {
+        Handle<Quote> r(vars.fraRates[i]);
+        Date startDate =
+            vars.calendar.advance(vars.settlement,
+                                  fraData[i].n,
+                                  fraData[i].units,
+                                  euribor6m->businessDayConvention(),
+                                  euribor6m->endOfMonth());
+        Date endDate =
+            vars.calendar.advance(vars.settlement,
+                                  fraData[i].n + 3,
+                                  fraData[i].units,
+                                  euribor6m->businessDayConvention(),
+                                  euribor6m->endOfMonth());
+        helpers.push_back(ext::make_shared<FraRateHelper>(
+            r, startDate, endDate, euribor6m, Pillar::LastRelevantDate, Date(), false));
+    }
+
+    auto curve = ext::make_shared<PiecewiseYieldCurve<ZeroYield, Linear>>(
+                                       vars.settlement, helpers, Actual365Fixed());
+    Handle<YieldTermStructure> h(curve);
+    euribor6m = ext::make_shared<Euribor6M>(h);
+
+    const Real tolerance = 1.0e-9;
+    for (Size i = 0; i < vars.fras; i++) {
+        Date start =
+            vars.calendar.advance(vars.settlement,
+                                  fraData[i].n,
+                                  fraData[i].units,
+                                  euribor6m->businessDayConvention(),
+                                  euribor6m->endOfMonth());
+        Date end =
+            vars.calendar.advance(vars.settlement,
+                                  fraData[i].n + 3,
+                                  fraData[i].units,
+                                  euribor6m->businessDayConvention(),
+                                  euribor6m->endOfMonth());
+        BOOST_REQUIRE(fraData[i].units == Months);
+
+        ForwardRateAgreement fra(euribor6m, start, end, Position::Long,
+                                 fraData[i].rate/100, 100.0);
+        Rate expectedRate = fraData[i].rate/100,
+            estimatedRate = fra.forwardRate();
+        if (std::fabs(expectedRate-estimatedRate) > tolerance) {
+            BOOST_ERROR(io::ordinal(i+1) << " FRA failure:" <<
+                        std::setprecision(8) <<
+                        "\n  estimated rate: " << io::rate(estimatedRate) <<
+                        "\n  expected rate:  " << io::rate(expectedRate));
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testDatedSwapHelpers) {
     BOOST_TEST_MESSAGE("Testing dated swap rate helpers...");
 
