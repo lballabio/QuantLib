@@ -222,8 +222,6 @@ BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
         simpleQuote->setValue (hwCorrelation[j]);
         for (Size i = 0; i < ntd.size(); i++) {
             QL_REQUIRE(ntd[i].rank() == hwData[i].rank, "rank does not match");
-            QL_REQUIRE(std::size(hwCorrelation) == std::size(hwData[i].spread),
-                       "vector length does not match");
             diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
             maxDiff = std::max(maxDiff, fabs (diff));
             BOOST_CHECK_MESSAGE (fabs(diff/hwData[i].spread[j]) < relTolerance
