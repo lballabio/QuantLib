@@ -32,6 +32,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/interpolation.hpp>
+#include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/currency.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -315,45 +317,43 @@ BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
     spreaded->referenceDate();
 }
 
-BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
+BOOST_AUTO_TEST_CASE(testSpreadedForward) {
 
     BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
-    auto refDate = vars.termStructure->referenceDate();
+    Real tolerance = 1.0e-9;
+    auto spread1 = ext::make_shared<SimpleQuote>(0.005);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.01);
+    std::vector<Handle<Quote>> spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
+    Date today = Settings::instance().evaluationDate();
+    auto dc = Actual365Fixed();
 
-    std::vector<Date> spreadDates = {vars.calendar.advance(refDate, 1, Years),
-                                     vars.calendar.advance(refDate, 2, Years)};
+    std::vector<Date> spreadDates = {vars.calendar.advance(today, 1, Years),
+                                     vars.calendar.advance(today, 2, Years)};
 
-    Date interpolationDate = vars.calendar.advance(refDate, 300, Days);
-
-    ext::shared_ptr<YieldTermStructure> spreadedTermStructure =
-        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<Linear>>(
-                        Handle<YieldTermStructure>(vars.termStructure),
+    std::vector<Date> dates = {today, today + Period(1, Years), today + Period(2, Years), today + Period(3, Years)};
+    std::vector<Real> forwardRates = {0.05, 0.055, 0.06, 0.065};
+    auto yts = ext::shared_ptr<YieldTermStructure>(new InterpolatedForwardCurve<ForwardFlat>(dates, forwardRates, dc, vars.calendar, ForwardFlat()));
+    ext::shared_ptr<YieldTermStructure> spreadedTS =
+        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<ForwardFlat>>(
+                        Handle<YieldTermStructure>(yts),
                         spreads, spreadDates);
 
-    Date d0 = vars.calendar.advance(refDate, 100,  Days);
-    Date d1 = vars.calendar.advance(refDate, 150,  Days);
-    Date d2 = vars.calendar.advance(refDate, 120,  Days);
+    Date testDate = today + Period(1, Years);
 
-    Real m = (0.03-0.02)/vars.dayCount.yearFraction(d0,d1);
-    Real expectedRate = m * vars.dayCount.yearFraction(d0, d2) + 0.054;
+    Rate forward = yts->forwardRate(testDate, testDate, dc,
+                                                   Continuous, NoFrequency);
+    Rate spreadedForward = spreadedTS->forwardRate(testDate, testDate, dc,
+                                                 Continuous, NoFrequency);
 
-    Time t = vars.dayCount.yearFraction(vars.settlementDate, interpolationDate);
-    Rate interpolatedZeroRate = spreadedTermStructure->zeroRate(t,vars.compounding);
-
-    Real tolerance = 1e-9;
-
-    if (std::fabs(interpolatedZeroRate - expectedRate) > tolerance)
+    if (std::fabs(forward - (spreadedForward - spread1->value())) > tolerance)
         BOOST_ERROR(
             "unable to reproduce interpolated rate\n"
             << std::setprecision(10)
-            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
-            << "    expected: "   << io::rate(expectedRate));
+            << "    calculated: " << io::rate(spreadedForward) << "\n"
+            << "    expected: "   << io::rate(forward + spread1->value()));
 
 }
 

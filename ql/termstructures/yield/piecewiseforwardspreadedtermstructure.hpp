@@ -63,6 +63,7 @@ namespace QuantLib {
     protected:
       //! returns the spreaded zero yield rate
       Rate zeroYieldImpl(Time) const override;
+      Rate forwardImpl(Time) const override;
       void update() override;
 
     private:
@@ -140,6 +141,14 @@ namespace QuantLib {
                                   zeroRate.compounding(),
                                   zeroRate.frequency());
         return spreadedRate.equivalentRate(Continuous, NoFrequency, t);
+    }
+
+    template <class T>
+    inline Rate
+    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::forwardImpl(Time t) const {
+        Spread spread = calcSpread(t);
+        Rate forwardRate = originalCurve_->forwardRate(t, t, Continuous, NoFrequency, true);
+        return forwardRate + spread;
     }
 
     template <class T>
