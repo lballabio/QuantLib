@@ -159,9 +159,9 @@ namespace QuantLib {
     FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
                                          const Date& iborStartDate,
                                          const ext::shared_ptr<IborIndex>& index,
-                                         const Handle<Quote>& convAdj,
+                                         Handle<Quote> convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(convAdj) {
+    : RateHelper(price), convAdj_(std::move(convAdj)) {
         CheckDate(iborStartDate, type);
 
         earliestDate_ = iborStartDate;
@@ -171,7 +171,7 @@ namespace QuantLib {
         yearFraction_ = DetermineYearFraction(earliestDate_, maturityDate_, index->dayCounter());
         pillarDate_ = latestDate_ = latestRelevantDate_ = maturityDate_;
 
-        registerWith(convAdj);
+        registerWith(convAdj_);
     }
 
     FuturesRateHelper::FuturesRateHelper(Real price,
