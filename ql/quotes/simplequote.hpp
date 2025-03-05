@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! market element returning a stored value
-    class SimpleQuote : public Quote {
+    class SimpleQuote final : public Quote {
       public:
         SimpleQuote(Real value = Null<Real>());
         //! \name Quote interface
