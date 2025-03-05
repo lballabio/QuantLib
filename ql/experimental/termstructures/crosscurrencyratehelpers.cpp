@@ -57,10 +57,13 @@ namespace QuantLib {
                          const Calendar& calendar,
                          BusinessDayConvention convention,
                          bool endOfMonth,
-                         const ext::shared_ptr<IborIndex>& idx) {
-            Schedule sch = legSchedule(evaluationDate, tenor, idx->tenor(), fixingDays, calendar,
+                         const ext::shared_ptr<IborIndex>& idx,
+                         Frequency paymentFrequency,
+                         Integer paymentLag) {
+            auto freqPeriod = paymentFrequency == NoFrequency ? idx->tenor() : Period(paymentFrequency);
+            Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
                                        convention, endOfMonth);
-            return IborLeg(sch, idx).withNotionals(1.0);
+            return IborLeg(sch, idx).withNotionals(1.0).withPaymentLag(paymentLag);
         }
 
         std::pair<Real, Real> npvbpsConstNotionalLeg(const Leg& iborLeg,
@@ -156,13 +159,16 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> quoteCurrencyIndex,
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
-        bool isBasisOnFxBaseCurrencyLeg)
+        bool isBasisOnFxBaseCurrencyLeg,
+        Frequency paymentFrequency,
+        Integer paymentLag)
     : RelativeDateRateHelper(basis), tenor_(tenor), fixingDays_(fixingDays),
       calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
       collateralHandle_(std::move(collateralCurve)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
+      isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
+      paymentFrequency_(paymentFrequency), paymentLag_(paymentLag) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
         registerWith(collateralHandle_);
@@ -171,13 +177,15 @@ namespace QuantLib {
 
     void CrossCurrencyBasisSwapRateHelperBase::initializeDates() {
         baseCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
-                                       endOfMonth_, baseCcyIdx_);
+                                       endOfMonth_, baseCcyIdx_, paymentFrequency_, paymentLag_);
         quoteCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                        convention_, endOfMonth_, quoteCcyIdx_);
+                                        convention_, endOfMonth_, quoteCcyIdx_, paymentFrequency_, paymentLag_);
         earliestDate_ =
             std::min(CashFlows::startDate(baseCcyIborLeg_), CashFlows::startDate(quoteCcyIborLeg_));
-        latestDate_ = std::max(CashFlows::maturityDate(baseCcyIborLeg_),
-                               CashFlows::maturityDate(quoteCcyIborLeg_));
+        maturityDate_ = std::max(CashFlows::maturityDate(baseCcyIborLeg_),
+                                 CashFlows::maturityDate(quoteCcyIborLeg_));
+        Date lastPaymentDate = std::max(baseCcyIborLeg_.back()->date(), quoteCcyIborLeg_.back()->date());
+        latestRelevantDate_ = latestDate_ = std::max(maturityDate_, lastPaymentDate);
     }
 
     const Handle<YieldTermStructure>&
@@ -216,7 +224,9 @@ namespace QuantLib {
         const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
-        bool isBasisOnFxBaseCurrencyLeg)
+        bool isBasisOnFxBaseCurrencyLeg,
+        Frequency paymentFrequency,
+        Integer paymentLag)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -227,7 +237,9 @@ namespace QuantLib {
                                            quoteCurrencyIndex,
                                            collateralCurve,
                                            isFxBaseCurrencyCollateralCurrency,
-                                           isBasisOnFxBaseCurrencyLeg) {}
+                                           isBasisOnFxBaseCurrencyLeg,
+                                           paymentFrequency,
+                                           paymentLag) {}
 
     Real ConstNotionalCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         auto [npvBaseCcy, bpsBaseCcy] = npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
@@ -256,7 +268,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
-        bool isFxBaseCurrencyLegResettable)
+        bool isFxBaseCurrencyLegResettable,
+        Frequency paymentFrequency,
+        Integer paymentLag)
     : CrossCurrencyBasisSwapRateHelperBase(basis,
                                            tenor,
                                            fixingDays,
@@ -267,7 +281,9 @@ namespace QuantLib {
                                            quoteCurrencyIndex,
                                            collateralCurve,
                                            isFxBaseCurrencyCollateralCurrency,
-                                           isBasisOnFxBaseCurrencyLeg),
+                                           isBasisOnFxBaseCurrencyLeg,
+                                           paymentFrequency,
+                                           paymentLag),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable) {}
 
     Real MtMCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
