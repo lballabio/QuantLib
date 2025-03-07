@@ -20,7 +20,6 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
@@ -64,12 +63,6 @@ namespace QuantLib {
             auto freqPeriod = paymentFrequency == NoFrequency ? idx->tenor() : Period(paymentFrequency);
             Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
                                        convention, endOfMonth);
-            auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx);
-            if (overnightIndex != nullptr) {
-                return OvernightLeg(sch, overnightIndex)
-                    .withNotionals(1.0)
-                    .withPaymentLag(paymentLag);
-            }
             return IborLeg(sch, idx).withNotionals(1.0).withPaymentLag(paymentLag);
         }
 
