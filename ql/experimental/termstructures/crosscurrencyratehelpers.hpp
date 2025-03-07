@@ -70,6 +70,9 @@ namespace QuantLib {
         Leg baseCcyIborLeg_;
         Leg quoteCcyIborLeg_;
 
+        Date initialNotionalExchangeDate_;
+        Date finalNotionalExchangeDate_;
+
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
