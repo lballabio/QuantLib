@@ -317,45 +317,147 @@ BOOST_AUTO_TEST_CASE(testCreateWithNullUnderlying) {
     spreaded->referenceDate();
 }
 
-BOOST_AUTO_TEST_CASE(testSpreadedForward) {
+BOOST_AUTO_TEST_CASE(testLinearInterpolationSpreadedForwardRate) {
 
-    BOOST_TEST_MESSAGE("Testing linear interpolation between two dates...");
+    BOOST_TEST_MESSAGE("Testing linear interpolation of forward rates between two dates...");
 
     CommonVars vars;
 
-    Real tolerance = 1.0e-9;
-    auto spread1 = ext::make_shared<SimpleQuote>(0.005);
-    auto spread2 = ext::make_shared<SimpleQuote>(0.01);
-    std::vector<Handle<Quote>> spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
+    // Define the forward rate spreads
+    auto calendar = vars.calendar;
+    auto dc = vars.termStructure->dayCounter();
     Date today = Settings::instance().evaluationDate();
-    auto dc = Actual365Fixed();
+    Date settlement = calendar.advance(today, vars.settlementDays, Days);
+    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
+    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    std::vector<Handle<Quote>> spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates = {vars.calendar.advance(today, 1, Years),
-                                     vars.calendar.advance(today, 2, Years)};
+    // Define the dates where spreads are specified
+    std::vector<Date> spreadDates = { vars.calendar.advance(today, 100, Days),
+                                      vars.calendar.advance(today, 150, Days) };
 
-    std::vector<Date> dates = {today, today + Period(1, Years), today + Period(2, Years), today + Period(3, Years)};
-    std::vector<Real> forwardRates = {0.05, 0.055, 0.06, 0.065};
-    auto yts = ext::shared_ptr<YieldTermStructure>(new InterpolatedForwardCurve<ForwardFlat>(dates, forwardRates, dc, vars.calendar, ForwardFlat()));
-    ext::shared_ptr<YieldTermStructure> spreadedTS =
-        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<ForwardFlat>>(
-                        Handle<YieldTermStructure>(yts),
+    Date interpolationDate = vars.calendar.advance(today, 120, Days);
+
+    // Create the forward spreaded term structure
+    ext::shared_ptr<YieldTermStructure> spreadedTermStructure =
+        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<Linear>>(
+                        Handle<YieldTermStructure>(vars.termStructure),
                         spreads, spreadDates);
 
-    Date testDate = today + Period(1, Years);
+    // Reference dates
+    Date d0 = vars.calendar.advance(today, 100, Days);
+    Date d1 = vars.calendar.advance(today, 150, Days);
+    Date d2 = vars.calendar.advance(today, 120, Days);
 
-    Rate forward = yts->forwardRate(testDate, testDate, dc,
-                                                   Continuous, NoFrequency);
-    Rate spreadedForward = spreadedTS->forwardRate(testDate, testDate, dc,
-                                                 Continuous, NoFrequency);
+    // Compute expected interpolated forward rate
+    Real time0 = dc.yearFraction(settlement, d0);
+    Real time1 = dc.yearFraction(settlement, d1);
+    Real time2 = dc.yearFraction(settlement, d2);
 
-    if (std::fabs(forward - (spreadedForward - spread1->value())) > tolerance)
+    Real m = (0.03 - 0.02) / (time1 - time0);
+
+    Time t = dc.yearFraction(settlement, interpolationDate);
+    Rate expectedForwardRate = vars.termStructure->forwardRate(t, t, Continuous, NoFrequency, true) + (m * (time2 - time0) + 0.02);
+    Rate interpolatedForwardRate = spreadedTermStructure->forwardRate(t, t, Continuous, NoFrequency, true);
+
+    Real tolerance = 1e-9;
+
+    if (std::fabs(interpolatedForwardRate - expectedForwardRate) > tolerance)
         BOOST_ERROR(
-            "unable to reproduce interpolated rate\n"
+            "unable to reproduce interpolated forward rate\n"
             << std::setprecision(10)
-            << "    calculated: " << io::rate(spreadedForward) << "\n"
-            << "    expected: "   << io::rate(forward + spread1->value()));
-
+            << "    calculated: " << io::rate(interpolatedForwardRate) << "\n"
+            << "    expected: "   << io::rate(expectedForwardRate));
 }
+
+BOOST_AUTO_TEST_CASE(testForwardFlatInterpolationSpreadedForwardRate) {
+
+    BOOST_TEST_MESSAGE("Testing forward flat interpolation of forward rates between two dates...");
+
+    CommonVars vars;
+
+    auto dc = vars.termStructure->dayCounter();
+    Date today = Settings::instance().evaluationDate();
+
+    // Define the forward rate spreads
+    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
+    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    std::vector<Handle<Quote>> spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
+
+    // Define the spread dates
+    std::vector<Date> spreadDates = { vars.calendar.advance(today, 75, Days),
+                                      vars.calendar.advance(today, 260, Days) };
+
+    Date interpolationDate = vars.calendar.advance(today, 100, Days);
+
+    // Create the forward spreaded term structure using ForwardFlat interpolation
+    ext::shared_ptr<YieldTermStructure> spreadedTermStructure =
+        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<ForwardFlat>>(
+                        Handle<YieldTermStructure>(vars.termStructure),
+                        spreads, spreadDates);
+
+    Time t = dc.yearFraction(today, interpolationDate);
+    Rate expectedForwardRate = vars.termStructure->forwardRate(t, t, Continuous, NoFrequency, true) +
+                               spread1->value();
+
+    Rate interpolatedForwardRate = spreadedTermStructure->forwardRate(t, t, Continuous, NoFrequency, true);
+
+    Real tolerance = 1e-9;
+
+    if (std::fabs(interpolatedForwardRate - expectedForwardRate) > tolerance)
+        BOOST_ERROR(
+            "unable to reproduce interpolated forward rate\n"
+            << std::setprecision(10)
+            << "    calculated: " << io::rate(interpolatedForwardRate) << "\n"
+            << "    expected: "   << io::rate(expectedForwardRate));
+}
+
+
+BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolationSpreadedForwardRate) {
+
+    BOOST_TEST_MESSAGE("Testing backward flat interpolation of forward rates between two dates...");
+
+    CommonVars vars;
+
+    auto dc = vars.termStructure->dayCounter();
+    Date today = Settings::instance().evaluationDate();
+
+    // Define the forward rate spreads
+    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
+    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.04);
+    std::vector<Handle<Quote>> spreads = {
+        Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
+    };
+
+    // Define the spread dates
+    std::vector<Date> spreadDates = { vars.calendar.advance(today, 100, Days),
+                                      vars.calendar.advance(today, 200, Days),
+                                      vars.calendar.advance(today, 300, Days) };
+
+    Date interpolationDate = vars.calendar.advance(today, 110, Days);
+
+    ext::shared_ptr<YieldTermStructure> spreadedTermStructure =
+        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<BackwardFlat>>(
+                        Handle<YieldTermStructure>(vars.termStructure),
+                        spreads, spreadDates);
+
+    Time t = dc.yearFraction(today, interpolationDate);
+    Rate expectedForwardRate = vars.termStructure->forwardRate(t, t, Continuous, NoFrequency, true) +
+                               spread2->value();
+
+    Rate interpolatedForwardRate = spreadedTermStructure->forwardRate(t, t, Continuous, NoFrequency, true);
+
+    Real tolerance = 1e-9;
+
+    if (std::fabs(interpolatedForwardRate - expectedForwardRate) > tolerance)
+        BOOST_ERROR(
+            "unable to reproduce interpolated forward rate\n"
+            << std::setprecision(10)
+            << "    calculated: " << io::rate(interpolatedForwardRate) << "\n"
+            << "    expected: "   << io::rate(expectedForwardRate));
+}
+
 
 BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
     BOOST_TEST_MESSAGE(
