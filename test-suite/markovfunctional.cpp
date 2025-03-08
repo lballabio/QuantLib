@@ -852,7 +852,6 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet, *precondition(if_speed(Slo
     BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to one instrument set...");
 
-    Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
 
@@ -1067,8 +1066,6 @@ BOOST_AUTO_TEST_CASE(testCalibrationOneInstrumentSet, *precondition(if_speed(Slo
                     << outputs4.modelPutPremium_[i][j] << ")");
         }
     }
-
-    Settings::instance().evaluationDate() = savedEvalDate;
 }
 
 BOOST_AUTO_TEST_CASE(testVanillaEngines, *precondition(if_speed(Slow))) {
@@ -1081,7 +1078,6 @@ BOOST_AUTO_TEST_CASE(testVanillaEngines, *precondition(if_speed(Slow))) {
 
     BOOST_TEST_MESSAGE("Testing Markov functional vanilla engines...");
 
-    Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
 
@@ -1351,8 +1347,6 @@ BOOST_AUTO_TEST_CASE(testVanillaEngines, *precondition(if_speed(Slow))) {
                 << blackPrice << ") does not match model premium (" << mfPrice
                 << ")");
     }
-
-    Settings::instance().evaluationDate() = savedEvalDate;
 }
 
 BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets, *precondition(if_speed(Fast))) {
@@ -1362,7 +1356,6 @@ BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets, *precondition(if_speed(Fa
     BOOST_TEST_MESSAGE(
         "Testing Markov functional calibration to two instrument sets...");
 
-    Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
 
@@ -1594,8 +1587,6 @@ BOOST_AUTO_TEST_CASE(testCalibrationTwoInstrumentSets, *precondition(if_speed(Fa
 
     // MarkovFunctional::ModelOutputs outputs2 = mf2->modelOutputs();
     // BOOST_TEST_MESSAGE(outputs2);
-
-    Settings::instance().evaluationDate() = savedEvalDate;
 }
 
 BOOST_AUTO_TEST_CASE(testBermudanSwaption) {
@@ -1604,7 +1595,6 @@ BOOST_AUTO_TEST_CASE(testBermudanSwaption) {
 
     BOOST_TEST_MESSAGE("Testing Markov functional Bermudan swaption engine...");
 
-    Date savedEvalDate = Settings::instance().evaluationDate();
     Date referenceDate(14, November, 2012);
     Settings::instance().evaluationDate() = referenceDate;
 
@@ -1677,8 +1667,6 @@ BOOST_AUTO_TEST_CASE(testBermudanSwaption) {
         BOOST_ERROR("Bermudan swaption value ("
                     << npv << ") deviates from cached value (" << cachedValue
                     << ")");
-
-    Settings::instance().evaluationDate() = savedEvalDate;
 }
 
 BOOST_AUTO_TEST_SUITE_END()

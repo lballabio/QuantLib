@@ -37,8 +37,10 @@
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/quotes/futuresconvadjustmentquote.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/globalbootstrap.hpp>
+#include <ql/termstructures/globalbootstrapvars.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
@@ -1463,6 +1465,65 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapPenalty, *precondition(usingAtParCoupons
         QL_CHECK_SMALL(
             refZeroRateGP[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate(),
             1E-6);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
+
+    CommonVars vars;
+
+    // First, build the curve without futures.
+    typedef PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap> Curve;
+    auto curve = ext::make_shared<Curve>(
+        vars.settlement, vars.instruments, Actual365Fixed(), LogLinear());
+
+    // Now build the curve with futures adjusted to the same level as swaps.
+    // Remove the first swap from helpers so it does not create a pillar.
+    auto helpers = vars.instruments;
+    auto firstSwap = helpers[vars.deposits];
+    helpers.erase(helpers.begin() + vars.deposits);
+
+    auto euribor3m = ext::make_shared<Euribor3M>();
+    Date immDate = vars.today;
+    // We will optimize vol as an additional variable during bootstrapping.
+    auto vol = ext::make_shared<SimpleQuote>();
+    auto mr = makeQuoteHandle(0.03);
+    for (Size i = 0; i < vars.immFuts; i++) {
+        Handle<Quote> r(vars.immFutPrices[i]);
+        immDate = IMM::nextDate(immDate);
+        // if the fixing is before today, jump forward by one future maturity
+        if (euribor3m->fixingDate(immDate) < vars.today)
+            immDate = IMM::nextDate(immDate);
+        auto convAdj = ext::make_shared<FuturesConvAdjustmentQuote>(
+            euribor3m, immDate, r, Handle<Quote>(vol), mr);
+        // Pass registerAsObserver = false so that FuturesRateHelpers do not
+        // depend on convAdj quotes. Otherwise, the curve will be invalidated
+        // every time we change the vol quote during optimization, which will
+        // break bootstrapping.
+        bool registerAsObserver = false;
+        helpers.push_back(ext::make_shared<FuturesRateHelper>(
+            r, immDate, euribor3m, Handle<Quote>(convAdj, registerAsObserver),
+            Futures::IMM));
+    }
+
+    auto penalties = [&]() { return Array{1e4 * firstSwap->quoteError()}; };
+
+    auto curveFutures = ext::make_shared<Curve>(
+        vars.settlement, helpers, Actual365Fixed(), LogLinear(),
+        Curve::bootstrap_type(
+            {firstSwap}, nullptr, penalties, 1e-12, nullptr, nullptr,
+            ext::make_shared<SimpleQuoteVariables>(
+                std::vector<ext::shared_ptr<SimpleQuote>>{vol},
+                std::vector<Real>{1.0}, std::vector<Real>{0.0})));
+
+    // Check that the pillars are not the same.
+    BOOST_CHECK(curve->dates() != curveFutures->dates());
+
+    // Check that all deposit and swap rates are the same in both curves.
+    for (const auto& helper : vars.instruments) {
+        BOOST_CHECK_CLOSE(curve->discount(helper->pillarDate()),
+                          curveFutures->discount(helper->pillarDate()),
+                          1e-6);
     }
 }
 

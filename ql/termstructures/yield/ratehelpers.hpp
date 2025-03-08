@@ -83,7 +83,7 @@ namespace QuantLib {
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& iborStartDate,
                           const ext::shared_ptr<IborIndex>& iborIndex,
-                          const Handle<Quote>& convexityAdjustment = {},
+                          Handle<Quote> convexityAdjustment = {},
                           Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
