@@ -15,13 +15,13 @@ this_include_HEADERS = \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
     interpolatedsimplezerocurve.hpp \
+    interpolatedpiecewisespreadcurve.hpp \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
     overnightindexfutureratehelper.hpp \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     piecewiseforwardspreadedtermstructure.hpp \
-    interpolatedpiecewisespreadcurve.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \
     ultimateforwardtermstructure.hpp \
