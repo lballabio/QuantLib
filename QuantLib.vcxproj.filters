@@ -2193,10 +2193,10 @@
     <ClInclude Include="ql\termstructures\yield\zeroyieldstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
-    <ClInclude Include="ql/termstructures/yield/piecewiseforwardspreadedtermstructure.hpp">
+    <ClInclude Include="ql\termstructures\yield\piecewiseforwardspreadedtermstructure.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
-    <ClInclude Include="ql/termstructures/interpolatedcurve.hpp">
+    <ClInclude Include="ql\termstructures\yield\interpolatedpiecewisespreadcurve.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\inflation\all.hpp">
