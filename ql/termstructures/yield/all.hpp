@@ -11,11 +11,13 @@
 #include <ql/termstructures/yield/forwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/forwardstructure.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
+#include <ql/termstructures/yield/interpolatedpiecewisespreadcurve.hpp>
 #include <ql/termstructures/yield/interpolatedsimplezerocurve.hpp>
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/piecewiseforwardspreadedtermstructure.hpp>
 #include <ql/termstructures/yield/piecewisezerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/quantotermstructure.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
