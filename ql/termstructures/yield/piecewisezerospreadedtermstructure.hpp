@@ -97,8 +97,9 @@ namespace QuantLib {
                                                            Frequency freq,
                                                            DayCounter dc,
                                                            const T& factory)
-    : originalCurve_(std::move(h)), dates_(dates), comp_(comp), freq_(freq),
-      dc_(std::move(dc)), InterpolatedPiecewiseSpreadCurve<T>(spreads, dates, h->referenceDate(), h->dayCounter(), factory)  {
+    : InterpolatedPiecewiseSpreadCurve<T>(spreads, dates, h->referenceDate(), h->dayCounter(), factory),
+      originalCurve_(std::move(h)), dates_(dates), comp_(comp), freq_(freq),
+      dc_(std::move(dc))  {
         registerWith(originalCurve_);
     }
 
