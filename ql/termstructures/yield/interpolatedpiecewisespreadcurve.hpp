@@ -53,6 +53,7 @@ namespace QuantLib {
             Time timeFromReference(const Date& d) const;
             void updateInterpolation();
             Real calcSpread(Time t) const;
+            Real calcSpreadPrimitive(Time t) const;
         private:
             std::vector<Handle<Quote>> spreads_;
             std::vector<Date> dates_;
@@ -104,6 +105,22 @@ namespace QuantLib {
         } else {
             return interpolator_(t, true);
         }
+    }
+
+    template <class T>
+    inline Spread
+    InterpolatedPiecewiseSpreadCurve<T>::calcSpreadPrimitive(Time t) const {
+        if (t == 0.0)
+            return calcSpread(0.0);
+
+        Real integral;
+        if (t <= this->times_.back()) {
+            integral = this->interpolator_.primitive(t, true);
+        } else {
+            integral = this->interpolator_.primitive(this->times_.back(), true)
+                     + this->spreads_.back()->value() * (t - this->times_.back());
+        }
+        return integral/t;
     }
 
     template <class T>

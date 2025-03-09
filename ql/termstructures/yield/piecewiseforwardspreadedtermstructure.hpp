@@ -116,13 +116,9 @@ namespace QuantLib {
     template <class T>
     inline Rate
     InterpolatedPiecewiseForwardSpreadedTermStructure<T>::zeroYieldImpl(Time t) const {
-        Spread spread = InterpolatedPiecewiseSpreadCurve<T>::calcSpread(t);
+        Spread spreadPrimitive = InterpolatedPiecewiseSpreadCurve<T>::calcSpreadPrimitive(t);
         InterestRate zeroRate = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
-        InterestRate spreadedRate(zeroRate + spread,
-                                  zeroRate.dayCounter(),
-                                  zeroRate.compounding(),
-                                  zeroRate.frequency());
-        return spreadedRate.equivalentRate(Continuous, NoFrequency, t);
+        return zeroRate + spreadPrimitive;
     }
 
     template <class T>
