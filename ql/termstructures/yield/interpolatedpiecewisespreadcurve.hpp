@@ -35,10 +35,17 @@
 
 namespace QuantLib {
 
+    //! Helper class to build interpolated piecewise spread curves
+    /*! Interpolated piecewise spread curves can use protected or private
+        inheritance from this class to obtain the relevant data
+        members and methods to get the spread to apply to a 
+        specific point in time.
+    */
     template <class Interpolator>
     class InterpolatedPiecewiseSpreadCurve : public virtual Observer,
                                              public virtual Observable {
         public:
+            // constructor
             InterpolatedPiecewiseSpreadCurve(std::vector<Handle<Quote>> spreads,
                                             const std::vector<Date>& dates,
                                             const Date& referenceDate,
@@ -52,6 +59,7 @@ namespace QuantLib {
         protected:
             Time timeFromReference(const Date& d) const;
             void updateInterpolation();
+            //! Spread calcution methods
             Real calcSpread(Time t) const;
             Real calcSpreadPrimitive(Time t) const;
         private:
