@@ -52,7 +52,7 @@ namespace QuantLib {
                 .backwards();
         }
 
-        Leg buildIborLeg(const Date& evaluationDate,
+        Leg buildFloatingLeg(const Date& evaluationDate,
                          const Period& tenor,
                          Natural fixingDays,
                          const Calendar& calendar,
@@ -208,9 +208,9 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelperBase::initializeDates() {
-        baseCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
+        baseCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
                                        endOfMonth_, baseCcyIdx_, paymentFrequency_, paymentLag_);
-        quoteCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
+        quoteCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
                                         convention_, endOfMonth_, quoteCcyIdx_, paymentFrequency_, paymentLag_);
         earliestDate_ = std::min(CashFlows::startDate(baseCcyIborLeg_), 
                                 CashFlows::startDate(quoteCcyIborLeg_));
