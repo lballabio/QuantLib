@@ -47,8 +47,8 @@ namespace QuantLib {
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool isFxBaseCurrencyCollateralCurrency,
                                              bool isBasisOnFxBaseCurrencyLeg,
-                                             Frequency paymentFrequency,
-                                             Integer paymentLag);
+                                             Frequency paymentFrequency = NoFrequency,
+                                             Integer paymentLag = 0);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
