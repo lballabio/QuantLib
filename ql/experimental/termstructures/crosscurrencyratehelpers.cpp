@@ -61,10 +61,18 @@ namespace QuantLib {
                          const ext::shared_ptr<IborIndex>& idx,
                          Frequency paymentFrequency,
                          Integer paymentLag) {
-            auto freqPeriod = paymentFrequency == NoFrequency ? idx->tenor() : Period(paymentFrequency);
+            auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx);
+
+            Period freqPeriod;
+            if (paymentFrequency == NoFrequency) {
+                // for overnight legs default to quarterly if the payment frequency is not supplied
+                freqPeriod = overnightIndex ? Period(Quarterly) : idx->tenor();
+            } else {
+                freqPeriod = Period(paymentFrequency);
+            }
+
             Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
                                        convention, endOfMonth);
-            auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(idx);
             if (overnightIndex != nullptr) {
                 return OvernightLeg(sch, overnightIndex)
                     .withNotionals(1.0)
