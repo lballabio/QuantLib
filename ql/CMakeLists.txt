@@ -2152,7 +2152,6 @@ set(QL_HEADERS
     termstructures/yield/zerospreadedtermstructure.hpp
     termstructures/yield/zeroyieldstructure.hpp
     termstructures/yieldtermstructure.hpp
-    termstructures/yield/interpolatedpiecewisespreadcurve.hpp
     termstructures/yield/piecewiseforwardspreadedtermstructure.hpp
     time/asx.hpp
     time/businessdayconvention.hpp
