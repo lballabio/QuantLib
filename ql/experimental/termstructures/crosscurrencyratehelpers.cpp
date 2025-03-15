@@ -65,8 +65,8 @@ namespace QuantLib {
 
             Period freqPeriod;
             if (paymentFrequency == NoFrequency) {
-                // for overnight legs default to quarterly if the payment frequency is not supplied
-                freqPeriod = overnightIndex ? Period(Quarterly) : idx->tenor();
+                QL_REQUIRE(!overnightIndex, "Require payment frequency for overnight indices.");
+                freqPeriod = idx->tenor();
             } else {
                 freqPeriod = Period(paymentFrequency);
             }
