@@ -1470,7 +1470,9 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapPenalty, *precondition(usingAtParCoupons
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
 
-    CommonVars vars;
+    // Use fixed evaluationDate to make the test stable. It works for any date,
+    // but the tolerance varies and also depends on usingAtParCoupons().
+    CommonVars vars(Date(25, Sep, 2019));
 
     // First, build the curve without futures.
     typedef PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap> Curve;
