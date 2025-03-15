@@ -459,6 +459,62 @@ BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolationSpreadedForwardRate) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolationZeroRate) {
+
+    BOOST_TEST_MESSAGE("Testing backward flat interpolation of zero rates between two dates...");
+
+    CommonVars vars;
+    auto dc = vars.termStructure->dayCounter();
+    Date today = Settings::instance().evaluationDate();
+    Date referenceDate = vars.termStructure->referenceDate();
+
+    // Define the zero rate spreads
+    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
+    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.04);
+    std::vector<Handle<Quote>> spreads = {
+        Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
+    };
+
+    // Define the spread dates
+    std::vector<Date> spreadDates = { vars.calendar.advance(today, 100, Days),
+                                      vars.calendar.advance(today, 200, Days),
+                                      vars.calendar.advance(today, 300, Days) };
+    std::vector<Time> times(spreadDates.size());
+    std::vector<Real> spreadValues(spreadDates.size());
+    for (Size i = 0; i < spreadDates.size(); i++) {
+            times[i] = dc.yearFraction(referenceDate, spreadDates[i]);
+            spreadValues[i] = spreads[i]->value();
+    }
+
+    Date interpolationDate = vars.calendar.advance(today, 110, Days);
+
+    ext::shared_ptr<YieldTermStructure> spreadedTermStructure =
+        ext::make_shared<InterpolatedPiecewiseForwardSpreadedTermStructure<BackwardFlat>>(
+                        Handle<YieldTermStructure>(vars.termStructure),
+                        spreads, spreadDates);
+
+    BackwardFlatInterpolation bckFlatInterpolation(times.begin(), times.end(), 
+                                                  spreadValues.begin()); 
+
+    Time t = dc.yearFraction(today, interpolationDate);
+    Rate nonSpreadedRate = vars.termStructure->zeroRate(t, Continuous, NoFrequency, true);
+    Rate spreadPrimitive = bckFlatInterpolation.primitive(t, true) / t;
+    Rate expectedZeroRate = nonSpreadedRate + spreadPrimitive;
+
+    Rate interpolatedZeroRate = spreadedTermStructure->zeroRate(t, Continuous, NoFrequency, true);
+
+    Real tolerance = 1e-9;
+
+    if (std::fabs(interpolatedZeroRate - expectedZeroRate) > tolerance)
+        BOOST_ERROR(
+            "unable to reproduce interpolated zero rate\n"
+            << std::setprecision(10)
+            << "    calculated: " << io::rate(interpolatedZeroRate) << "\n"
+            << "    expected: "   << io::rate(expectedZeroRate));
+}
+
+
 BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
     BOOST_TEST_MESSAGE(
         "Testing that an underlying curve can be relinked to "
