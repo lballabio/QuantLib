@@ -63,17 +63,23 @@ namespace QuantLib {
                 2,
                 EURCurrency(),
                 // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
-                // JoinBusinessDays is the fixing calendar for
+                // JoinHolidays is the fixing calendar for
                 // all indexes but o/n
                 JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                               TARGET(),
-                              JoinBusinessDays),
+                              JoinHolidays),
                 eurliborConvention(tenor), eurliborEOM(tenor),
                 Actual360(), h),
       target_(TARGET()) {
         QL_REQUIRE(this->tenor().units()!=Days,
                    "for daily tenors (" << this->tenor() <<
                    ") dedicated DailyTenor constructor must be used");
+    }
+
+    Date EURLibor::fixingDate(const Date& valueDate) const {
+        return fixingCalendar().adjust(
+            target_.advance(valueDate, -static_cast<Integer>(fixingDays_), Days),
+            Preceding);
     }
 
     Date EURLibor::valueDate(const Date& fixingDate) const {

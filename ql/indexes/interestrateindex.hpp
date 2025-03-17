@@ -56,7 +56,6 @@ namespace QuantLib {
         std::string familyName() const { return familyName_; }
         Period tenor() const { return tenor_; }
         Natural fixingDays() const { return fixingDays_; }
-        Date fixingDate(const Date& valueDate) const;
         const Currency& currency() const { return currency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
         //@}
@@ -67,6 +66,7 @@ namespace QuantLib {
 
             @{
         */
+        virtual Date fixingDate(const Date& valueDate) const;
         virtual Date valueDate(const Date& fixingDate) const;
         virtual Date maturityDate(const Date& valueDate) const = 0;
         //@}

@@ -48,6 +48,7 @@ namespace QuantLib {
             See <https://www.theice.com/marketdata/reports/170>.
             @{
         */
+        Date fixingDate(const Date& valueDate) const override;
         Date valueDate(const Date& fixingDate) const override;
         Date maturityDate(const Date& valueDate) const override;
         // @}
