@@ -19,6 +19,7 @@ this_include_HEADERS = \
     oisratehelper.hpp \
     overnightindexfutureratehelper.hpp \
     piecewiseyieldcurve.hpp \
+    piecewiseforwardspreadedtermstructure.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \

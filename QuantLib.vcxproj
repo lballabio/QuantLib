@@ -1790,6 +1790,7 @@
     <ClInclude Include="ql\termstructures\yield\zerospreadedtermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\zeroyieldstructure.hpp" />
     <ClInclude Include="ql\termstructures\yieldtermstructure.hpp" />
+    <ClInclude Include="ql\termstructures\yield\piecewiseforwardspreadedtermstructure.hpp" />
     <ClInclude Include="ql\time\all.hpp" />
     <ClInclude Include="ql\time\asx.hpp" />
     <ClInclude Include="ql\time\businessdayconvention.hpp" />

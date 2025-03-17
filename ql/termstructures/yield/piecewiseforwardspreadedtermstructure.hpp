@@ -19,23 +19,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file piecewisezerospreadedtermstructure.hpp
-    \brief Piecewise-zero-spreaded term structure
+/*! \file piecewiseforwardspreadedtermstructure.hpp
+    \brief Piecewise-forward-spreaded term structure
 */
 
-#ifndef quantlib_piecewise_zero_spreaded_term_structure_hpp
-#define quantlib_piecewise_zero_spreaded_term_structure_hpp
+#ifndef quantlib_piecewise_forward_spreaded_term_structure_hpp
+#define quantlib_piecewise_forward_spreaded_term_structure_hpp
 
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/quote.hpp>
-#include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <ql/termstructures/yield/forwardstructure.hpp>
 #include <utility>
 #include <vector>
 
 namespace QuantLib {
 
-  //! Yield curve with an added vector of spreads on the zero-yield rate
-  /*! The zero-yield spread at any given date is interpolated
+  //! Term structure with an added vector of spreads on the instantaneous forward rate
+  /*! The forward rate spread at any given date is interpolated
       between the input data.
 
       \note This term structure will remain linked to the original
@@ -46,13 +46,11 @@ namespace QuantLib {
   */
 
   template <class Interpolator>
-  class InterpolatedPiecewiseZeroSpreadedTermStructure : public ZeroYieldStructure {
+  class InterpolatedPiecewiseForwardSpreadedTermStructure : public ForwardRateStructure {
     public:
-      InterpolatedPiecewiseZeroSpreadedTermStructure(Handle<YieldTermStructure>,
+      InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure>,
                                                      std::vector<Handle<Quote> > spreads,
                                                      const std::vector<Date>& dates,
-                                                     Compounding comp = Continuous,
-                                                     Frequency freq = NoFrequency,
                                                      DayCounter dc = DayCounter(),
                                                      const Interpolator& factory = Interpolator());
       //! \name YieldTermStructure interface
@@ -66,11 +64,13 @@ namespace QuantLib {
     protected:
       //! returns the spreaded zero yield rate
       Rate zeroYieldImpl(Time) const override;
+      Rate forwardImpl(Time) const override;
       void update() override;
 
     private:
       void updateInterpolation();
       Real calcSpread(Time t) const;
+      Real calcSpreadPrimitive(Time t) const;
       Handle<YieldTermStructure> originalCurve_;
       std::vector<Handle<Quote> > spreads_;
       std::vector<Date> dates_;
@@ -83,26 +83,18 @@ namespace QuantLib {
       Interpolation interpolator_;
   };
 
-    //! Piecewise zero-spreaded yield curve based on linear interpolation of zero rates
-    /*! \ingroup yieldtermstructures */
-
-    typedef InterpolatedPiecewiseZeroSpreadedTermStructure<Linear> PiecewiseZeroSpreadedTermStructure;
-
-
     // inline definitions
 
     template <class T>
-    inline InterpolatedPiecewiseZeroSpreadedTermStructure<
-        T>::InterpolatedPiecewiseZeroSpreadedTermStructure(Handle<YieldTermStructure> h,
+    inline InterpolatedPiecewiseForwardSpreadedTermStructure<
+        T>::InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
                                                            std::vector<Handle<Quote> > spreads,
                                                            const std::vector<Date>& dates,
-                                                           Compounding comp,
-                                                           Frequency freq,
                                                            DayCounter dc,
                                                            const T& factory)
     : originalCurve_(std::move(h)), spreads_(std::move(spreads)), dates_(dates),
-      times_(dates.size()), spreadValues_(dates.size()), comp_(comp), freq_(freq),
-      dc_(std::move(dc)), factory_(factory) {
+    times_(dates.size()), spreadValues_(dates.size()), dc_(std::move(dc)),
+    factory_(factory) {
         QL_REQUIRE(!spreads_.empty(), "no spreads given");
         QL_REQUIRE(spreads_.size() == dates_.size(),
                    "spread and date vector have different sizes");
@@ -114,46 +106,50 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline DayCounter InterpolatedPiecewiseZeroSpreadedTermStructure<T>::dayCounter() const {
+    inline DayCounter InterpolatedPiecewiseForwardSpreadedTermStructure<T>::dayCounter() const {
         return originalCurve_->dayCounter();
     }
 
     template <class T>
-    inline Calendar InterpolatedPiecewiseZeroSpreadedTermStructure<T>::calendar() const {
+    inline Calendar InterpolatedPiecewiseForwardSpreadedTermStructure<T>::calendar() const {
         return originalCurve_->calendar();
     }
 
     template <class T>
-    inline Natural InterpolatedPiecewiseZeroSpreadedTermStructure<T>::settlementDays() const {
+    inline Natural InterpolatedPiecewiseForwardSpreadedTermStructure<T>::settlementDays() const {
         return originalCurve_->settlementDays();
     }
 
     template <class T>
     inline const Date&
-    InterpolatedPiecewiseZeroSpreadedTermStructure<T>::referenceDate() const {
+    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::referenceDate() const {
         return originalCurve_->referenceDate();
     }
 
     template <class T>
-    inline Date InterpolatedPiecewiseZeroSpreadedTermStructure<T>::maxDate() const {
+    inline Date InterpolatedPiecewiseForwardSpreadedTermStructure<T>::maxDate() const {
         return std::min(originalCurve_->maxDate(), dates_.back());
     }
 
     template <class T>
     inline Rate
-    InterpolatedPiecewiseZeroSpreadedTermStructure<T>::zeroYieldImpl(Time t) const {
+    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::zeroYieldImpl(Time t) const {
+        Spread spreadPrimitive = calcSpreadPrimitive(t);
+        InterestRate zeroRate = originalCurve_->zeroRate(t, Continuous, NoFrequency, true);
+        return zeroRate + spreadPrimitive;
+    }
+
+    template <class T>
+    inline Rate
+    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::forwardImpl(Time t) const {
         Spread spread = calcSpread(t);
-        InterestRate zeroRate = originalCurve_->zeroRate(t, comp_, freq_, true);
-        InterestRate spreadedRate(zeroRate + spread,
-                                  zeroRate.dayCounter(),
-                                  zeroRate.compounding(),
-                                  zeroRate.frequency());
-        return spreadedRate.equivalentRate(Continuous, NoFrequency, t);
+        Rate forwardRate = originalCurve_->forwardRate(t, t, Continuous, NoFrequency, true);
+        return forwardRate + spread;
     }
 
     template <class T>
     inline Spread
-    InterpolatedPiecewiseZeroSpreadedTermStructure<T>::calcSpread(Time t) const {
+    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::calcSpread(Time t) const {
         if (t <= times_.front()) {
             return spreads_.front()->value();
         } else if (t >= times_.back()) {
@@ -164,10 +160,26 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline void InterpolatedPiecewiseZeroSpreadedTermStructure<T>::update() {
+    inline Spread
+    InterpolatedPiecewiseForwardSpreadedTermStructure<T>::calcSpreadPrimitive(Time t) const {
+        if (t == 0.0)
+            return calcSpread(0.0);
+
+        Real integral;
+        if (t <= this->times_.back()) {
+            integral = this->interpolator_.primitive(t, true);
+        } else {
+            integral = this->interpolator_.primitive(this->times_.back(), true)
+                     + this->spreads_.back()->value() * (t - this->times_.back());
+        }
+        return integral/t;
+    }
+
+    template <class T>
+    inline void InterpolatedPiecewiseForwardSpreadedTermStructure<T>::update() {
         if (!originalCurve_.empty()) {
             updateInterpolation();
-            ZeroYieldStructure::update();
+            YieldTermStructure::update();
         } else {
             /* The implementation inherited from YieldTermStructure
                asks for our reference date, which we don't have since
@@ -179,7 +191,7 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline void InterpolatedPiecewiseZeroSpreadedTermStructure<T>::updateInterpolation() {
+    inline void InterpolatedPiecewiseForwardSpreadedTermStructure<T>::updateInterpolation() {
         for (Size i = 0; i < dates_.size(); i++) {
             times_[i] = timeFromReference(dates_[i]);
             spreadValues_[i] = spreads_[i]->value();
