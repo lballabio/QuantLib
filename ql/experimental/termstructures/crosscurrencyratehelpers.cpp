@@ -207,8 +207,7 @@ namespace QuantLib {
       collateralHandle_(std::move(collateralCurve)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg),
-      paymentFrequency_(paymentFrequency), paymentLag_(paymentLag),
-      initialNotionalExchangeDate_(Date()), finalNotionalExchangeDate_(Date()) {
+      paymentFrequency_(paymentFrequency), paymentLag_(paymentLag) {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
         registerWith(collateralHandle_);
