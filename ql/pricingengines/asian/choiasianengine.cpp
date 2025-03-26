@@ -85,7 +85,7 @@ namespace QuantLib {
             == fixingDates.end(), "two fixing dates are the same");
 
         const Real accruedAverage = (pastFixings != 0)
-            ? runningAccumulator / (pastFixings + futureFixings)
+            ? Real(runningAccumulator / (pastFixings + futureFixings))
             : 0.0;
 
         const Real strike = payoff->strike() - accruedAverage;
