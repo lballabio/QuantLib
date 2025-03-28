@@ -373,7 +373,7 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
         }
     } // pricer loop
     // remove circular refernce
-    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.reset();
 }
 
 
@@ -446,7 +446,7 @@ BOOST_AUTO_TEST_CASE(testParity) {
         }
     }
     // remove circular refernce
-    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testCachedValue) {
@@ -518,7 +518,7 @@ BOOST_AUTO_TEST_CASE(testCachedValue) {
                         <<" diff was "<<(fabs(floor->NPV()-cachedFloorNPVbac)));
 
     // remove circular refernce
-    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

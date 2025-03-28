@@ -675,7 +675,7 @@ BOOST_AUTO_TEST_CASE(testDecomposition) {
                     "  Diff: " << error );
     }
     // remove circular refernce
-    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
@@ -776,7 +776,7 @@ BOOST_AUTO_TEST_CASE(testInstrumentEquality) {
         }
     }
     // remove circular refernce
-    vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    vars.hy.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -530,7 +530,7 @@ BOOST_AUTO_TEST_CASE(testLinkToNullUnderlying) {
     spreaded->referenceDate();
     // if we do this, the curve can't work anymore. But it shouldn't
     // throw as long as we don't try to use it.
-    underlying.linkTo(ext::shared_ptr<YieldTermStructure>());
+    underlying.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testCompositeZeroYieldStructures) {

@@ -155,7 +155,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
     // teardown
     ~CommonVars() {
         // break circular references and allow curves to be destroyed
-        cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+        cpiTS.reset();
     }
 };
 

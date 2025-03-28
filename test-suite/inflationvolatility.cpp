@@ -70,8 +70,8 @@ void reset() {
     nominalEUR = Handle<YieldTermStructure>();
     nominalGBP = Handle<YieldTermStructure>();
     priceSurfEU.reset();
-    yoyEU.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
-    yoyUK.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    yoyEU.reset();
+    yoyUK.reset();
     yoyIndexUK.reset();
     yoyIndexEU.reset();
     cPriceEU.reset();

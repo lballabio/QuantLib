@@ -224,7 +224,7 @@ namespace QuantLib {
 
     template <class T>
     inline void RelinkableHandle<T>::reset() {
-        this->link_->linkTo(nullptr);
+        this->link_->linkTo(nullptr, true);
     }
 
 }

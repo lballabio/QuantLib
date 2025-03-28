@@ -350,7 +350,7 @@ BOOST_AUTO_TEST_CASE(consistency) {
                "failed stored consistency value test, ratio = " << diff);
 
     // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_CASE(zciisconsistency) {
@@ -403,7 +403,7 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
         QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPISwap leg");
     }
     // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_CASE(cpibondconsistency) {
@@ -493,7 +493,7 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
     // remove circular reference
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

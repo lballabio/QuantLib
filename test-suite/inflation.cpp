@@ -478,7 +478,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     }
 
     // remove circular refernce
-    hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    hz.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testZeroTermStructureWithLag) {
@@ -649,7 +649,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithLag) {
     }
 
     // remove circular refernce
-    hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    hz.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
@@ -1243,7 +1243,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
                             );
     }
     // remove circular refernce
-    hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
@@ -1401,7 +1401,7 @@ BOOST_AUTO_TEST_CASE(testYYTermStructureWithLag) {
                             );
     }
     // remove circular refernce
-    hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
+    hy.reset();
 }
 
 BOOST_AUTO_TEST_CASE(testPeriod) {

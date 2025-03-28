@@ -367,7 +367,7 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricesurface) {
     }
 
     // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
@@ -429,7 +429,7 @@ BOOST_AUTO_TEST_CASE(cpicapfloorpricer) {
                << cached << " vs " << aCap.NPV());
 
     // remove circular refernce
-    common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
