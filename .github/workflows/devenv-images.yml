@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: [noble, oracular]
+        tag: [noble, oracular, plucky]
     steps:
     - uses: actions/checkout@v4
     - name: Build CI images
