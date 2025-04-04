@@ -279,7 +279,7 @@
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
         "CMAKE_UNITY_BUILD": "ON",
-        "QL_CLANG_TIDY": "clang-tidy-18",
+        "QL_CLANG_TIDY": "clang-tidy-19",
         "QL_CLANG_TIDY_OPTIONS": "-quiet;-fix",
         "QL_USE_CLANG_TIDY": "ON",
         "QL_USE_STD_CLASSES": "ON"
