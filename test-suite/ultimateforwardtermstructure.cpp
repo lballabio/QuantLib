@@ -116,7 +116,7 @@ struct CommonVars {
     }
 };
 
-ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const Period& fsp) {
+static ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const Period& fsp) {
     DayCounter dc = ts->dayCounter();
     Real omega = 8.0 / 15.0;
     Time cutOff = ts->timeFromReference(ts->referenceDate() + fsp);
@@ -131,7 +131,7 @@ ext::shared_ptr<Quote> calculateLLFR(const Handle<YieldTermStructure>& ts, const
     return ext::shared_ptr<Quote>(new SimpleQuote(omega * llfr));
 }
 
-Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real alpha) {
+static Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real alpha) {
     Time deltaT = t - fsp;
     Real beta = (1.0 - std::exp(-alpha * deltaT)) / (alpha * deltaT);
     return ufr + (llfr - ufr) * beta;

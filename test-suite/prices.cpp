@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(testIntervalPriceInspectors) {
     BOOST_TEST(4 == p.value(IntervalPrice::Low));
 }
 
-void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
+static void testEquality(const IntervalPrice& lhs, const IntervalPrice& rhs) {
     using T = IntervalPrice::Type;
     for (const auto t : {T::Open, T::Close, T::High, T::Low})
         BOOST_TEST(lhs.value(t) == rhs.value(t));
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(testIntervalPriceModifiers) {
     testEquality(p, IntervalPrice(21, 22, 23, 24));
 }
 
-TimeSeries<IntervalPrice> createSeries() {
+static TimeSeries<IntervalPrice> createSeries() {
     std::vector<Date> d;
     d.emplace_back((Day)1, (Month)1, (Year)2001);
     d.emplace_back((Day)3, (Month)3, (Year)2003);

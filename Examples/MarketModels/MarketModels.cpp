@@ -69,7 +69,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 using namespace QuantLib;
 
-std::vector<std::vector<Matrix>>
+static std::vector<std::vector<Matrix>>
 theVegaBumps(bool factorwiseBumping, const ext::shared_ptr<MarketModel>& marketModel, bool doCaps) {
     Real multiplierCutOff = 50.0;
     Real projectionTolerance = 1E-4;
@@ -124,7 +124,7 @@ theVegaBumps(bool factorwiseBumping, const ext::shared_ptr<MarketModel>& marketM
 
 
 
-int Bermudan()
+static int Bermudan()
 {
 
     Size numberRates =20;
@@ -449,7 +449,7 @@ int Bermudan()
     return 0;
 }
 
-int InverseFloater(Real rateLevel)
+static int InverseFloater(Real rateLevel)
 {
 
     Size numberRates =20;

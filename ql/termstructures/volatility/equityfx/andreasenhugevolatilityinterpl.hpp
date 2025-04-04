@@ -56,7 +56,7 @@ namespace QuantLib {
       public:
         enum InterpolationType {PiecewiseConstant, Linear, CubicSpline};
         enum CalibrationType {
-            Call = Option::Call, Put = Option::Put, CallPut};
+            Call = Option::Call, Put = Option::Put, CallPut = 0};
 
         typedef std::vector<std::pair<
             ext::shared_ptr<VanillaOption>, ext::shared_ptr<Quote> > >

@@ -33,7 +33,7 @@
 
 using namespace QuantLib;
 
-unsigned long seed = 127;
+static unsigned long seed = 127;
 
 /*
     Some benchmark functions taken from
@@ -43,7 +43,7 @@ unsigned long seed = 127;
     * usually requires some hyper-parameter optimization to find appropriate values
 */
 
-Real ackley(const Array& x) {
+static Real ackley(const Array& x) {
     //Minimum is found at 0
     Real p1 = 0.0, p2 = 0.0;
 
@@ -56,7 +56,7 @@ Real ackley(const Array& x) {
     return M_E + 20.0 - 20.0*std::exp(p1)-std::exp(p2);
 }
 
-Array ackleyValues(const Array& x) {
+static Array ackleyValues(const Array& x) {
     Array y(x.size());
     for (Size i = 0; i < x.size(); i++) {
         Real p1 = x[i] * x[i];
@@ -67,12 +67,12 @@ Array ackleyValues(const Array& x) {
     return y;
 }
 
-Real sphere(const Array& x) {
+static Real sphere(const Array& x) {
     //Minimum is found at 0
     return DotProduct(x, x);
 }
 
-Array sphereValues(const Array& x) {
+static Array sphereValues(const Array& x) {
     Array y(x.size());
     for (Size i = 0; i < x.size(); i++) {
         y[i] = x[i]*x[i];
@@ -80,7 +80,7 @@ Array sphereValues(const Array& x) {
     return y;
 }
 
-Real rosenbrock(const Array& x) {
+static Real rosenbrock(const Array& x) {
     //Minimum is found at f(1, 1, ...)
     QL_REQUIRE(x.size() > 1, "Input size needs to be higher than 1");
     Real result = 0.0;
@@ -91,7 +91,7 @@ Real rosenbrock(const Array& x) {
     return result;
 }
 
-Real easom(const Array& x) {
+static Real easom(const Array& x) {
     //Minimum is found at f(\pi, \pi, ...)
     Real p1 = 1.0, p2 = 0.0;
     for (Real i : x) {
@@ -101,7 +101,7 @@ Real easom(const Array& x) {
     return -p1*std::exp(-p2);
 }
 
-Array easomValues(const Array& x) {
+static Array easomValues(const Array& x) {
     Array y(x.size());
     for (Size i = 0; i < x.size(); i++) {
         Real p1 = std::cos(x[i]);
@@ -111,7 +111,7 @@ Array easomValues(const Array& x) {
     return y;
 }
 
-Real eggholder(const Array& x) {
+static Real eggholder(const Array& x) {
     //Minimum is found at f(512, 404.2319)
     QL_REQUIRE(x.size() == 2, "Input size needs to be equal to 2");
     Real p = (x[1] + 47.0);
@@ -119,7 +119,7 @@ Real eggholder(const Array& x) {
         x[0] * std::sin(std::sqrt(std::abs(x[0] - p)));
 }
 
-Real printFunction(Problem& p, const Array& x) {
+static Real printFunction(Problem& p, const Array& x) {
     std::cout << " f(" << x[0];
     for (Size i = 1; i < x.size(); i++) {
         std::cout << ", " << x[i];
@@ -150,7 +150,7 @@ private:
     ArrayFunc fs_;
 };
 
-int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCriteria,
+static int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCriteria,
           const Array& start, const Constraint& constraint = Constraint(),
           const Array& optimum = Array()) {
     QL_REQUIRE(!start.empty(), "Input size needs to be at least 1");
@@ -175,7 +175,7 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
     return 1;
 }
 
-void testFirefly() {
+static void testFirefly() {
     /*
     The Eggholder function is only in 2 dimensions, it has a multitude
     * of local minima, and they are not symmetric necessarily
@@ -200,7 +200,7 @@ void testFirefly() {
     std::cout << "================================================================" << std::endl;
 }
 
-void testSimulatedAnnealing(Size dimension, Size maxSteps, Size staticSteps){
+static void testSimulatedAnnealing(Size dimension, Size maxSteps, Size staticSteps){
 
     /*The ackley function has a large amount of local minima, but the
       structure is symmetric, so if one could simply just ignore the
@@ -240,7 +240,7 @@ void testSimulatedAnnealing(Size dimension, Size maxSteps, Size staticSteps){
     std::cout << "================================================================" << std::endl;
 }
 
-void testGaussianSA(Size dimension,
+static void testGaussianSA(Size dimension,
                     Size maxSteps,
                     Size staticSteps,
                     Real initialTemp,
@@ -290,7 +290,7 @@ void testGaussianSA(Size dimension,
     std::cout << "================================================================" << std::endl;
 }
 
-void testPSO(Size n){
+static void testPSO(Size n){
     /*The Rosenbrock function has a global minima at (1.0, ...) and a local minima at (-1.0, 1.0, ...)
     The difficulty lies in the weird shape of the function*/
     NonhomogeneousBoundaryConstraint constraint(Array(n, -1.0), Array(n, 4.0));
@@ -311,7 +311,7 @@ void testPSO(Size n){
     std::cout << "================================================================" << std::endl;
 }
 
-void testDifferentialEvolution(Size n, Size agents){
+static void testDifferentialEvolution(Size n, Size agents){
     /*The Rosenbrock function has a global minima at (1.0, ...) and a local minima at (-1.0, 1.0, ...)
     The difficulty lies in the weird shape of the function*/
     NonhomogeneousBoundaryConstraint constraint(Array(n, -4.0), Array(n, 4.0));

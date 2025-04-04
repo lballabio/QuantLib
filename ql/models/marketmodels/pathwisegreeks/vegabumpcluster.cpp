@@ -154,10 +154,12 @@ namespace QuantLib {
     //    std::fill(model.begin(), model.end(), false);
 
         std::vector<std::valarray<bool> > modelTwo;
-        for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
+        modelTwo.reserve(associatedVolStructure_->numberOfRates());
+for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
-        for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
+        v.reserve(associatedVolStructure_->numberOfSteps());
+for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 
         for (const auto& allBump : allBumps_) {
@@ -193,10 +195,12 @@ namespace QuantLib {
         //std::fill(model.begin(), model.end(), false);
 
         std::vector<std::valarray<bool> > modelTwo;
-        for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
+        modelTwo.reserve(associatedVolStructure_->numberOfRates());
+for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
-        for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
+        v.reserve(associatedVolStructure_->numberOfSteps());
+for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 
         Size numberFailures=0;

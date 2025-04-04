@@ -89,7 +89,7 @@ struct BondDatum {
     Real price;
 };
 
-Datum depositData[] = {
+static Datum depositData[] = {
     { 1, Weeks,  4.559 },
     { 1, Months, 4.581 },
     { 2, Months, 4.573 },
@@ -98,7 +98,7 @@ Datum depositData[] = {
     { 9, Months, 4.490 }
 };
 
-Datum fraData[] = {
+static Datum fraData[] = {
     { 1, Months, 4.581 },
     { 2, Months, 4.573 },
     { 3, Months, 4.557 },
@@ -106,19 +106,19 @@ Datum fraData[] = {
     { 9, Months, 4.490 }
 };
 
-Datum immFutData[] = {
+static Datum immFutData[] = {
     { 1, Months, 4.581 },
     { 2, Months, 4.573 },
     { 3, Months, 4.557 }
 };
 
-Datum asxFutData[] = {
+static Datum asxFutData[] = {
     { 1, Months, 4.581 },
     { 2, Months, 4.573 },
     { 3, Months, 4.557 }
 };
 
-Datum swapData[] = {
+static Datum swapData[] = {
     {  1, Years, 4.54 },
     {  2, Years, 4.63 },
     {  3, Years, 4.75 },
@@ -136,7 +136,7 @@ Datum swapData[] = {
     { 30, Years, 5.96 }
 };
 
-BondDatum bondData[] = {
+static BondDatum bondData[] = {
     {  6, Months, 5, Semiannual, 4.75, 101.320 },
     {  1, Years,  3, Semiannual, 2.75, 100.590 },
     {  2, Years,  5, Semiannual, 5.00, 105.650 },
@@ -144,7 +144,7 @@ BondDatum bondData[] = {
     { 10, Years, 11, Semiannual, 3.75, 104.070 }
 };
 
-Datum bmaData[] = {
+static Datum bmaData[] = {
     {  1, Years, 67.56 },
     {  2, Years, 68.00 },
     {  3, Years, 68.25 },
@@ -342,7 +342,7 @@ struct CommonVars {
 
 
 template <class T, class I, template<class C> class B>
-void testCurveConsistency(CommonVars& vars,
+static void testCurveConsistency(CommonVars& vars,
                           const I& interpolator = I(),
                           Real tolerance = 1.0e-9) {
 
@@ -557,7 +557,7 @@ void testCurveConsistency(CommonVars& vars,
 }
 
 template <class T, class I, template<class C> class B>
-void testBMACurveConsistency(CommonVars& vars,
+static void testBMACurveConsistency(CommonVars& vars,
                              const I& interpolator = I(),
                              Real tolerance = 1.0e-9) {
 
@@ -1278,7 +1278,8 @@ struct additionalDates {
         Calendar cal = TARGET();
         Date settl = cal.advance(today, 2 * Days);
         std::vector<Date> dates;
-        for (Size i = 0; i < 5; ++i)
+        dates.reserve(5);
+for (Size i = 0; i < 5; ++i)
             dates.push_back(cal.advance(settl, (1 + i) * Months));
         // Add dates before the referenceDate and not in sorted order.
         // These should be skipped by GlobalBootstrap::initialize().
@@ -1343,7 +1344,8 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
     std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
 
     // set up the additional rate helpers we need in the cost function
-    for (Size i = 0; i < 7; ++i) {
+    additionalHelpers.reserve(7);
+for (Size i = 0; i < 7; ++i) {
         additionalHelpers.push_back(
             ext::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
     }

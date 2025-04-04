@@ -37,13 +37,13 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(QuoteTests)
 
-Real add10(Real x) { return x+10; }
-Real mul10(Real x) { return x*10; }
-Real sub10(Real x) { return x-10; }
+static Real add10(Real x) { return x+10; }
+static Real mul10(Real x) { return x*10; }
+static Real sub10(Real x) { return x-10; }
 
-Real add(Real x, Real y) { return x+y; }
-Real mul(Real x, Real y) { return x*y; }
-Real sub(Real x, Real y) { return x-y; }
+static Real add(Real x, Real y) { return x+y; }
+static Real mul(Real x, Real y) { return x*y; }
+static Real sub(Real x, Real y) { return x-y; }
 
 
 BOOST_AUTO_TEST_CASE(testObservable) {

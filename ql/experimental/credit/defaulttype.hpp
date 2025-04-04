@@ -36,12 +36,12 @@ namespace QuantLib {
     */
     enum Seniority {
         SecDom = 0,
-        SnrFor,
-        SubLT2,
-        JrSubT2,
-        PrefT1,
+        SnrFor = 1,
+        SubLT2 = 2,
+        JrSubT2 = 3,
+        PrefT1 = 4,
         // Unassigned value, allows for default RR quote
-        NoSeniority,
+        NoSeniority = 5,
         // markit parlance
         SeniorSec     = SecDom,
         SeniorUnSec   = SnrFor,
@@ -61,18 +61,18 @@ namespace QuantLib {
         enum Type {
             // Includes one of the restructuring cases
             Restructuring = 0,
-            Bankruptcy,
-            FailureToPay,
-            RepudiationMoratorium,
-            Acceleration,
-            Default,
+            Bankruptcy = 1,
+            FailureToPay = 2,
+            RepudiationMoratorium = 3,
+            Acceleration = 4,
+            Default = 5,
             // synonyms
             ObligationAcceleration = Acceleration,
             ObligationDefault = Default,
             CrossDefault = Default,
             // Other non-isda
-            Downgrade,   // Non-ISDA, not in FpML
-            MergerEvent  // Non-ISDA, not in FpML
+            Downgrade = 6,   // Non-ISDA, not in FpML
+            MergerEvent = 7  // Non-ISDA, not in FpML
         };
     };
 
@@ -84,10 +84,10 @@ namespace QuantLib {
     struct Restructuring {
         enum Type {
             NoRestructuring = 0,
-            ModifiedRestructuring,
-            ModifiedModifiedRestructuring,
-            FullRestructuring,
-            AnyRestructuring,
+            ModifiedRestructuring = 1,
+            ModifiedModifiedRestructuring = 2,
+            FullRestructuring = 3,
+            AnyRestructuring = 4,
             // Markit notation:
             XR = NoRestructuring,
             MR = ModifiedRestructuring,

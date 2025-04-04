@@ -40,11 +40,11 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(StatisticsTests)
 
-Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
-Real weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+static Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
+static Real weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 
 template <class S>
-void check(const std::string& name) {
+static void check(const std::string& name) {
 
     S s;
     for (Size i=0; i<std::size(data); i++)
@@ -117,7 +117,7 @@ void check(const std::string& name) {
 }
 
 template <class S>
-void checkSequence(const std::string& name, Size dimension) {
+static void checkSequence(const std::string& name, Size dimension) {
 
     GenericSequenceStatistics<S> ss(dimension);
     Size i;
@@ -222,7 +222,7 @@ void checkSequence(const std::string& name, Size dimension) {
 }
 
 template <class S>
-void checkConvergence(const std::string& name) {
+static void checkConvergence(const std::string& name) {
 
     ConvergenceStatistics<S> stats;
 

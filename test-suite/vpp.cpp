@@ -62,11 +62,11 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(VppTests)
 
-std::function<Real(Real)> constant_b(Real b) {
+static std::function<Real(Real)> constant_b(Real b) {
     return [=](Real x){ return b; };
 }
 
-ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
+static ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
     Array x0(2);
     x0[0] = 3.0; x0[1] = 0.0;
 
@@ -203,7 +203,7 @@ class PathSparkSpreadPrice : public FdmInnerValueCalculator {
     const ext::shared_ptr<Shape> powerShape_;
 };
 
-ext::shared_ptr<KlugeExtOUProcess> createKlugeExtOUProcess() {
+static ext::shared_ptr<KlugeExtOUProcess> createKlugeExtOUProcess() {
     // model definition
     const Real beta         = 200;
     const Real eta          = 1.0/0.2;

@@ -22,7 +22,7 @@
 
 namespace QuantLib {
     namespace chebyshev_interpolation_detail {
-        Array apply(const Array& x, const std::function<Real(Real)>& f) {
+        static Array apply(const Array& x, const std::function<Real(Real)>& f) {
             Array t(x.size());
             std::transform(std::begin(x), std::end(x), std::begin(t), f);
 

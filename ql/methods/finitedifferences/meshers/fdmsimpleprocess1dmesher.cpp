@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/stochasticprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
@@ -36,12 +37,12 @@ namespace QuantLib {
             const Real mp = (mandatoryPoint != Null<Real>()) ? mandatoryPoint
                                                              : process->x0();
 
-            const Real qMin = std::min(std::min(mp, process->x0()),
+            const Real qMin = std::min({mp, process->x0(),
                 process->evolve(0, process->x0(), t, 
-                                InverseCumulativeNormal()(eps)));
-            const Real qMax = std::max(std::max(mp, process->x0()),
+                                InverseCumulativeNormal()(eps))});
+            const Real qMax = std::max({mp, process->x0(),
                 process->evolve(0, process->x0(), t,
-                                InverseCumulativeNormal()(1-eps)));
+                                InverseCumulativeNormal()(1-eps))});
             
             const Real dp = (1-2*eps)/(size-1);
             Real p = eps;

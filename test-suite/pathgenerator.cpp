@@ -36,7 +36,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(PathGeneratorTests)
 
-void testSingle(const ext::shared_ptr<StochasticProcess1D>& process,
+static void testSingle(const ext::shared_ptr<StochasticProcess1D>& process,
                 const std::string& tag, bool brownianBridge,
                 Real expected, Real antithetic) {
     typedef PseudoRandom::rsg_type rsg_type;
@@ -85,7 +85,7 @@ void testSingle(const ext::shared_ptr<StochasticProcess1D>& process,
 
 }
 
-void testMultiple(const ext::shared_ptr<StochasticProcess>& process,
+static void testMultiple(const ext::shared_ptr<StochasticProcess>& process,
                   const std::string& tag,
                   Real expected[], Real antithetic[]) {
     typedef PseudoRandom::rsg_type rsg_type;

@@ -116,7 +116,7 @@ struct CommonVars {
     }
 };
 
-Real sub(Real x, Real y) { return x - y; }
+static Real sub(Real x, Real y) { return x - y; }
 
 
 BOOST_AUTO_TEST_CASE(testReferenceChange) {

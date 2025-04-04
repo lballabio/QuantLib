@@ -50,14 +50,14 @@ struct NamedOptimizationMethod {
     std::string name;
 };
 
-std::vector<ext::shared_ptr<CostFunction> > costFunctions_;
-std::vector<ext::shared_ptr<Constraint> > constraints_;
-std::vector<Array> initialValues_;
-std::vector<Size> maxIterations_, maxStationaryStateIterations_;
-std::vector<Real> rootEpsilons_, functionEpsilons_, gradientNormEpsilons_;
-std::vector<ext::shared_ptr<EndCriteria> > endCriterias_;
-std::vector<std::vector<NamedOptimizationMethod> > optimizationMethods_;
-std::vector<Array> xMinExpected_, yMinExpected_;
+static std::vector<ext::shared_ptr<CostFunction> > costFunctions_;
+static std::vector<ext::shared_ptr<Constraint> > constraints_;
+static std::vector<Array> initialValues_;
+static static std::vector<Size> maxIterations_, maxStationaryStateIterations_;
+static static static std::vector<Real> rootEpsilons_, functionEpsilons_, gradientNormEpsilons_;
+static std::vector<ext::shared_ptr<EndCriteria> > endCriterias_;
+static std::vector<std::vector<NamedOptimizationMethod> > optimizationMethods_;
+static static std::vector<Array> xMinExpected_, yMinExpected_;
 
 class OneDimensionalPolynomialDegreeN : public CostFunction {
   public:
@@ -120,7 +120,7 @@ enum OptimizationMethodType {simplex,
                              bfgs,
                              bfgs_goldstein};
 
-std::string optimizationMethodTypeToString(OptimizationMethodType type) {
+static std::string optimizationMethodTypeToString(OptimizationMethodType type) {
     switch (type) {
       case simplex:
         return "Simplex";
@@ -146,7 +146,7 @@ std::string optimizationMethodTypeToString(OptimizationMethodType type) {
 }
 
 
-ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
+static ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
                                                            OptimizationMethodType optimizationMethodType,
                                                            Real simplexLambda,
                                                            Real levenbergMarquardtEpsfcn,
@@ -185,7 +185,7 @@ ext::shared_ptr<OptimizationMethod> makeOptimizationMethod(
 }
 
 
-std::vector<NamedOptimizationMethod> makeOptimizationMethods(
+static std::vector<NamedOptimizationMethod> makeOptimizationMethods(
                                                              const std::vector<OptimizationMethodType>& optimizationMethodTypes,
                                                              Real simplexLambda,
                                                              Real levenbergMarquardtEpsfcn,
@@ -203,7 +203,7 @@ std::vector<NamedOptimizationMethod> makeOptimizationMethods(
     return results;
 }
 
-Real maxDifference(const Array& a, const Array& b) {
+static Real maxDifference(const Array& a, const Array& b) {
     Array diff = a-b;
     Real maxDiff = 0.0;
     for (Real i : diff)
@@ -213,7 +213,7 @@ Real maxDifference(const Array& a, const Array& b) {
 
 // Set up, for each cost function, all the ingredients for optimization:
 // constraint, initial guess, end criteria, optimization methods.
-void setup() {
+static void setup() {
 
     // Cost function n. 1: 1D polynomial of degree 2 (parabolic function y=a*x^2+b*x+c)
     const Real a = 1;   // required a > 0

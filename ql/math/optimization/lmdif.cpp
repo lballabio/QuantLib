@@ -68,15 +68,15 @@ or guarantee.
 namespace QuantLib::MINPACK {
 #define BUG 0
 /* resolution of arithmetic */
-double MACHEP = 1.2e-16;
+static double MACHEP = 1.2e-16;
 /* smallest nonzero number */
-double DWARF = 1.0e-38;
+static double DWARF = 1.0e-38;
 
 
 
 
 
-Real enorm(int n,Real* x)
+static Real enorm(int n,Real* x)
 {
 /*
 *     **********
@@ -209,7 +209,7 @@ return(ans);
 }
 /************************lmmisc.c*************************/
 
-Real dmax1(Real a,Real b)
+static Real dmax1(Real a,Real b)
 {
 if( a >= b )
     return(a);
@@ -217,7 +217,7 @@ else
     return(b);
 }
 
-Real dmin1(Real a,Real b)
+static Real dmin1(Real a,Real b)
 {
 if( a <= b )
     return(a);
@@ -225,7 +225,7 @@ else
     return(b);
 }
 
-int min0(int a,int b)
+static int min0(int a,int b)
 
 {
 if( a <= b )
@@ -234,7 +234,7 @@ else
     return(b);
 }
 
-int mod( int k, int m )
+static int mod( int k, int m )
 {
 return( k % m );
 }
@@ -252,7 +252,7 @@ return( k % m );
 //  QuantLib::LevenbergMarquardt::fcn(m, n, x, fvec, iflag);
 //}
 
-void fdjac2(int m,
+static void fdjac2(int m,
             int n,
             Real* x,
             const Real* fvec,
@@ -810,7 +810,7 @@ for( j=0; j<n; j++ )
 /************************lmpar.c*************************/
 
 
-void lmpar(int n,
+static void lmpar(int n,
            Real* r,
            int ldr,
            int* ipvt,

@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    std::vector<Volatility> rateVolDifferences(
+    static std::vector<Volatility> rateVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2) {
         QL_ENSURE(marketModel1.initialRates() == marketModel2.initialRates(),
@@ -52,7 +52,7 @@ namespace QuantLib {
         return result;
     }
 
-    std::vector<Spread> rateInstVolDifferences(
+    static std::vector<Spread> rateInstVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2,
                                            Size index) {
@@ -85,7 +85,7 @@ namespace QuantLib {
         return result;
     }
 
-    std::vector<Matrix> coterminalSwapPseudoRoots(
+    static std::vector<Matrix> coterminalSwapPseudoRoots(
         const PiecewiseConstantCorrelation& piecewiseConstantCorrelation,
         const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&
                                                  piecewiseConstantVariances) {

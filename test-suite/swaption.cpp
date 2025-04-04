@@ -48,12 +48,12 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(SwaptionTests)
 
-Period exercises[] = { 1*Years, 2*Years, 3*Years,
+static Period exercises[] = { 1*Years, 2*Years, 3*Years,
                        5*Years, 7*Years, 10*Years };
-Period lengths[] = { 1*Years, 2*Years, 3*Years,
+static Period lengths[] = { 1*Years, 2*Years, 3*Years,
                      5*Years, 7*Years, 10*Years,
                      15*Years, 20*Years };
-Swap::Type type[] = { Swap::Receiver, Swap::Payer };
+static Swap::Type type[] = { Swap::Receiver, Swap::Payer };
 
 struct CommonVars {
     // global data
@@ -1015,7 +1015,7 @@ BOOST_AUTO_TEST_CASE(testImpliedVolatilityOis, *precondition(if_speed(Fast))) {
 }
 
 template <typename Engine>
-ext::shared_ptr<Engine> makeConstVolEngine(
+static ext::shared_ptr<Engine> makeConstVolEngine(
     const Handle<YieldTermStructure> &discountCurve,
     Volatility volatility)
 {
@@ -1024,7 +1024,7 @@ ext::shared_ptr<Engine> makeConstVolEngine(
 }
 
 template <typename Engine>
-void checkSwaptionDelta(bool useBachelierVol)
+static void checkSwaptionDelta(bool useBachelierVol)
 {
     CommonVars vars;
     Date today = vars.today;

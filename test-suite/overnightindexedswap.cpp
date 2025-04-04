@@ -64,7 +64,7 @@ struct Datum {
     Rate rate;
 };
 
-Datum depositData[] = {
+static Datum depositData[] = {
     { 0, 1, Days, 1.10 },
     { 1, 1, Days, 1.10 },
     { 2, 1, Weeks, 1.40 },
@@ -77,7 +77,7 @@ Datum depositData[] = {
     { 2, 6, Months, 2.13 }
 };
 
-Datum estrSwapData[] = {
+static Datum estrSwapData[] = {
     { 2,  1, Weeks, 1.245 },
     { 2,  2, Weeks, 1.269 },
     { 2,  3, Weeks, 1.277 },
@@ -193,7 +193,7 @@ struct CommonVars {
     }
 };
 
-void testBootstrap(bool telescopicValueDates,
+static void testBootstrap(bool telescopicValueDates,
                    RateAveraging::Type averagingMethod,
                    Real tolerance = 1.0e-8) {
 
@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
 }
 
 
-void testBootstrapWithLookback(Natural lookbackDays,
+static void testBootstrapWithLookback(Natural lookbackDays,
                                Natural lockoutDays,
                                bool applyObservationShift,
                                bool telescopicValueDates,

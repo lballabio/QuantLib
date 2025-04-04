@@ -115,7 +115,7 @@ struct CommonVars {
     }
 };
 
-void checkReplicationOfZeroCouponSwapNPV(const Date& start,
+static void checkReplicationOfZeroCouponSwapNPV(const Date& start,
                                          const Date& end,
                                          Swap::Type type = Swap::Receiver) {
     CommonVars vars;
@@ -154,7 +154,7 @@ void checkReplicationOfZeroCouponSwapNPV(const Date& start,
                     << "    type:    " << type << "\n");
 }
 
-void checkFairFixedPayment(const Date& start,
+static void checkFairFixedPayment(const Date& start,
                            const Date& end,
                            Swap::Type type) {
     CommonVars vars;
@@ -175,7 +175,7 @@ void checkFairFixedPayment(const Date& start,
                     << "    type:    " << type << "\n");
 }
 
-void checkFairFixedRate(const Date& start, const Date& end, Swap::Type type) {
+static void checkFairFixedRate(const Date& start, const Date& end, Swap::Type type) {
     CommonVars vars;
     const Real tolerance = 1.0e-8;
 

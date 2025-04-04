@@ -36,7 +36,7 @@ namespace QuantLib {
         // Rowe et al: GALSIM: The modular galaxy image simulation toolkit
         // https://arxiv.org/abs/1407.7676
 
-        Real f(Real x) {
+        static Real f(Real x) {
             const Real x2 = 1.0/(x*x);
 
             return (
@@ -54,7 +54,7 @@ namespace QuantLib {
                 ) );
         }
 
-        Real g(Real x) {
+        static Real g(Real x) {
             const Real x2 = 1.0/(x*x);
 
             return x2*(
@@ -120,7 +120,7 @@ namespace QuantLib {
             }
         }
 
-        std::complex<Real> Ei(
+        static std::complex<Real> Ei(
             const std::complex<Real>& z, const std::complex<Real>& acc) {
 
             if (z.real() == 0.0 && z.imag() == 0.0

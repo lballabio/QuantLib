@@ -43,7 +43,7 @@ class TestCaseCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
 #pragma clang diagnostic ignored "-Wunused-but-set-variable"
 #endif
 
-void testTraceOutput(bool enable,
+static void testTraceOutput(bool enable,
 #if defined(QL_ENABLE_TRACING)
                      const std::string& result) {
 #else

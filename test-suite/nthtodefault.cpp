@@ -56,7 +56,7 @@ struct hwDatum {
    for all names is constant at 0.01, maturity 5 years, equal
    notional amounts.
 */
-hwDatum hwData[] = {
+static hwDatum hwData[] = {
     { 1, { 603, 440, 293 } },
     { 2, {  98, 139, 137 } },
     { 3, {  12,  53,  79 } },
@@ -70,7 +70,7 @@ hwDatum hwData[] = {
 };
 
 
-Real hwCorrelation[] = { 0.0, 0.3, 0.6 };
+static Real hwCorrelation[] = { 0.0, 0.3, 0.6 };
 
 
 struct hwDatumDist {
@@ -82,7 +82,7 @@ struct hwDatumDist {
 // corr = 0.3
 // NM/NZ
 // rank inf/inf 5/inf inf/5 5/5
-hwDatumDist hwDataDist[] = {
+static hwDatumDist hwDataDist[] = {
     { 1, { 440, 419, 474, 455 } },
     { 2, { 139, 127, 127, 116 } },
     { 3, {  53,  51,  44,  44 } },
@@ -177,7 +177,8 @@ BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
-    for(Size i=0; i<names; i++)
+    namesIds.reserve(names);
+for(Size i=0; i<names; i++)
         namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
@@ -298,7 +299,8 @@ BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
-    for(Size i=0; i<names; i++)
+    namesIds.reserve(names);
+for(Size i=0; i<names; i++)
         namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;

@@ -41,7 +41,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(ScheduleTests)
 
-void check_dates(const Schedule& s,
+static void check_dates(const Schedule& s,
                  const std::vector<Date>& expected) {
     if (s.size() != expected.size()) {
         BOOST_FAIL("expected " << expected.size() << " dates, "
@@ -390,7 +390,7 @@ BOOST_AUTO_TEST_CASE(testEffectiveDateWithEomAdjustment) {
 
 namespace CdsTests {
 
-    Schedule makeCdsSchedule(const Date& from, const Date& to, DateGeneration::Rule rule) {
+    static Schedule makeCdsSchedule(const Date& from, const Date& to, DateGeneration::Rule rule) {
 
         return MakeSchedule()
             .from(from)
@@ -404,7 +404,7 @@ namespace CdsTests {
 
     typedef map<pair<Date, Period>, pair<Date, Date> > InputData;
 
-    void testCDSConventions(const InputData& inputs, DateGeneration::Rule rule) {
+    static void testCDSConventions(const InputData& inputs, DateGeneration::Rule rule) {
 
         // Test the generated start and end date against the expected start and end date.
         for (const auto& input : inputs) {

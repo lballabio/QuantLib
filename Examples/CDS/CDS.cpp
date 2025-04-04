@@ -49,7 +49,7 @@
 using namespace std;
 using namespace QuantLib;
 
-void example01() {
+static void example01() {
 
     std::cout << std::endl;
 
@@ -90,13 +90,15 @@ void example01() {
 
     Date settlementDate = calendar.advance(todaysDate, settlementDays, Days);
     vector<Date> maturities;
-    for (Size i = 0; i < 4; i++) {
+    maturities.reserve(4);
+for (Size i = 0; i < 4; i++) {
         maturities.push_back(
             calendar.adjust(settlementDate + tenors[i], Following));
     }
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper>> instruments;
-    for (Size i = 0; i < 4; i++) {
+    instruments.reserve(4);
+for (Size i = 0; i < 4; i++) {
         instruments.push_back(ext::make_shared<SpreadCdsHelper>(
                                 makeQuoteHandle(quoted_spreads[i]),
                                 tenors[i], settlementDays, calendar, Quarterly, Following,
@@ -202,7 +204,7 @@ void example01() {
 
 }
 
-void example02() {
+static void example02() {
 
 Date todaysDate(25, September, 2014);
 Settings::instance().evaluationDate() = todaysDate;
@@ -422,7 +424,7 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 
 }
 
-void example03() {
+static void example03() {
 
     // this is the example from Apdx E in pricing and risk management of CDS, OpenGamma
 

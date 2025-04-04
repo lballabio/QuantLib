@@ -40,7 +40,7 @@
 using namespace std;
 using namespace QuantLib;
 
-ext::shared_ptr<YieldTermStructure>
+static ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              const ext::shared_ptr<Quote>& forward,
              const DayCounter& dc,
@@ -54,7 +54,7 @@ ext::shared_ptr<YieldTermStructure>
 }
 
 
-ext::shared_ptr<YieldTermStructure>
+static ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              Rate forward,
              const DayCounter& dc,

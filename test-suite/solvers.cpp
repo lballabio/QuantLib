@@ -62,7 +62,7 @@ class F3 {
 };
 
 template <class S, class F>
-void test_not_bracketed(const S& solver, const std::string& name,
+static void test_not_bracketed(const S& solver, const std::string& name,
                         const F& f, Real guess) {
     Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
     Real expected = 1.0;
@@ -78,7 +78,7 @@ void test_not_bracketed(const S& solver, const std::string& name,
 }
 
 template <class S, class F>
-void test_bracketed(const S& solver, const std::string& name,
+static void test_bracketed(const S& solver, const std::string& name,
                     const F& f, Real guess) {
     Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
     Real expected = 1.0;
@@ -111,7 +111,7 @@ class Probe {
 };
 
 template <class S>
-void test_last_call_with_root(const S& solver, const std::string& name,
+static void test_last_call_with_root(const S& solver, const std::string& name,
                               bool bracketed,  Real accuracy) {
 
     Real mins[] = { 3.0, 2.25, 1.5, 1.0 };
@@ -151,7 +151,7 @@ void test_last_call_with_root(const S& solver, const std::string& name,
 }        
 
 template <class S>
-void test_solver(const S& solver, const std::string& name, Real accuracy) {
+static void test_solver(const S& solver, const std::string& name, Real accuracy) {
     // guess on the left side of the root, increasing function
     test_not_bracketed(solver, name, F1(), 0.5);
     test_bracketed(solver, name, F1(), 0.5);

@@ -495,7 +495,7 @@ class AvgPayoffFct {
     const Real growthFactor_;
 };
 
-Array priceReport(const GridSetup& setup, const Array& strikes) {
+static Array priceReport(const GridSetup& setup, const Array& strikes) {
 
     const Date today(2, May, 2018);
     const DayCounter dc = Actual365Fixed();
@@ -715,7 +715,7 @@ BOOST_AUTO_TEST_CASE(testHigherOrderHestonOptionPricing, *precondition(if_speed(
 }
 
 
-Real priceQuality(Real h) {
+static Real priceQuality(Real h) {
 
     const Array strikes = {100};
 

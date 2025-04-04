@@ -50,7 +50,7 @@ using namespace QuantLib;
 
 // helper function that prints a basket of calibrating swaptions to std::cout
 
-void printBasket(
+static void printBasket(
     const std::vector<ext::shared_ptr<BlackCalibrationHelper>> &basket) {
     std::cout << "\n" << std::left << std::setw(20) << "Expiry" << std::setw(20)
               << "Maturity" << std::setw(20) << "Nominal" << std::setw(14)
@@ -83,7 +83,7 @@ void printBasket(
 
 // helper function that prints the result of a model calibration to std::cout
 
-void printModelCalibration(
+static void printModelCalibration(
     const std::vector<ext::shared_ptr<BlackCalibrationHelper>> &basket,
     const Array &volatility) {
 

@@ -128,7 +128,7 @@ namespace QuantLib {
         template<Size levelSpawn>
         void spawnFcts() const {
             integrationEntries_[levelSpawn-1] =
-                [&](std::function<Real (const std::vector<Real>&)> f, Real x){
+                [&](const std::function<Real (const std::vector<Real>&)>& f, Real x){
                     return scalarIntegrator<levelSpawn>(f, x);
                 };
             integrationEntriesVR_[levelSpawn-1] =

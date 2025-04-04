@@ -49,19 +49,19 @@ using namespace QuantLib;
 
 //Number of swaptions to be calibrated to...
 
-Size numRows = 5;
-Size numCols = 5;
+static Size numRows = 5;
+static Size numCols = 5;
 
-Integer swapLengths[] = {
+static Integer swapLengths[] = {
       1,     2,     3,     4,     5};
-Volatility swaptionVols[] = {
+static Volatility swaptionVols[] = {
   0.1490, 0.1340, 0.1228, 0.1189, 0.1148,
   0.1290, 0.1201, 0.1146, 0.1108, 0.1040,
   0.1149, 0.1112, 0.1070, 0.1010, 0.0957,
   0.1047, 0.1021, 0.0980, 0.0951, 0.1270,
   0.1000, 0.0950, 0.0900, 0.1230, 0.1160};
 
-void calibrateModel(
+static void calibrateModel(
           const ext::shared_ptr<ShortRateModel>& model,
           const std::vector<ext::shared_ptr<BlackCalibrationHelper>>& swaptions) {
 

@@ -141,7 +141,7 @@ MarketModelData::MarketModelData(){
         volatilities_[i] =   mktVols[i];//.0;
 }
 
-ext::shared_ptr<SequenceStatisticsInc>
+static ext::shared_ptr<SequenceStatisticsInc>
 simulate(const std::vector<Real>& todaysDiscounts,
          const ext::shared_ptr<MarketModelEvolver>& evolver,
          const MarketModelMultiProduct& product) {

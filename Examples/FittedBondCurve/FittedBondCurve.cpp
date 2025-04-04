@@ -46,7 +46,7 @@ using namespace std;
 using namespace QuantLib;
 
 // par-rate approximation
-Rate parRate(const YieldTermStructure& yts,
+static Rate parRate(const YieldTermStructure& yts,
              const std::vector<Date>& dates,
              const DayCounter& resultDayCounter) {
     QL_REQUIRE(dates.size() >= 2, "at least two dates are required");
@@ -61,7 +61,7 @@ Rate parRate(const YieldTermStructure& yts,
     return result/sum;
 }
 
-void printOutput(const std::string& tag,
+static void printOutput(const std::string& tag,
                  const ext::shared_ptr<FittedBondDiscountCurve>& curve) {
     cout << tag << endl;
     cout << "reference date : "

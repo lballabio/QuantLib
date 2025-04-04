@@ -643,7 +643,7 @@ namespace QuantLib {
                 SmileSectionUtils ssutils(*sec, modelSettings_.smileMoneynessCheckpoints_,
                                           calibrationPoint.second.atm_);
                 Real shift = sec->shift();
-                std::vector<Real> money = ssutils.moneyGrid();
+                const std::vector<Real>& money = ssutils.moneyGrid();
                 std::vector<Real> strikes, marketCall, marketPut, modelCall,
                     modelPut, marketVega, marketRawCall, marketRawPut;
                 for (Size j = 0; j < money.size(); j++) {

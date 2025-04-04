@@ -33,7 +33,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(NumericalDifferentiationTests)
 
-bool isTheSame(Real a, Real b) {
+static bool isTheSame(Real a, Real b) {
     constexpr double eps = 500 * QL_EPSILON;
 
     if (std::fabs(b) < QL_EPSILON)
@@ -42,7 +42,7 @@ bool isTheSame(Real a, Real b) {
         return std::fabs((a - b)/b) < eps;
 }
 
-void checkTwoArraysAreTheSame(const Array& calculated,
+static void checkTwoArraysAreTheSame(const Array& calculated,
                               const Array& expected) {
     bool correct = (calculated.size() == expected.size())
         && std::equal(calculated.begin(), calculated.end(),
@@ -56,7 +56,7 @@ void checkTwoArraysAreTheSame(const Array& calculated,
     }
 }
 
-void singleValueTest(const std::string& comment,
+static void singleValueTest(const std::string& comment,
                      Real calculated, Real expected, Real tol) {
     if (std::fabs(calculated - expected) > tol)
         BOOST_FAIL("Failed to reproduce " << comment
@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE(testDerivativesOfSineFunction) {
 }
 
 
-Array vandermondeCoefficients(
+static Array vandermondeCoefficients(
                               Size order, Real x, const Array& gridPoints) {
 
     const Array q = gridPoints - x;

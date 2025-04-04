@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE(testAdaptiveRungeKutta) {
 }
 
 
-Real frobenuiusNorm(const Matrix& m) {
+static Real frobenuiusNorm(const Matrix& m) {
     return std::sqrt(DotProduct((m*transpose(m)).diagonal(),
                                 Array(m.rows(), 1.0)));
 }
