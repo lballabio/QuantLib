@@ -17,7 +17,81 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.37 - January 2025</strong>
+    <strong>Release 1.38 - April 2025</strong>
+
+    PORTABILITY
+    - **Future change of default:** as already announced, in the next
+      release we're going to switch the default for `ext::any` and
+      `ext::optional` from the Boost implementation to the standard one.
+    - **Possible future breaking change**: in the next release, the
+      `SimpleQuote` class might be made `final`.  If you're inheriting
+      from it, drop us a line.
+
+    DATES AND CALENDARS
+    - The `Schedule` class now honors the passed business day convention
+      when end-of-month is enabled.  Previously, enabling
+      end-of-month caused it to always use the Modified Following
+      convention.
+    - Added Chinese holidays for 2025; thanks to Cheng Li.
+
+    INDEXES
+    - Year-or-year inflation indexes can (and should) now be built without
+      an `interpolated` flag.  As for zero inflation indexes,
+      the interpolation was moved into the coupons using the indexes.
+    - Fixed obsolete conventions for the (now discountinued) EUR LIBOR
+      index; thanks to Eugene Toder.
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Added implementation of partial-time barrier put options; thanks to
+      GitHub user paolodelia99.
+    - The `OvernightIndexFuture` class would not receive notifications
+      when the convexity quote or the evaluation date changed; this is now
+      fixed.  Thanks to Eugene Toder.
+    - The experimental `BlackCallableFixedRateBondEngine` wouldn't take
+      discount correctly into account when evaluation the embedded option;
+      this is now fixed.  Thanks to GitHub user RobertS548 for the heads-up.
+    - Moved a few instruments and engines from the experimental folder to
+      the core library:
+      - `HolderExtensibleOption` and `AnalyticHolderExtensibleOptionEngine`;
+      - `WriterExtensibleOption` and `AnalyticWriterExtensibleOptionEngine`;
+      - `PartialTimeBarrierOption` and `AnalyticPartialTimeBarrierOptionEngine`;
+      - `TwoAssetBarrierOption` and `AnalyticTwoAssetBarrierEngine`;
+      - `TwoAssetCorrelationOption` and ``AnalyticTwoAssetCorrelationEngine`;
+      - `ContinuousArithmeticAsianLevyEngine`;
+      - `AnalyticPDFHestonEngine`.
+
+    TERM STRUCTURES
+    - The `DepositRateHelper` and `FraRateHelper` classes can now be built
+      specifying fixed dates instead of a tenor; thanks to Eugene Toder.
+    - The cross-currency basis-swap rate helpers can now be passed an
+      overnight index and a corresponding payment frequency; it is also
+      possible to pass a payment lag.  Thanks to GitHub user kp9991-git.
+    - The additional penalty functions passed to the `GlobalBootstrap`
+      class can now take the curve nodes as arguments; thanks to Eugene
+      Toder.  This makes it possible, for example, to penalize
+      gradients to make the curve smoother.  It is also possible to
+      specify additional variables to be optimized, e.g., futures
+      convexity adjustments.
+    - Added a piecewise forward-spreaded term structure; thanks to
+      GitHub user paolodelia99.
+
+    DEPRECATED FEATURES
+    - **Removed** features deprecated in version 1.33:
+      - the constructors of `Currency` and `Currency::Data` taking a
+        format string, the `format` method of the `Currency` class and the
+        `formatString` data member of `Currency::Data`.
+    - Deprecated the constructors of year-on-year inflation indexes taking
+      an `interpolated` argument; use the other constructors instead.
+    - Deprecated the header files in `ql/experimental/exoticoptions` for
+      some classes moved to the core library (see above); use the
+      corresponding new headers in `ql/instruments` and
+      `ql/pricingengines` instead.
+
+    Thanks go also to Eugene Toder, Konstantin Novitsky, Tomas
+    Kalibera and GitHub user raneamri for miscellaneous smaller fixes,
+    improvements or reports.
+
+    <strong>Release 1.37 - January 21st, 2025</strong>
 
     PORTABILITY
     - **Future change of default:** as already announced, in the next

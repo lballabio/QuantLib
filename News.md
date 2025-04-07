@@ -1,11 +1,11 @@
-Changes for QuantLib 1.37:
+Changes for QuantLib 1.38:
 ==========================
 
-QuantLib 1.37 includes 27 pull requests from several contributors.
+QuantLib 1.38 includes 24 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/35?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/36?closed=1>.
 
 
 Portability
@@ -15,166 +15,97 @@ Portability
   release we're going to switch the default for `ext::any` and
   `ext::optional` from the Boost implementation to the standard one.
 
+- **Possible future breaking change**: in the next release, the
+  `SimpleQuote` class might be made `final`.  If you're inheriting
+  from it, drop us a line.
+
+
 Dates and calendars
 -------------------
 
-- Added closure for President Carter's funeral to the NYSE calendar;
-  thanks to Dirk Eddelbuettel (@eddelbuettel).
+- The `Schedule` class now honors the passed business day convention
+  when end-of-month is enabled (@lballabio).  Previously, enabling
+  end-of-month caused it to always use the Modified Following
+  convention.
 
-- Added distinct Wellington and Auckland variants for New Zealand
-  calendar (@lballabio).
+- Added Chinese holidays for 2025; thanks to Cheng Li (@wegamekinglc).
 
 
 Indexes
 -------
 
-- Improved the performance of the `addFixing` and `addFixings` method
-  in the `Index` class; thanks to Peter Caspers (@pcaspers).
+- Year-or-year inflation indexes can (and should) now be built without
+  an `interpolated` flag (@lballabio).  As for zero inflation indexes,
+  the interpolation was moved into the coupons using the indexes.
 
-- Added the KOFR index; thanks to Jongbong An (@jongbongan).
+- Fixed obsolete conventions for the (now discountinued) EUR LIBOR
+  index; thanks to Eugene Toder (@eltoder).
 
 
 Instruments and pricing engines
 -------------------------------
 
-- Added Choi pricing engine for Asian options; thanks to Klaus
-  Spanderen (@klausspanderen).
+- Added implementation of partial-time barrier put options; thanks to
+  @paolodelia99.
 
-- Passing a risk-free overnight index to an asset swap now implies
-  using OIS-like coupons (@lballabio).
+- The `OvernightIndexFuture` class would not receive notifications
+  when the convexity quote or the evaluation date changed; this is now
+  fixed.  Thanks to Eugene Toder (@eltoder).
 
-- Added Bjerksund-Stensland, Operator-Splitting, Deng-Li-Zhou, Choi
-  and n-dim PDE engines for spread options; thanks to Klaus Spanderen
-  (@klausspanderen).
+- The experimental `BlackCallableFixedRateBondEngine` wouldn't take
+  discount correctly into account when evaluation the embedded option;
+  this is now fixed.  Thanks to @RobertS548 for the heads-up.
 
-- Deng-Li-Zhou, Choi and n-dim PDE engines for basket options; thanks
-  to Klaus Spanderen (@klausspanderen).
+- Moved a few instruments and engines from the experimental folder to
+  the core library (@lballabio):
+  - `HolderExtensibleOption` and `AnalyticHolderExtensibleOptionEngine`;
+  - `WriterExtensibleOption` and `AnalyticWriterExtensibleOptionEngine`;
+  - `PartialTimeBarrierOption` and `AnalyticPartialTimeBarrierOptionEngine`;
+  - `TwoAssetBarrierOption` and `AnalyticTwoAssetBarrierEngine`;
+  - `TwoAssetCorrelationOption` and ``AnalyticTwoAssetCorrelationEngine`;
+  - `ContinuousArithmeticAsianLevyEngine`;
+  - `AnalyticPDFHestonEngine`.
 
 
 Term structures
 ---------------
 
-- **Possibly breaking**: better upper and lower bounds for global
-  bootstrap; thanks to Eugene Toder (@eltoder).  If you created your
-  own bootstrap traits, you'll need to add `transformDirect` and
-  `transformInverse` methods for them to work with the `GlobalBootstrap`
-  class.
+- The `DepositRateHelper` and `FraRateHelper` classes can now be built
+  specifying fixed dates instead of a tenor; thanks to Eugene Toder
+  (@eltoder).
 
-- Fitted bond curves can now be passed precomputed parameters without
-  the need for bond helpers (@lballabio).
+- The cross-currency basis-swap rate helpers can now be passed an
+  overnight index and a corresponding payment frequency; it is also
+  possible to pass a payment lag.  Thanks to @kp9991-git.
 
-- Use correct guess in SABR swaption vol cube (@lballabio).
+- The additional penalty functions passed to the `GlobalBootstrap`
+  class can now take the curve nodes as arguments; thanks to Eugene
+  Toder (@eltoder).  This makes it possible, for example, to penalize
+  gradients to make the curve smoother.  It is also possible to
+  specify additional variables to be optimized, e.g., futures
+  convexity adjustments.
 
-- OIS rate helpers can now be passed a date-generation rule; thanks to
-  Sotirios Papathanasopoulos (@sophistis42).
-
-- Swap rate helpers can now be passed explicit start and end dates;
-  thanks to Eugene Toder (@eltoder).
-
-- OIS rate helpers can now be passed explicit start and end dates,
-  making a distinct `DatedOISRateHelper` class unnecessary; thanks to
-  Eugene Toder (@eltoder).
-
-
-Cash flows
-----------
-
-- Added new `MultipleResetsCoupon` and `MultipleResetsLeg` classes to
-  manage coupons with multiple resets (@lballabio).  They fix and
-  replace `SubPeriodsCoupon` and `SubPeriodsLeg`.
+- Added a piecewise forward-spreaded term structure; thanks to
+  @paolodelia99.
 
 
 Deprecated features
 -------------------
 
-- **Removed** features deprecated in version 1.32:
-  - the `FixedRateBondForward` class;
-  - the `SampledCurve` and `SampledCurveSet` classes;
-  - the `StepConditionSet` and `BoundaryConditionSet` classes;
-  - the `ParallelEvolver` and `ParallelEvolverTraits` classes;
-  - the `FDVanillaEngine` and `FDMultiPeriodEngine` classes;
-  - the `BSMTermOperator`, `StandardFiniteDifferenceModel`,
-    `StandardSystemFiniteDifferenceModel` and `StandardStepCondition`
-    typedefs;
-  - the `QL_NULL_FUNCTION` macro;
-  - the overloads of `DigitalCmsLeg::withReplication` ,
-    `DigitalCmsSpreadLeg::withReplication` and
-    `DigitalIborLeg::withReplication` taking no arguments;
-  - the empty headers `analyticamericanmargrabeengine.hpp`,
-    `analyticcomplexchooserengine.hpp`,
-    `analyticcomplexchooserengine.hpp`,
-    `analyticcompoundoptionengine.hpp`,
-    `analyticeuropeanmargrabeengine.hpp`,
-    `analyticsimplechooserengine.hpp`, `complexchooseroption.hpp`,
-    `compoundoption.hpp`, `margrabeoption.hpp` and
-    `simplechooseroption.hpp` in the `ql/experimental/exoticoptions`
-    folder;
-  - the empty header `ql/experimental/termstructures/multicurvesensitivities.hpp`;
-  - the empty headers `pdeshortrate.hpp` and `shoutcondition.hpp` in
-    the `ql/methods/finitedifferences` folder;
-  - the empty header `ql/models/marketmodels/duffsdeviceinnerproduct.hpp`;
-  - the empty headers `fdconditions.hpp`, `fddividendengine.hpp` and
-    `fdstepconditionengine.hpp` in the `ql/pricingengines/vanilla`
-    folder.
+- **Removed** features deprecated in version 1.33:
+  - the constructors of `Currency` and `Currency::Data` taking a
+    format string, the `format` method of the `Currency` class and the
+    `formatString` data member of `Currency::Data`.
 
-- Deprecated the `SubPeriodsCoupon`, `SubPeriodsPricer`,
-  `AveragingRatePricer` and `CompoundingRatePricer` classes; renamed
-  to `MultipleResetsCoupon`, `MultipleResetsPricer`,
-  `AveragingMultipleResetsPricer` and
-  `CompoundingMultipleResetsPricer`, respectively.
+- Deprecated the constructors of year-on-year inflation indexes taking
+  an `interpolated` argument; use the other constructors instead.
 
-- Deprecated the `SubPeriodsLeg` class; use `MultipleResetsLeg` instead.
-
-- Deprecated the `MultipleResetsCoupon` constructor without a reset
-  schedule; use the other constructor.
-
-- Deprecated the `calendar`, `price`, `addQuote`, `addQuotes`,
-  `clearQuotes`, `isValidQuoteDate` and `quotes` methods in the
-  `CommodityIndex` class; use `fixingCalendar`, `fixing`, `addFixing`,
-  `addFixings`, `clearFixings`, `isValidFixingDate` and `timeSeries`
-  instead.
-
-- Deprecated the experimental `SpreadOption` and `KirkSpreadOptionEngine`
-  classes; use `BasketOption` and `KirkEngine` instead.
-
-- Deprecated the `TransformedGrid` and `LogGrid` classes and the
-  `CenteredGrid`, `BoundedGrid` and `BoundedLogGrid` functions; use
-  the new FD framework instead.
-
-- Deprecated the `PdeOperator` and `BSMOperator` classes; use the new
-  FD framework instead.
-
-- Deprecated the `PdeSecondOrderParabolic`, `PdeConstantCoeff`,
-  `PdeBSM` and `GenericTimeSetter` classes; use the new FD framework
-  instead.
-
-- Deprecated the `hasHistory`, `getHistory`, `clearHistory`,
-  `hasHistoricalFixing` and `setHistory` in the `IndexManager` class;
-  use `Index::hasHistoricalFixing`, `Index::timeSeries`,
-  `Index::clearFixings`, `Index::hasHistoricalFixing` and
-  `Index::addFixings` instead.
-
-- Deprecated the `notifier` method in the `IndexManager` class;
-  register with the relevant index instead.
-
-- Deprecated one of the `AssetSwap` constructors; use the other overload.
-
-- Deprecated the `fcn` and `jacFcn` methods in the
-  `LevenbergMarquardt` class; they are for internal use only.
-
-- Deprecated the `indexIsInterpolated` parameter in YoY inflation
-  curve constructors; use another overload.  Fixings will be
-  interpolated by coupons instead, so curves and indexes will only be
-  asked for fixing at the start of a month.
-
-- Deprecated the `indexIsInterpolated` method and the
-  `indexIsInterpolated_` data member in the
-  `YoYInflationTermStructure` class.
-
-- Deprecated the `DatedOISRateHelper` class; use `OISRateHelper`
-  instead.
+- Deprecated the header files in `ql/experimental/exoticoptions` for
+  some classes moved to the core library (see above); use the
+  corresponding new headers in `ql/instruments` and
+  `ql/pricingengines` instead.
 
 
-**Thanks go also** to Eugene Toder (@eltoder), Ben Watson (@sonben)
-and the XAD team (@auto-differentiation-dev) for miscellaneous
+**Thanks go also** to Eugene Toder (@eltoder), Konstantin Novitsky
+(@novitk), Tomas Kalibera (@kalibera) and @raneamri for miscellaneous
 smaller fixes, improvements or reports.
