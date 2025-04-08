@@ -66,6 +66,8 @@ namespace QuantLib {
         Array(const Array&);
         Array(Array&&) noexcept;
         Array(std::initializer_list<Real>);
+        template <typename T, typename = std::enable_if_t<std::is_convertible_v<T, Real>>>
+        Array(std::initializer_list<T> init);
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
@@ -335,6 +337,11 @@ namespace QuantLib {
         // We have to detect integral types and dispatch.
         detail::_fill_array_(*this, data_, n_, begin, end,
                              std::is_integral<ForwardIterator>());
+    }
+
+    template <typename T, typename>
+    Array::Array(std::initializer_list<T> init) {
+        detail::_fill_array_(*this, data_, n_, init.begin(), init.end(), std::false_type());
     }
 
     inline Array& Array::operator=(const Array& from) {

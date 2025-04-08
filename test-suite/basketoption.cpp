@@ -2488,7 +2488,7 @@ BOOST_AUTO_TEST_CASE(testAccurateAmericanBasketOptions) {
     );
 
     BasketOption basketOption(
-        ext::make_shared<AverageBasketPayoff>(payoff, Array({1})),
+        ext::make_shared<AverageBasketPayoff>(payoff, Array({Real(1.)})),
         exercise
     );
     basketOption.setPricingEngine(
