@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(testConstruction) {
     }
 
     // recast initializer list to Real
-    Array a11({1, 2, 3, 4, 5});
+    Array a11{1, 2, 3, 4, 5};
     if (a2.size() != size)
         BOOST_ERROR("Array not of the required size"
                     << "\n    required:  " << size
