@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(testInitialisation) {
 
         LiborForwardModelProcess process(60, index);
 
-        std::vector<Time> fixings = process.fixingTimes();
+        const std::vector<Time>& fixings = process.fixingTimes();
         for (Size i=1; i < fixings.size()-1; ++i) {
             Size ileft  = process.nextIndexReset(fixings[i]-0.000001);
             Size iright = process.nextIndexReset(fixings[i]+0.000001);

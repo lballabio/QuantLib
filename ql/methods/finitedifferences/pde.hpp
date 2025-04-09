@@ -27,6 +27,7 @@
 #include <ql/math/array.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/math/transformedgrid.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -92,7 +93,7 @@ namespace QuantLib {
     public:
         template <class T>
         GenericTimeSetter(const Array &grid, T process) :
-            grid_(grid), pde_(process) {}
+            grid_(grid), pde_(std::move(process)) {}
         void setTime(Time t, TridiagonalOperator& L) const override {
             pde_.generateOperator(t, grid_, L);
         }
@@ -117,7 +118,7 @@ namespace QuantLib {
             QL_DEPRECATED_DISABLE_WARNING
             timeSetter_ =
                 ext::shared_ptr<GenericTimeSetter<PdeClass> >(
-                     new GenericTimeSetter<PdeClass>(grid, process));
+                     new GenericTimeSetter<PdeClass>(grid, std::move(process)));
             QL_DEPRECATED_ENABLE_WARNING
             setTime(residualTime);
         }

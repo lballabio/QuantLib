@@ -866,7 +866,8 @@ namespace QuantLib {
                        << swapLengths.size() << ")");
 
         std::vector<Time> betaTimes;
-        for (Size i = 0; i < beta.size(); i++)
+        betaTimes.reserve(beta.size());
+for (Size i = 0; i < beta.size(); i++)
             betaTimes.push_back(
                 timeFromReference(optionDateFromTenor(swapLengths[i])));
 
@@ -1107,7 +1108,8 @@ namespace QuantLib {
     template<class Model> std::vector<Real> XabrSwaptionVolatilityCube<Model>::Cube::operator()(
                             const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
-        for (Size k=0; k<nLayers_; ++k)
+        result.reserve(nLayers_);
+for (Size k=0; k<nLayers_; ++k)
             result.push_back((*interpolators_[k])(optionTime, swapLength));
         return result;
     }

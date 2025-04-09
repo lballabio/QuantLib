@@ -33,6 +33,7 @@
 */
 
 
+#include <algorithm>
 #include <ql/math/matrixutilities/svd.hpp>
 
 namespace QuantLib {
@@ -378,13 +379,13 @@ namespace QuantLib {
 
                   // Calculate the shift.
                   Real scale = std::max(
-                                     std::max(
-                                         std::max(
-                                             std::max(std::fabs(s_[p-1]),
-                                                    std::fabs(s_[p-2])),
-                                             std::fabs(e[p-2])),
-                                         std::fabs(s_[k])),
-                                     std::fabs(e[k]));
+                                     {
+                                         
+                                             std::fabs(s_[p-1]),
+                                                    std::fabs(s_[p-2]),
+                                             std::fabs(e[p-2]),
+                                         std::fabs(s_[k]),
+                                     std::fabs(e[k])});
                   Real sp = s_[p-1]/scale;
                   Real spm1 = s_[p-2]/scale;
                   Real epm1 = e[p-2]/scale;

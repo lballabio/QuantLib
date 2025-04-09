@@ -1473,7 +1473,7 @@ BOOST_AUTO_TEST_CASE(testKernelInterpolation) {
 
     for (Size j=0; j< ytd.size(); ++j) {
         std::vector<Real> currY=yd[j];
-        std::vector<Real> currTY=ytd[j];
+        const std::vector<Real>& currTY=ytd[j];
 
         // Build interpolation according to original grid + y-values
         KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),

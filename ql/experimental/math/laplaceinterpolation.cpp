@@ -121,7 +121,7 @@ for (auto const& m : map_)
         std::vector<Real> corner_h(dim.size());
         std::vector<Size> corner_neighbour_index(dim.size());
         for (auto const& pos : *layout_) {
-            auto coord = pos.coordinates();
+            const auto& coord = pos.coordinates();
             Real val =
                 y_(numberOfCoordinatesIncluded_ == x_.size() ? coord : fullCoordinates(coord));
             QL_REQUIRE(rowit != op.end1() && rowit.index1() == count,

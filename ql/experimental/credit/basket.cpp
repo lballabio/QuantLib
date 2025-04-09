@@ -200,7 +200,8 @@ namespace QuantLib {
 
         std::vector<Real> calcBufferNotionals;
         const std::vector<Size>& alive = liveList(endDate);
-        for(Size i=0; i<alive.size(); i++)
+        calcBufferNotionals.reserve(alive.size());
+for(Size i=0; i<alive.size(); i++)
             calcBufferNotionals.push_back(
                 exposure(pool_->names()[i], endDate)
                 );// some better way to trim it? 
@@ -213,7 +214,8 @@ namespace QuantLib {
         vector<Real> prob;
         const std::vector<Size>& alive = liveList();
 
-        for(Size i=0; i<alive.size(); i++)
+        prob.reserve(alive.size());
+for(Size i=0; i<alive.size(); i++)
             prob.push_back(pool_->get(pool_->names()[i]).defaultProbability(
                 pool_->defaultKeys()[i])->defaultProbability(d, true));
         return prob;

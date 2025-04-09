@@ -508,7 +508,8 @@ std::vector<Real> impliedStdDevs(const Real atm, const std::vector<Real> &strike
 
     std::vector<Real> result;
 
-    for (Size i = 0; i < prices.size(); i++) {
+    result.reserve(prices.size());
+for (Size i = 0; i < prices.size(); i++) {
         result.push_back(blackFormulaImpliedStdDev(Option::Call, strikes[i],
                                                    atm, prices[i], 1.0, 0.0,
                                                    0.2, 1E-8, 1000));

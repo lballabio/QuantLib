@@ -74,7 +74,7 @@ namespace QuantLib {
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts (const xContainer &x, Real intercept) {
                 if (intercept != 0.0)
-                    v.push_back([=](ArgumentType x){ return intercept; });
+                    v.push_back([=](const ArgumentType& x){ return intercept; });
                 Size m = x.begin()->size();
                 for (Size i = 0; i < m; ++i)
                     v.push_back(LinearFct<ArgumentType>(i));
@@ -106,7 +106,7 @@ namespace QuantLib {
                                            const yContainer& y, Real intercept) 
     : GeneralLinearLeastSquares(x, y,
           details::LinearFcts<xContainer, 
-              std::is_arithmetic<typename xContainer::value_type>::value>
+              std::is_arithmetic_v<typename xContainer::value_type>>
                                                         (x, intercept).fcts()) {
     }
 

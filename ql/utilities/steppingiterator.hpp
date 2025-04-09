@@ -67,11 +67,7 @@ namespace QuantLib {
 
         Size step() const { return static_cast<Size>(this->step_); }
 
-        step_iterator& operator=(const step_iterator& other) {
-            base_ = other.base_;
-            step_ = other.step_;
-            return *this;
-        }
+        step_iterator& operator=(const step_iterator& other) = default;
 
         step_iterator& operator++() {
             base_ += step_;

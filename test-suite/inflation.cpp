@@ -76,7 +76,7 @@ ext::shared_ptr<YieldTermStructure> nominalTermStructure() {
 template <class T>
 std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
         const std::vector<Datum>& iiData,
-        std::function<ext::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>
+        const std::function<ext::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>&
             makeHelper) {
 
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;

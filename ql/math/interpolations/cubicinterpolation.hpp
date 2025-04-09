@@ -29,6 +29,7 @@
 #ifndef quantlib_cubic_interpolation_hpp
 #define quantlib_cubic_interpolation_hpp
 
+#include <algorithm>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
@@ -700,9 +701,9 @@ namespace QuantLib {
                         } else {
                             pm=(S_[i-1]*dx_[i]+S_[i]*dx_[i-1])/
                                 (dx_[i-1]+dx_[i]);
-                            M = 3.0 * std::min(std::min(std::fabs(S_[i-1]),
-                                                        std::fabs(S_[i])),
-                                               std::fabs(pm));
+                            M = 3.0 * std::min({std::fabs(S_[i-1]),
+                                                        std::fabs(S_[i]),
+                                               std::fabs(pm)});
                             if (i>1) {
                                 if ((S_[i-1]-S_[i-2])*(S_[i]-S_[i-1])>0.0) {
                                     pd=(S_[i-1]*(2.0*dx_[i-1]+dx_[i-2])
