@@ -13,7 +13,7 @@ jobs:
         classes: [boost, std]
         include:
           - classes: std
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-pointers --disable-std-any --disable-std-optional
     steps:
     - uses: actions/checkout@v4
     - name: Setup

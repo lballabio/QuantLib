@@ -29,6 +29,8 @@
 #if defined(QL_USE_STD_ANY)
 #include <any>
 #else
+// Deprecated in version 1.39
+#pragma message("Warning: using boost::any is deprecated.  Enable std::any instead.")
 #include <boost/any.hpp>
 #endif
 

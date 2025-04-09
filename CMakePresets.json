@@ -301,7 +301,9 @@
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
+        "QL_USE_STD_ANY": "OFF",
+        "QL_USE_STD_OPTIONAL": "OFF",
         "QL_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
@@ -319,7 +321,9 @@
         "QL_THROW_IN_CYCLES": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
+        "QL_USE_STD_ANY": "OFF",
+        "QL_USE_STD_OPTIONAL": "OFF",
         "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       }
