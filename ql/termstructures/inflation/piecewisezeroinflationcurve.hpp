@@ -68,36 +68,6 @@ namespace QuantLib {
           instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the other overload and pass the base date directly
-                        instead of using a lag. A base rate is not needed.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        PiecewiseZeroInflationCurve(
-            const Date& referenceDate,
-            const Calendar& calendar,
-            const DayCounter& dayCounter,
-            const Period& lag,
-            Frequency frequency,
-            Rate baseZeroRate,
-            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
-            Real accuracy = 1.0e-12,
-            const Interpolator& i = Interpolator())
-        : base_curve(referenceDate,
-                     calendar,
-                     dayCounter,
-                     lag,
-                     frequency,
-                     baseZeroRate,
-                     i),
-          instruments_(std::move(instruments)), accuracy_(accuracy) {
-            bootstrap_.setup(this);
-        }
-
-        QL_DEPRECATED_ENABLE_WARNING
         //@}
 
         //! \name Inflation interface

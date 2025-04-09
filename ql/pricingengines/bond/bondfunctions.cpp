@@ -280,13 +280,6 @@ namespace QuantLib {
     Rate BondFunctions::atmRate(const Bond& bond,
                                 const YieldTermStructure& discountCurve,
                                 Date settlement,
-                                Real cleanPrice) {
-        return atmRate(bond, discountCurve, settlement, {cleanPrice, Bond::Price::Clean});
-    }
-
-    Rate BondFunctions::atmRate(const Bond& bond,
-                                const YieldTermStructure& discountCurve,
-                                Date settlement,
                                 const Bond::Price price) {
         if (settlement == Date())
             settlement = bond.settlementDate();
@@ -375,20 +368,6 @@ namespace QuantLib {
                             Date settlement) {
         InterestRate y(yield, dayCounter, compounding, frequency);
         return bps(bond, y, settlement);
-    }
-
-    Rate BondFunctions::yield(const Bond& bond,
-                              Real price,
-                              const DayCounter& dayCounter,
-                              Compounding compounding,
-                              Frequency frequency,
-                              Date settlement,
-                              Real accuracy,
-                              Size maxIterations,
-                              Rate guess,
-                              Bond::Price::Type priceType) {
-        return yield(bond, {price, priceType}, dayCounter, compounding, frequency,
-                     settlement, accuracy, maxIterations, guess);
     }
 
     Rate BondFunctions::yield(const Bond& bond,
@@ -538,20 +517,6 @@ namespace QuantLib {
                                          false, settlement) *
             100.0 / bond.notional(settlement);
         return dirtyPrice;
-    }
-
-    Spread BondFunctions::zSpread(const Bond& bond,
-                                  Real cleanPrice,
-                                  const ext::shared_ptr<YieldTermStructure>& d,
-                                  const DayCounter& dayCounter,
-                                  Compounding compounding,
-                                  Frequency frequency,
-                                  Date settlement,
-                                  Real accuracy,
-                                  Size maxIterations,
-                                  Rate guess) {
-        return zSpread(bond, {cleanPrice, Bond::Price::Clean}, d, dayCounter,
-                       compounding, frequency, settlement, accuracy, maxIterations, guess);
     }
 
     Spread BondFunctions::zSpread(const Bond& bond,

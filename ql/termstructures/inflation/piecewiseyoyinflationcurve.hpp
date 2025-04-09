@@ -93,39 +93,6 @@ namespace QuantLib {
             this->indexIsInterpolated_ = indexIsInterpolated;
             QL_DEPRECATED_ENABLE_WARNING
         }
-
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the overload without lag and indexIsInterpolated and
-                        pass the base date as the first date in the vector.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use the overload without lag and indexIsInterpolated and pass the base date as the first date in the vector")]]
-        PiecewiseYoYInflationCurve(
-            const Date& referenceDate,
-            const Calendar& calendar,
-            const DayCounter& dayCounter,
-            const Period& lag,
-            Frequency frequency,
-            bool indexIsInterpolated,
-            Rate baseYoYRate,
-            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
-            Real accuracy = 1.0e-12,
-            const Interpolator& i = Interpolator())
-        : base_curve(referenceDate,
-                     calendar,
-                     dayCounter,
-                     baseYoYRate,
-                     lag,
-                     frequency,
-                     indexIsInterpolated,
-                     i),
-          instruments_(std::move(instruments)), accuracy_(accuracy) {
-            bootstrap_.setup(this);
-        }
-
-        QL_DEPRECATED_ENABLE_WARNING
         //@}
 
         //! \name Inflation interface

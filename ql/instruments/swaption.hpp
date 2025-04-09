@@ -113,14 +113,6 @@ namespace QuantLib {
         const ext::shared_ptr<FixedVsFloatingSwap>& underlying() const {
             return swap_;
         }
-        /*! \deprecated Use the Swaption::underlying method instead.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use the Swaption::underlying method instead")]]
-        const ext::shared_ptr<VanillaSwap>& underlyingSwap() const {
-            QL_REQUIRE(vanilla_, "underlying is not a vanilla swap");
-            return vanilla_;
-        }
         //@}
         //! implied volatility
         Volatility impliedVolatility(
