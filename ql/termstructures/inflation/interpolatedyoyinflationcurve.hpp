@@ -67,7 +67,6 @@ namespace QuantLib {
 
         //! \name InflationTermStructure interface
         //@{
-        Date baseDate() const override;
         Date maxDate() const override;
         //@}
 
@@ -198,14 +197,6 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
     }
 
-
-    template <class T>
-    Date InterpolatedYoYInflationCurve<T>::baseDate() const {
-        if (hasExplicitBaseDate())
-            return YoYInflationTermStructure::baseDate();
-        else
-            return dates_.front();
-    }
 
     template <class T>
     Date InterpolatedYoYInflationCurve<T>::maxDate() const {

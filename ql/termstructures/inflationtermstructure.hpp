@@ -59,9 +59,19 @@ namespace QuantLib {
                                Rate baseRate = Null<Rate>());
         //@}
 
+        QL_DEPRECATED_DISABLE_WARNING
+        ~InflationTermStructure() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         //! \name Inflation interface
         //@{
+        /*! \deprecated Do not use; inflation curves always have an explicit
+                        base date now.
+                        Deprecated in version 1.39.
+        */
+        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
         virtual Period observationLag() const;
+
         virtual Frequency frequency() const;
         virtual Rate baseRate() const;
 
@@ -73,12 +83,13 @@ namespace QuantLib {
         */
         virtual Date baseDate() const;
 
-        /*! This can be used temporarily to check whether the term structure
-            was created using one of the new constructors taking a base date
-            or one of the deprecated ones taking an observation lag.
+        /*! \deprecated Do not use; inflation curves always have an explicit
+                        base date now.
+                        Deprecated in version 1.39.
         */
+        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
         bool hasExplicitBaseDate() const {
-            return hasExplicitBaseDate_;
+            return true;
         }
         //@}
 
@@ -96,13 +107,19 @@ namespace QuantLib {
                         bool extrapolate) const;
 
         ext::shared_ptr<Seasonality> seasonality_;
+
+        /*! \deprecated Do not use; inflation curves always have an explicit
+                        base date now.
+                        Deprecated in version 1.39.
+        */
+        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
         Period observationLag_;
+
         Frequency frequency_;
         mutable Rate baseRate_;
 
       private:
         Date baseDate_;
-        bool hasExplicitBaseDate_;
     };
 
     //! Interface for zero inflation term structures.
@@ -281,7 +298,9 @@ namespace QuantLib {
     // inline
 
     inline Period InflationTermStructure::observationLag() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return observationLag_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Frequency InflationTermStructure::frequency() const {

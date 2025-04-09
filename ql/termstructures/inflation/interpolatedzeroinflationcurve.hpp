@@ -50,7 +50,6 @@ namespace QuantLib {
 
         //! \name InflationTermStructure interface
         //@{
-        Date baseDate() const override;
         Date maxDate() const override;
         //@}
 
@@ -129,19 +128,8 @@ namespace QuantLib {
     }
 
     template <class T>
-    Date InterpolatedZeroInflationCurve<T>::baseDate() const {
-        if (hasExplicitBaseDate())
-            return ZeroInflationTermStructure::baseDate();
-        else
-            return dates_.front();
-    }
-
-    template <class T>
     Date InterpolatedZeroInflationCurve<T>::maxDate() const {
-        if (hasExplicitBaseDate())
-            return dates_.back();
-        else
-            return inflationPeriod(dates_.back(), frequency()).second;
+        return dates_.back();
     }
 
     template <class T>

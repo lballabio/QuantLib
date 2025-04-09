@@ -97,7 +97,6 @@ namespace QuantLib {
 
         //! \name Inflation interface
         //@{
-        Date baseDate() const override;
         Date maxDate() const override;
         //@
         //! \name Inspectors
@@ -126,13 +125,6 @@ namespace QuantLib {
 
 
     // inline and template definitions
-
-    template <class I, template <class> class B, class T>
-    inline Date PiecewiseYoYInflationCurve<I,B,T>::baseDate() const {
-        if (!this->hasExplicitBaseDate())
-            this->calculate();
-        return base_curve::baseDate();
-    }
 
     template <class I, template <class> class B, class T>
     inline Date PiecewiseYoYInflationCurve<I,B,T>::maxDate() const {
