@@ -115,6 +115,20 @@ BOOST_AUTO_TEST_CASE(testConstruction) {
                         << calculated);
         }
     }
+
+    // recast initializer list to Real
+    Array a11{1, 2, 3, 4, 5};
+    if (a2.size() != size)
+        BOOST_ERROR("Array not of the required size"
+                    << "\n    required:  " << size
+                    << "\n    resulting: " << a2.size());
+    for (i=0; i<size; ++i) {
+        if (a11[i] != Real(i+1))
+            BOOST_ERROR(io::ordinal(i+1) << " element not with required value"
+                        << "\n    required:  " << Real(i+1)
+                        << "\n    resulting: " << a11[i]);
+    }
+
 }
 
 BOOST_AUTO_TEST_CASE(testArrayFunctions) {
