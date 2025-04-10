@@ -106,7 +106,7 @@ namespace QuantLib {
                                            const yContainer& y, Real intercept) 
     : GeneralLinearLeastSquares(x, y,
           details::LinearFcts<xContainer, 
-              std::is_arithmetic<typename xContainer::value_type>::value>
+              std::is_arithmetic_v<typename xContainer::value_type>>
                                                         (x, intercept).fcts()) {
     }
 
