@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE(test1dLinearRegression) {
     }    
 
     // an alternative container type 
-    boost::circular_buffer<Real> cx(x.begin(), x.end()), cy(y.begin(), y.end());
+    std::vector<Real> cx(x.begin(), x.end()), cy(y.begin(), y.end());
     LinearRegression m1(cx, cy);
 
     for (Size i=0; i < 2; ++i) {
