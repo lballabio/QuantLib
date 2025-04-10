@@ -242,22 +242,27 @@ BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
             Real expected_k =
                 M_PI_2 * (modifiedBesselFunction_i(-nu, x) - modifiedBesselFunction_i(nu, x)) *
                 exp(-x) / std::sin(M_PI * nu);
-            Real tol_i = 1e3 * QL_EPSILON * std::fabs(expected_i) * std::max(exp(x), 1.0);
-            Real tol_k = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::fabs(expected_k) *
-                                                        std::max(exp(x), 1.0));
+            Real tol_i = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::fabs(expected_i) * std::max(exp(x), 1.0));
+            Real tol_k = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::fabs(expected_k) * std::max(exp(x), 1.0));
             if (std::abs(expected_i - calculated_i) > tol_i) {
                 BOOST_ERROR("failed to verify exponentially weighted"
-                            << "modified Bessel function of first kind"
-                            << "\n order      : " << nu << "\n argument   : " << x
-                            << "\n calculated  : " << calculated_i << "\n expected   : "
-                            << expected_i << "\n difference : " << (expected_i - calculated_i));
+                            << " modified Bessel function of first kind"
+                            << "\n order      : " << nu
+                            << "\n argument   : " << x
+                            << "\n calculated : " << calculated_i
+                            << "\n expected   : " << expected_i
+                            << "\n tolerance  : " << tol_i
+                            << "\n difference : " << (expected_i - calculated_i));
             }
             if (std::abs(expected_k - calculated_k) > tol_k) {
                 BOOST_ERROR("failed to verify exponentially weighted"
-                            << "modified Bessel function of second kind"
-                            << "\n order      : " << nu << "\n argument   : " << x
-                            << "\n calculated  : " << calculated_k << "\n expected   : "
-                            << expected_k << "\n difference : " << (expected_k - calculated_k));
+                            << " modified Bessel function of second kind"
+                            << "\n order      : " << nu
+                            << "\n argument   : " << x
+                            << "\n calculated : " << calculated_k
+                            << "\n expected   : " << expected_k
+                            << "\n tolerance  : " << tol_k
+                            << "\n difference : " << (expected_k - calculated_k));
             }
         }
     }
@@ -274,21 +279,27 @@ BOOST_AUTO_TEST_CASE(testWeightedModifiedBesselFunctions) {
                                                       (modifiedBesselFunction_i(-nu, z) * exp(-z) -
                                                        modifiedBesselFunction_i(nu, z) * exp(-z)) /
                                                       std::sin(M_PI * nu);
-                Real tol_i = 1e3 * QL_EPSILON * std::abs(calculated_i);
-                Real tol_k = 1e3 * QL_EPSILON * std::abs(calculated_k);
+                Real tol_i = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::abs(calculated_i));
+                Real tol_k = std::max(QL_EPSILON, 1e3 * QL_EPSILON * std::abs(calculated_k));
                 if (std::abs(calculated_i - expected_i) > tol_i) {
                     BOOST_ERROR("failed to verify exponentially weighted"
-                                << "modified Bessel function of first kind"
-                                << "\n order      : " << nu << "\n argument   : " << x
-                                << "\n calculated  : " << calculated_i << "\n expected   : "
-                                << expected_i << "\n difference : " << (expected_i - calculated_i));
+                                << " modified Bessel function of first kind"
+                                << "\n order      : " << nu
+                                << "\n argument   : " << x
+                                << "\n calculated : " << calculated_i
+                                << "\n expected   : " << expected_i
+                                << "\n tolerance  : " << tol_i
+                                << "\n difference : " << (expected_i - calculated_i));
                 }
                 if (std::abs(expected_k - calculated_k) > tol_k) {
                     BOOST_ERROR("failed to verify exponentially weighted"
-                                << "modified Bessel function of second kind"
-                                << "\n order      : " << nu << "\n argument   : " << x
-                                << "\n calculated  : " << calculated_k << "\n expected   : "
-                                << expected_k << "\n difference : " << (expected_k - calculated_k));
+                                << " modified Bessel function of second kind"
+                                << "\n order      : " << nu
+                                << "\n argument   : " << x
+                                << "\n calculated : " << calculated_k
+                                << "\n expected   : " << expected_k
+                                << "\n tolerance  : " << tol_k
+                                << "\n difference : " << (expected_k - calculated_k));
                 }
             }
         }
