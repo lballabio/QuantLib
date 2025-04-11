@@ -127,8 +127,10 @@ namespace QuantLib {
 
         const Size timeSteps = timeGrid_->size()-1;
 
+        QL_DEPRECATED_DISABLE_WARNING
         typedef boost::multi_array<Real, 3> path_type;
         path_type paths(boost::extents[calibrationPaths_][timeSteps][2]);
+        QL_DEPRECATED_ENABLE_WARNING
 
         const ext::shared_ptr<BrownianGenerator> brownianGenerator =
             brownianGeneratorFactory_->create(2, timeSteps);

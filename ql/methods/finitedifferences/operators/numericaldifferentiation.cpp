@@ -69,7 +69,9 @@ namespace QuantLib {
             QL_REQUIRE(N > M, "number of points must be greater "
                                "than the order of the derivative");
 
+            QL_DEPRECATED_DISABLE_WARNING
             boost::multi_array<Real, 3>  d(boost::extents[M+1][N][N]);
+            QL_DEPRECATED_ENABLE_WARNING
             d[0][0][0] = 1.0;
             Real c1 = 1.0;
 
