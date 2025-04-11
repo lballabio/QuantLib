@@ -42,7 +42,14 @@
 #include <ql/version.hpp>
 
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#if BOOST_VERSION >= 108800
+#include <boost/process/v1/system.hpp>
+#include <boost/process/v1/args.hpp>
+namespace bp = boost::process::v1;
+#else
 #include <boost/process.hpp>
+namespace bp = boost::process;
+#endif
 #include <boost/interprocess/ipc/message_queue.hpp>
 #endif
 
@@ -408,7 +415,7 @@ namespace {
 #ifdef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
         // The entry point for the std::thread's that will be the workers
         static int worker(const char * exe, const std::vector<std::string>& args) {        
-            return boost::process::system(exe, boost::process::args=args);
+            return bp::system(exe, bp::args=args);
         }
 #endif
 
