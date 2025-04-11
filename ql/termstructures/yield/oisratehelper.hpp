@@ -48,7 +48,7 @@ namespace QuantLib {
                       Frequency paymentFrequency = Annual,
                       Calendar paymentCalendar = Calendar(),
                       const Period& forwardStart = 0 * Days,
-                      Spread overnightSpread = 0.0,
+                      Handle<Quote> overnightSpread = {},
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
@@ -71,7 +71,7 @@ namespace QuantLib {
                       BusinessDayConvention paymentConvention = Following,
                       Frequency paymentFrequency = Annual,
                       Calendar paymentCalendar = Calendar(),
-                      Spread overnightSpread = 0.0,
+                      Handle<Quote> overnightSpread = {},
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
@@ -119,7 +119,7 @@ namespace QuantLib {
         Frequency paymentFrequency_;
         Calendar paymentCalendar_;
         Period forwardStart_;
-        Spread overnightSpread_;
+        Handle<Quote> overnightSpread_;
         Pillar::Choice pillarChoice_;
         RateAveraging::Type averagingMethod_;
         ext::optional<bool> endOfMonth_;
@@ -150,7 +150,7 @@ namespace QuantLib {
                            BusinessDayConvention paymentConvention = Following,
                            Frequency paymentFrequency = Annual,
                            const Calendar& paymentCalendar = Calendar(),
-                           Spread overnightSpread = 0.0,
+                           Handle<Quote> overnightSpread = {},
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                            const Calendar& fixedCalendar = Calendar(),
@@ -176,7 +176,7 @@ namespace QuantLib {
                            Frequency paymentFrequency,
                            const Calendar& paymentCalendar,
                            const Period& forwardStart,
-                           Spread overnightSpread = 0.0,
+                           Handle<Quote> overnightSpread = {},
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                            const Calendar& fixedCalendar = Calendar());
