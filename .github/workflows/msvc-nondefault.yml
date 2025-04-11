@@ -18,7 +18,7 @@ jobs:
             boost_version: 77
           - vsversion: 2022
             os: windows-2022
-            boost_version: 85
+            boost_version: 88
     steps:
     - uses: actions/checkout@v4
     - name: Setup MSVC++ environment
