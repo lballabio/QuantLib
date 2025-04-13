@@ -398,6 +398,21 @@ namespace QuantLib {
                 return false;
         }
 
+        // data from https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2024/ce_SEHK_CT_063_2024.pdf
+        if (y == 2025) {
+            if (// Lunar New Year
+                ((d >= 29 && d <= 31) && m == January)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 5 && m == May)
+                // Mid-autumn festival
+                || (d == 7 && m == October)
+                // Chung Yeung festival
+                || (d == 29 && m == October))
+                return false;
+        }
+
         return true;
     }
 
