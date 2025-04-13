@@ -297,7 +297,7 @@ namespace QuantLib {
             return false;
 
         if ((y == 2025) && ((d == 12 && m == February)    // Substitution for Makha Bucha Day (Wednesday 12th February 2025)
-            || (d == 7 && m == April)     // Substitution for Chakri Memorial Day (Saturday 6th April 2024)
+            || (d == 7 && m == April)     // Substitution for Chakri Memorial Day (Sunday 6th April 2025)
             || (d == 5 && m == May)       // Substitution for Coronation Day (Sunday 4th May 2025)
             || (d == 12 && m == May)      // Wisakha Bucha Day
             || (d == 10 && m == July)     // Substitution for Asarnha Bucha Day (Tuesday 20th July 2025)
