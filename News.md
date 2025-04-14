@@ -1,7 +1,7 @@
 Changes for QuantLib 1.38:
 ==========================
 
-QuantLib 1.38 includes 24 pull requests from several contributors.
+QuantLib 1.38 includes 28 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -14,6 +14,8 @@ Portability
 - **Future change of default:** as already announced, in the next
   release we're going to switch the default for `ext::any` and
   `ext::optional` from the Boost implementation to the standard one.
+  Using `boost::any` and `boost::optional` is still possible
+  for the time being but deprecated.
 
 - **Possible future breaking change**: in the next release, the
   `SimpleQuote` class might be made `final`.  If you're inheriting
@@ -29,6 +31,11 @@ Dates and calendars
   convention.
 
 - Added Chinese holidays for 2025; thanks to Cheng Li (@wegamekinglc).
+
+- Added Thailand holidays for 2025; thanks to Paolo D'Elia
+  (@paolodelia99).
+
+- Added Hong Kong holidays for 2025; thanks to Ka Wai Lee (@kawailee).
 
 
 Indexes
@@ -46,7 +53,7 @@ Instruments and pricing engines
 -------------------------------
 
 - Added implementation of partial-time barrier put options; thanks to
-  @paolodelia99.
+  Paolo D'Elia (@paolodelia99).
 
 - The `OvernightIndexFuture` class would not receive notifications
   when the convexity quote or the evaluation date changed; this is now
@@ -86,7 +93,7 @@ Term structures
   convexity adjustments.
 
 - Added a piecewise forward-spreaded term structure; thanks to
-  @paolodelia99.
+  Paolo D'Elia (@paolodelia99).
 
 
 Deprecated features

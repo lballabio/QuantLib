@@ -23,6 +23,8 @@
     - **Future change of default:** as already announced, in the next
       release we're going to switch the default for `ext::any` and
       `ext::optional` from the Boost implementation to the standard one.
+      Using `boost::any` and `boost::optional` is still possible
+      for the time being but deprecated.
     - **Possible future breaking change**: in the next release, the
       `SimpleQuote` class might be made `final`.  If you're inheriting
       from it, drop us a line.
@@ -33,6 +35,8 @@
       end-of-month caused it to always use the Modified Following
       convention.
     - Added Chinese holidays for 2025; thanks to Cheng Li.
+    - Added Thailand holidays for 2025; thanks to Paolo D'Elia.
+    - Added Hong Kong holidays for 2025; thanks to Ka Wai Lee.
 
     INDEXES
     - Year-or-year inflation indexes can (and should) now be built without
@@ -43,7 +47,7 @@
 
     INSTRUMENTS AND PRICING ENGINES
     - Added implementation of partial-time barrier put options; thanks to
-      GitHub user paolodelia99.
+      Paolo D'Elia.
     - The `OvernightIndexFuture` class would not receive notifications
       when the convexity quote or the evaluation date changed; this is now
       fixed.  Thanks to Eugene Toder.
@@ -73,7 +77,7 @@
       specify additional variables to be optimized, e.g., futures
       convexity adjustments.
     - Added a piecewise forward-spreaded term structure; thanks to
-      GitHub user paolodelia99.
+      Paolo D'Elia.
 
     DEPRECATED FEATURES
     - **Removed** features deprecated in version 1.33:

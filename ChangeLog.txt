@@ -1,3 +1,147 @@
+commit 74a27b3d1a87169c300fa3c1764ff3fe58773e54
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 14 Apr 2025 14:46:20 +0200
+
+    Update news and changelog
+
+ Contributors.txt        |  2 ++
+ Docs/pages/history.docs |  6 ++++--
+ News.md                 | 11 ++++++++---
+ 3 files changed, 14 insertions(+), 5 deletions(-)
+
+commit 94fef96cb9f2dedb38ec2c73e2becf6a19136df6
+Merge: 8ee2a4f43 451551d2b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 14 Apr 2025 14:15:37 +0200
+
+    Add Hong Kong Exchange 2025 holidays (#2196)
+
+commit 8ee2a4f43e327fbb727273697f19fe5fbdc8f426
+Merge: 872dfff0a 9d8e28534
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 14 Apr 2025 11:40:43 +0200
+
+    Thailand Holidays 2025 (#2197)
+
+commit 9d8e28534c2edb083e6bb34c220a618ce9c3418e
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Sun, 13 Apr 2025 15:56:03 +0200
+
+    Fixed typo in comments
+
+ ql/time/calendars/thailand.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d095be917fefef774f0c61b4e955decf64038003
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Sun, 13 Apr 2025 15:52:09 +0200
+
+    Added Thailand holidays 2025
+
+ ql/time/calendars/thailand.cpp | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+commit 451551d2b73e283596be6aa17c88f4c20fdbacb4
+Author: kawailee <wai@kawailee.com>
+Date:   Sat, 12 Apr 2025 20:40:33 -0400
+
+    Add Hong Kong Exchange 2025 holidays
+
+ ql/time/calendars/hongkong.cpp | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+commit 872dfff0ad9ef98bd1656075466846c4f2036d49
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 11 Apr 2025 13:03:53 +0200
+
+    Workaround deprecation of Boost.Process v1 in Boost 1.88
+
+ test-suite/paralleltestrunner.hpp | 8 +++++++-
+ test-suite/quantlibbenchmark.cpp  | 9 ++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+commit 593b0ebcc5f0a80c0c7c7fb5c3c005fb5271215d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 11 Apr 2025 11:55:37 +0200
+
+    Avoid deprecation warnings from Boost 1.88 on VC++ 2022
+
+ ql/methods/finitedifferences/operators/numericaldifferentiation.cpp | 2 ++
+ ql/models/equity/hestonslvmcmodel.cpp                               | 2 ++
+ 2 files changed, 4 insertions(+)
+
+commit d2f17e8255d17cc1b0a93c1378f1c8d4d30080ba
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 11 Apr 2025 11:03:00 +0200
+
+    Use latest Boost version in CI builds
+
+ .github/workflows/cmake.yml            | 12 ++++++------
+ .github/workflows/msvc-all-configs.yml |  2 +-
+ .github/workflows/msvc-analysis.yml    |  4 ++--
+ .github/workflows/msvc-nondefault.yml  |  2 +-
+ .github/workflows/msvc.yml             |  2 +-
+ 5 files changed, 11 insertions(+), 11 deletions(-)
+
+commit 4655f19ca2816c3c5f7b43fca4daf947719baf56
+Merge: f0b000fa0 93e9ee55c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 10 Apr 2025 14:25:09 +0200
+
+    Floor test tolerance at numeric_limits::epsilon (#2194)
+
+commit 93e9ee55c887004dc1581ebb3d40ba17feefe29e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 10 Apr 2025 11:52:14 +0200
+
+    Floor test tolerance at numeric_limits::epsilon
+
+ test-suite/functions.cpp | 53 +++++++++++++++++++++++++++++-------------------
+ 1 file changed, 32 insertions(+), 21 deletions(-)
+
+commit f0b000fa0e48cadb93bad655347cf5951a40b620
+Merge: 0ace62262 981d20177
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 9 Apr 2025 14:30:58 +0200
+
+    Array Construction Edge-Case Fix (#2189)
+
+commit 981d2017704285d2eb88191b80cf427d27ad7f52
+Author: imraneamri <mohammad.amri@ucdconnect.ie>
+Date:   Wed, 9 Apr 2025 12:27:07 +0100
+
+    Changed double bracketed ( Array({...}) ) constructions with Array to be single-bracketed.
+
+ test-suite/array.cpp        | 2 +-
+ test-suite/basketoption.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 0763acaafec5fff7ad84babf68557b52df6acb9c
+Author: imraneamri <mohammad.amri@ucdconnect.ie>
+Date:   Tue, 8 Apr 2025 16:27:28 +0100
+
+    Fixes ambiguous array construction:
+    
+    - Array({1}) in test-suite/basketoption.cpp:2491 is ambiguous and throws a warning. This is changed to be Array({Real(1.)}) as to not be confused with the Size constructor.
+    - Added a constructor to array.hpp for when an initializer list is not of type Real but can be cast to it, such as int, float, etc.
+
+ ql/math/array.hpp           |  7 +++++++
+ test-suite/array.cpp        | 14 ++++++++++++++
+ test-suite/basketoption.cpp |  2 +-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
+
+commit 0ace62262fd3206320b0618dba72e89c524eb83c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Apr 2025 11:45:32 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 2249 +++++++++++++++++------------------------------
+ Contributors.txt        |    1 +
+ Docs/pages/history.docs |   76 +-
+ News.md                 |  195 ++--
+ 4 files changed, 933 insertions(+), 1588 deletions(-)
+
 commit 85767864f36ed8bad4f0933d4349dd8c832e9277
 Merge: f19d8f42c cd391752d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
