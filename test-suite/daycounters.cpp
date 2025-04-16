@@ -995,25 +995,28 @@ BOOST_AUTO_TEST_CASE(testActual365_Canadian) {
 
     Actual365Fixed dayCounter(Actual365Fixed::Canadian);
 
-    try {
-        // no reference period
+    // no reference period
+    BOOST_CHECK_THROW(
         dayCounter.yearFraction(Date(10, September, 2018),
-                                Date(10, September, 2019));
-        BOOST_ERROR("Invalid call to yearFraction failed to throw");
-    } catch (Error&) {
-        ;  // expected
-    }
+                                Date(10, September, 2019)),
+        Error);
 
-    try {
-        // reference period shorter than a month
+    // reference period shorter than a month
+    BOOST_CHECK_THROW(
         dayCounter.yearFraction(Date(10, September, 2018),
                                 Date(12, September, 2018),
                                 Date(10, September, 2018),
-                                Date(15, September, 2018));
-        BOOST_ERROR("Invalid call to yearFraction failed to throw");
-    } catch (Error&) {
-        ;  // expected
-    }
+                                Date(15, September, 2018)),
+        Error);
+
+    // reference period longer than a year
+    BOOST_CHECK_THROW(
+        dayCounter.yearFraction(Date(8, January, 2025),
+                                Date(8, January, 2027),
+                                Date(8, January, 2025),
+                                Date(8, January, 2027)),
+        Error);
+
 }
 
 #ifdef QL_HIGH_RESOLUTION_DATE

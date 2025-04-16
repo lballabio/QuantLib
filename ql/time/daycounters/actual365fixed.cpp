@@ -55,6 +55,9 @@ namespace QuantLib {
                    "invalid reference period for Act/365 Canadian; "
                    "must be longer than a month");
         auto frequency = Integer(12 / months);
+        QL_REQUIRE(frequency != 0,
+                   "invalid reference period for Act/365 Canadian; "
+                   "must not be longer than a year");
 
         if (dcs < Integer(365/frequency))
             return dcs/365.0;
