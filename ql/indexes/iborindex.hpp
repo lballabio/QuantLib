@@ -95,6 +95,8 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& h = {});
         //! returns a copy of itself linked to a different forwarding curve
         ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+      private:
+        TimeSeries<Real> compoundIndex_;
     };
 
 
