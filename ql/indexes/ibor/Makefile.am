@@ -30,6 +30,7 @@ this_include_HEADERS = \
     nzocr.hpp \
     pribor.hpp \
     robor.hpp \
+    saron.hpp \
     seklibor.hpp \
     shibor.hpp \
     sofr.hpp \
@@ -53,6 +54,7 @@ cpp_files = \
     fedfunds.cpp \
     kofr.cpp \
     libor.cpp \
+    saron.cpp \
     shibor.cpp \
     sofr.cpp \
     sonia.cpp
