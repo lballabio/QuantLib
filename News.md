@@ -1,7 +1,7 @@
 Changes for QuantLib 1.38:
 ==========================
 
-QuantLib 1.38 includes 28 pull requests from several contributors.
+QuantLib 1.38 includes 29 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at

@@ -1,13 +1,53 @@
-commit 74a27b3d1a87169c300fa3c1764ff3fe58773e54
+commit e17a089689885cd367a4367546f81c536d536f11
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.38 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 178d31aa51354dbecd079be193b93dddab166da6
+Merge: 5ccf7ffa6 ed694f6ea
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 16 Apr 2025 21:51:49 +0200
+
+    Add check for null frequency in Act/365 Canadian (#2202)
+
+commit ed694f6ea21c446e1812e5f1a34733112eb987d7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 16 Apr 2025 16:28:06 +0200
+
+    Add check for null frequency in Act/365 Canadian
+
+ ql/time/daycounters/actual365fixed.cpp |  3 +++
+ test-suite/daycounters.cpp             | 31 +++++++++++++++++--------------
+ 2 files changed, 20 insertions(+), 14 deletions(-)
+
+commit 5ccf7ffa653b1d86254f28c5fd4deb8f8b11fffd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.38-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit ffdc5257f0d12c98d04cfc957919cce192b2a2e6
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 14 Apr 2025 14:46:20 +0200
 
     Update news and changelog
 
- Contributors.txt        |  2 ++
- Docs/pages/history.docs |  6 ++++--
- News.md                 | 11 ++++++++---
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ ChangeLog.txt           | 144 ++++++++++++++++++++++++++++++++++++++++++++++++
+ Contributors.txt        |   2 +
+ Docs/pages/history.docs |   8 ++-
+ News.md                 |  13 ++++-
+ 4 files changed, 162 insertions(+), 5 deletions(-)
 
 commit 94fef96cb9f2dedb38ec2c73e2becf6a19136df6
 Merge: 8ee2a4f43 451551d2b
