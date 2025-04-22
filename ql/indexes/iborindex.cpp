@@ -117,14 +117,16 @@ namespace QuantLib {
         std::vector<Real> compIndexValues;
         std::vector<Date> compIndexDates;
         compIndexValues.push_back(Real(1.000));
+        compIndexDates.push_back(currentFixingDay);
 
         while(currentFixingDay <= lastFixingDate) {
-            compIndexDates.push_back(currentFixingDay);
             auto nextFixingDay = fixingCalendar.advance(currentFixingDay, Period(1, Days));
             compIndexValues.push_back(
-                compIndexValues.back() +
+                compIndexValues.back() *
                 (1 + ts[currentFixingDay] 
                     * dayCounter_.yearFraction(currentFixingDay, nextFixingDay)));
+            compIndexDates.push_back(nextFixingDay);
+            currentFixingDay = nextFixingDay;
         }
 
         compoundIndex_ = TimeSeries<Real>(compIndexDates.begin(), 

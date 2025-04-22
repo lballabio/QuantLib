@@ -119,6 +119,7 @@ set(QL_TEST_SOURCES
     operators.cpp
     optimizers.cpp
     optionletstripper.cpp
+    overnightindex.cpp
     overnightindexedcoupon.cpp
     overnightindexedswap.cpp
     pagodaoption.cpp

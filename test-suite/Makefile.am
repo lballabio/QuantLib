@@ -120,6 +120,7 @@ QL_TEST_SRCS = \
 	operators.cpp \
 	optimizers.cpp \
 	optionletstripper.cpp \
+	overnightindex.cpp \
 	overnightindexedcoupon.cpp \
 	overnightindexedswap.cpp \
 	pagodaoption.cpp \
