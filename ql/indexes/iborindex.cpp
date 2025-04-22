@@ -82,6 +82,60 @@ namespace QuantLib {
    : IborIndex(familyName, 1*Days, settlementDays, curr,
                fixCal, Following, false, dc, h) {}
 
+    void OvernightIndex::addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite) {
+        calculated_ = false;
+        Index::addFixing(fixingDate, fixing, forceOverwrite);
+    }
+
+    void OvernightIndex::addFixings(const TimeSeries<Real>& t, bool forceOverwrite) {
+        calculated_ = false;
+        Index::addFixings(t, forceOverwrite);
+    }
+
+    Rate OvernightIndex::compoundedFixings(const Date& fromFixingDate, const Date& toFixingDate) {
+        calculate();
+        auto yearFraction = dayCounter_.yearFraction(fromFixingDate, toFixingDate);
+        return (compoundIndex_[toFixingDate] / compoundIndex_[fromFixingDate] - 1) / yearFraction;  
+    }
+ 
+    void OvernightIndex::performCalculations() const {
+        auto getLastFixingDate = [](Calendar fixingCalendar, std::vector<Date>& fixingDates){
+            Date lastFixingDay = fixingDates.front();
+            std::for_each(fixingDates.begin() + 1, fixingDates.end(), [&](Date& fixingDate){
+                if (fixingCalendar.advance(lastFixingDay, Period(1, Days)) == fixingDate)
+                    lastFixingDay = fixingDate;
+            });
+            return lastFixingDay;
+        };
+
+        const auto& ts = Index::timeSeries();
+        auto fixingDates = ts.dates();
+        auto fixingCalendar = InterestRateIndex::fixingCalendar();
+        auto lastFixingDate = getLastFixingDate(fixingCalendar, fixingDates);
+
+        auto currentFixingDay = fixingDates.front();
+        std::vector<Real> compIndexValues;
+        std::vector<Date> compIndexDates;
+        compIndexValues.push_back(Real(1.000));
+
+        while(currentFixingDay <= lastFixingDate) {
+            compIndexDates.push_back(currentFixingDay);
+            auto nextFixingDay = fixingCalendar.advance(currentFixingDay, Period(1, Days));
+            compIndexValues.push_back(
+                compIndexValues.back() +
+                (1 + ts[currentFixingDay] 
+                    * dayCounter_.yearFraction(currentFixingDay, nextFixingDay)));
+        }
+
+        compoundIndex_ = TimeSeries<Real>(compIndexDates.begin(), 
+                                          compIndexDates.end(), 
+                                          compIndexValues.begin());
+    }
+
+    void OvernightIndex::update() {
+        notifyObservers();
+    }
+
     ext::shared_ptr<IborIndex> OvernightIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
         return ext::shared_ptr<IborIndex>(

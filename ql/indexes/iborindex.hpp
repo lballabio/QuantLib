@@ -28,6 +28,7 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
 
@@ -85,7 +86,8 @@ namespace QuantLib {
     };
 
 
-    class OvernightIndex : public IborIndex {
+    class OvernightIndex : public IborIndex,
+                           virtual public LazyObject {
       public:
         OvernightIndex(const std::string& familyName,
                        Natural settlementDays,
@@ -95,8 +97,14 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& h = {});
         //! returns a copy of itself linked to a different forwarding curve
         ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+        void update() override;
+        void addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite = false) override;
+        void addFixings(const TimeSeries<Real>& t, bool forceOverwrite = false) override;
+        Rate compoundedFixings(const Date& fromFixingDate, const Date& toFixingDate);
+      protected:
+          void performCalculations() const override;
       private:
-        TimeSeries<Real> compoundIndex_;
+        mutable TimeSeries<Real> compoundIndex_;
     };
 
 

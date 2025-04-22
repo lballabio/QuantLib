@@ -104,7 +104,8 @@ struct CommonVars {
             0.0009
         };
 
-        sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+        TimeSeries<Real> ts(pastDates.begin(), pastDates.end(), pastRates.begin());
+        sofr->addFixings(ts);
     }
 
     CommonVars() : CommonVars(Date(23, November, 2021)) {}
