@@ -48,23 +48,8 @@ namespace QuantLib {
                                        const ext::shared_ptr<Seasonality>& seasonality = {},
                                        const Interpolator& interpolator = Interpolator());
 
-        /*! \deprecated Use the other overload and pass the base date directly
-                        as the first date in the vector instead of using a lag.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                       const Calendar& calendar,
-                                       const DayCounter& dayCounter,
-                                       const Period& lag,
-                                       Frequency frequency,
-                                       std::vector<Date> dates,
-                                       const std::vector<Rate>& rates,
-                                       const Interpolator& interpolator = Interpolator());
-
         //! \name InflationTermStructure interface
         //@{
-        Date baseDate() const override;
         Date maxDate() const override;
         //@}
 
@@ -93,19 +78,6 @@ namespace QuantLib {
                                        Frequency frequency,
                                        const DayCounter& dayCounter,
                                        const ext::shared_ptr<Seasonality>& seasonality = {},
-                                       const Interpolator &interpolator = Interpolator());
-
-        /*! \deprecated Use the other overload and pass the base date directly
-                        instead of using a lag. A base rate should not be needed.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                       const Calendar& calendar,
-                                       const DayCounter& dayCounter,
-                                       const Period& lag,
-                                       Frequency frequency,
-                                       Rate baseZeroRate,
                                        const Interpolator &interpolator = Interpolator());
     };
 
@@ -155,76 +127,9 @@ namespace QuantLib {
        InterpolatedCurve<Interpolator>(interpolator) {
     }
 
-    QL_DEPRECATED_DISABLE_WARNING
-
-    template <class Interpolator>
-    InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
-        const Date& referenceDate,
-        const Calendar& calendar,
-        const DayCounter& dayCounter,
-        const Period& lag,
-        Frequency frequency,
-        std::vector<Date> dates,
-        const std::vector<Rate>& rates,
-        const Interpolator& interpolator)
-    : ZeroInflationTermStructure(referenceDate, calendar, dayCounter, rates[0], lag, frequency),
-      InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
-      dates_(std::move(dates)) {
-
-        QL_REQUIRE(dates_.size() > 1, "too few dates: " << dates_.size());
-
-        // check that the data starts from the beginning,
-        // i.e. referenceDate - lag, at least must be in the relevant
-        // period
-        std::pair<Date, Date> lim =
-            inflationPeriod(referenceDate - this->observationLag(), frequency);
-        QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
-                   "first data date is not in base period, date: "
-                       << dates_[0] << " not within [" << lim.first << "," << lim.second << "]");
-
-        QL_REQUIRE(this->data_.size() == dates_.size(),
-                   "indices/dates count mismatch: " << this->data_.size() << " vs "
-                                                    << dates_.size());
-        for (Size i = 1; i < dates_.size(); i++) {
-            // must be greater than -1
-            QL_REQUIRE(this->data_[i] > -1.0, "zero inflation data < -100 %");
-        }
-
-        this->setupTimes(dates_, referenceDate, dayCounter);
-        this->setupInterpolation();
-        this->interpolation_.update();
-    }
-
-    template <class Interpolator>
-    InterpolatedZeroInflationCurve<Interpolator>::
-    InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   Rate baseZeroRate,
-                                   const Interpolator& interpolator)
-    :  ZeroInflationTermStructure(referenceDate, calendar, dayCounter,
-                                  baseZeroRate, lag, frequency),
-       InterpolatedCurve<Interpolator>(interpolator) {
-    }
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-    template <class T>
-    Date InterpolatedZeroInflationCurve<T>::baseDate() const {
-        if (hasExplicitBaseDate())
-            return ZeroInflationTermStructure::baseDate();
-        else
-            return dates_.front();
-    }
-
     template <class T>
     Date InterpolatedZeroInflationCurve<T>::maxDate() const {
-        if (hasExplicitBaseDate())
-            return dates_.back();
-        else
-            return inflationPeriod(dates_.back(), frequency()).second;
+        return dates_.back();
     }
 
     template <class T>

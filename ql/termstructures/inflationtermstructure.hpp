@@ -57,48 +57,21 @@ namespace QuantLib {
                                const DayCounter& dayCounter = DayCounter(),
                                ext::shared_ptr<Seasonality> seasonality = {},
                                Rate baseRate = Null<Rate>());
-
-        /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InflationTermStructure(Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               const DayCounter& dayCounter = DayCounter(),
-                               ext::shared_ptr<Seasonality> seasonality = {});
-
-        /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InflationTermStructure(const Date& referenceDate,
-                               Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               const Calendar& calendar = Calendar(),
-                               const DayCounter& dayCounter = DayCounter(),
-                               ext::shared_ptr<Seasonality> seasonality = {});
-
-        /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        InflationTermStructure(Natural settlementDays,
-                               const Calendar& calendar,
-                               Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               const DayCounter& dayCounter = DayCounter(),
-                               ext::shared_ptr<Seasonality> seasonality = {});
         //@}
+
+        QL_DEPRECATED_DISABLE_WARNING
+        ~InflationTermStructure() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
 
         //! \name Inflation interface
         //@{
+        /*! \deprecated Do not use; inflation curves always have an explicit
+                        base date now.
+                        Deprecated in version 1.39.
+        */
+        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
         virtual Period observationLag() const;
+
         virtual Frequency frequency() const;
         virtual Rate baseRate() const;
 
@@ -110,48 +83,43 @@ namespace QuantLib {
         */
         virtual Date baseDate() const;
 
-        /*! This can be used temporarily to check whether the term structure
-            was created using one of the new constructors taking a base date
-            or one of the deprecated ones taking an observation lag.
+        /*! \deprecated Do not use; inflation curves always have an explicit
+                        base date now.
+                        Deprecated in version 1.39.
         */
+        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
         bool hasExplicitBaseDate() const {
-            return hasExplicitBaseDate_;
+            return true;
         }
         //@}
 
         //! \name Seasonality
         //@{
-        /*! \deprecated Use the overload taking a pointer and pass an empty one to remove seasonality.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use the overload taking a pointer and pass an empty one to remove seasonality.")]]
-        void setSeasonality() { setSeasonality({}); }
         void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality);
         ext::shared_ptr<Seasonality> seasonality() const;
         bool hasSeasonality() const;
         //@}
 
       protected:
-        /*! \deprecated Do not use; set baseRate_ directly if needed.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Do not use; set baseRate_ directly if needed.")]]
-        virtual void setBaseRate(const Rate& r) { baseRate_ = r; }
-
-        // range-checking
         void checkRange(const Date&,
                         bool extrapolate) const;
         void checkRange(Time t,
                         bool extrapolate) const;
 
         ext::shared_ptr<Seasonality> seasonality_;
+
+        /*! \deprecated Do not use; inflation curves always have an explicit
+                        base date now.
+                        Deprecated in version 1.39.
+        */
+        [[deprecated("Do not use; inflation curves always have an explicit base date now.")]]
         Period observationLag_;
+
         Frequency frequency_;
         mutable Rate baseRate_;
 
       private:
         Date baseDate_;
-        bool hasExplicitBaseDate_;
     };
 
     //! Interface for zero inflation term structures.
@@ -175,43 +143,6 @@ namespace QuantLib {
                                    Date baseDate,
                                    Frequency frequency,
                                    const DayCounter& dayCounter,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag. A base rate should not be needed.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        ZeroInflationTermStructure(const DayCounter& dayCounter,
-                                   Rate baseZeroRate,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag. A base rate should not be needed.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        ZeroInflationTermStructure(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   Rate baseZeroRate,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use another overload and pass the base date directly
-                        instead of using a lag. A base rate should not be needed.
-                        Deprecated in version 1.34.
-        */
-        QL_DEPRECATED
-        ZeroInflationTermStructure(Natural settlementDays,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   Rate baseZeroRate,
-                                   const Period& lag,
-                                   Frequency frequency,
                                    const ext::shared_ptr<Seasonality>& seasonality = {});
         //@}
 
@@ -307,43 +238,6 @@ namespace QuantLib {
                                   bool indexIsInterpolated,
                                   const DayCounter& dayCounter,
                                   const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use an overload with an explicit base date and without indexIsInterpolated.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use an overload with an explicit base date and without indexIsInterpolated")]]
-        YoYInflationTermStructure(const DayCounter& dayCounter,
-                                  Rate baseYoYRate,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use an overload with an explicit base date and without indexIsInterpolated.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use an overload with an explicit base date and without indexIsInterpolated")]]
-        YoYInflationTermStructure(const Date& referenceDate,
-                                  const Calendar& calendar,
-                                  const DayCounter& dayCounter,
-                                  Rate baseYoYRate,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use an overload with an explicit base date and without indexIsInterpolated.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use an overload with an explicit base date and without indexIsInterpolated")]]
-        YoYInflationTermStructure(Natural settlementDays,
-                                  const Calendar& calendar,
-                                  const DayCounter& dayCounter,
-                                  Rate baseYoYRate,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {});
         //@}
 
         QL_DEPRECATED_DISABLE_WARNING
@@ -404,7 +298,9 @@ namespace QuantLib {
     // inline
 
     inline Period InflationTermStructure::observationLag() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return observationLag_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Frequency InflationTermStructure::frequency() const {

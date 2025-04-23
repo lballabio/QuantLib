@@ -93,44 +93,10 @@ namespace QuantLib {
             this->indexIsInterpolated_ = indexIsInterpolated;
             QL_DEPRECATED_ENABLE_WARNING
         }
-
-
-        QL_DEPRECATED_DISABLE_WARNING
-
-        /*! \deprecated Use the overload without lag and indexIsInterpolated and
-                        pass the base date as the first date in the vector.
-                        Deprecated in version 1.34.
-        */
-        [[deprecated("Use the overload without lag and indexIsInterpolated and pass the base date as the first date in the vector")]]
-        PiecewiseYoYInflationCurve(
-            const Date& referenceDate,
-            const Calendar& calendar,
-            const DayCounter& dayCounter,
-            const Period& lag,
-            Frequency frequency,
-            bool indexIsInterpolated,
-            Rate baseYoYRate,
-            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
-            Real accuracy = 1.0e-12,
-            const Interpolator& i = Interpolator())
-        : base_curve(referenceDate,
-                     calendar,
-                     dayCounter,
-                     baseYoYRate,
-                     lag,
-                     frequency,
-                     indexIsInterpolated,
-                     i),
-          instruments_(std::move(instruments)), accuracy_(accuracy) {
-            bootstrap_.setup(this);
-        }
-
-        QL_DEPRECATED_ENABLE_WARNING
         //@}
 
         //! \name Inflation interface
         //@{
-        Date baseDate() const override;
         Date maxDate() const override;
         //@
         //! \name Inspectors
@@ -159,13 +125,6 @@ namespace QuantLib {
 
 
     // inline and template definitions
-
-    template <class I, template <class> class B, class T>
-    inline Date PiecewiseYoYInflationCurve<I,B,T>::baseDate() const {
-        if (!this->hasExplicitBaseDate())
-            this->calculate();
-        return base_curve::baseDate();
-    }
 
     template <class I, template <class> class B, class T>
     inline Date PiecewiseYoYInflationCurve<I,B,T>::maxDate() const {

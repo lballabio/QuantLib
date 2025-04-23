@@ -236,18 +236,6 @@ namespace QuantLib {
             + accruedAmount(settlement);
     }
 
-    Rate Bond::yield(Real price,
-                     const DayCounter& dc,
-                     Compounding comp,
-                     Frequency freq,
-                     Date settlement,
-                     Real accuracy,
-                     Size maxEvaluations,
-                     Real guess,
-                     Bond::Price::Type priceType) const {
-        return yield({price, priceType}, dc, comp, freq, settlement, accuracy,
-                     maxEvaluations, guess);
-    }
     Rate Bond::yield(Bond::Price price,
                      const DayCounter& dc,
                      Compounding comp,
