@@ -87,8 +87,7 @@ struct CommonVars {
     }
 
 
-BOOST_AUTO_TEST_CASE(testCompoundedIndex) {
-    // Setup
+BOOST_AUTO_TEST_CASE(testCompoundedIndex1m) {
     CommonVars vars;
     Date today(22, April, 2025);
     Settings::instance().evaluationDate() = today;
@@ -96,16 +95,69 @@ BOOST_AUTO_TEST_CASE(testCompoundedIndex) {
     Calendar calendar = TARGET();
     DayCounter dayCounter = Actual360();
 
-    // Test compounded fixings
     Date fromFixingDate(14, February, 2025);
     Date toFixingDate(14, March, 2025);
 
     Rate compoundedRate = vars.estr->compoundedFixings(fromFixingDate, toFixingDate);
 
-    // Expected compounded rate calculation
-    Real expectedRate = 0.026489361171;
+    Rate expectedRate = 0.026489361171;
 
-    // Assert
+    CHECK_OIS_RATE_RESULT("OIS Rate over a month", compoundedRate, expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testCompoundedIndex2m) {
+    CommonVars vars;
+    Date today(22, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual360();
+
+    Date fromFixingDate(14, February, 2025);
+    Date toFixingDate(14, April, 2025);
+
+    Rate compoundedRate = vars.estr->compoundedFixings(fromFixingDate, toFixingDate);
+
+    Rate expectedRate = 0.02530656552467557;
+
+    CHECK_OIS_RATE_RESULT("OIS Rate over two months: ", compoundedRate, expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testCompoundedIndexOutOfRangeBefore) {
+    CommonVars vars;
+    Date today(22, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual360();
+
+    Date fromFixingDate(11, February, 2025);
+    Date toFixingDate(11, March, 2025);
+
+    Rate compoundedRate = vars.estr->compoundedFixings(fromFixingDate, toFixingDate);
+
+    // Expected Null<Rate>
+    Rate expectedRate = Null<Rate>();
+
+    CHECK_OIS_RATE_RESULT("OIS Rate over a month", compoundedRate, expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testCompoundedIndexOutOfRangeAfter) {
+    CommonVars vars;
+    Date today(22, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual360();
+
+    Date fromFixingDate(22, March, 2025);
+    Date toFixingDate(22, April, 2025);
+
+    Rate compoundedRate = vars.estr->compoundedFixings(fromFixingDate, toFixingDate);
+
+    // Expected Null<Rate>
+    Rate expectedRate = Null<Rate>();
+
     CHECK_OIS_RATE_RESULT("OIS Rate over a month", compoundedRate, expectedRate, 1e-12);
 }
 

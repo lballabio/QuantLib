@@ -95,6 +95,12 @@ namespace QuantLib {
     Rate OvernightIndex::compoundedFixings(const Date& fromFixingDate, const Date& toFixingDate) {
         calculate();
         auto yearFraction = dayCounter_.yearFraction(fromFixingDate, toFixingDate);
+        auto compIndexEnd = compoundIndex_[toFixingDate];
+        auto compIndexStart = compoundIndex_[fromFixingDate];
+
+        if (compIndexStart == Null<Rate>() || compIndexEnd == Null<Rate>())
+            return Null<Rate>();
+
         return (compoundIndex_[toFixingDate] / compoundIndex_[fromFixingDate] - 1) / yearFraction;  
     }
  

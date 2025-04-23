@@ -311,6 +311,9 @@
     <ClCompile Include="optionletstripper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="overnightindex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="overnightindexedcoupon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
