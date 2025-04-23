@@ -275,12 +275,12 @@ AC_MSG_RESULT([$ql_faster_lazy_objects])
 AC_MSG_CHECKING([whether to enable std::any instead of boost::any])
 AC_ARG_ENABLE([std-any],
               AS_HELP_STRING([--enable-std-any],
-                             [If enabled, std::any and related classes and
-                              functions will be used instead of boost::any.
-                              If disabled (the default) the Boost facilities
+                             [If enabled (the default), std::any and related
+                              classes and functions will be used instead of
+                              boost::any. If disabled, the Boost facilities
                               will be used.]),
               [ql_use_std_any=$enableval],
-              [ql_use_std_any=no])
+              [ql_use_std_any=yes])
 if test "$ql_use_std_any" = "yes" ; then
    AC_DEFINE([QL_USE_STD_ANY],[1],
              [Define this if you want to use std::any.])
@@ -290,12 +290,12 @@ AC_MSG_RESULT([$ql_use_std_any])
 AC_MSG_CHECKING([whether to enable std::optional instead of boost::optional])
 AC_ARG_ENABLE([std-optional],
               AS_HELP_STRING([--enable-std-optional],
-                             [If enabled, std::optional and related
-                              classes and functions will be used instead
-                              of boost::optional. If disabled (the default)
+                             [If enabled (the default), std::optional and
+                              related classes and functions will be used
+                              instead of boost::optional. If disabled,
                               the Boost facilities will be used.]),
               [ql_use_std_optional=$enableval],
-              [ql_use_std_optional=no])
+              [ql_use_std_optional=yes])
 if test "$ql_use_std_optional" = "yes" ; then
    AC_DEFINE([QL_USE_STD_OPTIONAL],[1],
              [Define this if you want to use std::optional.])

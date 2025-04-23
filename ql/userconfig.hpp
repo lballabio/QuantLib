@@ -124,7 +124,7 @@
    will be used.
 */
 #ifndef QL_USE_STD_ANY
-//#    define QL_USE_STD_ANY
+#    define QL_USE_STD_ANY
 #endif
 
 /* If defined, `std::optional` and related classes and functions will
@@ -132,7 +132,7 @@
    facilities will be used.
 */
 #ifndef QL_USE_STD_OPTIONAL
-//#    define QL_USE_STD_OPTIONAL
+#    define QL_USE_STD_OPTIONAL
 #endif
 
 /* If defined, `std::shared_ptr` and related classes and functions

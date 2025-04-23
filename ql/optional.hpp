@@ -29,6 +29,8 @@
 #if defined(QL_USE_STD_OPTIONAL)
 #include <optional>
 #else
+// Deprecated in version 1.39
+#pragma message("Warning: using boost::optional is deprecated.  Enable std::optional instead.")
 #include <boost/optional.hpp>
 #endif
 

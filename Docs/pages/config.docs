@@ -121,15 +121,15 @@
     \code
     #define QL_USE_STD_ANY
     \endcode
-    If defined, `std::any` and related classes and functions will be
-    used instead of `boost::any`. If undefined (the default) the Boost
-    facilities will be used.
+    If defined (the default), `std::any` and related classes and
+    functions will be used instead of `boost::any`. If undefined, the
+    Boost facilities will be used.
 
     \code
     #define QL_USE_STD_OPTIONAL
     \endcode
-    If defined, `std::optional` and related classes and functions will
-    be used instead of `boost::optional`. If undefined (the default)
+    If defined (the default), `std::optional` and related classes and
+    functions will be used instead of `boost::optional`. If undefined,
     the Boost facilities will be used.
 
     \code
