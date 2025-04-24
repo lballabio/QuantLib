@@ -136,6 +136,21 @@ BOOST_AUTO_TEST_CASE(testPastCouponRate) {
     CHECK_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAmount, 1e-8);
 }
 
+BOOST_AUTO_TEST_CASE(testPastCouponRateThroughIndex) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon through compundFactor in index...");
+
+    CommonVars vars;
+
+    // coupon entirely in the past
+    auto pastCoupon = vars.makeCoupon(Date(1, July, 2019),
+                                      Date(1, August, 2019));
+
+    Rate expectedRate = 0.024537253424;
+    Real expectedAmount = vars.notional * expectedRate * 31.0/360;
+    CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
+    CHECK_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAmount, 1e-8);
+}
+
 BOOST_AUTO_TEST_CASE(testCurrentCouponRate) {
     BOOST_TEST_MESSAGE("Testing rate for current overnight-indexed coupon...");
 
