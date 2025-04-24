@@ -57,6 +57,7 @@ namespace QuantLib {
         const ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
         const auto& pastFixings = index->timeSeries();
+        const auto& fixingCalendar = index->fixingCalendar();
 
         const auto& fixingDates = coupon_->fixingDates();
         const auto& valueDates = coupon_->valueDates();
@@ -68,18 +69,32 @@ namespace QuantLib {
         const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
 
         Real compoundFactor = 1.0;
+        Date lastPastFixingDate = n < fixingCalendar.businessDaysBetween(fixingDates[0], today)
+            ? fixingCalendar.advance(fixingDates[0], Period(n, Days)) : fixingCalendar.advance(today, Period(-1, Days));
+        Real indexCompoundedFactor = index->compoundedFactor(fixingDates[0], lastPastFixingDate);
+        auto calculatePastFixing = [&](){
+            while (i < n && fixingDates[i] < today) {
+                // rate must have been fixed
+                const Rate fixing = pastFixings[fixingDates[i]];
+                QL_REQUIRE(fixing != Null<Real>(),
+                           "Missing " << index->name() << " fixing for " << fixingDates[i]);
+                Time span = (date >= interestDates[i + 1] ?
+                                 dt[i] :
+                                 index->dayCounter().yearFraction(interestDates[i], date));
+                compoundFactor *= (1.0 + fixing * span);
+                ++i;
+            }    
+        };
 
-        // already fixed part
-        while (i < n && fixingDates[i] < today) {
-            // rate must have been fixed
-            const Rate fixing = pastFixings[fixingDates[i]];
-            QL_REQUIRE(fixing != Null<Real>(),
-                       "Missing " << index->name() << " fixing for " << fixingDates[i]);
-            Time span = (date >= interestDates[i + 1] ?
-                             dt[i] :
-                             index->dayCounter().yearFraction(interestDates[i], date));
-            compoundFactor *= (1.0 + fixing * span);
-            ++i;
+        if (indexCompoundedFactor == Null<Real>() 
+            || applyObservationShift 
+            || coupon_->lockoutDays() != Null<Natural>()) {
+            calculatePastFixing();
+        } else {
+            compoundFactor = indexCompoundedFactor;
+            i = fixingCalendar.businessDaysBetween(fixingDates[0], 
+                                                   lastPastFixingDate,
+                                                   true, true);
         }
 
         // today is a border case

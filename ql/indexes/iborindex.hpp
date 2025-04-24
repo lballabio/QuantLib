@@ -101,6 +101,7 @@ namespace QuantLib {
         void addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite = false) override;
         void addFixings(const TimeSeries<Real>& t, bool forceOverwrite = false) override;
         Rate compoundedFixings(const Date& fromFixingDate, const Date& toFixingDate);
+        Real compoundedFactor(const Date& fromFixingDate, const Date& toFixingDate);
       protected:
           void performCalculations() const override;
       private:

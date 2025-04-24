@@ -98,10 +98,21 @@ namespace QuantLib {
         auto compIndexEnd = compoundIndex_[toFixingDate];
         auto compIndexStart = compoundIndex_[fromFixingDate];
 
-        if (compIndexStart == Null<Rate>() || compIndexEnd == Null<Rate>())
-            return Null<Rate>();
+        if (compIndexStart == Null<Real>() || compIndexEnd == Null<Real>())
+            return Null<Real>();
 
         return (compoundIndex_[toFixingDate] / compoundIndex_[fromFixingDate] - 1) / yearFraction;  
+    }
+
+    Real OvernightIndex::compoundedFactor(const Date& fromFixingDate, const Date& toFixingDate) {
+        calculate();
+        auto compIndexEnd = compoundIndex_[toFixingDate];
+        auto compIndexStart = compoundIndex_[fromFixingDate];
+
+        if (compIndexStart == Null<Real>() || compIndexEnd == Null<Real>())
+            return Null<Real>();
+
+        return compIndexEnd / compIndexStart;
     }
  
     void OvernightIndex::performCalculations() const {
