@@ -202,7 +202,7 @@ void testBootstrap(bool telescopicValueDates,
     Natural paymentLag = 2;
 
     std::vector<ext::shared_ptr<RateHelper> > estrHelpers;
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.00)));
+    auto spread = makeQuoteHandle(0.0);
 
     auto euribor3m = ext::make_shared<Euribor3M>();
     auto estr = ext::make_shared<Estr>();
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
         ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(0.02, 0.15, true);
 
     std::vector<ext::shared_ptr<RateHelper> > estrHelpers;
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.00)));
+    auto spread = makeQuoteHandle(0.0);
 
     auto euribor3m = ext::make_shared<Euribor3M>();
     auto estr = ext::make_shared<Estr>();
@@ -492,7 +492,7 @@ void testBootstrapWithLookback(Natural lookbackDays,
     std::vector<ext::shared_ptr<RateHelper> > estrHelpers;
 
     auto estr = ext::make_shared<Estr>();
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.00)));
+    auto spread = makeQuoteHandle(0.0);
 
 
     for (auto& i : estrSwapData) {
@@ -674,7 +674,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     auto index = ext::make_shared<FedFunds>();
-    Handle<Quote> spread(ext::shared_ptr<Quote>(new SimpleQuote(0.00)));
+    auto spread = makeQuoteHandle(0.0);
 
     helpers.push_back(
         ext::make_shared<DepositRateHelper>(data[0].rate,
