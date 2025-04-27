@@ -104,8 +104,6 @@ namespace QuantLib {
             default:
               QL_FAIL("unknown barrier type");
           }
-
-        return 0.0;
     }
 
     void AnalyticPartialTimeBarrierOptionEngine::calculate() const {
