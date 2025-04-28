@@ -37,6 +37,8 @@ namespace QuantLib {
 
     //! CompoudAveragedOvernightIndexedCouponPricer pricer
     class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+      using Dates = std::vector<Date>;
+      using Times = std::vector<Time>;
       public:
         //! \name FloatingRateCoupon interface
         //@{
@@ -52,6 +54,16 @@ namespace QuantLib {
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
+
+      private:
+        void handlePastFixings(Size& i, const Size n, Real& compoundFactor, const ext::shared_ptr<OvernightIndex> index, 
+                               const Dates& fixingDates, const Dates& valueDates, const Dates& interestDates,
+                               const Times& dt, const Date& today, const Date& date, const bool applyObservationShift) const;
+        void handleTodayFixing(Size& i, Size n, Real& compoundFactor, 
+          const ext::shared_ptr<OvernightIndex> index, const Dates& fixingDates,
+          const Dates& interestDates, const Times& dt, const Date& today, 
+          const Date& date) const;
+        void handleFutureFixings();
     };
 
     /*! pricer for arithmetically averaged overnight indexed coupons

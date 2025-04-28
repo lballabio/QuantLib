@@ -127,6 +127,10 @@ namespace QuantLib {
 
         const auto& ts = Index::timeSeries();
         auto fixingDates = ts.dates();
+        if (fixingDates.empty()) {
+            compoundIndex_ = TimeSeries<Real>();
+            return;
+        }
         auto fixingCalendar = InterestRateIndex::fixingCalendar();
         auto lastFixingDate = getLastFixingDate(fixingCalendar, fixingDates);
 
