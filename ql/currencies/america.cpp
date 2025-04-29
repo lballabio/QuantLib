@@ -140,6 +140,7 @@ namespace QuantLib {
     // Mexican Unidad de Inversion
     MXVCurrency::MXVCurrency() {
         static auto mxvData = ext::make_shared<Data>("Mexican Unidad de Inversion", "MXV", 979, "MXV", "", 1, Rounding());
+        data_ = mxvData;
     }
 
     // Unidad de Valor Real
