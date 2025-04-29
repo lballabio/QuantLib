@@ -674,7 +674,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     auto index = ext::make_shared<FedFunds>();
-    auto spread = makeQuoteHandle(0.0);
+    Spread spread = 0.0;
 
     helpers.push_back(
         ext::make_shared<DepositRateHelper>(data[0].rate,
