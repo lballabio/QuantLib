@@ -52,10 +52,10 @@ for years, owner in copyrights:
     if last_year is not None and years[0] != last_year:
         lines.append("")
     last_year = years[0]
-    lines.append("    Copyright (C) %s %s" % (", ".join([str(y) for y in years]), owner))
+    lines.append("Copyright (C) %s %s" % (", ".join([str(y) for y in years]), owner))
 
 print(
-    """QuantLib is
+    """
 %s
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
