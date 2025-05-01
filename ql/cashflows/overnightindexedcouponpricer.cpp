@@ -113,29 +113,11 @@ namespace QuantLib {
         }
     }
 
-    Rate CompoundingOvernightIndexedCouponPricer::averageRate(const Date& date) const {
-        const Date today = Settings::instance().evaluationDate();
-
-        const ext::shared_ptr<OvernightIndex> index =
-            ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
-        const auto& fixingCalendar = index->fixingCalendar();
-
-        const auto& fixingDates = coupon_->fixingDates();
-        const auto& valueDates = coupon_->valueDates();
-        const auto& interestDates = coupon_->interestDates();
-        const auto& dt = coupon_->dt();
-        const bool applyObservationShift = coupon_->applyObservationShift();
-
-        Size i = 0;
-        const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
-        Real compoundFactor = 1.0;
-
-        handlePastFixings(i, n, compoundFactor, index, fixingDates, valueDates, 
-                          interestDates, dt, today, date, applyObservationShift);
-
-        handleTodayFixing(i, n, compoundFactor, index, fixingDates, interestDates,
-                          dt, today, date);
-
+    void CompoundingOvernightIndexedCouponPricer::handleFutureFixings(Size& i, Size n, 
+        Real& compoundFactor, const ext::shared_ptr<OvernightIndex> index,
+        const Dates& valueDates, const Dates& fixingDates, 
+        const Dates& interestDates, const Times& dt, const Date& today, 
+        const Date& date) const {
         // forward part using telescopic property in order
         // to avoid the evaluation of multiple forward fixings
         // where possible.
@@ -206,6 +188,33 @@ namespace QuantLib {
                 }
             }
         }
+    }
+
+    Rate CompoundingOvernightIndexedCouponPricer::averageRate(const Date& date) const {
+        const Date today = Settings::instance().evaluationDate();
+
+        const ext::shared_ptr<OvernightIndex> index =
+            ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+        const auto& fixingCalendar = index->fixingCalendar();
+
+        const auto& fixingDates = coupon_->fixingDates();
+        const auto& valueDates = coupon_->valueDates();
+        const auto& interestDates = coupon_->interestDates();
+        const auto& dt = coupon_->dt();
+        const bool applyObservationShift = coupon_->applyObservationShift();
+
+        Size i = 0;
+        const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
+        Real compoundFactor = 1.0;
+
+        handlePastFixings(i, n, compoundFactor, index, fixingDates, valueDates, 
+                          interestDates, dt, today, date, applyObservationShift);
+
+        handleTodayFixing(i, n, compoundFactor, index, fixingDates, interestDates,
+                          dt, today, date);
+
+        handleFutureFixings(i, n, compoundFactor, index, valueDates, fixingDates,
+                            interestDates, dt, today, date);
 
         const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
         return coupon_->gearing() * rate + coupon_->spread();

@@ -63,7 +63,10 @@ namespace QuantLib {
           const ext::shared_ptr<OvernightIndex> index, const Dates& fixingDates,
           const Dates& interestDates, const Times& dt, const Date& today, 
           const Date& date) const;
-        void handleFutureFixings();
+        void handleFutureFixings(Size& i, Size n, Real& compoundFactor,
+          const ext::shared_ptr<OvernightIndex> index, const Dates& fixingDates,
+          const Dates& valueDates, const Dates& interestDates, const Times& dt, 
+          const Date& today, const Date& date) const;
     };
 
     /*! pricer for arithmetically averaged overnight indexed coupons

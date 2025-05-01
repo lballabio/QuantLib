@@ -88,6 +88,8 @@ struct CommonVars {
 
 
 BOOST_AUTO_TEST_CASE(testCompoundedIndex1m) {
+    BOOST_TEST_MESSAGE("Testing 1m rate for past overnight-indexed coupon...");
+
     CommonVars vars;
     Date today(22, April, 2025);
     Settings::instance().evaluationDate() = today;
@@ -106,6 +108,8 @@ BOOST_AUTO_TEST_CASE(testCompoundedIndex1m) {
 }
 
 BOOST_AUTO_TEST_CASE(testCompoundedIndex2m) {
+    BOOST_TEST_MESSAGE("Testing 2m rate for past overnight-indexed coupon...");
+
     CommonVars vars;
     Date today(22, April, 2025);
     Settings::instance().evaluationDate() = today;
@@ -124,6 +128,8 @@ BOOST_AUTO_TEST_CASE(testCompoundedIndex2m) {
 }
 
 BOOST_AUTO_TEST_CASE(testCompoundedIndexOutOfRangeBefore) {
+    BOOST_TEST_MESSAGE("Testing compounded fixings for a date range partially before available fixings...");
+
     CommonVars vars;
     Date today(22, April, 2025);
     Settings::instance().evaluationDate() = today;
@@ -143,6 +149,8 @@ BOOST_AUTO_TEST_CASE(testCompoundedIndexOutOfRangeBefore) {
 }
 
 BOOST_AUTO_TEST_CASE(testCompoundedIndexOutOfRangeAfter) {
+    BOOST_TEST_MESSAGE("Testing compounded fixings for a date range partially after available fixings...");
+
     CommonVars vars;
     Date today(22, April, 2025);
     Settings::instance().evaluationDate() = today;
@@ -159,6 +167,26 @@ BOOST_AUTO_TEST_CASE(testCompoundedIndexOutOfRangeAfter) {
     Rate expectedRate = Null<Rate>();
 
     CHECK_OIS_RATE_RESULT("OIS Rate over a month", compoundedRate, expectedRate, 1e-12);
+}
+
+BOOST_AUTO_TEST_CASE(testCompoundedFactor) {
+    BOOST_TEST_MESSAGE("Testing compoundFactor at the end of available fixings...");
+
+    CommonVars vars;
+    Date today(22, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = TARGET();
+    DayCounter dayCounter = Actual360();
+
+    Date fromFixingDate(14, February, 2025);
+    Date toFixingDate(17, March, 2025);
+
+    Real compoundedFactor = vars.estr->compoundedFactor(fromFixingDate, toFixingDate);
+
+    Real expectedCompounedFactor = 1.002262115288;
+
+    CHECK_OIS_RATE_RESULT("OIS Rate over a month", compoundedFactor, expectedCompounedFactor, 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

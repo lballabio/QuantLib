@@ -21,7 +21,9 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
 #include <utility>
+#include <numeric>
 
 namespace QuantLib {
 
@@ -131,27 +133,28 @@ namespace QuantLib {
             compoundIndex_ = TimeSeries<Real>();
             return;
         }
+
         auto fixingCalendar = InterestRateIndex::fixingCalendar();
         auto lastFixingDate = getLastFixingDate(fixingCalendar, fixingDates);
+        Schedule schedule = MakeSchedule()
+                                .from(fixingDates.front())
+                                .to(lastFixingDate)
+                                .withTenor(Period(1, Days))
+                                .withCalendar(fixingCalendar)
+                                .withConvention(Following)
+                                .withTerminationDateConvention(Following);
+        std::vector<Real> compIndexValues(schedule.size());
+        Real lastCompIndexValue = 1.000;
+        compIndexValues[0] = lastCompIndexValue;
 
-        auto currentFixingDay = fixingDates.front();
-        std::vector<Real> compIndexValues;
-        std::vector<Date> compIndexDates;
-        compIndexValues.push_back(Real(1.000));
-        compIndexDates.push_back(currentFixingDay);
+        std::transform(schedule.begin(), schedule.end() - 1, schedule.begin() + 1, compIndexValues.begin() + 1,
+            [&](const Date& d1, const Date& d2) {
+                lastCompIndexValue *= (1 + ts[d1] * dayCounter_.yearFraction(d1, d2));
+                return lastCompIndexValue;
+            });
 
-        while(currentFixingDay <= lastFixingDate) {
-            auto nextFixingDay = fixingCalendar.advance(currentFixingDay, Period(1, Days));
-            compIndexValues.push_back(
-                compIndexValues.back() *
-                (1 + ts[currentFixingDay] 
-                    * dayCounter_.yearFraction(currentFixingDay, nextFixingDay)));
-            compIndexDates.push_back(nextFixingDay);
-            currentFixingDay = nextFixingDay;
-        }
-
-        compoundIndex_ = TimeSeries<Real>(compIndexDates.begin(), 
-                                          compIndexDates.end(), 
+        compoundIndex_ = TimeSeries<Real>(schedule.begin(), 
+                                          schedule.end(), 
                                           compIndexValues.begin());
     }
 
