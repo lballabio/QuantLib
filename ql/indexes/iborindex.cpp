@@ -23,7 +23,6 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/schedule.hpp>
 #include <utility>
-#include <numeric>
 
 namespace QuantLib {
 
