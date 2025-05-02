@@ -97,10 +97,31 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& h = {});
         //! returns a copy of itself linked to a different forwarding curve
         ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+        //! \name Observer interface
+        //@{
         void update() override;
+        //@}
+        //! stores the historical fixing at the given date
+        /*! the date passed as arguments must be the actual calendar
+            date of the fixing; no settlement days must be used.
+        */
         void addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite = false) override;
+        //! stores historical fixings from a TimeSeries
+        /*! the dates in the TimeSeries must be the actual calendar
+            dates of the fixings; no settlement days must be used.
+        */
         void addFixings(const TimeSeries<Real>& t, bool forceOverwrite = false) override;
+        //! Computes the compounded fixings over a given date range
+        /*!
+            This method calculates the compounded rate for the index over the specified
+            date range, using historical fixings stored in the index's time series.
+        */
         Rate compoundedFixings(const Date& fromFixingDate, const Date& toFixingDate);
+        //! Computes the compounded factor over a given date range
+        /*!
+            This method calculates the compounded factor for the index over the specified
+            date range, using historical fixings stored in the index's time series.
+        */
         Real compoundedFactor(const Date& fromFixingDate, const Date& toFixingDate);
       protected:
           void performCalculations() const override;
