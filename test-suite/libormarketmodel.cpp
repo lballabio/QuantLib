@@ -58,7 +58,7 @@ ext::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates, const std::vector<
 
     RelinkableHandle<YieldTermStructure> termStructure;
 
-    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index = ext::make_shared<Euribor6M>(termStructure);
 
     Date todaysDate =
         index->fixingCalendar().adjust(Date(4,September,2005));

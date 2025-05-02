@@ -195,7 +195,6 @@ namespace QuantLib {
 
         const ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
-        const auto& fixingCalendar = index->fixingCalendar();
 
         const auto& fixingDates = coupon_->fixingDates();
         const auto& valueDates = coupon_->valueDates();
