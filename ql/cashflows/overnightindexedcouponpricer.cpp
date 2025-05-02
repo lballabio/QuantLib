@@ -40,6 +40,16 @@ namespace QuantLib {
             // always one less than the number of interest dates.
             return n == interestDates.size() && applyObservationShift ? n - 1 : n;
         }
+
+        void updateCompoundFactor(Real& compoundFactor, const ext::shared_ptr<OvernightIndex> index, Size position, 
+            const std::vector<Date>& fixingDates, const std::vector<Date>& interestDates, const std::vector<Time>& dt,
+            const Date& date) {
+            const Rate fixing = index->fixing(fixingDates[position]);
+            Time span = (date >= interestDates[position + 1] ?
+                dt[position] :
+                index->dayCounter().yearFraction(interestDates[position], date));
+            compoundFactor *= (1.0 + fixing * span);
+        }
     }
 
     void CompoundingOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
@@ -56,22 +66,15 @@ namespace QuantLib {
         const Dates& valueDates, const Dates& interestDates, const Times& dt, 
         const Date& today, const Date& date, const bool applyObservationShift) const {
         Calendar fixingCalendar = index->fixingCalendar();
-        const auto& pastFixings = index->timeSeries();
         Size deltaDays = fixingCalendar.businessDaysBetween(fixingDates[0], today);
         Date lastPastFixingDate = n < deltaDays
             ? fixingCalendar.advance(fixingDates[0], Period(n, Days)) : fixingCalendar.advance(today, Period(-1, Days));
         Real indexCompoundedFactor = index->compoundedFactor(fixingDates[0], lastPastFixingDate);
 
-        auto calculatePastFixing = [&](){
+        auto calculatePastCompoundFactor = [&](){
             while (i < n && fixingDates[i] < today) {
                 // rate must have been fixed
-                const Rate fixing = pastFixings[fixingDates[i]];
-                QL_REQUIRE(fixing != Null<Real>(),
-                           "Missing " << index->name() << " fixing for " << fixingDates[i]);
-                Time span = (date >= interestDates[i + 1] ?
-                                 dt[i] :
-                                 index->dayCounter().yearFraction(interestDates[i], date));
-                compoundFactor *= (1.0 + fixing * span);
+                updateCompoundFactor(compoundFactor, index, i, fixingDates, interestDates, dt, date);
                 ++i;
             }    
         };
@@ -79,7 +82,7 @@ namespace QuantLib {
         if (indexCompoundedFactor == Null<Real>() 
             || applyObservationShift 
             || coupon_->lockoutDays() != Null<Natural>()) {
-            calculatePastFixing();
+            calculatePastCompoundFactor();
         } else {
             compoundFactor = indexCompoundedFactor;
             i = fixingCalendar.businessDaysBetween(fixingDates[0], 
@@ -92,17 +95,13 @@ namespace QuantLib {
         Size n, Real& compoundFactor, const ext::shared_ptr<OvernightIndex> index, 
         const Dates& fixingDates, const Dates& interestDates, const Times& dt, 
         const Date& today, const Date& date) const {
-        const auto& pastFixings = index->timeSeries();
         // today is a border case
         if (i < n && fixingDates[i] == today) {
             // might have been fixed
             try {
-                Rate fixing = pastFixings[fixingDates[i]];
+                Rate fixing = index->fixing(fixingDates[i]);
                 if (fixing != Null<Real>()) {
-                    Time span = (date >= interestDates[i + 1] ?
-                                     dt[i] :
-                                     index->dayCounter().yearFraction(interestDates[i], date));
-                    compoundFactor *= (1.0 + fixing * span);
+                    updateCompoundFactor(compoundFactor, index, i, fixingDates, interestDates, dt, date);
                     ++i;
                 } else {
                     ; // fall through and forecast
@@ -126,15 +125,6 @@ namespace QuantLib {
             QL_REQUIRE(!curve.empty(),
                        "null term structure set to this instance of " << index->name());
 
-            const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
-                                        &dt](Size position) {
-                Rate fixing = index->fixing(fixingDates[position]);
-                Time span = (date >= interestDates[position + 1] ?
-                                 dt[position] :
-                                 index->dayCounter().yearFraction(interestDates[position], date));
-                return span * fixing;
-            };
-
             if (!coupon_->canApplyTelescopicFormula()) {
                 // With lookback applied, the telescopic formula cannot be used,
                 // we need to project each fixing in the coupon.
@@ -147,7 +137,7 @@ namespace QuantLib {
                 // Same applies to a case when accrual calculation date does or
                 // does not occur on an interest date.
                 while (i < n) {
-                    compoundFactor *= (1.0 + effectiveRate(i));
+                    updateCompoundFactor(compoundFactor, index, i, fixingDates, interestDates, dt, date);
                     ++i;
                 }
             } else {
@@ -174,7 +164,7 @@ namespace QuantLib {
 
                     // With no lockout, the loop is skipped because i = n.
                     while (i < n) {
-                        compoundFactor *= (1.0 + effectiveRate(i));
+                        updateCompoundFactor(compoundFactor, index, i, fixingDates, interestDates, dt, date);
                         ++i;
                     }
                 } else {
@@ -184,7 +174,7 @@ namespace QuantLib {
                     // previous date, then we'll add the missing bit.
                     const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
                     compoundFactor *= startDiscount / endDiscount;
-                    compoundFactor *= (1.0 + effectiveRate(n - 1));
+                    updateCompoundFactor(compoundFactor, index, n - 1, fixingDates, interestDates, dt, date);
                 }
             }
         }
