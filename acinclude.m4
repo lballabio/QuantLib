@@ -8,15 +8,16 @@ AC_DEFUN([QL_CHECK_CPP17],
  AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM(
         [[@%:@include <optional>
-          int main() {
+          void foo() {
               auto x = std::optional<int>{42};
+              x.reset(); // avoids unused-variable warning
           }
           ]],
         [[]])],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no: adding -std=c++17 to CXXFLAGS])
      AC_SUBST([CPP17_CXXFLAGS],["-std=c++17"])
-     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++17"])
+     AC_SUBST([CXXFLAGS],["-std=c++17 ${CXXFLAGS}"])
     ])
 ])
 
