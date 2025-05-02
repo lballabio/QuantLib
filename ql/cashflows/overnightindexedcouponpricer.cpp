@@ -76,7 +76,7 @@ namespace QuantLib {
                 // rate must have been fixed
                 updateCompoundFactor(compoundFactor, index, i, fixingDates, interestDates, dt, date);
                 ++i;
-            }    
+            }
         };
 
         if (indexCompoundedFactor == Null<Real>() 
