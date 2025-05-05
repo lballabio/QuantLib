@@ -332,7 +332,7 @@ namespace QuantLib {
     }
 
     template <class ForwardIterator>
-    inline Array::Array(ForwardIterator begin, ForwardIterator end) {
+    inline Array::Array(ForwardIterator begin, ForwardIterator end) {   // NOLINT(performance-unnecessary-value-param)
         // Unfortunately, calls such as Array(3, 4) match this constructor.
         // We have to detect integral types and dispatch.
         detail::_fill_array_(*this, data_, n_, begin, end,
