@@ -2413,7 +2413,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                 endIndex);
 
             std::vector<Matrix> pseudoRoots;
-            for (Size k=0; k < marketModel->numberOfSteps(); ++k)
+            pseudoRoots.reserve(marketModel->numberOfSteps());
+for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                 pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
          // test that the derivative of swaption implied vols to the pseudo-root elements are correct, finite differencing versus analytic value
@@ -2513,7 +2514,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                         endIndex, initialNumeraireValue);
 
                     std::vector<Matrix> pseudoRoots;
-                    for (Size k=0; k < marketModel->numberOfSteps(); ++k)
+                    pseudoRoots.reserve(marketModel->numberOfSteps());
+for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
                     // test cap price derivatives with respect to pseudo-root elements
@@ -2659,7 +2661,8 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                         endIndex,initialNumeraireValue);
 
                     std::vector<Matrix> pseudoRoots;
-                    for (Size k=0; k < marketModel->numberOfSteps(); ++k)
+                    pseudoRoots.reserve(marketModel->numberOfSteps());
+for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
 
@@ -4491,7 +4494,7 @@ BOOST_AUTO_TEST_CASE(testDriftCalculator) {
     const std::vector<Real>& rateTaus = evolution.rateTaus();
     std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution,
         measureOffset_);
-    std::vector<Size> alive = evolution.firstAliveRate();
+    const std::vector<Size>& alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,

@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/math/comparison.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
@@ -323,9 +324,9 @@ namespace QuantLib {
                 Y = projectToUnitDiagonalMatrix(X);
 
                 // convergence test
-                if (std::max(normInf(X-lastX)/normInf(X),
-                        std::max(normInf(Y-lastY)/normInf(Y),
-                                normInf(Y-X)/normInf(Y)))
+                if (std::max({normInf(X-lastX)/normInf(X),
+                        normInf(Y-lastY)/normInf(Y),
+                                normInf(Y-X)/normInf(Y)})
                         <= tolerance)
                 {
                     break;

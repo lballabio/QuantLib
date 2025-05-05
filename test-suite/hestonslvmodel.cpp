@@ -703,7 +703,7 @@ ext::shared_ptr<LocalVolTermStructure> getFixedLocalVolFromHeston(
                                                  ext::make_shared<Matrix>(nStrikes, timeGrid->size()-1));
     for (Size i=1; i < timeGrid->size(); ++i) {
         const Time t = timeGrid->at(i);
-        const ext::shared_ptr<std::vector<Real> > strikeSlice = strikes[i-1];
+        const ext::shared_ptr<std::vector<Real> >& strikeSlice = strikes[i-1];
 
         for (Size j=0; j < nStrikes; ++j) {
             const Real s = (*strikeSlice)[j];

@@ -1652,7 +1652,8 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouVsPDE) {
     const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturity);
 
     std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
-    for (Size d=0; d < 4; ++d)
+    processes.reserve(4);
+for (Size d=0; d < 4; ++d)
         processes.push_back(
             ext::make_shared<BlackScholesMertonProcess>(
                 Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d])),
@@ -1716,7 +1717,8 @@ BOOST_AUTO_TEST_CASE(testDengLiZhouWithNegativeStrike) {
     const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturity);
 
     std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
-    for (Size d=0; d < 4; ++d)
+    processes.reserve(4);
+for (Size d=0; d < 4; ++d)
         processes.push_back(
             ext::make_shared<BlackScholesMertonProcess>(
                 Handle<Quote>(ext::make_shared<SimpleQuote>(underlyings[d])),
@@ -1858,7 +1860,8 @@ BOOST_AUTO_TEST_CASE(testSingleFactorBsmBasketEngine) {
             = Handle<YieldTermStructure>(flatRate(today, t.r, dc));
 
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes;
-        for (Size d=0; d < t.underlyings.size(); ++d)
+        processes.reserve(t.underlyings.size());
+for (Size d=0; d < t.underlyings.size(); ++d)
             processes.push_back(
                 ext::make_shared<BlackScholesMertonProcess>(
                     Handle<Quote>(ext::make_shared<SimpleQuote>(t.underlyings[d])),

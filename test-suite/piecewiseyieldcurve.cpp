@@ -1278,7 +1278,8 @@ struct additionalDates {
         Calendar cal = TARGET();
         Date settl = cal.advance(today, 2 * Days);
         std::vector<Date> dates;
-        for (Size i = 0; i < 5; ++i)
+        dates.reserve(5);
+for (Size i = 0; i < 5; ++i)
             dates.push_back(cal.advance(settl, (1 + i) * Months));
         // Add dates before the referenceDate and not in sorted order.
         // These should be skipped by GlobalBootstrap::initialize().
@@ -1343,7 +1344,8 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
     std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
 
     // set up the additional rate helpers we need in the cost function
-    for (Size i = 0; i < 7; ++i) {
+    additionalHelpers.reserve(7);
+for (Size i = 0; i < 7; ++i) {
         additionalHelpers.push_back(
             ext::make_shared<FraRateHelper>(-0.004, (12 + i) * Months, index));
     }

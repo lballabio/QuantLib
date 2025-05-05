@@ -743,7 +743,8 @@ namespace QuantLib {
         numberBumps_ = vegaBumps[0].size();
 
        std::vector<Matrix> jacobiansThisPathsModel;
-       for (Size i =0; i < numberRates_; ++i)
+       jacobiansThisPathsModel.reserve(numberRates_);
+for (Size i =0; i < numberRates_; ++i)
            jacobiansThisPathsModel.emplace_back(numberRates_, factors_);
 
 

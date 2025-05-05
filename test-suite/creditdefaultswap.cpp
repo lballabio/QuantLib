@@ -585,7 +585,8 @@ BOOST_AUTO_TEST_CASE(testIsdaEngine) {
                            0.014,
                            0.015488};
 
-    for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
+    isdaRateHelpers.reserve(sizeof(dep_tenors) / sizeof(int));
+for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
         isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,
@@ -767,7 +768,8 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleQuote) {
     int dep_tenors[] = {1, 3, 6, 12};
     double dep_quotes[] = {-0.0056,-0.005440,-0.005190,-0.004930};
 
-    for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
+    isdaRateHelpers.reserve(sizeof(dep_tenors) / sizeof(int));
+for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
         isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,
@@ -874,7 +876,8 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleWithIssueDateInThePast) {
     int dep_tenors[] = {1, 3, 6, 12};
     double dep_quotes[] = {-0.0056,-0.005440,-0.005190,-0.004930};
 
-    for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
+    isdaRateHelpers.reserve(sizeof(dep_tenors) / sizeof(int));
+for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
         isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
                                      dep_quotes[i], dep_tenors[i] * Months, 2,
                                      WeekendsOnly(), ModifiedFollowing,

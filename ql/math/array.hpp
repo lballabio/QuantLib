@@ -312,7 +312,7 @@ namespace QuantLib {
         inline void _fill_array_(Array& a,
                                  std::unique_ptr<Real[]>& data_,
                                  Size& n_,
-                                 I begin, I end,
+                                 const I& begin, const I& end,
                                  const std::false_type&) {
             // true iterators
             Size n = std::distance(begin, end);

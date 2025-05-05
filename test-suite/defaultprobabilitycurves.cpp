@@ -173,7 +173,8 @@ void testBootstrapFromSpread() {
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
-    for(Size i=0; i<n.size(); i++)
+    helpers.reserve(n.size());
+for(Size i=0; i<n.size(); i++)
         helpers.push_back(
                 ext::shared_ptr<DefaultProbabilityHelper>(
                     new SpreadCdsHelper(quote[i], Period(n[i], Years),
@@ -251,7 +252,8 @@ void testBootstrapFromUpfront() {
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
-    for(Size i=0; i<n.size(); i++)
+    helpers.reserve(n.size());
+for(Size i=0; i<n.size(); i++)
         helpers.push_back(
                 ext::shared_ptr<DefaultProbabilityHelper>(
                     new UpfrontCdsHelper(quote[i], fixedRate,

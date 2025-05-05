@@ -40,7 +40,8 @@ BOOST_AUTO_TEST_CASE(testCached) {
 
     DayCounter dc = Actual360();
     std::vector<Date> fixingDates;
-    for (Size i=0; i<5; ++i)
+    fixingDates.reserve(5);
+for (Size i=0; i<5; ++i)
         fixingDates.push_back(today+i*90);
 
     Real strike = 101.0;

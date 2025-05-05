@@ -20,6 +20,7 @@
 /*! \file fdmvppstartlimitstepcondition.cpp
 */
 
+#include <algorithm>
 #include <ql/math/array.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
@@ -60,8 +61,8 @@ namespace QuantLib {
                 retVal[i] = std::max(state[i+1], state[tMinUp_+i+1]);
             }
             else if (j == tMinUp_-1) {
-                retVal[i] = std::max(state[i+tMinUp_+1],
-                                     std::max(state[i], state[i+tMinUp_]));
+                retVal[i] = std::max({state[i+tMinUp_+1],
+                                     state[i], state[i+tMinUp_]});
             }
             else if (j < 2*tMinUp_) {
                 retVal[i] = retVal[i-tMinUp_];

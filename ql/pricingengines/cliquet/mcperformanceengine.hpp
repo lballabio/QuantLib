@@ -140,7 +140,8 @@ namespace QuantLib {
     inline TimeGrid MCPerformanceEngine<RNG,S>::timeGrid() const {
 
         std::vector<Time> fixingTimes;
-        for (Size i=0; i<arguments_.resetDates.size(); i++)
+        fixingTimes.reserve(arguments_.resetDates.size());
+for (Size i=0; i<arguments_.resetDates.size(); i++)
             fixingTimes.push_back(process_->time(arguments_.resetDates[i]));
         fixingTimes.push_back(process_->time(arguments_.exercise->lastDate()));
 
@@ -165,7 +166,8 @@ namespace QuantLib {
 
         std::vector<DiscountFactor> discounts;
 
-        for (Size k=0;k<arguments_.resetDates.size();k++) {
+        discounts.reserve(arguments_.resetDates.size());
+for (Size k=0;k<arguments_.resetDates.size();k++) {
             discounts.push_back(this->process_->riskFreeRate()->discount(
                                                    arguments_.resetDates[k]));
         }
