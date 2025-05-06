@@ -178,7 +178,7 @@ namespace QuantLib {
         template<typename Iter>
         Rate aggregateRate(const Leg& leg,
                            Iter first,
-                           Iter last) {
+                           const Iter& last) {
             if (first==last) return 0.0;
 
             Date paymentDate = (*first)->date();

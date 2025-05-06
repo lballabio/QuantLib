@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
 
     DayCounter dc = Actual360();
     std::vector<Date> fixingDates;
+    fixingDates.reserve(5);
     for (Size i=0; i<5; ++i)
         fixingDates.push_back(today+i*90);
 

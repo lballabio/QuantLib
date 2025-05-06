@@ -154,9 +154,11 @@ namespace QuantLib {
     //    std::fill(model.begin(), model.end(), false);
 
         std::vector<std::valarray<bool> > modelTwo;
+        modelTwo.reserve(associatedVolStructure_->numberOfRates());
         for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
+        v.reserve(associatedVolStructure_->numberOfSteps());
         for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 
@@ -193,9 +195,11 @@ namespace QuantLib {
         //std::fill(model.begin(), model.end(), false);
 
         std::vector<std::valarray<bool> > modelTwo;
+        modelTwo.reserve(associatedVolStructure_->numberOfRates());
         for (Size i=0; i < associatedVolStructure_->numberOfRates(); ++i)
             modelTwo.push_back(model);
 
+        v.reserve(associatedVolStructure_->numberOfSteps());
         for (Size j=0; j < associatedVolStructure_->numberOfSteps(); ++j)
             v.push_back(modelTwo);
 
