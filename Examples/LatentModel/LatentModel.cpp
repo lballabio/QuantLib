@@ -58,6 +58,7 @@ int main(int, char* []) {
         // build curves and issuers into a basket of three names
         std::vector<Real> hazardRates(3, -std::log(1.-0.01));
         std::vector<std::string> names;
+        names.reserve(hazardRates.size());
         for(Size i=0; i<hazardRates.size(); i++)
             names.push_back(std::string("Acme") + std::to_string(i));
         std::vector<Handle<DefaultProbabilityTermStructure>> defTS;
@@ -181,6 +182,7 @@ int main(int, char* []) {
         lmT->resetBasket(theBskt);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
+            tmp.reserve(theBskt->size());
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
                 tmp.push_back(lmT->defaultCorrelation(correlDate, 
                     iName1, iName2));
@@ -190,6 +192,7 @@ int main(int, char* []) {
         theBskt->setLossModel(rdlmT);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
+            tmp.reserve(theBskt->size());
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
                 tmp.push_back(theBskt->defaultCorrelation(correlDate, 
                     iName1, iName2));
@@ -200,6 +203,7 @@ int main(int, char* []) {
         lmG->resetBasket(theBskt);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
+            tmp.reserve(theBskt->size());
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
                 tmp.push_back(lmG->defaultCorrelation(correlDate, 
                     iName1, iName2));
@@ -209,6 +213,7 @@ int main(int, char* []) {
         theBskt->setLossModel(rdlmG);
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             std::vector<Real> tmp;
+            tmp.reserve(theBskt->size());
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
                 tmp.push_back(theBskt->defaultCorrelation(correlDate, 
                     iName1, iName2));

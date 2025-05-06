@@ -296,6 +296,7 @@ namespace QuantLib {
 
             // Precalc conditional probabilities
             std::vector<Probability> pDefCond;
+            pDefCond.reserve(poolSize);
             for(Size i=0; i<poolSize; i++)
                 pDefCond.push_back(conditionalDefaultProbability(
                     pool->get(pool->names()[i]).

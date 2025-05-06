@@ -90,12 +90,14 @@ void example01() {
 
     Date settlementDate = calendar.advance(todaysDate, settlementDays, Days);
     vector<Date> maturities;
+    maturities.reserve(4);
     for (Size i = 0; i < 4; i++) {
         maturities.push_back(
             calendar.adjust(settlementDate + tenors[i], Following));
     }
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper>> instruments;
+    instruments.reserve(4);
     for (Size i = 0; i < 4; i++) {
         instruments.push_back(ext::make_shared<SpreadCdsHelper>(
                                 makeQuoteHandle(quoted_spreads[i]),

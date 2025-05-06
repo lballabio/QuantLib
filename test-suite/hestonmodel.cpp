@@ -21,6 +21,7 @@
 #include "preconditions.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <algorithm>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/functional.hpp>
@@ -1046,9 +1047,12 @@ BOOST_AUTO_TEST_CASE(testDifferentIntegrals, *precondition(if_speed(Fast))) {
                 }
             }
         }
-        const Real maxDiff = std::max(std::max(
-            std::max(maxLaguerreDiff,maxLegendreDiff),
-                                     maxChebyshevDiff), maxChebyshev2ndDiff);
+        const Real maxDiff = std::max({
+                maxLaguerreDiff,
+                maxLegendreDiff,
+                maxChebyshevDiff,
+                maxChebyshev2ndDiff
+            });
 
         const Real tr = tol[iter - params.begin()];
         if (maxDiff > tr) {

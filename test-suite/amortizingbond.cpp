@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(testAmortizingFixedRateBond) {
         AmortizingFixedRateBond myBond(0, notionals, schedule, {rates[i]},
                                        ActualActual(ActualActual::ISMA));
 
-        Leg cashflows = myBond.cashflows();
+        const Leg& cashflows = myBond.cashflows();
 
         for (Size k=0; k < cashflows.size() / 2; ++k) {
             Real coupon = cashflows[2*k]->amount();
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(testBrazilianAmortizingFixedRateBond) {
 
     const Real tolerance = 1.0e-6;
     Real error;
-    Leg cashflows = risf11.cashflows();
+    const Leg& cashflows = risf11.cashflows();
     for (Size k=0; k < cashflows.size() / 2; ++k) {
         error = std::fabs(expected_coupons[k] - cashflows[2*k]->amount());
         if(error > tolerance) {

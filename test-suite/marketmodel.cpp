@@ -2413,6 +2413,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                 endIndex);
 
             std::vector<Matrix> pseudoRoots;
+            pseudoRoots.reserve(marketModel->numberOfSteps());
             for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                 pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
@@ -2513,6 +2514,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                         endIndex, initialNumeraireValue);
 
                     std::vector<Matrix> pseudoRoots;
+                    pseudoRoots.reserve(marketModel->numberOfSteps());
                     for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
@@ -2659,6 +2661,7 @@ BOOST_AUTO_TEST_CASE(testPathwiseVegas, *precondition(if_speed(Fast))) {
                         endIndex,initialNumeraireValue);
 
                     std::vector<Matrix> pseudoRoots;
+                    pseudoRoots.reserve(marketModel->numberOfSteps());
                     for (Size k=0; k < marketModel->numberOfSteps(); ++k)
                         pseudoRoots.push_back( marketModel->pseudoRoot(k));
 
@@ -4491,7 +4494,7 @@ BOOST_AUTO_TEST_CASE(testDriftCalculator) {
     const std::vector<Real>& rateTaus = evolution.rateTaus();
     std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution,
         measureOffset_);
-    std::vector<Size> alive = evolution.firstAliveRate();
+    const std::vector<Size>& alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,

@@ -200,6 +200,7 @@ namespace QuantLib {
 
         std::vector<Real> calcBufferNotionals;
         const std::vector<Size>& alive = liveList(endDate);
+        calcBufferNotionals.reserve(alive.size());
         for(Size i=0; i<alive.size(); i++)
             calcBufferNotionals.push_back(
                 exposure(pool_->names()[i], endDate)
@@ -213,6 +214,7 @@ namespace QuantLib {
         vector<Real> prob;
         const std::vector<Size>& alive = liveList();
 
+        prob.reserve(alive.size());
         for(Size i=0; i<alive.size(); i++)
             prob.push_back(pool_->get(pool_->names()[i]).defaultProbability(
                 pool_->defaultKeys()[i])->defaultProbability(d, true));

@@ -54,7 +54,7 @@ namespace QuantLib {
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts(const xContainer &x, Real intercept) {
                 if (intercept != 0.0)
-                    v.push_back([=](ArgumentType){ return intercept; });
+                    v.push_back([=](const ArgumentType&){ return intercept; });
                 if constexpr (std::is_arithmetic_v<ArgumentType>) {
                     v.push_back([](ArgumentType x){ return x; });
                 } else {

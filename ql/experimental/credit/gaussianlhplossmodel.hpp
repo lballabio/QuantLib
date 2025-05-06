@@ -174,6 +174,7 @@ namespace QuantLib {
             const std::vector<Probability> probs = 
                 basket_->remainingProbabilities(d);
             std::vector<Real> recoveries;
+            recoveries.reserve(basket_->remainingSize());
             for(Size i=0; i<basket_->remainingSize(); i++)
                 recoveries.push_back(rrQuotes_[i]->value());
             std::vector<Real> notionals = basket_->remainingNotionals(d);
