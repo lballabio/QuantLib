@@ -87,7 +87,6 @@ namespace QuantLib {
           case MidPoint:
             return ouProcess_->expectation(t0, x0, dt)
                     + b_(t0+0.5*dt)*(1.0 - std::exp(-speed_*dt));
-            break;
           case Trapezodial:
             {
               const Time t = t0+dt;
@@ -99,13 +98,11 @@ namespace QuantLib {
               return ouProcess_->expectation(t0, x0, dt)
                     + bt-ex*bu - (bt-bu)/(speed_*dt)*(1-ex);
             }
-            break;
           case GaussLobatto:
               return ouProcess_->expectation(t0, x0, dt)
                   + speed_*std::exp(-speed_*(t0+dt))
                   * GaussLobattoIntegral(100000, intEps_)(integrand(b_, speed_),
                                                           t0, t0+dt);
-            break;
           default:
             QL_FAIL("unknown discretization scheme");
         }
