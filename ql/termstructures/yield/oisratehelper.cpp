@@ -257,7 +257,8 @@ namespace QuantLib {
                                            bool applyObservationShift,
                                            const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : OISRateHelper(startDate, endDate, fixedRate, overnightIndex, std::move(discount), telescopicValueDates,
-                    paymentLag, paymentConvention, paymentFrequency, paymentCalendar, std::move(overnightSpread),
+                    paymentLag, paymentConvention, paymentFrequency, paymentCalendar, 
+                    std::variant<Spread, Handle<Quote>>(std::move(overnightSpread)),
                     Pillar::LastRelevantDate, Date(), averagingMethod, endOfMonth, fixedPaymentFrequency,
                     fixedCalendar, lookbackDays, lockoutDays, applyObservationShift, pricer) {}
 
