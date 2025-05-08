@@ -153,7 +153,7 @@ namespace QuantLib {
                            BusinessDayConvention paymentConvention = Following,
                            Frequency paymentFrequency = Annual,
                            const Calendar& paymentCalendar = Calendar(),
-                           Handle<Quote> overnightSpread = {},
+                           Spread overnightSpread = {},
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                            const Calendar& fixedCalendar = Calendar(),
@@ -179,7 +179,7 @@ namespace QuantLib {
                            Frequency paymentFrequency,
                            const Calendar& paymentCalendar,
                            const Period& forwardStart,
-                           Handle<Quote> overnightSpread = {},
+                           Spread overnightSpread = {},
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                            const Calendar& fixedCalendar = Calendar());

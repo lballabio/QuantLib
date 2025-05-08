@@ -248,7 +248,7 @@ namespace QuantLib {
                                            BusinessDayConvention paymentConvention,
                                            Frequency paymentFrequency,
                                            const Calendar& paymentCalendar,
-                                           Handle<Quote> overnightSpread,
+                                           Spread overnightSpread,
                                            ext::optional<bool> endOfMonth,
                                            ext::optional<Frequency> fixedPaymentFrequency,
                                            const Calendar& fixedCalendar,
@@ -258,7 +258,7 @@ namespace QuantLib {
                                            const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
     : OISRateHelper(startDate, endDate, fixedRate, overnightIndex, std::move(discount), telescopicValueDates,
                     paymentLag, paymentConvention, paymentFrequency, paymentCalendar, 
-                    std::variant<Spread, Handle<Quote>>(std::move(overnightSpread)),
+                    std::variant<Spread, Handle<Quote>>(overnightSpread),
                     Pillar::LastRelevantDate, Date(), averagingMethod, endOfMonth, fixedPaymentFrequency,
                     fixedCalendar, lookbackDays, lockoutDays, applyObservationShift, pricer) {}
 
@@ -274,7 +274,7 @@ namespace QuantLib {
                                            Frequency paymentFrequency,
                                            const Calendar& paymentCalendar,
                                            const Period&,
-                                           Handle<Quote> overnightSpread,
+                                           Spread overnightSpread,
                                            ext::optional<bool> endOfMonth,
                                            ext::optional<Frequency> fixedPaymentFrequency,
                                            const Calendar& fixedCalendar)
