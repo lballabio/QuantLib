@@ -61,8 +61,7 @@ namespace QuantLib {
     template <class TS>
     class BootstrapHelper : public Observer, public Observable {
       public:
-        explicit BootstrapHelper(Handle<Quote> quote);
-        explicit BootstrapHelper(Real quote);
+        explicit BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote);
         ~BootstrapHelper() override = default;
         //! \name BootstrapHelper interface
         //@{
@@ -127,10 +126,10 @@ namespace QuantLib {
     template <class TS>
     class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {
       public:
-        explicit RelativeDateBootstrapHelper(const Handle<Quote>& quote,
-                                             bool updateDates = true);
-        explicit RelativeDateBootstrapHelper(Real quote,
-                                             bool updateDates = true);
+        explicit RelativeDateBootstrapHelper(
+            const std::variant<Spread, Handle<Quote>>& quote,
+            bool updateDates = true);
+
         //! \name Observer interface
         //@{
         void update() override {
@@ -150,14 +149,10 @@ namespace QuantLib {
     // template definitions
 
     template <class TS>
-    BootstrapHelper<TS>::BootstrapHelper(Handle<Quote> quote)
-    : quote_(std::move(quote)), termStructure_(nullptr) {
+    BootstrapHelper<TS>::BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote)
+    : quote_(handleFromVariant(quote)), termStructure_(nullptr) {
         registerWith(quote_);
     }
-
-    template <class TS>
-    BootstrapHelper<TS>::BootstrapHelper(Real quote)
-    : quote_(makeQuoteHandle(quote)), termStructure_(nullptr) {}
 
     template <class TS>
     void BootstrapHelper<TS>::setTermStructure(TS* t) {
@@ -215,18 +210,13 @@ namespace QuantLib {
 
     template <class TS>
     RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
-        const Handle<Quote>& quote, bool updateDates)
+        const std::variant<Spread, Handle<Quote>>& quote, bool updateDates)
     : BootstrapHelper<TS>(quote), updateDates_(updateDates) {
         if (updateDates) {
             this->registerWith(Settings::instance().evaluationDate());
             evaluationDate_ = Settings::instance().evaluationDate();
         }
     }
-
-    template <class TS>
-    RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
-        Real quote, bool updateDates)
-    : RelativeDateBootstrapHelper<TS>(makeQuoteHandle(quote), updateDates) {}
 
 
     inline std::ostream& operator<<(std::ostream& out,

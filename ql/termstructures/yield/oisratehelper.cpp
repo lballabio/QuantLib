@@ -28,24 +28,6 @@
 
 namespace QuantLib {
 
-    namespace {
-        Handle<Quote> normalizeSpreadType(const std::variant<Spread, Handle<Quote>>& overnightSpread) {
-            return std::visit(
-                [](const auto& value) -> Handle<Quote> {
-                    using T = std::decay_t<decltype(value)>;
-                    if constexpr (std::is_same_v<T, Spread>) {
-                        return makeQuoteHandle(value);
-                    } else if constexpr (std::is_same_v<T, Handle<Quote>>) {
-                        return value;
-                    } else {
-                        QL_FAIL("Unexpected type in overnightSpread variant");
-                    }
-                },
-                overnightSpread
-            );
-        }
-    }
-
     OISRateHelper::OISRateHelper(Natural settlementDays,
         const Period& tenor, // swap maturity
         const Handle<Quote>& fixedRate,
@@ -73,7 +55,7 @@ namespace QuantLib {
     discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
     paymentLag_(paymentLag), paymentConvention_(paymentConvention),
     paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
-    forwardStart_(forwardStart), overnightSpread_(normalizeSpreadType(overnightSpread)), pillarChoice_(pillar),
+    forwardStart_(forwardStart), overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
     averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
     fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
     lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
@@ -107,7 +89,7 @@ namespace QuantLib {
     discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
     paymentLag_(paymentLag), paymentConvention_(paymentConvention),
     paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
-    overnightSpread_(normalizeSpreadType(overnightSpread)), pillarChoice_(pillar),
+    overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
     averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
     fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
     lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
