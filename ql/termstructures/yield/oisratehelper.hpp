@@ -28,6 +28,7 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <ql/optional.hpp>
+#include <variant>
 
 namespace QuantLib {
 
@@ -37,52 +38,54 @@ namespace QuantLib {
     class OISRateHelper : public RelativeDateRateHelper {
       public:
         OISRateHelper(Natural settlementDays,
-                      const Period& tenor, // swap maturity
-                      const Handle<Quote>& fixedRate,
-                      const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                      // exogenous discounting curve
-                      Handle<YieldTermStructure> discountingCurve = {},
-                      bool telescopicValueDates = false,
-                      Integer paymentLag = 0,
-                      BusinessDayConvention paymentConvention = Following,
-                      Frequency paymentFrequency = Annual,
-                      Calendar paymentCalendar = Calendar(),
-                      const Period& forwardStart = 0 * Days,
-                      Spread overnightSpread = 0.0,
-                      Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date(),
-                      RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      ext::optional<bool> endOfMonth = ext::nullopt,
-                      ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                      Calendar fixedCalendar = Calendar(),
-                      Natural lookbackDays = Null<Natural>(),
-                      Natural lockoutDays = 0,
-                      bool applyObservationShift = false,
-                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
-                      DateGeneration::Rule rule = DateGeneration::Backward);
+          const Period& tenor, // swap maturity
+          const Handle<Quote>& fixedRate,
+          const ext::shared_ptr<OvernightIndex>& overnightIndex,
+          // exogenous discounting curve
+          Handle<YieldTermStructure> discountingCurve = {},
+          bool telescopicValueDates = false,
+          Integer paymentLag = 0,
+          BusinessDayConvention paymentConvention = Following,
+          Frequency paymentFrequency = Annual,
+          Calendar paymentCalendar = Calendar(),
+          const Period& forwardStart = 0 * Days,
+          std::variant<Spread, Handle<Quote>> overnightSpread = Spread(0.0),
+          Pillar::Choice pillar = Pillar::LastRelevantDate,
+          Date customPillarDate = Date(),
+          RateAveraging::Type averagingMethod = RateAveraging::Compound,
+          ext::optional<bool> endOfMonth = ext::nullopt,
+          ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+          Calendar fixedCalendar = Calendar(),
+          Natural lookbackDays = Null<Natural>(),
+          Natural lockoutDays = 0,
+          bool applyObservationShift = false,
+          ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
+          DateGeneration::Rule rule = DateGeneration::Backward);
+
         OISRateHelper(const Date& startDate,
-                      const Date& endDate,
-                      const Handle<Quote>& fixedRate,
-                      const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                      // exogenous discounting curve
-                      Handle<YieldTermStructure> discountingCurve = {},
-                      bool telescopicValueDates = false,
-                      Integer paymentLag = 0,
-                      BusinessDayConvention paymentConvention = Following,
-                      Frequency paymentFrequency = Annual,
-                      Calendar paymentCalendar = Calendar(),
-                      Spread overnightSpread = 0.0,
-                      Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date(),
-                      RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      ext::optional<bool> endOfMonth = ext::nullopt,
-                      ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                      Calendar fixedCalendar = Calendar(),
-                      Natural lookbackDays = Null<Natural>(),
-                      Natural lockoutDays = 0,
-                      bool applyObservationShift = false,
-                      ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
-                      DateGeneration::Rule rule = DateGeneration::Backward);
+          const Date& endDate,
+          const Handle<Quote>& fixedRate,
+          const ext::shared_ptr<OvernightIndex>& overnightIndex,
+          // exogenous discounting curve
+          Handle<YieldTermStructure> discountingCurve = {},
+          bool telescopicValueDates = false,
+          Integer paymentLag = 0,
+          BusinessDayConvention paymentConvention = Following,
+          Frequency paymentFrequency = Annual,
+          Calendar paymentCalendar = Calendar(),
+          std::variant<Spread, Handle<Quote>> overnightSpread = Spread(0.0),
+          Pillar::Choice pillar = Pillar::LastRelevantDate,
+          Date customPillarDate = Date(),
+          RateAveraging::Type averagingMethod = RateAveraging::Compound,
+          ext::optional<bool> endOfMonth = ext::nullopt,
+          ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+          Calendar fixedCalendar = Calendar(),
+          Natural lookbackDays = Null<Natural>(),
+          Natural lockoutDays = 0,
+          bool applyObservationShift = false,
+          ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
+          DateGeneration::Rule rule = DateGeneration::Backward);
+
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -119,7 +122,7 @@ namespace QuantLib {
         Frequency paymentFrequency_;
         Calendar paymentCalendar_;
         Period forwardStart_;
-        Spread overnightSpread_;
+        Handle<Quote> overnightSpread_;
         Pillar::Choice pillarChoice_;
         RateAveraging::Type averagingMethod_;
         ext::optional<bool> endOfMonth_;
@@ -150,7 +153,7 @@ namespace QuantLib {
                            BusinessDayConvention paymentConvention = Following,
                            Frequency paymentFrequency = Annual,
                            const Calendar& paymentCalendar = Calendar(),
-                           Spread overnightSpread = 0.0,
+                           Spread overnightSpread = {},
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                            const Calendar& fixedCalendar = Calendar(),
@@ -176,7 +179,7 @@ namespace QuantLib {
                            Frequency paymentFrequency,
                            const Calendar& paymentCalendar,
                            const Period& forwardStart,
-                           Spread overnightSpread = 0.0,
+                           Spread overnightSpread = {},
                            ext::optional<bool> endOfMonth = ext::nullopt,
                            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
                            const Calendar& fixedCalendar = Calendar());

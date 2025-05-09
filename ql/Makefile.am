@@ -77,6 +77,7 @@ cpp_files = \
     money.cpp \
     position.cpp \
     prices.cpp \
+    quote.cpp \
 	rebatedexercise.cpp \
     settings.cpp \
 	stochasticprocess.cpp \
