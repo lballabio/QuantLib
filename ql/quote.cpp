@@ -1,7 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2025 StatPro Italia srl
  Copyright (C) 2025 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,7 +23,7 @@
 
 namespace QuantLib {
 
-    Handle<Quote> valueOrHandle(const std::variant<Real, Handle<Quote>>& value) {
+    Handle<Quote> handleFromVariant(const std::variant<Real, Handle<Quote>>& value) {
         return std::visit(
             [](const auto& x) -> Handle<Quote> {
                 using T = std::decay_t<decltype(x)>;

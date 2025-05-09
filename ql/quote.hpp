@@ -44,7 +44,8 @@ namespace QuantLib {
         virtual bool isValid() const = 0;
     };
 
-    Handle<Quote> valueOrHandle(const std::variant<Real, Handle<Quote>>& value);
+
+    Handle<Quote> handleFromVariant(const std::variant<Real, Handle<Quote>>& value);
 
 }
 

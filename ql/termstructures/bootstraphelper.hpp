@@ -150,7 +150,7 @@ namespace QuantLib {
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote)
-    : quote_(valueOrHandle(quote)), termStructure_(nullptr) {
+    : quote_(handleFromVariant(quote)), termStructure_(nullptr) {
         registerWith(quote_);
     }
 
