@@ -75,7 +75,7 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          const std::variant<Real, Handle<Quote>>& convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(valueOrHandle(convAdj)) {
+    : RateHelper(price), convAdj_(handleFromVariant(convAdj)) {
         CheckDate(iborStartDate, type);
 
         earliestDate_ = iborStartDate;
@@ -93,7 +93,7 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          const std::variant<Real, Handle<Quote>>& convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(valueOrHandle(convAdj)) {
+    : RateHelper(price), convAdj_(handleFromVariant(convAdj)) {
         CheckDate(iborStartDate, type);
 
         const auto determineMaturityDate =
@@ -140,7 +140,7 @@ namespace QuantLib {
                                          const ext::shared_ptr<IborIndex>& index,
                                          const std::variant<Real, Handle<Quote>>& convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(valueOrHandle(convAdj)) {
+    : RateHelper(price), convAdj_(handleFromVariant(convAdj)) {
         CheckDate(iborStartDate, type);
 
         earliestDate_ = iborStartDate;

@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    Handle<Quote> valueOrHandle(const std::variant<Real, Handle<Quote>>& value) {
+    Handle<Quote> handleFromVariant(const std::variant<Real, Handle<Quote>>& value) {
         return std::visit(
             [](const auto& x) -> Handle<Quote> {
                 using T = std::decay_t<decltype(x)>;
