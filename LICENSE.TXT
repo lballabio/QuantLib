@@ -173,6 +173,8 @@ Copyright (C) 2024 Jongbong An
 
 Copyright (C) 2025 Paolo D'Elia
 
+    Copyright (C) 2025 Paolo D'Elia
+
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".
 

@@ -764,6 +764,7 @@
     <ClCompile Include="operators.cpp" />
     <ClCompile Include="optimizers.cpp" />
     <ClCompile Include="optionletstripper.cpp" />
+    <ClCompile Include="overnightindex.cpp" />
     <ClCompile Include="overnightindexedcoupon.cpp" />
     <ClCompile Include="overnightindexedswap.cpp" />
     <ClCompile Include="pagodaoption.cpp" />

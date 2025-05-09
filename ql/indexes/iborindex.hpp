@@ -28,6 +28,7 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
 
@@ -85,8 +86,20 @@ namespace QuantLib {
     };
 
 
-    class OvernightIndex : public IborIndex {
+    /*! Base class for overnight indexes, (e.g. %SOFR, %ESTR, etc.)
+    */
+    class OvernightIndex : public IborIndex,
+                           virtual public LazyObject {
       public:
+        //! Constructor for the OvernightIndex
+        /*!
+            \param familyName The name of the index family (e.g., "ESTR").
+            \param settlementDays The number of settlement days for the index.
+            \param currency The currency of the index.
+            \param fixingCalendar The calendar used for fixing dates.
+            \param dayCounter The day count convention for the index.
+            \param h The yield term structure used for forecasting fixings (optional).
+        */
         OvernightIndex(const std::string& familyName,
                        Natural settlementDays,
                        const Currency& currency,
@@ -95,6 +108,44 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& h = {});
         //! returns a copy of itself linked to a different forwarding curve
         ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+        //! \name Observer interface
+        //@{
+        void update() override;
+        //@}
+        //! stores the historical fixing at the given date
+        /*! the date passed as arguments must be the actual calendar
+            date of the fixing; no settlement days must be used.
+        */
+        void addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite = false) override;
+        //! stores historical fixings from a TimeSeries
+        /*! the dates in the TimeSeries must be the actual calendar
+            dates of the fixings; no settlement days must be used.
+        */
+        void addFixings(const TimeSeries<Real>& t, bool forceOverwrite = false) override;
+        //! Computes the compounded fixings over a given date range
+        /*!
+            This method calculates the compounded rate for the index over the specified
+            date range, using historical fixings stored in the index's time series.
+
+            \param fromFixingDate The start date of the fixing period.
+            \param toFixingDate The end date of the fixing period.
+            \return The compounded rate over the specified date range, or `Null<Rate>()` if any fixings are missing.
+        */
+        Rate compoundedFixings(const Date& fromFixingDate, const Date& toFixingDate);
+        //! Computes the compounded factor over a given date range
+        /*!
+            This method calculates the compounded factor for the index over the specified
+            date range, using historical fixings stored in the index's time series.
+
+            \param fromFixingDate The start date of the fixing period.
+            \param toFixingDate The end date of the fixing period.
+            \return The compounded factor over the specified date range, or `Null<Real>()` if any fixings are missing.
+        */
+        Real compoundedFactor(const Date& fromFixingDate, const Date& toFixingDate);
+      protected:
+          void performCalculations() const override;
+      private:
+        mutable TimeSeries<Real> compoundIndex_;
     };
 
 
