@@ -78,8 +78,8 @@ namespace QuantLib {
                 // bang-bang-wait strategy
                 Real currentValue = std::max({
                         a[iter.index()],
-                        buyPrice - price*maxInject,
-                        sellPrice + price*maxWithDraw
+                        Real(buyPrice - price*maxInject),
+                        Real(sellPrice + price*maxWithDraw)
                     });
 
                 // check if intermediate grid points give a better value
