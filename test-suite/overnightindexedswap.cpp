@@ -202,6 +202,7 @@ void testBootstrap(bool telescopicValueDates,
     Natural paymentLag = 2;
 
     std::vector<ext::shared_ptr<RateHelper> > estrHelpers;
+    auto spread = makeQuoteHandle(0.0);
 
     auto euribor3m = ext::make_shared<Euribor3M>();
     auto estr = ext::make_shared<Estr>();
@@ -235,7 +236,7 @@ void testBootstrap(bool telescopicValueDates,
                                                       Annual,
                                                       Calendar(),
                                                       0 * Days,
-                                                      0.0,
+                                                      spread,
                                                       Pillar::LastRelevantDate,
                                                       Date(),
                                                       averagingMethod);
@@ -417,6 +418,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
         ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(0.02, 0.15, true);
 
     std::vector<ext::shared_ptr<RateHelper> > estrHelpers;
+    auto spread = makeQuoteHandle(0.0);
 
     auto euribor3m = ext::make_shared<Euribor3M>();
     auto estr = ext::make_shared<Estr>();
@@ -437,7 +439,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
                                                       Annual,
                                                       Calendar(),
                                                       0 * Days,
-                                                      0.0,
+                                                      spread,
                                                       Pillar::LastRelevantDate,
                                                       Date(),
                                                       averagingMethod,
@@ -490,6 +492,8 @@ void testBootstrapWithLookback(Natural lookbackDays,
     std::vector<ext::shared_ptr<RateHelper> > estrHelpers;
 
     auto estr = ext::make_shared<Estr>();
+    auto spread = makeQuoteHandle(0.0);
+
 
     for (auto& i : estrSwapData) {
         Real rate = 0.01 * i.rate;
@@ -506,7 +510,7 @@ void testBootstrapWithLookback(Natural lookbackDays,
                                                       Annual,
                                                       Calendar(),
                                                       0 * Days,
-                                                      0.0,
+                                                      spread,
                                                       Pillar::LastRelevantDate,
                                                       Date(),
                                                       RateAveraging::Compound,
@@ -670,6 +674,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     auto index = ext::make_shared<FedFunds>();
+    Spread spread = 0.0;
 
     helpers.push_back(
         ext::make_shared<DepositRateHelper>(data[0].rate,
@@ -689,7 +694,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapRegression) {
                                   index,
                                   Handle<YieldTermStructure>(),
                                   false, 2,
-                                  Following, Annual, Calendar(), 0*Days, 0.0,
+                                  Following, Annual, Calendar(), 0*Days, spread,
                                   // this bootstrap fails with the default LastRelevantDate choice
                                   Pillar::MaturityDate));
     }
