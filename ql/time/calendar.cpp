@@ -159,13 +159,13 @@ namespace QuantLib {
             Date d1 = d + n*unit;
 
             // we are sure the unit is Months or Years
-            if (endOfMonth){
-                if (c == Unadjusted && Date::isEndOfMonth(d)){
-                    // move to end of calendar day if using Unadjusted convention and d is last calendar day
-                    return Date::endOfMonth(d1);
-                } else if (isEndOfMonth(d)) {
-                    // move to end of business day if d is last bussiness day
-                    return Calendar::endOfMonth(d1);
+            if (endOfMonth) {
+                if (c == Unadjusted) {
+                    // move to the last calendar day if d is the last calendar day
+                    if (Date::isEndOfMonth(d)) return Date::endOfMonth(d1);
+                } else {
+                    // move to the last business day if d is the last business day
+                    if (isEndOfMonth(d)) return Calendar::endOfMonth(d1);
                 }
             }
             return adjust(d1, c);
