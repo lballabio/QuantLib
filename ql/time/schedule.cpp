@@ -183,9 +183,6 @@ namespace QuantLib {
             }
         }
 
-
-        // calendar needed for endOfMonth adjustment
-        Calendar nullCalendar = NullCalendar();
         Integer periods = 1;
         Date seed, exitDate;
         switch (*rule_) {
@@ -198,14 +195,12 @@ namespace QuantLib {
             break;
 
           case DateGeneration::Backward:
-
             dates_.push_back(terminationDate);
 
             seed = terminationDate;
             if (nextToLastDate_ != Date()) {
                 dates_.push_back(nextToLastDate_);
-                Date temp = nullCalendar.advance(seed,
-                    -periods*(*tenor_), convention, *endOfMonth_);
+                Date temp = seed - periods*(*tenor_);
                 isRegular_.push_back(temp == nextToLastDate_);
                 seed = nextToLastDate_;
             }
@@ -215,8 +210,7 @@ namespace QuantLib {
                 exitDate = firstDate_;
 
             for (;;) {
-                Date temp = nullCalendar.advance(seed,
-                    -periods*(*tenor_), convention, *endOfMonth_);
+                Date temp = seed - periods*(*tenor_);
                 if (temp < exitDate) {
                     if (firstDate_ != Date() &&
                         (calendar_.adjust(dates_.back(),convention)!=
@@ -274,8 +268,7 @@ namespace QuantLib {
 
             if (firstDate_!=Date()) {
                 dates_.push_back(firstDate_);
-                Date temp = nullCalendar.advance(seed, periods*(*tenor_),
-                                                 convention, *endOfMonth_);
+                Date temp = seed + periods*(*tenor_);
                 if (temp!=firstDate_)
                     isRegular_.push_back(false);
                 else
@@ -306,8 +299,7 @@ namespace QuantLib {
             if (nextToLastDate_ != Date())
                 exitDate = nextToLastDate_;
             for (;;) {
-                Date temp = nullCalendar.advance(seed, periods*(*tenor_),
-                                                 convention, *endOfMonth_);
+                Date temp = seed + periods*(*tenor_);
                 if (temp > exitDate) {
                     if (nextToLastDate_ != Date() &&
                         (calendar_.adjust(dates_.back(),convention)!=
