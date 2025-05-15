@@ -2286,6 +2286,9 @@
     <ClInclude Include="ql\utilities\tracing.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\utilities\variants.hpp">
+      <Filter>utilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\utilities\vectors.hpp">
       <Filter>utilities</Filter>
     </ClInclude>

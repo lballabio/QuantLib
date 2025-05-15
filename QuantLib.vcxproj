@@ -1874,6 +1874,7 @@
     <ClInclude Include="ql\utilities\observablevalue.hpp" />
     <ClInclude Include="ql\utilities\steppingiterator.hpp" />
     <ClInclude Include="ql\utilities\tracing.hpp" />
+    <ClInclude Include="ql\utilities\variants.hpp" />
     <ClInclude Include="ql\utilities\vectors.hpp" />
     <ClInclude Include="ql\any.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
