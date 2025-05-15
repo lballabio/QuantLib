@@ -50,7 +50,8 @@ namespace QuantLib {
         Natural lockoutDays,
         bool applyObservationShift,
         ext::shared_ptr<FloatingRateCouponPricer> pricer,
-        DateGeneration::Rule rule)
+        DateGeneration::Rule rule,
+        Calendar overnightCalendar)
     : RelativeDateRateHelper(fixedRate), settlementDays_(settlementDays), tenor_(tenor),
     discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
     paymentLag_(paymentLag), paymentConvention_(paymentConvention),
@@ -58,8 +59,8 @@ namespace QuantLib {
     forwardStart_(forwardStart), overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
     averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
     fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
-    lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
-    pricer_(std::move(pricer)), rule_(rule) {
+    overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
+    applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
     initialize(overnightIndex, customPillarDate);
     }
 
@@ -84,7 +85,8 @@ namespace QuantLib {
         Natural lockoutDays,
         bool applyObservationShift,
         ext::shared_ptr<FloatingRateCouponPricer> pricer,
-        DateGeneration::Rule rule)
+        DateGeneration::Rule rule,
+        Calendar overnightCalendar)
     : RelativeDateRateHelper(fixedRate, false), startDate_(startDate), endDate_(endDate),
     discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
     paymentLag_(paymentLag), paymentConvention_(paymentConvention),
@@ -92,8 +94,8 @@ namespace QuantLib {
     overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
     averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
     fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
-    lookbackDays_(lookbackDays), lockoutDays_(lockoutDays), applyObservationShift_(applyObservationShift),
-    pricer_(std::move(pricer)), rule_(rule) {
+    overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
+    applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
     initialize(overnightIndex, customPillarDate);
     }
 
@@ -143,6 +145,9 @@ namespace QuantLib {
         }
         if (!fixedCalendar_.empty()) {
             tmp.withFixedLegCalendar(fixedCalendar_);
+        }
+        if (!overnightCalendar_.empty()) {
+            tmp.withOvernightLegCalendar(overnightCalendar_);
         }
         swap_ = tmp;
 
