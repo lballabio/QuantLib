@@ -618,10 +618,10 @@ namespace QuantLib {
     }
 
     Date::serial_type Date::serialNumber() const {
-        const Date::serial_type n = (dateTime_.date()
-            - serialNumberDateReference()).days();
-        checkSerialNumber(n);
-
+        const Date::serial_type n =
+            (dateTime_.date() - serialNumberDateReference()).days();
+        if (n != 0)
+            checkSerialNumber(n);
         return n;
     }
 
