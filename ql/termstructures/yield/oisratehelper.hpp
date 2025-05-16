@@ -60,7 +60,8 @@ namespace QuantLib {
           Natural lockoutDays = 0,
           bool applyObservationShift = false,
           ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
-          DateGeneration::Rule rule = DateGeneration::Backward);
+          DateGeneration::Rule rule = DateGeneration::Backward,
+          Calendar overnightCalendar = Calendar());
 
         OISRateHelper(const Date& startDate,
           const Date& endDate,
@@ -84,7 +85,8 @@ namespace QuantLib {
           Natural lockoutDays = 0,
           bool applyObservationShift = false,
           ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
-          DateGeneration::Rule rule = DateGeneration::Backward);
+          DateGeneration::Rule rule = DateGeneration::Backward,
+          Calendar overnightCalendar = Calendar());
 
         //! \name RateHelper interface
         //@{
@@ -128,6 +130,7 @@ namespace QuantLib {
         ext::optional<bool> endOfMonth_;
         ext::optional<Frequency> fixedPaymentFrequency_;
         Calendar fixedCalendar_;
+        Calendar overnightCalendar_;
         Natural lookbackDays_;
         Natural lockoutDays_;
         bool applyObservationShift_;
