@@ -10,6 +10,7 @@
 #include <ql/indexes/ibor/cdor.hpp>
 #include <ql/indexes/ibor/chflibor.hpp>
 #include <ql/indexes/ibor/corra.hpp>
+#include <ql/indexes/ibor/custom.hpp>
 #include <ql/indexes/ibor/destr.hpp>
 #include <ql/indexes/ibor/dkklibor.hpp>
 #include <ql/indexes/ibor/eonia.hpp>

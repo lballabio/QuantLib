@@ -52,6 +52,10 @@ namespace QuantLib {
         Date valueDate(const Date& fixingDate) const override;
         Date maturityDate(const Date& valueDate) const override;
         // @}
+        //! \name IborIndex interface
+        //@{
+        ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
+        // @}
       private:
         Calendar target_;
     };
