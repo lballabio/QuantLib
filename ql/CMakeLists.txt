@@ -2241,6 +2241,7 @@ set(QL_HEADERS
     utilities/observablevalue.hpp
     utilities/steppingiterator.hpp
     utilities/tracing.hpp
+    utilities/variants.hpp
     utilities/vectors.hpp
     version.hpp
     volatilitymodel.hpp

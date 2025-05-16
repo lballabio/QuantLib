@@ -20,20 +20,15 @@
 #include <ql/quote.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/errors.hpp>
+#include <ql/utilities/variants.hpp>
 
 namespace QuantLib {
 
     Handle<Quote> handleFromVariant(const std::variant<Real, Handle<Quote>>& value) {
         return std::visit(
-            [](const auto& x) -> Handle<Quote> {
-                using T = std::decay_t<decltype(x)>;
-                if constexpr (std::is_same_v<T, Real>) {
-                    return makeQuoteHandle(x);
-                } else if constexpr (std::is_same_v<T, Handle<Quote>>) {
-                    return x;
-                } else {
-                    QL_FAIL("Unexpected type in quote variant");
-                }
+            detail::variant_visitor{
+                [](Real x) -> Handle<Quote> { return makeQuoteHandle(x); },
+                [](const Handle<Quote>& x) { return x; }
             },
             value);
     }
