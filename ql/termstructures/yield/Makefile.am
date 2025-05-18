@@ -18,11 +18,14 @@ this_include_HEADERS = \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
     overnightindexfutureratehelper.hpp \
+    piecewisespreadyieldcurve.hpp \
     piecewiseyieldcurve.hpp \
     piecewiseforwardspreadedtermstructure.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
     ratehelpers.hpp \
+    spreadbootstraptraits.hpp \
+    spreaddiscountcurve.hpp \
     ultimateforwardtermstructure.hpp \
     zerocurve.hpp \
     zerospreadedtermstructure.hpp \

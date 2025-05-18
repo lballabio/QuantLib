@@ -108,8 +108,8 @@ template <class Curve> class GlobalBootstrap {
     AdditionalPenalties additionalPenalties_;
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables_;
     mutable bool initialized_ = false, validCurve_ = false;
-    mutable Size firstHelper_, numberHelpers_;
-    mutable Size firstAdditionalHelper_, numberAdditionalHelpers_;
+    mutable Size firstHelper_ = 0, numberHelpers_ = 0;
+    mutable Size firstAdditionalHelper_ = 0, numberAdditionalHelpers_ = 0;
 };
 
 // template definitions
