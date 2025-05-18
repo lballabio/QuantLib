@@ -34,8 +34,6 @@
 
 namespace QuantLib {
 
-    class MultiCurveSensitivities;
-
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest
         rate instruments which are passed as a vector of pointers to
@@ -184,7 +182,6 @@ namespace QuantLib {
         // the curve data. They might be passed the data instead, but
         // it would increase the complexity---which is high enough
         // already.
-        friend class MultiCurveSensitivities;
         friend class Bootstrap<this_curve>;
         friend class BootstrapError<this_curve> ;
         friend class PenaltyFunction<this_curve>;
