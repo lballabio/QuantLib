@@ -2153,10 +2153,13 @@ set(QL_HEADERS
     termstructures/yield/nonlinearfittingmethods.hpp
     termstructures/yield/oisratehelper.hpp
     termstructures/yield/overnightindexfutureratehelper.hpp
+    termstructures/yield/piecewisespreadyieldcurve.hpp
     termstructures/yield/piecewiseyieldcurve.hpp
     termstructures/yield/piecewisezerospreadedtermstructure.hpp
     termstructures/yield/quantotermstructure.hpp
     termstructures/yield/ratehelpers.hpp
+    termstructures/yield/spreadbootstraptraits.hpp
+    termstructures/yield/spreaddiscountcurve.hpp
     termstructures/yield/ultimateforwardtermstructure.hpp
     termstructures/yield/zerocurve.hpp
     termstructures/yield/zerospreadedtermstructure.hpp

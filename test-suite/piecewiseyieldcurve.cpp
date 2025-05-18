@@ -45,6 +45,7 @@
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
+#include <ql/termstructures/yield/piecewisespreadyieldcurve.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/time/asx.hpp>
@@ -1530,6 +1531,125 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
                           curveFutures->discount(helper->pillarDate()),
                           1e-6);
     }
+}
+
+template <template<class C> class Bootstrap>
+void testPiecewiseSpreadYieldCurveImpl() {
+    // Use fixed evaluationDate to make the test stable. When usingAtParCoupons() == false
+    // the dates don't always align between the 3M and 6M indexes, but most of the test is
+    // still valid.
+    CommonVars vars(Date(23, Sep, 2019));
+    Actual365Fixed dc;
+
+    // First, build the base curve. We can use any bootstrapping and interpolation.
+    typedef PiecewiseYieldCurve<Discount, LogLinear> BaseCurve;
+    Handle<YieldTermStructure> baseCurve(ext::make_shared<BaseCurve>(
+        vars.settlement, vars.instruments, dc, LogLinear()));
+    baseCurve->enableExtrapolation();
+
+    // Now build the curve with fewer benchmarks as a spread to the base.
+    Datum swapData[] = {
+        {  1, Years, 4.44 },
+        {  3, Years, 4.55 },
+        {  6, Years, 4.81 },
+        {  9, Years, 5.01 },
+        { 15, Years, 5.25 },
+        { 30, Years, 5.36 }
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    auto euribor3m = ext::make_shared<Euribor3M>();
+    for (const auto& datum : swapData) {
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+            datum.rate / 100.0, datum.n * datum.units, vars.calendar,
+            vars.fixedLegFrequency, vars.fixedLegConvention, vars.fixedLegDayCounter,
+            euribor3m));
+    }
+
+    // We rely on LogLinear interpolation to check the curve's shape.
+    typedef PiecewiseSpreadYieldCurve<Discount, LogLinear, Bootstrap> Curve;
+    auto curve = ext::make_shared<Curve>(baseCurve, helpers, LogLinear());
+    curve->enableExtrapolation();
+    Handle<YieldTermStructure> curveHandle(curve);
+
+    // Check that we reprice the swaps.
+    const Real tolerance = 1.0e-9;
+    euribor3m = ext::make_shared<Euribor3M>(curveHandle);
+    for (const auto& datum : swapData) {
+        VanillaSwap swap = MakeVanillaSwap(datum.n * datum.units, euribor3m, 0.0)
+            .withEffectiveDate(vars.settlement)
+            .withFixedLegDayCount(vars.fixedLegDayCounter)
+            .withFixedLegTenor(Period(vars.fixedLegFrequency))
+            .withFixedLegConvention(vars.fixedLegConvention)
+            .withFixedLegTerminationDateConvention(vars.fixedLegConvention);
+
+        Rate expectedRate = datum.rate / 100.0,
+            estimatedRate = swap.fairRate();
+        Spread error = std::fabs(expectedRate - estimatedRate);
+        if (error > tolerance) {
+            BOOST_ERROR(datum.n << " year(s) swap:\n"
+                        << std::setprecision(8)
+                        << "\n estimated rate: " << io::rate(estimatedRate)
+                        << "\n expected rate:  " << io::rate(expectedRate)
+                        << "\n error:          " << io::rate(error)
+                        << "\n tolerance:      " << io::rate(tolerance));
+        }
+    }
+
+    // Check that the curve has shape between pillars.
+    auto prev = vars.settlement;
+    for (const auto& helper : helpers) {
+        Date pillar = helper->pillarDate();
+        Rate rate1 = curve->forwardRate(prev, pillar, dc, Continuous).rate();
+        Rate rate2 = curve->forwardRate(prev, prev + (pillar - prev) / 2, dc, Continuous).rate();
+        BOOST_CHECK_GT(std::fabs(rate1 - rate2), 1e-4);
+        prev = pillar;
+    }
+
+    // Check that extrapolation preserves constant spread.
+    Date maxDate = curve->maxDate();
+    BOOST_CHECK_EQUAL(maxDate, baseCurve->maxDate());
+    Rate rate1 = curve->forwardRate(maxDate - 1*Years, maxDate, dc, Continuous).rate();
+    Rate rate2 = curve->forwardRate(maxDate, maxDate + 1*Years, dc, Continuous).rate();
+    Rate baseRate1 = baseCurve->forwardRate(maxDate - 1*Years, maxDate, dc, Continuous).rate();
+    Rate baseRate2 = baseCurve->forwardRate(maxDate, maxDate + 1*Years, dc, Continuous).rate();
+    BOOST_CHECK_CLOSE(rate1 - baseRate1, rate2 - baseRate2, 1e-9);
+
+    // Check accessors.
+    BOOST_CHECK_EQUAL(curve->dates().size(), helpers.size() + 1);
+    BOOST_CHECK_EQUAL(curve->times().size(), helpers.size() + 1);
+    BOOST_CHECK_EQUAL(curve->data().size(), helpers.size() + 1);
+    const auto nodes = curve->nodes();
+    BOOST_CHECK_EQUAL(nodes.size(), helpers.size() + 1);
+
+    BOOST_CHECK_EQUAL(curve->dates()[0], vars.settlement);
+    BOOST_CHECK_EQUAL(curve->times()[0], 0.0);
+    BOOST_CHECK_EQUAL(curve->data()[0], 1.0);
+    BOOST_CHECK(nodes[0] == std::make_pair(vars.settlement, 1.0));
+    for (Size i = 0; i < helpers.size(); ++i) {
+        BOOST_CHECK_EQUAL(curve->dates()[i+1], helpers[i]->pillarDate());
+        BOOST_CHECK_EQUAL(curve->times()[i+1], curve->timeFromReference(helpers[i]->pillarDate()));
+        BOOST_CHECK(nodes[i+1] == std::make_pair(curve->dates()[i+1], curve->data()[i+1]));
+    }
+
+    // Check that we can rebuild the curve from raw data.
+    auto rawCurve = ext::make_shared<SpreadDiscountCurve>(
+        curve->baseCurve(), curve->dates(), curve->data());
+    rawCurve->enableExtrapolation();
+
+    const Integer maxSwapYears = (std::end(swapData)-1)->n;
+    for (Integer i = 0; i < maxSwapYears + 3; ++i) {
+        Date d = vars.settlement + i*Years;
+        BOOST_CHECK_CLOSE(curve->discount(d), rawCurve->discount(d), 1e-9);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testPiecewiseSpreadYieldCurve) {
+
+    BOOST_TEST_MESSAGE("Testing PiecewiseSpreadYieldCurve...");
+
+    testPiecewiseSpreadYieldCurveImpl<IterativeBootstrap>();
+    testPiecewiseSpreadYieldCurveImpl<GlobalBootstrap>();
 }
 
 /* This test attempts to build an ARS collateralised in USD curve as of 25 Sep 2019. Using the default 
