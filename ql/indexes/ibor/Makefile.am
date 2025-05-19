@@ -13,6 +13,7 @@ this_include_HEADERS = \
     cdor.hpp \
     chflibor.hpp \
     corra.hpp \
+    custom.hpp \
     destr.hpp \
     dkklibor.hpp \
     eonia.hpp \
@@ -47,6 +48,7 @@ this_include_HEADERS = \
 cpp_files = \
     bibor.cpp \
     corra.cpp \
+    custom.cpp \
     eonia.cpp \
     estr.cpp \
     euribor.cpp \
