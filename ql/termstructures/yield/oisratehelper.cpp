@@ -21,6 +21,7 @@
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/utilities/null_deleter.hpp>
@@ -28,7 +29,8 @@
 
 namespace QuantLib {
 
-    OISRateHelper::OISRateHelper(Natural settlementDays,
+    OISRateHelper::OISRateHelper(
+        Natural settlementDays,
         const Period& tenor, // swap maturity
         const Handle<Quote>& fixedRate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
@@ -53,18 +55,19 @@ namespace QuantLib {
         DateGeneration::Rule rule,
         Calendar overnightCalendar)
     : RelativeDateRateHelper(fixedRate), settlementDays_(settlementDays), tenor_(tenor),
-    discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
-    paymentLag_(paymentLag), paymentConvention_(paymentConvention),
-    paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
-    forwardStart_(forwardStart), overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
-    averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
-    fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
-    overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
-    applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
-    initialize(overnightIndex, customPillarDate);
+      discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
+      paymentLag_(paymentLag), paymentConvention_(paymentConvention),
+      paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
+      forwardStart_(forwardStart), overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
+      averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
+      fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
+      overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
+      applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
+        initialize(overnightIndex, customPillarDate);
     }
 
-    OISRateHelper::OISRateHelper(const Date& startDate,
+    OISRateHelper::OISRateHelper(
+        const Date& startDate,
         const Date& endDate,
         const Handle<Quote>& fixedRate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
@@ -88,15 +91,15 @@ namespace QuantLib {
         DateGeneration::Rule rule,
         Calendar overnightCalendar)
     : RelativeDateRateHelper(fixedRate, false), startDate_(startDate), endDate_(endDate),
-    discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
-    paymentLag_(paymentLag), paymentConvention_(paymentConvention),
-    paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
-    overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
-    averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
-    fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
-    overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
-    applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
-    initialize(overnightIndex, customPillarDate);
+      discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
+      paymentLag_(paymentLag), paymentConvention_(paymentConvention),
+      paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
+      overnightSpread_(handleFromVariant(overnightSpread)), pillarChoice_(pillar),
+      averagingMethod_(averagingMethod), endOfMonth_(endOfMonth),
+      fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
+      overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
+      applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
+        initialize(overnightIndex, customPillarDate);
     }
 
     void OISRateHelper::initialize(const ext::shared_ptr<OvernightIndex>& overnightIndex,
@@ -161,7 +164,11 @@ namespace QuantLib {
 
         Date lastPaymentDate = std::max(swap_->overnightLeg().back()->date(),
                                         swap_->fixedLeg().back()->date());
-        latestRelevantDate_ = latestDate_ = std::max(maturityDate_, lastPaymentDate);
+        Date lastFixingDate =
+            ext::dynamic_pointer_cast<OvernightIndexedCoupon>(swap_->overnightLeg().back())->fixingDate();
+        Date fixingEndDate =
+            overnightIndex_->maturityDate(overnightIndex_->valueDate(lastFixingDate));
+        latestRelevantDate_ = latestDate_ = std::max({maturityDate_, lastPaymentDate, fixingEndDate});
 
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
