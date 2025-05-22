@@ -1296,10 +1296,6 @@ BOOST_AUTO_TEST_CASE(testSabrInterpolation){
     }
 
     // Test SABR calibration against input parameters
-    // Use default values (but not null, since then parameters
-    // will then not be fixed during optimization, see the
-    // interpolation constructor, thus rendering the test cases
-    // with fixed parameters non-sensical)
     Real alphaGuess = std::sqrt(0.2);
     Real betaGuess = 0.5;
     Real nuGuess = std::sqrt(0.4);
@@ -1401,6 +1397,64 @@ BOOST_AUTO_TEST_CASE(testSabrInterpolation){
         }
     }
 }
+
+
+struct SabrTestCase {
+    Time expiry;
+    Real forward;
+    Real alpha;
+    Real beta;
+    Real nu;
+    Real rho;
+};
+
+BOOST_AUTO_TEST_CASE(testSabrGuess){
+
+    BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
+
+    // table 3 in Le Floc'h and Kennedy.
+    // They only seems to use it with lognormal volatility
+    // and no shift; we extend the test here.
+    SabrTestCase cases[] = {
+        {0.058, 2016, 0.271, 1.0, 1.010, -0.345},
+        {0.153, 2016, 0.256, 1.0, 0.933, -0.321},
+        {0.230, 2016, 0.256, 1.0, 0.820, -0.346},
+        {0.479, 2016, 0.255, 1.0, 0.629, -0.370},
+        {0.729, 2016, 0.257, 1.0, 0.528, -0.403},
+        {1.227, 2016, 0.260, 1.0, 0.448, -0.429},
+        {1.726, 2016, 0.261, 1.0, 0.392, -0.440},
+        {2.244, 2016, 0.262, 1.0, 0.355, -0.445},
+        {2.742, 2016, 0.262, 1.0, 0.329, -0.445},
+        {3.241, 2016, 0.262, 1.0, 0.310, -0.447},
+        {4.239, 2016, 0.263, 1.0, 0.284, -0.452}
+    };
+
+    for (const auto& c : cases) {
+        for (auto type: {VolatilityType::ShiftedLognormal, VolatilityType::Normal}) {
+            for (auto shift: {0.0, 0.01, 0.1}) {
+                // strikes at forward and plus or minus 5%
+                Real k_m = c.forward * 0.95, k_0 = c.forward, k_p = c.forward * 1.05;
+                Real vol_m = shiftedSabrVolatility(k_m, c.forward, c.expiry, c.alpha, c.beta, c.nu, c.rho, shift, type);
+                Real vol_0 = shiftedSabrVolatility(k_0, c.forward, c.expiry, c.alpha, c.beta, c.nu, c.rho, shift, type);
+                Real vol_p = shiftedSabrVolatility(k_p, c.forward, c.expiry, c.alpha, c.beta, c.nu, c.rho, shift, type);
+
+                // try to invert smile and retrieve parameters
+                auto [alpha, beta, nu, rho] = sabrGuess(k_m, vol_m, k_0, vol_0, k_p, vol_p,
+                                                        c.forward, c.expiry, c.beta,
+                                                        shift, type);
+
+                if (std::fabs(alpha - c.alpha) > 0.0001)
+                    BOOST_ERROR("alpha = " << alpha << ", expected = " << c.alpha << ", error = " << alpha - c.alpha);
+                BOOST_CHECK_EQUAL(beta, c.beta);
+                if (std::fabs(nu - c.nu) > 0.01)
+                    BOOST_ERROR("nu = " << nu << ", expected = " << c.nu << ", error = " << nu - c.nu);
+                if (std::fabs(rho - c.rho) > 0.005)
+                    BOOST_ERROR("rho = " << rho << ", expected = " << c.rho << ", error = " << rho - c.rho);
+            }
+        }
+    }
+}
+
 
 BOOST_AUTO_TEST_CASE(testKernelInterpolation) {
 

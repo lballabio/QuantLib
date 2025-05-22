@@ -27,6 +27,8 @@
 #include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
+#include <boost/math/special_functions/sign.hpp>
+#include <boost/math/tools/cubic_roots.hpp>
 
 namespace QuantLib {
 
@@ -260,6 +262,123 @@ namespace QuantLib {
             {forward, alpha, beta, nu, rho, expiryTime};
 
         return v(strike);
+    }
+
+
+
+    namespace {
+
+        Real smallest_positive_root(Real c1, Real c2, Real c3, Real c4) {
+            auto [r1, r2, r3] = boost::math::tools::cubic_roots(c1, c2, c3, c4);
+            if (std::isnan(r3)) {
+                // single root (or two equal ones), check that it's positive
+                QL_REQUIRE(r1 > 0.0, "no positive root");
+                return r1;
+            } else {
+                // three roots in non-decreasing order, return the first positive one
+                QL_REQUIRE(r3 > 0.0, "no positive root");
+                return r1 > 0.0 ? r1 : (r2 > 0.0 ? r2 : r3);
+            }
+        }
+
+    }
+
+    std::array<Real, 4> sabrGuess(Real k_m, Volatility vol_m,
+                                  Real k_0, Volatility vol_0,
+                                  Real k_p, Volatility vol_p,
+                                  Rate forward,
+                                  Time expiryTime,
+                                  Real beta,
+                                  Real shift,
+                                  VolatilityType volatilityType) {
+
+        // same variable names as in the equations for ease of reference:
+        Real f = forward, b = shift, T = expiryTime;
+
+        // change to log-moneyness
+
+        Real z_m = std::log((k_m + b) / (f + b));
+        Real z_0 = std::log((k_0 + b) / (f + b));
+        Real z_p = std::log((k_p + b) / (f + b));
+
+        // calculate atm, skew, curvature
+
+        Real w_m = 1 / ((z_m - z_0) * (z_m - z_p));  // eq. (42) in the paper
+        Real w_0 = 1 / ((z_0 - z_m) * (z_0 - z_p));  // eq. (43)
+        Real w_p = 1 / ((z_p - z_m) * (z_p - z_0));  // eq. (44)
+
+        Real sigma_0 = z_0 * z_p * w_m * vol_m + z_m * z_p * w_0 * vol_0 + z_m * z_0 * w_p * vol_p;         // (39)
+        Real sigma_1 = - (z_0 + z_p) * w_m * vol_m - (z_m + z_p) * w_0 * vol_0 - (z_m + z_0) * w_p * vol_p; // (40)
+        Real sigma_2 = 2 * w_m * vol_m + 2 * w_0 * vol_0 + 2 * w_p * vol_p;                                 // (41)
+
+        switch (volatilityType) {
+          case ShiftedLognormal: {
+
+              // equations (32)
+
+              Real alpha = sigma_0 * std::pow(f + b, 1.0-beta);
+              Real nu2 =
+                  3 * sigma_0 * sigma_2
+                  - 0.5 * squared(1-beta) * sigma_0 * sigma_0
+                  + 1.5 * squared(2*sigma_1 + (1-beta)*sigma_0);
+              Real nu, rho;
+              if (nu2 > 0.0) {
+                  nu = std::sqrt(nu2);
+                  rho = (1/nu) * (2*sigma_1 + (1-beta)*sigma_0);
+              } else {
+                  rho = boost::math::sign(2*sigma_1 + (1-beta)*sigma_0);
+                  nu = (1/rho) * (2*sigma_1 + (1-beta)*sigma_0);
+              }
+
+              // coefficients of the polynomial in equation (33)
+
+              Real c1 = squared(1 - beta) * T / (24 * std::pow(f + b, 2 - 2 * beta));
+              Real c2 = rho * beta * nu * T / (4 * std::pow(f + b, 1 - beta));
+              Real c3 = 1 + ((2 - 3 * rho*rho) / 24) * nu*nu * T;
+              Real c4 = - sigma_0 * std::pow(f + b, 1-beta);
+
+              try {
+                  alpha = smallest_positive_root(c1, c2, c3, c4);
+              } catch (Error&) {}
+
+              return { alpha, beta, nu, rho };
+          }
+          case Normal: {
+
+              // equations (37)
+
+              Real alpha = sigma_0 * std::pow(f + b, -beta);
+              Real nu2 = squared(1 / (f + b)) * (
+                  3 * sigma_0 * sigma_2
+                  - 0.5 * (beta*beta + beta) * (sigma_0*sigma_0)
+                  - 3 * sigma_0 * (sigma_1 - 0.5 * beta * sigma_0)
+                  + 1.5 * squared(2 * sigma_1 - beta * sigma_0)
+              );
+              Real nu, rho;
+              if (nu2 > 0.0) {
+                  nu = std::sqrt(nu2);
+                  rho = (1 / (nu * (f + b))) * (2 * sigma_1 - beta * sigma_0);
+              } else {
+                  rho = boost::math::sign((1 / (f + b)) * (2 * sigma_1 - beta * sigma_0));
+                  nu = (1 / (rho * (f + b))) * (2 * sigma_1 - beta * sigma_0);
+              }
+
+              // coefficients of the polynomial in equation (38)
+
+              Real c1 = (beta * beta - 2 * beta) * T / (24 * std::pow(f + b, 2 - 2 * beta));
+              Real c2 = rho * beta * nu * T / (4 * std::pow(f + b, 1 - beta));
+              Real c3 = 1 + ((2 - 3 * rho*rho) / 24) * nu*nu * T;
+              Real c4 = - sigma_0 * std::pow(f + b, -beta);
+
+              try {
+                  alpha = smallest_positive_root(c1, c2, c3, c4);
+              } catch (Error&) {}
+
+              return { alpha, beta, nu, rho };
+          }
+          default:
+            QL_FAIL("unknown volatility type: " << Integer(volatilityType));
+        }
     }
 
 }
