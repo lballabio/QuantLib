@@ -115,6 +115,9 @@ namespace QuantLib {
         closest around the forward (k_0 and vol_0 would be the closest strike and its volatility,
         k_m and vol_m the previous point, k_p and vol_p the following one) and solve a system for
         the SABR parameters that match them.
+
+        \warning This functionality requires Boost 1.78 or later.  When compiled with an earlier
+                 version, calling this function will raise a run-time exception.
     */
     std::array<Real, 4> sabrGuess(Real k_m, Volatility vol_m,
                                   Real k_0, Volatility vol_0,

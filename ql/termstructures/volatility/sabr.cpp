@@ -27,8 +27,10 @@
 #include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
+#if BOOST_VERSION >= 107800
 #include <boost/math/special_functions/sign.hpp>
 #include <boost/math/tools/cubic_roots.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -265,6 +267,7 @@ namespace QuantLib {
     }
 
 
+    #if BOOST_VERSION >= 107800
 
     namespace {
 
@@ -380,5 +383,20 @@ namespace QuantLib {
             QL_FAIL("unknown volatility type: " << Integer(volatilityType));
         }
     }
+
+    #else
+
+    std::array<Real, 4> sabrGuess(Real, Volatility,
+                                  Real, Volatility,
+                                  Real, Volatility,
+                                  Rate,
+                                  Time,
+                                  Real,
+                                  Real,
+                                  VolatilityType) {
+        QL_FAIL("Boost 1.78 or later is required for the implementation of this functionality");
+    }
+
+    #endif
 
 }

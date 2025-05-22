@@ -1412,6 +1412,8 @@ BOOST_AUTO_TEST_CASE(testSabrGuess){
 
     BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
 
+    #if BOOST_VERSION >= 107800
+
     // table 3 in Le Floc'h and Kennedy.
     // They only seems to use it with lognormal volatility
     // and no shift; we extend the test here.
@@ -1453,6 +1455,15 @@ BOOST_AUTO_TEST_CASE(testSabrGuess){
             }
         }
     }
+
+    #else
+
+    BOOST_CHECK_EXCEPTION(sabrGuess(99, 0.32, 100, 0.30, 101, 0.31,
+                                    100, 1.0, 0.5, 0.0, VolatilityType::Normal),
+                          Error,
+                          ExpectedErrorMessage("Boost 1.78 or later is required"));
+
+    #endif
 }
 
 
