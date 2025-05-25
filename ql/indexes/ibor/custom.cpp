@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 #include <ql/indexes/ibor/custom.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -9,15 +10,15 @@ namespace QuantLib {
                                      Natural settlementDays,
                                      const Currency& currency,
                                      const Calendar& fixingCalendar,
-                                     const Calendar& valueCalendar,
-                                     const Calendar& maturityCalendar,
+                                     Calendar  valueCalendar,
+                                     Calendar  maturityCalendar,
                                      BusinessDayConvention convention,
                                      bool endOfMonth,
                                      const DayCounter& dayCounter,
                                      const Handle<YieldTermStructure>& h)
     : IborIndex(familyName, tenor, settlementDays, currency, fixingCalendar,
                 convention, endOfMonth, dayCounter, h),
-      valueCalendar_(valueCalendar), maturityCalendar_(maturityCalendar) {}
+      valueCalendar_(std::move(valueCalendar)), maturityCalendar_(std::move(maturityCalendar)) {}
 
     Date CustomIborIndex::fixingDate(const Date& valueDate) const {
         Date fixingDate = valueCalendar_.advance(valueDate,
