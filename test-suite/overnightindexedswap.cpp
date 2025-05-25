@@ -769,12 +769,13 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithDifferentCalendars) {
 
     auto calendar = UnitedStates(UnitedStates::FederalReserve);
 
-    for (Size i=0; i<std::size(data); ++i) {
+    helpers.reserve(std::size(data));
+for (auto & i : data) {
         helpers.push_back(
             ext::make_shared<OISRateHelper>(
-                                  data[i].settlementDays,
-                                  Period(data[i].n, data[i].unit),
-                                  makeQuoteHandle(data[i].rate),
+                                  i.settlementDays,
+                                  Period(i.n, i.unit),
+                                  makeQuoteHandle(i.rate),
                                   index,
                                   Handle<YieldTermStructure>(),
                                   false, 0,
