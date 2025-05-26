@@ -58,16 +58,15 @@ std::vector<ext::shared_ptr<Helper> > makeHelpers(
         const Period& observationLag,
         const Calendar& calendar,
         const BusinessDayConvention& bdc,
-        const DayCounter& dc,
-        const Handle<YieldTermStructure>& yTS) {
+        const DayCounter& dc) {
 
     std::vector<ext::shared_ptr<Helper> > instruments;
     for (Datum datum : iiData) {
         Date maturity = datum.date;
         Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(datum.rate/100.0)));
-        ext::shared_ptr<Helper> h(new ZeroCouponInflationSwapHelper(
-                quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, yTS));
+        auto h = ext::make_shared<ZeroCouponInflationSwapHelper>(
+                quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex);
         instruments.push_back(h);
     }
     return instruments;
@@ -144,7 +143,7 @@ struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
 
         std::vector<ext::shared_ptr<Helper> > helpers =
             makeHelpers(zciisData, ii,
-                        observationLag, calendar, convention, dayCounter, yTS);
+                        observationLag, calendar, convention, dayCounter);
 
         Date baseDate = ii->lastFixingDate();
 

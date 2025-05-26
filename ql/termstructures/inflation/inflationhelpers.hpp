@@ -45,6 +45,10 @@ namespace QuantLib {
             ext::shared_ptr<ZeroInflationIndex> zii,
             CPI::InterpolationType observationInterpolation);
 
+        /*! \deprecated Use the overload that does not take a nominal curve.
+                        Deprecated in version 1.39.
+        */
+        [[deprecated("Use the overload that does not take a nominal curve.")]]
         ZeroCouponInflationSwapHelper(
             const Handle<Quote>& quote,
             const Period& swapObsLag,

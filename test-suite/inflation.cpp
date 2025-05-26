@@ -482,6 +482,8 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
 }
 
 
+QL_DEPRECATED_DISABLE_WARNING
+
 BOOST_AUTO_TEST_CASE(testZeroTermStructureWithNominalCurve) {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure passing nominal curve to helpers...");
 
@@ -538,8 +540,9 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithNominalCurve) {
     Frequency frequency = Monthly;
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
-        return ext::make_shared<ZeroCouponInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS);
+        return ext::shared_ptr<ZeroCouponInflationSwapHelper>(
+          new ZeroCouponInflationSwapHelper(
+            quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS));
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
@@ -648,6 +651,8 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithNominalCurve) {
     // remove circular refernce
     hz.reset();
 }
+
+QL_DEPRECATED_ENABLE_WARNING
 
 
 BOOST_AUTO_TEST_CASE(testSeasonalityCorrection) {
@@ -1713,7 +1718,7 @@ BOOST_AUTO_TEST_CASE(testExtrapolationRegression) {
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
         return ext::make_shared<ZeroCouponInflationSwapHelper>(
-            quote, observationLag, maturity, calendar, bdc, dc, rpi, CPI::AsIndex, nominalTS);
+            quote, observationLag, maturity, calendar, bdc, dc, rpi, CPI::AsIndex);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 

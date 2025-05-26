@@ -29,6 +29,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
         const Period& swapObsLag,
@@ -90,6 +92,8 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(nominalTermStructure_);
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 
     Real ZeroCouponInflationSwapHelper::impliedQuote() const {
