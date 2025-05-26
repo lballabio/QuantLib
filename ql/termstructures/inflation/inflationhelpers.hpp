@@ -43,6 +43,16 @@ namespace QuantLib {
             BusinessDayConvention paymentConvention,
             DayCounter dayCounter,
             ext::shared_ptr<ZeroInflationIndex> zii,
+            CPI::InterpolationType observationInterpolation);
+
+        ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& swapObsLag,
+            const Date& maturity,
+            Calendar calendar,
+            BusinessDayConvention paymentConvention,
+            DayCounter dayCounter,
+            ext::shared_ptr<ZeroInflationIndex> zii,
             CPI::InterpolationType observationInterpolation,
             Handle<YieldTermStructure> nominalTermStructure);
 
