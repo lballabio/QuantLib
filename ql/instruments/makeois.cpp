@@ -24,6 +24,8 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/indexes/ibor/sonia.hpp>
+#include <ql/indexes/ibor/corra.hpp>
 
 namespace QuantLib {
 
@@ -35,6 +37,7 @@ namespace QuantLib {
       forwardStart_(forwardStart),
       fixedCalendar_(overnightIndex->fixingCalendar()),
       overnightCalendar_(overnightIndex->fixingCalendar()),
+      settlementDays_(Null<Natural>()),
       fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
@@ -48,12 +51,23 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate = effectiveDate_;
         else {
+            // settlement days: override if set, else fallback to default by index name
+            Natural settlementDays = settlementDays_;
+            if (settlementDays == Null<Natural>()) {
+                if (ext::dynamic_pointer_cast<Sonia>(overnightIndex_))
+                    settlementDays = 0;
+                else if (ext::dynamic_pointer_cast<Corra>(overnightIndex_))
+                    settlementDays = 1;
+                else
+                    settlementDays = 2;
+            }            
+
             Date refDate = Settings::instance().evaluationDate();
             // if the evaluation date is not a business day
             // then move to the next business day
             refDate = overnightCalendar_.adjust(refDate);
             Date spotDate = overnightCalendar_.advance(refDate,
-                                                       settlementDays_*Days);
+                                                       settlementDays*Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = overnightCalendar_.adjust(startDate, Preceding);
