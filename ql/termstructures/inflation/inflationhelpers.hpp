@@ -41,7 +41,7 @@ namespace QuantLib {
             const Date& maturity,
             Calendar calendar, // index may have null calendar as valid on every day
             BusinessDayConvention paymentConvention,
-            DayCounter dayCounter,
+            const DayCounter& dayCounter,
             ext::shared_ptr<ZeroInflationIndex> zii,
             CPI::InterpolationType observationInterpolation);
 

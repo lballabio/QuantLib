@@ -37,11 +37,11 @@ namespace QuantLib {
         const Date& maturity,
         Calendar calendar,
         BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
+        const DayCounter& dayCounter,
         ext::shared_ptr<ZeroInflationIndex> zii,
         CPI::InterpolationType observationInterpolation)
-    : ZeroCouponInflationSwapHelper(quote, swapObsLag, maturity, calendar, paymentConvention,
-                                    dayCounter, zii, observationInterpolation, {}) {
+    : ZeroCouponInflationSwapHelper(quote, swapObsLag, maturity, std::move(calendar), paymentConvention,
+                                    dayCounter, std::move(zii), observationInterpolation, {}) {
         // any nominal term structure will give the same result;
         // when calculating the fair rate, the equal discount factors
         // for the payments on the two legs will cancel out.
