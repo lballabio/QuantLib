@@ -25,6 +25,7 @@
 #include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/indexes/inflation/ukhicp.hpp>
 #include <ql/indexes/inflation/aucpi.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -540,9 +541,9 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithNominalCurve) {
     Frequency frequency = Monthly;
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
-        return ext::shared_ptr<ZeroCouponInflationSwapHelper>(
-          new ZeroCouponInflationSwapHelper(
-            quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS));
+        return ext::make_shared<ZeroCouponInflationSwapHelper>(
+          
+            quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS);
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
