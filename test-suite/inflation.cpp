@@ -540,7 +540,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructureWithNominalCurve) {
     Frequency frequency = Monthly;
 
     auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
-        return ext::shared_ptr<ZeroCouponInflationSwapHelper>(
+        return ext::shared_ptr<ZeroCouponInflationSwapHelper>(  // NOLINT(modernize-make-shared)
           new ZeroCouponInflationSwapHelper(
             quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, nominalTS));
     };
