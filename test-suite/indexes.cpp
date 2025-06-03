@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE(testCustomIborIndex) {
     matCal.addHoliday(Date(30, April, 2025));
 
     auto ibor = CustomIborIndex(
-        "Custom Ibor", 3*Months, 2, Currency(), fixCal, valCal, matCal,
+        "Custom Ibor", 3*Months, 2, Currency(), fixCal, valCal, matCal, // NOLINT(cppcoreguidelines-slicing)
         ModifiedFollowing, true, Actual360()
     );
     auto iborClone = ibor.clone(Handle<YieldTermStructure>());
