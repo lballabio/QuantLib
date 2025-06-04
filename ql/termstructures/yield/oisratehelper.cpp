@@ -32,7 +32,7 @@ namespace QuantLib {
     OISRateHelper::OISRateHelper(
         Natural settlementDays,
         const Period& tenor, // swap maturity
-        const Handle<Quote>& fixedRate,
+        const std::variant<Rate, Handle<Quote>>& fixedRate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         Handle<YieldTermStructure> discount,
         bool telescopicValueDates,
@@ -69,7 +69,7 @@ namespace QuantLib {
     OISRateHelper::OISRateHelper(
         const Date& startDate,
         const Date& endDate,
-        const Handle<Quote>& fixedRate,
+        const std::variant<Rate, Handle<Quote>>& fixedRate,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         Handle<YieldTermStructure> discount,
         bool telescopicValueDates,
