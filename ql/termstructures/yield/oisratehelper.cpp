@@ -25,6 +25,8 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <ql/indexes/ibor/sonia.hpp>
+#include <ql/indexes/ibor/corra.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -54,7 +56,7 @@ namespace QuantLib {
         ext::shared_ptr<FloatingRateCouponPricer> pricer,
         DateGeneration::Rule rule,
         Calendar overnightCalendar)
-    : RelativeDateRateHelper(fixedRate), settlementDays_(settlementDays), tenor_(tenor),
+    : RelativeDateRateHelper(fixedRate), settlementDays_(Null<Natural>()), tenor_(tenor),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
@@ -63,6 +65,17 @@ namespace QuantLib {
       fixedPaymentFrequency_(fixedPaymentFrequency), fixedCalendar_(std::move(fixedCalendar)),
       overnightCalendar_(std::move(overnightCalendar)), lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
       applyObservationShift_(applyObservationShift), pricer_(std::move(pricer)), rule_(rule) {
+        // Use index-specific settlement day defaults if none explicitly provided
+        if (settlementDays == Null<Natural>()) {
+            if (ext::dynamic_pointer_cast<Sonia>(overnightIndex) ||
+                ext::dynamic_pointer_cast<Corra>(overnightIndex)) {
+                settlementDays_ = 0;
+            } else {
+                settlementDays_ = 2;
+            }
+        } else {
+            settlementDays_ = settlementDays;
+        }
         initialize(overnightIndex, customPillarDate);
     }
 
