@@ -55,6 +55,20 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CalendarTests)
 
+void checkHolidays(const std::vector<Date>& calculated, const std::vector<Date>& expected) {
+    std::set<Date> calc(calculated.begin(), calculated.end());
+    std::set<Date> exp(expected.begin(), expected.end());
+
+    for (Date d : calculated) {
+        if (exp.find(d) == exp.end())
+            BOOST_ERROR(d << " calculated but not expected");
+    }
+    for (Date d : expected) {
+        if (calc.find(d) == calc.end())
+            BOOST_ERROR(d << " expected but not calculated");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testModifiedCalendars) {
 
     BOOST_TEST_MESSAGE("Testing calendar modification...");
@@ -217,15 +231,9 @@ BOOST_AUTO_TEST_CASE(testUSSettlement) {
     expectedHol.emplace_back(26, December, 2005);
 
     Calendar c = UnitedStates(UnitedStates::Settlement);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2005));
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
-    for (Size i = 0; i < hol.size(); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2005)),
+        expectedHol);
 
     // before Uniform Monday Holiday Act
     expectedHol = std::vector<Date>();
@@ -238,15 +246,9 @@ BOOST_AUTO_TEST_CASE(testUSSettlement) {
     expectedHol.emplace_back(23, November, 1961);
     expectedHol.emplace_back(25, December, 1961);
 
-    hol = c.holidayList(Date(1, January, 1961), Date(31, December, 1961));
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
-    for (Size i = 0; i < hol.size(); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
+    checkHolidays(
+        c.holidayList(Date(1, January, 1961), Date(31, December, 1961)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUSGovernmentBondMarket) {
@@ -267,16 +269,9 @@ BOOST_AUTO_TEST_CASE(testUSGovernmentBondMarket) {
     expectedHol.emplace_back(24, December, 2004);
 
     Calendar c = UnitedStates(UnitedStates::GovernmentBond);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2004));
-
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2004)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
@@ -314,17 +309,9 @@ BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
     expectedHol.emplace_back(25, December, 2006);
 
     Calendar c = UnitedStates(UnitedStates::NYSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2006));
-
-    Size i;
-    for (i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2006)),
+        expectedHol);
 
     std::vector<Date> histClose;
     histClose.emplace_back(30, October, 2012);   // Hurricane Sandy
@@ -369,7 +356,7 @@ BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
     histClose.emplace_back(7, Nov, 1972);
     histClose.emplace_back(5, Nov, 1968);
     histClose.emplace_back(3, Nov, 1964);
-    for (i = 0; i < histClose.size(); i++) {
+    for (Size i = 0; i < histClose.size(); i++) {
         if (!c.isHoliday(histClose[i]))
             BOOST_FAIL(histClose[i] << " should be holiday (historical close)");
     }
@@ -468,16 +455,9 @@ BOOST_AUTO_TEST_CASE(testTARGET) {
     expectedHol.emplace_back(26, December, 2006);
 
     Calendar c = TARGET();
-    std::vector<Date> hol = c.holidayList(Date(1, January, 1999), Date(31, December, 2006));
-
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 1999), Date(31, December, 2006)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testGermanyFrankfurt) {
@@ -499,15 +479,9 @@ BOOST_AUTO_TEST_CASE(testGermanyFrankfurt) {
     expectedHol.emplace_back(24, December, 2004);
 
     Calendar c = Germany(Germany::FrankfurtStockExchange);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2003), Date(31, December, 2004));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2003), Date(31, December, 2004)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testGermanyEurex) {
@@ -531,15 +505,9 @@ BOOST_AUTO_TEST_CASE(testGermanyEurex) {
     expectedHol.emplace_back(31, December, 2004);
 
     Calendar c = Germany(Germany::Eurex);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2003), Date(31, December, 2004));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2003), Date(31, December, 2004)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testGermanyXetra) {
@@ -561,15 +529,9 @@ BOOST_AUTO_TEST_CASE(testGermanyXetra) {
     expectedHol.emplace_back(24, December, 2004);
 
     Calendar c = Germany(Germany::Xetra);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2003), Date(31, December, 2004));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2003), Date(31, December, 2004)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUKSettlement) {
@@ -614,15 +576,9 @@ BOOST_AUTO_TEST_CASE(testUKSettlement) {
     expectedHol.emplace_back(26, December, 2007);
 
     Calendar c = UnitedKingdom(UnitedKingdom::Settlement);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2007));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2007)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUKExchange) {
@@ -667,15 +623,9 @@ BOOST_AUTO_TEST_CASE(testUKExchange) {
     expectedHol.emplace_back(26, December, 2007);
 
     Calendar c = UnitedKingdom(UnitedKingdom::Exchange);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2007));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2007)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUKMetals) {
@@ -720,15 +670,9 @@ BOOST_AUTO_TEST_CASE(testUKMetals) {
     expectedHol.emplace_back(26, December, 2007);
 
     Calendar c = UnitedKingdom(UnitedKingdom::Metals);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2007));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2007)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testItalyExchange) {
@@ -763,15 +707,9 @@ BOOST_AUTO_TEST_CASE(testItalyExchange) {
     expectedHol.emplace_back(31, December, 2004);
 
     Calendar c = Italy(Italy::Exchange);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2002), Date(31, December, 2004));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2002), Date(31, December, 2004)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testRussia) {
@@ -1359,20 +1297,9 @@ BOOST_AUTO_TEST_CASE(testRussia) {
     expectedHol.emplace_back(31, December, 2016);
 
     Calendar c = Russia(Russia::MOEX);
-
-
-    std::vector<Date> hol =
-        c.holidayList(Date(1, January, 2012),
-                      Date(31, December, 2016), // only dates for which calendars are available
-                      true);                    // include week-ends since lists are exhaustive
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2012), Date(31, December, 2016), true),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testBrazil) {
@@ -1407,15 +1334,9 @@ BOOST_AUTO_TEST_CASE(testBrazil) {
     expectedHol.emplace_back(25, December, 2006);
 
     Calendar c = Brazil();
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2005), Date(31, December, 2006));
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2005), Date(31, December, 2006)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testDenmark) {
@@ -1466,16 +1387,9 @@ BOOST_AUTO_TEST_CASE(testDenmark) {
     // Saturday: expectedHol.emplace_back(31, December, 2022);
 
     Calendar c = Denmark();
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2020), Date(31, December, 2022));
-
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2020), Date(31, December, 2022)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
@@ -2193,16 +2107,9 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
     expectedHol.emplace_back(26, December, 2050);
 
     Calendar c = SouthKorea(SouthKorea::Settlement);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2050));
-
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2050)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
@@ -2969,16 +2876,9 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
     expectedHol.emplace_back(30, December, 2050);
 
     Calendar c = SouthKorea(SouthKorea::KRX);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2004), Date(31, December, 2050));
-
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2004), Date(31, December, 2050)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testChinaSSE) {
@@ -3223,16 +3123,9 @@ BOOST_AUTO_TEST_CASE(testChinaSSE) {
     expectedHol.emplace_back(8, Oct, 2025);
 
     Calendar c = China(China::SSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2025));
-
-    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
-        if (hol[i] != expectedHol[i])
-            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
-                                               << hol[i]);
-    }
-    if (hol.size() != expectedHol.size())
-        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
-                                 << hol.size() << " calculated holidays");
+    checkHolidays(
+        c.holidayList(Date(1, January, 2014), Date(31, December, 2025)),
+        expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testChinaIB) {
