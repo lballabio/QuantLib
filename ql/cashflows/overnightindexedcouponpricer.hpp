@@ -35,9 +35,12 @@
 
 namespace QuantLib {
 
-    //! CompoudAveragedOvernightIndexedCouponPricer pricer
+    //! CompoundAveragedOvernightIndexedCouponPricer pricer
     class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
       public:
+        explicit CompoundingOvernightIndexedCouponPricer(const bool cdiCompounding = false)
+        : cdiComp_(cdiCompounding) {} // Nonstandard CDI (Brazilian overnight index) compounding
+
         //! \name FloatingRateCoupon interface
         //@{
         void initialize(const FloatingRateCoupon& coupon) override;
@@ -52,6 +55,7 @@ namespace QuantLib {
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
+        bool cdiComp_;
     };
 
     /*! pricer for arithmetically averaged overnight indexed coupons

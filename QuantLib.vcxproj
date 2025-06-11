@@ -514,6 +514,7 @@
     <ClInclude Include="ql\cashflows\capflooredinflationcoupon.hpp" />
     <ClInclude Include="ql\cashflows\cashflows.hpp" />
     <ClInclude Include="ql\cashflows\cashflowvectors.hpp" />
+    <ClInclude Include="ql\cashflows\cdicoupon.hpp" />
     <ClInclude Include="ql\cashflows\cmscoupon.hpp" />
     <ClInclude Include="ql\cashflows\conundrumpricer.hpp" />
     <ClInclude Include="ql\cashflows\coupon.hpp" />
@@ -826,6 +827,7 @@
     <ClInclude Include="ql\indexes\ibor\bibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\bkbm.hpp" />
     <ClInclude Include="ql\indexes\ibor\cadlibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\cdi.hpp" />
     <ClInclude Include="ql\indexes\ibor\cdor.hpp" />
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\corra.hpp" />
@@ -2134,6 +2136,7 @@
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
     <ClCompile Include="ql\indexes\equityindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
+    <ClCompile Include="ql\indexes\ibor\cdi.cpp" />
     <ClCompile Include="ql\indexes\ibor\corra.cpp" />
     <ClCompile Include="ql\indexes\ibor\custom.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />

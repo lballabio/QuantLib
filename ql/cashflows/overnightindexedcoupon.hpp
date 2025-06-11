@@ -49,22 +49,21 @@ namespace QuantLib {
     */
     class OvernightIndexedCoupon : public FloatingRateCoupon {
       public:
-        OvernightIndexedCoupon(
-                    const Date& paymentDate,
-                    Real nominal,
-                    const Date& startDate,
-                    const Date& endDate,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                    Real gearing = 1.0,
-                    Spread spread = 0.0,
-                    const Date& refPeriodStart = Date(),
-                    const Date& refPeriodEnd = Date(),
-                    const DayCounter& dayCounter = DayCounter(),
-                    bool telescopicValueDates = false,
-                    RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                    Natural lookbackDays = Null<Natural>(),
-                    Natural lockoutDays = 0,
-                    bool applyObservationShift = false);
+        OvernightIndexedCoupon(const Date& paymentDate,
+                               Real nominal,
+                               const Date& startDate,
+                               const Date& endDate,
+                               const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                               Real gearing = 1.0,
+                               Spread spread = 0.0,
+                               const Date& refPeriodStart = Date(),
+                               const Date& refPeriodEnd = Date(),
+                               const DayCounter& dayCounter = DayCounter(),
+                               bool telescopicValueDates = false,
+                               RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                               Natural lookbackDays = Null<Natural>(),
+                               Natural lockoutDays = 0,
+                               bool applyObservationShift = false);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -83,6 +82,8 @@ namespace QuantLib {
         Natural lockoutDays() const { return lockoutDays_; }
         //! apply observation shift
         bool applyObservationShift() const { return applyObservationShift_; }
+        //! whether the coupon is indexed to Brazilian CDI which has unique accrual formulas
+        virtual bool isCdiIndexed() const { return false; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -100,9 +101,9 @@ namespace QuantLib {
         //! Only when index fixing delay is 0 and observation shift is used,
         //! we can apply telescopic formula, when applying lookback period.
         //@{
-        bool canApplyTelescopicFormula() const {
+        bool virtual canApplyTelescopicFormula() const {
             return fixingDays_ == index_->fixingDays() ||
-                (applyObservationShift_ && index_->fixingDays() == 0);
+                   (applyObservationShift_ && index_->fixingDays() == 0);
         }
         //@}
       private:
@@ -137,6 +138,7 @@ namespace QuantLib {
         OvernightLeg& withLockoutDays(Natural lockoutDays);
         OvernightLeg& withObservationShift(bool applyObservationShift = true);
         operator Leg() const;
+
       private:
         Schedule schedule_;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
