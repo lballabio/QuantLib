@@ -22,7 +22,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/CdiCoupon.hpp>
+#include <ql/cashflows/cdicoupon.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
 
 #include <iostream>
