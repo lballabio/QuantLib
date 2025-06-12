@@ -35,6 +35,7 @@
 #include <ql/time/calendars/china.hpp>
 #include <ql/time/calendars/denmark.hpp>
 #include <ql/time/calendars/germany.hpp>
+#include <ql/time/calendars/israel.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
@@ -3372,6 +3373,126 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
     BOOST_TEST(wellington.isBusinessDay({1, February, 2027}));
 }
 
+
+BOOST_AUTO_TEST_CASE(testTASECalendar) {
+    BOOST_TEST_MESSAGE("Testing TASE calendar...");
+
+    std::vector<Date> expected2013 = {
+        {24, February, 2013},
+        {25, March, 2013},
+        {26, March, 2013},
+        {31, March, 2013},
+        {1, April, 2013},
+        {15, April, 2013},
+        {16, April, 2013},
+        {14, May, 2013},
+        {15, May, 2013},
+        {16, July, 2013},
+        {4, September, 2013},
+        {5, September, 2013},
+        {18, September, 2013},
+        {19, September, 2013},
+        {25, September, 2013},
+        {26, September, 2013},
+    };
+
+    auto c = Israel();
+    checkHolidays(
+        c.holidayList(Date(1, January, 2013), Date(31, December, 2013)),
+        expected2013);
+
+    std::vector<Date> expected2025 = {
+        {13, April, 2025},
+        {30, April, 2025},
+        {1, May, 2025},
+        {2, June, 2025},
+        {3, August, 2025},
+        {23, September, 2025},
+        {24, September, 2025},
+        {1, October, 2025},
+        {2, October, 2025},
+        {6, October, 2025},
+        {7, October, 2025},
+        {13, October, 2025},
+        {14, October, 2025},
+    };
+
+    checkHolidays(
+        c.holidayList(Date(1, January, 2025), Date(31, December, 2025)),
+        expected2025);
+}
+
+BOOST_AUTO_TEST_CASE(testSHIRCalendar) {
+    BOOST_TEST_MESSAGE("Testing SHIR calendar...");
+
+    std::vector<Date> expected = {
+        Date(5, May, 2022),
+        Date(3, June, 2022),
+        Date(26, September, 2022),
+        Date(27, September, 2022),
+        Date(4, October, 2022),
+        Date(5, October, 2022),
+        Date(10, October, 2022),
+        Date(17, October, 2022),
+        Date(1, November, 2022),
+        Date(26, December, 2022),
+        Date(2, January, 2023),
+        Date(7, March, 2023),
+        Date(8, March, 2023),
+        Date(5, April, 2023),
+        Date(6, April, 2023),
+        Date(7, April, 2023),
+        Date(10, April, 2023),
+        Date(12, April, 2023),
+        Date(26, April, 2023),
+        Date(26, May, 2023),
+        Date(29, May, 2023),
+        Date(27, July, 2023),
+        Date(15, September, 2023),
+        Date(25, September, 2023),
+        Date(25, December, 2023),
+        Date(26, December, 2023),
+        Date(1, January, 2024),
+        Date(27, February, 2024),
+        Date(25, March, 2024),
+        Date(29, March, 2024),
+        Date(22, April, 2024),
+        Date(23, April, 2024),
+        Date(29, April, 2024),
+        Date(14, May, 2024),
+        Date(27, May, 2024),
+        Date(12, June, 2024),
+        Date(13, August, 2024),
+        Date(2, October, 2024),
+        Date(3, October, 2024),
+        Date(4, October, 2024),
+        Date(11, October, 2024),
+        Date(17, October, 2024),
+        Date(24, October, 2024),
+        Date(25, December, 2024),
+        Date(26, December, 2024),
+        Date(1, January, 2025),
+        Date(14, March, 2025),
+        Date(18, April, 2025),
+        Date(1, May, 2025),
+        Date(26, May, 2025),
+        Date(2, June, 2025),
+        Date(22, September, 2025),
+        Date(23, September, 2025),
+        Date(24, September, 2025),
+        Date(1, October, 2025),
+        Date(2, October, 2025),
+        Date(7, October, 2025),
+        Date(14, October, 2025),
+        Date(25, December, 2025),
+        Date(26, December, 2025),
+    };
+
+    auto c = Israel(Israel::SHIR);
+    checkHolidays(
+        c.holidayList(Date(5, May, 2022), Date(31, December, 2025)),
+        expected);
+}
 
 BOOST_AUTO_TEST_CASE(testStartOfMonth) {
     BOOST_TEST_MESSAGE("Testing start-of-month calculation...");
