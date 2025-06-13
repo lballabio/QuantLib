@@ -898,6 +898,60 @@ BOOST_AUTO_TEST_CASE(testThirty360_EurobondBasis) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testThirty360_USA) {
+
+    BOOST_TEST_MESSAGE("Testing 30/360 day counter (USA)...");
+
+    // See https://en.wikipedia.org/wiki/Day_count_convention#30/360_US
+
+    DayCounter dayCounter = Thirty360(Thirty360::USA);
+
+    Thirty360Case data[] = {
+        // Example 1: End dates do not involve the last day of February
+        {Date(20, August, 2006),    Date(20, February, 2007), 180},
+        {Date(20, February, 2007),  Date(20, August, 2007),   180},
+        {Date(20, August, 2007),    Date(20, February, 2008), 180},
+        {Date(20, February, 2008),  Date(20, August, 2008),   180},
+        {Date(20, August, 2008),    Date(20, February, 2009), 180},
+        {Date(20, February, 2009),  Date(20, August, 2009),   180},
+
+        // Example 2: End dates include some end-February dates
+        {Date(31, August, 2006),    Date(28, February, 2007), 178},
+        {Date(28, February, 2007),  Date(31, August, 2007),   180},
+        {Date(31, August, 2007),    Date(29, February, 2008), 179},
+        {Date(29, February, 2008),  Date(31, August, 2008),   180},
+        {Date(31, August, 2008),    Date(28, February, 2009), 178},
+        {Date(28, February, 2009),  Date(31, August, 2009),   180},
+
+        // Example 3: Miscellaneous calculations
+        {Date(31, January, 2006),   Date(28, February, 2006),  28},
+        {Date(30, January, 2006),   Date(28, February, 2006),  28},
+        {Date(28, February, 2006),  Date(3, March, 2006),       3},
+        {Date(14, February, 2006),  Date(28, February, 2006),  14},
+        {Date(30, September, 2006), Date(31, October, 2006),   30},
+        {Date(31, October, 2006),   Date(28, November, 2006),  28},
+        {Date(31, August, 2007),    Date(28, February, 2008), 178},
+        {Date(28, February, 2008),  Date(28, August, 2008),   180},
+        {Date(28, February, 2008),  Date(30, August, 2008),   182},
+        {Date(28, February, 2008),  Date(31, August, 2008),   183},
+        {Date(26, February, 2007),  Date(28, February, 2008), 362},
+        {Date(26, February, 2007),  Date(29, February, 2008), 363},
+        {Date(29, February, 2008),  Date(28, February, 2009), 360},
+        {Date(28, February, 2008),  Date(30, March, 2008),     32},
+        {Date(28, February, 2008),  Date(31, March, 2008),     33}
+    };
+
+    for (auto x : data) {
+        Date::serial_type calculated = dayCounter.dayCount(x.start, x.end);
+        if (calculated != x.expected) {
+                BOOST_ERROR("from " << x.start
+                            << " to " << x.end << ":\n"
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << x.expected);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testThirty360_ISDA) {
 
     BOOST_TEST_MESSAGE("Testing 30/360 day counter (ISDA)...");
