@@ -998,6 +998,63 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
         Date expected(14, May, 2025);
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
+
+    // Manual override should take precedence over default
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, sonia, 0.01)
+                                        .withSettlementDays(5);
+        Date expected(19, May, 2025); // 5 business days after today
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, corra, 0.01)
+                                        .withSettlementDays(3);
+        Date expected(15, May, 2025);
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOISRateHelperSettlementDayDefaults) {
+    BOOST_TEST_MESSAGE("Testing OISRateHelper settlement day defaults...");
+
+    Date today(12, May, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<Quote> dummyRate(ext::make_shared<SimpleQuote>(0.01));
+
+    ext::shared_ptr<OvernightIndex> sonia = ext::make_shared<Sonia>();
+    ext::shared_ptr<OvernightIndex> corra = ext::make_shared<Corra>();
+    ext::shared_ptr<OvernightIndex> sofr  = ext::make_shared<Sofr>();
+    ext::shared_ptr<OvernightIndex> eonia = ext::make_shared<Eonia>();
+
+    // SONIA: default 0
+    auto soniaHelper = ext::make_shared<OISRateHelper>(
+        Null<Natural>(), 1 * Years, dummyRate, sonia);
+    BOOST_CHECK_EQUAL(soniaHelper->swap()->startDate(), today);
+
+    // CORRA: default 0
+    auto corraHelper = ext::make_shared<OISRateHelper>(
+        Null<Natural>(), 1 * Years, dummyRate, corra);
+    BOOST_CHECK_EQUAL(corraHelper->swap()->startDate(), today);
+
+    // SOFR: default fallback should be 2
+    auto sofrHelper = ext::make_shared<OISRateHelper>(
+        Null<Natural>(), 1 * Years, dummyRate, sofr);
+    Date sofrExpected(14, May, 2025);
+    BOOST_CHECK_EQUAL(sofrHelper->swap()->startDate(), sofrExpected);
+
+    // EONIA: default fallback should be 2
+    auto eoniaHelper = ext::make_shared<OISRateHelper>(
+        Null<Natural>(), 1 * Years, dummyRate, eonia);
+    Date eoniaExpected(14, May, 2025);
+    BOOST_CHECK_EQUAL(eoniaHelper->swap()->startDate(), eoniaExpected);
+
+    // Manual override (confirm it bypasses default logic)
+    auto manualHelper = ext::make_shared<OISRateHelper>(
+        5, 1 * Years, dummyRate, sofr);
+    Date manualExpected(19, May, 2025);
+    BOOST_CHECK_EQUAL(manualHelper->swap()->startDate(), manualExpected);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
