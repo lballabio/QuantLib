@@ -912,6 +912,7 @@
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp" />
+    <ClInclude Include="ql\instruments\crossccyswap.hpp" />
     <ClInclude Include="ql\instruments\dividendbarrieroption.hpp" />
     <ClInclude Include="ql\instruments\dividendschedule.hpp" />
     <ClInclude Include="ql\instruments\dividendvanillaoption.hpp" />
@@ -1580,6 +1581,7 @@
     <ClInclude Include="ql\pricingengines\quanto\all.hpp" />
     <ClInclude Include="ql\pricingengines\quanto\quantoengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\all.hpp" />
+    <ClInclude Include="ql\pricingengines\swap\crossccyswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\cvaswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discountingswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\swap\discretizedswap.hpp" />
@@ -2187,6 +2189,7 @@
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp" />
+    <ClCompile Include="ql\instruments\crossccyswap.cpp" />
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\doublebarriertype.cpp" />
     <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp" />
@@ -2635,6 +2638,7 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\mclookbackengine.cpp" />
+    <ClInclude Include="ql\pricingengines\swap\crossccyswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />

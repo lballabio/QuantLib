@@ -25,6 +25,7 @@ this_include_HEADERS = \
     cpicapfloor.hpp \
     cpiswap.hpp \
     creditdefaultswap.hpp \
+    crossccyswap.hpp \
     dividendbarrieroption.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
@@ -100,6 +101,7 @@ cpp_files = \
     cpicapfloor.cpp \
     cpiswap.cpp \
     creditdefaultswap.cpp \
+    crossccyswap.cpp \
     doublebarrieroption.cpp \
     doublebarriertype.cpp \
     equitytotalreturnswap.cpp \
