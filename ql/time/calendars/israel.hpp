@@ -60,15 +60,12 @@ namespace QuantLib {
     */
     class Israel : public Calendar {
       private:
-        class TelAvivImpl final : public Calendar::Impl {
-          public:
-            std::string name() const override { return "Tel Aviv stock exchange"; }
-            bool isWeekend(Weekday) const override;
-            bool isBusinessDay(const Date&) const override;
-        };
+        class TelAvivImpl;
+        class ShirImpl;
       public:
           enum Market { Settlement,     //!< generic settlement calendar
-                        TASE            //!< Tel-Aviv stock exchange calendar
+                        TASE,           //!< Tel-Aviv stock exchange calendar
+                        SHIR            //!< SHIR fixing calendar
           };
           Israel(Market market = Settlement);
     };
