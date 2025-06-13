@@ -26,6 +26,7 @@
 
 #include <ql/processes/forwardmeasureprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +34,7 @@ namespace QuantLib {
     /*! \ingroup processes */
     class G2Process : public StochasticProcess {
       public:
-        G2Process(Real a, Real sigma, Real b, Real eta, Real rho);
+        G2Process(const Handle<YieldTermStructure>& h, Real a, Real sigma, Real b, Real eta, Real rho);
         //! \name StochasticProcess interface
         //@{
         Size size() const override;
@@ -55,13 +56,14 @@ namespace QuantLib {
         Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
+        Handle<YieldTermStructure> h_;
     };
 
     //! %Forward %G2 stochastic process
     /*! \ingroup processes */
     class G2ForwardProcess : public ForwardMeasureProcess {
       public:
-        G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho);
+        G2ForwardProcess(const Handle<YieldTermStructure>& h, Real a, Real sigma, Real b, Real eta, Real rho);
         //! \name StochasticProcess interface
         //@{
         Size size() const override;
@@ -80,6 +82,7 @@ namespace QuantLib {
         Real yForwardDrift(Time t, Time T) const;
         Real Mx_T(Real s, Real t, Real T) const;
         Real My_T(Real s, Real t, Real T) const;
+        Handle<YieldTermStructure> h_;
     };
 
 }
