@@ -754,7 +754,23 @@ namespace QuantLib {
         FxSwapRateHelper::initializeDates();
     }
 
+    FxSwapRateHelper::FxSwapRateHelper(const Handle<Quote>& fwdPoint,
+                                       Handle<Quote> spotFx,
+                                       const Date& startDate,
+                                       const Date& endDate,
+                                       bool isFxBaseCurrencyCollateralCurrency,
+                                       Handle<YieldTermStructure> coll)
+    : RelativeDateRateHelper(fwdPoint, false), spot_(std::move(spotFx)),
+      isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
+      collHandle_(std::move(coll)) {
+        registerWith(spot_);
+        registerWith(collHandle_);
+        earliestDate_ = startDate;
+        latestDate_ = endDate;
+    }
+
     void FxSwapRateHelper::initializeDates() {
+        if (!updateDates_) return;
         // if the evaluation date is not a business day
         // then move to the next business day
         Date refDate = cal_.adjust(evaluationDate_);
