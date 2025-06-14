@@ -620,6 +620,7 @@ BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     // Create swap
 	Real USDNominal = 10'000'000;
@@ -635,7 +636,7 @@ BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
     // Check values
     Real tolerance = 0.01;
 
-	Real expNpv = 218961.99;
+	Real expNpv = usingAtParCoupons ? 218961.99 : 218981.99;
     Real npv = xccySwap->NPV();
 	CHECK_XCCY_SWAP_RESULT("NPV", npv, expNpv, tolerance);
 
@@ -646,7 +647,7 @@ BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
 	CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyNPV", xccySwap->inCcyLegNPV(0), expPayLegNpv  * spotFx, tolerance  * spotFx);
 	CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyBPS", xccySwap->inCcyLegBPS(0), expPayLegBps * spotFx, tolerance * spotFx);
 
-	Real expRecLegNpv = 141906.99;
+	Real expRecLegNpv = usingAtParCoupons ? 141906.99 : 141926.99;
 	Real expRecLegBps = 4730.19;
 	CHECK_XCCY_SWAP_RESULT("Leg 1 NPV", xccySwap->legNPV(1), expRecLegNpv, tolerance);
 	CHECK_XCCY_SWAP_RESULT("Leg 1 BPS", xccySwap->legBPS(1), expRecLegBps, tolerance);
@@ -659,6 +660,7 @@ BOOST_AUTO_TEST_CASE(testFloatFloatXCCYSwapPricing) {
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     // Create swap
 	Real USDNominal = 125'000'000;
@@ -678,14 +680,14 @@ BOOST_AUTO_TEST_CASE(testFloatFloatXCCYSwapPricing) {
     Real expNpv = 0.00;
 	CHECK_XCCY_SWAP_RESULT("NPV", xccySwap->NPV(), expNpv, tolerance);
 
-	Real expPayLegNpv = -1773829.64;
+	Real expPayLegNpv = usingAtParCoupons ? -1773829.64 : -1773772.22;
 	Real expPayLegBps = -59127.58;
 	CHECK_XCCY_SWAP_RESULT("Leg 0 NPV", xccySwap->legNPV(0), expPayLegNpv, tolerance);
 	CHECK_XCCY_SWAP_RESULT("Leg 0 BPS", xccySwap->legBPS(0), expPayLegBps, tolerance);
 	CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyNPV", xccySwap->inCcyLegNPV(0), expPayLegNpv, tolerance);
 	CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyBPS", xccySwap->inCcyLegBPS(0), expPayLegBps, tolerance);
 
-	Real expRecLegNpv = 1773829.64;
+	Real expRecLegNpv = usingAtParCoupons ? 1773829.64 : 1773772.22;
 	Real expRecLegBps = 58317.61;
 	CHECK_XCCY_SWAP_RESULT("Leg 1 NPV", xccySwap->legNPV(1), expRecLegNpv, tolerance);
 	CHECK_XCCY_SWAP_RESULT("Leg 1 BPS", xccySwap->legBPS(1), expRecLegBps, tolerance);
