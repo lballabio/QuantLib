@@ -367,6 +367,12 @@ namespace QuantLib {
                          bool isFxBaseCurrencyCollateralCurrency,
                          Handle<YieldTermStructure> collateralCurve,
                          Calendar tradingCalendar = Calendar());
+        FxSwapRateHelper(const Handle<Quote>& fwdPoint,
+                         Handle<Quote> spotFx,
+                         const Date& startDate,
+                         const Date& endDate,
+                         bool isFxBaseCurrencyCollateralCurrency,
+                         Handle<YieldTermStructure> collateralCurve);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
