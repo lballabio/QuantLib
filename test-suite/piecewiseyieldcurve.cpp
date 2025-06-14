@@ -1599,16 +1599,20 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     };
 
     // Create the FX swap rate helpers for the ARS in USD curve.
-    vector<ext::shared_ptr<RateHelper> > instruments;
+    vector<ext::shared_ptr<RateHelper>> instruments, datedInstruments;
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Date startDate = calendar.advance(calendar.adjust(asof), 2*Days);
     for (auto & arsFwdPoint : arsFwdPoints) {
         Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(arsFwdPoint.second));
         instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, arsFwdPoint.first, 2,
-            UnitedStates(UnitedStates::GovernmentBond), Following, false, true, usdYts));
+            calendar, Following, false, true, usdYts));
+        datedInstruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, startDate,
+            calendar.advance(startDate, arsFwdPoint.first), true, usdYts));
     }
 
     // Create the ARS in USD curve with the default IterativeBootstrap.
     typedef PiecewiseYieldCurve<Discount, LogLinear, IterativeBootstrap> LLDFCurve;
-    ext::shared_ptr<YieldTermStructure> arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter);
+    auto arsYts = ext::make_shared<LLDFCurve>(asof, instruments, tsDayCounter);
 
     // USD/ARS spot date. The date on which we check the ARS discount curve.
     Date spotDate(27, Sep, 2019);
@@ -1635,6 +1639,13 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     Real calcFwd = (spotDfArs * arsSpot->value() / oneYearDfArs) / (spotDfUsd / oneYearDfUsd);
     Real expFwd = arsSpot->value() + arsFwdPoints.at(1 * Years);
     QL_CHECK_SMALL(calcFwd - expFwd, 1e-10);
+
+    // Check that datedInstruments give the same result.
+    auto datedArsYts = ext::make_shared<LLDFCurve>(asof, datedInstruments, tsDayCounter, ib);
+    BOOST_CHECK(arsYts->dates() == datedArsYts->dates());
+    for (const auto date : arsYts->dates()) {
+        BOOST_CHECK_CLOSE(arsYts->discount(date), datedArsYts->discount(date), 1e-6);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testCustomFuturesHelpers) {
