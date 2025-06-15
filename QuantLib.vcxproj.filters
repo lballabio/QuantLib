@@ -507,7 +507,7 @@
 		<ClInclude Include="ql\cashflows\cashflowvectors.hpp">
 			<Filter>cashflows</Filter>
 		</ClInclude>
-		<ClInclude Include="ql\cashflows\cdi.hpp">
+		<ClInclude Include="ql\cashflows\cdicoupon.hpp">
 			<Filter>cashflows</Filter>
 		</ClInclude>
 		<ClInclude Include="ql\cashflows\cmscoupon.hpp">
