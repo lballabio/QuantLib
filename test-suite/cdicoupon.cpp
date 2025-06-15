@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "ql/time/daycounters/actual360.hpp"
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/cdicoupon.hpp>
