@@ -357,9 +357,9 @@ BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
     histClose.emplace_back(7, Nov, 1972);
     histClose.emplace_back(5, Nov, 1968);
     histClose.emplace_back(3, Nov, 1964);
-    for (Size i = 0; i < histClose.size(); i++) {
-        if (!c.isHoliday(histClose[i]))
-            BOOST_FAIL(histClose[i] << " should be holiday (historical close)");
+    for (auto i : histClose) {
+        if (!c.isHoliday(i))
+            BOOST_FAIL(i << " should be holiday (historical close)");
     }
 }
 
