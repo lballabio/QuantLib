@@ -22,10 +22,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/cdicoupon.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
-
-#include <iostream>
 
 namespace QuantLib {
 
@@ -67,14 +64,15 @@ namespace QuantLib {
         const auto& dt = coupon_->dt();
         const bool applyObservationShift = coupon_->applyObservationShift();
 
-        const Real& gearing = coupon_->gearing();
-        const bool isCdiIndexed = coupon_->isCdiIndexed();
-
         const auto span = [&index, &interestDates, &dt, &date](Size position) -> Time {
             return (date >= interestDates[position + 1] ?
                         dt[position] :
                         index->dayCounter().yearFraction(interestDates[position], date));
         };
+
+        const Real& gearing = coupon_->gearing();
+        const bool isCdiIndexed = coupon_->isCdiIndexed();
+
         const auto compound = [isCdiIndexed, gearing](const Time t, const Rate r) -> Real {
             return !isCdiIndexed ? 1.0 + r * t : (std::pow(1.0 + r, t) - 1.0) * gearing + 1.0;
         };

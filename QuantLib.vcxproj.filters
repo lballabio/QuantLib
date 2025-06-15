@@ -4500,12 +4500,6 @@
     <ClInclude Include="ql\pricingengines\basket\vectorbsmprocessextractor.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
-    <ClInclude Include="ql\indexes\ibor\cdi.hpp">
-      <Filter>indexes\ibor</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\cashflows\cdicoupon.hpp">
-      <Filter>cashflows</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7296,9 +7290,6 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\vectorbsmprocessextractor.cpp">
       <Filter>pricingengines\basket</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\indexes\ibor\cdi.cpp">
-      <Filter>indexes\ibor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

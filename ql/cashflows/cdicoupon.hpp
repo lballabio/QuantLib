@@ -21,12 +21,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file overnightindexedcdicoupon.hpp
-    \brief overnight indexed coupon accruing the CDI rate
+/*! \file cdicoupon.hpp
+    \brief Overnight indexed coupon accruing the Brazilian CDI rate
 */
 
-#ifndef quantlib_overnight_indexed_cdi_coupon_hpp
-#define quantlib_overnight_indexed_cdi_coupon_hpp
+#ifndef quantlib_cdi_coupon_hpp
+#define quantlib_cdi_coupon_hpp
 
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/ibor/cdi.hpp>
@@ -40,8 +40,8 @@ namespace QuantLib {
      * See: https://www.cmegroup.com/education/files/otc-irs-brl-overview.pdf
      * The implementation is provided by the compounding overnight coupon pricer
      * The following conventions are used
-     *  1) CDI ON accrual with spread s: [(1+cdi_i)*(1+s)]^(1/252)
-     *  2) CDI ON accrual with gearing ("DI over") g: [(1+cdi_i)^(1/252)-1] * g + 1
+     *  1) CDI ON compound factor with spread s: [(1+cdi_i)*(1+s)]^(1/252)
+     *  2) CDI ON compound factor with gearing ("DI over") g: [(1+cdi_i)^(1/252)-1] * g + 1
      *     If gearing is nontrivial, then the telescopic formula cannot be applied.
      */
 
