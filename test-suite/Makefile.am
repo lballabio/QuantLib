@@ -26,6 +26,7 @@ QL_TEST_SRCS = \
 	capflooredcoupon.cpp \
 	cashflows.cpp \
 	catbonds.cpp \
+	cdicoupon.cpp \
 	cdo.cpp \
 	cdsoption.cpp \
 	chooseroption.cpp \
