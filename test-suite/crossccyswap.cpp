@@ -47,6 +47,26 @@ BOOST_AUTO_TEST_SUITE(CrossCcySwapTests)
     }
 
 // Data for the tests
+struct CommonVars {
+    Date today, startDate, endDate;
+    Calendar payCalendar;
+    DateGeneration::Rule rule;
+    BusinessDayConvention convention;
+    bool endOfMonth;
+    DayCounter dc;
+
+    CommonVars(Calendar c, BusinessDayConvention conv, DateGeneration::Rule r) {
+        payCalendar = c;
+        today = Date(11, Sep, 2018);
+        Settings::instance().evaluationDate() = today;
+        startDate = payCalendar.advance(today, Period(2, Days));
+        endDate = payCalendar.advance(today, Period(5, Years));
+        rule = r;
+        convention = conv;
+        endOfMonth = false;
+        dc = Actual365Fixed();
+    }
+};
 
 Handle<YieldTermStructure> CHFDiscountCurve() {
     std::vector<Date> dates(27);
@@ -412,23 +432,17 @@ Handle<YieldTermStructure> TRYDiscountCurve() {
 ext::shared_ptr<CrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) {
 	Calendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), Switzerland());
 	
-	Date referenceDate = payCalendar.adjust(Settings::instance().evaluationDate());
-    Date start_date = payCalendar.advance(referenceDate, Period(2, Days));
-    Date end_date = payCalendar.advance(referenceDate, Period(5, Years));
-    DateGeneration::Rule rule = DateGeneration::Forward;
-    BusinessDayConvention convention = Following;
-    bool end_of_month = false;
-    DayCounter dc = Actual365Fixed();
+    CommonVars vars(payCalendar, Following, DateGeneration::Forward);
 
     Schedule schedule(
-        start_date,
-        end_date,
+        vars.startDate,
+        vars.endDate,
         Period(3, Months),
         payCalendar,
-        convention,
-        convention,
-        rule,
-        end_of_month
+        vars.convention,
+        vars.convention,
+        vars.rule,
+        vars.endOfMonth
     );
 
 	Rate usdRate = 0.0575;
@@ -437,10 +451,10 @@ ext::shared_ptr<CrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) 
 	// USD Leg
     Leg usdLeg = FixedRateLeg(schedule)
                        .withNotionals(leg1Nominal)
-                       .withCouponRates(usdRate, dc)
-                       .withPaymentAdjustment(convention)
-                       .withPaymentCalendar(payCalendar);
-	Date aDate = payCalendar.adjust(schedule.dates().front(), convention);
+                       .withCouponRates(usdRate, vars.dc)
+                       .withPaymentAdjustment(vars.convention)
+                       .withPaymentCalendar(vars.payCalendar);
+	Date aDate = payCalendar.adjust(schedule.dates().front(), vars.convention);
     auto initialCapitalFlow = ext::make_shared<SimpleCashFlow>(-leg1Nominal, aDate);
     auto finalCapitalFlow = ext::make_shared<SimpleCashFlow>(leg1Nominal, usdLeg.back()->date());
 	usdLeg.insert(usdLeg.begin(), initialCapitalFlow);
@@ -449,9 +463,9 @@ ext::shared_ptr<CrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) 
 	// CHF Leg
     Leg chfLeg = FixedRateLeg(schedule)
                         .withNotionals(leg1Nominal * spotFx)
-                        .withCouponRates(chfRate, dc)
-                        .withPaymentAdjustment(convention)
-                        .withPaymentCalendar(payCalendar);
+                        .withCouponRates(chfRate, vars.dc)
+                        .withPaymentAdjustment(vars.convention)
+                        .withPaymentCalendar(vars.payCalendar);
     auto initialCHFCapitalFlow = ext::make_shared<SimpleCashFlow>(-leg1Nominal * spotFx, aDate);
     auto finalCHFCapitalFlow = ext::make_shared<SimpleCashFlow>(leg1Nominal * spotFx, chfLeg.back()->date());
 	chfLeg.insert(chfLeg.begin(), initialCHFCapitalFlow);
@@ -465,45 +479,39 @@ ext::shared_ptr<CrossCcySwap> makeFixFixXCCYSwap(Real leg1Nominal, Rate spotFx) 
 ext::shared_ptr<CrossCcySwap> makeFixFloatXCCYSwap(Real leg1Nominal, Rate spotFx) {
 	Calendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), UnitedKingdom(), Turkey());
 	
-	Date referenceDate = payCalendar.adjust(Settings::instance().evaluationDate());
-    Date start_date = payCalendar.advance(referenceDate, Period(2, Days));
-    Date end_date = payCalendar.advance(referenceDate, Period(5, Years));
-    DateGeneration::Rule rule = DateGeneration::Backward;
-    BusinessDayConvention convention = ModifiedFollowing;
+    CommonVars vars(payCalendar, ModifiedFollowing, DateGeneration::Backward);
     BusinessDayConvention payConvention = Following;
-    bool end_of_month = false;
-    DayCounter dc = Actual365Fixed();
 
     Schedule floatSchedule(
-        start_date,
-        end_date,
+        vars.startDate,
+        vars.endDate,
         Period(3, Months),
         payCalendar,
-        convention,
-        convention,
-        rule,
-        end_of_month
+        vars.convention,
+        vars.convention,
+        vars.rule,
+        vars.endOfMonth
     );
 	
 	Schedule fixSchedule(
-        start_date,
-        end_date,
+        vars.startDate,
+        vars.endDate,
         Period(1, Years),
         payCalendar,
-        convention,
-        convention,
-        rule,
-        end_of_month
+        vars.convention,
+        vars.convention,
+        vars.rule,
+        vars.endOfMonth
     );
 
 	// TRY Leg
 	Rate tryRate = 0.249;
 	Leg tryLeg = FixedRateLeg(fixSchedule)
                     .withNotionals(leg1Nominal * spotFx)
-                    .withCouponRates(tryRate, dc)
+                    .withCouponRates(tryRate, vars.dc)
                     .withPaymentAdjustment(payConvention)
                     .withPaymentCalendar(payCalendar);
-	Date aDate = payCalendar.adjust(fixSchedule.dates().front(), convention);
+	Date aDate = payCalendar.adjust(fixSchedule.dates().front(), vars.convention);
     auto initialTRYCapitalFlow = ext::make_shared<SimpleCashFlow>(-leg1Nominal * spotFx, aDate);
     auto finalTRYCapitalFlow = ext::make_shared<SimpleCashFlow>(leg1Nominal * spotFx, tryLeg.back()->date());
 	tryLeg.insert(tryLeg.begin(), initialTRYCapitalFlow);
@@ -515,7 +523,7 @@ ext::shared_ptr<CrossCcySwap> makeFixFloatXCCYSwap(Real leg1Nominal, Rate spotFx
 				.withNotionals(leg1Nominal)
 				.withPaymentAdjustment(payConvention)
                 .withPaymentCalendar(payCalendar);
-	aDate = payCalendar.adjust(floatSchedule.dates().front(), convention);
+	aDate = payCalendar.adjust(floatSchedule.dates().front(), vars.convention);
     auto initialUSDNotionalExchange = ext::make_shared<SimpleCashFlow>(-leg1Nominal, aDate);
 	usdLeg.insert(usdLeg.begin(), initialUSDNotionalExchange);
 	auto finalUSDNotionalExchange = ext::make_shared<SimpleCashFlow>(leg1Nominal, usdLeg.back()->date());
@@ -529,29 +537,24 @@ ext::shared_ptr<CrossCcySwap> makeFixFloatXCCYSwap(Real leg1Nominal, Rate spotFx
 ext::shared_ptr<CrossCcySwap> makeFloatFloatXCCYSwap(Real leg1Nominal, Rate spotFx) {
 	Calendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), UnitedKingdom());
 	
-	Date referenceDate = payCalendar.adjust(Settings::instance().evaluationDate());
-    Date start_date = payCalendar.advance(referenceDate, Period(2, Days));
-    Date end_date = payCalendar.advance(referenceDate, Period(5, Years));
-    DateGeneration::Rule rule = DateGeneration::Forward;
-    BusinessDayConvention convention = Following;
-    bool end_of_month = false;
+    CommonVars vars(payCalendar, Following, DateGeneration::Forward);
 
     Schedule schedule(
-        start_date,
-        end_date,
+        vars.startDate,
+        vars.endDate,
         Period(3, Months),
         payCalendar,
-        convention,
-        convention,
-        rule,
-        end_of_month
+        vars.convention,
+        vars.convention,
+        vars.rule,
+        vars.endOfMonth
     );
 
 	// USD Leg
     auto usdlibor3M = ext::make_shared<USDLibor>(Period(3, Months), USDProjectionCurve());
 	Leg usdLeg = IborLeg(schedule, usdlibor3M)
 					.withNotionals(leg1Nominal)
-					.withPaymentAdjustment(convention)
+					.withPaymentAdjustment(vars.convention)
 					.withPaymentCalendar(payCalendar);
 	Date aDate = payCalendar.adjust(schedule.dates().front());
 	auto initialUSDNotionalExchange = ext::make_shared<SimpleCashFlow>(-leg1Nominal, aDate);
@@ -563,7 +566,7 @@ ext::shared_ptr<CrossCcySwap> makeFloatFloatXCCYSwap(Real leg1Nominal, Rate spot
     auto gbpLibor3M = ext::make_shared<GBPLibor>(Period(3, Months), GBPProjectionCurve());
     Leg gbpLeg = IborLeg(schedule, gbpLibor3M)
 					.withNotionals(leg1Nominal * spotFx)
-					.withPaymentAdjustment(convention)
+					.withPaymentAdjustment(vars.convention)
 					.withPaymentCalendar(payCalendar);
 	auto initialGBPNotionalExchange = ext::make_shared<SimpleCashFlow>(-leg1Nominal * spotFx, aDate);
 	gbpLeg.insert(gbpLeg.begin(), initialGBPNotionalExchange);
@@ -578,9 +581,6 @@ ext::shared_ptr<CrossCcySwap> makeFloatFloatXCCYSwap(Real leg1Nominal, Rate spot
 
 BOOST_AUTO_TEST_CASE(testFixFixXCCYSwapPricing) {
     BOOST_TEST_MESSAGE("Test Fix-Fix cross currency swap pricing against known results");
-
-    SavedSettings backup;
-    Settings::instance().evaluationDate() = Date(11, Sep, 2018);
 
     // Create swap
     Real USDNominal = 125'000'000;
@@ -618,8 +618,6 @@ BOOST_AUTO_TEST_CASE(testFixFixXCCYSwapPricing) {
 BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
     BOOST_TEST_MESSAGE("Test Float-Fix cross currency pricing against known results");
 
-    SavedSettings backup;
-    Settings::instance().evaluationDate() = Date(11, Sep, 2018);
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     // Create swap
@@ -658,8 +656,6 @@ BOOST_AUTO_TEST_CASE(testFloatFixXCCYSwapPricing) {
 BOOST_AUTO_TEST_CASE(testFloatFloatXCCYSwapPricing) {
     BOOST_TEST_MESSAGE("Test Float-Float cross currency pricing against known results");
 
-    SavedSettings backup;
-    Settings::instance().evaluationDate() = Date(11, Sep, 2018);
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     // Create swap
