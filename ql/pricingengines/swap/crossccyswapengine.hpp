@@ -27,9 +27,10 @@
 #ifndef quantlib_cross_ccy_swap_engine_hpp
 #define quantlib_cross_ccy_swap_engine_hpp
 
-#include <ql/termstructures/yieldtermstructure.hpp>
-
+#include <ql/handle.hpp>
 #include <ql/instruments/crossccyswap.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
