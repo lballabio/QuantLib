@@ -2638,7 +2638,7 @@
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfixedlookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuouspartialfloatinglookback.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\mclookbackengine.cpp" />
-    <ClInclude Include="ql\pricingengines\swap\crossccyswapengine.cpp" />
+    <ClCompile Include="ql\pricingengines\swap\crossccyswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discountingswapengine.cpp" />
     <ClCompile Include="ql\pricingengines\swap\discretizedswap.cpp" />
