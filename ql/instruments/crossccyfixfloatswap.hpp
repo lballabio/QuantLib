@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file qle/instruments/crossccyfixfloatswap.hpp
+/*! \file ql/instruments/crossccyfixfloatswap.hpp
     \brief Cross currency fixed vs float swap instrument
     \ingroup instruments
 */
