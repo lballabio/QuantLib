@@ -822,6 +822,9 @@
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\crossccyfixfloatswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\crossccyswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -4749,6 +4752,9 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\crossccyfixfloatswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\crossccyswap.cpp">

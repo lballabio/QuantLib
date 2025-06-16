@@ -1,0 +1,159 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2016 Quaternion Risk Management Ltd
+ All rights reserved.
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+#include <ql/instruments/crossccyfixfloatswap.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
+
+namespace QuantLib {
+
+CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
+    Type type, Real fixedNominal, const Currency& fixedCurrency, const Schedule& fixedSchedule, Rate fixedRate,
+    const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc, Natural fixedPaymentLag,
+    const Calendar& fixedPaymentCalendar, Real floatNominal, const Currency& floatCurrency,
+    const Schedule& floatSchedule, const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
+    BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, const Calendar& floatPaymentCalendar)
+    : CrossCcySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(fixedCurrency),
+      fixedSchedule_(fixedSchedule), fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
+      fixedPaymentBdc_(fixedPaymentBdc), fixedPaymentLag_(fixedPaymentLag), fixedPaymentCalendar_(fixedPaymentCalendar),
+      floatNominal_(floatNominal), floatCurrency_(floatCurrency), floatSchedule_(floatSchedule),
+      floatIndex_(floatIndex), floatSpread_(floatSpread), floatPaymentBdc_(floatPaymentBdc),
+      floatPaymentLag_(floatPaymentLag), floatPaymentCalendar_(floatPaymentCalendar) {
+
+    // Build the float leg
+    Leg floatLeg = IborLeg(floatSchedule_, floatIndex_)
+                       .withNotionals(floatNominal_)
+                       .withSpreads(floatSpread_)
+                       .withPaymentAdjustment(floatPaymentBdc_)
+                       .withPaymentLag(floatPaymentLag_)
+                       .withPaymentCalendar(floatPaymentCalendar_);
+
+    // Register with each floating rate coupon
+    for (Leg::const_iterator it = floatLeg.begin(); it < floatLeg.end(); ++it)
+        registerWith(*it);
+
+    // Initial notional exchange
+    Date aDate = floatSchedule_.dates().front();
+    aDate = floatPaymentCalendar_.adjust(aDate, floatPaymentBdc_);
+    ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-floatNominal_, aDate);
+    floatLeg.insert(floatLeg.begin(), aCashflow);
+
+    // Final notional exchange
+    aDate = floatLeg.back()->date();
+    aCashflow = ext::make_shared<SimpleCashFlow>(floatNominal_, aDate);
+    floatLeg.push_back(aCashflow);
+
+    // Build the fixed rate leg
+    Leg fixedLeg = FixedRateLeg(fixedSchedule_)
+                       .withNotionals(fixedNominal_)
+                       .withCouponRates(fixedRate_, fixedDayCount_)
+                       .withPaymentAdjustment(fixedPaymentBdc_)
+                       .withPaymentLag(fixedPaymentLag)
+                       .withPaymentCalendar(fixedPaymentCalendar);
+
+    // Initial notional exchange
+    aDate = fixedSchedule_.dates().front();
+    aDate = fixedPaymentCalendar_.adjust(aDate, fixedPaymentBdc_);
+    aCashflow = ext::make_shared<SimpleCashFlow>(-fixedNominal_, aDate);
+    fixedLeg.insert(fixedLeg.begin(), aCashflow);
+
+    // Final notional exchange
+    aDate = fixedLeg.back()->date();
+    aCashflow = ext::make_shared<SimpleCashFlow>(fixedNominal_, aDate);
+    fixedLeg.push_back(aCashflow);
+
+    // Deriving from cross currency swap where:
+    //   First leg should hold the pay flows
+    //   Second leg should hold the receive flows
+    payer_[0] = -1.0;
+    payer_[1] = 1.0;
+    switch (type_) {
+    case Payer:
+        legs_[0] = fixedLeg;
+        currencies_[0] = fixedCurrency_;
+        legs_[1] = floatLeg;
+        currencies_[1] = floatCurrency_;
+        break;
+    case Receiver:
+        legs_[1] = fixedLeg;
+        currencies_[1] = fixedCurrency_;
+        legs_[0] = floatLeg;
+        currencies_[0] = floatCurrency_;
+        break;
+    default:
+        QL_FAIL("Unknown cross currency fix float swap type");
+    }
+}
+
+void CrossCcyFixFloatSwap::setupArguments(PricingEngine::arguments* a) const {
+    CrossCcySwap::setupArguments(a);
+    if (CrossCcyFixFloatSwap::arguments* args = dynamic_cast<CrossCcyFixFloatSwap::arguments*>(a)) {
+        args->fixedRate = fixedRate_;
+        args->spread = floatSpread_;
+    }
+}
+
+void CrossCcyFixFloatSwap::fetchResults(const PricingEngine::results* r) const {
+
+    CrossCcySwap::fetchResults(r);
+
+    // Depending on the pricing engine used, we may have CrossCcyFixFloatSwap::results
+    if (const CrossCcyFixFloatSwap::results* res = dynamic_cast<const CrossCcyFixFloatSwap::results*>(r)) {
+        // If we have CrossCcyFixFloatSwap::results from the pricing engine
+        fairFixedRate_ = res->fairFixedRate;
+        fairSpread_ = res->fairSpread;
+    } else {
+        // If not, set them to Null to indicate a calculation is needed below
+        fairFixedRate_ = Null<Rate>();
+        fairSpread_ = Null<Spread>();
+    }
+
+    // Calculate fair rate and spread if they are still Null here
+    static Spread basisPoint = 1.0e-4;
+
+    Size idxFixed = type_ == Payer ? 0 : 1;
+    if (fairFixedRate_ == Null<Rate>() && legBPS_[idxFixed] != Null<Real>())
+        fairFixedRate_ = fixedRate_ - NPV_ / (legBPS_[idxFixed] / basisPoint);
+
+    Size idxFloat = type_ == Payer ? 1 : 0;
+    if (fairSpread_ == Null<Spread>() && legBPS_[idxFloat] != Null<Real>())
+        fairSpread_ = floatSpread_ - NPV_ / (legBPS_[idxFloat] / basisPoint);
+}
+
+void CrossCcyFixFloatSwap::setupExpired() const {
+    CrossCcySwap::setupExpired();
+    fairFixedRate_ = Null<Rate>();
+    fairSpread_ = Null<Spread>();
+}
+
+void CrossCcyFixFloatSwap::arguments::validate() const {
+    CrossCcySwap::arguments::validate();
+    QL_REQUIRE(fixedRate != Null<Rate>(), "Fixed rate cannot be null");
+    QL_REQUIRE(spread != Null<Spread>(), "Spread cannot be null");
+}
+
+void CrossCcyFixFloatSwap::results::reset() {
+    CrossCcySwap::results::reset();
+    fairFixedRate = Null<Rate>();
+    fairSpread = Null<Spread>();
+}
+
+} // namespace QuantLib
