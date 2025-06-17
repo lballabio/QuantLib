@@ -21,6 +21,7 @@
 #include "toplevelfixture.hpp"
 #include <ql/currencies/all.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/time/calendars/all.hpp>
