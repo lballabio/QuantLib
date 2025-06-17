@@ -19,8 +19,6 @@
 */
 
 #include "toplevelfixture.hpp"
-#include <boost/make_shared.hpp>
-#include <boost/test/unit_test.hpp>
 #include <ql/currencies/all.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -252,47 +250,49 @@ ext::shared_ptr<CrossCcyFixFloatSwap> makeFixFloatXCCYSwap(Rate spotFx, Rate rat
 
 
 BOOST_AUTO_TEST_CASE(testFixFloatXCCYSwapPricing) {
-
     BOOST_TEST_MESSAGE("Test cross currency fix float swap pricing against known results");
 
     SavedSettings backup;
-
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);
+	bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     // Create swap, USD 3M Libor vs TRY annual fixed
     Rate spotFx = 6.4304;
     Rate rate = 0.249;
     Spread spread = 0.0;
-    auto swap = makeFixFloatXCCYSwap(spotFx, rate, spread);
+    auto xccy = makeFixFloatXCCYSwap(spotFx, rate, spread);
 
     // Attach pricing engine
     auto fxSpotQuote = makeQuoteHandle(1.0 / spotFx);
     auto engine = ext::make_shared<CrossCcySwapEngine>(
         USDCurrency(), usdDiscountCurve(), TRYCurrency(), tryDiscountCurve(), fxSpotQuote);
-    swap->setPricingEngine(engine);
+    xccy->setPricingEngine(engine);
 
     // Check values
-	Real usdTolerance = 0.01;
+    Real usdTolerance = 0.01;
+	
+    Real expNpv = usingAtParCoupons ? 129777.91 : 129767.99;
+    CHECK_XCCY_SWAP_RESULT("NPV", xccy->NPV(), expNpv, usdTolerance);
 
-	Real expNpv = 129777.91;
-	CHECK_XCCY_SWAP_RESULT("NPV", swap->NPV(), expNpv, usdTolerance);
+    Real expPayLegNpv = -12286.45;
+    Real expPayLegBps = -2628.39;
+    CHECK_XCCY_SWAP_RESULT("Leg 0 NPV", xccy->legNPV(0), expPayLegNpv, usdTolerance);
+    CHECK_XCCY_SWAP_RESULT("Leg 0 BPS", xccy->legBPS(0), expPayLegBps, usdTolerance);
+    CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyNPV", xccy->inCcyLegNPV(0), expPayLegNpv * spotFx, usdTolerance * spotFx);
+    CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyBPS", xccy->inCcyLegBPS(0), expPayLegBps * spotFx, usdTolerance * spotFx);
 
-	Real expPayLegNpv = -12286.45;
-	Real expPayLegBps = -2628.39;
-	CHECK_XCCY_SWAP_RESULT("Leg 0 NPV", swap->legNPV(0), expPayLegNpv, usdTolerance);
-	CHECK_XCCY_SWAP_RESULT("Leg 0 BPS", swap->legBPS(0), expPayLegBps, usdTolerance);
-	CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyNPV", swap->inCcyLegNPV(0), expPayLegNpv * spotFx, usdTolerance * spotFx);
-	CHECK_XCCY_SWAP_RESULT("Leg 0 inCcyBPS", swap->inCcyLegBPS(0), expPayLegBps * spotFx, usdTolerance * spotFx);
+    Real expRecLegNpv = usingAtParCoupons ? 142064.36 : 142054.44;
+    Real expRecLegBps = 4735.03;
+    CHECK_XCCY_SWAP_RESULT("Leg 1 NPV", xccy->legNPV(1), expRecLegNpv, usdTolerance);
+    CHECK_XCCY_SWAP_RESULT("Leg 1 BPS", xccy->legBPS(1), expRecLegBps, usdTolerance);
+    CHECK_XCCY_SWAP_RESULT("Leg 1 inCcyNPV", xccy->inCcyLegNPV(1), expRecLegNpv, usdTolerance);
+    CHECK_XCCY_SWAP_RESULT("Leg 1 inCcyBPS", xccy->inCcyLegBPS(1), expRecLegBps, usdTolerance);
 
-	Real expRecLegNpv = 142064.36;
-	Real expRecLegBps = 4735.03;
-	CHECK_XCCY_SWAP_RESULT("Leg 1 NPV", swap->legNPV(1), expRecLegNpv, usdTolerance);
-	CHECK_XCCY_SWAP_RESULT("Leg 1 BPS", swap->legBPS(1), expRecLegBps, usdTolerance);
-	CHECK_XCCY_SWAP_RESULT("Leg 1 inCcyNPV", swap->inCcyLegNPV(1), expRecLegNpv, usdTolerance);
-	CHECK_XCCY_SWAP_RESULT("Leg 1 inCcyBPS", swap->inCcyLegBPS(1), expRecLegBps, usdTolerance);
+    Real expectedFairRate = usingAtParCoupons ? 0.253937551076 : 0.253937173908;
+    Real expectedFairSpread = usingAtParCoupons ? -0.002740802104 : -0.002740592739;
 
-	CHECK_XCCY_SWAP_RESULT("Fair Fixed Rate", swap->fairFixedRate(), 0.253937551076, 1e-10);
-	CHECK_XCCY_SWAP_RESULT("Fair Spread", swap->fairSpread(), -0.002740802104, 1e-10);
+    CHECK_XCCY_SWAP_RESULT("Fair Fixed Rate", xccy->fairFixedRate(), expectedFairRate, 1e-10);
+    CHECK_XCCY_SWAP_RESULT("Fair Spread", xccy->fairSpread(), expectedFairSpread, 1e-10);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
