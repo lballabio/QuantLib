@@ -271,6 +271,7 @@ set(QL_SOURCES
     instruments/cpicapfloor.cpp
     instruments/cpiswap.cpp
     instruments/creditdefaultswap.cpp
+    instruments/crossccybasisswap.cpp
     instruments/crossccyfixfloatswap.cpp
     instruments/crossccyswap.cpp
     instruments/doublebarrieroption.cpp
@@ -1339,6 +1340,7 @@ set(QL_HEADERS
     instruments/cpicapfloor.hpp
     instruments/cpiswap.hpp
     instruments/creditdefaultswap.hpp
+    instruments/crossccybasisswap.hpp
     instruments/crossccyfixfloatswap.hpp
     instruments/crossccyswap.hpp
     instruments/dividendbarrieroption.hpp

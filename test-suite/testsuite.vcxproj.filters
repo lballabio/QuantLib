@@ -501,6 +501,9 @@
     <ClCompile Include="basisswapratehelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="crossccybasisswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="crossccyfixfloatswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -912,6 +912,7 @@
     <ClInclude Include="ql\instruments\cpicapfloor.hpp" />
     <ClInclude Include="ql\instruments\cpiswap.hpp" />
     <ClInclude Include="ql\instruments\creditdefaultswap.hpp" />
+    <ClInclude Include="ql\instruments\crossccybasisswap.hpp" />
     <ClInclude Include="ql\instruments\crossccyfixfloatswap.hpp" />
     <ClInclude Include="ql\instruments\crossccyswap.hpp" />
     <ClInclude Include="ql\instruments\dividendbarrieroption.hpp" />
@@ -2190,6 +2191,7 @@
     <ClCompile Include="ql\instruments\cpicapfloor.cpp" />
     <ClCompile Include="ql\instruments\cpiswap.cpp" />
     <ClCompile Include="ql\instruments\creditdefaultswap.cpp" />
+    <ClCompile Include="ql\instruments\crossccybasisswap.cpp" />
     <ClCompile Include="ql\instruments\crossccyfixfloatswap.cpp" />
     <ClCompile Include="ql\instruments\crossccyswap.cpp" />
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp" />

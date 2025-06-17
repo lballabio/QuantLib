@@ -40,6 +40,7 @@ QL_TEST_SRCS = \
 	covariance.cpp \
 	creditdefaultswap.cpp \
 	creditriskplus.cpp \
+	crossccybasissswap.cpp \
 	crossccyfixfloatswap.cpp \
 	crossccyswap.cpp \
 	crosscurrencyratehelpers.cpp \
