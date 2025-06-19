@@ -24,7 +24,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/indexes/ibor/cdi.hpp>
 #include <ql/utilities/vectors.hpp>
 #include <utility>
 #include <algorithm>
@@ -43,29 +43,29 @@ namespace QuantLib {
     }
 
     OvernightIndexedCoupon::OvernightIndexedCoupon(
-                    const Date& paymentDate,
-                    Real nominal,
-                    const Date& startDate,
-                    const Date& endDate,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                    Real gearing,
-                    Spread spread,
-                    const Date& refPeriodStart,
-                    const Date& refPeriodEnd,
-                    const DayCounter& dayCounter,
-                    bool telescopicValueDates,
-                    RateAveraging::Type averagingMethod,
-                    Natural lookbackDays,
-                    Natural lockoutDays,
-                    bool applyObservationShift)
+        const Date& paymentDate,
+        Real nominal,
+        const Date& startDate,
+        const Date& endDate,
+        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+        Real gearing,
+        Spread spread,
+        const Date& refPeriodStart,
+        const Date& refPeriodEnd,
+        const DayCounter& dayCounter,
+        bool telescopicValueDates,
+        RateAveraging::Type averagingMethod,
+        Natural lookbackDays,
+        Natural lockoutDays,
+        bool applyObservationShift)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          lookbackDays,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, false), 
-        averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
-        applyObservationShift_(applyObservationShift) {
+      averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
+      applyObservationShift_(applyObservationShift), isCdiIndexed_(false) {
 
         // value dates
         Date tmpEndDate = endDate;
@@ -91,13 +91,13 @@ namespace QuantLib {
         }
         Schedule sch =
             MakeSchedule()
-                .from(startDate)
-                // .to(endDate)
-                .to(tmpEndDate)
-                .withTenor(1 * Days)
-                .withCalendar(overnightIndex->fixingCalendar())
-                .withConvention(overnightIndex->businessDayConvention())
-                .backwards();
+                           .from(startDate)
+                           // .to(endDate)
+                           .to(tmpEndDate)
+                           .withTenor(1 * Days)
+                           .withCalendar(overnightIndex->fixingCalendar())
+                           .withConvention(overnightIndex->businessDayConvention())
+                           .backwards();
         valueDates_ = sch.dates();
 
         if (telescopicValueDates) {
@@ -169,18 +169,25 @@ namespace QuantLib {
         for (Size i=0; i<n_; ++i)
             dt_[i] = dc.yearFraction(interestDates_[i], interestDates_[i + 1]);
 
+        if (ext::dynamic_pointer_cast<Cdi>(index_) != nullptr) {
+            QL_REQUIRE(averagingMethod == RateAveraging::Compound,
+                       "Cdi-indexed coupon not implemented for "
+                       "RateAveraging method other than Compound.");
+            isCdiIndexed_ = true;
+        }
+
         switch (averagingMethod) {
-          case RateAveraging::Simple:
+            case RateAveraging::Simple:
             QL_REQUIRE(
                 fixingDays_ == overnightIndex->fixingDays() && !applyObservationShift_ && lockoutDays_ == 0,
                 "Cannot price an overnight coupon with simple averaging with lookback or lockout.");
             setPricer(ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>(telescopicValueDates));
-            break;
-          case RateAveraging::Compound:
-            setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
-            break;
-          default:
-            QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
+                break;
+            case RateAveraging::Compound:
+                setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+                break;
+            default:
+                QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
         }
     }
 

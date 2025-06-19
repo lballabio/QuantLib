@@ -32,9 +32,11 @@ namespace QuantLib {
         QL_REQUIRE(t > 0.0, "\n cannot calculate forward rate between "
                                 << d1 << " and " << d2 << ":\n non positive time (" << t
                                 << ") using " << dayCounter_.name() << " daycounter");
+        
+        //const DiscountFactor disc1 = termStructure_->discount(d1);
+        //const DiscountFactor disc2 = termStructure_->discount(d2);
+        //return std::pow(disc1 / disc2, 1.0 / t) - 1.0;
 
-        const DiscountFactor disc1 = termStructure_->discount(d1);
-        const DiscountFactor disc2 = termStructure_->discount(d2);
-        return std::pow(disc1 / disc2, 1.0 / t) - 1.0;
+        return termStructure_->forwardRate(d1, d2, dayCounter_, Compounded, Annual).rate();
     }
 }

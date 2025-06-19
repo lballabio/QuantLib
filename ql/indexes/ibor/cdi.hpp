@@ -31,12 +31,15 @@
 
 namespace QuantLib {
 
-    //! %Brazilian CDI Overnight Index.
+    //! %Brazilian CDI Overnight rate.
     /* Reference: https://www.cmegroup.com/education/files/otc-irs-brl-overview.pdf
      * "Overnight Brazilian Interbank Deposit Rate Annualized as
      * the average of the DI-OVER-EXTRA Grupo as published by CETIP"
-     * "A business day in any of San Paulo, Rio de Janeiro or Brasilia
-     * not otherwise declared as a financial market holiday by the BM&F"
+     * Using this index will direct the overnight compounding pricer
+     * to calculate the daily compound factor according to the following conventions:
+     *  1) CDI ON with spread s: [(1+cdi_i)*(1+s)]^(1/252)
+     *  2) CDI ON gearing ("DI over") g: [(1+cdi_i)^(1/252)-1] * g + 1
+     *  3) Combination of the two: (1+s)^(1/252) * 2)
      */
     class Cdi : public OvernightIndex {
       public:

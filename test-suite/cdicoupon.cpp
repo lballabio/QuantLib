@@ -19,7 +19,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/cashflows/cdicoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/ibor/cdi.hpp>
 #include <ql/settings.hpp>
 #include <ql/time/daycounters/business252.hpp>
@@ -32,43 +32,77 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CdiCouponTests)
 
+namespace Data {
+
+    Real fixing(const Date& date) {
+        if (date <= Date(2, August, 2023))
+            return 13.65;
+        if (date <= Date(20, September, 2023))
+            return 13.15;
+        if (date <= Date(1, November, 2023))
+            return 12.65;
+        if (date <= Date(13, December, 2023))
+            return 12.15;
+        if (date <= Date(31, January, 2024))
+            return 11.65;
+        if (date <= Date(20, March, 2024))
+            return 11.15;
+        if (date <= Date(8, May, 2024))
+            return 10.65;
+        if (date <= Date(18, September, 2024))
+            return 10.4;
+        if (date <= Date(6, November, 2024))
+            return 10.65;
+        if (date <= Date(11, December, 2024))
+            return 11.15;
+        if (date <= Date(29, January, 2025))
+            return 12.15;
+        if (date <= Date(19, March, 2025))
+            return 13.15;
+        if (date <= Date(7, May, 2025))
+            return 14.15;
+        return 14.65;
+    }
+
+    void addFixings(Cdi& index, const Date& first, const Date& last) {
+        Schedule s = MakeSchedule()
+                         .from(first)
+                         .to(last)
+                         .withTenor(1 * Days)
+                         .withCalendar(Brazil::Brazil())
+                         .withConvention(Following)
+                         .forwards()
+                         .endOfMonth(false);
+        for (const auto& d : s) {
+            index.addFixing(d, fixing(d) / 100);
+        }
+    }
+
+}
+
 struct CommonVars {
-    Date today;
-    const Real notional = 100000.0;
-    const Real cdiForeCast = 0.015;
+    const Date today = Date(19, June, 2025); // holiday in Brazil
+    Date start = Date(23, June, 2023);
+    const Real notional = 10000000.0;
+
     ext::shared_ptr<Cdi> cdi;
     RelinkableHandle<YieldTermStructure> forecastCurve;
 
-    ext::shared_ptr<CdiCoupon>
+    ext::shared_ptr<OvernightIndexedCoupon>
     makeCoupon(Date startDate, Date endDate, Real gearing = 1.0, Real spread = 0.0) {
-        return ext::make_shared<CdiCoupon>(endDate, notional, startDate, endDate, cdi, gearing,
-                                           spread);
+        return ext::make_shared<OvernightIndexedCoupon>(endDate, notional, startDate, endDate, cdi,
+                                                        gearing, spread);
     }
 
-    CommonVars(const Date& evaluationDate) {
-        today = evaluationDate;
-
+    CommonVars() {
         Settings::instance().evaluationDate() = today;
-
         cdi = ext::make_shared<Cdi>(forecastCurve);
 
-        std::vector<Date> pastDates = {
-            Date(29, April, 2025), Date(30, April, 2025), Date(2, May, 2025),  Date(5, May, 2025),
-            Date(6, May, 2025),    Date(7, May, 2025),    Date(8, May, 2025),  Date(9, May, 2025),
-            Date(12, May, 2025),   Date(13, May, 2025),   Date(14, May, 2025), Date(15, May, 2025),
-            Date(16, May, 2025),   Date(19, May, 2025),   Date(20, May, 2025), Date(21, May, 2025),
-            Date(22, May, 2025),   Date(23, May, 2025),   Date(26, May, 2025), Date(27, May, 2025),
-            Date(28, May, 2025),   Date(29, May, 2025),
-        };
-        std::vector<Rate> pastRates = {
-            0.1415, 0.1415, 0.1415, 0.1415, 0.1415, 0.1415, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465,
-            0.1465, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465, 0.1465,
-        };
+        Date lastFixingDate = Brazil().adjust(today, Preceding);
+        Data::addFixings(*cdi, start, lastFixingDate);
 
-        cdi->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+        // cdi->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
     }
-
-    CommonVars() : CommonVars(Date(30, May, 2025)) {}
 };
 
 #define CHECK_CDI_OIS_COUPON_RESULT(what, calculated, expected, tolerance)         \
@@ -81,24 +115,31 @@ struct CommonVars {
     }
 
 BOOST_AUTO_TEST_CASE(testPastCouponRate) {
-    BOOST_TEST_MESSAGE("Testing rate for past cdi-indexed coupon...");
+    BOOST_TEST_MESSAGE("Testing rate for cdi-indexed coupon in the past...");
 
     CommonVars vars;
 
     // coupon entirely in the past
 
-    auto pastCoupon = vars.makeCoupon(Date(29, April, 2025), Date(30, May, 2025));
-    auto pastCoupon2 = vars.makeCoupon(Date(29, April, 2025), Date(30, May, 2025), 1.7, 0.0045);
+    const Date end = Date(18, June, 2025);
 
-    // expected values here come from manual calculations while looking at bbg swpm
-    Real expectedAccrued = 1190.15373385;
-    Real expectedAccruedSpreadGearing = 2071.29478688;
-    // Rate expectedRate = 0.000987136104;
-    // Real expectedAmount = vars.notional * expectedRate * 31.0 / 360;
-    // CHECK_CDI_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
-    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAccrued, 1e-8);
-    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", pastCoupon2->amount(),
-                                expectedAccruedSpreadGearing, 1e-4);
+    auto coupon1 = vars.makeCoupon(vars.start, end);
+    auto coupon2 = vars.makeCoupon(vars.start, end, 1.1, 0.005);
+    auto coupon3 = vars.makeCoupon(vars.start, end, 0.6, -0.003);
+
+    // expected values here come from manual calculations while looking at BBG SWPM
+    Real expectedAccrued1 = 2507099.48795;
+    Real expectedAccrued2 = 2916664.74186;
+    Real expectedAccrued3 = 1368957.56541;
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon1->amount(), expectedAccrued1, 1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon2->amount(), expectedAccrued2, 1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon3->amount(), expectedAccrued3, 1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("accrued amount", coupon1->accruedAmount(end), expectedAccrued1,
+                                1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("accrued amount", coupon2->accruedAmount(end), expectedAccrued2,
+                                1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("accrued amount", coupon3->accruedAmount(end), expectedAccrued3,
+                                1e-5);
 }
 
 // BOOST_AUTO_TEST_CASE(testCurrentCouponRate) {

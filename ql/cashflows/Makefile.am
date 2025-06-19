@@ -9,7 +9,6 @@ this_include_HEADERS = \
     capflooredinflationcoupon.hpp \
     cashflows.hpp \
     cashflowvectors.hpp \
-    cdicoupon.hpp \
     cmscoupon.hpp \
     conundrumpricer.hpp \
     coupon.hpp \

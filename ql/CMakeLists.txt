@@ -956,7 +956,6 @@ set(QL_HEADERS
     cashflows/capflooredinflationcoupon.hpp
     cashflows/cashflows.hpp
     cashflows/cashflowvectors.hpp
-    cashflows/cdicoupon.hpp
     cashflows/cmscoupon.hpp
     cashflows/conundrumpricer.hpp
     cashflows/coupon.hpp
