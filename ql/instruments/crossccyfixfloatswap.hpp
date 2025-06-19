@@ -43,7 +43,30 @@ public:
 
     //! \name Constructors
     //@{
-    //! Detailed constructor
+    /*!
+        \brief Constructs a cross-currency fixed vs floating rate swap.
+
+        This instrument represents a cross-currency swap where one leg pays fixed-rate cashflows in one currency, 
+        and the other leg pays floating-rate cashflows in another currency.
+
+        \param type                  The type of the swap (Receiver or Payer).
+        \param fixedNominal          Notional amount for the fixed leg.
+        \param fixedCurrency         Currency of the fixed leg.
+        \param fixedSchedule         Payment schedule for the fixed leg.
+        \param fixedRate             Fixed interest rate for the fixed leg.
+        \param fixedDayCount         Day count convention for the fixed leg.
+        \param fixedPaymentBdc       Business day convention for fixed leg payments.
+        \param fixedPaymentLag       Payment lag for the fixed leg (default: 0).
+        \param fixedPaymentCalendar  Calendar for fixed leg payments.
+        \param floatNominal          Notional amount for the floating leg.
+        \param floatCurrency         Currency of the floating leg.
+        \param floatSchedule         Payment schedule for the floating leg.
+        \param floatIndex            Floating rate index for the floating leg.
+        \param floatSpread           Spread over the floating rate for the floating leg.
+        \param floatPaymentBdc       Business day convention for floating leg payments.
+        \param floatPaymentLag       Payment lag for the floating leg (default: 0).
+        \param floatPaymentCalendar  Calendar for floating leg payments.
+    */
     CrossCcyFixFloatSwap(Type type, Real fixedNominal, const Currency& fixedCurrency,
                          const Schedule& fixedSchedule, Rate fixedRate,
                          const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc,
