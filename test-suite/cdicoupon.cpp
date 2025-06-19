@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CdiCouponTests)
 
-namespace Data {
+namespace CdiTestData {
 
     Real fixing(const Date& date) {
         if (date <= Date(2, August, 2023))
@@ -64,12 +64,12 @@ namespace Data {
         return 14.65;
     }
 
-    void addFixings(Cdi& index, const Date& first, const Date& last) {
+    void addFixings(Cdi& index, const Date& first, const Date& last, const Calendar& cal) {
         Schedule s = MakeSchedule()
                          .from(first)
                          .to(last)
                          .withTenor(1 * Days)
-                         .withCalendar(Brazil::Brazil())
+                         .withCalendar(cal)
                          .withConvention(Following)
                          .forwards()
                          .endOfMonth(false);
@@ -81,9 +81,11 @@ namespace Data {
 }
 
 struct CommonVars {
-    const Date today = Date(19, June, 2025); // holiday in Brazil
-    Date start = Date(23, June, 2023);
+    const Calendar calendar = Brazil();
+    const Date today = Date(19, June, 2025); // holiday
+    const Date start = Date(23, June, 2023);
     const Real notional = 10000000.0;
+    const Rate fixedRate = 14.2103910923;
 
     ext::shared_ptr<Cdi> cdi;
     RelinkableHandle<YieldTermStructure> forecastCurve;
@@ -98,10 +100,8 @@ struct CommonVars {
         Settings::instance().evaluationDate() = today;
         cdi = ext::make_shared<Cdi>(forecastCurve);
 
-        Date lastFixingDate = Brazil().adjust(today, Preceding);
-        Data::addFixings(*cdi, start, lastFixingDate);
-
-        // cdi->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+        Date lastFixingDate = calendar.adjust(today, Preceding);
+        CdiTestData::addFixings(*cdi, start, lastFixingDate, calendar);
     }
 };
 
