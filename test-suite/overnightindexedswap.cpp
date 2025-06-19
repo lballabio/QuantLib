@@ -48,6 +48,15 @@
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
 #include <ql/indexes/ibor/corra.hpp>
+#include <ql/indexes/ibor/tibor.hpp>
+#include <ql/indexes/ibor/aonia.hpp>
+#include <ql/indexes/ibor/tona.hpp>
+#include <ql/indexes/ibor/saron.hpp>
+#include <ql/indexes/ibor/nzocr.hpp>
+#include <ql/indexes/ibor/destr.hpp>
+#include <ql/indexes/ibor/swestr.hpp>
+#include <ql/indexes/ibor/kofr.hpp>
+#include <ql/indexes/ibor/mosprime.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -975,27 +984,72 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
     Date today(12, May, 2025);
     Settings::instance().evaluationDate() = today;
 
-    auto sonia = ext::make_shared<Sonia>();
-    auto corra = ext::make_shared<Corra>();
-    auto eonia = ext::make_shared<Eonia>();
+    // Create all overnight indices
+    std::vector<std::pair<std::string, ext::shared_ptr<OvernightIndex>>> indices = {
+        // 0-day settlement index
+        {"SONIA", ext::make_shared<Sonia>()},
+        // 1-day settlement index
+        {"CORRA", ext::make_shared<Corra>()},
+        // 2-day settlement indices
+        {"EONIA", ext::make_shared<Eonia>()},
+        {"ESTR", ext::make_shared<Estr>()},
+        {"FedFunds", ext::make_shared<FedFunds>()},
+        {"SOFR", ext::make_shared<Sofr>()},
+        {"AONIA", ext::make_shared<Aonia>()},
+        {"TONA", ext::make_shared<Tona>()},
+        {"SARON", ext::make_shared<Saron>()},
+        {"NZOCR", ext::make_shared<Nzocr>()},
+        {"DESTR", ext::make_shared<Destr>()},
+        {"SWESTR", ext::make_shared<Swestr>()},
+        {"KOFR", ext::make_shared<Kofr>()}
+    };
 
-    // SONIA: 0-day settlement
-    {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, sonia, 0.01);
-        Date expected(12, May, 2025);
+    // Test default settlement days
+    for (const auto& [name, index] : indices) {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, index, 0.01);
+        Date expected;
+        if (name == "SONIA") {
+            expected = today; // T+0 settlement for SONIA
+        } else if (name == "CORRA") {
+            expected = today + 1 * Days; // T+1 settlement for CORRA
+        } else {
+            expected = today + 2 * Days; // T+2 settlement for all others
+        }
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
-    // CORRA: 0-day settlement
-    {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, corra, 0.01);
-        Date expected(12, May, 2025); 
+
+    // Test manual override
+    for (const auto& [name, index] : indices) {
+        // Override settlement days: 2 for CORRA, 1 for all others
+        Natural settlementDaysOverride = (name == "CORRA") ? 2 : 1;
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, index, 0.01)
+                                        .withSettlementDays(settlementDaysOverride);
+        Date expected = today + settlementDaysOverride * Days;
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 
-    // EONIA: 2-day settlement
+    // Test weekend handling
+    Date weekend(10, May, 2025); // Saturday
+    Settings::instance().evaluationDate() = weekend;
+
+    // Test 0-day settlement index on weekend
     {
-        OvernightIndexedSwap swap = MakeOIS(6 * Months, eonia, 0.01);
-        Date expected(14, May, 2025);
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[0].second, 0.01); // SONIA
+        Date expected(12, May, 2025); // Monday
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    // Test 1-day settlement index on weekend
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[1].second, 0.01); // CORRA
+        Date expected(13, May, 2025); // Tuesday
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    // Test 2-day settlement index on weekend
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[2].second, 0.01); // EONIA
+        Date expected(14, May, 2025); // Wednesday
         BOOST_CHECK_EQUAL(swap.startDate(), expected);
     }
 }
