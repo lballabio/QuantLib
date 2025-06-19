@@ -45,8 +45,30 @@ public:
     class results;
     //! \name Constructors
     //@{
-    /*! First leg holds the pay currency cashflows and the second leg
-        holds the receive currency cashflows.
+    /*!
+        \brief Constructs a cross-currency basis swap.
+
+        First leg holds the pay currency cashflows and the second leg holds the receive currency cashflows.
+        
+        \param payNominal         Notional amount for the pay leg.
+        \param payCurrency        Currency of the pay leg.
+        \param paySchedule        Payment schedule for the pay leg.
+        \param payIndex           Floating rate index for the pay leg.
+        \param paySpread          Spread over the floating rate for the pay leg.
+        \param payGearing         Gearing factor for the pay leg.
+        \param recNominal         Notional amount for the receive leg.
+        \param recCurrency        Currency of the receive leg.
+        \param recSchedule        Payment schedule for the receive leg.
+        \param recIndex           Floating rate index for the receive leg.
+        \param recSpread          Spread over the floating rate for the receive leg.
+        \param recGearing         Gearing factor for the receive leg.
+        \param payPaymentLag      Payment lag for the pay leg (default: 0).
+        \param recPaymentLag      Payment lag for the receive leg (default: 0).
+        \param payIncludeSpread   Optional flag to include the spread in the pay leg calculation (default: null).
+        \param payLookbackDays    Optional lookback days for the pay leg (default: null).
+        \param recIncludeSpread   Optional flag to include the spread in the receive leg calculation (default: null).
+        \param recLookbackDays    Optional lookback days for the receive leg (default: null).
+        \param telescopicValueDates Flag indicating whether telescopic value dates are used (default: false).
     */
     CrossCcyBasisSwap(
         Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
