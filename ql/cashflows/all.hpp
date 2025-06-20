@@ -10,6 +10,7 @@
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/cashflows/digitalcmscoupon.hpp>
 #include <ql/cashflows/digitalcoupon.hpp>
