@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(testPastCoupon) {
 
     // coupon entirely in the past
 
-    const Date end = Date(18, June, 2025);
+    auto end = Date(18, June, 2025);
 
     auto coupon1 = vars.makeCoupon(vars.start, end);
     auto coupon2 = vars.makeCoupon(vars.start, end, 1.1, 0.005);
@@ -192,8 +192,9 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
     BOOST_TEST_MESSAGE("Testing rate for cdi-indexed coupon...");
 
     CommonVars vars;
+    auto d = vars.today;
 
-    const auto curve = CdiTestData::makeCurve(vars.today);
+    const auto curve = CdiTestData::makeCurve(d);
     vars.forecastCurve.linkTo(curve);
 
     // coupon partly in the past, today not fixed
@@ -217,17 +218,15 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
     Real expAmount2 = 7512591.22333;
     Real expAmount3 = 3269861.76315;
 
-    auto d = vars.today;
-
     CHECK_CDI_OIS_COUPON_RESULT("accrued amount", coupon1->accruedAmount(d), expAccrued1, 1e-5);
     CHECK_CDI_OIS_COUPON_RESULT("accrued amount", coupon2->accruedAmount(d), expAccrued2, 1e-5);
     CHECK_CDI_OIS_COUPON_RESULT("accrued amount", coupon3->accruedAmount(d), expAccrued3, 1e-5);
 
     CHECK_CDI_OIS_COUPON_RESULT("coupon rate", coupon1->rate(), expRate1, 1e-12);
 
-     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon1->amount(), expAmount1, 1e-5)
-     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon2->amount(), expAmount2, 1e-5);
-     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon3->amount(), expAmount3, 1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon1->amount(), expAmount1, 1e-5)
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon2->amount(), expAmount2, 1e-5);
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon3->amount(), expAmount3, 1e-5);
 }
 //
 // BOOST_AUTO_TEST_CASE(testFutureCouponRate) {

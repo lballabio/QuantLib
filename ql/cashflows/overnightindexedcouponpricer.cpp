@@ -87,8 +87,7 @@ namespace QuantLib {
             const Rate fixing = pastFixings[fixingDates[i]];
             QL_REQUIRE(fixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
-            Time s = span(i);
-            compoundFactor *= compound(s, fixing);
+            compoundFactor *= compound(span(i), fixing);
             ++i;
         }
 
@@ -98,8 +97,7 @@ namespace QuantLib {
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
                 if (fixing != Null<Real>()) {
-                    Time s = span(i);
-                    compoundFactor *= compound(s, fixing);
+                    compoundFactor *= compound(span(i), fixing);
                     ++i;
                 } else {
                     ; // fall through and forecast
