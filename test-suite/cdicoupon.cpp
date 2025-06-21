@@ -82,39 +82,42 @@ namespace CdiTestData {
         }
     }
 
-    std::vector<Date> curveDates(const Date& today) {
-        return {today,
-                Date(23, June, 2025),
-                Date(1, July, 2025),
-                Date(1, August, 2025),
-                Date(1, September, 2025),
-                Date(1, October, 2025),
-                Date(3, November, 2025),
-                Date(1, December, 2025),
-                Date(2, January, 2026),
-                Date(2, February, 2026),
-                Date(2, March, 2026),
-                Date(1, April, 2026),
-                Date(4, May, 2026),
-                Date(1, June, 2026),
-                Date(1, July, 2026),
-                Date(1, October, 2026),
-                Date(4, January, 2027),
-                Date(1, April, 2027),
-                Date(1, July, 2027)};
+    namespace {
+        std::vector<Date> curveDates(const Date& today) {
+            return {today,
+                    Date(23, June, 2025),
+                    Date(1, July, 2025),
+                    Date(1, August, 2025),
+                    Date(1, September, 2025),
+                    Date(1, October, 2025),
+                    Date(3, November, 2025),
+                    Date(1, December, 2025),
+                    Date(2, January, 2026),
+                    Date(2, February, 2026),
+                    Date(2, March, 2026),
+                    Date(1, April, 2026),
+                    Date(4, May, 2026),
+                    Date(1, June, 2026),
+                    Date(1, July, 2026),
+                    Date(1, October, 2026),
+                    Date(4, January, 2027),
+                    Date(1, April, 2027),
+                    Date(1, July, 2027)};
+        }
+
+        std::vector<Rate>
+        curveRates(const Date& today, const Date& first, const Date& second, const DayCounter& dc) {
+            // some randomized rates with linear extrapolation for today's rate
+            const Real r_1 = 0.14;
+            const Real r_2 = 0.145;
+            const Real r_0 =
+                r_1 - dc.yearFraction(today, first) * (r_2 - r_1) / dc.yearFraction(first, second);
+            return {r_0,     r_1,     r_2,     0.14512, 0.14683, 0.14614, 0.14707,
+                    0.14762, 0.14886, 0.15101, 0.14961, 0.14958, 0.15110, 0.14881,
+                    0.14942, 0.14782, 0.14641, 0.14573, 0.14293};
+        }
     }
 
-    std::vector<Rate>
-    curveRates(const Date& today, const Date& first, const Date& second, const DayCounter& dc) {
-        // some randomized rates with linear extrapolation for today's rate
-        const Real r_1 = 0.14;
-        const Real r_2 = 0.145;
-        const Real r_0 =
-            r_1 - dc.yearFraction(today, first) * (r_2 - r_1) / dc.yearFraction(first, second);
-        return {r_0,     r_1,     r_2,     0.14512, 0.14683, 0.14614, 0.14707,
-                0.14762, 0.14886, 0.15101, 0.14961, 0.14958, 0.15110, 0.14881,
-                0.14942, 0.14782, 0.14641, 0.14573, 0.14293};
-    }
 
     ext::shared_ptr<ZeroCurve> makeCurve(const Date& today) {
         const auto dc = Business252();
@@ -143,11 +146,14 @@ struct CommonVars {
                                                         gearing, spread);
     }
 
+    void initializeFixings() const {
+        Date lastFixingDate = calendar.adjust(today, Preceding);
+        CdiTestData::addFixings(cdi, start, lastFixingDate, calendar);
+    }
+
     CommonVars() {
         Settings::instance().evaluationDate() = today;
         cdi = ext::make_shared<Cdi>(forecastCurve);
-        Date lastFixingDate = calendar.adjust(today, Preceding);
-        CdiTestData::addFixings(cdi, start, lastFixingDate, calendar);
     }
 };
 
@@ -164,6 +170,7 @@ BOOST_AUTO_TEST_CASE(testPastCoupon) {
     BOOST_TEST_MESSAGE("Testing rate for cdi-indexed coupon in the past...");
 
     CommonVars vars;
+    vars.initializeFixings();
 
     // coupon entirely in the past
 
@@ -192,6 +199,8 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
     BOOST_TEST_MESSAGE("Testing rate for cdi-indexed coupon...");
 
     CommonVars vars;
+    vars.initializeFixings();
+
     auto d = vars.today;
 
     const auto curve = CdiTestData::makeCurve(d);
@@ -199,7 +208,7 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
 
     // coupon partly in the past, today not fixed
 
-    const Date end = Date(23, June, 2027);
+    auto end = Date(23, June, 2027);
 
     auto coupon1 = vars.makeCoupon(vars.start, end);
     auto coupon2 = vars.makeCoupon(vars.start, end, 1.1, 0.005);
@@ -228,23 +237,27 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon2->amount(), expAmount2, 1e-5);
     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon3->amount(), expAmount3, 1e-5);
 }
-//
-// BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
-//     BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon...");
-//
-//     CommonVars vars;
-//
-//     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
-//
-//     // coupon entirely in the future
-//
-//     auto futureCoupon = vars.makeCoupon(Date(10, December, 2021), Date(10, January, 2022));
-//
-//     Rate expectedRate = 0.001000043057;
-//     Real expectedAmount = vars.notional * expectedRate * 31.0 / 360;
-//     CHECK_CDI_OIS_COUPON_RESULT("coupon rate", futureCoupon->rate(), expectedRate, 1e-12);
-//     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", futureCoupon->amount(), expectedAmount, 1e-8);
-// }
+
+BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
+    BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon...");
+
+    CommonVars vars;
+
+    vars.forecastCurve.linkTo(flatRate(0.15, vars.dc));
+
+    auto coupon = vars.makeCoupon(Date(10, July, 2026), Date(23, June, 2027));
+
+    // expected values here come from manual calculations
+    Rate expRate = 0.16109593956134;
+    Real expAmount = 1515068.95539835;
+
+    CHECK_CDI_OIS_COUPON_RESULT("coupon rate", coupon->rate(), expRate, 1e-12);
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon->amount(), expAmount, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testCdoZeroCouponSwap) {
+    
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
