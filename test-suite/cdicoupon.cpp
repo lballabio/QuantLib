@@ -75,7 +75,7 @@ namespace CdiTestData {
                          .withTenor(1 * Days)
                          .withCalendar(cal)
                          .withConvention(Following)
-                         .forwards()
+                         .backwards()
                          .endOfMonth(false);
         for (const auto& d : s) {
             index->addFixing(d, fixing(d) / 100);
@@ -255,9 +255,6 @@ BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon->amount(), expAmount, 1e-8);
 }
 
-//BOOST_AUTO_TEST_CASE(testCdiZeroCouponSwap) {
-//    
-//}
 
 BOOST_AUTO_TEST_SUITE_END()
 

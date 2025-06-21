@@ -79,7 +79,8 @@ namespace QuantLib {
            lead to false coupon projections (see the warning the class header). */
 
         QL_REQUIRE(canApplyTelescopicFormula() || !telescopicValueDates,
-                   "Telescopic formula cannot be applied for a coupon with lookback.");
+                   "Telescopic formula cannot be applied for a coupon with lookback "
+                   "or cdi coupon with gearing.");
 
         if (telescopicValueDates) {
             // build optimised value dates schedule: front stub goes
