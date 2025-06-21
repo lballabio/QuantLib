@@ -818,7 +818,7 @@
     <ClCompile Include="zerocouponswap.cpp" />
     <ClCompile Include="zigguratgaussian.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp">
-	  <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
