@@ -120,7 +120,3 @@ nbproject
 .dir-locals.el
 Build.props
 Directory.Build.props
-
-# temp add vcxproj
-# *.vcxproj
-# *.vcxproj.filters
