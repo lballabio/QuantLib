@@ -18,7 +18,7 @@
 */
 
 /*! \file cdi.hpp
-    \brief %CDI index
+    \brief %Cdi Overnight rate
 */
 
 #ifndef quantlib_cdi_hpp
@@ -38,7 +38,7 @@ namespace QuantLib {
      * Using this index will direct the overnight compounding pricer
      * to calculate the daily compound factor according to the following conventions:
      *  1) CDI ON with spread s: [(1+cdi_i)*(1+s)]^(1/252)
-     *  2) CDI ON gearing ("DI over") g: [(1+cdi_i)^(1/252)-1] * g + 1
+     *  2) CDI ON with gearing ("DI over") g: [(1+cdi_i)^(1/252)-1] * g + 1
      *  3) Combination of the two: (1+s)^(1/252) * 2)
      */
     class Cdi : public OvernightIndex {
