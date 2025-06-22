@@ -122,7 +122,7 @@ namespace CdiTestData {
     ext::shared_ptr<ZeroCurve> makeCurve(const Date& today) {
         const auto dc = Business252();
         const auto dates = curveDates(today);
-        const auto rates = curveRates(today, dates[0], dates[1], dc);
+        const auto rates = curveRates(today, dates[1], dates[2], dc);
         return ext::make_shared<InterpolatedZeroCurve<Linear>>(dates, rates, dc, Calendar(),
                                                                Linear(), Compounded, Annual);
     }
