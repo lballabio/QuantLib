@@ -1,4 +1,4 @@
-name: Build and Test with CMake and CTest
+name: CMake matrix build for the latest runners and c++ standards
 
 on:
   push: { }
@@ -45,7 +45,7 @@ jobs:
             # { os: windows-2025,   cc: cl,       cxx: cl }
           ]
         cxx-standard: [ 17, 20, 23 ]
-        cmake-config-type: [ release ]
+        cmake-build-type: [ release ]
 
     runs-on: ${{ matrix.settings.os }}
 
@@ -66,5 +66,5 @@ jobs:
           CXX: ${{ matrix.settings.cxx }}
         run: |
           cmake --version
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.cmake-config-type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} -DQL_COMPILE_WARNING_AS_ERROR=ON -L
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} -DQL_COMPILE_WARNING_AS_ERROR=ON -L
           cmake --build build --verbose
