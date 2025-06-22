@@ -233,7 +233,7 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
 
     CHECK_CDI_OIS_COUPON_RESULT("coupon rate", coupon1->rate(), expRate1, 1e-12);
 
-    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon1->amount(), expAmount1, 1e-5)
+    CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon1->amount(), expAmount1, 1e-5);
     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon2->amount(), expAmount2, 1e-5);
     CHECK_CDI_OIS_COUPON_RESULT("coupon amount", coupon3->amount(), expAmount3, 1e-5);
 }
