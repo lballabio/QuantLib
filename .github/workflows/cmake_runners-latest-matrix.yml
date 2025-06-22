@@ -2,7 +2,7 @@ name: CMake matrix build for the latest runners and c++ standards
 
 on:
   push: { }
-  # pull_request: { }
+  pull_request: { }
   schedule:
     # At 02:35 on Monday
     - cron: '35 2 * * 1'
