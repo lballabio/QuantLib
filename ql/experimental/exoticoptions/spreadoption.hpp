@@ -40,12 +40,19 @@ namespace QuantLib {
         : MultiAssetOption(payoff, exercise) {}
     };
 
+    // On Windows and c++ std 20 and 23
+    //   public GenericEngine<SpreadOption::arguments, SpreadOption::results>
+    // raises two deprecation warnings which are disabled here.
+    QL_DEPRECATED_DISABLE_WARNING
+
     /*! \deprecated Use BasketOption and KirkEngine instead.
                         Deprecated in version 1.37.
     */
     class [[deprecated("Use BasketOption and KirkEngine instead")]] SpreadOption::engine
         : public GenericEngine<SpreadOption::arguments,
                                SpreadOption::results> {};
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
