@@ -1,0 +1,70 @@
+name: Build and Test with CMake and CTest
+
+on:
+  push: { }
+  # pull_request: { }
+  schedule:
+    # At 02:35 on Monday
+    - cron: '35 2 * * 1'
+  workflow_dispatch: { }
+
+jobs:
+  cmake-build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        settings:
+          [
+            { os: macos-latest,   cc: clang,    cxx: clang++ },
+            { os: ubuntu-latest,  cc: clang,    cxx: clang++ },
+            { os: ubuntu-latest,  cc: gcc,      cxx: g++ },
+            { os: windows-latest, cc: cl,       cxx: cl }
+
+            # { os: macos-13,       cc: clang,    cxx: clang++ },
+            # { os: macos-14,       cc: clang,    cxx: clang++ },
+            # { os: macos-15,       cc: clang,    cxx: clang++ },
+            #
+            # { os: ubuntu-22.04,   cc: clang-13, cxx: clang++-13 },
+            # { os: ubuntu-22.04,   cc: clang-14, cxx: clang++-14 },
+            # { os: ubuntu-22.04,   cc: clang-15, cxx: clang++-15 },
+            #
+            # { os: ubuntu-22.04,   cc: gcc-10,   cxx: g++-10 },
+            # { os: ubuntu-22.04,   cc: gcc-11,   cxx: g++-11 },
+            # { os: ubuntu-22.04,   cc: gcc-12,   cxx: g++-12 },
+            #
+            # { os: ubuntu-24.04,   cc: clang-16, cxx: clang++-16 },
+            # { os: ubuntu-24.04,   cc: clang-17, cxx: clang++-17 },
+            # { os: ubuntu-24.04,   cc: clang-18, cxx: clang++-18 },
+            #
+            # { os: ubuntu-24.04,   cc: gcc-12,   cxx: g++-12 },
+            # { os: ubuntu-24.04,   cc: gcc-13,   cxx: g++-13 },
+            # { os: ubuntu-24.04,   cc: gcc-14,   cxx: g++-14 },
+            #
+            # { os: windows-2019,   cc: cl,       cxx: cl },
+            # { os: windows-2022,   cc: cl,       cxx: cl },
+            # { os: windows-2025,   cc: cl,       cxx: cl }
+          ]
+        cxx-standard: [ 17, 20, 23 ]
+        cmake-config-type: [ release ]
+
+    runs-on: ${{ matrix.settings.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup needed software
+        id: setup
+        uses: ./.github/actions/setup
+        with:
+          os: ${{ matrix.settings.os }}
+          cxx: ${{ matrix.settings.cxx }}
+          cxx-standard: ${{ matrix.cxx-standard }}
+
+      - name: Configure CMake and Build
+        env:
+          CC: ${{ matrix.settings.cc }}
+          CXX: ${{ matrix.settings.cxx }}
+        run: |
+          cmake --version
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.cmake-config-type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} -DQL_COMPILE_WARNING_AS_ERROR=ON -L
+          cmake --build build --verbose
