@@ -41,7 +41,7 @@ runs:
         brew install boost
 
     - name: Setup build variables on macOs
-      if: runner.os == 'macOs'
+      if: runner.os == 'macOS'
       shell: bash
       run: |
         echo "CXXFLAGS=-stdlib=libc++"                                                                    >> $GITHUB_ENV
