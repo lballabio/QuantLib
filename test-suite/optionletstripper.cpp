@@ -888,7 +888,7 @@ BOOST_AUTO_TEST_CASE(testSwitchStrike) {
                    << "\ntolerance:     " << io::rate(vars.tolerance));
 }
 
-BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON) {
+BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Test Option striplet on ON index");
     CommonVarsON vars;
     Settings::instance().evaluationDate() = vars.today;
