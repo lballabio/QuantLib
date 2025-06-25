@@ -167,7 +167,7 @@ struct CommonVars {
     }
 
 BOOST_AUTO_TEST_CASE(testPastCoupon) {
-    BOOST_TEST_MESSAGE("Testing rate for cdi-indexed coupon in the past...");
+    BOOST_TEST_MESSAGE("Testing amount for cdi-indexed coupon in the past...");
 
     CommonVars vars;
     vars.initializeFixings();
@@ -201,7 +201,7 @@ BOOST_AUTO_TEST_CASE(testPastCoupon) {
 }
 
 BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
-    BOOST_TEST_MESSAGE("Testing rate for cdi-indexed coupon...");
+    BOOST_TEST_MESSAGE("Testing amount for cdi-indexed coupon spanning today...");
 
     CommonVars vars;
     vars.initializeFixings();
@@ -244,7 +244,7 @@ BOOST_AUTO_TEST_CASE(testCurrentCoupon) {
 }
 
 BOOST_AUTO_TEST_CASE(testFutureCouponRate) {
-    BOOST_TEST_MESSAGE("Testing rate for future overnight-indexed coupon...");
+    BOOST_TEST_MESSAGE("Testing amount for future cdi-indexed coupon...");
 
     CommonVars vars;
 
