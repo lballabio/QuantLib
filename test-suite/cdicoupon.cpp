@@ -180,6 +180,11 @@ BOOST_AUTO_TEST_CASE(testPastCoupon) {
     auto coupon2 = vars.makeCoupon(vars.start, end, 1.1, 0.005);
     auto coupon3 = vars.makeCoupon(vars.start, end, 0.6, -0.003);
 
+    BOOST_CHECK(coupon1->isCdiIndexed() == true);
+    BOOST_CHECK(coupon1->canApplyTelescopicFormula() == true);
+    BOOST_CHECK(coupon2->canApplyTelescopicFormula() == false);
+    BOOST_CHECK(coupon3->canApplyTelescopicFormula() == false);
+
     // expected values here come from manual calculations while looking at BBG SWPM
     Real expectedAccrued1 = 2507099.48795;
     Real expectedAccrued2 = 2916664.74186;
