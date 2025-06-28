@@ -1531,6 +1531,60 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testLastRelevantDateSwapRateHelperDiscBehavior) {
+    BOOST_TEST_MESSAGE("Testing latestRelevantDate for SwapRateHelper...");
+
+    Date today(29, Aug, 2018);
+    Settings::instance().evaluationDate() = today;
+    UnitedStates cal(UnitedStates::FederalReserve);
+    ext::shared_ptr<IborIndex> termIndex = ext::make_shared<USDLibor>(3*Months);
+    // endogenous discount curve
+    SwapRateHelper rhEndog(
+        0.05, 2 * Years, cal, Semiannual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), termIndex, Handle<Quote>(),
+        0 * Years,  Handle<YieldTermStructure>(), 2, Pillar::LastRelevantDate, Date(), true, true);
+    // 31-Aug-2020 is a valid payment day for the supplied calendar
+    BOOST_CHECK_EQUAL(rhEndog.pillarDate(), Date(31, Aug, 2020));
+    std::vector<ext::shared_ptr<RateHelper>> helpersEndog({ext::make_shared<SwapRateHelper>(rhEndog)});
+    auto termStructureEndog = ext::make_shared<PiecewiseYieldCurve<Discount,LogLinear>>(today, helpersEndog, Actual360());
+    BOOST_CHECK_NO_THROW(termStructureEndog->nodes());
+
+    // exogenous discount curve
+    Handle<YieldTermStructure> discCrv(ext::make_shared<FlatForward>(today, 0.05, Actual360()));
+    SwapRateHelper rhExog(
+        0.05, 2 * Years, cal, Semiannual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), termIndex, Handle<Quote>(),
+        0 * Years, discCrv, 2, Pillar::LastRelevantDate, Date(), true, true);
+    // 31-Aug-2020 is a UK holiday, fixingEndDate adjusts back to the 28th
+    BOOST_CHECK_EQUAL(rhExog.pillarDate(), Date(28, Aug, 2020));
+    std::vector<ext::shared_ptr<RateHelper>> helpersExog({ext::make_shared<SwapRateHelper>(rhExog)});
+    auto termStructureExog = ext::make_shared<PiecewiseYieldCurve<Discount,LogLinear>>(today, helpersExog, Actual360());
+    BOOST_CHECK_NO_THROW(termStructureExog->nodes());
+}
+
+BOOST_AUTO_TEST_CASE(testLastRelevantDateOISRateHelperDiscBehavior) {
+    BOOST_TEST_MESSAGE("Testing latestRelevantDate for OISRateHelper...");
+
+    Date today(29, Aug, 2018);
+    Settings::instance().evaluationDate() = today;
+    ext::shared_ptr<OvernightIndex> onIndex = ext::make_shared<Estr>();
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.05));
+    // endogenous discount curve
+    OISRateHelper rhEndog(2, 2*Years, q, onIndex, {}, false, 2);
+    BOOST_CHECK_EQUAL(rhEndog.pillarDate(), Date(2, Sep, 2020));
+    std::vector<ext::shared_ptr<RateHelper>> helpersEndog({ext::make_shared<OISRateHelper>(rhEndog)});
+    auto termStructureEndog = ext::make_shared<PiecewiseYieldCurve<Discount,LogLinear>>(today, helpersEndog, Actual360());
+    BOOST_CHECK_NO_THROW(termStructureEndog->nodes());
+
+    // exogenous discount curve
+    Handle<YieldTermStructure> discCrv(ext::make_shared<FlatForward>(today, 0.05, Actual360()));
+    OISRateHelper rhExog(2, 2*Years, q, onIndex, discCrv, false, 2);
+    BOOST_CHECK_EQUAL(rhExog.pillarDate(), Date(31, Aug, 2020));
+    std::vector<ext::shared_ptr<RateHelper>> helpersExog({ext::make_shared<OISRateHelper>(rhExog)});
+    auto termStructureExog = ext::make_shared<PiecewiseYieldCurve<Discount,LogLinear>>(today, helpersExog, Actual360());
+    BOOST_CHECK_NO_THROW(termStructureExog->nodes());
+}
+
 /* This test attempts to build an ARS collateralised in USD curve as of 25 Sep 2019. Using the default 
    IterativeBootstrap with no retries, the yield curve building fails. Allowing retries, it expands the min and max 
    bounds and passes.
