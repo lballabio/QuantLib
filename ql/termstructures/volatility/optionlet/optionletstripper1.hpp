@@ -52,7 +52,8 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& discount = {},
             VolatilityType type = ShiftedLognormal,
             Real displacement = 0.0,
-            bool dontThrow = false);
+            bool dontThrow = false,
+            ext::optional<Period> optionletFrequency = ext::nullopt);
 
         const Matrix& capFloorPrices() const;
         const Matrix &capletVols() const;
