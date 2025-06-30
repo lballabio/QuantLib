@@ -56,6 +56,10 @@ namespace QuantLib {
                         temp++;
                     }
                 }
+                if(v2 <= 1e-12){
+                    branching.add(temp,0.0,1.0,0.0);
+                    continue;
+                }
 
                 Real e = m - (x0_ + temp*dx_[i+1]);
                 Real e2 = e*e;
