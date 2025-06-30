@@ -98,6 +98,8 @@ namespace QuantLib {
           case Days:
             if (length==1)
                 return Daily;
+            else if (length==28)
+                return EveryFourthWeek;
             else
                 return OtherFrequency;
           default:
