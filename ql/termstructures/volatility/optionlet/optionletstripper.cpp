@@ -45,6 +45,11 @@ namespace QuantLib {
                        "non-null displacement is not allowed with Normal model");
         }
 
+        if (ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_)) {
+            QL_REQUIRE(optionletFrequency_, 
+                       "an optionlet frequency is required when using an overnight index");
+        }
+
         registerWith(termVolSurface);
         registerWith(iborIndex_);
         registerWith(discount_);
