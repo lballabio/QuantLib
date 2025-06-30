@@ -134,7 +134,7 @@ namespace QuantLib {
         // Note: this approach works only for CoxRossRubinstein lattices, so
         // is disabled if T is not a CoxRossRubinstein or derived from it.
         Size optimum_steps = timeSteps_;
-        if (std::is_base_of<CoxRossRubinstein, T>::value &&
+        if (std::is_base_of_v<CoxRossRubinstein, T> &&
             maxTimeSteps_ > timeSteps_ && s0 > 0 && arguments_.barrier > 0) {
             Real divisor;
             if (s0 > arguments_.barrier)

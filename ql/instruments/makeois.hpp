@@ -100,7 +100,7 @@ namespace QuantLib {
         Rate fixedRate_;
         Period forwardStart_;
 
-        Natural settlementDays_ = 2;
+        Natural settlementDays_;
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, overnightCalendar_;
 

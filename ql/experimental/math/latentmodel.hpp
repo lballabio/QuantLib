@@ -465,6 +465,7 @@ namespace QuantLib {
                     case LatentModelIntegrationType::Trapezoid:
                         {
                         std::vector<ext::shared_ptr<Integrator> > integrals;
+                        integrals.reserve(dimension);
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
                             ext::make_shared<TrapezoidIntegral<Default> >(

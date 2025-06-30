@@ -29,35 +29,7 @@
 
 namespace QuantLib {
 
-    CdsHelper::CdsHelper(const Handle<Quote>& quote,
-                         const Period& tenor,
-                         Integer settlementDays,
-                         Calendar calendar,
-                         Frequency frequency,
-                         BusinessDayConvention paymentConvention,
-                         DateGeneration::Rule rule,
-                         DayCounter dayCounter,
-                         Real recoveryRate,
-                         const Handle<YieldTermStructure>& discountCurve,
-                         bool settlesAccrual,
-                         bool paysAtDefaultTime,
-                         const Date& startDate,
-                         DayCounter lastPeriodDayCounter,
-                         const bool rebatesAccrual,
-                         const CreditDefaultSwap::PricingModel model)
-    : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor), settlementDays_(settlementDays),
-      calendar_(std::move(calendar)), frequency_(frequency), paymentConvention_(paymentConvention),
-      rule_(rule), dayCounter_(std::move(dayCounter)), recoveryRate_(recoveryRate),
-      discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
-      paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(std::move(lastPeriodDayCounter)),
-      rebatesAccrual_(rebatesAccrual), model_(model), startDate_(startDate) {
-
-        CdsHelper::initializeDates();
-
-        registerWith(discountCurve);
-    }
-
-    CdsHelper::CdsHelper(Rate quote,
+    CdsHelper::CdsHelper(const std::variant<Rate, Handle<Quote>>& quote,
                          const Period& tenor,
                          Integer settlementDays,
                          Calendar calendar,
@@ -136,7 +108,7 @@ namespace QuantLib {
     }
 
     SpreadCdsHelper::SpreadCdsHelper(
-                              const Handle<Quote>& runningSpread,
+                              const std::variant<Rate, Handle<Quote>>& runningSpread,
                               const Period& tenor,
                               Integer settlementDays,
                               const Calendar& calendar,
@@ -156,28 +128,6 @@ namespace QuantLib {
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
                 startDate, lastPeriodDayCounter, rebatesAccrual, model) {}
-
-    SpreadCdsHelper::SpreadCdsHelper(
-                              Rate runningSpread,
-                              const Period& tenor,
-                              Integer settlementDays,
-                              const Calendar& calendar,
-                              Frequency frequency,
-                              BusinessDayConvention paymentConvention,
-                              DateGeneration::Rule rule,
-                              const DayCounter& dayCounter,
-                              Real recoveryRate,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              bool settlesAccrual,
-                              bool paysAtDefaultTime,
-                              const Date& startDate,
-                              const DayCounter& lastPeriodDayCounter,
-                              const bool rebatesAccrual,
-                              const CreditDefaultSwap::PricingModel model)
-    : CdsHelper(runningSpread, tenor, settlementDays, calendar,
-                frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
-                startDate, lastPeriodDayCounter,rebatesAccrual, model) {}
 
     Real SpreadCdsHelper::impliedQuote() const {
         swap_->recalculate();
@@ -207,7 +157,7 @@ namespace QuantLib {
     }
 
     UpfrontCdsHelper::UpfrontCdsHelper(
-                              const Handle<Quote>& upfront,
+                              const std::variant<Rate, Handle<Quote>>& upfront,
                               Rate runningSpread,
                               const Period& tenor,
                               Integer settlementDays,
@@ -226,33 +176,6 @@ namespace QuantLib {
                               const bool rebatesAccrual,
                               const CreditDefaultSwap::PricingModel model)
     : CdsHelper(upfront, tenor, settlementDays, calendar,
-                frequency, paymentConvention, rule, dayCounter,
-                recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
-                startDate, lastPeriodDayCounter, rebatesAccrual, model),
-      upfrontSettlementDays_(upfrontSettlementDays),
-      upfrontDate_(upfrontDate()),
-      runningSpread_(runningSpread) {}
-
-    UpfrontCdsHelper::UpfrontCdsHelper(
-                              Rate upfrontSpread,
-                              Rate runningSpread,
-                              const Period& tenor,
-                              Integer settlementDays,
-                              const Calendar& calendar,
-                              Frequency frequency,
-                              BusinessDayConvention paymentConvention,
-                              DateGeneration::Rule rule,
-                              const DayCounter& dayCounter,
-                              Real recoveryRate,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Natural upfrontSettlementDays,
-                              bool settlesAccrual,
-                              bool paysAtDefaultTime,
-                              const Date& startDate,
-                              const DayCounter& lastPeriodDayCounter,
-                              const bool rebatesAccrual,
-                              const CreditDefaultSwap::PricingModel model)
-    : CdsHelper(upfrontSpread, tenor, settlementDays, calendar,
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual, paysAtDefaultTime,
                 startDate, lastPeriodDayCounter, rebatesAccrual, model),

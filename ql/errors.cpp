@@ -24,7 +24,7 @@ namespace {
 
     #if defined(_MSC_VER)
     // allow Visual Studio integration
-    std::string format(
+    std::string format_error(
                        #ifdef QL_ERROR_LINES
                        const std::string& file, long line,
                        #else
@@ -49,9 +49,9 @@ namespace {
     }
     #else
     // use gcc format (e.g. for integration with Emacs)
-    std::string format(const std::string& file, long line,
-                       const std::string& function,
-                       const std::string& message) {
+    std::string format_error(const std::string& file, long line,
+                             const std::string& function,
+                             const std::string& message) {
         std::ostringstream msg;
         #ifdef QL_ERROR_LINES
         msg << "\n" << file << ":" << line << ": ";
@@ -72,18 +72,18 @@ namespace boost {
     // must be defined by the user
     void assertion_failed(char const * expr, char const * function,
                           char const * file, long line) {
-        throw std::runtime_error(format(file, line, function,
-                                        "Boost assertion failed: " +
-                                        std::string(expr)));
+        throw std::runtime_error(format_error(file, line, function,
+                                              "Boost assertion failed: " +
+                                              std::string(expr)));
     }
 
     void assertion_failed_msg(char const * expr, char const * msg,
                               char const * function, char const * file,
                               long line) {
-        throw std::runtime_error(format(file, line, function,
-                                        "Boost assertion failed: " +
-                                        std::string(expr) + ": " +
-                                        std::string(msg)));
+        throw std::runtime_error(format_error(file, line, function,
+                                              "Boost assertion failed: " +
+                                              std::string(expr) + ": " +
+                                              std::string(msg)));
     }
 
 }
@@ -94,7 +94,7 @@ namespace QuantLib {
                  const std::string& function,
                  const std::string& message) {
         message_ = ext::make_shared<std::string>(
-                                      format(file, line, function, message));
+            format_error(file, line, function, message));
     }
 
     const char* Error::what() const noexcept { return message_->c_str(); }

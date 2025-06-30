@@ -117,6 +117,7 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     std::vector<ext::shared_ptr<BondHelper> > helpers;
 
+    helpers.reserve(bonds.size());
     for (Size i = 0; i < bonds.size(); ++i) {
         helpers.push_back(ext::make_shared<BondHelper>(
             Handle<Quote>(ext::make_shared<SimpleQuote>(quotes[i])), bonds[i]));

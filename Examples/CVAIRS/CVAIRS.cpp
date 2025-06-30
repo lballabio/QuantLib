@@ -67,6 +67,7 @@ int main(int, char* []) {
         Rate ratesSwapmkt[] = {.03249, .04074, .04463, .04675, .04775, .04811};
 
         vector<ext::shared_ptr<RateHelper>> swapHelpers;
+        swapHelpers.reserve(sizeof(tenorsSwapMkt)/sizeof(Size));
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++)
             swapHelpers.push_back(ext::make_shared<SwapRateHelper>(
                     makeQuoteHandle(ratesSwapmkt[i]),
@@ -156,6 +157,7 @@ int main(int, char* []) {
         Swap::Type swapType = Swap::Payer;
         auto yieldIndxS = ext::make_shared<Euribor3M>(Handle<YieldTermStructure>(swapTS));
         std::vector<VanillaSwap> riskySwaps;
+        riskySwaps.reserve(sizeof(tenorsSwapMkt)/sizeof(Size));
         for(Size i=0; i<sizeof(tenorsSwapMkt)/sizeof(Size); i++) 
             riskySwaps.push_back(MakeVanillaSwap(tenorsSwapMkt[i]*Years,
                 yieldIndxS,

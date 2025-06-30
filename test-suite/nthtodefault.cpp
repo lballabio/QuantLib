@@ -177,6 +177,7 @@ BOOST_AUTO_TEST_CASE(testGauss, *precondition(if_speed(Slow))) {
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
+    namesIds.reserve(names);
     for(Size i=0; i<names; i++)
         namesIds.push_back(std::string("Name") + std::to_string(i));
 
@@ -298,6 +299,7 @@ BOOST_AUTO_TEST_CASE(testStudent, *precondition(if_speed(Slow))) {
 
     // Set up pool and basket
     std::vector<std::string> namesIds;
+    namesIds.reserve(names);
     for(Size i=0; i<names; i++)
         namesIds.push_back(std::string("Name") + std::to_string(i));
 

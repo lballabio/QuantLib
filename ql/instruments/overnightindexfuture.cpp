@@ -124,10 +124,8 @@ namespace QuantLib {
         switch (averagingMethod_) {
           case RateAveraging::Simple:
             return averagedRate();
-            break;
           case RateAveraging::Compound:
             return compoundedRate();
-            break;
           default:
               QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
         }

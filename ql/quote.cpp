@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2025 Paolo D'Elia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,35 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file quote.hpp
-    \brief purely virtual base class for market observables
-*/
-
-#ifndef quantlib_quote_hpp
-#define quantlib_quote_hpp
-
-#include <ql/handle.hpp>
+#include <ql/quote.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/errors.hpp>
-#include <ql/utilities/null.hpp>
-#include <variant>
+#include <ql/utilities/variants.hpp>
 
 namespace QuantLib {
 
-    //! purely virtual base class for market observables
-    /*! \test the observability of class instances is tested.
-     */
-    class Quote : public virtual Observable {
-      public:
-        ~Quote() override = default;
-        //! returns the current value
-        virtual Real value() const = 0;
-        //! returns true if the Quote holds a valid value
-        virtual bool isValid() const = 0;
-    };
-
-
-    Handle<Quote> handleFromVariant(const std::variant<Real, Handle<Quote>>& value);
+    Handle<Quote> handleFromVariant(const std::variant<Real, Handle<Quote>>& value) {
+        return std::visit(
+            detail::variant_visitor{
+                [](Real x) -> Handle<Quote> { return makeQuoteHandle(x); },
+                [](const Handle<Quote>& x) { return x; }
+            },
+            value);
+    }
 
 }
-
-#endif

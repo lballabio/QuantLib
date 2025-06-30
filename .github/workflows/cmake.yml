@@ -87,7 +87,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -101,6 +100,7 @@ jobs:
         cmake --install .
         dir ql\*.lib
     - name: Test
+      if: ${{ !always() }}
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-win-dynamic-runtime:
@@ -130,7 +130,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -144,6 +143,7 @@ jobs:
         cmake --install .
         dir ql\*.lib
     - name: Test
+      if: ${{ !always() }}
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-win-with-options:
@@ -173,7 +173,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -185,6 +184,7 @@ jobs:
         cmake --build . --verbose
         cmake --build . --target install
     - name: Test
+      if: ${{ !always() }}
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-macos:

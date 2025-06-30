@@ -1,4 +1,4 @@
-# Doxyfile 1.10.0
+# Doxyfile 1.14.0
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -45,6 +45,7 @@ MARKDOWN_SUPPORT       = YES
 TOC_INCLUDE_HEADINGS   = 0
 MARKDOWN_ID_STYLE      = DOXYGEN
 AUTOLINK_SUPPORT       = YES
+AUTOLINK_IGNORE_WORDS  =
 BUILTIN_STL_SUPPORT    = YES
 CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
@@ -72,6 +73,7 @@ EXTRACT_ANON_NSPACES   = NO
 RESOLVE_UNNAMED_PARAMS = YES
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = YES
+HIDE_UNDOC_NAMESPACES  = YES
 HIDE_FRIEND_COMPOUNDS  = NO
 HIDE_IN_BODY_DOCS      = YES
 INTERNAL_DOCS          = NO
@@ -101,6 +103,7 @@ SHOW_NAMESPACES        = NO
 FILE_VERSION_FILTER    =
 LAYOUT_FILE            =
 CITE_BIB_FILES         =
+EXTERNAL_TOOL_PATH     =
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
 #---------------------------------------------------------------------------
@@ -111,6 +114,7 @@ WARN_IF_DOC_ERROR      = YES
 WARN_IF_INCOMPLETE_DOC = NO
 WARN_NO_PARAMDOC       = NO
 WARN_IF_UNDOC_ENUM_VAL = NO
+WARN_LAYOUT_FILE       = YES
 WARN_AS_ERROR          = YES
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LINE_FORMAT       = "at line $line of file $file"
@@ -141,6 +145,7 @@ FILTER_PATTERNS        =
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
 USE_MDFILE_AS_MAINPAGE =
+IMPLICIT_DIR_DOCS      = YES
 FORTRAN_COMMENT_AFTER  = 72
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -206,8 +211,10 @@ GENERATE_ECLIPSEHELP   = NO
 ECLIPSE_DOC_ID         = org.doxygen.Project
 DISABLE_INDEX          = NO
 GENERATE_TREEVIEW      = NO
+PAGE_OUTLINE_PANEL     = YES
 FULL_SIDEBAR           = NO
 ENUM_VALUES_PER_LINE   = 4
+SHOW_ENUM_VALUES       = NO
 TREEVIEW_WIDTH         = 250
 EXT_LINKS_IN_WINDOW    = NO
 OBFUSCATE_EMAILS       = YES
@@ -257,6 +264,7 @@ COMPACT_RTF            = NO
 RTF_HYPERLINKS         = NO
 RTF_STYLESHEET_FILE    =
 RTF_EXTENSIONS_FILE    =
+RTF_EXTRA_FILES        =
 #---------------------------------------------------------------------------
 # Configuration options related to the man page output
 #---------------------------------------------------------------------------
@@ -329,6 +337,7 @@ COLLABORATION_GRAPH    = NO
 GROUP_GRAPHS           = NO
 UML_LOOK               = NO
 UML_LIMIT_NUM_FIELDS   = 10
+UML_MAX_EDGE_LABELS    = 10
 DOT_UML_DETAILS        = NO
 DOT_WRAP_THRESHOLD     = 17
 TEMPLATE_RELATIONS     = NO
@@ -348,6 +357,7 @@ DIAFILE_DIRS           =
 PLANTUML_JAR_PATH      =
 PLANTUML_CFG_FILE      =
 PLANTUML_INCLUDE_PATH  =
+PLANTUMLFILE_DIRS      =
 DOT_GRAPH_MAX_NODES    = 150
 MAX_DOT_GRAPH_DEPTH    = 2
 DOT_MULTI_TARGETS      = NO

@@ -11,13 +11,14 @@ jobs:
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy-18 libboost-dev
+        sudo apt-get install -y clang-tidy-19 libboost-dev
     - name: Check
       run: |
         cmake --preset linux-ci-build-with-clang-tidy
         cd build/linux-ci-build-with-clang-tidy
         cmake --build . -j1
     - uses: peter-evans/create-pull-request@v7
+      if: ${{ always() }}
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: clang-tidy-fixes-${{ github.ref_name }}

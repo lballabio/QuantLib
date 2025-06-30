@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <algorithm>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp>
@@ -75,9 +76,11 @@ namespace QuantLib {
                 const Real buyPrice  = interpl(x, y+maxInject);
 
                 // bang-bang-wait strategy
-                Real currentValue = std::max(a[iter.index()],
-                    std::max(buyPrice - price*maxInject,
-                             sellPrice + price*maxWithDraw));
+                Real currentValue = std::max({
+                        a[iter.index()],
+                        Real(buyPrice - price*maxInject),
+                        Real(sellPrice + price*maxWithDraw)
+                    });
 
                 // check if intermediate grid points give a better value
                 auto yIter = std::upper_bound(y_.begin(), y_.end(), y - maxWithDraw);

@@ -146,24 +146,25 @@ namespace QuantLib {
         QL_REQUIRE(a>=0.0,
             "negative a (" << a << ") not allowed");
 
+        auto temp = [a](Real x) { return a < QL_EPSILON ? x : (1.0-std::exp(-a*x)) / a; };
+
         Time deltaT = (T-t);
-        Real tempDeltaT = (1.-std::exp(-a*deltaT)) / a;
+        Real tempDeltaT = temp(deltaT);
         Real halfSigmaSquare = sigma*sigma/2.0;
 
         // lambda adjusts for the fact that the underlying is an interest rate
-        Real lambda = halfSigmaSquare * (1.-std::exp(-2.0*a*t)) / a *
-            tempDeltaT * tempDeltaT;
+        Real lambda = temp(2.0*t) * tempDeltaT;
 
-        Real tempT = (1.0 - std::exp(-a*t)) / a;
+        Real tempT = temp(t);
 
         // phi is the MtM adjustment
-        Real phi = halfSigmaSquare * tempDeltaT * tempT * tempT;
+        Real phi = tempT * tempT;
 
         // the adjustment
-        Real z = lambda + phi;
+        Real z = halfSigmaSquare * (lambda + phi);
 
         Rate futureRate = (100.0-futuresPrice)/100.0;
-        return (1.0-std::exp(-z)) * (futureRate + 1.0/(T-t));
+        return deltaT < QL_EPSILON ? z : (1.0-std::exp(-z*tempDeltaT)) * (futureRate + 1.0/deltaT);
     }
 
 }

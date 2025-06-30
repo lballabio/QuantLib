@@ -173,6 +173,7 @@ void testBootstrapFromSpread() {
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
+    helpers.reserve(n.size());
     for(Size i=0; i<n.size(); i++)
         helpers.push_back(
                 ext::shared_ptr<DefaultProbabilityHelper>(
@@ -251,6 +252,7 @@ void testBootstrapFromUpfront() {
 
     std::vector<ext::shared_ptr<DefaultProbabilityHelper> > helpers;
 
+    helpers.reserve(n.size());
     for(Size i=0; i<n.size(); i++)
         helpers.push_back(
                 ext::shared_ptr<DefaultProbabilityHelper>(

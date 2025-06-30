@@ -48,13 +48,10 @@ namespace QuantLib {
             switch (barrierRange) {
               case PartialBarrier::Start:
                 return CA(1, barrier, strike, r, q);
-                break;
               case PartialBarrier::EndB1:
                 return CoB1(barrier, strike, r, q);
-                break;
               case PartialBarrier::EndB2:
                 return CoB2(Barrier::DownOut, barrier, strike, r, q);
-                break;
               default:
                 QL_FAIL("invalid barrier range");
             }
@@ -64,7 +61,6 @@ namespace QuantLib {
             switch (barrierRange) {
               case PartialBarrier::Start:
                 return CIA(1, barrier, strike, r, q);
-                break;
               case PartialBarrier::EndB1:
               case PartialBarrier::EndB2:
                 QL_FAIL("Down-and-in partial-time end barrier is not implemented");
@@ -77,13 +73,10 @@ namespace QuantLib {
             switch (barrierRange) {
               case PartialBarrier::Start:
                 return CA(-1, barrier, strike, r, q);
-                break;
               case PartialBarrier::EndB1:
                 return CoB1(barrier, strike, r, q);
-                break;
               case PartialBarrier::EndB2:
                 return CoB2(Barrier::UpOut, barrier, strike, r, q);
-                break;
               default:
                 QL_FAIL("invalid barrier range");
             }
@@ -93,7 +86,6 @@ namespace QuantLib {
               switch (barrierRange) {
                 case PartialBarrier::Start:
                   return CIA(-1, barrier, strike, r, q);
-                  break;
                 case PartialBarrier::EndB1:
                 case PartialBarrier::EndB2:
                   QL_FAIL("Up-and-in partial-time end barrier is not implemented");

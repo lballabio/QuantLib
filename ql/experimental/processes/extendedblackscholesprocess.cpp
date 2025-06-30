@@ -57,11 +57,9 @@ namespace QuantLib {
             return apply(x0, drift(t0, x0)*dt
                            + 0.5*std::pow(diffusion(t0, x0),2)*(dw*dw-1)*dt
                            + diffusion(t0,x0)*std::sqrt(dt)*dw);
-            break;
           case Euler:
             // Usual Euler scheme
             return apply(expectation(t0,x0,dt), stdDeviation(t0,x0,dt)*dw);
-            break;
           case PredictorCorrector:
             // Predictor-Corrector scheme with equal weighting
             predictor =
@@ -84,7 +82,6 @@ namespace QuantLib {
             corrector =
                 apply(x0,driftterm*dt+diffusionterm*std::sqrt(dt)*dw);
             return corrector;
-            break;
           default:
             QL_FAIL("unknown discretization scheme");
         }

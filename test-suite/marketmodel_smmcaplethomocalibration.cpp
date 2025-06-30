@@ -381,6 +381,7 @@ BOOST_AUTO_TEST_CASE(testPeriodFunction) {
 
     std::vector<PiecewiseConstantAbcdVariance >
                                     swapVariances;
+    swapVariances.reserve(numberBigRates);
     for (Size i=0; i<numberBigRates; ++i) {
         swapVariances.emplace_back(a_, b_, c_, d_, i, bigRateTimes);
     }

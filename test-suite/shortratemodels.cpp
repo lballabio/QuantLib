@@ -384,27 +384,30 @@ BOOST_AUTO_TEST_CASE(testFuturesConvexityBias) {
 
     // G. Kirikos, D. Novak, "Convexity Conundrums", Risk Magazine, March 1997
     Real futureQuote = 94.0;
-    Real a = 0.03;
     Real sigma = 0.015;
     Time t = 5.0;
-    Time T = 5.25;
+    Real tolerance = 0.0000001;
 
-    Rate expectedForward = 0.0573037;
-    Real tolerance       = 0.0000001;
+    for (auto [T, a, expectedForward] : {
+        std::tuple{5.25,  0.03, 0.0573037},
+        std::tuple{5.25,  1e-4, 0.0568627},
+        std::tuple{5.25,  0.0,  0.0568611},
+        std::tuple{5.001, 0.03, 0.0575736},
+        std::tuple{5.0,   0.03, 0.0575747},
+    }) {
+        Rate futureImpliedRate = (100.0-futureQuote)/100.0;
+        Rate calculatedForward =
+            futureImpliedRate - HullWhite::convexityBias(futureQuote,t,T,sigma,a);
 
-    Rate futureImpliedRate = (100.0-futureQuote)/100.0;
-    Rate calculatedForward =
-        futureImpliedRate - HullWhite::convexityBias(futureQuote,t,T,sigma,a);
-
-    Real error = std::fabs(calculatedForward-expectedForward);
-
-    if (error > tolerance) {
-        BOOST_ERROR("Failed to reproduce convexity bias:"
-                    << "\ncalculated: " << calculatedForward
-                    << "\n  expected: " << expectedForward
-                    << std::scientific
-                    << "\n     error: " << error
-                    << "\n tolerance: " << tolerance);
+        Real error = std::fabs(calculatedForward-expectedForward);
+        if (!(error < tolerance)) {
+            BOOST_ERROR("Failed to reproduce convexity bias:"
+                        << "\ncalculated: " << calculatedForward
+                        << "\n  expected: " << expectedForward
+                        << std::scientific
+                        << "\n     error: " << error
+                        << "\n tolerance: " << tolerance);
+        }
     }
 }
 

@@ -23,10 +23,31 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/shared_ptr.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
 namespace QuantLib {
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
+        const Handle<Quote>& quote,
+        const Period& swapObsLag,
+        const Date& maturity,
+        Calendar calendar,
+        BusinessDayConvention paymentConvention,
+        const DayCounter& dayCounter,
+        ext::shared_ptr<ZeroInflationIndex> zii,
+        CPI::InterpolationType observationInterpolation)
+    : ZeroCouponInflationSwapHelper(quote, swapObsLag, maturity, std::move(calendar), paymentConvention,
+                                    dayCounter, std::move(zii), observationInterpolation, {}) {
+        // any nominal term structure will give the same result;
+        // when calculating the fair rate, the equal discount factors
+        // for the payments on the two legs will cancel out.
+        nominalTermStructure_ =
+            Handle<YieldTermStructure>(ext::make_shared<FlatForward>(0, NullCalendar(), 0.0, dayCounter));
+    }
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
@@ -71,6 +92,8 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(nominalTermStructure_);
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 
     Real ZeroCouponInflationSwapHelper::impliedQuote() const {

@@ -639,6 +639,9 @@
     <ClInclude Include="ql\indexes\ibor\corra.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\custom.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
     <ClInclude Include="ql\indexes\ibor\dkklibor.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
@@ -2284,6 +2287,9 @@
       <Filter>utilities</Filter>
     </ClInclude>
     <ClInclude Include="ql\utilities\tracing.hpp">
+      <Filter>utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\utilities\variants.hpp">
       <Filter>utilities</Filter>
     </ClInclude>
     <ClInclude Include="ql\utilities\vectors.hpp">
@@ -4637,6 +4643,9 @@
     <ClCompile Include="ql\indexes\ibor\corra.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
+    <ClCompile Include="ql\indexes\ibor\custom.cpp">
+      <Filter>indexes\ibor</Filter>
+    </ClCompile>
     <ClCompile Include="ql\indexes\ibor\eonia.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
@@ -6699,6 +6708,7 @@
     <ClCompile Include="ql\event.cpp" />
     <ClCompile Include="ql\exchangerate.cpp" />
     <ClCompile Include="ql\exercise.cpp" />
+    <ClCompile Include="ql\quote.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />
     <ClCompile Include="ql\index.cpp" />
     <ClCompile Include="ql\instrument.cpp" />

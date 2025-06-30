@@ -544,6 +544,17 @@ BOOST_AUTO_TEST_CASE(canHash) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(nullDate) {
+    BOOST_TEST_MESSAGE("Testing null date for working serial number and hash...");
+
+    Date null_date = Date();
+
+    std::hash<Date> hasher;
+
+    BOOST_CHECK_NO_THROW(null_date.serialNumber());
+    BOOST_CHECK_NO_THROW(hasher(null_date));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()

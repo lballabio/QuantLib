@@ -20,7 +20,9 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/bmaindex.hpp>
+#include <ql/indexes/ibor/custom.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -136,6 +138,60 @@ BOOST_AUTO_TEST_CASE(testTenorNormalization) {
         BOOST_ERROR("inconsistent maturity dates and tenors"
                     << "\n  maturity date for 6-days index: " << maturity6d
                     << "\n  maturity date for 7-days index: " << maturity7d);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCustomIborIndex) {
+    BOOST_TEST_MESSAGE("Testing CustomIborIndex...");
+
+    auto fixCal = BespokeCalendar("Fixings");
+    fixCal.addHoliday(Date(8, January, 2025));
+
+    auto valCal = BespokeCalendar("Value");
+    valCal.addHoliday(Date(21, January, 2025));
+
+    auto matCal = BespokeCalendar("Maturity");
+    matCal.addHoliday(Date(7, January, 2025));
+    matCal.addHoliday(Date(15, January, 2025));
+    matCal.addHoliday(Date(23, April, 2025));
+    matCal.addHoliday(Date(30, April, 2025));
+
+    auto ibor = CustomIborIndex(
+        "Custom Ibor", 3*Months, 2, Currency(), fixCal, valCal, matCal, // NOLINT(cppcoreguidelines-slicing)
+        ModifiedFollowing, true, Actual360()
+    );
+    auto iborClone = ibor.clone(Handle<YieldTermStructure>());
+
+    for (IborIndex* index : {static_cast<IborIndex*>(&ibor), iborClone.get()}) {
+        auto* as_custom = dynamic_cast<CustomIborIndex*>(index);
+        BOOST_CHECK_EQUAL(index->fixingCalendar(), fixCal);
+        BOOST_CHECK_EQUAL(as_custom->valueCalendar(), valCal);
+        BOOST_CHECK_EQUAL(as_custom->maturityCalendar(), matCal);
+
+        BOOST_CHECK_EXCEPTION(
+            index->valueDate(Date(8, January, 2025)), Error,
+            ExpectedErrorMessage("Fixing date January 8th, 2025 is not valid"));
+
+        BOOST_CHECK_EQUAL(index->valueDate(Date(7, January, 2025)),
+                          Date(9, January, 2025));
+        BOOST_CHECK_EQUAL(index->valueDate(Date(13, January, 2025)),
+                          Date(16, January, 2025));
+        BOOST_CHECK_EQUAL(index->valueDate(Date(20, January, 2025)),
+                          Date(23, January, 2025));
+
+        BOOST_CHECK_EQUAL(index->fixingDate(Date(23, January, 2025)),
+                          Date(20, January, 2025));
+        BOOST_CHECK_EQUAL(index->fixingDate(Date(16, January, 2025)),
+                          Date(14, January, 2025));
+        BOOST_CHECK_EQUAL(index->fixingDate(Date(10, January, 2025)),
+                          Date(7, January, 2025));
+
+        BOOST_CHECK_EQUAL(index->maturityDate(Date(23, January, 2025)),
+                          Date(24, April, 2025));
+        BOOST_CHECK_EQUAL(index->maturityDate(Date(30, January, 2025)),
+                          Date(29, April, 2025));
+        BOOST_CHECK_EQUAL(index->maturityDate(Date(28, February, 2025)),
+                          Date(31, May, 2025));
     }
 }
 

@@ -83,7 +83,6 @@ namespace QuantLib {
               return ext::shared_ptr<FdmVPPStepCondition>(
                   new FdmVPPStartLimitStepCondition(params, args_.nStarts,
                           mesh, fuel, spark));
-              break;
           default:
             QL_FAIL("vpp type is not supported");
         }
