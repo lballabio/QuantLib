@@ -41,7 +41,6 @@ jobs:
             # { os: ubuntu-24.04,   cc: gcc-13,   cxx: g++-13 },
             # { os: ubuntu-24.04,   cc: gcc-14,   cxx: g++-14 },
             #
-            # { os: windows-2019,   cc: cl,       cxx: cl },
             # { os: windows-2022,   cc: cl,       cxx: cl },
             # { os: windows-2025,   cc: cl,       cxx: cl }
           ]
