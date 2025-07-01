@@ -32,14 +32,22 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> iborIndex,
         Handle<YieldTermStructure> discount,
         const VolatilityType type,
-        const Real displacement)
+        const Real displacement,
+        ext::optional<Period> optionletFrequency
+    )
     : termVolSurface_(termVolSurface), iborIndex_(std::move(iborIndex)),
       discount_(std::move(discount)), nStrikes_(termVolSurface->strikes().size()),
-      volatilityType_(type), displacement_(displacement) {
+      volatilityType_(type), displacement_(displacement), 
+      optionletFrequency_(optionletFrequency) {
 
         if (volatilityType_ == Normal) {
             QL_REQUIRE(displacement_ == 0.0,
                        "non-null displacement is not allowed with Normal model");
+        }
+
+        if (ext::dynamic_pointer_cast<OvernightIndex>(iborIndex_)) {
+            QL_REQUIRE(optionletFrequency_, 
+                       "an optionlet frequency is required when using an overnight index");
         }
 
         registerWith(termVolSurface);
@@ -47,7 +55,7 @@ namespace QuantLib {
         registerWith(discount_);
         registerWith(Settings::instance().evaluationDate());
 
-        Period indexTenor = iborIndex_->tenor();
+        Period indexTenor = optionletFrequency_ ? *optionletFrequency_ : iborIndex_->tenor();
         Period maxCapFloorTenor = termVolSurface->optionTenors().back();
 
         // optionlet tenors and capFloor lengths
@@ -160,6 +168,10 @@ namespace QuantLib {
 
     VolatilityType OptionletStripper::volatilityType() const {
         return volatilityType_;
+    }
+
+    ext::optional<Period> OptionletStripper::optionletFrequency() const {
+        return optionletFrequency_;
     }
 
 }
