@@ -825,9 +825,6 @@
     <ClInclude Include="ql\instruments\dividendschedule.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\dividendvanillaoption.hpp">
-      <Filter>instruments</Filter>
-    </ClInclude>
     <ClInclude Include="ql\instruments\europeanoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -3899,9 +3896,6 @@
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\concentrating1dmesher.hpp">
       <Filter>methods\finitedifferences\meshers</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\instruments\dividendbarrieroption.hpp">
-      <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\meshers\exponentialjump1dmesher.hpp">
       <Filter>methods\finitedifferences\meshers</Filter>

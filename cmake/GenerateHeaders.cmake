@@ -38,7 +38,6 @@ function(generate_dir_headers source_dir binary_dir)
     file(GLOB children_hpp RELATIVE ${source_dir} "${source_dir}/*.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "all.hpp")
 
-    list(FILTER children_hpp EXCLUDE REGEX "dividendvanillaoption.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "averageoiscouponpricer.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "subperiodcoupon.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fdmultiperiodengine.hpp")

@@ -74,15 +74,6 @@ namespace QuantLib {
         : Bibor(Period(6, Months), h) {}
     };
 
-    /*! \deprecated If needed, use the Bibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the Bibor class with an explicit tenor instead")]] Bibor9M : public Bibor {
-      public:
-        explicit Bibor9M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(9, Months), h) {}
-    };
-
     //! 1-year %Bibor index
     class Bibor1Y : public Bibor {
       public:
