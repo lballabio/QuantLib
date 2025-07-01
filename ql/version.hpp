@@ -26,6 +26,7 @@
 #define quantlib_version_hpp
 
 #include <ql/qldefines.hpp>
+#include <cstddef>
 
 /*! \addtogroup macros */
 /*! @{ */
