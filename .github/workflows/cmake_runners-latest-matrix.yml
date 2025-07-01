@@ -68,3 +68,10 @@ jobs:
           cmake --version
           cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx-standard }} -DQL_COMPILE_WARNING_AS_ERROR=ON -L
           cmake --build build --verbose
+
+      - name: Run the test-suite
+        # currently the Windows workflow is failing due to a compiler/STL bug,
+        # remove the condition once the bug is resolved
+        if: runner.os != 'Windows'
+        run: |
+          ./build/test-suite/quantlib-test-suite -l message
