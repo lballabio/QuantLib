@@ -263,6 +263,7 @@ BOOST_AUTO_TEST_CASE(testFrequencyComputation) {
     BOOST_TEST(Period(4, Weeks).frequency() == EveryFourthWeek);
     BOOST_TEST(Period(2, Weeks).frequency() == Biweekly);
     BOOST_TEST(Period(1, Weeks).frequency() == Weekly);
+    BOOST_TEST(Period(28, Days).frequency() == EveryFourthWeek);
     BOOST_TEST(Period(1, Days).frequency() == Daily);
 }
 
