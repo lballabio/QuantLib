@@ -20,6 +20,18 @@
 
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <ql/types.hpp>
+
+namespace {
+    inline double entropy(double p1, double p2, double p3) {
+        double H = 0.0;
+        for (double p : {p1, p2, p3}) {
+            if (p > 1e-16)
+                H -= p * std::log(p);
+        }
+        return H;
+    }
+}
 
 namespace QuantLib {
 
@@ -69,6 +81,10 @@ namespace QuantLib {
                 Real p2 = (2.0 - e2/v2)/3.0;
                 Real p3 = (1.0 + e2/v2 + e3/v)/6.0;
 
+                Real H  = entropy(p1,p2,p3);
+                if(H<1e-3 and std::max(p1,p3) < 1e-12){
+                    p1 = 0 , p2 =1 , p3 = 0 ;
+                }
                 branching.add(temp, p1, p2, p3);
             }
             branchings_.push_back(branching);
