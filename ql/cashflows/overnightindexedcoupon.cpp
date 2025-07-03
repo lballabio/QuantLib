@@ -72,15 +72,15 @@ namespace QuantLib {
 
         /* For the coupon's valuation only the first and last future valuation
            dates matter, therefore we can avoid to construct the whole series
-           of valuation dates, a front and back stub will do. However notice
+           of valuation dates, a front and back stub will do. However, notice
            that if the global evaluation date moves forward it might run past
            the front stub of valuation dates we build here (which incorporates
            a grace period of 7 business after the evaluation date). This will
            lead to false coupon projections (see the warning the class header). */
 
-        QL_REQUIRE(canApplyTelescopicFormula() || !telescopicValueDates,
+        QL_REQUIRE(!telescopicValueDates || canApplyTelescopicFormula(),
                    "Telescopic formula cannot be applied for a coupon with lookback "
-                   "or cdi coupon with gearing.");
+                   "and/or a cdi coupon with gearing.");
 
         if (telescopicValueDates) {
             // build optimised value dates schedule: front stub goes
