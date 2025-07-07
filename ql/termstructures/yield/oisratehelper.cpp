@@ -168,8 +168,8 @@ namespace QuantLib {
             ext::dynamic_pointer_cast<OvernightIndexedCoupon>(swap_->overnightLeg().back())->fixingDate();
         Date fixingEndDate =
             overnightIndex_->maturityDate(overnightIndex_->valueDate(lastFixingDate));
-        latestRelevantDate_ = latestDate_ = std::max({maturityDate_, lastPaymentDate, fixingEndDate});
-
+        latestRelevantDate_ = latestDate_ =
+            discountHandle_.empty() ? std::max(lastPaymentDate, fixingEndDate) : fixingEndDate;
         switch (pillarChoice_) {
           case Pillar::MaturityDate:
             pillarDate_ = maturityDate_;
