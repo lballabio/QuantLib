@@ -921,7 +921,7 @@ BOOST_AUTO_TEST_CASE(testSwitchStrike) {
 }
 
 BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON, *precondition(if_speed(Slow))) {
-    BOOST_TEST_MESSAGE("Test Option striplet on ON index");
+    BOOST_TEST_MESSAGE("Testing optionlet stripping with overnight index...");
     CommonVarsON vars;
     Settings::instance().evaluationDate() = vars.today;
     Schedule schedule(vars.startDate, vars.endDate, vars.tenor,
