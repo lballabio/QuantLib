@@ -459,7 +459,7 @@ struct CommonVarsON {
         strikes = {0.03, 0.035, 0.04};
         
         for (int i = 1; i <= 10; ++i)
-            expiries.push_back(Period(i, Years));
+            expiries.emplace_back(i, Years);
 
         Matrix vols(expiries.size(), strikes.size());
         Real data[10][3] = {
