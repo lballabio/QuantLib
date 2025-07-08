@@ -35,7 +35,6 @@ namespace QuantLib {
                      const Period& forwardStart)
     : swapTenor_(swapTenor), overnightIndex_(overnightIndex), fixedRate_(fixedRate),
       forwardStart_(forwardStart),
-      settlementDays_(Null<Natural>()),
       fixedCalendar_(overnightIndex->fixingCalendar()),
       overnightCalendar_(overnightIndex->fixingCalendar()),
       fixedDayCount_(overnightIndex->dayCounter()) {}
