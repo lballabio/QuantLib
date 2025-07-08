@@ -17,7 +17,92 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.38 - April 2025</strong>
+    <strong>Release 1.39 - July 2025</strong>
+
+    PORTABILITY
+    - **Change of default:** as already announced, in this release we're
+      switching the default for `ext::any` and `ext::optional` from the
+      Boost implementation to the standard one.  Using `boost::any` and
+      `boost::optional` is still possible for the time being but
+      deprecated.
+
+    DATES, CALENDARS AND DAY-COUNT CONVENTIONS
+
+    - Fixed a corner case of `Calendar::advance` when using EOM and the
+      unadjusted business-day convention; thanks to Eugene Toder.
+    - Fixed an error when asking for the serial number of a null date with
+      intraday support enabled; thanks to UnitedMarsupial
+      for the heads-up.
+    - Added the SHIR fixing calendar.
+    - Fixed the order of operations in the 30/360 USA day-count
+      convention; thanks to Eugene Toder.
+
+    INDEXES
+
+    - Added the SARON index; thanks to Paolo D'Elia.
+    - Added a `CustomIborIndex` class that allows to create an IBOR-like
+      index with custom calendars for value and maturity dates
+      calculations; thanks to Eugene Toder.
+
+    INSTRUMENTS AND PRICING ENGINES
+
+    - The `MakeOIS` class now knows the default number of settlement days
+      for a few currencies; thanks to Zak Kraehling.
+
+    INTEREST RATES
+
+    - The `FxSwapRateHelper` class can now be built specifying fixed dates
+      instead of a tenor; thanks to Eugene Toder.
+    - A number of helpers can now take quoted rates either as numbers or
+      `Handle<Quote>` via the use of `std::variant`; this reduces the
+      number of overloaded constructors and in some cases allows the use
+      of keyword arguments when exported to Python.  Thanks to Paolo
+      D'Elia and Eugene Toder.
+    - The `OISRateHelper` class can now specify a calendar for the
+      overnight leg; thanks to Eugene Toder.
+    - The `ZeroCouponInflationSwapHelper` class now doesn't need to be
+      passed a nominal curve, which wouldn't affect the results anyway.
+
+    VOLATILITY
+
+    - Optionlet stripperes can now use overnight indexes; thanks to Paolo
+      D'Elia.
+    - Added calculation of better guesses for SABR calibration as detailed
+      in the Le Floc'h and Kennedy paper.
+
+    DEPRECATED FEATURES
+    -------------------
+
+    - **Removed** features deprecated in version 1.34:
+      - the overloads of `Bond::yield`, `BondFunctions::atmRate`,
+        `BondFunctions::yield` and `BondFunctions::zSpread` taking a price
+        as a `Real` instead of a `Bond::Price` instance;
+      - the `Swaption::underlyingSwap` and
+        `SwaptionHelper::underlyingSwap` methods;
+      - the constructors of `InflationTermStructure`,
+        `ZeroInflationTermStructure`, `YoYInflationTermStructure`,
+        `InterpolatedZeroInflationCurve`, `InterpolatedYoYInflationCurve`,
+        `PiecewiseZeroInflationCurve` and `PiecewiseYoYInflationCurve`
+        taking an observation lag;
+      - the overload of `InflationTermStructure::setSeasonality` taking no arguments;
+      - the `InflationTermStructure::setBaseRate` method;
+      - the `fixedRateBond` method and `fixedRateBond_` data member of the
+        `FixedRateBondHelper` class, and the `cpiBond` method and
+        `cpiBond_` data member of the `CPIBondHelper` class.
+    - Deprecated the `observationLag` and `hasExplicitBaseDate` methods
+      and the `observationLag_` data member of the
+      `InflationTermStructure` class; inflation term structures always
+      have an explicit base date now.
+    - Deprecated the usage of `boost::any` and `boost::optional`; their
+      standard counterparts are used by default now.
+    - Deprecated the constructor of `ZeroCouponInflationSwapHelper` taking
+      a nominal curve; use the other constructor instead.
+
+    Thanks go also to Imrane Amri, Ralf Konrad Eckel, Joan Carlos
+    Naftanaila, Eugene Toder, Paolo D'Elia and Holger Rother for
+    miscellaneous smaller fixes, improvements or reports.
+
+    <strong>Release 1.38 - April 23rd, 2025</strong>
 
     PORTABILITY
     - **Future change of default:** as already announced, in the next
