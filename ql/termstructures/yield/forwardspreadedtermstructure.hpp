@@ -26,7 +26,7 @@
 #define quantlib_forward_spreaded_term_structure_hpp
 
 #include <ql/quote.hpp>
-#include <ql/termstructures/yield/forwardstructure.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -44,7 +44,7 @@ namespace QuantLib {
         - observability against changes in the underlying term
           structure and in the added spread is checked.
     */
-    class ForwardSpreadedTermStructure : public ForwardRateStructure {
+    class ForwardSpreadedTermStructure : public ZeroYieldStructure {
       public:
         ForwardSpreadedTermStructure(Handle<YieldTermStructure>, Handle<Quote> spread);
         //! \name TermStructure interface
@@ -61,10 +61,8 @@ namespace QuantLib {
         void update() override;
         //@}
       protected:
-        //! \name ForwardRateStructure implementation
+        //! \name ZeroYieldStructure implementation
         //@{
-        Rate forwardImpl(Time t) const override;
-        /* This method must disappear should the spread become a curve */
         Rate zeroYieldImpl(Time t) const override;
         //@}
       private:
@@ -117,11 +115,6 @@ namespace QuantLib {
             // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             TermStructure::update();
         }
-    }
-
-    inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t) const {
-        return originalCurve_->forwardRate(t, t, Continuous, NoFrequency, true)
-            + spread_->value();
     }
 
     inline Rate ForwardSpreadedTermStructure::zeroYieldImpl(Time t) const {
