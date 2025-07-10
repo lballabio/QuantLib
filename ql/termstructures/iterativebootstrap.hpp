@@ -28,7 +28,6 @@
 #define quantlib_iterative_bootstrap_hpp
 
 #include <ql/termstructures/bootstraphelper.hpp>
-#include <ql/termstructures/bootstraperror.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/solvers1d/finitedifferencenewtonsafe.hpp>
 #include <ql/math/solvers1d/brent.hpp>
@@ -42,9 +41,8 @@ namespace detail {
         searching for a helper root between \c xMin and \c xMax, we use this function to return the value that
         gives the minimum absolute helper error in the interval between \c xMin and \c xMax inclusive.
     */
-    template <class Curve>
-    Real dontThrowFallback(const BootstrapError<Curve>& error,
-        Real xMin, Real xMax, Size steps) {
+    template <class Fn>
+    Real dontThrowFallback(const Fn& error, Real xMin, Real xMax, Size steps) {
 
         QL_REQUIRE(xMin < xMax, "Expected xMin to be less than xMax");
 
@@ -119,7 +117,6 @@ namespace detail {
         mutable bool initialized_ = false, validCurve_ = false, loopRequired_;
         mutable Size firstAliveHelper_ = 0, alive_ = 0;
         mutable std::vector<Real> previousData_;
-        mutable std::vector<ext::shared_ptr<BootstrapError<Curve> > > errors_;
     };
 
 
@@ -175,12 +172,11 @@ namespace detail {
                    " provided, " << Interpolator::requiredPoints-1 <<
                    " required");
 
-        // calculate dates and times, create errors_
+        // calculate dates and times
         std::vector<Date>& dates = ts_->dates_;
         std::vector<Time>& times = ts_->times_;
         dates.resize(alive_+1);
         times.resize(alive_+1);
-        errors_.resize(alive_+1);
         dates[0] = firstDate;
         times[0] = ts_->timeFromReference(dates[0]);
 
@@ -188,8 +184,7 @@ namespace detail {
         // pillar counter: i
         // helper counter: j
         for (Size i=1, j=firstAliveHelper_; j<n_; ++i, ++j) {
-            const ext::shared_ptr<typename Traits::helper>& helper =
-                                                        ts_->instruments_[j];
+            const auto& helper = ts_->instruments_[j];
             dates[i] = helper->pillarDate();
             times[i] = ts_->timeFromReference(dates[i]);
             // check for duplicated pillars
@@ -211,9 +206,6 @@ namespace detail {
             // convergence loop is required even if the Interpolator is local
             if (dates[i] != latestRelevantDate)
                 loopRequired_ = true;
-
-            errors_[i] = ext::shared_ptr<BootstrapError<Curve> >(new
-                BootstrapError<Curve>(ts_, helper, i));
         }
         ts_->maxDate_ = maxDate;
 
@@ -242,8 +234,7 @@ namespace detail {
 
         // setup helpers
         for (Size j=firstAliveHelper_; j<n_; ++j) {
-            const ext::shared_ptr<typename Traits::helper>& helper =
-                                                        ts_->instruments_[j];
+            const auto& helper = ts_->instruments_[j];
             // check for valid quote
             QL_REQUIRE(helper->quote()->isValid(),
                        io::ordinal(j + 1) << " instrument (maturity: " <<
@@ -272,7 +263,7 @@ namespace detail {
             std::vector<Real> maxValues(alive_+1, Null<Real>());
             std::vector<Size> attempts(alive_+1, 1);
 
-            for (Size i=1; i<=alive_; ++i) { // pillar loop
+            for (Size i=1, j=firstAliveHelper_; j<n_; ++i, ++j) { // pillar loop
 
                 // shorter aliases for readability and to avoid duplication
                 Real& min = minValues[i];
@@ -319,11 +310,17 @@ namespace detail {
                     ts_->interpolation_.update();
                 }
 
+                const auto& helper = ts_->instruments_[j];
+                auto error = [&](Rate guess) {
+                    Traits::updateGuess(ts_->data_, guess, i);
+                    ts_->interpolation_.update();
+                    return helper->quoteError();
+                };
                 try {
                     if (validData)
-                        solver_.solve(*errors_[i], accuracy, guess, min, max);
+                        solver_.solve(error, accuracy, guess, min, max);
                     else
-                        firstSolver_.solve(*errors_[i], accuracy, guess, min, max);
+                        firstSolver_.solve(error, accuracy, guess, min, max);
                 } catch (std::exception &e) {
                     if (validCurve_) {
                         // the previous curve state might have been a
@@ -342,12 +339,13 @@ namespace detail {
                     if (attempts[i] < maxAttempts_) {
                         attempts[i]++;
                         i--;
+                        j--;
                         continue;
                     }
 
                     if (dontThrow_) {
                         // Use the fallback value
-                        ts_->data_[i] = detail::dontThrowFallback(*errors_[i], min, max, dontThrowSteps_);
+                        ts_->data_[i] = detail::dontThrowFallback(error, min, max, dontThrowSteps_);
 
                         // Remember to update the interpolation. If we don't and we are on the last "i", we will still
                         // have the last attempted value in the solver being used in ts_->interpolation_.
@@ -355,8 +353,8 @@ namespace detail {
                     } else {
                         QL_FAIL(io::ordinal(iteration + 1) << " iteration: failed "
                                 "at " << io::ordinal(i) << " alive instrument, "
-                                "pillar " << errors_[i]->helper()->pillarDate() <<
-                                ", maturity " << errors_[i]->helper()->maturityDate() <<
+                                "pillar " << helper->pillarDate() <<
+                                ", maturity " << helper->maturityDate() <<
                                 ", reference date " << ts_->dates_[0] <<
                                 ": " << e.what());
                     }

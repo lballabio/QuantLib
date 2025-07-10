@@ -2050,7 +2050,6 @@ set(QL_HEADERS
     shared_ptr.hpp
     stochasticprocess.hpp
     termstructure.hpp
-    termstructures/bootstraperror.hpp
     termstructures/bootstraphelper.hpp
     termstructures/credit/defaultdensitystructure.hpp
     termstructures/credit/defaultprobabilityhelpers.hpp

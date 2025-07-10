@@ -1674,7 +1674,6 @@
     <ClInclude Include="ql\quotes\lastfixingquote.hpp" />
     <ClInclude Include="ql\quotes\simplequote.hpp" />
     <ClInclude Include="ql\termstructures\all.hpp" />
-    <ClInclude Include="ql\termstructures\bootstraperror.hpp" />
     <ClInclude Include="ql\termstructures\bootstraphelper.hpp" />
     <ClInclude Include="ql\termstructures\credit\all.hpp" />
     <ClInclude Include="ql\termstructures\credit\defaultdensitystructure.hpp" />

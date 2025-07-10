@@ -27,7 +27,6 @@
 #include <ql/functional.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/termstructures/bootstraperror.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <algorithm>
