@@ -2,7 +2,7 @@ name: Windows build
 on: [push, pull_request]
 jobs:
   msbuild:
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       fail-fast: false
       matrix:
