@@ -183,7 +183,6 @@ namespace QuantLib {
         // it would increase the complexity---which is high enough
         // already.
         friend class Bootstrap<this_curve>;
-        friend class BootstrapError<this_curve> ;
         friend class PenaltyFunction<this_curve>;
         Bootstrap<this_curve> bootstrap_;
     };

@@ -1938,9 +1938,6 @@
     <ClInclude Include="ql\termstructures\all.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\bootstraperror.hpp">
-      <Filter>termstructures</Filter>
-    </ClInclude>
     <ClInclude Include="ql\termstructures\bootstraphelper.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
