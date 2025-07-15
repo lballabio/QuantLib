@@ -493,7 +493,7 @@ namespace QuantLib {
       private:
         const SplineGrid &grid_;
         const data_table &y_;
-        const std::vector<bool> &ae_;
+        const std::vector<bool> ae_;
         mutable return_type a_, b_, a2_, b2_;
         mutable output_data v_, v1_, v2_;
         mutable result_type res_;
