@@ -62,7 +62,8 @@ namespace QuantLib {
           bool applyObservationShift = false,
           ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
           DateGeneration::Rule rule = DateGeneration::Backward,
-          Calendar overnightCalendar = Calendar());
+          Calendar overnightCalendar = Calendar(),
+          BusinessDayConvention convention = ModifiedFollowing);
 
         OISRateHelper(
           const Date& startDate,
@@ -88,7 +89,8 @@ namespace QuantLib {
           bool applyObservationShift = false,
           ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
           DateGeneration::Rule rule = DateGeneration::Backward,
-          Calendar overnightCalendar = Calendar());
+          Calendar overnightCalendar = Calendar(),
+          BusinessDayConvention convention = ModifiedFollowing);
 
         //! \name RateHelper interface
         //@{
@@ -133,6 +135,7 @@ namespace QuantLib {
         ext::optional<Frequency> fixedPaymentFrequency_;
         Calendar fixedCalendar_;
         Calendar overnightCalendar_;
+        BusinessDayConvention convention_;
         Natural lookbackDays_;
         Natural lockoutDays_;
         bool applyObservationShift_;
