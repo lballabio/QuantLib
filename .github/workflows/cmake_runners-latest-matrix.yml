@@ -70,8 +70,5 @@ jobs:
           cmake --build build --verbose
 
       - name: Run the test-suite
-        # currently the Windows workflow is failing due to a compiler/STL bug,
-        # remove the condition once the bug is resolved
-        if: runner.os != 'Windows'
         run: |
           ./build/test-suite/quantlib-test-suite -l message
