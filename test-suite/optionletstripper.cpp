@@ -459,7 +459,7 @@ struct CommonVarsON {
         strikes = {0.03, 0.035, 0.04};
         
         for (int i = 1; i <= 10; ++i)
-            expiries.push_back(Period(i, Years));
+            expiries.emplace_back(i, Years);
 
         Matrix vols(expiries.size(), strikes.size());
         Real data[10][3] = {
@@ -921,7 +921,7 @@ BOOST_AUTO_TEST_CASE(testSwitchStrike) {
 }
 
 BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1ON, *precondition(if_speed(Slow))) {
-    BOOST_TEST_MESSAGE("Test Option striplet on ON index");
+    BOOST_TEST_MESSAGE("Testing optionlet stripping with overnight index...");
     CommonVarsON vars;
     Settings::instance().evaluationDate() = vars.today;
     Schedule schedule(vars.startDate, vars.endDate, vars.tenor,

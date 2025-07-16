@@ -1,118 +1,129 @@
-Changes for QuantLib 1.38:
+Changes for QuantLib 1.39:
 ==========================
 
-QuantLib 1.38 includes 29 pull requests from several contributors.
+QuantLib 1.39 includes 28 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/36?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/37?closed=1>.
 
 
 Portability
 -----------
 
-- **Future change of default:** as already announced, in the next
-  release we're going to switch the default for `ext::any` and
-  `ext::optional` from the Boost implementation to the standard one.
-  Using `boost::any` and `boost::optional` is still possible
-  for the time being but deprecated.
+- **Bug in latest Visual C++ version**: at the time of this writing,
+  the latest version of the Visual C++ 2022 compiler (the 17.14.7
+  version, using the 14.44 toolset) has a known bug that,
+  unfortunately, affects QuantLib heavily and makes it basically
+  unusable.  A fix has been implemented and will be released at some
+  point in the near future, but in the meantime, if you’re compiling
+  QuantLib on Windows, either use the Visual C++ 2019 toolset (you can
+  do that from VC++ 2022, as well) or use a less recent version that
+  still uses the 14.43 toolset.
 
-- **Possible future breaking change**: in the next release, the
-  `SimpleQuote` class might be made `final`.  If you're inheriting
-  from it, drop us a line.
+- **Change of default:** as already announced, in this release we're
+  switching the default for `ext::any` and `ext::optional` from the
+  Boost implementation to the standard one.  Using `boost::any` and
+  `boost::optional` is still possible for the time being but
+  deprecated.
 
 
-Dates and calendars
--------------------
+Dates, calendars and day-count conventions
+------------------------------------------
 
-- The `Schedule` class now honors the passed business day convention
-  when end-of-month is enabled (@lballabio).  Previously, enabling
-  end-of-month caused it to always use the Modified Following
-  convention.
+- Fixed a corner case of `Calendar::advance` when using EOM and the
+  unadjusted business-day convention; thanks to Eugene Toder (@eltoder).
+  
+- Fixed an error when asking for the serial number of a null date with
+  intraday support enabled (@lballabio); thanks to @UnitedMarsupial
+  for the heads-up.
 
-- Added Chinese holidays for 2025; thanks to Cheng Li (@wegamekinglc).
+- Added the SHIR fixing calendar (@lballabio).
 
-- Added Thailand holidays for 2025; thanks to Paolo D'Elia
-  (@paolodelia99).
-
-- Added Hong Kong holidays for 2025; thanks to Ka Wai Lee (@kawailee).
+- Fixed the order of operations in the 30/360 USA day-count
+  convention; thanks to Eugene Toder (@eltoder).
 
 
 Indexes
 -------
 
-- Year-or-year inflation indexes can (and should) now be built without
-  an `interpolated` flag (@lballabio).  As for zero inflation indexes,
-  the interpolation was moved into the coupons using the indexes.
+- Added the SARON index; thanks to Paolo D'Elia (@paolodelia99).
 
-- Fixed obsolete conventions for the (now discountinued) EUR LIBOR
-  index; thanks to Eugene Toder (@eltoder).
+- Added a `CustomIborIndex` class that allows to create an IBOR-like
+  index with custom calendars for value and maturity dates
+  calculations; thanks to Eugene Toder (@eltoder).
 
 
 Instruments and pricing engines
 -------------------------------
 
-- Added implementation of partial-time barrier put options; thanks to
-  Paolo D'Elia (@paolodelia99).
-
-- The `OvernightIndexFuture` class would not receive notifications
-  when the convexity quote or the evaluation date changed; this is now
-  fixed.  Thanks to Eugene Toder (@eltoder).
-
-- The experimental `BlackCallableFixedRateBondEngine` wouldn't take
-  discount correctly into account when evaluation the embedded option;
-  this is now fixed.  Thanks to @RobertS548 for the heads-up.
-
-- Moved a few instruments and engines from the experimental folder to
-  the core library (@lballabio):
-  - `HolderExtensibleOption` and `AnalyticHolderExtensibleOptionEngine`;
-  - `WriterExtensibleOption` and `AnalyticWriterExtensibleOptionEngine`;
-  - `PartialTimeBarrierOption` and `AnalyticPartialTimeBarrierOptionEngine`;
-  - `TwoAssetBarrierOption` and `AnalyticTwoAssetBarrierEngine`;
-  - `TwoAssetCorrelationOption` and ``AnalyticTwoAssetCorrelationEngine`;
-  - `ContinuousArithmeticAsianLevyEngine`;
-  - `AnalyticPDFHestonEngine`.
+- The `MakeOIS` class now knows the default number of settlement days
+  for a few currencies; thanks to Zak Kraehling (@7astro7).
 
 
-Term structures
----------------
+Interest rates
+--------------
 
-- The `DepositRateHelper` and `FraRateHelper` classes can now be built
-  specifying fixed dates instead of a tenor; thanks to Eugene Toder
-  (@eltoder).
+- The `FxSwapRateHelper` class can now be built specifying fixed dates
+  instead of a tenor; thanks to Eugene Toder (@eltoder).
 
-- The cross-currency basis-swap rate helpers can now be passed an
-  overnight index and a corresponding payment frequency; it is also
-  possible to pass a payment lag.  Thanks to @kp9991-git.
+- A number of helpers can now take quoted rates either as numbers or
+  `Handle<Quote>` via the use of `std::variant`; this reduces the
+  number of overloaded constructors and in some cases allows the use
+  of keyword arguments when exported to Python.  Thanks to Paolo
+  D'Elia (@paolodelia99) and Eugene Toder (@eltoder).
 
-- The additional penalty functions passed to the `GlobalBootstrap`
-  class can now take the curve nodes as arguments; thanks to Eugene
-  Toder (@eltoder).  This makes it possible, for example, to penalize
-  gradients to make the curve smoother.  It is also possible to
-  specify additional variables to be optimized, e.g., futures
-  convexity adjustments.
+- The `OISRateHelper` class can now specify a calendar for the
+  overnight leg; thanks to Eugene Toder (@eltoder).
+  
+- The `ZeroCouponInflationSwapHelper` class now doesn't need to be
+  passed a nominal curve, which wouldn't affect the results anyway
+  (@lballabio).
 
-- Added a piecewise forward-spreaded term structure; thanks to
-  Paolo D'Elia (@paolodelia99).
+
+Volatility
+----------
+
+- Optionlet stripperes can now use overnight indexes; thanks to Paolo
+  D'Elia (@paolodelia99).
+  
+- Added calculation of better guesses for SABR calibration as detailed
+  in the Le Floc'h and Kennedy paper (@lballabio).
 
 
 Deprecated features
 -------------------
 
-- **Removed** features deprecated in version 1.33:
-  - the constructors of `Currency` and `Currency::Data` taking a
-    format string, the `format` method of the `Currency` class and the
-    `formatString` data member of `Currency::Data`.
+- **Removed** features deprecated in version 1.34:
+  - the overloads of `Bond::yield`, `BondFunctions::atmRate`,
+    `BondFunctions::yield` and `BondFunctions::zSpread` taking a price
+    as a `Real` instead of a `Bond::Price` instance;
+  - the `Swaption::underlyingSwap` and
+    `SwaptionHelper::underlyingSwap` methods;
+  - the constructors of `InflationTermStructure`,
+    `ZeroInflationTermStructure`, `YoYInflationTermStructure`,
+    `InterpolatedZeroInflationCurve`, `InterpolatedYoYInflationCurve`,
+    `PiecewiseZeroInflationCurve` and `PiecewiseYoYInflationCurve`
+    taking an observation lag;
+  - the overload of `InflationTermStructure::setSeasonality` taking no arguments;
+  - the `InflationTermStructure::setBaseRate` method;
+  - the `fixedRateBond` method and `fixedRateBond_` data member of the
+    `FixedRateBondHelper` class, and the `cpiBond` method and
+    `cpiBond_` data member of the `CPIBondHelper` class.
 
-- Deprecated the constructors of year-on-year inflation indexes taking
-  an `interpolated` argument; use the other constructors instead.
+- Deprecated the `observationLag` and `hasExplicitBaseDate` methods
+  and the `observationLag_` data member of the
+  `InflationTermStructure` class; inflation term structures always
+  have an explicit base date now.
 
-- Deprecated the header files in `ql/experimental/exoticoptions` for
-  some classes moved to the core library (see above); use the
-  corresponding new headers in `ql/instruments` and
-  `ql/pricingengines` instead.
+- Deprecated the usage of `boost::any` and `boost::optional`; their
+  standard counterparts are used by default now.
+
+- Deprecated the constructor of `ZeroCouponInflationSwapHelper` taking
+  a nominal curve; use the other constructor instead.
 
 
-**Thanks go also** to Eugene Toder (@eltoder), Konstantin Novitsky
-(@novitk), Tomas Kalibera (@kalibera) and @raneamri for miscellaneous
-smaller fixes, improvements or reports.
+**Thanks go also** to Imrane Amri (@raneamri), Ralf Konrad Eckel
+(@ralfkonrad), Joan Carlos Naftanaila (@MiDDiz), Eugene Toder
+(@eltoder), Paolo D'Elia (@paolodelia99) and Holger Rother (@hrother)
+for miscellaneous smaller fixes, improvements or reports.
