@@ -49,7 +49,8 @@ namespace QuantLib {
                 results_.value = standardBarrierEquivalent();
             }}
 
-        // Edge Case 2: Already knocked in/out 
+        // Edge Case 2: 
+        // Already knocked in/out 
         bool isKnockedIn = (barrierType == Barrier::DownIn && S <= L) || 
                           (barrierType == Barrier::UpIn && S >= U);
         bool isKnockedOut = (barrierType == Barrier::DownOut && S <= L) || 
@@ -143,7 +144,7 @@ namespace QuantLib {
         QL_REQUIRE(U >= L, "Upper barrier must be greater than or equal to lower barrier");
         QL_REQUIRE(optionType == Option::Call || optionType == Option::Put, "Invalid option type");
                                                    } 
-                                                   
+
         if (U == L)
             std:cerr << "Warning: Upper barrier equals lower barrier.  
                           This reduces to a standard barrier option.  
