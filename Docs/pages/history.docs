@@ -20,6 +20,14 @@
     <strong>Release 1.39 - July 2025</strong>
 
     PORTABILITY
+    - **Bug in recent Visual C++ versions**: a few recent version of the
+      Visual C++ 2022 compiler (from 17.14.2 to 17.14.8) had a known bug
+      that, unfortunately, affected QuantLib heavily and maed it basically
+      unusable.  A fix was released in version 17.14.9; if you’re
+      compiling QuantLib on Windows, make sure you're using at least that
+      version (or, if you can't upgrade, use the Visual C++ 2019 toolset;
+      you can do that from VC++ 2022, as well).
+
     - **Change of default:** as already announced, in this release we're
       switching the default for `ext::any` and `ext::optional` from the
       Boost implementation to the standard one.  Using `boost::any` and

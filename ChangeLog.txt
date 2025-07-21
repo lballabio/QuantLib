@@ -1,3 +1,46 @@
+commit b16200d7690373337c2009f20ef5ac4dbebbeb51
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.39 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit f5b93e4a95d4a2d7399500f410b7dfc4006fcdc2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 8 Jul 2025 15:13:48 +0200
+
+    Add warning about latest VC++
+
+ News.md | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+commit 9a51b98fa8ae6dbd647d158bc778e8602de43cef
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 11:52:15 +0200
+
+    Set version to 1.39-rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 93d64f1bb26d9ae12861f653d89d0ecce8604037
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 8 Jul 2025 12:31:57 +0200
+
+    Update news, contributors and changelog
+
+ ChangeLog.txt           | 1751 +++++++++++++++++++++--------------------------
+ Contributors.txt        |    3 +
+ Docs/pages/history.docs |   87 ++-
+ News.md                 |  159 ++---
+ 4 files changed, 932 insertions(+), 1068 deletions(-)
+
 commit 272a31200960bc03aa9607212da42c60173a919f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 7 Jul 2025 20:52:40 +0200

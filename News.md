@@ -11,15 +11,13 @@ A detailed list of changes is available in ChangeLog.txt and at
 Portability
 -----------
 
-- **Bug in latest Visual C++ version**: at the time of this writing,
-  the latest version of the Visual C++ 2022 compiler (the 17.14.7
-  version, using the 14.44 toolset) has a known bug that,
-  unfortunately, affects QuantLib heavily and makes it basically
-  unusable.  A fix has been implemented and will be released at some
-  point in the near future, but in the meantime, if you’re compiling
-  QuantLib on Windows, either use the Visual C++ 2019 toolset (you can
-  do that from VC++ 2022, as well) or use a less recent version that
-  still uses the 14.43 toolset.
+- **Bug in recent Visual C++ versions**: a few recent version of the
+  Visual C++ 2022 compiler (from 17.14.2 to 17.14.8) had a known bug
+  that, unfortunately, affected QuantLib heavily and maed it basically
+  unusable.  A fix was released in version 17.14.9; if you’re
+  compiling QuantLib on Windows, make sure you're using at least that
+  version (or, if you can't upgrade, use the Visual C++ 2019 toolset;
+  you can do that from VC++ 2022, as well).
 
 - **Change of default:** as already announced, in this release we're
   switching the default for `ext::any` and `ext::optional` from the
