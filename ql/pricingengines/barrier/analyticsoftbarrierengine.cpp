@@ -20,8 +20,20 @@
 
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/barrier/analyticsoftbarrierengine.hpp>
+#include <ql/instruments/barrieroption.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <utility>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/handle.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <iostream>
+// #include <ql/utilities/null_deleter.hpp>
+// are all of the above needed?????
+
+
 
 namespace QuantLib {
 
@@ -31,84 +43,88 @@ namespace QuantLib {
         registerWith(process_);
     }
 
+
     void AnalyticSoftBarrierEngine::calculate() const {
-        // Extract inputs
+
+        // Market data
         Real S = underlying();
         Real X = strike();
         Rate r = riskFreeRate();
         Rate q = dividendYield();
-        Time T = residualTime();
         Volatility sigma = volatility();
-        Real U = barrierHi_;
-        Real L = barrierLo_;
-        Option::Type optionType = arguments_.payoff->optionType();
-        Barrier::Type barrierType = arguments_.barrierType;
+
+        // Barrier parameters
+        Real U = barrierHi();
+        Real L = barrierLo();
+        SoftBarrier::Type barrierType = arguments_.barrierType;
+
+        // Option parameters
+        Time T = residualTime();
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff); // explain this?????
+        Option::Type optionType = payoff->optionType();
+        Integer eta = (optionType == Option::Call ? 1 : -1);
+        Rate b = r - q; // cost of carry
+
+
+        // validate inputs 
+        validateInputs(S, X, r, q, T, U, L, optionType, barrierType, sigma);
 
         // Edge Case 1: Equal barriers, priced as a standard barrier option
         if (U == L) {
                 results_.value = standardBarrierEquivalent();
-            }}
-
-        // Edge Case 2: 
-        // Already knocked in/out 
-        bool isKnockedIn = (barrierType == Barrier::DownIn && S <= L) || 
-                          (barrierType == Barrier::UpIn && S >= U);
-        bool isKnockedOut = (barrierType == Barrier::DownOut && S <= L) || 
-                          (barrierType == Barrier::UpOut && S >= U);
-
-        // priced as a vanilla option
-        if (isKnockedIn) {
-              results_.value = vanillaEquivalent();
-              return
+                return;
             }
 
-        // knocked out options are worthless
+        // Edge Case 2: already knocked in/out -> price as a standard vanilla option
+        bool isKnockedIn = (barrierType == SoftBarrier::DownIn && S <= L) || 
+                          (barrierType == SoftBarrier::UpIn && S >= U);
+        bool isKnockedOut = (barrierType == SoftBarrier::DownOut && S <= L) || 
+                          (barrierType == SoftBarrier::UpOut && S >= U);
+
+        if (isKnockedIn) {
+              results_.value = vanillaEquivalent();
+              return;
+            }
+
+        // Edge case 3: fully knocked out options are worthless
         else if (isKnockedOut) {
-            results_.value = 0.0;  // Properly knocked out
+            results_.value = 0.0;  
             return;
             }
 
-        // soft barrier pricing - main pricing logic
-        Real w = knockInValue();
-        if (barrierType == Barrier::DownIn || barrierType == Barrier::UpIn) {
-            results_.value = w;  // Knock-in soft barrier price
-        } else {
-            results_.value = vanillaEquivalent() - w;  // Knock-out soft barrier price
+        // soft barrier pricing logic
+        Real w = knockInValue(S, X, r, sigma, T, U, L, b, optionType,eta);
+        results_.value = (barrierType == SoftBarrier::DownIn || barrierType == SoftBarrier::UpIn)
+            ? w                     // knock in price
+            : vanillaEquivalent() - w;  // knock out price
         }
+    
 
-    Real AnalyticSoftBarrierEngine::knockInValue() const {
-        Real S = underlying();
-        Real X = strike();
-        Rate r = riskFreeRate();
-        Rate q = dividendYield();
-        Volatility sigma = volatility();
-        Time T = residualTime();
-        Real U = barrierHi();
-        Real L = barrierLo();
-        Real b = costOfCarry();
-
+    // Implements the formula to calculate 'w' from the Haug textbook, used in soft barrier pricing
+    Real AnalyticSoftBarrierEngine::knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T,
+                                           Real U, Real L, Real b, Option::Type optionType, 
+                                           Integer eta) const {
+        
+        // Constants                                     
         const Real mu = (b + 0.5 * sigma * sigma) / (sigma * sigma);
         const Real sqrtT = std::sqrt(T);
-
         const Real lambda1 = std::exp(-0.5 * sigma * sigma * T * (mu + 0.5) * (mu - 0.5));
         const Real lambda2 = std::exp(-0.5 * sigma * sigma * T * (mu - 0.5) * (mu - 1.5));
-
         const Real SX = S * X;
-        const Integer eta = (arguments_.payoff->optionType() == Option::Call) ? 1 : -1;
-
         const Real logU2_SX = std::log((U * U) / SX);
         const Real logL2_SX = std::log((L * L) / SX);
-
+        
+        // d and e terms
         const Real d1 = logU2_SX / (sigma * sqrtT) + mu * sigma * sqrtT;
         const Real d2 = d1 - (mu + 0.5) * sigma * sqrtT;
         const Real d3 = logU2_SX / (sigma * sqrtT) + (mu - 1) * sigma * sqrtT;
         const Real d4 = d3 - (mu - 0.5) * sigma * sqrtT;
-
         const Real e1 = logL2_SX / (sigma * sqrtT) + mu * sigma * sqrtT;
         const Real e2 = e1 - (mu + 0.5) * sigma * sqrtT;
         const Real e3 = logL2_SX / (sigma * sqrtT) + (mu - 1) * sigma * sqrtT;
         const Real e4 = e3 - (mu - 0.5) * sigma * sqrtT;
 
+        // cumulative normal values                                        
         const Real Nd1 = f_(eta * d1);
         const Real Nd2 = f_(eta * d2);
         const Real Nd3 = f_(eta * d3);
@@ -116,128 +132,141 @@ namespace QuantLib {
         const Real Ne1 = f_(eta * e1);
         const Real Ne2 = f_(eta * e2);
         const Real Ne3 = f_(eta * e3);
-        const Real Ne4 = f_(eta * e4);
+        const Real Ne4 = f_(eta * e4); 
 
+        // term 1                                        
         Real term1 = eta * S * std::exp((b - r) * T) * std::pow(S, -2.0 * mu)
             * std::pow(SX, mu + 0.5) / (2.0 * (mu + 0.5));
+        
         term1 *= std::pow(U * U / SX, mu + 0.5) * Nd1 - lambda1 * Nd2
                - std::pow(L * L / SX, mu + 0.5) * Ne1 + lambda1 * Ne2;
-
+        
+        // term2                                     
         Real term2 = eta * X * std::exp(-r * T) * std::pow(S, -2.0 * (mu - 1))
             * std::pow(SX, mu - 0.5) / (2.0 * (mu - 0.5));
+        
         term2 *= std::pow(U * U / SX, mu - 0.5) * Nd3 - lambda2 * Nd4
                - std::pow(L * L / SX, mu - 0.5) * Ne3 + lambda2 * Ne4;
-
+        
+        // return 'w' value
         return (1.0 / (U - L)) * (term1 - term2);
     }
 
+    // helper function to check inputs are reasonable
     void AnalyticSoftBarrierEngine::validateInputs(Real S, Real X, Rate r, Rate q, Time T, Real U, Real L,
-                                                   Option::Type optionType, Barrier::Type barrierType,
+                                                   Option::Type optionType, SoftBarrier::Type barrierType,
                                                    Real sigma) const {
+        // Core Parameter checks                                                
         QL_REQUIRE(S > 0.0, "Spot price must be > 0");
         QL_REQUIRE(X > 0.0, "Strike price must be > 0");
-        QL_REQUIRE(r <= 1.0 && r >= -0.05, "Interest rate must be between -5% and 100%");
-        QL_REQUIRE(q <= 1.0 && q >= -0.1, "Dividend yield must be between -10% and 100%");
-        QL_REQUIRE(std::fabs(r - q) >= 1e-4, "r and q too close leads to numerical instability");
         QL_REQUIRE(T > 0.0, "Option must have time to maturity > 0");
         QL_REQUIRE(U > 0.0 && L > 0.0, "Barrier levels must be positive");
         QL_REQUIRE(U >= L, "Upper barrier must be greater than or equal to lower barrier");
-        QL_REQUIRE(optionType == Option::Call || optionType == Option::Put, "Invalid option type");
-                                                   } 
-
-        if (U == L)
-            std:cerr << "Warning: Upper barrier equals lower barrier.  
-                          This reduces to a standard barrier option.  
-                          For optimal performance, use `BarrierOption` instead." << std::endl;
-
-        if (sigma <= 0.02)
-            std::cerr << "Warning: Sigma <= 0.02 -> may cause unstable results" << std::endl;
-
-        if (optionType == Option::Call) {
-            QL_REQUIRE(barrierType == Barrier::DownIn || barrierType == Barrier::DownOut,
-                       "Only 'down' barriers supported for soft call options");
-
-            if (barrierType == Barrier::DownIn && S < L)
-                std::cerr << "Warning: Spot price is below the lower barrier.
-                This soft barrier option is already knocked in and will be priced as vanilla.
-                For optimal performance, use `VanillaOption` directly for this case." << std::endl;   ### double check VanillaOption wording is correct
-
-        } else if (optionType == Option::Put) {
-            QL_REQUIRE(barrierType == Barrier::UpIn || barrierType == Barrier::UpOut,
-                       "Only 'up' barriers supported for soft put options");
-
-            if (barrierType == Barrier::UpIn && S > U)
-                std::cerr << "Warning: Spot price is above the upper barrier.
-            This soft barrier option is already knocked in and will be priced as vanilla.
-            For optimal performance, use `VanillaOption` directly for this case." << std::endl;
+        QL_REQUIRE(optionType == Option::Call || optionType == Option::Put, "Invalid option type");                                       
+              
+        // Bounds checks
+        QL_REQUIRE(r <= 1.0 && r >= -0.05, "Interest rate must be between -5% and 100%");
+        QL_REQUIRE(q <= 1.0 && q >= -0.1, "Dividend yield must be between -10% and 100%");
+        QL_REQUIRE(std::fabs(r - q) >= 1e-4, "r and q too close leads to numerical instability"); // double check we need this??
+        
+        // volatility warning
+        if (sigma <= 0.02){
+            std::cerr << "Warning: Sigma <= 0.02 -> may cause unstable results" << std::endl;  //// need to check this
         }
-    }
 
-    Real AnalyticDoubleBarrierEngine::underlying() const {
+        
+        // Barrier type checks
+        switch (optionType){
+            case Option::Call:
+                QL_REQUIRE(barrierType == SoftBarrier::DownIn || barrierType == SoftBarrier::DownOut,
+                        "Only 'down' barriers supported for soft call options");
+
+                if (barrierType == SoftBarrier::DownIn && S < L){
+                    std::cerr << "Warning: Spot price is below the lower barrier."
+                            << "This soft barrier option is already knocked in and will be priced as vanilla."
+                            << "For optimal performance, use 'VanillaOption' directly for this case." << std::endl;  ////////// double check VanillaOption wording is correct
+                }
+                break;
+
+            case Option::Put:
+                QL_REQUIRE(barrierType == SoftBarrier::UpIn || barrierType == SoftBarrier::UpOut,
+                        "Only up barriers supported for soft put options");
+
+                if (barrierType == SoftBarrier::UpIn && S > U){
+                    std::cerr << "Warning: Spot price is above the upper barrier."
+                            << "This soft barrier option is already knocked in and will be priced as vanilla."
+                            << "For optimal performance, use 'VanillaOption' directly for this case." << std::endl;
+                }
+
+        // edge case -> standard barrier equivalent
+        if (U == L) {
+            std::cerr << "Warning: Upper barrier equals lower barrier. "
+                     << "This reduces to a standard barrier option."
+                     << "For optimal performance, use `BarrierOption` instead." << std::endl;
+        }}}
+    
+
+    /// helper functions 
+    Real AnalyticSoftBarrierEngine::underlying() const {
         return process_->x0();
     }
 
-    Real AnalyticDoubleBarrierEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+    Real AnalyticSoftBarrierEngine::strike() const {
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);  //// are we defining payoff too many times??? not sure
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 
-    Time AnalyticDoubleBarrierEngine::residualTime() const {
+    Time AnalyticSoftBarrierEngine::residualTime() const {
         return process_->time(arguments_.exercise->lastDate());
     }
 
-    Volatility AnalyticDoubleBarrierEngine::volatility() const {
+    Volatility AnalyticSoftBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
     }
 
-    Real AnalyticDoubleBarrierEngine::volatilitySquared() const {
+    Real AnalyticSoftBarrierEngine::volatilitySquared() const {
         return volatility() * volatility();
     }
 
-    Real AnalyticDoubleBarrierEngine::stdDeviation() const {
+    Real AnalyticSoftBarrierEngine::stdDeviation() const {
         return volatility() * std::sqrt(residualTime());
     }
 
-    Real AnalyticDoubleBarrierEngine::barrierLo() const {
+    Real AnalyticSoftBarrierEngine::barrierLo() const {
         return arguments_.barrier_lo;
     }
 
-    Real AnalyticDoubleBarrierEngine::barrierHi() const {
+    Real AnalyticSoftBarrierEngine::barrierHi() const {
         return arguments_.barrier_hi;
     }
 
-    Rate AnalyticDoubleBarrierEngine::riskFreeRate() const {
+    Rate AnalyticSoftBarrierEngine::riskFreeRate() const {
         return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
                                                   NoFrequency);
     }
 
-    DiscountFactor AnalyticDoubleBarrierEngine::riskFreeDiscount() const {
+    DiscountFactor AnalyticSoftBarrierEngine::riskFreeDiscount() const {
         return process_->riskFreeRate()->discount(residualTime());
     }
 
-    Rate AnalyticDoubleBarrierEngine::dividendYield() const {
+    Rate AnalyticSoftBarrierEngine::dividendYield() const {
         return process_->dividendYield()->zeroRate(residualTime(),
                                                    Continuous, NoFrequency);
     }
 
-    DiscountFactor AnalyticDoubleBarrierEngine::dividendDiscount() const {
+    DiscountFactor AnalyticSoftBarrierEngine::dividendDiscount() const {
         return process_->dividendYield()->discount(residualTime());
     }
-
-    Rate AnalyticDoubleBarrierEngine::costOfCarry() const {
-        return riskFreeRate() - dividendYield();
-    }    
             
 
-    Real AnalyticDoubleBarrierEngine::vanillaEquivalent() const {
+    Real AnalyticSoftBarrierEngine::vanillaEquivalent() const {
         ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real forwardPrice = underlying() * dividendDiscount() / riskFreeDiscount();
         BlackCalculator black(payoff, forwardPrice, stdDeviation(), riskFreeDiscount());
         Real vanilla = black.value();
-        return max(vanilla, 0);
+        return std::max(vanilla, 0.0);
 
 }
 
@@ -245,30 +274,40 @@ namespace QuantLib {
     Real AnalyticSoftBarrierEngine::standardBarrierEquivalent() const {
         ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        
-        // Create temporary barrier option
+        QL_REQUIRE(payoff, "Payoff could not be cast to StrikedTypePayoff");
+
+
+        // Convert soft barrier to standard barrier
+        Barrier::Type barrierType;
+        switch (arguments_.barrierType) {
+            case SoftBarrier::DownIn:  barrierType = Barrier::DownIn;  break;
+            case SoftBarrier::DownOut: barrierType = Barrier::DownOut; break;
+            case SoftBarrier::UpIn:    barrierType = Barrier::UpIn;    break;
+            case SoftBarrier::UpOut:   barrierType = Barrier::UpOut;   break;
+            default:
+                QL_FAIL("Unknown soft barrier type");
+        }
+
+
+        // Create a standard barrier option
         BarrierOption tempOption(
-            arguments_.barrierType,
-            barrierHi_,  // U = L case
-            0.0,        // rebate
+            barrierType,
+            barrierHi(), // Assume U = L for standard equivalent
+            0.0,          // rebate
             payoff,
             arguments_.exercise
         );
 
-        // Reuse existing process data 
+        // Market data
         Handle<Quote> spot(ext::make_shared<SimpleQuote>(underlying()));
-        tempOption.setPricingEngine(
-            ext::make_shared<AnalyticBarrierEngine>(
-                ext::make_shared<GeneralizedBlackScholesProcess>(
-                    spot,
-                    riskFreeRate(),
-                    dividendYield(),
-                    volatility()
-                )
-            )
-        );
+        Handle<YieldTermStructure> q(ext::make_shared<FlatForward>(0, TARGET(), dividendYield(), Actual365Fixed()));
+        Handle<YieldTermStructure> r(ext::make_shared<FlatForward>(0, TARGET(), riskFreeRate(), Actual365Fixed()));
+        Handle<BlackVolTermStructure> vol(ext::make_shared<BlackConstantVol>(0, TARGET(), volatility(), Actual365Fixed()));
 
-        // calculate and return value
-        return max(tempOption.NPV(),0);
+        // Attach analytic engine
+        tempOption.setPricingEngine(ext::make_shared<AnalyticBarrierEngine>(ext::make_shared<GeneralizedBlackScholesProcess>(spot, q, r, vol)));
+
+        return std::max(tempOption.NPV(), 0.0);
+    }
 }
 

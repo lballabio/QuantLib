@@ -1,0 +1,61 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2005 Joseph Wang
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/license.shtml>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
+/*! \file pdebsm.hpp
+    \brief Black-Scholes-Merton PDE
+*/
+
+#ifndef quantlib_pdebsm_hpp
+#define quantlib_pdebsm_hpp
+
+#include <ql/methods/finitedifferences/pde.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
+
+namespace QuantLib {
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Part of the old FD framework; copy this function
+                    in your codebase if needed.
+                    Deprecated in version 1.37.
+    */
+    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] PdeBSM : public PdeSecondOrderParabolic {
+      public:
+        typedef ext::shared_ptr<GeneralizedBlackScholesProcess> argument_type;
+        typedef LogGrid grid_type;
+        PdeBSM(argument_type process) : process_(std::move(process)){};
+        Real diffusion(Time t, Real x) const override { return process_->diffusion(t, x); }
+        Real drift(Time t, Real x) const override { return process_->drift(t, x); }
+        Real discount(Time t, Real) const override {
+            if (std::fabs(t) < 1e-8) t = 0;
+            return process_->riskFreeRate()->
+                forwardRate(t,t,Continuous,NoFrequency,true);
+        }
+
+    private:
+        const argument_type process_;
+    };
+
+    QL_DEPRECATED_ENABLE_WARNING
+
+}
+
+
+#endif

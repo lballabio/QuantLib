@@ -15,7 +15,7 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
-*/
+
 
 #include "utilities.hpp"
 #include <ql/instruments/softbarrieroption.hpp>
@@ -32,7 +32,7 @@ struct SoftBarrierOptionData {
     Real upperBarrier;              // U 
     Real lowerBarrier;              // L 
     Rate q;                         // Dividend yield
-    Rate r;                         // Risk-free rate 
+    Rate r;                         // Risk free rate 
     Time t;                         // Time to maturity 
     Volatility v;                   // Volatility
     Real result;                    // Expected NPV 
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(SoftBarrierOptionTests) {
         /* The data below is from "The complete guide to option pricing formulas 2nd Ed",E.G. Haug p.166 
 
           Note: In the book, b represents the cost of carry (r-q)
-        */
+        
         
         // barrierType,       optionType,   S,   X,  U,  L,    q,   r,   T,  vol, result, tol
     { SoftBarrier::KnockOut, Option::Call, 100, 100, 95, 95, 0.05, 0.1, 0.5, 0.1, 3.8075, 1e-4 },
@@ -170,3 +170,5 @@ BOOST_AUTO_TEST_CASE(SoftBarrierOptionTests) {
         }
     }
 }
+
+*/

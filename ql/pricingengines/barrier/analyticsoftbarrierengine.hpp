@@ -51,6 +51,11 @@ namespace QuantLib {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;
 
+        void validateInputs(Real S, Real X, Rate r, Rate q, Time T, Real U, Real L,
+                    Option::Type optionType, SoftBarrier::Type barrierType,
+                    Real sigma) const;
+
+
         // Helper methods to extract relevant parameters
         Real underlying() const;
         Real strike() const;
@@ -68,8 +73,9 @@ namespace QuantLib {
 
         // Pricing helpers 
         Real vanillaEquivalent() const;    // Computes the equivalent vanilla  option price (with no barriers)
-        Real standardBarrierEquivalent() // Computes equivalent standard barrier option price when user sets upper barrier equal lower barrier
-        Real knockInValue() const;
+        Real standardBarrierEquivalent() const; // Computes equivalent standard barrier option price when user sets upper barrier equal lower barrier
+        Real knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T, 
+                 Real U, Real L, Real b, Option::Type optionType, Integer eta) const;
 
     };
 
