@@ -26,12 +26,21 @@
 
 namespace QuantLib {
 
+    static inline Real fast_pow10(Integer n) {
+        // supporting precision up to double 1e-16 (15.9 digits)
+        constexpr Real pow10_map[] = {1.0E0,  1.0E1,  1.0E2,  1.0E3,  1.0E4,  1.0E5,
+                                      1.0E6,  1.0E7,  1.0E8,  1.0E9,  1.0E10, 1.0E11,
+                                      1.0E12, 1.0E13, 1.0E14, 1.0E15};
+        // not checking precision input values but not crashing
+        return pow10_map[n&0xF];
+    }
+
     Decimal Rounding::operator()(Decimal value) const {
 
         if (type_ == None)
             return value;
 
-        Real mult = std::pow(10.0,precision_);
+        Real mult = fast_pow10(precision_);
         bool neg = (value < 0.0);
         Real lvalue = std::fabs(value)*mult;
         Real integral = 0.0;
