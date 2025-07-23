@@ -487,13 +487,14 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons,
+                                   const ext::optional<BusinessDayConvention>& floatConvention)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
-      useIndexedCoupons_(useIndexedCoupons) {
+      useIndexedCoupons_(useIndexedCoupons), floatConvention_(floatConvention) {
         initialize(iborIndex, customPillarDate);
     }
 
@@ -510,12 +511,14 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const ext::optional<bool>& useIndexedCoupons)
+                                   const ext::optional<bool>& useIndexedCoupons,
+                                   const ext::optional<BusinessDayConvention>& floatConvention)
     : RelativeDateRateHelper(rate, false), startDate_(startDate), endDate_(endDate),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
-      discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons) {
+      discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons),
+      floatConvention_(floatConvention) {
         QL_REQUIRE(fixedFrequency != Once,
             "fixedFrequency == Once is not supported when passing explicit "
             "startDate and endDate");
@@ -545,7 +548,7 @@ namespace QuantLib {
         //    i.e. it can dynamically change
         // 2. input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
+        auto tmp = MakeVanillaSwap(tenor_, iborIndex_, 0.0, fwdStart_)
             .withSettlementDays(settlementDays_)  // resets effectiveDate
             .withEffectiveDate(startDate_)
             .withTerminationDate(endDate_)
@@ -559,6 +562,11 @@ namespace QuantLib {
             .withFloatingLegCalendar(calendar_)
             .withFloatingLegEndOfMonth(endOfMonth_)
             .withIndexedCoupons(useIndexedCoupons_);
+        if (floatConvention_) {
+            tmp.withFloatingLegConvention(*floatConvention_)
+               .withFloatingLegTerminationDateConvention(*floatConvention_);
+        }
+        swap_ = tmp;
 
         simplifyNotificationGraph(*swap_, true);
 
