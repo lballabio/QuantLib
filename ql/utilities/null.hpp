@@ -36,7 +36,7 @@ namespace QuantLib {
 
     //! template function providing a null value for a given type.
     template <typename T>
-    T Null() {
+    constexpr T Null() {
         if constexpr (std::is_floating_point_v<T>) {
             // a specific, unlikely value that should fit into any Real
             return (std::numeric_limits<float>::max)();
@@ -58,8 +58,8 @@ namespace QuantLib {
     template <typename T>
     class Null {
       public:
-        Null() = default;
-        operator T() const {
+        constexpr Null() = default;
+        constexpr operator T() const {
             if constexpr (std::is_floating_point_v<T>) {
                 // a specific, unlikely value that should fit into any Real
                 return (std::numeric_limits<float>::max)();
