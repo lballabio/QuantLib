@@ -23,16 +23,12 @@
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <utility>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/handle.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <iostream>
-// #include <ql/utilities/null_deleter.hpp>
-// are all of the above needed?????
-
 
 
 namespace QuantLib {
@@ -60,7 +56,7 @@ namespace QuantLib {
 
         // Option parameters
         Time T = residualTime();
-        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff); // explain this?????
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff); 
         Option::Type optionType = payoff->optionType();
         Integer eta = (optionType == Option::Call ? 1 : -1);
         Rate b = r - q; // cost of carry
@@ -69,13 +65,7 @@ namespace QuantLib {
         // validate inputs 
         validateInputs(S, X, r, q, T, U, L, optionType, barrierType, sigma);
 
-        // Edge Case 1: Equal barriers, priced as a standard barrier option
-        if (U == L) {
-                results_.value = standardBarrierEquivalent();
-                return;
-            }
-
-        // Edge Case 2: already knocked in/out -> price as a standard vanilla option
+        // Edge Case: already knocked in/out 
         bool isKnockedIn = (barrierType == SoftBarrier::DownIn && S <= L) || 
                           (barrierType == SoftBarrier::UpIn && S >= U);
         bool isKnockedOut = (barrierType == SoftBarrier::DownOut && S <= L) || 
@@ -86,8 +76,7 @@ namespace QuantLib {
               return;
             }
 
-        // Edge case 3: fully knocked out options are worthless
-        else if (isKnockedOut) {
+        else if (isKnockedOut) {   
             results_.value = 0.0;  
             return;
             }
@@ -167,11 +156,11 @@ namespace QuantLib {
         // Bounds checks
         QL_REQUIRE(r <= 1.0 && r >= -0.05, "Interest rate must be between -5% and 100%");
         QL_REQUIRE(q <= 1.0 && q >= -0.1, "Dividend yield must be between -10% and 100%");
-        QL_REQUIRE(std::fabs(r - q) >= 1e-4, "r and q too close leads to numerical instability"); // double check we need this??
+        QL_REQUIRE(std::fabs(r - q) >= 1e-4, "r and q too close leads to numerical instability"); 
         
         // volatility warning
         if (sigma <= 0.02){
-            std::cerr << "Warning: Sigma <= 0.02 -> may cause unstable results" << std::endl;  //// need to check this
+            std::cerr << "Warning: Sigma <= 0.02 -> may cause unstable results" << std::endl;  
         }
 
         
@@ -184,7 +173,7 @@ namespace QuantLib {
                 if (barrierType == SoftBarrier::DownIn && S < L){
                     std::cerr << "Warning: Spot price is below the lower barrier."
                             << "This soft barrier option is already knocked in and will be priced as vanilla."
-                            << "For optimal performance, use 'VanillaOption' directly for this case." << std::endl;  ////////// double check VanillaOption wording is correct
+                            << "For optimal performance, use 'VanillaOption' directly for this case." << std::endl; 
                 }
                 break;
 
@@ -197,13 +186,7 @@ namespace QuantLib {
                             << "This soft barrier option is already knocked in and will be priced as vanilla."
                             << "For optimal performance, use 'VanillaOption' directly for this case." << std::endl;
                 }
-
-        // edge case -> standard barrier equivalent
-        if (U == L) {
-            std::cerr << "Warning: Upper barrier equals lower barrier. "
-                     << "This reduces to a standard barrier option."
-                     << "For optimal performance, use `BarrierOption` instead." << std::endl;
-        }}}
+        }}
     
 
     /// helper functions 
@@ -212,7 +195,7 @@ namespace QuantLib {
     }
 
     Real AnalyticSoftBarrierEngine::strike() const {
-        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);  //// are we defining payoff too many times??? not sure
+        ext::shared_ptr<PlainVanillaPayoff> payoff = ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);  
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
@@ -223,10 +206,6 @@ namespace QuantLib {
 
     Volatility AnalyticSoftBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
-    }
-
-    Real AnalyticSoftBarrierEngine::volatilitySquared() const {
-        return volatility() * volatility();
     }
 
     Real AnalyticSoftBarrierEngine::stdDeviation() const {
@@ -242,8 +221,7 @@ namespace QuantLib {
     }
 
     Rate AnalyticSoftBarrierEngine::riskFreeRate() const {
-        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
-                                                  NoFrequency);
+        return process_->riskFreeRate()->zeroRate(residualTime(), Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticSoftBarrierEngine::riskFreeDiscount() const {
@@ -251,8 +229,7 @@ namespace QuantLib {
     }
 
     Rate AnalyticSoftBarrierEngine::dividendYield() const {
-        return process_->dividendYield()->zeroRate(residualTime(),
-                                                   Continuous, NoFrequency);
+        return process_->dividendYield()->zeroRate(residualTime(),Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticSoftBarrierEngine::dividendDiscount() const {
@@ -268,46 +245,6 @@ namespace QuantLib {
         Real vanilla = black.value();
         return std::max(vanilla, 0.0);
 
-}
-
-            
-    Real AnalyticSoftBarrierEngine::standardBarrierEquivalent() const {
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "Payoff could not be cast to StrikedTypePayoff");
-
-
-        // Convert soft barrier to standard barrier
-        Barrier::Type barrierType;
-        switch (arguments_.barrierType) {
-            case SoftBarrier::DownIn:  barrierType = Barrier::DownIn;  break;
-            case SoftBarrier::DownOut: barrierType = Barrier::DownOut; break;
-            case SoftBarrier::UpIn:    barrierType = Barrier::UpIn;    break;
-            case SoftBarrier::UpOut:   barrierType = Barrier::UpOut;   break;
-            default:
-                QL_FAIL("Unknown soft barrier type");
-        }
-
-
-        // Create a standard barrier option
-        BarrierOption tempOption(
-            barrierType,
-            barrierHi(), // Assume U = L for standard equivalent
-            0.0,          // rebate
-            payoff,
-            arguments_.exercise
-        );
-
-        // Market data
-        Handle<Quote> spot(ext::make_shared<SimpleQuote>(underlying()));
-        Handle<YieldTermStructure> q(ext::make_shared<FlatForward>(0, TARGET(), dividendYield(), Actual365Fixed()));
-        Handle<YieldTermStructure> r(ext::make_shared<FlatForward>(0, TARGET(), riskFreeRate(), Actual365Fixed()));
-        Handle<BlackVolTermStructure> vol(ext::make_shared<BlackConstantVol>(0, TARGET(), volatility(), Actual365Fixed()));
-
-        // Attach analytic engine
-        tempOption.setPricingEngine(ext::make_shared<AnalyticBarrierEngine>(ext::make_shared<GeneralizedBlackScholesProcess>(spot, q, r, vol)));
-
-        return std::max(tempOption.NPV(), 0.0);
-    }
+}       
 }
 

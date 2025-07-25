@@ -40,7 +40,7 @@ namespace QuantLib {
         };
     };
 
-    //! Output stream operator for SoftBarrier::Type
+    // Overloading stream operator for SoftBarrier::Type
     std::ostream& operator<<(std::ostream& out,
                              SoftBarrier::Type type);
 

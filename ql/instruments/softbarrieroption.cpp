@@ -21,7 +21,6 @@
 #include <ql/instruments/softbarrieroption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/barrier/analyticsoftbarrierengine.hpp>
-#include <memory> //////// is this needed?
 
 namespace QuantLib {
 
@@ -45,7 +44,7 @@ namespace QuantLib {
         moreArgs->barrier_hi = barrier_hi_;
     }
 
-    Volatility SoftBarrierOption::impliedVolatility(
+    Volatility SoftBarrierOption::impliedVolatility(      
              Real targetValue,
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy,
@@ -62,7 +61,7 @@ namespace QuantLib {
 
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
-          case Exercise::European:
+            case Exercise::European:
               engine = std::make_unique<AnalyticSoftBarrierEngine>(newProcess);
               break;
           case Exercise::American:

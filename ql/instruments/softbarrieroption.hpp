@@ -17,6 +17,10 @@
  FOR A PARTICULAR PURPOSE. See the license for more details.
 */
 
+/*! \file softbarrieroption.hpp
+    \brief Soft Barrier european option on a single asset
+*/
+
 #ifndef quantlib_soft_barrier_option_hpp
 #define quantlib_soft_barrier_option_hpp
 
@@ -29,7 +33,8 @@ namespace QuantLib {
     class GeneralizedBlackScholesProcess;
 
     //! Soft barrier option on a single asset
-    /*! A soft barrier option gets knocked in/out proportionally over the barrier range instead of being triggered at a hard barrier.
+    /*! A soft barrier option gets knocked in/out proportionally over the barrier range instead of being knocked in/out in full at a hard barrier.
+        It is currently only available with European payoff style
 
         \ingroup instruments
     */
@@ -51,7 +56,7 @@ namespace QuantLib {
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy = 1.0e-4,
              Size maxEvaluations = 100,
-             Volatility minVol = 1.0e-7,
+             Volatility minVol = 0.05, // very low vol values can make the soft barrier formula produce NaN results
              Volatility maxVol = 4.0) const;
 
       protected:
@@ -60,7 +65,7 @@ namespace QuantLib {
         Real barrier_hi_;
     };
 
-    //! Arguments for soft barrier option calc
+    // Arguments for soft barrier option calc
     class SoftBarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments();
@@ -70,7 +75,7 @@ namespace QuantLib {
         void validate() const override;
     };
 
-    //! Base class for soft barrier option engines
+    // Base class for soft barrier option engines
     class SoftBarrierOption::engine
         : public GenericEngine<SoftBarrierOption::arguments,
                                SoftBarrierOption::results> {};

@@ -19,11 +19,6 @@
 
 /*! \file analyticsoftbarrierengine.hpp
     \brief Analytic soft barrier european option pricing engine
-
-    \ingroup barrierengines
-
-    \test correctness is verified by comparing to known benchmark values         ######## do i have stability checks????
-          and stability checks.
 */
 
 #ifndef quantlib_analytic_soft_barrier_engine_hpp
@@ -56,7 +51,7 @@ namespace QuantLib {
                     Real sigma) const;
 
 
-        // Helper methods to extract relevant parameters
+        // Helper methods to extract parameters
         Real underlying() const;
         Real strike() const;
         Time residualTime() const;
@@ -73,9 +68,7 @@ namespace QuantLib {
 
         // Pricing helpers 
         Real vanillaEquivalent() const;    // Computes the equivalent vanilla  option price (with no barriers)
-        Real standardBarrierEquivalent() const; // Computes equivalent standard barrier option price when user sets upper barrier equal lower barrier
-        Real knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T, 
-                 Real U, Real L, Real b, Option::Type optionType, Integer eta) const;
+        Real knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T, Real U, Real L, Real b, Option::Type optionType, Integer eta) const;
 
     };
 
