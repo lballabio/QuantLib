@@ -171,7 +171,6 @@ namespace QuantLib {
         Real accuracy_;
 
         friend class Bootstrap<this_curve>;
-        friend class BootstrapError<this_curve>;
         Bootstrap<this_curve> bootstrap_;
     };
 

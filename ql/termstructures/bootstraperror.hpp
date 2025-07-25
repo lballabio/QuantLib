@@ -32,9 +32,11 @@
 
 namespace QuantLib {
 
-    //! bootstrap error
+    /*! \deprecated Use a lambda instead (see e.g. the IterativeBootstrap class).
+                    Deprecated in version 1.40.
+    */
     template <class Curve>
-    class BootstrapError {
+    class [[deprecated("Use a lambda instead (see e.g. the IterativeBootstrap class)")]] BootstrapError {
         typedef typename Curve::traits_type Traits;
       public:
         BootstrapError(const Curve* curve,
@@ -53,13 +55,15 @@ namespace QuantLib {
 
     // template definitions
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     template <class Curve>
     BootstrapError<Curve>::BootstrapError(const Curve* curve,
                                           ext::shared_ptr<typename Traits::helper> helper,
                                           Size segment)
     : curve_(curve), helper_(std::move(helper)), segment_(segment) {}
 
-#ifndef __DOXYGEN__
+    #ifndef __DOXYGEN__
     template <class Curve>
     Real BootstrapError<Curve>::operator()(Real guess) const {
         Traits::updateGuess(curve_->data_, guess, segment_);
@@ -67,6 +71,8 @@ namespace QuantLib {
         return helper_->quoteError();
     }
     #endif
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
