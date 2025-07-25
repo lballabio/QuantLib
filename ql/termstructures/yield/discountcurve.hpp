@@ -30,7 +30,6 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
-#include <ql/math/comparison.hpp>
 #include <utility>
 
 namespace QuantLib {

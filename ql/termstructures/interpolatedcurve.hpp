@@ -24,6 +24,7 @@
 #ifndef quantlib_interpolated_curve_hpp
 #define quantlib_interpolated_curve_hpp
 
+#include <ql/math/comparison.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounter.hpp>

@@ -30,7 +30,6 @@
 #include <ql/termstructures/interpolatedcurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/math/comparison.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <utility>
 
