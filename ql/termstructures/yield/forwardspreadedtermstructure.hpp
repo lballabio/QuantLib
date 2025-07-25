@@ -75,6 +75,8 @@ namespace QuantLib {
     inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
                                                                       Handle<Quote> spread)
     : originalCurve_(std::move(h)), spread_(std::move(spread)) {
+        if (!originalCurve_.empty())
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
         registerWith(spread_);
     }
@@ -106,6 +108,7 @@ namespace QuantLib {
     inline void ForwardSpreadedTermStructure::update() {
         if (!originalCurve_.empty()) {
             YieldTermStructure::update();
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
         } else {
             /* The implementation inherited from YieldTermStructure
                asks for our reference date, which we don't have since
