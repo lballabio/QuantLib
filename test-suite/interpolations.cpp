@@ -1410,7 +1410,7 @@ struct SabrTestCase {
 
 BOOST_AUTO_TEST_CASE(testSabrGuess){
 
-    BOOST_TEST_MESSAGE("Testing Sabr interpolation...");
+    BOOST_TEST_MESSAGE("Testing Sabr guess...");
 
     #if BOOST_VERSION >= 107800
 

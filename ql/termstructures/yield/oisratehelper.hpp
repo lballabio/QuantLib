@@ -166,28 +166,6 @@ namespace QuantLib {
                            Natural lockoutDays = 0,
                            bool applyObservationShift = false,
                            const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
-
-        /*! \deprecated Use the overload without forward start.
-                        Deprecated in version 1.35.
-        */
-        [[deprecated("Use the overload without forward start")]]
-        DatedOISRateHelper(const Date& startDate,
-                           const Date& endDate,
-                           const Handle<Quote>& fixedRate,
-                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                           // exogenous discounting curve
-                           Handle<YieldTermStructure> discountingCurve,
-                           bool telescopicValueDates,
-                           RateAveraging::Type averagingMethod,
-                           Integer paymentLag,
-                           BusinessDayConvention paymentConvention,
-                           Frequency paymentFrequency,
-                           const Calendar& paymentCalendar,
-                           const Period& forwardStart,
-                           Spread overnightSpread = {},
-                           ext::optional<bool> endOfMonth = ext::nullopt,
-                           ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                           const Calendar& fixedCalendar = Calendar());
     };
 
 }

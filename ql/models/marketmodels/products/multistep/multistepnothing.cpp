@@ -31,9 +31,8 @@ namespace QuantLib {
         const CurveState&,
         std::vector<Size>& numberCashFlowsThisStep,
         std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&) {
-        std::fill(numberCashFlowsThisStep.begin(),
-                  numberCashFlowsThisStep.end(),
-                  0);
+        for (auto & i : numberCashFlowsThisStep)
+            i = 0;
         ++currentIndex_;
         return (currentIndex_ >= doneIndex_);
     }

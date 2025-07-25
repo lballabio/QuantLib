@@ -26,15 +26,16 @@
 #define quantlib_version_hpp
 
 #include <ql/qldefines.hpp>
+#include <cstddef>
 
 /*! \addtogroup macros */
 /*! @{ */
 
 //! version string
-#define QL_VERSION "1.39-dev"
+#define QL_VERSION "1.40-dev"
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x01390000
+#define QL_HEX_VERSION 0x01400000
 
 /*! @}  */
 
