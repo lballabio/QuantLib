@@ -186,9 +186,6 @@ set(QL_TEST_HEADERS
 
 if (QL_BUILD_TEST_SUITE)
     add_library(ql_test OBJECT ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
-    target_include_directories(ql_test PRIVATE)
-
-    
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_test PUBLIC BOOST_ALL_DYN_LINK)
     endif()
