@@ -100,7 +100,6 @@ jobs:
         cmake --install .
         dir ql\*.lib
     - name: Test
-      if: ${{ !always() }}
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-win-dynamic-runtime:
@@ -143,7 +142,6 @@ jobs:
         cmake --install .
         dir ql\*.lib
     - name: Test
-      if: ${{ !always() }}
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-win-with-options:
@@ -184,7 +182,6 @@ jobs:
         cmake --build . --verbose
         cmake --build . --target install
     - name: Test
-      if: ${{ !always() }}
       run: |
         & "C:\Program Files (x86)\QuantLib\bin\quantlib-test-suite" --log_level=message
   cmake-macos:

@@ -45,11 +45,11 @@ jobs:
       run: |
         msbuild ./QuantLib.sln /verbosity:normal /property:Configuration="${{ matrix.configuration }}" /property:Platform=${{ matrix.platform }} /property:PlatformToolset=${{ matrix.toolset }}
     - name: Test
-      if: ${{ (matrix.toolset == 'v142' || matrix.platform == 'Win32') && contains(matrix.configuration, 'Release') }}
+      if: ${{ contains(matrix.configuration, 'Release') }}
       run: |
         .\test-suite\bin\QuantLib-test-suite*.exe --log_level=message
     - name: Run examples
-      if: ${{ (matrix.toolset == 'v142' || matrix.platform == 'Win32') && contains(matrix.configuration, 'Release') }}
+      if: ${{ contains(matrix.configuration, 'Release') }}
       run: |
         foreach ($file in Get-ChildItem -Path .\Examples\*.exe -Recurse)
         {

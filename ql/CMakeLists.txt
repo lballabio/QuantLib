@@ -1336,9 +1336,7 @@ set(QL_HEADERS
     instruments/cpicapfloor.hpp
     instruments/cpiswap.hpp
     instruments/creditdefaultswap.hpp
-    instruments/dividendbarrieroption.hpp
     instruments/dividendschedule.hpp
-    instruments/dividendvanillaoption.hpp
     instruments/doublebarrieroption.hpp
     instruments/doublebarriertype.hpp
     instruments/equitytotalreturnswap.hpp

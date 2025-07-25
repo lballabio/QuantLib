@@ -40,11 +40,9 @@ jobs:
       run: |
         msbuild ./QuantLib.sln /verbosity:normal /property:Configuration=Release /property:Platform=x64 /property:PlatformToolset=${{ matrix.toolset }}
     - name: Test
-      if: ${{ matrix.toolset == 'v142' }}
       run: |
         .\test-suite\bin\QuantLib-test-suite*.exe --log_level=message
     - name: Run examples
-      if: ${{ matrix.toolset == 'v142' }}
       run: |
         foreach ($file in Get-ChildItem -Path .\Examples\*.exe -Recurse)
         {
