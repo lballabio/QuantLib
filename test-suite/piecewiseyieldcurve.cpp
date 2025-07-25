@@ -41,6 +41,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/globalbootstrapvars.hpp>
+#include <ql/termstructures/localbootstrap.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
