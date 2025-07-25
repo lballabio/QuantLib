@@ -35,35 +35,6 @@
 
 namespace QuantLib {
 
-    // penalty function class for solving using a multi-dimensional solver
-    template <class Curve>
-    class PenaltyFunction : public CostFunction {
-        typedef typename Curve::traits_type Traits;
-        typedef typename Traits::helper helper;
-        typedef
-          typename std::vector< ext::shared_ptr<helper> >::const_iterator
-                                                              helper_iterator;
-      public:
-        PenaltyFunction(Curve* curve,
-                        Size initialIndex,
-                        helper_iterator rateHelpersStart,
-                        helper_iterator rateHelpersEnd)
-        : curve_(curve), initialIndex_(initialIndex),
-          localisation_(std::distance(rateHelpersStart, rateHelpersEnd)),
-          rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {}
-
-        Real value(const Array& x) const override;
-        Array values(const Array& x) const override;
-
-      private:
-        Curve* curve_;
-        Size initialIndex_;
-        Size localisation_;
-        helper_iterator rateHelpersStart_;
-        helper_iterator rateHelpersEnd_;
-    };
-
-
     //! Localised-term-structure bootstrapper for most curve types.
     /*! This algorithm enables a localised fitting for non-local
         interpolation methods.
@@ -229,11 +200,19 @@ namespace QuantLib {
                 startArray[localisation_-dataAdjust] = ts_->data_[0];
             }
 
-            PenaltyFunction<Curve> currentCost(
-                        ts_,
-                        initialDataPt,
-                        ts_->instruments_.begin() + ((iInst+1) - localisation_),
-                        ts_->instruments_.begin() + (iInst+1));
+            SimpleCostFunction currentCost([&](const Array& x) {
+                for (Size i = 0; i < x.size(); ++i) {
+                    Traits::updateGuess(ts_->data_, x[i], initialDataPt + i);
+                }
+                ts_->interpolation_.update();
+
+                Array penalties(localisation_);
+                auto helpersEnd = ts_->instruments_.begin() + (iInst + 1);
+                std::transform(helpersEnd - localisation_, helpersEnd,
+                               penalties.begin(),
+                               [](const auto& helper) { return helper->quoteError(); });
+                return penalties;
+            });
 
             Problem toSolve(currentCost, solverConstraint, startArray);
 
@@ -245,53 +224,6 @@ namespace QuantLib {
             ++iInst;
         } while ( iInst < nInsts );
         validCurve_ = true;
-    }
-
-
-    template <class Curve>
-    Real PenaltyFunction<Curve>::value(const Array& x) const {
-        Size i = initialIndex_;
-        Array::const_iterator guessIt = x.begin();
-        while (guessIt != x.end()) {
-            Traits::updateGuess(curve_->data_, *guessIt, i);
-            ++guessIt;
-            ++i;
-        }
-
-        curve_->interpolation_.update();
-
-        Real penalty = 0.0;
-        helper_iterator instIt = rateHelpersStart_;
-        while (instIt != rateHelpersEnd_) {
-            Real quoteError = (*instIt)->quoteError();
-            penalty += std::fabs(quoteError);
-            ++instIt;
-        }
-        return penalty;
-    }
-
-    template <class Curve>
-    Array PenaltyFunction<Curve>::values(const Array& x) const {
-        Array::const_iterator guessIt = x.begin();
-        Size i = initialIndex_;
-        while (guessIt != x.end()) {
-            Traits::updateGuess(curve_->data_, *guessIt, i);
-            ++guessIt;
-            ++i;
-        }
-
-        curve_->interpolation_.update();
-
-        Array penalties(localisation_);
-        helper_iterator instIt = rateHelpersStart_;
-        Array::iterator penIt = penalties.begin();
-        while (instIt != rateHelpersEnd_) {
-            Real quoteError = (*instIt)->quoteError();
-            *penIt = std::fabs(quoteError);
-            ++instIt;
-            ++penIt;
-        }
-        return penalties;
     }
 
 }
