@@ -115,21 +115,21 @@ namespace QuantLib {
 //===========================================================================//
 
     void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-
         IborCouponPricer::initialize(coupon);
+    }
 
-        const Handle<YieldTermStructure>& rateCurve = index_->forwardingTermStructure();
-
-        if (rateCurve.empty()) {
-            discount_ = Null<Real>(); // might not be needed, will be checked later
-        } else {
+    Real BlackIborCouponPricer::discount() const {
+        if (discount_ == Null<Real>()) {
+            const Handle<YieldTermStructure>& rateCurve = index_->forwardingTermStructure();
+            QL_REQUIRE(!rateCurve.empty(), "no forecast curve provided");
             Date paymentDate = coupon_->date();
-            if (paymentDate > rateCurve->referenceDate())
-                discount_ = rateCurve->discount(paymentDate);
-            else
-                discount_ = 1.0;
+            QL_REQUIRE(
+                rateCurve->allowsExtrapolation() || paymentDate <= rateCurve->maxDate(),
+                "forecast curve allowExtrapolation is false and paymentDate is beyond maxDate"
+            );
+            discount_ = paymentDate > rateCurve->referenceDate() ? rateCurve->discount(paymentDate) : 1.0;
         }
-
+        return discount_;
     }
 
     Real BlackIborCouponPricer::optionletRate(Option::Type optionType, Real effStrike) const {
@@ -166,8 +166,7 @@ namespace QuantLib {
 
     Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
                                                Real effStrike) const {
-        QL_REQUIRE(discount_ != Null<Rate>(), "no forecast curve provided");
-        return optionletRate(optionType, effStrike) * accrualPeriod_ * discount_;
+        return optionletRate(optionType, effStrike) * accrualPeriod_ * discount();
     }
 
     Rate BlackIborCouponPricer::adjustedFixing(Rate fixing) const {
