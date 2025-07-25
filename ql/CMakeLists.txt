@@ -307,6 +307,8 @@ set(QL_SOURCES
     instruments/quantovanillaoption.cpp
     instruments/simplechooseroption.cpp
     instruments/simplifynotificationgraph.cpp
+    instruments/softbarrieroption.cpp
+    instruments/softbarriertype.cpp
     instruments/stickyratchet.cpp
     instruments/stock.cpp
     instruments/swap.cpp
@@ -665,6 +667,7 @@ set(QL_SOURCES
     pricingengines/barrier/analyticdoublebarrierbinaryengine.cpp
     pricingengines/barrier/analyticdoublebarrierengine.cpp
     pricingengines/barrier/analyticpartialtimebarrieroptionengine.cpp
+    pricingengines/barrier/analyticsoftbarrierengine.cpp
     pricingengines/barrier/analytictwoassetbarrierengine.cpp
     pricingengines/barrier/discretizedbarrieroption.cpp
     pricingengines/barrier/fdblackscholesbarrierengine.cpp
@@ -1374,6 +1377,8 @@ set(QL_HEADERS
     instruments/quantovanillaoption.hpp
     instruments/simplechooseroption.hpp
     instruments/simplifynotificationgraph.hpp
+    instruments/softbarrieroption.hpp
+    instruments/softbarriertype.hpp
     instruments/stickyratchet.hpp
     instruments/stock.hpp
     instruments/swap.hpp
@@ -1883,6 +1888,7 @@ set(QL_HEADERS
     pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp
     pricingengines/barrier/analyticdoublebarrierengine.hpp
     pricingengines/barrier/analyticpartialtimebarrieroptionengine.hpp
+    pricingengines/barrier/analyticsoftbarrierengine.hpp
     pricingengines/barrier/analytictwoassetbarrierengine.hpp
     pricingengines/barrier/binomialbarrierengine.hpp
     pricingengines/barrier/discretizedbarrieroption.hpp

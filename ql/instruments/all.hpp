@@ -57,6 +57,8 @@
 #include <ql/instruments/quantovanillaoption.hpp>
 #include <ql/instruments/simplechooseroption.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
+#include <ql/instruments/softbarrieroption.hpp>
+#include <ql/instruments/softbarriertype.hpp>
 #include <ql/instruments/stickyratchet.hpp>
 #include <ql/instruments/stock.hpp>
 #include <ql/instruments/swap.hpp>
@@ -72,5 +74,4 @@
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/instruments/zerocouponswap.hpp>
-
 #include <ql/instruments/bonds/all.hpp>
