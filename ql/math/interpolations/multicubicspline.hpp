@@ -466,6 +466,13 @@ namespace QuantLib {
     template <Size i> class MultiCubicSpline {
         typedef typename detail::Int2Type<i>::c_spline c_spline;
         typedef typename detail::Int2Type<i>::c_splint c_splint;
+        
+      private:
+        static const std::vector<bool>& getDefaultAe() {
+            static const std::vector<bool> default_ae(20, false);
+            return default_ae;
+        }
+        
       public:
         typedef typename c_splint::argument_type argument_type;
         typedef typename c_splint::result_type result_type;
@@ -474,14 +481,15 @@ namespace QuantLib {
         typedef typename c_splint::output_data output_data;
         typedef typename c_splint::dimensions dimensions;
         typedef typename c_splint::data data;
+        
         MultiCubicSpline(const SplineGrid& grid, const data_table &y,
-                         const std::vector<bool>& ae =
-                                             std::vector<bool>(20, false))
+                         const std::vector<bool>& ae = getDefaultAe())
         : grid_(grid), y_(y), ae_(ae), v_(grid), v1_(grid),
           v2_(grid), y2_(grid) {
             set_shared_increments();
             c_spline(d_, d2_, y_, y2_, v_);
         }
+        
         result_type operator()(const argument_type& x) const {
             set_shared_coefficients(x);
             c_splint(a_, b_, a2_, b2_, i_, d_, d2_, y_, y2_,
@@ -490,10 +498,11 @@ namespace QuantLib {
         }
         void set_shared_increments() const;
         void set_shared_coefficients(const argument_type &x) const;
+        
       private:
         const SplineGrid &grid_;
         const data_table &y_;
-        const std::vector<bool> ae_;
+        const std::vector<bool> &ae_;
         mutable return_type a_, b_, a2_, b2_;
         mutable output_data v_, v1_, v2_;
         mutable result_type res_;
@@ -565,4 +574,3 @@ namespace QuantLib {
 
 
 #endif
-
