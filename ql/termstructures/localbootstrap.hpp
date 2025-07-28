@@ -35,7 +35,9 @@
 
 namespace QuantLib {
 
-    // penalty function class for solving using a multi-dimensional solver
+    /*! \deprecated Use SimpleCostFunction instead.
+                    Deprecated in version 1.40.
+    */
     template <class Curve>
     class [[deprecated("Use SimpleCostFunction instead")]] PenaltyFunction : public CostFunction {
         typedef typename Curve::traits_type Traits;
