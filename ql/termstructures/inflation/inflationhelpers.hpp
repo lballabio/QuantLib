@@ -62,7 +62,11 @@ namespace QuantLib {
 
         void setTermStructure(ZeroInflationTermStructure*) override;
         Real impliedQuote() const override;
-
+        //! \name inspectors
+        //@{
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<ZeroCouponInflationSwap> swap() const { return zciis_; }
+        //@}
       protected:
         Period swapObsLag_;
         Date maturity_;
@@ -104,7 +108,11 @@ namespace QuantLib {
 
         void setTermStructure(YoYInflationTermStructure*) override;
         Real impliedQuote() const override;
-
+        //! \name inspectors
+        //@{
+        // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
+        ext::shared_ptr<YearOnYearInflationSwap> swap() const { return yyiis_; }
+        //@}
       protected:
         Period swapObsLag_;
         Date maturity_;
