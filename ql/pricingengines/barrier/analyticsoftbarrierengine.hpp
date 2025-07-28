@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2025 William Day
 
- This file is part of QuantLib, a free-software/open-source library
+ This file is part of QuantLib, a free-software/open-source librarys
  for financial quantitative analysts and developers - http://quantlib.org/
 
  QuantLib is free software: you can redistribute it and/or modify it
@@ -47,7 +47,7 @@ namespace QuantLib {
         CumulativeNormalDistribution f_;
 
         void validateInputs(Real S, Real X, Rate r, Rate q, Time T, Real U, Real L,
-                    Option::Type optionType, SoftBarrier::Type barrierType,
+                    Option::Type optionType, Barrier::Type barrierType,
                     Real sigma) const;
 
 
@@ -68,6 +68,7 @@ namespace QuantLib {
 
         // Pricing helpers 
         Real vanillaEquivalent() const;    // Computes the equivalent vanilla  option price (with no barriers)
+        Real standardBarrierEquivalent() const; // for knock out calculations
         Real knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T, Real U, Real L, Real b, Option::Type optionType, Integer eta) const;
 
     };

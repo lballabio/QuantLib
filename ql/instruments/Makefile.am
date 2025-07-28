@@ -64,7 +64,6 @@ this_include_HEADERS = \
     simplechooseroption.hpp \
     simplifynotificationgraph.hpp \
     softbarrieroption.hpp \
-    softbarriertype.hpp \
     stickyratchet.hpp \
     stock.hpp \
     swap.hpp \
@@ -137,7 +136,6 @@ cpp_files = \
     simplechooseroption.cpp \
     simplifynotificationgraph.cpp \
     softbarrieroption.cpp \
-    softbarriertype.cpp \
     stickyratchet.cpp \
     stock.cpp \
     swap.cpp \

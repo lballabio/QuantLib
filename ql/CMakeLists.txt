@@ -308,7 +308,6 @@ set(QL_SOURCES
     instruments/simplechooseroption.cpp
     instruments/simplifynotificationgraph.cpp
     instruments/softbarrieroption.cpp
-    instruments/softbarriertype.cpp
     instruments/stickyratchet.cpp
     instruments/stock.cpp
     instruments/swap.cpp
@@ -1378,7 +1377,6 @@ set(QL_HEADERS
     instruments/simplechooseroption.hpp
     instruments/simplifynotificationgraph.hpp
     instruments/softbarrieroption.hpp
-    instruments/softbarriertype.hpp
     instruments/stickyratchet.hpp
     instruments/stock.hpp
     instruments/swap.hpp

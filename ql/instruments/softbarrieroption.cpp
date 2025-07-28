@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     SoftBarrierOption::SoftBarrierOption(
-        SoftBarrier::Type barrierType,
+        Barrier::Type barrierType,
         Real barrier_lo,
         Real barrier_hi,
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
@@ -81,23 +81,7 @@ namespace QuantLib {
     }
 
     SoftBarrierOption::arguments::arguments()
-    : barrierType(SoftBarrier::Type(-1)),
+    : barrierType(Barrier::Type(-1)),
       barrier_lo(Null<Real>()), barrier_hi(Null<Real>()) {}
-
-    void SoftBarrierOption::arguments::validate() const {
-        OneAssetOption::arguments::validate();
-
-        QL_REQUIRE(
-          barrierType == SoftBarrier::DownIn ||
-          barrierType == SoftBarrier::DownOut ||
-          barrierType == SoftBarrier::UpIn ||
-          barrierType == SoftBarrier::UpOut,
-          "Invalid soft barrier type"
-        );
-
-        QL_REQUIRE(barrier_lo != Null<Real>(), "no low barrier given");
-        QL_REQUIRE(barrier_hi != Null<Real>(), "no high barrier given");
-        QL_REQUIRE(barrier_lo <= barrier_hi, "low barrier must be <= high barrier");
-    }
 
 }

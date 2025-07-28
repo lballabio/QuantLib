@@ -26,7 +26,7 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/instruments/softbarriertype.hpp>
+#include <ql/instruments/barriertype.hpp>
 
 namespace QuantLib {
 
@@ -34,7 +34,7 @@ namespace QuantLib {
 
     //! Soft barrier option on a single asset
     /*! A soft barrier option gets knocked in/out proportionally over the barrier range instead of being knocked in/out in full at a hard barrier.
-        It is currently only available with European payoff style
+        It is currently only available with European payoff stylet
 
         \ingroup instruments
     */
@@ -43,7 +43,7 @@ namespace QuantLib {
         class arguments;
         class engine;
 
-        SoftBarrierOption(SoftBarrier::Type barrierType,
+        SoftBarrierOption(Barrier::Type barrierType,
                           Real barrier_lo,
                           Real barrier_hi,
                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
@@ -56,11 +56,11 @@ namespace QuantLib {
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy = 1.0e-4,
              Size maxEvaluations = 100,
-             Volatility minVol = 0.05, // very low vol values can make the soft barrier formula produce NaN results
+             Volatility minVol = 1e-6, // 0 vol values can make the soft barrier formula produce NaN results
              Volatility maxVol = 4.0) const;
 
-      protected:
-        SoftBarrier::Type barrierType_;
+      private:
+        Barrier::Type barrierType_;
         Real barrier_lo_;
         Real barrier_hi_;
     };
@@ -69,10 +69,9 @@ namespace QuantLib {
     class SoftBarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments();
-        SoftBarrier::Type barrierType;
+        Barrier::Type barrierType;
         Real barrier_lo;
         Real barrier_hi;
-        void validate() const override;
     };
 
     // Base class for soft barrier option engines

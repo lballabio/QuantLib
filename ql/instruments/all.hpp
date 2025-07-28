@@ -58,7 +58,6 @@
 #include <ql/instruments/simplechooseroption.hpp>
 #include <ql/instruments/simplifynotificationgraph.hpp>
 #include <ql/instruments/softbarrieroption.hpp>
-#include <ql/instruments/softbarriertype.hpp>
 #include <ql/instruments/stickyratchet.hpp>
 #include <ql/instruments/stock.hpp>
 #include <ql/instruments/swap.hpp>
