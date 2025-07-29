@@ -116,7 +116,6 @@ namespace detail {
         FiniteDifferenceNewtonSafe solver_;
         mutable bool initialized_ = false, validCurve_ = false, loopRequired_;
         mutable Size firstAliveHelper_ = 0, alive_ = 0;
-        mutable std::vector<Real> previousData_;
     };
 
 
@@ -180,7 +179,7 @@ namespace detail {
         dates[0] = firstDate;
         times[0] = ts_->timeFromReference(dates[0]);
 
-        Date latestRelevantDate, maxDate = firstDate;
+        Date maxDate = firstDate;
         // pillar counter: i
         // helper counter: j
         for (Size i=1, j=firstAliveHelper_; j<n_; ++i, ++j) {
@@ -191,7 +190,7 @@ namespace detail {
             QL_REQUIRE(dates[i-1]!=dates[i],
                        "more than one instrument with pillar " << dates[i]);
 
-            latestRelevantDate = helper->latestRelevantDate();
+            Date latestRelevantDate = helper->latestRelevantDate();
             // check that the helper is really extending the curve, i.e. that
             // pillar-sorted helpers are also sorted by latestRelevantDate
             QL_REQUIRE(latestRelevantDate > maxDate,
@@ -200,11 +199,11 @@ namespace detail {
                        latestRelevantDate << ") before or equal to "
                        "previous instrument's latestRelevantDate (" <<
                        maxDate << ")");
-            maxDate = latestRelevantDate;
+            maxDate = std::max(dates[i], latestRelevantDate);
 
-            // when a pillar date is different from the last relevant date the
+            // when a pillar date is before the last relevant date the
             // convergence loop is required even if the Interpolator is local
-            if (dates[i] != latestRelevantDate)
+            if (dates[i] < latestRelevantDate)
                 loopRequired_ = true;
         }
         ts_->maxDate_ = maxDate;
@@ -215,7 +214,6 @@ namespace detail {
             // but reasonable numbers might be needed for the whole data vector
             // because, e.g., of interpolation's early checks
             ts_->data_ = std::vector<Real>(alive_+1, Traits::initialValue(ts_));
-            previousData_.resize(alive_+1);
             validCurve_ = false;
         }
         initialized_ = true;
@@ -254,9 +252,11 @@ namespace detail {
 
         // there might be a valid curve state to use as guess
         bool validData = validCurve_;
+        std::vector<Real> previousData;
 
         for (Size iteration=0; ; ++iteration) {
-            previousData_ = ts_->data_;
+            if (loopRequired_ && validData)
+                previousData = ts_->data_;
 
             // Store min value and max value at each pillar so that we can expand search if necessary.
             std::vector<Real> minValues(alive_+1, Null<Real>());
@@ -365,11 +365,13 @@ namespace detail {
                  break;
 
             // exit condition
-            Real change = std::fabs(data[1]-previousData_[1]);
-            for (Size i=2; i<=alive_; ++i)
-                change = std::max(change, std::fabs(data[i]-previousData_[i]));
-            if (change<=accuracy)  // convergence reached
-                break;
+            Real change = 0;
+            if (validData) {
+                for (Size i=1; i<=alive_; ++i)
+                    change = std::max(change, std::fabs(data[i]-previousData[i]));
+                if (change<=accuracy)  // convergence reached
+                    break;
+            }
 
             // If we hit the max number of iterations and dontThrow is true, just use what we have
             if (iteration == maxIterations) {
