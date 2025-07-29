@@ -714,6 +714,9 @@
     <ClInclude Include="ql\indexes\ibor\tona.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\tonar.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
     <ClInclude Include="ql\indexes\ibor\trlibor.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
