@@ -340,19 +340,19 @@ namespace QuantLib {
         return sum+daysBetween(d1, newD2)/den;
     }
 
-    Time ActualActual::ISMA_Impl::dayCount(const Date& d1, const Date& d2) const {
+    Date::serial_type ActualActual::ISMA_Impl::dayCount(const Date& d1, const Date& d2) const {
         return daysBetween(d1, d2);
     }
 
-    Time ActualActual::Old_ISMA_Impl::dayCount(const Date& d1, const Date& d2) const {
-    return daysBetween(d1, d2);
-    }
-
-    Time ActualActual::ISDA_Impl::dayCount(const Date& d1, const Date& d2) const {
+    Date::serial_type ActualActual::Old_ISMA_Impl::dayCount(const Date& d1, const Date& d2) const {
         return daysBetween(d1, d2);
     }
 
-    Time ActualActual::AFB_Impl::dayCount(const Date& d1, const Date& d2) const {
+    Date::serial_type ActualActual::ISDA_Impl::dayCount(const Date& d1, const Date& d2) const {
+        return daysBetween(d1, d2);
+    }
+
+    Date::serial_type ActualActual::AFB_Impl::dayCount(const Date& d1, const Date& d2) const {
         return daysBetween(d1, d2);
     }
 
