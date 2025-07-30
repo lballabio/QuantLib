@@ -47,6 +47,7 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "fdtypedefs.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "parallelevolver.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fixedratebondforward.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "tona.hpp")
 
     # These headers were moved to another location.
     # Therefore, we can ignore them as they only contain a warning and the new includes.

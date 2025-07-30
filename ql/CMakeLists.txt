@@ -1283,6 +1283,7 @@ set(QL_HEADERS
     indexes/ibor/thbfix.hpp
     indexes/ibor/tibor.hpp
     indexes/ibor/tona.hpp
+    indexes/ibor/tonar.hpp
     indexes/ibor/trlibor.hpp
     indexes/ibor/usdlibor.hpp
     indexes/ibor/wibor.hpp
