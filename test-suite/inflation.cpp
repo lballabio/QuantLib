@@ -481,6 +481,87 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     hz.reset();
 }
 
+BOOST_AUTO_TEST_CASE(testZeroTermStructureLazyBaseDate) {
+
+    // UKRPI conventions
+    Calendar calendar = UnitedKingdom();
+    BusinessDayConvention bdc = ModifiedFollowing;
+    Period observationLag = Period(3, Months);
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    Frequency frequency = Monthly;
+    Date evaluationDate(13, August, 2007);
+    evaluationDate = calendar.adjust(evaluationDate);
+    Settings::instance().evaluationDate() = evaluationDate;
+
+    // zc swaps
+    std::vector<Datum> zcData = {
+        { Date(13, August, 2008), 2.93 },
+        { Date(13, August, 2009), 2.95 },
+        { Date(13, August, 2010), 2.965 },
+        { Date(15, August, 2011), 2.98 },
+        { Date(13, August, 2012), 3.0 },
+        { Date(13, August, 2014), 3.06 },
+        { Date(13, August, 2017), 3.175 },
+        { Date(13, August, 2019), 3.243 },
+        { Date(15, August, 2022), 3.293 },
+        { Date(14, August, 2027), 3.338 },
+        { Date(13, August, 2032), 3.348 },
+        { Date(15, August, 2037), 3.348 },
+        { Date(13, August, 2047), 3.308 },
+        { Date(13, August, 2057), 3.228 }
+    };
+
+    auto ii = ext::make_shared<UKRPI>();
+    std::vector<ext::shared_ptr<SimpleQuote>> quotes;
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure>>> helpers;
+    for (auto datum : zcData) {
+        // Don't set quote values yet to simulate the case where market data
+        // is not available when the curve object is created.
+        quotes.push_back(ext::make_shared<SimpleQuote>());
+        helpers.push_back(ext::make_shared<ZeroCouponInflationSwapHelper>(
+            Handle<Quote>(quotes.back()), observationLag, datum.date, calendar, bdc, dc,
+            ii, CPI::AsIndex));
+    }
+
+    // Create a curve that will use lastFixingDate as the baseDate. The fixings
+    // are not set yet, so lastFixingDate is not known at this point. However,
+    // we can pass this curve to create further objects, as long as they don't
+    // trigger the calculation before the fixings are available.
+    auto curveLazy = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+        evaluationDate, [&]() { return ii->lastFixingDate(); }, frequency, dc, helpers);
+
+    // set zc swaps quotes
+    for (Size i=0; i<std::size(zcData); i++) {
+        quotes[i]->setValue(zcData[i].rate / 100.0);
+    }
+
+    // set fixings
+    Date from(1, January, 2005);
+    Date to(1, July, 2007);
+    Schedule rpiSchedule =
+        MakeSchedule().from(from).to(to)
+        .withFrequency(Monthly);
+
+    Real fixData[] = {
+        189.9, 189.9, 189.6, 190.5, 191.6, 192.0,
+        192.2, 192.2, 192.6, 193.1, 193.3, 193.6,
+        194.1, 193.4, 194.2, 195.0, 196.5, 197.7,
+        198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
+        202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
+        207.3 };
+
+    for (Size i=0; i<std::size(fixData); i++) {
+        ii->addFixing(rpiSchedule[i], fixData[i]);
+    }
+
+    // Create a curve with an explicit baseDate and check that the lazy curve
+    // produces the same results.
+    auto curve = ext::make_shared<PiecewiseZeroInflationCurve<Linear>>(
+        evaluationDate, ii->lastFixingDate(), frequency, dc, helpers);
+
+    BOOST_CHECK_EQUAL(curveLazy->baseDate(), curve->baseDate());
+    BOOST_CHECK(curveLazy->nodes() == curve->nodes());
+}
 
 QL_DEPRECATED_DISABLE_WARNING
 
