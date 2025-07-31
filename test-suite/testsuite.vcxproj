@@ -670,6 +670,7 @@
     <ClCompile Include="capflooredcoupon.cpp" />
     <ClCompile Include="cashflows.cpp" />
     <ClCompile Include="catbonds.cpp" />
+    <ClCompile Include="cdicoupon.cpp" />
     <ClCompile Include="cdo.cpp" />
     <ClCompile Include="cdsoption.cpp" />
     <ClCompile Include="chooseroption.cpp" />

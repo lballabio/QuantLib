@@ -25,6 +25,7 @@ set(QL_TEST_SOURCES
     capflooredcoupon.cpp
     cashflows.cpp
     catbonds.cpp
+    cdicoupon.cpp
     cdo.cpp
     cdsoption.cpp
     chooseroption.cpp
