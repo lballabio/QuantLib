@@ -135,7 +135,6 @@ struct CommonVars {
     const Date today = Date(19, June, 2025); // holiday
     const Date start = Date(23, June, 2023);
     const Real notional = 10000000.0;
-    const Rate fixedRate = 14.2103910923;
 
     ext::shared_ptr<Cdi> cdi;
     RelinkableHandle<YieldTermStructure> forecastCurve;
