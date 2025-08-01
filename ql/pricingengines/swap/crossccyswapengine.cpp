@@ -26,30 +26,30 @@
 
 namespace QuantLib {
 
-CrossCcySwapEngine::CrossCcySwapEngine(const Currency& ccy1, const Handle<YieldTermStructure>& currency1Discountcurve,
-                                       const Currency& ccy2, const Handle<YieldTermStructure>& currency2Discountcurve,
+CrossCcySwapEngine::CrossCcySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountcurve,
+                                       const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountcurve,
                                        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows,
                                        const Date& settlementDate, const Date& npvDate, const Date& spotFXSettleDate)
-    : ccy1_(ccy1), currency1Discountcurve_(currency1Discountcurve), ccy2_(ccy2),
-      currency2Discountcurve_(currency2Discountcurve), spotFX_(spotFX),
+    : domesticCcy_(domesticCcy), domesticCcyDiscountcurve_(domesticCcyDiscountcurve), foreignCcy_(foreignCcy),
+      foreignCcyDiscountcurve_(foreignCcyDiscountcurve), spotFX_(spotFX),
       includeSettlementDateFlows_(includeSettlementDateFlows), settlementDate_(settlementDate), npvDate_(npvDate),
       spotFXSettleDate_(spotFXSettleDate) {
 
-    registerWith(currency1Discountcurve_);
-    registerWith(currency2Discountcurve_);
+    registerWith(domesticCcyDiscountcurve_);
+    registerWith(foreignCcyDiscountcurve_);
     registerWith(spotFX_);
 }
 
 void CrossCcySwapEngine::calculate() const {
 
-    QL_REQUIRE(!currency1Discountcurve_.empty() && !currency2Discountcurve_.empty(),
+    QL_REQUIRE(!domesticCcyDiscountcurve_.empty() && !foreignCcyDiscountcurve_.empty(),
                "Discounting term structure handle is empty.");
 
     QL_REQUIRE(!spotFX_.empty(), "FX spot quote handle is empty.");
 
-    QL_REQUIRE(currency1Discountcurve_->referenceDate() == currency2Discountcurve_->referenceDate(),
+    QL_REQUIRE(domesticCcyDiscountcurve_->referenceDate() == foreignCcyDiscountcurve_->referenceDate(),
                "Term structures should have the same reference date.");
-    Date referenceDate = currency1Discountcurve_->referenceDate();
+    Date referenceDate = domesticCcyDiscountcurve_->referenceDate();
     Date settlementDate = settlementDate_;
     if (settlementDate_ == Date()) {
         settlementDate = referenceDate;
@@ -101,13 +101,13 @@ void CrossCcySwapEngine::calculate() const {
         try {
             // Choose the correct discount curve for the leg.
             Handle<YieldTermStructure> legDiscountCurve;
-            if (arguments_.currencies[legNo] == ccy1_) {
-                legDiscountCurve = currency1Discountcurve_;
+            if (arguments_.currencies[legNo] == domesticCcy_) {
+                legDiscountCurve = domesticCcyDiscountcurve_;
             } else {
-                QL_REQUIRE(arguments_.currencies[legNo] == ccy2_, "leg ccy (" << arguments_.currencies[legNo]
-                                                                              << ") must be ccy1 (" << ccy1_
-                                                                              << ") or ccy2 (" << ccy2_ << ")");
-                legDiscountCurve = currency2Discountcurve_;
+                QL_REQUIRE(arguments_.currencies[legNo] == foreignCcy_, "leg ccy (" << arguments_.currencies[legNo]
+                                                                              << ") must be domesticCcy (" << domesticCcy_
+                                                                              << ") or foreignCcy (" << foreignCcy_ << ")");
+                legDiscountCurve = foreignCcyDiscountcurve_;
             }
             results_.npvDateDiscounts[legNo] = legDiscountCurve->discount(results_.valuationDate);
 
@@ -122,7 +122,7 @@ void CrossCcySwapEngine::calculate() const {
             results_.legBPS[legNo] = results_.inCcyLegBPS[legNo];
 
             // Convert to NPV currency if necessary.
-            if (arguments_.currencies[legNo] != ccy1_) {
+            if (arguments_.currencies[legNo] != domesticCcy_) {
                 // results_.legNPV[legNo] *= spotFX_->value();
                 // results_.legBPS[legNo] *= spotFX_->value();
 				Real spotFXRate = spotFX_->value();
@@ -130,11 +130,11 @@ void CrossCcySwapEngine::calculate() const {
 					// Use the parity relation between discount factors and fx rates to compute spotFXRate
 					// Generic formula: fx(T1)/fx(T2) = FwdDF_Quote(T1->T2) / FwdDF_Base(T1->T2),
                     // where fx represents the currency ratio Base/Quote
-					Real ccy1DF = currency1Discountcurve_->discount(spotFXSettleDate);
-					Real ccy2DF = currency2Discountcurve_->discount(spotFXSettleDate);
-					QL_REQUIRE(ccy2DF != 0.0, "Discount Factor associated with currency " << ccy2_
+					Real domesticCcyDF = domesticCcyDiscountcurve_->discount(spotFXSettleDate);
+					Real foreignCcyDF = foreignCcyDiscountcurve_->discount(spotFXSettleDate);
+					QL_REQUIRE(foreignCcyDF != 0.0, "Discount Factor associated with currency " << foreignCcy_
                                                  << " at maturity " << spotFXSettleDate << " cannot be zero");
-					spotFXRate *= ccy1DF / ccy2DF;
+					spotFXRate *= domesticCcyDF / foreignCcyDF;
 				}
 				results_.legNPV[legNo] *= spotFXRate;
 				results_.legBPS[legNo] *= spotFXRate;
@@ -142,14 +142,14 @@ void CrossCcySwapEngine::calculate() const {
 
             // Get start date and end date discount for the leg
             Date startDate = CashFlows::startDate(arguments_.legs[legNo]);
-            if (startDate >= currency1Discountcurve_->referenceDate()) {
+            if (startDate >= domesticCcyDiscountcurve_->referenceDate()) {
                 results_.startDiscounts[legNo] = legDiscountCurve->discount(startDate);
             } else {
                 results_.startDiscounts[legNo] = Null<DiscountFactor>();
             }
 
             Date maturityDate = CashFlows::maturityDate(arguments_.legs[legNo]);
-            if (maturityDate >= currency1Discountcurve_->referenceDate()) {
+            if (maturityDate >= domesticCcyDiscountcurve_->referenceDate()) {
                 results_.endDiscounts[legNo] = legDiscountCurve->discount(maturityDate);
             } else {
                 results_.endDiscounts[legNo] = Null<DiscountFactor>();

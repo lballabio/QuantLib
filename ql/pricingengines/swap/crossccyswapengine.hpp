@@ -37,27 +37,27 @@ namespace QuantLib {
 //! Cross currency swap engine
 
 /*! This class implements an engine for pricing swaps comprising legs that
-    involve two currencies. The npv is expressed in ccy1. The given currencies
-    ccy1 and ccy2 are matched to the correct swap legs. The evaluation date is the
+    involve two currencies. The npv is expressed in domesticCcy. The given currencies
+    domesticCcy and foreignCcy are matched to the correct swap legs. The evaluation date is the
     reference date of either discounting curve (which must be equal).
 
-            \ingroup engines
+   \ingroup engines
 */
 class CrossCcySwapEngine : public CrossCcySwap::engine {
 public:
     //! \name Constructors
     //@{
-    /*! \param ccy1
+    /*! \param domesticCcy
                Currency 1
-        \param currency1DiscountCurve
+        \param domesitcCcyDiscountCurve
                Discount curve for cash flows in currency 1
-        \param ccy2
+        \param foreignCcy
                Currency 2
-        \param currency2DiscountCurve
+        \param foreignCcyDiscountCurve
                Discount curve for cash flows in currency 2
         \param spotFX
-               The market spot rate quote, given as units of ccy1
-               for one unit of ccy2. The spot rate must be given
+               The market spot rate quote, given as units of domesticCcy
+               for one unit of foreignCcy. The spot rate must be given
                w.r.t. a settlement equal to the npv date.
         \param includeSettlementDateFlows, settlementDate
                If includeSettlementDateFlows is true (false), cashflows
@@ -70,8 +70,8 @@ public:
         \param spotFXSettleDate
                FX conversion as of this date if specified explicitly
     */
-    CrossCcySwapEngine(const Currency& ccy1, const Handle<YieldTermStructure>& currency1DiscountCurve,
-                       const Currency& ccy2, const Handle<YieldTermStructure>& currency2DiscountCurve,
+    CrossCcySwapEngine(const Currency& domesticCcy, const Handle<YieldTermStructure>& domesitcCcyDiscountCurve,
+                       const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
                        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
                        const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
     //@}
@@ -83,20 +83,20 @@ public:
 
     //! \name Inspectors
     //@{
-    const Handle<YieldTermStructure>& currency1DiscountCurve() const { return currency1Discountcurve_; }
-    const Handle<YieldTermStructure>& currency2DiscountCurve() const { return currency2Discountcurve_; }
+    const Handle<YieldTermStructure>& domesitcCcyDiscountCurve() const { return domesticCcyDiscountcurve_; }
+    const Handle<YieldTermStructure>& foreignCcyDiscountCurve() const { return foreignCcyDiscountcurve_; }
 
-    const Currency& currency1() const { return ccy1_; }
-    const Currency& currency2() const { return ccy2_; }
+    const Currency& currency1() const { return domesticCcy_; }
+    const Currency& currency2() const { return foreignCcy_; }
 
     const Handle<Quote>& spotFX() const { return spotFX_; }
     //@}
 
 private:
-    Currency ccy1_;
-    Handle<YieldTermStructure> currency1Discountcurve_;
-    Currency ccy2_;
-    Handle<YieldTermStructure> currency2Discountcurve_;
+    Currency domesticCcy_;
+    Handle<YieldTermStructure> domesticCcyDiscountcurve_;
+    Currency foreignCcy_;
+    Handle<YieldTermStructure> foreignCcyDiscountcurve_;
     Handle<Quote> spotFX_;
     ext::optional<bool> includeSettlementDateFlows_;
     Date settlementDate_;
