@@ -76,11 +76,7 @@ namespace QuantLib {
         virtual Rate baseRate() const;
 
         //! minimum (base) date
-        /*! The last date for which we have information.
-
-            When not set directly (the recommended option), it is
-            calculated base on an observation lag relative to today.
-        */
+        /*! The last date for which we have information. */
         virtual Date baseDate() const;
 
         /*! \deprecated Do not use; inflation curves always have an explicit
@@ -117,9 +113,8 @@ namespace QuantLib {
 
         Frequency frequency_;
         mutable Rate baseRate_;
-
-      private:
-        Date baseDate_;
+        // Can be set by subclasses that don't have baseDate available in constructors.
+        mutable Date baseDate_;
     };
 
     //! Interface for zero inflation term structures.
