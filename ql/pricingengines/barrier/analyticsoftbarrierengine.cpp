@@ -53,6 +53,12 @@ namespace QuantLib {
         Real U = barrierHi();
         Real L = barrierLo();
         Barrier::Type barrierType = arguments_.barrierType;
+        
+        // Stability tweak for r and q
+        const Real epsilon = 1e-6;  
+        if (std::abs(r - q) < 1e-10) {
+            r = q + epsilon;  // Avoids mu = 0.5 singularity
+        }
 
         // Option parameters
         Time T = residualTime();
@@ -121,7 +127,6 @@ namespace QuantLib {
         const Real e3 = logL2_SX / (sigma * sqrtT) + (mu - 1) * sigma * sqrtT;
         const Real e4 = e3 - (mu - 0.5) * sigma * sqrtT;
 
-
         const Real Nd1 = f_(eta * d1);
         const Real Nd2 = f_(eta * d2);
         const Real Nd3 = f_(eta * d3);
@@ -168,7 +173,7 @@ namespace QuantLib {
         QL_REQUIRE(optionType == Option::Call || optionType == Option::Put, "Invalid option type");                                       
         QL_REQUIRE(r <= 1.0 && r >= -0.05, "Interest rate must be between -5% and 100%");
         QL_REQUIRE(q <= 1.0 && q >= -0.1, "Dividend yield must be between -10% and 100%");
-        QL_REQUIRE(std::fabs(r - q) >= 1e-4, "r and q too close leads to numerical instability"); 
+
         
         // Barrier type checks
         QL_REQUIRE(
@@ -181,12 +186,10 @@ namespace QuantLib {
         QL_REQUIRE(U != Null<Real>(), "no high barrier given");
         QL_REQUIRE(U > 0.0 && L > 0.0, "Barrier levels must be positive");
         QL_REQUIRE(U >= L, "Upper barrier must be greater than or equal to lower barrier");
-
-
         }
     
 
-    // /// helper functions 
+    // helper functions 
     Real AnalyticSoftBarrierEngine::underlying() const {
         return process_->x0();
     }

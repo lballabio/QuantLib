@@ -68,7 +68,7 @@ namespace QuantLib {
 
         // Pricing helpers 
         Real vanillaEquivalent() const;    // Computes the equivalent vanilla  option price (with no barriers)
-        Real standardBarrierEquivalent() const; // for knock out calculations
+        Real standardBarrierEquivalent() const; // for when U=L
         Real knockInValue(Real S, Real X, Rate r, Volatility sigma, Time T, Real U, Real L, Real b, Option::Type optionType, Integer eta) const;
 
     };
