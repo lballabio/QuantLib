@@ -63,6 +63,7 @@ this_include_HEADERS = \
     quantovanillaoption.hpp \
     simplechooseroption.hpp \
     simplifynotificationgraph.hpp \
+    softbarrieroption.hpp \
     stickyratchet.hpp \
     stock.hpp \
     swap.hpp \
@@ -134,6 +135,7 @@ cpp_files = \
     quantovanillaoption.cpp \
     simplechooseroption.cpp \
     simplifynotificationgraph.cpp \
+    softbarrieroption.cpp \
     stickyratchet.cpp \
     stock.cpp \
     swap.cpp \
