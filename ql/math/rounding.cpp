@@ -28,7 +28,7 @@ namespace QuantLib {
 
     static inline Real fast_pow10(Integer precision) {
         // Providing support for truncating up to 16 decimal places after dot
-        constexpr static Real pow10_lut[0x20] = {
+        constexpr static double pow10_lut[0x20] = {
             1.0E0,  1.0E1,  1.0E2,  1.0E3,  1.0E4,  1.0E5,
             1.0E6,  1.0E7,  1.0E8,  1.0E9,  1.0E10, 1.0E11,
             1.0E12, 1.0E13, 1.0E14, 1.0E15, 1.0E16
