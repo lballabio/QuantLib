@@ -69,7 +69,7 @@ namespace QuantLib {
                                    Rate spread,
                                    const Date& refPeriodStart,
                                    const Date& refPeriodEnd,
-                                   ext::shared_ptr<Schedule> observationsSchedule,
+                                   const ext::shared_ptr<Schedule>& observationsSchedule,
                                    Real lowerTrigger,
                                    Real upperTrigger)
         : RangeAccrualFloatersCoupon(paymentDate, nominal, index, startDate, endDate,
