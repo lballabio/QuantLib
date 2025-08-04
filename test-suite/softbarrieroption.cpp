@@ -78,7 +78,7 @@ struct SoftBarrierOptionData {
 
 BOOST_AUTO_TEST_CASE(testSoftBarrierHaug) {
 
-    BOOST_TEST_MESSAGE("Testing soft barrier option pricing against textbook values");
+    BOOST_TEST_MESSAGE("Testing soft barrier option pricing against textbook values...");
     
     SoftBarrierOptionData values[] = {
         /* The data below is from "The complete guide to option pricing formulas 2nd Ed",E.G. Haug p.166 
