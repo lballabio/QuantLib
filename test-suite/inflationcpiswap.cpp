@@ -409,11 +409,9 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
 
     CommonVars common;
 
-    // ZeroInflationSwap aka CPISwap
-
     Swap::Type type = Swap::Payer;
     Real nominal = 1000000.0;
-    bool subtractInflationNominal = true;
+    bool subtractInflationNominal = false;
     // float+spread leg
     Spread spread = 0.0;
     DayCounter floatDayCount = Actual365Fixed();
@@ -480,7 +478,7 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     // now do the bond equivalent
     std::vector<Rate> fixedRates(1,fixedRate);
     Natural settlementDays = 1;// cannot be zero!
-    bool growthOnly = true;
+    bool growthOnly = false;
     CPIBond cpiB(settlementDays, nominal, growthOnly,
                  baseCPI, contractObservationLag, fixedIndex,
                  observationInterpolation, fixedSchedule,
