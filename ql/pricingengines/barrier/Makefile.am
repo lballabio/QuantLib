@@ -28,7 +28,6 @@ cpp_files = \
     analyticpartialtimebarrieroptionengine.cpp \
     analyticsoftbarrierengine.cpp \
     analytictwoassetbarrierengine.cpp \
-    analytictwoassetbarrierengine.cpp \
     discretizedbarrieroption.cpp \
     fdblackscholesbarrierengine.cpp \
     fdblackscholesrebateengine.cpp \
