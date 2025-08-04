@@ -44,6 +44,27 @@ namespace QuantLib {
       public:
         CPIBond(Natural settlementDays,
                 Real faceAmount,
+                Real baseCPI,
+                const Period& observationLag,
+                ext::shared_ptr<ZeroInflationIndex> cpiIndex,
+                CPI::InterpolationType observationInterpolation,
+                Schedule schedule,
+                const std::vector<Rate>& coupons,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = ModifiedFollowing,
+                const Date& issueDate = Date(),
+                const Calendar& paymentCalendar = Calendar(),
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false);
+
+        /*! \deprecated Use the overload without the growthOnly parameter.
+                        Deprecated in version 1.40.
+        */
+        [[deprecated("Use the overload without the growthOnly parameter")]]
+        CPIBond(Natural settlementDays,
+                Real faceAmount,
                 bool growthOnly,
                 Real baseCPI,
                 const Period& observationLag,

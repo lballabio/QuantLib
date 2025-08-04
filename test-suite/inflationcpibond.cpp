@@ -173,7 +173,6 @@ BOOST_AUTO_TEST_CASE(testCleanPrice) {
     Period contractObservationLag = Period(3,Months);
     CPI::InterpolationType observationInterpolation = CPI::Flat;
     Natural settlementDays = 3;
-    bool growthOnly = false;
 
     Real baseCPI = 206.1;
     // set the schedules
@@ -186,7 +185,7 @@ BOOST_AUTO_TEST_CASE(testCleanPrice) {
                       .withConvention(Unadjusted)
                       .backwards();
 
-    CPIBond bond(settlementDays, notional, growthOnly,
+    CPIBond bond(settlementDays, notional,
                  baseCPI, contractObservationLag, fixedIndex,
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
