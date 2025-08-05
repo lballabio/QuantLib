@@ -26,6 +26,7 @@
 #ifndef quantlib_piecewise_zero_inflation_curve_hpp
 #define quantlib_piecewise_zero_inflation_curve_hpp
 
+#include <ql/functional.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/inflation/inflationtraits.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
@@ -44,6 +45,7 @@ namespace QuantLib {
         typedef InterpolatedZeroInflationCurve<Interpolator> base_curve;
         typedef PiecewiseZeroInflationCurve<Interpolator,Bootstrap,Traits>
                                                                    this_curve;
+        typedef std::function<Date()> BaseDateFunc;
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
@@ -68,10 +70,31 @@ namespace QuantLib {
           instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
+
+        PiecewiseZeroInflationCurve(
+            const Date& referenceDate,
+            BaseDateFunc baseDateFunc,
+            Frequency frequency,
+            const DayCounter& dayCounter,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const ext::shared_ptr<Seasonality>& seasonality = {},
+            Real accuracy = 1.0e-14,
+            const Interpolator& i = Interpolator())
+        : base_curve(referenceDate,
+                     Date(),
+                     frequency,
+                     dayCounter,
+                     seasonality,
+                     i),
+          instruments_(std::move(instruments)), accuracy_(accuracy),
+          baseDateFunc_(std::move(baseDateFunc)) {
+            bootstrap_.setup(this);
+        }
         //@}
 
         //! \name Inflation interface
         //@{
+        Date baseDate() const override;
         Date maxDate() const override;
         //@
         //! \name Inspectors
@@ -92,6 +115,7 @@ namespace QuantLib {
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
+        BaseDateFunc baseDateFunc_;
 
         friend class Bootstrap<this_curve>;
         Bootstrap<this_curve> bootstrap_;
@@ -99,6 +123,13 @@ namespace QuantLib {
 
 
     // inline and template definitions
+
+    template <class I, template <class> class B, class T>
+    inline Date PiecewiseZeroInflationCurve<I,B,T>::baseDate() const {
+        if (baseDateFunc_)
+            this->calculate();
+        return base_curve::baseDate();
+    }
 
     template <class I, template <class> class B, class T>
     inline Date PiecewiseZeroInflationCurve<I,B,T>::maxDate() const {
@@ -133,6 +164,8 @@ namespace QuantLib {
 
     template <class I, template <class> class B, class T>
     void PiecewiseZeroInflationCurve<I,B,T>::performCalculations() const {
+        if (baseDateFunc_)
+            const_cast<this_curve*>(this)->baseDate_ = baseDateFunc_();
         bootstrap_.calculate();
     }
 
