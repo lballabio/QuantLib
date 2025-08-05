@@ -35,9 +35,8 @@
 namespace QuantLib {
 
     class IborIndex;
-    class RangeAccrualPricer;
 
-    class RangeAccrualFloatersCoupon: public FloatingRateCoupon {
+    class RangeAccrualFloatersCoupon : public FloatingRateCoupon {
 
       public:
         RangeAccrualFloatersCoupon(const Date& paymentDate,
@@ -51,9 +50,33 @@ namespace QuantLib {
                                    Rate spread,
                                    const Date& refPeriodStart,
                                    const Date& refPeriodEnd,
-                                   ext::shared_ptr<Schedule> observationsSchedule,
+                                   Schedule observationsSchedule,
                                    Real lowerTrigger,
                                    Real upperTrigger);
+
+        /*! \deprecated Use the overload taking a Schedule instead.
+                        Deprecated in version 1.40.
+        */
+        [[deprecated("Use the overload taking a Schedule instead")]]
+        RangeAccrualFloatersCoupon(const Date& paymentDate,
+                                   Real nominal,
+                                   const ext::shared_ptr<IborIndex>& index,
+                                   const Date& startDate,
+                                   const Date& endDate,
+                                   Natural fixingDays,
+                                   const DayCounter& dayCounter,
+                                   Real gearing,
+                                   Rate spread,
+                                   const Date& refPeriodStart,
+                                   const Date& refPeriodEnd,
+                                   const ext::shared_ptr<Schedule>& observationsSchedule,
+                                   Real lowerTrigger,
+                                   Real upperTrigger)
+        : RangeAccrualFloatersCoupon(paymentDate, nominal, index, startDate, endDate,
+                                     fixingDays, dayCounter, gearing, spread,
+                                     refPeriodStart, refPeriodEnd,
+                                     *observationsSchedule,
+                                     lowerTrigger, upperTrigger) {}
 
         Real startTime() const {return startTime_; }
         Real endTime() const {return endTime_; }
@@ -66,7 +89,14 @@ namespace QuantLib {
         const std::vector<Real>& observationTimes() const {
             return observationTimes_;
         }
-        ext::shared_ptr<Schedule> observationsSchedule() const { return observationsSchedule_; }
+        const Schedule& observationSchedule() const { return observationSchedule_; }
+        /*! \deprecated Use observationSchedule instead.
+                        Deprecated in version 1.40.
+        */
+        [[deprecated("Use observationSchedule instead")]]
+        ext::shared_ptr<Schedule> observationsSchedule() const {
+            return ext::make_shared<Schedule>(observationSchedule_);
+        }
 
         Real priceWithoutOptionality(
                        const Handle<YieldTermStructure>& discountCurve) const;
@@ -79,7 +109,7 @@ namespace QuantLib {
         Real startTime_;                               // S
         Real endTime_;                                 // T
 
-        const ext::shared_ptr<Schedule> observationsSchedule_;
+        Schedule observationSchedule_;
         std::vector<Date> observationDates_;
         std::vector<Real> observationTimes_;
         Size observationsNo_;

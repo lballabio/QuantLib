@@ -28,8 +28,12 @@
 
 namespace QuantLib {
 
-    //! basic rounding class
-    /*! \test the correctness of the returned values is tested by
+    /*! A basic rounding class that supports truncating up to 16 decimal places
+        (input precision range in [0,16]) and depends on a precision of rounding number.
+        Note that the class does not validate the input range; supplying an unsupported
+        rounding value may result in undefined behavior.
+
+        \test the correctness of the returned values is tested by
               checking them against known good results.
     */
     class Rounding {

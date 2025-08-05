@@ -47,7 +47,7 @@ namespace QuantLib {
         Rate spread,
         const Date& refPeriodStart,
         const Date& refPeriodEnd,
-        ext::shared_ptr<Schedule> observationsSchedule,
+        Schedule observationSchedule,
         Real lowerTrigger, // l
         Real upperTrigger  // u
         )
@@ -62,17 +62,17 @@ namespace QuantLib {
                          refPeriodStart,
                          refPeriodEnd,
                          dayCounter),
-      observationsSchedule_(std::move(observationsSchedule)), lowerTrigger_(lowerTrigger),
+      observationSchedule_(std::move(observationSchedule)), lowerTrigger_(lowerTrigger),
       upperTrigger_(upperTrigger) {
 
         QL_REQUIRE(lowerTrigger_<upperTrigger,
                    "lowerTrigger_>=upperTrigger");
-        QL_REQUIRE(observationsSchedule_->startDate()==startDate,
+        QL_REQUIRE(observationSchedule_.startDate()==startDate,
                    "incompatible start date");
-        QL_REQUIRE(observationsSchedule_->endDate()==endDate,
+        QL_REQUIRE(observationSchedule_.endDate()==endDate,
                    "incompatible end date");
 
-        observationDates_ = observationsSchedule_->dates();
+        observationDates_ = observationSchedule_.dates();
         observationDates_.pop_back();                       //remove end date
         observationDates_.erase(observationDates_.begin()); //remove start date
         observationsNo_ = observationDates_.size();
@@ -132,7 +132,7 @@ namespace QuantLib {
         observationsNo_ = coupon_->observationsNo();
 
         const std::vector<Date> &observationDates =
-            coupon_->observationsSchedule()->dates();
+            coupon_->observationSchedule().dates();
         QL_REQUIRE(observationDates.size()==observationsNo_+2,
                    "incompatible size of initialValues vector");
         initialValues_= std::vector<Real>(observationDates.size(),0.);
@@ -647,7 +647,6 @@ namespace QuantLib {
 
         Date refStart, start, refEnd, end;
         Date paymentDate;
-        std::vector<ext::shared_ptr<Schedule> > observationsSchedules;
 
         for (Size i=0; i<n; ++i) {
             refStart = start = schedule_.date(i);
@@ -669,12 +668,12 @@ namespace QuantLib {
                                     paymentDayCounter_,
                                     start, end, refStart, refEnd)));
             } else { // floating coupon
-                observationsSchedules.push_back(
-                    ext::make_shared<Schedule>(start, end,
-                                 observationTenor_, calendar,
-                                 observationConvention_,
-                                 observationConvention_,
-                                 DateGeneration::Forward, false));
+                auto observationSchedule =
+                    Schedule(start, end,
+                             observationTenor_, calendar,
+                             observationConvention_,
+                             observationConvention_,
+                             DateGeneration::Forward, false);
 
                     leg.push_back(ext::shared_ptr<CashFlow>(new
                        RangeAccrualFloatersCoupon(
@@ -687,7 +686,7 @@ namespace QuantLib {
                             detail::get(gearings_, i, 1.0),
                             detail::get(spreads_, i, 0.0),
                             refStart, refEnd,
-                            observationsSchedules.back(),
+                            observationSchedule,
                             detail::get(lowerTriggers_, i, Null<Rate>()),
                             detail::get(upperTriggers_, i, Null<Rate>()))));
             }

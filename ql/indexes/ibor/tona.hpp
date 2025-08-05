@@ -17,33 +17,12 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tona.hpp
-\brief %TONA index
-*/
-
 #ifndef quantlib_tona_hpp
 #define quantlib_tona_hpp
 
-#include <ql/indexes/iborindex.hpp>
-#include <ql/time/calendars/japan.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/currencies/asia.hpp>
+// Deprecated in version 1.38
+#pragma message("Warning: this file will disappear in a future release; include <ql/indexes/ibor/tonar.hpp> instead.")
 
-namespace QuantLib {
-
-    //! %TONA index
-    /*! TONA (Tokyo Overnight Average) rate fixed by the BOJ.
-
-    See <https://www3.boj.or.jp/market/en/menu_m.htm>.
-    */
-    class Tona : public OvernightIndex {
-      public:
-        explicit Tona(const Handle<YieldTermStructure>& h = {})
-        : OvernightIndex("Tona", 0, JPYCurrency(),
-                         Japan(),
-                         Actual365Fixed(), h) {}
-    };
-
-}
+#include <ql/indexes/ibor/tonar.hpp>
 
 #endif

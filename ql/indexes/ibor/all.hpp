@@ -35,7 +35,7 @@
 #include <ql/indexes/ibor/sonia.hpp>
 #include <ql/indexes/ibor/swestr.hpp>
 #include <ql/indexes/ibor/tibor.hpp>
-#include <ql/indexes/ibor/tona.hpp>
+#include <ql/indexes/ibor/tonar.hpp>
 #include <ql/indexes/ibor/thbfix.hpp>
 #include <ql/indexes/ibor/trlibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>

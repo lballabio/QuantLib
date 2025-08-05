@@ -50,7 +50,7 @@
 #include <ql/indexes/ibor/corra.hpp>
 #include <ql/indexes/ibor/tibor.hpp>
 #include <ql/indexes/ibor/aonia.hpp>
-#include <ql/indexes/ibor/tona.hpp>
+#include <ql/indexes/ibor/tonar.hpp>
 #include <ql/indexes/ibor/saron.hpp>
 #include <ql/indexes/ibor/nzocr.hpp>
 #include <ql/indexes/ibor/destr.hpp>
@@ -996,7 +996,7 @@ BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
         {"FedFunds", ext::make_shared<FedFunds>()},
         {"SOFR", ext::make_shared<Sofr>()},
         {"AONIA", ext::make_shared<Aonia>()},
-        {"TONA", ext::make_shared<Tona>()},
+        {"TONAR", ext::make_shared<Tonar>()},
         {"SARON", ext::make_shared<Saron>()},
         {"NZOCR", ext::make_shared<Nzocr>()},
         {"DESTR", ext::make_shared<Destr>()},

@@ -77,7 +77,7 @@ struct CommonVars {
     Date paymentDate;
     Natural fixingDays;
     DayCounter rangeCouponDayCount;
-    ext::shared_ptr<Schedule> observationSchedule;
+    Schedule observationSchedule;
     // Observation Schedule conventions
     Frequency observationsFrequency;
     BusinessDayConvention observationsConvention;
@@ -558,11 +558,11 @@ struct CommonVars {
         // observations schedule
         observationsConvention = ModifiedFollowing;
         observationsFrequency = Daily;//Monthly;
-        observationSchedule = ext::make_shared<Schedule>(startDate,endDate,
-                                                         Period(observationsFrequency),
-                                                         calendar,observationsConvention,
-                                                         observationsConvention,
-                                                         DateGeneration::Forward, false);
+        observationSchedule = Schedule(startDate,endDate,
+                                       Period(observationsFrequency),
+                                       calendar,observationsConvention,
+                                       observationsConvention,
+                                       DateGeneration::Forward, false);
         // Range accrual pricers properties
         byCallSpread = std::vector<bool>({true, false});
 

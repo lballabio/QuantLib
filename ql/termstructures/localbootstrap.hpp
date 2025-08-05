@@ -35,9 +35,11 @@
 
 namespace QuantLib {
 
-    // penalty function class for solving using a multi-dimensional solver
+    /*! \deprecated Use SimpleCostFunction instead.
+                    Deprecated in version 1.40.
+    */
     template <class Curve>
-    class PenaltyFunction : public CostFunction {
+    class [[deprecated("Use SimpleCostFunction instead")]] PenaltyFunction : public CostFunction {
         typedef typename Curve::traits_type Traits;
         typedef typename Traits::helper helper;
         typedef
@@ -229,11 +231,19 @@ namespace QuantLib {
                 startArray[localisation_-dataAdjust] = ts_->data_[0];
             }
 
-            PenaltyFunction<Curve> currentCost(
-                        ts_,
-                        initialDataPt,
-                        ts_->instruments_.begin() + ((iInst+1) - localisation_),
-                        ts_->instruments_.begin() + (iInst+1));
+            SimpleCostFunction currentCost([&](const Array& x) {
+                for (Size i = 0; i < x.size(); ++i) {
+                    Traits::updateGuess(ts_->data_, x[i], initialDataPt + i);
+                }
+                ts_->interpolation_.update();
+
+                Array penalties(localisation_);
+                auto helpersEnd = ts_->instruments_.begin() + (iInst + 1);
+                std::transform(helpersEnd - localisation_, helpersEnd,
+                               penalties.begin(),
+                               [](const auto& helper) { return helper->quoteError(); });
+                return penalties;
+            });
 
             Problem toSolve(currentCost, solverConstraint, startArray);
 
@@ -247,6 +257,7 @@ namespace QuantLib {
         validCurve_ = true;
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
 
     template <class Curve>
     Real PenaltyFunction<Curve>::value(const Array& x) const {
@@ -293,6 +304,8 @@ namespace QuantLib {
         }
         return penalties;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
