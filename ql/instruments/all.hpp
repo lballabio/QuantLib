@@ -73,4 +73,5 @@
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/instruments/zerocouponswap.hpp>
+
 #include <ql/instruments/bonds/all.hpp>
