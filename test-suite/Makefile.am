@@ -142,6 +142,7 @@ QL_TEST_SRCS = \
 	settings.cpp \
 	shortratemodels.cpp \
 	sofrfutures.cpp \
+	softbarrieroption.cpp \
 	solvers.cpp \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \

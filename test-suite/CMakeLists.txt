@@ -141,6 +141,7 @@ set(QL_TEST_SOURCES
     settings.cpp
     shortratemodels.cpp
     sofrfutures.cpp
+    softbarrieroption.cpp
     solvers.cpp
     spreadoption.cpp
     squarerootclvmodel.cpp
