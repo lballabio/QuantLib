@@ -34,8 +34,8 @@ namespace QuantLib {
             Size n = std::lower_bound(interestDates.begin(), interestDates.end(), date) -
                      interestDates.begin();
             // When using the observation shift, it may happen that
-            // that the end of accrual period will fall later than the last
-            // interest date. In which case, n will be equal to the number of
+            // the end of accrual period will fall later than the last
+            // interest date. In that case, n will be equal to the number of
             // interest dates, while we know that the number of fixing dates is
             // always one less than the number of interest dates.
             return n == interestDates.size() && applyObservationShift ? n - 1 : n;
@@ -64,9 +64,21 @@ namespace QuantLib {
         const auto& dt = coupon_->dt();
         const bool applyObservationShift = coupon_->applyObservationShift();
 
+        const auto span = [&index, &interestDates, &dt, &date](Size position) -> Time {
+            return (date >= interestDates[position + 1] ?
+                        dt[position] :
+                        index->dayCounter().yearFraction(interestDates[position], date));
+        };
+
+        const Real& gearing = coupon_->gearing();
+        const bool isCdiIndexed = coupon_->isCdiIndexed();
+
+        const auto compound = [isCdiIndexed, gearing](const Time t, const Rate r) -> Real {
+            return !isCdiIndexed ? 1.0 + r * t : (std::pow(1.0 + r, t) - 1.0) * gearing + 1.0;
+        };
+
         Size i = 0;
         const Size n = determineNumberOfFixings(interestDates, date, applyObservationShift);
-
         Real compoundFactor = 1.0;
 
         // already fixed part
@@ -75,10 +87,7 @@ namespace QuantLib {
             const Rate fixing = pastFixings[fixingDates[i]];
             QL_REQUIRE(fixing != Null<Real>(),
                        "Missing " << index->name() << " fixing for " << fixingDates[i]);
-            Time span = (date >= interestDates[i + 1] ?
-                             dt[i] :
-                             index->dayCounter().yearFraction(interestDates[i], date));
-            compoundFactor *= (1.0 + fixing * span);
+            compoundFactor *= compound(span(i), fixing);
             ++i;
         }
 
@@ -88,10 +97,7 @@ namespace QuantLib {
             try {
                 Rate fixing = pastFixings[fixingDates[i]];
                 if (fixing != Null<Real>()) {
-                    Time span = (date >= interestDates[i + 1] ?
-                                     dt[i] :
-                                     index->dayCounter().yearFraction(interestDates[i], date));
-                    compoundFactor *= (1.0 + fixing * span);
+                    compoundFactor *= compound(span(i), fixing);
                     ++i;
                 } else {
                     ; // fall through and forecast
@@ -109,15 +115,6 @@ namespace QuantLib {
             QL_REQUIRE(!curve.empty(),
                        "null term structure set to this instance of " << index->name());
 
-            const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
-                                        &dt](Size position) {
-                Rate fixing = index->fixing(fixingDates[position]);
-                Time span = (date >= interestDates[position + 1] ?
-                                 dt[position] :
-                                 index->dayCounter().yearFraction(interestDates[position], date));
-                return span * fixing;
-            };
-
             if (!coupon_->canApplyTelescopicFormula()) {
                 // With lookback applied, the telescopic formula cannot be used,
                 // we need to project each fixing in the coupon.
@@ -130,7 +127,8 @@ namespace QuantLib {
                 // Same applies to a case when accrual calculation date does or
                 // does not occur on an interest date.
                 while (i < n) {
-                    compoundFactor *= (1.0 + effectiveRate(i));
+                    const Rate fixing = index->fixing(fixingDates[i]);
+                    compoundFactor *= compound(span(i), fixing);
                     ++i;
                 }
             } else {
@@ -157,7 +155,8 @@ namespace QuantLib {
 
                     // With no lockout, the loop is skipped because i = n.
                     while (i < n) {
-                        compoundFactor *= (1.0 + effectiveRate(i));
+                        const Rate fixing = index->fixing(fixingDates[i]);
+                        compoundFactor *= compound(span(i), fixing);
                         ++i;
                     }
                 } else {
@@ -167,13 +166,19 @@ namespace QuantLib {
                     // previous date, then we'll add the missing bit.
                     const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
                     compoundFactor *= startDiscount / endDiscount;
-                    compoundFactor *= (1.0 + effectiveRate(n - 1));
+                    const Rate fixing = index->fixing(fixingDates[n - 1]);
+                    compoundFactor *= compound(span(n - 1), fixing);
                 }
             }
         }
 
-        const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
-        return coupon_->gearing() * rate + coupon_->spread();
+        const Time accruedPeriod = coupon_->accruedPeriod(date);
+        if (!isCdiIndexed) {
+            const Rate rate = (compoundFactor - 1.0) / accruedPeriod;
+            return gearing * rate + coupon_->spread();
+        }
+        compoundFactor *= std::pow(1.0 + coupon_->spread(), accruedPeriod);
+        return (compoundFactor - 1.0) / accruedPeriod;
     }
 
     void
