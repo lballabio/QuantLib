@@ -237,6 +237,12 @@ struct CommonVars {
         // make sure that the index has the latest zero inflation term structure
         hcpi.linkTo(pCPIts);
     }
+
+    // teardown
+    ~CommonVars() {
+        // break circular references and allow curves to be destroyed
+        hcpi.reset();
+    }
 };
 
 
@@ -346,9 +352,6 @@ BOOST_AUTO_TEST_CASE(consistency) {
 
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);
-
-    // remove circular refernce
-    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_CASE(zciisconsistency) {
@@ -400,8 +403,6 @@ BOOST_AUTO_TEST_CASE(zciisconsistency) {
     for (Size i=0; i<2; i++) {
         QL_REQUIRE(fabs(cS.legNPV(i)-zciis.legNPV(i))<1e-3,"zciis leg does not equal CPISwap leg");
     }
-    // remove circular refernce
-    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_CASE(cpibondconsistency) {
@@ -409,11 +410,9 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
 
     CommonVars common;
 
-    // ZeroInflationSwap aka CPISwap
-
     Swap::Type type = Swap::Payer;
     Real nominal = 1000000.0;
-    bool subtractInflationNominal = true;
+    bool subtractInflationNominal = false;
     // float+spread leg
     Spread spread = 0.0;
     DayCounter floatDayCount = Actual365Fixed();
@@ -480,8 +479,7 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     // now do the bond equivalent
     std::vector<Rate> fixedRates(1,fixedRate);
     Natural settlementDays = 1;// cannot be zero!
-    bool growthOnly = true;
-    CPIBond cpiB(settlementDays, nominal, growthOnly,
+    CPIBond cpiB(settlementDays, nominal,
                  baseCPI, contractObservationLag, fixedIndex,
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
@@ -490,8 +488,6 @@ BOOST_AUTO_TEST_CASE(cpibondconsistency) {
     cpiB.setPricingEngine(dbe);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
-    // remove circular reference
-    common.hcpi.reset();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
