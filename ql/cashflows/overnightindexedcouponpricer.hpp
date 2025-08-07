@@ -35,6 +35,8 @@
 
 namespace QuantLib {
 
+    class OptionletVolatilityStructure;
+
     //! CompoudAveragedOvernightIndexedCouponPricer pricer
     class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
       public:
@@ -49,9 +51,13 @@ namespace QuantLib {
         Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
         //@}
         Rate averageRate(const Date& date) const;
+        Rate effectiveSpread() const;
+        Rate effectiveIndexFixing() const;
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
+        std::tuple<Rate, Spread, Rate> compute(const Date& date) const;
+        mutable Real swapletRate_, effectiveSpread_, effectiveIndexFixing_;
     };
 
     /*! pricer for arithmetically averaged overnight indexed coupons
@@ -85,6 +91,23 @@ namespace QuantLib {
         bool byApprox_;
         Real mrs_;
         Real vol_;
+    };
+
+    //! capped floored overnight indexed coupon pricer base class
+    class CappedFlooredOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    public:
+        CappedFlooredOvernightIndexedCouponPricer(const Handle<OptionletVolatilityStructure>& v,
+                                                  const bool effectiveVolatilityInput = false);
+        Handle<OptionletVolatilityStructure> capletVolatility() const;
+        bool effectiveVolatilityInput() const;
+        Real effectiveCapletVolatility() const;   // only available after capletRate() was called
+        Real effectiveFloorletVolatility() const; // only available after floorletRate() was called
+
+    protected:
+        Handle<OptionletVolatilityStructure> capletVol_;
+        bool effectiveVolatilityInput_;
+        mutable Real effectiveCapletVolatility_ = Null<Real>();
+        mutable Real effectiveFloorletVolatility_ = Null<Real>();
     };
 }
 
