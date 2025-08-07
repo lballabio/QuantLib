@@ -231,6 +231,9 @@ namespace QuantLib {
         OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
         OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);
+        OvernightLeg& withOvernightIndexedCouponPricer(const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer);
+        OvernightLeg& withCapFlooredOvernightIndexedCouponPricer(
+          const QuantLib::ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer>& couponPricer);
 
         operator Leg() const;
       private:
@@ -256,7 +259,7 @@ namespace QuantLib {
         ext::optional<Period> lastRecentPeriod_;
         Calendar lastRecentPeriodCalendar_;
         std::vector<Date> paymentDates_;
-        ext::shared_ptr<CompoundingOvernightIndexedCouponPricer> couponPricer_; //FIXME: make it flexible for both pricers
+        ext::shared_ptr<FloatingRateCouponPricer> couponPricer_;
         ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer> capFlooredCouponPricer_;
     };
 

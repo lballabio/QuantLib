@@ -61,7 +61,7 @@ namespace QuantLib {
     }
 
     Rate CompoundingOvernightIndexedCouponPricer::effectiveSpread() const {
-        auto [r, effectiveSpread, rest] = compute(coupon_->accrualEndDate());
+        auto [r, effectiveSpread, effectiveIndexFixing] = compute(coupon_->accrualEndDate());
         effectiveSpread_ = effectiveSpread;
         return effectiveSpread_;
     }
@@ -212,6 +212,7 @@ namespace QuantLib {
         Rate finalRate = coupon_->gearing() * rate;
         Spread effectiveSpread;
         Rate effectiveIndexFixing;
+        
         if (!coupon_->includeSpread()) {
             finalRate += coupon_->spread();
             effectiveSpread = coupon_->spread();

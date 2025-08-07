@@ -31,6 +31,7 @@
 #include <ql/utilities/vectors.hpp>
 #include <utility>
 #include <algorithm>
+#include <type_traits>
 
 using std::vector;
 
@@ -528,17 +529,22 @@ namespace QuantLib {
         return *this;
     }
 
-    /*
-    OvernightLeg& OvernightLeg::withOvernightIndexedCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
+    OvernightLeg& OvernightLeg::withOvernightIndexedCouponPricer(const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer) {
+        if (averagingMethod_ == RateAveraging::Compound)
+            QL_REQUIRE((std::is_same_v<decltype(*couponPricer), CompoundingOvernightIndexedCouponPricer>), 
+                        "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
+        else
+            QL_REQUIRE((std::is_same_v<decltype(*couponPricer), ArithmeticAveragedOvernightIndexedCouponPricer>) , 
+                        "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
         couponPricer_ = couponPricer;
         return *this;
     }
 
     OvernightLeg& OvernightLeg::withCapFlooredOvernightIndexedCouponPricer(
-	const QuantLib::ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer>& couponPricer) {
-	capFlooredCouponPricer_ = couponPricer;
-	return *this;
-    }*/
+        const QuantLib::ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer>& couponPricer) {
+        capFlooredCouponPricer_ = couponPricer;
+        return *this;
+    }
 
     OvernightLeg::operator Leg() const {
 
