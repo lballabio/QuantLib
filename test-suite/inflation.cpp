@@ -375,6 +375,11 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     };
     auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
 
+    auto firstHelper = ext::dynamic_pointer_cast<ZeroCouponInflationSwapHelper>(helpers[0]);
+    auto firstCashFlow = ext::dynamic_pointer_cast<ZeroInflationCashFlow>(
+        firstHelper->swap()->inflationLeg().front());
+    BOOST_CHECK_EQUAL(firstCashFlow->fixingDate(), Date(13, May, 2008));
+
     Date baseDate = ii->lastFixingDate();
 
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS =
@@ -1238,6 +1243,11 @@ BOOST_AUTO_TEST_CASE(testYYTermStructure) {
             Handle<YieldTermStructure>(nominalTS));
     };
     auto helpers = makeHelpers<YoYInflationTermStructure>(yyData, makeHelper);
+
+    auto firstHelper = ext::dynamic_pointer_cast<YearOnYearInflationSwapHelper>(helpers[0]);
+    auto firstCashFlow = ext::dynamic_pointer_cast<YoYInflationCoupon>(
+        firstHelper->swap()->yoyLeg().front());
+    BOOST_CHECK_EQUAL(firstCashFlow->fixingDate(), Date(13, June, 2008));
 
     Date baseDate = rpi->lastFixingDate();
     Rate baseYYRate = yyData[0].rate/100.0;
