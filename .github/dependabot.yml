@@ -6,9 +6,3 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every weekday
       interval: "weekly"
-
-  # unfortunately, actions not in workflows needed to be checked separately.
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/setup"
-    schedule:
-      interval: "weekly"

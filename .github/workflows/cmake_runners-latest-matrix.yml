@@ -52,15 +52,61 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup needed software
-        id: setup
-        uses: ./.github/actions/setup
-        with:
-          os: ${{ matrix.settings.os }}
-          cxx: ${{ matrix.settings.cxx }}
-          cxx-standard: ${{ matrix.cxx-standard }}
+      - name: Determine ccache variant
+        shell: bash
+        run: |
+          echo "CMAKE_CXX_COMPILER_LAUNCHER=${{ ( (runner.os == 'Windows') && 'sccache' ) || 'ccache' }}"   >> $GITHUB_ENV
 
-      - name: Configure CMake and Build
+      - name: Setup CCache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: cmake-latest-${{ inputs.os }}-${{ inputs.cxx }}-${{ inputs.cxx-standard }}
+          restore-keys: |
+            cmake-latest-${{ inputs.os }}-${{ inputs.cxx }}-${{ inputs.cxx-standard }}
+            cmake-latest-${{ inputs.os }}-${{ inputs.cxx }}
+            cmake-latest-${{ inputs.os }}
+          variant: ${{ env.CMAKE_CXX_COMPILER_LAUNCHER }}
+
+      - name: Setup Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache ninja-build
+
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew update
+          brew install boost
+
+          echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin"   >> $GITHUB_PATH
+
+      - name: Setup macOS
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install ninja boost
+
+          echo "CXXFLAGS=-stdlib=libc++"   >> $GITHUB_ENV
+
+      - name: Setup Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $BoostUri = "https://downloads.sourceforge.net/project/boost/boost-binaries/1.88.0/boost_1_88_0-msvc-14.3-64.exe"
+          Start-BitsTransfer -Source $BoostUri -Destination $env:RUNNER_TEMP\boost.exe
+          Start-Process -Wait -FilePath "$env:RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=$env:RUNNER_TEMP\boost"
+
+          choco install -y ninja
+
+          Write "Boost_DIR=$env:RUNNER_TEMP\boost\lib64-msvc-14.3\cmake\Boost-1.88.0"   >> $env:GITHUB_ENV
+
+      - name: Set up Visual Studio shell on Windows
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure CMake and build
         env:
           CC: ${{ matrix.settings.cc }}
           CXX: ${{ matrix.settings.cxx }}
