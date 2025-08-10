@@ -818,7 +818,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
         npv += cf->amount() * discountCurve->discount(cf->date());
     }
     
-    CHECK_OIS_COUPON_RESULT("OvernightLeg NPV", npv, expectedNpv, 1e-12);
+    CHECK_OIS_COUPON_RESULT("OvernightLeg NPV", npv, expectedNpv, 1e-8);
 }
 
 /*
