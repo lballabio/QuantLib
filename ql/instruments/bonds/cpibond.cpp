@@ -51,8 +51,8 @@ namespace QuantLib {
                      const Calendar& exCouponCalendar,
                      const BusinessDayConvention exCouponConvention,
                      bool exCouponEndOfMonth)
-    : CPIBond(settlementDays, faceAmount, false, baseCPI, observationLag, cpiIndex,
-              observationInterpolation, schedule, fixedRate, accrualDayCounter,
+    : CPIBond(settlementDays, faceAmount, false, baseCPI, observationLag, std::move(cpiIndex),
+              observationInterpolation, std::move(schedule), fixedRate, accrualDayCounter,
               paymentConvention, issueDate, paymentCalendar, exCouponPeriod,
               exCouponCalendar, exCouponConvention, exCouponEndOfMonth) {}
 
