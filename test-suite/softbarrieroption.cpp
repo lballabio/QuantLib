@@ -154,17 +154,17 @@ BOOST_AUTO_TEST_CASE(testSoftBarrierHaug) {
 
 
     DayCounter dc = Actual360();  // 
-    Date today = Date::todaysDate();
+    Date today = {8, August, 2025};
     Settings::instance().evaluationDate() = today;
     
     
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+    auto volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
         spot->setValue(value.s);
@@ -173,15 +173,15 @@ BOOST_AUTO_TEST_CASE(testSoftBarrierHaug) {
         vol->setValue(value.v);
 
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        auto exercise = ext::make_shared<EuropeanExercise>(exDate);
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process(
-            new GeneralizedBlackScholesProcess(
+        auto process =
+            ext::make_shared<GeneralizedBlackScholesProcess>(
                 Handle<Quote>(spot),
                 Handle<YieldTermStructure>(qTS),
                 Handle<YieldTermStructure>(rTS),
-                Handle<BlackVolTermStructure>(volTS)));
+                Handle<BlackVolTermStructure>(volTS));
 
         SoftBarrierOption option(value.barrierType, value.L, value.U, payoff, exercise);
         option.setPricingEngine(ext::make_shared<AnalyticSoftBarrierEngine>(process));
