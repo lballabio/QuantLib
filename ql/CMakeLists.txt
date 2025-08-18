@@ -1,6 +1,7 @@
 set(QL_SOURCES
     cashflow.cpp
     cashflows/averagebmacoupon.cpp
+    cashflows/blackovernightindexedcouponpricer.cpp
     cashflows/capflooredcoupon.cpp
     cashflows/capflooredinflationcoupon.cpp
     cashflows/cashflows.cpp
@@ -951,6 +952,7 @@ set(QL_HEADERS
     auto_link.hpp
     cashflow.hpp
     cashflows/averagebmacoupon.hpp
+    cashflows/blackovernightindexedcouponpricer.hpp
     cashflows/capflooredcoupon.hpp
     cashflows/capflooredinflationcoupon.hpp
     cashflows/cashflows.hpp

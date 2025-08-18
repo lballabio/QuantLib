@@ -235,7 +235,10 @@ namespace QuantLib {
     Real OvernightIndexedCoupon::effectiveSpread() const {
         if (!includeSpread_)
             return spread();
-        //FIXME: handle two pricers case
+        
+        if (averagingMethod_ == RateAveraging::Simple)
+            QL_FAIL("Average OIS Coupon does not have an effectiveSpread"); // FIXME: better error message
+
         auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer());
         QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveSpread(): expected OvernightIndexedCouponPricer");
         p->initialize(*this);
@@ -244,7 +247,10 @@ namespace QuantLib {
 
     Real OvernightIndexedCoupon::effectiveIndexFixing() const {
         auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer());
-        //FIXME: handle two pricers case
+        
+        if (averagingMethod_ == RateAveraging::Simple)
+            QL_FAIL("Average OIS Coupon does not have an effectiveIndexFixing"); // FIXME: better error message
+
         QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveSpread(): expected OvernightIndexedCouponPricer");
         p->initialize(*this);
         return p->effectiveIndexFixing();
@@ -254,12 +260,13 @@ namespace QuantLib {
 
     CappedFlooredOvernightIndexedCoupon::CappedFlooredOvernightIndexedCoupon(
         const ext::shared_ptr<OvernightIndexedCoupon>& underlying, Real cap, Real floor, bool nakedOption,
-        bool localCapFloor)
+        bool localCapFloor, RateAveraging::Type averagingMethod, bool includeSpread)
         : FloatingRateCoupon(underlying->date(), underlying->nominal(), underlying->accrualStartDate(),
                             underlying->accrualEndDate(), underlying->fixingDays(), underlying->index(),
                             underlying->gearing(), underlying->spread(), underlying->referencePeriodStart(),
                             underlying->referencePeriodEnd(), underlying->dayCounter(), false),
-        underlying_(underlying), nakedOption_(nakedOption), localCapFloor_(localCapFloor) {
+        underlying_(underlying), nakedOption_(nakedOption), localCapFloor_(localCapFloor), 
+        averagingMethod_(averagingMethod), includeSpread_(includeSpread) {
 
         QL_REQUIRE(!underlying_->includeSpread() || close_enough(underlying_->gearing(), 1.0),
                 "CappedFlooredOvernightIndexedCoupon: if include spread = true, only a gearing 1.0 is allowed - scale "

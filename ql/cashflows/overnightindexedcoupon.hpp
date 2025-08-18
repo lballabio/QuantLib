@@ -146,8 +146,12 @@ namespace QuantLib {
         /*! capped / floored compounded, backward-looking on coupon, local means that the daily rates are capped / floored
           while a global cap / floor is applied to the effective period rate */
         CappedFlooredOvernightIndexedCoupon(const ext::shared_ptr<OvernightIndexedCoupon>& underlying,
-                                            Real cap = Null<Real>(), Real floor = Null<Real>(), bool nakedOption = false,
-                                            bool localCapFloor = false);
+                                            Real cap = Null<Real>(),
+                                            Real floor = Null<Real>(), 
+                                            bool nakedOption = false,
+                                            bool localCapFloor = false,
+                                            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                            bool includeSpread = false);
 
         //! \name Observer interface
         //@{
@@ -190,12 +194,17 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndexedCoupon> underlying() const { return underlying_; }
         bool nakedOption() const { return nakedOption_; }
         bool localCapFloor() const { return localCapFloor_; }
+        bool includeSpread() const { return includeSpread_; }
+        //! averaging method
+        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
 
     protected:
         ext::shared_ptr<OvernightIndexedCoupon> underlying_;
         Rate cap_, floor_;
         bool nakedOption_;
         bool localCapFloor_;
+        RateAveraging::Type averagingMethod_;
+        bool includeSpread_;
         mutable Real effectiveCapletVolatility_;
         mutable Real effectiveFloorletVolatility_;
     };
