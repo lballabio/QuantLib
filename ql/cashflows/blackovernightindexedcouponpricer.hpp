@@ -22,7 +22,8 @@
     \brief black coupon pricer for capped / floored ON indexed coupons
 */
 
-#pragma once
+#ifndef quantlib_black_overnight_indexed_coupon_pricer_hpp
+#define quantlib_black_overnight_indexed_coupon_pricer_hpp
 
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
@@ -83,3 +84,5 @@ private:
 };
 
 }
+
+#endif
