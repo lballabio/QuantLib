@@ -510,7 +510,7 @@
   <ItemGroup>
     <ClInclude Include="ql\cashflows\all.hpp" />
     <ClInclude Include="ql\cashflows\averagebmacoupon.hpp" />
-    <ClInclude Include="ql\cashflows\blackovernightindexedcouponpricer.hpp">
+    <ClInclude Include="ql\cashflows\blackovernightindexedcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\capflooredcoupon.hpp" />
     <ClInclude Include="ql\cashflows\capflooredinflationcoupon.hpp" />
     <ClInclude Include="ql\cashflows\cashflows.hpp" />
