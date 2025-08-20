@@ -6,6 +6,7 @@
 #include <ql/indexes/ibor/bbsw.hpp>
 #include <ql/indexes/ibor/bibor.hpp>
 #include <ql/indexes/ibor/bkbm.hpp>
+#include <ql/indexes/ibor/brlcdi.hpp>
 #include <ql/indexes/ibor/cadlibor.hpp>
 #include <ql/indexes/ibor/cdor.hpp>
 #include <ql/indexes/ibor/chflibor.hpp>
