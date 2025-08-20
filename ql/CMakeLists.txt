@@ -217,6 +217,7 @@ set(QL_SOURCES
     indexes/bmaindex.cpp
     indexes/equityindex.cpp
     indexes/ibor/bibor.cpp
+    indexes/ibor/brlcdi.cpp
     indexes/ibor/corra.cpp
     indexes/ibor/custom.cpp
     indexes/ibor/eonia.cpp
@@ -1254,6 +1255,7 @@ set(QL_HEADERS
     indexes/ibor/bbsw.hpp
     indexes/ibor/bibor.hpp
     indexes/ibor/bkbm.hpp
+    indexes/ibor/brlcdi.hpp
     indexes/ibor/cadlibor.hpp
     indexes/ibor/cdor.hpp
     indexes/ibor/chflibor.hpp
