@@ -20,6 +20,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
@@ -218,7 +219,10 @@ struct CommonVarsONLeg {
 
         if (!caps.empty() || !floors.empty()) {
             rateVolTS.linkTo(returnRateVolTS());
-            leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackOvernightIndexedCouponPricer>(rateVolTS));
+            if (averaging == RateAveraging::Compound)
+                leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackOvernightIndexedCouponPricer>(rateVolTS));
+            else
+                leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackAverageONIndexedCouponPricer>(rateVolTS));
         }
         
         return leg;
@@ -979,7 +983,8 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
     
     BOOST_CHECK_EQUAL(leg.size(), 12);
 
-    Real expectedNpv = -14.317126680266473;
+    bool atParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+    Real expectedNpv = atParCoupons ? -14.317126680266473 : -20.473876859068422;
     Real npv = 0.0;
     
     for (Size i = 0; i < leg.size(); ++i) {
