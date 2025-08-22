@@ -66,6 +66,7 @@ namespace QuantLib {
     should be revised. */
     class BlackAverageONIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
     public:
+        using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
         //! \name FloatingRateCoupon interface
         //@{
         void initialize(const FloatingRateCoupon& coupon) override;
