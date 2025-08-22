@@ -260,13 +260,12 @@ namespace QuantLib {
 
     CappedFlooredOvernightIndexedCoupon::CappedFlooredOvernightIndexedCoupon(
         const ext::shared_ptr<OvernightIndexedCoupon>& underlying, Real cap, Real floor, bool nakedOption,
-        bool localCapFloor, RateAveraging::Type averagingMethod, bool includeSpread)
+        bool localCapFloor)
         : FloatingRateCoupon(underlying->date(), underlying->nominal(), underlying->accrualStartDate(),
                             underlying->accrualEndDate(), underlying->fixingDays(), underlying->index(),
                             underlying->gearing(), underlying->spread(), underlying->referencePeriodStart(),
                             underlying->referencePeriodEnd(), underlying->dayCounter(), false),
-        underlying_(underlying), nakedOption_(nakedOption), localCapFloor_(localCapFloor), 
-        averagingMethod_(averagingMethod), includeSpread_(includeSpread) {
+        underlying_(underlying), nakedOption_(nakedOption), localCapFloor_(localCapFloor) {
 
         QL_REQUIRE(!underlying_->includeSpread() || close_enough(underlying_->gearing(), 1.0),
                 "CappedFlooredOvernightIndexedCoupon: if include spread = true, only a gearing 1.0 is allowed - scale "

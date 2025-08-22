@@ -21,11 +21,14 @@
 #include "utilities.hpp"
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/settings.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -126,6 +129,39 @@ struct CommonVars {
 
     CommonVars() : CommonVars(Date(23, November, 2021)) {}
 };
+
+struct BlackONPricerVars {
+    Date today;
+    Real notional = 1000000.0;
+    RelinkableHandle<YieldTermStructure> forecastCurve;
+    RelinkableHandle<OptionletVolatilityStructure> vol;
+    ext::shared_ptr<OvernightIndex> sofr;
+    ext::shared_ptr<OvernightIndexedCoupon> onCoupon;
+    DayCounter dc;
+
+    BlackONPricerVars(const Date& evalDate = Date(1, July, 2025)) {
+        today = evalDate;
+        dc = Actual360();
+        Settings::instance().evaluationDate() = today;
+        auto optionletVol = makeQuoteHandle(0.01);
+
+        // Flat forward curve
+        forecastCurve.linkTo(flatRate(today, 0.04, dc));
+        sofr = ext::make_shared<Sofr>(forecastCurve);
+
+        // Flat volatility
+        vol.linkTo(ext::make_shared<ConstantOptionletVolatility>(today, TARGET(), Following, optionletVol, dc));
+    }
+
+    ext::shared_ptr<CappedFlooredOvernightIndexedCoupon> makeCoupon(Date start, Date end, Rate cap = Null<Rate>(), Rate floor = Null<Rate>()) {
+        onCoupon = ext::make_shared<OvernightIndexedCoupon>(
+            end, notional, start, end, sofr, 1.0, 0.0, Date(), Date(), dc,
+            false, RateAveraging::Compound, Null<Natural>(), 0, false, 
+            false);
+        return ext::make_shared<CappedFlooredOvernightIndexedCoupon>(onCoupon, cap, floor);
+    }
+};
+
 
 struct CommonVarsONLeg {
     Date today;
@@ -694,6 +730,37 @@ BOOST_AUTO_TEST_CASE(testErrorWhenLookbackOrLockoutAppliedForSimpleAveraging) {
     BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), 0,
                                       true, false, RateAveraging::Simple),
                       Error);
+}
+
+BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
+    BOOST_TEST_MESSAGE("Testing BlackOvernightIndexedCouponPricer caplet/floorlet pricing...");
+
+    BlackONPricerVars vars;
+    Date start = Date(1, July, 2025);
+    Date end = Date(1, October, 2025);
+
+    // Caplet
+    Rate cap = 0.045;
+    auto cappedCoupon = vars.makeCoupon(start, end, cap, Null<Rate>());
+    auto pricer = ext::make_shared<BlackOvernightIndexedCouponPricer>(vars.vol);
+    cappedCoupon->setPricer(pricer);
+
+    Rate rate = cappedCoupon->rate();
+    BOOST_CHECK(rate <= cap + 1e-8); // Should not exceed cap
+
+    // Floorlet
+    Rate floor = 0.035;
+    auto flooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), floor);
+    flooredCoupon->setPricer(pricer);
+
+    rate = flooredCoupon->rate();
+    BOOST_CHECK(rate >= floor - 1e-8); // Should not be below floor
+
+    // Capped and Floored
+    auto cappedFlooredCoupon = vars.makeCoupon(start, end, cap, floor);
+    cappedFlooredCoupon->setPricer(pricer);
+    rate = cappedFlooredCoupon->rate();
+    BOOST_CHECK(rate <= cap + 1e-8 && rate >= floor - 1e-8);
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegBasicFunctionality) {

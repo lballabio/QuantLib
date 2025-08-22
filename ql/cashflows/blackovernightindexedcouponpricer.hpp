@@ -32,56 +32,60 @@
 
 namespace QuantLib {
 
-//! Black compounded overnight coupon pricer
-/* The methods that are implemented here to price capped / floored compounded ON coupons are
-   highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
-   should be revised. */
-class BlackOvernightIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
-public:
-    using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
-    void initialize(const FloatingRateCoupon& coupon) override;
-    Real swapletPrice() const override;
-    Rate swapletRate() const override;
-    Real capletPrice(Rate effectiveCap) const override;
-    Rate capletRate(Rate effectiveCap) const override;
-    Real floorletPrice(Rate effectiveFloor) const override;
-    Rate floorletRate(Rate effectiveFloor) const override;
+    //! Black compounded overnight coupon pricer
+    /* The methods that are implemented here to price capped / floored compounded ON coupons are
+    highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
+    should be revised. */
+    class BlackOvernightIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
+    public:
+        using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
+        //! \name FloatingRateCoupon interface
+        //@{
+        void initialize(const FloatingRateCoupon& coupon) override;
+        Real swapletPrice() const override;
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
+        //@}
+    private:
+        Real optionletRateGlobal(Option::Type optionType, Real effStrike) const;
+        Real optionletRateLocal(Option::Type optionType, Real effStrike) const;
 
-private:
-    Real optionletRateGlobal(Option::Type optionType, Real effStrike) const;
-    Real optionletRateLocal(Option::Type optionType, Real effStrike) const;
+        Real gearing_;
+        ext::shared_ptr<IborIndex> index_;
+        Real effectiveIndexFixing_, swapletRate_;
 
-    Real gearing_;
-    ext::shared_ptr<IborIndex> index_;
-    Real effectiveIndexFixing_, swapletRate_;
+        const CappedFlooredOvernightIndexedCoupon* coupon_;
+    };
 
-    const CappedFlooredOvernightIndexedCoupon* coupon_;
-};
+    //! Black averaged overnight coupon pricer
+    /* The methods that are implemented here to price capped / floored average ON coupons are
+    highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
+    should be revised. */
+    class BlackAverageONIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
+    public:
+        //! \name FloatingRateCoupon interface
+        //@{
+        void initialize(const FloatingRateCoupon& coupon) override;
+        Real swapletPrice() const override;
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
+        //@}
+    private:
+        Real optionletRateGlobal(Option::Type optionType, Real effStrike) const;
+        Real optionletRateLocal(Option::Type optionType, Real effStrike) const;
 
-//! Black averaged overnight coupon pricer
-/* The methods that are implemented here to price capped / floored average ON coupons are
-   highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
-   should be revised. */
-class BlackAverageONIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
-public:
-    void initialize(const FloatingRateCoupon& coupon) override;
-    Real swapletPrice() const override;
-    Rate swapletRate() const override;
-    Real capletPrice(Rate effectiveCap) const override;
-    Rate capletRate(Rate effectiveCap) const override;
-    Real floorletPrice(Rate effectiveFloor) const override;
-    Rate floorletRate(Rate effectiveFloor) const override;
+        Real gearing_;
+        ext::shared_ptr<IborIndex> index_;
+        Real swapletRate_, forwardRate_;
 
-private:
-    Real optionletRateGlobal(Option::Type optionType, Real effStrike) const;
-    Real optionletRateLocal(Option::Type optionType, Real effStrike) const;
-
-    Real gearing_;
-    ext::shared_ptr<IborIndex> index_;
-    Real swapletRate_, forwardRate_;
-
-    const CappedFlooredOvernightIndexedCoupon* coupon_;
-};
+        const CappedFlooredOvernightIndexedCoupon* coupon_;
+    };
 
 }
 
