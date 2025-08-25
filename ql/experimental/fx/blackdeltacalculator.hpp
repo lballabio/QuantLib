@@ -55,7 +55,7 @@ namespace QuantLib {
             \param dt Delta type (spot, forward, premium-adjusted, etc.)
             \param spot Spot FX rate
             \param dDiscount Domestic discount factor
-            \param dDiscount Foreign discount factor
+            \param fDiscount Foreign discount factor
             \param stdDev Standard deviation volatility*sqrt(timeToMaturity)
             
             \warning Make sure you are passing the correct standard deviation
