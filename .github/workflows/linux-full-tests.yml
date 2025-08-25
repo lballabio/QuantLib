@@ -201,7 +201,7 @@ jobs:
             configureflags: --enable-null-as-functions
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version

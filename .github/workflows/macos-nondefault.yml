@@ -15,7 +15,7 @@ jobs:
           - classes: std
             configureflags: --enable-std-pointers --disable-std-any --disable-std-optional
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
