@@ -25,16 +25,15 @@ namespace QuantLib {
 
     //! BRL-CDI Index: relevant for https://en.wikipedia.org/wiki/Brazilian_Swap
 
-    class BRLCdi : public OvernightIndex {
+    class Cdi : public OvernightIndex {
       public:
-        explicit BRLCdi(const Handle<YieldTermStructure>& h = {})
-        : OvernightIndex("BRL-CDI", 0, BRLCurrency(), Brazil(Brazil::Settlement), Business252(), h) {}
+        explicit Cdi(const Handle<YieldTermStructure>& h = {})
+        : OvernightIndex("CDI", 0, BRLCurrency(), Brazil(Brazil::Settlement), Business252(), h) {}
 
         Rate forecastFixing(const Date& fixingDate) const override;
 
     };
 
 } 
-
 
 #endif

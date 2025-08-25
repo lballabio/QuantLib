@@ -627,10 +627,10 @@
     <ClInclude Include="ql\indexes\ibor\bkbm.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
-        <ClInclude Include="ql\indexes\ibor\brlcdi.hpp">
+    <ClInclude Include="ql\indexes\ibor\cadlibor.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
-    <ClInclude Include="ql\indexes\ibor\cadlibor.hpp">
+    <ClInclude Include="ql\indexes\ibor\cdi.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\ibor\cdor.hpp">
@@ -4655,7 +4655,7 @@
     <ClCompile Include="ql\indexes\ibor\bibor.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
-        <ClCompile Include="ql\indexes\ibor\brlcdi.cpp">
+    <ClCompile Include="ql\indexes\ibor\cdi.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\ibor\corra.cpp">

@@ -17,7 +17,7 @@
 
 namespace QuantLib {
     // Reference: Zine-eddine, Arroub. "OpenGamma Quantitative research Brazilian Swaps", London, December 2013. paragraph 5
-    Rate BRLCdi::forecastFixing(const Date& fixingDate) const {
+    Rate Cdi::forecastFixing(const Date& fixingDate) const {
 
         Date startDate = valueDate(fixingDate);
         Date endDate = maturityDate(startDate);

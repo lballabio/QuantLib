@@ -9,8 +9,8 @@ this_include_HEADERS = \
     bbsw.hpp \
     bibor.hpp \
     bkbm.hpp \
-    brlcdi.hpp \
     cadlibor.hpp \
+    cdi.hpp \
     cdor.hpp \
     chflibor.hpp \
     corra.hpp \
@@ -49,7 +49,7 @@ this_include_HEADERS = \
 
 cpp_files = \
     bibor.cpp \
-    brlcdi.cpp \
+    cdi.cpp \
     corra.cpp \
     custom.cpp \
     eonia.cpp \
