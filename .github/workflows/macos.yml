@@ -8,7 +8,7 @@ jobs:
       matrix:
         os: [macos-13, macos-14]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
