@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         Uniform1dMesher(Real start, Real end, Size size)
         : Fdm1dMesher(size) {
-            QL_REQUIRE(end > start, "end must be large than start");
+            QL_REQUIRE(end > start, "end must be larger than start");
 
             const Real dx = (end-start)/(size-1);
 
