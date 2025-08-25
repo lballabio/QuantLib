@@ -13,8 +13,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_brlcdi_hpp
-#define quantlib_brlcdi_hpp
+#ifndef quantlib_cdi_hpp
+#define quantlib_cdi_hpp
 
 #include <ql/currencies/america.hpp>
 #include <ql/indexes/iborindex.hpp>

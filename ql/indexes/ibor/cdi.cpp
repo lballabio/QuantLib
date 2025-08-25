@@ -13,7 +13,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/indexes/ibor/brlcdi.hpp>
+#include <ql/indexes/ibor/cdi.hpp>
 
 namespace QuantLib {
     // Reference: Zine-eddine, Arroub. "OpenGamma Quantitative research Brazilian Swaps", London, December 2013. paragraph 5
