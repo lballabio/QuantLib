@@ -23,6 +23,7 @@
 #include <ql/indexes/ibor/custom.hpp>
 #include <ql/indexes/ibor/cdi.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/target.hpp>
