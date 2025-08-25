@@ -35,6 +35,8 @@
 
 namespace QuantLib {
 
+    class OptionletVolatilityStructure;
+
     //! CompoudAveragedOvernightIndexedCouponPricer pricer
     class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
       public:
@@ -49,9 +51,13 @@ namespace QuantLib {
         Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
         //@}
         Rate averageRate(const Date& date) const;
+        Rate effectiveSpread() const;
+        Rate effectiveIndexFixing() const;
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
+        std::tuple<Rate, Spread, Rate> compute(const Date& date) const;
+        mutable Real swapletRate_, effectiveSpread_, effectiveIndexFixing_;
     };
 
     /*! pricer for arithmetically averaged overnight indexed coupons
@@ -85,6 +91,39 @@ namespace QuantLib {
         bool byApprox_;
         Real mrs_;
         Real vol_;
+    };
+
+    //! capped floored overnight indexed coupon pricer base class
+    class CappedFlooredOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    public:
+        /*! \brief Constructor
+            \param v Optionlet volatility structure handle
+            \param effectiveVolatilityInput If true, volatility is interpreted as effective volatility
+        */
+        CappedFlooredOvernightIndexedCouponPricer(const Handle<OptionletVolatilityStructure>& v,
+                                                  const bool effectiveVolatilityInput = false);
+        
+        /*! \brief Returns the handle to the optionlet volatility structure used for caplets/floorlets */
+        Handle<OptionletVolatilityStructure> capletVolatility() const;
+        
+        /*! \brief Returns true if the volatility input is interpreted as effective volatility */
+        bool effectiveVolatilityInput() const;
+        
+        /*! \brief Returns the effective caplet volatility used in the last capletRate() calculation.
+            \note Only available after capletRate() was called.
+        */
+        Real effectiveCapletVolatility() const;
+        
+        /*! \brief Returns the effective floorlet volatility used in the last floorletRate() calculation.
+            \note Only available after floorletRate() was called.
+        */
+        Real effectiveFloorletVolatility() const;
+
+    protected:
+        Handle<OptionletVolatilityStructure> capletVol_;
+        bool effectiveVolatilityInput_;
+        mutable Real effectiveCapletVolatility_ = Null<Real>();
+        mutable Real effectiveFloorletVolatility_ = Null<Real>();
     };
 }
 
