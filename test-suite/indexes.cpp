@@ -200,6 +200,7 @@ BOOST_AUTO_TEST_CASE(testCustomIborIndex) {
 }
 
 BOOST_AUTO_TEST_CASE(testCdiIndex) {
+    BOOST_TEST_MESSAGE("Testing Brazil CDI forecastFixing");
     Date today = Settings::instance().evaluationDate();
     auto flatRate = ext::make_shared<SimpleQuote>(0.05);
     Handle<YieldTermStructure> ts(
@@ -215,8 +216,8 @@ BOOST_AUTO_TEST_CASE(testCdiIndex) {
         Brazil(Brazil::Settlement).advance(testFixingDate, Period(1, Days)));
     
     auto approx = pow(discountStart / discountEnd, 252.0) - 1.0;
-    QL_ASSERT(std::fabs(0.05127 - forecast) < 1e5, "discrepancy in fixing forecast computation\n");
-    QL_ASSERT(std::fabs(approx - forecast) < 1e6, "discrepancy in fixing forecast computation with approximation\n");
+    QL_ASSERT(std::fabs(0.05127 - forecast) < 1e-5, "discrepancy in fixing forecast computation\n");
+    QL_ASSERT(std::fabs(approx - forecast) < 1e-6, "discrepancy in fixing forecast computation with approximation\n");
 }
 BOOST_AUTO_TEST_SUITE_END()
 
