@@ -214,11 +214,9 @@ BOOST_AUTO_TEST_CASE(testCdiIndex) {
         Brazil(Brazil::Settlement).advance(testFixingDate, Period(1, Days)));
     
     auto approx = pow(discountStart / discountEnd, 252.0) - 1.0;
-    QL_ASSERT(close_enough(std::round(forecast * 1e5) / 1e5, 0.05127),
-              "discrepancy in fixing forecast computation\n");
-    QL_ASSERT(close_enough(std::round(forecast * 1e6), std::round(approx * 1e6)),  "discrepancy in fixing forecast computation with approximation\n");
+    QL_ASSERT(std::fabs(0.05127 - forecast) < 1e5, "discrepancy in fixing forecast computation\n");
+    QL_ASSERT(std::fabs(approx - forecast) < 1e6, "discrepancy in fixing forecast computation with approximation\n");
 }
-
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
