@@ -21,11 +21,15 @@
 #include "utilities.hpp"
 #include <ql/indexes/bmaindex.hpp>
 #include <ql/indexes/ibor/custom.hpp>
+#include <ql/indexes/ibor/cdi.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/bespokecalendar.hpp>
+#include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 using namespace QuantLib;
@@ -195,6 +199,26 @@ BOOST_AUTO_TEST_CASE(testCustomIborIndex) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testCdiIndex) {
+    BOOST_TEST_MESSAGE("Testing Brazil CDI forecastFixing");
+    Date today = Settings::instance().evaluationDate();
+    auto flatRate = ext::make_shared<SimpleQuote>(0.05);
+    Handle<YieldTermStructure> ts(
+        ext::make_shared<FlatForward>(today, Handle<Quote>(flatRate), Business252()));
+
+
+    auto cdi = ext::make_shared<Cdi>(ts);
+    auto testFixingDate = Brazil(Brazil::Settlement).advance(today, Period(1, Months));
+    auto forecast = cdi->forecastFixing(testFixingDate);
+
+    DiscountFactor discountStart = ts->discount(testFixingDate);
+    DiscountFactor discountEnd = ts->discount(
+        Brazil(Brazil::Settlement).advance(testFixingDate, Period(1, Days)));
+    
+    auto approx = pow(discountStart / discountEnd, 252.0) - 1.0;
+    QL_ASSERT(std::fabs(0.05127 - forecast) < 1e-5, "discrepancy in fixing forecast computation\n");
+    QL_ASSERT(std::fabs(approx - forecast) < 1e-6, "discrepancy in fixing forecast computation with approximation\n");
+}
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
