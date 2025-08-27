@@ -56,9 +56,9 @@ namespace QuantLib {
             \param spot Spot FX rate
             \param dDiscount Domestic discount factor
             \param fDiscount Foreign discount factor
-            \param stdDev Standard deviation volatility*sqrt(timeToMaturity)
+            \param stdDev Standard deviation of the underlying
             
-            \warning Make sure you are passing the correct standard deviation
+            \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
         */
         BlackDeltaCalculator(Option::Type ot,
@@ -67,6 +67,8 @@ namespace QuantLib {
                              DiscountFactor dDiscount,   // domestic discount
                              DiscountFactor fDiscount,   // foreign discount
                              Real stdDev);
+        //@}
+
         /*!
             \brief Computes the option delta for a given strike.
 
@@ -77,6 +79,7 @@ namespace QuantLib {
             \return       The option delta under the chosen convention.
         */
         Real deltaFromStrike(Real strike) const;
+
         /*!
             \brief Computes the strike corresponding to a given delta.
 
@@ -88,6 +91,7 @@ namespace QuantLib {
             \return       The strike price corresponding to the given delta.
         */
         Real strikeFromDelta(Real delta) const;
+
         /*!
             \brief Calculates the at-the-money (ATM) strike for the given ATM convention.
             
@@ -110,12 +114,14 @@ namespace QuantLib {
                   volatility, and time to expiration set at construction.
         */
         Real atmStrike(DeltaVolQuote::AtmType atmT) const;
+
         /*!
             \brief Sets the delta calculation convention.
             
             \param dt The new delta type convention:
         */
         void setDeltaType(DeltaVolQuote::DeltaType dt);
+
         /*!
             \brief Sets the option type (call or put).
                       
