@@ -1625,7 +1625,7 @@ void testPiecewiseSpreadYieldCurveImpl() {
     BOOST_CHECK_EQUAL(curve->dates()[0], vars.settlement);
     BOOST_CHECK_EQUAL(curve->times()[0], 0.0);
     BOOST_CHECK_EQUAL(curve->data()[0], 1.0);
-    BOOST_CHECK(nodes[0] == std::make_pair(vars.settlement, 1.0));
+    BOOST_CHECK(nodes[0] == std::make_pair(vars.settlement, Real(1)));
     for (Size i = 0; i < helpers.size(); ++i) {
         BOOST_CHECK_EQUAL(curve->dates()[i+1], helpers[i]->pillarDate());
         BOOST_CHECK_EQUAL(curve->times()[i+1], curve->timeFromReference(helpers[i]->pillarDate()));
