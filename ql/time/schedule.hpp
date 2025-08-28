@@ -190,10 +190,15 @@ namespace QuantLib {
     }
 
     inline const Date& Schedule::startDate() const {
+        QL_REQUIRE(!dates_.empty(), "empty Schedule: no start date"); 
         return dates_.front();
     }
 
-    inline const Date &Schedule::endDate() const { return dates_.back(); }
+    inline const Date &Schedule::endDate() const {
+        // Checks to avoid segfault, issue #2302
+        QL_REQUIRE(!dates_.empty(), "empty Schedule: no end date"); 
+        return dates_.back(); 
+    }
 
     inline bool Schedule::hasTenor() const {
         return static_cast<bool>(tenor_);
