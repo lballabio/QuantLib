@@ -47,12 +47,6 @@ namespace QuantLib {
                                     Integer paymentLag)
     : Bond(settlementDays, schedule.calendar(), issueDate) {
 
-        // Checks to avoid segfault, issue #2302
-        QL_REQUIRE(index, "invalid Ibor index (null)");
-        QL_REQUIRE(schedule.size() >= 2,
-                   "AmortizingFloatingRateBond requires a non-empty schedule "
-                   "with at least two dates (got " << schedule.size() << ")");
-
         maturityDate_ = schedule.endDate();
 
         cashflows_ = IborLeg(std::move(schedule), index)
