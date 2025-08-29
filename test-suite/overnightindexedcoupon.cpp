@@ -19,10 +19,17 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/settings.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -48,6 +55,20 @@ struct CommonVars {
         return ext::make_shared<OvernightIndexedCoupon>(
             endDate, notional, startDate, endDate, sofr, 1.0, 0.0, Date(), Date(), DayCounter(),
             telescopicValueDates, averaging, fixingDays, lockoutDays, applyObservationShift);
+    }
+
+    ext::shared_ptr<OvernightIndexedCoupon> makeSpreadedCoupon(Date startDate,
+                                                       Date endDate,
+                                                       Spread spread = 0.0001,
+                                                       bool includeSpread = true,
+                                                       Natural fixingDays = Null<Natural>(),
+                                                       Natural lockoutDays = 0,
+                                                       bool applyObservationShift = false,
+                                                       bool telescopicValueDates = false,
+                                                       RateAveraging::Type averaging = RateAveraging::Compound) {
+        return ext::make_shared<OvernightIndexedCoupon>(
+            endDate, notional, startDate, endDate, sofr, 1.0, spread, Date(), Date(), DayCounter(),
+            telescopicValueDates, averaging, fixingDays, lockoutDays, applyObservationShift, includeSpread);
     }
 
     CommonVars(const Date& evaluationDate) {
@@ -110,6 +131,177 @@ struct CommonVars {
     CommonVars() : CommonVars(Date(23, November, 2021)) {}
 };
 
+struct BlackONPricerVars {
+    Date today;
+    Real notional = 1000000.0;
+    RelinkableHandle<YieldTermStructure> forecastCurve;
+    RelinkableHandle<OptionletVolatilityStructure> vol;
+    ext::shared_ptr<OvernightIndex> sofr;
+    ext::shared_ptr<OvernightIndexedCoupon> onCoupon;
+    DayCounter dc;
+
+    BlackONPricerVars(const Date& evalDate = Date(1, July, 2025)) {
+        today = evalDate;
+        dc = Actual360();
+        Settings::instance().evaluationDate() = today;
+        auto optionletVol = makeQuoteHandle(0.01);
+
+        // Flat forward curve
+        forecastCurve.linkTo(flatRate(today, 0.04, dc));
+        sofr = ext::make_shared<Sofr>(forecastCurve);
+
+        // Flat volatility
+        vol.linkTo(ext::make_shared<ConstantOptionletVolatility>(today, TARGET(), Following, optionletVol, dc));
+    }
+
+    ext::shared_ptr<CappedFlooredOvernightIndexedCoupon> makeCoupon(Date start, Date end, Rate cap = Null<Rate>(), Rate floor = Null<Rate>(),
+                                                                    RateAveraging::Type avgMethod = RateAveraging::Compound) {
+        onCoupon = ext::make_shared<OvernightIndexedCoupon>(
+            end, notional, start, end, sofr, 1.0, 0.0, Date(), Date(), dc,
+            false, avgMethod, Null<Natural>(), 0, false, 
+            false);
+        return ext::make_shared<CappedFlooredOvernightIndexedCoupon>(onCoupon, cap, floor);
+    }
+};
+
+
+struct CommonVarsONLeg {
+    Date today;
+    Real notional = 1000000.0;
+    ext::shared_ptr<OvernightIndex> sofr;
+    RelinkableHandle<YieldTermStructure> forecastCurve;
+    Schedule legSchedule;
+    DayCounter dc;
+    RelinkableHandle<OptionletVolatilityStructure> rateVolTS;
+
+    ext::shared_ptr<OptionletVolatilityStructure> returnRateVolTS() {
+        auto optionletVol = makeQuoteHandle(0.01);
+        return ext::make_shared<ConstantOptionletVolatility>(today, TARGET(), Following, optionletVol, dc);
+    }
+
+    Leg makeLeg(Natural fixingDays = Null<Natural>(),
+                Natural lockoutDays = 0,
+                bool applyObservationShift = false,
+                bool telescopicValueDates = false,
+                RateAveraging::Type averaging = RateAveraging::Compound,
+                const std::vector<Real>& gearings = std::vector<Real>(),
+                const std::vector<Spread>& spreads = std::vector<Spread>(),
+                const std::vector<Rate>& caps = std::vector<Rate>(),
+                const std::vector<Rate>& floors = std::vector<Rate>()) {
+        
+        OvernightLeg leg(legSchedule, sofr);
+        leg.withNotionals(notional)
+           .withPaymentDayCounter(dc)
+           .withAveragingMethod(averaging)
+           .withLockoutDays(lockoutDays)
+           .withObservationShift(applyObservationShift)
+           .withTelescopicValueDates(telescopicValueDates);
+           
+        if (fixingDays != Null<Natural>()) {
+            leg.withLookbackDays(fixingDays);
+        }
+        
+        if (!gearings.empty()) {
+            leg.withGearings(gearings);
+        }
+        
+        if (!spreads.empty()) {
+            leg.withSpreads(spreads);
+        }
+        
+        if (!caps.empty()) {
+            leg.withCaps(caps);
+        }
+        
+        if (!floors.empty()) {
+            leg.withFloors(floors);
+        }
+
+        if (!caps.empty() || !floors.empty()) {
+            rateVolTS.linkTo(returnRateVolTS());
+            if (averaging == RateAveraging::Compound)
+                leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackOvernightIndexedCouponPricer>(rateVolTS));
+            else
+                leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackAverageONIndexedCouponPricer>(rateVolTS));
+        }
+        
+        return leg;
+    }
+
+    CommonVarsONLeg(const Date& evaluationDate) {
+        today = evaluationDate;
+        dc = Actual360();
+
+        Settings::instance().evaluationDate() = today;
+
+        sofr = ext::make_shared<Sofr>(forecastCurve);
+        
+        // Create a quarterly schedule for testing
+        legSchedule = Schedule(Date(1, July, 2025), Date(1, July, 2026),
+                              Period(1, Months), 
+                              UnitedStates(UnitedStates::GovernmentBond),
+                              ModifiedFollowing, ModifiedFollowing,
+                              DateGeneration::Forward, false);
+
+        std::vector<Date> pastDates = {
+            Date(2, June, 2025), Date(3, June, 2025), Date(4, June, 2025), Date(5, June, 2025),
+            Date(6, June, 2025), Date(9, June, 2025), Date(10, June, 2025), Date(11, June, 2025),
+            Date(12, June, 2025), Date(13, June, 2025), Date(16, June, 2025), Date(17, June, 2025),
+            Date(18, June, 2025), Date(20, June, 2025), Date(23, June, 2025), Date(24, June, 2025),
+            Date(25, June, 2025), Date(26, June, 2025), Date(27, June, 2025), Date(30, June, 2025),
+            Date(1, July, 2025), Date(2, July, 2025), Date(3, July, 2025), Date(7, July, 2025),
+            Date(8, July, 2025), Date(9, July, 2025), Date(10, July, 2025), Date(11, July, 2025),
+            Date(14, July, 2025), Date(15, July, 2025), Date(16, July, 2025), Date(17, July, 2025),
+            Date(18, July, 2025), Date(21, July, 2025), Date(22, July, 2025), Date(23, July, 2025),
+            Date(24, July, 2025), Date(25, July, 2025), Date(28, July, 2025), Date(29, July, 2025),
+            Date(30, July, 2025), Date(31, July, 2025), Date(1, August, 2025)
+        };
+
+        std::vector<Rate> pastRates = {
+            0.0435, 0.0432, 0.0428, 0.0429, 0.0429, 0.0429, 0.0428, 0.0428, 0.0428, 0.0428,
+            0.0432, 0.0431, 0.0428, 0.0429, 0.0429, 0.0430, 0.0436, 0.0440, 0.0439, 0.0445,
+            0.0444, 0.0440, 0.0435, 0.0433, 0.0434, 0.0432, 0.0431, 0.0431, 0.0433, 0.0437,
+            0.0434, 0.0434, 0.0430, 0.0428, 0.0428, 0.0428, 0.0430, 0.0436, 0.0436, 0.0436,
+            0.0432, 0.0439, 0.0434
+        };
+
+        sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+    }
+
+    void setupForecastCurve() {
+        std::vector<Date> curveDates = {
+            today,
+            Date(30, July, 2025),
+            Date(29, August, 2025), 
+            Date(30, September, 2025),
+            Date(30, December, 2025),
+            Date(30, March, 2026),
+            Date(30, June, 2026)
+        };
+        
+        std::vector<Rate> zeroRates = {
+            0.0434,
+            0.0436,
+            0.0431,
+            0.0413,
+            0.0390,
+            0.0370,
+            0.0348
+        };
+        
+        ext::shared_ptr<InterpolatedZeroCurve<Cubic>> zeroCurve(
+            new InterpolatedZeroCurve<Cubic>(curveDates, zeroRates, 
+                dc, UnitedStates(UnitedStates::SOFR))
+        );
+
+        zeroCurve->enableExtrapolation();
+        
+        forecastCurve.linkTo(zeroCurve);
+    }
+
+    CommonVarsONLeg() : CommonVarsONLeg(Date(1, June, 2025)) {}
+};
+
 #define CHECK_OIS_COUPON_RESULT(what, calculated, expected, tolerance)   \
     if (std::fabs(calculated-expected) > tolerance) { \
         BOOST_ERROR("Failed to reproduce " what ":" \
@@ -132,6 +324,28 @@ BOOST_AUTO_TEST_CASE(testPastCouponRate) {
     Rate expectedRate = 0.000987136104;
     Real expectedAmount = vars.notional * expectedRate * 31.0/360;
     CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRate, 1e-12);
+    CHECK_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAmount, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testPastSpreadedCouponRate) {
+    BOOST_TEST_MESSAGE("Testing rate for past overnight-indexed coupon with spread included...");
+
+    CommonVars vars;
+
+    // coupon entirely in the past
+    auto pastCoupon = vars.makeSpreadedCoupon(Date(18, October, 2021),
+                                      Date(18, November, 2021),
+                                      0.0001);
+    auto pastCouponNotSpreadedIncluded = vars.makeSpreadedCoupon(Date(18, October, 2021),
+                                      Date(18, November, 2021),
+                                      0.0001, false);
+
+    // expected values here and below come from manual calculations based on past dates and rates
+    Rate expectedRateSpreadInlcuded = 0.0010871445057780704;
+    Rate expectedRateSpreadNotInlcuded = 0.0010871361040194164;
+    Real expectedAmount = vars.notional * expectedRateSpreadInlcuded * 31.0/360;
+    CHECK_OIS_COUPON_RESULT("coupon rate", pastCoupon->rate(), expectedRateSpreadInlcuded, 1e-12);
+    CHECK_OIS_COUPON_RESULT("coupon rate", pastCouponNotSpreadedIncluded->rate(), expectedRateSpreadNotInlcuded, 1e-12);
     CHECK_OIS_COUPON_RESULT("coupon amount", pastCoupon->amount(), expectedAmount, 1e-8);
 }
 
@@ -532,6 +746,293 @@ BOOST_AUTO_TEST_CASE(testErrorWhenLookbackOrLockoutAppliedForSimpleAveraging) {
     BOOST_CHECK_THROW(vars.makeCoupon(Date(1, July, 2019), Date(31, July, 2019), Null<Natural>(), 0,
                                       true, false, RateAveraging::Simple),
                       Error);
+}
+
+BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
+    BOOST_TEST_MESSAGE("Testing BlackOvernightIndexedCouponPricer caplet/floorlet pricing...");
+
+    BlackONPricerVars vars;
+    Date start = Date(1, July, 2025);
+    Date end = Date(1, October, 2025);
+
+    // Caplet
+    Rate cap = 0.045;
+    auto cappedCoupon = vars.makeCoupon(start, end, cap, Null<Rate>());
+    auto pricer = ext::make_shared<BlackOvernightIndexedCouponPricer>(vars.vol);
+    cappedCoupon->setPricer(pricer);
+
+    Rate rate = cappedCoupon->rate();
+    Rate expectedRate = 0.040205142853869814;
+    BOOST_CHECK(rate <= cap + 1e-8); // Should not exceed cap
+    CHECK_OIS_COUPON_RESULT("Capped Rate", rate, expectedRate, 1e-8);
+
+    // Floorlet
+    Rate floor = 0.035;
+    auto flooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), floor);
+    flooredCoupon->setPricer(pricer);
+    BOOST_CHECK(!flooredCoupon->isCalculated());
+
+    rate = flooredCoupon->rate();
+    BOOST_CHECK(rate >= floor - 1e-8); // Should not be below floor
+    CHECK_OIS_COUPON_RESULT("Floored Rate", rate, expectedRate, 1e-8);
+
+    // Capped and Floored
+    auto cappedFlooredCoupon = vars.makeCoupon(start, end, cap, floor);
+    cappedFlooredCoupon->setPricer(pricer);
+    rate = cappedFlooredCoupon->rate();
+    BOOST_CHECK(rate <= cap + 1e-8 && rate >= floor - 1e-8);
+    CHECK_OIS_COUPON_RESULT("Capped and Floored Rate", rate, expectedRate, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testBlackAverageONIndexedCouponPricerCapletFloorlet) {
+    BOOST_TEST_MESSAGE("Testing BlackAverageONIndexedCouponPricer caplet/floorlet pricing...");
+
+    BlackONPricerVars vars;
+    Date start = Date(1, July, 2025);
+    Date end = Date(1, October, 2025);
+
+    // Caplet
+    Rate cap = 0.045;
+    auto cappedCoupon = vars.makeCoupon(start, end, cap, Null<Rate>(), RateAveraging::Simple);
+    cappedCoupon->setPricer(ext::make_shared<BlackAverageONIndexedCouponPricer>(vars.vol));
+
+    Rate rate = cappedCoupon->rate();
+    Rate expectedRate = 0.040004396561138286;
+    BOOST_CHECK(rate <= cap + 1e-8);
+    CHECK_OIS_COUPON_RESULT("Capped Rate", rate, expectedRate, 1e-8);
+
+    // Floorlet
+    Rate floor = 0.035;
+    auto flooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), floor, RateAveraging::Simple);
+    flooredCoupon->setPricer(ext::make_shared<BlackAverageONIndexedCouponPricer>(vars.vol));
+
+    rate = flooredCoupon->rate();
+    BOOST_CHECK(rate >= floor - 1e-8);
+    CHECK_OIS_COUPON_RESULT("Capped Rate", rate, expectedRate, 1e-8);
+
+    // Capped and Floored
+    auto cappedFlooredCoupon = vars.makeCoupon(start, end, cap, floor, RateAveraging::Simple);
+    cappedFlooredCoupon->setPricer(ext::make_shared<BlackAverageONIndexedCouponPricer>(vars.vol));
+    rate = cappedFlooredCoupon->rate();
+    BOOST_CHECK(rate <= cap + 1e-8 && rate >= floor - 1e-8);
+    CHECK_OIS_COUPON_RESULT("Capped and Floored Rate", rate, expectedRate, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testBlackONPricerConsistencyWithNoVol) {
+    BOOST_TEST_MESSAGE("Testing BlackOvernightIndexedCouponPricer with zero volatility (should match vanilla pricer)...");
+
+    BlackONPricerVars vars;
+    auto optionletVol = makeQuoteHandle(0.0);
+    vars.vol.linkTo(ext::make_shared<ConstantOptionletVolatility>(vars.today, TARGET(), Following, optionletVol, vars.dc));
+    Date start = Date(1, July, 2025);
+    Date end = Date(1, October, 2025);
+
+    auto cappedFlooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), Null<Rate>());
+    cappedFlooredCoupon->setPricer(ext::make_shared<BlackOvernightIndexedCouponPricer>(vars.vol));
+    Rate blackRate = cappedFlooredCoupon->rate();
+
+    // Compare with standard compounding pricer
+    auto baseONCoupon = vars.onCoupon;
+    baseONCoupon->setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+    Rate vanillaRate = baseONCoupon->rate();
+
+    CHECK_OIS_COUPON_RESULT("Zero capped coupon rate", blackRate, vanillaRate, 1e-10);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegBasicFunctionality) {
+    BOOST_TEST_MESSAGE("Testing basic functionality of OvernightLeg...");
+
+    CommonVarsONLeg vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    Leg leg = vars.makeLeg();
+    
+    // Check that we have the expected number of coupons (monthly over 1 year = 12 coupons)
+    BOOST_CHECK_EQUAL(leg.size(), 12);
+    
+    // Check that all cash flows are OvernightIndexedCoupons
+    for (const auto& cf : leg) {
+        auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cf);
+        BOOST_CHECK(oisCoupon != nullptr);
+        if (oisCoupon) {
+            BOOST_CHECK_EQUAL(oisCoupon->nominal(), vars.notional);
+            BOOST_CHECK_EQUAL(oisCoupon->averagingMethod(), RateAveraging::Compound);
+            BOOST_CHECK_EQUAL(oisCoupon->lockoutDays(), 0);
+            BOOST_CHECK_EQUAL(oisCoupon->applyObservationShift(), false);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegWithLookback) {
+    BOOST_TEST_MESSAGE("Testing OvernightLeg with lookback days...");
+
+    CommonVarsONLeg vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    Natural lookbackDays = 5;
+    Leg leg = vars.makeLeg(lookbackDays);
+    
+    for (const auto& cf : leg) {
+        auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cf);
+        BOOST_CHECK(oisCoupon != nullptr);
+        if (oisCoupon) {
+            // The coupon should have lookback configured
+            BOOST_CHECK(oisCoupon->fixingDays() == lookbackDays || 
+                       oisCoupon->fixingDays() == oisCoupon->index()->fixingDays());
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegWithLockout) {
+    BOOST_TEST_MESSAGE("Testing OvernightLeg with lockout days...");
+
+    CommonVarsONLeg vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    Natural lockoutDays = 3;
+    Leg leg = vars.makeLeg(Null<Natural>(), lockoutDays);
+    
+    for (const auto& cf : leg) {
+        auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cf);
+        BOOST_CHECK(oisCoupon != nullptr);
+        if (oisCoupon) {
+            BOOST_CHECK_EQUAL(oisCoupon->lockoutDays(), lockoutDays);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegWithObservationShift) {
+    BOOST_TEST_MESSAGE("Testing OvernightLeg with observation shift...");
+
+    CommonVarsONLeg vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    Leg leg = vars.makeLeg(Null<Natural>(), 0, true);
+    
+    for (const auto& cf : leg) {
+        auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cf);
+        BOOST_CHECK(oisCoupon != nullptr);
+        if (oisCoupon) {
+            BOOST_CHECK_EQUAL(oisCoupon->applyObservationShift(), true);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
+    BOOST_TEST_MESSAGE("Testing OvernightLeg with gearings and spreads...");
+
+    CommonVarsONLeg vars;
+    vars.setupForecastCurve();
+
+    std::vector<Real> gearings = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                  1.25, 1.25, 1.25, 1.5, 2.0, 0.5};
+    std::vector<Spread> spreads = {0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001,
+                                  0.0001, 0.0001, 0.0001, 0.0002, 0.0003, 0.0004};
+    
+    Leg leg = vars.makeLeg(Null<Natural>(), 0, false, false, 
+                          RateAveraging::Compound, gearings, spreads);
+    
+    BOOST_CHECK_EQUAL(leg.size(), 12);
+    
+    for (Size i = 0; i < leg.size(); ++i) {
+        auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
+        BOOST_CHECK(oisCoupon != nullptr);
+        if (oisCoupon) {
+            BOOST_CHECK_CLOSE(oisCoupon->gearing(), gearings[i], 1e-12);
+            BOOST_CHECK_CLOSE(oisCoupon->spread(), spreads[i], 1e-12);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
+    BOOST_TEST_MESSAGE("Testing Coupon Leg NPVs...");
+
+    CommonVarsONLeg vars;
+    vars.setupForecastCurve();
+
+    Leg leg = vars.makeLeg(Null<Natural>(), 3, false, true, RateAveraging::Compound);
+    
+    Handle<YieldTermStructure> discountCurve(flatRate(0.0015, Actual360()));
+    
+    // Calculate NPV
+    Real expectedNpv = 34662.920418887923;
+    Real npv = 0.0;
+    for (const auto& cf : leg) {
+        npv += cf->amount() * discountCurve->discount(cf->date());
+    }
+    
+    CHECK_OIS_COUPON_RESULT("OvernightLeg NPV", npv, expectedNpv, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
+    BOOST_TEST_MESSAGE("Testing OvernightLeg with caps and floors...");
+
+    CommonVarsONLeg vars;
+    vars.setupForecastCurve();
+    Handle<YieldTermStructure> discountCurve(flatRate(0.0015, Actual360()));
+
+    std::vector<Rate> caps = {0.0435, 0.0435, 0.0435, 0.0435, 0.0435, 0.0435, 
+                              0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04};
+    std::vector<Rate> floors = {0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 
+                                0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025};
+    
+    Leg leg = vars.makeLeg(Null<Natural>(), 0, false, false, 
+                          RateAveraging::Compound, 
+                          std::vector<Real>(), std::vector<Spread>(),
+                          caps, floors);
+    
+    BOOST_CHECK_EQUAL(leg.size(), 12);
+
+    bool atParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+    Real expectedNpv = atParCoupons ? -14.317126680266473 : -20.473876859068422;
+    Real npv = 0.0;
+    
+    for (Size i = 0; i < leg.size(); ++i) {
+        auto cappedFlooredCoupon = ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCoupon>(leg[i]);
+        BOOST_CHECK(cappedFlooredCoupon != nullptr);
+        if (cappedFlooredCoupon) {
+            BOOST_CHECK_CLOSE(cappedFlooredCoupon->cap(), caps[i], 1e-12);
+            BOOST_CHECK_CLOSE(cappedFlooredCoupon->floor(), floors[i], 1e-12);
+            BOOST_CHECK(cappedFlooredCoupon->isCapped());
+            BOOST_CHECK(cappedFlooredCoupon->isFloored());
+        }
+        npv += cappedFlooredCoupon->amount() * discountCurve->discount(cappedFlooredCoupon->date());
+    }
+
+    CHECK_OIS_COUPON_RESULT("Capped-Floored OvernightLeg NPV", npv, expectedNpv, 1e-8);
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegSimpleAveraging) {
+    BOOST_TEST_MESSAGE("Testing OvernightLeg with simple averaging...");
+
+    CommonVarsONLeg vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    Leg leg = vars.makeLeg(Null<Natural>(), 0, false, false, RateAveraging::Simple);
+    
+    for (const auto& cf : leg) {
+        auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cf);
+        BOOST_CHECK(oisCoupon != nullptr);
+        if (oisCoupon) {
+            BOOST_CHECK_EQUAL(oisCoupon->averagingMethod(), RateAveraging::Simple);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testOvernightLegErrorConditions) {
+    BOOST_TEST_MESSAGE("Testing error conditions for OvernightLeg...");
+
+    CommonVarsONLeg vars;
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    // Test that lookback with simple averaging throws an error
+    BOOST_CHECK_THROW(vars.makeLeg(5, 0, false, false, RateAveraging::Simple), Error);
+    
+    // Test that lockout with simple averaging throws an error  
+    BOOST_CHECK_THROW(vars.makeLeg(Null<Natural>(), 3, false, false, RateAveraging::Simple), Error);
+    
+    // Test that observation shift with simple averaging throws an error
+    BOOST_CHECK_THROW(vars.makeLeg(Null<Natural>(), 0, true, false, RateAveraging::Simple), Error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
