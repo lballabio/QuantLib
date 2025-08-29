@@ -972,9 +972,9 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
     Handle<YieldTermStructure> discountCurve(flatRate(0.0015, Actual360()));
 
     std::vector<Rate> caps = {0.0435, 0.0435, 0.0435, 0.0435, 0.0435, 0.0435, 
-                              0.04, 0.04, 0.04, 0.04, 0.04, 0.04};
+                              0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04};
     std::vector<Rate> floors = {0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 
-                                0.025, 0.025, 0.025, 0.025, 0.025, 0.025};
+                                0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025};
     
     Leg leg = vars.makeLeg(Null<Natural>(), 0, false, false, 
                           RateAveraging::Compound, 
