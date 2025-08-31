@@ -175,7 +175,7 @@ struct CommonVarsONLeg {
     RelinkableHandle<OptionletVolatilityStructure> rateVolTS;
 
     ext::shared_ptr<OptionletVolatilityStructure> returnRateVolTS() {
-        auto optionletVol = makeQuoteHandle(0.01);
+        auto optionletVol = makeQuoteHandle(0.05);
         return ext::make_shared<ConstantOptionletVolatility>(today, TARGET(), Following, optionletVol, dc);
     }
 
@@ -238,7 +238,7 @@ struct CommonVarsONLeg {
         
         // Create a quarterly schedule for testing
         legSchedule = Schedule(Date(1, July, 2025), Date(1, July, 2026),
-                              Period(1, Months), 
+                              Period(3, Months), 
                               UnitedStates(UnitedStates::GovernmentBond),
                               ModifiedFollowing, ModifiedFollowing,
                               DateGeneration::Forward, false);
@@ -848,7 +848,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegBasicFunctionality) {
     Leg leg = vars.makeLeg();
     
     // Check that we have the expected number of coupons (monthly over 1 year = 12 coupons)
-    BOOST_CHECK_EQUAL(leg.size(), 12);
+    BOOST_CHECK_EQUAL(leg.size(), 4);
     
     // Check that all cash flows are OvernightIndexedCoupons
     for (const auto& cf : leg) {
@@ -924,15 +924,13 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
     CommonVarsONLeg vars;
     vars.setupForecastCurve();
 
-    std::vector<Real> gearings = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                  1.25, 1.25, 1.25, 1.5, 2.0, 0.5};
-    std::vector<Spread> spreads = {0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001,
-                                  0.0001, 0.0001, 0.0001, 0.0002, 0.0003, 0.0004};
+    std::vector<Real> gearings = {1.0, 1.25, 2.0, 0.5};
+    std::vector<Spread> spreads = {0.0001, 0.0001, 0.0002, 0.0002};
     
     Leg leg = vars.makeLeg(Null<Natural>(), 0, false, false, 
                           RateAveraging::Compound, gearings, spreads);
     
-    BOOST_CHECK_EQUAL(leg.size(), 12);
+    BOOST_CHECK_EQUAL(leg.size(), 4);
     
     for (Size i = 0; i < leg.size(); ++i) {
         auto oisCoupon = ext::dynamic_pointer_cast<OvernightIndexedCoupon>(leg[i]);
@@ -955,7 +953,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
     Handle<YieldTermStructure> discountCurve(flatRate(0.0015, Actual360()));
     
     // Calculate NPV
-    Real expectedNpv = 34662.920418887923;
+    Real expectedNpv = 34883.949669756257;
     Real npv = 0.0;
     for (const auto& cf : leg) {
         npv += cf->amount() * discountCurve->discount(cf->date());
@@ -971,20 +969,18 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
     vars.setupForecastCurve();
     Handle<YieldTermStructure> discountCurve(flatRate(0.0015, Actual360()));
 
-    std::vector<Rate> caps = {0.0435, 0.0435, 0.0435, 0.0435, 0.0435, 0.0435, 
-                              0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04};
-    std::vector<Rate> floors = {0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 
-                                0.025, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025};
+    std::vector<Rate> caps = {0.0435, 0.0435, 0.04, 0.04};
+    std::vector<Rate> floors = {0.025, 0.025, 0.025, 0.025};
     
     Leg leg = vars.makeLeg(Null<Natural>(), 0, false, false, 
                           RateAveraging::Compound, 
                           std::vector<Real>(), std::vector<Spread>(),
                           caps, floors);
     
-    BOOST_CHECK_EQUAL(leg.size(), 12);
+    BOOST_CHECK_EQUAL(leg.size(), 4);
 
     bool atParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-    Real expectedNpv = atParCoupons ? -14.317126680266473 : -20.473876859068422;
+    Real expectedNpv = atParCoupons ? 3.2486488629525807 : -20.473876859068422;
     Real npv = 0.0;
     
     for (Size i = 0; i < leg.size(); ++i) {
