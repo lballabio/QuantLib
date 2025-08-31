@@ -129,11 +129,20 @@ namespace QuantLib {
         */
         void setOptionType(Option::Type ot);
 
-      protected:
+        /*! \deprecated Deprecated in version 1.40. */
+        [[deprecated("This method will be moved in the private section")]]
         Real cumD1(Real strike) const;    // N(d1) or N(-d1)
-        Real cumD2(Real strike) const;    // N(d2) or N(-d2)
 
+        /*! \deprecated Deprecated in version 1.40. */
+        [[deprecated("This method will be moved in the private section")]]
+        Real cumD2(Real strike) const;    // N(d2) or N(-d2)
+        
+        /*! \deprecated Deprecated in version 1.40. */
+        [[deprecated("This method will be moved in the private section")]]
         Real nD1(Real strike) const;      // n(d1)
+
+        /*! \deprecated Deprecated in version 1.40. */
+        [[deprecated("This method will be moved in the private section")]]
         Real nD2(Real strike) const;      // n(d2)
 
       private:
@@ -149,7 +158,8 @@ namespace QuantLib {
     };
 
 
-    class BlackDeltaPremiumAdjustedSolverClass {
+    /*! \deprecated Deprecated in version 1.40. */
+    class [[deprecated("Deprecated in version 1.40")]] BlackDeltaPremiumAdjustedSolverClass {
       public:
         BlackDeltaPremiumAdjustedSolverClass(
                         Option::Type ot,
@@ -168,7 +178,8 @@ namespace QuantLib {
     };
 
 
-    class BlackDeltaPremiumAdjustedMaxStrikeClass {
+    /*! \deprecated Deprecated in version 1.40. */
+    class [[deprecated("Deprecated in version 1.40")]] BlackDeltaPremiumAdjustedMaxStrikeClass {
       public:
         BlackDeltaPremiumAdjustedMaxStrikeClass(
                         Option::Type ot,
