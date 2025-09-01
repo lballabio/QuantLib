@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/fx/blackdeltacalculator.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
 
 namespace QuantLib {
 

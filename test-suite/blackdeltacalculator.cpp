@@ -19,8 +19,8 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/fx/blackdeltacalculator.hpp>
-#include <ql/experimental/fx/deltavolquote.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
+#include <ql/quotes/deltavolquote.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/instruments/europeanoption.hpp>

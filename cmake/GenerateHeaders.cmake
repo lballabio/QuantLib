@@ -66,6 +66,11 @@ function(generate_dir_headers source_dir binary_dir)
         list(FILTER children_hpp EXCLUDE REGEX "writerextensibleoption.hpp")
     endif ()
 
+    if (${source_dir} MATCHES "experimental" AND ${source_dir} MATCHES "fx")
+        list(FILTER children_hpp EXCLUDE REGEX "blackdeltacalculator.hpp")
+        list(FILTER children_hpp EXCLUDE REGEX "deltavolquote.hpp")
+    endif ()
+
     file(GLOB children_dir RELATIVE ${source_dir} "${source_dir}/*")
     list(FILTER children_dir EXCLUDE REGEX "CMakeFiles")
     list(FILTER children_dir EXCLUDE REGEX "^\\..*")
