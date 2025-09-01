@@ -37,9 +37,6 @@ namespace QuantLib {
         every price can be expressed in both numeraires.
     */
     class BlackDeltaCalculator {
-      friend class BlackDeltaPremiumAdjustedSolverClass;
-      friend class BlackDeltaPremiumAdjustedMaxStrikeClass;
-
       public:
         //! \name Constructors
         //@{
