@@ -258,8 +258,8 @@ namespace QuantLib {
         bool applyObservationShift_ = false;
         bool includeSpread_ = false;
         std::vector<Rate> caps_, floors_;
-        bool nakedOption_;
-        bool localCapFloor_;
+        bool nakedOption_ = false;
+        bool localCapFloor_ = false;
         bool inArrears_ = true;
         ext::optional<Period> lastRecentPeriod_;
         Calendar lastRecentPeriodCalendar_;

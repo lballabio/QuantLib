@@ -979,8 +979,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
     
     BOOST_CHECK_EQUAL(leg.size(), 4);
 
-    bool atParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
-    Real expectedNpv = atParCoupons ? 3.2486488629525807 : -20.473876859068422;
+    Real expectedNpv = 34648.328606210489;
     Real npv = 0.0;
     
     for (Size i = 0; i < leg.size(); ++i) {
