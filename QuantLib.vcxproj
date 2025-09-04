@@ -947,6 +947,7 @@
     <ClInclude Include="ql\instruments\overnightindexfuture.hpp" />
     <ClInclude Include="ql\instruments\partialtimebarrieroption.hpp" />
     <ClInclude Include="ql\instruments\payoffs.hpp" />
+    <ClInclude Include="ql\instruments\perpetualfutures.hpp" />
     <ClInclude Include="ql\instruments\quantobarrieroption.hpp" />
     <ClInclude Include="ql\instruments\quantoforwardvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\quantovanillaoption.hpp" />
@@ -2224,6 +2225,7 @@
     <ClCompile Include="ql\instruments\overnightindexfuture.cpp" />
     <ClCompile Include="ql\instruments\partialtimebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\payoffs.cpp" />
+    <ClCompile Include="ql\instruments\perpetualfutures.cpp" />
     <ClCompile Include="ql\instruments\quantobarrieroption.cpp" />
     <ClCompile Include="ql\instruments\quantoforwardvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\quantovanillaoption.cpp" />
