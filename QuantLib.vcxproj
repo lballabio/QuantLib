@@ -101,6 +101,7 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="QuantLib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -1494,6 +1495,7 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp" />
     <ClInclude Include="ql\pricingengines\asian\turnbullwakemanasianengine.hpp" />
+    <ClInclude Include="ql\pricingengines\bacheliercalculator.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\all.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp" />
@@ -1549,6 +1551,7 @@
     <ClInclude Include="ql\pricingengines\credit\integralcdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\credit\isdacdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\credit\midpointcdsengine.hpp" />
+    <ClInclude Include="ql\pricingengines\diffusioncalculator.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\all.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticcomplexchooserengine.hpp" />
@@ -2579,6 +2582,7 @@
     <ClCompile Include="ql\pricingengines\asian\mc_discr_geom_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp" />
+    <ClCompile Include="ql\pricingengines\bacheliercalculator.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.cpp" />
@@ -2626,6 +2630,7 @@
     <ClCompile Include="ql\pricingengines\credit\integralcdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\isdacdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\midpointcdsengine.cpp" />
+    <ClCompile Include="ql\pricingengines\diffusioncalculator.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticcomplexchooserengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticcompoundoptionengine.cpp" />
@@ -2877,6 +2882,9 @@
     <ClCompile Include="ql\termstructure.cpp" />
     <ClCompile Include="ql\timegrid.cpp" />
     <ClCompile Include="ql\version.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BACHELIERCALCULATOR_FIXES.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project=".\Build.props" Condition="Exists('.\Build.props')" />

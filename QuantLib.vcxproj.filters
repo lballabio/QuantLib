@@ -4515,6 +4515,12 @@
     <ClInclude Include="ql\pricingengines\basket\vectorbsmprocessextractor.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\bacheliercalculator.hpp">
+      <Filter>pricingengines</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\diffusioncalculator.hpp">
+      <Filter>pricingengines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7315,5 +7321,14 @@
     <ClCompile Include="ql\pricingengines\basket\vectorbsmprocessextractor.cpp">
       <Filter>pricingengines\basket</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\bacheliercalculator.cpp">
+      <Filter>pricingengines</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\diffusioncalculator.cpp">
+      <Filter>pricingengines</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BACHELIERCALCULATOR_FIXES.md" />
   </ItemGroup>
 </Project>

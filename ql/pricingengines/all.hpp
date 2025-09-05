@@ -3,6 +3,7 @@
 
 #include <ql/pricingengines/americanpayoffatexpiry.hpp>
 #include <ql/pricingengines/americanpayoffathit.hpp>
+#include <ql/pricingengines/diffusioncalculator.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackscholescalculator.hpp>

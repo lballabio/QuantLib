@@ -18,36 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file blackcalculator.hpp
-    \brief Black-formula calculator class
+/*! \file bacheliercalculator.hpp
+    \brief Bachelier-formula calculator class
 */
 
-#ifndef quantlib_blackcalculator_hpp
-#define quantlib_blackcalculator_hpp
+#ifndef quantlib_bacheliercalculator_hpp
+#define quantlib_bacheliercalculator_hpp
 
 #include <ql/pricingengines/diffusioncalculator.hpp>
 
 namespace QuantLib {
 
-    //! Black 1976 calculator class
+    //! Bachelier calculator class
     /*! \bug When the variance is null, division by zero occur during
              the calculation of delta, delta forward, gamma, gamma
              forward, rho, dividend rho, vega, and strike sensitivity.
     */
-    class BlackCalculator : public DiffusionCalculator {
+    class BachelierCalculator : public DiffusionCalculator {
       private:
         class Calculator;
       public:
-        BlackCalculator(const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                        Real forward,
-                        Real stdDev,
-                        Real discount = 1.0);
-        BlackCalculator(Option::Type optionType,
-                        Real strike,
-                        Real forward,
-                        Real stdDev,
-                        Real discount = 1.0);
-        ~BlackCalculator() override = default;
+        BachelierCalculator(const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           Real forward,
+                           Real stdDev,
+                           Real discount = 1.0);
+        BachelierCalculator(Option::Type optionType,
+                           Real strike,
+                           Real forward,
+                           Real stdDev,
+                           Real discount = 1.0);
+        ~BachelierCalculator() override = default;
 
         Real value() const override;
 
@@ -108,19 +108,19 @@ namespace QuantLib {
     };
 
     // inline
-    inline Real BlackCalculator::itmCashProbability() const {
+    inline Real BachelierCalculator::itmCashProbability() const {
         return cum_d2_;
     }
 
-    inline Real BlackCalculator::itmAssetProbability() const {
+    inline Real BachelierCalculator::itmAssetProbability() const {
         return cum_d1_;
     }
 
-    inline Real BlackCalculator::alpha() const {
+    inline Real BachelierCalculator::alpha() const {
         return alpha_;
     }
 
-    inline Real BlackCalculator::beta() const {
+    inline Real BachelierCalculator::beta() const {
         return beta_;
     }
 
