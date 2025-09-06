@@ -1568,6 +1568,7 @@
     <ClInclude Include="ql\pricingengines\forward\mcforwardvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\mcvarianceswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\replicatingvarianceswapengine.hpp" />
+    <ClInclude Include="ql\pricingengines\futures\discountingperpetualfuturesengine.hpp" />
     <ClInclude Include="ql\pricingengines\genericmodelengine.hpp" />
     <ClInclude Include="ql\pricingengines\greeks.hpp" />
     <ClInclude Include="ql\pricingengines\inflation\all.hpp" />
@@ -2639,6 +2640,7 @@
     <ClCompile Include="ql\pricingengines\exotic\analyticwriterextensibleoptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp" />
+    <ClCompile Include="ql\pricingengines\futures\discountingperpetualfuturesengine.cpp" />
     <ClCompile Include="ql\pricingengines\greeks.cpp" />
     <ClCompile Include="ql\pricingengines\inflation\inflationcapfloorengines.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfixedlookback.cpp" />
