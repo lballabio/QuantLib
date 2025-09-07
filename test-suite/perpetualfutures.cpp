@@ -68,10 +68,13 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
     BOOST_TEST_MESSAGE("Testing perpetual futures value aginast analytic form for constant parameters...");
 
     PerpetualFuturesData values[] = {
-        {PerpetualFutures::Linear, PerpetualFutures::AHJ, Period(3, Months), 10000., 0.03, 0.05,
+        {PerpetualFutures::Linear, PerpetualFutures::AHJ, Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005,
+         10000. * (0.01 - 0.005) * exp(0.05 / 4.) / (exp(0.05 / 4.) - exp(0.03 / 4.) + 0.01 * exp(0.05 / 4.)), 5.},
+        {PerpetualFutures::Linear, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.03, 0.05,
          0.01, 0.005,
-         10000. * (0.01 - 0.005) * exp(0.05 / 4.) /
-             (exp(0.05 / 4.) - exp(0.03 / 4.) + 0.01 * exp(0.05 / 4.)), 5.},
+         10000. * (0.01 - 0.005) * exp(0.03 / 4.) /
+             (exp(0.05 / 4.) - exp(0.03 / 4.) + 0.01 * exp(0.03 / 4.)),
+         5.},
     };
 
     DayCounter dc = ActualActual(ActualActual::ISDA);

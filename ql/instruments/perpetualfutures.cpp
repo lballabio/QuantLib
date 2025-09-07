@@ -60,6 +60,8 @@ namespace QuantLib {
         switch (fundingType) {
             case PerpetualFutures::AHJ:
                 break;
+            case PerpetualFutures::AHJ_alt:
+                break;
             default:
                 QL_FAIL("unknown funding type");
         }

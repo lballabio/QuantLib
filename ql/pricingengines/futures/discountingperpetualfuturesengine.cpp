@@ -132,8 +132,8 @@ namespace QuantLib {
                 Real ratio = 1.;
                 Size i;
                 for (i = 0; i < timeGrid.size() - 1; ++i) {
-                    Real time = fundingTimes_[i];
-                    Real nextTime = fundingTimes_[i+1];
+                    Real time = timeGrid[i];
+                    Real nextTime = timeGrid[i + 1];
                     ratio = foreignDiscountCurve_->discount(nextTime) /
                             foreignDiscountCurve_->discount(time) /
                             domesticDiscountCurve_->discount(nextTime) *
