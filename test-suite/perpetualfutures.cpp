@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_SUITE(PerpetualFuturesTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoffType, fundingType, fundingFreq, s, r, q, k, i_diff, today, \
-                       expected, calculated, error, tolerance)                               \
+                       expected, calculated, relError, tolerance)                               \
     BOOST_FAIL(payoffType                                                                    \
                << " perpetual futures with " << fundingType << " funding type:\n"  \
                << "    spot value:                      " << s << "\n"                                      \
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_SUITE(PerpetualFuturesTests)
                << "    reference date:                  " << today << "\n"                                  \
                << "    expected   " << greekName << ": " << expected << "\n"                 \
                << "    calculated " << greekName << ": " << calculated << "\n"               \
-               << "    error:     " << error << "\n"                                  \
+               << "    rel error: " << relError << "\n"                                  \
                << "    tolerance: " << tolerance << "\n");
 
 struct PerpetualFuturesData {
@@ -59,7 +59,7 @@ struct PerpetualFuturesData {
     Rate q;       // asset yield
     Rate k;       // funding rate
     Rate i_diff;  // interest rate differential
-    Real tol;     // tolerance
+    Real relTol;  // relative tolerance
 };
 
 
@@ -68,10 +68,16 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
     BOOST_TEST_MESSAGE("Testing perpetual futures value aginast analytic form for constant parameters...");
 
     PerpetualFuturesData values[] = {
-        {PerpetualFutures::Linear, PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
-        {PerpetualFutures::Linear, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
-        {PerpetualFutures::Inverse, PerpetualFutures::AHJ,    Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
-        {PerpetualFutures::Inverse, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
+        // Discrete time
+        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Linear,  PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Inverse, PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Inverse, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        // Continuous time
+        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(0, Months), 10000., 0.04, 0.02, 0.2,  0.005, 1.e-6},
+        {PerpetualFutures::Inverse, PerpetualFutures::AHJ,     Period(0, Months), 10000., 0.04, 0.02, 0.2,  0.005, 1.e-6},
+
     };
 
     DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -117,33 +123,44 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
                 QL_FAIL("Unknown fundingFrequency unit");
         }
         Real expected = 0.;
-        if (value.payoffType == PerpetualFutures::Linear) {
-            if (value.fundingType == PerpetualFutures::AHJ) {
-                expected =
-                    value.s * (value.k - value.i_diff) * exp(value.q * dt) /
-                    (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.q * dt));
-            } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
-                expected =
-                    value.s * (value.k - value.i_diff) * exp(value.r * dt) /
-                    (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.r * dt));
+        // Discrete time
+        if (value.fundingFreq.length() > 0) {
+            if (value.payoffType == PerpetualFutures::Linear) {
+                if (value.fundingType == PerpetualFutures::AHJ) {
+                    expected =
+                        value.s * (value.k - value.i_diff) * exp(value.q * dt) /
+                        (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.q * dt));
+                } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                    expected =
+                        value.s * (value.k - value.i_diff) * exp(value.r * dt) /
+                        (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.r * dt));
+                }
+            } else if (value.payoffType == PerpetualFutures::Inverse) {
+                if (value.fundingType == PerpetualFutures::AHJ) {
+                    expected =
+                        value.s *
+                        (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.r * dt)) /
+                        (value.k - value.i_diff) / exp(value.r * dt);
+                } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                    expected =
+                        value.s *
+                        (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.q * dt)) /
+                        (value.k - value.i_diff) / exp(value.q * dt);
+                }
             }
-        } else if (value.payoffType == PerpetualFutures::Inverse) {
-            if (value.fundingType == PerpetualFutures::AHJ) {
-                expected = value.s *
-                    (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.r * dt)) /
-                    (value.k - value.i_diff) / exp(value.r * dt);
-            } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
-                expected = value.s *
-                    (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.q * dt)) /
-                    (value.k - value.i_diff) / exp(value.q * dt);
+        } else {
+            // Continuous time
+            if (value.payoffType == PerpetualFutures::Linear) {
+                expected = value.s * (value.k - value.i_diff) / (value.q - value.r + value.k);
+            } else if (value.payoffType == PerpetualFutures::Inverse) {
+                expected = value.s * (value.r - value.q + value.k) / (value.k - value.i_diff);
             }
         }
-        Real error = std::fabs(calculated - expected);
-        if (error > value.tol) {
+        Real relError = std::fabs(calculated / expected - 1.);
+        if (relError > value.relTol) {
             REPORT_FAILURE("value", value.payoffType, value.fundingType, value.fundingFreq, value.s,
                            value.r, value.q, value.k, value.i_diff, today, expected, calculated,
-                           error,
-                           value.tol);
+                           relError, value.relTol);
         }
     }
 }

@@ -197,7 +197,7 @@ namespace QuantLib {
         } else {
         // continuous-time case
             Real timeIntegral = 0.;
-            TrapezoidIntegral<Default> integrator(1.e-4, 20);
+            TrapezoidIntegral<Default> integrator(1.e-6, 30);
             Real fundingRate_xMax = fundingRateInterp.xMax();
             auto expIRDiff = [fundingRateInterp, integrator, fundingRate_xMax](Real s) {
                 if (s < fundingRate_xMax) {
