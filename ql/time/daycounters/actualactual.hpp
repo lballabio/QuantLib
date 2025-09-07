@@ -64,6 +64,8 @@ namespace QuantLib {
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd) const override;
 
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
+
           private:
             Schedule schedule_;
         };
@@ -74,18 +76,25 @@ namespace QuantLib {
                               const Date& d2,
                               const Date& refPeriodStart,
                               const Date& refPeriodEnd) const override;
+
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
         class ISDA_Impl final : public DayCounter::Impl {
           public:
             std::string name() const override { return std::string("Actual/Actual (ISDA)"); }
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
+
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
         class AFB_Impl final : public DayCounter::Impl {
           public:
             std::string name() const override { return std::string("Actual/Actual (AFB)"); }
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
+
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
+
         };
         static ext::shared_ptr<DayCounter::Impl> implementation(Convention c, Schedule schedule);
       public:
