@@ -61,9 +61,19 @@ namespace QuantLib {
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
 
-        //Date refDate = domesticDiscountCurve_->referenceDate();
-        //Array effFundingRates = fundingRates_;
-        //Array effInterestRateDiffs = interestRateDiffs_;
+        QL_REQUIRE(
+            arguments_.payoffType == PerpetualFutures::Linear ||
+                arguments_.payoffType == PerpetualFutures::Inverse,
+            "Only Linear and Inverse payoffs are supported in DiscountingPerpetualFuturesEngine");
+
+        // Linear payoff <--> Inverse payoff:
+        // 1. exchange domestic and foreign curves
+        // 2. future price: f <--> 1/f
+        auto effDomCurve = arguments_.payoffType == PerpetualFutures::Linear ?
+                               domesticDiscountCurve_ : foreignDiscountCurve_;
+        auto effForCurve = arguments_.payoffType == PerpetualFutures::Linear ?
+                               foreignDiscountCurve_ : domesticDiscountCurve_;
+
         Period fundingFreq = arguments_.fundingFrequency;
         Date refDate = Settings::instance().evaluationDate();
         DayCounter dc = arguments_.dc;
@@ -80,6 +90,7 @@ namespace QuantLib {
                                                                    interestRateDiffs_);
         interestRateDiffInterp.enableExtrapolation();
 
+        Real factor = 0.;
         // discrete-time case
         if (fundingFreq.length() > 0) { 
             std::vector<Real> timeGrid;
@@ -91,7 +102,12 @@ namespace QuantLib {
                 Real daysInYear = dc.dayCount(Date(1, January, date.year()), Date(1, January, date.year()+1));
                 switch (fundingFreq.units()) { 
                     case Years:
+                        grid_time += fundingFreq.length();
+                        break;
                     case Months:
+                        unit_t = 1. / 12.;
+                        grid_time += unit_t * fundingFreq.length();
+                        break;
                     case Weeks:
                     case Days:
                         grid_time = dc.yearFraction(refDate, cal.advance(date, fundingFreq));
@@ -134,10 +150,8 @@ namespace QuantLib {
                 for (i = 0; i < timeGrid.size() - 1; ++i) {
                     Real time = timeGrid[i];
                     Real nextTime = timeGrid[i + 1];
-                    ratio = foreignDiscountCurve_->discount(nextTime) /
-                            foreignDiscountCurve_->discount(time) /
-                            domesticDiscountCurve_->discount(nextTime) *
-                            domesticDiscountCurve_->discount(time);
+                    ratio = effForCurve->discount(nextTime) / effForCurve->discount(time)
+                          / effDomCurve->discount(nextTime) * effDomCurve->discount(time);
                     fundingRateGrid[i] *= ratio;
                     interestRateDiffGrid[i] *= ratio;
                 }
@@ -154,13 +168,12 @@ namespace QuantLib {
             };
             Real sum = 0.;
             std::vector<Real> df_dom, df_for;
-            for (Size i = 0; i < timeGrid.size(); ++i) {
+            for (Size i = 0; i < timeGrid.size() - 1; ++i) {
                 Real time = timeGrid[i];
-                sum += productIRDiff(i) * (fundingRateGrid[i] - interestRateDiffGrid[i]) *
-                       this->foreignDiscountCurve_->discount(time) /
-                       this->domesticDiscountCurve_->discount(time);
-                df_dom.push_back(this->domesticDiscountCurve_->discount(time));
-                df_for.push_back(this->foreignDiscountCurve_->discount(time));
+                sum += productIRDiff(i) * (fundingRateGrid[i] - interestRateDiffGrid[i])
+                       * effForCurve->discount(time) / effDomCurve->discount(time);
+                df_dom.push_back(effDomCurve->discount(time));
+                df_for.push_back(effForCurve->discount(time));
             }
             Size i_last = timeGrid.size() - 1;
             Real time_last = timeGrid[i_last];
@@ -168,21 +181,19 @@ namespace QuantLib {
             Real fundingRateGrid_last = fundingRateGrid[i_last];
             Real interestRateDiffGrid_last = interestRateDiffGrid[i_last];
             Real dt = 1.e-4;
-            Real domRate_last = (log(this->domesticDiscountCurve_->discount(time_last)) -
-                                log(this->domesticDiscountCurve_->discount(time_last + dt))) / dt;
-            Real forRate_last = (log(this->foreignDiscountCurve_->discount(time_last)) -
-                                 log(this->foreignDiscountCurve_->discount(time_last + dt))) / dt;
-            // for remaining part, assume flat extrapolaiton on all rates
-            // inside summation:
-            Real last_term = productIRDiff_last *
-                             (fundingRateGrid_last - interestRateDiffGrid_last) *
-                             this->foreignDiscountCurve_->discount(time_last) /
-                             this->domesticDiscountCurve_->discount(time_last);
+            Real domRate_last = (log(effDomCurve->discount(time_last)) - log(effDomCurve->discount(time_last + dt))) / dt;
+            Real forRate_last = (log(effForCurve->discount(time_last)) - log(effForCurve->discount(time_last + dt))) / dt;
+
+            // for t > maxT_, assume flat extrapolaiton on all rates
+            Real last_term = productIRDiff_last
+                             * (fundingRateGrid_last - interestRateDiffGrid_last)
+                             * effForCurve->discount(time_last) / effDomCurve->discount(time_last);
             Real time_step = (timeGrid.back() - timeGrid.front()) / (timeGrid.size() - 1);
             Real ratio =
                 1. / (1. + fundingRateGrid_last) * exp(-time_step * (forRate_last - domRate_last));
             sum += last_term / (1. - ratio);
-            results_.value = assetSpot_->value() * sum;
+            factor = sum;
+
         } else {
         // continuous-time case
             Real timeIntegral = 0.;
@@ -197,13 +208,29 @@ namespace QuantLib {
                 }
             };
 
-            auto timeIntegrand = [fundingRateInterp, interestRateDiffInterp, integrator,
-                                  expIRDiff, this](Real s) {
-                return (fundingRateInterp(s) - interestRateDiffInterp(s)) * expIRDiff(s) *
-                       this->foreignDiscountCurve_->discount(s) /
-                       this->domesticDiscountCurve_->discount(s);
+            auto timeIntegrand = [fundingRateInterp, interestRateDiffInterp, integrator, expIRDiff,
+                                  effDomCurve, effForCurve](Real s) {
+                return (fundingRateInterp(s) - interestRateDiffInterp(s)) * expIRDiff(s)
+                       * effForCurve->discount(s) / effDomCurve->discount(s);
             };
-            results_.value = assetSpot_->value() * integrator(timeIntegrand, 0., maxT_);
+            factor = integrator(timeIntegrand, 0., maxT_);
+
+            // for t > maxT_, assume flat extrapolaiton on all rates
+            Real fundingRate_last = fundingRateInterp(maxT_);
+            Real interestRateDiff_last = interestRateDiffInterp(maxT_);
+            Real expIRDiff_last = expIRDiff(maxT_);
+            Real dt = 1.e-4;
+            Real domRate_last = (log(effDomCurve->discount(maxT_)) - log(effDomCurve->discount(maxT_ + dt))) / dt;
+            Real forRate_last = (log(effForCurve->discount(maxT_)) - log(effForCurve->discount(maxT_ + dt))) /dt;
+            Real ratio = fundingRate_last + forRate_last - domRate_last;
+            factor += (fundingRate_last - interestRateDiff_last) * expIRDiff_last *
+                      effForCurve->discount(maxT_) / effDomCurve->discount(maxT_) / ratio;
+        }
+
+        if (arguments_.payoffType == PerpetualFutures::Linear) {
+            results_.value = assetSpot_->value() * factor;
+        } else {
+            results_.value = assetSpot_->value() / factor;
         }
     }
 

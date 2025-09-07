@@ -43,6 +43,10 @@ namespace QuantLib {
         - AHJ_alt: (cashflow at day t+1) = f_t+1 - f_t - fr_t * x_t+1 * (f_t - x_t)/x_t - i_diff_t * x_t+1;
         where x_t, f_t, fr_t and i_diff_t are a spot and a future price, a funding rate, an interest rate differential at t.
 
+        fundingFrequency:
+        - 0 length: Continuous
+        - otherwise: Discrete
+
         For more details, refer to
         https://finance.wharton.upenn.edu/~jermann/AHJ-main-10.pdf
     */

@@ -22,6 +22,7 @@
 #include <ql/instruments/perpetualfutures.hpp>
 #include <ql/pricingengines/futures/discountingperpetualfuturesengine.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -58,7 +59,6 @@ struct PerpetualFuturesData {
     Rate q;       // asset yield
     Rate k;       // funding rate
     Rate i_diff;  // interest rate differential
-    Real result;  // expected result
     Real tol;     // tolerance
 };
 
@@ -68,13 +68,10 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
     BOOST_TEST_MESSAGE("Testing perpetual futures value aginast analytic form for constant parameters...");
 
     PerpetualFuturesData values[] = {
-        {PerpetualFutures::Linear, PerpetualFutures::AHJ, Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005,
-         10000. * (0.01 - 0.005) * exp(0.05 / 4.) / (exp(0.05 / 4.) - exp(0.03 / 4.) + 0.01 * exp(0.05 / 4.)), 5.},
-        {PerpetualFutures::Linear, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.03, 0.05,
-         0.01, 0.005,
-         10000. * (0.01 - 0.005) * exp(0.03 / 4.) /
-             (exp(0.05 / 4.) - exp(0.03 / 4.) + 0.01 * exp(0.03 / 4.)),
-         5.},
+        {PerpetualFutures::Linear, PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
+        {PerpetualFutures::Linear, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
+        {PerpetualFutures::Inverse, PerpetualFutures::AHJ,    Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
+        {PerpetualFutures::Inverse, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.03, 0.05, 0.01, 0.005, 1.e-4},
     };
 
     DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -90,12 +87,62 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         ext::shared_ptr<PricingEngine> engine(new DiscountingPerpetualFuturesEngine(
             domCurve, forCurve, spot, fundingTimes, fundingRates, interestRateDiffs));
         trade.setPricingEngine(engine);
-
         Real calculated = trade.NPV();
-        Real error = std::fabs(calculated - value.result);
+
+        // analytic
+        Real dt = 0.;
+        switch (value.fundingFreq.units()) {
+            case Years:
+                dt = (Real)value.fundingFreq.length();
+                break;
+            case Months:
+                dt = (Real)value.fundingFreq.length() / 12.;
+                break;
+            case Weeks:
+                dt = (Real)value.fundingFreq.length() / 365. * 7.;
+                break;
+            case Days:
+                dt = (Real)value.fundingFreq.length() / 365.;
+                break;
+            case Hours:
+                dt = (Real)value.fundingFreq.length() / 365. / 24.;
+                break;
+            case Minutes:
+                dt = (Real)value.fundingFreq.length() / 365. / 24. / 60.;
+                break;
+            case Seconds:
+                dt = (Real)value.fundingFreq.length() / 365. / 24. / 60. / 60.;
+                break;
+            default:
+                QL_FAIL("Unknown fundingFrequency unit");
+        }
+        Real expected = 0.;
+        if (value.payoffType == PerpetualFutures::Linear) {
+            if (value.fundingType == PerpetualFutures::AHJ) {
+                expected =
+                    value.s * (value.k - value.i_diff) * exp(value.q * dt) /
+                    (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.q * dt));
+            } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                expected =
+                    value.s * (value.k - value.i_diff) * exp(value.r * dt) /
+                    (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.r * dt));
+            }
+        } else if (value.payoffType == PerpetualFutures::Inverse) {
+            if (value.fundingType == PerpetualFutures::AHJ) {
+                expected = value.s *
+                    (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.r * dt)) /
+                    (value.k - value.i_diff) / exp(value.r * dt);
+            } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                expected = value.s *
+                    (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.q * dt)) /
+                    (value.k - value.i_diff) / exp(value.q * dt);
+            }
+        }
+        Real error = std::fabs(calculated - expected);
         if (error > value.tol) {
             REPORT_FAILURE("value", value.payoffType, value.fundingType, value.fundingFreq, value.s,
-                           value.r, value.q, value.k, value.i_diff, today, value.result, calculated, error,
+                           value.r, value.q, value.k, value.i_diff, today, expected, calculated,
+                           error,
                            value.tol);
         }
     }
