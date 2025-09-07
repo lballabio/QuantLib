@@ -40,9 +40,9 @@ namespace QuantLib {
     class DiscountingPerpetualFuturesEngine : public PerpetualFutures::engine {
       public:
         enum InterpolationType { PiecewiseConstant, Linear, CubicSpline };
-        DiscountingPerpetualFuturesEngine(Handle<YieldTermStructure> domesticDiscountCurve,
-                                          Handle<YieldTermStructure> foreignDiscountCurve,
-                                          Handle<Quote> assetSpot,
+        DiscountingPerpetualFuturesEngine(Handle<YieldTermStructure>& domesticDiscountCurve,
+                                          Handle<YieldTermStructure>& foreignDiscountCurve,
+                                          Handle<Quote>& assetSpot,
                                           Array& fundingTimes,
                                           Array& fundingRates,
                                           Array& interestRateDiffs,
@@ -61,6 +61,7 @@ namespace QuantLib {
         Handle<Quote> assetSpot_;
         Array& fundingTimes_, fundingRates_, interestRateDiffs_;
         InterpolationType fundingInterpType_;
+        Real maxT_;
     };
 
 }

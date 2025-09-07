@@ -422,6 +422,12 @@ namespace QuantLib {
                                  const short_period_holder& holder) {
             Integer n = holder.p.length();
             switch (holder.p.units()) {
+              case Hours:
+                return out << n << "h";
+              case Minutes:
+                return out << n << "m";
+              case Seconds:
+                return out << n << "s";
               case Days:
                 return out << n << "D";
               case Weeks:
