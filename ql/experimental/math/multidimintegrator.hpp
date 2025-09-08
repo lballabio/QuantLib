@@ -23,7 +23,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <vector>
 
 namespace QuantLib {

@@ -19,10 +19,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functional.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {

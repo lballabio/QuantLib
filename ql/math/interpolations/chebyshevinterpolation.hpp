@@ -24,9 +24,9 @@
 #ifndef quantlib_chebyshev_interpolation_hpp
 #define quantlib_chebyshev_interpolation_hpp
 
-#include <ql/functional.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/interpolation.hpp>
+#include <functional>
 
 namespace QuantLib {
 

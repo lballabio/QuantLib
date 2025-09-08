@@ -28,8 +28,8 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
-#include <ql/functional.hpp>
 #include <boost/iterator/transform_iterator.hpp>
+#include <functional>
 #include <iterator>
 #include <algorithm>
 #include <map>

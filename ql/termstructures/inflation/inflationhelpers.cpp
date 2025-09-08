@@ -177,19 +177,6 @@ namespace QuantLib {
         YearOnYearInflationSwapHelper::initializeDates();
     }
 
-    YearOnYearInflationSwapHelper::YearOnYearInflationSwapHelper(
-        const Handle<Quote>& quote,
-        const Period& swapObsLag,
-        const Date& maturity,
-        Calendar calendar,
-        BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
-        const ext::shared_ptr<YoYInflationIndex>& yii,
-        Handle<YieldTermStructure> nominalTermStructure)
-    : YearOnYearInflationSwapHelper(quote, swapObsLag, maturity, std::move(calendar), paymentConvention,
-                                    std::move(dayCounter), yii, CPI::AsIndex, std::move(nominalTermStructure)) {}
-
-
     Real YearOnYearInflationSwapHelper::impliedQuote() const {
         yyiis_->deepUpdate();
         return yyiis_->fairRate();

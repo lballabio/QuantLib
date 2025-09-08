@@ -25,7 +25,7 @@
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/experimental/mcbasket/pathpayoff.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <memory>
 
 namespace QuantLib {

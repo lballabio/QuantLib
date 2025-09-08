@@ -25,7 +25,7 @@
 
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 
 namespace QuantLib {
 

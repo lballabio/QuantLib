@@ -20,12 +20,12 @@
 /*! \file exponentialfittinghestonengine.cpp
 */
 
-#include <ql/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/pricingengines/vanilla/exponentialfittinghestonengine.hpp>
+#include <functional>
 
 namespace QuantLib {
 

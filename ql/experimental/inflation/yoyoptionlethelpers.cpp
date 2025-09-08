@@ -64,20 +64,6 @@ namespace QuantLib {
         // haven't yet set the vol (term structure = surface)
     }
 
-    YoYOptionletHelper::YoYOptionletHelper(const Handle<Quote>& price,
-                                           Real notional,
-                                           YoYInflationCapFloor::Type capFloorType,
-                                           Period& lag,
-                                           DayCounter yoyDayCounter,
-                                           Calendar paymentCalendar,
-                                           Natural fixingDays,
-                                           ext::shared_ptr<YoYInflationIndex> index,
-                                           Rate strike,
-                                           Size n,
-                                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
-    : YoYOptionletHelper(price, notional, capFloorType, lag, std::move(yoyDayCounter), std::move(paymentCalendar),
-                         fixingDays, std::move(index), CPI::AsIndex, strike, n, std::move(pricer)) {}
-
 
     Real YoYOptionletHelper::impliedQuote() const {
         yoyCapFloor_->deepUpdate();

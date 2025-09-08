@@ -16,6 +16,10 @@ function(generate_ql_header source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "qldefines.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "quantlib.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "version.hpp")
+
+    list(FILTER children_hpp EXCLUDE REGEX "functional.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "tuple.hpp")
+
     foreach(child ${children_hpp})
         file(APPEND "${binary_dir}/ql/quantlib.hpp" "#include <${child}>\n")
     endforeach()
@@ -38,7 +42,6 @@ function(generate_dir_headers source_dir binary_dir)
     file(GLOB children_hpp RELATIVE ${source_dir} "${source_dir}/*.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "all.hpp")
 
-    list(FILTER children_hpp EXCLUDE REGEX "averageoiscouponpricer.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "subperiodcoupon.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fdmultiperiodengine.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fdvanillaengine.hpp")
@@ -48,6 +51,10 @@ function(generate_dir_headers source_dir binary_dir)
     list(FILTER children_hpp EXCLUDE REGEX "parallelevolver.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "fixedratebondforward.hpp")
     list(FILTER children_hpp EXCLUDE REGEX "tona.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "arithmeticaverageois.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "arithmeticoisratehelper.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "creditriskplus.hpp")
+    list(FILTER children_hpp EXCLUDE REGEX "sensitivityanalysis.hpp")
 
     # These headers were moved to another location.
     # Therefore, we can ignore them as they only contain a warning and the new includes.

@@ -100,23 +100,6 @@ namespace QuantLib {
                         "cfStrikes not increasing");
     }
 
-    YoYCapFloorTermPriceSurface::YoYCapFloorTermPriceSurface(
-        Natural fixingDays,
-        const Period& yyLag,
-        const ext::shared_ptr<YoYInflationIndex>& yii,
-        Rate baseRate,
-        Handle<YieldTermStructure> nominal,
-        const DayCounter& dc,
-        const Calendar& cal,
-        const BusinessDayConvention& bdc,
-        const std::vector<Rate>& cStrikes,
-        const std::vector<Rate>& fStrikes,
-        const std::vector<Period>& cfMaturities,
-        const Matrix& cPrice,
-        const Matrix& fPrice)
-    : YoYCapFloorTermPriceSurface(fixingDays, yyLag, yii, CPI::AsIndex, std::move(nominal), dc, cal, bdc,
-                                  cStrikes, fStrikes, cfMaturities, cPrice, fPrice) {}
-
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
     {
         return referenceDate() + p;

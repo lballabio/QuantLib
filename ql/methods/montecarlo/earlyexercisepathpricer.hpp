@@ -27,7 +27,7 @@
 #include <ql/math/array.hpp>
 #include <ql/methods/montecarlo/path.hpp>
 #include <ql/methods/montecarlo/multipath.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 
 namespace QuantLib {
 

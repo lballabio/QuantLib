@@ -17,41 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tuple.hpp
-    \brief Maps tuple to either the boost or std implementation
-*/
-
 #ifndef quantlib_tuple_hpp
 #define quantlib_tuple_hpp
 
-#include <ql/qldefines.hpp>
+// Deprecated in version 1.41
+#pragma message("Warning: this file is empty and will disappear in a future release; use #include <tuple> instead.")
+
 #include <tuple>
-
-namespace QuantLib::ext {
-
-        /*! \deprecated Use std::tuple instead.
-                        Deprecated in version 1.36.
-        */
-        template <typename... Ts>
-        using tuple [[deprecated("Use std::tuple instead")]] = std::tuple<Ts...>;    // NOLINT(misc-unused-using-decls)
-
-        /*! \deprecated Use std::make_tuple instead.
-                        Deprecated in version 1.36.
-        */
-        using std::make_tuple;              // NOLINT(misc-unused-using-decls)
-
-        /*! \deprecated Use std::get instead.
-                        Deprecated in version 1.36.
-        */
-        using std::get;                     // NOLINT(misc-unused-using-decls)
-
-        /*! \deprecated Use std::tie or structured bindings instead.
-                        Deprecated in version 1.36.
-        */
-        using std::tie;                     // NOLINT(misc-unused-using-decls)
-
-    }
-
 
 #endif
 

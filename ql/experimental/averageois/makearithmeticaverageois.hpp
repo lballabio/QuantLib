@@ -17,89 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file makearithmeticaverageois.hpp
-    \brief Helper class to instantiate overnight indexed swaps.
-*/
-
 #ifndef quantlib_makearithmeticaverageois_hpp
 #define quantlib_makearithmeticaverageois_hpp
 
-#include <ql/experimental/averageois/arithmeticaverageois.hpp>
-#include <ql/time/dategenerationrule.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-
-namespace QuantLib {
-
-    /*! \deprecated Use MakeOIS instead.
-                        Deprecated in version 1.36.
-    */
-    class [[deprecated("Use MakeOIS instead")]] MakeArithmeticAverageOIS {
-      public:
-        QL_DEPRECATED_DISABLE_WARNING
-
-        MakeArithmeticAverageOIS(const Period& swapTenor,
-                const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                Rate fixedRate = Null<Rate>(),
-                const Period& fwdStart = 0*Days);
-
-        operator ArithmeticAverageOIS() const;
-        operator ext::shared_ptr<ArithmeticAverageOIS>() const;
-
-        MakeArithmeticAverageOIS& receiveFixed(bool flag = true);
-        MakeArithmeticAverageOIS& withType(Swap::Type type);
-        MakeArithmeticAverageOIS& withNominal(Real n);
-
-        MakeArithmeticAverageOIS& withSettlementDays(Natural settlementDays);
-        MakeArithmeticAverageOIS& withEffectiveDate(const Date&);
-        MakeArithmeticAverageOIS& withTerminationDate(const Date&);
-        MakeArithmeticAverageOIS& withRule(DateGeneration::Rule r);
-
-        MakeArithmeticAverageOIS& withFixedLegPaymentFrequency(Frequency f);
-        MakeArithmeticAverageOIS& withOvernightLegPaymentFrequency(Frequency f);
-        MakeArithmeticAverageOIS& withEndOfMonth(bool flag = true);
-
-        MakeArithmeticAverageOIS& withFixedLegDayCount(const DayCounter& dc);
-
-        MakeArithmeticAverageOIS& withOvernightLegSpread(Spread sp);
-
-        MakeArithmeticAverageOIS& withDiscountingTermStructure(
-                  const Handle<YieldTermStructure>& discountingTermStructure);
-        MakeArithmeticAverageOIS& withPricingEngine(
-                              const ext::shared_ptr<PricingEngine>& engine);
-        MakeArithmeticAverageOIS& withArithmeticAverage(
-                                       Real meanReversionSpeed = 0.03,
-                                       Real volatility = 0.00, // NO convexity adjustment by default
-                                       bool byApprox = false); // TRUE to use Katsumi Takada approximation
-      private:
-        Period swapTenor_;
-        ext::shared_ptr<OvernightIndex> overnightIndex_;
-        Rate fixedRate_;
-        Period forwardStart_;
-
-        Natural settlementDays_ = 2;
-        Date effectiveDate_, terminationDate_;
-        Calendar calendar_;
-
-        Frequency fixedLegPaymentFrequency_ = Annual;
-        Frequency overnightLegPaymentFrequency_ = Annual;
-        DateGeneration::Rule rule_ = DateGeneration::Backward;
-        bool endOfMonth_, isDefaultEOM_ = true;
-
-        bool byApprox_ = false;
-        Real mrs_ = 0.03;
-        Real vol_ = 0.00;
-
-        Swap::Type type_ = Swap::Payer;
-        Real nominal_ = 1.0;
-
-        Spread overnightSpread_ = 0.0;
-        DayCounter fixedDayCount_;
-
-        ext::shared_ptr<PricingEngine> engine_;
-
-        QL_DEPRECATED_ENABLE_WARNING
-    };
-
-}
+// Deprecated in version 1.41
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 #endif

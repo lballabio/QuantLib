@@ -26,10 +26,10 @@
 #ifndef quantlib_piecewise_zero_inflation_curve_hpp
 #define quantlib_piecewise_zero_inflation_curve_hpp
 
-#include <ql/functional.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/inflation/inflationtraits.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {

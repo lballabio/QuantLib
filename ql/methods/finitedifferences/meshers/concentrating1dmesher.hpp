@@ -28,9 +28,7 @@
 
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
 #include <ql/utilities/null.hpp>
-
-#include <ql/tuple.hpp>
-
+#include <tuple>
 #include <utility>
 #include <vector>
 

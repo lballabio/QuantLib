@@ -63,23 +63,7 @@ namespace QuantLib {
             DayCounter yoyDayCount,
             Calendar paymentCalendar, // inflation index does not have a calendar
             BusinessDayConvention paymentConvention = ModifiedFollowing);
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        YearOnYearInflationSwap(
-            Type type,
-            Real nominal,
-            Schedule fixedSchedule,
-            Rate fixedRate,
-            DayCounter fixedDayCount,
-            Schedule yoySchedule,
-            ext::shared_ptr<YoYInflationIndex> yoyIndex,
-            const Period& observationLag,
-            Spread spread,
-            DayCounter yoyDayCount,
-            Calendar paymentCalendar, // inflation index does not have a calendar
-            BusinessDayConvention paymentConvention = ModifiedFollowing);
+
         // results
         virtual Real fixedLegNPV() const;
         virtual Rate fairRate() const;

@@ -77,22 +77,6 @@ namespace QuantLib {
         }
     }
 
-    YearOnYearInflationSwap::YearOnYearInflationSwap(Type type,
-                                                     Real nominal,
-                                                     Schedule fixedSchedule,
-                                                     Rate fixedRate,
-                                                     DayCounter fixedDayCount,
-                                                     Schedule yoySchedule,
-                                                     ext::shared_ptr<YoYInflationIndex> yoyIndex,
-                                                     const Period& observationLag,
-                                                     Spread spread,
-                                                     DayCounter yoyDayCount,
-                                                     Calendar paymentCalendar,
-                                                     BusinessDayConvention paymentConvention)
-    : YearOnYearInflationSwap(type, nominal, std::move(fixedSchedule), fixedRate, std::move(fixedDayCount),
-                              std::move(yoySchedule), std::move(yoyIndex), observationLag, CPI::AsIndex,
-                              spread, std::move(yoyDayCount), std::move(paymentCalendar), paymentConvention) {}
-
      void YearOnYearInflationSwap::setupArguments(PricingEngine::arguments* args) const {
 
         Swap::setupArguments(args);

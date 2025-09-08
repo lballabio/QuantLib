@@ -47,21 +47,7 @@ namespace QuantLib {
                            Rate strike,
                            Size n,
                            ext::shared_ptr<YoYInflationCapFloorEngine> pricer);
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        YoYOptionletHelper(const Handle<Quote>& price,
-                           Real notional,
-                           YoYInflationCapFloor::Type capFloorType,
-                           Period& lag,
-                           DayCounter yoyDayCounter,
-                           Calendar paymentCalendar,
-                           Natural fixingDays,
-                           ext::shared_ptr<YoYInflationIndex> index,
-                           Rate strike,
-                           Size n,
-                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer);
+
         void setTermStructure(YoYOptionletVolatilitySurface*) override;
         Real impliedQuote() const override;
 

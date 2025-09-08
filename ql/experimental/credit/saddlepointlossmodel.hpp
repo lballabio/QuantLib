@@ -20,12 +20,12 @@
 #ifndef quantlib_saddle_point_lossmodel_hpp
 #define quantlib_saddle_point_lossmodel_hpp
 
-#include <ql/tuple.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <tuple>
 
 namespace QuantLib {
 

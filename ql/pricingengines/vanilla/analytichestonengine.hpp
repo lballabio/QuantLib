@@ -31,7 +31,7 @@
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <complex>
 
 namespace QuantLib {

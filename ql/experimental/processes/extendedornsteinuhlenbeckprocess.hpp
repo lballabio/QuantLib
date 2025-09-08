@@ -25,7 +25,7 @@
 #define quantlib_extended_ornstein_uhlenbeck_process_hpp
 
 #include <ql/stochasticprocess.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 
 namespace QuantLib {
 

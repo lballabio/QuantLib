@@ -25,8 +25,7 @@
 #define quantlib_gmres_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/functional.hpp>
-
+#include <functional>
 #include <list>
 
 namespace QuantLib {

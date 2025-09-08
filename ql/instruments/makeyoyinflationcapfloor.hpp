@@ -43,15 +43,7 @@ namespace QuantLib {
                                  Calendar cal,
                                  const Period& observationLag,
                                  CPI::InterpolationType interpolation);
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
-                                 ext::shared_ptr<YoYInflationIndex> index,
-                                 const Size& length,
-                                 Calendar cal,
-                                 const Period& observationLag);
+
         MakeYoYInflationCapFloor& withNominal(Real n);
         MakeYoYInflationCapFloor& withEffectiveDate(const Date& effectiveDate);
         MakeYoYInflationCapFloor& withFirstCapletExcluded();

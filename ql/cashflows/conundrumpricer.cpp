@@ -24,7 +24,6 @@
 
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/functional.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/vanillaswap.hpp>
@@ -36,6 +35,7 @@
 #include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/schedule.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {

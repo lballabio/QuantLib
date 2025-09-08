@@ -29,7 +29,7 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <vector>
 #include <cmath>
 #include <complex>

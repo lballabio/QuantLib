@@ -33,7 +33,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/statistics/histogram.hpp>
 #include <ql/math/statistics/riskstatistics.hpp>
-#include <ql/tuple.hpp>
+#include <tuple>
 #include <utility>
 
 /* Intended to replace

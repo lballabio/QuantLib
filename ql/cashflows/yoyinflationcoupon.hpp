@@ -48,23 +48,6 @@ namespace QuantLib {
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date());
 
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        YoYInflationCoupon(const Date& paymentDate,
-                           Real nominal,
-                           const Date& startDate,
-                           const Date& endDate,
-                           Natural fixingDays,
-                           const ext::shared_ptr<YoYInflationIndex>& index,
-                           const Period& observationLag,
-                           const DayCounter& dayCounter,
-                           Real gearing = 1.0,
-                           Spread spread = 0.0,
-                           const Date& refPeriodStart = Date(),
-                           const Date& refPeriodEnd = Date());
-
         //! \name Inspectors
         //@{
         //! index gearing, i.e. multiplicative coefficient for the index
@@ -118,14 +101,6 @@ namespace QuantLib {
                       ext::shared_ptr<YoYInflationIndex> index,
                       const Period& observationLag,
                       CPI::InterpolationType interpolation);
-      /*! \deprecated Use the overload that passes an interpolation type instead.
-                      Deprecated in version 1.36.
-      */
-      [[deprecated("Use the overload that passes an interpolation type instead")]]
-      yoyInflationLeg(Schedule schedule,
-                      Calendar cal,
-                      ext::shared_ptr<YoYInflationIndex> index,
-                      const Period& observationLag);
       yoyInflationLeg& withNotionals(Real notional);
       yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
       yoyInflationLeg& withPaymentDayCounter(const DayCounter&);

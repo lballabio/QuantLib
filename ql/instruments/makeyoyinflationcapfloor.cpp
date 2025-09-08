@@ -38,13 +38,6 @@ namespace QuantLib {
 
       dayCounter_(Thirty360(Thirty360::BondBasis)) {}
 
-    MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
-                                                       ext::shared_ptr<YoYInflationIndex> index,
-                                                       const Size& length,
-                                                       Calendar cal,
-                                                       const Period& observationLag)
-    : MakeYoYInflationCapFloor(capFloorType, std::move(index), length, std::move(cal), observationLag, CPI::AsIndex)  {}
-
     MakeYoYInflationCapFloor::operator YoYInflationCapFloor() const {
         ext::shared_ptr<YoYInflationCapFloor> capfloor = *this;
         return *capfloor;
