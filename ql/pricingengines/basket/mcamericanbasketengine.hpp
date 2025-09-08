@@ -27,13 +27,12 @@
 #define quantlib_american_basket_montecarlo_engine_hpp
 
 #include <ql/exercise.hpp>
-#include <ql/functional.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/qldefines.hpp>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {

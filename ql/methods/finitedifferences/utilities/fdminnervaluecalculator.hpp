@@ -28,7 +28,7 @@
 
 #include <ql/types.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <vector>
 
 

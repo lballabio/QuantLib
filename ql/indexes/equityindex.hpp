@@ -69,16 +69,6 @@ namespace QuantLib {
                     Handle<YieldTermStructure> dividend = {},
                     Handle<Quote> spot = {});
 
-        /*! \deprecated Use the constructor taking a currency.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the constructor taking a currency")]]
-        EquityIndex(std::string name,
-                    Calendar fixingCalendar,
-                    Handle<YieldTermStructure> interest = {},
-                    Handle<YieldTermStructure> dividend = {},
-                    Handle<Quote> spot = {});
-
         //! \name Index interface
         //@{
         std::string name() const override { return name_; }

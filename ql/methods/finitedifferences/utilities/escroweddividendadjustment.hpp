@@ -24,9 +24,9 @@
 #define quantlib_escrowed_dividend_adjustment_hpp
 
 #include <ql/handle.hpp>
-#include <ql/functional.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/instruments/dividendschedule.hpp>
+#include <functional>
 
 namespace QuantLib {
 

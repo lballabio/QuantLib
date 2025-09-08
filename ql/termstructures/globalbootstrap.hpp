@@ -24,12 +24,12 @@
 #ifndef quantlib_global_bootstrap_hpp
 #define quantlib_global_bootstrap_hpp
 
-#include <ql/functional.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <algorithm>
+#include <functional>
 #include <utility>
 
 namespace QuantLib {

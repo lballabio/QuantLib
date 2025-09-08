@@ -55,12 +55,6 @@ namespace QuantLib {
         EndCriteria::Type minimize(Problem& P,
                                    const EndCriteria& endCriteria) override;
 
-        /*! \deprecated Don't use this method; inspect the result of minimize instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Don't use this method; inspect the result of minimize instead")]]
-        virtual Integer getInfo() const { return info_; }
-
         /*! \deprecated Don't use this method; it is for internal use.
                         Deprecated in version 1.37.
         */

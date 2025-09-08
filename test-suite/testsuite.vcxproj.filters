@@ -113,9 +113,6 @@
     <ClCompile Include="creditdefaultswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="creditriskplus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="curvestates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
