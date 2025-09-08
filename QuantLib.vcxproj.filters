@@ -4530,6 +4530,9 @@
     <ClInclude Include="ql\pricingengines\futures\discountingperpetualfuturesengine.hpp">
       <Filter>pricingengines\futures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\futures\all.hpp">
+      <Filter>pricingengines\futures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">

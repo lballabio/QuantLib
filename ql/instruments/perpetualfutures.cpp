@@ -19,7 +19,6 @@
 
 #include <ql/instruments/perpetualfutures.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
 //#include <memory>
 
 namespace QuantLib {

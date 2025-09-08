@@ -1568,6 +1568,7 @@
     <ClInclude Include="ql\pricingengines\forward\mcforwardvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\mcvarianceswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\replicatingvarianceswapengine.hpp" />
+    <ClInclude Include="ql\pricingengines\futures\all.hpp" />
     <ClInclude Include="ql\pricingengines\futures\discountingperpetualfuturesengine.hpp" />
     <ClInclude Include="ql\pricingengines\genericmodelengine.hpp" />
     <ClInclude Include="ql\pricingengines\greeks.hpp" />

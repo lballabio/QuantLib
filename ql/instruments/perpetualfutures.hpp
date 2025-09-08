@@ -26,7 +26,9 @@
 
 #include <ql/instrument.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 
 namespace QuantLib {
     // Futures has no termination date mainly for cryptocurrencies
@@ -59,10 +61,10 @@ namespace QuantLib {
             enum FundingType { AHJ, AHJ_alt };
 
             PerpetualFutures(PerpetualFutures::PayoffType payoffType,
-                             PerpetualFutures::FundingType fundingType,
-                             Period fundingFrequency,
-                             Calendar cal,
-                             DayCounter dc);
+                             PerpetualFutures::FundingType fundingType = PerpetualFutures::AHJ_alt,
+                             Period fundingFrequency = Period(8, Hours),
+                             Calendar cal = NullCalendar(),
+                             DayCounter dc = ActualActual(ActualActual::ISDA));
             bool isExpired() const override { return false; };
             void setupArguments(PricingEngine::arguments*) const override;
     
