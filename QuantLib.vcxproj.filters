@@ -7328,7 +7328,4 @@
       <Filter>pricingengines</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="BACHELIERCALCULATOR_FIXES.md" />
-  </ItemGroup>
 </Project>

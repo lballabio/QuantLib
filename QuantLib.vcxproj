@@ -2883,9 +2883,6 @@
     <ClCompile Include="ql\timegrid.cpp" />
     <ClCompile Include="ql\version.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="BACHELIERCALCULATOR_FIXES.md" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project=".\Build.props" Condition="Exists('.\Build.props')" />
   <ImportGroup Label="ExtensionTargets">

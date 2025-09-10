@@ -109,10 +109,15 @@ namespace QuantLib {
 
     // inline
     inline Real BachelierCalculator::itmCashProbability() const {
-        return cum_d2_;
+        // For Bachelier model, this is the probability that F > K (call) or F < K (put)
+        // which is N(d) for call, 1-N(d) = N(-d) for put
+        // where d = (F-K)/?
+        return cum_d1_;
     }
 
     inline Real BachelierCalculator::itmAssetProbability() const {
+        // In Bachelier model, asset probability is the same as cash probability
+        // since there's no drift adjustment like in Black-Scholes
         return cum_d1_;
     }
 
