@@ -290,9 +290,6 @@ namespace QuantLib {
         
         // Theta = -dV/dt = -(r*V - r*S*Delta + 0.5*σ²*Gamma)
 
-        if (close(maturity, 0.0))
-            return 0.0;
-
         return -(std::log(discount_) * value() + std::log(forward_ / spot) * spot * delta(spot) +
                  0.5 * variance_ * gamma(spot)) / maturity;
     }
