@@ -1915,6 +1915,8 @@ set(QL_HEADERS
     pricingengines/basket/spreadblackscholesvanillaengine.hpp
     pricingengines/basket/stulzengine.hpp
     pricingengines/blackcalculator.hpp
+    pricingengines/bacheliercalculator.hpp
+    pricingengines/diffusioncalculator.hpp
     pricingengines/blackformula.hpp
     pricingengines/blackscholescalculator.hpp
     pricingengines/bond/binomialconvertibleengine.hpp
