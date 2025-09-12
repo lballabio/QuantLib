@@ -690,6 +690,8 @@ set(QL_SOURCES
     pricingengines/basket/spreadblackscholesvanillaengine.cpp
     pricingengines/basket/stulzengine.cpp
     pricingengines/blackcalculator.cpp
+    pricingengines/bacheliercalculator.cpp
+    pricingengines/diffusioncalculator.cpp
     pricingengines/blackformula.cpp
     pricingengines/blackscholescalculator.cpp
     pricingengines/bond/bondfunctions.cpp
