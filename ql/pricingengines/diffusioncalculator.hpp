@@ -34,12 +34,15 @@ namespace QuantLib {
         functionality for different diffusion model calculators like 
         Black-Scholes and Bachelier models.
         
+        \warning This class cannot be instantiated directly. 
+                 Use concrete implementations like BlackCalculator or BachelierCalculator.
+        
         \bug When the variance is null, division by zero occur during
              the calculation of delta, delta forward, gamma, gamma
              forward, rho, dividend rho, vega, and strike sensitivity.
     */
     class DiffusionCalculator {
-      public:
+    protected:  // Made protected to prevent direct instantiation
         DiffusionCalculator(const ext::shared_ptr<StrikedTypePayoff>& payoff,
                            Real forward,
                            Real stdDev,
@@ -49,6 +52,18 @@ namespace QuantLib {
                            Real forward,
                            Real stdDev,
                            Real discount = 1.0);
+        
+        //! Initialize the calculator with a payoff
+        virtual void initialize(const ext::shared_ptr<StrikedTypePayoff>& p) = 0;
+        
+        //! Common member variables
+        Real strike_, forward_, stdDev_, discount_, variance_;
+        Real d1_, d2_;
+        Real alpha_, beta_, DalphaDd1_, DbetaDd2_;
+        Real n_d1_, cum_d1_, n_d2_, cum_d2_;
+        Real x_, DxDs_, DxDstrike_;
+        
+      public:
         virtual ~DiffusionCalculator() = default;
 
         //! Option value
@@ -110,17 +125,6 @@ namespace QuantLib {
 
         virtual Real alpha() const = 0;
         virtual Real beta() const = 0;
-
-      protected:
-        //! Initialize the calculator with a payoff
-        virtual void initialize(const ext::shared_ptr<StrikedTypePayoff>& p) = 0;
-        
-        //! Common member variables
-        Real strike_, forward_, stdDev_, discount_, variance_;
-        Real d1_, d2_;
-        Real alpha_, beta_, DalphaDd1_, DbetaDd2_;
-        Real n_d1_, cum_d1_, n_d2_, cum_d2_;
-        Real x_, DxDs_, DxDstrike_;
     };
 
     // inline
