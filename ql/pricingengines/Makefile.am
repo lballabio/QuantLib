@@ -10,6 +10,8 @@ this_include_HEADERS = \
     americanpayoffatexpiry.hpp \
     americanpayoffathit.hpp \
     blackcalculator.hpp \
+    bacheliercalculator.hpp \
+    diffusioncalculator.hpp \
     blackformula.hpp \
     blackscholescalculator.hpp \
     genericmodelengine.hpp \
@@ -22,6 +24,8 @@ cpp_files = \
 	americanpayoffatexpiry.cpp \
 	americanpayoffathit.cpp \
 	blackcalculator.cpp \
+    bacheliercalculator.cpp \
+    diffusioncalculator.cpp \
 	blackformula.cpp \
 	blackscholescalculator.cpp \
 	greeks.cpp
