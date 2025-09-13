@@ -34,7 +34,7 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 BOOST_AUTO_TEST_SUITE(PerpetualFuturesTests)
 
 #undef REPORT_FAILURE
-#define REPORT_FAILURE(greekName, payoffType, fundingType, fundingFreq, s, r, q, k, i_diff, today, \
+#define REPORT_FAILURE(greekName, payoffType, fundingType, fundingFreq, s, r, q, k, iDiff, today, \
                        expected, calculated, relError, tolerance)                               \
     BOOST_FAIL(payoffType                                                                    \
                << " perpetual futures with " << fundingType << " funding type:\n"  \
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_SUITE(PerpetualFuturesTests)
                << "    risk-free rate:                  " << r << "\n"                            \
                << "    asset yield:                     " << q << "\n"                            \
                << "    funding rate:                    " << k << "\n"                            \
-               << "    interest rate diffierential:     " << i_diff << "\n"                       \
+               << "    interest rate diffierential:     " << iDiff << "\n"                       \
                << "    funding frequency:               " << fundingFreq << "\n"                       \
                << "    reference date:                  " << today << "\n"                                  \
                << "    expected   " << greekName << ": " << expected << "\n"                 \
@@ -58,7 +58,7 @@ struct PerpetualFuturesData {
     Rate r;       // risk-free rate
     Rate q;       // asset yield
     Rate k;       // funding rate
-    Rate i_diff;  // interest rate differential
+    Rate iDiff;  // interest rate differential
     Real relTol;  // relative tolerance
 };
 
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         Handle<YieldTermStructure> domCurve(flatRate(today, value.r, dc));
         Handle<YieldTermStructure> forCurve(flatRate(today, value.q, dc));
         Handle<Quote> spot(ext::shared_ptr<SimpleQuote>(new SimpleQuote(value.s)));
-        Array fundingTimes(1, 0.), fundingRates(1, value.k), interestRateDiffs(1, value.i_diff);
+        Array fundingTimes(1, 0.), fundingRates(1, value.k), interestRateDiffs(1, value.iDiff);
         ext::shared_ptr<PricingEngine> engine(new DiscountingPerpetualFuturesEngine(
             domCurve, forCurve, spot, fundingTimes, fundingRates, interestRateDiffs));
         trade.setPricingEngine(engine);
@@ -127,11 +127,11 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
             if (value.payoffType == PerpetualFutures::Linear) {
                 if (value.fundingType == PerpetualFutures::AHJ) {
                     expected =
-                        value.s * (value.k - value.i_diff) * exp(value.q * dt) /
+                        value.s * (value.k - value.iDiff) * exp(value.q * dt) /
                         (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.q * dt));
                 } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
                     expected =
-                        value.s * (value.k - value.i_diff) * exp(value.r * dt) /
+                        value.s * (value.k - value.iDiff) * exp(value.r * dt) /
                         (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.r * dt));
                 }
             } else if (value.payoffType == PerpetualFutures::Inverse) {
@@ -139,26 +139,26 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
                     expected =
                         value.s *
                         (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.r * dt)) /
-                        (value.k - value.i_diff) / exp(value.r * dt);
+                        (value.k - value.iDiff) / exp(value.r * dt);
                 } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
                     expected =
                         value.s *
                         (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.q * dt)) /
-                        (value.k - value.i_diff) / exp(value.q * dt);
+                        (value.k - value.iDiff) / exp(value.q * dt);
                 }
             }
         } else {
             // Continuous time
             if (value.payoffType == PerpetualFutures::Linear) {
-                expected = value.s * (value.k - value.i_diff) / (value.q - value.r + value.k);
+                expected = value.s * (value.k - value.iDiff) / (value.q - value.r + value.k);
             } else if (value.payoffType == PerpetualFutures::Inverse) {
-                expected = value.s * (value.r - value.q + value.k) / (value.k - value.i_diff);
+                expected = value.s * (value.r - value.q + value.k) / (value.k - value.iDiff);
             }
         }
         Real relError = std::fabs(calculated / expected - 1.);
         if (relError > value.relTol) {
             REPORT_FAILURE("value", value.payoffType, value.fundingType, value.fundingFreq, value.s,
-                           value.r, value.q, value.k, value.i_diff, today, expected, calculated,
+                           value.r, value.q, value.k, value.iDiff, today, expected, calculated,
                            relError, value.relTol);
         }
     }

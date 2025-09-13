@@ -94,43 +94,43 @@ namespace QuantLib {
         // discrete-time case
         if (fundingFreq.length() > 0) { 
             std::vector<Real> timeGrid;
-            Real grid_time = 0.;
-            while (grid_time < maxT_) {
-                timeGrid.push_back(grid_time);
-                Real unit_t = 0.;
-                Date date = yearFractionToDate(dc, refDate, grid_time);
+            Real tGrid = 0.;
+            while (tGrid < maxT_) {
+                timeGrid.push_back(tGrid);
+                Real tUnit = 0.;
+                Date date = yearFractionToDate(dc, refDate, tGrid);
                 Real daysInYear = dc.dayCount(Date(1, January, date.year()), Date(1, January, date.year()+1));
                 switch (fundingFreq.units()) { 
                     case Years:
-                        grid_time += fundingFreq.length();
+                        tGrid += fundingFreq.length();
                         break;
                     case Months:
-                        unit_t = 1. / 12.;
-                        grid_time += unit_t * fundingFreq.length();
+                        tUnit = 1. / 12.;
+                        tGrid += tUnit * fundingFreq.length();
                         break;
                     case Weeks:
                     case Days:
-                        grid_time = dc.yearFraction(refDate, cal.advance(date, fundingFreq));
+                        tGrid = dc.yearFraction(refDate, cal.advance(date, fundingFreq));
                         break;
                     case Hours:
-                        unit_t = 1. / daysInYear / 24.;
-                        grid_time += unit_t * fundingFreq.length();
+                        tUnit = 1. / daysInYear / 24.;
+                        tGrid += tUnit * fundingFreq.length();
                         break;
                     case Minutes:
-                        unit_t = 1. / daysInYear / 24. / 60.;
-                        grid_time += unit_t * fundingFreq.length();
+                        tUnit = 1. / daysInYear / 24. / 60.;
+                        tGrid += tUnit * fundingFreq.length();
                         break;
                     case Seconds:
-                        unit_t = 1. / daysInYear / 24. / 60. / 60.;
-                        grid_time += unit_t * fundingFreq.length();
+                        tUnit = 1. / daysInYear / 24. / 60. / 60.;
+                        tGrid += tUnit * fundingFreq.length();
                         break;
                     case Milliseconds:
-                        unit_t = 1. / daysInYear / 24. / 60. / 60. / 1000.;
-                        grid_time += unit_t * fundingFreq.length();
+                        tUnit = 1. / daysInYear / 24. / 60. / 60. / 1000.;
+                        tGrid += tUnit * fundingFreq.length();
                         break;
                     case Microseconds:
-                        unit_t = 1. / daysInYear / 24. / 60. / 60. / 1000. / 1000.;
-                        grid_time += unit_t * fundingFreq.length();
+                        tUnit = 1. / daysInYear / 24. / 60. / 60. / 1000. / 1000.;
+                        tGrid += tUnit * fundingFreq.length();
                         break;
                     default:
                         QL_FAIL("Unknown unit in fundingFrequency");
@@ -175,36 +175,36 @@ namespace QuantLib {
                 df_dom.push_back(effDomCurve->discount(time));
                 df_for.push_back(effForCurve->discount(time));
             }
-            Size i_last = timeGrid.size() - 1;
-            Real time_last = timeGrid[i_last];
-            Real productIRDiff_last = productIRDiff(i_last);
-            Real fundingRateGrid_last = fundingRateGrid[i_last];
-            Real interestRateDiffGrid_last = interestRateDiffGrid[i_last];
+            Size iLast = timeGrid.size() - 1;
+            Real timeLast = timeGrid[iLast];
+            Real productIRDiffLast = productIRDiff(iLast);
+            Real fundingRateGridLast = fundingRateGrid[iLast];
+            Real interestRateDiffGridLast = interestRateDiffGrid[iLast];
             Real dt = 1.e-4;
-            Real domRate_last = (log(effDomCurve->discount(time_last)) - log(effDomCurve->discount(time_last + dt))) / dt;
-            Real forRate_last = (log(effForCurve->discount(time_last)) - log(effForCurve->discount(time_last + dt))) / dt;
+            Real domRateLast = (log(effDomCurve->discount(timeLast)) - log(effDomCurve->discount(timeLast + dt))) / dt;
+            Real forRateLast = (log(effForCurve->discount(timeLast)) - log(effForCurve->discount(timeLast + dt))) / dt;
 
             // for t > maxT_, assume flat extrapolaiton on all rates
-            Real last_term = productIRDiff_last
-                             * (fundingRateGrid_last - interestRateDiffGrid_last)
-                             * effForCurve->discount(time_last) / effDomCurve->discount(time_last);
-            Real time_step = (timeGrid.back() - timeGrid.front()) / (timeGrid.size() - 1);
+            Real lastTerm = productIRDiffLast
+                             * (fundingRateGridLast - interestRateDiffGridLast)
+                             * effForCurve->discount(timeLast) / effDomCurve->discount(timeLast);
+            Real timeStep = (timeGrid.back() - timeGrid.front()) / (timeGrid.size() - 1);
             Real ratio =
-                1. / (1. + fundingRateGrid_last) * exp(-time_step * (forRate_last - domRate_last));
-            sum += last_term / (1. - ratio);
+                1. / (1. + fundingRateGridLast) * exp(-timeStep * (forRateLast - domRateLast));
+            sum += lastTerm / (1. - ratio);
             factor = sum;
 
         } else {
         // continuous-time case
             Real timeIntegral = 0.;
             TrapezoidIntegral<Default> integrator(1.e-6, 30);
-            Real fundingRate_xMax = fundingRateInterp.xMax();
-            auto expIRDiff = [fundingRateInterp, integrator, fundingRate_xMax](Real s) {
-                if (s < fundingRate_xMax) {
+            Real fundingRateXMax = fundingRateInterp.xMax();
+            auto expIRDiff = [fundingRateInterp, integrator, fundingRateXMax](Real s) {
+                if (s < fundingRateXMax) {
                     return exp(-integrator(fundingRateInterp, 0., s));
                 } else {
-                    return exp(-integrator(fundingRateInterp, 0., fundingRate_xMax) -
-                               fundingRateInterp(fundingRate_xMax) * (s - fundingRate_xMax));
+                    return exp(-integrator(fundingRateInterp, 0., fundingRateXMax) -
+                               fundingRateInterp(fundingRateXMax) * (s - fundingRateXMax));
                 }
             };
 
@@ -216,14 +216,14 @@ namespace QuantLib {
             factor = integrator(timeIntegrand, 0., maxT_);
 
             // for t > maxT_, assume flat extrapolaiton on all rates
-            Real fundingRate_last = fundingRateInterp(maxT_);
-            Real interestRateDiff_last = interestRateDiffInterp(maxT_);
+            Real fundingRateLast = fundingRateInterp(maxT_);
+            Real interestRateDiffLast = interestRateDiffInterp(maxT_);
             Real expIRDiff_last = expIRDiff(maxT_);
             Real dt = 1.e-4;
-            Real domRate_last = (log(effDomCurve->discount(maxT_)) - log(effDomCurve->discount(maxT_ + dt))) / dt;
-            Real forRate_last = (log(effForCurve->discount(maxT_)) - log(effForCurve->discount(maxT_ + dt))) /dt;
-            Real ratio = fundingRate_last + forRate_last - domRate_last;
-            factor += (fundingRate_last - interestRateDiff_last) * expIRDiff_last *
+            Real domRateLast = (log(effDomCurve->discount(maxT_)) - log(effDomCurve->discount(maxT_ + dt))) / dt;
+            Real forRateLast = (log(effForCurve->discount(maxT_)) - log(effForCurve->discount(maxT_ + dt))) /dt;
+            Real ratio = fundingRateLast + forRateLast - domRateLast;
+            factor += (fundingRateLast - interestRateDiffLast) * expIRDiff_last *
                       effForCurve->discount(maxT_) / effDomCurve->discount(maxT_) / ratio;
         }
 
