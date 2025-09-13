@@ -61,7 +61,7 @@ namespace QuantLib {
             enum PayoffType { Linear, Inverse, Quanto };
             enum FundingType { AHJ, AHJ_alt };
 
-            PerpetualFutures(PerpetualFutures::PayoffType payoffType,
+            explicit PerpetualFutures(PerpetualFutures::PayoffType payoffType,
                              PerpetualFutures::FundingType fundingType = PerpetualFutures::AHJ_alt,
                              Period fundingFrequency = Period(8, Hours),
                              Calendar cal = NullCalendar(),
