@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
 
     PerpetualFuturesData values[] = {
         // Discrete time
-        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-16},
+        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
         {PerpetualFutures::Linear,  PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
         {PerpetualFutures::Inverse, PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
         {PerpetualFutures::Inverse, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},

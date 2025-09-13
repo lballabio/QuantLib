@@ -235,8 +235,8 @@ namespace QuantLib {
     }
 
     Interpolation
-    DiscountingPerpetualFuturesEngine::selectInterpolation(const Array times,
-                                                           const Array values) const {
+    DiscountingPerpetualFuturesEngine::selectInterpolation(const Array& times,
+                                                           const Array& values) const {
         Interpolation interpolator;
         switch (fundingInterpType_) {
             case Linear:

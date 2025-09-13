@@ -57,7 +57,7 @@ namespace QuantLib {
         Array interestRateDiffs() const { return interestRateDiffs_; }
 
       private:
-        Interpolation selectInterpolation(const Array times, const Array values) const;
+        Interpolation selectInterpolation(const Array& times, const Array& values) const;
         const Handle<YieldTermStructure> domesticDiscountCurve_, foreignDiscountCurve_;
         const Handle<Quote> assetSpot_;
         const Array fundingTimes_, fundingRates_, interestRateDiffs_;
