@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024
+ Copyright (C) 2025 kp9991-git https://github.com/kp9991-git
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -285,8 +285,6 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorNumericalDerivatives) {
     Real strike = 100.0;
     Real stdDev = 0.20;
     Real discount = 0.95;
-    Real spot = 98.0;
-    Real maturity = 1.0;
     Real bump = 1e-4;
     Real tolerance = 1e-3;
 
