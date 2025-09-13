@@ -40,6 +40,7 @@ struct BachelierCalculatorTestData {
     Real stdDev;        // Absolute volatility
     Real discount;
     Real tolerance;
+    Real refValue;
 };
 
 BOOST_AUTO_TEST_CASE(testBachelierCalculatorBasicValues) {
@@ -47,15 +48,15 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorBasicValues) {
 
     BachelierCalculatorTestData values[] = {
         // type, strike, forward, stdDev (absolute), discount, tolerance
-        { Option::Call, 100.0, 100.0, 20.0, 1.0, 1e-8 },  // ATM Call
-        { Option::Put,  100.0, 100.0, 20.0, 1.0, 1e-8 },  // ATM Put
-        { Option::Call, 90.0,  100.0, 20.0, 1.0, 1e-8 },  // ITM Call
-        { Option::Put,  110.0, 100.0, 20.0, 1.0, 1e-8 },  // ITM Put
-        { Option::Call, 110.0, 100.0, 20.0, 1.0, 1e-8 },  // OTM Call
-        { Option::Put,  90.0,  100.0, 20.0, 1.0, 1e-8 },  // OTM Put
-        { Option::Call, 100.0, 100.0, 0.0,  1.0, 1e-8 },  // Zero vol Call
-        { Option::Put,  100.0, 100.0, 0.0,  1.0, 1e-8 },  // Zero vol Put
-        { Option::Call, 0.0,   100.0, 20.0, 1.0, 1e-8 },  // Zero strike
+        {Option::Call, 100.0, 100.0, 20.0, 1.0, 1e-8, 7.9788456080286538}, // ATM Call
+        {Option::Put, 100.0, 100.0, 20.0, 1.0, 1e-8, 7.9788456080286538},  // ATM Put
+        {Option::Call, 90.0, 100.0, 20.0, 1.0, 1e-8, 13.955931148026121},  // ITM Call
+        {Option::Put, 110.0, 100.0, 20.0, 1.0, 1e-8, 13.955931148026121},  // ITM Put
+        {Option::Call, 110.0, 100.0, 20.0, 1.0, 1e-8, 3.9559311480261217}, // OTM Call
+        {Option::Put, 90.0, 100.0, 20.0, 1.0, 1e-8, 3.9559311480261217},   // OTM Put
+        { Option::Call, 100.0, 100.0, 0.0,  1.0, 1e-8, 0.0 },  // Zero vol Call
+        { Option::Put,  100.0, 100.0, 0.0,  1.0, 1e-8, 0.0 },  // Zero vol Put
+        {Option::Call, 0.0, 100.0, 20.0, 1.0, 1e-8, 100.00000106923312},   // Zero strike
     };
 
     for (auto& data : values) {
@@ -78,6 +79,15 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorBasicValues) {
                        << " stdDev=" << data.stdDev << " discount=" << data.discount
                        << " value1=" << value1 << " value2=" << value2
                        << " error=" << error);
+        }
+
+        Real error2 = std::fabs(value1 - data.refValue);
+        if (error2 > data.tolerance) {
+            BOOST_ERROR("BachelierCalculator constructor rf value error for "
+                        << (data.type == Option::Call ? "Call" : "Put") << " strike=" << data.strike
+                        << " forward=" << data.forward << " stdDev=" << data.stdDev
+                        << " discount=" << data.discount << " value1=" << value1
+                        << " value2=" << value2 << " error=" << error);
         }
 
         // Basic sanity checks
@@ -103,73 +113,100 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorGreeks) {
     BOOST_TEST_MESSAGE("Testing BachelierCalculator Greeks calculations...");
 
     Real forward = 100.0;
-    Real strike = 100.0;
+    Real strike = 105.0;
     Real stdDev = 20.0;  // Absolute volatility
     Real discount = 0.95;
     Real spot = 98.0;
     Real maturity = 1.0;
     Real tolerance = 1e-6;
+    Real refDelta = 0.38900917408288;
+    Real refDeltaFwd = 0.38122899060122245;
+    Real refGamma = 0.019124047842706517;
+    Real refGammaFwd = 0.018366735548135338;
+    Real refTheta = -4.3159316452046594;
+    Real refVega = 0.36733471096270676;
+    Real refRho = 32.682349793874224;
+    Real refElasticity = 7.0071783554334042;
+    Real refElasticityFwd = 7.0071783554334051;
+    Real refItmCashProb = 0.4012936743170763;
+    Real refItmAssetProb = 0.4012936743170763;
+    Real refDividendRho = -38.122899060122243;
+    Real refStrikeSensitivity = -0.38122899060122245;
+    Real refStrikeGamma = 0.018366735548135338;
 
     BachelierCalculator calc(Option::Call, strike, forward, stdDev, discount);
 
-    // Test delta
     Real delta = calc.delta(spot);
     Real deltaForward = calc.deltaForward();
-    
-    if (std::isnan(delta) || std::isnan(deltaForward)) {
-        BOOST_ERROR("BachelierCalculator produced NaN delta values");
-    }
-
-    // Delta should be between 0 and 1 for calls
-    if (delta < -tolerance || delta > 1.0 + tolerance) {
-        BOOST_ERROR("BachelierCalculator call delta out of range: " << delta);
-    }
-
-    // Test gamma
     Real gamma = calc.gamma(spot);
     Real gammaForward = calc.gammaForward();
-    
-    if (std::isnan(gamma) || std::isnan(gammaForward)) {
-        BOOST_ERROR("BachelierCalculator produced NaN gamma values");
-    }
-
-    // Gamma should be non-negative
-    if (gamma < -tolerance || gammaForward < -tolerance) {
-        BOOST_ERROR("BachelierCalculator negative gamma: spot=" << gamma 
-                   << " forward=" << gammaForward);
-    }
-
-    // Test theta
     Real theta = calc.theta(spot, maturity);
-    if (std::isnan(theta)) {
-        BOOST_ERROR("BachelierCalculator produced NaN theta");
-    }
-
-    // Test vega
     Real vega = calc.vega(maturity);
-    if (std::isnan(vega)) {
-        BOOST_ERROR("BachelierCalculator produced NaN vega");
-    }
-
-    // Vega should be non-negative for normal options
-    if (vega < -tolerance) {
-        BOOST_ERROR("BachelierCalculator negative vega: " << vega);
-    }
-
-    // Test rho
     Real rho = calc.rho(maturity);
-    if (std::isnan(rho)) {
-        BOOST_ERROR("BachelierCalculator produced NaN rho");
-    }
-
-    // Test other Greeks
+    Real elasticity = calc.elasticity(spot);
+    Real elasticityForward = calc.elasticityForward();
+    Real itmCashProb = calc.itmCashProbability();
+    Real itmAssetProb = calc.itmAssetProbability();
     Real dividendRho = calc.dividendRho(maturity);
     Real strikeSensitivity = calc.strikeSensitivity();
     Real strikeGamma = calc.strikeGamma();
     
-    if (std::isnan(dividendRho) || std::isnan(strikeSensitivity) || std::isnan(strikeGamma)) {
-        BOOST_ERROR("BachelierCalculator produced NaN values for extended Greeks");
+    if (std::fabs(deltaForward - refDeltaFwd) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call fwd delta error");
     }
+
+    if (std::fabs(delta - refDelta) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call delta error");
+    }
+
+    if (std::fabs(gammaForward - refGammaFwd) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call fwd gamma error");
+    }
+
+    if (std::fabs(gamma - refGamma) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call gamma error");
+    }
+
+    if (std::fabs(theta - refTheta) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call theta error");
+    }
+
+    if (std::fabs(vega - refVega) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call vega error");
+    }
+
+    if (std::fabs(rho - refRho) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call rho error");
+    }
+
+    if (std::fabs(elasticityForward - refElasticityFwd) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call fwd elasticity error");
+    }
+
+    if (std::fabs(elasticity - refElasticity) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call elasticity error");
+    }
+
+    if (std::fabs(itmCashProb - refItmCashProb) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call itm cash probability error");
+    }
+
+    if (std::fabs(itmAssetProb - refItmAssetProb) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call itm asset probability error");
+    }
+
+    if (std::fabs(dividendRho - refDividendRho) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call dividend rho error");
+    }
+
+    if (std::fabs(strikeSensitivity - refStrikeSensitivity) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call strike sensitivity error");
+    }
+
+    if (std::fabs(strikeGamma - refStrikeGamma) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call strike gamma error");
+    }
+
 }
 
 BOOST_AUTO_TEST_CASE(testBachelierCalculatorPutCallParity) {
@@ -202,14 +239,15 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorPutCallParity) {
 BOOST_AUTO_TEST_CASE(testBachelierCalculatorEdgeCases) {
     BOOST_TEST_MESSAGE("Testing BachelierCalculator edge cases...");
 
-    Real tolerance = 1e-10;
+    Real tolerance = 1e-8;
 
-    // Test very low volatility
+    // Test zero volatility
     {
-        BachelierCalculator calc(Option::Call, 100.0, 100.0, 1e-8, 1.0);
+        BachelierCalculator calc(Option::Call, 100.0, 100.0, 0.0, 1.0);
         Real value = calc.value();
-        if (value < 0 || std::isnan(value)) {
-            BOOST_ERROR("BachelierCalculator failed for very low volatility: " << value);
+        Real refValue = 0.0;
+        if (std::fabs(value - refValue) > tolerance) {
+            BOOST_ERROR("BachelierCalculator failed for zero volatility: " << value);
         }
     }
 
@@ -217,7 +255,8 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorEdgeCases) {
     {
         BachelierCalculator calc(Option::Call, 100.0, 100.0, 200.0, 1.0);
         Real value = calc.value();
-        if (value < 0 || std::isnan(value)) {
+        Real refValue = 79.788456080286537;
+        if (std::fabs(value - refValue) > tolerance) {
             BOOST_ERROR("BachelierCalculator failed for very high volatility: " << value);
         }
     }
@@ -230,6 +269,17 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorEdgeCases) {
         if (value < intrinsicValue - 10.0) {  // Allow some time value
             BOOST_ERROR("BachelierCalculator negative strike call unreasonable: " 
                        << value << " vs intrinsic " << intrinsicValue);
+        }
+    }
+
+    // Test negative forward (valid in Bachelier model)
+    {
+        BachelierCalculator calc(Option::Call, 50.0, -100.0, 20.0, 1.0);
+        Real value = calc.value();
+        Real intrinsicValue = -100.0 - 50.0; // Should be close to intrinsic
+        if (value < intrinsicValue + 10.0) {   // Allow some time value
+            BOOST_ERROR("BachelierCalculator negative strike call unreasonable: "
+                        << value << " vs intrinsic " << intrinsicValue);
         }
     }
 
@@ -248,7 +298,8 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorEdgeCases) {
     {
         BachelierCalculator calc(Option::Call, 150.0, 100.0, 20.0, 1.0);
         Real value = calc.value();
-        if (value < 0) {
+        Real refValue = 0.040082743582562863;
+        if (std::fabs(value - refValue) > tolerance) {
             BOOST_ERROR("BachelierCalculator deep OTM call negative: " << value);
         }
     }
@@ -308,41 +359,6 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorNumericalDerivatives) {
                    << "analytical=" << analyticalVega 
                    << " numerical=" << numericalVega * std::sqrt(maturity)
                    << " error=" << vegaError);
-    }
-}
-
-BOOST_AUTO_TEST_CASE(testBachelierCalculatorProbabilities) {
-    BOOST_TEST_MESSAGE("Testing BachelierCalculator ITM probabilities...");
-
-    Real forward = 100.0;
-    Real strike = 100.0;
-    Real stdDev = 20.0;  // Absolute volatility
-    Real discount = 1.0;
-    Real tolerance = 1e-8;
-
-    BachelierCalculator calc(Option::Call, strike, forward, stdDev, discount);
-
-    Real cashProb = calc.itmCashProbability();
-    Real assetProb = calc.itmAssetProbability();
-
-    // Probabilities should be between 0 and 1
-    if (cashProb < -tolerance || cashProb > 1.0 + tolerance) {
-        BOOST_ERROR("BachelierCalculator cash ITM probability out of range: " << cashProb);
-    }
-    
-    if (assetProb < -tolerance || assetProb > 1.0 + tolerance) {
-        BOOST_ERROR("BachelierCalculator asset ITM probability out of range: " << assetProb);
-    }
-
-    // For ATM options, probabilities should be close to 0.5
-    if (std::fabs(cashProb - 0.5) > 0.1) {
-        BOOST_ERROR("BachelierCalculator ATM cash probability far from 0.5: " << cashProb);
-    }
-
-    // In Bachelier model, asset and cash probabilities are the same
-    if (std::fabs(cashProb - assetProb) > tolerance) {
-        BOOST_ERROR("BachelierCalculator cash and asset probabilities differ: "
-                   << "cash=" << cashProb << " asset=" << assetProb);
     }
 }
 

@@ -58,8 +58,6 @@ namespace QuantLib {
     }
 
     void BachelierCalculator::initialize(const ext::shared_ptr<StrikedTypePayoff>& p) {
-        QL_REQUIRE(strike_ >= 0.0, "strike (" << strike_ << ") must be non-negative");
-        QL_REQUIRE(forward_ > 0.0, "forward (" << forward_ << ") must be positive");
         QL_REQUIRE(stdDev_ >= 0.0, "stdDev (" << stdDev_ << ") must be non-negative");
         QL_REQUIRE(discount_ > 0.0, "discount (" << discount_ << ") must be positive");
 

@@ -38,6 +38,7 @@ struct BlackCalculatorTestData {
     Real stdDev;
     Real discount;
     Real tolerance;
+    Real refValue;
 };
 
 BOOST_AUTO_TEST_CASE(testBlackCalculatorBasicValues) {
@@ -45,14 +46,14 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorBasicValues) {
 
     BlackCalculatorTestData values[] = {
         // type, strike, forward, stdDev, discount, tolerance
-        { Option::Call, 100.0, 100.0, 0.20, 1.0, 1e-8 },  // ATM Call
-        { Option::Put,  100.0, 100.0, 0.20, 1.0, 1e-8 },  // ATM Put
-        { Option::Call, 90.0,  100.0, 0.20, 1.0, 1e-8 },  // ITM Call
-        { Option::Put,  110.0, 100.0, 0.20, 1.0, 1e-8 },  // ITM Put
-        { Option::Call, 110.0, 100.0, 0.20, 1.0, 1e-8 },  // OTM Call
-        { Option::Put,  90.0,  100.0, 0.20, 1.0, 1e-8 },  // OTM Put
-        { Option::Call, 100.0, 100.0, 0.0,  1.0, 1e-8 },  // Zero vol Call
-        { Option::Put,  100.0, 100.0, 0.0,  1.0, 1e-8 },  // Zero vol Put
+        {Option::Call, 100.0, 100.0, 0.20, 1.0, 1e-8, 7.9655674554058038}, // ATM Call
+        {Option::Put, 100.0, 100.0, 0.20, 1.0, 1e-8, 7.9655674554058038},  // ATM Put
+        {Option::Call, 90.0, 100.0, 0.20, 1.0, 1e-8, 13.589108116054803},  // ITM Call
+        {Option::Put, 110.0, 100.0, 0.20, 1.0, 1e-8, 14.292010941409899},  // ITM Put
+        {Option::Call, 110.0, 100.0, 0.20, 1.0, 1e-8, 4.2920109414098846}, // OTM Call
+        {Option::Put, 90.0, 100.0, 0.20, 1.0, 1e-8, 3.5891081160548062},   // OTM Put
+        { Option::Call, 100.0, 100.0, 0.0,  1.0, 1e-8, 0.0 },  // Zero vol Call
+        { Option::Put,  100.0, 100.0, 0.0,  1.0, 1e-8, 0.0 },  // Zero vol Put
     };
 
     for (auto& data : values) {
@@ -75,6 +76,15 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorBasicValues) {
                        << " stdDev=" << data.stdDev << " discount=" << data.discount
                        << " value1=" << value1 << " value2=" << value2
                        << " error=" << error);
+        }
+
+        Real error2 = std::fabs(value1 - data.refValue);
+        if (error2 > data.tolerance) {
+            BOOST_ERROR("BlackCalculator constructor rf value error for "
+                        << (data.type == Option::Call ? "Call" : "Put") << " strike=" << data.strike
+                        << " forward=" << data.forward << " stdDev=" << data.stdDev
+                        << " discount=" << data.discount << " value1=" << value1
+                        << " value2=" << value2 << " error=" << error);
         }
 
         // Basic sanity checks
@@ -100,72 +110,98 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorGreeks) {
     BOOST_TEST_MESSAGE("Testing BlackCalculator Greeks calculations...");
 
     Real forward = 100.0;
-    Real strike = 100.0;
+    Real strike = 105.0;
     Real stdDev = 0.20;
     Real discount = 0.95;
     Real spot = 98.0;
     Real maturity = 1.0;
     Real tolerance = 1e-6;
+    Real refDelta = 0.42921547913932068;
+    Real refDeltaFwd = 0.42063116955653351;
+    Real refGamma = 0.019527733248736884;
+    Real refGammaFwd = 0.018754435012086908;
+    Real refTheta = -4.31290436588883;
+    Real refVega = 37.508870024173795;
+    Real refRho = 36.452803157675653;
+    Real refElasticity = 7.4974624362037323;
+    Real refElasticityFwd = 7.4974624362037199;
+    Real refItmCashProb = 0.36544163566592136;
+    Real refItmAssetProb = 0.44276965216477238;
+    Real refDividendRho = -42.063116955653371;
+    Real refStrikeSensitivity = -0.34716955388262527;
+    Real refStrikeGamma = 0.017010825407788574;
 
     BlackCalculator calc(Option::Call, strike, forward, stdDev, discount);
 
-    // Test delta
     Real delta = calc.delta(spot);
     Real deltaForward = calc.deltaForward();
-    
-    if (std::isnan(delta) || std::isnan(deltaForward)) {
-        BOOST_ERROR("BlackCalculator produced NaN delta values");
-    }
-
-    // Delta should be between 0 and 1 for calls
-    if (delta < -tolerance || delta > 1.0 + tolerance) {
-        BOOST_ERROR("BlackCalculator call delta out of range: " << delta);
-    }
-
-    // Test gamma
     Real gamma = calc.gamma(spot);
     Real gammaForward = calc.gammaForward();
-    
-    if (std::isnan(gamma) || std::isnan(gammaForward)) {
-        BOOST_ERROR("BlackCalculator produced NaN gamma values");
-    }
-
-    // Gamma should be non-negative
-    if (gamma < -tolerance || gammaForward < -tolerance) {
-        BOOST_ERROR("BlackCalculator negative gamma: spot=" << gamma 
-                   << " forward=" << gammaForward);
-    }
-
-    // Test theta
     Real theta = calc.theta(spot, maturity);
-    if (std::isnan(theta)) {
-        BOOST_ERROR("BlackCalculator produced NaN theta");
-    }
-
-    // Test vega
     Real vega = calc.vega(maturity);
-    if (std::isnan(vega)) {
-        BOOST_ERROR("BlackCalculator produced NaN vega");
-    }
-
-    // Vega should be non-negative for ATM options
-    if (vega < -tolerance) {
-        BOOST_ERROR("BlackCalculator negative vega: " << vega);
-    }
-
-    // Test rho
     Real rho = calc.rho(maturity);
-    if (std::isnan(rho)) {
-        BOOST_ERROR("BlackCalculator produced NaN rho");
-    }
-
-    // Test other Greeks
+    Real elasticity = calc.elasticity(spot);
+    Real elasticityForward = calc.elasticityForward();
+    Real itmCashProb = calc.itmCashProbability();
+    Real itmAssetProb = calc.itmAssetProbability();
     Real dividendRho = calc.dividendRho(maturity);
     Real strikeSensitivity = calc.strikeSensitivity();
     Real strikeGamma = calc.strikeGamma();
-    
-    if (std::isnan(dividendRho) || std::isnan(strikeSensitivity) || std::isnan(strikeGamma)) {
-        BOOST_ERROR("BlackCalculator produced NaN values for extended Greeks");
+
+    if (std::fabs(deltaForward - refDeltaFwd) > tolerance) {
+        BOOST_ERROR("BlackCalculator call fwd delta error");
+    }
+
+    if (std::fabs(delta - refDelta) > tolerance) {
+        BOOST_ERROR("BlackCalculator call delta error");
+    }
+
+    if (std::fabs(gammaForward - refGammaFwd) > tolerance) {
+        BOOST_ERROR("BlackCalculator call fwd gamma error");
+    }
+
+    if (std::fabs(gamma - refGamma) > tolerance) {
+        BOOST_ERROR("BlackCalculator call gamma error");
+    }
+
+    if (std::fabs(theta - refTheta) > tolerance) {
+        BOOST_ERROR("BlackCalculator call theta error");
+    }
+
+    if (std::fabs(vega - refVega) > tolerance) {
+        BOOST_ERROR("BlackCalculator call vega error");
+    }
+
+    if (std::fabs(rho - refRho) > tolerance) {
+        BOOST_ERROR("BlackCalculator call rho error");
+    }
+
+    if (std::fabs(elasticityForward - refElasticityFwd) > tolerance) {
+        BOOST_ERROR("BlackCalculator call fwd elasticity error");
+    }
+
+    if (std::fabs(elasticity - refElasticity) > tolerance) {
+        BOOST_ERROR("BlackCalculator call elasticity error");
+    }
+
+    if (std::fabs(itmCashProb - refItmCashProb) > tolerance) {
+        BOOST_ERROR("BlackCalculator call itm cash probability error");
+    }
+
+    if (std::fabs(itmAssetProb - refItmAssetProb) > tolerance) {
+        BOOST_ERROR("BlackCalculator call itm asset probability error");
+    }
+
+    if (std::fabs(dividendRho - refDividendRho) > tolerance) {
+        BOOST_ERROR("BlackCalculator call dividend rho error");
+    }
+
+    if (std::fabs(strikeSensitivity - refStrikeSensitivity) > tolerance) {
+        BOOST_ERROR("BlackCalculator call strike sensitivity error");
+    }
+
+    if (std::fabs(strikeGamma - refStrikeGamma) > tolerance) {
+        BOOST_ERROR("BlackCalculator call strike gamma error");
     }
 }
 
@@ -201,12 +237,13 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorEdgeCases) {
 
     Real tolerance = 1e-10;
 
-    // Test very low volatility
+    // Test zero volatility
     {
-        BlackCalculator calc(Option::Call, 100.0, 100.0, 1e-8, 1.0);
+        BlackCalculator calc(Option::Call, 100.0, 100.0, 0.0, 1.0);
         Real value = calc.value();
-        if (value < 0 || std::isnan(value)) {
-            BOOST_ERROR("BlackCalculator failed for very low volatility: " << value);
+        Real refValue = 0.0;
+        if (std::fabs(value - refValue) > tolerance) {
+            BOOST_ERROR("BlackCalculator failed for zero volatility: " << value);
         }
     }
 
@@ -214,7 +251,8 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorEdgeCases) {
     {
         BlackCalculator calc(Option::Call, 100.0, 100.0, 2.0, 1.0);
         Real value = calc.value();
-        if (value < 0 || std::isnan(value)) {
+        Real refValue = 68.268949213708595;
+        if (std::fabs(value - refValue) > tolerance) {
             BOOST_ERROR("BlackCalculator failed for very high volatility: " << value);
         }
     }
@@ -282,34 +320,6 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorNumericalDerivatives) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testBlackCalculatorProbabilities) {
-    BOOST_TEST_MESSAGE("Testing BlackCalculator ITM probabilities...");
-
-    Real forward = 100.0;
-    Real strike = 100.0;
-    Real stdDev = 0.20;
-    Real discount = 1.0;
-    Real tolerance = 1e-8;
-
-    BlackCalculator calc(Option::Call, strike, forward, stdDev, discount);
-
-    Real cashProb = calc.itmCashProbability();
-    Real assetProb = calc.itmAssetProbability();
-
-    // Probabilities should be between 0 and 1
-    if (cashProb < -tolerance || cashProb > 1.0 + tolerance) {
-        BOOST_ERROR("BlackCalculator cash ITM probability out of range: " << cashProb);
-    }
-    
-    if (assetProb < -tolerance || assetProb > 1.0 + tolerance) {
-        BOOST_ERROR("BlackCalculator asset ITM probability out of range: " << assetProb);
-    }
-
-    // For ATM options, probabilities should be close to 0.5
-    if (std::fabs(cashProb - 0.5) > 0.1) {
-        BOOST_ERROR("BlackCalculator ATM cash probability far from 0.5: " << cashProb);
-    }
-}
 
 BOOST_AUTO_TEST_SUITE_END()
 
