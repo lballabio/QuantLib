@@ -95,6 +95,9 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         Real calculated = trade.NPV();
 
         // analytic
+        // for details, refer to
+        // Perpetual Futures Pricing, Damien Ackerer, Julien Hugonnier, Urban Jermann, 2024
+        // https://finance.wharton.upenn.edu/~jermann/AHJ-main-10.pdf
         Real dt = 0.;
         switch (value.fundingFreq.units()) {
             case Years:
@@ -126,16 +129,19 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         if (value.fundingFreq.length() > 0) {
             if (value.payoffType == PerpetualFutures::Linear) {
                 if (value.fundingType == PerpetualFutures::AHJ) {
+                    // Equation (12) in the above paper
                     expected =
                         value.s * (value.k - value.iDiff) * exp(value.q * dt) /
                         (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.q * dt));
                 } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                    // at the end of "3 Perpetual futures pricing" in the above paper
                     expected =
                         value.s * (value.k - value.iDiff) * exp(value.r * dt) /
                         (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.r * dt));
                 }
             } else if (value.payoffType == PerpetualFutures::Inverse) {
                 if (value.fundingType == PerpetualFutures::AHJ) {
+                    // "Prorpsition 2" in the above paper
                     expected =
                         value.s *
                         (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.r * dt)) /
@@ -150,8 +156,10 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         } else {
             // Continuous time
             if (value.payoffType == PerpetualFutures::Linear) {
+                // "Prorpsition 3" in the above paper
                 expected = value.s * (value.k - value.iDiff) / (value.q - value.r + value.k);
             } else if (value.payoffType == PerpetualFutures::Inverse) {
+                // "Prorpsition 4" in the above paper
                 expected = value.s * (value.r - value.q + value.k) / (value.k - value.iDiff);
             }
         }

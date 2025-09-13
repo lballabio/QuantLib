@@ -50,6 +50,7 @@ namespace QuantLib {
         - otherwise: Discrete
 
         For more details, refer to
+        Perpetual Futures Pricing, Damien Ackerer, Julien Hugonnier, Urban Jermann, 2024
         https://finance.wharton.upenn.edu/~jermann/AHJ-main-10.pdf
     */
 
