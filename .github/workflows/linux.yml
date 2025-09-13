@@ -17,15 +17,15 @@ jobs:
             tag: jammy
             cc: gcc
             cxx: g++
-          - name: "gcc 13.x"
+          - name: "gcc 13.3 (Boost 1.89)"
             shortname: gcc13
             tag: noble
             cc: gcc
             cxx: g++
             tests: true
-          - name: "gcc 14.x"
-            shortname: gcc14
-            tag: plucky
+          - name: "gcc 15.x"
+            shortname: gcc15
+            tag: questing
             cc: gcc
             cxx: g++
             tests: true
@@ -39,7 +39,7 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
-          - name: "Clang 18"
+          - name: "Clang 18 (Boost 1.89)"
             shortname: clang18
             tag: noble
             cc: clang

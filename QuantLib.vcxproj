@@ -1527,6 +1527,7 @@
     <ClInclude Include="ql\pricingengines\basket\stulzengine.hpp" />
     <ClInclude Include="ql\pricingengines\basket\vectorbsmprocessextractor.hpp" />
     <ClInclude Include="ql\pricingengines\blackcalculator.hpp" />
+    <ClInclude Include="ql\pricingengines\blackdeltacalculator.hpp" />
     <ClInclude Include="ql\pricingengines\blackformula.hpp" />
     <ClInclude Include="ql\pricingengines\blackscholescalculator.hpp" />
     <ClInclude Include="ql\pricingengines\bond\all.hpp" />
@@ -1670,6 +1671,7 @@
     <ClInclude Include="ql\processes\stochasticprocessarray.hpp" />
     <ClInclude Include="ql\quotes\all.hpp" />
     <ClInclude Include="ql\quotes\compositequote.hpp" />
+    <ClInclude Include="ql\quotes\deltavolquote.hpp" />
     <ClInclude Include="ql\quotes\derivedquote.hpp" />
     <ClInclude Include="ql\quotes\eurodollarfuturesquote.hpp" />
     <ClInclude Include="ql\quotes\forwardswapquote.hpp" />
@@ -2076,8 +2078,6 @@
     <ClCompile Include="ql\experimental\finitedifferences\glued1dmesher.cpp" />
     <ClCompile Include="ql\experimental\finitedifferences\vanillavppoption.cpp" />
     <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp" />
-    <ClCompile Include="ql\experimental\fx\blackdeltacalculator.cpp" />
-    <ClCompile Include="ql\experimental\fx\deltavolquote.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloorengines.cpp" />
     <ClCompile Include="ql\experimental\inflation\cpicapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
@@ -2611,6 +2611,7 @@
     <ClCompile Include="ql\pricingengines\basket\stulzengine.cpp" />
     <ClCompile Include="ql\pricingengines\basket\vectorbsmprocessextractor.cpp" />
     <ClCompile Include="ql\pricingengines\blackcalculator.cpp" />
+    <ClCompile Include="ql\pricingengines\blackdeltacalculator.cpp" />
     <ClCompile Include="ql\pricingengines\blackformula.cpp" />
     <ClCompile Include="ql\pricingengines\blackscholescalculator.cpp" />
     <ClCompile Include="ql\pricingengines\bond\bondfunctions.cpp" />
@@ -2720,6 +2721,7 @@
     <ClCompile Include="ql\processes\ornsteinuhlenbeckprocess.cpp" />
     <ClCompile Include="ql\processes\squarerootprocess.cpp" />
     <ClCompile Include="ql\processes\stochasticprocessarray.cpp" />
+    <ClCompile Include="ql\quotes\deltavolquote.cpp" />
     <ClCompile Include="ql\quotes\eurodollarfuturesquote.cpp" />
     <ClCompile Include="ql\quotes\forwardswapquote.cpp" />
     <ClCompile Include="ql\quotes\forwardvaluequote.cpp" />

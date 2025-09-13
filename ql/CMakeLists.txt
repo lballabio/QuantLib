@@ -150,8 +150,6 @@ set(QL_SOURCES
     experimental/finitedifferences/glued1dmesher.cpp
     experimental/finitedifferences/vanillavppoption.cpp
     experimental/forward/analytichestonforwardeuropeanengine.cpp
-    experimental/fx/blackdeltacalculator.cpp
-    experimental/fx/deltavolquote.cpp
     experimental/inflation/cpicapfloorengines.cpp
     experimental/inflation/cpicapfloortermpricesurface.cpp
     experimental/inflation/yoycapfloortermpricesurface.cpp
@@ -690,6 +688,7 @@ set(QL_SOURCES
     pricingengines/basket/spreadblackscholesvanillaengine.cpp
     pricingengines/basket/stulzengine.cpp
     pricingengines/blackcalculator.cpp
+    pricingengines/blackdeltacalculator.cpp
     pricingengines/bacheliercalculator.cpp
     pricingengines/diffusioncalculator.cpp
     pricingengines/blackformula.cpp
@@ -801,6 +800,7 @@ set(QL_SOURCES
     processes/squarerootprocess.cpp
     processes/stochasticprocessarray.cpp
     quote.cpp
+    quotes/deltavolquote.cpp
     quotes/eurodollarfuturesquote.cpp
     quotes/forwardswapquote.cpp
     quotes/forwardvaluequote.cpp
@@ -1915,6 +1915,7 @@ set(QL_HEADERS
     pricingengines/basket/spreadblackscholesvanillaengine.hpp
     pricingengines/basket/stulzengine.hpp
     pricingengines/blackcalculator.hpp
+    pricingengines/blackdeltacalculator.hpp
     pricingengines/bacheliercalculator.hpp
     pricingengines/diffusioncalculator.hpp
     pricingengines/blackformula.hpp
@@ -2046,6 +2047,7 @@ set(QL_HEADERS
     processes/stochasticprocessarray.hpp
     quote.hpp
     quotes/compositequote.hpp
+    quotes/deltavolquote.hpp
     quotes/derivedquote.hpp
     quotes/eurodollarfuturesquote.hpp
     quotes/forwardswapquote.hpp

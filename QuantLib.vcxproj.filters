@@ -2400,6 +2400,9 @@
     <ClInclude Include="ql\pricingengines\blackcalculator.hpp">
       <Filter>pricingengines</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\blackdeltacalculator.hpp">
+      <Filter>pricingengines</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\blackformula.hpp">
       <Filter>pricingengines</Filter>
     </ClInclude>
@@ -2752,6 +2755,9 @@
       <Filter>quotes</Filter>
     </ClInclude>
     <ClInclude Include="ql\quotes\compositequote.hpp">
+      <Filter>quotes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\quotes\deltavolquote.hpp">
       <Filter>quotes</Filter>
     </ClInclude>
     <ClInclude Include="ql\quotes\derivedquote.hpp">
@@ -5792,6 +5798,9 @@
     <ClCompile Include="ql\pricingengines\blackcalculator.cpp">
       <Filter>pricingengines</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\blackdeltacalculator.cpp">
+      <Filter>pricingengines</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\blackformula.cpp">
       <Filter>pricingengines</Filter>
     </ClCompile>
@@ -6034,6 +6043,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\inflation\inflationcapfloorengines.cpp">
       <Filter>pricingengines\inflation</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\quotes\deltavolquote.cpp">
+      <Filter>quotes</Filter>
     </ClCompile>
     <ClCompile Include="ql\quotes\eurodollarfuturesquote.cpp">
       <Filter>quotes</Filter>
@@ -6376,12 +6388,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp">
       <Filter>experimental\coupons</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\fx\blackdeltacalculator.cpp">
-      <Filter>experimental\fx</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\fx\deltavolquote.cpp">
-      <Filter>experimental\fx</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp">
       <Filter>experimental\exoticoptions</Filter>

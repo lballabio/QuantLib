@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -1527,7 +1527,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
 
     // Check that all deposit and swap rates are the same in both curves.
     for (const auto& helper : vars.instruments) {
-        BOOST_CHECK_CLOSE(curve->discount(helper->pillarDate()),
+        QL_CHECK_CLOSE(curve->discount(helper->pillarDate()),
                           curveFutures->discount(helper->pillarDate()),
                           1e-6);
     }
@@ -1613,7 +1613,7 @@ void testPiecewiseSpreadYieldCurveImpl() {
     Rate rate2 = curve->forwardRate(maxDate, maxDate + 1*Years, dc, Continuous).rate();
     Rate baseRate1 = baseCurve->forwardRate(maxDate - 1*Years, maxDate, dc, Continuous).rate();
     Rate baseRate2 = baseCurve->forwardRate(maxDate, maxDate + 1*Years, dc, Continuous).rate();
-    BOOST_CHECK_CLOSE(rate1 - baseRate1, rate2 - baseRate2, 1e-9);
+    QL_CHECK_CLOSE(rate1 - baseRate1, rate2 - baseRate2, 1e-9);
 
     // Check accessors.
     BOOST_CHECK_EQUAL(curve->dates().size(), helpers.size() + 1);
@@ -1625,7 +1625,7 @@ void testPiecewiseSpreadYieldCurveImpl() {
     BOOST_CHECK_EQUAL(curve->dates()[0], vars.settlement);
     BOOST_CHECK_EQUAL(curve->times()[0], 0.0);
     BOOST_CHECK_EQUAL(curve->data()[0], 1.0);
-    BOOST_CHECK(nodes[0] == std::make_pair(vars.settlement, 1.0));
+    BOOST_CHECK(nodes[0] == std::make_pair(vars.settlement, Real(1)));
     for (Size i = 0; i < helpers.size(); ++i) {
         BOOST_CHECK_EQUAL(curve->dates()[i+1], helpers[i]->pillarDate());
         BOOST_CHECK_EQUAL(curve->times()[i+1], curve->timeFromReference(helpers[i]->pillarDate()));
@@ -1640,7 +1640,7 @@ void testPiecewiseSpreadYieldCurveImpl() {
     const Integer maxSwapYears = (std::end(swapData)-1)->n;
     for (Integer i = 0; i < maxSwapYears + 3; ++i) {
         Date d = vars.settlement + i*Years;
-        BOOST_CHECK_CLOSE(curve->discount(d), rawCurve->discount(d), 1e-9);
+        QL_CHECK_CLOSE(curve->discount(d), rawCurve->discount(d), 1e-9);
     }
 }
 
@@ -1765,7 +1765,7 @@ BOOST_AUTO_TEST_CASE(testIterativeBootstrapRetries) {
     auto datedArsYts = ext::make_shared<LLDFCurve>(asof, datedInstruments, tsDayCounter, ib);
     BOOST_CHECK(arsYts->dates() == datedArsYts->dates());
     for (const auto date : arsYts->dates()) {
-        BOOST_CHECK_CLOSE(arsYts->discount(date), datedArsYts->discount(date), 1e-6);
+        QL_CHECK_CLOSE(arsYts->discount(date), datedArsYts->discount(date), 1e-6);
     }
 }
 

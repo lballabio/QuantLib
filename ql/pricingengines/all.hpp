@@ -6,6 +6,7 @@
 #include <ql/pricingengines/diffusioncalculator.hpp>
 #include <ql/pricingengines/bacheliercalculator.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackscholescalculator.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
