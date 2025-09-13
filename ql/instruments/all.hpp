@@ -52,6 +52,7 @@
 #include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/instruments/partialtimebarrieroption.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/instruments/perpetualfutures.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
 #include <ql/instruments/quantovanillaoption.hpp>
