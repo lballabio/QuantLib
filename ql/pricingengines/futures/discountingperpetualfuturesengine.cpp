@@ -28,15 +28,15 @@
 namespace QuantLib {
 
     DiscountingPerpetualFuturesEngine::DiscountingPerpetualFuturesEngine(
-        Handle<YieldTermStructure>& domesticDiscountCurve,
-        Handle<YieldTermStructure>& foreignDiscountCurve,
-        Handle<Quote>& assetSpot,
-        Array& fundingTimes,
-        Array& fundingRates,
-        Array& interestRateDiffs,
+        const Handle<YieldTermStructure>& domesticDiscountCurve,
+        const Handle<YieldTermStructure>& foreignDiscountCurve,
+        const Handle<Quote>& assetSpot,
+        const Array fundingTimes,
+        const Array fundingRates,
+        const Array interestRateDiffs,
         DiscountingPerpetualFuturesEngine::InterpolationType fundingInterpType)
-    : domesticDiscountCurve_(std::move(domesticDiscountCurve)),
-      foreignDiscountCurve_(std::move(foreignDiscountCurve)), assetSpot_(assetSpot),
+    : domesticDiscountCurve_(domesticDiscountCurve),
+      foreignDiscountCurve_(foreignDiscountCurve), assetSpot_(assetSpot),
       fundingTimes_(fundingTimes), fundingRates_(fundingRates),
       interestRateDiffs_(interestRateDiffs), fundingInterpType_(fundingInterpType), maxT_(60.) {
         registerWith(domesticDiscountCurve_);
@@ -78,7 +78,7 @@ namespace QuantLib {
         Date refDate = Settings::instance().evaluationDate();
         DayCounter dc = arguments_.dc;
         Calendar cal = arguments_.cal;
-
+        
         Interpolation fundingRateInterp =
             DiscountingPerpetualFuturesEngine::selectInterpolation(fundingTimes_, fundingRates_);
         fundingRateInterp.enableExtrapolation();
@@ -235,8 +235,8 @@ namespace QuantLib {
     }
 
     Interpolation
-    DiscountingPerpetualFuturesEngine::selectInterpolation(const Array& times,
-                                                           const Array& values) const {
+    DiscountingPerpetualFuturesEngine::selectInterpolation(const Array times,
+                                                           const Array values) const {
         Interpolation interpolator;
         switch (fundingInterpType_) {
             case Linear:

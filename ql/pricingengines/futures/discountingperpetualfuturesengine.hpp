@@ -40,13 +40,14 @@ namespace QuantLib {
     class DiscountingPerpetualFuturesEngine : public PerpetualFutures::engine {
       public:
         enum InterpolationType { PiecewiseConstant, Linear, CubicSpline };
-        DiscountingPerpetualFuturesEngine(Handle<YieldTermStructure>& domesticDiscountCurve,
-                                          Handle<YieldTermStructure>& foreignDiscountCurve,
-                                          Handle<Quote>& assetSpot,
-                                          Array& fundingTimes,
-                                          Array& fundingRates,
-                                          Array& interestRateDiffs,
-                                          InterpolationType fundingInterpType = PiecewiseConstant);
+        DiscountingPerpetualFuturesEngine(
+            const Handle<YieldTermStructure>& domesticDiscountCurve,
+            const Handle<YieldTermStructure>& foreignDiscountCurve,
+            const Handle<Quote>& assetSpot,
+            const Array fundingTimes,
+            const Array fundingRates,
+            const Array interestRateDiffs,
+            InterpolationType fundingInterpType = PiecewiseConstant);
         void calculate() const override;
         Handle<YieldTermStructure> domsticDiscountCurve() const { return domesticDiscountCurve_; }
         Handle<YieldTermStructure> foreignDiscountCurve() const { return foreignDiscountCurve_; }
@@ -56,14 +57,13 @@ namespace QuantLib {
         Array interestRateDiffs() const { return interestRateDiffs_; }
 
       private:
-        Interpolation selectInterpolation(const Array& times, const Array& values) const;
-        Handle<YieldTermStructure> domesticDiscountCurve_, foreignDiscountCurve_;
-        Handle<Quote> assetSpot_;
-        Array& fundingTimes_, fundingRates_, interestRateDiffs_;
+        Interpolation selectInterpolation(const Array times, const Array values) const;
+        const Handle<YieldTermStructure> domesticDiscountCurve_, foreignDiscountCurve_;
+        const Handle<Quote> assetSpot_;
+        const Array fundingTimes_, fundingRates_, interestRateDiffs_;
         InterpolationType fundingInterpType_;
         Real maxT_;
     };
-
 }
 
 #endif
