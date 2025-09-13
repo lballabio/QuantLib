@@ -1,10 +1,10 @@
 name: Update generated headers
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'dependabot/**'
 jobs:
-  filelists:
+  generate-headers:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5

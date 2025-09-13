@@ -1,8 +1,8 @@
 name: Misspell fixer
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'dependabot/**'
 jobs:
   check:
     runs-on: ubuntu-latest
