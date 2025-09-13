@@ -651,6 +651,7 @@
     <ClCompile Include="asianoptions.cpp" />
     <ClCompile Include="assetswap.cpp" />
     <ClCompile Include="autocovariances.cpp" />
+    <ClCompile Include="bacheliercalculator.cpp" />
     <ClCompile Include="barrieroption.cpp" />
     <ClCompile Include="basismodels.cpp" />
     <ClCompile Include="basisswapratehelpers.cpp" />
@@ -658,6 +659,7 @@
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
     <ClCompile Include="binaryoption.cpp" />
+    <ClCompile Include="blackcalculator.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
     <ClCompile Include="bondforward.cpp" />

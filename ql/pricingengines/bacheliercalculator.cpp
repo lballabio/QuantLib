@@ -1,7 +1,9 @@
 ﻿/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- 
+
+  Copyright (C) 2025 kp9991-git https://github.com/kp9991-git
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 

@@ -32,6 +32,9 @@
     <ClCompile Include="autocovariances.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+	<ClCompile Include="bacheliercalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="barrieroption.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="blackdeltacalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blackcalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="blackformula.cpp">
@@ -529,6 +535,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="equitycashflow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blackcalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bacheliercalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
