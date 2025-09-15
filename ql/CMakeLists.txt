@@ -690,7 +690,6 @@ set(QL_SOURCES
     pricingengines/blackcalculator.cpp
     pricingengines/blackdeltacalculator.cpp
     pricingengines/bacheliercalculator.cpp
-    pricingengines/diffusioncalculator.cpp
     pricingengines/blackformula.cpp
     pricingengines/blackscholescalculator.cpp
     pricingengines/bond/bondfunctions.cpp
@@ -1917,7 +1916,6 @@ set(QL_HEADERS
     pricingengines/blackcalculator.hpp
     pricingengines/blackdeltacalculator.hpp
     pricingengines/bacheliercalculator.hpp
-    pricingengines/diffusioncalculator.hpp
     pricingengines/blackformula.hpp
     pricingengines/blackscholescalculator.hpp
     pricingengines/bond/binomialconvertibleengine.hpp

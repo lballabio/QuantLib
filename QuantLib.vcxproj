@@ -101,6 +101,7 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="QuantLib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -1551,7 +1552,6 @@
     <ClInclude Include="ql\pricingengines\credit\integralcdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\credit\isdacdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\credit\midpointcdsengine.hpp" />
-    <ClInclude Include="ql\pricingengines\diffusioncalculator.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\all.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticcomplexchooserengine.hpp" />
@@ -2630,7 +2630,6 @@
     <ClCompile Include="ql\pricingengines\credit\integralcdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\isdacdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\midpointcdsengine.cpp" />
-    <ClCompile Include="ql\pricingengines\diffusioncalculator.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticamericanmargrabeengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticcomplexchooserengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticcompoundoptionengine.cpp" />

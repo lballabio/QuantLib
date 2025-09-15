@@ -46,7 +46,8 @@ namespace QuantLib {
                                      Real forward,
                                      Real stdDev,
                                      Real discount)
-    : DiffusionCalculator(p, forward, stdDev, discount) {
+    : strike_(p->strike()), forward_(forward), stdDev_(stdDev),
+        discount_(discount), variance_(stdDev* stdDev) {
         initialize(p);
     }
 
@@ -55,7 +56,8 @@ namespace QuantLib {
                                      Real forward,
                                      Real stdDev,
                                      Real discount)
-    : DiffusionCalculator(optionType, strike, forward, stdDev, discount) {
+    : strike_(strike), forward_(forward), stdDev_(stdDev), discount_(discount),
+      variance_(stdDev * stdDev) {
         initialize(ext::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(optionType, strike)));
     }
