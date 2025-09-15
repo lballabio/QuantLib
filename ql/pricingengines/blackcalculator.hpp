@@ -76,7 +76,7 @@ namespace QuantLib {
         /*! Sensitivity to time to maturity per day,
             assuming 365 day per year. */
         virtual Real thetaPerDay(Real spot,
-                                Time maturity) const;
+                                 Time maturity) const;
 
         /*! Sensitivity to volatility. */
         Real vega(Time maturity) const;
@@ -111,7 +111,6 @@ namespace QuantLib {
       protected:
         void initialize(const ext::shared_ptr<StrikedTypePayoff>& p);
         
-        //! Member variables
         Real strike_, forward_, stdDev_, discount_, variance_;
         Real d1_, d2_;
         Real alpha_, beta_, DalphaDd1_, DbetaDd2_;

@@ -12,7 +12,6 @@ this_include_HEADERS = \
     blackcalculator.hpp \
     blackdeltacalculator.hpp \
     bacheliercalculator.hpp \
-    diffusioncalculator.hpp \
     blackformula.hpp \
     blackscholescalculator.hpp \
     genericmodelengine.hpp \
@@ -27,7 +26,6 @@ cpp_files = \
 	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
     bacheliercalculator.cpp \
-    diffusioncalculator.cpp \
 	blackformula.cpp \
 	blackscholescalculator.cpp \
 	greeks.cpp
