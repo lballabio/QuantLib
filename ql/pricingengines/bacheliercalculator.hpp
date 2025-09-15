@@ -49,23 +49,23 @@ namespace QuantLib {
                            Real discount = 1.0);
         virtual ~BachelierCalculator() = default;
 
-        Real value() const;
+        virtual Real value() const;
 
         /*! Sensitivity to change in the underlying forward price. */
-        Real deltaForward() const;
+        virtual Real deltaForward() const;
         /*! Sensitivity to change in the underlying spot price. */
         virtual Real delta(Real spot) const;
 
         /*! Sensitivity in percent to a percent change in the
             underlying forward price. */
-        Real elasticityForward() const;
+        virtual Real elasticityForward() const;
         /*! Sensitivity in percent to a percent change in the
             underlying spot price. */
         virtual Real elasticity(Real spot) const;
 
         /*! Second order derivative with respect to change in the
             underlying forward price. */
-        Real gammaForward() const;
+        virtual Real gammaForward() const;
         /*! Second order derivative with respect to change in the
             underlying spot price. */
         virtual Real gamma(Real spot) const;
@@ -79,13 +79,13 @@ namespace QuantLib {
                                 Time maturity) const;
 
         /*! Sensitivity to volatility. */
-        Real vega(Time maturity) const;
+        virtual Real vega(Time maturity) const;
 
         /*! Sensitivity to discounting rate. */
-        Real rho(Time maturity) const;
+        virtual Real rho(Time maturity) const;
 
         /*! Sensitivity to dividend/growth rate. */
-        Real dividendRho(Time maturity) const;
+        virtual Real dividendRho(Time maturity) const;
 
         /*! Probability of being in the money in the bond martingale
             measure, i.e. N(d).
@@ -100,10 +100,10 @@ namespace QuantLib {
         Real itmAssetProbability() const;
 
         /*! Sensitivity to strike. */
-        Real strikeSensitivity() const;
+        virtual Real strikeSensitivity() const;
 
         /*! gamma w.r.t. strike. */
-        Real strikeGamma() const;
+        virtual Real strikeGamma() const;
 
         Real alpha() const;
         Real beta() const;
