@@ -102,7 +102,6 @@ namespace QuantLib {
         const Real shift_;
 
       private:
-        class ImpliedVolatilityHelper;
         const CalibrationErrorType calibrationErrorType_;
     };
 
