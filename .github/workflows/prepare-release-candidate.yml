@@ -15,9 +15,6 @@ jobs:
       run: |
         git config user.name 'lballabio[bot]'
         git config user.email '224797326+lballabio-bot@users.noreply.github.com'
-    - name: Sanity check
-      run: |
-        git tag
     - name: Calculate versions
       env:
         GH_TOKEN: ${{ github.token }}
@@ -37,9 +34,11 @@ jobs:
       run: |
         git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep v1.${LATEST_MINOR}... > ChangeLog.txt
         git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
-    - name: Check first commit
-      run: |
-        git show HEAD^
-    - name: Check second commit
-      run: |
-        git show HEAD
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
+        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
+        branch: set-to-rc-${{ github.ref_name }}
+        delete-branch: true
+        title: 'Set version to 1.${{ env.NEXT_MINOR }}-rc'
+        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
