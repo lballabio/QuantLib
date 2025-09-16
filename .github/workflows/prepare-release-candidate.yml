@@ -8,10 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Calculate version number
+    - name: Calculate versions
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
         export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
         echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee $GITHUB_ENV
         echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee $GITHUB_ENV
+    - name: Update version numbers
+      run: |
+        sed -i -e "s/^AC_INIT\(\[QuantLib\]/AC_INIT([QuantLib], [1.${NEXT_MINOR}-rc]/g" configure.ac
+        sed -i -e "s/^#define QL_VERSION/#define QL_VERSION \"1.${NEXT_MINOR}-rc\"/g" ql/version.hpp
+        sed -i -e "s/^#define QL_HEX_VERSION/#define QL_HEX_VERSION 0x01${NEXT_MINOR}00c0/g" ql/version.hpp
+        sed -i -e "s/^set\(PACKAGE_VERSION  /set(PACKAGE_VERSION       \"1.${NEXT_MINOR}-rc\"\)/g" CMakeLists.txt
+        sed -i -e "s/^set\(PACKAGE_VERSION_HEX/set(PACKAGE_VERSION_HEX   \"0x01${NEXT_MINOR}00c0\"\)/g" CMakeLists.txt
+    - name: Check changes
+      run: |
+        git diff
