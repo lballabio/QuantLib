@@ -8,8 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - name: Latest version
+    - name: Calculate version number
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'
+        export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee $GITHUB_ENV
