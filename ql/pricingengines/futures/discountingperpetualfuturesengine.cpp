@@ -91,8 +91,8 @@ namespace QuantLib {
         interestRateDiffInterp.enableExtrapolation();
 
         Real factor = 0.;
-        // discrete-time case
         if (fundingFreq.length() > 0) { 
+            // discrete-time case
             std::vector<Real> timeGrid;
             Real tGrid = 0.;
             while (tGrid < maxT_) {
@@ -195,8 +195,7 @@ namespace QuantLib {
             factor = sum;
 
         } else {
-        // continuous-time case
-            Real timeIntegral = 0.;
+            // continuous-time case
             TrapezoidIntegral<Default> integrator(1.e-6, 30);
             Real fundingRateXMax = fundingRateInterp.xMax();
             auto expIRDiff = [fundingRateInterp, integrator, fundingRateXMax](Real s) {
