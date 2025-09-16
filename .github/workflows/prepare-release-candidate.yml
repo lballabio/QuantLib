@@ -33,7 +33,7 @@ jobs:
     - name: Update ChangeLog
       run: |
         git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep v1.${LATEST_MINOR}... > ChangeLog.txt
-        git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
+        git commit -a -m "Update changelog"
     - uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
