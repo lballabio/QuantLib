@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
+      with:
+        fetch-tags: true
     - name: Setup git
       run: |
         git config user.name 'lballabio[bot]'
