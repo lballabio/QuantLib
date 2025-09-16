@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
+    - name: Setup git
+      run: |
+        git config user.name 'lballabio[bot]'
+        git config user.email '224797326+lballabio-bot@users.noreply.github.com'
     - name: Calculate versions
       env:
         GH_TOKEN: ${{ github.token }}
@@ -22,7 +26,14 @@ jobs:
         sed -i -e "s/^#define QL_HEX_VERSION.*$/#define QL_HEX_VERSION 0x01${NEXT_MINOR}00c0/g" ql/version.hpp
         sed -i -e "s/^set(PACKAGE_VERSION  .*$/set(PACKAGE_VERSION       \"1.${NEXT_MINOR}-rc\"\)/g" CMakeLists.txt
         sed -i -e "s/^set(PACKAGE_VERSION_HEX.*$/set(PACKAGE_VERSION_HEX   \"0x01${NEXT_MINOR}00c0\"\)/g" CMakeLists.txt
-    - name: Check changes
-      if: ${{ always() }}
+        git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
+    - name: Update ChangeLog
       run: |
-        git diff
+        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep v1.${LATEST_MINOR}... > ChangeLog.txt
+        git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
+    - name: Check first commit
+      run: |
+        git show HEAD^
+    - name: Check second commit
+      run: |
+        git show HEAD
