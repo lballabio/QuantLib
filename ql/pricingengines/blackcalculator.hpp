@@ -72,7 +72,7 @@ namespace QuantLib {
 
         /*! Sensitivity to time to maturity. */
         virtual Real theta(Real spot,
-                          Time maturity) const;
+                           Time maturity) const;
         /*! Sensitivity to time to maturity per day,
             assuming 365 day per year. */
         virtual Real thetaPerDay(Real spot,
@@ -120,7 +120,7 @@ namespace QuantLib {
 
     // inline
     inline Real BlackCalculator::thetaPerDay(Real spot,
-                                           Time maturity) const {
+                                             Time maturity) const {
         return theta(spot, maturity)/365.0;
     }
 
