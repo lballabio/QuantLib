@@ -12,6 +12,9 @@ jobs:
       run: |
         git config user.name 'lballabio[bot]'
         git config user.email '224797326+lballabio-bot@users.noreply.github.com'
+    - name: Sanity check
+      run: |
+        git tag
     - name: Calculate versions
       env:
         GH_TOKEN: ${{ github.token }}
