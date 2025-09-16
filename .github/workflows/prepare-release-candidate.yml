@@ -17,11 +17,12 @@ jobs:
         echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee $GITHUB_ENV
     - name: Update version numbers
       run: |
-        sed -i -e "s/^AC_INIT\(\[QuantLib\]/AC_INIT([QuantLib], [1.${NEXT_MINOR}-rc]/g" configure.ac
+        sed -i -e "s/^AC_INIT\(\[QuantLib\]/AC_INIT([QuantLib], [1.${NEXT_MINOR}-rc],/g" configure.ac
         sed -i -e "s/^#define QL_VERSION/#define QL_VERSION \"1.${NEXT_MINOR}-rc\"/g" ql/version.hpp
         sed -i -e "s/^#define QL_HEX_VERSION/#define QL_HEX_VERSION 0x01${NEXT_MINOR}00c0/g" ql/version.hpp
         sed -i -e "s/^set\(PACKAGE_VERSION  /set(PACKAGE_VERSION       \"1.${NEXT_MINOR}-rc\"\)/g" CMakeLists.txt
         sed -i -e "s/^set\(PACKAGE_VERSION_HEX/set(PACKAGE_VERSION_HEX   \"0x01${NEXT_MINOR}00c0\"\)/g" CMakeLists.txt
     - name: Check changes
+      if: ${{ always() }}
       run: |
         git diff
