@@ -1,5 +1,7 @@
 name: Prepare release candidate
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
 
 jobs:
   update-for-rc:
