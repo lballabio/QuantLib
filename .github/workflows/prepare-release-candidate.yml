@@ -17,8 +17,8 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
-        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee $GITHUB_ENV
-        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee -a $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee -a $GITHUB_ENV
     - name: Update version numbers
       run: |
         sed -i -e "s/^AC_INIT(\[QuantLib\].*$/AC_INIT([QuantLib], [1.${NEXT_MINOR}-rc],/g" configure.ac
