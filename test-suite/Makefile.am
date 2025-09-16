@@ -126,6 +126,7 @@ QL_TEST_SRCS = \
 	partialtimebarrieroption.cpp \
 	pathgenerator.cpp \
 	period.cpp \
+	perpetualfutures.cpp \
 	piecewiseyieldcurve.cpp \
 	piecewisezerospreadedtermstructure.cpp \
 	preconditions.cpp \

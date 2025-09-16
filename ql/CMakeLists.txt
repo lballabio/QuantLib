@@ -301,6 +301,7 @@ set(QL_SOURCES
     instruments/overnightindexfuture.cpp
     instruments/partialtimebarrieroption.cpp
     instruments/payoffs.cpp
+    instruments/perpetualfutures.cpp
     instruments/quantobarrieroption.cpp
     instruments/quantoforwardvanillaoption.cpp
     instruments/quantovanillaoption.cpp
@@ -718,6 +719,7 @@ set(QL_SOURCES
     pricingengines/exotic/analyticwriterextensibleoptionengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
+    pricingengines/futures/discountingperpetualfuturesengine.cpp
     pricingengines/greeks.cpp
     pricingengines/inflation/inflationcapfloorengines.cpp
     pricingengines/lookback/analyticcontinuousfixedlookback.cpp
@@ -1374,6 +1376,7 @@ set(QL_HEADERS
     instruments/overnightindexfuture.hpp
     instruments/partialtimebarrieroption.hpp
     instruments/payoffs.hpp
+    instruments/perpetualfutures.hpp
     instruments/quantobarrieroption.hpp
     instruments/quantoforwardvanillaoption.hpp
     instruments/quantovanillaoption.hpp
@@ -1949,6 +1952,7 @@ set(QL_HEADERS
     pricingengines/forward/mcforwardvanillaengine.hpp
     pricingengines/forward/mcvarianceswapengine.hpp
     pricingengines/forward/replicatingvarianceswapengine.hpp
+    pricingengines/futures/discountingperpetualfuturesengine.hpp
     pricingengines/genericmodelengine.hpp
     pricingengines/greeks.hpp
     pricingengines/inflation/inflationcapfloorengines.hpp
@@ -2355,6 +2359,7 @@ set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/pricingengines/credit/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/exotic/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/forward/all.hpp
+    ${PROJECT_BINARY_DIR}/ql/pricingengines/futures/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/inflation/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/lookback/all.hpp
     ${PROJECT_BINARY_DIR}/ql/pricingengines/quanto/all.hpp
