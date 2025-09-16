@@ -9,5 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - name: Latest version
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'
