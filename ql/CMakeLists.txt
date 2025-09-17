@@ -690,6 +690,7 @@ set(QL_SOURCES
     pricingengines/basket/stulzengine.cpp
     pricingengines/blackcalculator.cpp
     pricingengines/blackdeltacalculator.cpp
+    pricingengines/bacheliercalculator.cpp
     pricingengines/blackformula.cpp
     pricingengines/blackscholescalculator.cpp
     pricingengines/bond/bondfunctions.cpp
@@ -1917,6 +1918,7 @@ set(QL_HEADERS
     pricingengines/basket/stulzengine.hpp
     pricingengines/blackcalculator.hpp
     pricingengines/blackdeltacalculator.hpp
+    pricingengines/bacheliercalculator.hpp
     pricingengines/blackformula.hpp
     pricingengines/blackscholescalculator.hpp
     pricingengines/bond/binomialconvertibleengine.hpp

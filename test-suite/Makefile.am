@@ -14,6 +14,8 @@ QL_TEST_SRCS = \
 	basketoption.cpp \
 	batesmodel.cpp \
 	bermudanswaption.cpp \
+	bacheliercalculator.cpp \
+	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
 	bondforward.cpp \

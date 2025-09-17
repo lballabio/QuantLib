@@ -6,6 +6,7 @@ set(QL_TEST_SOURCES
     asianoptions.cpp
     assetswap.cpp
     autocovariances.cpp
+	bacheliercalculator.cpp
     barrieroption.cpp
     basismodels.cpp
     basisswapratehelpers.cpp
@@ -14,6 +15,7 @@ set(QL_TEST_SOURCES
     bermudanswaption.cpp
     binaryoption.cpp
     blackdeltacalculator.cpp
+	blackcalculator.cpp
     blackformula.cpp
     bondforward.cpp
     bonds.cpp

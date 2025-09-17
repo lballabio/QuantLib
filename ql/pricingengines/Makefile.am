@@ -11,6 +11,7 @@ this_include_HEADERS = \
     americanpayoffathit.hpp \
     blackcalculator.hpp \
     blackdeltacalculator.hpp \
+    bacheliercalculator.hpp \
     blackformula.hpp \
     blackscholescalculator.hpp \
     genericmodelengine.hpp \
@@ -24,6 +25,7 @@ cpp_files = \
 	americanpayoffathit.cpp \
 	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
+    bacheliercalculator.cpp \
 	blackformula.cpp \
 	blackscholescalculator.cpp \
 	greeks.cpp

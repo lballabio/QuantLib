@@ -4533,6 +4533,9 @@
     <ClInclude Include="ql\pricingengines\futures\all.hpp">
       <Filter>pricingengines\futures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\bacheliercalculator.hpp">
+      <Filter>pricingengines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7338,6 +7341,9 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\futures\discountingperpetualfuturesengine.cpp">
       <Filter>pricingengines\futures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\bacheliercalculator.cpp">
+      <Filter>pricingengines</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
