@@ -13,8 +13,7 @@ jobs:
         ./tools/check_copyrights.sh
     - uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
-        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
+        token: ${{ secrets.GITHUB_TOKEN }}
         branch: update-copyright-list-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Update copyright list in license'

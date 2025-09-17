@@ -14,8 +14,7 @@ jobs:
         sed -i -e 's|http://quantlib\.org/license\.shtml|https://www.quantlib.org/license.shtml|g' **/*.[hc]pp **/*.ac **/*.docs **/*.cfg **/*.sh **/*.el
     - uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
-        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
+        token: ${{ secrets.GITHUB_TOKEN }}
         branch: update-license-links-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Update old license links'
