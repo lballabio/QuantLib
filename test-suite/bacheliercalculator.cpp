@@ -389,6 +389,121 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorAgainstAnalyticalFormula) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBachelierCalculatorZeroVolatilityGreeks) {
+    BOOST_TEST_MESSAGE("Testing BachelierCalculator Greeks with zero volatility...");
+
+    Real tolerance = 1e-10;
+    Real forward = 100.0;
+    Real discount = 1.0;
+    Real spot = 98.0;
+    Real maturity = 1.0;
+    Real stdDev = 0.0;  // Zero absolute volatility
+
+    // Test different moneyness scenarios
+    struct ZeroVolTestCase {
+        Option::Type type;
+        Real strike;
+        std::string description;
+        Real expectedDelta;
+        Real expectedGamma;
+        Real expectedVega;
+        Real expectedTheta;
+    };
+
+    ZeroVolTestCase testCases[] = {
+        // ITM options should have delta = 1 for calls, -1 for puts (approximately)
+        {Option::Call, 90.0, "ITM Call", 1.0, 0.0, 0.0, 0.0},
+        {Option::Put, 110.0, "ITM Put", -1.0, 0.0, 0.0, 0.0},
+        // ATM options in Bachelier model
+        {Option::Call, 100.0, "ATM Call", 0.5, 0.0, 0.0, 0.0},
+        {Option::Put, 100.0, "ATM Put", -0.5, 0.0, 0.0, 0.0},
+        // OTM options should have delta = 0
+        {Option::Call, 90.0, "OTM Call", 0.0, 0.0, 0.0, 0.0},
+        {Option::Put, 110.0, "OTM Put", 0.0, 0.0, 0.0, 0.0},
+        // Test negative strikes (valid in Bachelier model)
+        {Option::Call, -10.0, "Negative Strike Call", 1.0, 0.0, 0.0, 0.0},
+        {Option::Put, 200.0, "High Strike Put", -1.0, 0.0, 0.0, 0.0}
+    };
+
+    for (const auto& testCase : testCases) {
+        BachelierCalculator calc(testCase.type, testCase.strike, forward, stdDev, discount);
+
+        Real deltaForward = calc.deltaForward();
+        Real delta = calc.delta(spot);
+        Real gammaForward = calc.gammaForward();
+        Real gamma = calc.gamma(spot);
+        Real vega = calc.vega(maturity);
+        Real theta = calc.theta(spot, maturity);
+        Real rho = calc.rho(maturity);
+        Real dividendRho = calc.dividendRho(maturity);
+
+        // All Greeks should be finite (not NaN or infinite)
+        if (!std::isfinite(deltaForward) || !std::isfinite(delta) || 
+            !std::isfinite(gammaForward) || !std::isfinite(gamma) ||
+            !std::isfinite(vega) || !std::isfinite(theta) || 
+            !std::isfinite(rho) || !std::isfinite(dividendRho)) {
+            BOOST_ERROR("BachelierCalculator " << testCase.description 
+                       << " produced non-finite Greeks with zero volatility");
+        }
+
+        // Gamma should be zero (no convexity with zero vol)
+        if (std::fabs(gammaForward) > tolerance || std::fabs(gamma) > tolerance) {
+            BOOST_ERROR("BachelierCalculator " << testCase.description 
+                       << " gamma should be zero with zero volatility: "
+                       << "gammaForward=" << gammaForward << " gamma=" << gamma);
+        }
+
+        // Vega should be zero (no vol sensitivity)  
+        if (std::fabs(vega) > tolerance) {
+            BOOST_ERROR("BachelierCalculator " << testCase.description 
+                       << " vega should be zero with zero volatility: " << vega);
+        }
+
+        // For clearly ITM/OTM cases, check delta bounds
+        if (testCase.strike < forward - 5.0) { // Clearly ITM call
+            if (testCase.type == Option::Call && (deltaForward < 0.99 || deltaForward > 1.01)) {
+                BOOST_ERROR("BachelierCalculator ITM call deltaForward should be ~1.0 with zero vol: " 
+                           << deltaForward);
+            }
+        }
+        if (testCase.strike > forward + 5.0) { // Clearly OTM call
+            if (testCase.type == Option::Call && std::fabs(deltaForward) > tolerance) {
+                BOOST_ERROR("BachelierCalculator OTM call deltaForward should be ~0.0 with zero vol: " 
+                           << deltaForward);
+            }
+        }
+
+        // Strike sensitivities should be finite
+        Real strikeSens = calc.strikeSensitivity();
+        Real strikeGamma = calc.strikeGamma();
+        
+        if (!std::isfinite(strikeSens) || !std::isfinite(strikeGamma)) {
+            BOOST_ERROR("BachelierCalculator " << testCase.description 
+                       << " strike sensitivities should be finite with zero volatility");
+        }
+
+        // Test ITM probabilities
+        Real itmCashProb = calc.itmCashProbability();
+        Real itmAssetProb = calc.itmAssetProbability();
+        
+        if (!std::isfinite(itmCashProb) || !std::isfinite(itmAssetProb)) {
+            BOOST_ERROR("BachelierCalculator " << testCase.description 
+                       << " ITM probabilities should be finite with zero volatility");
+        }
+
+        // In Bachelier model with zero vol, ITM probabilities should be 0 or 1
+        Real expectedProb = (testCase.type == Option::Call) ? 
+                           (forward > testCase.strike ? 1.0 : (forward == testCase.strike ? 0.5 : 0.0)) :
+                           (forward < testCase.strike ? 1.0 : (forward == testCase.strike ? 0.5 : 0.0));
+        
+        if (std::fabs(itmCashProb - expectedProb) > tolerance) {
+            BOOST_ERROR("BachelierCalculator " << testCase.description 
+                       << " ITM cash probability incorrect with zero vol: expected=" 
+                       << expectedProb << " actual=" << itmCashProb);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testBachelierVsBlackConvergence) {
     BOOST_TEST_MESSAGE("Testing BachelierCalculator convergence to BlackCalculator for small relative volatilities...");
 
@@ -416,6 +531,7 @@ BOOST_AUTO_TEST_CASE(testBachelierVsBlackConvergence) {
                    << " relative error=" << relativeError);
     }
 }
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

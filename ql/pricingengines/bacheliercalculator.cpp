@@ -289,7 +289,7 @@ namespace QuantLib {
         // Therefore: Vega = n(d) + σ*(-d*n(d))*(-d/σ) = n(d) + d²*n(d) = n(d)*(1 + d²) - (F-K)*n(d)*d/σ
         // Simplifying: Vega = n(d) for Bachelier model
         
-        if (maturity <= QL_EPSILON) {
+        if (maturity <= QL_EPSILON || stdDev_ <= QL_EPSILON) {
             return 0.0;
         }
         

@@ -30,10 +30,6 @@
 namespace QuantLib {
 
     //! Bachelier calculator class
-    /*! \bug When the variance is null, division by zero occur during
-             the calculation of delta, delta forward, gamma, gamma
-             forward, rho, dividend rho, vega, and strike sensitivity.
-    */
     class BachelierCalculator {
       private:
         class Calculator;
@@ -126,16 +122,28 @@ namespace QuantLib {
     }
 
     inline Real BachelierCalculator::itmCashProbability() const {
-        // For Bachelier model, this is the probability that F > K (call) or F < K (put)
-        // which is N(d) for call, 1-N(d) = N(-d) for put
-        // where d = (F-K)/σ
-        return cum_d_;
+        // For Bachelier model:
+        // Call ITM probability: P(F > K) = N(d) where d = (F-K)/σ
+        // Put ITM probability:  P(F < K) = N(-d) = 1 - N(d) where d = (F-K)/σ
+        
+        if (alpha_ >= 0) { // Call option (alpha_ = N(d) >= 0)
+            return cum_d_;  // N(d)
+        } else { // Put option (alpha_ = N(d) - 1 < 0)
+            return 1.0 - cum_d_;  // N(-d) = 1 - N(d)
+        }
     }
 
     inline Real BachelierCalculator::itmAssetProbability() const {
         // In Bachelier model, asset probability is the same as cash probability
         // since there's no drift adjustment like in Black-Scholes
-        return cum_d_;
+        // Call ITM probability: P(F > K) = N(d) where d = (F-K)/σ  
+        // Put ITM probability:  P(F < K) = N(-d) = 1 - N(d) where d = (F-K)/σ
+        
+        if (alpha_ >= 0) { // Call option
+            return cum_d_;  // N(d)
+        } else { // Put option
+            return 1.0 - cum_d_;  // N(-d) = 1 - N(d)
+        }
     }
 
     inline Real BachelierCalculator::alpha() const {
