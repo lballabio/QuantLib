@@ -24,8 +24,9 @@
 */
 
 #ifndef quantlib_defines_hpp
-/* install-hook */
 #define quantlib_defines_hpp
+
+/* install-hook */
 
 #ifdef _MSC_VER
 /* Microsoft-specific, but needs to be defined before
