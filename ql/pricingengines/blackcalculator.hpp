@@ -30,10 +30,6 @@
 namespace QuantLib {
 
     //! Black 1976 calculator class
-    /*! \bug When the variance is null, division by zero occur during
-             the calculation of delta, delta forward, gamma, gamma
-             forward, rho, dividend rho, vega, and strike sensitivity.
-    */
     class BlackCalculator {
       private:
         class Calculator;

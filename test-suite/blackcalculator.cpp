@@ -317,6 +317,117 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorNumericalDerivatives) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBlackCalculatorZeroVolatilityGreeks) {
+    BOOST_TEST_MESSAGE("Testing BlackCalculator Greeks with zero volatility...");
+
+    Real tolerance = 1e-10;
+    Real forward = 100.0;
+    Real discount = 1.0;
+    Real spot = 98.0;
+    Real maturity = 1.0;
+    Real stdDev = 0.0;  // Zero volatility
+
+    // Test different moneyness scenarios
+    struct ZeroVolTestCase {
+        Option::Type type;
+        Real strike;
+        std::string description;
+        Real expectedDelta;
+        Real expectedGamma;
+        Real expectedVega;
+        Real expectedTheta;  // Approximate expected theta
+    };
+
+    ZeroVolTestCase testCases[] = {
+        // ITM options should have delta = 1 for calls, -1 for puts (approximately)
+        {Option::Call, 90.0, "ITM Call", 1.0, 0.0, 0.0, 0.0},
+        {Option::Put, 110.0, "ITM Put", -1.0, 0.0, 0.0, 0.0},
+        // ATM options have undefined behavior at zero vol, but should be finite
+        {Option::Call, 100.0, "ATM Call", 0.5, 0.0, 0.0, 0.0},
+        {Option::Put, 100.0, "ATM Put", -0.5, 0.0, 0.0, 0.0},
+        // OTM options should have delta = 0
+        {Option::Call, 110.0, "OTM Call", 0.0, 0.0, 0.0, 0.0},
+        {Option::Put, 90.0, "OTM Put", 0.0, 0.0, 0.0, 0.0}
+    };
+
+    for (const auto& testCase : testCases) {
+        BlackCalculator calc(testCase.type, testCase.strike, forward, stdDev, discount);
+
+        Real deltaForward = calc.deltaForward();
+        Real delta = calc.delta(spot);
+        Real gammaForward = calc.gammaForward();
+        Real gamma = calc.gamma(spot);
+        Real vega = calc.vega(maturity);
+        Real theta = calc.theta(spot, maturity);
+        Real rho = calc.rho(maturity);
+        Real dividendRho = calc.dividendRho(maturity);
+
+        // All Greeks should be finite (not NaN or infinite)
+        if (!std::isfinite(deltaForward) || !std::isfinite(delta) || 
+            !std::isfinite(gammaForward) || !std::isfinite(gamma) ||
+            !std::isfinite(vega) || !std::isfinite(theta) || 
+            !std::isfinite(rho) || !std::isfinite(dividendRho)) {
+            BOOST_ERROR("BlackCalculator " << testCase.description 
+                       << " produced non-finite Greeks with zero volatility");
+        }
+
+        // Gamma should be zero (no convexity with zero vol)
+        if (std::fabs(gammaForward) > tolerance || std::fabs(gamma) > tolerance) {
+            BOOST_ERROR("BlackCalculator " << testCase.description 
+                       << " gamma should be zero with zero volatility: "
+                       << "gammaForward=" << gammaForward << " gamma=" << gamma);
+        }
+
+        // Vega should be zero (no vol sensitivity)
+        if (std::fabs(vega) > tolerance) {
+            BOOST_ERROR("BlackCalculator " << testCase.description 
+                       << " vega should be zero with zero volatility: " << vega);
+        }
+
+        // For clearly ITM/OTM cases, check delta bounds
+        if (testCase.strike < forward * 0.95) { // Clearly ITM call
+            if (testCase.type == Option::Call && (deltaForward < 0.99 || deltaForward > 1.01)) {
+                BOOST_ERROR("BlackCalculator ITM call deltaForward should be ~1.0 with zero vol: " 
+                           << deltaForward);
+            }
+        }
+        if (testCase.strike > forward * 1.05) { // Clearly OTM call
+            if (testCase.type == Option::Call && std::fabs(deltaForward) > tolerance) {
+                BOOST_ERROR("BlackCalculator OTM call deltaForward should be ~0.0 with zero vol: " 
+                           << deltaForward);
+            }
+        }
+
+        // Strike sensitivities should be finite
+        Real strikeSens = calc.strikeSensitivity();
+        Real strikeGamma = calc.strikeGamma();
+        
+        if (!std::isfinite(strikeSens) || !std::isfinite(strikeGamma)) {
+            BOOST_ERROR("BlackCalculator " << testCase.description 
+                       << " strike sensitivities should be finite with zero volatility");
+        }
+    }
+
+    // Test specific edge case: very small but non-zero volatility to ensure it still works
+    Real smallVol = 1e-12;
+    BlackCalculator calcSmallVol(Option::Call, 100.0, forward, smallVol, discount);
+
+    Real deltaSmallVol = calcSmallVol.deltaForward();
+    Real gammaSmallVol = calcSmallVol.gammaForward();
+    Real vegaSmallVol = calcSmallVol.vega(maturity);
+
+    // These should be finite and reasonable
+    if (!std::isfinite(deltaSmallVol) || !std::isfinite(gammaSmallVol) ||
+        !std::isfinite(vegaSmallVol)) {
+        BOOST_ERROR("BlackCalculator failed for very small volatility");
+    }
+
+    // Delta should be close to 0.5 for ATM
+    if (std::fabs(deltaSmallVol - discount * 0.5) > 0.1) {
+        BOOST_ERROR("BlackCalculator ATM delta with small vol unreasonable: " << deltaSmallVol);
+    }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
