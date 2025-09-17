@@ -204,6 +204,36 @@ namespace QuantLib {
         QL_REQUIRE(spot > 0.0, "positive spot value required: " <<
                    spot << " not allowed");
 
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, delta is:
+            // ITM Call: 1.0, OTM Call: 0.0, ATM Call: 0.5
+            // ITM Put: -1.0, OTM Put: 0.0, ATM Put: -0.5
+            Real DforwardDs = forward_ / spot;
+            if (close(forward_, strike_)) {
+                // ATM case
+                if (alpha_ >= 0) { // Call
+                    return discount_ * 0.5 * DforwardDs;
+                } else { // Put
+                    return discount_ * (-0.5) * DforwardDs;
+                }
+            } else if (forward_ > strike_) {
+                // ITM Call, OTM Put
+                if (alpha_ >= 0) { // Call
+                    return discount_ * 1.0 * DforwardDs;
+                } else { // Put  
+                    return 0.0;
+                }
+            } else {
+                // OTM Call, ITM Put
+                if (alpha_ >= 0) { // Call
+                    return 0.0;
+                } else { // Put
+                    return discount_ * (-1.0) * DforwardDs;
+                }
+            }
+        }
+
         Real DforwardDs = forward_ / spot;
 
         Real temp = stdDev_*spot;
@@ -216,6 +246,35 @@ namespace QuantLib {
     }
 
     Real BlackCalculator::deltaForward() const {
+
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, forward delta is:
+            // ITM Call: 1.0, OTM Call: 0.0, ATM Call: 0.5
+            // ITM Put: -1.0, OTM Put: 0.0, ATM Put: -0.5
+            if (close(forward_, strike_)) {
+                // ATM case
+                if (alpha_ >= 0) { // Call
+                    return discount_ * 0.5;
+                } else { // Put
+                    return discount_ * (-0.5);
+                }
+            } else if (forward_ > strike_) {
+                // ITM Call, OTM Put
+                if (alpha_ >= 0) { // Call
+                    return discount_ * 1.0;
+                } else { // Put
+                    return 0.0;
+                }
+            } else {
+                // OTM Call, ITM Put
+                if (alpha_ >= 0) { // Call
+                    return 0.0;
+                } else { // Put
+                    return discount_ * (-1.0);
+                }
+            }
+        }
 
         Real temp = stdDev_*forward_;
         Real DalphaDforward = DalphaDd1_/temp;
@@ -257,6 +316,12 @@ namespace QuantLib {
         QL_REQUIRE(spot > 0.0, "positive spot value required: " <<
                    spot << " not allowed");
 
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, gamma is always 0 (no convexity)
+            return 0.0;
+        }
+
         Real DforwardDs = forward_ / spot;
 
         Real temp = stdDev_*spot;
@@ -273,6 +338,12 @@ namespace QuantLib {
     }
 
     Real BlackCalculator::gammaForward() const {
+
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, gamma is always 0 (no convexity)
+            return 0.0;
+        }
 
         Real temp = stdDev_*forward_;
         Real DalphaDforward = DalphaDd1_/temp;
@@ -302,6 +373,11 @@ namespace QuantLib {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            return 0.0;
+        }
+
         Real temp = std::log(strike_/forward_)/variance_;
         // actually DalphaDsigma / SQRT(T)
         Real DalphaDsigma = DalphaDd1_*(temp+0.5);
@@ -310,12 +386,18 @@ namespace QuantLib {
         Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * x_;
 
         return discount_ * std::sqrt(maturity) * temp2;
-
     }
 
     Real BlackCalculator::rho(Time maturity) const {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
+
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, rho = T * (delta_forward * forward - value/discount)
+            Real deltaFwd = deltaForward();
+            return maturity * (deltaFwd * forward_ - value());
+        }
 
         // actually DalphaDr / T
         Real DalphaDr = DalphaDd1_/stdDev_;
@@ -329,6 +411,13 @@ namespace QuantLib {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, dividend rho = -T * discount * delta_forward * forward
+            Real deltaFwd = deltaForward() / discount_;  // Remove discount to get pure delta
+            return -maturity * discount_ * deltaFwd * forward_;
+        }
+
         // actually DalphaDq / T
         Real DalphaDq = -DalphaDd1_/stdDev_;
         Real DbetaDq  = -DbetaDd2_/stdDev_;
@@ -339,6 +428,35 @@ namespace QuantLib {
     }
 
     Real BlackCalculator::strikeSensitivity() const {
+
+        // Handle zero volatility case  
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, strike sensitivity is:
+            // Call: -N(d2) where d2 -> 1 (ITM), 0 (OTM), 0.5 (ATM)
+            // Put: N(-d2) = 1 - N(d2)
+            if (close(forward_, strike_)) {
+                // ATM case
+                if (alpha_ >= 0) { // Call
+                    return -discount_ * 0.5;
+                } else { // Put
+                    return discount_ * 0.5;
+                }
+            } else if (forward_ > strike_) {
+                // ITM Call, OTM Put
+                if (alpha_ >= 0) { // Call
+                    return -discount_ * 1.0;
+                } else { // Put
+                    return discount_ * 0.0;
+                }
+            } else {
+                // OTM Call, ITM Put
+                if (alpha_ >= 0) { // Call
+                    return -discount_ * 0.0;
+                } else { // Put
+                    return discount_ * 1.0;
+                }
+            }
+        }
 
         Real temp = stdDev_*strike_;
         Real DalphaDstrike = -DalphaDd1_/temp;
@@ -352,6 +470,12 @@ namespace QuantLib {
 
 
     Real BlackCalculator::strikeGamma() const {
+
+        // Handle zero volatility case
+        if (stdDev_ <= QL_EPSILON) {
+            // For zero volatility, strike gamma is 0 (no convexity)
+            return 0.0;
+        }
 
         Real temp = stdDev_*strike_;
         Real DalphaDstrike = -DalphaDd1_/temp;

@@ -531,6 +531,12 @@
     <ClCompile Include="equitycashflow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="blackcalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bacheliercalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="paralleltestrunner.hpp">

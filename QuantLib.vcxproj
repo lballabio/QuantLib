@@ -1494,6 +1494,7 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp" />
     <ClInclude Include="ql\pricingengines\asian\turnbullwakemanasianengine.hpp" />
+    <ClInclude Include="ql\pricingengines\bacheliercalculator.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\all.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbarrierengine.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbinarybarrierengine.hpp" />
@@ -2579,6 +2580,7 @@
     <ClCompile Include="ql\pricingengines\asian\mc_discr_geom_av_price.cpp" />
     <ClCompile Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp" />
+    <ClCompile Include="ql\pricingengines\bacheliercalculator.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticbarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticbinarybarrierengine.cpp" />
     <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.cpp" />
