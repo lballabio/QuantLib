@@ -34,11 +34,12 @@ namespace QuantLib {
         const Array fundingTimes,
         const Array fundingRates,
         const Array interestRateDiffs,
-        DiscountingPerpetualFuturesEngine::InterpolationType fundingInterpType)
+        const DiscountingPerpetualFuturesEngine::InterpolationType fundingInterpType,
+        const Real maxT)
     : domesticDiscountCurve_(domesticDiscountCurve),
       foreignDiscountCurve_(foreignDiscountCurve), assetSpot_(assetSpot),
       fundingTimes_(fundingTimes), fundingRates_(fundingRates),
-      interestRateDiffs_(interestRateDiffs), fundingInterpType_(fundingInterpType), maxT_(60.) {
+      interestRateDiffs_(interestRateDiffs), fundingInterpType_(fundingInterpType), maxT_(maxT) {
         registerWith(domesticDiscountCurve_);
         registerWith(foreignDiscountCurve_);
         registerWith(assetSpot_);
@@ -46,7 +47,7 @@ namespace QuantLib {
         QL_REQUIRE(fundingRates_.size() > 0, "fundingRates is empty");
         QL_REQUIRE(interestRateDiffs_.size() > 0, "interestRateDiffs is empty");
         QL_REQUIRE(fundingTimes_.size() == fundingRates_.size(),
-                   "fundingTimes and fundimgRates must have the same size.");
+                   "fundingTimes and fundingRates must have the same size.");
         QL_REQUIRE(fundingTimes_.size() == interestRateDiffs_.size(),
                    "fundingTimes and interestRateDiffs must have the same size.");
     }
@@ -83,7 +84,7 @@ namespace QuantLib {
             DiscountingPerpetualFuturesEngine::selectInterpolation(fundingTimes_, fundingRates_);
         fundingRateInterp.enableExtrapolation();
         QL_REQUIRE(fundingRateInterp(fundingRateInterp.xMax()) > 0,
-                   "fundingRate at max time is nagative. Because the last funding rate is "
+                   "fundingRate at max time is negative. Because the last funding rate is "
                    "flatly extrapolated, integral diverges.");
         Interpolation interestRateDiffInterp =
             DiscountingPerpetualFuturesEngine::selectInterpolation(fundingTimes_,
@@ -144,7 +145,7 @@ namespace QuantLib {
                 interestRateDiffGrid[i] = interestRateDiffInterp(time);
             }
             
-            if (arguments_.fundingType == PerpetualFutures::AHJ_alt) {
+            if (arguments_.fundingType == PerpetualFutures::FundingWithCurrentSpot) {
                 Real ratio = 1.;
                 Size i;
                 for (i = 0; i < timeGrid.size() - 1; ++i) {
@@ -180,9 +181,11 @@ namespace QuantLib {
             Real productIRDiffLast = productIRDiff(iLast);
             Real fundingRateGridLast = fundingRateGrid[iLast];
             Real interestRateDiffGridLast = interestRateDiffGrid[iLast];
-            Real dt = 1.e-4;
-            Real domRateLast = (log(effDomCurve->discount(timeLast)) - log(effDomCurve->discount(timeLast + dt))) / dt;
-            Real forRateLast = (log(effForCurve->discount(timeLast)) - log(effForCurve->discount(timeLast + dt))) / dt;
+
+            Real domRateLast =
+                effDomCurve->forwardRate(timeLast, timeLast, Continuous, NoFrequency).rate();
+            Real forRateLast =
+                effForCurve->forwardRate(timeLast, timeLast, Continuous, NoFrequency).rate();
 
             // for t > maxT_, assume flat extrapolaiton on all rates
             Real lastTerm = productIRDiffLast
@@ -198,7 +201,7 @@ namespace QuantLib {
             // continuous-time case
             TrapezoidIntegral<Default> integrator(1.e-6, 30);
             Real fundingRateXMax = fundingRateInterp.xMax();
-            auto expIRDiff = [fundingRateInterp, integrator, fundingRateXMax](Real s) {
+            auto expIRDiff = [&fundingRateInterp, &integrator, fundingRateXMax](Real s) {
                 if (s < fundingRateXMax) {
                     return exp(-integrator(fundingRateInterp, 0., s));
                 } else {
@@ -218,9 +221,10 @@ namespace QuantLib {
             Real fundingRateLast = fundingRateInterp(maxT_);
             Real interestRateDiffLast = interestRateDiffInterp(maxT_);
             Real expIRDiff_last = expIRDiff(maxT_);
-            Real dt = 1.e-4;
-            Real domRateLast = (log(effDomCurve->discount(maxT_)) - log(effDomCurve->discount(maxT_ + dt))) / dt;
-            Real forRateLast = (log(effForCurve->discount(maxT_)) - log(effForCurve->discount(maxT_ + dt))) /dt;
+            Real domRateLast =
+                effDomCurve->forwardRate(maxT_, maxT_, Continuous, NoFrequency).rate();
+            Real forRateLast =
+                effForCurve->forwardRate(maxT_, maxT_, Continuous, NoFrequency).rate();
             Real ratio = fundingRateLast + forRateLast - domRateLast;
             factor += (fundingRateLast - interestRateDiffLast) * expIRDiff_last *
                       effForCurve->discount(maxT_) / effDomCurve->discount(maxT_) / ratio;

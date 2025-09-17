@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_SUITE(PerpetualFuturesTests)
                << "    risk-free rate:                  " << r << "\n"                            \
                << "    asset yield:                     " << q << "\n"                            \
                << "    funding rate:                    " << k << "\n"                            \
-               << "    interest rate diffierential:     " << iDiff << "\n"                       \
+               << "    interest rate differential:      " << iDiff << "\n"                       \
                << "    funding frequency:               " << fundingFreq << "\n"                       \
                << "    reference date:                  " << today << "\n"                                  \
                << "    expected   " << greekName << ": " << expected << "\n"                 \
@@ -69,14 +69,14 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
 
     PerpetualFuturesData values[] = {
         // Discrete time
-        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
-        {PerpetualFutures::Linear,  PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
-        {PerpetualFutures::Inverse, PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
-        {PerpetualFutures::Inverse, PerpetualFutures::AHJ_alt, Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
-        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Linear,  PerpetualFutures::FundingWithPreviousSpot,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Linear,  PerpetualFutures::FundingWithCurrentSpot,      Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Inverse, PerpetualFutures::FundingWithPreviousSpot,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Inverse, PerpetualFutures::FundingWithCurrentSpot,      Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
+        {PerpetualFutures::Linear,  PerpetualFutures::FundingWithPreviousSpot,     Period(3, Months), 10000., 0.04, 0.02, 0.01, 0.005, 1.e-6},
         // Continuous time
-        {PerpetualFutures::Linear,  PerpetualFutures::AHJ,     Period(0, Months), 10000., 0.04, 0.02, 0.2,  0.005, 1.e-6},
-        {PerpetualFutures::Inverse, PerpetualFutures::AHJ,     Period(0, Months), 10000., 0.04, 0.02, 0.2,  0.005, 1.e-6},
+        {PerpetualFutures::Linear,  PerpetualFutures::FundingWithPreviousSpot,     Period(0, Months), 10000., 0.04, 0.02, 0.2,  0.005, 1.e-6},
+        {PerpetualFutures::Inverse, PerpetualFutures::FundingWithPreviousSpot,     Period(0, Months), 10000., 0.04, 0.02, 0.2,  0.005, 1.e-6},
     };
 
     DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         PerpetualFutures trade(value.payoffType, value.fundingType, value.fundingFreq, cal, dc);
         Handle<YieldTermStructure> domCurve(flatRate(today, value.r, dc));
         Handle<YieldTermStructure> forCurve(flatRate(today, value.q, dc));
-        Handle<Quote> spot(ext::shared_ptr<SimpleQuote>(new SimpleQuote(value.s)));
+        Handle<Quote> spot(ext::make_shared<SimpleQuote>(value.s));
         Array fundingTimes(1, 0.), fundingRates(1, value.k), interestRateDiffs(1, value.iDiff);
         ext::shared_ptr<PricingEngine> engine(new DiscountingPerpetualFuturesEngine(
             domCurve, forCurve, spot, fundingTimes, fundingRates, interestRateDiffs));
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
                 dt = (Real)value.fundingFreq.length() / 12.;
                 break;
             case Weeks:
-                dt = (Real)value.fundingFreq.length() / 365. * 7.;
+                dt = (Real)value.fundingFreq.length() * 7. / 365.;
                 break;
             case Days:
                 dt = (Real)value.fundingFreq.length() / 365.;
@@ -128,25 +128,25 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         // Discrete time
         if (value.fundingFreq.length() > 0) {
             if (value.payoffType == PerpetualFutures::Linear) {
-                if (value.fundingType == PerpetualFutures::AHJ) {
+                if (value.fundingType == PerpetualFutures::FundingWithPreviousSpot) {
                     // Equation (12) in the above paper
                     expected =
                         value.s * (value.k - value.iDiff) * exp(value.q * dt) /
                         (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.q * dt));
-                } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                } else if (value.fundingType == PerpetualFutures::FundingWithCurrentSpot) {
                     // at the end of "3 Perpetual futures pricing" in the above paper
                     expected =
                         value.s * (value.k - value.iDiff) * exp(value.r * dt) /
                         (exp(value.q * dt) - exp(value.r * dt) + value.k * exp(value.r * dt));
                 }
             } else if (value.payoffType == PerpetualFutures::Inverse) {
-                if (value.fundingType == PerpetualFutures::AHJ) {
-                    // "Prorpsition 2" in the above paper
+                if (value.fundingType == PerpetualFutures::FundingWithPreviousSpot) {
+                    // "Proposition 2" in the above paper
                     expected =
                         value.s *
                         (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.r * dt)) /
                         (value.k - value.iDiff) / exp(value.r * dt);
-                } else if (value.fundingType == PerpetualFutures::AHJ_alt) {
+                } else if (value.fundingType == PerpetualFutures::FundingWithCurrentSpot) {
                     expected =
                         value.s *
                         (exp(value.r * dt) - exp(value.q * dt) + value.k * exp(value.q * dt)) /
@@ -156,10 +156,10 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         } else {
             // Continuous time
             if (value.payoffType == PerpetualFutures::Linear) {
-                // "Prorpsition 3" in the above paper
+                // "Proposition 3" in the above paper
                 expected = value.s * (value.k - value.iDiff) / (value.q - value.r + value.k);
             } else if (value.payoffType == PerpetualFutures::Inverse) {
-                // "Prorpsition 4" in the above paper
+                // "Proposition 4" in the above paper
                 expected = value.s * (value.r - value.q + value.k) / (value.k - value.iDiff);
             }
         }

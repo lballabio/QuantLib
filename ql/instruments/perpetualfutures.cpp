@@ -56,9 +56,9 @@ namespace QuantLib {
                 QL_FAIL("unknown payoff type");
         }
         switch (fundingType) {
-            case PerpetualFutures::AHJ:
+            case PerpetualFutures::FundingWithPreviousSpot:
                 break;
-            case PerpetualFutures::AHJ_alt:
+            case PerpetualFutures::FundingWithCurrentSpot:
                 break;
             default:
                 QL_FAIL("unknown funding type");
@@ -71,21 +71,23 @@ namespace QuantLib {
                 return out << "Linear";
             case PerpetualFutures::Inverse:
                 return out << "Inverse";
+            case PerpetualFutures::Quanto:
+                return out << "Quanto";
             default:
-                QL_FAIL("unknown PerpetualFutures::PayoffType(" << Integer(type) << ")");
+                QL_FAIL("unknown PerpetualFutures::PayoffType(" << int(type) << ")");
         }
-    };
+    }
 
     std::ostream& operator<<(std::ostream& out, PerpetualFutures::FundingType type) {
         switch (type) {
-            case PerpetualFutures::AHJ:
-                return out << "AHJ";
-            case PerpetualFutures::AHJ_alt:
-                return out << "AHJ_alt";
+            case PerpetualFutures::FundingWithPreviousSpot:
+                return out << "FundingWithPreviousSpot";
+            case PerpetualFutures::FundingWithCurrentSpot:
+                return out << "FundingWithCurrentSpot";
             default:
-                QL_FAIL("unknown PerpetualFutures::FundingType(" << Integer(type) << ")");
+                QL_FAIL("unknown PerpetualFutures::FundingType(" << int(type) << ")");
         }
-    };
+    }
 
 }
 

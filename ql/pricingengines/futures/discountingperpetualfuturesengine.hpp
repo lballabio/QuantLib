@@ -33,9 +33,9 @@
 
 namespace QuantLib {
 
-    //! Discounting engine for swaps
-    /*! This engine discounts future swap cashflows to the reference
-        date of the discount curve.
+    //! Discounting engine for perpetual futures
+    /*! This engine discounts perpetual futures cashflows
+        to the reference date.
     */
     class DiscountingPerpetualFuturesEngine : public PerpetualFutures::engine {
       public:
@@ -47,22 +47,23 @@ namespace QuantLib {
             const Array fundingTimes,
             const Array fundingRates,
             const Array interestRateDiffs,
-            InterpolationType fundingInterpType = PiecewiseConstant);
+            const InterpolationType fundingInterpType = PiecewiseConstant,
+            const Real maxT_ = 60.);
         void calculate() const override;
-        Handle<YieldTermStructure> domsticDiscountCurve() const { return domesticDiscountCurve_; }
+        Handle<YieldTermStructure> domesticDiscountCurve() const { return domesticDiscountCurve_; }
         Handle<YieldTermStructure> foreignDiscountCurve() const { return foreignDiscountCurve_; }
         Handle<Quote> assetSpot() const { return assetSpot_; }
-        Array fundingTimes() const { return fundingTimes_; }
-        Array fundingRates() const { return fundingRates_; }
-        Array interestRateDiffs() const { return interestRateDiffs_; }
+        const Array& fundingTimes() const { return fundingTimes_; }
+        const Array& fundingRates() const { return fundingRates_; }
+        const Array& interestRateDiffs() const { return interestRateDiffs_; }
 
       private:
         Interpolation selectInterpolation(const Array& times, const Array& values) const;
         const Handle<YieldTermStructure> domesticDiscountCurve_, foreignDiscountCurve_;
         const Handle<Quote> assetSpot_;
         const Array fundingTimes_, fundingRates_, interestRateDiffs_;
-        InterpolationType fundingInterpType_;
-        Real maxT_;
+        const InterpolationType fundingInterpType_;
+        const Real maxT_;
     };
 }
 
