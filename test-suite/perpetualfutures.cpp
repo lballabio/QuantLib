@@ -65,7 +65,7 @@ struct PerpetualFuturesData {
 
 BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
 
-    BOOST_TEST_MESSAGE("Testing perpetual futures value aginast analytic form for constant parameters...");
+    BOOST_TEST_MESSAGE("Testing perpetual futures value against analytic form for constant parameters...");
 
     PerpetualFuturesData values[] = {
         // Discrete time

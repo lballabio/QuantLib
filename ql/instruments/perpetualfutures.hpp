@@ -39,6 +39,7 @@ namespace QuantLib {
     /*! PayoffType is:
         - Linear: underlying is FOR/DOM pair and margin and settlement are done in DOM;
         - Inverse: underlying is FOR/DOM pair and margin and settlement are done in FOR;
+        - Quanto: underlying is FOR/DOM pair and margin and settlement are done in Quanto currency;
 
         FundingType is:
         - FundingWithPreviousSpot: (cashflow at day t+1) = f_t+1 - f_t - fr_t * (f_t - x_t) - i_diff_t * x_t;

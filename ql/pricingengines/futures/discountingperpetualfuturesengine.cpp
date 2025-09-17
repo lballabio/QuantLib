@@ -187,7 +187,7 @@ namespace QuantLib {
             Real forRateLast =
                 effForCurve->forwardRate(timeLast, timeLast, Continuous, NoFrequency).rate();
 
-            // for t > maxT_, assume flat extrapolaiton on all rates
+            // for t > maxT_, assume flat extrapolation on all rates
             Real lastTerm = productIRDiffLast
                              * (fundingRateGridLast - interestRateDiffGridLast)
                              * effForCurve->discount(timeLast) / effDomCurve->discount(timeLast);
