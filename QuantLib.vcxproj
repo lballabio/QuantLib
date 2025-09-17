@@ -947,6 +947,7 @@
     <ClInclude Include="ql\instruments\overnightindexfuture.hpp" />
     <ClInclude Include="ql\instruments\partialtimebarrieroption.hpp" />
     <ClInclude Include="ql\instruments\payoffs.hpp" />
+    <ClInclude Include="ql\instruments\perpetualfutures.hpp" />
     <ClInclude Include="ql\instruments\quantobarrieroption.hpp" />
     <ClInclude Include="ql\instruments\quantoforwardvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\quantovanillaoption.hpp" />
@@ -1568,6 +1569,8 @@
     <ClInclude Include="ql\pricingengines\forward\mcforwardvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\mcvarianceswapengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\replicatingvarianceswapengine.hpp" />
+    <ClInclude Include="ql\pricingengines\futures\all.hpp" />
+    <ClInclude Include="ql\pricingengines\futures\discountingperpetualfuturesengine.hpp" />
     <ClInclude Include="ql\pricingengines\genericmodelengine.hpp" />
     <ClInclude Include="ql\pricingengines\greeks.hpp" />
     <ClInclude Include="ql\pricingengines\inflation\all.hpp" />
@@ -2225,6 +2228,7 @@
     <ClCompile Include="ql\instruments\overnightindexfuture.cpp" />
     <ClCompile Include="ql\instruments\partialtimebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\payoffs.cpp" />
+    <ClCompile Include="ql\instruments\perpetualfutures.cpp" />
     <ClCompile Include="ql\instruments\quantobarrieroption.cpp" />
     <ClCompile Include="ql\instruments\quantoforwardvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\quantovanillaoption.cpp" />
@@ -2639,6 +2643,7 @@
     <ClCompile Include="ql\pricingengines\exotic\analyticwriterextensibleoptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp" />
+    <ClCompile Include="ql\pricingengines\futures\discountingperpetualfuturesengine.cpp" />
     <ClCompile Include="ql\pricingengines\greeks.cpp" />
     <ClCompile Include="ql\pricingengines\inflation\inflationcapfloorengines.cpp" />
     <ClCompile Include="ql\pricingengines\lookback\analyticcontinuousfixedlookback.cpp" />

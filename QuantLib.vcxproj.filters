@@ -340,6 +340,9 @@
     <Filter Include="experimental\asian">
       <UniqueIdentifier>{0abb3851-b409-4ea6-8e55-120d00a9fcdb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pricingengines\futures">
+      <UniqueIdentifier>{ac3d075b-c62b-4d89-a091-2f66a70b33d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ql\methods\all.hpp">
@@ -4521,6 +4524,15 @@
     <ClInclude Include="ql\pricingengines\basket\vectorbsmprocessextractor.hpp">
       <Filter>pricingengines\basket</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\perpetualfutures.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\futures\discountingperpetualfuturesengine.hpp">
+      <Filter>pricingengines\futures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\futures\all.hpp">
+      <Filter>pricingengines\futures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\bacheliercalculator.hpp">
       <Filter>pricingengines</Filter>
     </ClInclude>
@@ -7323,6 +7335,12 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\basket\vectorbsmprocessextractor.cpp">
       <Filter>pricingengines\basket</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\perpetualfutures.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\futures\discountingperpetualfuturesengine.cpp">
+      <Filter>pricingengines\futures</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bacheliercalculator.cpp">
       <Filter>pricingengines</Filter>

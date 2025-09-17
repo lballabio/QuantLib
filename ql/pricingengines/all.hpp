@@ -23,6 +23,7 @@
 #include <ql/pricingengines/credit/all.hpp>
 #include <ql/pricingengines/exotic/all.hpp>
 #include <ql/pricingengines/forward/all.hpp>
+#include <ql/pricingengines/futures/all.hpp>
 #include <ql/pricingengines/inflation/all.hpp>
 #include <ql/pricingengines/lookback/all.hpp>
 #include <ql/pricingengines/quanto/all.hpp>
