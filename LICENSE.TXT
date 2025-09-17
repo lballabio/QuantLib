@@ -173,6 +173,7 @@ Copyright (C) 2024 Jongbong An
 
 Copyright (C) 2025 Paolo D'Elia
 Copyright (C) 2025 Sotirios Papathanasopoulos
+Copyright (C) 2025 Test User
 Copyright (C) 2025 William Day
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
