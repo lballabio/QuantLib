@@ -217,6 +217,20 @@ namespace QuantLib {
                 || (d == 31 && m == October))
                 return false;
         }
+        
+        // https://api2.sgx.com/sites/default/files/2025-07/DT%20Trading%20Calendar%202025%20%28updated%2031%20Jul%202025%29.pdf
+        if (y == 2025)
+        {
+            if (// Chinese New Year
+                ((d == 29 || d == 30) && m == January)
+                // Hari Raya Puasa
+                || (d == 31 && m == March)
+                // Vesak Poya Day
+                || (d == 12 && m == May)
+                // Deepavali
+                || (d == 20 && m == October))
+                return false;
+        }
         return true;
     }
 
