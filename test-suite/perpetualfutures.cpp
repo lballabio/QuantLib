@@ -35,19 +35,19 @@ BOOST_AUTO_TEST_SUITE(PerpetualFuturesTests)
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoffType, fundingType, fundingFreq, s, r, q, k, iDiff, today, \
-                       expected, calculated, relError, tolerance)                               \
-    BOOST_FAIL(payoffType                                                                    \
-               << " perpetual futures with " << fundingType << " funding type:\n"  \
-               << "    spot value:                      " << s << "\n"                                      \
-               << "    risk-free rate:                  " << r << "\n"                            \
-               << "    asset yield:                     " << q << "\n"                            \
-               << "    funding rate:                    " << k << "\n"                            \
-               << "    interest rate differential:      " << iDiff << "\n"                       \
-               << "    funding frequency:               " << fundingFreq << "\n"                       \
-               << "    reference date:                  " << today << "\n"                                  \
-               << "    expected   " << greekName << ": " << expected << "\n"                 \
-               << "    calculated " << greekName << ": " << calculated << "\n"               \
-               << "    rel error: " << relError << "\n"                                  \
+                       expected, calculated, relError, tolerance) \
+    BOOST_FAIL(payoffType \
+               << " perpetual futures with " << fundingType << " funding type:\n" \
+               << "    spot value:                      " << s << "\n" \
+               << "    risk-free rate:                  " << r << "\n" \
+               << "    asset yield:                     " << q << "\n" \
+               << "    funding rate:                    " << k << "\n" \
+               << "    interest rate differential:      " << iDiff << "\n" \
+               << "    funding frequency:               " << fundingFreq << "\n" \
+               << "    reference date:                  " << today << "\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n" \
+               << "    rel error: " << relError << "\n" \
                << "    tolerance: " << tolerance << "\n");
 
 struct PerpetualFuturesData {
