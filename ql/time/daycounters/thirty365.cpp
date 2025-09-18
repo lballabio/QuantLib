@@ -27,7 +27,7 @@ namespace QuantLib {
         Integer mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
 
-        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
+        return 365*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
 
     Thirty365::Thirty365()
