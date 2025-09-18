@@ -48,7 +48,7 @@ namespace QuantLib {
             const Array fundingRates,
             const Array interestRateDiffs,
             const InterpolationType fundingInterpType = PiecewiseConstant,
-            const Real maxT_ = 60.);
+            const Real maxT = 60.);
         void calculate() const override;
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domesticDiscountCurve_; }
         Handle<YieldTermStructure> foreignDiscountCurve() const { return foreignDiscountCurve_; }
