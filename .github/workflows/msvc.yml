@@ -1,5 +1,9 @@
 name: Windows build
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   msbuild:
     runs-on: windows-2022

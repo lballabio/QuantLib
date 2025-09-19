@@ -1,5 +1,9 @@
 name: Compile single headers
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   headers:
     runs-on: ubuntu-latest

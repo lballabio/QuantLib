@@ -1,5 +1,9 @@
 name: Check CMake file list and VC++ projects
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   filelists:
     runs-on: ubuntu-latest

@@ -1,5 +1,9 @@
 name: Check test times
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   check-test-times:
     runs-on: ubuntu-latest

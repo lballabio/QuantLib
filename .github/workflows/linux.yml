@@ -1,5 +1,9 @@
 name: Linux build
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   build:
     runs-on: ubuntu-latest
