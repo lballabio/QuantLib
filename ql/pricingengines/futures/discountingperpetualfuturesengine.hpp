@@ -44,11 +44,11 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& domesticDiscountCurve,
             const Handle<YieldTermStructure>& foreignDiscountCurve,
             const Handle<Quote>& assetSpot,
-            const Array fundingTimes,
-            const Array fundingRates,
-            const Array interestRateDiffs,
-            const InterpolationType fundingInterpType = PiecewiseConstant,
-            const Real maxT = 60.);
+            Array& fundingTimes,
+            Array& fundingRates,
+            Array& interestRateDiffs,
+            InterpolationType fundingInterpType = PiecewiseConstant,
+            Real maxT = 60.);
         void calculate() const override;
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domesticDiscountCurve_; }
         Handle<YieldTermStructure> foreignDiscountCurve() const { return foreignDiscountCurve_; }
