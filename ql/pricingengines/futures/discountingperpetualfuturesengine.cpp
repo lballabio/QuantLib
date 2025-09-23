@@ -31,9 +31,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& domesticDiscountCurve,
         const Handle<YieldTermStructure>& foreignDiscountCurve,
         const Handle<Quote>& assetSpot,
-        const Array fundingTimes,
-        const Array fundingRates,
-        const Array interestRateDiffs,
+        const std::vector<Time>& fundingTimes,
+        const std::vector<Rate>& fundingRates,
+        const std::vector<Spread>& interestRateDiffs,
         const DiscountingPerpetualFuturesEngine::InterpolationType fundingInterpType,
         const Real maxT)
     : domesticDiscountCurve_(domesticDiscountCurve),
@@ -137,8 +137,8 @@ namespace QuantLib {
                         QL_FAIL("Unknown unit in fundingFrequency");
                 }
             }
-            Array fundingRateGrid(timeGrid.size());
-            Array interestRateDiffGrid(timeGrid.size());
+            std::vector<Rate> fundingRateGrid(timeGrid.size());
+            std::vector<Spread> interestRateDiffGrid(timeGrid.size());
             for (Size i = 0; i < timeGrid.size(); ++i) {
                 Real time = timeGrid[i];
                 fundingRateGrid[i] = fundingRateInterp(time);
@@ -238,8 +238,8 @@ namespace QuantLib {
     }
 
     Interpolation
-    DiscountingPerpetualFuturesEngine::selectInterpolation(const Array& times,
-                                                           const Array& values) const {
+    DiscountingPerpetualFuturesEngine::selectInterpolation(const std::vector<Time>& times,
+                                                           const std::vector<Real>& values) const {
         Interpolation interpolator;
         switch (fundingInterpType_) {
             case Linear:

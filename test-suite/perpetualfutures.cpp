@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(testPerpetualFuturesValues) {
         Handle<YieldTermStructure> domCurve(flatRate(today, value.r, dc));
         Handle<YieldTermStructure> forCurve(flatRate(today, value.q, dc));
         Handle<Quote> spot(ext::make_shared<SimpleQuote>(value.s));
-        Array fundingTimes(1, 0.), fundingRates(1, value.k), interestRateDiffs(1, value.iDiff);
+        std::vector<Real> fundingTimes = { 0.0 }, fundingRates = { value.k }, interestRateDiffs = { value.iDiff };
         ext::shared_ptr<PricingEngine> engine(new DiscountingPerpetualFuturesEngine(
             domCurve, forCurve, spot, fundingTimes, fundingRates, interestRateDiffs));
         trade.setPricingEngine(engine);

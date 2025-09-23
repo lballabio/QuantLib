@@ -26,7 +26,6 @@
 
 #include <ql/instruments/perpetualfutures.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/math/array.hpp>
 #include <ql/handle.hpp>
 #include <ql/optional.hpp>
 #include <ql/math/interpolation.hpp>
@@ -44,27 +43,30 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& domesticDiscountCurve,
             const Handle<YieldTermStructure>& foreignDiscountCurve,
             const Handle<Quote>& assetSpot,
-            const Array fundingTimes,
-            const Array fundingRates,
-            const Array interestRateDiffs,
+            const std::vector<Time>& fundingTimes,
+            const std::vector<Rate>& fundingRates,
+            const std::vector<Spread>& interestRateDiffs,
             const InterpolationType fundingInterpType = PiecewiseConstant,
             const Real maxT = 60.);
         void calculate() const override;
         Handle<YieldTermStructure> domesticDiscountCurve() const { return domesticDiscountCurve_; }
         Handle<YieldTermStructure> foreignDiscountCurve() const { return foreignDiscountCurve_; }
         Handle<Quote> assetSpot() const { return assetSpot_; }
-        const Array& fundingTimes() const { return fundingTimes_; }
-        const Array& fundingRates() const { return fundingRates_; }
-        const Array& interestRateDiffs() const { return interestRateDiffs_; }
+        const std::vector<Time>& fundingTimes() const { return fundingTimes_; }
+        const std::vector<Rate>& fundingRates() const { return fundingRates_; }
+        const std::vector<Spread>& interestRateDiffs() const { return interestRateDiffs_; }
 
       private:
-        Interpolation selectInterpolation(const Array& times, const Array& values) const;
-        const Handle<YieldTermStructure> domesticDiscountCurve_, foreignDiscountCurve_;
-        const Handle<Quote> assetSpot_;
-        const Array fundingTimes_, fundingRates_, interestRateDiffs_;
-        const InterpolationType fundingInterpType_;
-        const Real maxT_;
+        Interpolation selectInterpolation(const std::vector<Time>& times, const std::vector<Real>& values) const;
+        Handle<YieldTermStructure> domesticDiscountCurve_, foreignDiscountCurve_;
+        Handle<Quote> assetSpot_;
+        std::vector<Time> fundingTimes_;
+        std::vector<Rate> fundingRates_;
+        std::vector<Spread> interestRateDiffs_;
+        InterpolationType fundingInterpType_;
+        Real maxT_;
     };
+
 }
 
 #endif
