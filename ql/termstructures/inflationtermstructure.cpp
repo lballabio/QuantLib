@@ -298,38 +298,19 @@ namespace QuantLib {
 
     std::pair<Date,Date> inflationPeriod(const Date& d,
                                          Frequency frequency) {
-
         Month month = d.month();
         Year year = d.year();
 
         Month startMonth, endMonth;
         switch (frequency) {
           case Annual:
-            startMonth = January;
-            endMonth = December;
-            break;
           case Semiannual:
-            if (month <= June) {
-                startMonth = January;
-                endMonth = June;
-            } else {
-                startMonth = July;
-                endMonth = December;
-            }
-            break;
+          case EveryFourthMonth:
           case Quarterly:
-            if (month <= March) {
-                startMonth = January;
-                endMonth = March;
-            } else if (month <= June) {
-                startMonth = April;
-                endMonth = June;
-            } else if (month <= September) {
-                startMonth = July;
-                endMonth = September;
-            } else {
-                startMonth = October;
-                endMonth = December;
+          case Bimonthly: {
+                int nMonths = 12 / frequency;
+                startMonth = Month(month - (month - 1) % nMonths);
+                endMonth = Month(startMonth + nMonths - 1);
             }
             break;
           case Monthly:
@@ -340,10 +321,7 @@ namespace QuantLib {
             break;
         };
 
-        Date startDate = Date(1, startMonth, year);
-        Date endDate = Date::endOfMonth(Date(1, endMonth, year));
-
-        return std::make_pair(startDate,endDate);
+        return {Date(1, startMonth, year), Date::endOfMonth(Date(1, endMonth, year))};
     }
 
 
