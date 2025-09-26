@@ -74,12 +74,6 @@ namespace QuantLib {
         // McSimulation implementation
         TimeGrid timeGrid() const override;
         ext::shared_ptr<path_generator_type> pathGenerator() const override {
-
-            ext::shared_ptr<BasketPayoff> payoff =
-                ext::dynamic_pointer_cast<BasketPayoff>(
-                                                          arguments_.payoff);
-            QL_REQUIRE(payoff, "non-basket payoff given");
-
             Size numAssets = processes_->size();
 
             TimeGrid grid = timeGrid();
