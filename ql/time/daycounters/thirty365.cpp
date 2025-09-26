@@ -27,6 +27,11 @@ namespace QuantLib {
         Integer mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
 
+        // date adjustment rules as in ISO 20022
+        // see https://www.iso20022.org/15022/uhb/mt565-16-field-22f.htm
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31) { dd2 = 30; }
+
         return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
 
