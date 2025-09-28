@@ -201,7 +201,7 @@ namespace QuantLib {
             // continuous-time case
             TrapezoidIntegral<Default> integrator(1.e-6, 30);
             Real fundingRateXMax = fundingRateInterp.xMax();
-            auto expIRDiff = [&fundingRateInterp, &integrator, fundingRateXMax](Real s) {
+            auto expIRDiff = [&fundingRateInterp, &integrator, fundingRateXMax](Real s) -> Real {
                 if (s < fundingRateXMax) {
                     return exp(-integrator(fundingRateInterp, 0., s));
                 } else {
@@ -211,7 +211,7 @@ namespace QuantLib {
             };
 
             auto timeIntegrand = [fundingRateInterp, interestRateDiffInterp, integrator, expIRDiff,
-                                  effDomCurve, effForCurve](Real s) {
+                                  effDomCurve, effForCurve](Real s) -> Real {
                 return (fundingRateInterp(s) - interestRateDiffInterp(s)) * expIRDiff(s)
                        * effForCurve->discount(s) / effDomCurve->discount(s);
             };
