@@ -43,9 +43,9 @@ namespace QuantLib {
         registerWith(domesticDiscountCurve_);
         registerWith(foreignDiscountCurve_);
         registerWith(assetSpot_);
-        QL_REQUIRE(fundingTimes_.size() > 0, "fundingTimes is empty");
-        QL_REQUIRE(fundingRates_.size() > 0, "fundingRates is empty");
-        QL_REQUIRE(interestRateDiffs_.size() > 0, "interestRateDiffs is empty");
+        QL_REQUIRE(!fundingTimes_.empty(), "fundingTimes is empty");
+        QL_REQUIRE(!fundingRates_.empty(), "fundingRates is empty");
+        QL_REQUIRE(!interestRateDiffs_.empty(), "interestRateDiffs is empty");
         QL_REQUIRE(fundingTimes_.size() == fundingRates_.size(),
                    "fundingTimes and fundingRates must have the same size.");
         QL_REQUIRE(fundingTimes_.size() == interestRateDiffs_.size(),

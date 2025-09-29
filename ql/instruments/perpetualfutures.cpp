@@ -19,6 +19,7 @@
 
 #include <ql/instruments/perpetualfutures.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -28,7 +29,7 @@ namespace QuantLib {
         Period fundingFrequency,
         Calendar cal,
         DayCounter dc) : payoffType_(payoffType), fundingType_(fundingType), fundingFrequency_(fundingFrequency),
-        cal_(cal), dc_(dc) {
+        cal_(std::move(cal)), dc_(std::move(dc)) {
     }
 
     void PerpetualFutures::setupArguments(PricingEngine::arguments* args) const {
