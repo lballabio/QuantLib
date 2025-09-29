@@ -311,8 +311,10 @@ namespace QuantLib {
             auto bits_set = bsetMask.count();
             auto increaseMask = [&]() {
                 for (Size i = 0; i < bsetMask.size(); i++) {
+                    // NOLINTBEGIN(modernize-use-bool-literals)
                     if (bsetMask[i]) {bsetMask[i] = 0; bits_set--;}
                     else {bsetMask[i] = 1; bits_set++; break;}
+                    // NOLINTEND(modernize-use-bool-literals)
                 }
             };
             for (; mask < limit; mask++) {
