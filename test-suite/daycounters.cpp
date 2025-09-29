@@ -764,23 +764,41 @@ BOOST_AUTO_TEST_CASE(testThirty365) {
 
     BOOST_TEST_MESSAGE("Testing 30/365 day counter...");
 
-    Date d1(17,June,2011), d2(30,December,2012);
+    struct {
+        Date startDate;
+        Date endDate;
+        BigInteger expected;
+    } testCases[] = {
+        {Date(17, June, 2011), Date(30, December, 2012), 553},
+        // month end to month end
+        {Date(31, March, 2025), Date(30, April, 2025), 30},
+        // month end to 6 month ends later
+        {Date(30, September, 2024), Date(31, March, 2025), 180},
+        // no accrual beyond the 30th
+        {Date(30, March, 2025), Date(31, March, 2025), 0}
+    };
+
     DayCounter dayCounter = Thirty365();
+    for (const auto& testCase : testCases) {
+        Date d1 = testCase.startDate;
+        Date d2 = testCase.endDate;
+        BigInteger expectedDays = testCase.expected;
 
-    BigInteger days = dayCounter.dayCount(d1,d2);
-    if (days != 553) {
-        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
-                   << "    calculated: " << days << "\n"
-                   << "    expected:   " << 553);
-    }
+        BigInteger days = dayCounter.dayCount(d1, d2);
+        if (days != expectedDays) {
+            BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                       << "    calculated: " << days << "\n"
+                       << "    expected:   " << expectedDays);
+        }
 
-    Time t = dayCounter.yearFraction(d1,d2);
-    Time expected = 553/365.0;
-    if (std::fabs(t-expected) > 1.0e-12) {
-        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
-                   << std::setprecision(12)
-                   << "    calculated: " << t << "\n"
-                   << "    expected:   " << expected);
+        Time t = dayCounter.yearFraction(d1, d2);
+        Time expectedTime = expectedDays / 365.0;
+        if (std::fabs(t - expectedTime) > 1.0e-12) {
+            BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                       << std::setprecision(12)
+                       << "    calculated: " << t << "\n"
+                       << "    expected:   " << expectedTime);
+        }
     }
 }
 
