@@ -467,12 +467,6 @@ namespace QuantLib {
         typedef typename detail::Int2Type<i>::c_spline c_spline;
         typedef typename detail::Int2Type<i>::c_splint c_splint;
         
-      private:
-        static const std::vector<bool>& getDefaultAe() {
-            static const std::vector<bool> default_ae(20, false);
-            return default_ae;
-        }
-        
       public:
         typedef typename c_splint::argument_type argument_type;
         typedef typename c_splint::result_type result_type;
@@ -483,9 +477,11 @@ namespace QuantLib {
         typedef typename c_splint::data data;
         
         MultiCubicSpline(const SplineGrid& grid, const data_table &y,
-                         const std::vector<bool>& ae = getDefaultAe())
-        : grid_(grid), y_(y), ae_(ae), v_(grid), v1_(grid),
+                         std::vector<bool> ae = {})
+        : grid_(grid), y_(y), ae_(std::move(ae)), v_(grid), v1_(grid),
           v2_(grid), y2_(grid) {
+            if (ae_.empty())
+                ae_ = std::vector<bool>(grid.size(), false);
             set_shared_increments();
             c_spline(d_, d2_, y_, y2_, v_);
         }
@@ -502,7 +498,7 @@ namespace QuantLib {
       private:
         const SplineGrid &grid_;
         const data_table &y_;
-        const std::vector<bool> &ae_;
+        std::vector<bool> ae_;
         mutable return_type a_, b_, a2_, b2_;
         mutable output_data v_, v1_, v2_;
         mutable result_type res_;
@@ -553,8 +549,7 @@ namespace QuantLib {
             const std::vector<Real> &v = grid_[j];
             if(x[j] < v[0] || x[j] >= v[sz]) {
                 QL_REQUIRE(ae_[j],
-                           "Dimension " << j
-                           << ": extrapolation is not allowed.");
+                           "Dimension " << j << ": extrapolation is not allowed.");
                 a_[j] = 1.0, a2_[j] = b_[j] = b2_[j] = 0.0;
                 k =  x[j] < v[0] ? 0 : sz;
             }
