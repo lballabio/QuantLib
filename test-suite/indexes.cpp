@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(testCustomIborIndex) {
 }
 
 BOOST_AUTO_TEST_CASE(testCdiIndex) {
-    BOOST_TEST_MESSAGE("Testing Brazil CDI forecastFixing");
+    BOOST_TEST_MESSAGE("Testing Brazil CDI forecastFixing...");
     Date today = Settings::instance().evaluationDate();
     auto flatRate = ext::make_shared<SimpleQuote>(0.05);
     Handle<YieldTermStructure> ts(
