@@ -37,12 +37,58 @@ namespace QuantLib {
 
     class OptionletVolatilityStructure;
 
+    //! Pricer for overnight-indexed floating coupons
+    /*!
+        This is the base pricer class for coupons indexed to an overnight rate.  
+        It defines the common pricing interface and provides the foundation for 
+        more specialized overnight coupon pricers (e.g., compounded, averaged, 
+        capped/floored variants).
+
+        Derived classes should implement the specific logic for computing the 
+        rate and optional adjustments, depending on the compounding or 
+        averaging convention used.
+    */
+    class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+      public:
+
+        explicit OvernightIndexedCouponPricer(Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+                                              const bool effectiveVolatilityInput = false);
+
+        void initialize(const FloatingRateCoupon& coupon) override;
+
+        void setCapletVolatility(
+                            const Handle<OptionletVolatilityStructure>& v =
+                                    Handle<OptionletVolatilityStructure>()) {
+            unregisterWith(capletVol_);
+            capletVol_ = v;
+            registerWith(capletVol_);
+            update();
+        }
+
+        /*! \brief Returns the handle to the optionlet volatility structure used for caplets/floorlets */
+        Handle<OptionletVolatilityStructure> capletVolatility() const {
+            return capletVol_;
+        }
+        
+        void setEffectiveVolatilityInput(const bool effectiveVolatilityInput) {
+            effectiveVolatilityInput_ = effectiveVolatilityInput;
+        }
+
+        /*! \brief Returns true if the volatility input is interpreted as effective volatility */
+        bool effectiveVolatilityInput() const;
+
+      protected:
+        const OvernightIndexedCoupon* coupon_ = nullptr;
+        Handle<OptionletVolatilityStructure> capletVol_;
+        bool effectiveVolatilityInput_ = false;
+    };
+
     //! CompoudAveragedOvernightIndexedCouponPricer pricer
-    class CompoundingOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    class CompoundingOvernightIndexedCouponPricer : virtual public OvernightIndexedCouponPricer {
       public:
         //! \name FloatingRateCoupon interface
         //@{
-        void initialize(const FloatingRateCoupon& coupon) override;
+        //void initialize(const FloatingRateCoupon& coupon) override;
         Rate swapletRate() const override;
         Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
         Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
@@ -55,7 +101,6 @@ namespace QuantLib {
         Rate effectiveIndexFixing() const;
 
       protected:
-        const OvernightIndexedCoupon* coupon_ = nullptr;
         std::tuple<Rate, Spread, Rate> compute(const Date& date) const;
         mutable Real swapletRate_, effectiveSpread_, effectiveIndexFixing_;
     };
@@ -64,7 +109,7 @@ namespace QuantLib {
     Reference: Katsumi Takada 2011, Valuation of Arithmetically Average of
     Fed Funds Rates and Construction of the US Dollar Swap Yield Curve
     */
-    class ArithmeticAveragedOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    class ArithmeticAveragedOvernightIndexedCouponPricer : virtual public OvernightIndexedCouponPricer {
       public:
         explicit ArithmeticAveragedOvernightIndexedCouponPricer(
             Real meanReversion = 0.03,
@@ -76,7 +121,7 @@ namespace QuantLib {
             bool byApprox) // Simplified constructor assuming no convexity correction
         : ArithmeticAveragedOvernightIndexedCouponPricer(0.03, 0.0, byApprox) {}
 
-        void initialize(const FloatingRateCoupon& coupon) override;
+        //void initialize(const FloatingRateCoupon& coupon) override;
         Rate swapletRate() const override;
         Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
         Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
@@ -87,28 +132,17 @@ namespace QuantLib {
       protected:
         Real convAdj1(Time ts, Time te) const;
         Real convAdj2(Time ts, Time te) const;
-        const OvernightIndexedCoupon* coupon_;
         bool byApprox_;
         Real mrs_;
         Real vol_;
     };
 
-    //! capped floored overnight indexed coupon pricer base class
-    class CappedFlooredOvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+    //! capped floored overnight indexed coupon pricer base interface
+    class CappedFlooredOvernightIndexedCouponPricer : virtual public OvernightIndexedCouponPricer {
+    using FloatingRateCouponPricer::capletRate;
+    using FloatingRateCouponPricer::floorletRate;
     public:
-        /*! \brief Constructor
-            \param v Optionlet volatility structure handle
-            \param effectiveVolatilityInput If true, volatility is interpreted as effective volatility
-        */
-        CappedFlooredOvernightIndexedCouponPricer(const Handle<OptionletVolatilityStructure>& v,
-                                                  const bool effectiveVolatilityInput = false);
-        
-        /*! \brief Returns the handle to the optionlet volatility structure used for caplets/floorlets */
-        Handle<OptionletVolatilityStructure> capletVolatility() const;
-        
-        /*! \brief Returns true if the volatility input is interpreted as effective volatility */
-        bool effectiveVolatilityInput() const;
-        
+        void initialize(const FloatingRateCoupon& coupon) override;
         /*! \brief Returns the effective caplet volatility used in the last capletRate() calculation.
             \note Only available after capletRate() was called.
         */
@@ -119,9 +153,10 @@ namespace QuantLib {
         */
         Real effectiveFloorletVolatility() const;
 
+        virtual Rate capletRate(Rate effectiveCap, bool localCapFloor) const;
+        virtual Rate floorletRate(Rate effectiveCap, bool localCapFloor) const;
+
     protected:
-        Handle<OptionletVolatilityStructure> capletVol_;
-        bool effectiveVolatilityInput_;
         mutable Real effectiveCapletVolatility_ = Null<Real>();
         mutable Real effectiveFloorletVolatility_ = Null<Real>();
     };

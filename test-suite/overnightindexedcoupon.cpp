@@ -22,6 +22,7 @@
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
 #include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/indexes/ibor/sofr.hpp>
 #include <ql/settings.hpp>
@@ -160,6 +161,12 @@ struct BlackONPricerVars {
             end, notional, start, end, sofr, 1.0, 0.0, Date(), Date(), dc,
             false, avgMethod, Null<Natural>(), 0, false, 
             false);
+
+        if (avgMethod == RateAveraging::Compound)
+            onCoupon->setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
+        else
+            onCoupon->setPricer(ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>());
+
         return ext::make_shared<CappedFlooredOvernightIndexedCoupon>(onCoupon, cap, floor);
     }
 };

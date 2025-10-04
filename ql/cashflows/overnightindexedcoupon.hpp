@@ -189,6 +189,8 @@ namespace QuantLib {
         bool isCapped() const { return cap_ != Null<Real>(); }
         bool isFloored() const { return floor_ != Null<Real>(); }
 
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override; 
+
         ext::shared_ptr<OvernightIndexedCoupon> underlying() const { return underlying_; }
         bool nakedOption() const { return nakedOption_; }
         bool localCapFloor() const { return localCapFloor_; }
@@ -203,6 +205,7 @@ namespace QuantLib {
         bool localCapFloor_;
         mutable Real effectiveCapletVolatility_;
         mutable Real effectiveFloorletVolatility_;
+        ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer> on_pricer_;
     };
 
     //! helper class building a sequence of overnight coupons

@@ -36,9 +36,13 @@ namespace QuantLib {
     /* The methods that are implemented here to price capped / floored compounded ON coupons are
     highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
     should be revised. */
-    class BlackOvernightIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
+    class BlackOvernightIndexedCouponPricer : public CompoundingOvernightIndexedCouponPricer, 
+                                              public CappedFlooredOvernightIndexedCouponPricer {
     public:
-        using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
+    using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
+        BlackOvernightIndexedCouponPricer(
+                Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+                const bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
         void initialize(const FloatingRateCoupon& coupon) override;
@@ -49,6 +53,8 @@ namespace QuantLib {
         Real floorletPrice(Rate effectiveFloor) const override;
         Rate floorletRate(Rate effectiveFloor) const override;
         //@}
+        Rate capletRate(Rate effectiveCap, bool localCapFloor) const override;
+        Rate floorletRate(Rate effectiveCap, bool localCapFloor) const override;
     private:
         Real optionletRateGlobal(Option::Type optionType, Real effStrike) const;
         Real optionletRateLocal(Option::Type optionType, Real effStrike) const;
@@ -56,17 +62,19 @@ namespace QuantLib {
         Real gearing_;
         ext::shared_ptr<IborIndex> index_;
         Real effectiveIndexFixing_, swapletRate_;
-
-        const CappedFlooredOvernightIndexedCoupon* coupon_;
     };
 
     //! Black averaged overnight coupon pricer
     /* The methods that are implemented here to price capped / floored average ON coupons are
     highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
     should be revised. */
-    class BlackAverageONIndexedCouponPricer : public CappedFlooredOvernightIndexedCouponPricer {
+    class BlackAverageONIndexedCouponPricer : public ArithmeticAveragedOvernightIndexedCouponPricer,
+                                              public CappedFlooredOvernightIndexedCouponPricer {
     public:
-        using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
+    using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
+        BlackAverageONIndexedCouponPricer(
+                Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+                const bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
         void initialize(const FloatingRateCoupon& coupon) override;
@@ -77,6 +85,8 @@ namespace QuantLib {
         Real floorletPrice(Rate effectiveFloor) const override;
         Rate floorletRate(Rate effectiveFloor) const override;
         //@}
+        Rate capletRate(Rate effectiveCap, bool localCapFloor) const override;
+        Rate floorletRate(Rate effectiveCap, bool localCapFloor) const override;
     private:
         Real optionletRateGlobal(Option::Type optionType, Real effStrike) const;
         Real optionletRateLocal(Option::Type optionType, Real effStrike) const;
@@ -84,8 +94,6 @@ namespace QuantLib {
         Real gearing_;
         ext::shared_ptr<IborIndex> index_;
         Real swapletRate_, forwardRate_;
-
-        const CappedFlooredOvernightIndexedCoupon* coupon_;
     };
 
 }

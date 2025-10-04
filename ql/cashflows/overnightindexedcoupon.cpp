@@ -302,22 +302,23 @@ namespace QuantLib {
     }
 
     void CappedFlooredOvernightIndexedCoupon::performCalculations() const {
-        QL_REQUIRE(underlying_->pricer(), "pricer not set");
+        QL_REQUIRE(underlying_->pricer(), "underlying coupon pricer not set");
         Rate swapletRate = nakedOption_ ? 0.0 : underlying_->rate();
+        auto cfONPricer = ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer());
+        QL_REQUIRE(cfONPricer, "coupon pricer not an instance of CappedFlooredOvernightIndexedCouponPricer");
+
         if (floor_ != Null<Real>() || cap_ != Null<Real>())
-            pricer()->initialize(*this);
+            cfONPricer->initialize(*this);
         Rate floorletRate = 0.;
         if (floor_ != Null<Real>())
-            floorletRate = pricer()->floorletRate(effectiveFloor());
+            floorletRate = cfONPricer->floorletRate(effectiveFloor(), localCapFloor());
         Rate capletRate = 0.;
         if (cap_ != Null<Real>())
-            capletRate = (nakedOption_ && floor_ == Null<Real>() ? -1.0 : 1.0) * pricer()->capletRate(effectiveCap());
+            capletRate = (nakedOption_ && floor_ == Null<Real>() ? -1.0 : 1.0) * cfONPricer->capletRate(effectiveCap(), localCapFloor());
         rate_ = swapletRate + floorletRate - capletRate;
-        auto p = QuantLib::ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer());
-        QL_REQUIRE(p, "CappedFlooredOvernightIndexedCoupon::performCalculations(): internal error, could not cast to "
-                    "CappedFlooredOvernightIndexedCouponPricer");
-        effectiveCapletVolatility_ = p->effectiveCapletVolatility();
-        effectiveFloorletVolatility_ = p->effectiveFloorletVolatility();
+
+        effectiveCapletVolatility_ = cfONPricer->effectiveCapletVolatility();
+        effectiveFloorletVolatility_ = cfONPricer->effectiveFloorletVolatility();
     }
 
     Rate CappedFlooredOvernightIndexedCoupon::cap() const { return gearing_ > 0.0 ? cap_ : floor_; }
@@ -397,6 +398,12 @@ namespace QuantLib {
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
+    }
+
+    void CappedFlooredOvernightIndexedCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer){
+        auto p = ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer);
+        QL_REQUIRE(p, "The pricer is required to be an instance of CappedFlooredOvernightIndexedCouponPricer");
+        pricer_ = p;
     }
 
     // OvernightLeg implementation
