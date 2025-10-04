@@ -145,7 +145,7 @@ namespace QuantLib {
     public:
         /*! capped / floored compounded, backward-looking on coupon, local means that the daily rates are capped / floored
           while a global cap / floor is applied to the effective period rate */
-        CappedFlooredOvernightIndexedCoupon(const ext::shared_ptr<OvernightIndexedCoupon>& underlying,
+        explicit CappedFlooredOvernightIndexedCoupon(const ext::shared_ptr<OvernightIndexedCoupon>& underlying,
                                             Real cap = Null<Real>(),
                                             Real floor = Null<Real>(), 
                                             bool nakedOption = false,

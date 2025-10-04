@@ -40,7 +40,7 @@ namespace QuantLib {
                                               public CappedFlooredOvernightIndexedCouponPricer {
     public:
     using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
-        BlackOvernightIndexedCouponPricer(
+        explicit BlackOvernightIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
                 const bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
@@ -72,7 +72,7 @@ namespace QuantLib {
                                               public CappedFlooredOvernightIndexedCouponPricer {
     public:
     using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
-        BlackAverageONIndexedCouponPricer(
+        explicit BlackAverageONIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
                 const bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
