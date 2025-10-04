@@ -27,6 +27,9 @@
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/multipleresetscoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>        /* internal */
 #include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp> /* internal */
 #include <ql/pricingengines/blackformula.hpp>
@@ -249,6 +252,8 @@ namespace QuantLib {
                              public Visitor<CappedFlooredIborCoupon>,
                              public Visitor<CappedFlooredCmsCoupon>,
                              public Visitor<CappedFlooredCmsSpreadCoupon>,
+                             public Visitor<OvernightIndexedCoupon>,
+                             public Visitor<CappedFlooredOvernightIndexedCoupon>,
                              public Visitor<DigitalIborCoupon>,
                              public Visitor<DigitalCmsCoupon>,
                              public Visitor<DigitalCmsSpreadCoupon>,
@@ -266,6 +271,8 @@ namespace QuantLib {
             void visit(CappedFlooredCoupon& c) override;
             void visit(IborCoupon& c) override;
             void visit(CappedFlooredIborCoupon& c) override;
+            void visit(OvernightIndexedCoupon& c) override;
+            void visit(CappedFlooredOvernightIndexedCoupon& c) override;
             void visit(DigitalIborCoupon& c) override;
             void visit(CmsCoupon& c) override;
             void visit(CmsSpreadCoupon& c) override;
@@ -328,6 +335,32 @@ namespace QuantLib {
             QL_REQUIRE(iborCouponPricer,
                        "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
+        }
+
+        void PricerSetter::visit(OvernightIndexedCoupon& c) {
+            if (c.averagingMethod() == RateAveraging::Compound) {
+                const ext::shared_ptr<CompoundingOvernightIndexedCouponPricer> overnightCouponPricer =
+                    ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer_);
+                QL_REQUIRE(overnightCouponPricer,
+                       "pricer not compatible with overnight indexed coupon");
+                c.setPricer(overnightCouponPricer);
+            } else {
+                const ext::shared_ptr<ArithmeticAveragedOvernightIndexedCouponPricer> overnightCouponPricer =
+                    ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(pricer_);
+                QL_REQUIRE(overnightCouponPricer,
+                       "pricer not compatible with arithmetic averaged overnight indexed coupon");
+                c.setPricer(overnightCouponPricer);
+            }
+        }
+
+        void PricerSetter::visit(CappedFlooredOvernightIndexedCoupon& c) {
+            const ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer> p =
+                ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer_);
+            // we can set a pricer for the capped floored on coupon or the underlying on coupon
+            if (p)
+                c.setPricer(p);
+            else
+                c.underlying()->accept(*this);
         }
 
         void PricerSetter::visit(CmsCoupon& c) {
