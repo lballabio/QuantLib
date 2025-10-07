@@ -175,6 +175,47 @@ BOOST_AUTO_TEST_CASE(testDutchCentralBankRates) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testDutchCentralBankRatesWithRounding) {
+    BOOST_TEST_MESSAGE("Testing DNB replication of UFR zero annually compounded rates with rounding...");
+
+    CommonVars vars;
+
+    ext::shared_ptr<Quote> llfr = calculateLLFR(vars.ftkCurveHandle, vars.fsp);
+
+    ext::shared_ptr<YieldTermStructure> ufrTs(
+        new UltimateForwardTermStructure(
+            vars.ftkCurveHandle,
+            Handle<Quote>(llfr),
+            Handle<Quote>(vars.ufrRate),
+            vars.fsp,
+            vars.alpha,
+            5
+        )
+    );
+
+    Datum expectedZeroes[] = {{10, Years, 0.00478}, {20, Years, 0.01007}, {30, Years, 0.01218},
+                              {40, Years, 0.01427}, {50, Years, 0.01584}, {60, Years, 0.01697},
+                              {70, Years, 0.01781}, {80, Years, 0.01845}, {90, Years, 0.01896},
+                              {100, Years, 0.01936}};
+
+    Real tolerance = 1.0e-12;
+    Size nRates = std::size(expectedZeroes);
+
+    for (Size i = 0; i < nRates; ++i) {
+        Period p = expectedZeroes[i].n * expectedZeroes[i].units;
+        Date maturity = vars.settlement + p;
+
+        Rate actual = ufrTs->zeroRate(maturity, vars.dayCount, Compounded, Annual).rate();
+        Rate expected = expectedZeroes[i].rate;
+
+        if (std::fabs(actual - expected) > tolerance)
+            BOOST_ERROR("unable to reproduce zero yield rate from the UFR curve\n"
+                        << std::setprecision(5) << "    calculated: " << actual << "\n"
+                        << "    expected:   " << expected << "\n"
+                        << "    tenor:       " << p << "\n");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testExtrapolatedForward) {
     BOOST_TEST_MESSAGE("Testing continuous forward rates in extrapolation region...");
 
