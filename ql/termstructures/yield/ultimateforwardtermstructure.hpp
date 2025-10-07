@@ -172,8 +172,8 @@ namespace QuantLib {
             return r;
         }
         // Input rate is continuously compounded by definition
-        Rate equivalentRate = InterestRate(
-            r, dayCounter(), Continuous, NoFrequency).equivalentRate(compounding_, frequency_, t);
+        Rate equivalentRate = InterestRate(r, dayCounter(), Continuous, NoFrequency)
+                                  .equivalentRate(compounding_, frequency_, t);
         Rate rounded = ClosestRounding(*rounding_)(equivalentRate);
         return InterestRate(rounded, dayCounter(), compounding_, frequency_)
             .equivalentRate(Continuous, NoFrequency, t);
@@ -197,11 +197,9 @@ namespace QuantLib {
             InterestRate baseRate = originalCurve_->zeroRate(cutOffTime, Continuous, NoFrequency);
             Real beta = (1.0 - std::exp(-alpha_ * deltaT)) / (alpha_ * deltaT);
             Rate extrapolatedForward = ufr_->value() + (llfr_->value() - ufr_->value()) * beta;
-            return apply_rounding(
-                (cutOffTime * baseRate + deltaT * extrapolatedForward) / t, t);
+            return apply_rounding((cutOffTime * baseRate + deltaT * extrapolatedForward) / t, t);
         }
-        return apply_rounding(
-            originalCurve_->zeroRate(t, Continuous, NoFrequency), t);
+        return apply_rounding(originalCurve_->zeroRate(t, Continuous, NoFrequency), t);
     }
 }
 
