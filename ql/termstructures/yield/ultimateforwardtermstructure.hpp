@@ -48,7 +48,7 @@ namespace QuantLib {
         UFR 2013-2019 term structure documentation:
         https://www.dnb.nl/media/0vmbxaf4/methodologie-dnb.pdf
 
-        UFR 2023 term structure documentation:
+        UFR 2023 term structure documentation (p.46):
         https://www.tweedekamer.nl/downloads/document?id=2022D50944
 
         This term structure will remain linked to the original
