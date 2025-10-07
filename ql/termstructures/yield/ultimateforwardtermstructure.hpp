@@ -99,7 +99,7 @@ namespace QuantLib {
         //@}
       private:
         //! applies rounding on zero rate with required compounding
-        Rate apply_rounding(Rate r, Time t) const;
+        Rate applyRounding(Rate r, Time t) const;
         //@}
 
         Handle<YieldTermStructure> originalCurve_;
@@ -167,8 +167,8 @@ namespace QuantLib {
         }
     }
 
-    inline Rate UltimateForwardTermStructure::apply_rounding(Rate r, Time t) const {
-        if (!rounding_) {
+    inline Rate UltimateForwardTermStructure::applyRounding(Rate r, Time t) const {
+        if (!rounding_.has_value()) {
             return r;
         }
         // Input rate is continuously compounded by definition
@@ -197,9 +197,9 @@ namespace QuantLib {
             InterestRate baseRate = originalCurve_->zeroRate(cutOffTime, Continuous, NoFrequency);
             Real beta = (1.0 - std::exp(-alpha_ * deltaT)) / (alpha_ * deltaT);
             Rate extrapolatedForward = ufr_->value() + (llfr_->value() - ufr_->value()) * beta;
-            return apply_rounding((cutOffTime * baseRate + deltaT * extrapolatedForward) / t, t);
+            return applyRounding((cutOffTime * baseRate + deltaT * extrapolatedForward) / t, t);
         }
-        return apply_rounding(originalCurve_->zeroRate(t, Continuous, NoFrequency), t);
+        return applyRounding(originalCurve_->zeroRate(t, Continuous, NoFrequency), t);
     }
 }
 
