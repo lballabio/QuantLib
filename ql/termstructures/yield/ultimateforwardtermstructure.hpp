@@ -110,6 +110,7 @@ namespace QuantLib {
         ext::optional<Integer> rounding_;
         Compounding compounding_;
         Frequency frequency_;
+        bool isCompoundingContinuous_;
     };
 
     // inline definitions
@@ -125,7 +126,8 @@ namespace QuantLib {
         Frequency frequency)
     : originalCurve_(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),
       ufr_(std::move(ultimateForwardRate)), fsp_(firstSmoothingPoint), alpha_(alpha),
-      rounding_(rounding), compounding_(compounding), frequency_(frequency) {
+      rounding_(rounding), compounding_(compounding), frequency_(frequency),
+      isCompoundingContinuous_(compounding == Continuous) {
         QL_REQUIRE(fsp_.length() > 0,
                    "first smoothing point must be a period with positive length");
         if (!originalCurve_.empty())
@@ -171,12 +173,19 @@ namespace QuantLib {
         if (!rounding_.has_value()) {
             return r;
         }
-        // Input rate is continuously compounded by definition
-        Rate equivalentRate = InterestRate(r, dayCounter(), Continuous, NoFrequency)
-                                  .equivalentRate(compounding_, frequency_, t);
+        // Input rate is continuously compounded by definition.
+        // Hence, in case this is also the selected compounding method for rounding,
+        // it is not required to calculate equivalent rates, and rounding
+        // may be applied directly.
+        Rate equivalentRate = isCompoundingContinuous_ ?
+                                  r :
+                                  InterestRate(r, dayCounter(), Continuous, NoFrequency)
+                                      .equivalentRate(compounding_, frequency_, t);
         Rate rounded = ClosestRounding(*rounding_)(equivalentRate);
-        return InterestRate(rounded, dayCounter(), compounding_, frequency_)
-            .equivalentRate(Continuous, NoFrequency, t);
+        return isCompoundingContinuous_ ?
+                   rounded :
+                   InterestRate(rounded, dayCounter(), compounding_, frequency_)
+                       .equivalentRate(Continuous, NoFrequency, t);
     }
 
     inline Rate UltimateForwardTermStructure::zeroYieldImpl(Time t) const {
