@@ -51,6 +51,10 @@ namespace QuantLib {
         UFR 2023 term structure documentation (p.46):
         https://www.tweedekamer.nl/downloads/document?id=2022D50944
 
+        Optionally, computed zero rates may be rounded.
+        The specified number of decimal places will affect the absolute value.
+        For example, rounding to 5 decimal places: 0.005555 --> 0.00556.
+
         This term structure will remain linked to the original
         structure, i.e., any changes in the latter will be
         reflected in this structure as well.
@@ -78,7 +82,7 @@ namespace QuantLib {
                                      Handle<Quote> ultimateForwardRate,
                                      const Period& firstSmoothingPoint,
                                      Real alpha,
-                                     const ext::optional<Integer>& rounding = ext::nullopt,
+                                     const ext::optional<Integer>& roundingDigits = ext::nullopt,
                                      Compounding compounding = Compounded,
                                      Frequency frequency = Annual);
         //! \name YieldTermStructure interface
@@ -107,10 +111,9 @@ namespace QuantLib {
         Handle<Quote> ufr_;
         Period fsp_;
         Real alpha_;
-        ext::optional<Integer> rounding_;
+        ext::optional<Integer> roundingDigits_;
         Compounding compounding_;
         Frequency frequency_;
-        bool isCompoundingContinuous_;
     };
 
     // inline definitions
@@ -121,13 +124,12 @@ namespace QuantLib {
         Handle<Quote> ultimateForwardRate,
         const Period& firstSmoothingPoint,
         Real alpha,
-        const ext::optional<Integer>& rounding,
+        const ext::optional<Integer>& roundingDigits,
         Compounding compounding,
         Frequency frequency)
     : originalCurve_(std::move(h)), llfr_(std::move(lastLiquidForwardRate)),
       ufr_(std::move(ultimateForwardRate)), fsp_(firstSmoothingPoint), alpha_(alpha),
-      rounding_(rounding), compounding_(compounding), frequency_(frequency),
-      isCompoundingContinuous_(compounding == Continuous) {
+      roundingDigits_(roundingDigits), compounding_(compounding), frequency_(frequency) {
         QL_REQUIRE(fsp_.length() > 0,
                    "first smoothing point must be a period with positive length");
         if (!originalCurve_.empty())
@@ -170,19 +172,19 @@ namespace QuantLib {
     }
 
     inline Rate UltimateForwardTermStructure::applyRounding(Rate r, Time t) const {
-        if (!rounding_.has_value()) {
+        if (!roundingDigits_.has_value()) {
             return r;
         }
         // Input rate is continuously compounded by definition.
         // Hence, in case this is also the selected compounding method for rounding,
         // it is not required to calculate equivalent rates, and rounding
         // may be applied directly.
-        Rate equivalentRate = isCompoundingContinuous_ ?
+        Rate equivalentRate = compounding_ == Continuous ?
                                   r :
                                   InterestRate(r, dayCounter(), Continuous, NoFrequency)
                                       .equivalentRate(compounding_, frequency_, t);
-        Rate rounded = ClosestRounding(*rounding_)(equivalentRate);
-        return isCompoundingContinuous_ ?
+        Rate rounded = ClosestRounding(*roundingDigits_)(equivalentRate);
+        return compounding_ == Continuous ?
                    rounded :
                    InterestRate(rounded, dayCounter(), compounding_, frequency_)
                        .equivalentRate(Continuous, NoFrequency, t);
