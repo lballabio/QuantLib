@@ -545,10 +545,10 @@ namespace QuantLib {
 
     OvernightLeg& OvernightLeg::withOvernightIndexedCouponPricer(const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer) {
         if (averagingMethod_ == RateAveraging::Compound)
-            QL_REQUIRE(dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer), 
+            QL_REQUIRE(ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer), 
                         "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
         else
-            QL_REQUIRE(dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer), 
+            QL_REQUIRE(ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer), 
                         "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
         couponPricer_ = couponPricer;
         return *this;
@@ -556,12 +556,12 @@ namespace QuantLib {
 
     OvernightLeg& OvernightLeg::withCapFlooredOvernightIndexedCouponPricer(
         const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
-        auto p = dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
+        auto p = ext::dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
         if (averagingMethod_ == RateAveraging::Compound) {
-            auto p = dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
+            auto p = ext::dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
             QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackOvernightIndexedCouponPricer");
         } else {
-            auto p = dynamic_pointer_cast<BlackAverageONIndexedCouponPricer>(couponPricer);
+            auto p = ext::dynamic_pointer_cast<BlackAverageONIndexedCouponPricer>(couponPricer);
             QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackAverageONIndexedCouponPricer");
         }
         capFlooredCouponPricer_ = couponPricer;
