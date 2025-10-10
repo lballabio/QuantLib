@@ -1,4 +1,43 @@
-commit 6a6bfbf88d5e8e8ee0db3834e63f0ecebdae8714
+commit 6baa6c2b4434c3bb456e51392dc5b07f742a0554
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 10 Oct 2025 15:13:51 +0000
+
+    Set version to 1.40
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit eea869603efb2b83a3c38b80553da151f24f1ace
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 3 Oct 2025 16:31:55 +0200
+
+    Fix job name
+
+ .github/workflows/prepare-release.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 1823b828774fbf078f461d0d13796d6213ead130
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 3 Oct 2025 15:09:32 +0200
+
+    Add initial workflows for release
+
+ .github/workflows/prepare-release.yml | 43 +++++++++++++++++++++++++++++
+ .github/workflows/publish-release.yml | 52 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 95 insertions(+)
+
+commit 0e7d8fbb1ce1e3efe892d89f0b12acf95101d584
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Thu, 2 Oct 2025 10:58:02 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 10017 +++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 9249 insertions(+), 768 deletions(-)
+
+commit 42dcd1b669981b5172283856ce446fdf9638c891
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Thu, 2 Oct 2025 10:58:02 +0000
 
