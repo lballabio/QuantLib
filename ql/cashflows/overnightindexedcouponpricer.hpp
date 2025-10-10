@@ -49,6 +49,8 @@ namespace QuantLib {
         averaging convention used.
     */
     class OvernightIndexedCouponPricer : public FloatingRateCouponPricer {
+      using FloatingRateCouponPricer::capletRate;
+      using FloatingRateCouponPricer::floorletRate;
       public:
 
         explicit OvernightIndexedCouponPricer(
