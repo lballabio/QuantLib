@@ -36,10 +36,9 @@ namespace QuantLib {
     /* The methods that are implemented here to price capped / floored compounded ON coupons are
     highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
     should be revised. */
-    class BlackOvernightIndexedCouponPricer : public CompoundingOvernightIndexedCouponPricer, 
-                                              public CappedFlooredOvernightIndexedCouponPricer {
+    class BlackOvernightIndexedCouponPricer : public CompoundingOvernightIndexedCouponPricer {
+    using CompoundingOvernightIndexedCouponPricer::CompoundingOvernightIndexedCouponPricer;
     public:
-    using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
         explicit BlackOvernightIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
                 const bool effectiveVolatilityInput = false);
@@ -68,10 +67,9 @@ namespace QuantLib {
     /* The methods that are implemented here to price capped / floored average ON coupons are
     highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
     should be revised. */
-    class BlackAverageONIndexedCouponPricer : public ArithmeticAveragedOvernightIndexedCouponPricer,
-                                              public CappedFlooredOvernightIndexedCouponPricer {
+    class BlackAverageONIndexedCouponPricer : public ArithmeticAveragedOvernightIndexedCouponPricer {
+    using ArithmeticAveragedOvernightIndexedCouponPricer::ArithmeticAveragedOvernightIndexedCouponPricer;
     public:
-    using CappedFlooredOvernightIndexedCouponPricer::CappedFlooredOvernightIndexedCouponPricer;
         explicit BlackAverageONIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
                 const bool effectiveVolatilityInput = false);

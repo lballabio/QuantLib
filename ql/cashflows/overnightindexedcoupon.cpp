@@ -24,6 +24,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -304,8 +305,8 @@ namespace QuantLib {
     void CappedFlooredOvernightIndexedCoupon::performCalculations() const {
         QL_REQUIRE(underlying_->pricer(), "underlying coupon pricer not set");
         Rate swapletRate = nakedOption_ ? 0.0 : underlying_->rate();
-        auto cfONPricer = ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer());
-        QL_REQUIRE(cfONPricer, "coupon pricer not an instance of CappedFlooredOvernightIndexedCouponPricer");
+        auto cfONPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer());
+        QL_REQUIRE(cfONPricer, "coupon pricer not an instance of OvernightIndexedCouponPricer");
 
         if (floor_ != Null<Real>() || cap_ != Null<Real>())
             cfONPricer->initialize(*this);
@@ -401,8 +402,8 @@ namespace QuantLib {
     }
 
     void CappedFlooredOvernightIndexedCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer){
-        auto p = ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer);
-        QL_REQUIRE(p, "The pricer is required to be an instance of CappedFlooredOvernightIndexedCouponPricer");
+        auto p = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer);
+        QL_REQUIRE(p, "The pricer is required to be an instance of OvernightIndexedCouponPricer");
         pricer_ = p;
     }
 
@@ -544,17 +545,25 @@ namespace QuantLib {
 
     OvernightLeg& OvernightLeg::withOvernightIndexedCouponPricer(const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer) {
         if (averagingMethod_ == RateAveraging::Compound)
-            QL_REQUIRE((std::is_same_v<decltype(*couponPricer), CompoundingOvernightIndexedCouponPricer>), 
+            QL_REQUIRE(dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer), 
                         "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
         else
-            QL_REQUIRE((std::is_same_v<decltype(*couponPricer), ArithmeticAveragedOvernightIndexedCouponPricer>) , 
+            QL_REQUIRE(dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer), 
                         "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
         couponPricer_ = couponPricer;
         return *this;
     }
 
     OvernightLeg& OvernightLeg::withCapFlooredOvernightIndexedCouponPricer(
-        const QuantLib::ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer>& couponPricer) {
+        const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
+        auto p = dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
+        if (averagingMethod_ == RateAveraging::Compound) {
+            auto p = dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
+            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackOvernightIndexedCouponPricer");
+        } else {
+            auto p = dynamic_pointer_cast<BlackAverageONIndexedCouponPricer>(couponPricer);
+            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackAverageONIndexedCouponPricer");
+        }
         capFlooredCouponPricer_ = couponPricer;
         return *this;
     }

@@ -51,15 +51,42 @@ namespace QuantLib {
     }
 
     void OvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        auto c = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
-        QL_REQUIRE(c, "wrong coupon type, needed a OvernightIndexedCoupon instance");
-        coupon_ = c;
+        if (auto cfCoupon = dynamic_cast<const CappedFlooredOvernightIndexedCoupon*>(&coupon)) {
+            auto underlying = cfCoupon->underlying().get();
+            QL_REQUIRE(underlying, "OvernightIndexedCouponPricer: CappedFlooredOvernightIndexedCoupon underlying coupon not defined");
+            coupon_ = cfCoupon->underlying().get();
+        } else if (auto onCoupon = dynamic_cast<const OvernightIndexedCoupon*>(&coupon)) {
+            coupon_ = onCoupon;
+        } else {
+            QL_FAIL("OvernightIndexedCouponPricer: unsupported coupon type");
+        }
     }
 
     bool OvernightIndexedCouponPricer::effectiveVolatilityInput() const {
         return effectiveVolatilityInput_;
     }
+
+    Real OvernightIndexedCouponPricer::effectiveCapletVolatility() const {
+        return effectiveCapletVolatility_;
+    }
+
+    Real OvernightIndexedCouponPricer::effectiveFloorletVolatility() const {
+        return effectiveFloorletVolatility_;
+    }
+
+    Rate OvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool localCapFloor) const {
+        QL_FAIL("OvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
+    }
+
+    Rate OvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool localCapFloor) const {
+        QL_FAIL("OvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
+    }
     
+    CompoundingOvernightIndexedCouponPricer::CompoundingOvernightIndexedCouponPricer(
+            Handle<OptionletVolatilityStructure> v,
+            const bool effectiveVolatilityInput)
+        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
+
     Rate CompoundingOvernightIndexedCouponPricer::swapletRate() const {
         auto [swapletRate, effectiveSpread, effectiveIndexFixing] = compute(coupon_->accrualEndDate());
         swapletRate_ = swapletRate;
@@ -331,33 +358,5 @@ namespace QuantLib {
         return vol_ * vol_ / (2.0 * pow(mrs_, 2.0)) *
                ((te - ts) - pow(1.0 - exp(-mrs_ * (te - ts)), 2.0) / mrs_ -
                 (1.0 - exp(-2.0 * mrs_ * (te - ts))) / (2.0 * mrs_));
-    }
-
-    // CappedFlooredOvernightIndexedCouponPricer implementation (this is the base class only)
-
-    void CappedFlooredOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        if (auto cfCoupon = dynamic_cast<const CappedFlooredOvernightIndexedCoupon*>(&coupon)) {
-            auto underlying = cfCoupon->underlying().get();
-            QL_REQUIRE(underlying, "CappedFlooredOvernightIndexedCouponPricer: CappedFlooredOvernightIndexedCoupon underlying coupon not defined");
-            coupon_ = cfCoupon->underlying().get();
-        } else if (auto onCoupon = dynamic_cast<const OvernightIndexedCoupon*>(&coupon)) {
-            coupon_ = onCoupon;
-        } else {
-            QL_FAIL("CappedFlooredOvernightIndexedCouponPricer: unsupported coupon type");
-        }
-    }
-
-    Real CappedFlooredOvernightIndexedCouponPricer::effectiveCapletVolatility() const { return effectiveCapletVolatility_; }
-
-    Real CappedFlooredOvernightIndexedCouponPricer::effectiveFloorletVolatility() const {
-        return effectiveFloorletVolatility_;
-    }
-
-    Rate CappedFlooredOvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool localCapFloor) const {
-        QL_FAIL("CappedFlooredOvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
-    }
-
-    Rate CappedFlooredOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool localCapFloor) const {
-        QL_FAIL("CappedFlooredOvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
     }
 }

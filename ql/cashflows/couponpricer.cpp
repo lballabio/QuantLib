@@ -354,13 +354,21 @@ namespace QuantLib {
         }
 
         void PricerSetter::visit(CappedFlooredOvernightIndexedCoupon& c) {
-            const ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer> p =
-                ext::dynamic_pointer_cast<CappedFlooredOvernightIndexedCouponPricer>(pricer_);
-            // we can set a pricer for the capped floored on coupon or the underlying on coupon
-            if (p)
-                c.setPricer(p);
-            else
+            if (c.averagingMethod() == RateAveraging::Compound) {
+                const ext::shared_ptr<BlackOvernightIndexedCouponPricer> overnightCouponPricer =
+                    ext::dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(pricer_);
+                QL_REQUIRE(overnightCouponPricer,
+                       "pricer not compatible with capped-floored overnight indexed coupon");
+                c.setPricer(overnightCouponPricer);
                 c.underlying()->accept(*this);
+            } else {
+                const ext::shared_ptr<BlackAverageONIndexedCouponPricer> overnightCouponPricer =
+                    ext::dynamic_pointer_cast<BlackAverageONIndexedCouponPricer>(pricer_);
+                QL_REQUIRE(overnightCouponPricer,
+                       "pricer not compatible with arithmetic averaged capped-floored overnight indexed coupon");
+                c.setPricer(overnightCouponPricer);
+                c.underlying()->accept(*this);
+            }
         }
 
         void PricerSetter::visit(CmsCoupon& c) {

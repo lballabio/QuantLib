@@ -38,8 +38,8 @@
 
 namespace QuantLib {
 
+    class OvernightIndexedCouponPricer;
     class CompoundingOvernightIndexedCouponPricer;
-    class CappedFlooredOvernightIndexedCouponPricer;
 
     //! overnight coupon
     /*! %Coupon paying the interest, depending on the averaging convention,
@@ -205,7 +205,6 @@ namespace QuantLib {
         bool localCapFloor_;
         mutable Real effectiveCapletVolatility_;
         mutable Real effectiveFloorletVolatility_;
-        ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer> on_pricer_;
     };
 
     //! helper class building a sequence of overnight coupons
@@ -241,7 +240,7 @@ namespace QuantLib {
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);
         OvernightLeg& withOvernightIndexedCouponPricer(const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer);
         OvernightLeg& withCapFlooredOvernightIndexedCouponPricer(
-          const QuantLib::ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer>& couponPricer);
+          const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer);
 
         operator Leg() const;
       private:
@@ -268,7 +267,7 @@ namespace QuantLib {
         Calendar lastRecentPeriodCalendar_;
         std::vector<Date> paymentDates_;
         ext::shared_ptr<FloatingRateCouponPricer> couponPricer_;
-        ext::shared_ptr<CappedFlooredOvernightIndexedCouponPricer> capFlooredCouponPricer_;
+        ext::shared_ptr<OvernightIndexedCouponPricer> capFlooredCouponPricer_;
     };
 
 }

@@ -27,10 +27,10 @@ namespace QuantLib {
     BlackOvernightIndexedCouponPricer::BlackOvernightIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             const bool effectiveVolatilityInput)
-        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
+        : CompoundingOvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
 
     void BlackOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        CappedFlooredOvernightIndexedCouponPricer::initialize(coupon);
+        OvernightIndexedCouponPricer::initialize(coupon);
 
         gearing_ = coupon.gearing();
         swapletRate_ = coupon_->rate();
@@ -277,10 +277,10 @@ namespace QuantLib {
     BlackAverageONIndexedCouponPricer::BlackAverageONIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             const bool effectiveVolatilityInput)
-        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
+        : ArithmeticAveragedOvernightIndexedCouponPricer(0.03, 0.0, false, v, effectiveVolatilityInput) {}
 
     void BlackAverageONIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        CappedFlooredOvernightIndexedCouponPricer::initialize(coupon);
+        OvernightIndexedCouponPricer::initialize(coupon);
 
         if (coupon_->averagingMethod() == RateAveraging::Compound)
             QL_FAIL("Avereging method required to be simple for BlackAverageONIndexedCouponPricer");
@@ -490,11 +490,11 @@ namespace QuantLib {
     Rate BlackAverageONIndexedCouponPricer::swapletRate() const { return swapletRate_; }
 
     Rate BlackAverageONIndexedCouponPricer::capletRate(Rate effectiveCap) const {
-        return CappedFlooredOvernightIndexedCouponPricer::capletRate(effectiveCap, false);
+        return OvernightIndexedCouponPricer::capletRate(effectiveCap, false);
     }
 
     Rate BlackAverageONIndexedCouponPricer::floorletRate(Rate effectiveFloor) const {
-        return CappedFlooredOvernightIndexedCouponPricer::floorletRate(effectiveFloor, false);
+        return OvernightIndexedCouponPricer::floorletRate(effectiveFloor, false);
     }
 
     Rate BlackAverageONIndexedCouponPricer::capletRate(Rate effectiveCap, bool localCapFloor) const {
