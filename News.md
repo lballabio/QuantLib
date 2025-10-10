@@ -36,7 +36,7 @@ Full list of pull requests
 --------------------------
 
 All the pull requests merged in this release are listed on its release
-page at <https://github.com/lballabio/QuantLib/releases/tag/v1.40-rc>.
+page at <https://github.com/lballabio/QuantLib/releases/tag/v1.40>.
 
 The list of commits since the previous release is available in `ChangeLog.txt`.
 
