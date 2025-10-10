@@ -115,6 +115,12 @@ namespace QuantLib {
         Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
         Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
         //@}
+        Rate capletRate(Rate effectiveCap, bool localCapFloor) const override {
+          QL_FAIL("CompoundingOvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
+        }
+        Rate floorletRate(Rate effectiveCap, bool localCapFloor) const override {
+          QL_FAIL("CompoundingOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
+        }
         Rate averageRate(const Date& date) const;
         Rate effectiveSpread() const;
         Rate effectiveIndexFixing() const;
@@ -151,6 +157,12 @@ namespace QuantLib {
         Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
         Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
 
+        Rate capletRate(Rate effectiveCap, bool localCapFloor) const override {
+          QL_FAIL("ArithmeticAveragedOvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
+        }
+        Rate floorletRate(Rate effectiveCap, bool localCapFloor) const override {
+          QL_FAIL("ArithmeticAveragedOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
+        }
       protected:
         Real convAdj1(Time ts, Time te) const;
         Real convAdj2(Time ts, Time te) const;
