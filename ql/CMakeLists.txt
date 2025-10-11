@@ -818,6 +818,7 @@ set(QL_SOURCES
     termstructures/credit/hazardratestructure.cpp
     termstructures/credit/survivalprobabilitystructure.cpp
     termstructures/defaulttermstructure.cpp
+    termstructures/globalbootstrap.cpp
     termstructures/globalbootstrapvars.cpp
     termstructures/inflation/inflationhelpers.cpp
     termstructures/inflation/seasonality.cpp

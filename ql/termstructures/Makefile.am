@@ -20,6 +20,7 @@ this_include_HEADERS = \
 
 cpp_files = \
 	defaulttermstructure.cpp \
+	globalbootstrap.cpp \
 	globalbootstrapvars.cpp \
 	inflationtermstructure.cpp \
 	voltermstructure.cpp \
