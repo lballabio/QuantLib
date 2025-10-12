@@ -361,40 +361,38 @@ template <class Curve> void GlobalBootstrap<Curve>::setupCostFunction() const {
     }
     guess_ = Array(numberPillars + additionalGuesses.size());
     for (Size i = 0; i < numberPillars; ++i) {
-        guess_ = Array(ts_->times_.size() - 1 + additionalGuesses.size());
-        for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
-            // just pass zero as the first alive helper, it's not used in the standard QL traits
-            // anyway update ts_->data_ since Traits::guess() usually depends on previous values
-            Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
-            guess_[i] = Traits::transformInverse(ts_->data_[i + 1], i + 1, ts_);
-        }
-        std::copy(additionalGuesses.begin(), additionalGuesses.end(), guess_.begin() + numberPillars);
-
-        // setup cost function
-        costFunctionSet_ = [this, numberPillars](const Array& x) {
-            // x has the same layout as guess above: the first numberPillars values go into
-            // the curve, while the rest are new values for the additional variables.
-            for (Size i = 0; i < numberPillars; ++i) {
-                Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
-            }
-            ts_->interpolation_.update();
-            if (additionalVariables_) {
-                additionalVariables_->update(Array(x.begin() + numberPillars, x.end()));
-            }
-        };
-
-        costFunctionEval_ = [this]() {
-            Array additionalErrors;
-            if (additionalPenalties_) {
-                additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
-            }
-            Array result(numberHelpers_ + additionalErrors.size());
-            std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(), result.begin(),
-                           [](const auto& helper) { return helper->quoteError(); });
-            std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
-            return result;
-        };
+        // just pass zero as the first alive helper, it's not used in the standard QL traits
+        // anyway update ts_->data_ since Traits::guess() usually depends on previous values
+        Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
+        guess_[i] = Traits::transformInverse(ts_->data_[i + 1], i + 1, ts_);
     }
+    std::copy(additionalGuesses.begin(), additionalGuesses.end(), guess_.begin() + numberPillars);
+
+    // setup cost function
+    costFunctionSet_ = [this, numberPillars](const Array& x) {
+        std::cout << "costfct set (" << x << ")" << std::endl;
+        // x has the same layout as guess above: the first numberPillars values go into
+        // the curve, while the rest are new values for the additional variables.
+        for (Size i = 0; i < numberPillars; ++i) {
+            Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
+        }
+        ts_->interpolation_.update();
+        if (additionalVariables_) {
+            additionalVariables_->update(Array(x.begin() + numberPillars, x.end()));
+        }
+    };
+    costFunctionEval_ = [this]() {
+        Array additionalErrors;
+        if (additionalPenalties_) {
+            additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
+            std::cout << "additional penalties () = " << additionalErrors << std::endl;
+        }
+        Array result(numberHelpers_ + additionalErrors.size());
+        std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(), result.begin(),
+                       [](const auto& helper) { return helper->quoteError(); });
+        std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
+        return result;
+    };
 }
 
 template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
