@@ -50,6 +50,9 @@
     <ClCompile Include="blackformula.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="blackvolsurfacedelta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="bonds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

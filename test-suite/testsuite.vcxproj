@@ -662,6 +662,7 @@
     <ClCompile Include="blackcalculator.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
+    <ClCompile Include="blackvolsurfacedelta.cpp" /> 
     <ClCompile Include="bondforward.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
