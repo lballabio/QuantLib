@@ -370,7 +370,6 @@ template <class Curve> void GlobalBootstrap<Curve>::setupCostFunction() const {
 
     // setup cost function
     costFunctionSet_ = [this, numberPillars](const Array& x) {
-        std::cout << "costfct set (" << x << ")" << std::endl;
         // x has the same layout as guess above: the first numberPillars values go into
         // the curve, while the rest are new values for the additional variables.
         for (Size i = 0; i < numberPillars; ++i) {
@@ -385,7 +384,6 @@ template <class Curve> void GlobalBootstrap<Curve>::setupCostFunction() const {
         Array additionalErrors;
         if (additionalPenalties_) {
             additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
-            std::cout << "additional penalties () = " << additionalErrors << std::endl;
         }
         Array result(numberHelpers_ + additionalErrors.size());
         std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(), result.begin(),
