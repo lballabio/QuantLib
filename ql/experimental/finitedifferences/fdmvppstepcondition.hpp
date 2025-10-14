@@ -26,8 +26,8 @@
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/functional.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <functional>
 #include <vector>
 
 namespace QuantLib {

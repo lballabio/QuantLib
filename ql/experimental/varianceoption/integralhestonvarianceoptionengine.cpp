@@ -23,7 +23,7 @@
 
 #include <ql/errors.hpp>
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 #include <complex>
 #include <utility>
 #include <memory>

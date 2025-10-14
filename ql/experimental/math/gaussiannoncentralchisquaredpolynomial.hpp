@@ -24,8 +24,8 @@
 #ifndef quantlib_gaussian_non_central_chi_squared_polynomial_hpp
 #define quantlib_gaussian_non_central_chi_squared_polynomial_hpp
 
-#include <ql/functional.hpp>
 #include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
+#include <functional>
 
 namespace QuantLib {
 

@@ -3642,9 +3642,6 @@
     <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp">
       <Filter>experimental\averageois</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp">
-      <Filter>experimental\averageois</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp">
       <Filter>experimental\averageois</Filter>
     </ClInclude>
@@ -6581,12 +6578,6 @@
     <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\risk\creditriskplus.cpp">
-      <Filter>experimental\risk</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp">
-      <Filter>experimental\risk</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\shortrate\generalizedhullwhite.cpp">
       <Filter>experimental\shortrate</Filter>
     </ClCompile>
@@ -6685,15 +6676,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\commodities\unitofmeasureconversionmanager.cpp">
       <Filter>experimental\commodities</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
-      <Filter>experimental\averageois</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp">
-      <Filter>experimental\averageois</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp">
-      <Filter>experimental\averageois</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>

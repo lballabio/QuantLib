@@ -30,7 +30,7 @@
 #ifndef QL_PATCH_SOLARIS
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/functional.hpp>
+#include <functional>
 
 namespace QuantLib {
 

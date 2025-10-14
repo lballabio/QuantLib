@@ -48,9 +48,6 @@ set(QL_SOURCES
     exercise.cpp
     experimental/asian/analytic_cont_geom_av_price_heston.cpp
     experimental/asian/analytic_discr_geom_av_price_heston.cpp
-    experimental/averageois/arithmeticaverageois.cpp
-    experimental/averageois/arithmeticoisratehelper.cpp
-    experimental/averageois/makearithmeticaverageois.cpp
     experimental/barrieroption/mcdoublebarrierengine.cpp
     experimental/barrieroption/discretizeddoublebarrieroption.cpp
     experimental/barrieroption/perturbativebarrieroptionengine.cpp
@@ -178,8 +175,6 @@ set(QL_SOURCES
     experimental/processes/gemanroncoroniprocess.cpp
     experimental/processes/klugeextouprocess.cpp
     experimental/processes/vegastressedblackscholesprocess.cpp
-    experimental/risk/creditriskplus.cpp
-    experimental/risk/sensitivityanalysis.cpp
     experimental/shortrate/generalizedhullwhite.cpp
     experimental/shortrate/generalizedornsteinuhlenbeckprocess.cpp
     experimental/swaptions/haganirregularswaptionengine.cpp
@@ -1014,7 +1009,6 @@ set(QL_HEADERS
     experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/arithmeticaverageois.hpp
     experimental/averageois/arithmeticoisratehelper.hpp
-    experimental/averageois/averageoiscouponpricer.hpp
     experimental/averageois/makearithmeticaverageois.hpp
     experimental/barrieroption/mcdoublebarrierengine.hpp
     experimental/barrieroption/binomialdoublebarrierengine.hpp

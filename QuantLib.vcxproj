@@ -559,7 +559,6 @@
     <ClInclude Include="ql\experimental\averageois\all.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp" />
-    <ClInclude Include="ql\experimental\averageois\averageoiscouponpricer.hpp" />
     <ClInclude Include="ql\experimental\averageois\makearithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\all.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\binomialdoublebarrierengine.hpp" />
@@ -1977,9 +1976,6 @@
     <ClCompile Include="ql\currencies\oceania.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp" />
-    <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp" />
-    <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp" />
-    <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp" />
@@ -2107,8 +2103,6 @@
     <ClCompile Include="ql\experimental\processes\gemanroncoroniprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp" />
     <ClCompile Include="ql\experimental\processes\vegastressedblackscholesprocess.cpp" />
-    <ClCompile Include="ql\experimental\risk\creditriskplus.cpp" />
-    <ClCompile Include="ql\experimental\risk\sensitivityanalysis.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedhullwhite.cpp" />
     <ClCompile Include="ql\experimental\shortrate\generalizedornsteinuhlenbeckprocess.cpp" />
     <ClCompile Include="ql\experimental\swaptions\haganirregularswaptionengine.cpp" />

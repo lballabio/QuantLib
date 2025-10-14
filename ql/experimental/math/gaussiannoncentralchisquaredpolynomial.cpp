@@ -20,8 +20,6 @@
 
 #include <ql/errors.hpp>
 #include <ql/experimental/math/gaussiannoncentralchisquaredpolynomial.hpp>
-#include <ql/functional.hpp>
-
 #include <boost/preprocessor/iteration/local.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 

@@ -156,6 +156,8 @@ quantlib.hpp: Makefile.am
 			qldefines.hpp)     continue;; \
 			quantlib.hpp)      continue;; \
 			version.hpp)       continue;; \
+			functional.hpp)       continue;; \
+			tuple.hpp)       continue;; \
 			*.hpp)             ;; \
 		esac; \
 		echo "#include <${subdir}/$$i>" >> ${srcdir}/$@; \

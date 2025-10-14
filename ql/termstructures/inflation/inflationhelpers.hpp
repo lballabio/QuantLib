@@ -98,19 +98,6 @@ namespace QuantLib {
                                       CPI::InterpolationType interpolation,
                                       Handle<YieldTermStructure> nominalTermStructure);
 
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
-                                      const Period& swapObsLag,
-                                      const Date& maturity,
-                                      Calendar calendar,
-                                      BusinessDayConvention paymentConvention,
-                                      DayCounter dayCounter,
-                                      const ext::shared_ptr<YoYInflationIndex>& yii,
-                                      Handle<YieldTermStructure> nominalTermStructure);
-
         void setTermStructure(YoYInflationTermStructure*) override;
         Real impliedQuote() const override;
         //! \name inspectors
