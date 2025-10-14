@@ -1,5 +1,6 @@
 name: Increase version number
 on:
+  push:
   workflow_dispatch:
 
 jobs:
