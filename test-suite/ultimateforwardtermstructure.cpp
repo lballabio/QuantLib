@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(testDutchCentralBankRatesWithRounding) {
 
 BOOST_AUTO_TEST_CASE(testDutchCentralBankRatesWithRoundingAndContinuousCompounding) {
     BOOST_TEST_MESSAGE(
-        "Testing DNB replication of UFR zero continuously compounded rates with rounding ...");
+        "Testing DNB replication of UFR zero continuously compounded rates with rounding...");
     std::vector<Datum> expectedRates{
         {10, Years, 0.00477}, {20, Years, 0.01002}, {30, Years, 0.01211}, {40, Years, 0.01417},
         {50, Years, 0.01571}, {60, Years, 0.01683}, {70, Years, 0.01766}, {80, Years, 0.01829},

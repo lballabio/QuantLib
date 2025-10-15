@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2020 Marcin Rybacki
- Copyright (C) 2025 Marcin Rybacki
+ Copyright (C) 2020, 2025 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,8 +51,9 @@ namespace QuantLib {
         https://www.tweedekamer.nl/downloads/document?id=2022D50944
 
         Optionally, computed zero rates may be rounded.
-        The specified number of decimal places will affect the absolute value.
-        For example, rounding to 5 decimal places: 0.005555 --> 0.00556.
+        The specified number of decimal places will affect the rate
+        in decimal format; for example, rounding a rate of 1.5555%
+        to 5 decimal places results in 0.015555 becoming 0.01556, or 1.556%.
 
         This term structure will remain linked to the original
         structure, i.e., any changes in the latter will be
