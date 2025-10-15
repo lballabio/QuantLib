@@ -152,7 +152,7 @@ Copyright (C) 2020 Leonardo Arcari
 Copyright (C) 2020 Piotr Siejda
 Copyright (C) 2020, 2021 Jack Gillett
 Copyright (C) 2020, 2021 Lew Wei Hao
-Copyright (C) 2020, 2021, 2022, 2023 Marcin Rybacki
+Copyright (C) 2020, 2021, 2022, 2023, 2025 Marcin Rybacki
 
 Copyright (C) 2021 Anubhav Pandey
 Copyright (C) 2021 Magnus Mencke
