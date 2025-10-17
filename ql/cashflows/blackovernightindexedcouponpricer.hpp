@@ -37,7 +37,6 @@ namespace QuantLib {
     highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
     should be revised. */
     class BlackOvernightIndexedCouponPricer : public CompoundingOvernightIndexedCouponPricer {
-    using CompoundingOvernightIndexedCouponPricer::CompoundingOvernightIndexedCouponPricer;
     public:
         explicit BlackOvernightIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
@@ -68,7 +67,6 @@ namespace QuantLib {
     highly experimental and ad-hoc. As soon as a market best practice has evolved, the pricer
     should be revised. */
     class BlackAverageONIndexedCouponPricer : public ArithmeticAveragedOvernightIndexedCouponPricer {
-    using ArithmeticAveragedOvernightIndexedCouponPricer::ArithmeticAveragedOvernightIndexedCouponPricer;
     public:
         explicit BlackAverageONIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),

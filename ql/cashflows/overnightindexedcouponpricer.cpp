@@ -261,6 +261,7 @@ namespace QuantLib {
             effectiveSpread = finalRate - (compoundFactorWithoutSpread - 1.0) / tau;
             effectiveIndexFixing = finalRate - effectiveSpread;
         }
+
         return std::make_tuple(finalRate, effectiveSpread, effectiveIndexFixing);
     }
 
