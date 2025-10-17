@@ -66,9 +66,9 @@ namespace QuantLib {
         const Calendar& cal, const Handle<Quote>& spot, const Handle<YieldTermStructure>& domesticTS,
         const Handle<YieldTermStructure>& foreignTS, DeltaVolQuote::DeltaType dt, DeltaVolQuote::AtmType at,
         ext::optional<DeltaVolQuote::DeltaType> atmDeltaType, const Period& switchTenor, DeltaVolQuote::DeltaType ltdt,
-        DeltaVolQuote::AtmType ltat, ext::optional<QuantLib::DeltaVolQuote::DeltaType> longTermAtmDeltaType,
+        DeltaVolQuote::AtmType ltat, ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType,
         InterpolatedFxSmileSection::InterpolationMethod im, bool flatStrikeExtrapolation,
-        QuantLib::BlackVolTimeExtrapolation timeExtrapolation)
+        BlackVolTimeExtrapolation timeExtrapolation)
         : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
         putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
         foreignTS_(foreignTS), dt_(dt), at_(at), atmDeltaType_(atmDeltaType), switchTenor_(switchTenor), ltdt_(ltdt),
@@ -113,7 +113,7 @@ namespace QuantLib {
             }
 
             // BlackVarianceCurve will make a local copy of vols and dates
-            interpolators_.push_back(QuantLib::ext::make_shared<BlackVarianceCurve>(
+            interpolators_.push_back(ext::make_shared<BlackVarianceCurve>(
                 referenceDate, dates, vols, dayCounter, forceMonotoneVariance,
                 timeExtrapolation));
         }
@@ -124,7 +124,7 @@ namespace QuantLib {
         registerWith(foreignTS_);
     }
 
-    QuantLib::ext::shared_ptr<FxSmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(Time t) const {
+    ext::shared_ptr<FxSmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(Time t) const {
 
         Real spot = spot_->value();
         DiscountFactor dDiscount = domesticTS_->discount(t);
@@ -202,15 +202,15 @@ namespace QuantLib {
                 "BlackVolatilitySurfaceDelta::blackVolSmile(" << t << "): no strikes given, this is unexpected.");
         if (vols.size() == 1) {
             // handle the situation that we only have one strike (might occur for e.g. t=0)
-            return QuantLib::ext::make_shared<ConstantFxSmileSection>(vols.front());
+            return ext::make_shared<ConstantFxSmileSection>(vols.front());
         } else {
             // we have at least two strikes
-            return QuantLib::ext::make_shared<InterpolatedFxSmileSection>(spot, dDiscount, fDiscount, t, strikes, vols,
+            return ext::make_shared<InterpolatedFxSmileSection>(spot, dDiscount, fDiscount, t, strikes, vols,
                                                                         interpolationMethod_, flatStrikeExtrapolation_);
         }
     }
 
-    QuantLib::ext::shared_ptr<FxSmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(const Date& d) const {
+    ext::shared_ptr<FxSmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(const Date& d) const {
         return blackVolSmile(timeFromReference(d));
     }
 

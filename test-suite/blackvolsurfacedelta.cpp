@@ -70,6 +70,55 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaConstantVol) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
+
+    BOOST_TEST_MESSAGE("Testing BlackVolatilitySurfaceDelta with non constant vol surface...");
+
+    std::vector<std::vector<Volatility>> vols = {
+        {0.15, 0.13, 0.135}, // 1M
+        {0.14, 0.11, 0.125}, // 6M
+        {0.13, 0.10, 0.12}, // 1Y
+        {0.125, 0.095, 0.115}, // 2Y
+    };
+
+    Date refDate(1, Jan, 2010);
+    Settings::instance().evaluationDate() = refDate;
+
+    // Setup a 2x2
+    vector<Date> dates = { 
+        refDate + Period(1, Months), 
+        refDate + Period(6, Months),
+        refDate + Period(1, Years),
+        refDate + Period(2, Years)
+    };
+    vector<Real> putDeltas = { -0.25 };
+    vector<Real> callDeltas = { 0.25 };
+    bool hasAtm = true;
+    Matrix blackVolMatrix(4, 3);
+
+    for (Size i = 0; i < vols.size(); ++i) {
+        for (Size j = 0; j < vols.at(0).size(); ++j) {
+            blackVolMatrix[i][j] = vols[i][j];
+        }
+    }
+
+    // dummy spot and zero yield curve
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(1.18));
+    Handle<YieldTermStructure> dts(ext::make_shared<FlatForward>(0, TARGET(), 0.02, ActualActual(ActualActual::ISDA)));
+    Handle<YieldTermStructure> fts(ext::make_shared<FlatForward>(0, TARGET(), 0.035, ActualActual(ActualActual::ISDA)));
+
+    // build a vol surface
+    BOOST_TEST_MESSAGE("Build Surface");
+    BlackVolatilitySurfaceDelta surface(refDate, dates, putDeltas, callDeltas, hasAtm, blackVolMatrix, ActualActual(ActualActual::ISDA),
+                                        TARGET(), spot, dts, fts);
+
+    // ask for volatility at lots of points, should be constVol at every point
+    // make sure we ask for vols outside 25D and 2Y
+    auto smile1M = surface.blackVolSmile(refDate + Period(1, Months));
+    BOOST_CHECK_CLOSE(smile1M->volatility(1.18), 0.13010360399, 1e-8);
+    
+}
+
 BOOST_AUTO_TEST_CASE(testInterpolatedFxSmileSectionConstruction) {
 
     BOOST_TEST_MESSAGE("Testing InterpolatedFxSmileSection...");
