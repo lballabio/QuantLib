@@ -137,7 +137,7 @@ Rate calculateExtrapolatedForward(Time t, Time fsp, Rate llfr, Rate ufr, Real al
     return ufr + (llfr - ufr) * beta;
 }
 
-void checkDutchBankRates(const std::vector<Datum> expectedRates,
+void checkDutchBankRates(const std::vector<Datum>& expectedRates,
                          const ext::optional<Integer>& rounding = ext::nullopt,
                          Compounding compounding = Compounded,
                          Frequency frequency = Annual,
