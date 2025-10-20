@@ -15,8 +15,9 @@ namespace QuantLib {
               template <class> class Bootstrap = IterativeBootstrap>
     class PiecewiseSpreadYieldCurve
         : public PiecewiseYieldCurve<detail::SpreadTraits<Traits>, Interpolator, Bootstrap> {
-      private:
+      public:
         typedef detail::SpreadTraits<Traits> traits_type;
+      private:
         typedef PiecewiseYieldCurve<traits_type, Interpolator, Bootstrap> base_curve;
 
       public:
