@@ -129,6 +129,8 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorGreeks) {
     Real refDividendRho = -42.063116955653371;
     Real refStrikeSensitivity = -0.34716955388262527;
     Real refStrikeGamma = 0.017010825407788574;
+    Real refVanna = 0.65822482825836837;
+    Real refVolga = 9.2856964243177753;
 
     BlackCalculator calc(Option::Call, strike, forward, stdDev, discount);
 
@@ -146,6 +148,8 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorGreeks) {
     Real dividendRho = calc.dividendRho(maturity);
     Real strikeSensitivity = calc.strikeSensitivity();
     Real strikeGamma = calc.strikeGamma();
+    Real vanna = calc.vanna(spot, maturity);
+    Real volga = calc.volga(maturity);
 
     if (std::fabs(deltaForward - refDeltaFwd) > tolerance) {
         BOOST_ERROR("BlackCalculator call fwd delta error");
@@ -201,6 +205,14 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorGreeks) {
 
     if (std::fabs(strikeGamma - refStrikeGamma) > tolerance) {
         BOOST_ERROR("BlackCalculator call strike gamma error");
+    }
+
+    if (std::fabs(vanna - refVanna) > tolerance) {
+        BOOST_ERROR("BlackCalculator call vanna error");
+    }
+
+    if (std::fabs(volga - refVolga) > tolerance) {
+        BOOST_ERROR("BlackCalculator call volga error");
     }
 }
 
@@ -284,6 +296,7 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorNumericalDerivatives) {
     Real strike = 100.0;
     Real stdDev = 0.20;
     Real discount = 0.95;
+    Real maturity = 1.0;
     Real bump = 1e-4;
     Real tolerance = 1e-3;
 
@@ -314,6 +327,31 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorNumericalDerivatives) {
                    << "analytical=" << analyticalGamma 
                    << " numerical=" << numericalGamma 
                    << " error=" << gammaError);
+    }
+
+    Real vanna = calc.vanna(forward, maturity);
+    Real volga = calc.volga(maturity);
+
+    // Finite difference for vanna: dVega/dForward
+    Real vegaFwdUp = calcUp.vega(maturity);
+    Real vegaFwdDown = calcDown.vega(maturity);
+    Real vannaFD = (vegaFwdUp - vegaFwdDown) / (2.0 * bump);
+
+    if (std::fabs(vanna - vannaFD) > tolerance) {
+        BOOST_ERROR("BlackCalculator call vanna error: analytical="
+                    << vanna << " finite-diff=" << vannaFD << " error=" << (vanna - vannaFD));
+    }
+
+    // Finite difference for volga: dVega/dVol
+    BlackCalculator calcVolUp(Option::Call, strike, forward, stdDev + bump, discount);
+    BlackCalculator calcVolDown(Option::Call, strike, forward, stdDev - bump, discount);
+    Real vegaVolUp = calcVolUp.vega(maturity);
+    Real vegaVolDown = calcVolDown.vega(maturity);
+    Real volgaFD = (vegaVolUp - vegaVolDown) / (2.0 * bump);
+
+    if (std::fabs(volga - volgaFD) > tolerance) {
+        BOOST_ERROR("BlackCalculator call volga error: analytical="
+                    << volga << " finite-diff=" << volgaFD << " error=" << (volga - volgaFD));
     }
 }
 
@@ -405,6 +443,20 @@ BOOST_AUTO_TEST_CASE(testBlackCalculatorZeroVolatilityGreeks) {
         if (!std::isfinite(strikeSens) || !std::isfinite(strikeGamma)) {
             BOOST_ERROR("BlackCalculator " << testCase.description 
                        << " strike sensitivities should be finite with zero volatility");
+        }
+
+        Real vanna = calc.vanna(spot, maturity);
+        Real volga = calc.volga(maturity);
+
+        if (std::fabs(vanna) > tolerance) {
+            BOOST_ERROR("BlackCalculator "
+                        << testCase.description
+                        << " vanna should be zero with zero volatility: " << vanna);
+        }
+        if (std::fabs(volga) > tolerance) {
+            BOOST_ERROR("BlackCalculator "
+                        << testCase.description
+                        << " volga should be zero with zero volatility: " << volga);
         }
     }
 
