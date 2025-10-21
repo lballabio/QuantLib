@@ -6,7 +6,7 @@ on:
         description: 'Boost version'
         required: true
 env:
-  ROLLING: plucky
+  ROLLING: questing
 jobs:
   docker-images:
     runs-on: ubuntu-latest
