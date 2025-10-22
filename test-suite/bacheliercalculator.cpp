@@ -132,6 +132,8 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorGreeks) {
     Real refDividendRho = -38.122899060122243;
     Real refStrikeSensitivity = -0.38122899060122245;
     Real refStrikeGamma = 0.018366735548135338;
+    Real refVanna = 0.0048333514600356151;
+    Real refVolga = 0.0011479209717584586;
 
     BachelierCalculator calc(Option::Call, strike, forward, stdDev, discount);
 
@@ -149,6 +151,8 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorGreeks) {
     Real dividendRho = calc.dividendRho(maturity);
     Real strikeSensitivity = calc.strikeSensitivity();
     Real strikeGamma = calc.strikeGamma();
+    Real vanna = calc.vanna(maturity);
+    Real volga = calc.volga(maturity);
     
     if (std::fabs(deltaForward - refDeltaFwd) > tolerance) {
         BOOST_ERROR("BachelierCalculator call fwd delta error");
@@ -204,6 +208,14 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorGreeks) {
 
     if (std::fabs(strikeGamma - refStrikeGamma) > tolerance) {
         BOOST_ERROR("BachelierCalculator call strike gamma error");
+    }
+
+    if (std::fabs(vanna - refVanna) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call vanna error");
+    }
+
+    if (std::fabs(volga - refVolga) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call volga error");
     }
 
 }
@@ -358,6 +370,33 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorNumericalDerivatives) {
                    << " numerical=" << numericalVega * std::sqrt(maturity)
                    << " error=" << vegaError);
     }
+
+    // --- Vanna and Volga tests ---
+    // Analytical values
+    Real vanna = calc.vanna(maturity);
+    Real volga = calc.volga(maturity);
+
+    // Finite difference for vanna: dVega/dForward
+    BachelierCalculator calcFwdUp(Option::Call, strike, forward + bump, stdDev, discount);
+    BachelierCalculator calcFwdDown(Option::Call, strike, forward - bump, stdDev, discount);
+    Real vegaFwdUp = calcFwdUp.vega(maturity);
+    Real vegaFwdDown = calcFwdDown.vega(maturity);
+    Real vannaFD = (vegaFwdUp - vegaFwdDown) / (2.0 * bump);
+
+    if (std::fabs(vanna - vannaFD) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call vanna error: analytical="
+                    << vanna << " finite-diff=" << vannaFD << " error=" << (vanna - vannaFD));
+    }
+
+    // Finite difference for volga: dVega/dVol
+    Real vegaVolUp = calcVolUp.vega(maturity);
+    Real vegaVolDown = calcVolDown.vega(maturity);
+    Real volgaFD = (vegaVolUp - vegaVolDown) / (2.0 * bump);
+
+    if (std::fabs(volga - volgaFD) > tolerance) {
+        BOOST_ERROR("BachelierCalculator call volga error: analytical="
+                    << volga << " finite-diff=" << volgaFD << " error=" << (volga - volgaFD));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testBachelierCalculatorAgainstAnalyticalFormula) {
@@ -500,6 +539,20 @@ BOOST_AUTO_TEST_CASE(testBachelierCalculatorZeroVolatilityGreeks) {
             BOOST_ERROR("BachelierCalculator " << testCase.description 
                        << " ITM cash probability incorrect with zero vol: expected=" 
                        << expectedProb << " actual=" << itmCashProb);
+        }
+
+        Real vanna = calc.vanna(maturity);
+        Real volga = calc.volga(maturity);
+
+        if (std::fabs(vanna) > tolerance) {
+            BOOST_ERROR("BachelierCalculator "
+                        << testCase.description
+                        << " vanna should be zero with zero volatility: " << vanna);
+        }
+        if (std::fabs(volga) > tolerance) {
+            BOOST_ERROR("BachelierCalculator "
+                        << testCase.description
+                        << " volga should be zero with zero volatility: " << volga);
         }
     }
 }

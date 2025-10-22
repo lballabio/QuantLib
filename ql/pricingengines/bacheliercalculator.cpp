@@ -345,4 +345,25 @@ namespace QuantLib {
         
         return discount_ * n_d_ / stdDev_;
     }
+
+    // Sensitivity of Vega to forward (Vanna)
+    Real BachelierCalculator::vanna(Time maturity) const {
+        if (maturity <= QL_EPSILON || stdDev_ <= QL_EPSILON) {
+            return 0.0;
+        }
+        // d_ is (F-K)/stdDev_
+        // n_d_ is n(d)
+        // Vanna = -d * n(d) / stdDev_ * sqrt(T)
+        return -d_ * n_d_ * std::sqrt(maturity) / stdDev_;
+    }
+
+    // Sensitivity of Vega to volatility (Volga)
+    Real BachelierCalculator::volga(Time maturity) const {
+        if (maturity <= QL_EPSILON || stdDev_ <= QL_EPSILON) {
+            return 0.0;
+        }
+        // Volga = d^2 / stdDev_ * Vega
+        Real vega = this->vega(maturity);
+        return (d_ * d_ / stdDev_) * vega;
+    }
 }
