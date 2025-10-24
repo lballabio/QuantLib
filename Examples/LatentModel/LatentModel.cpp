@@ -260,7 +260,6 @@ int main(int, char* []) {
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
                 cout << 
                     correlsTlm[iName1][iName2] << " , ";
-            ;
                 cout << endl;
         }
         cout << endl;
@@ -279,7 +278,6 @@ int main(int, char* []) {
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
                 cout << 
                     correlsTrand[iName1][iName2] << " , ";
-            ;
                 cout << endl;
         }
 
