@@ -258,10 +258,8 @@ int main(int, char* []) {
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                    correlsTlm[iName1][iName2] << " , ";
-            ;
-                cout << endl;
+                cout << correlsTlm[iName1][iName2] << " , ";
+            cout << endl;
         }
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
@@ -277,10 +275,8 @@ int main(int, char* []) {
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                    correlsTrand[iName1][iName2] << " , ";
-            ;
-                cout << endl;
+                cout << correlsTrand[iName1][iName2] << " , ";
+            cout << endl;
         }
 
         return 0;
