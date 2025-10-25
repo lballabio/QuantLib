@@ -21,6 +21,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/indexes/bmaindex.hpp>
 #include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
@@ -42,6 +43,7 @@
 #include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/globalbootstrapvars.hpp>
 #include <ql/termstructures/localbootstrap.hpp>
+#include <ql/termstructures/multicurve.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/oisratehelper.hpp>
@@ -1531,6 +1533,145 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
                           curveFutures->discount(helper->pillarDate()),
                           1e-6);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testMultiCurve) {
+
+    BOOST_TEST_MESSAGE("Testing multicurve bootstrap...");
+
+    CommonVars vars(Date(23, Oct, 2025));
+
+    constexpr Real accuracy = 1E-10;
+
+    Handle<YieldTermStructure> discountCurve(
+        ext::make_shared<FlatForward>(vars.settlement, 0.02, Actual360()));
+
+    RelinkableHandle<YieldTermStructure> intcurve3m, intcurve6m;
+
+    auto euribor3m = ext::make_shared<Euribor3M>(intcurve3m);
+    auto euribor6m = ext::make_shared<Euribor6M>(intcurve6m);
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers3m, helpers6m;
+
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.03));
+    Handle<Quote> b(ext::make_shared<SimpleQuote>(0.0020));
+
+    for (Size i = 1; i <= 9; ++i) {
+        helpers3m.push_back(ext::make_shared<FraRateHelper>(
+            q, i, i + 3, euribor3m->fixingDays(), euribor3m->fixingCalendar(),
+            euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m->dayCounter(),
+            Pillar::LastRelevantDate));
+    }
+
+    for (Size i = 2; i <= 10; ++i) {
+        helpers3m.push_back(ext::make_shared<IborIborBasisSwapRateHelper>(
+            b, i * Years, euribor3m->fixingDays(), euribor3m->fixingCalendar(),
+            euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m, euribor6m,
+            discountCurve, true));
+    }
+
+    for (Size i = 1; i <= 4; ++i) {
+        helpers6m.push_back(ext::make_shared<IborIborBasisSwapRateHelper>(
+            b, (i * 3) * Months, euribor3m->fixingDays(), euribor3m->fixingCalendar(),
+            euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m, euribor6m,
+            discountCurve, false));
+    }
+
+    for (Size i = 2; i <= 10; ++i) {
+        helpers6m.push_back(ext::make_shared<SwapRateHelper>(
+            q, i * Years, euribor6m->fixingCalendar(), Annual, Following,
+            Thirty360(Thirty360::BondBasis), euribor6m, Handle<Quote>(), 0 * Days, discountCurve));
+    }
+
+    using CurveType = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
+
+    auto ptr3m = ext::make_shared<CurveType>(vars.today, helpers3m, Actual360(), LogLinear(),
+                                             GlobalBootstrap<CurveType>(accuracy));
+    auto ptr6m = ext::make_shared<CurveType>(vars.today, helpers6m, Actual360(), LogLinear(),
+                                             GlobalBootstrap<CurveType>(accuracy));
+
+    auto multiCurve = ext::make_shared<MultiCurve>(ext::make_shared<MultiCurveBootstrap>(accuracy));
+
+    auto curve3m = multiCurve->addCurve(intcurve3m, ptr3m, &ptr3m->bootstrap());
+    auto curve6m = multiCurve->addCurve(intcurve6m, ptr6m, &ptr6m->bootstrap());
+
+    // check instrument npvs
+
+    constexpr Real tolerance = 1E-10;
+
+    for (Size i = 1; i <= 9; ++i) {
+        Date start = euribor3m->fixingCalendar().advance(
+            euribor3m->fixingCalendar().advance(vars.today, euribor3m->fixingDays(), Days), i,
+            Months, euribor3m->businessDayConvention(), euribor3m->endOfMonth());
+        ForwardRateAgreement fra(euribor3m, start, Position::Long, q->value(), 1.0, curve3m);
+        BOOST_CHECK_CLOSE(fra.forwardRate().rate(), q->value(), tolerance);
+    }
+
+    for (Size i = 2; i <= 10; ++i) {
+        Date start = euribor3m->fixingCalendar().advance(vars.today, euribor3m->fixingDays(), Days);
+        Date maturity = euribor3m->fixingCalendar().advance(start, i * Years,
+                                                            euribor3m->businessDayConvention());
+        Schedule baseSchedule = MakeSchedule()
+                                   .from(start)
+                                   .to(maturity)
+                                   .withTenor(3 * Months)
+                                   .withCalendar(euribor3m->fixingCalendar())
+                                   .withConvention(euribor3m->businessDayConvention())
+                                   .endOfMonth(euribor3m->endOfMonth())
+                                   .forwards();
+        Schedule otherSchedule = MakeSchedule()
+                                     .from(start)
+                                     .to(maturity)
+                                     .withTenor(6 * Months)
+                                     .withCalendar(euribor6m->fixingCalendar())
+                                     .withConvention(euribor6m->businessDayConvention())
+                                     .endOfMonth(euribor6m->endOfMonth())
+                                     .forwards();
+        Leg baseLeg = IborLeg(baseSchedule, euribor3m).withSpreads(b->value()).withNotionals(1.0);
+        Leg otherLeg = IborLeg(otherSchedule, euribor6m).withNotionals(1.0);
+        Swap swap(baseLeg, otherLeg);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+    }
+
+    for (Size i = 1; i <= 4; ++i) {
+        Date start = euribor3m->fixingCalendar().advance(vars.today, euribor3m->fixingDays(), Days);
+        Date maturity = euribor3m->fixingCalendar().advance(start, (i * 3) * Months,
+                                                            euribor3m->businessDayConvention());
+        Schedule baseSchedule = MakeSchedule()
+                                   .from(start)
+                                   .to(maturity)
+                                   .withTenor(3 * Months)
+                                   .withCalendar(euribor3m->fixingCalendar())
+                                   .withConvention(euribor3m->businessDayConvention())
+                                   .endOfMonth(euribor3m->endOfMonth())
+                                   .forwards();
+        Schedule otherSchedule = MakeSchedule()
+                                     .from(start)
+                                     .to(maturity)
+                                     .withTenor(6 * Months)
+                                     .withCalendar(euribor6m->fixingCalendar())
+                                     .withConvention(euribor6m->businessDayConvention())
+                                     .endOfMonth(euribor6m->endOfMonth())
+                                     .forwards();
+        Leg baseLeg = IborLeg(baseSchedule, euribor3m).withSpreads(b->value()).withNotionals(1.0);
+        Leg otherLeg = IborLeg(otherSchedule, euribor6m).withNotionals(1.0);
+        Swap swap(baseLeg, otherLeg);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+    }
+
+    for (Size i = 2; i <= 10; ++i) {
+        VanillaSwap swap = MakeVanillaSwap(i * Years, euribor6m, q->value())
+                               .withSettlementDays(euribor6m->fixingDays())
+                               .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
+                               .withFixedLegTenor(1 * Years)
+                               .withFixedLegConvention(Following)
+                               .withFixedLegTerminationDateConvention(Following);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+    }
+
 }
 
 template <template<class C> class Bootstrap>
