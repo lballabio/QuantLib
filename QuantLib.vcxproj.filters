@@ -1974,6 +1974,9 @@
     <ClInclude Include="ql\termstructures\localbootstrap.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\multicurve.hpp">
+      <Filter>termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\voltermstructure.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
@@ -5544,6 +5547,9 @@
       <Filter>termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\inflationtermstructure.cpp">
+      <Filter>termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\multicurve.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\voltermstructure.cpp">

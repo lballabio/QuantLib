@@ -820,6 +820,7 @@ set(QL_SOURCES
     termstructures/defaulttermstructure.cpp
     termstructures/globalbootstrap.cpp
     termstructures/globalbootstrapvars.cpp
+    termstructures/multicurve.cpp
     termstructures/inflation/inflationhelpers.cpp
     termstructures/inflation/seasonality.cpp
     termstructures/inflationtermstructure.cpp
@@ -2079,6 +2080,7 @@ set(QL_HEADERS
     termstructures/defaulttermstructure.hpp
     termstructures/globalbootstrap.hpp
     termstructures/globalbootstrapvars.hpp
+    termstructures/multicurve.hpp
     termstructures/inflation/inflationhelpers.hpp
     termstructures/inflation/inflationtraits.hpp
     termstructures/inflation/interpolatedyoyinflationcurve.hpp
