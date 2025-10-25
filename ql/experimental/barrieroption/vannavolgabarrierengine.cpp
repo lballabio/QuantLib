@@ -191,11 +191,6 @@ namespace QuantLib {
 
             //BS price with atm vol
             Real priceBS = barrierOption.NPV();
-
-            Real priceAtmCallBS = blackFormula(Option::Call,atmStrike,
-                                              forward, 
-                                              atmVol_->value() * sqrt(T_),
-                                              domesticTS_->discount(T_));
             Real price25CallBS = blackFormula(Option::Call,call25Strike,
                                               forward, 
                                               atmVol_->value() * sqrt(T_),
@@ -206,11 +201,6 @@ namespace QuantLib {
                                               domesticTS_->discount(T_));
 
             //market price
-            Real priceAtmCallMkt = blackFormula(Option::Call,atmStrike,
-                                              forward, 
-                                              atmVol_->value() * sqrt(T_),
-                                              domesticTS_->discount(T_));
-
             Real price25CallMkt = blackFormula(Option::Call,call25Strike,
                                               forward, 
                                               call25Vol * sqrt(T_),
@@ -331,8 +321,7 @@ namespace QuantLib {
             Real p_survival = 1.0 - probTouch;
 
             Real lambda = p_survival ;
-            Real adjust = q[0]*(priceAtmCallMkt - priceAtmCallBS) 
-                        + q[1]*(price25CallMkt - price25CallBS)
+            Real adjust = q[1]*(price25CallMkt - price25CallBS)
                         + q[2]*(price25PutMkt - price25PutBS);
             Real outPrice = priceBS + lambda*adjust;//
             Real inPrice;
