@@ -52,7 +52,7 @@ public:
 class MultiCurveBootstrap : public QuantLib::ext::enable_shared_from_this<MultiCurveBootstrap> {
   public:
     explicit MultiCurveBootstrap(Real accuracy);
-    MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+    explicit MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                         ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     void add(const MultiCurveBootstrapContributor* c);
     void runMultiCurveBootstrap();
