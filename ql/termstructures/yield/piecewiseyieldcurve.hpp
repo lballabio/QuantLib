@@ -142,6 +142,7 @@ namespace QuantLib {
         //@{
         void update() override;
         //@}
+        const bootstrap_type& bootstrap() const { return bootstrap_; }
       protected:
         template <class... Args>
         PiecewiseYieldCurve(
