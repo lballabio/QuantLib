@@ -1570,9 +1570,9 @@ BOOST_AUTO_TEST_CASE(testMultiCurve) {
             discountCurve, true));
     }
 
-    for (Size i = 1; i <= 4; ++i) {
+    for (Size i = 1; i <= 3; ++i) {
         helpers6m.push_back(ext::make_shared<IborIborBasisSwapRateHelper>(
-            b, (i * 3) * Months, euribor3m->fixingDays(), euribor3m->fixingCalendar(),
+            b, (i * 6) * Months, euribor3m->fixingDays(), euribor3m->fixingCalendar(),
             euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m, euribor6m,
             discountCurve, false));
     }
@@ -1634,9 +1634,9 @@ BOOST_AUTO_TEST_CASE(testMultiCurve) {
         BOOST_CHECK_SMALL(swap.NPV(), tolerance);
     }
 
-    for (Size i = 1; i <= 4; ++i) {
+    for (Size i = 1; i <= 3; ++i) {
         Date start = euribor3m->fixingCalendar().advance(vars.today, euribor3m->fixingDays(), Days);
-        Date maturity = euribor3m->fixingCalendar().advance(start, (i * 3) * Months,
+        Date maturity = euribor3m->fixingCalendar().advance(start, (i * 6) * Months,
                                                             euribor3m->businessDayConvention());
         Schedule baseSchedule = MakeSchedule()
                                    .from(start)
