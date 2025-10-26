@@ -42,8 +42,7 @@ public:
     virtual ~MultiCurveBootstrapContributor() {}
     virtual void
     setParentBootstrapper(const QuantLib::ext::shared_ptr<MultiCurveBootstrap>& b) const = 0;
-    virtual Array guess() const = 0;
-    virtual void setupCostFunction() const = 0;
+    virtual Array setupCostFunction() const = 0;
     virtual void setCostFunctionArgument(const Array& v) const = 0;
     virtual Array evaluateCostFunction() const = 0;
     virtual void setToValid() const = 0;
@@ -132,8 +131,7 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
     void initialize() const;
     void
     setParentBootstrapper(const QuantLib::ext::shared_ptr<MultiCurveBootstrap>& b) const override;
-    Array guess() const override;
-    void setupCostFunction() const override;
+    Array setupCostFunction() const override;
     void setCostFunctionArgument(const Array& v) const override;
     Array evaluateCostFunction() const override;
     void setToValid() const override;
@@ -301,7 +299,7 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     initialized_ = true;
 }
 
-template <class Curve> void GlobalBootstrap<Curve>::setupCostFunction() const {
+template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
 
     // for single-curve boostrap, this was done in LazyObject::calculate() already, but for
     // multi-curve boostrap we have to do this manually for all contributing curves except
@@ -343,10 +341,7 @@ template <class Curve> void GlobalBootstrap<Curve>::setupCostFunction() const {
         ts_->interpolation_ =
             ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(), ts_->data_.begin());
     }
-}
 
-template <class Curve>
-Array GlobalBootstrap<Curve>::guess() const {
     // Initial guess. We have guesses for the curve values first (numberPillars),
     // followed by guesses for the additional variables.
     Array additionalGuesses;
@@ -390,17 +385,18 @@ Array GlobalBootstrap<Curve>::evaluateCostFunction() const {
     std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
     return result;
 }
-    
-template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
-  if (parentBootstrapper_) {
+template <class Curve>
+void GlobalBootstrap<Curve>::calculate() const {
+
+    if (parentBootstrapper_) {
         parentBootstrapper_->runMultiCurveBootstrap();
         return;
     }
 
     // single curve boostrap
 
-    setupCostFunction();
+    Array guess = setupCostFunction();
 
     NoConstraint noConstraint;
 
@@ -409,7 +405,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
         return this->evaluateCostFunction();
     });
 
-    Problem problem(costFunction, noConstraint, guess());
+    Problem problem(costFunction, noConstraint, guess);
     EndCriteria::Type endType = optimizer_->minimize(problem, *endCriteria_);
     QL_REQUIRE(EndCriteria::succeeded(endType),
                "global bootstrap failed to minimize to required accuracy: " << endType);

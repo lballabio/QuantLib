@@ -43,8 +43,7 @@ void MultiCurveBootstrap::runMultiCurveBootstrap() {
     std::vector<Real> globalGuess;
 
     for (auto const& c : contributors_) {
-        c->setupCostFunction();
-        Array guess = c->guess();
+        Array guess = c->setupCostFunction();
         globalGuess.insert(globalGuess.end(), guess.begin(), guess.end());
         guessSizes.push_back(guess.size());
     }
