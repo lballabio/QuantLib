@@ -74,7 +74,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> nominalTermStructure)
     : ZeroCouponInflationSwapHelper(
         quote, swapObsLag, Date(), maturity, std::move(calendar), paymentConvention,
-        dayCounter, zii, observationInterpolation, std::move(nominalTermStructure)) {}
+        std::move(dayCounter), zii, observationInterpolation, std::move(nominalTermStructure)) {}
 
     ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
         const Handle<Quote>& quote,
