@@ -101,7 +101,7 @@ class AdditionalBootstrapVariables {
   and Traits::transformInverse() to be implemented. Also, check the usage of
   Traits::updateGuess(), Traits::guess() in this class.
 */
-template <class Curve> class GlobalBootstrap : public MultiCurveBootstrapContributor {
+template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapContributor {
     typedef typename Curve::traits_type Traits;             // ZeroYield, Discount, ForwardRate
     typedef typename Curve::interpolator_type Interpolator; // Linear, LogLinear, ...
     typedef std::function<Array(const std::vector<Time>&, const std::vector<Real>&)>
