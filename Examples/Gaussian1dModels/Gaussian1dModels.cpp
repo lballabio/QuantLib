@@ -151,7 +151,7 @@ int main(int, char *[]) {
             << "\nWe assume a multicurve setup, for simplicity with flat yield "
                "\nterm structures. The discounting curve is an Eonia curve at"
                "\na level of " << oisLevel
-            << " and the forwarding curve is an Euribior 6m curve"
+            << " and the forwarding curve is an Euribor 6m curve"
             << "\nat a level of " << forward6mLevel << std::endl;
 
         Real volLevel = 0.20;
