@@ -33,27 +33,22 @@
 
 namespace QuantLib {
 
-    class MultiCurve : public Observer
-#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-    ,
-                       public ext::enable_shared_from_this<MultiCurve>
-#endif
-    {
+    class MultiCurve : public Observer {
       public:
         explicit MultiCurve(Real accuracy);
         explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                             ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 
-        /* addCurve() takes an internal handle and returns an external handle.
-           Internal handle, which must be an empty RelinkableHandle, should be
-           used within the cycle. External handle should be used outside of the
-           cycle. */
-        Handle<YieldTermStructure> addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                                            ext::shared_ptr<YieldTermStructure> curve);
         /* add observer that should be updated during the bootstrap */
         void addBootstrapObserver(Observer* o);
 
       private:
+        template <class Traits, class Interpolator, template <class> class Bootstrap>
+        friend class PiecewiseYieldCurve;
+        Handle<YieldTermStructure> addCurve(ext::shared_ptr<MultiCurve> multiCurve,
+                                            RelinkableHandle<YieldTermStructure>& internalHandle,
+                                            ext::shared_ptr<YieldTermStructure> curve,
+                                            MultiCurveBootstrapContributor* bootstrap);
         void update() override;
         ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap_;
         std::vector<ext::shared_ptr<YieldTermStructure>> curves_;

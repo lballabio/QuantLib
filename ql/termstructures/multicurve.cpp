@@ -30,29 +30,21 @@ namespace QuantLib {
     : multiCurveBootstrap_(ext::make_shared<MultiCurveBootstrap>(optimizer, endCriteria)) {}
 
     Handle<YieldTermStructure>
-    MultiCurve::addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                         ext::shared_ptr<YieldTermStructure> curve) {
+    MultiCurve::addCurve(ext::shared_ptr<MultiCurve> multiCurve,
+                         RelinkableHandle<YieldTermStructure>& internalHandle,
+                         ext::shared_ptr<YieldTermStructure> curve,
+                         MultiCurveBootstrapContributor* bootstrap) {
 
         QL_REQUIRE(internalHandle.empty(),
                    "internal handle must be empty; was the curve added already?");
         QL_REQUIRE(curve != nullptr, "curve must not be null");
 
-        auto bootstrap = curve->multiCurveBootstrapContributor();
-        QL_REQUIRE(bootstrap,
-                   "curve does not provide a valid multi curve bootstrap contributor");
-
         multiCurveBootstrap_->add(bootstrap);
 
         internalHandle.linkTo(ext::shared_ptr<YieldTermStructure>(curve.get(), null_deleter()),
                               false);
-        Handle<YieldTermStructure> externalHandle(ext::shared_ptr<YieldTermStructure>(
-#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-            ext::static_pointer_cast<MultiCurve>(shared_from_this())
-#else
-            shared_from_this()
-#endif
-                ,
-            curve.get()));
+        Handle<YieldTermStructure> externalHandle(
+            ext::shared_ptr<YieldTermStructure>(multiCurve, curve.get()));
         registerWithObservables(curve);
         curves_.push_back(std::move(curve));
 
