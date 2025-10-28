@@ -39,7 +39,7 @@ class MultiCurveBootstrap;
 
 class MultiCurveBootstrapContributor {
 public:
-    virtual ~MultiCurveBootstrapContributor() {}
+    virtual ~MultiCurveBootstrapContributor() = default;
     virtual void
     setParentBootstrapper(const QuantLib::ext::shared_ptr<MultiCurveBootstrap>& b) const = 0;
     virtual Array setupCostFunction() const = 0;

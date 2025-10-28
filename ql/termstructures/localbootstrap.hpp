@@ -91,6 +91,7 @@ namespace QuantLib {
         LocalBootstrap(Size localisation = 2,
                        bool forcePositive = true,
                        Real accuracy = Null<Real>());
+        virtual ~LocalBootstrap() = default;
         void setup(Curve* ts);
         void calculate() const;
 

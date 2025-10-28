@@ -28,6 +28,7 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <utility>
 
@@ -142,7 +143,9 @@ namespace QuantLib {
         //@{
         void update() override;
         //@}
-        const void* multiCurveBootstrapContributor() const override { return &bootstrap_; }
+        const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const override {
+            return dynamic_cast<const MultiCurveBootstrapContributor*>(&bootstrap_);
+        }
 
       protected:
         template <class... Args>

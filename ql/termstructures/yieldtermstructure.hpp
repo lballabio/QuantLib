@@ -157,7 +157,7 @@ namespace QuantLib {
         void update() override;
         //@}
 
-        virtual const void* multiCurveBootstrapContributor() const { return nullptr; }
+        virtual const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const { return nullptr; }
 
       protected:
         /*! \name Calculations
