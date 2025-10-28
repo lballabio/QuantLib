@@ -33,10 +33,8 @@ namespace QuantLib {
                    "internal handle must be empty; was the curve added already?");
         QL_REQUIRE(curve != nullptr, "curve must not be null");
 
-        auto bootstrap = static_cast<const MultiCurveBootstrapContributor*>(
-            curve->multiCurveBootstrapContributor());
-        QL_REQUIRE(bootstrap,
-                   "curve does not provide a valid multi curve bootstrap contributor");
+        auto bootstrap = curve->multiCurveBootstrapContributor();
+        QL_REQUIRE(bootstrap, "curve does not provide a valid multi curve bootstrap contributor");
 
         multiCurveBootstrap_->add(bootstrap);
 
@@ -45,31 +43,16 @@ namespace QuantLib {
         Handle<YieldTermStructure> externalHandle(
             ext::shared_ptr<YieldTermStructure>(shared_from_this(), curve.get()));
 
-        curves_.push_back({std::move(curve), ext::make_shared<Updater>()});
-
-        curves_.back().updater->addObservable(curves_.back().ptr);
-
-        for(Size i=0;i<curves_.size()-1;++i) {
-            curves_.back().updater->addObserver(curves_[i].ptr);
-            curves_[i].updater->addObserver(curves_.back().ptr);
-        }
+	registerWithObservables(curve);
+        curves_.push_back(std::move(curve));
 
         return externalHandle;
     }
 
-    void MultiCurve::Updater::addObservable(const ext::shared_ptr<Observable>& curve) {
-        QL_REQUIRE(curve != nullptr, "Updater::addObservable(): got null curve");
-        registerWith(curve);
-    }
-
-    void MultiCurve::Updater::addObserver(ext::shared_ptr<Observer> curve) {
-        QL_REQUIRE(curve != nullptr, "Updater::addObserver(): got null curve");
-        observers_.push_back(std::move(curve));
-    }
-
-    void MultiCurve::Updater::update() {
-        for (auto const& c : observers_)
+    void MultiCurve::update() {
+        for (auto const& c : curves_)
             c->update();
+	notifyObservers();
     }
 
 }

@@ -33,7 +33,9 @@
 
 namespace QuantLib {
 
-    class MultiCurve : public ext::enable_shared_from_this<MultiCurve> {
+    class MultiCurve : public ext::enable_shared_from_this<MultiCurve>,
+                       public Observer,
+                       public Observable {
       public:
         explicit MultiCurve(ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap);
 
@@ -46,21 +48,8 @@ namespace QuantLib {
 
 
       private:
-        class Updater : public Observer {
-        public:
-          void addObservable(const ext::shared_ptr<Observable>& observable);
-          void addObserver(ext::shared_ptr<Observer> observer);
-          void update() override;
-        private:
-            std::vector<ext::shared_ptr<Observer>> observers_;
-        };
-
-        struct Entry {
-            ext::shared_ptr<YieldTermStructure> ptr;
-            ext::shared_ptr<Updater> updater;
-        };
-
-        std::vector<Entry> curves_;
+        void update() override;
+        std::vector<ext::shared_ptr<YieldTermStructure>> curves_;
         ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap_;
     };
 }
