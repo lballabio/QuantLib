@@ -144,7 +144,11 @@ namespace QuantLib {
         void update() override;
         //@}
         const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const override {
-            return dynamic_cast<const MultiCurveBootstrapContributor*>(&bootstrap_);
+            if constexpr (std::is_convertible_v<bootstrap_type*, MultiCurveBootstrapContributor*>) {
+                return &bootstrap_;
+            } else {
+                return nullptr;
+            }
         }
 
       protected:

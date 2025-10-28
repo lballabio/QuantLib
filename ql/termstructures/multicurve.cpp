@@ -34,7 +34,8 @@ namespace QuantLib {
         QL_REQUIRE(curve != nullptr, "curve must not be null");
 
         auto bootstrap = curve->multiCurveBootstrapContributor();
-        QL_REQUIRE(bootstrap, "curve does not provide a valid multi curve bootstrap contributor");
+        QL_REQUIRE(bootstrap,
+                   "curve does not provide a valid multi curve bootstrap contributor");
 
         multiCurveBootstrap_->add(bootstrap);
 
