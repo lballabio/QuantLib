@@ -143,6 +143,25 @@ namespace QuantLib {
         //      maturityDate(), observationLag(), infIndex_->interpolated());
     }
 
+    Real ZeroCouponInflationSwap::fixedLegBPS() const {
+        // legBPS_[0] is 0, because fixed leg uses a SimpleCashFlow. BPSCalculator assumes
+        // that simple cashflows are not sensitive to fixedRate. We could change that to a
+        // FixedRateCoupon, however BPSCalculator also assumes that all coupons are linear
+        // in fixedRate. Our fixed leg uses annual compounding, so it does not compute the
+        // right number.
+        calculate();
+        QL_REQUIRE(endDiscounts_[0] != Null<DiscountFactor>(),
+                   "cannot calculate fixedLegBPS because end discount is not populated");
+
+        const Spread basisPoint = 1.0e-4;
+        DiscountFactor df = payer_[0] * endDiscounts_[0];
+        Real T =
+            inflationYearFraction(infIndex_->frequency(),
+                                  detail::CPI::isInterpolated(observationInterpolation_),
+                                  dayCounter_, baseDate_, obsDate_);
+
+        return df * nominal_ * (pow(1.0 + fixedRate_ + basisPoint, T) - pow(1.0 + fixedRate_, T));
+    }
 
     Real ZeroCouponInflationSwap::fixedLegNPV() const {
         calculate();

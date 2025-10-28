@@ -120,6 +120,7 @@ namespace QuantLib {
         //! \name Results
         //@{
         Real fixedLegNPV() const;
+        Real fixedLegBPS() const;
         Real inflationLegNPV() const;
         Real fairRate() const;
         //@}
