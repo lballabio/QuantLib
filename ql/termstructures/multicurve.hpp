@@ -33,12 +33,11 @@
 
 namespace QuantLib {
 
-    class MultiCurve : public ext::enable_shared_from_this<MultiCurve>,
-                       public Observer,
-                       public Observable {
+    struct MultiCurveImpl : public Observer, public Observable {};
+
+    class MultiCurve : public MultiCurveImpl, public ext::enable_shared_from_this<MultiCurve> {
       public:
         explicit MultiCurve(ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap);
-
         /* addCurve() takes an internal handle and returns an external handle.
            Internal handle, which must be an empty RelinkableHandle, should be
            used within the cycle. External handle should be used outside of the
