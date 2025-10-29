@@ -33,9 +33,9 @@
 
 namespace QuantLib {
 
-    class MultiCurve : public ext::enable_shared_from_this<MultiCurve>,
-                       public Observer,
-                       public Observable {
+    class MultiCurve : public Observer,
+                       public Observable,
+                       public ext::enable_shared_from_this<MultiCurve> {
       public:
         explicit MultiCurve(ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap);
 
