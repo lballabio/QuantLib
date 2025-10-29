@@ -40,9 +40,14 @@ namespace QuantLib {
 
         internalHandle.linkTo(ext::shared_ptr<YieldTermStructure>(curve.get(), null_deleter()),
                               false);
-        Handle<YieldTermStructure> externalHandle(
-            ext::shared_ptr<YieldTermStructure>(shared_from_this(), curve.get()));
-
+        Handle<YieldTermStructure> externalHandle(ext::shared_ptr<YieldTermStructure>(
+#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+            ext::static_pointer_cast<MultiCurve>(shared_from_this())
+#else
+            shared_from_this()
+#endif
+                ,
+            curve.get()));
         registerWithObservables(curve);
         curves_.push_back(std::move(curve));
 
@@ -52,7 +57,6 @@ namespace QuantLib {
     void MultiCurve::update() {
         for (auto const& c : curves_)
             c->update();
-        notifyObservers();
     }
 
 }
