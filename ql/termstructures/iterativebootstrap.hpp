@@ -99,7 +99,6 @@ namespace detail {
                            bool dontThrow = false,
                            Size dontThrowSteps = 10,
                            Size maxEvaluations = MAX_FUNCTION_EVALUATIONS);
-        virtual ~IterativeBootstrap() = default;
         void setup(Curve* ts);
         void calculate() const;
       private:
