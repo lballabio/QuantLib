@@ -40,8 +40,8 @@ namespace QuantLib {
 
         internalHandle.linkTo(ext::shared_ptr<YieldTermStructure>(curve.get(), null_deleter()),
                               false);
-        Handle<YieldTermStructure> externalHandle(
-            ext::shared_ptr<YieldTermStructure>(shared_from_this(), curve.get()));
+        Handle<YieldTermStructure> externalHandle(ext::shared_ptr<YieldTermStructure>(
+            ext::enable_shared_from_this<MultiCurve>::shared_from_this(), curve.get()));
 
         registerWithObservables(curve);
         curves_.push_back(std::move(curve));
