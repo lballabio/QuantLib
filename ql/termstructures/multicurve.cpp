@@ -43,7 +43,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> externalHandle(
             ext::shared_ptr<YieldTermStructure>(shared_from_this(), curve.get()));
 
-	registerWithObservables(curve);
+        registerWithObservables(curve);
         curves_.push_back(std::move(curve));
 
         return externalHandle;
@@ -52,7 +52,7 @@ namespace QuantLib {
     void MultiCurve::update() {
         for (auto const& c : curves_)
             c->update();
-	notifyObservers();
+        notifyObservers();
     }
 
 }

@@ -27,6 +27,7 @@
 
 #include <ql/handle.hpp>
 #include <ql/patterns/observable.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/null_deleter.hpp>
