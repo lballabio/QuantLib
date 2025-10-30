@@ -54,6 +54,7 @@ class MultiCurveBootstrap : public QuantLib::ext::enable_shared_from_this<MultiC
     explicit MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                         ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     void add(const MultiCurveBootstrapContributor* c);
+    void addObserver(Observer* o);
     void runMultiCurveBootstrap();
     void setOtherContributorsToValid() const;
     void finalizeCalculation();
@@ -62,6 +63,7 @@ class MultiCurveBootstrap : public QuantLib::ext::enable_shared_from_this<MultiC
     ext::shared_ptr<OptimizationMethod> optimizer_;
     ext::shared_ptr<EndCriteria> endCriteria_;
     std::vector<const MultiCurveBootstrapContributor*> contributors_;
+    std::vector<Observer*> observers_;
 };
 
 class AdditionalBootstrapVariables {

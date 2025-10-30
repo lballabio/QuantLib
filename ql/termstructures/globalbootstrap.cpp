@@ -37,6 +37,10 @@ void MultiCurveBootstrap::add(const MultiCurveBootstrapContributor* c) {
     c->setParentBootstrapper(shared_from_this());
 }
 
+void MultiCurveBootstrap::addObserver(Observer* o) {
+    observers_.push_back(o);
+}
+
 void MultiCurveBootstrap::runMultiCurveBootstrap() {
 
     std::vector<Size> guessSizes;
@@ -60,7 +64,11 @@ void MultiCurveBootstrap::runMultiCurveBootstrap() {
             contributors_[c]->setCostFunctionArgument(tmp);
         }
 
-        // collect the contributoes result
+        // update observers
+        for(auto o: observers_)
+            o->update();
+
+        // collect the contributors' result
 
         std::vector<Array> results;
         for (std::size_t c = 0; c < contributors_.size(); ++c) {

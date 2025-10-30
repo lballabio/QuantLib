@@ -55,6 +55,10 @@ namespace QuantLib {
         return externalHandle;
     }
 
+    void MultiCurve::addBootstrapObserver(Observer* o) {
+        multiCurveBootstrap_->addObserver(o);
+    }
+
     void MultiCurve::update() {
         for (auto const& c : curves_)
             c->update();

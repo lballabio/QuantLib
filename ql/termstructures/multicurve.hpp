@@ -48,12 +48,13 @@ namespace QuantLib {
            cycle. */
         Handle<YieldTermStructure> addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
                                             ext::shared_ptr<YieldTermStructure> curve);
-
+        /* add observer that should be updated during the bootstrap */
+        void addBootstrapObserver(Observer* o);
 
       private:
         void update() override;
-        std::vector<ext::shared_ptr<YieldTermStructure>> curves_;
         ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap_;
+        std::vector<ext::shared_ptr<YieldTermStructure>> curves_;
     };
 }
 
