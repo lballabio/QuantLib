@@ -663,9 +663,7 @@ BOOST_AUTO_TEST_CASE(testOptionLetsDelta) {
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
-                                                            Continuous,
-                                                            Annual,
-                                                            Actual360()));                                               
+                                                            Continuous));
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  
@@ -784,9 +782,7 @@ BOOST_AUTO_TEST_CASE(testBachelierOptionLetsDelta) {
     ext::shared_ptr<YieldTermStructure> spreadCurve(new ZeroSpreadedTermStructure(
                                                             baseCurveHandle,
                                                             Handle<Quote>(spread),
-                                                            Continuous,
-                                                            Annual,
-                                                            Actual360()));                                               
+                                                            Continuous));
     vars.termStructure.linkTo(spreadCurve);
     Date startDate = vars.termStructure->referenceDate();
     Leg leg = vars.makeLeg(startDate,20);  

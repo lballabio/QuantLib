@@ -1142,55 +1142,6 @@ namespace QuantLib {
     }
 
     // Z-spread utility functions
-    namespace {
-
-        class ZSpreadFinder {
-          public:
-            ZSpreadFinder(const Leg& leg,
-                          const ext::shared_ptr<YieldTermStructure>& discountCurve,
-                          Real npv,
-                          const DayCounter& dc,
-                          Compounding comp,
-                          Frequency freq,
-                          bool includeSettlementDateFlows,
-                          Date settlementDate,
-                          Date npvDate)
-            : leg_(leg), npv_(npv), zSpread_(new SimpleQuote(0.0)),
-              curve_(Handle<YieldTermStructure>(discountCurve),
-                     Handle<Quote>(zSpread_), comp, freq, dc),
-              includeSettlementDateFlows_(includeSettlementDateFlows),
-              settlementDate_(settlementDate),
-              npvDate_(npvDate) {
-
-                if (settlementDate_ == Date())
-                    settlementDate_ = Settings::instance().evaluationDate();
-
-                if (npvDate_ == Date())
-                    npvDate_ = settlementDate_;
-
-                // if the discount curve allows extrapolation, let's
-                // the spreaded curve do too.
-                curve_.enableExtrapolation(
-                                  discountCurve->allowsExtrapolation());
-            }
-            Real operator()(Rate zSpread) const {
-                zSpread_->setValue(zSpread);
-                Real NPV = CashFlows::npv(leg_, curve_,
-                                          includeSettlementDateFlows_,
-                                          settlementDate_, npvDate_);
-                return npv_ - NPV;
-            }
-          private:
-            const Leg& leg_;
-            Real npv_;
-            ext::shared_ptr<SimpleQuote> zSpread_;
-            ZeroSpreadedTermStructure curve_;
-            bool includeSettlementDateFlows_;
-            Date settlementDate_, npvDate_;
-        };
-
-    } // anonymous namespace ends here
-
     Real CashFlows::npv(const Leg& leg,
                         const ext::shared_ptr<YieldTermStructure>& discountCurve,
                         Spread zSpread,
@@ -1216,9 +1167,7 @@ namespace QuantLib {
 
         ZeroSpreadedTermStructure spreadedCurve(discountCurveHandle,
                                                 zSpreadQuoteHandle,
-                                                comp, freq, dc);
-
-        spreadedCurve.enableExtrapolation(discountCurveHandle->allowsExtrapolation());
+                                                comp, freq);
 
         return npv(leg, spreadedCurve,
                    includeSettlementDateFlows,
@@ -1244,13 +1193,21 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
+        auto zSpreadQuote = ext::make_shared<SimpleQuote>();
+        ZeroSpreadedTermStructure spreadedCurve(Handle<YieldTermStructure>(discount),
+                                                Handle<Quote>(zSpreadQuote),
+                                                compounding,
+                                                frequency);
+        auto objFunction = [&](Rate zSpread) {
+            zSpreadQuote->setValue(zSpread);
+            Real NPV = CashFlows::npv(leg, spreadedCurve,
+                                      includeSettlementDateFlows,
+                                      settlementDate, npvDate);
+            return npv - NPV;
+        };
+
         Brent solver;
         solver.setMaxEvaluations(maxIterations);
-        ZSpreadFinder objFunction(leg,
-                                  discount,
-                                  npv,
-                                  dayCounter, compounding, frequency, includeSettlementDateFlows,
-                                  settlementDate, npvDate);
         Real step = 0.01;
         return solver.solve(objFunction, accuracy, guess, step);
     }

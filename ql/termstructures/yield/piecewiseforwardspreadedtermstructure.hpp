@@ -49,10 +49,16 @@ namespace QuantLib {
   class InterpolatedPiecewiseForwardSpreadedTermStructure : public ForwardRateStructure {
     public:
       InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure>,
-                                                     std::vector<Handle<Quote> > spreads,
-                                                     const std::vector<Date>& dates,
-                                                     DayCounter dc = DayCounter(),
-                                                     const Interpolator& factory = Interpolator());
+                                                     std::vector<Handle<Quote>> spreads,
+                                                     std::vector<Date> dates,
+                                                     Interpolator factory = Interpolator());
+
+      [[deprecated("Use the constructor without DayCounter")]]
+      InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure>,
+                                                     std::vector<Handle<Quote>> spreads,
+                                                     std::vector<Date> dates,
+                                                     DayCounter dc,
+                                                     Interpolator factory = Interpolator());
       //! \name YieldTermStructure interface
       //@{
       DayCounter dayCounter() const override;
@@ -78,23 +84,22 @@ namespace QuantLib {
       std::vector<Spread> spreadValues_;
       Compounding comp_;
       Frequency freq_;
-      DayCounter dc_;
       Interpolator factory_;
       Interpolation interpolator_;
   };
 
     // inline definitions
 
+    #ifndef __DOXYGEN__
+
     template <class T>
     inline InterpolatedPiecewiseForwardSpreadedTermStructure<
         T>::InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
-                                                           std::vector<Handle<Quote> > spreads,
-                                                           const std::vector<Date>& dates,
-                                                           DayCounter dc,
-                                                           const T& factory)
-    : originalCurve_(std::move(h)), spreads_(std::move(spreads)), dates_(dates),
-    times_(dates.size()), spreadValues_(dates.size()), dc_(std::move(dc)),
-    factory_(factory) {
+                                                           std::vector<Handle<Quote>> spreads,
+                                                           std::vector<Date> dates,
+                                                           T factory)
+    : originalCurve_(std::move(h)), spreads_(std::move(spreads)), dates_(std::move(dates)),
+    times_(dates_.size()), spreadValues_(dates_.size()), factory_(std::move(factory)) {
         QL_REQUIRE(!spreads_.empty(), "no spreads given");
         QL_REQUIRE(spreads_.size() == dates_.size(),
                    "spread and date vector have different sizes");
@@ -104,6 +109,19 @@ namespace QuantLib {
         if (!originalCurve_.empty())
             updateInterpolation();
     }
+
+    template <class T>
+    inline InterpolatedPiecewiseForwardSpreadedTermStructure<
+        T>::InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
+                                                           std::vector<Handle<Quote>> spreads,
+                                                           std::vector<Date> dates,
+                                                           DayCounter dc,
+                                                           T factory)
+    : InterpolatedPiecewiseForwardSpreadedTermStructure(
+        std::move(h), std::move(spreads), std::move(dates), std::move(factory)
+    ) {}
+
+    #endif
 
     template <class T>
     inline DayCounter InterpolatedPiecewiseForwardSpreadedTermStructure<T>::dayCounter() const {
