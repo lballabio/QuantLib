@@ -15,13 +15,16 @@ this_include_HEADERS = \
 	interpolatedcurve.hpp \
 	iterativebootstrap.hpp \
 	localbootstrap.hpp \
+	multicurve.hpp \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
 
 cpp_files = \
 	defaulttermstructure.cpp \
+	globalbootstrap.cpp \
 	globalbootstrapvars.cpp \
 	inflationtermstructure.cpp \
+	multicurve.cpp \
 	voltermstructure.cpp \
 	yieldtermstructure.cpp
 
