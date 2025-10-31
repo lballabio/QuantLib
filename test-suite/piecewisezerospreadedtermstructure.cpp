@@ -368,14 +368,11 @@ BOOST_AUTO_TEST_CASE(testSetInterpolationFactory) {
 
     Frequency freq = NoFrequency;
 
-    Cubic factory;
-    factory = Cubic(CubicInterpolation::Spline, false);
-
     spreadedTermStructure =
         ext::make_shared<InterpolatedPiecewiseZeroSpreadedTermStructure<Cubic> >(
                                Handle<YieldTermStructure>(vars.termStructure),
                                spreads, spreadDates, vars.compounding,
-                               freq, vars.dayCount,factory);
+                               freq, Cubic(CubicInterpolation::Spline, false));
 
     Time t = vars.dayCount.yearFraction(vars.today, interpolationDate);
     Rate interpolatedZeroRate = spreadedTermStructure->zeroRate(t,vars.compounding);
