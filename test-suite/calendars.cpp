@@ -3831,15 +3831,20 @@ BOOST_AUTO_TEST_CASE(testDayLists) {
     Calendar germany = Germany();
     Date firstDate = Settings::instance().evaluationDate(), endDate = firstDate + 1 * Years;
 
-    // Test that same day holidayList and businessDayList does not throw an error
-    germany.holidayList(firstDate, firstDate, true);
-    germany.businessDayList(firstDate, firstDate);
+    // Test that a crossed range returns an empty vector
+    BOOST_CHECK_EQUAL(germany.holidayList(endDate, firstDate, true).size(), 0);
+    BOOST_CHECK_EQUAL(germany.businessDayList(endDate, firstDate).size(), 0);
+    // Test that the range is inclusive on both sides
+    BOOST_CHECK_EQUAL(germany.holidayList(firstDate, firstDate, true).size(),
+                      static_cast<size_t>(germany.isHoliday(firstDate)));
+    BOOST_CHECK_EQUAL(germany.businessDayList(firstDate, firstDate).size(),
+                      static_cast<size_t>(germany.isBusinessDay(firstDate)));
 
     std::vector<Date> holidays = germany.holidayList(firstDate, endDate, true);
     std::vector<Date> businessDays = germany.businessDayList(firstDate, endDate);
 
     auto it_holidays = holidays.begin(), it_businessDays = businessDays.begin();
-    for (Date d = firstDate; d < endDate; d++) {
+    for (Date d = firstDate; d <= endDate; d++) {
         if (it_holidays != holidays.end() && it_businessDays != businessDays.end() &&
             d == *it_holidays && d == *it_businessDays) {
             BOOST_FAIL("Date " << d << "is both holiday and business day.");
