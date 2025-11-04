@@ -37,7 +37,8 @@
 
 namespace QuantLib {
 
-    class InterpolatedFxSmileSection : public FxSmileSection, LazyObject {
+    class InterpolatedFxSmileSection : public FxSmileSection, 
+                                       public LazyObject {
     public:
         //! Supported interpolation methods
         enum class InterpolationMethod { Linear, NaturalCubic, FinancialCubic, CubicSpline };

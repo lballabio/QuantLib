@@ -22,6 +22,7 @@
 */
 #pragma once
 
+#include <array>
 #include <functional>
 #include <ql/math/comparison.hpp>
 #include <ql/math/interpolation.hpp>
