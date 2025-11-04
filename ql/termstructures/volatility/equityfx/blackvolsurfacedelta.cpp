@@ -18,6 +18,7 @@
 */
 
 #include <ql/errors.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
@@ -31,8 +32,48 @@ namespace QuantLib {
                                                     const std::vector<Real>& strikes,
                                                     const std::vector<Volatility>& vols, InterpolationMethod method,
                                                     bool flatExtrapolation)
-        : FxSmileSection(spot, rd, rf, t), strikes_(strikes), vols_(vols), flatExtrapolation_(flatExtrapolation) {
+        : FxSmileSection(spot, rd, rf, t), strikes_(strikes), vols_(vols), volHandles_(vols.size()), flatExtrapolation_(flatExtrapolation) {
+        for (Size i = 0; i < vols.size(); ++i)
+            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols[i])));
 
+        initializeInterpolator(method);
+    }
+
+    InterpolatedFxSmileSection::InterpolatedFxSmileSection(Real spot, Real rd, Real rf, Time t,
+                                                    const std::vector<Real>& strikes,
+                                                    const std::vector<Handle<Quote>>& volHandles, InterpolationMethod method,
+                                                    bool flatExtrapolation)
+        : FxSmileSection(spot, rd, rf, t), strikes_(strikes), vols_(volHandles.size()),
+        volHandles_(volHandles), flatExtrapolation_(flatExtrapolation) {
+        for (auto& volHandle : volHandles)
+            LazyObject::registerWith(volHandle);
+        
+        initializeInterpolator(method);
+    }
+
+    Volatility InterpolatedFxSmileSection::volatility(Real strike) const {
+        calculate();
+        if (flatExtrapolation_) {
+            if (strike < strikes_.front())
+                return vols_.front();
+            else if (strike > strikes_.back())
+                return vols_.back();
+        }
+        // and then call the interpolator with extrapolation on
+        return interpolator_(strike, true);
+    }
+
+    void InterpolatedFxSmileSection::performCalculations() const {
+        for (Size i = 0; i < volHandles_.size(); ++i)
+            vols_[i] = volHandles_[i]->value();
+        interpolator_.update();
+    }
+
+    void InterpolatedFxSmileSection::update() {
+        LazyObject::update();
+    }
+
+    void InterpolatedFxSmileSection::initializeInterpolator(InterpolationMethod method) const {
         if (method == InterpolationMethod::Linear)
             interpolator_ = Linear().interpolate(strikes_.begin(), strikes_.end(), vols_.begin());
         else if (method == InterpolationMethod::NaturalCubic)
@@ -47,17 +88,6 @@ namespace QuantLib {
         else {
             QL_FAIL("Invalid method " << (int)method);
         }
-    }
-
-    Volatility InterpolatedFxSmileSection::volatility(Real strike) const {
-        if (flatExtrapolation_) {
-            if (strike < strikes_.front())
-                return vols_.front();
-            else if (strike > strikes_.back())
-                return vols_.back();
-        }
-        // and then call the interpolator with extrapolation on
-        return interpolator_(strike, true);
     }
 
     BlackVolatilitySurfaceDelta::BlackVolatilitySurfaceDelta(

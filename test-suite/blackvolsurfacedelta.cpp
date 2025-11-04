@@ -34,6 +34,71 @@ BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(BlackVolSurfaceDeltaTest)
 
+BOOST_AUTO_TEST_CASE(testInterpolatedFxSmileSectionConstruction) {
+
+    BOOST_TEST_MESSAGE("Testing InterpolatedFxSmileSection...");
+    // Set up the parameters with some arbitrary data
+    Real spot = 100;
+    Real rd = 0.05;
+    Real rf = 0.03;
+    Time t = 1.0;
+    vector<Real> strikes = { 90, 100, 110 };
+    vector<Volatility> vols = { 0.15, 0.1, 0.15 };
+    vector<InterpolatedFxSmileSection::InterpolationMethod> methods = {
+        InterpolatedFxSmileSection::InterpolationMethod::Linear,
+        InterpolatedFxSmileSection::InterpolationMethod::FinancialCubic,
+        InterpolatedFxSmileSection::InterpolationMethod::NaturalCubic,
+        InterpolatedFxSmileSection::InterpolationMethod::CubicSpline
+    };
+
+    // Construct the smile section
+    ext::shared_ptr<InterpolatedFxSmileSection> section;
+    for (auto method : methods) {
+        BOOST_TEST_MESSAGE("Trying to construct InterpolatedFxSmileSection with interpolation method: " << Integer(method) << ".");
+        BOOST_CHECK_NO_THROW(section =
+                                ext::make_shared<InterpolatedFxSmileSection>(spot, rd, rf, t, strikes, vols, method));
+        BOOST_CHECK_EQUAL(section->volatility(strikes.at(1)), vols.at(1));
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testInterpolatedFxSmileSectionConstructionWithHandles) {
+
+    BOOST_TEST_MESSAGE("Testing InterpolatedFxSmileSection using Handles...");
+    // Set up the parameters with some arbitrary data
+    Real spot = 100;
+    Real rd = 0.05;
+    Real rf = 0.03;
+    Time t = 1.0;
+
+    auto vol90 = ext::shared_ptr<SimpleQuote>(new SimpleQuote(0.15));
+    auto vol100 = ext::shared_ptr<SimpleQuote>(new SimpleQuote(0.1));
+    auto vol110 = ext::shared_ptr<SimpleQuote>(new SimpleQuote(0.13));
+    auto vol90Handle = Handle<Quote>(vol90);
+    auto vol100Handle = Handle<Quote>(vol100);
+    auto vol110Handle = Handle<Quote>(vol110);
+
+    vector<Real> strikes = { 90, 100, 110 };
+    vector<Handle<Quote>> vols = {
+        vol90Handle, 
+        vol100Handle, 
+        vol110Handle 
+    };
+
+    auto method = InterpolatedFxSmileSection::InterpolationMethod::CubicSpline;
+    auto section = ext::make_shared<InterpolatedFxSmileSection>(spot, rd, rf, t, strikes, vols, method);
+    
+    Real strikeToTest = 95.0;
+    Real expectedVol95 = 0.11749999999;
+
+    BOOST_CHECK_CLOSE(section->volatility(strikeToTest), expectedVol95, 1e-8);
+
+    // Test the updated interpolation after the update of a quote
+    vol90->setValue(0.13);
+    Real expectedVol95AfterMove = 0.109375;
+
+    BOOST_CHECK_CLOSE(section->volatility(strikeToTest), expectedVol95AfterMove, 1e-8);
+}
+
 BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaConstantVol) {
 
     BOOST_TEST_MESSAGE("Testing BlackVolatilitySurfaceDelta...");
@@ -117,33 +182,6 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     auto smile1M = surface.blackVolSmile(refDate + Period(1, Months));
     BOOST_CHECK_CLOSE(smile1M->volatility(1.18), 0.13010360399, 1e-8);
     
-}
-
-BOOST_AUTO_TEST_CASE(testInterpolatedFxSmileSectionConstruction) {
-
-    BOOST_TEST_MESSAGE("Testing InterpolatedFxSmileSection...");
-    // Set up the parameters with some arbitrary data
-    Real spot = 100;
-    Real rd = 0.05;
-    Real rf = 0.03;
-    Time t = 1.0;
-    vector<Real> strikes = { 90, 100, 110 };
-    vector<Volatility> vols = { 0.15, 0.1, 0.15 };
-    vector<InterpolatedFxSmileSection::InterpolationMethod> methods = {
-        InterpolatedFxSmileSection::InterpolationMethod::Linear,
-        InterpolatedFxSmileSection::InterpolationMethod::FinancialCubic,
-        InterpolatedFxSmileSection::InterpolationMethod::NaturalCubic,
-        InterpolatedFxSmileSection::InterpolationMethod::CubicSpline
-    };
-
-    // Construct the smile section
-    ext::shared_ptr<InterpolatedFxSmileSection> section;
-    for (auto method : methods) {
-        BOOST_TEST_MESSAGE("Trying to construct InterpolatedFxSmileSection with interpolation method: " << Integer(method) << ".");
-        BOOST_CHECK_NO_THROW(section =
-                                ext::make_shared<InterpolatedFxSmileSection>(spot, rd, rf, t, strikes, vols, method));
-        BOOST_CHECK_EQUAL(section->volatility(strikes.at(1)), vols.at(1));
-    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

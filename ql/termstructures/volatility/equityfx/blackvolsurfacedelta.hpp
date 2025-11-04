@@ -37,7 +37,7 @@
 
 namespace QuantLib {
 
-    class InterpolatedFxSmileSection : public FxSmileSection {
+    class InterpolatedFxSmileSection : public FxSmileSection, LazyObject {
     public:
         //! Supported interpolation methods
         enum class InterpolationMethod { Linear, NaturalCubic, FinancialCubic, CubicSpline };
@@ -46,19 +46,31 @@ namespace QuantLib {
         InterpolatedFxSmileSection(Real spot, Real rd, Real rf, Time t, const std::vector<Real>& strikes,
                                 const std::vector<Volatility>& vols, InterpolationMethod method,
                                 bool flatExtrapolation = false);
+        
+        InterpolatedFxSmileSection(Real spot, Real rd, Real rf, Time t, const std::vector<Real>& strikes,
+                                const std::vector<Handle<Quote>>& volsHandles, InterpolationMethod method,
+                                bool flatExtrapolation = false);
 
         Volatility volatility(Real strike) const override;
 
+
+        void performCalculations() const override;
+        void update() override;
         //! \name Inspectors
         //@{
         const std::vector<Real>& strikes() const { return strikes_; }
-        const std::vector<Volatility>& volatilities() const { return vols_; }
+        const std::vector<Volatility>& volatilities() const {
+            return vols_;
+         }
         //@}
 
     private:
-        Interpolation interpolator_;
+        void initializeInterpolator(InterpolationMethod method) const;
+
+        mutable Interpolation interpolator_;
         std::vector<Real> strikes_;
-        std::vector<Volatility> vols_;
+        mutable std::vector<Volatility> vols_;
+        std::vector<Handle<Quote>> volHandles_;
         bool flatExtrapolation_;
     };
 
