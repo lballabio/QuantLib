@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     Date refDate(1, Jan, 2010);
     Settings::instance().evaluationDate() = refDate;
 
-    // Setup a 2x2
+    // Setup a 4x3
     vector<Date> dates = { 
         refDate + Period(1, Months), 
         refDate + Period(6, Months),
@@ -112,11 +112,28 @@ BOOST_AUTO_TEST_CASE(testBlackVolSurfaceDeltaNonConstantVol) {
     BlackVolatilitySurfaceDelta surface(refDate, dates, putDeltas, callDeltas, hasAtm, blackVolMatrix, ActualActual(ActualActual::ISDA),
                                         TARGET(), spot, dts, fts);
 
-    // ask for volatility at lots of points, should be constVol at every point
-    // make sure we ask for vols outside 25D and 2Y
+    // Testing ATM strike
+    Real atmStrike = 1.18;
+
+    // ask for volatility at 1M (present in the matrix)
     auto smile1M = surface.blackVolSmile(refDate + Period(1, Months));
-    BOOST_CHECK_CLOSE(smile1M->volatility(1.18), 0.13010360399, 1e-8);
+    BOOST_CHECK_CLOSE(smile1M->volatility(atmStrike), 0.13010360399, 1e-8);
     
+    // ask for volatility at 15D (using time extrapolation) should be the same as the 1M
+    auto smile15D = surface.blackVolSmile(refDate + Period(15, Days));
+    BOOST_CHECK_CLOSE(smile15D->volatility(atmStrike), 0.13007226607, 1e-8);
+
+    // ask for volatility at 3M (using time extrapolation)
+    auto smile3M = surface.blackVolSmile(refDate + Period(3, Months));
+    BOOST_CHECK_CLOSE(smile3M->volatility(atmStrike), 0.115077252583, 1e-8);
+
+    // ask for volatility at 6M for "extreme" strikes (using strike extrapolation)
+    Real lowStrike = 1.10;
+    Real highStrike = 1.30;
+
+    auto smile6M = surface.blackVolSmile(refDate + Period(6, Months));
+    BOOST_CHECK_CLOSE(smile6M->volatility(lowStrike), 0.1411379628132, 1e-8);
+    BOOST_CHECK_CLOSE(smile6M->volatility(highStrike), 0.136291154962, 1e-8);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -1,20 +1,21 @@
 /*
  Copyright (C) 2019 Quaternion Risk Management Ltd
  Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2025 Paolo D'Elia
  All rights reserved.
 
- This file is part of ORE, a free-software/open-source library
- for transparent pricing and risk analysis - http://opensourcerisk.org
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
 
- ORE is free software: you can redistribute it and/or modify it
- under the terms of the Modified BSD License.  You should have received a
- copy of the license along with this program.
- The license is also available online at <http://opensourcerisk.org>
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <https://www.quantlib.org/license.shtml>.
 
- This program is distributed on the basis that it will form a useful
- contribution to risk analytics and model standardisation, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/errors.hpp>
@@ -116,7 +117,7 @@ namespace QuantLib {
         // Store smile section in map. Use strikes as key and vols as values for automatic sorting by strike.
         // If we have already have a strike from a previous delta, we do not overwrite it.
         auto comp = [](Real a, Real b) { return !close(a, b) && a < b; };
-        map<Real, Real, decltype(comp)> smileSections(comp);
+        map<Real, Real, decltype(comp)> smileSection(comp);
         Size i = 0;
         Real atmLevel = 1.0; // set atmLevel to 1.0 in case hasAtm_ is false
 
@@ -125,8 +126,8 @@ namespace QuantLib {
             try {
                 BlackDeltaCalculator bdc(Option::Put, dt, spot, dDiscount, fDiscount, vol * sqrtT);
                 Real strike = bdc.strikeFromDelta(delta);
-                if (smileSections.count(strike) == 0)
-                    smileSections[strike] = vol;
+                if (smileSection.count(strike) == 0)
+                    smileSection[strike] = vol;
             } catch (const std::exception& e) {
                 QL_FAIL("BlackVolatilitySurfaceDelta: Error during calculating put strike at delta " << delta << ": "
                                                                                                     << e.what());
@@ -139,8 +140,8 @@ namespace QuantLib {
             try {
                 BlackDeltaCalculator bdc(Option::Put, atmDt, spot, dDiscount, fDiscount, vol * sqrtT);
                 Real strike = bdc.atmStrike(at);
-                if (smileSections.count(strike) == 0)
-                    smileSections[strike] = vol;
+                if (smileSection.count(strike) == 0)
+                    smileSection[strike] = vol;
             } catch (const std::exception& e) {
                 QL_FAIL("BlackVolatilitySurfaceDelta: Error during calculating atm strike: " << e.what());
             }
@@ -151,8 +152,8 @@ namespace QuantLib {
             try {
                 BlackDeltaCalculator bdc(Option::Call, dt, spot, dDiscount, fDiscount, vol * sqrtT);
                 Real strike = bdc.strikeFromDelta(delta);
-                if (smileSections.count(strike) == 0)
-                    smileSections[strike] = vol;
+                if (smileSection.count(strike) == 0)
+                    smileSection[strike] = vol;
             } catch (const std::exception& e) {
                 QL_FAIL("BlackVolatilitySurfaceDelta: Error during calculating call strike at delta " << delta << ": "
                                                                                                     << e.what());
@@ -162,10 +163,10 @@ namespace QuantLib {
 
         // sort and extract to vectors
         vector<Real> strikes;
-        strikes.reserve(smileSections.size());
+        strikes.reserve(smileSection.size());
         vector<Real> stdDevs;
-        stdDevs.reserve(smileSections.size());
-        for (const auto& kv : smileSections) {
+        stdDevs.reserve(smileSection.size());
+        for (const auto& kv : smileSection) {
             strikes.push_back(kv.first);
             stdDevs.push_back(kv.second * sqrtT);
         }
