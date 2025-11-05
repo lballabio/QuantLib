@@ -23,72 +23,12 @@
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvolsurfacedelta.hpp>
+#include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
 
 using namespace std;
 
 namespace QuantLib {
-
-    InterpolatedFxSmileSection::InterpolatedFxSmileSection(Real spot, Real rd, Real rf, Time t,
-                                                    const std::vector<Real>& strikes,
-                                                    const std::vector<Volatility>& vols, InterpolationMethod method,
-                                                    bool flatExtrapolation)
-        : FxSmileSection(spot, rd, rf, t), strikes_(strikes), vols_(vols), volHandles_(vols.size()), flatExtrapolation_(flatExtrapolation) {
-        for (Size i = 0; i < vols.size(); ++i)
-            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(vols[i])));
-
-        initializeInterpolator(method);
-    }
-
-    InterpolatedFxSmileSection::InterpolatedFxSmileSection(Real spot, Real rd, Real rf, Time t,
-                                                    const std::vector<Real>& strikes,
-                                                    const std::vector<Handle<Quote>>& volHandles, InterpolationMethod method,
-                                                    bool flatExtrapolation)
-        : FxSmileSection(spot, rd, rf, t), strikes_(strikes), vols_(volHandles.size()),
-        volHandles_(volHandles), flatExtrapolation_(flatExtrapolation) {
-        for (auto& volHandle : volHandles)
-            LazyObject::registerWith(volHandle);
-        
-        initializeInterpolator(method);
-    }
-
-    Volatility InterpolatedFxSmileSection::volatility(Real strike) const {
-        calculate();
-        if (flatExtrapolation_) {
-            if (strike < strikes_.front())
-                return vols_.front();
-            else if (strike > strikes_.back())
-                return vols_.back();
-        }
-        // and then call the interpolator with extrapolation on
-        return interpolator_(strike, true);
-    }
-
-    void InterpolatedFxSmileSection::performCalculations() const {
-        for (Size i = 0; i < volHandles_.size(); ++i)
-            vols_[i] = volHandles_[i]->value();
-        interpolator_.update();
-    }
-
-    void InterpolatedFxSmileSection::update() {
-        LazyObject::update();
-    }
-
-    void InterpolatedFxSmileSection::initializeInterpolator(InterpolationMethod method) const {
-        if (method == InterpolationMethod::Linear)
-            interpolator_ = Linear().interpolate(strikes_.begin(), strikes_.end(), vols_.begin());
-        else if (method == InterpolationMethod::NaturalCubic)
-            interpolator_ =
-                Cubic(CubicInterpolation::Kruger, true).interpolate(strikes_.begin(), strikes_.end(), vols_.begin());
-        else if (method == InterpolationMethod::FinancialCubic)
-            interpolator_ = Cubic(CubicInterpolation::Kruger, true, CubicInterpolation::SecondDerivative, 0.0,
-                                CubicInterpolation::FirstDerivative)
-                                .interpolate(strikes_.begin(), strikes_.end(), vols_.begin());
-        else if (method == InterpolationMethod::CubicSpline)
-            interpolator_ = CubicNaturalSpline(strikes_.begin(), strikes_.end(), vols_.begin());
-        else {
-            QL_FAIL("Invalid method " << (int)method);
-        }
-    }
 
     BlackVolatilitySurfaceDelta::BlackVolatilitySurfaceDelta(
         Date referenceDate, const std::vector<Date>& dates, const std::vector<Real>& putDeltas,
@@ -97,8 +37,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& foreignTS, DeltaVolQuote::DeltaType dt, DeltaVolQuote::AtmType at,
         ext::optional<DeltaVolQuote::DeltaType> atmDeltaType, const Period& switchTenor, DeltaVolQuote::DeltaType ltdt,
         DeltaVolQuote::AtmType ltat, ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType,
-        InterpolatedFxSmileSection::InterpolationMethod im, bool flatStrikeExtrapolation,
-        BlackVolTimeExtrapolation timeExtrapolation)
+        SmileInterpolationMethod im, bool flatStrikeExtrapolation, BlackVolTimeExtrapolation timeExtrapolation)
         : BlackVolatilityTermStructure(referenceDate, cal, Following, dayCounter), dates_(dates), times_(dates.size(), 0),
         putDeltas_(putDeltas), callDeltas_(callDeltas), hasAtm_(hasAtm), spot_(spot), domesticTS_(domesticTS),
         foreignTS_(foreignTS), dt_(dt), at_(at), atmDeltaType_(atmDeltaType), switchTenor_(switchTenor), ltdt_(ltdt),
@@ -154,11 +93,12 @@ namespace QuantLib {
         registerWith(foreignTS_);
     }
 
-    ext::shared_ptr<FxSmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(Time t) const {
+    ext::shared_ptr<SmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(Time t) const {
 
         Real spot = spot_->value();
         DiscountFactor dDiscount = domesticTS_->discount(t);
         DiscountFactor fDiscount = foreignTS_->discount(t);
+        Real sqrtT = sqrt(t);
 
         DeltaVolQuote::AtmType at;
         DeltaVolQuote::DeltaType dt;
@@ -176,15 +116,17 @@ namespace QuantLib {
         // Store smile section in map. Use strikes as key and vols as values for automatic sorting by strike.
         // If we have already have a strike from a previous delta, we do not overwrite it.
         auto comp = [](Real a, Real b) { return !close(a, b) && a < b; };
-        map<Real, Real, decltype(comp)> smileSection(comp);
+        map<Real, Real, decltype(comp)> smileSections(comp);
         Size i = 0;
+        Real atmLevel = 1.0; // set atmLevel to 1.0 in case hasAtm_ is false
+
         for (Real delta : putDeltas_) {
             Real vol = interpolators_.at(i)->blackVol(t, 1, true);
             try {
-                BlackDeltaCalculator bdc(Option::Put, dt, spot, dDiscount, fDiscount, vol * sqrt(t));
+                BlackDeltaCalculator bdc(Option::Put, dt, spot, dDiscount, fDiscount, vol * sqrtT);
                 Real strike = bdc.strikeFromDelta(delta);
-                if (smileSection.count(strike) == 0)
-                    smileSection[strike] = vol;
+                if (smileSections.count(strike) == 0)
+                    smileSections[strike] = vol;
             } catch (const std::exception& e) {
                 QL_FAIL("BlackVolatilitySurfaceDelta: Error during calculating put strike at delta " << delta << ": "
                                                                                                     << e.what());
@@ -193,11 +135,12 @@ namespace QuantLib {
         }
         if (hasAtm_) {
             Real vol = interpolators_.at(i)->blackVol(t, 1, true);
+            atmLevel = vol;
             try {
-                BlackDeltaCalculator bdc(Option::Put, atmDt, spot, dDiscount, fDiscount, vol * sqrt(t));
+                BlackDeltaCalculator bdc(Option::Put, atmDt, spot, dDiscount, fDiscount, vol * sqrtT);
                 Real strike = bdc.atmStrike(at);
-                if (smileSection.count(strike) == 0)
-                    smileSection[strike] = vol;
+                if (smileSections.count(strike) == 0)
+                    smileSections[strike] = vol;
             } catch (const std::exception& e) {
                 QL_FAIL("BlackVolatilitySurfaceDelta: Error during calculating atm strike: " << e.what());
             }
@@ -206,10 +149,10 @@ namespace QuantLib {
         for (Real delta : callDeltas_) {
             Real vol = interpolators_.at(i)->blackVol(t, 1, true);
             try {
-                BlackDeltaCalculator bdc(Option::Call, dt, spot, dDiscount, fDiscount, vol * sqrt(t));
+                BlackDeltaCalculator bdc(Option::Call, dt, spot, dDiscount, fDiscount, vol * sqrtT);
                 Real strike = bdc.strikeFromDelta(delta);
-                if (smileSection.count(strike) == 0)
-                    smileSection[strike] = vol;
+                if (smileSections.count(strike) == 0)
+                    smileSections[strike] = vol;
             } catch (const std::exception& e) {
                 QL_FAIL("BlackVolatilitySurfaceDelta: Error during calculating call strike at delta " << delta << ": "
                                                                                                     << e.what());
@@ -219,28 +162,42 @@ namespace QuantLib {
 
         // sort and extract to vectors
         vector<Real> strikes;
-        strikes.reserve(smileSection.size());
-        vector<Real> vols;
-        vols.reserve(smileSection.size());
-        for (const auto& kv : smileSection) {
+        strikes.reserve(smileSections.size());
+        vector<Real> stdDevs;
+        stdDevs.reserve(smileSections.size());
+        for (const auto& kv : smileSections) {
             strikes.push_back(kv.first);
-            vols.push_back(kv.second);
+            stdDevs.push_back(kv.second * sqrtT);
         }
 
         // now build smile from strikes and vols
-        QL_REQUIRE(!vols.empty(),
+        QL_REQUIRE(!stdDevs.empty(),
                 "BlackVolatilitySurfaceDelta::blackVolSmile(" << t << "): no strikes given, this is unexpected.");
-        if (vols.size() == 1) {
+        if (stdDevs.size() == 1) {
             // handle the situation that we only have one strike (might occur for e.g. t=0)
-            return ext::make_shared<ConstantFxSmileSection>(vols.front());
+            return ext::make_shared<FlatSmileSection>(t, stdDevs.front() / sqrtT, dayCounter());
         } else {
             // we have at least two strikes
-            return ext::make_shared<InterpolatedFxSmileSection>(spot, dDiscount, fDiscount, t, strikes, vols,
-                                                                        interpolationMethod_, flatStrikeExtrapolation_);
+            if (interpolationMethod_ == SmileInterpolationMethod::Linear)
+                return ext::make_shared<InterpolatedSmileSection<Linear>>(t, strikes, stdDevs, atmLevel);
+            else if (interpolationMethod_ == SmileInterpolationMethod::NaturalCubic)
+                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Kruger));
+            else if (interpolationMethod_ == SmileInterpolationMethod::FinancialCubic)
+                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, 
+                        strikes, 
+                        stdDevs, 
+                        atmLevel, 
+                        Cubic(CubicInterpolation::Kruger, true, CubicInterpolation::SecondDerivative, 0.0,
+                                    CubicInterpolation::FirstDerivative));
+            else if (interpolationMethod_ == SmileInterpolationMethod::CubicSpline)
+                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Spline));
+            else {
+                QL_FAIL("Invalid method " << (int)interpolationMethod_);
+            }
         }
     }
 
-    ext::shared_ptr<FxSmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(const Date& d) const {
+    ext::shared_ptr<SmileSection> BlackVolatilitySurfaceDelta::blackVolSmile(const Date& d) const {
         return blackVolSmile(timeFromReference(d));
     }
 

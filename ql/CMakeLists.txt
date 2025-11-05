@@ -2108,7 +2108,6 @@ set(QL_HEADERS
     termstructures/volatility/equityfx/blackvolsurfacedelta.hpp
     termstructures/volatility/equityfx/blackvoltermstructure.hpp
     termstructures/volatility/equityfx/fixedlocalvolsurface.hpp
-    termstructures/volatility/equityfx/fxsmilesection.hpp
     termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp
     termstructures/volatility/equityfx/hestonblackvolsurface.hpp
     termstructures/volatility/equityfx/impliedvoltermstructure.hpp

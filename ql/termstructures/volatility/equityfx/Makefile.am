@@ -14,7 +14,6 @@ this_include_HEADERS = \
     blackvolsurfacedelta.hpp \
     blackvoltermstructure.hpp \
     fixedlocalvolsurface.hpp \
-    fxsmilesection.hpp \
     gridmodellocalvolsurface.hpp \
     hestonblackvolsurface.hpp \
     impliedvoltermstructure.hpp \

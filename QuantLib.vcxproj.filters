@@ -4251,9 +4251,6 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\volatility\equityfx\fxsmilesection.hpp">
-      <Filter>termstructures\volatility\equityfx</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
