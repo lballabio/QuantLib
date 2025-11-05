@@ -47,7 +47,8 @@ namespace QuantLib {
                                  const Interpolator& interpolator = Interpolator(),
                                  const DayCounter& dc = Actual365Fixed(),
                                  VolatilityType type = ShiftedLognormal,
-                                 Real shift = 0.0);
+                                 Real shift = 0.0,
+                                 bool flatStrikeExtrapolation = false);
         InterpolatedSmileSection(Time expiryTime,
                                  std::vector<Rate> strikes,
                                  const std::vector<Real>& stdDevs,
@@ -55,7 +56,8 @@ namespace QuantLib {
                                  const Interpolator& interpolator = Interpolator(),
                                  const DayCounter& dc = Actual365Fixed(),
                                  VolatilityType type = ShiftedLognormal,
-                                 Real shift = 0.0);
+                                 Real shift = 0.0,
+                                 bool flatStrikeExtrapolation = false);
         InterpolatedSmileSection(const Date& d,
                                  std::vector<Rate> strikes,
                                  const std::vector<Handle<Quote> >& stdDevHandles,
@@ -64,7 +66,8 @@ namespace QuantLib {
                                  const Interpolator& interpolator = Interpolator(),
                                  const Date& referenceDate = Date(),
                                  VolatilityType type = ShiftedLognormal,
-                                 Real shift = 0.0);
+                                 Real shift = 0.0,
+                                 bool flatStrikeExtrapolation = false);
         InterpolatedSmileSection(const Date& d,
                                  std::vector<Rate> strikes,
                                  const std::vector<Real>& stdDevs,
@@ -73,7 +76,8 @@ namespace QuantLib {
                                  const Interpolator& interpolator = Interpolator(),
                                  const Date& referenceDate = Date(),
                                  VolatilityType type = ShiftedLognormal,
-                                 Real shift = 0.0);
+                                 Real shift = 0.0,
+                                 bool flatStrikeExtrapolation = false);
 
         void performCalculations() const override;
         Real varianceImpl(Rate strike) const override;
@@ -84,12 +88,15 @@ namespace QuantLib {
         void update() override;
 
       private:
+        void checkStrikes();
+
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
         std::vector<Handle<Quote> > stdDevHandles_;
         Handle<Quote> atmLevel_;
         mutable std::vector<Volatility> vols_;
         mutable Interpolation interpolation_;
+        bool flatStrikeExtrapolation_;
     };
 
 
@@ -102,14 +109,18 @@ namespace QuantLib {
         const Interpolator& interpolator,
         const DayCounter& dc,
         const VolatilityType type,
-        const Real shift)
+        const Real shift,
+        bool flatStrikeExtrapolation
+    )
     : SmileSection(timeToExpiry, dc, type, shift),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(std::move(strikes)),
-      stdDevHandles_(stdDevHandles), atmLevel_(std::move(atmLevel)), vols_(stdDevHandles.size()) {
+      stdDevHandles_(stdDevHandles), atmLevel_(std::move(atmLevel)), vols_(stdDevHandles.size()),
+      flatStrikeExtrapolation_(flatStrikeExtrapolation) {
         for (auto& stdDevHandle : stdDevHandles_)
             LazyObject::registerWith(stdDevHandle);
         LazyObject::registerWith(atmLevel_);
-        // check strikes!!!!!!!!!!!!!!!!!!!!
+
+        checkStrikes();
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
                                                   vols_.begin());
@@ -124,10 +135,13 @@ namespace QuantLib {
         const Interpolator& interpolator,
         const DayCounter& dc,
         const VolatilityType type,
-        const Real shift)
+        const Real shift,
+        bool flatStrikeExtrapolation
+    )
     : SmileSection(timeToExpiry, dc, type, shift),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(std::move(strikes)),
-      stdDevHandles_(stdDevs.size()), vols_(stdDevs.size()) {
+      stdDevHandles_(stdDevs.size()), vols_(stdDevs.size()),
+      flatStrikeExtrapolation_(flatStrikeExtrapolation) {
         // fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<stdDevs.size(); ++i)
@@ -135,7 +149,8 @@ namespace QuantLib {
                 SimpleQuote(stdDevs[i])));
         atmLevel_ = Handle<Quote>
            (ext::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
-        // check strikes!!!!!!!!!!!!!!!!!!!!
+        
+        checkStrikes();
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
                                                   vols_.begin());
@@ -151,14 +166,18 @@ namespace QuantLib {
         const Interpolator& interpolator,
         const Date& referenceDate,
         const VolatilityType type,
-        const Real shift)
+        const Real shift,
+        bool flatStrikeExtrapolation
+    )
     : SmileSection(d, dc, referenceDate, type, shift),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(std::move(strikes)),
-      stdDevHandles_(stdDevHandles), atmLevel_(std::move(atmLevel)), vols_(stdDevHandles.size()) {
+      stdDevHandles_(stdDevHandles), atmLevel_(std::move(atmLevel)), vols_(stdDevHandles.size()),
+      flatStrikeExtrapolation_(flatStrikeExtrapolation) {
         for (auto& stdDevHandle : stdDevHandles_)
             LazyObject::registerWith(stdDevHandle);
         LazyObject::registerWith(atmLevel_);
-        // check strikes!!!!!!!!!!!!!!!!!!!!
+        
+        checkStrikes();
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
                                                   vols_.begin());
@@ -174,10 +193,13 @@ namespace QuantLib {
         const Interpolator& interpolator,
         const Date& referenceDate,
         const VolatilityType type,
-        const Real shift)
+        const Real shift,
+        bool flatStrikeExtrapolation
+    )
     : SmileSection(d, dc, referenceDate, type, shift),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(std::move(strikes)),
-      stdDevHandles_(stdDevs.size()), vols_(stdDevs.size()) {
+      stdDevHandles_(stdDevs.size()), vols_(stdDevs.size()),
+      flatStrikeExtrapolation_(flatStrikeExtrapolation) {
         //fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<stdDevs.size(); ++i)
@@ -185,7 +207,8 @@ namespace QuantLib {
                 SimpleQuote(stdDevs[i])));
         atmLevel_ = Handle<Quote>
            (ext::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
-        // check strikes!!!!!!!!!!!!!!!!!!!!
+        
+        checkStrikes();
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
                                                   vols_.begin());
@@ -205,12 +228,30 @@ namespace QuantLib {
     Real InterpolatedSmileSection<Interpolator>::varianceImpl(Real strike) const {
         calculate();
         Real v = interpolation_(strike, true);
-        return v*v*exerciseTime();
+
+        if (flatStrikeExtrapolation_) {
+            if (strike < minStrike()) {
+                v = minStrike();                
+            } else if (strike > maxStrike()) {
+                v = maxStrike();
+            }
+        }
+
+        return v * v * exerciseTime();
     }
 
     template <class Interpolator>
     Real InterpolatedSmileSection<Interpolator>::volatilityImpl(Real strike) const {
         calculate();
+        
+        if (flatStrikeExtrapolation_) {
+            if (strike < minStrike()) {
+                return minStrike();                
+            } else if (strike > maxStrike()) {
+                return maxStrike();
+            }
+        }
+
         return interpolation_(strike, true);
     }
 
@@ -220,6 +261,28 @@ namespace QuantLib {
         SmileSection::update();
     }
     #endif
+
+    template <class Interpolator>
+    void InterpolatedSmileSection<Interpolator>::checkStrikes() {
+        if (!std::is_sorted(strikes_.begin(), strikes_.end())) {
+            std::vector<Size> indices(strikes_.size(), 0); 
+        
+            // initialize the indeces vector
+            for (Size i = 0; i < indices.size(); ++i)
+                indices[i] = i;
+            
+            std::sort(indices.begin(), indices.end(), [&](const int& a, const int& b){
+                return strikes_[a] < strikes_[b];
+            });
+            std::sort(strikes_.begin(), strikes_.end());
+        
+            auto oldVols = vols_;
+
+            for (Size i = 0; i < indices.size(); ++i) {
+                vols_[i] = oldVols[indices[i]];
+            }
+        }
+    }
 
 }
 

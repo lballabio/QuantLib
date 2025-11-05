@@ -180,18 +180,27 @@ namespace QuantLib {
         } else {
             // we have at least two strikes
             if (interpolationMethod_ == SmileInterpolationMethod::Linear)
-                return ext::make_shared<InterpolatedSmileSection<Linear>>(t, strikes, stdDevs, atmLevel);
+                return ext::make_shared<InterpolatedSmileSection<Linear>>(t, strikes, stdDevs, atmLevel, Linear(), dayCounter(), 
+                                                                          VolatilityType::ShiftedLognormal, 0.0, flatStrikeExtrapolation_);
             else if (interpolationMethod_ == SmileInterpolationMethod::NaturalCubic)
-                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Kruger));
+                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Kruger), 
+                                                                         dayCounter(), VolatilityType::ShiftedLognormal, 0.0, 
+                                                                         flatStrikeExtrapolation_);
             else if (interpolationMethod_ == SmileInterpolationMethod::FinancialCubic)
                 return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, 
                         strikes, 
                         stdDevs, 
                         atmLevel, 
                         Cubic(CubicInterpolation::Kruger, true, CubicInterpolation::SecondDerivative, 0.0,
-                                    CubicInterpolation::FirstDerivative));
+                                    CubicInterpolation::FirstDerivative),
+                        dayCounter(),
+                        VolatilityType::ShiftedLognormal, 
+                        0.0, 
+                        flatStrikeExtrapolation_);
             else if (interpolationMethod_ == SmileInterpolationMethod::CubicSpline)
-                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Spline));
+                return ext::make_shared<InterpolatedSmileSection<Cubic>>(t, strikes, stdDevs, atmLevel, Cubic(CubicInterpolation::Spline),
+                                                                         dayCounter(), VolatilityType::ShiftedLognormal, 0.0, 
+                                                                         flatStrikeExtrapolation_);
             else {
                 QL_FAIL("Invalid method " << (int)interpolationMethod_);
             }

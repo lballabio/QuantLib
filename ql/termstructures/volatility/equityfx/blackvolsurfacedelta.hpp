@@ -39,7 +39,6 @@
 namespace QuantLib {
 
     /*! \brief Black volatility surface parameterized by market deltas
-        \ingroup termstructures
 
         BlackVolatilitySurfaceDelta represents a Black volatility term
         structure where market quotes are expressed as delta-based points
@@ -100,7 +99,7 @@ namespace QuantLib {
                                     ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt,
                                     SmileInterpolationMethod interpolationMethod =
                                         SmileInterpolationMethod::Linear,
-                                    bool flatStrikeExtrapolation = true,
+                                    bool flatStrikeExtrapolation = false,
                                     BlackVolTimeExtrapolation timeExtrapolation =
                                         BlackVolTimeExtrapolation::FlatVolatility);
         //@}
