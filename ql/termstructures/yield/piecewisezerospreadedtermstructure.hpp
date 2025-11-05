@@ -55,6 +55,9 @@ namespace QuantLib {
                                                      Frequency freq = NoFrequency,
                                                      Interpolator factory = Interpolator());
 
+      /*! \deprecated Use the constructor without a day counter.
+                      Deprecated in version 1.41.
+      */
       [[deprecated("Use the constructor without DayCounter")]]
       InterpolatedPiecewiseZeroSpreadedTermStructure(Handle<YieldTermStructure>,
                                                      std::vector<Handle<Quote>> spreads,

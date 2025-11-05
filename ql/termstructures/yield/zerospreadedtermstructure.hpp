@@ -51,6 +51,9 @@ namespace QuantLib {
                                   Compounding comp = Continuous,
                                   Frequency freq = NoFrequency);
 
+        /*! \deprecated Use the constructor without a day counter.
+                        Deprecated in version 1.41.
+        */
         [[deprecated("Use the constructor without DayCounter")]]
         ZeroSpreadedTermStructure(Handle<YieldTermStructure>,
                                   Handle<Quote> spread,

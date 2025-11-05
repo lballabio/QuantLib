@@ -53,6 +53,9 @@ namespace QuantLib {
                                                      std::vector<Date> dates,
                                                      Interpolator factory = Interpolator());
 
+      /*! \deprecated Use the constructor without a day counter.
+                      Deprecated in version 1.41.
+      */
       [[deprecated("Use the constructor without DayCounter")]]
       InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure>,
                                                      std::vector<Handle<Quote>> spreads,
