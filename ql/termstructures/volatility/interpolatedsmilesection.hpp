@@ -271,7 +271,7 @@ namespace QuantLib {
             for (Size i = 0; i < indices.size(); ++i)
                 indices[i] = i;
             
-            std::sort(indices.begin(), indices.end(), [&](const int& a, const int& b){
+            std::sort(indices.begin(), indices.end(), [&](const auto& a, const auto& b){
                 return strikes_[a] < strikes_[b];
             });
             std::sort(strikes_.begin(), strikes_.end());

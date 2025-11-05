@@ -20,8 +20,7 @@
 
 /*! \file blackvolsurfacedelta.hpp
  \brief Black volatility surface based on delta
- \ingroup termstructures
- */
+*/
 
 #ifndef quantlib_black_variance_surface_delta_hpp
 #define quantlib_black_variance_surface_delta_hpp
