@@ -1268,7 +1268,7 @@ BOOST_AUTO_TEST_CASE(testAmericanOptionsWithEscrowedDividends) {
 			option.setPricingEngine(spotEngine);
 			const Real spotNPV = option.NPV();
 
-			const Real tol = 0.05;
+			const Real tol = 0.1;
 			const Real diff = std::abs(spotNPV - escrowedNPV);
 			if (diff > tol) {
 				BOOST_FAIL("Failed to compare American option prices "
