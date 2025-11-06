@@ -44,23 +44,23 @@ namespace QuantLib {
 
     void CashDividendEuropeanEngine::calculate() const {
 
-    	const ext::shared_ptr<EuropeanExercise> exercise =
-    		ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
-    	QL_REQUIRE(exercise, "not an European option");
+        const ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        QL_REQUIRE(exercise, "not an European option");
 
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-    	if (cashDividendModel_ == Escrowed) {
-    		VanillaOption option(payoff, exercise);
-    		option.setPricingEngine(
-    			ext::make_shared<AnalyticDividendEuropeanEngine>(
-    				process_, dividends_));
+        if (cashDividendModel_ == Escrowed) {
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(
+                ext::make_shared<AnalyticDividendEuropeanEngine>(
+                    process_, dividends_));
 
-    		results_.value = option.NPV();
-    		return;
-    	}
+            results_.value = option.NPV();
+            return;
+        }
 
 
         const Real strike = payoff->strike();
@@ -74,18 +74,18 @@ namespace QuantLib {
 
         DividendSchedule dividends;
         std::copy_if(
-        	dividends_.begin(), dividends_.end(),
-			std::back_inserter(dividends),
+            dividends_.begin(), dividends_.end(),
+            std::back_inserter(dividends),
             [settlementDate, maturityDate](
-            	const ext::shared_ptr<Dividend>& div) -> bool {
+                const ext::shared_ptr<Dividend>& div) -> bool {
                 return div->date() >= settlementDate && div->date() <= maturityDate;
             }
         );
         std::sort(
-        	dividends.begin(), dividends.end(),
-			[](const ext::shared_ptr<Dividend>& d1, const ext::shared_ptr<Dividend>& d2) {
-        		return d1->date() < d2->date();
-        	}
+            dividends.begin(), dividends.end(),
+            [](const ext::shared_ptr<Dividend>& d1, const ext::shared_ptr<Dividend>& d2) {
+                return d1->date() < d2->date();
+            }
         );
 
         DividendSchedule underlyings(dividends);

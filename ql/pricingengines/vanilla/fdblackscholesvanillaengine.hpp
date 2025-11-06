@@ -45,8 +45,8 @@ namespace QuantLib {
     class FdBlackScholesVanillaEngine : public VanillaOption::engine {
       public:
         enum CashDividendModel {
-        	Spot = CashDividendEuropeanEngine::Spot,
-			Escrowed = CashDividendEuropeanEngine::Escrowed
+            Spot = CashDividendEuropeanEngine::Spot,
+            Escrowed = CashDividendEuropeanEngine::Escrowed
         };
 
         explicit FdBlackScholesVanillaEngine(

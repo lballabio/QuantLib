@@ -32,13 +32,13 @@ namespace QuantLib {
 
     //! (Semi)-Analytic pricing engine for European options with cash dividends
 
-	/*! References:
+    /*! References:
 
-		Jherek Healy, 2021. The Pricing of Vanilla Options with Cash Dividends as
-		a Classic Vanilla Basket Option Problem,
-		https://arxiv.org/pdf/2106.12971
+        Jherek Healy, 2021. The Pricing of Vanilla Options with Cash Dividends as
+        a Classic Vanilla Basket Option Problem,
+        https://arxiv.org/pdf/2106.12971
 
- 	    \ingroup vanillaengines
+         \ingroup vanillaengines
 
         \test the correctness of the returned greeks is tested by
               reproducing numerical derivatives.

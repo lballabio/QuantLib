@@ -168,15 +168,15 @@ namespace QuantLib {
         
         // 2. Calculator
         const ext::shared_ptr<FdmInnerValueCalculator> calculator =
-        	ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
+            ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
 
         ext::shared_ptr<FdmInnerValueCalculator> earlyExerciseCalculator;
         switch (cashDividendModel_) {
           case Spot:
-        	  earlyExerciseCalculator = calculator;
+              earlyExerciseCalculator = calculator;
             break;
           case Escrowed:
-        	  earlyExerciseCalculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
+              earlyExerciseCalculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
                   escrowedDivAdj, payoff, mesher, 0);
             break;
           default:
@@ -187,7 +187,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
                 dividendSchedule, arguments_.exercise, mesher,
-				earlyExerciseCalculator,
+                earlyExerciseCalculator,
                 process_->riskFreeRate()->referenceDate(),
                 process_->riskFreeRate()->dayCounter());
 
@@ -196,7 +196,7 @@ namespace QuantLib {
 
         // 5. Solver
         FdmSolverDesc solverDesc = {
-        	mesher, boundaries, conditions, calculator, maturity, tGrid_, dampingSteps_
+            mesher, boundaries, conditions, calculator, maturity, tGrid_, dampingSteps_
         };
 
         const ext::shared_ptr<FdmBlackScholesSolver> solver(
