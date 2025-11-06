@@ -27,7 +27,7 @@
 #define quantlib_fd_black_scholes_vanilla_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/vanilla/cashdividendeuropeanengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 
 namespace QuantLib {
@@ -44,7 +44,10 @@ namespace QuantLib {
     */
     class FdBlackScholesVanillaEngine : public VanillaOption::engine {
       public:
-        enum CashDividendModel { Spot, Escrowed };
+        enum CashDividendModel {
+        	Spot = CashDividendEuropeanEngine::Spot,
+			Escrowed = CashDividendEuropeanEngine::Escrowed
+        };
 
         explicit FdBlackScholesVanillaEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess>,
