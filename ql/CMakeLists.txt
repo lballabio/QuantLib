@@ -868,7 +868,6 @@ set(QL_SOURCES
     termstructures/volatility/swaption/swaptionvolstructure.cpp
     termstructures/voltermstructure.cpp
     termstructures/yield/bondhelpers.cpp
-    termstructures/yield/crosscurrencyswapratehelper.cpp
     termstructures/yield/fittedbonddiscountcurve.cpp
     termstructures/yield/flatforward.cpp
     termstructures/yield/forwardstructure.cpp
@@ -2147,7 +2146,6 @@ set(QL_HEADERS
     termstructures/yield/bondhelpers.hpp
     termstructures/yield/bootstraptraits.hpp
     termstructures/yield/compositezeroyieldstructure.hpp
-    termstructures/yield/crosscurrencyswapratehelper.hpp
     termstructures/yield/discountcurve.hpp
     termstructures/yield/fittedbonddiscountcurve.hpp
     termstructures/yield/flatforward.hpp

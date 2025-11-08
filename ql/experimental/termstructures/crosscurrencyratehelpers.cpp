@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2025 Uzair Beg
  Copyright (C) 2021 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
@@ -363,4 +364,136 @@ namespace QuantLib {
         else
             RateHelper::accept(v);
     }
+// -----------------------------------------------------------------------------
+// CrossCurrencySwapRateHelper
+// -----------------------------------------------------------------------------
+
+
+namespace {
+    static inline DiscountFactor getDF(
+        const YieldTermStructure* maybeTs,
+        const Handle<YieldTermStructure>& provided,
+        const Date& d) {
+        if (!provided.empty())
+            return provided->discount(d);
+        QL_REQUIRE(maybeTs, "term structure not set");
+        return maybeTs->discount(d);
+    }
+}
+
+CrossCurrencySwapRateHelper::CrossCurrencySwapRateHelper(
+    const Handle<Quote>& fixedRate,
+    const Period& tenor,
+    Natural fixingDays,
+    const Calendar& calendar,
+    BusinessDayConvention convention,
+    bool endOfMonth,
+    Frequency fixedFrequency,
+    const DayCounter& fixedDayCount,
+    const Currency& fixedCurrency,
+    const ext::shared_ptr<IborIndex>& floatIndex,
+    const Currency& floatCurrency,
+    const Handle<YieldTermStructure>& collateralCurve,
+    bool collateralOnFixedLeg)
+: RelativeDateRateHelper(fixedRate),
+  tenor_(tenor),
+  fixingDays_(fixingDays),
+  calendar_(calendar),
+  convention_(convention),
+  endOfMonth_(endOfMonth),
+  fixedFrequency_(fixedFrequency),
+  fixedDayCount_(fixedDayCount),
+  fixedCurrency_(fixedCurrency),
+  floatCurrency_(floatCurrency),
+  floatIndex_(floatIndex),
+  collateralCurve_(collateralCurve),
+  collateralOnFixedLeg_(collateralOnFixedLeg) {
+
+    QL_REQUIRE(floatIndex_, "floating index required");
+    QL_REQUIRE(!collateralCurve_.empty(),
+               "collateral curve must be provided");
+    QL_REQUIRE(!floatIndex_->forwardingTermStructure().empty(),
+               "floating index must have a forwarding curve");
+               registerWith(floatIndex_);
+               registerWith(collateralCurve_);
+               
+               
+
+    initializeDates();
+}
+
+void CrossCurrencySwapRateHelper::initializeDates() {
+    Date ref = Settings::instance().evaluationDate();
+    QL_REQUIRE(ref != Date(), "evaluation date not set");
+    settlementDate_ = calendar_.advance(ref, fixingDays_, Days);
+    maturityDate_   = calendar_.advance(settlementDate_, tenor_, convention_, endOfMonth_);
+    earliestDate_ = settlementDate_;
+    latestDate_   = maturityDate_;
+}
+
+void CrossCurrencySwapRateHelper::setTermStructure(YieldTermStructure* t) {
+    RelativeDateRateHelper::setTermStructure(t);
+}
+
+Real CrossCurrencySwapRateHelper::impliedQuote() const {
+    const Schedule fixedSched(settlementDate_, maturityDate_,
+                              Period(fixedFrequency_), calendar_,
+                              convention_, convention_,
+                              DateGeneration::Forward, endOfMonth_);
+    const std::vector<Date>& fdates = fixedSched.dates();
+    QL_REQUIRE(fdates.size() >= 2, "fixed schedule too short");
+
+    const Calendar fCal = floatIndex_->fixingCalendar();
+    const BusinessDayConvention fBdc = floatIndex_->businessDayConvention();
+    const Period fTenor = floatIndex_->tenor();
+    const Schedule floatSched(settlementDate_, maturityDate_,
+                              fTenor, fCal, fBdc, fBdc,
+                              DateGeneration::Forward, false);
+    const std::vector<Date>& ldates = floatSched.dates();
+    QL_REQUIRE(ldates.size() >= 2, "floating schedule too short");
+
+    auto fixedDF = [&](const Date& d) {
+        if (collateralOnFixedLeg_)
+            return getDF(nullptr, collateralCurve_, d);
+        return getDF(termStructure_, Handle<YieldTermStructure>(), d);
+    };
+
+    auto floatDF = [&](const Date& d) {
+        if (collateralOnFixedLeg_)
+            return getDF(termStructure_, Handle<YieldTermStructure>(), d);
+        return getDF(nullptr, collateralCurve_, d);
+    };
+
+    Real pvbp = 0.0;
+    for (Size i = 1; i < fdates.size(); ++i) {
+        const Date s = fdates[i-1], e = fdates[i];
+        const Date pay = e;
+        const Time accr = fixedDayCount_.yearFraction(s, e);
+        pvbp += accr * fixedDF(pay);
+    }
+
+    Real pvFloat = 0.0;
+    for (Size j = 1; j < ldates.size(); ++j) {
+        const Date s = ldates[j-1], e = ldates[j];
+        const Date fixDate = floatIndex_->fixingDate(s);
+        const Rate fwd = floatIndex_->forecastFixing(fixDate);
+        const Time accr = floatIndex_->dayCounter().yearFraction(s, e);
+        const Date pay = e;
+        pvFloat += fwd * accr * floatDF(pay);
+    }
+
+    Date lastPaymentDate = std::max(fdates.back(), ldates.back());
+    const Date lastRelevant = std::max(maturityDate_, lastPaymentDate);
+    const_cast<Date&>(latestRelevantDate_) = lastRelevant;
+    const_cast<Date&>(latestDate_) = lastRelevant;    
+    return pvFloat / pvbp;
+}
+void CrossCurrencySwapRateHelper::accept(AcyclicVisitor& v) {
+    auto* v1 = dynamic_cast<Visitor<CrossCurrencySwapRateHelper>*>(&v);
+    if (v1 != nullptr)
+        v1->visit(*this);
+    else
+        RateHelper::accept(v);
+}
+
 }

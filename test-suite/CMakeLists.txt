@@ -41,7 +41,6 @@ set(QL_TEST_SOURCES
     covariance.cpp
     creditdefaultswap.cpp
     crosscurrencyratehelpers.cpp
-    crosscurrencyswapratehelper.cpp
     currency.cpp
     curvestates.cpp
     dates.cpp

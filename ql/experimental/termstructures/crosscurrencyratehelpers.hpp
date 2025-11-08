@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2021 Marcin Rybacki
+Copyright (C) 2025 Uzair Beg 
+Copyright (C) 2021 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -165,6 +166,57 @@ namespace QuantLib {
       private:
         bool isFxBaseCurrencyLegResettable_;
     };
+    
+    //! Rate helper for bootstrapping fixed–floating cross-currency par swaps
+    /*!
+      This helper represents a par cross-currency swap exchanging a fixed-rate leg
+      against a floating-rate leg in a different currency. Since the swap is quoted
+      at par, the FX spot cancels out and is not required.
+
+      The collateral currency determines which leg is discounted using the provided
+      collateral curve, while the other leg’s discount curve is the one being bootstrapped.
+    */
+
+   class CrossCurrencySwapRateHelper : public RelativeDateRateHelper {
+    public:
+      CrossCurrencySwapRateHelper(
+          const Handle<Quote>& fixedRate,
+          const Period& tenor,
+          Natural fixingDays,
+          const Calendar& calendar,
+          BusinessDayConvention convention,
+          bool endOfMonth,
+          Frequency fixedFrequency,
+          const DayCounter& fixedDayCount,
+          const Currency& fixedCurrency,
+          const ext::shared_ptr<IborIndex>& floatIndex,
+          const Currency& floatCurrency,
+          const Handle<YieldTermStructure>& collateralCurve,
+          bool collateralOnFixedLeg);
+
+      void setTermStructure(YieldTermStructure*) override;
+      Real impliedQuote() const override;
+      void accept(AcyclicVisitor&) override;
+
+
+    protected:
+      void initializeDates() override;
+
+    private:
+      Period tenor_;
+      Natural fixingDays_;
+      Calendar calendar_;
+      BusinessDayConvention convention_;
+      bool endOfMonth_;
+      Frequency fixedFrequency_;
+      DayCounter fixedDayCount_;
+      Currency fixedCurrency_, floatCurrency_;
+      ext::shared_ptr<IborIndex> floatIndex_;
+      Handle<YieldTermStructure> collateralCurve_;
+      bool collateralOnFixedLeg_;
+
+      Date settlementDate_, maturityDate_;
+  };
 }
 
 #endif

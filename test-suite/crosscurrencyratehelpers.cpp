@@ -33,6 +33,9 @@
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/currencies/all.hpp>
+
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -512,6 +515,117 @@ BOOST_AUTO_TEST_CASE(testExceptionWhenInstrumentTenorShorterThanIndexFrequency) 
         Error);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+// -----------------------------------------------------------------------------
+// CrossCurrencySwapRateHelper Tests
+// -----------------------------------------------------------------------------
 
+BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperBasic) {
+    BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper basic functionality");
+
+    SavedSettings backup;
+    Date today(27, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> eurFwd(
+        ext::make_shared<FlatForward>(today, 0.017, Actual365Fixed()));
+
+    ext::shared_ptr<IborIndex> euribor3m = ext::make_shared<Euribor3M>(eurFwd);
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.018));
+
+    Period tenor(5, Years);
+    Natural fixingDays = 2;
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency fixedFreq = Annual;
+    DayCounter fixedDC = Thirty360(Thirty360::BondBasis);
+
+    // Dummy curve to link the helper
+    RelinkableHandle<YieldTermStructure> bootstrapCurve;
+    bootstrapCurve.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual360()));
+
+    // Case 1: collateral on fixed leg (USD)
+    CrossCurrencySwapRateHelper hFixed(
+        q, tenor, fixingDays, cal, bdc, endOfMonth, fixedFreq,
+        fixedDC, USDCurrency(), euribor3m, EURCurrency(), usdCollat, true);
+    hFixed.setTermStructure(bootstrapCurve.currentLink().get());
+
+    // Case 2: collateral on floating leg (EUR)
+    CrossCurrencySwapRateHelper hFloat(
+        q, tenor, fixingDays, cal, bdc, endOfMonth, fixedFreq,
+        fixedDC, USDCurrency(), euribor3m, EURCurrency(), usdCollat, false);
+    hFloat.setTermStructure(bootstrapCurve.currentLink().get());
+
+    BOOST_CHECK(hFixed.impliedQuote() > 0.0);
+    BOOST_CHECK(hFloat.impliedQuote() > 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperDifferentTenors) {
+    BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper across various tenors");
+
+    SavedSettings backup;
+    Date today(27, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> eurFwd(
+        ext::make_shared<FlatForward>(today, 0.017, Actual365Fixed()));
+
+    ext::shared_ptr<IborIndex> euribor3m = ext::make_shared<Euribor3M>(eurFwd);
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.018));
+
+    Calendar cal = TARGET();
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
+    BusinessDayConvention bdc = Following;
+
+    RelinkableHandle<YieldTermStructure> bootstrapCurve;
+    bootstrapCurve.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual360()));
+
+    for (auto years : {1, 3, 5, 10}) {
+        Period tenor(years, Years);
+        CrossCurrencySwapRateHelper h(
+            q, tenor, 2, cal, bdc, true, Annual,
+            dc, USDCurrency(), euribor3m, EURCurrency(),
+            usdCollat, true);
+        h.setTermStructure(bootstrapCurve.currentLink().get());
+        BOOST_CHECK(h.impliedQuote() > 0.0);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperRelinking) {
+    BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper reaction to relinked curves");
+
+    SavedSettings backup;
+    Date today(27, April, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> usdCollat;
+    usdCollat.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> eurFwd(
+        ext::make_shared<FlatForward>(today, 0.017, Actual365Fixed()));
+
+    ext::shared_ptr<IborIndex> euribor3m = ext::make_shared<Euribor3M>(eurFwd);
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.018));
+
+    CrossCurrencySwapRateHelper h(
+        q, Period(5, Years), 2, TARGET(), Following, true, Annual,
+        Thirty360(Thirty360::BondBasis), USDCurrency(), euribor3m, EURCurrency(),
+        usdCollat, true);
+
+    RelinkableHandle<YieldTermStructure> bootstrapCurve;
+    bootstrapCurve.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual360()));
+    h.setTermStructure(bootstrapCurve.currentLink().get());
+
+    Real oldQuote = h.impliedQuote();
+
+    usdCollat.linkTo(ext::make_shared<FlatForward>(today, 0.03, Actual365Fixed())); // 3%
+    Real newQuote = h.impliedQuote();
+
+    BOOST_CHECK(oldQuote != newQuote);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
