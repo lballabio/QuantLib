@@ -59,7 +59,7 @@ namespace QuantLib {
                                   Handle<Quote> spread,
                                   Compounding comp,
                                   Frequency freq,
-                                  DayCounter dc);
+                                  const DayCounter& dc);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const override;
@@ -101,7 +101,7 @@ namespace QuantLib {
                                                                 Handle<Quote> spread,
                                                                 Compounding comp,
                                                                 Frequency freq,
-                                                                DayCounter dc)
+                                                                const DayCounter& dc)
     : ZeroSpreadedTermStructure(std::move(h), std::move(spread), comp, freq) {}
 
     inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {

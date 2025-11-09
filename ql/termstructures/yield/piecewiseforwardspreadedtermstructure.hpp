@@ -60,7 +60,7 @@ namespace QuantLib {
       InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure>,
                                                      std::vector<Handle<Quote>> spreads,
                                                      std::vector<Date> dates,
-                                                     DayCounter dc,
+                                                     const DayCounter& dc,
                                                      Interpolator factory = Interpolator());
       //! \name YieldTermStructure interface
       //@{
@@ -118,7 +118,7 @@ namespace QuantLib {
         T>::InterpolatedPiecewiseForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
                                                            std::vector<Handle<Quote>> spreads,
                                                            std::vector<Date> dates,
-                                                           DayCounter dc,
+                                                           const DayCounter& dc,
                                                            T factory)
     : InterpolatedPiecewiseForwardSpreadedTermStructure(
         std::move(h), std::move(spreads), std::move(dates), std::move(factory)
