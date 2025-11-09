@@ -64,7 +64,7 @@ namespace QuantLib {
                                                      std::vector<Date> dates,
                                                      Compounding comp,
                                                      Frequency freq,
-                                                     DayCounter dc,
+                                                     const DayCounter& dc,
                                                      Interpolator factory = Interpolator());
       //! \name YieldTermStructure interface
       //@{
@@ -131,7 +131,7 @@ namespace QuantLib {
                                                            std::vector<Date> dates,
                                                            Compounding comp,
                                                            Frequency freq,
-                                                           DayCounter dc,
+                                                           const DayCounter& dc,
                                                            T factory)
     : InterpolatedPiecewiseZeroSpreadedTermStructure(
         std::move(h), std::move(spreads), std::move(dates), comp, freq, std::move(factory)
