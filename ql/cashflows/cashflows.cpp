@@ -64,7 +64,7 @@ namespace QuantLib {
     }
 
     bool CashFlows::isExpired(const Leg& leg,
-                              bool includeSettlementDateFlows,
+                              const ext::optional<bool>& includeSettlementDateFlows,
                               Date settlementDate)
     {
         if (leg.empty())
@@ -82,7 +82,7 @@ namespace QuantLib {
 
     Leg::const_reverse_iterator
     CashFlows::previousCashFlow(const Leg& leg,
-                                bool includeSettlementDateFlows,
+                                const ext::optional<bool>& includeSettlementDateFlows,
                                 Date settlementDate) {
         if (leg.empty())
             return leg.rend();
@@ -100,7 +100,7 @@ namespace QuantLib {
 
     Leg::const_iterator
     CashFlows::nextCashFlow(const Leg& leg,
-                            bool includeSettlementDateFlows,
+                            const ext::optional<bool>& includeSettlementDateFlows,
                             Date settlementDate) {
         if (leg.empty())
             return leg.end();
@@ -117,7 +117,7 @@ namespace QuantLib {
     }
 
     Date CashFlows::previousCashFlowDate(const Leg& leg,
-                                         bool includeSettlementDateFlows,
+                                         const ext::optional<bool>& includeSettlementDateFlows,
                                          Date settlementDate) {
         Leg::const_reverse_iterator cf;
         cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
@@ -129,7 +129,7 @@ namespace QuantLib {
     }
 
     Date CashFlows::nextCashFlowDate(const Leg& leg,
-                                     bool includeSettlementDateFlows,
+                                     const ext::optional<bool>& includeSettlementDateFlows,
                                      Date settlementDate) {
         Leg::const_iterator cf;
         cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
@@ -141,7 +141,7 @@ namespace QuantLib {
     }
 
     Real CashFlows::previousCashFlowAmount(const Leg& leg,
-                                           bool includeSettlementDateFlows,
+                                           const ext::optional<bool>& includeSettlementDateFlows,
                                            Date settlementDate) {
         Leg::const_reverse_iterator cf;
         cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
@@ -157,7 +157,7 @@ namespace QuantLib {
     }
 
     Real CashFlows::nextCashFlowAmount(const Leg& leg,
-                                       bool includeSettlementDateFlows,
+                                       const ext::optional<bool>& includeSettlementDateFlows,
                                        Date settlementDate) {
         Leg::const_iterator cf;
         cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
@@ -213,7 +213,7 @@ namespace QuantLib {
     } // anonymous namespace ends here
 
     Rate CashFlows::previousCouponRate(const Leg& leg,
-                                       bool includeSettlementDateFlows,
+                                       const ext::optional<bool>& includeSettlementDateFlows,
                                        Date settlementDate) {
         Leg::const_reverse_iterator cf;
         cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
@@ -222,7 +222,7 @@ namespace QuantLib {
     }
 
     Rate CashFlows::nextCouponRate(const Leg& leg,
-                                   bool includeSettlementDateFlows,
+                                   const ext::optional<bool>& includeSettlementDateFlows,
                                    Date settlementDate) {
         Leg::const_iterator cf;
         cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
@@ -230,7 +230,7 @@ namespace QuantLib {
     }
 
     Real CashFlows::nominal(const Leg& leg,
-                            bool includeSettlementDateFlows,
+                            const ext::optional<bool>& includeSettlementDateFlows,
                             Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0.0;
@@ -245,7 +245,7 @@ namespace QuantLib {
     }
 
     Date CashFlows::accrualStartDate(const Leg& leg,
-                                     bool includeSettlementDateFlows,
+                                     const ext::optional<bool>& includeSettlementDateFlows,
                                      Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end())
@@ -261,7 +261,7 @@ namespace QuantLib {
     }
 
     Date CashFlows::accrualEndDate(const Leg& leg,
-                                   bool includeSettlementDateFlows,
+                                   const ext::optional<bool>& includeSettlementDateFlows,
                                    Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end())
@@ -277,7 +277,7 @@ namespace QuantLib {
     }
 
     Date CashFlows::referencePeriodStart(const Leg& leg,
-                                         bool includeSettlementDateFlows,
+                                         const ext::optional<bool>& includeSettlementDateFlows,
                                          Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end())
@@ -293,7 +293,7 @@ namespace QuantLib {
     }
 
     Date CashFlows::referencePeriodEnd(const Leg& leg,
-                                       bool includeSettlementDateFlows,
+                                       const ext::optional<bool>& includeSettlementDateFlows,
                                        Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end())
@@ -309,7 +309,7 @@ namespace QuantLib {
     }
 
     Time CashFlows::accrualPeriod(const Leg& leg,
-                                  bool includeSettlementDateFlows,
+                                  const ext::optional<bool>& includeSettlementDateFlows,
                                   Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0;
@@ -324,7 +324,7 @@ namespace QuantLib {
     }
 
     Date::serial_type CashFlows::accrualDays(const Leg& leg,
-                                             bool includeSettlementDateFlows,
+                                             const ext::optional<bool>& includeSettlementDateFlows,
                                              Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
         if (cf==leg.end()) return 0;
@@ -339,7 +339,7 @@ namespace QuantLib {
     }
 
     Time CashFlows::accruedPeriod(const Leg& leg,
-                                  bool includeSettlementDateFlows,
+                                  const ext::optional<bool>& includeSettlementDateFlows,
                                   Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -357,7 +357,7 @@ namespace QuantLib {
     }
 
     Date::serial_type CashFlows::accruedDays(const Leg& leg,
-                                             bool includeSettlementDateFlows,
+                                             const ext::optional<bool>& includeSettlementDateFlows,
                                              Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -375,7 +375,7 @@ namespace QuantLib {
     }
 
     Real CashFlows::accruedAmount(const Leg& leg,
-                                  bool includeSettlementDateFlows,
+                                  const ext::optional<bool>& includeSettlementDateFlows,
                                   Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -424,7 +424,7 @@ namespace QuantLib {
 
     Real CashFlows::npv(const Leg& leg,
                         const YieldTermStructure& discountCurve,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
 
@@ -449,7 +449,7 @@ namespace QuantLib {
 
     Real CashFlows::bps(const Leg& leg,
                         const YieldTermStructure& discountCurve,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
         if (leg.empty())
@@ -472,7 +472,7 @@ namespace QuantLib {
 
     std::pair<Real, Real> CashFlows::npvbps(const Leg& leg,
                                             const YieldTermStructure& discountCurve,
-                                            bool includeSettlementDateFlows,
+                                            const ext::optional<bool>& includeSettlementDateFlows,
                                             Date settlementDate,
                                             Date npvDate) {
         Real npv = 0.0;
@@ -509,7 +509,7 @@ namespace QuantLib {
 
     Rate CashFlows::atmRate(const Leg& leg,
                             const YieldTermStructure& discountCurve,
-                            bool includeSettlementDateFlows,
+                            const ext::optional<bool>& includeSettlementDateFlows,
                             Date settlementDate,
                             Date npvDate,
                             Real targetNpv) {
@@ -602,7 +602,7 @@ namespace QuantLib {
 
         Real simpleDuration(const Leg& leg,
                             const InterestRate& y,
-                            bool includeSettlementDateFlows,
+                            const ext::optional<bool>& includeSettlementDateFlows,
                             Date settlementDate,
                             Date npvDate) {
             if (leg.empty())
@@ -642,7 +642,7 @@ namespace QuantLib {
 
         Real modifiedDuration(const Leg& leg,
                               const InterestRate& y,
-                              bool includeSettlementDateFlows,
+                              const ext::optional<bool>& includeSettlementDateFlows,
                               Date settlementDate,
                               Date npvDate) {
             if (leg.empty())
@@ -709,7 +709,7 @@ namespace QuantLib {
 
         Real macaulayDuration(const Leg& leg,
                               const InterestRate& y,
-                              bool includeSettlementDateFlows,
+                              const ext::optional<bool>& includeSettlementDateFlows,
                               Date settlementDate,
                               Date npvDate) {
 
@@ -736,7 +736,7 @@ namespace QuantLib {
                                     DayCounter dayCounter,
                                     Compounding comp,
                                     Frequency freq,
-                                    bool includeSettlementDateFlows,
+                                    const ext::optional<bool>& includeSettlementDateFlows,
                                     Date settlementDate,
                                     Date npvDate)
     : leg_(leg), npv_(npv), dayCounter_(std::move(dayCounter)), compounding_(comp),
@@ -811,7 +811,7 @@ namespace QuantLib {
 
     Real CashFlows::npv(const Leg& leg,
                         const InterestRate& y,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
 
@@ -858,7 +858,7 @@ namespace QuantLib {
                         const DayCounter& dc,
                         Compounding comp,
                         Frequency freq,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
         return npv(leg, InterestRate(yield, dc, comp, freq),
@@ -868,7 +868,7 @@ namespace QuantLib {
 
     Real CashFlows::bps(const Leg& leg,
                         const InterestRate& yield,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
 
@@ -893,7 +893,7 @@ namespace QuantLib {
                         const DayCounter& dc,
                         Compounding comp,
                         Frequency freq,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
         return bps(leg, InterestRate(yield, dc, comp, freq),
@@ -906,7 +906,7 @@ namespace QuantLib {
                           const DayCounter& dayCounter,
                           Compounding compounding,
                           Frequency frequency,
-                          bool includeSettlementDateFlows,
+                          const ext::optional<bool>& includeSettlementDateFlows,
                           Date settlementDate,
                           Date npvDate,
                           Real accuracy,
@@ -925,7 +925,7 @@ namespace QuantLib {
     Time CashFlows::duration(const Leg& leg,
                              const InterestRate& rate,
                              Duration::Type type,
-                             bool includeSettlementDateFlows,
+                             const ext::optional<bool>& includeSettlementDateFlows,
                              Date settlementDate,
                              Date npvDate) {
 
@@ -962,7 +962,7 @@ namespace QuantLib {
                              Compounding comp,
                              Frequency freq,
                              Duration::Type type,
-                             bool includeSettlementDateFlows,
+                             const ext::optional<bool>& includeSettlementDateFlows,
                              Date settlementDate,
                              Date npvDate) {
         return duration(leg, InterestRate(yield, dc, comp, freq),
@@ -973,7 +973,7 @@ namespace QuantLib {
 
     Real CashFlows::convexity(const Leg& leg,
                               const InterestRate& y,
-                              bool includeSettlementDateFlows,
+                              const ext::optional<bool>& includeSettlementDateFlows,
                               Date settlementDate,
                               Date npvDate) {
         if (leg.empty())
@@ -1047,7 +1047,7 @@ namespace QuantLib {
                               const DayCounter& dc,
                               Compounding comp,
                               Frequency freq,
-                              bool includeSettlementDateFlows,
+                              const ext::optional<bool>& includeSettlementDateFlows,
                               Date settlementDate,
                               Date npvDate) {
         return convexity(leg, InterestRate(yield, dc, comp, freq),
@@ -1057,7 +1057,7 @@ namespace QuantLib {
 
     Real CashFlows::basisPointValue(const Leg& leg,
                                     const InterestRate& y,
-                                    bool includeSettlementDateFlows,
+                                    const ext::optional<bool>& includeSettlementDateFlows,
                                     Date settlementDate,
                                     Date npvDate) {
         if (leg.empty())
@@ -1094,7 +1094,7 @@ namespace QuantLib {
                                     const DayCounter& dc,
                                     Compounding comp,
                                     Frequency freq,
-                                    bool includeSettlementDateFlows,
+                                    const ext::optional<bool>& includeSettlementDateFlows,
                                     Date settlementDate,
                                     Date npvDate) {
         return basisPointValue(leg, InterestRate(yield, dc, comp, freq),
@@ -1104,7 +1104,7 @@ namespace QuantLib {
 
     Real CashFlows::yieldValueBasisPoint(const Leg& leg,
                                          const InterestRate& y,
-                                         bool includeSettlementDateFlows,
+                                         const ext::optional<bool>& includeSettlementDateFlows,
                                          Date settlementDate,
                                          Date npvDate) {
         if (leg.empty())
@@ -1133,7 +1133,7 @@ namespace QuantLib {
                                          const DayCounter& dc,
                                          Compounding comp,
                                          Frequency freq,
-                                         bool includeSettlementDateFlows,
+                                         const ext::optional<bool>& includeSettlementDateFlows,
                                          Date settlementDate,
                                          Date npvDate) {
         return yieldValueBasisPoint(leg, InterestRate(yield, dc, comp, freq),
@@ -1148,7 +1148,7 @@ namespace QuantLib {
                         const DayCounter& dc,
                         Compounding comp,
                         Frequency freq,
-                        bool includeSettlementDateFlows,
+                        const ext::optional<bool>& includeSettlementDateFlows,
                         Date settlementDate,
                         Date npvDate) {
 
@@ -1180,7 +1180,7 @@ namespace QuantLib {
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
-                              bool includeSettlementDateFlows,
+                              const ext::optional<bool>& includeSettlementDateFlows,
                               Date settlementDate,
                               Date npvDate,
                               Real accuracy,
