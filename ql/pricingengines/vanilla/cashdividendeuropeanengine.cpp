@@ -26,9 +26,9 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/pricingengines/vanilla/cashdividendeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/basket/choibasketengine.hpp>
-
 
 namespace QuantLib {
     CashDividendEuropeanEngine::CashDividendEuropeanEngine(
@@ -49,19 +49,8 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "not an European option");
 
         const ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
-
-        if (cashDividendModel_ == Escrowed) {
-            VanillaOption option(payoff, exercise);
-            option.setPricingEngine(
-                ext::make_shared<AnalyticDividendEuropeanEngine>(
-                    process_, dividends_));
-
-            results_.value = option.NPV();
-            return;
-        }
-
 
         const Real strike = payoff->strike();
 
@@ -78,7 +67,8 @@ namespace QuantLib {
             std::back_inserter(dividends),
             [settlementDate, maturityDate](
                 const ext::shared_ptr<Dividend>& div) -> bool {
-                return div->date() >= settlementDate && div->date() <= maturityDate;
+                return (div->date() >= settlementDate
+                        && div->date() <= maturityDate && div->amount() > 0.0);
             }
         );
         std::sort(
@@ -88,6 +78,17 @@ namespace QuantLib {
             }
         );
 
+        if (cashDividendModel_ == Escrowed
+            || (dividends.size() == 1 && dividends.back()->date() == settlementDate)) {
+            VanillaOption option(payoff, exercise);
+            option.setPricingEngine(
+                ext::make_shared<AnalyticDividendEuropeanEngine>(process_, dividends_)
+            );
+
+            results_.value = option.NPV();
+            return;
+        }
+
         DividendSchedule underlyings(dividends);
         if (!underlyings.empty() && underlyings.back()->date() == maturityDate) {
             underlyings.back() = ext::make_shared<FixedDividend>(
@@ -96,6 +97,19 @@ namespace QuantLib {
         }
         else
             underlyings.emplace_back(ext::make_shared<FixedDividend>(strike, maturityDate));
+
+        if (underlyings.size() == 1) {
+            VanillaOption option(
+                ext::make_shared<PlainVanillaPayoff>(
+                    payoff->optionType(), underlyings.back()->amount()
+                ),
+                exercise
+            );
+            option.setPricingEngine(ext::make_shared<AnalyticEuropeanEngine>(process_));
+
+            results_.value = option.NPV();
+            return;
+        }
 
         const Handle<BlackVolTermStructure> volTS = process_->blackVolatility();
         const Date volRefDate = volTS->referenceDate();
@@ -138,7 +152,10 @@ namespace QuantLib {
         for (Size i=0; i < underlyings.size(); ++i) {
             rho[i][i] = 1.0;
             for (Size j=0; j < i; ++j)
-                rho[i][j] = rho[j][i] = v[j] / std::sqrt(v[i]*v[j]);
+                if (v[j] > QL_EPSILON)
+                    rho[i][j] = rho[j][i] = v[j] / std::sqrt(v[i]*v[j]);
+                else
+                    rho[i][j] = rho[j][i] = QL_EPSILON;
         }
 
         BasketOption basketOption(

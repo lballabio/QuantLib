@@ -70,8 +70,12 @@ namespace QuantLib {
         const detail::VectorBsmProcessExtractor pExtractor(processes_);
         const Array s = pExtractor.getSpot();
         const Array dq = pExtractor.getDividendYieldDf(maturityDate);
-        const Array stdDev = Sqrt(pExtractor.getBlackVariance(maturityDate));
         const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
+
+        Array stdDev = Sqrt(pExtractor.getBlackVariance(maturityDate));
+        std::transform(stdDev.begin(), stdDev.end(), stdDev.begin(),
+            [](Real x) -> Real { return std::max(QL_EPSILON*QL_EPSILON, x); }
+        );
 
         const Array fwd = s * dq/dr0;
 

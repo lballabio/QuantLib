@@ -24,6 +24,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/math/functional.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
@@ -1066,14 +1067,7 @@ BOOST_AUTO_TEST_CASE(testCashDividendEuropeanEngine) {
     };
     const std::vector<Rate> dividendAmounts{4, 10, 2, 5, 25, 15};
 
-    DividendSchedule dividendSchedule;
-    std::transform(
-        dividendAmounts.begin(), dividendAmounts.end(),
-        dividendDates.begin(), std::back_inserter(dividendSchedule),
-        [](const Rate amount, const Date& date) {
-            return ext::make_shared<FixedDividend>(amount, date);
-        }
-    );
+    DividendSchedule dividendSchedule(DividendVector(dividendDates,dividendAmounts));
 
     const Real tol = 0.005;
     for (const auto cashDivModel: {
@@ -1127,6 +1121,174 @@ BOOST_AUTO_TEST_CASE(testCashDividendEuropeanEngine) {
 }
 
 
+BOOST_AUTO_TEST_CASE(testCashDividendEuropeanEngineWithManyDividends) {
+    BOOST_TEST_MESSAGE("Testing cash-dividend European engine with many dividends...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(9, November, 2025);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Date maturityDate = today + Period(2, Years);
+    const Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+
+    const Handle<YieldTermStructure> qTS(flatRate(today, 0.05, dc));
+
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<ZeroCurve>(
+            std::vector<Date>{today, Date(1, May, 2026),
+                              Date(1, November, 2027), Date(1, January, 2032)},
+            std::vector<Real>{0.05, 0.075, 0.04, 0.06},
+            dc
+        )
+    );
+
+    const Handle<BlackVolTermStructure> vTS(
+        ext::make_shared<BlackVarianceCurve>(
+            today,
+            std::vector<Date>{Date(2, January, 2026), Date(1, July, 2026),
+                              Date(1, August, 2027), Date(1, January, 2032)},
+            std::vector<Volatility>{0.3, 0.4, 0.42, 0.5},
+            dc
+        )
+    );
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+            qTS, rTS, vTS
+        );
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, 110.0),
+        ext::make_shared<EuropeanExercise>(maturityDate)
+    );
+
+    MersenneTwisterUniformRng rng(1234);
+    std::vector<Date> dividendDates({today + Period(-1, Months)});
+    std::vector<Real> dividendAmounts({1.0});
+
+    const Size daysToMaturity = maturityDate - today;
+    dividendDates.reserve(Size(daysToMaturity/2.8));
+    dividendAmounts.reserve(Size(daysToMaturity/2.8));
+
+    while (dividendDates.back() < maturityDate + Period(1, Months)) {
+        dividendDates.emplace_back(
+            dividendDates.back() + Period(1 + rng.nextInt32() % 5, Days)
+        );
+        dividendAmounts.emplace_back(0.1*rng.nextReal());
+    }
+
+    option.setPricingEngine(
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(10)
+            .withXGrid(500)
+            .withCashDividends(dividendDates, dividendAmounts)
+            .withCashDividendModel(
+                FdBlackScholesVanillaEngine::Spot)
+    );
+
+    const Real expected = option.NPV();
+
+    option.setPricingEngine(
+        ext::make_shared<CashDividendEuropeanEngine>(
+            process,
+            DividendVector(dividendDates,dividendAmounts),
+            CashDividendEuropeanEngine::Spot
+        )
+    );
+    const Real calculated = option.NPV();
+
+    const Real tol = 0.04;
+    const Real diff = std::abs(expected - calculated);
+    if (diff > tol) {
+        BOOST_FAIL("Failed to compare European option prices "
+                   "with many dividends, CashDividendEuropeanEngine "
+                   "and FdBlackScholesVanillaEngine"
+                   << "\n    FDM price      : " << expected
+                   << "\n    Cash Div price : " << calculated
+                   << "\n    difference     : " << diff
+                   << "\n    tolerance      : " << tol);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testCashDividendEuropeanEngineWithSingleDividends) {
+    BOOST_TEST_MESSAGE("Testing cash-dividend European engine with single dividend...");
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(11, November, 2025);
+
+    Settings::instance().evaluationDate() = today;
+
+    const Date maturityDate = today + Period(18, Months);
+
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+            Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
+            Handle<YieldTermStructure>(flatRate(today, 0.025, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.3, dc))
+        );
+
+    const ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturityDate);
+
+    const std::vector<Real> dividendAmounts{5.0};
+    for (Date divDate: {
+        today - Period(1, Days), today, today + Period(1, Days),
+        today + Period(6, Months), maturityDate, maturityDate + Period(1, Days)}
+    )
+    for (const auto cashDivModel: {
+        CashDividendEuropeanEngine::Spot, CashDividendEuropeanEngine::Escrowed
+    }) {
+        const std::vector<Date> dividendDates{divDate};
+
+        const ext::shared_ptr<PricingEngine> fdEngine =
+            MakeFdBlackScholesVanillaEngine(process)
+                .withTGrid(200)
+                .withXGrid(400)
+                .withCashDividends(dividendDates, dividendAmounts)
+                .withCashDividendModel(
+                    FdBlackScholesVanillaEngine::CashDividendModel(cashDivModel));
+
+        const ext::shared_ptr<PricingEngine> cashDivEngine =
+            ext::make_shared<CashDividendEuropeanEngine>(
+                process, DividendVector(dividendDates, dividendAmounts), cashDivModel
+            );
+
+        for (Option::Type optionType: {Option::Call, Option::Put}) {
+            VanillaOption option(
+                ext::make_shared<PlainVanillaPayoff>(optionType, 95.0),
+                exercise
+            );
+
+            option.setPricingEngine(fdEngine);
+            const Real expected = option.NPV();
+
+            option.setPricingEngine(cashDivEngine);
+            const Real calculated = option.NPV();
+
+            const Real tol = 0.001;
+            const Real diff = std::fabs(expected - calculated);
+            if (diff > tol) {
+                BOOST_FAIL("Failed to compare European option prices "
+                           "with CashDividendEuropeanEngine and "
+                           "FdBlackScholesVanillaEngine"
+                           << "\n    Option Type    : "
+                           << ((optionType == Option::Call)? "Call" : "Put")
+                           << "\n    Dividend Date  : " << divDate
+                           << "\n    Dividends Model: "
+                           << ((cashDivModel == CashDividendEuropeanEngine::Spot)? "Spot" : "Escrowed")
+                           << "\n    FDM price      : " << expected
+                           << "\n    Cash Div price : " << calculated
+                           << "\n    difference     : " << diff
+                           << "\n    tolerance      : " << tol);
+            }
+        }
+    }
+}
+
+
 BOOST_AUTO_TEST_CASE(testZeroStrikeCallWithEscrowedDividends) {
     BOOST_TEST_MESSAGE("Testing zero strike call with escrowed dividend model...");
 
@@ -1171,14 +1333,31 @@ BOOST_AUTO_TEST_CASE(testZeroStrikeCallWithEscrowedDividends) {
                        / qTS->discount(dividendDate) * qTS->discount(maturityDate);
 
         const Real tol = 1e-3;
-        const Real europeanDiff = std::abs(europeanCalculated - europeanExpected);
-        if (europeanDiff > tol) {
+        const Real europeanFdmDiff = std::abs(europeanCalculated - europeanExpected);
+        if (europeanFdmDiff > tol) {
             BOOST_FAIL("Failed to calculate zero strike Europeasn call prices with "
                        "escrowed dividend model"
                        << "\n    FDM price   : " << europeanCalculated
                        << "\n    expected    : " << europeanExpected
-                       << "\n    difference  : " << europeanDiff
+                       << "\n    difference  : " << europeanFdmDiff
                        << "\n    tolerance   : " << tol);
+        }
+
+        europeanOption.setPricingEngine(
+            ext::make_shared<CashDividendEuropeanEngine>(
+                process, DividendVector({dividendDate}, {dividend})
+            )
+        );
+        const Real europeanCdCalculated = europeanOption.NPV();
+        const Real europeanCdDiff = std::abs(europeanCdCalculated - europeanExpected);
+
+        if (europeanCdDiff > tol) {
+            BOOST_FAIL("Failed to calculate zero strike Europeasn call prices with "
+                       "escrowed dividend model"
+                       << "\n    semi analytic price: " << europeanCdCalculated
+                       << "\n    expected           : " << europeanExpected
+                       << "\n    difference         : " << europeanCdDiff
+                       << "\n    tolerance          : " << tol);
         }
 
         VanillaOption americanOption(
@@ -1196,7 +1375,7 @@ BOOST_AUTO_TEST_CASE(testZeroStrikeCallWithEscrowedDividends) {
                        "escrowed dividend model"
                        << "\n    FDM price   : " << americanCalculated
                        << "\n    expected    : " << americanExpected
-                       << "\n    difference  : " << europeanDiff
+                       << "\n    difference  : " << americanDiff
                        << "\n    tolerance   : " << tol);
         }
     }
