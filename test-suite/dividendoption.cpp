@@ -1289,8 +1289,8 @@ BOOST_AUTO_TEST_CASE(testCashDividendEuropeanEngineWithSingleDividends) {
 }
 
 
-BOOST_AUTO_TEST_CASE(testZeroStrikeCallWithEscrowedDividends) {
-    BOOST_TEST_MESSAGE("Testing zero strike call with escrowed dividend model...");
+BOOST_AUTO_TEST_CASE(testZeroStrikeCallWithCashDividends) {
+    BOOST_TEST_MESSAGE("Testing zero strike call with cash dividend model...");
 
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(26, October, 2025);
@@ -1353,7 +1353,7 @@ BOOST_AUTO_TEST_CASE(testZeroStrikeCallWithEscrowedDividends) {
 
         if (europeanCdDiff > tol) {
             BOOST_FAIL("Failed to calculate zero strike Europeasn call prices with "
-                       "escrowed dividend model"
+                       "spot dividend model"
                        << "\n    semi analytic price: " << europeanCdCalculated
                        << "\n    expected           : " << europeanExpected
                        << "\n    difference         : " << europeanCdDiff

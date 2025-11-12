@@ -93,6 +93,7 @@ namespace QuantLib {
         QL_REQUIRE(avgPayoff, "average or spread basket payoff expected");
 
         const Array weights = avgPayoff->weights();
+
         QL_REQUIRE(n_ == weights.size() && n_ > 1,
              "wrong number of weights arguments in payoff");
 
@@ -158,6 +159,7 @@ namespace QuantLib {
                 nIntOrder[i] = Size(std::lround(1 + intScale*sv[i]));
 
             lambda*=0.9;
+
             QL_REQUIRE(lambda/lambda_ > 1e-10,
                 "can not rescale lambda to fit max integration order");
         } while (std::accumulate(
