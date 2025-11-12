@@ -226,7 +226,7 @@ namespace QuantLib {
         std::pair<Date, Date> fixingPeriod = inflationPeriod(fixingDate, frequency_);
 
         Date firstDateInPeriod = fixingPeriod.first;
-        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
+        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, false);
         Time t1 = inflationYearFraction(frequency_, false, zeroInflation_->dayCounter(),
                                         baseDate, firstDateInPeriod);
         return baseFixing * std::pow(1.0 + Z1, t1);
@@ -381,7 +381,7 @@ namespace QuantLib {
             std::pair<Date,Date> fixingPeriod = inflationPeriod(fixingDate, frequency_);
             d = fixingPeriod.first;
         }
-        return yoyInflation_->yoyRate(d,0*Days);
+        return yoyInflation_->yoyRate(d);
     }
 
     ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(

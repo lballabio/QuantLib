@@ -144,18 +144,23 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! zero-coupon inflation rate.
-        /*! Essentially the fair rate for a zero-coupon inflation swap
-            (by definition), i.e. the zero term structure uses yearly
-            compounding, which is assumed for ZCIIS instrument quotes.
+        /*! The zero term structure uses yearly compounding, which is
+            assumed for ZCIIS instrument quotes.
 
-            \note by default you get the same as lag and interpolation
-            as the term structure.
-            If you want to get predictions of RPI/CPI/etc then use an
-            index.
+            If you want to get predictions of RPI/CPI/etc. use the
+            corresponding index instead; if you need a ZCIIS rate,
+            retrieve it from the instrument.
         */
-        Rate zeroRate(const Date& d, const Period& instObsLag = Period(-1,Days),
+        Rate zeroRate(const Date& d, bool extrapolate = false) const;
+
+        /*! \deprecated Use the overload without a lag instead.
+                        Deprecated in version 1.41.
+        */
+        [[deprecated("Use the overload without a lag instead")]]
+        Rate zeroRate(const Date& d, const Period& instObsLag,
                       bool forceLinearInterpolation = false,
                       bool extrapolate = false) const;
+
         //! zero-coupon inflation rate.
         /*! \warning Since inflation is highly linked to dates (lags,
                      interpolation, months for seasonality, etc) this
@@ -242,14 +247,20 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! year-on-year inflation rate.
-        /*! The forceLinearInterpolation parameter is relative to the
-            frequency of the TS.
-
-            \note this is not the year-on-year swap (YYIIS) rate.
+        /*! This does not return the year-on-year swap (YYIIS) rate.
+            If you need that rate, retrieve it from the corresponding
+            instrument instead.
         */
-        Rate yoyRate(const Date& d, const Period& instObsLag = Period(-1,Days),
+        Rate yoyRate(const Date& d, bool extrapolate = false) const;
+
+        /*! \deprecated Use the overload without a lag instead.
+                        Deprecated in version 1.41.
+        */
+        [[deprecated("Use the overload without a lag instead")]]
+        Rate yoyRate(const Date& d, const Period& instObsLag,
                      bool forceLinearInterpolation = false,
                      bool extrapolate = false) const;
+
         //! year-on-year inflation rate.
         /*! \warning Since inflation is highly linked to dates (lags,
                      interpolation, months for seasonality, etc) this
