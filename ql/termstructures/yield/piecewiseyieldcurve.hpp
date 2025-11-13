@@ -28,6 +28,7 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <utility>
 
@@ -142,6 +143,14 @@ namespace QuantLib {
         //@{
         void update() override;
         //@}
+        const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const override {
+            if constexpr (std::is_convertible_v<bootstrap_type*, MultiCurveBootstrapContributor*>) {
+                return &bootstrap_;
+            } else {
+                return nullptr;
+            }
+        }
+
       protected:
         template <class... Args>
         PiecewiseYieldCurve(
