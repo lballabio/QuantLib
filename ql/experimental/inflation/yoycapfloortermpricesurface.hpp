@@ -194,8 +194,7 @@ namespace QuantLib {
             // work in terms of maturity-of-instruments
             // so ask for rate with observation lag
             Period p = (obsLag == Period(-1, Days)) ? observationLag() : obsLag;
-            // Third parameter = force linear interpolation of yoy
-            return yoy_->yoyRate(d, p, false, extrapolate);
+            return yoy_->yoyRate(d - p, extrapolate);
         }
         //@}
 

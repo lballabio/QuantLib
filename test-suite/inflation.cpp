@@ -444,7 +444,7 @@ BOOST_AUTO_TEST_CASE(testZeroTermStructure) {
     Date bd = hz->baseDate();
     Real bf = ii->fixing(bd);
     for (const auto& d : testIndex) {
-        Real z = hz->zeroRate(d, Period(0, Days));
+        Real z = hz->zeroRate(d);
         Real t = hz->dayCounter().yearFraction(bd, inflationPeriod(d, ii->frequency()).first);
         Real calc = bf * std::pow(1+z, t);
         if (t<=0)

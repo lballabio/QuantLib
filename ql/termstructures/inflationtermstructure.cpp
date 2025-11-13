@@ -131,6 +131,12 @@ namespace QuantLib {
                                    const ext::shared_ptr<Seasonality>& seasonality)
     : InflationTermStructure(settlementDays, calendar, baseDate, frequency, dayCounter, seasonality) {}
 
+    Rate ZeroInflationTermStructure::zeroRate(const Date &d, bool extrapolate) const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return zeroRate(d, Period(0, Days), false, extrapolate);
+        QL_DEPRECATED_ENABLE_WARNING
+    }
+
     Rate ZeroInflationTermStructure::zeroRate(const Date &d, const Period& instObsLag,
                                               bool forceLinearInterpolation,
                                               bool extrapolate) const {
@@ -242,6 +248,12 @@ namespace QuantLib {
     }
 
     QL_DEPRECATED_ENABLE_WARNING
+
+    Rate YoYInflationTermStructure::yoyRate(const Date &d, bool extrapolate) const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return yoyRate(d, Period(0, Days), false, extrapolate);
+        QL_DEPRECATED_ENABLE_WARNING
+    }
 
     Rate YoYInflationTermStructure::yoyRate(const Date &d, const Period& instObsLag,
                                             bool forceLinearInterpolation,

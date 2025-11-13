@@ -78,7 +78,7 @@ namespace QuantLib {
                 // This also means that we do not need the coupon to have
                 // a pricing engine to return the swaplet rate and then
                 // the adjusted fixing in the instrument.
-                forwards[i] = yoyTS->yoyRate(arguments_.fixingDates[i],Period(0,Days));
+                forwards[i] = yoyTS->yoyRate(arguments_.fixingDates[i]);
                 Rate forward = forwards[i];
 
                 Date fixingDate = arguments_.fixingDates[i];
