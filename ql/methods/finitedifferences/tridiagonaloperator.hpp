@@ -33,7 +33,7 @@
 namespace QuantLib {
 
     //! Base implementation for tridiagonal operator
-    /*! \warning to use real time-dependant algebra, you must overload
+    /*! \warning to use real time-dependent algebra, you must overload
                  the corresponding operators in the inheriting
                  time-dependent class.
 

@@ -100,7 +100,7 @@ namespace QuantLib {
                new ImpliedTermStructure(process_->riskFreeRate(),
                                         this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
-        // time dependant. It is plain wrong if it is asset dependant.
+        // time-dependent. It is plain wrong if it is asset-dependent.
         // In the latter case the right solution would be stochastic
         // volatility or at least local volatility (which unfortunately
         // implies an unrealistic time-decreasing smile)

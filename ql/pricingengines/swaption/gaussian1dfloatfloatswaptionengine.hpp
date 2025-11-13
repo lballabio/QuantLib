@@ -72,7 +72,7 @@ namespace QuantLib {
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<Quote> &oas =
-                Handle<Quote>(), // continously compounded w.r.t. yts daycounter
+                Handle<Quote>(), // continuously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
                 Handle<YieldTermStructure>(),
             const bool includeTodaysExercise = false,
@@ -100,7 +100,7 @@ namespace QuantLib {
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<Quote> &oas =
-                Handle<Quote>(), // continously compounded w.r.t. yts daycounter
+                Handle<Quote>(), // continuously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
                 Handle<YieldTermStructure>(),
             const bool includeTodaysExercise = false,

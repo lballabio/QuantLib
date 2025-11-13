@@ -174,7 +174,7 @@ namespace QuantLib {
 
     /*! Two credit events are the same independently of their
         settlement member data. This has the side effect of
-        overwritting different settlements from the same credit event
+        overwriting different settlements from the same credit event
         when, say, inserting in a map. But on the other hand one given
         event can only have one settlement. This means we can not have
         two restructuring events on a bond on the same date.

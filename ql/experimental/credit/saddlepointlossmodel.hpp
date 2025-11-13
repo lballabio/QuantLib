@@ -804,7 +804,7 @@ namespace QuantLib {
         //
         Probability pMaxName = copula_->conditionalDefaultProbabilityInvP(
             invUncondPs[iNamMax], iNamMax, mktFactor);
-        // aproximates the  saddle pt corresponding to this minimum; finds 
+        // approximates the  saddle pt corresponding to this minimum; finds 
         //   it by using only the smallest logistic term and thus this is 
         //   smaller than the true value:
         Real saddleMin = 1./(lgds[iNamMax]/remainingNotional_) * 

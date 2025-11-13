@@ -330,7 +330,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
                               payoff_.optionType(), payoff_.strike(),
                               r_, maturity_, sigma_);
 
-    // a statistics accumulator for the path-dependant Profit&Loss values
+    // a statistics accumulator for the path-dependent Profit&Loss values
     Statistics statisticsAccumulator;
 
     // The Monte Carlo model generates paths using myPathGenerator

@@ -150,7 +150,7 @@ namespace QuantLib {
             range check has already been performed; therefore, they
             must assume that extrapolation is required.
             The third method has a default implementation which can be
-            overriden with a more efficient implementation in derived
+            overridden with a more efficient implementation in derived
             classes.
         */
         //@{
