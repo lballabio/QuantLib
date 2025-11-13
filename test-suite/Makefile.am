@@ -18,6 +18,7 @@ QL_TEST_SRCS = \
 	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
+	blackvolsurfacedelta.cpp \
 	bondforward.cpp \
 	bonds.cpp \
 	brownianbridge.cpp \
