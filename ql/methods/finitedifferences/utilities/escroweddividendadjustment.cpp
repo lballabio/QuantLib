@@ -40,10 +40,11 @@ namespace QuantLib {
         for (auto const& dividend: dividendSchedule_) {
             const Time divTime = toTime_(dividend->date());
 
-            if (divTime >= t && t <= maturity_)
+            if (divTime >= t && divTime <= maturity_) {
                 divAdj -= dividend->amount()
                     * rTS_->discount(divTime) / rTS_->discount(t)
                     * qTS_->discount(t) / qTS_->discount(divTime);
+            }
         }
 
         return divAdj;
