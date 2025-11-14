@@ -22,6 +22,7 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
@@ -83,7 +84,7 @@ namespace QuantLib {
         }
 
         std::pair<Real, Real>
-        npvbpsConstNotionalLeg(const Leg& iborLeg,
+        npvbpsConstNotionalLeg(const Leg& leg,
                                const Date& initialNotionalExchangeDate,
                                const Date& finalNotionalExchangeDate,
                                const Handle<YieldTermStructure>& discountCurveHandle) {
@@ -91,7 +92,7 @@ namespace QuantLib {
             Date refDt = discountCurveHandle->referenceDate();
             const YieldTermStructure& discountRef = **discountCurveHandle;
             bool includeSettleDtFlows = true;
-            auto [npv, bps] = CashFlows::npvbps(iborLeg, discountRef, includeSettleDtFlows, refDt, refDt);
+            auto [npv, bps] = CashFlows::npvbps(leg, discountRef, includeSettleDtFlows, refDt, refDt);
             // Include NPV of the notional exchange at start and maturity.
             npv += (-1.0) * discountRef.discount(initialNotionalExchangeDate);
             npv += discountRef.discount(finalNotionalExchangeDate);
@@ -217,23 +218,35 @@ namespace QuantLib {
 
     void CrossCurrencyBasisSwapRateHelperBase::initializeDates() {
         baseCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
-                                       endOfMonth_, baseCcyIdx_, paymentFrequency_, paymentLag_);
+                                           endOfMonth_, baseCcyIdx_, paymentFrequency_, paymentLag_);
+    
         quoteCcyIborLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
-                                        convention_, endOfMonth_, quoteCcyIdx_, paymentFrequency_, paymentLag_);
-        earliestDate_ = std::min(CashFlows::startDate(baseCcyIborLeg_), 
-                                CashFlows::startDate(quoteCcyIborLeg_));
+                                            convention_, endOfMonth_, quoteCcyIdx_, paymentFrequency_, paymentLag_);
+    
+        earliestDate_ = std::min(CashFlows::startDate(baseCcyIborLeg_),
+                                 CashFlows::startDate(quoteCcyIborLeg_));
+    
         maturityDate_ = std::max(CashFlows::maturityDate(baseCcyIborLeg_),
                                  CashFlows::maturityDate(quoteCcyIborLeg_));
+    
         if (paymentLag_ == 0) {
             initialNotionalExchangeDate_ = earliestDate_;
-            finalNotionalExchangeDate_ = maturityDate_;
+            finalNotionalExchangeDate_   = maturityDate_;
         } else {
             initialNotionalExchangeDate_ = calendar_.advance(earliestDate_, paymentLag_, Days, convention_);
-            finalNotionalExchangeDate_ = calendar_.advance(maturityDate_, paymentLag_, Days, convention_);
+            finalNotionalExchangeDate_   = calendar_.advance(maturityDate_, paymentLag_, Days, convention_);
         }
-        Date lastPaymentDate = std::max(baseCcyIborLeg_.back()->date(), quoteCcyIborLeg_.back()->date());
-        latestRelevantDate_ = latestDate_ = std::max(maturityDate_, lastPaymentDate);
+    
+        Date lastPaymentDate =
+            std::max(baseCcyIborLeg_.back()->date(),
+                     quoteCcyIborLeg_.back()->date());
+    
+        Date last = std::max(maturityDate_, lastPaymentDate);
+    
+        const_cast<Date&>(latestRelevantDate_) = last;
+        const_cast<Date&>(latestDate_)        = last;
     }
+    
 
     const Handle<YieldTermStructure>&
     CrossCurrencyBasisSwapRateHelperBase::baseCcyLegDiscountHandle() const {
@@ -368,18 +381,36 @@ namespace QuantLib {
 // CrossCurrencySwapRateHelper
 // -----------------------------------------------------------------------------
 
-
-namespace {
-    static inline DiscountFactor getDF(
-        const YieldTermStructure* maybeTs,
-        const Handle<YieldTermStructure>& provided,
-        const Date& d) {
-        if (!provided.empty())
-            return provided->discount(d);
-        QL_REQUIRE(maybeTs, "term structure not set");
-        return maybeTs->discount(d);
-    }
+Leg CrossCurrencySwapRateHelper::buildFixedLeg(const Schedule& fixedSchedule) const {
+    return FixedRateLeg(fixedSchedule)
+        .withNotionals(1.0)
+        .withCouponRates(1.0, fixedDayCount_);
 }
+
+Leg CrossCurrencySwapRateHelper::buildFloatingLeg(const Schedule& floatSchedule) const {
+    return IborLeg(floatSchedule, floatIndex_)
+        .withNotionals(1.0)
+        .withSpreads(0.0);
+}
+
+Handle<YieldTermStructure> CrossCurrencySwapRateHelper::fixedLegDiscountHandle() const {
+    if (collateralOnFixedLeg_) {
+        return collateralCurve_;
+    }
+    QL_REQUIRE(termStructure_, "term structure not set");
+    return Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
+        termStructure_, null_deleter()));
+}
+
+Handle<YieldTermStructure> CrossCurrencySwapRateHelper::floatingLegDiscountHandle() const {
+    if (collateralOnFixedLeg_) {
+        QL_REQUIRE(termStructure_, "term structure not set");
+        return Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
+            termStructure_, null_deleter()));
+    }
+    return collateralCurve_;
+}
+
 
 CrossCurrencySwapRateHelper::CrossCurrencySwapRateHelper(
     const Handle<Quote>& fixedRate,
@@ -425,69 +456,62 @@ CrossCurrencySwapRateHelper::CrossCurrencySwapRateHelper(
 void CrossCurrencySwapRateHelper::initializeDates() {
     Date ref = Settings::instance().evaluationDate();
     QL_REQUIRE(ref != Date(), "evaluation date not set");
-    settlementDate_ = calendar_.advance(ref, fixingDays_, Days);
-    maturityDate_   = calendar_.advance(settlementDate_, tenor_, convention_, endOfMonth_);
-    earliestDate_ = settlementDate_;
-    latestDate_   = maturityDate_;
+    instrumentSettlementDate_ = calendar_.advance(ref, fixingDays_, Days);
+    maturityDate_ = calendar_.advance(instrumentSettlementDate_, tenor_, convention_, endOfMonth_);
+    earliestDate_ = instrumentSettlementDate_;
+
+    initialNotionalExchangeDate_ = instrumentSettlementDate_;
+    finalNotionalExchangeDate_ = maturityDate_;
+
+    fixedSchedule_ = Schedule(instrumentSettlementDate_, maturityDate_,
+                              Period(fixedFrequency_), calendar_,
+                              convention_, convention_,
+                              DateGeneration::Forward, endOfMonth_);
+
+    floatSchedule_ = Schedule(instrumentSettlementDate_, maturityDate_,
+                              floatIndex_->tenor(),
+                              floatIndex_->fixingCalendar(),
+                              floatIndex_->businessDayConvention(),
+                              floatIndex_->businessDayConvention(),
+                              DateGeneration::Forward, false);
+
+    QL_REQUIRE(fixedSchedule_.size() >= 2, "fixed schedule too short");
+    QL_REQUIRE(floatSchedule_.size() >= 2, "floating schedule too short");
+
+    fixedLeg_ = buildFixedLeg(fixedSchedule_);
+    floatLeg_ = buildFloatingLeg(floatSchedule_);
+
+    Date lastPayment = std::max(fixedSchedule_.back(), floatSchedule_.back());
+    Date last = std::max(maturityDate_, lastPayment);
+
+    const_cast<Date&>(latestRelevantDate_) = last;
+    const_cast<Date&>(latestDate_) = last;
 }
+
 
 void CrossCurrencySwapRateHelper::setTermStructure(YieldTermStructure* t) {
     RelativeDateRateHelper::setTermStructure(t);
 }
 
 Real CrossCurrencySwapRateHelper::impliedQuote() const {
-    const Schedule fixedSched(settlementDate_, maturityDate_,
-                              Period(fixedFrequency_), calendar_,
-                              convention_, convention_,
-                              DateGeneration::Forward, endOfMonth_);
-    const std::vector<Date>& fdates = fixedSched.dates();
-    QL_REQUIRE(fdates.size() >= 2, "fixed schedule too short");
+    QL_REQUIRE(termStructure_, "term structure not set");
 
-    const Calendar fCal = floatIndex_->fixingCalendar();
-    const BusinessDayConvention fBdc = floatIndex_->businessDayConvention();
-    const Period fTenor = floatIndex_->tenor();
-    const Schedule floatSched(settlementDate_, maturityDate_,
-                              fTenor, fCal, fBdc, fBdc,
-                              DateGeneration::Forward, false);
-    const std::vector<Date>& ldates = floatSched.dates();
-    QL_REQUIRE(ldates.size() >= 2, "floating schedule too short");
+    Handle<YieldTermStructure> fixedDisc  = fixedLegDiscountHandle();
+    Handle<YieldTermStructure> floatDisc  = floatingLegDiscountHandle();
 
-    auto fixedDF = [&](const Date& d) {
-        if (collateralOnFixedLeg_)
-            return getDF(nullptr, collateralCurve_, d);
-        return getDF(termStructure_, Handle<YieldTermStructure>(), d);
-    };
+    auto [fixedNpv, fixedBps] = npvbpsConstNotionalLeg(
+        fixedLeg_, initialNotionalExchangeDate_, finalNotionalExchangeDate_, fixedDisc);
 
-    auto floatDF = [&](const Date& d) {
-        if (collateralOnFixedLeg_)
-            return getDF(termStructure_, Handle<YieldTermStructure>(), d);
-        return getDF(nullptr, collateralCurve_, d);
-    };
+    auto [floatNpv, floatBps] = npvbpsConstNotionalLeg(
+        floatLeg_, initialNotionalExchangeDate_, finalNotionalExchangeDate_, floatDisc);
 
-    Real pvbp = 0.0;
-    for (Size i = 1; i < fdates.size(); ++i) {
-        const Date s = fdates[i-1], e = fdates[i];
-        const Date pay = e;
-        const Time accr = fixedDayCount_.yearFraction(s, e);
-        pvbp += accr * fixedDF(pay);
-    }
+    QL_REQUIRE(std::fabs(fixedBps) > 0.0, "fixed leg BPS is zero");
 
-    Real pvFloat = 0.0;
-    for (Size j = 1; j < ldates.size(); ++j) {
-        const Date s = ldates[j-1], e = ldates[j];
-        const Date fixDate = floatIndex_->fixingDate(s);
-        const Rate fwd = floatIndex_->forecastFixing(fixDate);
-        const Time accr = floatIndex_->dayCounter().yearFraction(s, e);
-        const Date pay = e;
-        pvFloat += fwd * accr * floatDF(pay);
-    }
-
-    Date lastPaymentDate = std::max(fdates.back(), ldates.back());
-    const Date lastRelevant = std::max(maturityDate_, lastPaymentDate);
-    const_cast<Date&>(latestRelevantDate_) = lastRelevant;
-    const_cast<Date&>(latestDate_) = lastRelevant;    
-    return pvFloat / pvbp;
+    return 1.0 + (floatNpv - fixedNpv) / fixedBps;
 }
+
+
+
 void CrossCurrencySwapRateHelper::accept(AcyclicVisitor& v) {
     auto* v1 = dynamic_cast<Visitor<CrossCurrencySwapRateHelper>*>(&v);
     if (v1 != nullptr)

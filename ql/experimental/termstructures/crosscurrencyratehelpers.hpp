@@ -194,29 +194,39 @@ namespace QuantLib {
           const Handle<YieldTermStructure>& collateralCurve,
           bool collateralOnFixedLeg);
 
-      void setTermStructure(YieldTermStructure*) override;
-      Real impliedQuote() const override;
-      void accept(AcyclicVisitor&) override;
+          void setTermStructure(YieldTermStructure*) override;
+          Real impliedQuote() const override;
+          void accept(AcyclicVisitor&) override;
+      
+      protected:
+          void initializeDates() override;
+      
+          private:
+          Period tenor_;
+          Natural fixingDays_;
+          Calendar calendar_;
+          BusinessDayConvention convention_;
+          bool endOfMonth_;
+          Frequency fixedFrequency_;
+          DayCounter fixedDayCount_;
+          Currency fixedCurrency_, floatCurrency_;
+          ext::shared_ptr<IborIndex> floatIndex_;
+          Handle<YieldTermStructure> collateralCurve_;
+          bool collateralOnFixedLeg_;
+          Date instrumentSettlementDate_, maturityDate_;
+          Date initialNotionalExchangeDate_;
+          Date finalNotionalExchangeDate_;
+          Schedule fixedSchedule_;
+          Schedule floatSchedule_;
+          Leg fixedLeg_;
+          Leg floatLeg_;
 
+          Leg buildFixedLeg(const Schedule& fixedSchedule) const;
+          Leg buildFloatingLeg(const Schedule& floatSchedule) const;
+          Handle<YieldTermStructure> fixedLegDiscountHandle() const;
+          Handle<YieldTermStructure> floatingLegDiscountHandle() const;
 
-    protected:
-      void initializeDates() override;
-
-    private:
-      Period tenor_;
-      Natural fixingDays_;
-      Calendar calendar_;
-      BusinessDayConvention convention_;
-      bool endOfMonth_;
-      Frequency fixedFrequency_;
-      DayCounter fixedDayCount_;
-      Currency fixedCurrency_, floatCurrency_;
-      ext::shared_ptr<IborIndex> floatIndex_;
-      Handle<YieldTermStructure> collateralCurve_;
-      bool collateralOnFixedLeg_;
-
-      Date settlementDate_, maturityDate_;
-  };
+      };
 }
 
 #endif

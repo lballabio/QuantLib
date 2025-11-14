@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /*
- Copyright (C) 2021 Marcin Rybacki
+ Copyright (C) 2025 Uzair Beg 
+Copyright (C) 2021 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -523,7 +525,7 @@ BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperBasic) {
     BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper basic functionality");
 
     SavedSettings backup;
-    Date today(27, April, 2025);
+    Date today(15, January, 2026);
     Settings::instance().evaluationDate() = today;
 
     Handle<YieldTermStructure> usdCollat(
@@ -542,7 +544,6 @@ BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperBasic) {
     Frequency fixedFreq = Annual;
     DayCounter fixedDC = Thirty360(Thirty360::BondBasis);
 
-    // Dummy curve to link the helper
     RelinkableHandle<YieldTermStructure> bootstrapCurve;
     bootstrapCurve.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual360()));
 
@@ -566,7 +567,7 @@ BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperDifferentTenors) {
     BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper across various tenors");
 
     SavedSettings backup;
-    Date today(27, April, 2025);
+    Date today(15, January, 2026);
     Settings::instance().evaluationDate() = today;
 
     Handle<YieldTermStructure> usdCollat(
@@ -599,7 +600,7 @@ BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperRelinking) {
     BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper reaction to relinked curves");
 
     SavedSettings backup;
-    Date today(27, April, 2025);
+    Date today(15, January, 2026);
     Settings::instance().evaluationDate() = today;
 
     RelinkableHandle<YieldTermStructure> usdCollat;
@@ -626,6 +627,95 @@ BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperRelinking) {
 
     BOOST_CHECK(oldQuote != newQuote);
 }
+
+BOOST_AUTO_TEST_CASE(testCrossCurrencySwapRateHelperParPricing) {
+    BOOST_TEST_MESSAGE("Testing CrossCurrencySwapRateHelper par pricing via bootstrapped curve");
+
+    SavedSettings backup;
+    Date today(20, March, 2030); 
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    Handle<YieldTermStructure> eurFwd(
+        ext::make_shared<FlatForward>(today, 0.017, Actual365Fixed()));
+
+    ext::shared_ptr<IborIndex> euribor3m =
+        ext::make_shared<Euribor3M>(eurFwd);
+
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.018));
+    Period tenor(5, Years);
+    Natural fixingDays = 5; 
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency fixedFreq = Annual;
+    DayCounter fixedDC = Thirty360(Thirty360::BondBasis);
+
+    std::vector<ext::shared_ptr<RateHelper> > helpers;
+    helpers.push_back(ext::make_shared<CrossCurrencySwapRateHelper>(
+        q, tenor, fixingDays, cal, bdc, endOfMonth,
+        fixedFreq, fixedDC,
+        USDCurrency(), euribor3m, EURCurrency(),
+        usdCollat, true));
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
+    ext::shared_ptr<YieldTermStructure> curve(
+        new Curve(today, helpers, Actual365Fixed()));
+    curve->enableExtrapolation();
+    Handle<YieldTermStructure> curveHandle(curve);
+
+    Date settlement = cal.advance(today, fixingDays, Days);
+    Date maturity   = cal.advance(settlement, tenor, bdc, endOfMonth);
+
+    Schedule fixedSched(settlement, maturity,
+        Period(fixedFreq),
+        cal, bdc, bdc,
+        DateGeneration::Forward, endOfMonth);
+
+
+    Schedule floatSched(settlement, maturity,
+                        euribor3m->tenor(),
+                        euribor3m->fixingCalendar(),
+                        euribor3m->businessDayConvention(),
+                        euribor3m->businessDayConvention(),
+                        DateGeneration::Forward, false);
+
+    Leg fixedLeg = FixedRateLeg(fixedSched)
+                       .withNotionals(1.0)
+                       .withCouponRates(q->value(), fixedDC);
+
+    Leg floatLeg = IborLeg(floatSched, euribor3m)
+                       .withNotionals(1.0)
+                       .withSpreads(0.0);
+
+    Date initialPaymentDate = CashFlows::startDate(fixedLeg);
+    fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
+    floatLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
+
+    Date finalPaymentDate = CashFlows::maturityDate(fixedLeg);
+    fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
+    floatLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
+
+    ext::shared_ptr<PricingEngine> fixedEngine(
+        new DiscountingSwapEngine(usdCollat));
+    ext::shared_ptr<PricingEngine> floatEngine(
+        new DiscountingSwapEngine(curveHandle));
+
+    Swap fixedProxy(std::vector<Leg>(1, fixedLeg),
+                    std::vector<bool>(1, true));
+    Swap floatProxy(std::vector<Leg>(1, floatLeg),
+                    std::vector<bool>(1, false));
+
+    fixedProxy.setPricingEngine(fixedEngine);
+    floatProxy.setPricingEngine(floatEngine);
+
+    Real npv = fixedProxy.NPV() + floatProxy.NPV();
+    Real tolerance = 1e-10;
+
+    BOOST_CHECK_SMALL(npv, tolerance);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
