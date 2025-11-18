@@ -30,6 +30,12 @@
 
 namespace QuantLib {
 
+    enum class BlackVolTimeExtrapolation {
+        FlatVolatility,
+        UseInterpolatorVariance,
+        UseInterpolatorVolatility,
+    };
+
     //! Black-volatility term structure
     /*! This abstract class defines the interface of concrete
         Black-volatility term structures which will be derived from

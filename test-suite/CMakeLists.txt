@@ -17,6 +17,7 @@ set(QL_TEST_SOURCES
     blackdeltacalculator.cpp
 	blackcalculator.cpp
     blackformula.cpp
+    blackvolsurfacedelta.cpp
     bondforward.cpp
     bonds.cpp
     brownianbridge.cpp
