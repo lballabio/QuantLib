@@ -242,9 +242,8 @@ namespace QuantLib {
                      quoteCcyIborLeg_.back()->date());
     
         Date last = std::max(maturityDate_, lastPaymentDate);
-    
-        const_cast<Date&>(latestRelevantDate_) = last;
-        const_cast<Date&>(latestDate_)        = last;
+        latestRelevantDate_ = latestDate_ = last;
+                     
     }
     
 
@@ -378,22 +377,23 @@ namespace QuantLib {
             RateHelper::accept(v);
     }
 // -----------------------------------------------------------------------------
-// CrossCurrencySwapRateHelper
+// ConstNotionalCrossCurrencySwapRateHelper
 // -----------------------------------------------------------------------------
 
-Leg CrossCurrencySwapRateHelper::buildFixedLeg(const Schedule& fixedSchedule) const {
+Leg ConstNotionalCrossCurrencySwapRateHelper::buildFixedLeg(const Schedule& fixedSchedule) const {
     return FixedRateLeg(fixedSchedule)
         .withNotionals(1.0)
         .withCouponRates(1.0, fixedDayCount_);
 }
 
-Leg CrossCurrencySwapRateHelper::buildFloatingLeg(const Schedule& floatSchedule) const {
+Leg ConstNotionalCrossCurrencySwapRateHelper::buildFloatingLeg(const Schedule& floatSchedule) const {
     return IborLeg(floatSchedule, floatIndex_)
         .withNotionals(1.0)
         .withSpreads(0.0);
 }
 
-Handle<YieldTermStructure> CrossCurrencySwapRateHelper::fixedLegDiscountHandle() const {
+Handle<YieldTermStructure>
+ConstNotionalCrossCurrencySwapRateHelper::fixedLegDiscountHandle() const {
     if (collateralOnFixedLeg_) {
         return collateralCurve_;
     }
@@ -402,17 +402,21 @@ Handle<YieldTermStructure> CrossCurrencySwapRateHelper::fixedLegDiscountHandle()
         termStructure_, null_deleter()));
 }
 
-Handle<YieldTermStructure> CrossCurrencySwapRateHelper::floatingLegDiscountHandle() const {
-    if (collateralOnFixedLeg_) {
-        QL_REQUIRE(termStructure_, "term structure not set");
-        return Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
-            termStructure_, null_deleter()));
+
+
+Handle<YieldTermStructure>
+ConstNotionalCrossCurrencySwapRateHelper::floatingLegDiscountHandle() const {
+    if (!collateralOnFixedLeg_) {
+        return collateralCurve_;
     }
-    return collateralCurve_;
+    QL_REQUIRE(termStructure_, "term structure not set");
+    return Handle<YieldTermStructure>(ext::shared_ptr<YieldTermStructure>(
+        termStructure_, null_deleter()));
 }
 
 
-CrossCurrencySwapRateHelper::CrossCurrencySwapRateHelper(
+
+ConstNotionalCrossCurrencySwapRateHelper::ConstNotionalCrossCurrencySwapRateHelper(
     const Handle<Quote>& fixedRate,
     const Period& tenor,
     Natural fixingDays,
@@ -453,7 +457,7 @@ CrossCurrencySwapRateHelper::CrossCurrencySwapRateHelper(
     initializeDates();
 }
 
-void CrossCurrencySwapRateHelper::initializeDates() {
+void ConstNotionalCrossCurrencySwapRateHelper::initializeDates() {
     Date ref = Settings::instance().evaluationDate();
     QL_REQUIRE(ref != Date(), "evaluation date not set");
     instrumentSettlementDate_ = calendar_.advance(ref, fixingDays_, Days);
@@ -489,11 +493,7 @@ void CrossCurrencySwapRateHelper::initializeDates() {
 }
 
 
-void CrossCurrencySwapRateHelper::setTermStructure(YieldTermStructure* t) {
-    RelativeDateRateHelper::setTermStructure(t);
-}
-
-Real CrossCurrencySwapRateHelper::impliedQuote() const {
+Real ConstNotionalCrossCurrencySwapRateHelper::impliedQuote() const {
     QL_REQUIRE(termStructure_, "term structure not set");
 
     Handle<YieldTermStructure> fixedDisc  = fixedLegDiscountHandle();
@@ -512,8 +512,8 @@ Real CrossCurrencySwapRateHelper::impliedQuote() const {
 
 
 
-void CrossCurrencySwapRateHelper::accept(AcyclicVisitor& v) {
-    auto* v1 = dynamic_cast<Visitor<CrossCurrencySwapRateHelper>*>(&v);
+void ConstNotionalCrossCurrencySwapRateHelper::accept(AcyclicVisitor& v) {
+    auto* v1 = dynamic_cast<Visitor<ConstNotionalCrossCurrencySwapRateHelper>*>(&v);
     if (v1 != nullptr)
         v1->visit(*this);
     else

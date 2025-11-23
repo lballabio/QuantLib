@@ -34,8 +34,8 @@ namespace QuantLib {
       public:
         //! \name RateHelper interface
         //@{
-        void setTermStructure(YieldTermStructure*) override;
         //@}
+        void setTermStructure(YieldTermStructure* t) override;
       protected:
         CrossCurrencyBasisSwapRateHelperBase(const Handle<Quote>& basis,
                                              const Period& tenor,
@@ -177,9 +177,9 @@ namespace QuantLib {
       collateral curve, while the other leg’s discount curve is the one being bootstrapped.
     */
 
-   class CrossCurrencySwapRateHelper : public RelativeDateRateHelper {
+   class ConstNotionalCrossCurrencySwapRateHelper : public RelativeDateRateHelper {
     public:
-      CrossCurrencySwapRateHelper(
+    ConstNotionalCrossCurrencySwapRateHelper(
           const Handle<Quote>& fixedRate,
           const Period& tenor,
           Natural fixingDays,
@@ -194,7 +194,6 @@ namespace QuantLib {
           const Handle<YieldTermStructure>& collateralCurve,
           bool collateralOnFixedLeg);
 
-          void setTermStructure(YieldTermStructure*) override;
           Real impliedQuote() const override;
           void accept(AcyclicVisitor&) override;
       
