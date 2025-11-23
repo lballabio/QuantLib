@@ -30,7 +30,13 @@ MultiCurveBootstrap::MultiCurveBootstrap(Real accuracy) {
 
 MultiCurveBootstrap::MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer,
                                          ext::shared_ptr<EndCriteria> endCriteria)
-: optimizer_(std::move(optimizer)), endCriteria_(std::move(endCriteria)) {}
+: optimizer_(std::move(optimizer)), endCriteria_(std::move(endCriteria)) {
+    constexpr Real accuracy = 1E-10;
+    if (optimizer_ == nullptr)
+        optimizer_ = ext::make_shared<LevenbergMarquardt>(accuracy, accuracy, accuracy);
+    if (endCriteria_ == nullptr)
+        endCriteria_ = ext::make_shared<EndCriteria>(1000, 10, accuracy, accuracy, accuracy);
+}
 
 void MultiCurveBootstrap::add(const MultiCurveBootstrapContributor* c) {
     contributors_.push_back(c);

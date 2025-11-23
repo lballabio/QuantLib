@@ -40,7 +40,9 @@ namespace QuantLib {
 #endif
     {
       public:
-        explicit MultiCurve(ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap);
+        explicit MultiCurve(Real accuracy);
+        explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                            ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 
         /* addCurve() takes an internal handle and returns an external handle.
            Internal handle, which must be an empty RelinkableHandle, should be

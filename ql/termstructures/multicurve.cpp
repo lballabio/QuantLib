@@ -22,8 +22,12 @@
 
 namespace QuantLib {
 
-    MultiCurve::MultiCurve(ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap)
-    : multiCurveBootstrap_(std::move(multiCurveBootstrap)) {}
+    MultiCurve::MultiCurve(Real accuracy)
+    : multiCurveBootstrap_(ext::make_shared<MultiCurveBootstrap>(accuracy)) {}
+
+    MultiCurve::MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer,
+                           ext::shared_ptr<EndCriteria> endCriteria)
+    : multiCurveBootstrap_(ext::make_shared<MultiCurveBootstrap>(optimizer, endCriteria)) {}
 
     Handle<YieldTermStructure>
     MultiCurve::addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
