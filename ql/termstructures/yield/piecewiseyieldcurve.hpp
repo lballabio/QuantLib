@@ -154,8 +154,9 @@ namespace QuantLib {
                         const ext::shared_ptr<MultiCurve>& multiCurve) {
             static_assert(std::is_convertible_v<bootstrap_type*, MultiCurveBootstrapContributor*>,
                           "bootstrap type is not compatible with MultiCurve");
-            return multiCurve->addCurve(multiCurve, internalHandle, this->shared_from_this(),
-                                        &this->bootstrap_);
+            return multiCurve->addCurve(
+                multiCurve, internalHandle,
+                ext::static_pointer_cast<this_curve>(this->shared_from_this()), &this->bootstrap_);
         }
 
       protected:
