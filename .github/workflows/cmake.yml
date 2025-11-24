@@ -8,7 +8,7 @@ jobs:
   cmake-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
@@ -40,7 +40,7 @@ jobs:
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
@@ -67,7 +67,7 @@ jobs:
   cmake-win:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -109,7 +109,7 @@ jobs:
   cmake-win-dynamic-runtime:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -151,7 +151,7 @@ jobs:
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -191,7 +191,7 @@ jobs:
   cmake-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
