@@ -21,7 +21,7 @@ jobs:
             boost_version: 89
             vsversion: 2022
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup MSVC++ environment
       uses: ilammy/msvc-dev-cmd@v1
       with:
