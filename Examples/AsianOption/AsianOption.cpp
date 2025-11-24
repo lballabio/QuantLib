@@ -94,7 +94,7 @@ int main(int, char* []) {
         std::cout << "Number of fixings: " << fixingDates.size() << std::endl;
         std::cout << std::endl;
 
-        // Bootstrap the yield/dividend/vol curves
+        // Set up flat yield/dividend/vol curves
         auto underlyingH = makeQuoteHandle(underlying);
         Handle<YieldTermStructure> flatTermStructure(
             ext::make_shared<FlatForward>(settlementDate, riskFreeRate, dayCounter));
@@ -199,6 +199,14 @@ int main(int, char* []) {
             ext::make_shared<TurnbullWakemanAsianEngine>(bsmProcess));
         std::cout << discreteArithmeticOption.NPV() << std::endl;
 
+        // Finite Differences (PDE method)
+        std::cout << std::setw(widths[0]) << std::left << "Finite Differences (PDE)"
+                  << std::fixed << std::setprecision(6)
+                  << std::setw(widths[1]) << std::left;
+        discreteArithmeticOption.setPricingEngine(
+            ext::make_shared<FdBlackScholesAsianEngine>(bsmProcess, 100, 100, 50));
+        std::cout << discreteArithmeticOption.NPV() << std::endl;
+
         // **********************************************
         // CONTINUOUS AVERAGING - GEOMETRIC AVERAGE
         // **********************************************
@@ -231,34 +239,19 @@ int main(int, char* []) {
         std::cout << continuousArithmeticOption.NPV() << std::endl;
 
         // **********************************************
-        // PDE APPROACH (Finite Differences)
-        // **********************************************
-        std::cout << std::endl;
-        std::cout << "PDE APPROACH - DISCRETE ARITHMETIC" << std::endl;
-        std::cout << "==================================" << std::endl;
-
-        // Finite Differences for discrete arithmetic
-        std::cout << std::setw(widths[0]) << std::left << "Finite Differences (PDE)"
-                  << std::fixed << std::setprecision(6)
-                  << std::setw(widths[1]) << std::left;
-        discreteArithmeticOption.setPricingEngine(
-            ext::make_shared<FdBlackScholesAsianEngine>(bsmProcess, 100, 100, 50));
-        std::cout << discreteArithmeticOption.NPV() << std::endl;
-
-        // **********************************************
         // COMPARISON SUMMARY
         // **********************************************
         std::cout << std::endl;
         std::cout << "SUMMARY COMPARISON" << std::endl;
         std::cout << "==================" << std::endl;
         std::cout << std::endl;
-        std::cout << "Averaging Type        Method                              NPV" << std::endl;
+        std::cout << "Averaging Type          Method                              NPV" << std::endl;
         std::cout << "--------------------------------------------------------------------------------" << std::endl;
 
         // Re-price all for summary
         discreteGeometricOption.setPricingEngine(
             ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianEngine>(bsmProcess));
-        std::cout << std::setw(20) << std::left << "Discrete Geometric"
+        std::cout << std::setw(24) << std::left << "Discrete Geometric"
                   << std::setw(36) << std::left << "Analytic"
                   << std::fixed << std::setprecision(6)
                   << discreteGeometricOption.NPV() << std::endl;
@@ -268,38 +261,32 @@ int main(int, char* []) {
                 .withSamples(10000)
                 .withControlVariate()
                 .withSeed(mcSeed));
-        std::cout << std::setw(20) << std::left << "Discrete Arithmetic"
+        std::cout << std::setw(24) << std::left << "Discrete Arithmetic"
                   << std::setw(36) << std::left << "Monte Carlo (Control Variate)"
                   << std::fixed << std::setprecision(6)
                   << discreteArithmeticOption.NPV() << std::endl;
 
         discreteArithmeticOption.setPricingEngine(
             ext::make_shared<TurnbullWakemanAsianEngine>(bsmProcess));
-        std::cout << std::setw(20) << std::left << "Discrete Arithmetic"
+        std::cout << std::setw(24) << std::left << "Discrete Arithmetic"
                   << std::setw(36) << std::left << "Turnbull-Wakeman"
                   << std::fixed << std::setprecision(6)
                   << discreteArithmeticOption.NPV() << std::endl;
 
         continuousGeometricOption.setPricingEngine(
             ext::make_shared<AnalyticContinuousGeometricAveragePriceAsianEngine>(bsmProcess));
-        std::cout << std::setw(20) << std::left << "Continuous Geometric"
+        std::cout << std::setw(24) << std::left << "Continuous Geometric"
                   << std::setw(36) << std::left << "Analytic"
                   << std::fixed << std::setprecision(6)
                   << continuousGeometricOption.NPV() << std::endl;
 
         continuousArithmeticOption.setPricingEngine(
             ext::make_shared<ContinuousArithmeticAsianLevyEngine>(bsmProcess, currentAverage, settlementDate));
-        std::cout << std::setw(20) << std::left << "Continuous Arithmetic"
+        std::cout << std::setw(24) << std::left << "Continuous Arithmetic"
                   << std::setw(36) << std::left << "Levy Engine"
                   << std::fixed << std::setprecision(6)
                   << continuousArithmeticOption.NPV() << std::endl;
 
-        std::cout << std::endl;
-        std::cout << "Notes:" << std::endl;
-        std::cout << "- Geometric average options have closed-form solutions" << std::endl;
-        std::cout << "- Arithmetic average options typically require numerical methods" << std::endl;
-        std::cout << "- Control variate methods use geometric average as control" << std::endl;
-        std::cout << "- Arithmetic average is always >= Geometric average" << std::endl;
         std::cout << std::endl;
 
         return 0;
