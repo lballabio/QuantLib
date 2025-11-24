@@ -1165,8 +1165,8 @@ BOOST_AUTO_TEST_CASE(testCashDividendEuropeanEngineWithManyDividends) {
     );
 
     MersenneTwisterUniformRng rng(1234);
-    std::vector<Date> dividendDates({today + Period(-1, Months)});
-    std::vector<Real> dividendAmounts({1.0});
+    std::vector<Date> dividendDates = {today + Period(-1, Months)};
+    std::vector<Real> dividendAmounts = {Real(1.0)};
 
     const Size daysToMaturity = maturityDate - today;
     dividendDates.reserve(Size(daysToMaturity/2.8));
