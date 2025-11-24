@@ -21,6 +21,7 @@
 #include <ql/pricingengines/asian/continuousarithmeticasianlevyengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <utility>
 
 using namespace std;
@@ -42,7 +43,19 @@ namespace QuantLib {
                    "not an Arithmetic average option");
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
-        QL_REQUIRE(startDate_ <= process_->riskFreeRate()->referenceDate(),
+
+        // Prefer arguments from option if available, otherwise use constructor parameters
+        Date startDate = (arguments_.startDate != Date()) ? arguments_.startDate : startDate_;
+        Handle<Quote> currentAverage = (!currentAverage_.empty() && currentAverage_->isValid())
+                                        ? currentAverage_
+                                        : Handle<Quote>();
+
+        // If arguments provide current average, use it
+        if (arguments_.currentAverage != Null<Real>()) {
+            currentAverage = Handle<Quote>(ext::make_shared<SimpleQuote>(arguments_.currentAverage));
+        }
+
+        QL_REQUIRE(startDate <= process_->riskFreeRate()->referenceDate(),
                    "startDate must be earlier than or equal to reference date");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
@@ -57,7 +70,7 @@ namespace QuantLib {
 
         // original time to maturity
         Date maturity = arguments_.exercise->lastDate();
-        Time T = rfdc.yearFraction(startDate_,
+        Time T = rfdc.yearFraction(startDate,
                                    arguments_.exercise->lastDate());
         // remaining time to maturity
         Time T2 = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
@@ -82,9 +95,9 @@ namespace QuantLib {
 
         Real X;
         if (T2 < T) {
-            QL_REQUIRE(!currentAverage_.empty() && currentAverage_->isValid(),
-                       "current average required");
-            X = strike - ((T-T2)/T)*currentAverage_->value();
+            QL_REQUIRE(!currentAverage.empty() && currentAverage->isValid(),
+                       "current average required for seasoned option");
+            X = strike - ((T-T2)/T)*currentAverage->value();
         } else {
             X = strike;
         }

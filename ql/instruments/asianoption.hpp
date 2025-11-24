@@ -34,22 +34,36 @@
 namespace QuantLib {
 
     //! Continuous-averaging Asian option
-    /*! \todo add running average
-
-        \ingroup instruments
-    */
+    /*! \ingroup instruments */
     class ContinuousAveragingAsianOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
+        /*! This constructor is for unseasoned (fresh) options where
+            averaging has not yet started.
+        */
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
                 const ext::shared_ptr<StrikedTypePayoff>& payoff,
                 const ext::shared_ptr<Exercise>& exercise);
+
+        /*! This constructor is for seasoned options where averaging
+            has already started.  The current average and start date
+            are used to properly value the remaining life of the option.
+        */
+        ContinuousAveragingAsianOption(
+                Average::Type averageType,
+                Real currentAverage,
+                Date startDate,
+                const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                const ext::shared_ptr<Exercise>& exercise);
+
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
         Average::Type averageType_;
+        Real currentAverage_;
+        Date startDate_;
     };
 
     //! Discrete-averaging Asian option
@@ -115,9 +129,13 @@ namespace QuantLib {
     class ContinuousAveragingAsianOption::arguments
         : public OneAssetOption::arguments {
       public:
-        arguments() : averageType(Average::Type(-1)) {}
+        arguments() : averageType(Average::Type(-1)),
+                      currentAverage(Null<Real>()),
+                      startDate(Date()) {}
         void validate() const override;
         Average::Type averageType;
+        Real currentAverage;
+        Date startDate;
     };
 
     //! Discrete-averaging Asian %engine base class

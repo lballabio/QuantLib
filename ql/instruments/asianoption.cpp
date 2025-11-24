@@ -147,7 +147,20 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
         const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
-      averageType_(averageType) {}
+      averageType_(averageType),
+      currentAverage_(Null<Real>()),
+      startDate_(Date()) {}
+
+    ContinuousAveragingAsianOption::ContinuousAveragingAsianOption(
+        Average::Type averageType,
+        Real currentAverage,
+        Date startDate,
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
+      averageType_(averageType),
+      currentAverage_(currentAverage),
+      startDate_(startDate) {}
 
     void ContinuousAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
@@ -157,6 +170,8 @@ namespace QuantLib {
         auto* moreArgs = dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
         QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
+        moreArgs->currentAverage = currentAverage_;
+        moreArgs->startDate = startDate_;
     }
 
     void ContinuousAveragingAsianOption::arguments::validate() const {
@@ -164,6 +179,14 @@ namespace QuantLib {
         OneAssetOption::arguments::validate();
 
         QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
+
+        // For seasoned options, both currentAverage and startDate should be specified
+        if (currentAverage != Null<Real>() || startDate != Date()) {
+            QL_REQUIRE(currentAverage != Null<Real>() && startDate != Date(),
+                       "both currentAverage and startDate must be specified for seasoned options");
+            QL_REQUIRE(currentAverage >= 0.0,
+                       "current average must be non-negative");
+        }
     }
 
 }
