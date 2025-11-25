@@ -61,7 +61,10 @@ namespace QuantLib {
     class PiecewiseYieldCurve
         : public Traits::template curve<Interpolator>::type,
           public LazyObject,
-          public ext::enable_shared_from_this<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>> {
+#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+          public ext::enable_shared_from_this<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>>
+#endif
+    {
       private:
         typedef typename Traits::template curve<Interpolator>::type base_curve;
         typedef PiecewiseYieldCurve<Traits,Interpolator,Bootstrap> this_curve;
@@ -156,7 +159,12 @@ namespace QuantLib {
                           "bootstrap type is not compatible with MultiCurve");
             return multiCurve->addCurve(
                 multiCurve, internalHandle,
-                ext::static_pointer_cast<this_curve>(this->shared_from_this()), &this->bootstrap_);
+#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+                this->shared_from_this()
+#else
+                ext::dynamic_pointer_cast<this_curve>(this->shared_from_this())
+#endif
+                , &this->bootstrap_);
         }
 
       protected:
