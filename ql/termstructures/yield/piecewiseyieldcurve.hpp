@@ -60,9 +60,9 @@ namespace QuantLib {
               template <class> class Bootstrap = IterativeBootstrap>
     class PiecewiseYieldCurve
         : public Traits::template curve<Interpolator>::type,
-          public LazyObject,
+          public LazyObject
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-          public ext::enable_shared_from_this<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>>
+        , public ext::enable_shared_from_this<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>>
 #endif
     {
       private:
