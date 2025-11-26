@@ -81,8 +81,8 @@ namespace QuantLib {
         Date valueEnd = rateComputationEndDate_ == Null<Date>() ? endDate : rateComputationEndDate_;
         if (lookbackDays != Null<Natural>()) {
             BusinessDayConvention bdc = lookbackDays > 0 ? Preceding : Following;
-            valueStart = overnightIndex->fixingCalendar().advance(valueStart, -lookbackDays, Days, bdc);
-            valueEnd = overnightIndex->fixingCalendar().advance(valueEnd, -lookbackDays, Days, bdc);
+            valueStart = overnightIndex->fixingCalendar().advance(valueStart, -static_cast<Integer>(lookbackDays), Days, bdc);
+            valueEnd = overnightIndex->fixingCalendar().advance(valueEnd, -static_cast<Integer>(lookbackDays), Days, bdc);
         }
         
         // value dates
