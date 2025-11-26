@@ -77,7 +77,14 @@ namespace QuantLib {
         includeSpread_(includeSpread),
         rateComputationStartDate_(rateComputationStartDate),
         rateComputationEndDate_(rateComputationEndDate) {
-
+        Date valueStart = rateComputationStartDate_ == Null<Date>() ? startDate : rateComputationStartDate_;
+        Date valueEnd = rateComputationEndDate_ == Null<Date>() ? endDate : rateComputationEndDate_;
+        if (lookbackDays != Null<Natural>()) {
+            BusinessDayConvention bdc = lookbackDays > 0 ? Preceding : Following;
+            valueStart = overnightIndex->fixingCalendar().advance(valueStart, -lookbackDays, Days, bdc);
+            valueEnd = overnightIndex->fixingCalendar().advance(valueEnd, -lookbackDays, Days, bdc);
+        }
+        
         // value dates
         Date tmpEndDate = endDate;
 

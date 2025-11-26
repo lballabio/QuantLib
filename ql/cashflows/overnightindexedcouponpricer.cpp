@@ -249,20 +249,20 @@ namespace QuantLib {
 
         const Rate tau = index->dayCounter().yearFraction(valueDates.front(), valueDates.back());
         const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
-        Rate finalRate = coupon_->gearing() * rate;
+        Rate swapletRate = coupon_->gearing() * rate;
         Spread effectiveSpread;
         Rate effectiveIndexFixing;
         
         if (!coupon_->includeSpread()) {
-            finalRate += coupon_->spread();
+            swapletRate += coupon_->spread();
             effectiveSpread = coupon_->spread();
-            effectiveIndexFixing = finalRate;
+            effectiveIndexFixing = rate;
         } else {
-            effectiveSpread = finalRate - (compoundFactorWithoutSpread - 1.0) / tau;
-            effectiveIndexFixing = finalRate - effectiveSpread;
+            effectiveSpread = rate - (compoundFactorWithoutSpread - 1.0) / tau;
+            effectiveIndexFixing = rate - effectiveSpread;
         }
 
-        return std::make_tuple(finalRate, effectiveSpread, effectiveIndexFixing);
+        return std::make_tuple(swapletRate, effectiveSpread, effectiveIndexFixing);
     }
 
     Rate ArithmeticAveragedOvernightIndexedCouponPricer::swapletRate() const {
