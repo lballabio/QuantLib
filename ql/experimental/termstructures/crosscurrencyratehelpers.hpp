@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-Copyright (C) 2025 Uzair Beg 
-Copyright (C) 2021 Marcin Rybacki
+ Copyright (C) 2021 Marcin Rybacki
+ Copyright (C) 2025 Uzair Beg
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,13 +29,40 @@ Copyright (C) 2021 Marcin Rybacki
 
 namespace QuantLib {
 
-    //! Base class for cross-currency basis swap rate helpers
-    class CrossCurrencyBasisSwapRateHelperBase : public RelativeDateRateHelper {
+    class CrossCurrencySwapRateHelperBase : public RelativeDateRateHelper {
       public:
-        //! \name RateHelper interface
-        //@{
-        //@}
         void setTermStructure(YieldTermStructure* t) override;
+
+      protected:
+        CrossCurrencySwapRateHelperBase(const Handle<Quote>& quote,
+                                        const Period& tenor,
+                                        Natural fixingDays,
+                                        Calendar calendar,
+                                        BusinessDayConvention convention,
+                                        bool endOfMonth,
+                                        Handle<YieldTermStructure> collateralCurve,
+                                        Integer paymentLag);
+
+        void initializeDatesFromLegs(const Leg& firstLeg, const Leg& secondLeg);
+
+        Period tenor_;
+        Natural fixingDays_;
+        Calendar calendar_;
+        BusinessDayConvention convention_;
+        bool endOfMonth_;
+        Integer paymentLag_;
+
+        Handle<YieldTermStructure> collateralHandle_;
+
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+
+        Date initialNotionalExchangeDate_;
+        Date finalNotionalExchangeDate_;
+    };
+
+
+    //! Base class for cross-currency basis swap rate helpers
+    class CrossCurrencyBasisSwapRateHelperBase : public CrossCurrencySwapRateHelperBase {
       protected:
         CrossCurrencyBasisSwapRateHelperBase(const Handle<Quote>& basis,
                                              const Period& tenor,
@@ -55,27 +82,16 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
         const Handle<YieldTermStructure>& quoteCcyLegDiscountHandle() const;
 
-        Period tenor_;
-        Natural fixingDays_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        bool endOfMonth_;
         ext::shared_ptr<IborIndex> baseCcyIdx_;
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
-        Handle<YieldTermStructure> collateralHandle_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
         Frequency paymentFrequency_;
-        Integer paymentLag_;
 
         Leg baseCcyIborLeg_;
         Leg quoteCcyIborLeg_;
-
-        Date initialNotionalExchangeDate_;
-        Date finalNotionalExchangeDate_;
-
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
+
 
     //! Rate helper for bootstrapping over constant-notional cross-currency basis swaps
     /*!
@@ -166,66 +182,50 @@ namespace QuantLib {
       private:
         bool isFxBaseCurrencyLegResettable_;
     };
-    
-    //! Rate helper for bootstrapping fixed–floating cross-currency par swaps
+
+
+    //! Rate helper for bootstrapping fixed–vs-floating cross-currency par swaps
     /*!
-      This helper represents a par cross-currency swap exchanging a fixed-rate leg
-      against a floating-rate leg in a different currency. Since the swap is quoted
-      at par, the FX spot cancels out and is not required.
+    This helper represents a par cross-currency swap exchanging a fixed-rate leg
+    against a floating-rate leg in a different currency. Since the swap is quoted
+    at par, the FX spot cancels out and is not required.
 
-      The collateral currency determines which leg is discounted using the provided
-      collateral curve, while the other leg’s discount curve is the one being bootstrapped.
+    The collateralOnFixedLeg flag determines which leg is discounted using the provided
+    collateral curve, while the other leg’s discount curve is the one being bootstrapped.
     */
+    class ConstNotionalCrossCurrencySwapRateHelper : public CrossCurrencySwapRateHelperBase {
+      public:
+        ConstNotionalCrossCurrencySwapRateHelper(
+            const Handle<Quote>& fixedRate,
+            const Period& tenor,
+            Natural fixingDays,
+            const Calendar& calendar,
+            BusinessDayConvention convention,
+            bool endOfMonth,
+            Frequency fixedFrequency,
+            const DayCounter& fixedDayCount,
+            const ext::shared_ptr<IborIndex>& floatIndex,
+            const Handle<YieldTermStructure>& collateralCurve,
+            bool collateralOnFixedLeg,
+            Integer paymentLag = 0);
 
-   class ConstNotionalCrossCurrencySwapRateHelper : public RelativeDateRateHelper {
-    public:
-    ConstNotionalCrossCurrencySwapRateHelper(
-          const Handle<Quote>& fixedRate,
-          const Period& tenor,
-          Natural fixingDays,
-          const Calendar& calendar,
-          BusinessDayConvention convention,
-          bool endOfMonth,
-          Frequency fixedFrequency,
-          const DayCounter& fixedDayCount,
-          const Currency& fixedCurrency,
-          const ext::shared_ptr<IborIndex>& floatIndex,
-          const Currency& floatCurrency,
-          const Handle<YieldTermStructure>& collateralCurve,
-          bool collateralOnFixedLeg);
+        Real impliedQuote() const override;
+        void accept(AcyclicVisitor&) override;
 
-          Real impliedQuote() const override;
-          void accept(AcyclicVisitor&) override;
-      
       protected:
-          void initializeDates() override;
-      
-          private:
-          Period tenor_;
-          Natural fixingDays_;
-          Calendar calendar_;
-          BusinessDayConvention convention_;
-          bool endOfMonth_;
-          Frequency fixedFrequency_;
-          DayCounter fixedDayCount_;
-          Currency fixedCurrency_, floatCurrency_;
-          ext::shared_ptr<IborIndex> floatIndex_;
-          Handle<YieldTermStructure> collateralCurve_;
-          bool collateralOnFixedLeg_;
-          Date instrumentSettlementDate_, maturityDate_;
-          Date initialNotionalExchangeDate_;
-          Date finalNotionalExchangeDate_;
-          Schedule fixedSchedule_;
-          Schedule floatSchedule_;
-          Leg fixedLeg_;
-          Leg floatLeg_;
+        void initializeDates() override;
+        const Handle<YieldTermStructure>& fixedLegDiscountHandle() const;
+        const Handle<YieldTermStructure>& floatingLegDiscountHandle() const;
 
-          Leg buildFixedLeg(const Schedule& fixedSchedule) const;
-          Leg buildFloatingLeg(const Schedule& floatSchedule) const;
-          Handle<YieldTermStructure> fixedLegDiscountHandle() const;
-          Handle<YieldTermStructure> floatingLegDiscountHandle() const;
+        Frequency fixedFrequency_;
+        DayCounter fixedDayCount_;
+        ext::shared_ptr<IborIndex> floatIndex_;
+        bool collateralOnFixedLeg_;
 
-      };
+        Leg fixedLeg_;
+        Leg floatLeg_;
+    };
+
 }
 
 #endif
