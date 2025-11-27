@@ -26,6 +26,7 @@
 #define quantlib_nonlinear_fitting_methods_hpp
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/bspline.hpp>
 #include <ql/shared_ptr.hpp>
 
@@ -228,12 +229,16 @@ namespace QuantLib {
         DiscountFactor discountFunction(const Array& x, Time t) const override;
 
       private:
-        std::vector<Time> knotTimes_;
-        std::vector<Real> h_;           // knot spacings size = n-1
-        std::vector<Real> a_, b_, c_; // tridiagonal coeffs (sub, diag, super), size = n-2
-        Size size_;  
-        Array solveTridiagonal(const Array& rhs) const;
+        Array computeSecondDerivatives(const Array& y) const;
+        DiscountFactor evaluateWithPrecomputedM(const Array& y,
+                                                const Array& M,
+                                                Time t) const;
         Size findInterval(Time t) const;
+
+      private:
+        std::vector<Time> knotTimes_;
+        std::vector<Real> h_;
+        Size size_;
     };
 
     //! Simple polynomial fitting method
