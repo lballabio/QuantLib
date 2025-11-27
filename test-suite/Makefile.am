@@ -92,6 +92,7 @@ QL_TEST_SRCS = \
 	instruments.cpp \
 	integrals.cpp \
 	interestrates.cpp \
+	interpolatedsmilesection.cpp \
 	interpolations.cpp \
 	jumpdiffusion.cpp \
 	lazyobject.cpp \

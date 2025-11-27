@@ -230,6 +230,9 @@
     <ClCompile Include="interestrates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="interpolatedsmilesection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="interpolations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

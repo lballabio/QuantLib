@@ -231,9 +231,9 @@ namespace QuantLib {
 
         if (flatStrikeExtrapolation_) {
             if (strike < minStrike()) {
-                v = minStrike();                
+                v = interpolation_(minStrike(), true);                
             } else if (strike > maxStrike()) {
-                v = maxStrike();
+                v = interpolation_(maxStrike(), true);
             }
         }
 
@@ -246,9 +246,9 @@ namespace QuantLib {
         
         if (flatStrikeExtrapolation_) {
             if (strike < minStrike()) {
-                return minStrike();                
+                return interpolation_(minStrike(), true);                
             } else if (strike > maxStrike()) {
-                return maxStrike();
+                return interpolation_(maxStrike(), true);
             }
         }
 
@@ -264,24 +264,8 @@ namespace QuantLib {
 
     template <class Interpolator>
     void InterpolatedSmileSection<Interpolator>::checkStrikes() {
-        if (!std::is_sorted(strikes_.begin(), strikes_.end())) {
-            std::vector<Size> indices(strikes_.size(), 0); 
-        
-            // initialize the indeces vector
-            for (Size i = 0; i < indices.size(); ++i)
-                indices[i] = i;
-            
-            std::sort(indices.begin(), indices.end(), [&](const auto& a, const auto& b){
-                return strikes_[a] < strikes_[b];
-            });
-            std::sort(strikes_.begin(), strikes_.end());
-        
-            auto oldVols = vols_;
-
-            for (Size i = 0; i < indices.size(); ++i) {
-                vols_[i] = oldVols[indices[i]];
-            }
-        }
+        QL_REQUIRE(std::is_sorted(strikes_.begin(), strikes_.end()), 
+                    "Strikes have to be sorted in ascending order");
     }
 
 }

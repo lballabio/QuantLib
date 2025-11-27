@@ -736,6 +736,7 @@
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interestrates.cpp" />
+    <ClCompile Include="interpolatedsmilesection.cpp" />
     <ClCompile Include="interpolations.cpp" />
     <ClCompile Include="jumpdiffusion.cpp" />
     <ClCompile Include="lazyobject.cpp" />

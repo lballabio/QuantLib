@@ -91,6 +91,7 @@ set(QL_TEST_SOURCES
     instruments.cpp
     integrals.cpp
     interestrates.cpp
+    interpolatedsmilesection.cpp
     interpolations.cpp
     jumpdiffusion.cpp
     lazyobject.cpp
