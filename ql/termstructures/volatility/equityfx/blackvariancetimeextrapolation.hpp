@@ -20,7 +20,6 @@
 /*! \file blackvariancetimeextrapolation.hpp
     \brief Utility function for time extrapolation in Black volatility in black variance term structures
 */
-#pragma once
 
 #include <array>
 #include <functional>
@@ -31,7 +30,7 @@
 
 namespace QuantLib {
 
-    namespace {
+    namespace detail {
         Real linearExtrapolation(const double t, const std::array<double, 2>& times, const std::array<double, 2>& variances);
 
         inline Real linearExtrapolation(const double t, const std::array<double, 2>& times,
@@ -79,7 +78,7 @@ namespace QuantLib {
         std::array<Real, 2> variances;
         variances[0] = varianceSurface(xs[0], strike, true);
         variances[1] = varianceSurface(xs[1], strike, true);
-        Real v = linearExtrapolation(t, xs, variances);
+        Real v = detail::linearExtrapolation(t, xs, variances);
         return v * v * t;
     }
 
@@ -96,7 +95,7 @@ namespace QuantLib {
         std::array<Real, 2> variances;
         variances[0] = varianceCurve(xs[0], true);
         variances[1] = varianceCurve(xs[1], true);
-        Real v = linearExtrapolation(t, xs, variances);
+        Real v = detail::linearExtrapolation(t, xs, variances);
         return v * v * t;
     }
 } // namespace QuantLib
