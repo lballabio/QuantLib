@@ -2684,17 +2684,17 @@ BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
     Real freshNPV = freshOption.NPV();
 
     // Test 2: Seasoned continuous arithmetic option
+    // startDate goes in the option (contract term), currentAverage goes in the engine (market data)
     Real currentAverage = 98.5;  // Running average below spot
     ContinuousAveragingAsianOption seasonedOption(
         Average::Arithmetic,
-        currentAverage,
         startDate,
         payoff,
         europeanExercise);
 
     seasonedOption.setPricingEngine(
         ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
-            bsmProcess, Handle<Quote>(), Date()));
+            bsmProcess, makeQuoteHandle(currentAverage), startDate));
 
     Real seasonedNPV = seasonedOption.NPV();
 
@@ -2711,14 +2711,13 @@ BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
     Real highAverage = 102.0;  // Running average above strike
     ContinuousAveragingAsianOption seasonedHighOption(
         Average::Arithmetic,
-        highAverage,
         startDate,
         payoff,
         europeanExercise);
 
     seasonedHighOption.setPricingEngine(
         ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
-            bsmProcess, Handle<Quote>(), Date()));
+            bsmProcess, makeQuoteHandle(highAverage), startDate));
 
     Real seasonedHighNPV = seasonedHighOption.NPV();
 
@@ -2733,7 +2732,6 @@ BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
     // Test 4: Continuous geometric should fail for seasoned options (not yet implemented)
     ContinuousAveragingAsianOption seasonedGeometric(
         Average::Geometric,
-        currentAverage,
         startDate,
         payoff,
         europeanExercise);

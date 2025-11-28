@@ -21,7 +21,6 @@
 #include <ql/pricingengines/asian/continuousarithmeticasianlevyengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <utility>
 
 using namespace std;
@@ -44,16 +43,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        // Prefer arguments from option if available, otherwise use constructor parameters
+        // Prefer startDate from option if available, otherwise use constructor parameter
         Date startDate = (arguments_.startDate != Date()) ? arguments_.startDate : startDate_;
-        Handle<Quote> currentAverage = (!currentAverage_.empty() && currentAverage_->isValid())
-                                        ? currentAverage_
-                                        : Handle<Quote>();
-
-        // If arguments provide current average, use it
-        if (arguments_.currentAverage != Null<Real>()) {
-            currentAverage = Handle<Quote>(ext::make_shared<SimpleQuote>(arguments_.currentAverage));
-        }
 
         QL_REQUIRE(startDate <= process_->riskFreeRate()->referenceDate(),
                    "startDate must be earlier than or equal to reference date");
@@ -95,9 +86,9 @@ namespace QuantLib {
 
         Real X;
         if (T2 < T) {
-            QL_REQUIRE(!currentAverage.empty() && currentAverage->isValid(),
+            QL_REQUIRE(!currentAverage_.empty() && currentAverage_->isValid(),
                        "current average required for seasoned option");
-            X = strike - ((T-T2)/T)*currentAverage->value();
+            X = strike - ((T-T2)/T)*currentAverage_->value();
         } else {
             X = strike;
         }

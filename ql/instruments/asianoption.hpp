@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2025 Kareem Fareed
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,12 +49,12 @@ namespace QuantLib {
                 const ext::shared_ptr<Exercise>& exercise);
 
         /*! This constructor is for seasoned options where averaging
-            has already started.  The current average and start date
-            are used to properly value the remaining life of the option.
+            has already started. The start date is a contract term specifying
+            when averaging began. The current average (market data) should be
+            provided to the pricing engine.
         */
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
-                Real currentAverage,
                 Date startDate,
                 const ext::shared_ptr<StrikedTypePayoff>& payoff,
                 const ext::shared_ptr<Exercise>& exercise);
@@ -62,7 +63,6 @@ namespace QuantLib {
 
       protected:
         Average::Type averageType_;
-        Real currentAverage_;
         Date startDate_;
     };
 
@@ -130,11 +130,9 @@ namespace QuantLib {
         : public OneAssetOption::arguments {
       public:
         arguments() : averageType(Average::Type(-1)),
-                      currentAverage(Null<Real>()),
                       startDate(Date()) {}
         void validate() const override;
         Average::Type averageType;
-        Real currentAverage;
         Date startDate;
     };
 

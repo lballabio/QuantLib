@@ -41,7 +41,7 @@ namespace QuantLib {
                    "not an European Option");
 
         // Check if this is a seasoned option
-        if (arguments_.currentAverage != Null<Real>() && arguments_.startDate != Date()) {
+        if (arguments_.startDate != Date()) {
             QL_FAIL("seasoned continuous geometric Asian options not yet supported - "
                     "requires adjustment of forward price and variance based on "
                     "accumulated geometric average. This feature needs mathematical "
