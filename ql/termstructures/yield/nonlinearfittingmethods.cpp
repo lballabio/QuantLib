@@ -265,6 +265,164 @@ namespace QuantLib {
         return d;
     }
 
+    NaturalCubicFitting::NaturalCubicFitting(
+        const std::vector<Time>& knotTimes,
+        bool constrainAtZero,
+        const Array& weights,
+        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        const Array& l2,
+        Real minCutoffTime,
+        Real maxCutoffTime,
+        Constraint constraint)
+    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod, l2,
+                                             minCutoffTime, maxCutoffTime, std::move(constraint)),
+      knotTimes_(knotTimes) {
+
+        std::sort(knotTimes_.begin(), knotTimes_.end());
+        auto last = std::unique(knotTimes_.begin(), knotTimes_.end(),
+                                [](Time a, Time b){ return std::fabs(a - b) <= 1e-14; });
+        knotTimes_.erase(last, knotTimes_.end());
+
+        QL_REQUIRE(knotTimes_.size() >= 2,
+                   "NaturalCubicFitting: at least two knot times required");
+
+        const Size n = knotTimes_.size();
+        size_ = constrainAtZero ? n - 1 : n;
+
+        h_.assign(n - 1, 0.0);
+        for (Size i = 0; i + 1 < n; ++i) {
+            h_[i] = knotTimes_[i+1] - knotTimes_[i];
+            QL_REQUIRE(h_[i] > 1e-14,
+                       "NaturalCubicFitting: knot times must be strictly increasing (non-zero spacing)");
+            QL_REQUIRE(std::isfinite(h_[i]),
+                       "NaturalCubicFitting: non-finite knot spacing");
+        }
+    }
+
+    NaturalCubicFitting::NaturalCubicFitting(
+        const std::vector<Time>& knotTimes,
+        bool constrainAtZero,
+        const Array& weights,
+        const Array& l2,
+        Real minCutoffTime,
+        Real maxCutoffTime,
+        Constraint constraint)
+    : NaturalCubicFitting(knotTimes, constrainAtZero, weights, {}, l2,
+                          minCutoffTime, maxCutoffTime, std::move(constraint)) {}
+
+    std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
+    NaturalCubicFitting::clone() const {
+        return std::make_unique<NaturalCubicFitting>(*this);
+    }
+
+    Size NaturalCubicFitting::size() const {
+        return size_;
+    }
+
+    Size NaturalCubicFitting::findInterval(Time t) const {
+        const Size n = knotTimes_.size();
+        if (t <= knotTimes_.front()) return 0;
+        if (t >= knotTimes_.back()) return n - 2;
+        auto it = std::upper_bound(knotTimes_.begin(), knotTimes_.end(), t);
+        Size idx = std::distance(knotTimes_.begin(), it);
+        QL_REQUIRE(idx > 0, "NaturalCubicFitting::findInterval(): internal error");
+        idx = idx - 1;
+        if (idx >= n - 1) idx = n - 2;
+        return idx;
+    }
+
+    Array NaturalCubicFitting::computeSecondDerivatives(const Array& y) const {
+        const Size n = knotTimes_.size();
+        QL_REQUIRE(y.size() == n, "computeSecondDerivatives: y must have length equal to number of knots");
+
+        // (Spline + SecondDerivative = 0 at both ends).
+        CubicInterpolation spline(
+            knotTimes_.begin(), knotTimes_.end(),
+            y.begin(),
+            CubicInterpolation::Spline,
+            false,
+            CubicInterpolation::SecondDerivative, 0.0,
+            CubicInterpolation::SecondDerivative, 0.0);
+
+        spline.update();
+
+        Array M(n, 0.0);
+        for (Size i = 0; i < n; ++i) {
+            M[i] = spline.secondDerivative(knotTimes_[i]);
+            QL_REQUIRE(std::isfinite(M[i]), "computeSecondDerivatives: non-finite second derivative at knot " << i);
+        }
+        return M;
+    }
+
+    DiscountFactor NaturalCubicFitting::evaluateWithPrecomputedM(const Array& y,
+                                                                 const Array& M,
+                                                                 Time t) const {
+        const Size n = knotTimes_.size();
+        QL_REQUIRE(y.size() == n, "evaluateWithPrecomputedM: y size mismatch");
+        QL_REQUIRE(M.size() == n, "evaluateWithPrecomputedM: M size mismatch");
+
+        if (t <= knotTimes_.front()) return y.front();
+        if (t >= knotTimes_.back())  return y.back();
+
+        if (n == 2) {
+            const Real t0 = knotTimes_[0], t1 = knotTimes_[1];
+            const Real h = t1 - t0;
+            QL_REQUIRE(std::fabs(h) > 0.0, "evaluateWithPrecomputedM: zero interval width");
+            const Real w0 = (t1 - t) / h, w1 = (t - t0) / h;
+            return y[0] * w0 + y[1] * w1;
+        }
+
+        const Size idx = findInterval(t);
+        const Real xi  = knotTimes_.at(idx);
+        const Real xi1 = knotTimes_.at(idx+1);
+        const Real hi  = xi1 - xi;
+        QL_REQUIRE(hi > 0.0, "evaluateWithPrecomputedM: zero interval width detected");
+
+        const Real ti  = t - xi;
+        const Real ti1 = xi1 - t;
+
+        const Real yi  = y.at(idx);
+        const Real yi1 = y.at(idx+1);
+        const Real Mi  = M.at(idx);
+        const Real Mi1 = M.at(idx+1);
+
+        const Real term1 = (Mi * ti1 * ti1 * ti1 + Mi1 * ti * ti * ti) / (6.0 * hi);
+        const Real term2 = (yi - Mi * hi * hi / 6.0) * (ti1 / hi);
+        const Real term3 = (yi1 - Mi1 * hi * hi / 6.0) * (ti / hi);
+
+        const Real result = term1 + term2 + term3;
+        QL_REQUIRE(std::isfinite(result), "evaluateWithPrecomputedM: non-finite result");
+
+        return DiscountFactor(result);
+    }
+
+    DiscountFactor NaturalCubicFitting::discountFunction(const Array& x, Time t) const {
+        const Size n = knotTimes_.size();
+        QL_REQUIRE(n >= 2, "NaturalCubicFitting::discountFunction(): insufficient knotTimes");
+
+        const Size expected = size();
+        QL_REQUIRE(x.size() == expected,
+                   "NaturalCubicFitting::discountFunction(): parameter size mismatch: expected "
+                   << expected << " got " << x.size());
+
+        Array y(n, 0.0);
+        if (this->constrainAtZero()) {
+            y[0] = 1.0;
+            for (Size i = 1; i < n; ++i)
+                y[i] = x[i - 1];
+        } else {
+            for (Size i = 0; i < n; ++i)
+                y[i] = x[i];
+        }
+
+        for (Size i = 0; i < n; ++i)
+            QL_REQUIRE(std::isfinite(y[i]), "NaturalCubicFitting::discountFunction(): non-finite nodal value");
+
+        Array M = computeSecondDerivatives(y);
+
+        return evaluateWithPrecomputedM(y, M, t);
+    }
+
 
     SimplePolynomialFitting::SimplePolynomialFitting(
         Natural degree,
