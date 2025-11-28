@@ -29,6 +29,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -45,6 +46,81 @@ using namespace boost::unit_test_framework;
 BOOST_FIXTURE_TEST_SUITE(QuantLibTests, TopLevelFixture)
 
 BOOST_AUTO_TEST_SUITE(CrossCurrencyRateHelpersTests)
+
+namespace {
+    Schedule schedule(const Date& today,
+                      const Period& tenor,
+                      Frequency paymentFrequency,
+                      Natural settlementDays = 2,
+                      const Calendar& calendar = TARGET(),
+                      BusinessDayConvention businessConvention = ModifiedFollowing,
+                      bool endOfMonth = false) {
+        Date settlement(calendar.advance(today, settlementDays, Days));
+        return MakeSchedule()
+            .from(settlement)
+            .to(settlement + tenor)
+            .withFrequency(paymentFrequency)
+            .withCalendar(calendar)
+            .withConvention(businessConvention)
+            .endOfMonth(endOfMonth)
+            .backwards();
+    }
+
+    Leg appendNotionalExchange(Leg& leg, Real notional, Natural paymentLag, const Calendar& cal, BusinessDayConvention convention) {
+        Date initialPaymentDate = CashFlows::startDate(leg);
+        Date lastPaymentDate = CashFlows::maturityDate(leg);
+
+        if (paymentLag != 0) {
+            initialPaymentDate = cal.advance(initialPaymentDate, paymentLag, Days, convention);
+            lastPaymentDate = cal.advance(lastPaymentDate, paymentLag, Days, convention);
+        }
+        BOOST_ERROR("    initial payment date:    " << initialPaymentDate << "\n"
+                    "    final payment date:    " << lastPaymentDate << "\n");
+        leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
+        leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
+        return leg;
+    }
+
+    Leg constantNotionalLeg(const Schedule& sch,
+                            const ext::shared_ptr<IborIndex>& idx,
+                            Real notional = 1.0,
+                            Spread basis = 0.0,
+                            Natural paymentLag = 0) {
+        Leg leg = IborLeg(sch, idx)
+                      .withNotionals(notional)
+                      .withSpreads(basis)
+                      .withPaymentLag(paymentLag);
+
+        return appendNotionalExchange(leg, notional, paymentLag, sch.calendar(),
+                                      sch.businessDayConvention());
+    }
+
+    Leg constantNotionalLeg(const Schedule& sch,
+                            const ext::shared_ptr<OvernightIndex>& idx,
+                            Real notional = 1.0,
+                            Spread basis = 0.0,
+                            Natural paymentLag = 0) {
+        Leg leg = OvernightLeg(sch, idx).withNotionals(notional).withSpreads(basis).withPaymentLag(
+            paymentLag);
+
+        return appendNotionalExchange(leg, notional, paymentLag, sch.calendar(),
+                                      sch.businessDayConvention());
+    }
+
+    Leg constantNotionalLeg(const Schedule& sch,
+                            Rate rate,
+                            const DayCounter& dayCount,
+                            Real notional = 1.0,
+                            Natural paymentLag = 0) {
+        Leg leg = FixedRateLeg(sch)
+                      .withNotionals(notional)
+                      .withCouponRates(rate, dayCount)
+                      .withPaymentLag(paymentLag);
+
+        return appendNotionalExchange(leg, notional, paymentLag, sch.calendar(),
+                                      sch.businessDayConvention());
+    }
+}
 
 struct XccyTestDatum {
     Integer n;
@@ -65,6 +141,7 @@ struct CommonVars {
     BusinessDayConvention businessConvention;
     DayCounter dayCount;
     bool endOfMonth;
+    Frequency paymentFrequency;
 
     ext::shared_ptr<IborIndex> baseCcyIdx;
     ext::shared_ptr<IborIndex> quoteCcyIdx;
@@ -154,30 +231,9 @@ struct CommonVars {
         return instruments;
     }
 
-    Schedule legSchedule(const Period& tenor,
-                         const ext::shared_ptr<IborIndex>& idx) const {
-        return MakeSchedule()
-            .from(instrumentSettlementDt)
-            .to(instrumentSettlementDt + tenor)
-            .withTenor(idx->tenor())
-            .withCalendar(calendar)
-            .withConvention(businessConvention)
-            .endOfMonth(endOfMonth)
-            .backwards();
-    }
-
-    Leg constantNotionalLeg(Schedule schedule,
-                            const ext::shared_ptr<IborIndex>& idx,
-                            Real notional,
-                            Spread basis) const {
-        Leg leg = IborLeg(std::move(schedule), idx).withNotionals(notional).withSpreads(basis);
-
-        Date initialPaymentDate = CashFlows::startDate(leg);
-        leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
-
-        Date lastPaymentDate = CashFlows::maturityDate(leg);
-        leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
-        return leg;
+    Schedule legSchedule(const Period& tenor) const {
+        return schedule(today, tenor, paymentFrequency, instrumentSettlementDays, calendar,
+                        businessConvention, endOfMonth);
     }
 
     std::vector<ext::shared_ptr<Swap> >
@@ -193,13 +249,13 @@ struct CommonVars {
         std::vector<ext::shared_ptr<Swap> > legs;
         bool payer = true;
 
-        Leg baseCcyLeg = constantNotionalLeg(legSchedule(Period(q.n, q.units), baseCcyIdx),
-                                             baseCcyIdx, baseCcyLegNotional, baseCcyLegBasis);
+        Leg baseCcyLeg = constantNotionalLeg(legSchedule(Period(q.n, q.units)), baseCcyIdx,
+                                             baseCcyLegNotional, baseCcyLegBasis);
         legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, baseCcyLeg),
                                               std::vector<bool>(1, !payer)));
 
         Leg quoteCcyLeg =
-            constantNotionalLeg(legSchedule(Period(q.n, q.units), quoteCcyIdx), quoteCcyIdx,
+            constantNotionalLeg(legSchedule(Period(q.n, q.units)), quoteCcyIdx,
                                 quoteCcyLegNotional, quoteCcyLegBasis);
         legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, quoteCcyLeg),
                                               std::vector<bool>(1, payer)));
@@ -213,12 +269,15 @@ struct CommonVars {
         calendar = TARGET();
         dayCount = Actual365Fixed();
         endOfMonth = false;
+        paymentFrequency = Quarterly;
 
         basisPoint = 1.0e-4;
         fxSpot = 1.25;
 
-        baseCcyIdx = ext::shared_ptr<IborIndex>(new Euribor3M(baseCcyIdxHandle));
-        quoteCcyIdx = ext::shared_ptr<IborIndex>(new USDLibor(3 * Months, quoteCcyIdxHandle));
+        baseCcyIdx =
+            ext::shared_ptr<IborIndex>(new Euribor(Period(paymentFrequency), baseCcyIdxHandle));
+        quoteCcyIdx =
+            ext::shared_ptr<IborIndex>(new USDLibor(Period(paymentFrequency), quoteCcyIdxHandle));
         baseOvernightIndex = ext::shared_ptr<IborIndex>(new Eonia(baseCcyIdxHandle));
         quoteOvernightIndex = ext::shared_ptr<IborIndex>(new Sofr(quoteCcyIdxHandle));
 
@@ -585,7 +644,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (auto [tenor, q]: quotes) {
+    for (auto& [tenor, q] : quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
@@ -601,42 +660,16 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
     auto fixedEngine = ext::make_shared<DiscountingSwapEngine>(usdCollat);
     auto floatEngine = ext::make_shared<DiscountingSwapEngine>(curveHandle);
 
-    for (auto [tenor, q]: quotes) {
-
-        Date settlement = cal.advance(today, fixingDays, Days);
-        Date maturity   = cal.advance(settlement, tenor, bdc, endOfMonth);
-
-        Schedule fixedSched(settlement, maturity,
-                            Period(fixedFreq),
-                            cal, bdc, bdc,
-                            DateGeneration::Forward, endOfMonth);
-
-        Schedule floatSched(settlement, maturity,
-                            euribor3m->tenor(),
-                            euribor3m->fixingCalendar(),
-                            euribor3m->businessDayConvention(),
-                            euribor3m->businessDayConvention(),
-                            DateGeneration::Forward, false);
-
-        Leg fixedLeg = FixedRateLeg(fixedSched)
-                       .withNotionals(1.0)
-                       .withCouponRates(q, fixedDC);
-
-        Leg floatLeg = IborLeg(floatSched, euribor3m)
-                       .withNotionals(1.0)
-                       .withSpreads(0.0);
-
-        Date initialPaymentDate = CashFlows::startDate(fixedLeg);
-        fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
-        floatLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
-
-        Date finalPaymentDate = CashFlows::maturityDate(fixedLeg);
-        fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
-        floatLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
+    for (auto& [tenor, q] : quotes) {
+        Leg fixedLeg = constantNotionalLeg(
+            schedule(today, tenor, fixedFreq, fixingDays, cal, bdc, endOfMonth), q, fixedDC);
+        Leg floatingLeg = constantNotionalLeg(schedule(today, tenor, euribor3m->tenor().frequency(),
+                                                       fixingDays, cal, bdc, endOfMonth),
+                                              euribor3m, 1.0, 0.0);
 
         Swap fixedProxy(std::vector<Leg>(1, fixedLeg),
                         std::vector<bool>(1, true));
-        Swap floatProxy(std::vector<Leg>(1, floatLeg),
+        Swap floatProxy(std::vector<Leg>(1, floatingLeg),
                         std::vector<bool>(1, false));
 
         fixedProxy.setPricingEngine(fixedEngine);
@@ -648,7 +681,6 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
         BOOST_CHECK_SMALL(npv, tolerance);
     }
 }
-
 
 BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
     BOOST_TEST_MESSAGE("Testing const-notional CCS helper with collateral on floating leg...");
@@ -662,8 +694,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
     Handle<YieldTermStructure> eurFwd(
         ext::make_shared<FlatForward>(today, 0.017, Actual365Fixed()));
 
-    ext::shared_ptr<IborIndex> euribor3m =
-        ext::make_shared<Euribor3M>(eurFwd);
+    ext::shared_ptr<IborIndex> euribor3m = ext::make_shared<Euribor3M>(eurFwd);
 
     Natural fixingDays = 5;
     Calendar cal = TARGET();
@@ -681,61 +712,31 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
         {Period(20, Years), 0.028},
     };
 
-    std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (auto [tenor, q]: quotes) {
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto& [tenor, q] : quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
-            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
-            fixedFreq, fixedDC, euribor3m,
-            usdCollat, false, paymentLag));
+            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, fixedFreq, fixedDC,
+            euribor3m, usdCollat, false, NoFrequency, paymentLag));
     }
 
     typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
-    ext::shared_ptr<YieldTermStructure> curve(
-        new Curve(today, helpers, Actual365Fixed()));
+    ext::shared_ptr<YieldTermStructure> curve(new Curve(today, helpers, Actual365Fixed()));
     curve->enableExtrapolation();
     Handle<YieldTermStructure> curveHandle(curve);
 
     auto fixedEngine = ext::make_shared<DiscountingSwapEngine>(curveHandle);
     auto floatEngine = ext::make_shared<DiscountingSwapEngine>(usdCollat);
 
-    for (auto [tenor, q]: quotes) {
-        Date settlement = cal.advance(today, fixingDays, Days);
-        Date maturity   = cal.advance(settlement, tenor, bdc, endOfMonth);
+    for (auto& [tenor, q] : quotes) {
+        Leg fixedLeg =
+            constantNotionalLeg(schedule(today, tenor, fixedFreq, fixingDays, cal, bdc, endOfMonth),
+                                q, fixedDC, 1.0, paymentLag);
+        Leg floatingLeg = constantNotionalLeg(schedule(today, tenor, euribor3m->tenor().frequency(),
+                                                       fixingDays, cal, bdc, endOfMonth),
+                                              euribor3m, 1.0, 0.0, paymentLag);
 
-        Schedule fixedSched(settlement, maturity,
-                            Period(fixedFreq),
-                            cal, bdc, bdc,
-                            DateGeneration::Forward, endOfMonth);
-
-        Schedule floatSched(settlement, maturity,
-                            euribor3m->tenor(),
-                            euribor3m->fixingCalendar(),
-                            euribor3m->businessDayConvention(),
-                            euribor3m->businessDayConvention(),
-                            DateGeneration::Forward, false);
-
-        Leg fixedLeg = FixedRateLeg(fixedSched)
-                       .withNotionals(1.0)
-                       .withCouponRates(q, fixedDC)
-                       .withPaymentLag(paymentLag);
-
-        Leg floatLeg = IborLeg(floatSched, euribor3m)
-                       .withNotionals(1.0)
-                       .withSpreads(0.0)
-                       .withPaymentLag(paymentLag);
-
-        Date initialPaymentDate = cal.advance(CashFlows::startDate(fixedLeg), paymentLag, Days, bdc);
-        fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
-        floatLeg.push_back(ext::make_shared<SimpleCashFlow>(-1.0, initialPaymentDate));
-
-        Date finalPaymentDate = cal.advance(CashFlows::maturityDate(fixedLeg), paymentLag, Days, bdc);
-        fixedLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
-        floatLeg.push_back(ext::make_shared<SimpleCashFlow>(1.0, finalPaymentDate));
-
-        Swap fixedProxy(std::vector<Leg>(1, fixedLeg),
-                        std::vector<bool>(1, true));
-        Swap floatProxy(std::vector<Leg>(1, floatLeg),
-                        std::vector<bool>(1, false));
+        Swap fixedProxy(std::vector<Leg>(1, fixedLeg), std::vector<bool>(1, true));
+        Swap floatProxy(std::vector<Leg>(1, floatingLeg), std::vector<bool>(1, false));
 
         fixedProxy.setPricingEngine(fixedEngine);
         floatProxy.setPricingEngine(floatEngine);
@@ -747,7 +748,67 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnOvernightLeg) {
+    BOOST_TEST_MESSAGE("Testing const-notional CCS helper with collateral on overnight leg...");
 
+    SavedSettings backup;
+    Date today(20, March, 2030);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.05, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(usdCollat);
+
+    Natural fixingDays = 2;
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency paymentFreq = Annual;
+    DayCounter fixedDC = Actual360();
+    Integer paymentLag = 1;
+
+    std::vector<std::pair<Period, Real>> quotes = {
+        {Period(5, Years), 0.07},
+        {Period(7, Years), 0.071}, 
+        {Period(10, Years), 0.072},
+        {Period(15, Years), 0.08},
+        {Period(20, Years), 0.09},
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto& [tenor, q] : quotes) {
+        helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
+            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC, sofr,
+            usdCollat, false, paymentFreq, paymentLag));
+    }
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
+    ext::shared_ptr<YieldTermStructure> curve(new Curve(today, helpers, Actual365Fixed()));
+    curve->enableExtrapolation();
+    Handle<YieldTermStructure> curveHandle(curve);
+
+    auto fixedEngine = ext::make_shared<DiscountingSwapEngine>(curveHandle);
+    auto floatEngine = ext::make_shared<DiscountingSwapEngine>(usdCollat);
+
+    for (auto& [tenor, q] : quotes) {
+        auto sch = schedule(today, tenor, paymentFreq, fixingDays, cal, bdc, endOfMonth);
+        
+        Leg fixedLeg = constantNotionalLeg(sch, q, fixedDC, 1.0, paymentLag);
+        Leg floatingLeg = constantNotionalLeg(sch, sofr, 1.0, 0.0, paymentLag);
+
+        Swap fixedProxy(std::vector<Leg>(1, fixedLeg), std::vector<bool>(1, true));
+        Swap floatProxy(std::vector<Leg>(1, floatingLeg), std::vector<bool>(1, false));
+
+        fixedProxy.setPricingEngine(fixedEngine);
+        floatProxy.setPricingEngine(floatEngine);
+
+        Real npv = fixedProxy.NPV() + floatProxy.NPV();
+        Real tolerance = 1e-10;
+
+        BOOST_CHECK_SMALL(npv, tolerance);
+    }
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()

@@ -434,12 +434,14 @@ namespace QuantLib {
         Frequency fixedFrequency,
         const DayCounter& fixedDayCount,
         const ext::shared_ptr<IborIndex>& floatIndex,
-        const Handle<YieldTermStructure>& collateralCurve,
+        Handle<YieldTermStructure> collateralCurve,
         bool collateralOnFixedLeg,
+        Frequency floatingFrequency,
         Integer paymentLag)
     : CrossCurrencySwapRateHelperBase(fixedRate, tenor, fixingDays, calendar, convention, endOfMonth,
                                       std::move(collateralCurve), paymentLag),
       fixedFrequency_(fixedFrequency),
+      floatingFrequency_(floatingFrequency),
       fixedDayCount_(fixedDayCount),
       floatIndex_(floatIndex),
       collateralOnFixedLeg_(collateralOnFixedLeg) {
@@ -453,9 +455,8 @@ namespace QuantLib {
     void ConstNotionalCrossCurrencySwapRateHelper::initializeDates() {
         fixedLeg_ = buildFixedLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
                                   endOfMonth_, fixedFrequency_, fixedDayCount_, paymentLag_);
-        floatLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, floatIndex_->fixingCalendar(),
-                                     floatIndex_->businessDayConvention(), endOfMonth_,
-                                     floatIndex_, floatIndex_->tenor().frequency(), paymentLag_);
+        floatLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
+                                     endOfMonth_, floatIndex_, floatingFrequency_, paymentLag_);
 
         initializeDatesFromLegs(fixedLeg_, floatLeg_);
     }

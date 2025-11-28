@@ -205,8 +205,9 @@ namespace QuantLib {
             Frequency fixedFrequency,
             const DayCounter& fixedDayCount,
             const ext::shared_ptr<IborIndex>& floatIndex,
-            const Handle<YieldTermStructure>& collateralCurve,
+            Handle<YieldTermStructure> collateralCurve,
             bool collateralOnFixedLeg,
+            Frequency floatingFrequency = NoFrequency,
             Integer paymentLag = 0);
 
         Real impliedQuote() const override;
@@ -218,6 +219,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& floatingLegDiscountHandle() const;
 
         Frequency fixedFrequency_;
+        Frequency floatingFrequency_;
         DayCounter fixedDayCount_;
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
