@@ -36,12 +36,11 @@ namespace QuantLib {
         QL_REQUIRE(internalHandle.empty(),
                    "internal handle must be empty; was the curve added already?");
 
-	auto mcProv = ext::dynamic_pointer_cast<MultiCurveBootstrapProvider>(curve);
+        auto mcProv = ext::dynamic_pointer_cast<MultiCurveBootstrapProvider>(curve);
         QL_REQUIRE(mcProv != nullptr, "curve must not be a MultiCurveBootstrapProvider");
 
         auto bootstrap = mcProv->multiCurveBootstrapContributor();
-        QL_REQUIRE(bootstrap,
-                   "curve does not provide a valid multi curve bootstrap contributor");
+        QL_REQUIRE(bootstrap, "curve does not provide a valid multi curve bootstrap contributor");
 
         multiCurveBootstrap_->add(bootstrap);
 
@@ -57,7 +56,7 @@ namespace QuantLib {
             curve.get()));
         registerWithObservables(curve);
         curves_.push_back(std::move(curve));
-	curve = ext::shared_ptr<YieldTermStructure>();
+        curve = ext::shared_ptr<YieldTermStructure>();
 
         return externalHandle;
     }
@@ -83,7 +82,7 @@ namespace QuantLib {
             curve.get()));
         registerWithObservables(curve);
         curves_.push_back(std::move(curve));
-	curve = ext::shared_ptr<YieldTermStructure>();
+        curve = ext::shared_ptr<YieldTermStructure>();
 
         return externalHandle;
     }
