@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2019 SoftSolutions! S.r.l.
+ Copyright (C) 2025 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +34,37 @@
 #include <utility>
 
 namespace QuantLib {
+
+class MultiCurveBootstrap;
+
+class MultiCurveBootstrapContributor {
+public:
+    virtual ~MultiCurveBootstrapContributor() = default;
+    virtual void
+    setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const = 0;
+    virtual Array setupCostFunction() const = 0;
+    virtual void setCostFunctionArgument(const Array& v) const = 0;
+    virtual Array evaluateCostFunction() const = 0;
+    virtual void setToValid() const = 0;
+};
+
+class MultiCurveBootstrap : public ext::enable_shared_from_this<MultiCurveBootstrap> {
+  public:
+    explicit MultiCurveBootstrap(Real accuracy);
+    explicit MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                        ext::shared_ptr<EndCriteria> endCriteria = nullptr);
+    void add(const MultiCurveBootstrapContributor* c);
+    void addObserver(Observer* o);
+    void runMultiCurveBootstrap();
+    void setOtherContributorsToValid() const;
+    void finalizeCalculation();
+
+  private:
+    ext::shared_ptr<OptimizationMethod> optimizer_;
+    ext::shared_ptr<EndCriteria> endCriteria_;
+    std::vector<const MultiCurveBootstrapContributor*> contributors_;
+    std::vector<Observer*> observers_;
+};
 
 class AdditionalBootstrapVariables {
   public:
@@ -70,7 +102,7 @@ class AdditionalBootstrapVariables {
   and Traits::transformInverse() to be implemented. Also, check the usage of
   Traits::updateGuess(), Traits::guess() in this class.
 */
-template <class Curve> class GlobalBootstrap {
+template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapContributor {
     typedef typename Curve::traits_type Traits;             // ZeroYield, Discount, ForwardRate
     typedef typename Curve::interpolator_type Interpolator; // Linear, LogLinear, ...
     typedef std::function<Array(const std::vector<Time>&, const std::vector<Real>&)>
@@ -99,7 +131,13 @@ template <class Curve> class GlobalBootstrap {
 
   private:
     void initialize() const;
-    Curve *ts_;
+    void
+    setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const override;
+    Array setupCostFunction() const override;
+    void setCostFunctionArgument(const Array& v) const override;
+    Array evaluateCostFunction() const override;
+    void setToValid() const override;
+    Curve* ts_;
     Real accuracy_;
     ext::shared_ptr<OptimizationMethod> optimizer_;
     ext::shared_ptr<EndCriteria> endCriteria_;
@@ -109,7 +147,8 @@ template <class Curve> class GlobalBootstrap {
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables_;
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_ = 0, numberHelpers_ = 0;
-    mutable Size firstAdditionalHelper_ = 0, numberAdditionalHelpers_ = 0;
+    mutable Size firstAdditionalHelper_ = 0, numberAdditionalHelpers_= 0;
+    mutable ext::shared_ptr<MultiCurveBootstrap> parentBootstrapper_ = nullptr;
 };
 
 // template definitions
@@ -133,12 +172,13 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
   endCriteria_(std::move(endCriteria)), additionalHelpers_(std::move(additionalHelpers)),
-  additionalDates_(std::move(additionalDates)), additionalPenalties_(std::move(additionalPenalties)),
+  additionalDates_(std::move(additionalDates)),
+  additionalPenalties_(std::move(additionalPenalties)),
   additionalVariables_(std::move(additionalVariables)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+    std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
     std::function<std::vector<Date>()> additionalDates,
     std::function<Array()> additionalPenalties,
     Real accuracy,
@@ -154,7 +194,14 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
                   accuracy, std::move(optimizer), std::move(endCriteria),
                   std::move(additionalVariables)) {}
 
-template <class Curve> void GlobalBootstrap<Curve>::setup(Curve *ts) {
+template <class Curve>
+void GlobalBootstrap<Curve>::setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const {
+    parentBootstrapper_ = b;
+}
+
+template <class Curve> void GlobalBootstrap<Curve>::setToValid() const { validCurve_ = true; }
+
+template <class Curve> void GlobalBootstrap<Curve>::setup(Curve* ts) {
     ts_ = ts;
     for (Size j = 0; j < ts_->instruments_.size(); ++j)
         ts_->registerWithObservables(ts_->instruments_[j]);
@@ -254,7 +301,12 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     initialized_ = true;
 }
 
-template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
+template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
+
+    // for single-curve boostrap, this was done in LazyObject::calculate() already, but for
+    // multi-curve boostrap we have to do this manually for all contributing curves except
+    // the main one, because calculate() is never triggered for them
+    ts_->setCalculated(true);
 
     // we might have to call initialize even if the curve is initialized
     // and not moving, just because helpers might be date relative and change
@@ -266,7 +318,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
     // setup helpers
     for (Size j = 0; j < numberHelpers_; ++j) {
-        const ext::shared_ptr<typename Traits::helper> &helper = ts_->instruments_[firstHelper_ + j];
+        const ext::shared_ptr<typename Traits::helper>& helper = ts_->instruments_[firstHelper_ + j];
         // check for valid quote
         QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
                                                    << " instrument (maturity: " << helper->maturityDate()
@@ -274,16 +326,16 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
         // don't try this at home!
         // This call creates helpers, and removes "const".
         // There is a significant interaction with observability.
-        helper->setTermStructure(const_cast<Curve *>(ts_));
+        helper->setTermStructure(const_cast<Curve*>(ts_));
     }
 
     // setup additional helpers
     for (Size j = 0; j < numberAdditionalHelpers_; ++j) {
-        const ext::shared_ptr<typename Traits::helper> &helper = additionalHelpers_[firstAdditionalHelper_ + j];
+        const ext::shared_ptr<typename Traits::helper>& helper = additionalHelpers_[firstAdditionalHelper_ + j];
         QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
                                                    << " additional instrument (maturity: " << helper->maturityDate()
                                                    << ") has an invalid quote");
-        helper->setTermStructure(const_cast<Curve *>(ts_));
+        helper->setTermStructure(const_cast<Curve*>(ts_));
     }
 
     // setup interpolation
@@ -292,59 +344,73 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
             ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(), ts_->data_.begin());
     }
 
-    // Setup initial guess. We have guesses for the curve values first (numberPillars),
+    // Initial guess. We have guesses for the curve values first (numberPillars),
     // followed by guesses for the additional variables.
-    const Size numberPillars = ts_->times_.size() - 1;
     Array additionalGuesses;
     if (additionalVariables_) {
         additionalGuesses = additionalVariables_->initialize(validCurve_);
     }
-    Array guess(numberPillars + additionalGuesses.size());
-    for (Size i = 0; i < numberPillars; ++i) {
+    Array guess(ts_->times_.size() - 1 + additionalGuesses.size());
+    for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
         // just pass zero as the first alive helper, it's not used in the standard QL traits anyway
         // update ts_->data_ since Traits::guess() usually depends on previous values
         Traits::updateGuess(ts_->data_, Traits::guess(i + 1, ts_, validCurve_, 0), i + 1);
         guess[i] = Traits::transformInverse(ts_->data_[i + 1], i + 1, ts_);
     }
-    std::copy(additionalGuesses.begin(), additionalGuesses.end(), guess.begin() + numberPillars);
+    std::copy(additionalGuesses.begin(), additionalGuesses.end(),
+              guess.begin() + ts_->times_.size() - 1);
+    return guess;
+}
 
-    // setup cost function
-    SimpleCostFunction cost([&](const Array& x) {
-        // x has the same layout as guess above: the first numberPillars values go into
-        // the curve, while the rest are new values for the additional variables.
-        for (Size i = 0; i < numberPillars; ++i) {
-            Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
-        }
-        ts_->interpolation_.update();
-        if (additionalVariables_) {
-            additionalVariables_->update(Array(x.begin() + numberPillars, x.end()));
-        }
+template <class Curve>
+void GlobalBootstrap<Curve>::setCostFunctionArgument(const Array& x) const {
+    // x has the same layout as guess above: the first numberPillars values go into
+    // the curve, while the rest are new values for the additional variables.
+    for (Size i = 0; i < ts_->times_.size() - 1; ++i) {
+        Traits::updateGuess(ts_->data_, Traits::transformDirect(x[i], i + 1, ts_), i + 1);
+    }
+    ts_->interpolation_.update();
+    if (additionalVariables_) {
+        additionalVariables_->update(Array(x.begin() + ts_->times_.size() - 1, x.end()));
+    }
+}
 
-        Array additionalErrors;
-        if (additionalPenalties_) {
-            additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
-        }
-        Array result(numberHelpers_ + additionalErrors.size());
-        std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(),
-                       result.begin(),
-                       [](const auto& helper) { return helper->quoteError(); });
-        std::copy(additionalErrors.begin(), additionalErrors.end(),
-                  result.begin() + numberHelpers_);
-        return result;
+template <class Curve>
+Array GlobalBootstrap<Curve>::evaluateCostFunction() const {
+    Array additionalErrors;
+    if (additionalPenalties_) {
+        additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
+    }
+    Array result(numberHelpers_ + additionalErrors.size());
+    std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(),
+                   result.begin(), [](const auto& helper) { return helper->quoteError(); });
+    std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
+    return result;
+}
+
+template <class Curve>
+void GlobalBootstrap<Curve>::calculate() const {
+
+    if (parentBootstrapper_) {
+        parentBootstrapper_->runMultiCurveBootstrap();
+        return;
+    }
+
+    // single curve boostrap
+
+    Array guess = setupCostFunction();
+
+    NoConstraint noConstraint;
+
+    SimpleCostFunction costFunction([this](const Array& x) {
+        this->setCostFunctionArgument(x);
+        return this->evaluateCostFunction();
     });
 
-    // setup problem
-    NoConstraint noConstraint;
-    Problem problem(cost, noConstraint, guess);
-
-    // run optimization
+    Problem problem(costFunction, noConstraint, guess);
     EndCriteria::Type endType = optimizer_->minimize(problem, *endCriteria_);
-
-    // check the end criteria
     QL_REQUIRE(EndCriteria::succeeded(endType),
                "global bootstrap failed to minimize to required accuracy: " << endType);
-
-    // set valid flag
     validCurve_ = true;
 }
 
