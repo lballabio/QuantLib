@@ -37,7 +37,6 @@ namespace QuantLib {
                    "internal handle must be empty; was the curve added already?");
 
 	auto mcProv = ext::dynamic_pointer_cast<MultiCurveBootstrapProvider>(curve);
-
         QL_REQUIRE(mcProv != nullptr, "curve must not be a MultiCurveBootstrapProvider");
 
         auto bootstrap = mcProv->multiCurveBootstrapContributor();
