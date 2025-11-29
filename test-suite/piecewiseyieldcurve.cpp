@@ -1701,27 +1701,14 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
     using CurveType = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
 
-    auto ptr3m = ext::make_shared<CurveType>(vars.today, helpers3m, Actual360(), LogLinear(),
-                                             GlobalBootstrap<CurveType>(accuracy));
-
     auto multiCurve = ext::make_shared<MultiCurve>(accuracy);
 
+    auto ptr3m = ext::make_shared<CurveType>(vars.today, helpers3m, Actual360(), LogLinear(),
+                                             GlobalBootstrap<CurveType>(accuracy));
     auto curve3m = ptr3m->addToMultiCurve(intcurve3m, multiCurve);
 
     auto ptrois = ext::make_shared<ZeroSpreadedTermStructure>(intcurve3m, b);
-    intcurveois.linkTo(ptrois);
-    
-    /* FIXME: this leads to a crash, apparently due to a notification cycle of piecewise yield curve and
-       zero spreaded curve, although intcurve3m should have been converted to a non-observing handle above
-       in addToMultiCurve.
-       The test works nevertheless, because the zero spreaded curve does not need the update during bootstrap.
-       To be investigated. */
-    // multiCurve->addBootstrapObserver(ptrois.get());
-
-    /* TBD: do we want to add intcurveois to MultiCurve similar to what we do with piecewise yc handles?
-       I.e. same handling as for internal handles to pwyc in MultiCurve::addCurve(), except we replace
-       multiCurveBootstrap_->add() with multiCurveBootstrap_->addBootstrapObserver() there */
-    auto curveois = intcurveois;
+    auto curveois = multiCurve->addNonPiecewiseCurve(multiCurve, intcurveois, ptrois);
 
     // check spread ois 3m
 

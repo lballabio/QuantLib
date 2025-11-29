@@ -51,8 +51,24 @@ namespace QuantLib {
         return externalHandle;
     }
 
-    void MultiCurve::addBootstrapObserver(Observer* o) {
-        multiCurveBootstrap_->addObserver(o);
+    Handle<YieldTermStructure>
+    MultiCurve::addNonPiecewiseCurve(ext::shared_ptr<MultiCurve> multiCurve,
+                         RelinkableHandle<YieldTermStructure>& internalHandle,
+                         ext::shared_ptr<YieldTermStructure> curve) {
+        QL_REQUIRE(internalHandle.empty(),
+                   "internal handle must be empty; was the curve added already?");
+        QL_REQUIRE(curve != nullptr, "curve must not be null");
+
+        multiCurveBootstrap_->addObserver(curve.get());
+
+        internalHandle.linkTo(ext::shared_ptr<YieldTermStructure>(curve.get(), null_deleter()),
+                              false);
+        Handle<YieldTermStructure> externalHandle(
+            ext::shared_ptr<YieldTermStructure>(multiCurve, curve.get()));
+        registerWithObservables(curve);
+        curves_.push_back(std::move(curve));
+
+        return externalHandle;
     }
 
     void MultiCurve::update() {

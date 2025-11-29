@@ -39,8 +39,11 @@ namespace QuantLib {
         explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                             ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 
-        /* add observer that should be updated during the bootstrap */
-        void addBootstrapObserver(Observer* o);
+        // preliminary interface, to be cleaned...
+        Handle<YieldTermStructure>
+        addNonPiecewiseCurve(ext::shared_ptr<MultiCurve> multiCurve,
+                             RelinkableHandle<YieldTermStructure>& internalHandle,
+                             ext::shared_ptr<YieldTermStructure> curve);
 
       private:
         template <class Traits, class Interpolator, template <class> class Bootstrap>
