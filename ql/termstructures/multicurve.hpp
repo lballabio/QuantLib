@@ -33,25 +33,38 @@
 
 namespace QuantLib {
 
-    class MultiCurve : public Observer {
+    struct MultiCurveBootstrapProvider {
+        virtual ~MultiCurveBootstrapProvider() = default;
+        virtual const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const = 0;
+    };
+
+    class MultiCurve : public Observer
+#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    ,
+                       public ext::enable_shared_from_this<MultiCurve>
+#endif
+    {
       public:
         explicit MultiCurve(Real accuracy);
         explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                             ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 
-        // preliminary interface, to be cleaned...
+        /* addCurve() takes an internal handle to a PiecewiseYieldCurve and returns
+           an external handle. Internal handle, which must be an empty RelinkableHandle,
+           should be used within the cycle. External handle should be used outside of the
+           cycle. The passed in curve shared_ptr is reset to a nullptr to avoid wrong
+           usage. */
+        Handle<YieldTermStructure> addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
+                                            ext::shared_ptr<YieldTermStructure>& curve);
+
+        /* similar to addCurve(), this function converts an internal handle to a YieldTermStructure
+           that is not a PiecewiseYieldCurve to an external handle. The passed in curve shared_ptr is
+           reset to a nullptr here as well for the same reason. */
         Handle<YieldTermStructure>
-        addNonPiecewiseCurve(ext::shared_ptr<MultiCurve> multiCurve,
-                             RelinkableHandle<YieldTermStructure>& internalHandle,
-                             ext::shared_ptr<YieldTermStructure> curve);
+        addNonPiecewiseCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
+                             ext::shared_ptr<YieldTermStructure>& curve);
 
       private:
-        template <class Traits, class Interpolator, template <class> class Bootstrap>
-        friend class PiecewiseYieldCurve;
-        Handle<YieldTermStructure> addCurve(ext::shared_ptr<MultiCurve> multiCurve,
-                                            RelinkableHandle<YieldTermStructure>& internalHandle,
-                                            ext::shared_ptr<YieldTermStructure> curve,
-                                            MultiCurveBootstrapContributor* bootstrap);
         void update() override;
         ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap_;
         std::vector<ext::shared_ptr<YieldTermStructure>> curves_;

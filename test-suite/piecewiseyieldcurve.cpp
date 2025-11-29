@@ -1586,15 +1586,15 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
     using CurveType = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
 
-    auto ptr3m = ext::make_shared<CurveType>(vars.today, helpers3m, Actual360(), LogLinear(),
-                                             GlobalBootstrap<CurveType>(accuracy));
-    auto ptr6m = ext::make_shared<CurveType>(vars.today, helpers6m, Actual360(), LogLinear(),
-                                             GlobalBootstrap<CurveType>(accuracy));
+    ext::shared_ptr<YieldTermStructure> ptr3m = ext::make_shared<CurveType>(
+        vars.today, helpers3m, Actual360(), LogLinear(), GlobalBootstrap<CurveType>(accuracy));
+    ext::shared_ptr<YieldTermStructure> ptr6m = ext::make_shared<CurveType>(
+        vars.today, helpers6m, Actual360(), LogLinear(), GlobalBootstrap<CurveType>(accuracy));
 
     auto multiCurve = ext::make_shared<MultiCurve>(accuracy);
 
-    auto curve3m = ptr3m->addToMultiCurve(intcurve3m, multiCurve);
-    auto curve6m = ptr6m->addToMultiCurve(intcurve6m, multiCurve);
+    auto curve3m = multiCurve->addCurve(intcurve3m, ptr3m);
+    auto curve6m = multiCurve->addCurve(intcurve6m, ptr6m);
 
     // check instrument npvs
 
@@ -1703,12 +1703,13 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
     auto multiCurve = ext::make_shared<MultiCurve>(accuracy);
 
-    auto ptr3m = ext::make_shared<CurveType>(vars.today, helpers3m, Actual360(), LogLinear(),
-                                             GlobalBootstrap<CurveType>(accuracy));
-    auto curve3m = ptr3m->addToMultiCurve(intcurve3m, multiCurve);
+    ext::shared_ptr<YieldTermStructure> ptr3m = ext::make_shared<CurveType>(
+        vars.today, helpers3m, Actual360(), LogLinear(), GlobalBootstrap<CurveType>(accuracy));
+    auto curve3m = multiCurve->addCurve(intcurve3m, ptr3m);
 
-    auto ptrois = ext::make_shared<ZeroSpreadedTermStructure>(intcurve3m, b);
-    auto curveois = multiCurve->addNonPiecewiseCurve(multiCurve, intcurveois, ptrois);
+    ext::shared_ptr<YieldTermStructure> ptrois =
+        ext::make_shared<ZeroSpreadedTermStructure>(intcurve3m, b);
+    auto curveois = multiCurve->addNonPiecewiseCurve(intcurveois, ptrois);
 
     // check spread ois 3m
 

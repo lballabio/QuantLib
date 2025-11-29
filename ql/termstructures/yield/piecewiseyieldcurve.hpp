@@ -28,9 +28,9 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
+#include <ql/termstructures/globalbootstrap.hpp>
 #include <ql/termstructures/multicurve.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
-
 #include <utility>
 
 namespace QuantLib {
@@ -60,11 +60,8 @@ namespace QuantLib {
               template <class> class Bootstrap = IterativeBootstrap>
     class PiecewiseYieldCurve
         : public Traits::template curve<Interpolator>::type,
-          public LazyObject
-#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-        , public ext::enable_shared_from_this<PiecewiseYieldCurve<Traits,Interpolator,Bootstrap>>
-#endif
-    {
+          public LazyObject,
+          public MultiCurveBootstrapProvider {
       private:
         typedef typename Traits::template curve<Interpolator>::type base_curve;
         typedef PiecewiseYieldCurve<Traits,Interpolator,Bootstrap> this_curve;
@@ -148,23 +145,12 @@ namespace QuantLib {
         //@{
         void update() override;
         //@}
-        /*! addToMultiCurve() takes an internal handle and returns an external handle to this curve
-            instance. Internal handle, which must be an empty RelinkableHandle when being passed into
-            this method, should be used within a cycle of a MultiCurve. The external handle should be
-            used outside of the cycle. */
-        Handle<YieldTermStructure>
-        addToMultiCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                        const ext::shared_ptr<MultiCurve>& multiCurve) {
-            static_assert(std::is_convertible_v<bootstrap_type*, MultiCurveBootstrapContributor*>,
-                          "bootstrap type is not compatible with MultiCurve");
-            return multiCurve->addCurve(
-                multiCurve, internalHandle,
-#ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-                this->shared_from_this()
-#else
-                ext::dynamic_pointer_cast<this_curve>(this->shared_from_this())
-#endif
-                , &this->bootstrap_);
+        const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const override {
+            if constexpr (std::is_convertible_v<bootstrap_type*, MultiCurveBootstrapContributor*>) {
+                return &bootstrap_;
+            } else {
+                return nullptr;
+            }
         }
 
       protected:
