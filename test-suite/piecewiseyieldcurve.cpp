@@ -50,6 +50,7 @@
 #include <ql/termstructures/yield/piecewisespreadyieldcurve.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/asx.hpp>
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/calendars/japan.hpp>
@@ -1535,9 +1536,9 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(testMultiCurve) {
+BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
-    BOOST_TEST_MESSAGE("Testing multicurve bootstrap...");
+    BOOST_TEST_MESSAGE("Testing multicurve bootstrap with two piecewise yield curves...");
 
     CommonVars vars(Date(23, Oct, 2025));
 
@@ -1669,6 +1670,76 @@ BOOST_AUTO_TEST_CASE(testMultiCurve) {
                                .withFixedLegConvention(Following)
                                .withFixedLegTerminationDateConvention(Following);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
+        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
+
+    BOOST_TEST_MESSAGE("Testing multicurve bootstrap with piecewise yield curve and spreaded curve...");
+
+    CommonVars vars(Date(23, Oct, 2025));
+
+    constexpr Real accuracy = 1E-10;
+
+    RelinkableHandle<YieldTermStructure> intcurveois;
+    RelinkableHandle<YieldTermStructure> intcurve3m;
+
+    auto euribor3m = ext::make_shared<Euribor3M>(intcurve3m);
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers3m;
+
+    Handle<Quote> q(ext::make_shared<SimpleQuote>(0.03));
+    Handle<Quote> b(ext::make_shared<SimpleQuote>(-0.01));
+
+    for (Size i = 1; i <= 10; ++i) {
+        helpers3m.push_back(ext::make_shared<SwapRateHelper>(
+            q, i * Years, euribor3m->fixingCalendar(), Annual, Following,
+            Thirty360(Thirty360::BondBasis), euribor3m, Handle<Quote>(), 0 * Days, intcurveois));
+    }
+
+    using CurveType = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
+
+    auto ptr3m = ext::make_shared<CurveType>(vars.today, helpers3m, Actual360(), LogLinear(),
+                                             GlobalBootstrap<CurveType>(accuracy));
+
+    auto multiCurve = ext::make_shared<MultiCurve>(accuracy);
+
+    auto curve3m = ptr3m->addToMultiCurve(intcurve3m, multiCurve);
+
+    auto ptrois = ext::make_shared<ZeroSpreadedTermStructure>(intcurve3m, b);
+    intcurveois.linkTo(ptrois);
+    
+    /* FIXME: this leads to a crash, apparently due to a notification cycle of piecewise yield curve and
+       zero spreaded curve, although intcurve3m should have been converted to a non-observing handle above
+       in addToMultiCurve.
+       The test works nevertheless, because the zero spreaded curve does not need the update during bootstrap.
+       To be investigated. */
+    // multiCurve->addBootstrapObserver(ptrois.get());
+
+    /* TBD: do we want to add intcurveois to MultiCurve similar to what we do with piecewise yc handles?
+       I.e. same handling as for internal handles to pwyc in MultiCurve::addCurve(), except we replace
+       multiCurveBootstrap_->add() with multiCurveBootstrap_->addBootstrapObserver() there */
+    auto curveois = intcurveois;
+
+    // check spread ois 3m
+
+    constexpr Real tolerance = 1E-10;
+
+    BOOST_CHECK_CLOSE(curveois->zeroRate(1.0, Continuous) - curve3m->zeroRate(1.0, Continuous),
+                      b->value(), tolerance);
+
+    // check instrument npvs
+
+    for (Size i = 1; i <= 10; ++i) {
+        VanillaSwap swap = MakeVanillaSwap(i * Years, euribor3m, q->value())
+                               .withSettlementDays(euribor3m->fixingDays())
+                               .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
+                               .withFixedLegTenor(1 * Years)
+                               .withFixedLegConvention(Following)
+                               .withFixedLegTerminationDateConvention(Following);
+        swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(curveois));
         BOOST_CHECK_SMALL(swap.NPV(), tolerance);
     }
 
