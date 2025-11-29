@@ -55,14 +55,14 @@ namespace QuantLib {
            cycle. The passed in curve shared_ptr is reset to a nullptr to avoid wrong
            usage. */
         Handle<YieldTermStructure> addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                                            ext::shared_ptr<YieldTermStructure>& curve);
+                                            ext::shared_ptr<YieldTermStructure>&& curve);
 
         /* similar to addCurve(), this function converts an internal handle to a YieldTermStructure
            that is not a PiecewiseYieldCurve to an external handle. The passed in curve shared_ptr
            is reset to a nullptr here as well for the same reason. */
         Handle<YieldTermStructure>
         addNonPiecewiseCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                             ext::shared_ptr<YieldTermStructure>& curve);
+                             ext::shared_ptr<YieldTermStructure>&& curve);
 
       private:
         void update() override;

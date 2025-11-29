@@ -1593,8 +1593,8 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
     auto multiCurve = ext::make_shared<MultiCurve>(accuracy);
 
-    auto curve3m = multiCurve->addCurve(intcurve3m, ptr3m);
-    auto curve6m = multiCurve->addCurve(intcurve6m, ptr6m);
+    auto curve3m = multiCurve->addCurve(intcurve3m, std::move(ptr3m));
+    auto curve6m = multiCurve->addCurve(intcurve6m, std::move(ptr6m));
 
     // check instrument npvs
 
@@ -1705,11 +1705,11 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
     ext::shared_ptr<YieldTermStructure> ptr3m = ext::make_shared<CurveType>(
         vars.today, helpers3m, Actual360(), LogLinear(), GlobalBootstrap<CurveType>(accuracy));
-    auto curve3m = multiCurve->addCurve(intcurve3m, ptr3m);
+    auto curve3m = multiCurve->addCurve(intcurve3m, std::move(ptr3m));
 
     ext::shared_ptr<YieldTermStructure> ptrois =
         ext::make_shared<ZeroSpreadedTermStructure>(intcurve3m, b);
-    auto curveois = multiCurve->addNonPiecewiseCurve(intcurveois, ptrois);
+    auto curveois = multiCurve->addNonPiecewiseCurve(intcurveois, std::move(ptrois));
 
     // check spread ois 3m
 

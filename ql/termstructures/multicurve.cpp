@@ -31,7 +31,7 @@ namespace QuantLib {
 
     Handle<YieldTermStructure>
     MultiCurve::addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                         ext::shared_ptr<YieldTermStructure>& curve) {
+                         ext::shared_ptr<YieldTermStructure>&& curve) {
 
         QL_REQUIRE(internalHandle.empty(),
                    "internal handle must be empty; was the curve added already?");
@@ -55,15 +55,14 @@ namespace QuantLib {
                 ,
             curve.get()));
         registerWithObservables(curve);
-        curves_.push_back(std::move(curve));
-        curve = ext::shared_ptr<YieldTermStructure>();
+        curves_.push_back(curve);
 
         return externalHandle;
     }
 
     Handle<YieldTermStructure>
     MultiCurve::addNonPiecewiseCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                                     ext::shared_ptr<YieldTermStructure>& curve) {
+                                     ext::shared_ptr<YieldTermStructure>&& curve) {
         QL_REQUIRE(internalHandle.empty(),
                    "internal handle must be empty; was the curve added already?");
         QL_REQUIRE(curve != nullptr, "curve must not be null");
@@ -81,8 +80,7 @@ namespace QuantLib {
                 ,
             curve.get()));
         registerWithObservables(curve);
-        curves_.push_back(std::move(curve));
-        curve = ext::shared_ptr<YieldTermStructure>();
+        curves_.push_back(curve);
 
         return externalHandle;
     }
