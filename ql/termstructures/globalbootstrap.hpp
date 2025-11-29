@@ -41,14 +41,14 @@ class MultiCurveBootstrapContributor {
 public:
     virtual ~MultiCurveBootstrapContributor() = default;
     virtual void
-    setParentBootstrapper(const QuantLib::ext::shared_ptr<MultiCurveBootstrap>& b) const = 0;
+    setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const = 0;
     virtual Array setupCostFunction() const = 0;
     virtual void setCostFunctionArgument(const Array& v) const = 0;
     virtual Array evaluateCostFunction() const = 0;
     virtual void setToValid() const = 0;
 };
 
-class MultiCurveBootstrap : public QuantLib::ext::enable_shared_from_this<MultiCurveBootstrap> {
+class MultiCurveBootstrap : public ext::enable_shared_from_this<MultiCurveBootstrap> {
   public:
     explicit MultiCurveBootstrap(Real accuracy);
     explicit MultiCurveBootstrap(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
@@ -132,7 +132,7 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
   private:
     void initialize() const;
     void
-    setParentBootstrapper(const QuantLib::ext::shared_ptr<MultiCurveBootstrap>& b) const override;
+    setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const override;
     Array setupCostFunction() const override;
     void setCostFunctionArgument(const Array& v) const override;
     Array evaluateCostFunction() const override;
@@ -148,7 +148,7 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_ = 0, numberHelpers_ = 0;
     mutable Size firstAdditionalHelper_ = 0, numberAdditionalHelpers_= 0;
-    mutable QuantLib::ext::shared_ptr<MultiCurveBootstrap> parentBootstrapper_ = nullptr;
+    mutable ext::shared_ptr<MultiCurveBootstrap> parentBootstrapper_ = nullptr;
 };
 
 // template definitions
@@ -195,7 +195,7 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
                   std::move(additionalVariables)) {}
 
 template <class Curve>
-void GlobalBootstrap<Curve>::setParentBootstrapper(const QuantLib::ext::shared_ptr<MultiCurveBootstrap>& b) const {
+void GlobalBootstrap<Curve>::setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const {
     parentBootstrapper_ = b;
 }
 
