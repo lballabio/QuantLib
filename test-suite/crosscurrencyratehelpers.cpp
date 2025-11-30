@@ -585,7 +585,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (auto [tenor, q]: quotes) {
+    helpers.reserve(quotes.size());
+for (auto [tenor, q]: quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
@@ -682,7 +683,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (auto [tenor, q]: quotes) {
+    helpers.reserve(quotes.size());
+for (auto [tenor, q]: quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
