@@ -49,22 +49,24 @@ namespace QuantLib {
         explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                             ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 
-        /* addCurve() takes an internal handle to a PiecewiseYieldCurve and returns
-           an external handle. Internal handle, which must be an empty RelinkableHandle,
-           should be used within the cycle. External handle should be used outside of the
-           cycle. The passed in curve shared_ptr is reset to a nullptr to avoid wrong
-           usage. */
-        Handle<YieldTermStructure> addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
-                                            ext::shared_ptr<YieldTermStructure>&& curve);
-
-        /* similar to addCurve(), this function converts an internal handle to a YieldTermStructure
-           that is not a PiecewiseYieldCurve to an external handle. The passed in curve shared_ptr
-           is reset to a nullptr here as well for the same reason. */
+        /* addBootstrappedCurve() takes an internal handle to a YieldTermStructure using bootstrap
+           and implementing MultiCurveBootstrapProvider, e.g. a PiecewiseYieldCurve, and returns
+           an external handle. Internal handle, which must be an empty RelinkableHandle, should be
+           used within the cycle. External handle should be used outside of the cycle. */
         Handle<YieldTermStructure>
-        addNonPiecewiseCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
+        addBootstrappedCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
                              ext::shared_ptr<YieldTermStructure>&& curve);
 
+        /* addNonBootstrappedCurve() works similar as addBootstrappedCurve() for a YieldTermStructure
+           no using bootstrap, e.g. ZeroSpreadedTermStructure, that requires updates during a multicurve
+           build. */
+        Handle<YieldTermStructure>
+        addNonBootstrappedCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
+                                ext::shared_ptr<YieldTermStructure>&& curve);
+
       private:
+        Handle<YieldTermStructure> addCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
+                                            ext::shared_ptr<YieldTermStructure>&& curve);
         void update() override;
         ext::shared_ptr<MultiCurveBootstrap> multiCurveBootstrap_;
         std::vector<ext::shared_ptr<YieldTermStructure>> curves_;
