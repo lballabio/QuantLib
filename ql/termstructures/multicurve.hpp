@@ -38,6 +38,44 @@ namespace QuantLib {
         virtual const MultiCurveBootstrapContributor* multiCurveBootstrapContributor() const = 0;
     };
 
+    /*! MultiCurve builds a set of curves that form a dependency cycle. MultiCurve builds such a
+       cycle of curves by using an optimizer specified by one of the constructors. The steps to set
+       up the member curves of the cycle is as follows:
+
+       1. Create empty relinkable handles to a YieldTermStructure to represent each member. We call
+          these handles 'internal', because they are used internally in the cycle, but not outside
+          the cycle.
+
+       2. Construct each member curve as a shared pointer, e.g. by calling
+
+           a) make_shared<PiecewiseYieldCurve<...>>
+           b) make_shared<ZeroSpreadedTermStructure>
+
+           Rate helpers in a) or the base curve in b) underlying the spreaded curve should use the
+           internal handles from 1. Curves using a bootstrapper as in a) must use a compatible
+           boostrap class like GlobalBootstrap.
+
+       3. Construct a MultiCurve instance. This must be a shared pointer.
+
+        4. Add the cycle members to the MultiCurve instance using addBootstrappedCurve() for curves
+           using a bootstrapper, as e.g. in a), resp. addNonBootstrappedCurve() for all other
+           curves, as e.g. in b).
+
+           Both methods take the internal handle of the curve from 1. and the shared pointer from 2
+           as an argument. The latter has to be moved and to the function argument and can thus not
+           be used after having added the curve.
+
+           Both functions return an external handle to the curve which should be used to reference
+           the curve for all other purposes than the internal handles in 2.
+
+           The internal handle is linked to the relevant curve, but the ownership and observability
+           is removed to avoid cycles of shared pointers and notification cyclces.
+
+           The external handles are constructed with ownership information shared with the
+           MultiCurve instance, which ensures that all member curves are kept alive until none of
+           the curves and the MultiCurve instance itself are referenced by any alive object.
+
+        See the piecewise yield curve unit tests for examples. */
     class MultiCurve : public Observer
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
     ,
@@ -49,17 +87,10 @@ namespace QuantLib {
         explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                             ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 
-        /* addBootstrappedCurve() takes an internal handle to a YieldTermStructure using bootstrap
-           and implementing MultiCurveBootstrapProvider, e.g. a PiecewiseYieldCurve, and returns
-           an external handle. Internal handle, which must be an empty RelinkableHandle, should be
-           used within the cycle. External handle should be used outside of the cycle. */
         Handle<YieldTermStructure>
         addBootstrappedCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
                              ext::shared_ptr<YieldTermStructure>&& curve);
 
-        /* addNonBootstrappedCurve() works similar as addBootstrappedCurve() for a YieldTermStructure
-           no using bootstrap, e.g. ZeroSpreadedTermStructure, that requires updates during a multicurve
-           build. */
         Handle<YieldTermStructure>
         addNonBootstrappedCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
                                 ext::shared_ptr<YieldTermStructure>&& curve);
