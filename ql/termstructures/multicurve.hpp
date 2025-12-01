@@ -39,7 +39,7 @@ namespace QuantLib {
     };
 
     /*! MultiCurve builds a set of curves that form a dependency cycle. MultiCurve builds such a
-       cycle of curves by using an optimizer specified by one of the constructors. The steps to set
+       cycle of curves by using an optimizer specified by one of its constructors. The steps to set
        up the member curves of the cycle is as follows:
 
        1. Create empty relinkable handles to a YieldTermStructure to represent each member. We call
@@ -62,18 +62,18 @@ namespace QuantLib {
            curves, as e.g. in b).
 
            Both methods take the internal handle of the curve from 1. and the shared pointer from 2
-           as an argument. The latter has to be moved and to the function argument and can thus not
-           be used after having added the curve.
+           as an argument. The latter has to be moved into the function and can not be used
+           afterwards.
 
            Both functions return an external handle to the curve which should be used to reference
-           the curve for all other purposes than the internal handles in 2.
+           the curve for all other purposes than the internal handle in 2.
 
            The internal handle is linked to the relevant curve, but the ownership and observability
            is removed to avoid cycles of shared pointers and notification cyclces.
 
            The external handles are constructed with ownership information shared with the
            MultiCurve instance, which ensures that all member curves are kept alive until none of
-           the curves and the MultiCurve instance itself are referenced by any alive object.
+           the curves and the MultiCurve instance itself is referenced by any alive object.
 
         See the piecewise yield curve unit tests for examples. */
     class MultiCurve : public Observer
