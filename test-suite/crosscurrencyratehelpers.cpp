@@ -74,8 +74,7 @@ namespace {
             initialPaymentDate = cal.advance(initialPaymentDate, paymentLag, Days, convention);
             lastPaymentDate = cal.advance(lastPaymentDate, paymentLag, Days, convention);
         }
-        BOOST_ERROR("    initial payment date:    " << initialPaymentDate << "\n"
-                    "    final payment date:    " << lastPaymentDate << "\n");
+
         leg.push_back(ext::make_shared<SimpleCashFlow>(-notional, initialPaymentDate));
         leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
         return leg;
@@ -809,6 +808,298 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnOvernightLeg) {
         BOOST_CHECK_SMALL(npv, tolerance);
     }
 }
+
+BOOST_AUTO_TEST_CASE(
+    testNonDeliverableConstNotionalHelperWithCollateralOnFixedLegNoFxFixingDelayAndNoPaymentLag) {
+    BOOST_TEST_MESSAGE("Testing non-deliverable const-notional CCS helper with collateral on fixed "
+                       "leg with no FX fixing delay and no payment lag...");
+    // Without FX fixing delay and payment lag, the non-deliverable instrument pays out
+    // exacts same cash flows as the deliverable one.
+
+    SavedSettings backup;
+    Date today(20, March, 2030);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.05, Actual365Fixed()));
+
+    Handle<YieldTermStructure> eoniaFwd(
+        ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> eonia = ext::make_shared<Eonia>(eoniaFwd);
+
+    Natural fixingDays = 2;
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency paymentFreq = Annual;
+    DayCounter fixedDC = Actual360();
+    Integer paymentLag = 0;
+    Integer fxFixingDelay = 0;
+    bool collateralOnFixedLeg = true;
+
+    std::vector<std::pair<Period, Real>> quotes = {
+        {Period(5, Years), 0.04},  {Period(7, Years), 0.041}, {Period(10, Years), 0.042},
+        {Period(15, Years), 0.04}, {Period(20, Years), 0.04},
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto& [tenor, q] : quotes) {
+        helpers.push_back(ext::make_shared<NonDeliverableConstNotionalCrossCurrencySwapRateHelper>(
+            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC,
+            eonia, usdCollat, collateralOnFixedLeg, paymentFreq, paymentLag, fxFixingDelay));
+    }
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
+    ext::shared_ptr<YieldTermStructure> curve(new Curve(today, helpers, Actual365Fixed()));
+    curve->enableExtrapolation();
+    Handle<YieldTermStructure> curveHandle(curve);
+
+    auto fixedEngine = ext::make_shared<DiscountingSwapEngine>(usdCollat);
+    auto floatEngine = ext::make_shared<DiscountingSwapEngine>(curveHandle);
+
+    for (auto& [tenor, q] : quotes) {
+        auto sch = schedule(today, tenor, paymentFreq, fixingDays, cal, bdc, endOfMonth);
+
+        Leg fixedLeg = constantNotionalLeg(sch, q, fixedDC, 1.0, paymentLag);
+        Leg floatingLeg = constantNotionalLeg(sch, eonia, 1.0, 0.0, paymentLag);
+
+        Swap fixedProxy(std::vector<Leg>(1, fixedLeg), std::vector<bool>(1, true));
+        Swap floatProxy(std::vector<Leg>(1, floatingLeg), std::vector<bool>(1, false));
+
+        fixedProxy.setPricingEngine(fixedEngine);
+        floatProxy.setPricingEngine(floatEngine);
+
+        Real npv = fixedProxy.NPV() + floatProxy.NPV();
+        Real tolerance = 1e-10;
+
+        BOOST_CHECK_SMALL(npv, tolerance);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(
+    testNonDeliverableConstNotionalHelperWithCollateralOnFloatingLegNoFxFixingDelayAndNoPaymentLag) {
+    BOOST_TEST_MESSAGE("Testing non-deliverable const-notional CCS helper with collateral on floating "
+                       "leg with no FX fixing delay and no payment lag...");
+    // Without FX fixing delay and payment lag, the non-deliverable instrument pays out
+    // exacts same cash flows as the deliverable one.
+
+    SavedSettings backup;
+    Date today(20, March, 2030);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.05, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(usdCollat);
+
+    Natural fixingDays = 2;
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency paymentFreq = Annual;
+    DayCounter fixedDC = Actual360();
+    Integer paymentLag = 0;
+    Integer fxFixingDelay = 0;
+    bool collateralOnFixedLeg = false;
+
+    std::vector<std::pair<Period, Real>> quotes = {
+        {Period(5, Years), 0.07},  {Period(7, Years), 0.071}, {Period(10, Years), 0.072},
+        {Period(15, Years), 0.08}, {Period(20, Years), 0.09},
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    for (auto& [tenor, q] : quotes) {
+        helpers.push_back(ext::make_shared<NonDeliverableConstNotionalCrossCurrencySwapRateHelper>(
+            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC,
+            sofr, usdCollat, collateralOnFixedLeg, paymentFreq, paymentLag, fxFixingDelay));
+    }
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
+    ext::shared_ptr<YieldTermStructure> curve(new Curve(today, helpers, Actual365Fixed()));
+    curve->enableExtrapolation();
+    Handle<YieldTermStructure> curveHandle(curve);
+
+    auto fixedEngine = ext::make_shared<DiscountingSwapEngine>(curveHandle);
+    auto floatEngine = ext::make_shared<DiscountingSwapEngine>(usdCollat);
+
+    for (auto& [tenor, q] : quotes) {
+        auto sch = schedule(today, tenor, paymentFreq, fixingDays, cal, bdc, endOfMonth);
+
+        Leg fixedLeg = constantNotionalLeg(sch, q, fixedDC, 1.0, paymentLag);
+        Leg floatingLeg = constantNotionalLeg(sch, sofr, 1.0, 0.0, paymentLag);
+
+        Swap fixedProxy(std::vector<Leg>(1, fixedLeg), std::vector<bool>(1, true));
+        Swap floatProxy(std::vector<Leg>(1, floatingLeg), std::vector<bool>(1, false));
+
+        fixedProxy.setPricingEngine(fixedEngine);
+        floatProxy.setPricingEngine(floatEngine);
+
+        Real npv = fixedProxy.NPV() + floatProxy.NPV();
+        Real tolerance = 1e-10;
+
+        BOOST_CHECK_SMALL(npv, tolerance);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(
+    testDifferenceBetweenDeliverableAndNonDeliverableConstNotionalHelperWithCollateralOnFloatingLeg) {
+    BOOST_TEST_MESSAGE(
+        "Testing difference in implied rates between deliverable and non-deliverable "
+        "const-notional CCS helpers with collateral on floating leg...");
+
+    SavedSettings backup;
+    Date today(20, March, 2030);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.05, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(usdCollat);
+
+    Natural fixingDays = 2;
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency paymentFreq = Annual;
+    DayCounter fixedDC = Actual360();
+    Integer paymentLag = 2;
+    Integer fxFixingDelay = 2;
+    bool collateralOnFixedLeg = false;
+
+    std::vector<std::pair<Period, Real>> quotes = {
+        {Period(5, Years), 0.07},  {Period(7, Years), 0.071}, {Period(10, Years), 0.072},
+        {Period(15, Years), 0.08}, {Period(20, Years), 0.09},
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> deliverableHelpers;
+    for (auto& [tenor, q] : quotes) {
+        deliverableHelpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
+                makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC,
+                sofr, usdCollat, collateralOnFixedLeg, paymentFreq, paymentLag));
+    }
+
+    std::vector<ext::shared_ptr<RateHelper>> nonDeliverableHelpers;
+    for (auto& [tenor, q] : quotes) {
+        nonDeliverableHelpers.push_back(ext::make_shared<NonDeliverableConstNotionalCrossCurrencySwapRateHelper>(
+            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC, sofr,
+            usdCollat, collateralOnFixedLeg, paymentFreq, paymentLag, fxFixingDelay));
+    }
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
+    auto crvDayCount = Actual365Fixed();
+
+    ext::shared_ptr<YieldTermStructure> deliverableCurve(
+        new Curve(today, deliverableHelpers, crvDayCount));
+    deliverableCurve->enableExtrapolation();
+
+    ext::shared_ptr<YieldTermStructure> nonDeliverableCurve(
+        new Curve(today, nonDeliverableHelpers, crvDayCount));
+    nonDeliverableCurve->enableExtrapolation();
+
+    Real tolerance = 1.0e-4 * 2.0;
+    Size numberOfInstruments = quotes.size();
+
+    for (Size i = 0; i < numberOfInstruments; ++i) {
+
+        Date maturity = nonDeliverableHelpers[i]->maturityDate();
+        Rate nonDeliverableZero = nonDeliverableCurve->zeroRate(maturity, crvDayCount, Continuous);
+        Rate deliverableZero = deliverableCurve->zeroRate(maturity, crvDayCount, Continuous);
+
+        // The difference between non-deliverable and deliverable curves
+        // is not expected to be substantial. With the current setup it should
+        // amount to only a few basis points - hence the tolerance level was
+        // set at 2 bps.
+        if (std::fabs(nonDeliverableZero - deliverableZero) > tolerance)
+            BOOST_ERROR("too large difference between non-deliverable and deliverable curve \n"
+                        << std::setprecision(5)
+                        << "    zero from non-deliverable curve:    " << nonDeliverableZero << "\n"
+                        << "    zero from deliverable curve:    " << deliverableZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
+    }
+}
+
+BOOST_AUTO_TEST_CASE(
+    testDifferenceBetweenDeliverableAndNonDeliverableConstNotionalHelperWithCollateralOnFixedLeg) {
+    BOOST_TEST_MESSAGE(
+        "Testing difference in implied rates between deliverable and non-deliverable "
+        "const-notional CCS helpers with collateral on fixed leg...");
+
+    SavedSettings backup;
+    Date today(20, March, 2030);
+    Settings::instance().evaluationDate() = today;
+
+    Handle<YieldTermStructure> usdCollat(
+        ext::make_shared<FlatForward>(today, 0.05, Actual365Fixed()));
+
+    Handle<YieldTermStructure> eoniaFwd(
+        ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+
+    ext::shared_ptr<OvernightIndex> eonia = ext::make_shared<Eonia>(eoniaFwd);
+
+    Natural fixingDays = 2;
+    Calendar cal = TARGET();
+    BusinessDayConvention bdc = Following;
+    bool endOfMonth = true;
+    Frequency paymentFreq = Annual;
+    DayCounter fixedDC = Actual360();
+    Integer paymentLag = 2;
+    Integer fxFixingDelay = 2;
+    bool collateralOnFixedLeg = true;
+
+    std::vector<std::pair<Period, Real>> quotes = {
+        {Period(5, Years), 0.04},  {Period(7, Years), 0.041}, {Period(10, Years), 0.042},
+        {Period(15, Years), 0.04}, {Period(20, Years), 0.04},
+    };
+
+    std::vector<ext::shared_ptr<RateHelper>> deliverableHelpers;
+    for (auto& [tenor, q] : quotes) {
+        deliverableHelpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
+            makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC,
+            eonia, usdCollat, collateralOnFixedLeg, paymentFreq, paymentLag));
+    }
+
+    std::vector<ext::shared_ptr<RateHelper>> nonDeliverableHelpers;
+    for (auto& [tenor, q] : quotes) {
+        nonDeliverableHelpers.push_back(
+            ext::make_shared<NonDeliverableConstNotionalCrossCurrencySwapRateHelper>(
+                makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth, paymentFreq, fixedDC,
+                eonia, usdCollat, collateralOnFixedLeg, paymentFreq, paymentLag, fxFixingDelay));
+    }
+
+    typedef PiecewiseYieldCurve<Discount, LogLinear> Curve;
+    auto crvDayCount = Actual365Fixed();
+
+    ext::shared_ptr<YieldTermStructure> deliverableCurve(
+        new Curve(today, deliverableHelpers, crvDayCount));
+    deliverableCurve->enableExtrapolation();
+
+    ext::shared_ptr<YieldTermStructure> nonDeliverableCurve(
+        new Curve(today, nonDeliverableHelpers, crvDayCount));
+    nonDeliverableCurve->enableExtrapolation();
+
+    Real tolerance = 1.0e-4 * 2.0;
+    Size numberOfInstruments = quotes.size();
+
+    for (Size i = 0; i < numberOfInstruments; ++i) {
+
+        Date maturity = nonDeliverableHelpers[i]->maturityDate();
+        Rate nonDeliverableZero = nonDeliverableCurve->zeroRate(maturity, crvDayCount, Continuous);
+        Rate deliverableZero = deliverableCurve->zeroRate(maturity, crvDayCount, Continuous);
+
+        // The difference between non-deliverable and deliverable curves
+        // is not expected to be substantial. With the current setup it should
+        // amount to only a few basis points - hence the tolerance level was
+        // set at 2 bps.
+        if (std::fabs(nonDeliverableZero - deliverableZero) > tolerance)
+            BOOST_ERROR("too large difference between non-deliverable and deliverable curve \n"
+                        << std::setprecision(5)
+                        << "    zero from non-deliverable curve:    " << nonDeliverableZero << "\n"
+                        << "    zero from deliverable curve:    " << deliverableZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
+    }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
