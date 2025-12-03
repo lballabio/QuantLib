@@ -267,18 +267,18 @@ namespace QuantLib {
 
     NaturalCubicFitting::NaturalCubicFitting(
         const std::vector<Time>& knotTimes,
-        bool constrainAtZero,
         const Array& weights,
         const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
         const Array& l2,
         Real minCutoffTime,
         Real maxCutoffTime,
         Constraint constraint)
-    : FittedBondDiscountCurve::FittingMethod(constrainAtZero, weights, optimizationMethod, l2,
+    : FittedBondDiscountCurve::FittingMethod(true, weights, optimizationMethod, l2,
                                              minCutoffTime, maxCutoffTime, std::move(constraint)),
       knotTimes_(knotTimes) {
-
+        knotTimes_.push_back(0.0);
         std::sort(knotTimes_.begin(), knotTimes_.end());
+
         auto last = std::unique(knotTimes_.begin(), knotTimes_.end(),
                                 [](Time a, Time b){ return std::fabs(a - b) <= 1e-14; });
         knotTimes_.erase(last, knotTimes_.end());
@@ -287,7 +287,7 @@ namespace QuantLib {
                    "NaturalCubicFitting: at least two knot times required");
 
         const Size n = knotTimes_.size();
-        size_ = constrainAtZero ? n - 1 : n;
+        size_ = n - 1;
 
         h_.assign(n - 1, 0.0);
         for (Size i = 0; i + 1 < n; ++i) {
@@ -301,13 +301,12 @@ namespace QuantLib {
 
     NaturalCubicFitting::NaturalCubicFitting(
         const std::vector<Time>& knotTimes,
-        bool constrainAtZero,
         const Array& weights,
         const Array& l2,
         Real minCutoffTime,
         Real maxCutoffTime,
         Constraint constraint)
-    : NaturalCubicFitting(knotTimes, constrainAtZero, weights, {}, l2,
+    : NaturalCubicFitting(knotTimes, weights, {}, l2,
                           minCutoffTime, maxCutoffTime, std::move(constraint)) {}
 
     std::unique_ptr<FittedBondDiscountCurve::FittingMethod>
@@ -317,18 +316,6 @@ namespace QuantLib {
 
     Size NaturalCubicFitting::size() const {
         return size_;
-    }
-
-    Size NaturalCubicFitting::findInterval(Time t) const {
-        const Size n = knotTimes_.size();
-        if (t <= knotTimes_.front()) return 0;
-        if (t >= knotTimes_.back()) return n - 2;
-        auto it = std::upper_bound(knotTimes_.begin(), knotTimes_.end(), t);
-        Size idx = std::distance(knotTimes_.begin(), it);
-        QL_REQUIRE(idx > 0, "NaturalCubicFitting::findInterval(): internal error");
-        idx = idx - 1;
-        if (idx >= n - 1) idx = n - 2;
-        return idx;
     }
 
     DiscountFactor NaturalCubicFitting::discountFunction(const Array& x, Time t) const {

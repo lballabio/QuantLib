@@ -206,7 +206,6 @@ namespace QuantLib {
     class NaturalCubicFitting : public FittedBondDiscountCurve::FittingMethod {
       public:
         NaturalCubicFitting(const std::vector<Time>& knotTimes,
-                            bool constrainAtZero = true,
                             const Array& weights = Array(),
                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                             const Array& l2 = Array(),
@@ -215,7 +214,6 @@ namespace QuantLib {
                             Constraint constraint = NoConstraint());
 
         NaturalCubicFitting(const std::vector<Time>& knotTimes,
-                            bool constrainAtZero,
                             const Array& weights,
                             const Array& l2,
                             Real minCutoffTime = 0.0,
@@ -227,13 +225,6 @@ namespace QuantLib {
       protected:
         Size size() const override;
         DiscountFactor discountFunction(const Array& x, Time t) const override;
-
-      private:
-        Array computeSecondDerivatives(const Array& y) const;
-        DiscountFactor evaluateWithPrecomputedM(const Array& y,
-                                                const Array& M,
-                                                Time t) const;
-        Size findInterval(Time t) const;
 
       private:
         std::vector<Time> knotTimes_;

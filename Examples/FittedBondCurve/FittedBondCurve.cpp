@@ -279,7 +279,7 @@ int main(int, char* []) {
         for (Real& knot : knotsNatural) {
         knotVectorNatural.push_back(knot);
         }
-        NaturalCubicFitting naturalSplines(knotVectorNatural, constrainAtZero);
+        NaturalCubicFitting naturalSplines(knotVectorNatural);
         auto ts8 =
             ext::make_shared<FittedBondDiscountCurve>(
                 curveSettlementDays,
@@ -307,7 +307,8 @@ int main(int, char* []) {
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
              << setw(6) << "(f)" << " | "
-             << setw(6) << "(g)" << endl;
+             << setw(6) << "(g)" << " | "
+             << setw(6) << "(h)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
