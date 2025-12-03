@@ -331,71 +331,6 @@ namespace QuantLib {
         return idx;
     }
 
-    Array NaturalCubicFitting::computeSecondDerivatives(const Array& y) const {
-        const Size n = knotTimes_.size();
-        QL_REQUIRE(y.size() == n, "computeSecondDerivatives: y must have length equal to number of knots");
-
-        // (Spline + SecondDerivative = 0 at both ends).
-        CubicInterpolation spline(
-            knotTimes_.begin(), knotTimes_.end(),
-            y.begin(),
-            CubicInterpolation::Spline,
-            false,
-            CubicInterpolation::SecondDerivative, 0.0,
-            CubicInterpolation::SecondDerivative, 0.0);
-
-        spline.update();
-
-        Array M(n, 0.0);
-        for (Size i = 0; i < n; ++i) {
-            M[i] = spline.secondDerivative(knotTimes_[i]);
-            QL_REQUIRE(std::isfinite(M[i]), "computeSecondDerivatives: non-finite second derivative at knot " << i);
-        }
-        return M;
-    }
-
-    DiscountFactor NaturalCubicFitting::evaluateWithPrecomputedM(const Array& y,
-                                                                 const Array& M,
-                                                                 Time t) const {
-        const Size n = knotTimes_.size();
-        QL_REQUIRE(y.size() == n, "evaluateWithPrecomputedM: y size mismatch");
-        QL_REQUIRE(M.size() == n, "evaluateWithPrecomputedM: M size mismatch");
-
-        if (t <= knotTimes_.front()) return y.front();
-        if (t >= knotTimes_.back())  return y.back();
-
-        if (n == 2) {
-            const Real t0 = knotTimes_[0], t1 = knotTimes_[1];
-            const Real h = t1 - t0;
-            QL_REQUIRE(std::fabs(h) > 0.0, "evaluateWithPrecomputedM: zero interval width");
-            const Real w0 = (t1 - t) / h, w1 = (t - t0) / h;
-            return y[0] * w0 + y[1] * w1;
-        }
-
-        const Size idx = findInterval(t);
-        const Real xi  = knotTimes_.at(idx);
-        const Real xi1 = knotTimes_.at(idx+1);
-        const Real hi  = xi1 - xi;
-        QL_REQUIRE(hi > 0.0, "evaluateWithPrecomputedM: zero interval width detected");
-
-        const Real ti  = t - xi;
-        const Real ti1 = xi1 - t;
-
-        const Real yi  = y.at(idx);
-        const Real yi1 = y.at(idx+1);
-        const Real Mi  = M.at(idx);
-        const Real Mi1 = M.at(idx+1);
-
-        const Real term1 = (Mi * ti1 * ti1 * ti1 + Mi1 * ti * ti * ti) / (6.0 * hi);
-        const Real term2 = (yi - Mi * hi * hi / 6.0) * (ti1 / hi);
-        const Real term3 = (yi1 - Mi1 * hi * hi / 6.0) * (ti / hi);
-
-        const Real result = term1 + term2 + term3;
-        QL_REQUIRE(std::isfinite(result), "evaluateWithPrecomputedM: non-finite result");
-
-        return DiscountFactor(result);
-    }
-
     DiscountFactor NaturalCubicFitting::discountFunction(const Array& x, Time t) const {
         const Size n = knotTimes_.size();
         QL_REQUIRE(n >= 2, "NaturalCubicFitting::discountFunction(): insufficient knotTimes");
@@ -418,9 +353,9 @@ namespace QuantLib {
         for (Size i = 0; i < n; ++i)
             QL_REQUIRE(std::isfinite(y[i]), "NaturalCubicFitting::discountFunction(): non-finite nodal value");
 
-        Array M = computeSecondDerivatives(y);
-
-        return evaluateWithPrecomputedM(y, M, t);
+        CubicNaturalSpline spline(knotTimes_.begin(), knotTimes_.end(), y.begin());
+        spline.update();
+        return spline(std::clamp(t, knotTimes_.front(), knotTimes_.back()));
     }
 
 

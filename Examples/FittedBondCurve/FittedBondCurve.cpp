@@ -273,6 +273,9 @@ int main(int, char* []) {
         Time knotsNatural[] =  { 5, 10, 15, 20, 25};
 
         std::vector<Time> knotVectorNatural;
+        if (constrainAtZero) {
+            knotVectorNatural.push_back(0.0);
+        }        
         for (Real& knot : knotsNatural) {
         knotVectorNatural.push_back(knot);
         }
