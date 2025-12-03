@@ -29,6 +29,14 @@ namespace QuantLib {
 
     ContinuousArithmeticAsianLevyEngine::ContinuousArithmeticAsianLevyEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Handle<Quote> currentAverage)
+    : process_(std::move(process)), currentAverage_(std::move(currentAverage)) {
+        registerWith(process_);
+        registerWith(currentAverage_);
+    }
+
+    ContinuousArithmeticAsianLevyEngine::ContinuousArithmeticAsianLevyEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Handle<Quote> currentAverage,
         Date startDate)
     : process_(std::move(process)), currentAverage_(std::move(currentAverage)),
@@ -43,11 +51,12 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        // Prefer startDate from option if available, otherwise use constructor parameter
+        // Prefer start date from option if available, otherwise use constructor parameter.
+        // At least one must be specified.
         Date startDate = (arguments_.startDate != Date()) ? arguments_.startDate : startDate_;
-
+        QL_REQUIRE(startDate != Date(), "start date not provided");
         QL_REQUIRE(startDate <= process_->riskFreeRate()->referenceDate(),
-                   "startDate must be earlier than or equal to reference date");
+                   "start date must be earlier than or equal to reference date");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();

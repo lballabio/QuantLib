@@ -2011,11 +2011,10 @@ BOOST_AUTO_TEST_CASE(testLevyEngine) {
                                                                                           Handle<YieldTermStructure>(rTS),
                                                                                           Handle<BlackVolTermStructure>(volTS)));
 
-        ext::shared_ptr<PricingEngine> engine(
-            new ContinuousArithmeticAsianLevyEngine(
-                stochProcess, Handle<Quote>(average), startDate));
+        auto engine = ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
+                stochProcess, Handle<Quote>(average));
 
-        ContinuousAveragingAsianOption option(averageType,
+        ContinuousAveragingAsianOption option(averageType, startDate,
                                               payoff, exercise);
         option.setPricingEngine(engine);
 
@@ -2674,12 +2673,13 @@ BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
     // Test 1: Fresh (unseasoned) continuous arithmetic option
     ContinuousAveragingAsianOption freshOption(
         Average::Arithmetic,
+        settlementDate,
         payoff,
         europeanExercise);
 
     freshOption.setPricingEngine(
         ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
-            bsmProcess, makeQuoteHandle(0.0), settlementDate));
+            bsmProcess, makeQuoteHandle(0.0)));
 
     Real freshNPV = freshOption.NPV();
 
@@ -2694,7 +2694,7 @@ BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
 
     seasonedOption.setPricingEngine(
         ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
-            bsmProcess, makeQuoteHandle(currentAverage), startDate));
+            bsmProcess, makeQuoteHandle(currentAverage)));
 
     Real seasonedNPV = seasonedOption.NPV();
 
@@ -2717,7 +2717,7 @@ BOOST_AUTO_TEST_CASE(testContinuousSeasonedAsianOptions) {
 
     seasonedHighOption.setPricingEngine(
         ext::make_shared<ContinuousArithmeticAsianLevyEngine>(
-            bsmProcess, makeQuoteHandle(highAverage), startDate));
+            bsmProcess, makeQuoteHandle(highAverage)));
 
     Real seasonedHighNPV = seasonedHighOption.NPV();
 
