@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2007 StatPro Italia srl
+ Copyright (C) 2025 Kareem Fareed
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -147,7 +148,17 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
         const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
-      averageType_(averageType) {}
+      averageType_(averageType),
+      startDate_(Date()) {}
+
+    ContinuousAveragingAsianOption::ContinuousAveragingAsianOption(
+        Average::Type averageType,
+        Date startDate,
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
+    : OneAssetOption(payoff, exercise),
+      averageType_(averageType),
+      startDate_(startDate) {}
 
     void ContinuousAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
@@ -157,6 +168,7 @@ namespace QuantLib {
         auto* moreArgs = dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
         QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->averageType = averageType_;
+        moreArgs->startDate = startDate_;
     }
 
     void ContinuousAveragingAsianOption::arguments::validate() const {

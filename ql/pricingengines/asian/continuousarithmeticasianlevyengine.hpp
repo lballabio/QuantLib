@@ -37,8 +37,16 @@ namespace QuantLib {
         : public ContinuousAveragingAsianOption::engine {
       public:
         ContinuousArithmeticAsianLevyEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                            Handle<Quote> currentAverage);
+
+        /*! \deprecated Use the other constructor and pass the start date to the option instead.
+                        Deprecated in version 1.41.
+        */
+        [[deprecated("Use the other constructor and pass the start date to the option instead")]]
+        ContinuousArithmeticAsianLevyEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
                                             Handle<Quote> currentAverage,
                                             Date startDate);
+
         void calculate() const override;
 
       private:
