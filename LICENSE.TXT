@@ -102,7 +102,7 @@ Copyright (C) 2012 Samuel Tebege
 Copyright (C) 2012 Simon Shakeshaft
 Copyright (C) 2012 Édouard Tallent
 Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
-Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2023, 2024 Peter Caspers
+Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2023, 2024, 2025 Peter Caspers
 
 Copyright (C) 2013 BGC Partners L.P.
 Copyright (C) 2013 Chris Higgs
@@ -171,6 +171,7 @@ Copyright (C) 2023 Paul Xi Cao
 Copyright (C) 2024 Jacques du Toit
 Copyright (C) 2024 Jongbong An
 
+Copyright (C) 2025 Eugene Toder
 Copyright (C) 2025 Hiroto Ogawa
 Copyright (C) 2025 Kareem Fareed
 Copyright (C) 2025 Paolo D'Elia
