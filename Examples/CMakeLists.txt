@@ -1,3 +1,4 @@
+add_subdirectory(AsianOption)
 add_subdirectory(BasketLosses)
 add_subdirectory(BermudanSwaption)
 add_subdirectory(Bonds)

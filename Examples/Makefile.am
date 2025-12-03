@@ -2,6 +2,7 @@
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 EXAMPLES = \
+    AsianOption/AsianOption \
     BasketLosses/BasketLosses \
     BermudanSwaption/BermudanSwaption \
     Bonds/Bonds \
@@ -45,6 +46,9 @@ noinst_PROGRAMS = $(EXAMPLES)
 endif
 
 LDADDS = ../ql/libQuantLib.la ${PTHREAD_LIB}
+
+AsianOption_AsianOption_SOURCES = AsianOption/AsianOption.cpp
+AsianOption_AsianOption_LDADD = $(LDADDS)
 
 BasketLosses_BasketLosses_SOURCES = BasketLosses/BasketLosses.cpp
 BasketLosses_BasketLosses_LDADD = $(LDADDS)

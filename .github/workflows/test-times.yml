@@ -8,7 +8,7 @@ jobs:
   check-test-times:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:

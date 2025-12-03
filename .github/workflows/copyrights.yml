@@ -7,7 +7,7 @@ jobs:
   check-copyrights:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Check
       run: |
         ./tools/check_copyrights.sh
