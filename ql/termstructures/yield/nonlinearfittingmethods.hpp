@@ -228,7 +228,6 @@ namespace QuantLib {
 
       private:
         std::vector<Time> knotTimes_;
-        std::vector<Real> h_;
         Size size_;
     };
 

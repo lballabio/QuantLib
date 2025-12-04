@@ -289,12 +289,11 @@ namespace QuantLib {
         const Size n = knotTimes_.size();
         size_ = n - 1;
 
-        h_.assign(n - 1, 0.0);
         for (Size i = 0; i + 1 < n; ++i) {
-            h_[i] = knotTimes_[i+1] - knotTimes_[i];
-            QL_REQUIRE(h_[i] > 1e-14,
+            Real h = knotTimes_[i+1] - knotTimes_[i];
+            QL_REQUIRE(h > 1e-14,
                        "NaturalCubicFitting: knot times must be strictly increasing (non-zero spacing)");
-            QL_REQUIRE(std::isfinite(h_[i]),
+            QL_REQUIRE(std::isfinite(h),
                        "NaturalCubicFitting: non-finite knot spacing");
         }
     }
@@ -320,22 +319,15 @@ namespace QuantLib {
 
     DiscountFactor NaturalCubicFitting::discountFunction(const Array& x, Time t) const {
         const Size n = knotTimes_.size();
-        QL_REQUIRE(n >= 2, "NaturalCubicFitting::discountFunction(): insufficient knotTimes");
-
         const Size expected = size();
         QL_REQUIRE(x.size() == expected,
                    "NaturalCubicFitting::discountFunction(): parameter size mismatch: expected "
                    << expected << " got " << x.size());
 
-        Array y(n, 0.0);
-        if (this->constrainAtZero()) {
-            y[0] = 1.0;
-            for (Size i = 1; i < n; ++i)
-                y[i] = x[i - 1];
-        } else {
-            for (Size i = 0; i < n; ++i)
-                y[i] = x[i];
-        }
+        Array y(n);
+        y[0] = 1.0;
+        for (Size i = 1; i < n; ++i)
+            y[i] = x[i - 1];
 
         for (Size i = 0; i < n; ++i)
             QL_REQUIRE(std::isfinite(y[i]), "NaturalCubicFitting::discountFunction(): non-finite nodal value");
