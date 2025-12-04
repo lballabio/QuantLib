@@ -55,6 +55,7 @@ namespace QuantLib {
         using reference = typename std::iterator_traits<Iterator>::reference;
 
         step_iterator() = default;
+        step_iterator(const step_iterator& other) = default;
 
         explicit step_iterator(const Iterator& base, Size step)
         : base_(base), step_(static_cast<BigInteger>(step)) {}
