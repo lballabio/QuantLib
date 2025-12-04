@@ -205,6 +205,7 @@ namespace QuantLib {
     */
     class NaturalCubicFitting : public FittedBondDiscountCurve::FittingMethod {
       public:
+        explicit
         NaturalCubicFitting(const std::vector<Time>& knotTimes,
                             const Array& weights = Array(),
                             const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
