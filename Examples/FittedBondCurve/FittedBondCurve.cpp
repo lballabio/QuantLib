@@ -270,16 +270,7 @@ int main(int, char* []) {
 
         printOutput("(g) exponential splines, fixed kappa", ts7);
         
-        Time knotsNatural[] =  { 5, 10, 15, 20, 25};
-
-        std::vector<Time> knotVectorNatural;
-        if (constrainAtZero) {
-            knotVectorNatural.push_back(0.0);
-        }        
-        for (Real& knot : knotsNatural) {
-        knotVectorNatural.push_back(knot);
-        }
-        NaturalCubicFitting naturalSplines(knotVectorNatural);
+        NaturalCubicFitting naturalSplines({ 5, 10, 15, 20, 25 });
         auto ts8 =
             ext::make_shared<FittedBondDiscountCurve>(
                 curveSettlementDays,
