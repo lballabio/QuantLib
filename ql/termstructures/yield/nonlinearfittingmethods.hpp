@@ -26,6 +26,7 @@
 #define quantlib_nonlinear_fitting_methods_hpp
 
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/bspline.hpp>
 #include <ql/shared_ptr.hpp>
 
@@ -195,6 +196,41 @@ namespace QuantLib {
         Natural N_;
     };
 
+        //! Natural cubic spline fitting method
+    /*! Fits a discount function using natural cubic spline interpolation
+        where the parameters are nodal discount values d(t_i).
+        The natural boundary condition (second derivative = 0 at ends)
+        is used. If constrainAtZero is true, d(0) is fixed to 1.0 and
+        the parameter vector x contains the remaining nodal values.
+    */
+    class NaturalCubicFitting : public FittedBondDiscountCurve::FittingMethod {
+      public:
+        explicit
+        NaturalCubicFitting(const std::vector<Time>& knotTimes,
+                            const Array& weights = Array(),
+                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                            const Array& l2 = Array(),
+                            Real minCutoffTime = 0.0,
+                            Real maxCutoffTime = QL_MAX_REAL,
+                            Constraint constraint = NoConstraint());
+
+        NaturalCubicFitting(const std::vector<Time>& knotTimes,
+                            const Array& weights,
+                            const Array& l2,
+                            Real minCutoffTime = 0.0,
+                            Real maxCutoffTime = QL_MAX_REAL,
+                            Constraint constraint = NoConstraint());
+
+        std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
+
+      protected:
+        Size size() const override;
+        DiscountFactor discountFunction(const Array& x, Time t) const override;
+
+      private:
+        std::vector<Time> knotTimes_;
+        Size size_;
+    };
 
     //! Simple polynomial fitting method
     /*! Fits a discount function to the simple polynomial form:
