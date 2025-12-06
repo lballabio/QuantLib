@@ -257,12 +257,6 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
             additionalDates.end()
         );
     }
-    const Size numberAdditionalDates = additionalDates.size();
-
-    QL_REQUIRE(numberHelpers_ + numberAdditionalDates >= Interpolator::requiredPoints - 1,
-               "not enough alive instruments (" << numberHelpers_ << ") + additional dates (" << numberAdditionalDates
-                                                << ") = " << numberHelpers_ + numberAdditionalDates << " provided, "
-                                                << Interpolator::requiredPoints - 1 << " required");
 
     // calculate dates and times
     std::vector<Date> &dates = ts_->dates_;
