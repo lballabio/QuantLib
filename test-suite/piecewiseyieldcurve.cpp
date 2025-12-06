@@ -1542,7 +1542,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
     CommonVars vars(Date(23, Oct, 2025));
 
-    constexpr Real accuracy = 1E-10;
+    constexpr auto accuracy = 1E-10;
 
     Handle<YieldTermStructure> discountCurve(
         ext::make_shared<FlatForward>(vars.settlement, 0.02, Actual360()));
@@ -1598,7 +1598,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
     // check instrument npvs
 
-    constexpr Real tolerance = 1E-10;
+    constexpr auto tolerance = 1E-10;
 
     for (Size i = 1; i <= 9; ++i) {
         Date start = euribor3m->fixingCalendar().advance(
