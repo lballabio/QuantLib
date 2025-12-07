@@ -43,7 +43,7 @@ namespace QuantLib {
         /*! Returns true if the instrument is calculated */
         bool isCalculated() const;
         /*! Set calculated status */
-        void setCalculated(const bool c) const;
+        void setCalculated(bool c) const;
         /*! \name Calculations
             These methods do not modify the structure of the object
             and are therefore declared as <tt>const</tt>. Data members
