@@ -84,8 +84,8 @@ namespace QuantLib {
     {
       public:
         explicit MultiCurve(Real accuracy);
-        explicit MultiCurve(ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
-                            ext::shared_ptr<EndCriteria> endCriteria = nullptr);
+        explicit MultiCurve(const ext::shared_ptr<OptimizationMethod>& optimizer = nullptr,
+                            const ext::shared_ptr<EndCriteria>& endCriteria = nullptr);
 
         Handle<YieldTermStructure>
         addBootstrappedCurve(RelinkableHandle<YieldTermStructure>& internalHandle,
