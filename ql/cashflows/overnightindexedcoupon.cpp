@@ -245,7 +245,7 @@ namespace QuantLib {
             return spread();
         
         if (averagingMethod_ == RateAveraging::Simple)
-            QL_FAIL("Average OIS Coupon does not have an effectiveSpread"); // FIXME: better error message
+            return spread();
 
         auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer());
         QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveSpread(): expected OvernightIndexedCouponPricer");
