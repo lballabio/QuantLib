@@ -22,10 +22,10 @@
 
 namespace QuantLib {
 
-    G2Process::G2Process(Real a, Real sigma, Real b, Real eta, Real rho)
+    G2Process::G2Process(const Handle<YieldTermStructure>& h, Real a, Real sigma, Real b, Real eta, Real rho)
     : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho),
       xProcess_(new QuantLib::OrnsteinUhlenbeckProcess(a, sigma, 0.0)),
-      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)) {}
+      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)), h_(h) {}
 
     Size G2Process::size() const {
         return 2;
@@ -36,9 +36,16 @@ namespace QuantLib {
     }
 
     Array G2Process::drift(Time t, const Array& x) const {
+        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-std::exp(-2*a_*t));
+        Real shift = 0.0001;
+        Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
+        Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);
+        Real f_prime = (fup-f)/shift;
+        alpha_drift += a_*f+f_prime;
+
         return {
-            xProcess_->drift(t, x[0]),
-            yProcess_->drift(t, x[1])
+            xProcess_->drift(t, x[0]) + alpha_drift,
+            yProcess_->drift(t, x[1]) + alpha_drift
         };
     }
 
@@ -124,10 +131,10 @@ namespace QuantLib {
     }
 
 
-    G2ForwardProcess::G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho)
+    G2ForwardProcess::G2ForwardProcess(const Handle<YieldTermStructure>& h, Real a, Real sigma, Real b, Real eta, Real rho)
     : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho),
       xProcess_(new QuantLib::OrnsteinUhlenbeckProcess(a, sigma, 0.0)),
-      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)) {}
+      yProcess_(new QuantLib::OrnsteinUhlenbeckProcess(b, eta, 0.0)),h_(h) {}
 
     Size G2ForwardProcess::size() const {
         return 2;
