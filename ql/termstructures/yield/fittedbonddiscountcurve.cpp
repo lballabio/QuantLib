@@ -322,8 +322,7 @@ namespace QuantLib {
         Array values(n + N);
         for (Size i=0; i<n; ++i) {
             ext::shared_ptr<BondHelper> helper = fittingMethod_->curve_->bondHelpers_[i];
-            Real error = helper->impliedQuote() - helper->quote()->value();
-            Real weightedError = fittingMethod_->weights_[i] * error;
+            Real weightedError = fittingMethod_->weights_[i] * helper->quoteError();
             values[i] = weightedError * weightedError;
         }
 
