@@ -257,26 +257,25 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
             additionalDates.end()
         );
     }
-    const Size numberAdditionalDates = additionalDates.size();
-
-    QL_REQUIRE(numberHelpers_ + numberAdditionalDates >= Interpolator::requiredPoints - 1,
-               "not enough alive instruments (" << numberHelpers_ << ") + additional dates (" << numberAdditionalDates
-                                                << ") = " << numberHelpers_ + numberAdditionalDates << " provided, "
-                                                << Interpolator::requiredPoints - 1 << " required");
 
     // calculate dates and times
     std::vector<Date> &dates = ts_->dates_;
     std::vector<Time> &times = ts_->times_;
 
-    // first populate the dates vector and make sure they are sorted and there are no duplicates
+    // first populate the dates vector and make sure they are sorted and unique
     dates.clear();
     dates.push_back(firstDate);
     for (Size j = 0; j < numberHelpers_; ++j)
         dates.push_back(ts_->instruments_[firstHelper_ + j]->pillarDate());
     dates.insert(dates.end(), additionalDates.begin(), additionalDates.end());
     std::sort(dates.begin(), dates.end());
-    auto it = std::unique(dates.begin(), dates.end());
-    QL_REQUIRE(it == dates.end(), "duplicate dates among alive instruments and additional dates");
+    dates.erase(std::unique(dates.begin(), dates.end()), dates.end());
+
+    // check if there are enough interpolation points
+    QL_REQUIRE(dates.size() >= Interpolator::requiredPoints,
+               "GlobalBootstrap: not enough curve points ("
+                   << dates.size() << ") for interpolation requiring at least "
+                   << Interpolator::requiredPoints);
 
     // build times vector
     times.clear();
