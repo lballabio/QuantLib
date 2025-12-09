@@ -1605,7 +1605,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
             euribor3m->fixingCalendar().advance(vars.today, euribor3m->fixingDays(), Days), i,
             Months, euribor3m->businessDayConvention(), euribor3m->endOfMonth());
         ForwardRateAgreement fra(euribor3m, start, Position::Long, q->value(), 1.0, curve3m);
-        BOOST_CHECK_CLOSE(fra.forwardRate().rate(), q->value(), tolerance);
+        QL_CHECK_CLOSE(fra.forwardRate().rate(), q->value(), tolerance);
     }
 
     for (Size i = 2; i <= 10; ++i) {
@@ -1632,7 +1632,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
         Leg otherLeg = IborLeg(otherSchedule, euribor6m).withNotionals(1.0);
         Swap swap(baseLeg, otherLeg);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
-        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+        QL_CHECK_SMALL(swap.NPV(), tolerance);
     }
 
     for (Size i = 1; i <= 3; ++i) {
@@ -1659,7 +1659,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
         Leg otherLeg = IborLeg(otherSchedule, euribor6m).withNotionals(1.0);
         Swap swap(baseLeg, otherLeg);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
-        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+        QL_CHECK_SMALL(swap.NPV(), tolerance);
     }
 
     for (Size i = 2; i <= 10; ++i) {
@@ -1670,7 +1670,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
                                .withFixedLegConvention(Following)
                                .withFixedLegTerminationDateConvention(Following);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(discountCurve));
-        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+        QL_CHECK_SMALL(swap.NPV(), tolerance);
     }
 
 }
@@ -1715,7 +1715,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
     constexpr Real tolerance = 1E-10;
 
-    BOOST_CHECK_CLOSE(curveois->zeroRate(1.0, Continuous) - curve3m->zeroRate(1.0, Continuous),
+    QL_CHECK_CLOSE(curveois->zeroRate(1.0, Continuous) - curve3m->zeroRate(1.0, Continuous),
                       b->value(), tolerance);
 
     // check instrument npvs
@@ -1728,7 +1728,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
                                .withFixedLegConvention(Following)
                                .withFixedLegTerminationDateConvention(Following);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(curveois));
-        BOOST_CHECK_SMALL(swap.NPV(), tolerance);
+        QL_CHECK_SMALL(swap.NPV(), tolerance);
     }
 
 }
