@@ -111,21 +111,24 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
   public:
     GlobalBootstrap(Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
-                    ext::shared_ptr<EndCriteria> endCriteria = nullptr);
+                    ext::shared_ptr<EndCriteria> endCriteria = nullptr,
+                    std::vector<Real> instrumentWeights = {});
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     AdditionalPenalties additionalPenalties,
                     Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
-                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr);
+                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr,
+                    std::vector<Real> instrumentWeights = {});
     GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     std::function<Array()> additionalPenalties,
                     Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
-                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr);
+                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr,
+                    std::vector<Real> instrumentWeights = {});
     void setup(Curve *ts);
     void calculate() const;
 
@@ -145,6 +148,7 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
     std::function<std::vector<Date>()> additionalDates_;
     AdditionalPenalties additionalPenalties_;
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables_;
+    mutable std::vector<Real> instrumentWeights_;
     mutable bool initialized_ = false, validCurve_ = false;
     mutable Size firstHelper_ = 0, numberHelpers_ = 0;
     mutable Size firstAdditionalHelper_ = 0, numberAdditionalHelpers_= 0;
@@ -154,27 +158,29 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
 // template definitions
 
 template <class Curve>
-GlobalBootstrap<Curve>::GlobalBootstrap(
-    Real accuracy,
-    ext::shared_ptr<OptimizationMethod> optimizer,
-    ext::shared_ptr<EndCriteria> endCriteria)
+GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy,
+                                        ext::shared_ptr<OptimizationMethod> optimizer,
+                                        ext::shared_ptr<EndCriteria> endCriteria,
+                                        std::vector<Real> instrumentWeights)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
-  endCriteria_(std::move(endCriteria)) {}
+  endCriteria_(std::move(endCriteria)), instrumentWeights_(std::move(instrumentWeights)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+    std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
     std::function<std::vector<Date>()> additionalDates,
     AdditionalPenalties additionalPenalties,
     Real accuracy,
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria,
-    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables)
+    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables,
+    std::vector<Real> instrumentWeights)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
   endCriteria_(std::move(endCriteria)), additionalHelpers_(std::move(additionalHelpers)),
   additionalDates_(std::move(additionalDates)),
   additionalPenalties_(std::move(additionalPenalties)),
-  additionalVariables_(std::move(additionalVariables)) {}
+  additionalVariables_(std::move(additionalVariables)),
+  instrumentWeights_(std::move(instrumentWeights)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
@@ -184,15 +190,19 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
     Real accuracy,
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria,
-    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables)
-: GlobalBootstrap(std::move(additionalHelpers), std::move(additionalDates),
-                  additionalPenalties
-                    ? [f=std::move(additionalPenalties)](const std::vector<Time>&, const std::vector<Real>&) {
-                        return f();
-                    }
-                    : AdditionalPenalties(),
-                  accuracy, std::move(optimizer), std::move(endCriteria),
-                  std::move(additionalVariables)) {}
+    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables,
+    std::vector<Real> instrumentWeights)
+: GlobalBootstrap(std::move(additionalHelpers),
+                  std::move(additionalDates),
+                  additionalPenalties ?
+                      [f = std::move(additionalPenalties)](
+                          const std::vector<Time>&, const std::vector<Real>&) { return f(); } :
+                      AdditionalPenalties(),
+                  accuracy,
+                  std::move(optimizer),
+                  std::move(endCriteria),
+                  std::move(additionalVariables),
+                  std::move(instrumentWeights)) {}
 
 template <class Curve>
 void GlobalBootstrap<Curve>::setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const {
@@ -226,6 +236,13 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     // ensure helpers are sorted
     std::sort(ts_->instruments_.begin(), ts_->instruments_.end(), detail::BootstrapHelperSorter());
     std::sort(additionalHelpers_.begin(), additionalHelpers_.end(), detail::BootstrapHelperSorter());
+
+    // check and initialize instrument weights
+    QL_REQUIRE(instrumentWeights_.empty() || instrumentWeights_.size() == ts_->instruments_.size(),
+               "GlobalBootstrap: number of instrument weights ("
+                   << instrumentWeights_.size() << ") must match number of instruments ("
+                   << ts_->instruments_.size() << ")");
+    instrumentWeights_.resize(ts_->instruments_.size(), 1.0);
 
     // skip expired helpers
     const Date firstDate = Traits::initialDate(ts_);
@@ -382,8 +399,9 @@ Array GlobalBootstrap<Curve>::evaluateCostFunction() const {
         additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
     }
     Array result(numberHelpers_ + additionalErrors.size());
-    std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(),
-                   result.begin(), [](const auto& helper) { return helper->quoteError(); });
+    for (Size i = 0; i < numberHelpers_; ++i)
+        result[i] = ts_->instruments_[firstHelper_ + i]->quoteError() *
+                     instrumentWeights_[firstHelper_ + i];
     std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
     return result;
 }
