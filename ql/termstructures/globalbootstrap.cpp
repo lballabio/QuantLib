@@ -84,7 +84,7 @@ void MultiCurveBootstrap::runMultiCurveBootstrap() {
         // concatenate the contributors' values and return the concatenation as the result
 
         std::size_t resultSize =
-            std::accumulate(results.begin(), results.end(), 0,
+            std::accumulate(results.begin(), results.end(), (std::size_t)0,
                             [](std::size_t len, const Array& a) { return len + a.size(); });
 
         Array result(resultSize);

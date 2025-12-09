@@ -1559,7 +1559,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurveTwoPiecewiseYieldCurves) {
 
     for (Size i = 1; i <= 9; ++i) {
         helpers3m.push_back(ext::make_shared<FraRateHelper>(
-            q, i, i + 3, euribor3m->fixingDays(), euribor3m->fixingCalendar(),
+            q, (Natural)i, (Natural)(i + 3), euribor3m->fixingDays(), euribor3m->fixingCalendar(),
             euribor3m->businessDayConvention(), euribor3m->endOfMonth(), euribor3m->dayCounter(),
             Pillar::LastRelevantDate));
     }
