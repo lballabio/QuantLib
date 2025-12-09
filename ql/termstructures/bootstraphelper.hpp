@@ -61,15 +61,13 @@ namespace QuantLib {
     template <class TS>
     class BootstrapHelper : public Observer, public Observable {
       public:
-        explicit BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote,
-                                 const Real scale = 1.0);
+        explicit BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote);
         ~BootstrapHelper() override = default;
         //! \name BootstrapHelper interface
         //@{
         const Handle<Quote>& quote() const { return quote_; }
         virtual Real impliedQuote() const = 0;
         Real quoteError() const { return quote_->value() - impliedQuote(); }
-        Real scale() const { return scale_; }
         //! sets the term structure to be used for pricing
         /*! \warning Being a pointer and not a shared_ptr, the term
                      structure is not guaranteed to remain allocated
@@ -116,7 +114,6 @@ namespace QuantLib {
         //@}
       protected:
         Handle<Quote> quote_;
-        Real scale_;
         TS* termStructure_;
         Date earliestDate_, latestDate_;
         Date maturityDate_, latestRelevantDate_, pillarDate_;
@@ -131,7 +128,7 @@ namespace QuantLib {
       public:
         explicit RelativeDateBootstrapHelper(
             const std::variant<Spread, Handle<Quote>>& quote,
-            bool updateDates = true, Real scale = 1.0);
+            bool updateDates = true);
 
         //! \name Observer interface
         //@{
@@ -152,9 +149,8 @@ namespace QuantLib {
     // template definitions
 
     template <class TS>
-    BootstrapHelper<TS>::BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote,
-                                         Real scale)
-    : quote_(handleFromVariant(quote)), scale_(scale), termStructure_(nullptr) {
+    BootstrapHelper<TS>::BootstrapHelper(const std::variant<Spread, Handle<Quote>>& quote)
+    : quote_(handleFromVariant(quote)), termStructure_(nullptr) {
         registerWith(quote_);
     }
 
@@ -214,8 +210,8 @@ namespace QuantLib {
 
     template <class TS>
     RelativeDateBootstrapHelper<TS>::RelativeDateBootstrapHelper(
-        const std::variant<Spread, Handle<Quote>>& quote, bool updateDates, Real scale)
-    : BootstrapHelper<TS>(quote, scale), updateDates_(updateDates) {
+        const std::variant<Spread, Handle<Quote>>& quote, bool updateDates)
+    : BootstrapHelper<TS>(quote), updateDates_(updateDates) {
         if (updateDates) {
             this->registerWith(Settings::instance().evaluationDate());
             evaluationDate_ = Settings::instance().evaluationDate();

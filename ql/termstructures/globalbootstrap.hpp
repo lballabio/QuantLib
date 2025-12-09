@@ -383,8 +383,7 @@ Array GlobalBootstrap<Curve>::evaluateCostFunction() const {
     }
     Array result(numberHelpers_ + additionalErrors.size());
     std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(),
-                   result.begin(),
-                   [](const auto& helper) { return helper->scale() * helper->quoteError(); });
+                   result.begin(), [](const auto& helper) { return helper->quoteError(); });
     std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
     return result;
 }

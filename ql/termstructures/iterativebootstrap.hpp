@@ -314,7 +314,7 @@ namespace detail {
                 auto error = [&](Rate guess) {
                     Traits::updateGuess(ts_->data_, guess, i);
                     ts_->interpolation_.update();
-                    return helper->scale() * helper->quoteError();
+                    return helper->quoteError();
                 };
                 try {
                     if (validData)
