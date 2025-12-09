@@ -75,7 +75,7 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          const std::variant<Real, Handle<Quote>>& convAdj,
                                          Futures::Type type)
-    : RateHelper(price, 0.01), convAdj_(handleFromVariant(convAdj)) {
+    : RateHelper(price), convAdj_(handleFromVariant(convAdj)) {
         CheckDate(iborStartDate, type);
 
         earliestDate_ = iborStartDate;
@@ -93,7 +93,7 @@ namespace QuantLib {
                                          const DayCounter& dayCounter,
                                          const std::variant<Real, Handle<Quote>>& convAdj,
                                          Futures::Type type)
-    : RateHelper(price, 0.01), convAdj_(handleFromVariant(convAdj)) {
+    : RateHelper(price, 100.0), convAdj_(handleFromVariant(convAdj)) {
         CheckDate(iborStartDate, type);
 
         const auto determineMaturityDate =
@@ -140,7 +140,7 @@ namespace QuantLib {
                                          const ext::shared_ptr<IborIndex>& index,
                                          const std::variant<Real, Handle<Quote>>& convAdj,
                                          Futures::Type type)
-    : RateHelper(price, 0.01), convAdj_(handleFromVariant(convAdj)) {
+    : RateHelper(price, 100.0), convAdj_(handleFromVariant(convAdj)) {
         CheckDate(iborStartDate, type);
 
         earliestDate_ = iborStartDate;
@@ -489,7 +489,7 @@ namespace QuantLib {
                                    bool endOfMonth,
                                    const ext::optional<bool>& useIndexedCoupons,
                                    const ext::optional<BusinessDayConvention>& floatConvention)
-    : RelativeDateRateHelper(rate, true, 100.0), settlementDays_(settlementDays), tenor_(tenor),
+    : RelativeDateRateHelper(rate, true, 0.01), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
