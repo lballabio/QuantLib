@@ -1733,6 +1733,38 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
+
+    CommonVars vars(Date(23, Oct, 2025));
+
+    std::vector<ext::shared_ptr<RateHelper>> helpers;
+    auto euribor6m = ext::make_shared<Euribor6M>();
+
+    helpers.push_back(ext::make_shared<DepositRateHelper>(
+        0.01, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
+    helpers.push_back(ext::make_shared<DepositRateHelper>(
+        0.02, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
+
+    using CurveType = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
+
+    auto addDates = [&helpers]() {
+        return std::vector<Date>{helpers[0]->pillarDate(), helpers[1]->pillarDate()};
+    };
+    auto addPenalties = [&helpers]() {
+        return Array{0.1 * helpers[0]->quoteError() + 0.9 * helpers[1]->quoteError()};
+    };
+
+    auto curve1 = ext::make_shared<CurveType>(
+        vars.today, helpers, Actual360(), LogLinear(),
+        GlobalBootstrap<CurveType>(1E-10, nullptr, nullptr, {0.1, 0.9}));
+
+    auto curve2 = ext::make_shared<CurveType>(
+        vars.today, std::vector<ext::shared_ptr<RateHelper>>{}, Actual360(), LogLinear(),
+        GlobalBootstrap<CurveType>(helpers, addDates, addPenalties, 1E-10));
+
+    BOOST_CHECK_CLOSE(curve1->discount(0.3), curve2->discount(0.3), 1E-18);
+}
+
 template <template<class C> class Bootstrap>
 void testPiecewiseSpreadYieldCurveImpl() {
     // Use fixed evaluationDate to make the test stable. When usingAtParCoupons() == false
