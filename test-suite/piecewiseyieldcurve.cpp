@@ -1759,7 +1759,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
 
     // curve2 uses custom dates and penalties using the same weights
 
-    auto addDates = [&helpers, w1, w2]() {
+    auto addDates = [&helpers]() {
         return std::vector<Date>{helpers[0]->pillarDate(), helpers[1]->pillarDate()};
     };
     auto addPenalties = [&helpers, w1, w2]() {
