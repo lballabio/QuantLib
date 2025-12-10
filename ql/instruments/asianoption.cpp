@@ -148,8 +148,8 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
         const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise),
-      averageType_(averageType),
-      startDate_(Date()) {}
+      averageType_(averageType)
+      {}
 
     ContinuousAveragingAsianOption::ContinuousAveragingAsianOption(
         Average::Type averageType,

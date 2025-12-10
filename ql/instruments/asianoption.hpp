@@ -129,8 +129,8 @@ namespace QuantLib {
     class ContinuousAveragingAsianOption::arguments
         : public OneAssetOption::arguments {
       public:
-        arguments() : averageType(Average::Type(-1)),
-                      startDate(Date()) {}
+        arguments() : averageType(Average::Type(-1))
+                      {}
         void validate() const override;
         Average::Type averageType;
         Date startDate;

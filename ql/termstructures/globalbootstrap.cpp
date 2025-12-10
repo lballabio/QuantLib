@@ -71,20 +71,21 @@ void MultiCurveBootstrap::runMultiCurveBootstrap() {
         }
 
         // update observers
-        for(auto o: observers_)
+        for(auto *o: observers_)
             o->update();
 
         // collect the contributors' result
 
         std::vector<Array> results;
-        for (std::size_t c = 0; c < contributors_.size(); ++c) {
-            results.push_back(contributors_[c]->evaluateCostFunction());
+        results.reserve(contributors_.size());
+for (auto & contributor : contributors_) {
+            results.push_back(contributor->evaluateCostFunction());
         }
 
         // concatenate the contributors' values and return the concatenation as the result
 
         std::size_t resultSize =
-            std::accumulate(results.begin(), results.end(), 0,
+            std::accumulate(results.begin(), results.end(), (std::size_t)0,
                             [](std::size_t len, const Array& a) { return len + a.size(); });
 
         Array result(resultSize);
