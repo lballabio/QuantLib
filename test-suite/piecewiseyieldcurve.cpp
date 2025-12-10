@@ -1740,6 +1740,8 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
     std::vector<ext::shared_ptr<RateHelper>> helpers;
     auto euribor6m = ext::make_shared<Euribor6M>();
 
+    // build a curve with overdetermined helper set
+
     helpers.push_back(ext::make_shared<DepositRateHelper>(
         0.01, 6 * Months, 2, TARGET(), ModifiedFollowing, true, Actual360()));
     helpers.push_back(ext::make_shared<DepositRateHelper>(
@@ -1747,22 +1749,30 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapInstrumentWeights) {
 
     using CurveType = PiecewiseYieldCurve<Discount, LogLinear, GlobalBootstrap>;
 
-    auto addDates = [&helpers]() {
-        return std::vector<Date>{helpers[0]->pillarDate(), helpers[1]->pillarDate()};
-    };
-    auto addPenalties = [&helpers]() {
-        return Array{0.1 * helpers[0]->quoteError() + 0.9 * helpers[1]->quoteError()};
-    };
+    // curve1 uses traditional helpers with weights w1 and w2
+
+    Real w1 = 0.1, w2 = 0.9;
 
     auto curve1 = ext::make_shared<CurveType>(
         vars.today, helpers, Actual360(), LogLinear(),
-        GlobalBootstrap<CurveType>(1E-10, nullptr, nullptr, {0.1, 0.9}));
+        GlobalBootstrap<CurveType>(1E-10, nullptr, nullptr, {w1, w2}));
+
+    // curve2 uses custom dates and penalties using the same weights
+
+    auto addDates = [&helpers, w1, w2]() {
+        return std::vector<Date>{helpers[0]->pillarDate(), helpers[1]->pillarDate()};
+    };
+    auto addPenalties = [&helpers, w1, w2]() {
+        return Array{w1 * helpers[0]->quoteError(), w2 * helpers[1]->quoteError()};
+    };
 
     auto curve2 = ext::make_shared<CurveType>(
         vars.today, std::vector<ext::shared_ptr<RateHelper>>{}, Actual360(), LogLinear(),
         GlobalBootstrap<CurveType>(helpers, addDates, addPenalties, 1E-10));
 
-    BOOST_CHECK_CLOSE(curve1->discount(0.3), curve2->discount(0.3), 1E-18);
+    // check that both approaches result in the same curve
+
+    BOOST_CHECK_CLOSE(curve1->discount(0.3), curve2->discount(0.3), 1E-13);
 }
 
 template <template<class C> class Bootstrap>
