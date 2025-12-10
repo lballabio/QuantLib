@@ -1681,7 +1681,7 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
     CommonVars vars(Date(23, Oct, 2025));
 
-    constexpr Real accuracy = 1E-10;
+    constexpr auto accuracy = 1E-10;
 
     RelinkableHandle<YieldTermStructure> intcurveois;
     RelinkableHandle<YieldTermStructure> intcurve3m;
@@ -1713,9 +1713,9 @@ BOOST_AUTO_TEST_CASE(testMultiCurvePiecewiseYieldCurveAndSpreadedCurve) {
 
     // check spread ois 3m
 
-    constexpr Real tolerance = 1E-10;
+    constexpr auto tolerance = 1E-10;
 
-    QL_CHECK_CLOSE(curveois->zeroRate(1.0, Continuous) - curve3m->zeroRate(1.0, Continuous),
+    QL_CHECK_CLOSE(curveois->zeroRate(1.0, Continuous).rate() - curve3m->zeroRate(1.0, Continuous).rate(),
                       b->value(), tolerance);
 
     // check instrument npvs
