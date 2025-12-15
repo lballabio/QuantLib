@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - uses: sobolevn/misspell-fixer-action@master
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib

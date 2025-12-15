@@ -12,7 +12,7 @@ jobs:
       run: |
         shopt -s globstar
         sed -i -e 's|http://quantlib\.org/license\.shtml|https://www.quantlib.org/license.shtml|g' **/*.[hc]pp **/*.ac **/*.docs **/*.cfg **/*.sh **/*.el
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: update-license-links-${{ github.ref_name }}
