@@ -22,7 +22,7 @@ jobs:
         find ql -name *.am | xargs touch
         make dist
         rm QuantLib-*.tar.gz
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib

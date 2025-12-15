@@ -12,7 +12,7 @@ jobs:
       run: |
         shopt -s globstar
         sed -i -E -e 's|#include *"(ql/.*\.hpp)"|#include <\1>|g' **/*.[hc]pp
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
