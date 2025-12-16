@@ -393,7 +393,7 @@ Array GlobalBootstrap<Curve>::evaluateCostFunction() const {
     }
     Array result(aliveInstruments_.size() + additionalErrors.size());
     for (Size i = 0; i < aliveInstruments_.size(); ++i)
-        result[i] = aliveInstruments_[i] * aliveInstrumentWeights_[i];
+        result[i] = aliveInstruments_[i]->quoteError() * aliveInstrumentWeights_[i];
     std::copy(additionalErrors.begin(), additionalErrors.end(),
               result.begin() + aliveInstruments_.size());
     return result;
