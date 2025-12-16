@@ -74,11 +74,11 @@ namespace QuantLib {
         return effectiveFloorletVolatility_;
     }
 
-    Rate OvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool localCapFloor) const {
+    Rate OvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool dailyCapFloor) const {
         QL_FAIL("OvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
     }
 
-    Rate OvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool localCapFloor) const {
+    Rate OvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool dailyCapFloor) const {
         QL_FAIL("OvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
     }
     
@@ -139,7 +139,7 @@ namespace QuantLib {
             Time span = (date >= interestDates[i + 1] ?
                              dt[i] :
                              index->dayCounter().yearFraction(interestDates[i], date));
-            if (coupon_->includeSpread()) {
+            if (coupon_->compoundSpreadDaily()) {
                 compoundFactorWithoutSpread *= (1.0 + fixing * span);
                 fixing += coupon_->spread();
             }
@@ -156,7 +156,7 @@ namespace QuantLib {
                     Time span = (date >= interestDates[i + 1] ?
                                      dt[i] :
                                      index->dayCounter().yearFraction(interestDates[i], date));
-                    if (coupon_->includeSpread()) {
+                    if (coupon_->compoundSpreadDaily()) {
                         compoundFactorWithoutSpread *= (1.0 + fixing * span);
                         fixing += coupon_->spread();
                     }
@@ -179,12 +179,12 @@ namespace QuantLib {
                        "null term structure set to this instance of " << index->name());
 
             const auto effectiveRate = [&index, &fixingDates, &date, &interestDates,
-                                        &dt, &couponSpread](Size position, bool includeSpread) {
+                                        &dt, &couponSpread](Size position, bool compoundSpreadDaily) {
                 Rate fixing = index->fixing(fixingDates[position]);
                 Time span = (date >= interestDates[position + 1] ?
                                  dt[position] :
                                  index->dayCounter().yearFraction(interestDates[position], date));
-                Spread spreadToAdd = includeSpread ? couponSpread : 0.0;
+                Spread spreadToAdd = compoundSpreadDaily ? couponSpread : 0.0;
                 return span * (fixing + spreadToAdd);
             };
 
@@ -201,7 +201,7 @@ namespace QuantLib {
                 // does not occur on an interest date.
                 while (i < n) {
 		            compoundFactorWithoutSpread *= (1.0 + effectiveRate(i, false));
-                    compoundFactor *= (1.0 + effectiveRate(i, coupon_->includeSpread()));
+                    compoundFactor *= (1.0 + effectiveRate(i, coupon_->compoundSpreadDaily()));
                     ++i;
                 }
             } else {
@@ -230,7 +230,7 @@ namespace QuantLib {
                     // With no lockout, the loop is skipped because i = n.
                     while (i < n) {
                         compoundFactorWithoutSpread *= (1.0 + effectiveRate(i, false));
-                        compoundFactor *= (1.0 + effectiveRate(i, coupon_->includeSpread()));
+                        compoundFactor *= (1.0 + effectiveRate(i, coupon_->compoundSpreadDaily()));
                         ++i;
                     }
                 } else {
@@ -241,7 +241,7 @@ namespace QuantLib {
                     const DiscountFactor endDiscount = curve->discount(valueDates[n - 1]);
                     compoundFactor *= startDiscount / endDiscount;
                     compoundFactorWithoutSpread *= startDiscount / endDiscount;
-                    compoundFactor *= (1.0 + effectiveRate(n - 1, coupon_->includeSpread()));
+                    compoundFactor *= (1.0 + effectiveRate(n - 1, coupon_->compoundSpreadDaily()));
                     compoundFactorWithoutSpread *= (1.0 + effectiveRate(n - 1, false));
                 }
             }
@@ -253,7 +253,7 @@ namespace QuantLib {
         Spread effectiveSpread;
         Rate effectiveIndexFixing;
         
-        if (!coupon_->includeSpread()) {
+        if (!coupon_->compoundSpreadDaily()) {
             swapletRate += coupon_->spread();
             effectiveSpread = coupon_->spread();
             effectiveIndexFixing = rate;

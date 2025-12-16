@@ -63,7 +63,7 @@ namespace QuantLib {
                     Natural lookbackDays,
                     Natural lockoutDays,
                     bool applyObservationShift,
-                    bool includeSpread,
+                    bool compoundSpreadDaily,
                     const Date& rateComputationStartDate,
                     const Date& rateComputationEndDate)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
@@ -74,7 +74,7 @@ namespace QuantLib {
                          dayCounter, false), 
         averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
         applyObservationShift_(applyObservationShift),
-        includeSpread_(includeSpread),
+        compoundSpreadDaily_(compoundSpreadDaily),
         rateComputationStartDate_(rateComputationStartDate),
         rateComputationEndDate_(rateComputationEndDate) {
         Date valueStart = rateComputationStartDate_ == Null<Date>() ? startDate : rateComputationStartDate_;
@@ -241,7 +241,7 @@ namespace QuantLib {
     }
 
     Real OvernightIndexedCoupon::effectiveSpread() const {
-        if (!includeSpread_)
+        if (!compoundSpreadDaily_)
             return spread();
         
         if (averagingMethod_ == RateAveraging::Simple)
@@ -268,18 +268,18 @@ namespace QuantLib {
 
     CappedFlooredOvernightIndexedCoupon::CappedFlooredOvernightIndexedCoupon(
         const ext::shared_ptr<OvernightIndexedCoupon>& underlying, Real cap, Real floor, bool nakedOption,
-        bool localCapFloor)
+        bool dailyCapFloor)
         : FloatingRateCoupon(underlying->date(), underlying->nominal(), underlying->accrualStartDate(),
                             underlying->accrualEndDate(), underlying->fixingDays(), underlying->index(),
                             underlying->gearing(), underlying->spread(), underlying->referencePeriodStart(),
                             underlying->referencePeriodEnd(), underlying->dayCounter(), false),
-        underlying_(underlying), nakedOption_(nakedOption), localCapFloor_(localCapFloor) {
+        underlying_(underlying), nakedOption_(nakedOption), dailyCapFloor_(dailyCapFloor) {
 
-        QL_REQUIRE(!underlying_->includeSpread() || close_enough(underlying_->gearing(), 1.0),
+        QL_REQUIRE(!underlying_->compoundSpreadDaily() || close_enough(underlying_->gearing(), 1.0),
                 "CappedFlooredOvernightIndexedCoupon: if include spread = true, only a gearing 1.0 is allowed - scale "
                 "the notional in this case instead.");
 
-        if (!localCapFloor) {
+        if (!dailyCapFloor) {
             if (gearing_ > 0.0) {
                 cap_ = cap;
                 floor_ = floor;
@@ -319,10 +319,10 @@ namespace QuantLib {
             cfONPricer->initialize(*this);
         Rate floorletRate = 0.;
         if (floor_ != Null<Real>())
-            floorletRate = cfONPricer->floorletRate(effectiveFloor(), localCapFloor());
+            floorletRate = cfONPricer->floorletRate(effectiveFloor(), dailyCapFloor());
         Rate capletRate = 0.;
         if (cap_ != Null<Real>())
-            capletRate = (nakedOption_ && floor_ == Null<Real>() ? -1.0 : 1.0) * cfONPricer->capletRate(effectiveCap(), localCapFloor());
+            capletRate = (nakedOption_ && floor_ == Null<Real>() ? -1.0 : 1.0) * cfONPricer->capletRate(effectiveCap(), dailyCapFloor());
         rate_ = swapletRate + floorletRate - capletRate;
 
         effectiveCapletVolatility_ = cfONPricer->effectiveCapletVolatility();
@@ -343,7 +343,7 @@ namespace QuantLib {
     Rate CappedFlooredOvernightIndexedCoupon::effectiveCap() const {
         if (cap_ == Null<Real>())
             return Null<Real>();
-        /* We have four cases dependent on localCapFloor_ and includeSpread. Notation in the formulas:
+        /* We have four cases dependent on dailyCapFloor_ and compoundSpreadDaily. Notation in the formulas:
         g         gearing,
         s         spread,
         A         coupon amount,
@@ -353,8 +353,8 @@ namespace QuantLib {
         C         cap rate
         F         floor rate
         */
-        if (localCapFloor_) {
-            if (underlying_->includeSpread()) {
+        if (dailyCapFloor_) {
+            if (underlying_->compoundSpreadDaily()) {
                 // A = g \cdot \frac{\prod (1 + \tau_i \min ( \max ( f_i + s , F), C)) - 1}{\tau}
                 return cap_ - underlying_->spread();
             } else {
@@ -362,7 +362,7 @@ namespace QuantLib {
                 return cap_;
             }
         } else {
-            if (underlying_->includeSpread()) {
+            if (underlying_->compoundSpreadDaily()) {
                 // A = \min \left( \max \left( g \cdot \frac{\prod (1 + \tau_i(f_i + s)) - 1}{\tau}, F \right), C \right)
                 return (cap_ / gearing() - underlying_->effectiveSpread());
             } else {
@@ -375,14 +375,14 @@ namespace QuantLib {
     Rate CappedFlooredOvernightIndexedCoupon::effectiveFloor() const {
         if (floor_ == Null<Real>())
             return Null<Real>();
-        if (localCapFloor_) {
-            if (underlying_->includeSpread()) {
+        if (dailyCapFloor_) {
+            if (underlying_->compoundSpreadDaily()) {
                 return floor_ - underlying_->spread();
             } else {
                 return floor_;
             }
         } else {
-            if (underlying_->includeSpread()) {
+            if (underlying_->compoundSpreadDaily()) {
                 return (floor_ - underlying_->effectiveSpread());
             } else {
                 return (floor_ - underlying_->effectiveSpread()) / gearing();
@@ -495,8 +495,8 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::includeSpread(bool includeSpread) {
-        includeSpread_ = includeSpread;
+    OvernightLeg& OvernightLeg::compoundingSpreadDaily(bool compoundSpreadDaily) {
+        compoundSpreadDaily_ = compoundSpreadDaily;
         return *this;
     }
 
@@ -525,8 +525,8 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withLocalCapFloor(const bool localCapFloor) {
-        localCapFloor_ = localCapFloor;
+    OvernightLeg& OvernightLeg::withDailyCapFloor(const bool dailyCapFloor) {
+        dailyCapFloor_ = dailyCapFloor;
         return *this;
     }
 
@@ -563,13 +563,13 @@ namespace QuantLib {
 
     OvernightLeg& OvernightLeg::withCapFlooredOvernightIndexedCouponPricer(
         const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
-        auto p = ext::dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
+        auto p = ext::dynamic_pointer_cast<BlackCompoundingOvernightIndexedCouponPricer>(couponPricer);
         if (averagingMethod_ == RateAveraging::Compound) {
-            auto p = ext::dynamic_pointer_cast<BlackOvernightIndexedCouponPricer>(couponPricer);
-            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackOvernightIndexedCouponPricer");
+            auto p = ext::dynamic_pointer_cast<BlackCompoundingOvernightIndexedCouponPricer>(couponPricer);
+            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackCompoundingOvernightIndexedCouponPricer");
         } else {
-            auto p = ext::dynamic_pointer_cast<BlackAverageONIndexedCouponPricer>(couponPricer);
-            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackAverageONIndexedCouponPricer");
+            auto p = ext::dynamic_pointer_cast<BlackAveragingOvernightIndexedCouponPricer>(couponPricer);
+            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackAveragingOvernightIndexedCouponPricer");
         }
         capFlooredCouponPricer_ = couponPricer;
         return *this;
@@ -668,7 +668,7 @@ namespace QuantLib {
                     paymentDate, detail::get(notionals_, i, 1.0), start, end, overnightIndex_,
                     detail::get(gearings_, i, 1.0), detail::get(spreads_, i, 0.0), refStart, refEnd, paymentDayCounter_,
                     telescopicValueDates_, averagingMethod_, lookbackDays_, lockoutDays_, applyObservationShift_,
-                    includeSpread_, rateComputationStartDate, rateComputationEndDate);
+                    compoundSpreadDaily_, rateComputationStartDate, rateComputationEndDate);
                 if (couponPricer_) {
                     cpn->setPricer(couponPricer_);
                 }
@@ -678,7 +678,7 @@ namespace QuantLib {
                     cashflows.push_back(cpn);
                 } else {
                     auto cfCpn = ext::make_shared<CappedFlooredOvernightIndexedCoupon>(cpn, cap, floor, nakedOption_,
-                                                                                    localCapFloor_);
+                                                                                       dailyCapFloor_);
                     if (capFlooredCouponPricer_) {
                         cfCpn->setPricer(capFlooredCouponPricer_);
                     }

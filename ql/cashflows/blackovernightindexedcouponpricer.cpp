@@ -24,12 +24,12 @@
 
 namespace QuantLib {
 
-    BlackOvernightIndexedCouponPricer::BlackOvernightIndexedCouponPricer(
+    BlackCompoundingOvernightIndexedCouponPricer::BlackCompoundingOvernightIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             const bool effectiveVolatilityInput)
         : CompoundingOvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
 
-    void BlackOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+    void BlackCompoundingOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         OvernightIndexedCouponPricer::initialize(coupon);
 
         gearing_ = coupon.gearing();
@@ -38,7 +38,7 @@ namespace QuantLib {
         effectiveCapletVolatility_ = effectiveFloorletVolatility_ = Null<Real>();
     }
 
-    Real BlackOvernightIndexedCouponPricer::optionletRateGlobal(Option::Type optionType, Real effStrike) const {
+    Real BlackCompoundingOvernightIndexedCouponPricer::optionletRateGlobal(Option::Type optionType, Real effStrike) const {
         Date lastRelevantFixingDate = coupon_->fixingDate();
         if (lastRelevantFixingDate <= Settings::instance().evaluationDate()) {
             // the amount is determined
@@ -53,9 +53,9 @@ namespace QuantLib {
             return gearing_ * std::max(a - b, 0.0);
         } else {
             // not yet determined, use Black model
-            QL_REQUIRE(!capletVolatility().empty(), "BlackOvernightIndexedCouponPricer: missing optionlet volatility");
+            QL_REQUIRE(!capletVolatility().empty(), "BlackCompoundingOvernightIndexedCouponPricer: missing optionlet volatility");
             std::vector<Date> fixingDates = coupon_->fixingDates();
-            QL_REQUIRE(!fixingDates.empty(), "BlackOvernightIndexedCouponPricer: empty fixing dates");
+            QL_REQUIRE(!fixingDates.empty(), "BlackCompoundingOvernightIndexedCouponPricer: empty fixing dates");
             bool shiftedLn = capletVolatility()->volatilityType() == ShiftedLognormal;
             Real shift = capletVolatility()->displacement();
             Real stdDev;
@@ -97,13 +97,13 @@ namespace QuantLib {
         }
     } // namespace
 
-    Real BlackOvernightIndexedCouponPricer::optionletRateLocal(Option::Type optionType, Real effStrike) const {
+    Real BlackCompoundingOvernightIndexedCouponPricer::optionletRateLocal(Option::Type optionType, Real effStrike) const {
 
         QL_REQUIRE(!effectiveVolatilityInput(),
                 "BlackAverageONIndexedCouponPricer::optionletRateLocal() does not support effective volatility input.");
 
         // We compute a rate and a rawRate such that
-        // rate * tau * nominal is the amount of the coupon with locally (i.e. daily) capped / floored rates
+        // rate * tau * nominal is the amount of the coupon with daily capped / floored rates
         // rawRate * tau * nominal is the amount of the coupon without capping / flooring the rate
         // We will then return the difference between rate and rawRate (with the correct sign, see below)
         // as the option component of the coupon.
@@ -114,7 +114,7 @@ namespace QuantLib {
         // - daily rate (spread excluded)
         // is capped / floored.
 
-        Real absStrike = coupon_->includeSpread() ? effStrike + coupon_->spread() : effStrike;
+        Real absStrike = coupon_->compoundSpreadDaily() ? effStrike + coupon_->spread() : effStrike;
 
         // This following code is inevitably quite similar to the plain ON coupon pricer code, possibly we can refactor
         // this, but as a first step it seems safer to add the full modified code explicitly here and leave the original
@@ -141,7 +141,7 @@ namespace QuantLib {
             Rate pastFixing = index->pastFixing(fixingDates[std::min(i, nCutoff)]);
             QL_REQUIRE(pastFixing != Null<Real>(),
                     "Missing " << index->name() << " fixing for " << fixingDates[std::min(i, nCutoff)]);
-            if (coupon_->includeSpread()) {
+            if (coupon_->compoundSpreadDaily()) {
                 pastFixing += coupon_->spread();
             }
             compoundFactor *= 1.0 + cappedFlooredRate(pastFixing, optionType, absStrike) * dt[i];
@@ -155,7 +155,7 @@ namespace QuantLib {
             try {
                 Rate pastFixing = index->pastFixing(today);
                 if (pastFixing != Null<Real>()) {
-                    if (coupon_->includeSpread()) {
+                    if (coupon_->compoundSpreadDaily()) {
                         pastFixing += coupon_->spread();
                     }
                     compoundFactor *= 1.0 + cappedFlooredRate(pastFixing, optionType, absStrike) * dt[i];
@@ -207,7 +207,7 @@ namespace QuantLib {
                 effectiveFloorletVolatility_ = stdDev / std::sqrt(effectiveTime);
 
             // add spread to average rate
-            if (coupon_->includeSpread()) {
+            if (coupon_->compoundSpreadDaily()) {
                 averageRate += coupon_->spread();
             }
 
@@ -233,7 +233,7 @@ namespace QuantLib {
         rate *= coupon_->gearing();
         rawRate *= coupon_->gearing();
 
-        if (!coupon_->includeSpread()) {
+        if (!coupon_->compoundSpreadDaily()) {
             rate += coupon_->spread();
             rawRate += coupon_->spread();
         }
@@ -244,46 +244,46 @@ namespace QuantLib {
         return (optionType == Option::Call ? -1.0 : 1.0) * (rate - rawRate);
     }
 
-    Rate BlackOvernightIndexedCouponPricer::swapletRate() const { return swapletRate_; }
+    Rate BlackCompoundingOvernightIndexedCouponPricer::swapletRate() const { return swapletRate_; }
 
-    Rate BlackOvernightIndexedCouponPricer::capletRate(Rate effectiveCap) const {
+    Rate BlackCompoundingOvernightIndexedCouponPricer::capletRate(Rate effectiveCap) const {
         return capletRate(effectiveCap, false);
     }
 
-    Rate BlackOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor) const {
+    Rate BlackCompoundingOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor) const {
         return floorletRate(effectiveFloor, false);
     }
 
-    Rate BlackOvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool localCapFloor) const {
-        return localCapFloor ? optionletRateLocal(Option::Call, effectiveCap)
+    Rate BlackCompoundingOvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool dailyCapFloor) const {
+        return dailyCapFloor ? optionletRateLocal(Option::Call, effectiveCap)
                              : optionletRateGlobal(Option::Call, effectiveCap);
     }
 
-    Rate BlackOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool localCapFloor) const {
-        return localCapFloor ? optionletRateLocal(Option::Put, effectiveFloor)
+    Rate BlackCompoundingOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool dailyCapFloor) const {
+        return dailyCapFloor ? optionletRateLocal(Option::Put, effectiveFloor)
                              : optionletRateGlobal(Option::Put, effectiveFloor);
     }
 
-    Real BlackOvernightIndexedCouponPricer::swapletPrice() const {
-        QL_FAIL("BlackOvernightIndexedCouponPricer::swapletPrice() not provided");
+    Real BlackCompoundingOvernightIndexedCouponPricer::swapletPrice() const {
+        QL_FAIL("BlackCompoundingOvernightIndexedCouponPricer::swapletPrice() not provided");
     }
-    Real BlackOvernightIndexedCouponPricer::capletPrice(Rate effectiveCap) const {
-        QL_FAIL("BlackOvernightIndexedCouponPricer::capletPrice() not provided");
+    Real BlackCompoundingOvernightIndexedCouponPricer::capletPrice(Rate effectiveCap) const {
+        QL_FAIL("BlackCompoundingOvernightIndexedCouponPricer::capletPrice() not provided");
     }
-    Real BlackOvernightIndexedCouponPricer::floorletPrice(Rate effectiveFloor) const {
-        QL_FAIL("BlackOvernightIndexedCouponPricer::floorletPrice() not provided");
+    Real BlackCompoundingOvernightIndexedCouponPricer::floorletPrice(Rate effectiveFloor) const {
+        QL_FAIL("BlackCompoundingOvernightIndexedCouponPricer::floorletPrice() not provided");
     }
 
-    BlackAverageONIndexedCouponPricer::BlackAverageONIndexedCouponPricer(
+    BlackAveragingOvernightIndexedCouponPricer::BlackAveragingOvernightIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             const bool effectiveVolatilityInput)
         : ArithmeticAveragedOvernightIndexedCouponPricer(0.03, 0.0, false, v, effectiveVolatilityInput) {}
 
-    void BlackAverageONIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+    void BlackAveragingOvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         OvernightIndexedCouponPricer::initialize(coupon);
 
         if (coupon_->averagingMethod() == RateAveraging::Compound)
-            QL_FAIL("Avereging method required to be simple for BlackAverageONIndexedCouponPricer");
+            QL_FAIL("Avereging method required to be simple for BlackAveragingOvernightIndexedCouponPricer");
 
         gearing_ = coupon.gearing();
         swapletRate_ = coupon_->rate();
@@ -291,7 +291,7 @@ namespace QuantLib {
         effectiveCapletVolatility_ = effectiveFloorletVolatility_ = Null<Real>();
     }
 
-    Real BlackAverageONIndexedCouponPricer::optionletRateGlobal(Option::Type optionType, Real effStrike) const {
+    Real BlackAveragingOvernightIndexedCouponPricer::optionletRateGlobal(Option::Type optionType, Real effStrike) const {
         Date lastRelevantFixingDate = coupon_->fixingDate();
         if (lastRelevantFixingDate <= Settings::instance().evaluationDate()) {
             // the amount is determined
@@ -306,9 +306,9 @@ namespace QuantLib {
             return gearing_ * std::max(a - b, 0.0);
         } else {
             // not yet determined, use Black model
-            QL_REQUIRE(!capletVolatility().empty(), "BlackAverageONIndexedCouponPricer: missing optionlet volatility");
+            QL_REQUIRE(!capletVolatility().empty(), "BlackAveragingOvernightIndexedCouponPricer: missing optionlet volatility");
             std::vector<Date> fixingDates = coupon_->fixingDates();
-            QL_REQUIRE(!fixingDates.empty(), "BlackAverageONIndexedCouponPricer: empty fixing dates");
+            QL_REQUIRE(!fixingDates.empty(), "BlackAveragingOvernightIndexedCouponPricer: empty fixing dates");
             bool shiftedLn = capletVolatility()->volatilityType() == ShiftedLognormal;
             Real shift = capletVolatility()->displacement();
             Real stdDev;
@@ -340,13 +340,13 @@ namespace QuantLib {
         }
     }
 
-    Real BlackAverageONIndexedCouponPricer::optionletRateLocal(Option::Type optionType, Real effStrike) const {
+    Real BlackAveragingOvernightIndexedCouponPricer::optionletRateLocal(Option::Type optionType, Real effStrike) const {
 
         QL_REQUIRE(!effectiveVolatilityInput(),
-                "BlackAverageONIndexedCouponPricer::optionletRateLocal() does not support effective volatility input.");
+                "BlackAveragingOvernightIndexedCouponPricer::optionletRateLocal() does not support effective volatility input.");
 
         // We compute a rate and a rawRate such that
-        // rate * tau * nominal is the amount of the coupon with locally (i.e. daily) capped / floored rates
+        // rate * tau * nominal is the amount of the coupon with daily capped / floored rates
         // rawRate * tau * nominal is the amount of the coupon without capping / flooring the rate
         // We will then return the difference between rate and rawRate (with the correct sign, see below)
         // as the option component of the coupon.
@@ -357,7 +357,7 @@ namespace QuantLib {
         // - daily rate (spread excluded)
         // is capped / floored.
 
-        Real absStrike = coupon_->includeSpread() ? effStrike + coupon_->spread() : effStrike;
+        Real absStrike = coupon_->compoundSpreadDaily() ? effStrike + coupon_->spread() : effStrike;
 
         // This following code is inevitably quite similar to the plain ON coupon pricer code, possibly we can refactor
         // this, but as a first step it seems safer to add the full modified code explicitly here and leave the original
@@ -384,7 +384,7 @@ namespace QuantLib {
             Rate pastFixing = index->pastFixing(fixingDates[std::min(i, nCutoff)]);
             QL_REQUIRE(pastFixing != Null<Real>(),
                     "Missing " << index->name() << " fixing for " << fixingDates[std::min(i, nCutoff)]);
-            if (coupon_->includeSpread()) {
+            if (coupon_->compoundSpreadDaily()) {
                 pastFixing += coupon_->spread();
             }
             accumulatedRate += cappedFlooredRate(pastFixing, optionType, absStrike) * dt[i];
@@ -398,7 +398,7 @@ namespace QuantLib {
             try {
                 Rate pastFixing = index->pastFixing(today);
                 if (pastFixing != Null<Real>()) {
-                    if (coupon_->includeSpread()) {
+                    if (coupon_->compoundSpreadDaily()) {
                         pastFixing += coupon_->spread();
                     }
                     accumulatedRate += cappedFlooredRate(pastFixing, optionType, absStrike) * dt[i];
@@ -451,7 +451,7 @@ namespace QuantLib {
                 effectiveFloorletVolatility_ = stdDev / std::sqrt(effectiveTime);
 
             // add spread to average rate
-            if (coupon_->includeSpread()) {
+            if (coupon_->compoundSpreadDaily()) {
                 averageRate += coupon_->spread();
             }
 
@@ -476,7 +476,7 @@ namespace QuantLib {
         rate *= coupon_->gearing();
         rawRate *= coupon_->gearing();
 
-        if (!coupon_->includeSpread()) {
+        if (!coupon_->compoundSpreadDaily()) {
             rate += coupon_->spread();
             rawRate += coupon_->spread();
         }
@@ -487,36 +487,36 @@ namespace QuantLib {
         return (optionType == Option::Call ? -1.0 : 1.0) * (rate - rawRate);
     }
 
-    Rate BlackAverageONIndexedCouponPricer::swapletRate() const { return swapletRate_; }
+    Rate BlackAveragingOvernightIndexedCouponPricer::swapletRate() const { return swapletRate_; }
 
-    Rate BlackAverageONIndexedCouponPricer::capletRate(Rate effectiveCap) const {
+    Rate BlackAveragingOvernightIndexedCouponPricer::capletRate(Rate effectiveCap) const {
         return OvernightIndexedCouponPricer::capletRate(effectiveCap, false);
     }
 
-    Rate BlackAverageONIndexedCouponPricer::floorletRate(Rate effectiveFloor) const {
+    Rate BlackAveragingOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor) const {
         return OvernightIndexedCouponPricer::floorletRate(effectiveFloor, false);
     }
 
-    Rate BlackAverageONIndexedCouponPricer::capletRate(Rate effectiveCap, bool localCapFloor) const {
-        return localCapFloor ? optionletRateLocal(Option::Call, effectiveCap)
+    Rate BlackAveragingOvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool dailyCapFloor) const {
+        return dailyCapFloor ? optionletRateLocal(Option::Call, effectiveCap)
                              : optionletRateGlobal(Option::Call, effectiveCap);
     }
 
-    Rate BlackAverageONIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool localCapFloor) const {
-        return localCapFloor ? optionletRateLocal(Option::Put, effectiveFloor)
+    Rate BlackAveragingOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool dailyCapFloor) const {
+        return dailyCapFloor ? optionletRateLocal(Option::Put, effectiveFloor)
                              : optionletRateGlobal(Option::Put, effectiveFloor);
     }
 
-    Real BlackAverageONIndexedCouponPricer::swapletPrice() const {
-        QL_FAIL("BlackAverageONIndexedCouponPricer::swapletPrice() not provided");
+    Real BlackAveragingOvernightIndexedCouponPricer::swapletPrice() const {
+        QL_FAIL("BlackAveragingOvernightIndexedCouponPricer::swapletPrice() not provided");
     }
 
-    Real BlackAverageONIndexedCouponPricer::capletPrice(Rate effectiveCap) const {
-        QL_FAIL("BlackAverageONIndexedCouponPricer::capletPrice() not provided");
+    Real BlackAveragingOvernightIndexedCouponPricer::capletPrice(Rate effectiveCap) const {
+        QL_FAIL("BlackAveragingOvernightIndexedCouponPricer::capletPrice() not provided");
     }
     
-    Real BlackAverageONIndexedCouponPricer::floorletPrice(Rate effectiveFloor) const {
-        QL_FAIL("BlackAverageONIndexedCouponPricer::floorletPrice() not provided");
+    Real BlackAveragingOvernightIndexedCouponPricer::floorletPrice(Rate effectiveFloor) const {
+        QL_FAIL("BlackAveragingOvernightIndexedCouponPricer::floorletPrice() not provided");
     }
 
 }

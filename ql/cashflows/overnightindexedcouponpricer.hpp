@@ -88,8 +88,8 @@ namespace QuantLib {
         */
         virtual Real effectiveFloorletVolatility() const;
 
-        virtual Rate capletRate(Rate effectiveCap, bool localCapFloor) const;
-        virtual Rate floorletRate(Rate effectiveCap, bool localCapFloor) const;
+        virtual Rate capletRate(Rate effectiveCap, bool dailyCapFloor) const;
+        virtual Rate floorletRate(Rate effectiveCap, bool dailyCapFloor) const;
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
@@ -115,10 +115,10 @@ namespace QuantLib {
         Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
         Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
         //@}
-        Rate capletRate(Rate effectiveCap, bool localCapFloor) const override {
+        Rate capletRate(Rate effectiveCap, bool dailyCapFloor) const override {
           QL_FAIL("CompoundingOvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
         }
-        Rate floorletRate(Rate effectiveCap, bool localCapFloor) const override {
+        Rate floorletRate(Rate effectiveCap, bool dailyCapFloor) const override {
           QL_FAIL("CompoundingOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
         }
         Rate averageRate(const Date& date) const;
@@ -157,10 +157,10 @@ namespace QuantLib {
         Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
         Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
 
-        Rate capletRate(Rate effectiveCap, bool localCapFloor) const override {
+        Rate capletRate(Rate effectiveCap, bool dailyCapFloor) const override {
           QL_FAIL("ArithmeticAveragedOvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
         }
-        Rate floorletRate(Rate effectiveCap, bool localCapFloor) const override {
+        Rate floorletRate(Rate effectiveCap, bool dailyCapFloor) const override {
           QL_FAIL("ArithmeticAveragedOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
         }
       protected:
