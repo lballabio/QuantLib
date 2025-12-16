@@ -836,7 +836,8 @@ BOOST_AUTO_TEST_CASE(testBlackONPricerConsistencyWithNoVol) {
     Date end = Date(1, October, 2025);
 
     auto cappedFlooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), Null<Rate>());
-    cappedFlooredCoupon->setPricer(ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(vars.vol));
+    auto blackPricer = ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(vars.vol);
+    cappedFlooredCoupon->setPricer(blackPricer);
     Rate blackRate = cappedFlooredCoupon->rate();
 
     // Compare with standard compounding pricer
@@ -845,6 +846,10 @@ BOOST_AUTO_TEST_CASE(testBlackONPricerConsistencyWithNoVol) {
     Rate vanillaRate = baseONCoupon->rate();
 
     CHECK_OIS_COUPON_RESULT("Zero capped coupon rate", blackRate, vanillaRate, 1e-10);
+
+    baseONCoupon->setPricer(blackPricer);
+    vanillaRate = baseONCoupon->rate();
+    CHECK_OIS_COUPON_RESULT("Zero capped coupon rate (same pricer)", blackRate, vanillaRate, 1e-10);
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegBasicFunctionality) {

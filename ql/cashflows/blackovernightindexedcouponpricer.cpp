@@ -33,8 +33,10 @@ namespace QuantLib {
         OvernightIndexedCouponPricer::initialize(coupon);
 
         gearing_ = coupon.gearing();
-        swapletRate_ = coupon_->rate();
-        effectiveIndexFixing_ = coupon_->effectiveIndexFixing();
+        auto [swapletRate, effectiveSpread, effectiveIndexFixing] = CompoundingOvernightIndexedCouponPricer::compute(coupon_->accrualEndDate());
+        swapletRate_ = swapletRate;
+        effectiveSpread_ = effectiveSpread;
+        effectiveIndexFixing_ = effectiveIndexFixing;
         effectiveCapletVolatility_ = effectiveFloorletVolatility_ = Null<Real>();
     }
 
