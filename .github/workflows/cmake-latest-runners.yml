@@ -89,13 +89,13 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $BoostUri = "https://archives.boost.io/release/1.89.0/binaries/boost_1_89_0-msvc-14.3-64.exe"
+          $BoostUri = "https://archives.boost.io/release/1.90.0/binaries/boost_1_90_0-msvc-14.3-64.exe"
           Start-BitsTransfer -Source $BoostUri -Destination $env:RUNNER_TEMP\boost.exe
           Start-Process -Wait -FilePath "$env:RUNNER_TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=$env:RUNNER_TEMP\boost"
 
           choco install -y ninja
 
-          Write "Boost_DIR=$env:RUNNER_TEMP\boost\lib64-msvc-14.3\cmake\Boost-1.89.0"   >> $env:GITHUB_ENV
+          Write "Boost_DIR=$env:RUNNER_TEMP\boost\lib64-msvc-14.3\cmake\Boost-1.90.0"   >> $env:GITHUB_ENV
 
       - name: Set up Visual Studio shell on Windows
         if: runner.os == 'Windows'
