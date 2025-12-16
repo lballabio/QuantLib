@@ -78,7 +78,7 @@ void MultiCurveBootstrap::runMultiCurveBootstrap() {
 
         std::vector<Array> results;
         results.reserve(contributors_.size());
-for (auto & contributor : contributors_) {
+        for (auto& contributor : contributors_) {
             results.push_back(contributor->evaluateCostFunction());
         }
 
