@@ -55,6 +55,7 @@ namespace QuantLib {
         //! returns the date the net present value refers to.
         const Date& valuationDate() const;
 
+        const ext::shared_ptr<PricingEngine>& pricingEngine() const;
         //! returns any additional result returned by the pricing engine.
         template <typename T> T result(const std::string& tag) const;
         //! returns all additional result returned by the pricing engine.
@@ -182,6 +183,10 @@ namespace QuantLib {
         QL_REQUIRE(valuationDate_ != Date(),
                    "valuation date not provided");
         return valuationDate_;
+    }
+
+    inline const ext::shared_ptr<PricingEngine>& Instrument::pricingEngine() const {
+        return engine_;
     }
 
     template <class T>
