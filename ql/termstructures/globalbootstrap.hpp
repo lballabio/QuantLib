@@ -298,8 +298,12 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     std::transform(dates.begin(), dates.end(), std::back_inserter(times),
                    [this](const Date& d) { return ts_->timeFromReference(d); });
 
-    // determine maxDate
-    ts_->maxDate_ = Date::maxDate();
+    // determine maxDate ensuring all instruments and additional helpers are covered
+    ts_->maxDate_ = dates.back();
+    for (auto const& h : aliveInstruments_)
+        ts_->maxDate_ = std::max(ts_->maxDate_, h->latestRelevantDate());
+    for (auto const& h : aliveAdditionalHelpers_)
+        ts_->maxDate_ = std::max(ts_->maxDate_, h->latestRelevantDate());
 
     // set initial guess only if the current curve cannot be used as guess
     if (!validCurve_ || ts_->data_.size() != dates.size()) {
@@ -351,7 +355,6 @@ template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
     if (!validCurve_) {
         ts_->interpolation_ = ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(),
                                                              ts_->data_.begin());
-        ts_->interpolation_.enableExtrapolation();
     }
 
     // Initial guess. We have guesses for the curve values first (numberPillars),
