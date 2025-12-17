@@ -411,7 +411,7 @@ namespace QuantLib {
     void CappedFlooredOvernightIndexedCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer){
         auto p = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer);
         QL_REQUIRE(p, "The pricer is required to be an instance of OvernightIndexedCouponPricer");
-        pricer_ = p;
+        FloatingRateCoupon::setPricer(p);
     }
 
     // OvernightLeg implementation
