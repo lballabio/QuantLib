@@ -111,21 +111,24 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
   public:
     GlobalBootstrap(Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
-                    ext::shared_ptr<EndCriteria> endCriteria = nullptr);
-    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+                    ext::shared_ptr<EndCriteria> endCriteria = nullptr,
+                    std::vector<Real> instrumentWeights = {});
+    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     AdditionalPenalties additionalPenalties,
                     Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
-                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr);
-    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr,
+                    std::vector<Real> instrumentWeights = {});
+    GlobalBootstrap(std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
                     std::function<std::vector<Date>()> additionalDates,
                     std::function<Array()> additionalPenalties,
                     Real accuracy = Null<Real>(),
                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
                     ext::shared_ptr<EndCriteria> endCriteria = nullptr,
-                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr);
+                    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables = nullptr,
+                    std::vector<Real> instrumentWeights = {});
     void setup(Curve *ts);
     void calculate() const;
 
@@ -141,40 +144,44 @@ template <class Curve> class GlobalBootstrap final : public MultiCurveBootstrapC
     Real accuracy_;
     ext::shared_ptr<OptimizationMethod> optimizer_;
     ext::shared_ptr<EndCriteria> endCriteria_;
-    mutable std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers_;
+    std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers_;
+    mutable std::vector<ext::shared_ptr<typename Traits::helper>> aliveInstruments_;
+    mutable std::vector<ext::shared_ptr<typename Traits::helper>> aliveAdditionalHelpers_;
     std::function<std::vector<Date>()> additionalDates_;
     AdditionalPenalties additionalPenalties_;
     ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables_;
+    mutable std::vector<Real> instrumentWeights_;
+    mutable std::vector<Real> aliveInstrumentWeights_;
     mutable bool initialized_ = false, validCurve_ = false;
-    mutable Size firstHelper_ = 0, numberHelpers_ = 0;
-    mutable Size firstAdditionalHelper_ = 0, numberAdditionalHelpers_= 0;
     mutable ext::shared_ptr<MultiCurveBootstrap> parentBootstrapper_ = nullptr;
 };
 
 // template definitions
 
 template <class Curve>
-GlobalBootstrap<Curve>::GlobalBootstrap(
-    Real accuracy,
-    ext::shared_ptr<OptimizationMethod> optimizer,
-    ext::shared_ptr<EndCriteria> endCriteria)
+GlobalBootstrap<Curve>::GlobalBootstrap(Real accuracy,
+                                        ext::shared_ptr<OptimizationMethod> optimizer,
+                                        ext::shared_ptr<EndCriteria> endCriteria,
+                                        std::vector<Real> instrumentWeights)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
-  endCriteria_(std::move(endCriteria)) {}
+  endCriteria_(std::move(endCriteria)), instrumentWeights_(std::move(instrumentWeights)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
-    std::vector<ext::shared_ptr<typename Traits::helper> > additionalHelpers,
+    std::vector<ext::shared_ptr<typename Traits::helper>> additionalHelpers,
     std::function<std::vector<Date>()> additionalDates,
     AdditionalPenalties additionalPenalties,
     Real accuracy,
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria,
-    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables)
+    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables,
+    std::vector<Real> instrumentWeights)
 : ts_(nullptr), accuracy_(accuracy), optimizer_(std::move(optimizer)),
   endCriteria_(std::move(endCriteria)), additionalHelpers_(std::move(additionalHelpers)),
   additionalDates_(std::move(additionalDates)),
   additionalPenalties_(std::move(additionalPenalties)),
-  additionalVariables_(std::move(additionalVariables)) {}
+  additionalVariables_(std::move(additionalVariables)),
+  instrumentWeights_(std::move(instrumentWeights)) {}
 
 template <class Curve>
 GlobalBootstrap<Curve>::GlobalBootstrap(
@@ -184,15 +191,19 @@ GlobalBootstrap<Curve>::GlobalBootstrap(
     Real accuracy,
     ext::shared_ptr<OptimizationMethod> optimizer,
     ext::shared_ptr<EndCriteria> endCriteria,
-    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables)
-: GlobalBootstrap(std::move(additionalHelpers), std::move(additionalDates),
-                  additionalPenalties
-                    ? [f=std::move(additionalPenalties)](const std::vector<Time>&, const std::vector<Real>&) {
-                        return f();
-                    }
-                    : AdditionalPenalties(),
-                  accuracy, std::move(optimizer), std::move(endCriteria),
-                  std::move(additionalVariables)) {}
+    ext::shared_ptr<AdditionalBootstrapVariables> additionalVariables,
+    std::vector<Real> instrumentWeights)
+: GlobalBootstrap(std::move(additionalHelpers),
+                  std::move(additionalDates),
+                  additionalPenalties ?
+                      [f = std::move(additionalPenalties)](
+                          const std::vector<Time>&, const std::vector<Real>&) { return f(); } :
+                      AdditionalPenalties(),
+                  accuracy,
+                  std::move(optimizer),
+                  std::move(endCriteria),
+                  std::move(additionalVariables),
+                  std::move(instrumentWeights)) {}
 
 template <class Curve>
 void GlobalBootstrap<Curve>::setParentBootstrapper(const ext::shared_ptr<MultiCurveBootstrap>& b) const {
@@ -217,34 +228,38 @@ template <class Curve> void GlobalBootstrap<Curve>::setup(Curve* ts) {
         endCriteria_ = ext::make_shared<EndCriteria>(1000, 10, accuracy, accuracy, accuracy);
     }
 
+    // check number of instrument weights
+    QL_REQUIRE(instrumentWeights_.empty() || instrumentWeights_.size() == ts_->instruments_.size(),
+               "GlobalBootstrap: number of instrument weights ("
+                   << instrumentWeights_.size() << ") must match number of instruments ("
+                   << ts_->instruments_.size() << ")");
+    instrumentWeights_.resize(ts_->instruments_.size(), 1.0);
+
     // do not initialize yet: instruments could be invalid here
     // but valid later when bootstrapping is actually required
 }
 
 template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
-    // ensure helpers are sorted
-    std::sort(ts_->instruments_.begin(), ts_->instruments_.end(), detail::BootstrapHelperSorter());
-    std::sort(additionalHelpers_.begin(), additionalHelpers_.end(), detail::BootstrapHelperSorter());
-
-    // skip expired helpers
     const Date firstDate = Traits::initialDate(ts_);
 
-    firstHelper_ = 0;
-    if (!ts_->instruments_.empty()) {
-        while (firstHelper_ < ts_->instruments_.size() && ts_->instruments_[firstHelper_]->pillarDate() <= firstDate)
-            ++firstHelper_;
+    // set up alive instruments and weights
+    aliveInstruments_.clear();
+    aliveInstrumentWeights_.clear();
+    for(Size i=0;i<ts_->instruments_.size();++i) {
+        if(ts_->instruments_[i]->pillarDate() > firstDate) {
+            aliveInstruments_.push_back(ts_->instruments_[i]);
+            aliveInstrumentWeights_.push_back(instrumentWeights_[i]);
+        }
     }
-    numberHelpers_ = ts_->instruments_.size() - firstHelper_;
 
-    // skip expired additional helpers
-    firstAdditionalHelper_ = 0;
-    if (!additionalHelpers_.empty()) {
-        while (firstAdditionalHelper_ < additionalHelpers_.size() &&
-               additionalHelpers_[firstAdditionalHelper_]->pillarDate() <= firstDate)
-            ++firstAdditionalHelper_;
-    }
-    numberAdditionalHelpers_ = additionalHelpers_.size() - firstAdditionalHelper_;
+    // set up alive additional helpers
+    aliveAdditionalHelpers_.clear();
+    std::copy_if(additionalHelpers_.begin(), additionalHelpers_.end(),
+                 std::back_inserter(aliveAdditionalHelpers_),
+                 [&firstDate](const ext::shared_ptr<typename Traits::helper>& h) {
+                     return h->pillarDate() > firstDate;
+                 });
 
     // skip expired additional dates
     std::vector<Date> additionalDates;
@@ -265,8 +280,9 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
     // first populate the dates vector and make sure they are sorted and unique
     dates.clear();
     dates.push_back(firstDate);
-    for (Size j = 0; j < numberHelpers_; ++j)
-        dates.push_back(ts_->instruments_[firstHelper_ + j]->pillarDate());
+    std::transform(
+        aliveInstruments_.begin(), aliveInstruments_.end(), std::back_inserter(dates),
+        [](const ext::shared_ptr<typename Traits::helper>& h) { return h->pillarDate(); });
     dates.insert(dates.end(), additionalDates.begin(), additionalDates.end());
     std::sort(dates.begin(), dates.end());
     dates.erase(std::unique(dates.begin(), dates.end()), dates.end());
@@ -279,15 +295,15 @@ template <class Curve> void GlobalBootstrap<Curve>::initialize() const {
 
     // build times vector
     times.clear();
-    for (auto& date : dates)
-        times.push_back(ts_->timeFromReference(date));
+    std::transform(dates.begin(), dates.end(), std::back_inserter(times),
+                   [this](const Date& d) { return ts_->timeFromReference(d); });
 
-    // determine maxDate
-    Date maxDate = dates.back();
-    for (Size j = 0; j < numberHelpers_; ++j) {
-        maxDate = std::max(ts_->instruments_[firstHelper_ + j]->latestRelevantDate(), maxDate);
-    }
-    ts_->maxDate_ = maxDate;
+    // determine maxDate ensuring all instruments and additional helpers are covered
+    ts_->maxDate_ = dates.back();
+    for (auto const& h : aliveInstruments_)
+        ts_->maxDate_ = std::max(ts_->maxDate_, h->latestRelevantDate());
+    for (auto const& h : aliveAdditionalHelpers_)
+        ts_->maxDate_ = std::max(ts_->maxDate_, h->latestRelevantDate());
 
     // set initial guess only if the current curve cannot be used as guess
     if (!validCurve_ || ts_->data_.size() != dates.size()) {
@@ -316,12 +332,11 @@ template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
         initialize();
 
     // setup helpers
-    for (Size j = 0; j < numberHelpers_; ++j) {
-        const ext::shared_ptr<typename Traits::helper>& helper = ts_->instruments_[firstHelper_ + j];
+    for (auto const& helper : aliveInstruments_) {
         // check for valid quote
-        QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
-                                                   << " instrument (maturity: " << helper->maturityDate()
-                                                   << ", pillar: " << helper->pillarDate() << ") has an invalid quote");
+        QL_REQUIRE(helper->quote()->isValid(),
+                   "instrument (maturity: " << helper->maturityDate() << ", pillar: "
+                                            << helper->pillarDate() << ") has an invalid quote");
         // don't try this at home!
         // This call creates helpers, and removes "const".
         // There is a significant interaction with observability.
@@ -329,18 +344,17 @@ template <class Curve> Array GlobalBootstrap<Curve>::setupCostFunction() const {
     }
 
     // setup additional helpers
-    for (Size j = 0; j < numberAdditionalHelpers_; ++j) {
-        const ext::shared_ptr<typename Traits::helper>& helper = additionalHelpers_[firstAdditionalHelper_ + j];
-        QL_REQUIRE(helper->quote()->isValid(), io::ordinal(j + 1)
-                                                   << " additional instrument (maturity: " << helper->maturityDate()
-                                                   << ") has an invalid quote");
+    for (auto const& helper : aliveAdditionalHelpers_) {
+        QL_REQUIRE(helper->quote()->isValid(),
+                   "additional instrument (maturity: " << helper->maturityDate()
+                                                       << ") has an invalid quote");
         helper->setTermStructure(const_cast<Curve*>(ts_));
     }
 
     // setup interpolation
     if (!validCurve_) {
-        ts_->interpolation_ =
-            ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(), ts_->data_.begin());
+        ts_->interpolation_ = ts_->interpolator_.interpolate(ts_->times_.begin(), ts_->times_.end(),
+                                                             ts_->data_.begin());
     }
 
     // Initial guess. We have guesses for the curve values first (numberPillars),
@@ -380,10 +394,11 @@ Array GlobalBootstrap<Curve>::evaluateCostFunction() const {
     if (additionalPenalties_) {
         additionalErrors = additionalPenalties_(ts_->times_, ts_->data_);
     }
-    Array result(numberHelpers_ + additionalErrors.size());
-    std::transform(ts_->instruments_.begin() + firstHelper_, ts_->instruments_.end(),
-                   result.begin(), [](const auto& helper) { return helper->quoteError(); });
-    std::copy(additionalErrors.begin(), additionalErrors.end(), result.begin() + numberHelpers_);
+    Array result(aliveInstruments_.size() + additionalErrors.size());
+    for (Size i = 0; i < aliveInstruments_.size(); ++i)
+        result[i] = aliveInstruments_[i]->quoteError() * aliveInstrumentWeights_[i];
+    std::copy(additionalErrors.begin(), additionalErrors.end(),
+              result.begin() + aliveInstruments_.size());
     return result;
 }
 
