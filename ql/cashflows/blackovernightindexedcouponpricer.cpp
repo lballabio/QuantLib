@@ -33,10 +33,7 @@ namespace QuantLib {
         OvernightIndexedCouponPricer::initialize(coupon);
 
         gearing_ = coupon.gearing();
-        auto [swapletRate, effectiveSpread, effectiveIndexFixing] = CompoundingOvernightIndexedCouponPricer::compute(coupon_->accrualEndDate());
-        swapletRate_ = swapletRate;
-        effectiveSpread_ = effectiveSpread;
-        effectiveIndexFixing_ = effectiveIndexFixing;
+        std::tie(swapletRate_, effectiveSpread_, effectiveIndexFixing_) = CompoundingOvernightIndexedCouponPricer::compute(coupon_->accrualEndDate());
         effectiveCapletVolatility_ = effectiveFloorletVolatility_ = Null<Real>();
     }
 
@@ -285,7 +282,7 @@ namespace QuantLib {
         OvernightIndexedCouponPricer::initialize(coupon);
 
         if (coupon_->averagingMethod() == RateAveraging::Compound)
-            QL_FAIL("Avereging method required to be simple for BlackAveragingOvernightIndexedCouponPricer");
+            QL_FAIL("Averaging method required to be simple for BlackAveragingOvernightIndexedCouponPricer");
 
         gearing_ = coupon.gearing();
         swapletRate_ = coupon_->rate();

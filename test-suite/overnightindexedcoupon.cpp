@@ -138,14 +138,13 @@ struct BlackONPricerVars {
     RelinkableHandle<YieldTermStructure> forecastCurve;
     RelinkableHandle<OptionletVolatilityStructure> vol;
     ext::shared_ptr<OvernightIndex> sofr;
-    ext::shared_ptr<OvernightIndexedCoupon> onCoupon;
     DayCounter dc;
 
     BlackONPricerVars(const Date& evalDate = Date(1, July, 2025)) {
         today = evalDate;
         dc = Actual360();
         Settings::instance().evaluationDate() = today;
-        auto optionletVol = makeQuoteHandle(0.01);
+        auto optionletVol = makeQuoteHandle(0.1);
 
         // Flat forward curve
         forecastCurve.linkTo(flatRate(today, 0.04, dc));
@@ -155,9 +154,9 @@ struct BlackONPricerVars {
         vol.linkTo(ext::make_shared<ConstantOptionletVolatility>(today, TARGET(), Following, optionletVol, dc));
     }
 
-    ext::shared_ptr<CappedFlooredOvernightIndexedCoupon> makeCoupon(Date start, Date end, Rate cap = Null<Rate>(), Rate floor = Null<Rate>(),
-                                                                    RateAveraging::Type avgMethod = RateAveraging::Compound) {
-        onCoupon = ext::make_shared<OvernightIndexedCoupon>(
+    ext::shared_ptr<OvernightIndexedCoupon> makeBaseCoupon(Date start, Date end,
+                                                           RateAveraging::Type avgMethod = RateAveraging::Compound) {
+        auto onCoupon = ext::make_shared<OvernightIndexedCoupon>(
             end, notional, start, end, sofr, 1.0, 0.0, Date(), Date(), dc,
             false, avgMethod, Null<Natural>(), 0, false, 
             false);
@@ -166,6 +165,13 @@ struct BlackONPricerVars {
             onCoupon->setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
         else
             onCoupon->setPricer(ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>());
+
+        return onCoupon;
+    }
+
+    ext::shared_ptr<CappedFlooredOvernightIndexedCoupon> makeCoupon(Date start, Date end, Rate cap = Null<Rate>(), Rate floor = Null<Rate>(),
+                                                                    RateAveraging::Type avgMethod = RateAveraging::Compound) {
+        auto onCoupon = makeBaseCoupon(start, end, avgMethod);
 
         return ext::make_shared<CappedFlooredOvernightIndexedCoupon>(onCoupon, cap, floor);
     }
@@ -760,17 +766,25 @@ BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
     BOOST_TEST_MESSAGE("Testing BlackOvernightIndexedCouponPricer caplet/floorlet pricing...");
 
     BlackONPricerVars vars;
-    Date start = Date(1, July, 2025);
-    Date end = Date(1, October, 2025);
+    Date start = Date(1, July, 2035);
+    Date end = Date(1, October, 2035);
+
+    // Vanilla
+    auto vanillaCoupon = vars.makeBaseCoupon(start, end);
+    auto pricer = ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(vars.vol);
+    vanillaCoupon->setPricer(pricer);
+
+    Rate rate = vanillaCoupon->rate();
+    Rate expectedRate = 0.039765917;
+    CHECK_OIS_COUPON_RESULT("Base Rate", rate, expectedRate, 1e-8);
 
     // Caplet
     Rate cap = 0.045;
     auto cappedCoupon = vars.makeCoupon(start, end, cap, Null<Rate>());
-    auto pricer = ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(vars.vol);
     cappedCoupon->setPricer(pricer);
 
-    Rate rate = cappedCoupon->rate();
-    Rate expectedRate = 0.040205142853869814;
+    rate = cappedCoupon->rate();
+    expectedRate = 0.036604717;
     BOOST_CHECK(rate <= cap + 1e-8); // Should not exceed cap
     CHECK_OIS_COUPON_RESULT("Capped Rate", rate, expectedRate, 1e-8);
 
@@ -781,13 +795,16 @@ BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
     BOOST_CHECK(!flooredCoupon->isCalculated());
 
     rate = flooredCoupon->rate();
+    expectedRate = 0.042502070;
     BOOST_CHECK(rate >= floor - 1e-8); // Should not be below floor
     CHECK_OIS_COUPON_RESULT("Floored Rate", rate, expectedRate, 1e-8);
 
     // Capped and Floored
     auto cappedFlooredCoupon = vars.makeCoupon(start, end, cap, floor);
     cappedFlooredCoupon->setPricer(pricer);
+
     rate = cappedFlooredCoupon->rate();
+    expectedRate = 0.039340869;
     BOOST_CHECK(rate <= cap + 1e-8 && rate >= floor - 1e-8);
     CHECK_OIS_COUPON_RESULT("Capped and Floored Rate", rate, expectedRate, 1e-8);
 }
@@ -796,32 +813,44 @@ BOOST_AUTO_TEST_CASE(testBlackAverageONIndexedCouponPricerCapletFloorlet) {
     BOOST_TEST_MESSAGE("Testing BlackAverageONIndexedCouponPricer caplet/floorlet pricing...");
 
     BlackONPricerVars vars;
-    Date start = Date(1, July, 2025);
-    Date end = Date(1, October, 2025);
+    Date start = Date(1, July, 2035);
+    Date end = Date(1, October, 2035);
+
+    // Vanilla
+    auto vanillaCoupon = vars.makeBaseCoupon(start, end, RateAveraging::Simple);
+    auto pricer = ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol);
+    vanillaCoupon->setPricer(pricer);
+
+    Rate rate = vanillaCoupon->rate();
+    Rate expectedRate = 0.039765917;
+    CHECK_OIS_COUPON_RESULT("Base Rate", rate, expectedRate, 1e-8);
 
     // Caplet
     Rate cap = 0.045;
     auto cappedCoupon = vars.makeCoupon(start, end, cap, Null<Rate>(), RateAveraging::Simple);
-    cappedCoupon->setPricer(ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol));
+    cappedCoupon->setPricer(pricer);
 
-    Rate rate = cappedCoupon->rate();
-    Rate expectedRate = 0.040004396561138286;
+    rate = cappedCoupon->rate();
+    expectedRate = 0.036488300;
     BOOST_CHECK(rate <= cap + 1e-8);
     CHECK_OIS_COUPON_RESULT("Capped Rate", rate, expectedRate, 1e-8);
 
     // Floorlet
     Rate floor = 0.035;
     auto flooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), floor, RateAveraging::Simple);
-    flooredCoupon->setPricer(ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol));
+    flooredCoupon->setPricer(pricer);
 
     rate = flooredCoupon->rate();
+    expectedRate = 0.042362746;
     BOOST_CHECK(rate >= floor - 1e-8);
     CHECK_OIS_COUPON_RESULT("Capped Rate", rate, expectedRate, 1e-8);
 
     // Capped and Floored
     auto cappedFlooredCoupon = vars.makeCoupon(start, end, cap, floor, RateAveraging::Simple);
-    cappedFlooredCoupon->setPricer(ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol));
+    cappedFlooredCoupon->setPricer(pricer);
+
     rate = cappedFlooredCoupon->rate();
+    expectedRate = 0.039281553;
     BOOST_CHECK(rate <= cap + 1e-8 && rate >= floor - 1e-8);
     CHECK_OIS_COUPON_RESULT("Capped and Floored Rate", rate, expectedRate, 1e-8);
 }
@@ -832,16 +861,16 @@ BOOST_AUTO_TEST_CASE(testBlackONPricerConsistencyWithNoVol) {
     BlackONPricerVars vars;
     auto optionletVol = makeQuoteHandle(0.0);
     vars.vol.linkTo(ext::make_shared<ConstantOptionletVolatility>(vars.today, TARGET(), Following, optionletVol, vars.dc));
-    Date start = Date(1, July, 2025);
-    Date end = Date(1, October, 2025);
+    Date start = Date(1, July, 2035);
+    Date end = Date(1, October, 2035);
 
-    auto cappedFlooredCoupon = vars.makeCoupon(start, end, Null<Rate>(), Null<Rate>());
+    auto cappedFlooredCoupon = vars.makeCoupon(start, end, 0.045, 0.035);
     auto blackPricer = ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(vars.vol);
     cappedFlooredCoupon->setPricer(blackPricer);
     Rate blackRate = cappedFlooredCoupon->rate();
 
     // Compare with standard compounding pricer
-    auto baseONCoupon = vars.onCoupon;
+    auto baseONCoupon = vars.makeBaseCoupon(start, end);
     baseONCoupon->setPricer(ext::make_shared<CompoundingOvernightIndexedCouponPricer>());
     Rate vanillaRate = baseONCoupon->rate();
 
@@ -956,7 +985,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
-    BOOST_TEST_MESSAGE("Testing Coupon Leg NPVs...");
+    BOOST_TEST_MESSAGE("Testing OvernightLeg NPVs...");
 
     CommonVarsONLeg vars;
     vars.setupForecastCurve();
