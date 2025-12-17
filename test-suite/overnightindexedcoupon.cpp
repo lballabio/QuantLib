@@ -227,9 +227,9 @@ struct CommonVarsONLeg {
         if (!caps.empty() || !floors.empty()) {
             rateVolTS.linkTo(returnRateVolTS());
             if (averaging == RateAveraging::Compound)
-                leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(rateVolTS));
+                leg.withCouponPricer(ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(rateVolTS));
             else
-                leg.withCapFlooredOvernightIndexedCouponPricer(ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(rateVolTS));
+                leg.withCouponPricer(ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(rateVolTS));
         }
         
         return leg;

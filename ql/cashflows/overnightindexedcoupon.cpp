@@ -550,7 +550,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withOvernightIndexedCouponPricer(const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer) {
+    OvernightLeg& OvernightLeg::withCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
         if (averagingMethod_ == RateAveraging::Compound)
             QL_REQUIRE(ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer), 
                         "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
@@ -558,20 +558,6 @@ namespace QuantLib {
             QL_REQUIRE(ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer), 
                         "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
         couponPricer_ = couponPricer;
-        return *this;
-    }
-
-    OvernightLeg& OvernightLeg::withCapFlooredOvernightIndexedCouponPricer(
-        const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
-        auto p = ext::dynamic_pointer_cast<BlackCompoundingOvernightIndexedCouponPricer>(couponPricer);
-        if (averagingMethod_ == RateAveraging::Compound) {
-            auto p = ext::dynamic_pointer_cast<BlackCompoundingOvernightIndexedCouponPricer>(couponPricer);
-            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackCompoundingOvernightIndexedCouponPricer");
-        } else {
-            auto p = ext::dynamic_pointer_cast<BlackAveragingOvernightIndexedCouponPricer>(couponPricer);
-            QL_REQUIRE(p, "Wrong coupon pricer provided, provide a BlackAveragingOvernightIndexedCouponPricer");
-        }
-        capFlooredCouponPricer_ = couponPricer;
         return *this;
     }
 
@@ -679,8 +665,8 @@ namespace QuantLib {
                 } else {
                     auto cfCpn = ext::make_shared<CappedFlooredOvernightIndexedCoupon>(cpn, cap, floor, nakedOption_,
                                                                                        dailyCapFloor_);
-                    if (capFlooredCouponPricer_) {
-                        cfCpn->setPricer(capFlooredCouponPricer_);
+                    if (couponPricer_) {
+                        cfCpn->setPricer(couponPricer_);
                     }
                     cashflows.push_back(cfCpn);
                 }
