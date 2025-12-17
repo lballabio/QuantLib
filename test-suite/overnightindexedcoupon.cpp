@@ -818,11 +818,11 @@ BOOST_AUTO_TEST_CASE(testBlackAverageONIndexedCouponPricerCapletFloorlet) {
 
     // Vanilla
     auto vanillaCoupon = vars.makeBaseCoupon(start, end, RateAveraging::Simple);
+    Rate expectedRate = vanillaCoupon->rate();
     auto pricer = ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol);
     vanillaCoupon->setPricer(pricer);
 
     Rate rate = vanillaCoupon->rate();
-    Rate expectedRate = 0.039765917;
     CHECK_OIS_COUPON_RESULT("Base Rate", rate, expectedRate, 1e-8);
 
     // Caplet

@@ -285,7 +285,7 @@ namespace QuantLib {
             QL_FAIL("Averaging method required to be simple for BlackAveragingOvernightIndexedCouponPricer");
 
         gearing_ = coupon.gearing();
-        swapletRate_ = coupon_->rate();
+        swapletRate_ = ArithmeticAveragedOvernightIndexedCouponPricer::swapletRate();
         forwardRate_ = (swapletRate_ - coupon_->spread()) / coupon_->gearing();
         effectiveCapletVolatility_ = effectiveFloorletVolatility_ = Null<Real>();
     }
