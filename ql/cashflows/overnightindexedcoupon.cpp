@@ -551,12 +551,6 @@ namespace QuantLib {
     }
 
     OvernightLeg& OvernightLeg::withCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
-        if (averagingMethod_ == RateAveraging::Compound)
-            QL_REQUIRE(ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer), 
-                        "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
-        else
-            QL_REQUIRE(ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer), 
-                        "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
         couponPricer_ = couponPricer;
         return *this;
     }
@@ -564,6 +558,15 @@ namespace QuantLib {
     OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
+
+        if (couponPricer_ != nullptr) {
+            if (averagingMethod_ == RateAveraging::Compound)
+                QL_REQUIRE(ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer_),
+                           "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
+            else
+                QL_REQUIRE(ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer_),
+                           "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
+        }
 
         Leg cashflows;
 
