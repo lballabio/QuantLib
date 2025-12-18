@@ -763,7 +763,7 @@ BOOST_AUTO_TEST_CASE(testErrorWhenLookbackOrLockoutAppliedForSimpleAveraging) {
 }
 
 BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
-    BOOST_TEST_MESSAGE("Testing BlackOvernightIndexedCouponPricer caplet/floorlet pricing...");
+    BOOST_TEST_MESSAGE("Testing Black compounding overnight-indexed coupon pricer...");
 
     BlackONPricerVars vars;
     Date start = Date(1, July, 2035);
@@ -771,11 +771,12 @@ BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
 
     // Vanilla
     auto vanillaCoupon = vars.makeBaseCoupon(start, end);
+    Rate expectedRate = vanillaCoupon->rate();
+
     auto pricer = ext::make_shared<BlackCompoundingOvernightIndexedCouponPricer>(vars.vol);
     vanillaCoupon->setPricer(pricer);
 
     Rate rate = vanillaCoupon->rate();
-    Rate expectedRate = 0.039765917;
     CHECK_OIS_COUPON_RESULT("Base Rate", rate, expectedRate, 1e-8);
 
     // Caplet
@@ -810,7 +811,7 @@ BOOST_AUTO_TEST_CASE(testBlackOvernightIndexedCouponPricerCapletFloorlet) {
 }
 
 BOOST_AUTO_TEST_CASE(testBlackAverageONIndexedCouponPricerCapletFloorlet) {
-    BOOST_TEST_MESSAGE("Testing BlackAverageONIndexedCouponPricer caplet/floorlet pricing...");
+    BOOST_TEST_MESSAGE("Testing Black averaging overnight-indexed coupon pricer...");
 
     BlackONPricerVars vars;
     Date start = Date(1, July, 2035);
@@ -819,6 +820,7 @@ BOOST_AUTO_TEST_CASE(testBlackAverageONIndexedCouponPricerCapletFloorlet) {
     // Vanilla
     auto vanillaCoupon = vars.makeBaseCoupon(start, end, RateAveraging::Simple);
     Rate expectedRate = vanillaCoupon->rate();
+
     auto pricer = ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol);
     vanillaCoupon->setPricer(pricer);
 
@@ -856,7 +858,7 @@ BOOST_AUTO_TEST_CASE(testBlackAverageONIndexedCouponPricerCapletFloorlet) {
 }
 
 BOOST_AUTO_TEST_CASE(testBlackONPricerConsistencyWithNoVol) {
-    BOOST_TEST_MESSAGE("Testing BlackOvernightIndexedCouponPricer with zero volatility (should match vanilla pricer)...");
+    BOOST_TEST_MESSAGE("Testing Black compounding pricer with zero volatility (should match vanilla pricer)...");
 
     BlackONPricerVars vars;
     auto optionletVol = makeQuoteHandle(0.0);
@@ -881,8 +883,34 @@ BOOST_AUTO_TEST_CASE(testBlackONPricerConsistencyWithNoVol) {
     CHECK_OIS_COUPON_RESULT("Zero capped coupon rate (same pricer)", blackRate, vanillaRate, 1e-10);
 }
 
+BOOST_AUTO_TEST_CASE(testBlackONAveragingPricerConsistencyWithNoVol) {
+    BOOST_TEST_MESSAGE("Testing Black averaging pricer with zero volatility (should match vanilla pricer)...");
+
+    BlackONPricerVars vars;
+    auto optionletVol = makeQuoteHandle(0.0);
+    vars.vol.linkTo(ext::make_shared<ConstantOptionletVolatility>(vars.today, TARGET(), Following, optionletVol, vars.dc));
+    Date start = Date(1, July, 2035);
+    Date end = Date(1, October, 2035);
+
+    auto cappedFlooredCoupon = vars.makeCoupon(start, end, 0.045, 0.035, RateAveraging::Simple);
+    auto blackPricer = ext::make_shared<BlackAveragingOvernightIndexedCouponPricer>(vars.vol);
+    cappedFlooredCoupon->setPricer(blackPricer);
+    Rate blackRate = cappedFlooredCoupon->rate();
+
+    // Compare with standard compounding pricer
+    auto baseONCoupon = vars.makeBaseCoupon(start, end, RateAveraging::Simple);
+    baseONCoupon->setPricer(ext::make_shared<ArithmeticAveragedOvernightIndexedCouponPricer>());
+    Rate vanillaRate = baseONCoupon->rate();
+
+    CHECK_OIS_COUPON_RESULT("Zero capped coupon rate", blackRate, vanillaRate, 1e-10);
+
+    baseONCoupon->setPricer(blackPricer);
+    vanillaRate = baseONCoupon->rate();
+    CHECK_OIS_COUPON_RESULT("Zero capped coupon rate (same pricer)", blackRate, vanillaRate, 1e-10);
+}
+
 BOOST_AUTO_TEST_CASE(testOvernightLegBasicFunctionality) {
-    BOOST_TEST_MESSAGE("Testing basic functionality of OvernightLeg...");
+    BOOST_TEST_MESSAGE("Testing basic functionality of overnight leg...");
 
     CommonVarsONLeg vars;
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -906,7 +934,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegBasicFunctionality) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegWithLookback) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg with lookback days...");
+    BOOST_TEST_MESSAGE("Testing overnight leg construction with lookback days...");
 
     CommonVarsONLeg vars;
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -926,7 +954,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithLookback) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegWithLockout) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg with lockout days...");
+    BOOST_TEST_MESSAGE("Testing overnight leg construction with lockout days...");
 
     CommonVarsONLeg vars;
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -944,7 +972,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithLockout) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegWithObservationShift) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg with observation shift...");
+    BOOST_TEST_MESSAGE("Testing overnight leg construction with observation shift...");
 
     CommonVarsONLeg vars;
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -961,7 +989,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithObservationShift) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg with gearings and spreads...");
+    BOOST_TEST_MESSAGE("Testing overnight leg construction with gearings and spreads...");
 
     CommonVarsONLeg vars;
     vars.setupForecastCurve();
@@ -985,7 +1013,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithGearingsAndSpreads) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg NPVs...");
+    BOOST_TEST_MESSAGE("Testing overnight leg NPV...");
 
     CommonVarsONLeg vars;
     vars.setupForecastCurve();
@@ -1005,7 +1033,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegNPV) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg with caps and floors...");
+    BOOST_TEST_MESSAGE("Testing overnight leg with caps and floors...");
 
     CommonVarsONLeg vars;
     vars.setupForecastCurve();
@@ -1040,7 +1068,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegWithCapsAndFloors) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegSimpleAveraging) {
-    BOOST_TEST_MESSAGE("Testing OvernightLeg with simple averaging...");
+    BOOST_TEST_MESSAGE("Testing overnight leg construction with simple averaging...");
 
     CommonVarsONLeg vars;
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
@@ -1057,7 +1085,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegSimpleAveraging) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightLegErrorConditions) {
-    BOOST_TEST_MESSAGE("Testing error conditions for OvernightLeg...");
+    BOOST_TEST_MESSAGE("Testing error conditions for overnight leg...");
 
     CommonVarsONLeg vars;
     vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
