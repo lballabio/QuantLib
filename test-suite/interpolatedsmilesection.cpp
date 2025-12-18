@@ -44,9 +44,13 @@ BOOST_AUTO_TEST_CASE(testInterpolationAndVariance) {
     BOOST_TEST_MESSAGE("Testing basic behaviour of Linear Interpolated Smile Section");
     // basic scenario: sorted strikes, constructor taking stdDevs (total std devs)
     Time expiry = 0.25; // 3 months
+    Real sqrtT = std::sqrt(expiry);
     std::vector<Rate> strikes{90.0, 100.0, 110};
     // total std deviations (i.e., sigma * sqrt(T))
-    std::vector<Real> stdDevs{0.20, 0.15, 0.18};
+    std::vector<Real> stdDevs{
+     0.20 * sqrtT,
+     0.15 * sqrtT,
+     0.18 * sqrtT};
     Real atmLevel = 95.0;
 
     auto section = ext::make_shared<InterpolatedSmileSection<Linear>>(
@@ -56,8 +60,6 @@ BOOST_AUTO_TEST_CASE(testInterpolationAndVariance) {
     // pick an interior strike 95 between 90 and 100
     Real strike = 95.0;
 
-    // vols stored internally are stdDev / sqrt(T)
-    Real sqrtT = std::sqrt(expiry);
     Real v90 = stdDevs[0] / sqrtT;
     Real v100 = stdDevs[1] / sqrtT;
     Real expectedVol = linearInterp(strike, 90.0, v90, 100.0, v100);
@@ -74,15 +76,18 @@ BOOST_AUTO_TEST_CASE(testExtrapolationWhenAllowed) {
     BOOST_TEST_MESSAGE("Testing extrapolation behavior of Linear Interpolated Smile Section");
     // test extrapolation behavior when flatStrikeExtrapolation=false
     Time expiry = 0.25;
+    Real sqrtT = std::sqrt(expiry);
     std::vector<Rate> strikes{90.0, 100.0, 110};
-    std::vector<Real> stdDevs{0.20, 0.15, 0.18};
+    std::vector<Real> stdDevs{
+     0.20 * sqrtT,
+     0.15 * sqrtT,
+     0.18 * sqrtT};
     Real atmLevel = 95.0;
 
     auto section = ext::make_shared<InterpolatedSmileSection<Linear>>(
         expiry, strikes, stdDevs, atmLevel
     );
 
-    Real sqrtT = std::sqrt(expiry);
     // compute expected extrapolated vol at strike 80 (below min strike 90)
     Real v90 = stdDevs[0] / sqrtT;
     Real v100 = stdDevs[1] / sqrtT;
@@ -105,12 +110,13 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
     BOOST_TEST_MESSAGE("Testing construction of Linear Interpolated Smile Section using Quote Handles for vols and updating them");
     // construct via Quote handles and verify changing the underlying quote updates the section
     Time expiry = 0.25;
+    Real sqrtT = std::sqrt(expiry);
     std::vector<Rate> strikes{80.0, 90.0, 100.0};
 
     // create SimpleQuote instances
-    ext::shared_ptr<SimpleQuote> q0(new SimpleQuote(0.20));
-    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15));
-    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18));
+    ext::shared_ptr<SimpleQuote> q0(new SimpleQuote(0.20 * sqrtT));
+    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15 * sqrtT));
+    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18 * sqrtT));
     std::vector<Handle<Quote>> stdDevHandles;
     stdDevHandles.emplace_back(Handle<Quote>(q0));
     stdDevHandles.emplace_back(Handle<Quote>(q1));
@@ -123,7 +129,6 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
         expiry, strikes, stdDevHandles, atmHandle
     );
 
-    Real sqrtT = std::sqrt(expiry);
     // current vol at 95
     Real v90 = q1->value() / sqrtT;
     Real v100 = q2->value() / sqrtT;
@@ -133,7 +138,7 @@ BOOST_AUTO_TEST_CASE(testHandlesUpdatePropagates) {
     BOOST_CHECK_CLOSE(section->volatilityImpl(95.0), expectedBefore, tol);
 
     // now change the middle quote q1 from 0.15 to 0.20
-    q1->setValue(0.20);
+    q1->setValue(0.20 * sqrtT);
 
     // after changing the quote, the section should reflect the new vol
     Real v90_after = q1->value() / sqrtT;
@@ -145,12 +150,13 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
     BOOST_TEST_MESSAGE("Testing flat strike extrapolation in Interpolated Smile Section");
     // construct via Quote handles and verify changing the underlying quote updates the section
     Time expiry = 0.25;
+    Real sqrtT = std::sqrt(expiry);
     std::vector<Rate> strikes{90.0, 100.0, 110.0};
 
     // create SimpleQuote instances
-    ext::shared_ptr<SimpleQuote> q0(new SimpleQuote(0.20));
-    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15));
-    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18));
+    ext::shared_ptr<SimpleQuote> q0(new SimpleQuote(0.20 * sqrtT));
+    ext::shared_ptr<SimpleQuote> q1(new SimpleQuote(0.15 * sqrtT));
+    ext::shared_ptr<SimpleQuote> q2(new SimpleQuote(0.18 * sqrtT));
     std::vector<Handle<Quote>> stdDevHandles;
     stdDevHandles.emplace_back(Handle<Quote>(q0));
     stdDevHandles.emplace_back(Handle<Quote>(q1));
@@ -164,7 +170,6 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
         Linear(), Actual365Fixed(), ShiftedLognormal, 0.0, true
     );
 
-    Real sqrtT = std::sqrt(expiry);
     // Check with strike lower than minStrike()
     Real v90 = q0->value() / sqrtT;
     Real strikeLow = 85.0;
@@ -179,7 +184,7 @@ BOOST_AUTO_TEST_CASE(testFlatStrikeExtrapolation) {
     BOOST_CHECK_CLOSE(section->volatilityImpl(strikeHigh), v110, tol);
 
     //Change minStrike vol quote and check if out-of-bounds vol is the same
-    q0->setValue(0.21);
+    q0->setValue(0.21 * sqrtT);
     Real v90_after = q0->value() / sqrtT;
     BOOST_CHECK_CLOSE(section->volatilityImpl(strikeLow), v90_after, tol);
 }
@@ -188,9 +193,13 @@ BOOST_AUTO_TEST_CASE(testErrorThrowingWhenNonSortedStrikes) {
     BOOST_TEST_MESSAGE("Testing throwin QuantLib::Error when creating Interpolated Smile section with non-sorted strikes");
     // basic scenario: sorted strikes, constructor taking stdDevs (total std devs)
     Time expiry = 0.25; // 3 months
+    Real sqrtT = std::sqrt(expiry);
     std::vector<Rate> strikes{90.0, 110.0, 100};
     // total std deviations (i.e., sigma * sqrt(T))
-    std::vector<Real> stdDevs{0.20, 0.15, 0.18};
+    std::vector<Real> stdDevs{
+     0.20 * sqrtT,
+     0.15 * sqrtT,
+     0.18 * sqrtT};
     Real atmLevel = 95.0;
 
     BOOST_CHECK_THROW(
@@ -204,3 +213,4 @@ BOOST_AUTO_TEST_CASE(testErrorThrowingWhenNonSortedStrikes) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
+
