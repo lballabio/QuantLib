@@ -401,8 +401,8 @@ namespace QuantLib {
     }
 
     void CappedFlooredOvernightIndexedCoupon::accept(AcyclicVisitor& v) {
-        Visitor<CappedFlooredOvernightIndexedCoupon>* v1 = dynamic_cast<Visitor<CappedFlooredOvernightIndexedCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CappedFlooredOvernightIndexedCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
@@ -417,7 +417,7 @@ namespace QuantLib {
     // OvernightLeg implementation
 
     OvernightLeg::OvernightLeg(const Schedule& schedule, const ext::shared_ptr<OvernightIndex>& i)
-    : schedule_(std::move(schedule)), overnightIndex_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
+    : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
 
