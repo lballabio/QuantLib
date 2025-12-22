@@ -489,11 +489,11 @@ namespace QuantLib {
     Rate BlackAveragingOvernightIndexedCouponPricer::swapletRate() const { return swapletRate_; }
 
     Rate BlackAveragingOvernightIndexedCouponPricer::capletRate(Rate effectiveCap) const {
-        return OvernightIndexedCouponPricer::capletRate(effectiveCap, false);
+        return capletRate(effectiveCap, false);
     }
 
     Rate BlackAveragingOvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor) const {
-        return OvernightIndexedCouponPricer::floorletRate(effectiveFloor, false);
+        return floorletRate(effectiveFloor, false);
     }
 
     Rate BlackAveragingOvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool dailyCapFloor) const {

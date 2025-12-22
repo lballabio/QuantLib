@@ -73,14 +73,6 @@ namespace QuantLib {
     Real OvernightIndexedCouponPricer::effectiveFloorletVolatility() const {
         return effectiveFloorletVolatility_;
     }
-
-    Rate OvernightIndexedCouponPricer::capletRate(Rate effectiveCap, bool dailyCapFloor) const {
-        QL_FAIL("OvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
-    }
-
-    Rate OvernightIndexedCouponPricer::floorletRate(Rate effectiveFloor, bool dailyCapFloor) const {
-        QL_FAIL("OvernightIndexedCouponPricer::capletRate(Rate, bool) not implemented");
-    }
     
     CompoundingOvernightIndexedCouponPricer::CompoundingOvernightIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
