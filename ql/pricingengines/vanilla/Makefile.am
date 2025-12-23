@@ -20,6 +20,7 @@ this_include_HEADERS = \
     batesengine.hpp \
     binomialengine.hpp \
     bjerksundstenslandengine.hpp \
+    cashdividendeuropeanengine.hpp \
     coshestonengine.hpp \
     discretizedvanillaoption.hpp \
     exponentialfittinghestonengine.hpp \
@@ -64,6 +65,7 @@ cpp_files = \
     baroneadesiwhaleyengine.cpp \
     batesengine.cpp \
     bjerksundstenslandengine.cpp \
+    cashdividendeuropeanengine.cpp \
     coshestonengine.cpp \
     discretizedvanillaoption.cpp \
     exponentialfittinghestonengine.cpp \

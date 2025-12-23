@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -75,6 +75,8 @@ namespace QuantLib {
     inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
                                                                       Handle<Quote> spread)
     : originalCurve_(std::move(h)), spread_(std::move(spread)) {
+        if (!originalCurve_.empty())
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
         registerWith(spread_);
     }
@@ -106,6 +108,7 @@ namespace QuantLib {
     inline void ForwardSpreadedTermStructure::update() {
         if (!originalCurve_.empty()) {
             YieldTermStructure::update();
+            enableExtrapolation(originalCurve_->allowsExtrapolation());
         } else {
             /* The implementation inherited from YieldTermStructure
                asks for our reference date, which we don't have since

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +29,14 @@ namespace QuantLib {
 
     ContinuousArithmeticAsianLevyEngine::ContinuousArithmeticAsianLevyEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Handle<Quote> currentAverage)
+    : process_(std::move(process)), currentAverage_(std::move(currentAverage)) {
+        registerWith(process_);
+        registerWith(currentAverage_);
+    }
+
+    ContinuousArithmeticAsianLevyEngine::ContinuousArithmeticAsianLevyEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Handle<Quote> currentAverage,
         Date startDate)
     : process_(std::move(process)), currentAverage_(std::move(currentAverage)),
@@ -42,8 +50,13 @@ namespace QuantLib {
                    "not an Arithmetic average option");
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
-        QL_REQUIRE(startDate_ <= process_->riskFreeRate()->referenceDate(),
-                   "startDate must be earlier than or equal to reference date");
+
+        // Prefer start date from option if available, otherwise use constructor parameter.
+        // At least one must be specified.
+        Date startDate = (arguments_.startDate != Date()) ? arguments_.startDate : startDate_;
+        QL_REQUIRE(startDate != Date(), "start date not provided");
+        QL_REQUIRE(startDate <= process_->riskFreeRate()->referenceDate(),
+                   "start date must be earlier than or equal to reference date");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
@@ -57,7 +70,7 @@ namespace QuantLib {
 
         // original time to maturity
         Date maturity = arguments_.exercise->lastDate();
-        Time T = rfdc.yearFraction(startDate_,
+        Time T = rfdc.yearFraction(startDate,
                                    arguments_.exercise->lastDate());
         // remaining time to maturity
         Time T2 = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
@@ -83,7 +96,7 @@ namespace QuantLib {
         Real X;
         if (T2 < T) {
             QL_REQUIRE(!currentAverage_.empty() && currentAverage_->isValid(),
-                       "current average required");
+                       "current average required for seasoned option");
             X = strike - ((T-T2)/T)*currentAverage_->value();
         } else {
             X = strike;

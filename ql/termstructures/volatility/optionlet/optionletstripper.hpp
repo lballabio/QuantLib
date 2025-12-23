@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -64,13 +64,15 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> iborIndex() const;
         Real displacement() const override;
         VolatilityType volatilityType() const override;
+        ext::optional<Period> optionletFrequency() const;
 
       protected:
         OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
                           ext::shared_ptr<IborIndex> iborIndex_,
                           Handle<YieldTermStructure> discount = {},
                           VolatilityType type = ShiftedLognormal,
-                          Real displacement = 0.0);
+                          Real displacement = 0.0,
+                          ext::optional<Period> optionletFrequency = ext::nullopt);
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Handle<YieldTermStructure> discount_;
@@ -90,6 +92,7 @@ namespace QuantLib {
         std::vector<Period> capFloorLengths_;
         const VolatilityType volatilityType_;
         const Real displacement_;
+        ext::optional<Period> optionletFrequency_;
     };
 
 }

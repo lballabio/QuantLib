@@ -1,22 +1,23 @@
 name: Fix inclusions of ql headers in double quotes
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'dependabot/**'
 jobs:
-  namespaces:
+  check-includes:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Check
       run: |
         shopt -s globstar
         sed -i -E -e 's|#include *"(ql/.*\.hpp)"|#include <\1>|g' **/*.[hc]pp
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
+        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
         branch: fix-include-in-quotes-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Fix inclusions of ql headers in double quotes'
         title: 'Fix inclusions of ql headers in double quotes'
-        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>

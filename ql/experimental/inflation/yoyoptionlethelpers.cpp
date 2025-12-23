@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -63,20 +63,6 @@ namespace QuantLib {
         yoyCapFloor_->setPricingEngine(pricer_);
         // haven't yet set the vol (term structure = surface)
     }
-
-    YoYOptionletHelper::YoYOptionletHelper(const Handle<Quote>& price,
-                                           Real notional,
-                                           YoYInflationCapFloor::Type capFloorType,
-                                           Period& lag,
-                                           DayCounter yoyDayCounter,
-                                           Calendar paymentCalendar,
-                                           Natural fixingDays,
-                                           ext::shared_ptr<YoYInflationIndex> index,
-                                           Rate strike,
-                                           Size n,
-                                           ext::shared_ptr<YoYInflationCapFloorEngine> pricer)
-    : YoYOptionletHelper(price, notional, capFloorType, lag, std::move(yoyDayCounter), std::move(paymentCalendar),
-                         fixingDays, std::move(index), CPI::AsIndex, strike, n, std::move(pricer)) {}
 
 
     Real YoYOptionletHelper::impliedQuote() const {

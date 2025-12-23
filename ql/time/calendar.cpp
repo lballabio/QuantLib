@@ -15,7 +15,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -277,9 +277,6 @@ namespace QuantLib {
     std::vector<Date> Calendar::holidayList(
         const Date& from, const Date& to, bool includeWeekEnds) const {
 
-        QL_REQUIRE(to>=from, "'from' date ("
-            << from << ") must be equal to or earlier than 'to' date ("
-            << to << ")");
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
             if (isHoliday(d) && (includeWeekEnds || !isWeekend(d.weekday())))
@@ -291,9 +288,6 @@ namespace QuantLib {
     std::vector<Date> Calendar::businessDayList(
         const Date& from, const Date& to) const {
 
-        QL_REQUIRE(to>=from, "'from' date ("
-            << from << ") must be equal to or earlier than 'to' date ("
-            << to << ")");
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
             if (isBusinessDay(d))

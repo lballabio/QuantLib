@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -94,29 +94,6 @@ namespace QuantLib {
           isFloored_(false), isCapped_(false) {
             setCommon(cap, floor);
         }
-
-        /*! \deprecated Use the overload that passes an interpolation type instead.
-                        Deprecated in version 1.36.
-        */
-        [[deprecated("Use the overload that passes an interpolation type instead")]]
-        CappedFlooredYoYInflationCoupon(const Date& paymentDate,
-                                        Real nominal,
-                                        const Date& startDate,
-                                        const Date& endDate,
-                                        Natural fixingDays,
-                                        const ext::shared_ptr<YoYInflationIndex>& index,
-                                        const Period& observationLag,
-                                        const DayCounter& dayCounter,
-                                        Real gearing = 1.0,
-                                        Spread spread = 0.0,
-                                        const Rate cap = Null<Rate>(),
-                                        const Rate floor = Null<Rate>(),
-                                        const Date& refPeriodStart = Date(),
-                                        const Date& refPeriodEnd = Date())
-        : CappedFlooredYoYInflationCoupon(paymentDate, nominal, startDate, endDate,
-                                          fixingDays, index, observationLag, CPI::AsIndex,
-                                          dayCounter, gearing, spread, cap, floor,
-                                          refPeriodStart, refPeriodEnd) {}
 
         //! \name augmented Coupon interface
         //@{

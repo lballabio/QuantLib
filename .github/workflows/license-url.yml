@@ -1,0 +1,22 @@
+name: Update old license links
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+jobs:
+  license-urls:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Check
+      run: |
+        shopt -s globstar
+        sed -i -e 's|http://quantlib\.org/license\.shtml|https://www.quantlib.org/license.shtml|g' **/*.[hc]pp **/*.ac **/*.docs **/*.cfg **/*.sh **/*.el
+    - uses: peter-evans/create-pull-request@v8
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: update-license-links-${{ github.ref_name }}
+        delete-branch: true
+        commit-message: 'Update old license links'
+        title: 'Update old license links'
+        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>

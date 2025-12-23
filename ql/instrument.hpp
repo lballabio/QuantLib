@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -55,6 +55,7 @@ namespace QuantLib {
         //! returns the date the net present value refers to.
         const Date& valuationDate() const;
 
+        const ext::shared_ptr<PricingEngine>& pricingEngine() const;
         //! returns any additional result returned by the pricing engine.
         template <typename T> T result(const std::string& tag) const;
         //! returns all additional result returned by the pricing engine.
@@ -182,6 +183,10 @@ namespace QuantLib {
         QL_REQUIRE(valuationDate_ != Date(),
                    "valuation date not provided");
         return valuationDate_;
+    }
+
+    inline const ext::shared_ptr<PricingEngine>& Instrument::pricingEngine() const {
+        return engine_;
     }
 
     template <class T>

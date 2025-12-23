@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -82,38 +82,11 @@ namespace QuantLib {
         : DailyTenorEURLibor(0, h) {}
     };
 
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLiborSW : public EURLibor {
-      public:
-        explicit EURLiborSW(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(1, Weeks), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor2W : public EURLibor {
-      public:
-        explicit EURLibor2W(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(2, Weeks), h) {}
-    };
-
     //! 1-month %EUR %Libor index
     class EURLibor1M : public EURLibor {
       public:
         explicit EURLibor1M(const Handle<YieldTermStructure>& h = {})
         : EURLibor(Period(1, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor2M : public EURLibor {
-      public:
-        explicit EURLibor2M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(2, Months), h) {}
     };
 
     //! 3-months %EUR %Libor index
@@ -123,74 +96,11 @@ namespace QuantLib {
         : EURLibor(Period(3, Months), h) {}
     };
 
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor4M : public EURLibor {
-      public:
-        explicit EURLibor4M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(4, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor5M : public EURLibor {
-      public:
-        explicit EURLibor5M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(5, Months), h) {}
-    };
-
     //! 6-months %EUR %Libor index
     class EURLibor6M : public EURLibor {
       public:
         explicit EURLibor6M(const Handle<YieldTermStructure>& h = {})
         : EURLibor(Period(6, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor7M : public EURLibor{
-      public:
-        explicit EURLibor7M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(7, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor8M : public EURLibor {
-      public:
-        explicit EURLibor8M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(8, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor9M : public EURLibor {
-      public:
-        explicit EURLibor9M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(9, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor10M : public EURLibor {
-      public:
-        explicit EURLibor10M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(10, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the EURLibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the EURLibor class with an explicit tenor instead")]] EURLibor11M : public EURLibor {
-      public:
-        explicit EURLibor11M(const Handle<YieldTermStructure>& h = {})
-        : EURLibor(Period(11, Months), h) {}
     };
 
     //! 1-year %EUR %Libor index

@@ -1,13 +1,13 @@
 name: Fix deprecated uses of ext namespace
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'dependabot/**'
 jobs:
-  namespaces:
+  check-namespaces:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Check
       run: |
         shopt -s globstar
@@ -20,11 +20,12 @@ jobs:
         sed -i -e 's/ext::make_tuple\b/std::make_tuple/g' **/*.[hc]pp
         sed -i -e 's/ext::get\b/std::get/g' **/*.[hc]pp
         sed -i -e 's/ext::tie\b/std::tie/g' **/*.[hc]pp
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
+        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib
         branch: fix-ext-namespace-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Fix deprecated uses of ext namespace'
         title: 'Fix deprecated uses of ext namespace'
-        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>

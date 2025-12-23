@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -45,24 +45,6 @@ namespace QuantLib {
                       dayCounter, refPeriodStart, refPeriodEnd),
       yoyIndex_(yoyIndex), interpolation_(interpolation), gearing_(gearing), spread_(spread) {}
 
-    YoYInflationCoupon::
-    YoYInflationCoupon(const Date& paymentDate,
-                       Real nominal,
-                       const Date& startDate,
-                       const Date& endDate,
-                       Natural fixingDays,
-                       const ext::shared_ptr<YoYInflationIndex>& yoyIndex,
-                       const Period& observationLag,
-                       const DayCounter& dayCounter,
-                       Real gearing,
-                       Spread spread,
-                       const Date& refPeriodStart,
-                       const Date& refPeriodEnd)
-    : YoYInflationCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, yoyIndex, observationLag, CPI::AsIndex,
-                         dayCounter, gearing, spread, refPeriodStart, refPeriodEnd) {}
-
-
     void YoYInflationCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<YoYInflationCoupon>*>(&v);
         if (v1 != nullptr)
@@ -89,13 +71,6 @@ namespace QuantLib {
                                      CPI::InterpolationType interpolation)
     : schedule_(std::move(schedule)), index_(std::move(index)), observationLag_(observationLag),
       interpolation_(interpolation), paymentCalendar_(std::move(paymentCalendar)) {}
-
-    yoyInflationLeg::yoyInflationLeg(Schedule schedule,
-                                     Calendar paymentCalendar,
-                                     ext::shared_ptr<YoYInflationIndex> index,
-                                     const Period& observationLag)
-    : yoyInflationLeg(std::move(schedule), std::move(paymentCalendar), std::move(index), observationLag, CPI::AsIndex) {}
-
 
     yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

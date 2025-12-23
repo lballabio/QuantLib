@@ -1,10 +1,14 @@
 name: CMake build
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
 jobs:
   cmake-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
@@ -36,7 +40,7 @@ jobs:
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         sudo rm /etc/apt/sources.list.d/microsoft-prod.list
@@ -63,7 +67,7 @@ jobs:
   cmake-win:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -75,10 +79,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://archives.boost.io/release/1.88.0/source/boost_1_88_0.zip"
+        $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
         Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
-        Rename-Item -Path "C:\local\boost_1_88_0" -NewName "boost"
+        Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -87,7 +91,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -106,7 +109,7 @@ jobs:
   cmake-win-dynamic-runtime:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -118,10 +121,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://archives.boost.io/release/1.88.0/source/boost_1_88_0.zip"
+        $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
         Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
-        Rename-Item -Path "C:\local\boost_1_88_0" -NewName "boost"
+        Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -130,7 +133,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -149,7 +151,7 @@ jobs:
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -161,10 +163,10 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://archives.boost.io/release/1.88.0/source/boost_1_88_0.zip"
+        $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
         Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
-        Rename-Item -Path "C:\local\boost_1_88_0" -NewName "boost"
+        Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
         $Url = "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\ninja-win.zip")
         Expand-Archive -Path "$RUNNER_TEMP\ninja-win.zip" -DestinationPath C:\local\ninja
@@ -173,7 +175,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: 2022
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost
@@ -190,7 +191,7 @@ jobs:
   cmake-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup
       env:
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1

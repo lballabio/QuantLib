@@ -113,9 +113,6 @@
     <ClCompile Include="creditdefaultswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="creditriskplus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="curvestates.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -374,6 +371,9 @@
     <ClCompile Include="sofrfutures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="softbarrieroption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="solvers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -535,6 +535,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="equitycashflow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="perpetualfutures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blackcalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bacheliercalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

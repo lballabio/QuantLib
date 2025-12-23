@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MulticurveBootstrapping", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EquityOption", "Examples\EquityOption\EquityOption.vcxproj", "{EF6D982C-CF99-4442-B297-776DBECFAFC9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsianOption", "Examples\AsianOption\AsianOption.vcxproj", "{A17D4799-97BF-410A-97C2-683F489A9DA8}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConvertibleBonds", "Examples\ConvertibleBonds\ConvertibleBonds.vcxproj", "{7C32702E-ED12-49F1-B476-656DD1EBCE66}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FRA", "Examples\FRA\FRA.vcxproj", "{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634}"
@@ -122,6 +124,22 @@ Global
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release|Win32.Build.0 = Release|Win32
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release|x64.ActiveCfg = Release|x64
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9}.Release|x64.Build.0 = Release|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug (static runtime)|x64.ActiveCfg = Debug (static runtime)|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug (static runtime)|x64.Build.0 = Debug (static runtime)|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug|Win32.Build.0 = Debug|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug|x64.ActiveCfg = Debug|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Debug|x64.Build.0 = Debug|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release (static runtime)|Win32.ActiveCfg = Release (static runtime)|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release (static runtime)|Win32.Build.0 = Release (static runtime)|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release (static runtime)|x64.ActiveCfg = Release (static runtime)|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release (static runtime)|x64.Build.0 = Release (static runtime)|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release|Win32.ActiveCfg = Release|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release|Win32.Build.0 = Release|Win32
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release|x64.ActiveCfg = Release|x64
+		{A17D4799-97BF-410A-97C2-683F489A9DA8}.Release|x64.Build.0 = Release|x64
 		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug (static runtime)|Win32.ActiveCfg = Debug (static runtime)|Win32
 		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug (static runtime)|Win32.Build.0 = Debug (static runtime)|Win32
 		{7C32702E-ED12-49F1-B476-656DD1EBCE66}.Debug (static runtime)|x64.ActiveCfg = Debug (static runtime)|x64
@@ -401,6 +419,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
 		{EF6D982C-CF99-4442-B297-776DBECFAFC9} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
+		{A17D4799-97BF-410A-97C2-683F489A9DA8} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
 		{7C32702E-ED12-49F1-B476-656DD1EBCE66} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
 		{B96E9E0A-99DA-4E9F-B8D0-941F46CDF634} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
 		{1B660588-A923-4D84-9092-16DA67869773} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}

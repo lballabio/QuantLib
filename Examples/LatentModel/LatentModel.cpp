@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -258,10 +258,8 @@ int main(int, char* []) {
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                    correlsTlm[iName1][iName2] << " , ";
-            ;
-                cout << endl;
+                cout << correlsTlm[iName1][iName2] << " , ";
+            cout << endl;
         }
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
@@ -277,10 +275,8 @@ int main(int, char* []) {
         cout << endl;
         for(Size iName1=0; iName1 <theBskt->size(); iName1++) {
             for(Size iName2=0; iName2 <theBskt->size(); iName2++)
-                cout << 
-                    correlsTrand[iName1][iName2] << " , ";
-            ;
-                cout << endl;
+                cout << correlsTrand[iName1][iName2] << " , ";
+            cout << endl;
         }
 
         return 0;

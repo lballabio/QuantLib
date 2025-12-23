@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,12 +20,12 @@
 #ifndef quantlib_saddle_point_lossmodel_hpp
 #define quantlib_saddle_point_lossmodel_hpp
 
-#include <ql/tuple.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
+#include <tuple>
 
 namespace QuantLib {
 
@@ -804,7 +804,7 @@ namespace QuantLib {
         //
         Probability pMaxName = copula_->conditionalDefaultProbabilityInvP(
             invUncondPs[iNamMax], iNamMax, mktFactor);
-        // aproximates the  saddle pt corresponding to this minimum; finds 
+        // approximates the  saddle pt corresponding to this minimum; finds 
         //   it by using only the smallest logistic term and thus this is 
         //   smaller than the true value:
         Real saddleMin = 1./(lgds[iNamMax]/remainingNotional_) * 

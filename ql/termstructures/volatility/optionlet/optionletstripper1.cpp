@@ -15,7 +15,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -43,8 +43,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& discount,
         const VolatilityType type,
         const Real displacement,
-        bool dontThrow)
-    : OptionletStripper(termVolSurface, index, discount, type, displacement),
+        bool dontThrow,
+        ext::optional<Period> optionletFrequency)
+    : OptionletStripper(termVolSurface, index, discount, type, displacement, optionletFrequency),
       floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 

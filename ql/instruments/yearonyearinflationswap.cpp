@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -76,22 +76,6 @@ namespace QuantLib {
             payer_[1] = -1.0;
         }
     }
-
-    YearOnYearInflationSwap::YearOnYearInflationSwap(Type type,
-                                                     Real nominal,
-                                                     Schedule fixedSchedule,
-                                                     Rate fixedRate,
-                                                     DayCounter fixedDayCount,
-                                                     Schedule yoySchedule,
-                                                     ext::shared_ptr<YoYInflationIndex> yoyIndex,
-                                                     const Period& observationLag,
-                                                     Spread spread,
-                                                     DayCounter yoyDayCount,
-                                                     Calendar paymentCalendar,
-                                                     BusinessDayConvention paymentConvention)
-    : YearOnYearInflationSwap(type, nominal, std::move(fixedSchedule), fixedRate, std::move(fixedDayCount),
-                              std::move(yoySchedule), std::move(yoyIndex), observationLag, CPI::AsIndex,
-                              spread, std::move(yoyDayCount), std::move(paymentCalendar), paymentConvention) {}
 
      void YearOnYearInflationSwap::setupArguments(PricingEngine::arguments* args) const {
 

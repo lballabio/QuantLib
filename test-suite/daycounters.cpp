@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -764,23 +764,41 @@ BOOST_AUTO_TEST_CASE(testThirty365) {
 
     BOOST_TEST_MESSAGE("Testing 30/365 day counter...");
 
-    Date d1(17,June,2011), d2(30,December,2012);
+    struct {
+        Date startDate;
+        Date endDate;
+        BigInteger expected;
+    } testCases[] = {
+        {Date(17, June, 2011), Date(30, December, 2012), 553},
+        // month end to month end
+        {Date(31, March, 2025), Date(30, April, 2025), 30},
+        // month end to 6 month ends later
+        {Date(30, September, 2024), Date(31, March, 2025), 180},
+        // no accrual beyond the 30th
+        {Date(30, March, 2025), Date(31, March, 2025), 0}
+    };
+
     DayCounter dayCounter = Thirty365();
+    for (const auto& testCase : testCases) {
+        Date d1 = testCase.startDate;
+        Date d2 = testCase.endDate;
+        BigInteger expectedDays = testCase.expected;
 
-    BigInteger days = dayCounter.dayCount(d1,d2);
-    if (days != 553) {
-        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
-                   << "    calculated: " << days << "\n"
-                   << "    expected:   " << 553);
-    }
+        BigInteger days = dayCounter.dayCount(d1, d2);
+        if (days != expectedDays) {
+            BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                       << "    calculated: " << days << "\n"
+                       << "    expected:   " << expectedDays);
+        }
 
-    Time t = dayCounter.yearFraction(d1,d2);
-    Time expected = 553/365.0;
-    if (std::fabs(t-expected) > 1.0e-12) {
-        BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
-                   << std::setprecision(12)
-                   << "    calculated: " << t << "\n"
-                   << "    expected:   " << expected);
+        Time t = dayCounter.yearFraction(d1, d2);
+        Time expectedTime = expectedDays / 365.0;
+        if (std::fabs(t - expectedTime) > 1.0e-12) {
+            BOOST_FAIL("from " << d1 << " to " << d2 << ":\n"
+                       << std::setprecision(12)
+                       << "    calculated: " << t << "\n"
+                       << "    expected:   " << expectedTime);
+        }
     }
 }
 
@@ -885,6 +903,60 @@ BOOST_AUTO_TEST_CASE(testThirty360_EurobondBasis) {
         {Date(29, February, 2008),  Date(28, February, 2009), 359},
         {Date(28, February, 2008),  Date(30, March, 2008),     32},
         {Date(28, February, 2008),  Date(31, March, 2008),     32}
+    };
+
+    for (auto x : data) {
+        Date::serial_type calculated = dayCounter.dayCount(x.start, x.end);
+        if (calculated != x.expected) {
+                BOOST_ERROR("from " << x.start
+                            << " to " << x.end << ":\n"
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << x.expected);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testThirty360_USA) {
+
+    BOOST_TEST_MESSAGE("Testing 30/360 day counter (USA)...");
+
+    // See https://en.wikipedia.org/wiki/Day_count_convention#30/360_US
+
+    DayCounter dayCounter = Thirty360(Thirty360::USA);
+
+    Thirty360Case data[] = {
+        // Example 1: End dates do not involve the last day of February
+        {Date(20, August, 2006),    Date(20, February, 2007), 180},
+        {Date(20, February, 2007),  Date(20, August, 2007),   180},
+        {Date(20, August, 2007),    Date(20, February, 2008), 180},
+        {Date(20, February, 2008),  Date(20, August, 2008),   180},
+        {Date(20, August, 2008),    Date(20, February, 2009), 180},
+        {Date(20, February, 2009),  Date(20, August, 2009),   180},
+
+        // Example 2: End dates include some end-February dates
+        {Date(31, August, 2006),    Date(28, February, 2007), 178},
+        {Date(28, February, 2007),  Date(31, August, 2007),   180},
+        {Date(31, August, 2007),    Date(29, February, 2008), 179},
+        {Date(29, February, 2008),  Date(31, August, 2008),   180},
+        {Date(31, August, 2008),    Date(28, February, 2009), 178},
+        {Date(28, February, 2009),  Date(31, August, 2009),   180},
+
+        // Example 3: Miscellaneous calculations
+        {Date(31, January, 2006),   Date(28, February, 2006),  28},
+        {Date(30, January, 2006),   Date(28, February, 2006),  28},
+        {Date(28, February, 2006),  Date(3, March, 2006),       3},
+        {Date(14, February, 2006),  Date(28, February, 2006),  14},
+        {Date(30, September, 2006), Date(31, October, 2006),   30},
+        {Date(31, October, 2006),   Date(28, November, 2006),  28},
+        {Date(31, August, 2007),    Date(28, February, 2008), 178},
+        {Date(28, February, 2008),  Date(28, August, 2008),   180},
+        {Date(28, February, 2008),  Date(30, August, 2008),   182},
+        {Date(28, February, 2008),  Date(31, August, 2008),   183},
+        {Date(26, February, 2007),  Date(28, February, 2008), 362},
+        {Date(26, February, 2007),  Date(29, February, 2008), 363},
+        {Date(29, February, 2008),  Date(28, February, 2009), 360},
+        {Date(28, February, 2008),  Date(30, March, 2008),     32},
+        {Date(28, February, 2008),  Date(31, March, 2008),     33}
     };
 
     for (auto x : data) {

@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -858,7 +858,7 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
     BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
 
     Real diffNpv = std::abs(escrowedNpv - spotNpv);
-    Real tol = 5e-2;
+    const Real tol = 5e-2;
 
     if (diffNpv > tol) {
         BOOST_FAIL("failed to compare American option NPV with "
@@ -871,7 +871,6 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
 
     const Real diffDelta = std::abs(escrowedDelta - spotDelta);
 
-    tol = 1e-3;
     if (diffDelta > tol) {
         BOOST_FAIL("failed to compare American option Delta with "
                    "escrowed and spot dividend model "
@@ -909,7 +908,6 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
     BOOST_CHECK_NO_THROW(option.theta());
 
     diffNpv = std::abs(escrowedNpv - spotNpv);
-    tol = 5e-2;
 
     if (diffNpv > tol) {
         BOOST_FAIL("failed to compare American option NPV with "

@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -190,10 +190,15 @@ namespace QuantLib {
     }
 
     inline const Date& Schedule::startDate() const {
+        QL_REQUIRE(!dates_.empty(), "empty Schedule: no start date"); 
         return dates_.front();
     }
 
-    inline const Date &Schedule::endDate() const { return dates_.back(); }
+    inline const Date &Schedule::endDate() const {
+        // Checks to avoid segfault, issue #2302
+        QL_REQUIRE(!dates_.empty(), "empty Schedule: no end date"); 
+        return dates_.back(); 
+    }
 
     inline bool Schedule::hasTenor() const {
         return static_cast<bool>(tenor_);

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -82,7 +82,7 @@ namespace QuantLib {
 
       A bad fit to the initial yield term structure may be due to a non suitable
       input smile or accumulating numerical errors in very long term calibrations.
-      The former point is adressed by smile pretreatment options. The latter point
+      The former point is addressed by smile pretreatment options. The latter point
       may be tackled by higher values for the numerical parameters possibly
       together with NTL high precision computing.
 

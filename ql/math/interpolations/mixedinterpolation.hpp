@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,7 +32,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        template<class I1, class I2, class Ia, class Ib>
+        template <class I1, class I2>
         class MixedInterpolationImpl;
 
     }
@@ -68,13 +68,12 @@ namespace QuantLib {
                                       Real leftConditionValue,
                                       CubicInterpolation::BoundaryCondition rightC,
                                       Real rightConditionValue) {
-            impl_ = ext::shared_ptr<Interpolation::Impl>(new
-                detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
-                    xBegin, xEnd, yBegin, n, behavior,
-                    Linear(),
-                    Cubic(da, monotonic,
-                          leftC, leftConditionValue,
-                          rightC, rightConditionValue)));
+            impl_ = ext::make_shared<detail::MixedInterpolationImpl<I1, I2>>(
+                xBegin, xEnd, yBegin, n, behavior,
+                Linear(),
+                Cubic(da, monotonic,
+                      leftC, leftConditionValue,
+                      rightC, rightConditionValue));
             impl_->update();
         }
     };
@@ -205,28 +204,28 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <class I1, class I2, class Interpolator1, class Interpolator2>
+        template <class I1, class I2>
         class MixedInterpolationImpl
-            : public Interpolation::templateImpl<I1,I2> {
+            : public Interpolation::templateImpl<I1, I2> {
           public:
+            template <class Interpolator1, class Interpolator2>
             MixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                    const I2& yBegin, Size n,
-                                   MixedInterpolation::Behavior behavior
-                                            = MixedInterpolation::ShareRanges,
-                                   const Interpolator1& factory1 = Interpolator1(),
-                                   const Interpolator2& factory2 = Interpolator2())
-            : Interpolation::templateImpl<I1,I2>(
-                               xBegin, xEnd, yBegin,
-                               std::max(Size(Interpolator1::requiredPoints),
-                                        Size(Interpolator2::requiredPoints))),
-              n_(n) {
+                                   MixedInterpolation::Behavior behavior,
+                                   const Interpolator1& factory1,
+                                   const Interpolator2& factory2)
+            : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1) {
+                Size maxN = static_cast<Size>(xEnd - xBegin);
+                // SplitRanges needs xBegin2_+1 to be valid
+                if (behavior == MixedInterpolation::SplitRanges) {
+                    --maxN;
+                }
+                // This only checks that we pass valid iterators into interpolate()
+                // calls below. The calls themselves check requiredPoints for each
+                // of the segments.
+                QL_REQUIRE(n <= maxN, "n is too large (" << n << " > " << maxN << ")");
 
-                xBegin2_ = this->xBegin_ + n_;
-                yBegin2_ = this->yBegin_ + n_;
-
-                QL_REQUIRE(xBegin2_<this->xEnd_,
-                           "too large n (" << n << ") for " <<
-                           this->xEnd_-this->xBegin_ << "-element x sequence");
+                xBegin2_ = this->xBegin_ + n;
 
                 switch (behavior) {
                   case MixedInterpolation::ShareRanges:
@@ -239,11 +238,11 @@ namespace QuantLib {
                     break;
                   case MixedInterpolation::SplitRanges:
                     interpolation1_ = factory1.interpolate(this->xBegin_,
-                                                           this->xBegin2_+1,
+                                                           this->xBegin2_ + 1,
                                                            this->yBegin_);
                     interpolation2_ = factory2.interpolate(this->xBegin2_,
                                                            this->xEnd_,
-                                                           this->yBegin2_);
+                                                           this->yBegin_ + n);
                     break;
                   default:
                     QL_FAIL("unknown mixed-interpolation behavior: " << behavior);
@@ -255,32 +254,29 @@ namespace QuantLib {
                 interpolation2_.update();
             }
             Real value(Real x) const {
-                if (x<*(this->xBegin2_))
+                if (x<*xBegin2_)
                     return interpolation1_(x, true);
                 return interpolation2_(x, true);
             }
             Real primitive(Real x) const {
-                if (x<*(this->xBegin2_))
+                if (x<*xBegin2_)
                     return interpolation1_.primitive(x, true);
                 return interpolation2_.primitive(x, true) -
                     interpolation2_.primitive(*xBegin2_, true) +
                     interpolation1_.primitive(*xBegin2_, true);
             }
             Real derivative(Real x) const {
-                if (x<*(this->xBegin2_))
+                if (x<*xBegin2_)
                     return interpolation1_.derivative(x, true);
                 return interpolation2_.derivative(x, true);
             }
             Real secondDerivative(Real x) const {
-                if (x<*(this->xBegin2_))
+                if (x<*xBegin2_)
                     return interpolation1_.secondDerivative(x, true);
                 return interpolation2_.secondDerivative(x, true);
             }
-            Size switchIndex() { return n_; }
           private:
             I1 xBegin2_;
-            I2 yBegin2_;
-            Size n_;
             Interpolation interpolation1_, interpolation2_;
         };
 

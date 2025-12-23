@@ -16,14 +16,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         run: |
-          $Url = "https://archives.boost.io/release/1.88.0/source/boost_1_88_0.zip"
+          $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
           (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
           Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
-          Rename-Item -Path "C:\local\boost_1_88_0" -NewName "boost"
+          Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
 
       - name: Configure CMake
         env:
@@ -42,12 +42,12 @@ jobs:
           ruleset: '${{ github.workspace }}/.msvc-analysis.ruleset'
 
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.run-analysis.outputs.sarif }}
 
       - name: Upload SARIF as an Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sarif-file
           path: ${{ steps.run-analysis.outputs.sarif }}

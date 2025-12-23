@@ -10,16 +10,18 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/fx/blackdeltacalculator.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
 
 namespace QuantLib {
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     BlackDeltaCalculator::BlackDeltaCalculator(
                         Option::Type ot,
@@ -46,8 +48,8 @@ namespace QuantLib {
                    "non-negative standard deviation required: "
                    << stdDev_ << " not allowed");
 
-        fExpPos_    =forward_*std::exp(0.5*stdDev_*stdDev_);
-        fExpNeg_    =forward_*std::exp(-0.5*stdDev_*stdDev_);
+        fExpPos_    = forward_ * std::exp(0.5 * stdDev_ * stdDev_);
+        fExpNeg_    = forward_ * std::exp(-0.5 * stdDev_ * stdDev_);
     }
 
 
@@ -57,23 +59,23 @@ namespace QuantLib {
                    "positive strike value required: " <<
                    strike << " not allowed");
 
-        Real res=0.0;
+        Real res = 0.0;
 
         switch(dt_){
           case DeltaVolQuote::Spot:
-            res=phi_*fDiscount_*cumD1(strike);
+            res = phi_ * fDiscount_ * cumD1(strike);
             break;
 
           case DeltaVolQuote::Fwd:
-            res=phi_*cumD1(strike);
+            res = phi_ * cumD1(strike);
             break;
 
           case DeltaVolQuote::PaSpot:
-            res=phi_*fDiscount_*cumD2(strike)*strike/forward_;
+            res = phi_ * fDiscount_ * cumD2(strike) * strike / forward_;
             break;
 
           case DeltaVolQuote::PaFwd:
-            res=phi_*cumD2(strike)*strike/forward_;
+            res = phi_ * cumD2(strike) * strike/  forward_;
             break;
 
           default:
@@ -89,27 +91,27 @@ namespace QuantLib {
     Real BlackDeltaCalculator::strikeFromDelta(Real delta,
                                                DeltaVolQuote::DeltaType dt)
                                                                         const{
-        Real res=0.0;
-        Real arg=0.0;
-        InverseCumulativeNormal f;
+        Real res = 0.0;
+        Real arg = 0.0;
+        InverseCumulativeNormal invNorm;
 
-        QL_REQUIRE(delta*phi_>=0.0, "Option type and delta are incoherent.");
+        QL_REQUIRE(delta*phi_ >= 0.0, "Option type and delta are incoherent.");
 
         switch (dt) {
           case DeltaVolQuote::Spot:
             QL_REQUIRE(std::fabs(delta)<=fDiscount_,
                        "Spot delta out of range.");
 
-            arg=-phi_*f(phi_*delta/fDiscount_)*stdDev_+0.5*stdDev_*stdDev_;
-            res=forward_*std::exp(arg);
+            arg = -phi_ * invNorm(phi_ * delta / fDiscount_) * stdDev_ + 0.5 * stdDev_ * stdDev_;
+            res = forward_ * std::exp(arg);
             break;
 
           case DeltaVolQuote::Fwd:
             QL_REQUIRE(std::fabs(delta)<=1.0,
                        "Forward delta out of range.");
 
-            arg=-phi_*f(phi_*delta)*stdDev_+0.5*stdDev_*stdDev_;
-            res=forward_*std::exp(arg);
+            arg = -phi_ * invNorm(phi_ * delta) * stdDev_ + 0.5 * stdDev_ * stdDev_;
+            res = forward_ * std::exp(arg);
             break;
 
           case DeltaVolQuote::PaSpot:
@@ -126,42 +128,42 @@ namespace QuantLib {
               // run into the area on the left of the maximum.  The
               // put delta doesn't have this property and can be
               // solved without any problems, but also numerically.
-
-              BlackDeltaPremiumAdjustedSolverClass f(
-                       ot_, dt , spot_,dDiscount_, fDiscount_, stdDev_,delta);
+              auto f = [&](Real strike) {
+                return deltaFromStrike(strike) - delta;
+              };
 
               Brent solver;
               solver.setMaxEvaluations(1000);
               Real accuracy = 1.0e-10;
 
-              Real rightLimit=0.0;
-              Real leftLimit=0.0;
+              Real rightLimit = 0.0;
+              Real leftLimit = 0.0;
 
               // Strike of not premium adjusted is always to the right of premium adjusted
-              if (dt==DeltaVolQuote::PaSpot) {
-                  rightLimit=strikeFromDelta(delta, DeltaVolQuote::Spot);
+              if (dt == DeltaVolQuote::PaSpot) {
+                  rightLimit = strikeFromDelta(delta, DeltaVolQuote::Spot);
               } else {
-                  rightLimit=strikeFromDelta(delta, DeltaVolQuote::Fwd);
+                  rightLimit = strikeFromDelta(delta, DeltaVolQuote::Fwd);
               }
 
-              if (phi_<0) { // if put
-                  res=solver.solve(f, accuracy, rightLimit, 0.0, spot_*100.0);
+              if (phi_ < 0) { // if put
+                  res = solver.solve(f, accuracy, rightLimit, 0.0, spot_*100.0);
                   break;
               } else {
 
                   // find out the left limit which is the strike
                   // corresponding to the value where premium adjusted
-                  // deltas have their maximum.
+                  // deltas have their maximum
+                  auto g = [&](Real strike) {
+                    return cumD2(strike) * stdDev_ - nD2(strike);
+                  };
 
-                  BlackDeltaPremiumAdjustedMaxStrikeClass g(
-                               ot_,dt, spot_,dDiscount_, fDiscount_, stdDev_);
-
-                  leftLimit=solver.solve(g, accuracy, rightLimit*0.5,
+                  leftLimit = solver.solve(g, accuracy, rightLimit * 0.5,
                                          0.0, rightLimit);
 
-                  Real guess=leftLimit+(rightLimit-leftLimit)*0.5;
+                  Real guess = leftLimit+(rightLimit - leftLimit) * 0.5;
 
-                  res=solver.solve(f, accuracy, guess, leftLimit, rightLimit);
+                  res = solver.solve(f, accuracy, guess, leftLimit, rightLimit);
               } // end if phi<0 else
 
               break;
@@ -176,33 +178,33 @@ namespace QuantLib {
 
     Real BlackDeltaCalculator::atmStrike(DeltaVolQuote::AtmType atmT) const {
 
-        Real res=0.0;
+        Real res = 0.0;
 
         switch(atmT) {
           case DeltaVolQuote::AtmSpot:
-            res=spot_;
+            res = spot_;
             break;
 
           case DeltaVolQuote::AtmDeltaNeutral:
-            if(dt_==DeltaVolQuote::Spot || dt_==DeltaVolQuote::Fwd){
-                res=fExpPos_;
+            if(dt_ == DeltaVolQuote::Spot || dt_ == DeltaVolQuote::Fwd){
+                res = fExpPos_;
             } else {
-                res=fExpNeg_;
+                res = fExpNeg_;
             }
             break;
 
           case DeltaVolQuote::AtmFwd:
-            res=forward_;
+            res = forward_;
             break;
 
           case DeltaVolQuote::AtmGammaMax: case DeltaVolQuote::AtmVegaMax:
-            res=fExpPos_;
+            res = fExpPos_;
             break;
 
           case DeltaVolQuote::AtmPutCall50:
-            QL_REQUIRE(dt_==DeltaVolQuote::Fwd,
+            QL_REQUIRE(dt_ == DeltaVolQuote::Fwd,
                        "|PutDelta|=CallDelta=0.50 only possible for forward delta.");
-            res=fExpPos_;
+            res = fExpPos_;
             break;
 
           default:
@@ -354,4 +356,5 @@ namespace QuantLib {
         return bdc_.cumD2(strike)*stdDev_ - bdc_.nD2(strike);
     }
 
+    QL_DEPRECATED_ENABLE_WARNING
 }

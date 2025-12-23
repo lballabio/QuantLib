@@ -6,6 +6,7 @@ set(QL_TEST_SOURCES
     asianoptions.cpp
     assetswap.cpp
     autocovariances.cpp
+	bacheliercalculator.cpp
     barrieroption.cpp
     basismodels.cpp
     basisswapratehelpers.cpp
@@ -14,6 +15,7 @@ set(QL_TEST_SOURCES
     bermudanswaption.cpp
     binaryoption.cpp
     blackdeltacalculator.cpp
+	blackcalculator.cpp
     blackformula.cpp
     bondforward.cpp
     bonds.cpp
@@ -128,6 +130,7 @@ set(QL_TEST_SOURCES
     partialtimebarrieroption.cpp
     pathgenerator.cpp
     period.cpp
+    perpetualfutures.cpp
     piecewiseyieldcurve.cpp
     piecewisezerospreadedtermstructure.cpp
     preconditions.cpp
@@ -144,6 +147,7 @@ set(QL_TEST_SOURCES
     settings.cpp
     shortratemodels.cpp
     sofrfutures.cpp
+    softbarrieroption.cpp
     solvers.cpp
     spreadoption.cpp
     squarerootclvmodel.cpp

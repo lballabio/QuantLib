@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -226,7 +226,7 @@ namespace QuantLib {
         std::pair<Date, Date> fixingPeriod = inflationPeriod(fixingDate, frequency_);
 
         Date firstDateInPeriod = fixingPeriod.first;
-        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
+        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, false);
         Time t1 = inflationYearFraction(frequency_, false, zeroInflation_->dayCounter(),
                                         baseDate, firstDateInPeriod);
         return baseFixing * std::pow(1.0 + Z1, t1);
@@ -381,7 +381,7 @@ namespace QuantLib {
             std::pair<Date,Date> fixingPeriod = inflationPeriod(fixingDate, frequency_);
             d = fixingPeriod.first;
         }
-        return yoyInflation_->yoyRate(d,0*Days);
+        return yoyInflation_->yoyRate(d);
     }
 
     ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(

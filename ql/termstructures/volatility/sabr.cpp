@@ -14,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -319,7 +319,7 @@ namespace QuantLib {
 
               // equations (32)
 
-              Real alpha = sigma_0 * std::pow(f + b, 1.0-beta);
+              Real alpha = sigma_0 * std::pow(f + b, 1.0-beta); // NOLINT(clang-analyzer-deadcode.DeadStores)
               Real nu2 =
                   3 * sigma_0 * sigma_2
                   - 0.5 * squared(1-beta) * sigma_0 * sigma_0
@@ -350,7 +350,7 @@ namespace QuantLib {
 
               // equations (37)
 
-              Real alpha = sigma_0 * std::pow(f + b, -beta);
+              Real alpha = sigma_0 * std::pow(f + b, -beta); // NOLINT(clang-analyzer-deadcode.DeadStores)
               Real nu2 = squared(1 / (f + b)) * (
                   3 * sigma_0 * sigma_2
                   - 0.5 * (beta*beta + beta) * (sigma_0*sigma_0)

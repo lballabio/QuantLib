@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -269,6 +269,19 @@ int main(int, char* []) {
                                                     max);
 
         printOutput("(g) exponential splines, fixed kappa", ts7);
+        
+        NaturalCubicFitting naturalSplines({ 5, 10, 15, 20, 25 });
+        auto ts8 =
+            ext::make_shared<FittedBondDiscountCurve>(
+                curveSettlementDays,
+                calendar,
+                instrumentsA,
+                dc,
+                naturalSplines,
+                tolerance,
+                max);
+
+        printOutput("(h) natural cubic splines", ts8);
 
         cout << "Output par rates for each curve. In this case, "
              << endl
@@ -285,7 +298,8 @@ int main(int, char* []) {
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
              << setw(6) << "(f)" << " | "
-             << setw(6) << "(g)" << endl;
+             << setw(6) << "(g)" << " | "
+             << setw(6) << "(h)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -331,7 +345,11 @@ int main(int, char* []) {
                  << 100.*parRate(*ts6,keyDates,dc) << " | "
                  // Exponential, fixed kappa
                  << setw(6) << fixed << setprecision(3) 
-                 << 100. *parRate(*ts7, keyDates, dc) << endl;
+                 << 100. *parRate(*ts7, keyDates, dc) << " | "
+                 // natural cubic spline
+                << setw(6) << fixed << setprecision(3)
+                << 100.*parRate(*ts8, keyDates, dc) << endl;
+
         }
 
         cout << endl << endl << endl;
@@ -362,6 +380,8 @@ int main(int, char* []) {
 
         printOutput("(g) exponential spline, fixed kappa", ts7);
 
+        printOutput("(h) natural cubic splines", ts8);
+
         cout << endl
              << endl;
 
@@ -375,7 +395,8 @@ int main(int, char* []) {
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
              << setw(6) << "(f)" << " | "
-             << setw(6) << "(g)" << endl;
+             << setw(6) << "(g)" << " | "
+             << setw(6) << "(h)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -421,7 +442,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts6,keyDates,dc) << " | "
                  // exponential, fixed kappa
                  << setw(6) << fixed << setprecision(3) 
-                 << 100. * parRate(*ts7, keyDates, dc) << endl;
+                 << 100. * parRate(*ts7, keyDates, dc) << " | "
+                 // natural cubic spline
+                << setw(6) << fixed << setprecision(3)
+                << 100.*parRate(*ts8, keyDates, dc) << endl;
         }
 
         cout << endl << endl << endl;
@@ -519,6 +543,16 @@ int main(int, char* []) {
 
         printOutput("(g) exponential, fixed kappa", ts77);
 
+        auto ts88 = ext::make_shared<FittedBondDiscountCurve>(curveSettlementDays,
+                                                    calendar,
+                                                    instrumentsA,
+                                                    dc,
+                                                    naturalSplines,
+                                                    tolerance,
+                                                    max);
+
+        printOutput("(h) natural cubic splines", ts88);
+
         cout << setw(6) << "tenor" << " | "
              << setw(6) << "coupon" << " | "
              << setw(6) << "bstrap" << " | "
@@ -528,7 +562,8 @@ int main(int, char* []) {
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
              << setw(6) << "(f)" << " | "
-             << setw(6) << "(g)" << endl;
+             << setw(6) << "(g)" << " | "
+             << setw(6) << "(h)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -574,7 +609,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts66,keyDates,dc) << " | "
                  // exponential, fixed kappa
                  << setw(6) << fixed << setprecision(3) 
-                 << 100. *parRate(*ts77, keyDates, dc) << endl;
+                 << 100. *parRate(*ts77, keyDates, dc) << " | "
+                 // natural cubic spline
+                << setw(6) << fixed << setprecision(3)
+                << 100.*parRate(*ts88, keyDates, dc) << endl;
         }
 
 
@@ -614,7 +652,8 @@ int main(int, char* []) {
              << setw(6) << "(d)" << " | "
              << setw(6) << "(e)" << " | "
              << setw(6) << "(f)" << " | "
-             << setw(6) << "(g)" << endl;
+             << setw(6) << "(g)" << " | "
+             << setw(6) << "(h)" << endl;
 
         for (Size i=0; i<instrumentsA.size(); i++) {
 
@@ -660,7 +699,10 @@ int main(int, char* []) {
                  << 100.*parRate(*ts66,keyDates,dc) << " | "
                  // exponential spline, fixed kappa
                  << setw(6) << fixed << setprecision(3) 
-                 << 100. *parRate(*ts77, keyDates, dc) << endl;
+                 << 100. *parRate(*ts77, keyDates, dc) << " | "
+                 // natural cubic spline
+                << setw(6) << fixed << setprecision(3)
+                << 100.*parRate(*ts88, keyDates, dc) << endl;
         }
 
         return 0;

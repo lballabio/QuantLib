@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -70,8 +70,12 @@ namespace QuantLib {
         const detail::VectorBsmProcessExtractor pExtractor(processes_);
         const Array s = pExtractor.getSpot();
         const Array dq = pExtractor.getDividendYieldDf(maturityDate);
-        const Array stdDev = Sqrt(pExtractor.getBlackVariance(maturityDate));
         const DiscountFactor dr0 = pExtractor.getInterestRateDf(maturityDate);
+
+        Array stdDev = Sqrt(pExtractor.getBlackVariance(maturityDate));
+        std::transform(stdDev.begin(), stdDev.end(), stdDev.begin(),
+            [](Real x) -> Real { return std::max(QL_EPSILON*QL_EPSILON, x); }
+        );
 
         const Array fwd = s * dq/dr0;
 
@@ -89,6 +93,7 @@ namespace QuantLib {
         QL_REQUIRE(avgPayoff, "average or spread basket payoff expected");
 
         const Array weights = avgPayoff->weights();
+
         QL_REQUIRE(n_ == weights.size() && n_ > 1,
              "wrong number of weights arguments in payoff");
 
@@ -154,6 +159,7 @@ namespace QuantLib {
                 nIntOrder[i] = Size(std::lround(1 + intScale*sv[i]));
 
             lambda*=0.9;
+
             QL_REQUIRE(lambda/lambda_ > 1e-10,
                 "can not rescale lambda to fit max integration order");
         } while (std::accumulate(

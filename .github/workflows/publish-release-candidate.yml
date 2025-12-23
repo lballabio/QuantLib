@@ -1,0 +1,42 @@
+name: Publish release candidate
+on:
+  push:
+    tags:
+      - 'v1.*-rc'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish-rc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+    - name: Setup
+      run: |
+        sudo apt update
+        sudo apt install -y libboost-dev tofrodos
+        ./autogen.sh
+        ./configure
+    - name: Make tarballs
+      run: |
+        mkdir tarballs
+        make dist
+        mv QuantLib-*.tar.gz tarballs
+        cd tarballs && ../tools/tgz2zip *.tar.gz && ls -lh
+    - name: Extract version
+      run: |
+        echo ${{ github.ref_name }} | awk -F '[v-]' '{ print "VERSION_NUMBER=" $2 }' | tee -a $GITHUB_ENV
+    - name: Create prerelease
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release create ${{ github.ref_name }} \
+            --title "${VERSION_NUMBER} release candidate" \
+            --prerelease \
+            --notes "This is a release candidate.  Please try it out and report any issues here on GitHub." --generate-notes \
+            tarballs/*.tar.gz tarballs/*.zip

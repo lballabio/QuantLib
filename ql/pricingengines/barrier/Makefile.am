@@ -9,6 +9,7 @@ this_include_HEADERS = \
     analyticdoublebarrierbinaryengine.hpp \
     analyticdoublebarrierengine.hpp \
     analyticpartialtimebarrieroptionengine.hpp \
+    analyticsoftbarrierengine.hpp \
     analytictwoassetbarrierengine.hpp \
     binomialbarrierengine.hpp \
     discretizedbarrieroption.hpp \
@@ -25,6 +26,7 @@ cpp_files = \
     analyticdoublebarrierbinaryengine.cpp \
     analyticdoublebarrierengine.cpp \
     analyticpartialtimebarrieroptionengine.cpp \
+    analyticsoftbarrierengine.cpp \
     analytictwoassetbarrierengine.cpp \
     discretizedbarrieroption.cpp \
     fdblackscholesbarrierengine.cpp \

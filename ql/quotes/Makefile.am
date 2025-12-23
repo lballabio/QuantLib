@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     compositequote.hpp \
+    deltavolquote.hpp \
     derivedquote.hpp \
     eurodollarfuturesquote.hpp \
     forwardswapquote.hpp \
@@ -15,6 +16,7 @@ this_include_HEADERS = \
     simplequote.hpp
 
 cpp_files = \
+    deltavolquote.cpp \
     eurodollarfuturesquote.cpp \
     forwardswapquote.cpp \
     forwardvaluequote.cpp \

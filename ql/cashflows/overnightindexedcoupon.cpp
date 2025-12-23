@@ -14,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -22,12 +22,17 @@
 */
 
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <ql/cashflows/blackovernightindexedcouponpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/utilities/vectors.hpp>
 #include <utility>
 #include <algorithm>
+#include <type_traits>
 
 using std::vector;
 
@@ -57,7 +62,10 @@ namespace QuantLib {
                     RateAveraging::Type averagingMethod,
                     Natural lookbackDays,
                     Natural lockoutDays,
-                    bool applyObservationShift)
+                    bool applyObservationShift,
+                    bool compoundSpreadDaily,
+                    const Date& rateComputationStartDate,
+                    const Date& rateComputationEndDate)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          lookbackDays,
                          overnightIndex,
@@ -65,8 +73,18 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd,
                          dayCounter, false), 
         averagingMethod_(averagingMethod), lockoutDays_(lockoutDays),
-        applyObservationShift_(applyObservationShift) {
-
+        applyObservationShift_(applyObservationShift),
+        compoundSpreadDaily_(compoundSpreadDaily),
+        rateComputationStartDate_(rateComputationStartDate),
+        rateComputationEndDate_(rateComputationEndDate) {
+        Date valueStart = rateComputationStartDate_ == Null<Date>() ? startDate : rateComputationStartDate_;
+        Date valueEnd = rateComputationEndDate_ == Null<Date>() ? endDate : rateComputationEndDate_;
+        if (lookbackDays != Null<Natural>()) {
+            BusinessDayConvention bdc = lookbackDays > 0 ? Preceding : Following;
+            valueStart = overnightIndex->fixingCalendar().advance(valueStart, -static_cast<Integer>(lookbackDays), Days, bdc);
+            valueEnd = overnightIndex->fixingCalendar().advance(valueEnd, -static_cast<Integer>(lookbackDays), Days, bdc);
+        }
+        
         // value dates
         Date tmpEndDate = endDate;
 
@@ -222,7 +240,183 @@ namespace QuantLib {
         }
     }
 
-    OvernightLeg::OvernightLeg(Schedule schedule, ext::shared_ptr<OvernightIndex> i)
+    Real OvernightIndexedCoupon::effectiveSpread() const {
+        if (!compoundSpreadDaily_)
+            return spread();
+        
+        if (averagingMethod_ == RateAveraging::Simple)
+            return spread();
+
+        auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer());
+        QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveSpread(): expected OvernightIndexedCouponPricer");
+        p->initialize(*this);
+        return p->effectiveSpread();
+    }
+
+    Real OvernightIndexedCoupon::effectiveIndexFixing() const {
+        auto p = ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer());
+        
+        if (averagingMethod_ == RateAveraging::Simple)
+            QL_FAIL("Average OIS Coupon does not have an effectiveIndexFixing"); // FIXME: better error message
+
+        QL_REQUIRE(p, "OvernightIndexedCoupon::effectiveSpread(): expected OvernightIndexedCouponPricer");
+        p->initialize(*this);
+        return p->effectiveIndexFixing();
+    }
+
+    // CappedFlooredOvernightIndexedCoupon implementation
+
+    CappedFlooredOvernightIndexedCoupon::CappedFlooredOvernightIndexedCoupon(
+        const ext::shared_ptr<OvernightIndexedCoupon>& underlying, Real cap, Real floor, bool nakedOption,
+        bool dailyCapFloor)
+        : FloatingRateCoupon(underlying->date(), underlying->nominal(), underlying->accrualStartDate(),
+                            underlying->accrualEndDate(), underlying->fixingDays(), underlying->index(),
+                            underlying->gearing(), underlying->spread(), underlying->referencePeriodStart(),
+                            underlying->referencePeriodEnd(), underlying->dayCounter(), false),
+        underlying_(underlying), nakedOption_(nakedOption), dailyCapFloor_(dailyCapFloor) {
+
+        QL_REQUIRE(!underlying_->compoundSpreadDaily() || close_enough(underlying_->gearing(), 1.0),
+                "CappedFlooredOvernightIndexedCoupon: if include spread = true, only a gearing 1.0 is allowed - scale "
+                "the notional in this case instead.");
+
+        if (!dailyCapFloor) {
+            if (gearing_ > 0.0) {
+                cap_ = cap;
+                floor_ = floor;
+            } else {
+                cap_ = floor;
+                floor_ = cap;
+            }
+        } else {
+            cap_ = cap;
+            floor_ = floor;
+        }
+        if (cap_ != Null<Real>() && floor_ != Null<Real>()) {
+            QL_REQUIRE(cap_ >= floor, "cap level (" << cap_ << ") less than floor level (" << floor_ << ")");
+        }
+        registerWith(underlying_);
+        if (nakedOption_)
+            underlying_->alwaysForwardNotifications();
+    }
+
+    void CappedFlooredOvernightIndexedCoupon::alwaysForwardNotifications() {
+        LazyObject::alwaysForwardNotifications();
+        underlying_->alwaysForwardNotifications();
+    }
+
+    void CappedFlooredOvernightIndexedCoupon::deepUpdate() {
+        update();
+        underlying_->deepUpdate();
+    }
+
+    void CappedFlooredOvernightIndexedCoupon::performCalculations() const {
+        QL_REQUIRE(underlying_->pricer(), "underlying coupon pricer not set");
+        Rate swapletRate = nakedOption_ ? 0.0 : underlying_->rate();
+        auto cfONPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer());
+        QL_REQUIRE(cfONPricer, "coupon pricer not an instance of OvernightIndexedCouponPricer");
+
+        if (floor_ != Null<Real>() || cap_ != Null<Real>())
+            cfONPricer->initialize(*this);
+        Rate floorletRate = 0.;
+        if (floor_ != Null<Real>())
+            floorletRate = cfONPricer->floorletRate(effectiveFloor(), dailyCapFloor());
+        Rate capletRate = 0.;
+        if (cap_ != Null<Real>())
+            capletRate = (nakedOption_ && floor_ == Null<Real>() ? -1.0 : 1.0) * cfONPricer->capletRate(effectiveCap(), dailyCapFloor());
+        rate_ = swapletRate + floorletRate - capletRate;
+
+        effectiveCapletVolatility_ = cfONPricer->effectiveCapletVolatility();
+        effectiveFloorletVolatility_ = cfONPricer->effectiveFloorletVolatility();
+    }
+
+    Rate CappedFlooredOvernightIndexedCoupon::cap() const { return gearing_ > 0.0 ? cap_ : floor_; }
+
+    Rate CappedFlooredOvernightIndexedCoupon::floor() const { return gearing_ > 0.0 ? floor_ : cap_; }
+
+    Rate CappedFlooredOvernightIndexedCoupon::rate() const {
+        calculate();
+        return rate_;
+    }
+
+    Rate CappedFlooredOvernightIndexedCoupon::convexityAdjustment() const { return underlying_->convexityAdjustment(); }
+
+    Rate CappedFlooredOvernightIndexedCoupon::effectiveCap() const {
+        if (cap_ == Null<Real>())
+            return Null<Real>();
+        /* We have four cases dependent on dailyCapFloor_ and compoundSpreadDaily. Notation in the formulas:
+        g         gearing,
+        s         spread,
+        A         coupon amount,
+        f_i       daily fixings,
+        \tau_i    daily accrual fractions,
+        \tau      coupon accrual fraction,
+        C         cap rate
+        F         floor rate
+        */
+        if (dailyCapFloor_) {
+            if (underlying_->compoundSpreadDaily()) {
+                // A = g \cdot \frac{\prod (1 + \tau_i \min ( \max ( f_i + s , F), C)) - 1}{\tau}
+                return cap_ - underlying_->spread();
+            } else {
+                // A = g \cdot \frac{\prod (1 + \tau_i \min ( \max ( f_i , F), C)) - 1}{\tau} + s
+                return cap_;
+            }
+        } else {
+            if (underlying_->compoundSpreadDaily()) {
+                // A = \min \left( \max \left( g \cdot \frac{\prod (1 + \tau_i(f_i + s)) - 1}{\tau}, F \right), C \right)
+                return (cap_ / gearing() - underlying_->effectiveSpread());
+            } else {
+                // A = \min \left( \max \left( g \cdot \frac{\prod (1 + \tau_i f_i) - 1}{\tau} + s, F \right), C \right)
+                return (cap_ - underlying_->effectiveSpread()) / gearing();
+            }
+        }
+    }
+
+    Rate CappedFlooredOvernightIndexedCoupon::effectiveFloor() const {
+        if (floor_ == Null<Real>())
+            return Null<Real>();
+        if (dailyCapFloor_) {
+            if (underlying_->compoundSpreadDaily()) {
+                return floor_ - underlying_->spread();
+            } else {
+                return floor_;
+            }
+        } else {
+            if (underlying_->compoundSpreadDaily()) {
+                return (floor_ - underlying_->effectiveSpread());
+            } else {
+                return (floor_ - underlying_->effectiveSpread()) / gearing();
+            }
+        }
+    }
+
+    Real CappedFlooredOvernightIndexedCoupon::effectiveCapletVolatility() const {
+        calculate();
+        return effectiveCapletVolatility_;
+    }
+
+    Real CappedFlooredOvernightIndexedCoupon::effectiveFloorletVolatility() const {
+        calculate();
+        return effectiveFloorletVolatility_;
+    }
+
+    void CappedFlooredOvernightIndexedCoupon::accept(AcyclicVisitor& v) {
+        Visitor<CappedFlooredOvernightIndexedCoupon>* v1 = dynamic_cast<Visitor<CappedFlooredOvernightIndexedCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            FloatingRateCoupon::accept(v);
+    }
+
+    void CappedFlooredOvernightIndexedCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer){
+        auto p = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer);
+        QL_REQUIRE(p, "The pricer is required to be an instance of OvernightIndexedCouponPricer");
+        FloatingRateCoupon::setPricer(p);
+    }
+
+    // OvernightLeg implementation
+
+    OvernightLeg::OvernightLeg(const Schedule& schedule, const ext::shared_ptr<OvernightIndex>& i)
     : schedule_(std::move(schedule)), overnightIndex_(std::move(i)), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
@@ -301,24 +495,117 @@ namespace QuantLib {
         return *this;
     }
 
+    OvernightLeg& OvernightLeg::compoundingSpreadDaily(bool compoundSpreadDaily) {
+        compoundSpreadDaily_ = compoundSpreadDaily;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withCaps(Rate cap) {
+        caps_ = std::vector<Rate>(1, cap);
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withCaps(const std::vector<Rate>& caps) {
+        caps_ = caps;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withFloors(Rate floor) {
+        floors_ = std::vector<Rate>(1, floor);
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withFloors(const std::vector<Rate>& floors) {
+        floors_ = floors;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withNakedOption(const bool nakedOption) {
+        nakedOption_ = nakedOption;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withDailyCapFloor(const bool dailyCapFloor) {
+        dailyCapFloor_ = dailyCapFloor;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withInArrears(const bool inArrears) {
+        inArrears_ = inArrears;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod) {
+        lastRecentPeriod_ = lastRecentPeriod;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar) {
+        lastRecentPeriodCalendar_ = lastRecentPeriodCalendar;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withPaymentDates(const std::vector<Date>& paymentDates) {
+        paymentDates_ = paymentDates;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withCouponPricer(const ext::shared_ptr<OvernightIndexedCouponPricer>& couponPricer) {
+        couponPricer_ = couponPricer;
+        return *this;
+    }
+
     OvernightLeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
+
+        if (couponPricer_ != nullptr) {
+            if (averagingMethod_ == RateAveraging::Compound)
+                QL_REQUIRE(ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(couponPricer_),
+                           "Wrong coupon pricer provided, provide a CompoundingOvernightIndexedCouponPricer");
+            else
+                QL_REQUIRE(ext::dynamic_pointer_cast<ArithmeticAveragedOvernightIndexedCouponPricer>(couponPricer_),
+                           "Wrong coupon pricer provided, provide a ArithmeticAveragedOvernightIndexedCouponPricer");
+        }
 
         Leg cashflows;
 
         // the following is not always correct
         Calendar calendar = schedule_.calendar();
+        Calendar paymentCalendar = paymentCalendar_;
+
+        if (calendar.empty())
+            calendar = paymentCalendar;
+        if (calendar.empty())
+            calendar = WeekendsOnly();
+        if (paymentCalendar.empty())
+            paymentCalendar = calendar;
 
         Date refStart, start, refEnd, end;
         Date paymentDate;
 
         Size n = schedule_.size()-1;
+
+        // Initial consistency checks
+        if (!paymentDates_.empty()) {
+            QL_REQUIRE(paymentDates_.size() == n, "Expected the number of explicit payment dates ("
+                                                    << paymentDates_.size()
+                                                    << ") to equal the number of calculation periods ("
+                                                    << n << ")");
+        }
+
         for (Size i=0; i<n; ++i) {
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
-            paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
 
+            // If explicit payment dates provided, use them.
+            if (!paymentDates_.empty()) {
+                paymentDate = paymentDates_[i];
+            } else {
+                paymentDate = paymentCalendar.advance(end, paymentLag_, Days, paymentAdjustment_);
+            }
+            
+            // determine refStart and refEnd
             if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
                 refStart = calendar.adjust(end - schedule_.tenor(),
                                            paymentAdjustment_);
@@ -326,13 +613,67 @@ namespace QuantLib {
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
 
-            const auto overnightIndexedCoupon = ext::make_shared<OvernightIndexedCoupon>(
-                paymentDate, detail::get(notionals_, i, notionals_.back()), start, end,
-                overnightIndex_, detail::get(gearings_, i, 1.0), detail::get(spreads_, i, 0.0),
-                refStart, refEnd, paymentDayCounter_, telescopicValueDates_, averagingMethod_,
-                lookbackDays_, lockoutDays_, applyObservationShift_);
+            // Determine the rate computation start and end date as
+            // - the coupon start and end date, if in arrears, and
+            // - the previous coupon start and end date, if in advance.
+            // In addition, adjust the start date, if a last recent period is given.
 
-            cashflows.push_back(overnightIndexedCoupon);
+            Date rateComputationStartDate, rateComputationEndDate;
+            if (inArrears_) {
+                // in arrears fixing (i.e. the "classic" case)
+                rateComputationStartDate = start;
+                rateComputationEndDate = end;
+            } else {
+                // handle in advance fixing
+                if (i > 0) {
+                    // if there is a previous period, we take that
+                    rateComputationStartDate = schedule_.date(i - 1);
+                    rateComputationEndDate = schedule_.date(i);
+                } else {
+                    // otherwise we construct the previous period
+                    rateComputationEndDate = start;
+                    if (schedule_.hasTenor() && schedule_.tenor() != 0 * Days)
+                        rateComputationStartDate = calendar.adjust(start - schedule_.tenor(), Preceding);
+                    else
+                        rateComputationStartDate = calendar.adjust(start - (end - start), Preceding);
+                }
+            }
+
+            if (lastRecentPeriod_) {
+                rateComputationStartDate = (lastRecentPeriodCalendar_.empty() ? calendar : lastRecentPeriodCalendar_)
+                                            .advance(rateComputationEndDate, -*lastRecentPeriod_);
+            }
+
+            // build coupon
+
+            if (close_enough(detail::get(gearings_, i, 1.0), 0.0)) {
+                // fixed coupon
+                cashflows.push_back(QuantLib::ext::make_shared<FixedRateCoupon>(
+                    paymentDate, detail::get(notionals_, i, 1.0), detail::effectiveFixedRate(spreads_, caps_, floors_, i),
+                    paymentDayCounter_, start, end, refStart, refEnd));
+            } else {
+                // floating coupon
+                auto cpn = ext::make_shared<OvernightIndexedCoupon>(
+                    paymentDate, detail::get(notionals_, i, 1.0), start, end, overnightIndex_,
+                    detail::get(gearings_, i, 1.0), detail::get(spreads_, i, 0.0), refStart, refEnd, paymentDayCounter_,
+                    telescopicValueDates_, averagingMethod_, lookbackDays_, lockoutDays_, applyObservationShift_,
+                    compoundSpreadDaily_, rateComputationStartDate, rateComputationEndDate);
+                if (couponPricer_) {
+                    cpn->setPricer(couponPricer_);
+                }
+                Real cap = detail::get(caps_, i, Null<Real>());
+                Real floor = detail::get(floors_, i, Null<Real>());
+                if (cap == Null<Real>() && floor == Null<Real>()) {
+                    cashflows.push_back(cpn);
+                } else {
+                    auto cfCpn = ext::make_shared<CappedFlooredOvernightIndexedCoupon>(cpn, cap, floor, nakedOption_,
+                                                                                       dailyCapFloor_);
+                    if (couponPricer_) {
+                        cfCpn->setPricer(couponPricer_);
+                    }
+                    cashflows.push_back(cfCpn);
+                }
+            }
         }
         return cashflows;
     }

@@ -35,7 +35,7 @@ jobs:
             tag: lunar
             cc: gcc
             cxx: g++
-          - name: "gcc 13.x"
+          - name: "gcc 13.3 (Boost 1.89)"
             shortname: gcc13
             tag: noble
             cc: gcc
@@ -43,6 +43,11 @@ jobs:
           - name: "gcc 14.x"
             shortname: gcc14
             tag: plucky
+            cc: gcc
+            cxx: g++
+          - name: "gcc 15.x"
+            shortname: gcc15
+            tag: questing
             cc: gcc
             cxx: g++
           - name: "Clang 7 (Boost 1.72)"
@@ -95,12 +100,12 @@ jobs:
             tag: mantic
             cc: clang
             cxx: clang++
-          - name: "Clang 18"
+          - name: "Clang 18 (Boost 1.89)"
             shortname: clang18
             tag: noble
             cc: clang
             cxx: clang++
-          - name: "Clang 19"
+          - name: "Clang 19 (Boost 1.89)"
             shortname: clang19
             tag: oracular
             cc: clang
@@ -154,7 +159,7 @@ jobs:
             configureflags: --enable-openmp
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version

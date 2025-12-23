@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -72,15 +72,6 @@ namespace QuantLib {
       public:
         explicit Bibor6M(const Handle<YieldTermStructure>& h = {})
         : Bibor(Period(6, Months), h) {}
-    };
-
-    /*! \deprecated If needed, use the Bibor class with an explicit tenor instead.
-                    Deprecated in version 1.35.
-    */
-    class [[deprecated("If needed, use the Bibor class with an explicit tenor instead")]] Bibor9M : public Bibor {
-      public:
-        explicit Bibor9M(const Handle<YieldTermStructure>& h = {})
-        : Bibor(Period(9, Months), h) {}
     };
 
     //! 1-year %Bibor index

@@ -5,27 +5,26 @@ on:
   workflow_dispatch:
 jobs:
   msbuild:
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
-        vsversion: [2019, 2022]
+        toolset: [v142, v143]
         platform: [x64, Win32]
         unity: [unity, singles]
         include:
-          - vsversion: 2019
-            os: windows-2019
+          - toolset: v142
             boost_version: 77
-          - vsversion: 2022
-            os: windows-2022
-            boost_version: 88
+            vsversion: 2019
+          - toolset: v143
+            boost_version: 90
+            vsversion: 2022
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup MSVC++ environment
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-        vsversion: ${{ matrix.vsversion }}
     - name: Setup Boost
       run: |
         $Url = "https://archives.boost.io/release/1.${{ matrix.boost_version }}.0/source/boost_1_${{ matrix.boost_version }}_0.zip"
@@ -44,7 +43,7 @@ jobs:
         COPY .ci\Unity.props .\Directory.Build.props
     - name: Build
       run: |
-        msbuild ./QuantLib.sln /verbosity:normal /property:Configuration=Release /property:Platform=${{ matrix.platform }}
+        msbuild ./QuantLib.sln /verbosity:normal /property:Configuration=Release /property:Platform=${{ matrix.platform }} /property:PlatformToolset=${{ matrix.toolset }}
     - name: Test
       run: |
         .\test-suite\bin\QuantLib-test-suite*.exe --log_level=message

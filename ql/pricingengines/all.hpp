@@ -4,6 +4,8 @@
 #include <ql/pricingengines/americanpayoffatexpiry.hpp>
 #include <ql/pricingengines/americanpayoffathit.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
+#include <ql/pricingengines/bacheliercalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackscholescalculator.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
@@ -21,6 +23,7 @@
 #include <ql/pricingengines/credit/all.hpp>
 #include <ql/pricingengines/exotic/all.hpp>
 #include <ql/pricingengines/forward/all.hpp>
+#include <ql/pricingengines/futures/all.hpp>
 #include <ql/pricingengines/inflation/all.hpp>
 #include <ql/pricingengines/lookback/all.hpp>
 #include <ql/pricingengines/quanto/all.hpp>

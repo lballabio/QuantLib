@@ -10,7 +10,7 @@
  under the terms of the QuantLib liense.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -72,7 +72,7 @@ namespace QuantLib {
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<Quote> &oas =
-                Handle<Quote>(), // continously compounded w.r.t. yts daycounter
+                Handle<Quote>(), // continuously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
                 Handle<YieldTermStructure>(),
             const bool includeTodaysExercise = false,
@@ -100,7 +100,7 @@ namespace QuantLib {
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
             const Handle<Quote> &oas =
-                Handle<Quote>(), // continously compounded w.r.t. yts daycounter
+                Handle<Quote>(), // continuously compounded w.r.t. yts daycounter
             const Handle<YieldTermStructure> &discountCurve =
                 Handle<YieldTermStructure>(),
             const bool includeTodaysExercise = false,

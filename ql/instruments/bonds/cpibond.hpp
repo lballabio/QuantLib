@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -42,6 +42,27 @@ namespace QuantLib {
      */
     class CPIBond : public Bond {
       public:
+        CPIBond(Natural settlementDays,
+                Real faceAmount,
+                Real baseCPI,
+                const Period& observationLag,
+                ext::shared_ptr<ZeroInflationIndex> cpiIndex,
+                CPI::InterpolationType observationInterpolation,
+                Schedule schedule,
+                const std::vector<Rate>& coupons,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = ModifiedFollowing,
+                const Date& issueDate = Date(),
+                const Calendar& paymentCalendar = Calendar(),
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false);
+
+        /*! \deprecated Use the overload without the growthOnly parameter.
+                        Deprecated in version 1.40.
+        */
+        [[deprecated("Use the overload without the growthOnly parameter")]]
         CPIBond(Natural settlementDays,
                 Real faceAmount,
                 bool growthOnly,

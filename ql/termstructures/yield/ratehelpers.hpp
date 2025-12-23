@@ -16,7 +16,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -224,7 +224,8 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt,
+                       const ext::optional<BusinessDayConvention>& floatConvention = ext::nullopt);
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Date& startDate,
                        const Date& endDate,
@@ -241,7 +242,8 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt,
+                       const ext::optional<BusinessDayConvention>& floatConvention = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -279,6 +281,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
         ext::optional<bool> useIndexedCoupons_;
+        ext::optional<BusinessDayConvention> floatConvention_;
     };
 
 
@@ -367,6 +370,12 @@ namespace QuantLib {
                          bool isFxBaseCurrencyCollateralCurrency,
                          Handle<YieldTermStructure> collateralCurve,
                          Calendar tradingCalendar = Calendar());
+        FxSwapRateHelper(const Handle<Quote>& fwdPoint,
+                         Handle<Quote> spotFx,
+                         const Date& startDate,
+                         const Date& endDate,
+                         bool isFxBaseCurrencyCollateralCurrency,
+                         Handle<YieldTermStructure> collateralCurve);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

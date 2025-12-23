@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,9 +19,9 @@
 
 #include <ql/experimental/barrieroption/vannavolgabarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
-#include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/blackdeltacalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -191,11 +191,6 @@ namespace QuantLib {
 
             //BS price with atm vol
             Real priceBS = barrierOption.NPV();
-
-            Real priceAtmCallBS = blackFormula(Option::Call,atmStrike,
-                                              forward, 
-                                              atmVol_->value() * sqrt(T_),
-                                              domesticTS_->discount(T_));
             Real price25CallBS = blackFormula(Option::Call,call25Strike,
                                               forward, 
                                               atmVol_->value() * sqrt(T_),
@@ -206,11 +201,6 @@ namespace QuantLib {
                                               domesticTS_->discount(T_));
 
             //market price
-            Real priceAtmCallMkt = blackFormula(Option::Call,atmStrike,
-                                              forward, 
-                                              atmVol_->value() * sqrt(T_),
-                                              domesticTS_->discount(T_));
-
             Real price25CallMkt = blackFormula(Option::Call,call25Strike,
                                               forward, 
                                               call25Vol * sqrt(T_),
@@ -331,8 +321,7 @@ namespace QuantLib {
             Real p_survival = 1.0 - probTouch;
 
             Real lambda = p_survival ;
-            Real adjust = q[0]*(priceAtmCallMkt - priceAtmCallBS) 
-                        + q[1]*(price25CallMkt - price25CallBS)
+            Real adjust = q[1]*(price25CallMkt - price25CallBS)
                         + q[2]*(price25PutMkt - price25PutBS);
             Real outPrice = priceBS + lambda*adjust;//
             Real inPrice;

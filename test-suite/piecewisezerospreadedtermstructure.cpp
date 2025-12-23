@@ -9,7 +9,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -368,14 +368,11 @@ BOOST_AUTO_TEST_CASE(testSetInterpolationFactory) {
 
     Frequency freq = NoFrequency;
 
-    Cubic factory;
-    factory = Cubic(CubicInterpolation::Spline, false);
-
     spreadedTermStructure =
         ext::make_shared<InterpolatedPiecewiseZeroSpreadedTermStructure<Cubic> >(
                                Handle<YieldTermStructure>(vars.termStructure),
                                spreads, spreadDates, vars.compounding,
-                               freq, vars.dayCount,factory);
+                               freq, Cubic(CubicInterpolation::Spline, false));
 
     Time t = vars.dayCount.yearFraction(vars.today, interpolationDate);
     Rate interpolatedZeroRate = spreadedTermStructure->zeroRate(t,vars.compounding);

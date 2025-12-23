@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -99,23 +99,6 @@ namespace QuantLib {
             QL_REQUIRE( cfStrikes_[i] > cfStrikes_[i-1],
                         "cfStrikes not increasing");
     }
-
-    YoYCapFloorTermPriceSurface::YoYCapFloorTermPriceSurface(
-        Natural fixingDays,
-        const Period& yyLag,
-        const ext::shared_ptr<YoYInflationIndex>& yii,
-        Rate baseRate,
-        Handle<YieldTermStructure> nominal,
-        const DayCounter& dc,
-        const Calendar& cal,
-        const BusinessDayConvention& bdc,
-        const std::vector<Rate>& cStrikes,
-        const std::vector<Rate>& fStrikes,
-        const std::vector<Period>& cfMaturities,
-        const Matrix& cPrice,
-        const Matrix& fPrice)
-    : YoYCapFloorTermPriceSurface(fixingDays, yyLag, yii, CPI::AsIndex, std::move(nominal), dc, cal, bdc,
-                                  cStrikes, fStrikes, cfMaturities, cPrice, fPrice) {}
 
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
     {

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -131,6 +131,12 @@ namespace QuantLib {
                                    const ext::shared_ptr<Seasonality>& seasonality)
     : InflationTermStructure(settlementDays, calendar, baseDate, frequency, dayCounter, seasonality) {}
 
+    Rate ZeroInflationTermStructure::zeroRate(const Date &d, bool extrapolate) const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return zeroRate(d, Period(0, Days), false, extrapolate);
+        QL_DEPRECATED_ENABLE_WARNING
+    }
+
     Rate ZeroInflationTermStructure::zeroRate(const Date &d, const Period& instObsLag,
                                               bool forceLinearInterpolation,
                                               bool extrapolate) const {
@@ -243,6 +249,12 @@ namespace QuantLib {
 
     QL_DEPRECATED_ENABLE_WARNING
 
+    Rate YoYInflationTermStructure::yoyRate(const Date &d, bool extrapolate) const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return yoyRate(d, Period(0, Days), false, extrapolate);
+        QL_DEPRECATED_ENABLE_WARNING
+    }
+
     Rate YoYInflationTermStructure::yoyRate(const Date &d, const Period& instObsLag,
                                             bool forceLinearInterpolation,
                                             bool extrapolate) const {
@@ -298,38 +310,19 @@ namespace QuantLib {
 
     std::pair<Date,Date> inflationPeriod(const Date& d,
                                          Frequency frequency) {
-
         Month month = d.month();
         Year year = d.year();
 
         Month startMonth, endMonth;
         switch (frequency) {
           case Annual:
-            startMonth = January;
-            endMonth = December;
-            break;
           case Semiannual:
-            if (month <= June) {
-                startMonth = January;
-                endMonth = June;
-            } else {
-                startMonth = July;
-                endMonth = December;
-            }
-            break;
+          case EveryFourthMonth:
           case Quarterly:
-            if (month <= March) {
-                startMonth = January;
-                endMonth = March;
-            } else if (month <= June) {
-                startMonth = April;
-                endMonth = June;
-            } else if (month <= September) {
-                startMonth = July;
-                endMonth = September;
-            } else {
-                startMonth = October;
-                endMonth = December;
+          case Bimonthly: {
+                int nMonths = 12 / frequency;
+                startMonth = Month(month - (month - 1) % nMonths);
+                endMonth = Month(startMonth + nMonths - 1);
             }
             break;
           case Monthly:
@@ -340,10 +333,7 @@ namespace QuantLib {
             break;
         };
 
-        Date startDate = Date(1, startMonth, year);
-        Date endDate = Date::endOfMonth(Date(1, endMonth, year));
-
-        return std::make_pair(startDate,endDate);
+        return {Date(1, startMonth, year), Date::endOfMonth(Date(1, endMonth, year))};
     }
 
 

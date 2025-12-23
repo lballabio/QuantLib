@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -124,13 +124,6 @@ namespace QuantLib {
         explicit RelinkableHandle(
                        ext::shared_ptr<T>&& p,
                        bool registerAsObserver = true);
-        /*! \deprecated Use one of the constructors taking shared_ptr.
-                        Deprecated in version 1.35.
-        */
-        [[deprecated("Use one of the constructors taking shared_ptr.")]]
-        explicit RelinkableHandle(
-                       T* p,
-                       bool registerAsObserver = true);
         void linkTo(const ext::shared_ptr<T>& h,
                     bool registerAsObserver = true);
         void linkTo(ext::shared_ptr<T>&& h,
@@ -204,11 +197,6 @@ namespace QuantLib {
     inline RelinkableHandle<T>::RelinkableHandle(ext::shared_ptr<T>&& p,
                                                  bool registerAsObserver)
     : Handle<T>(std::move(p), registerAsObserver) {}
-
-    template <class T>
-    inline RelinkableHandle<T>::RelinkableHandle(T* p,
-                                                 bool registerAsObserver)
-    : Handle<T>(p,registerAsObserver) {}
 
     template <class T>
     inline void RelinkableHandle<T>::linkTo(const ext::shared_ptr<T>& h,

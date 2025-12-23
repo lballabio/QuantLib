@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,7 +23,6 @@
   based on fourier transformation
 */
 
-#include <ql/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/exponentialintegrals.hpp>
@@ -37,10 +36,9 @@
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
-
 #include <boost/math/tools/minima.hpp>
 #include <boost/math/special_functions/sign.hpp>
-
+#include <functional>
 #include <cmath>
 #include <limits>
 #include <utility>

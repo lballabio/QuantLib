@@ -30,6 +30,7 @@ Examples/*/bin/
 Examples/*/build/
 Examples/*/*.trs
 build/
+install/
 lib/
 test-suite/bin/QuantLib-test-suite-*.manifest
 test-suite/build/

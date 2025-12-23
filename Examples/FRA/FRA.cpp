@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -99,7 +99,7 @@ int main(int, char* []) {
          *********************/
 
         // RateHelpers are built from the above quotes together with
-        // other instrument dependant infos.  Quotes are passed in
+        // other instrument-dependent infos.  Quotes are passed in
         // relinkable handles which could be relinked to some other
         // data source later.
 

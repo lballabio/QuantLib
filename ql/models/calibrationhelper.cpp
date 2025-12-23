@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,30 +23,16 @@
 
 namespace QuantLib {
 
-    class BlackCalibrationHelper::ImpliedVolatilityHelper {
-      public:
-        ImpliedVolatilityHelper(const BlackCalibrationHelper& helper,
-                                Real value)
-        : helper_(helper), value_(value) {}
-
-        Real operator()(Volatility x) const {
-            return value_ - helper_.blackPrice(x);
-        }
-      private:
-        const BlackCalibrationHelper& helper_;
-        Real value_;
-    };
-
     Volatility BlackCalibrationHelper::impliedVolatility(Real targetValue,
                                                          Real accuracy,
                                                          Size maxEvaluations,
                                                          Volatility minVol,
                                                          Volatility maxVol) const {
 
-        ImpliedVolatilityHelper f(*this,targetValue);
+        auto error = [&](Volatility x) { return targetValue - blackPrice(x); };
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-        return solver.solve(f,accuracy,volatility_->value(),minVol,maxVol);
+        return solver.solve(error, accuracy, volatility_->value(), minVol, maxVol);
     }
 
     Real BlackCalibrationHelper::calibrationError() {

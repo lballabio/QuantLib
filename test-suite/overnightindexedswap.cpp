@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -45,6 +45,18 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/indexes/ibor/sonia.hpp>
+#include <ql/indexes/ibor/eonia.hpp>
+#include <ql/indexes/ibor/corra.hpp>
+#include <ql/indexes/ibor/tibor.hpp>
+#include <ql/indexes/ibor/aonia.hpp>
+#include <ql/indexes/ibor/tonar.hpp>
+#include <ql/indexes/ibor/saron.hpp>
+#include <ql/indexes/ibor/nzocr.hpp>
+#include <ql/indexes/ibor/destr.hpp>
+#include <ql/indexes/ibor/swestr.hpp>
+#include <ql/indexes/ibor/kofr.hpp>
+#include <ql/indexes/ibor/mosprime.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -964,6 +976,82 @@ BOOST_AUTO_TEST_CASE(testNotifications) {
 
     if (!flag.isUp())
         BOOST_FAIL("OIS was not notified of curve change");
+}
+
+BOOST_AUTO_TEST_CASE(testMakeOISDefaultSettlementDays) {
+    BOOST_TEST_MESSAGE("Testing default settlement days in MakeOIS...");
+
+    Date today(12, May, 2025);
+    Settings::instance().evaluationDate() = today;
+
+    // Create all overnight indices
+    std::vector<std::pair<std::string, ext::shared_ptr<OvernightIndex>>> indices = {
+        // 0-day settlement index
+        {"SONIA", ext::make_shared<Sonia>()},
+        // 1-day settlement index
+        {"CORRA", ext::make_shared<Corra>()},
+        // 2-day settlement indices
+        {"EONIA", ext::make_shared<Eonia>()},
+        {"ESTR", ext::make_shared<Estr>()},
+        {"FedFunds", ext::make_shared<FedFunds>()},
+        {"SOFR", ext::make_shared<Sofr>()},
+        {"AONIA", ext::make_shared<Aonia>()},
+        {"TONAR", ext::make_shared<Tonar>()},
+        {"SARON", ext::make_shared<Saron>()},
+        {"NZOCR", ext::make_shared<Nzocr>()},
+        {"DESTR", ext::make_shared<Destr>()},
+        {"SWESTR", ext::make_shared<Swestr>()},
+        {"KOFR", ext::make_shared<Kofr>()}
+    };
+
+    // Test default settlement days
+    for (const auto& [name, index] : indices) {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, index, 0.01);
+        Date expected;
+        if (name == "SONIA") {
+            expected = today; // T+0 settlement for SONIA
+        } else if (name == "CORRA") {
+            expected = today + 1 * Days; // T+1 settlement for CORRA
+        } else {
+            expected = today + 2 * Days; // T+2 settlement for all others
+        }
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    // Test manual override
+    for (const auto& [name, index] : indices) {
+        // Override settlement days: 2 for CORRA, 1 for all others
+        Natural settlementDaysOverride = (name == "CORRA") ? 2 : 1;
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, index, 0.01)
+                                        .withSettlementDays(settlementDaysOverride);
+        Date expected = today + settlementDaysOverride * Days;
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    // Test weekend handling
+    Date weekend(10, May, 2025); // Saturday
+    Settings::instance().evaluationDate() = weekend;
+
+    // Test 0-day settlement index on weekend
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[0].second, 0.01); // SONIA
+        Date expected(12, May, 2025); // Monday
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    // Test 1-day settlement index on weekend
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[1].second, 0.01); // CORRA
+        Date expected(13, May, 2025); // Tuesday
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
+
+    // Test 2-day settlement index on weekend
+    {
+        OvernightIndexedSwap swap = MakeOIS(6 * Months, indices[2].second, 0.01); // EONIA
+        Date expected(14, May, 2025); // Wednesday
+        BOOST_CHECK_EQUAL(swap.startDate(), expected);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

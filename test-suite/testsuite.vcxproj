@@ -651,6 +651,7 @@
     <ClCompile Include="asianoptions.cpp" />
     <ClCompile Include="assetswap.cpp" />
     <ClCompile Include="autocovariances.cpp" />
+    <ClCompile Include="bacheliercalculator.cpp" />
     <ClCompile Include="barrieroption.cpp" />
     <ClCompile Include="basismodels.cpp" />
     <ClCompile Include="basisswapratehelpers.cpp" />
@@ -658,6 +659,7 @@
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
     <ClCompile Include="binaryoption.cpp" />
+    <ClCompile Include="blackcalculator.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
     <ClCompile Include="bondforward.cpp" />
@@ -773,6 +775,7 @@
     <ClCompile Include="partialtimebarrieroption.cpp" />
     <ClCompile Include="pathgenerator.cpp" />
     <ClCompile Include="period.cpp" />
+    <ClCompile Include="perpetualfutures.cpp" />
     <ClCompile Include="piecewiseyieldcurve.cpp" />
     <ClCompile Include="piecewisezerospreadedtermstructure.cpp" />
     <ClCompile Include="preconditions.cpp" />
@@ -789,6 +792,7 @@
     <ClCompile Include="settings.cpp" />
     <ClCompile Include="shortratemodels.cpp" />
     <ClCompile Include="sofrfutures.cpp" />
+    <ClCompile Include="softbarrieroption.cpp" />
     <ClCompile Include="solvers.cpp" />
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />

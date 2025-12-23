@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -40,7 +40,7 @@ namespace QuantLib {
         OISRateHelper(
           Natural settlementDays,
           const Period& tenor, // swap maturity
-          const Handle<Quote>& fixedRate,
+          const std::variant<Rate, Handle<Quote>>& fixedRate,
           const ext::shared_ptr<OvernightIndex>& overnightIndex,
           // exogenous discounting curve
           Handle<YieldTermStructure> discountingCurve = {},
@@ -62,12 +62,13 @@ namespace QuantLib {
           bool applyObservationShift = false,
           ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
           DateGeneration::Rule rule = DateGeneration::Backward,
-          Calendar overnightCalendar = Calendar());
+          Calendar overnightCalendar = Calendar(),
+          BusinessDayConvention convention = ModifiedFollowing);
 
         OISRateHelper(
           const Date& startDate,
           const Date& endDate,
-          const Handle<Quote>& fixedRate,
+          const std::variant<Rate, Handle<Quote>>& fixedRate,
           const ext::shared_ptr<OvernightIndex>& overnightIndex,
           // exogenous discounting curve
           Handle<YieldTermStructure> discountingCurve = {},
@@ -88,7 +89,8 @@ namespace QuantLib {
           bool applyObservationShift = false,
           ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
           DateGeneration::Rule rule = DateGeneration::Backward,
-          Calendar overnightCalendar = Calendar());
+          Calendar overnightCalendar = Calendar(),
+          BusinessDayConvention convention = ModifiedFollowing);
 
         //! \name RateHelper interface
         //@{
@@ -133,6 +135,7 @@ namespace QuantLib {
         ext::optional<Frequency> fixedPaymentFrequency_;
         Calendar fixedCalendar_;
         Calendar overnightCalendar_;
+        BusinessDayConvention convention_;
         Natural lookbackDays_;
         Natural lockoutDays_;
         bool applyObservationShift_;
@@ -166,28 +169,6 @@ namespace QuantLib {
                            Natural lockoutDays = 0,
                            bool applyObservationShift = false,
                            const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
-
-        /*! \deprecated Use the overload without forward start.
-                        Deprecated in version 1.35.
-        */
-        [[deprecated("Use the overload without forward start")]]
-        DatedOISRateHelper(const Date& startDate,
-                           const Date& endDate,
-                           const Handle<Quote>& fixedRate,
-                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                           // exogenous discounting curve
-                           Handle<YieldTermStructure> discountingCurve,
-                           bool telescopicValueDates,
-                           RateAveraging::Type averagingMethod,
-                           Integer paymentLag,
-                           BusinessDayConvention paymentConvention,
-                           Frequency paymentFrequency,
-                           const Calendar& paymentCalendar,
-                           const Period& forwardStart,
-                           Spread overnightSpread = {},
-                           ext::optional<bool> endOfMonth = ext::nullopt,
-                           ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                           const Calendar& fixedCalendar = Calendar());
     };
 
 }

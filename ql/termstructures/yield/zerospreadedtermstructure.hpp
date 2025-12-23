@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -49,8 +49,17 @@ namespace QuantLib {
         ZeroSpreadedTermStructure(Handle<YieldTermStructure>,
                                   Handle<Quote> spread,
                                   Compounding comp = Continuous,
-                                  Frequency freq = NoFrequency,
-                                  DayCounter dc = DayCounter());
+                                  Frequency freq = NoFrequency);
+
+        /*! \deprecated Use the constructor without a day counter.
+                        Deprecated in version 1.41.
+        */
+        [[deprecated("Use the constructor without DayCounter")]]
+        ZeroSpreadedTermStructure(Handle<YieldTermStructure>,
+                                  Handle<Quote> spread,
+                                  Compounding comp,
+                                  Frequency freq,
+                                  const DayCounter& dc);
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const override;
@@ -75,21 +84,25 @@ namespace QuantLib {
         Handle<Quote> spread_;
         Compounding comp_;
         Frequency freq_;
-        DayCounter dc_;
     };
 
     inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(Handle<YieldTermStructure> h,
                                                                 Handle<Quote> spread,
                                                                 Compounding comp,
-                                                                Frequency freq,
-                                                                DayCounter dc)
-    : originalCurve_(std::move(h)), spread_(std::move(spread)), comp_(comp), freq_(freq),
-      dc_(std::move(dc)) {
+                                                                Frequency freq)
+    : originalCurve_(std::move(h)), spread_(std::move(spread)), comp_(comp), freq_(freq) {
         if (!originalCurve_.empty())
             enableExtrapolation(originalCurve_->allowsExtrapolation());
         registerWith(originalCurve_);
         registerWith(spread_);
     }
+
+    inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(Handle<YieldTermStructure> h,
+                                                                Handle<Quote> spread,
+                                                                Compounding comp,
+                                                                Frequency freq,
+                                                                const DayCounter& dc)
+    : ZeroSpreadedTermStructure(std::move(h), std::move(spread), comp, freq) {}
 
     inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
         return originalCurve_->dayCounter();

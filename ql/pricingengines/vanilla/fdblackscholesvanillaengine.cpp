@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -158,7 +158,7 @@ namespace QuantLib {
         const ext::shared_ptr<Fdm1dMesher> equityMesher =
             ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, process_, maturity, payoff->strike(), 
-                    Null<Real>(), Null<Real>(), 0.0001, 1.5, 
+                    Null<Real>(), Null<Real>(), 0.0001, 1.5,
                     std::pair<Real, Real>(payoff->strike(), 0.1),
                     dividendSchedule, quantoHelper_,
                     spotAdjustment);
@@ -167,14 +167,16 @@ namespace QuantLib {
             ext::make_shared<FdmMesherComposite>(equityMesher);
         
         // 2. Calculator
-        ext::shared_ptr<FdmInnerValueCalculator> calculator;
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator =
+            ext::make_shared<FdmLogInnerValue>(payoff, mesher, 0);
+
+        ext::shared_ptr<FdmInnerValueCalculator> earlyExerciseCalculator;
         switch (cashDividendModel_) {
           case Spot:
-              calculator = ext::make_shared<FdmLogInnerValue>(
-                  payoff, mesher, 0);
+              earlyExerciseCalculator = calculator;
             break;
           case Escrowed:
-              calculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
+              earlyExerciseCalculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
                   escrowedDivAdj, payoff, mesher, 0);
             break;
           default:
@@ -184,7 +186,8 @@ namespace QuantLib {
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
             FdmStepConditionComposite::vanillaComposite(
-                dividendSchedule, arguments_.exercise, mesher, calculator,
+                dividendSchedule, arguments_.exercise, mesher,
+                earlyExerciseCalculator,
                 process_->riskFreeRate()->referenceDate(),
                 process_->riskFreeRate()->dayCounter());
 
@@ -192,8 +195,9 @@ namespace QuantLib {
         const FdmBoundaryConditionSet boundaries;
 
         // 5. Solver
-        FdmSolverDesc solverDesc = { mesher, boundaries, conditions, calculator,
-                                     maturity, tGrid_, dampingSteps_ };
+        FdmSolverDesc solverDesc = {
+            mesher, boundaries, conditions, calculator, maturity, tGrid_, dampingSteps_
+        };
 
         const ext::shared_ptr<FdmBlackScholesSolver> solver(
             ext::make_shared<FdmBlackScholesSolver>(

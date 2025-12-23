@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,6 +32,29 @@
 
 
 namespace QuantLib {
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    CPIBond::CPIBond(Natural settlementDays,
+                     Real faceAmount,
+                     Real baseCPI,
+                     const Period& observationLag,
+                     ext::shared_ptr<ZeroInflationIndex> cpiIndex,
+                     CPI::InterpolationType observationInterpolation,
+                     Schedule schedule,
+                     const std::vector<Rate>& fixedRate,
+                     const DayCounter& accrualDayCounter,
+                     BusinessDayConvention paymentConvention,
+                     const Date& issueDate,
+                     const Calendar& paymentCalendar,
+                     const Period& exCouponPeriod,
+                     const Calendar& exCouponCalendar,
+                     const BusinessDayConvention exCouponConvention,
+                     bool exCouponEndOfMonth)
+    : CPIBond(settlementDays, faceAmount, false, baseCPI, observationLag, std::move(cpiIndex),
+              observationInterpolation, std::move(schedule), fixedRate, accrualDayCounter,
+              paymentConvention, issueDate, paymentCalendar, exCouponPeriod,
+              exCouponCalendar, exCouponConvention, exCouponEndOfMonth) {}
 
     CPIBond::CPIBond(Natural settlementDays,
                      Real faceAmount,
@@ -59,7 +82,6 @@ namespace QuantLib {
 
         maturityDate_ = schedule.endDate();
 
-        // a CPIleg know about zero legs and inclusion of base inflation notional
         cashflows_ = CPILeg(std::move(schedule), cpiIndex_,
                             baseCPI_, observationLag_)
             .withNotionals(faceAmount)
@@ -85,4 +107,7 @@ namespace QuantLib {
             registerWith(*i);
         }
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }

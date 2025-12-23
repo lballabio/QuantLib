@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -107,7 +107,7 @@ namespace QuantLib {
                      paymentDelay) {
 
         legs_[0].push_back(
-            ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment, paymentDate_)));
+            ext::make_shared<SimpleCashFlow>(fixedPayment, paymentDate_));
     }
 
     ZeroCouponSwap::ZeroCouponSwap(Type type,
@@ -130,8 +130,8 @@ namespace QuantLib {
                      paymentDelay) {
 
         InterestRate interest(fixedRate, fixedDayCounter, Compounded, Annual);
-        legs_[0].push_back(ext::shared_ptr<CashFlow>(
-            new FixedRateCoupon(paymentDate_, baseNominal_, interest, startDate, maturityDate)));
+        legs_[0].push_back(ext::make_shared<FixedRateCoupon>(
+            paymentDate_, baseNominal_, std::move(interest), startDate, maturityDate));
     }
 
     Real ZeroCouponSwap::fixedLegNPV() const {

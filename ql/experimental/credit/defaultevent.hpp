@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -174,7 +174,7 @@ namespace QuantLib {
 
     /*! Two credit events are the same independently of their
         settlement member data. This has the side effect of
-        overwritting different settlements from the same credit event
+        overwriting different settlements from the same credit event
         when, say, inserting in a map. But on the other hand one given
         event can only have one settlement. This means we can not have
         two restructuring events on a bond on the same date.

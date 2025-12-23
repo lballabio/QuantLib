@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/license.shtml>.
+ <https://www.quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -322,8 +322,7 @@ namespace QuantLib {
         Array values(n + N);
         for (Size i=0; i<n; ++i) {
             ext::shared_ptr<BondHelper> helper = fittingMethod_->curve_->bondHelpers_[i];
-            Real error = helper->impliedQuote() - helper->quote()->value();
-            Real weightedError = fittingMethod_->weights_[i] * error;
+            Real weightedError = fittingMethod_->weights_[i] * helper->quoteError();
             values[i] = weightedError * weightedError;
         }
 
