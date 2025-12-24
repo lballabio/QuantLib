@@ -96,6 +96,7 @@ namespace QuantLib {
 
         bool updatesEnabled() const { return updatesEnabled_; }
         bool updatesDeferred() const { return updatesDeferred_; }
+        bool runningDeferredUpdates() const { return runningDeferredUpdates_; }
 
       private:
         ObservableSettings() = default;
@@ -107,8 +108,12 @@ namespace QuantLib {
         void unregisterDeferredObserver(Observer*);
 
         set_type deferredObservers_;
+        // To keep a subset of deferredObservers_ that become invalid during enableUpdates.
+        // This set should be small in practice.
+        set_type invalidDeferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
+        bool runningDeferredUpdates_ = false;
     };
 
     //! Object that gets notified when a given observable changes
@@ -165,7 +170,10 @@ namespace QuantLib {
     }
 
     inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
-        deferredObservers_.erase(o);
+        if (ObservableSettings::instance().updatesDeferred())
+            deferredObservers_.erase(o);
+        else if (deferredObservers_.find(o) != deferredObservers_.end())
+            invalidDeferredObservers_.insert(o);
     }
 
     inline Observable::Observable(const Observable&) {
@@ -195,7 +203,8 @@ namespace QuantLib {
     }
 
     inline Size Observable::unregisterObserver(Observer* o) {
-        if (ObservableSettings::instance().updatesDeferred())
+        if (ObservableSettings::instance().updatesDeferred() ||
+            ObservableSettings::instance().runningDeferredUpdates())
             ObservableSettings::instance().unregisterDeferredObserver(o);
 
         return observers_.erase(o);
