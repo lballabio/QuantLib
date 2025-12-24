@@ -33,8 +33,13 @@ namespace QuantLib {
         if (!deferredObservers_.empty()) {
             bool successful = true;
             std::string errMsg;
+            runningDeferredUpdates_ = true;
 
             for (auto* deferredObserver : deferredObservers_) {
+
+                if (invalidDeferredObservers_.find(deferredObserver) != invalidDeferredObservers_.end())
+                    continue;
+
                 try {
                     deferredObserver->update();
                 } catch (std::exception& e) {
@@ -46,10 +51,13 @@ namespace QuantLib {
             }
 
             deferredObservers_.clear();
+            invalidDeferredObservers_.clear();
+            runningDeferredUpdates_ = false;
 
             QL_ENSURE(successful,
                   "could not notify one or more observers: " << errMsg);
         }
+
     }
 
 

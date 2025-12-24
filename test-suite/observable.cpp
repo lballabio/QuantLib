@@ -20,14 +20,19 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/inflation/euhicp.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/bootstraphelper.hpp>
+#include <ql/termstructures/inflation/inflationhelpers.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <chrono>
 #include <thread>
 
@@ -393,6 +398,20 @@ BOOST_AUTO_TEST_CASE(testAddAndDeleteObserverDuringNotifyObservers) {
                 BOOST_FAIL("missed observer update detected");
             }
     }
+}
+
+BOOST_AUTO_TEST_CASE(testDeferredObserverLifetime)
+{
+    Date today(24, Dec, 2025);
+    Settings::instance().evaluationDate() = today;
+    Handle<Quote> quote(ext::make_shared<SimpleQuote>(0.02));
+    auto zciHelper = ext::make_shared<ZeroCouponInflationSwapHelper>(
+        quote, 3 * Months, Date(29, Dec, 2026), TARGET(), ModifiedFollowing,
+        ActualActual(ActualActual::ISDA), ext::make_shared<EUHICPXT>(), CPI::Flat);
+
+    ObservableSettings::instance().disableUpdates(true);
+    Settings::instance().evaluationDate() = Date(29, Dec, 2025);
+    ObservableSettings::instance().enableUpdates();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
