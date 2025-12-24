@@ -234,7 +234,7 @@ namespace QuantLib {
         OvernightLeg& withFloors(const std::vector<Rate>& floors);
         OvernightLeg& withNakedOption(const bool nakedOption);
         OvernightLeg& withDailyCapFloor(const bool dailyCapFloor = true);
-        OvernightLeg& withInArrears(const bool inArrears);
+        OvernightLeg& inArrears(const bool inArrears);
         OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
         OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);

@@ -530,7 +530,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withInArrears(const bool inArrears) {
+    OvernightLeg& OvernightLeg::inArrears(const bool inArrears) {
         inArrears_ = inArrears;
         return *this;
     }
