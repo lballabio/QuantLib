@@ -110,7 +110,7 @@ protected:
     /*! This constructor can be used by derived classes that will
         build their legs themselves.
     */
-    CrossCcySwap(Size legs);
+    explicit CrossCcySwap(Size legs);
     //@}
     //! \name Instrument interface
     //@{
