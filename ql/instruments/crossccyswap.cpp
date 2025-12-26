@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
+ Copyright (C) 2025 Paolo D'Elia
  All rights reserved.
 
  This file is part of QuantLib, a free-software/open-source library

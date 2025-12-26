@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
+ Copyright (C) 2025 Paolo D'Elia
  All rights reserved.
 
  This file is part of QuantLib, a free-software/open-source library
@@ -65,9 +66,13 @@ public:
         \param payPaymentLag      Payment lag for the pay leg (default: 0).
         \param recPaymentLag      Payment lag for the receive leg (default: 0).
         \param payIncludeSpread   Optional flag to include the spread in the pay leg calculation (default: null).
-        \param payLookbackDays    Optional lookback days for the pay leg (default: null).
+        \param payLookback        Optional lookback days for the pay leg (default: null).
+        \param payLockoutDays     Optional lockout period (in business days) before payment during which rate observations are frozen for the pay leg (defaul: 0).
+        \param payIsAveraged      If true, use arithmetic averaging of overnight rates instead of compounding when building the pay leg (defaul: 0).
         \param recIncludeSpread   Optional flag to include the spread in the receive leg calculation (default: null).
-        \param recLookbackDays    Optional lookback days for the receive leg (default: null).
+        \param recLookback        Optional lookback days for the receive leg (default: null).
+        \param recLockoutDays     Optional lockout period (in business days) before payment during which rate observations are frozen for the rec leg (defaul: 0).
+        \param recIsAveraged      If true, use arithmetic averaging of overnight rates instead of compounding when building the rec leg (defaul: 0).
         \param telescopicValueDates Flag indicating whether telescopic value dates are used (default: false).
     */
     CrossCcyBasisSwap(
@@ -76,9 +81,9 @@ public:
         const Currency& recCurrency, const Schedule& recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
         Spread recSpread, Real recGearing, Size payPaymentLag = 0, Size recPaymentLag = 0,
         ext::optional<bool> payIncludeSpread = ext::nullopt, ext::optional<Natural> payLookback = ext::nullopt,
-        ext::optional<Size> payRateCutoff = ext::nullopt, ext::optional<bool> payIsAveraged = ext::nullopt,
+        ext::optional<Size> payLockoutDays = ext::nullopt, ext::optional<bool> payIsAveraged = ext::nullopt,
         ext::optional<bool> recIncludeSpread = ext::nullopt, ext::optional<Natural> recLookback = ext::nullopt, 
-        ext::optional<Size> recRateCutoff = ext::nullopt, ext::optional<bool> recIsAveraged = ext::nullopt,
+        ext::optional<Size> recLockoutDays = ext::nullopt, ext::optional<bool> recIsAveraged = ext::nullopt,
         const bool telescopicValueDates = false);
     //@}
     //! \name Instrument interface
@@ -145,11 +150,11 @@ private:
     // OIS only
     ext::optional<bool> payIncludeSpread_;
     ext::optional<QuantLib::Natural> payLookback_;
-    ext::optional<Size> payRateCutoff_;
+    ext::optional<Size> payLockoutDays_;
     ext::optional<bool> payIsAveraged_;
     ext::optional<bool> recIncludeSpread_;
     ext::optional<QuantLib::Natural> recLookback_;
-    ext::optional<Size> recRateCutoff_;
+    ext::optional<Size> recLockoutDays_;
     ext::optional<bool> recIsAveraged_;
     bool telescopicValueDates_;
 

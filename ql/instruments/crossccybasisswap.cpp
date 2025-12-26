@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
+ Copyright (C) 2025 Paolo D'Elia
  All rights reserved.
 
  This file is part of QuantLib, a free-software/open-source library
@@ -30,17 +31,17 @@ CrossCcyBasisSwap::CrossCcyBasisSwap(Real payNominal, const Currency& payCurrenc
                                      Real recNominal, const Currency& recCurrency, const Schedule& recSchedule,
                                      const ext::shared_ptr<IborIndex>& recIndex, Spread recSpread, Real recGearing,
                                      Size payPaymentLag, Size recPaymentLag, ext::optional<bool> payIncludeSpread,
-                                     ext::optional<Natural> payLookback, ext::optional<Size> payRateCutoff,
+                                     ext::optional<Natural> payLookback, ext::optional<Size> payLockoutDays,
                                      ext::optional<bool> payIsAveraged, ext::optional<bool> recIncludeSpread,
-                                     ext::optional<Natural> recLookback, ext::optional<Size> recRateCutoff,
+                                     ext::optional<Natural> recLookback, ext::optional<Size> recLockoutDays,
                                      ext::optional<bool> recIsAveraged, const bool telescopicValueDates)
     : CrossCcySwap(2), payNominal_(payNominal), payCurrency_(payCurrency), paySchedule_(paySchedule),
       payIndex_(payIndex), paySpread_(paySpread), payGearing_(payGearing), recNominal_(recNominal),
       recCurrency_(recCurrency), recSchedule_(recSchedule), recIndex_(recIndex), recSpread_(recSpread),
       recGearing_(recGearing), payPaymentLag_(payPaymentLag), recPaymentLag_(recPaymentLag),
-      payIncludeSpread_(payIncludeSpread), payLookback_(payLookback), payRateCutoff_(payRateCutoff), 
+      payIncludeSpread_(payIncludeSpread), payLookback_(payLookback), payLockoutDays_(payLockoutDays), 
       payIsAveraged_(payIsAveraged), recIncludeSpread_(recIncludeSpread), recLookback_(recLookback), 
-      recRateCutoff_(recRateCutoff), recIsAveraged_(recIsAveraged), telescopicValueDates_(telescopicValueDates) {
+      recLockoutDays_(recLockoutDays), recIsAveraged_(recIsAveraged), telescopicValueDates_(telescopicValueDates) {
     registerWith(payIndex_);
     registerWith(recIndex_);
     initialize();
@@ -57,7 +58,9 @@ void CrossCcyBasisSwap::initialize() {
                         .withPaymentLag(payPaymentLag_)
                         .withSpreads(payIncludeSpread_ ? *payIncludeSpread_ : false)
                         .withLookbackDays(payLookback_ ? *payLookback_ : 0)
-                        .withLockoutDays(payRateCutoff_ ? *payRateCutoff_ : 0)
+                        .withLockoutDays(payLockoutDays_ ? *payLockoutDays_ : 0)
+                        .withAveragingMethod(payIsAveraged_ ? 
+                            (*payIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound) : RateAveraging::Compound)
                         .withTelescopicValueDates(telescopicValueDates_);
     } else {
         // Ibor leg
@@ -88,7 +91,9 @@ void CrossCcyBasisSwap::initialize() {
                         .withPaymentLag(recPaymentLag_)
                         .withSpreads(recIncludeSpread_ ? *recIncludeSpread_ : false)
                         .withLookbackDays(recLookback_ ? *recLookback_ : 0)
-                        .withLockoutDays(recRateCutoff_ ? *recRateCutoff_ : 0)
+                        .withLockoutDays(recLockoutDays_ ? *recLockoutDays_ : 0)
+                        .withAveragingMethod(recIsAveraged_ ? 
+                            (*recIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound) : RateAveraging::Compound)
                         .withTelescopicValueDates(telescopicValueDates_);
     } else {
         // Ibor leg

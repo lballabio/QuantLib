@@ -25,6 +25,8 @@
 #include <ql/currencies/all.hpp>
 #include <ql/indexes/ibor/gbplibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
+#include <ql/indexes/ibor/sonia.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/time/calendars/all.hpp>
@@ -322,12 +324,48 @@ ext::shared_ptr<CrossCcyBasisSwap> makeBasisXCCY(Rate spotFx, Spread GBPSpread) 
 }
 
 
+ext::shared_ptr<CrossCcyBasisSwap> makeONBasisXCCY(Rate spotFx, Spread GBPSpread) {
+
+    // USD nominal
+    Real GBPNominal = 10000000.0;
+
+    // Dates and calendars
+    JointCalendar payCalendar = JointCalendar(UnitedStates(UnitedStates::Settlement), UnitedKingdom());
+    Date referenceDate = Settings::instance().evaluationDate();
+    referenceDate = payCalendar.adjust(referenceDate);
+    Date start = payCalendar.advance(referenceDate, 2 * Days);
+    Date end = start + 5 * Years;
+    Schedule schedule(start, end, 3 * Months, payCalendar, ModifiedFollowing, ModifiedFollowing,
+                      DateGeneration::Backward, false);
+
+    // Indices
+    auto sofrIndex = ext::make_shared<Sofr>(USDProjectionCurve());
+    auto soniaIndex = ext::make_shared<Sonia>(GBPProjectionCurve());
+
+    // Create swap
+    return ext::shared_ptr<CrossCcyBasisSwap>(new CrossCcyBasisSwap(
+        GBPNominal, GBPCurrency(), schedule, soniaIndex, GBPSpread, 1.0, 
+		GBPNominal * spotFx, USDCurrency(), schedule, sofrIndex, 0.0, 1.0, 
+        0, // payPaymentLag
+        0, // recPaymentLaf
+        false, // payIncludeSpread
+        0, // payLookback
+        3, // payLockoutDays
+        false, // payIsAveraged
+        false, // recIncludeSpread
+        0, // recLookback
+        2, // recLockoutDays
+        false, // recIsAveraged
+        false // telescopicValueDates
+    ));
+}
+
+
 BOOST_AUTO_TEST_CASE(testBasisXCCYSwapPricing) {
     BOOST_TEST_MESSAGE("Test cross currency basis swap pricing against known results");
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = Date(11, Sep, 2018);
-	bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     // Create swap
     Rate spotFx = 1;
@@ -343,7 +381,35 @@ BOOST_AUTO_TEST_CASE(testBasisXCCYSwapPricing) {
 
     // Check values
 	Real tol = 0.01;
-	Real expectedNPV = usingAtParCoupons ? 0.0 : 0.0;
+	Real expectedNPV = 0.0;
+
+	CHECK_XCCY_SWAP_RESULT("NPV", xccy->NPV(), expectedNPV, tol);
+
+	Real expBps = -4670.170509677384; // cached value
+	CHECK_XCCY_SWAP_RESULT("Leg 0 BPS", xccy->legBPS(0), expBps, tol);
+}
+
+BOOST_AUTO_TEST_CASE(testBasisONXCCYSwapPricing) {
+    BOOST_TEST_MESSAGE("Test cross currency Overnight legs basis swap pricing against known results");
+
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(11, Sep, 2018);
+
+    // Create swap
+    Rate spotFx = 1;
+    Spread spread = 0;
+    auto xccy = makeONBasisXCCY(spotFx, spread);
+
+    // Attach pricing engine
+    auto fxSpotQuote = makeQuoteHandle(spotFx);
+    auto engine = ext::make_shared<CrossCcySwapEngine>(
+        USDCurrency(), USDDiscountCurve(), GBPCurrency(), GBPDiscountCurve(), fxSpotQuote);
+
+    xccy->setPricingEngine(engine);
+
+    // Check values
+	Real tol = 0.01;
+	Real expectedNPV = 0.26367734931409;
 
 	CHECK_XCCY_SWAP_RESULT("NPV", xccy->NPV(), expectedNPV, tol);
 

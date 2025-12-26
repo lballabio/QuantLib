@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2016 Quaternion Risk Management Ltd
+ Copyright (C) 2025 Paolo D'Elia
  All rights reserved.
 
  This file is part of QuantLib, a free-software/open-source library
@@ -55,7 +56,8 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
                     .withLookbackDays(floatLookbackDays ? *floatLookbackDays : 0)
                     .withPaymentCalendar(floatPaymentCalendar_)
                     .withLockoutDays(floatLockoutDays_ ? *floatLockoutDays_ : 0)
-                    .withAveragingMethod(floatIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound)
+                    .withAveragingMethod(floatIsAveraged_ ? 
+                        (*floatIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound) : RateAveraging::Compound)
                     .withTelescopicValueDates(telescopicValueDates_);
     } else {
         floatLeg = IborLeg(floatSchedule_, floatIndex_)
