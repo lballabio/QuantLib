@@ -1350,7 +1350,6 @@ set(QL_HEADERS
     instruments/crossccybasisswap.hpp
     instruments/crossccyfixfloatswap.hpp
     instruments/crossccyswap.hpp
-    instruments/dividendbarrieroption.hpp
     instruments/dividendschedule.hpp
     instruments/doublebarrieroption.hpp
     instruments/doublebarriertype.hpp

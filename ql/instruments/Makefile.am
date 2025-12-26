@@ -28,7 +28,6 @@ this_include_HEADERS = \
     crossccybasisswap.hpp \
     crossccyfixfloatswap.hpp \
     crossccyswap.hpp \
-    dividendbarrieroption.hpp \
     dividendschedule.hpp \
     doublebarrieroption.hpp \
     doublebarriertype.hpp \

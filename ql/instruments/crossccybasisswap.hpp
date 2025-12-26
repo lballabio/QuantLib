@@ -75,9 +75,11 @@ public:
         const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing, Real recNominal,
         const Currency& recCurrency, const Schedule& recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
         Spread recSpread, Real recGearing, Size payPaymentLag = 0, Size recPaymentLag = 0,
-        ext::optional<bool> payIncludeSpread = ext::nullopt, ext::optional<Natural> payLookbackDays = ext::nullopt,
-        ext::optional<bool> recIncludeSpread = ext::nullopt, ext::optional<Natural> recLookbackDays = ext::nullopt,
-		const bool telescopicValueDates = false);
+        ext::optional<bool> payIncludeSpread = ext::nullopt, ext::optional<Natural> payLookback = ext::nullopt,
+        ext::optional<Size> payRateCutoff = ext::nullopt, ext::optional<bool> payIsAveraged = ext::nullopt,
+        ext::optional<bool> recIncludeSpread = ext::nullopt, ext::optional<Natural> recLookback = ext::nullopt, 
+        ext::optional<Size> recRateCutoff = ext::nullopt, ext::optional<bool> recIsAveraged = ext::nullopt,
+        const bool telescopicValueDates = false);
     //@}
     //! \name Instrument interface
     //@{
@@ -142,9 +144,13 @@ private:
     Size recPaymentLag_;
     // OIS only
     ext::optional<bool> payIncludeSpread_;
-    ext::optional<Natural> payLookbackDays_;
+    ext::optional<QuantLib::Natural> payLookback_;
+    ext::optional<Size> payRateCutoff_;
+    ext::optional<bool> payIsAveraged_;
     ext::optional<bool> recIncludeSpread_;
-    ext::optional<Natural> recLookbackDays_;
+    ext::optional<QuantLib::Natural> recLookback_;
+    ext::optional<Size> recRateCutoff_;
+    ext::optional<bool> recIsAveraged_;
     bool telescopicValueDates_;
 
     mutable Spread fairPaySpread_;

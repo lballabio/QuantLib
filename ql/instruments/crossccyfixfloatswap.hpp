@@ -66,6 +66,11 @@ public:
         \param floatPaymentBdc       Business day convention for floating leg payments.
         \param floatPaymentLag       Payment lag for the floating leg (default: 0).
         \param floatPaymentCalendar  Calendar for floating leg payments.
+        \param telescopicValueDates  Set to true if the floatIndex is an OvernightIndex and you want to use telescopic values when calculating the rate.
+        \param floatIncludeSpread    If true, include the `floatSpread` when computing compounded or averaged overnight rates; if not provided, the index default behaviour is used.
+        \param floatLookbackDays     Optional lookback period (in calendar days) applied to the floating-rate observation window for the floating leg.
+        \param floatLockoutDays      Optional lockout period (in business days) before payment during which rate observations are frozen.
+        \param floatIsAveraged       If true, use arithmetic averaging of overnight rates instead of compounding when building the floating leg.
     */
     CrossCcyFixFloatSwap(Type type, Real fixedNominal, const Currency& fixedCurrency,
                          const Schedule& fixedSchedule, Rate fixedRate,
@@ -75,7 +80,12 @@ public:
                          const Schedule& floatSchedule,
                          const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
                          BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag,
-                         const Calendar& floatPaymentCalendar);
+                         const Calendar& floatPaymentCalendar, 
+                         const bool telescopicValueDates = false,
+                         ext::optional<bool> floatIncludeSpread = ext::nullopt,
+                         ext::optional<Natural> floatLookbackDays = ext::nullopt,
+                         ext::optional<Size> floatLockoutDays = ext::nullopt,
+                         ext::optional<bool> floatIsAveraged = ext::nullopt);
     //@}
 
     //! \name Instrument interface
@@ -105,6 +115,10 @@ public:
     BusinessDayConvention floatPaymentBdc() const { return floatPaymentBdc_; }
     Natural floatPaymentLag() const { return floatPaymentLag_; }
     const Calendar& floatPaymentCalendar() const { return floatPaymentCalendar_; }
+    ext::optional<bool> floatIncludeSpread() const { return floatIncludeSpread_; }
+    ext::optional<Natural> floatLookbackDays() const { return floatLookbackDays_; }
+    ext::optional<Size> floatLockoutDays() const { return floatLockoutDays_; }
+    ext::optional<bool> floatIsAveraged() const { return floatIsAveraged_; }
     //@}
 
     //! \name Additional interface
@@ -148,6 +162,11 @@ private:
     BusinessDayConvention floatPaymentBdc_;
     Natural floatPaymentLag_;
     Calendar floatPaymentCalendar_;
+    bool telescopicValueDates_;
+    ext::optional<bool> floatIncludeSpread_;
+    ext::optional<Natural> floatLookbackDays_;
+    ext::optional<Size> floatLockoutDays_;
+    ext::optional<bool> floatIsAveraged_;
 
     mutable Rate fairFixedRate_;
     mutable Spread fairSpread_;

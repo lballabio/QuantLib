@@ -41,7 +41,6 @@ QL_TEST_SRCS = \
 	convertiblebonds.cpp \
 	covariance.cpp \
 	creditdefaultswap.cpp \
-	creditriskplus.cpp \
 	crossccybasisswap.cpp \
 	crossccyfixfloatswap.cpp \
 	crossccyswap.cpp \

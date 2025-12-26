@@ -917,7 +917,6 @@
     <ClInclude Include="ql\instruments\crossccybasisswap.hpp" />
     <ClInclude Include="ql\instruments\crossccyfixfloatswap.hpp" />
     <ClInclude Include="ql\instruments\crossccyswap.hpp" />
-    <ClInclude Include="ql\instruments\dividendbarrieroption.hpp" />
     <ClInclude Include="ql\instruments\dividendschedule.hpp" />
     <ClInclude Include="ql\instruments\doublebarrieroption.hpp" />
     <ClInclude Include="ql\instruments\doublebarriertype.hpp" />

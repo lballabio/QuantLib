@@ -22,6 +22,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 
 namespace QuantLib {
 
@@ -30,21 +31,40 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
     const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc, Natural fixedPaymentLag,
     const Calendar& fixedPaymentCalendar, Real floatNominal, const Currency& floatCurrency,
     const Schedule& floatSchedule, const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
-    BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, const Calendar& floatPaymentCalendar)
+    BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag, const Calendar& floatPaymentCalendar,
+    const bool telescopicValueDates, ext::optional<bool> floatIncludeSpread, ext::optional<Natural> floatLookbackDays,
+    ext::optional<Size> floatLockoutDays, ext::optional<bool> floatIsAveraged)
     : CrossCcySwap(2), type_(type), fixedNominal_(fixedNominal), fixedCurrency_(fixedCurrency),
       fixedSchedule_(fixedSchedule), fixedRate_(fixedRate), fixedDayCount_(fixedDayCount),
       fixedPaymentBdc_(fixedPaymentBdc), fixedPaymentLag_(fixedPaymentLag), fixedPaymentCalendar_(fixedPaymentCalendar),
       floatNominal_(floatNominal), floatCurrency_(floatCurrency), floatSchedule_(floatSchedule),
       floatIndex_(floatIndex), floatSpread_(floatSpread), floatPaymentBdc_(floatPaymentBdc),
-      floatPaymentLag_(floatPaymentLag), floatPaymentCalendar_(floatPaymentCalendar) {
+      floatPaymentLag_(floatPaymentLag), floatPaymentCalendar_(floatPaymentCalendar),
+      telescopicValueDates_(telescopicValueDates),
+      floatIncludeSpread_(floatIncludeSpread), floatLookbackDays_(floatLookbackDays),
+      floatLockoutDays_(floatLockoutDays), floatIsAveraged_(floatIsAveraged) {
 
     // Build the float leg
-    Leg floatLeg = IborLeg(floatSchedule_, floatIndex_)
+    Leg floatLeg;
+    if (auto on = ext::dynamic_pointer_cast<OvernightIndex>(floatIndex_)) {
+        floatLeg = OvernightLeg(floatSchedule_, on)
+                    .withNotionals(floatNominal_)
+                    .withSpreads(floatSpread_)
+                    .withPaymentAdjustment(floatPaymentBdc_)
+                    .withPaymentLag(floatPaymentLag_)
+                    .withLookbackDays(floatLookbackDays ? *floatLookbackDays : 0)
+                    .withPaymentCalendar(floatPaymentCalendar_)
+                    .withLockoutDays(floatLockoutDays_ ? *floatLockoutDays_ : 0)
+                    .withAveragingMethod(floatIsAveraged_ ? RateAveraging::Simple : RateAveraging::Compound)
+                    .withTelescopicValueDates(telescopicValueDates_);
+    } else {
+        floatLeg = IborLeg(floatSchedule_, floatIndex_)
                        .withNotionals(floatNominal_)
                        .withSpreads(floatSpread_)
                        .withPaymentAdjustment(floatPaymentBdc_)
                        .withPaymentLag(floatPaymentLag_)
                        .withPaymentCalendar(floatPaymentCalendar_);
+    }
 
     // Register with each floating rate coupon
     for (Leg::const_iterator it = floatLeg.begin(); it < floatLeg.end(); ++it)
