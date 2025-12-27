@@ -68,7 +68,7 @@ class GsrProcessCore {
     void flushCache() const;
 
   protected:
-    const Array &times_, &vols_, &reversions_;
+    const Array times_, vols_, reversions_;
 
   private:
     int lowerIndex(Time t) const;
