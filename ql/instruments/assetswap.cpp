@@ -152,7 +152,7 @@ namespace QuantLib {
 
         if (overnight) {
             legs_[1] =
-                OvernightLeg(std::move(schedule), overnight)
+                OvernightLeg(schedule, overnight)
                 .withNotionals(notional)
                 .withPaymentAdjustment(paymentAdjustment)
                 .withGearings(gearing)

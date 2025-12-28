@@ -40,7 +40,7 @@ namespace QuantLib {
     public:
         explicit BlackCompoundingOvernightIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-                const bool effectiveVolatilityInput = false);
+                bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
         void initialize(const FloatingRateCoupon& coupon) override;
@@ -70,7 +70,7 @@ namespace QuantLib {
     public:
         explicit BlackAveragingOvernightIndexedCouponPricer(
                 Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-                const bool effectiveVolatilityInput = false);
+                bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
         void initialize(const FloatingRateCoupon& coupon) override;

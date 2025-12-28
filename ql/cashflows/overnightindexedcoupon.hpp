@@ -184,7 +184,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&) override;
+        void accept(AcyclicVisitor&) override;
 
         bool isCapped() const { return cap_ != Null<Real>(); }
         bool isFloored() const { return floor_ != Null<Real>(); }
@@ -232,9 +232,9 @@ namespace QuantLib {
         OvernightLeg& withCaps(const std::vector<Rate>& caps);
         OvernightLeg& withFloors(Rate floor);
         OvernightLeg& withFloors(const std::vector<Rate>& floors);
-        OvernightLeg& withNakedOption(const bool nakedOption);
-        OvernightLeg& withDailyCapFloor(const bool dailyCapFloor = true);
-        OvernightLeg& inArrears(const bool inArrears);
+        OvernightLeg& withNakedOption(bool nakedOption);
+        OvernightLeg& withDailyCapFloor(bool dailyCapFloor = true);
+        OvernightLeg& inArrears(bool inArrears);
         OvernightLeg& withLastRecentPeriod(const ext::optional<Period>& lastRecentPeriod);
         OvernightLeg& withLastRecentPeriodCalendar(const Calendar& lastRecentPeriodCalendar);
         OvernightLeg& withPaymentDates(const std::vector<Date>& paymentDates);
