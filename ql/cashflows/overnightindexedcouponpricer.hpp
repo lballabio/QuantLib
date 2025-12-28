@@ -32,6 +32,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -54,7 +55,7 @@ namespace QuantLib {
 
         explicit OvernightIndexedCouponPricer(
           Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-          const bool effectiveVolatilityInput = false);
+          bool effectiveVolatilityInput = false);
 
         void initialize(const FloatingRateCoupon& coupon) override;
 
@@ -103,7 +104,7 @@ namespace QuantLib {
       public:
         explicit CompoundingOvernightIndexedCouponPricer(
           Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-          const bool effectiveVolatilityInput = false);
+          bool effectiveVolatilityInput = false);
         //! \name FloatingRateCoupon interface
         //@{
         //void initialize(const FloatingRateCoupon& coupon) override;
@@ -141,7 +142,7 @@ namespace QuantLib {
             bool byApprox = false, // TRUE to use Katsumi Takada approximation
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
             const bool effectiveVolatilityInput = false)
-        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput),
+        : OvernightIndexedCouponPricer(std::move(v), effectiveVolatilityInput),
          byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}
 
         explicit ArithmeticAveragedOvernightIndexedCouponPricer(

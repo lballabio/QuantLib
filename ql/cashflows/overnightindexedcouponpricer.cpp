@@ -23,6 +23,7 @@
 */
 
 #include <ql/cashflows/overnightindexedcouponpricer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -51,11 +52,11 @@ namespace QuantLib {
     }
 
     void OvernightIndexedCouponPricer::initialize(const FloatingRateCoupon& coupon) {
-        if (auto cfCoupon = dynamic_cast<const CappedFlooredOvernightIndexedCoupon*>(&coupon)) {
-            auto underlying = cfCoupon->underlying().get();
+        if (const auto *cfCoupon = dynamic_cast<const CappedFlooredOvernightIndexedCoupon*>(&coupon)) {
+            auto *underlying = cfCoupon->underlying().get();
             QL_REQUIRE(underlying, "OvernightIndexedCouponPricer: CappedFlooredOvernightIndexedCoupon underlying coupon not defined");
             coupon_ = cfCoupon->underlying().get();
-        } else if (auto onCoupon = dynamic_cast<const OvernightIndexedCoupon*>(&coupon)) {
+        } else if (const auto *onCoupon = dynamic_cast<const OvernightIndexedCoupon*>(&coupon)) {
             coupon_ = onCoupon;
         } else {
             QL_FAIL("OvernightIndexedCouponPricer: unsupported coupon type");
@@ -77,7 +78,7 @@ namespace QuantLib {
     CompoundingOvernightIndexedCouponPricer::CompoundingOvernightIndexedCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             const bool effectiveVolatilityInput)
-        : OvernightIndexedCouponPricer(v, effectiveVolatilityInput) {}
+        : OvernightIndexedCouponPricer(std::move(v), effectiveVolatilityInput) {}
 
     Rate CompoundingOvernightIndexedCouponPricer::swapletRate() const {
         auto [swapletRate, effectiveSpread, effectiveIndexFixing] = compute(coupon_->accrualEndDate());
