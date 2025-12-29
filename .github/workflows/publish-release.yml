@@ -78,6 +78,7 @@ jobs:
         rm -rf reference
         mv ../Docs/html reference
         git add reference
+        cp ../LICENSE.TXT _includes/LICENSE.TXT
     - uses: peter-evans/create-pull-request@v8
       with:
         path: site
