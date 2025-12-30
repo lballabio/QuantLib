@@ -34,6 +34,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
 #include <set>
+#include <map>
 
 #if !defined(QL_USE_STD_SHARED_PTR) && BOOST_VERSION < 107400
 
@@ -101,16 +102,13 @@ namespace QuantLib {
       private:
         ObservableSettings() = default;
 
-        typedef std::set<Observer*> set_type;
+        typedef std::map<Observer*, bool> set_type;
         typedef set_type::iterator iterator;
 
         void registerDeferredObservers(const Observable::set_type& observers);
         void unregisterDeferredObserver(Observer*);
 
         set_type deferredObservers_;
-        // To keep a subset of deferredObservers_ that become invalid during enableUpdates.
-        // This set should be small in practice.
-        set_type invalidDeferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
         bool runningDeferredUpdates_ = false;
@@ -165,15 +163,20 @@ namespace QuantLib {
 
     inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
-            deferredObservers_.insert(observers.begin(), observers.end());
+            for (Observer* obs : observers)
+                deferredObservers_.emplace(obs, true);
         }
     }
 
     inline void ObservableSettings::unregisterDeferredObserver(Observer* o) {
-        if (ObservableSettings::instance().updatesDeferred())
+        if (updatesDeferred())
             deferredObservers_.erase(o);
-        else if (deferredObservers_.find(o) != deferredObservers_.end())
-            invalidDeferredObservers_.insert(o);
+        else
+        {
+            auto it = deferredObservers_.find(o);
+            if (it != deferredObservers_.end())
+                it->second = false;
+        }
     }
 
     inline Observable::Observable(const Observable&) {

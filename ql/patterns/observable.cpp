@@ -35,9 +35,8 @@ namespace QuantLib {
             std::string errMsg;
             runningDeferredUpdates_ = true;
 
-            for (auto* deferredObserver : deferredObservers_) {
-
-                if (invalidDeferredObservers_.find(deferredObserver) != invalidDeferredObservers_.end())
+            for (const auto& [deferredObserver, isValid] : deferredObservers_) {
+                if (!isValid)
                     continue;
 
                 try {
@@ -51,7 +50,6 @@ namespace QuantLib {
             }
 
             deferredObservers_.clear();
-            invalidDeferredObservers_.clear();
             runningDeferredUpdates_ = false;
 
             QL_ENSURE(successful,
