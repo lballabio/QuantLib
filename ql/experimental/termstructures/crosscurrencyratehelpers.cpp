@@ -525,6 +525,7 @@ namespace QuantLib {
     : CrossCurrencySwapRateHelperBase(fixedRate, tenor, fixingDays, calendar, convention, endOfMonth,
                                       collateralCurve, paymentLag),
       fixedFrequency_(fixedFrequency),
+      floatingFrequency_(floatingFrequency),
       fixedDayCount_(std::move(fixedDayCount)),
       floatIndex_(floatIndex),
       collateralOnFixedLeg_(collateralOnFixedLeg) {
