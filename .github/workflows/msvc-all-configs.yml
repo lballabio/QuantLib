@@ -18,7 +18,7 @@ jobs:
             boost_version: 77
             vsversion: 2019
           - toolset: v143
-            boost_version: 89
+            boost_version: 90
             vsversion: 2022
     steps:
     - uses: actions/checkout@v6

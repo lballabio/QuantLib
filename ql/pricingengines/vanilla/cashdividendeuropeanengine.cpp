@@ -175,7 +175,7 @@ namespace QuantLib {
         else {
             const Real divDiscounted = std::accumulate(
                 dividends.begin(), dividends.end(), Real(0),
-                [&rTS, &qTS](Real acc, const ext::shared_ptr<Dividend>& div) {
+                [&rTS, &qTS](Real acc, const ext::shared_ptr<Dividend>& div) -> Real {
                     return acc + div->amount() * rTS->discount(div->date()) / qTS->discount(div->date());
                 }
             );

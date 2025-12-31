@@ -40,6 +40,14 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
+        // Check if this is a seasoned option
+        if (arguments_.startDate != Date()) {
+            QL_FAIL("seasoned continuous geometric Asian options not yet supported - "
+                    "requires adjustment of forward price and variance based on "
+                    "accumulated geometric average. This feature needs mathematical "
+                    "review and implementation.");
+        }
+
         Date exercise = arguments_.exercise->lastDate();
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =

@@ -20,10 +20,10 @@ jobs:
 
       - name: Setup
         run: |
-          $Url = "https://archives.boost.io/release/1.89.0/source/boost_1_89_0.zip"
+          $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
           (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
           Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
-          Rename-Item -Path "C:\local\boost_1_89_0" -NewName "boost"
+          Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
 
       - name: Configure CMake
         env:
@@ -47,7 +47,7 @@ jobs:
           sarif_file: ${{ steps.run-analysis.outputs.sarif }}
 
       - name: Upload SARIF as an Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sarif-file
           path: ${{ steps.run-analysis.outputs.sarif }}

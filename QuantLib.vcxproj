@@ -510,6 +510,7 @@
   <ItemGroup>
     <ClInclude Include="ql\cashflows\all.hpp" />
     <ClInclude Include="ql\cashflows\averagebmacoupon.hpp" />
+    <ClInclude Include="ql\cashflows\blackovernightindexedcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\capflooredcoupon.hpp" />
     <ClInclude Include="ql\cashflows\capflooredinflationcoupon.hpp" />
     <ClInclude Include="ql\cashflows\cashflows.hpp" />
@@ -1698,6 +1699,7 @@
     <ClInclude Include="ql\termstructures\defaulttermstructure.hpp" />
     <ClInclude Include="ql\termstructures\globalbootstrap.hpp" />
     <ClInclude Include="ql\termstructures\globalbootstrapvars.hpp" />
+    <ClInclude Include="ql\termstructures\multicurve.hpp" />
     <ClInclude Include="ql\termstructures\inflation\all.hpp" />
     <ClInclude Include="ql\termstructures\inflation\inflationhelpers.hpp" />
     <ClInclude Include="ql\termstructures\inflation\inflationtraits.hpp" />
@@ -1936,6 +1938,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\cashflows\averagebmacoupon.cpp" />
+    <ClCompile Include="ql\cashflows\blackovernightindexedcouponpricer.cpp" />
     <ClCompile Include="ql\cashflows\capflooredcoupon.cpp" />
     <ClCompile Include="ql\cashflows\capflooredinflationcoupon.cpp" />
     <ClCompile Include="ql\cashflows\cashflows.cpp" />
@@ -2732,7 +2735,9 @@
     <ClCompile Include="ql\termstructures\credit\hazardratestructure.cpp" />
     <ClCompile Include="ql\termstructures\credit\survivalprobabilitystructure.cpp" />
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp" />
+    <ClCompile Include="ql\termstructures\globalbootstrap.cpp" />
     <ClCompile Include="ql\termstructures\globalbootstrapvars.cpp" />
+    <ClCompile Include="ql\termstructures\multicurve.cpp" />
     <ClCompile Include="ql\termstructures\inflation\inflationhelpers.cpp" />
     <ClCompile Include="ql\termstructures\inflation\seasonality.cpp" />
     <ClCompile Include="ql\termstructures\inflationtermstructure.cpp" />

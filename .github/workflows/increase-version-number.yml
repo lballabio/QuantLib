@@ -30,7 +30,7 @@ jobs:
         sed -i -e "s/^set(PACKAGE_VERSION  .*$/set(PACKAGE_VERSION       \"1.${NEXT_MINOR}-dev\"\)/g" CMakeLists.txt
         sed -i -e "s/^set(PACKAGE_VERSION_HEX.*$/set(PACKAGE_VERSION_HEX   \"0x01${NEXT_MINOR}0000\"\)/g" CMakeLists.txt
         git commit -a -m "Set version to 1.${NEXT_MINOR}-dev"
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib

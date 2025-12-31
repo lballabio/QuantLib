@@ -102,7 +102,7 @@ Copyright (C) 2012 Samuel Tebege
 Copyright (C) 2012 Simon Shakeshaft
 Copyright (C) 2012 Édouard Tallent
 Copyright (C) 2012, 2013 Grzegorz Andruszkiewicz
-Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2023, 2024 Peter Caspers
+Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2023, 2024, 2025 Peter Caspers
 
 Copyright (C) 2013 BGC Partners L.P.
 Copyright (C) 2013 Chris Higgs
@@ -127,7 +127,7 @@ Copyright (C) 2016 Nicholas Bertocchi
 Copyright (C) 2016 Stefano Fondi
 Copyright (C) 2016, 2017 Fabrice Lecuyer
 Copyright (C) 2016, 2019, 2020 Eisuke Tani
-Copyright (C) 2016, 2022 Quaternion Risk Management Ltd
+Copyright (C) 2016, 2020, 2022 Quaternion Risk Management Ltd
 
 Copyright (C) 2017 BN Algorithms Ltd
 Copyright (C) 2017 Joseph Jeisman
@@ -171,9 +171,12 @@ Copyright (C) 2023 Paul Xi Cao
 Copyright (C) 2024 Jacques du Toit
 Copyright (C) 2024 Jongbong An
 
+Copyright (C) 2025 Eugene Toder
 Copyright (C) 2025 Hiroto Ogawa
+Copyright (C) 2025 Kareem Fareed
 Copyright (C) 2025 Paolo D'Elia
 Copyright (C) 2025 Sotirios Papathanasopoulos
+Copyright (C) 2025 Uzair Beg
 Copyright (C) 2025 William Day
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo

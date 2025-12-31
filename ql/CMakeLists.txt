@@ -1,6 +1,7 @@
 set(QL_SOURCES
     cashflow.cpp
     cashflows/averagebmacoupon.cpp
+    cashflows/blackovernightindexedcouponpricer.cpp
     cashflows/capflooredcoupon.cpp
     cashflows/capflooredinflationcoupon.cpp
     cashflows/cashflows.cpp
@@ -814,7 +815,9 @@ set(QL_SOURCES
     termstructures/credit/hazardratestructure.cpp
     termstructures/credit/survivalprobabilitystructure.cpp
     termstructures/defaulttermstructure.cpp
+    termstructures/globalbootstrap.cpp
     termstructures/globalbootstrapvars.cpp
+    termstructures/multicurve.cpp
     termstructures/inflation/inflationhelpers.cpp
     termstructures/inflation/seasonality.cpp
     termstructures/inflationtermstructure.cpp
@@ -953,6 +956,7 @@ set(QL_HEADERS
     auto_link.hpp
     cashflow.hpp
     cashflows/averagebmacoupon.hpp
+    cashflows/blackovernightindexedcouponpricer.hpp
     cashflows/capflooredcoupon.hpp
     cashflows/capflooredinflationcoupon.hpp
     cashflows/cashflows.hpp
@@ -2074,6 +2078,7 @@ set(QL_HEADERS
     termstructures/defaulttermstructure.hpp
     termstructures/globalbootstrap.hpp
     termstructures/globalbootstrapvars.hpp
+    termstructures/multicurve.hpp
     termstructures/inflation/inflationhelpers.hpp
     termstructures/inflation/inflationtraits.hpp
     termstructures/inflation/interpolatedyoyinflationcurve.hpp

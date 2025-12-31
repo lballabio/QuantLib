@@ -203,7 +203,7 @@ namespace QuantLib {
             BusinessDayConvention convention,
             bool endOfMonth,
             Frequency fixedFrequency,
-            const DayCounter& fixedDayCount,
+            DayCounter  fixedDayCount,
             const ext::shared_ptr<IborIndex>& floatIndex,
             Handle<YieldTermStructure> collateralCurve,
             bool collateralOnFixedLeg,

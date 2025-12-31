@@ -128,6 +128,7 @@ int main(int, char* []) {
 
         ContinuousAveragingAsianOption continuousArithmeticOption(
             Average::Arithmetic,
+            settlementDate,
             payoff,
             europeanExercise);
 
@@ -235,7 +236,7 @@ int main(int, char* []) {
                   << std::setw(widths[1]) << std::left;
         auto currentAverage = makeQuoteHandle(0.0);  // No averaging yet for fresh option
         continuousArithmeticOption.setPricingEngine(
-            ext::make_shared<ContinuousArithmeticAsianLevyEngine>(bsmProcess, currentAverage, settlementDate));
+            ext::make_shared<ContinuousArithmeticAsianLevyEngine>(bsmProcess, currentAverage));
         std::cout << continuousArithmeticOption.NPV() << std::endl;
 
         // **********************************************
@@ -281,7 +282,7 @@ int main(int, char* []) {
                   << continuousGeometricOption.NPV() << std::endl;
 
         continuousArithmeticOption.setPricingEngine(
-            ext::make_shared<ContinuousArithmeticAsianLevyEngine>(bsmProcess, currentAverage, settlementDate));
+            ext::make_shared<ContinuousArithmeticAsianLevyEngine>(bsmProcess, currentAverage));
         std::cout << std::setw(24) << std::left << "Continuous Arithmetic"
                   << std::setw(36) << std::left << "Levy Engine"
                   << std::fixed << std::setprecision(6)

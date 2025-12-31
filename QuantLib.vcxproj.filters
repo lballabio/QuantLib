@@ -498,6 +498,9 @@
     <ClInclude Include="ql\cashflows\averagebmacoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\blackovernightindexedcouponpricer.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\capflooredcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -1972,6 +1975,9 @@
       <Filter>termstructures</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\localbootstrap.hpp">
+      <Filter>termstructures</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\multicurve.hpp">
       <Filter>termstructures</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\voltermstructure.hpp">
@@ -4568,6 +4574,9 @@
     <ClCompile Include="ql\cashflows\averagebmacoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
+    <ClCompile Include="ql\cashflows\blackovernightindexedcouponpricer.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
     <ClCompile Include="ql\cashflows\capflooredcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
@@ -5537,10 +5546,16 @@
     <ClCompile Include="ql\termstructures\defaulttermstructure.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\globalbootstrap.cpp">
+      <Filter>termstructures</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\globalbootstrapvars.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\inflationtermstructure.cpp">
+      <Filter>termstructures</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\multicurve.cpp">
       <Filter>termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\voltermstructure.cpp">

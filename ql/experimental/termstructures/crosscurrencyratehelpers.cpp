@@ -95,7 +95,7 @@ namespace QuantLib {
                           const DayCounter& dayCount,
                           Integer paymentLag) {
 
-            Period freqPeriod = Period(paymentFrequency);
+            auto freqPeriod = Period(paymentFrequency);
 
             Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
                                        convention, endOfMonth);
@@ -356,14 +356,8 @@ namespace QuantLib {
         bool isBasisOnFxBaseCurrencyLeg,
         Frequency paymentFrequency,
         Integer paymentLag)
-    : CrossCurrencySwapRateHelperBase(basis,
-                                      tenor,
-                                      fixingDays,
-                                      calendar,
-                                      convention,
-                                      endOfMonth,
-                                      std::move(collateralCurve),
-                                      paymentLag),
+    : CrossCurrencySwapRateHelperBase(basis, tenor, fixingDays, std::move(calendar), convention, endOfMonth,
+                                      std::move(collateralCurve), paymentLag),
       baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg), paymentFrequency_(paymentFrequency) {
@@ -522,22 +516,17 @@ namespace QuantLib {
         BusinessDayConvention convention,
         bool endOfMonth,
         Frequency fixedFrequency,
-        const DayCounter& fixedDayCount,
+        DayCounter  fixedDayCount,
         const ext::shared_ptr<IborIndex>& floatIndex,
         Handle<YieldTermStructure> collateralCurve,
         bool collateralOnFixedLeg,
         Frequency floatingFrequency,
         Integer paymentLag)
-    : CrossCurrencySwapRateHelperBase(fixedRate,
-                                      tenor,
-                                      fixingDays,
-                                      calendar,
-                                      convention,
-                                      endOfMonth,
-                                      std::move(collateralCurve),
-                                      paymentLag),
-      fixedFrequency_(fixedFrequency), floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount), floatIndex_(floatIndex),
+    : CrossCurrencySwapRateHelperBase(fixedRate, tenor, fixingDays, calendar, convention, endOfMonth,
+                                      collateralCurve, paymentLag),
+      fixedFrequency_(fixedFrequency),
+      fixedDayCount_(std::move(fixedDayCount)),
+      floatIndex_(floatIndex),
       collateralOnFixedLeg_(collateralOnFixedLeg) {
 
         QL_REQUIRE(floatIndex_, "floating index required");
