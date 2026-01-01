@@ -537,6 +537,9 @@
     <ClCompile Include="bacheliercalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fxforward.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="paralleltestrunner.hpp">

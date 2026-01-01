@@ -4542,6 +4542,8 @@
     <ClInclude Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\fxforward.hpp" />
+    <ClInclude Include="ql\pricingengines\forward\discountingfxforwardengine.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7348,5 +7350,7 @@
     <ClCompile Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\fxforward.cpp" />
+    <ClCompile Include="ql\pricingengines\forward\discountingfxforwardengine.cpp" />
   </ItemGroup>
 </Project>

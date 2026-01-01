@@ -45,41 +45,49 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -135,6 +143,38 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">QuantLib-x64-mt-s</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-x64-mt</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">
+    <IncludePath>C:\local\boost_1_89_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\local\boost_1_89_0\lib64-msvc-14.1;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -927,6 +967,7 @@
     <ClInclude Include="ql\instruments\forwardrateagreement.hpp" />
     <ClInclude Include="ql\instruments\forwardvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\futures.hpp" />
+    <ClInclude Include="ql\instruments\fxforward.hpp" />
     <ClInclude Include="ql\instruments\holderextensibleoption.hpp" />
     <ClInclude Include="ql\instruments\impliedvolatility.hpp" />
     <ClInclude Include="ql\instruments\inflationcapfloor.hpp" />
@@ -1562,6 +1603,7 @@
     <ClInclude Include="ql\pricingengines\exotic\analytictwoassetcorrelationengine.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticwriterextensibleoptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\all.hpp" />
+    <ClInclude Include="ql\pricingengines\forward\discountingfxforwardengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardperformanceengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.hpp" />
@@ -2206,6 +2248,7 @@
     <ClCompile Include="ql\instruments\forwardrateagreement.cpp" />
     <ClCompile Include="ql\instruments\forwardvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\futures.cpp" />
+    <ClCompile Include="ql\instruments\fxforward.cpp" />
     <ClCompile Include="ql\instruments\holderextensibleoption.cpp" />
     <ClCompile Include="ql\instruments\impliedvolatility.cpp" />
     <ClCompile Include="ql\instruments\inflationcapfloor.cpp" />
@@ -2639,6 +2682,7 @@
     <ClCompile Include="ql\pricingengines\exotic\analyticsimplechooserengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analytictwoassetcorrelationengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticwriterextensibleoptionengine.cpp" />
+    <ClCompile Include="ql\pricingengines\forward\discountingfxforwardengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\futures\discountingperpetualfuturesengine.cpp" />
