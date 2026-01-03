@@ -416,8 +416,8 @@ namespace QuantLib {
 
     // OvernightLeg implementation
 
-    OvernightLeg::OvernightLeg(const Schedule& schedule, const ext::shared_ptr<OvernightIndex>& i)
-    : schedule_(schedule), overnightIndex_(i), paymentCalendar_(schedule_.calendar()) {
+    OvernightLeg::OvernightLeg(Schedule  schedule, const ext::shared_ptr<OvernightIndex>& i)
+    : schedule_(std::move(schedule)), overnightIndex_(i), paymentCalendar_(schedule_.calendar()) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
 
