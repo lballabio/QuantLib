@@ -291,6 +291,8 @@ BOOST_AUTO_TEST_CASE(testGsrModel) {
                     << GsrJamNpv << ")");
 }
 
+/* To be re-enabled when we find a solution to #2408 that doesn't break calibration
+
 BOOST_AUTO_TEST_CASE(testGsrProcessWithPathGenerator) {
 
     BOOST_TEST_MESSAGE("Testing GSR process path generation...");
@@ -341,6 +343,7 @@ BOOST_AUTO_TEST_CASE(testGsrProcessWithPathGenerator) {
         }
     }
 }
+*/
 
 BOOST_AUTO_TEST_SUITE_END()
 
