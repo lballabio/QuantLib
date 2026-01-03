@@ -528,7 +528,7 @@ namespace QuantLib {
                                       std::move(calendar),
                                       convention,
                                       endOfMonth,
-                                      collateralCurve,
+                                      std::move(collateralCurve),
                                       paymentLag),
       fixedFrequency_(fixedFrequency), floatingFrequency_(floatingFrequency),
       fixedDayCount_(std::move(fixedDayCount)), floatIndex_(floatIndex),
