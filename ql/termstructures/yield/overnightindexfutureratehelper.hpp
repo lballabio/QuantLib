@@ -40,7 +40,7 @@ namespace QuantLib {
                                        const Date& maturityDate,
                                        const ext::shared_ptr<OvernightIndex>& overnightIndex,
                                        const Handle<Quote>& convexityAdjustment = {},
-                                       RateAveraging::Type averagingMethod = RateAveraging::Compound
+                                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
                                        const Date& customPillarDate = Date());
 
         //! \name RateHelper interface
@@ -74,14 +74,14 @@ namespace QuantLib {
                              Month referenceMonth,
                              Year referenceYear,
                              Frequency referenceFreq,
-                             const Handle<Quote>& convexityAdjustment = {}
+                             const Handle<Quote>& convexityAdjustment = {},
                              const Date& customPillarDate = Date());
 
         SofrFutureRateHelper(Real price,
                              Month referenceMonth,
                              Year referenceYear,
                              Frequency referenceFreq,
-                             Real convexityAdjustment = 0.0
+                             Real convexityAdjustment = 0.0,
                              const Date& customPillarDate = Date());
     };
 
