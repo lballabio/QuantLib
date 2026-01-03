@@ -66,7 +66,7 @@ namespace QuantLib {
                 "custom pillar date before start of reference period");
             QL_REQUIRE(customPillarDate <= maturityDate,
                 "custom pillar date after end of reference period");
-            customPillarDate_ = customPillarDate;
+            pillarDate_ = customPillarDate;
         }
     }
 
@@ -98,9 +98,6 @@ namespace QuantLib {
         return future_->convexityAdjustment();
     }
 
-    Date OvernightIndexFutureRateHelper::pillarDate() const {
-        return customPillarDate_ != Date() ? customPillarDate_ : maturityDate_;
-    }
     
     SofrFutureRateHelper::SofrFutureRateHelper(
         const Handle<Quote>& price,

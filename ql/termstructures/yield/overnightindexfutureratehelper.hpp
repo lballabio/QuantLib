@@ -53,11 +53,9 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
         Real convexityAdjustment() const;
-        Date pillarDate() const override;
       private:
         ext::shared_ptr<OvernightIndexFuture> future_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
-        Date customPillarDate_;
     };
 
     //! RateHelper for bootstrapping over CME SOFR futures
