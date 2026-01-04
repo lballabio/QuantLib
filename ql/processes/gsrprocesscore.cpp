@@ -28,7 +28,7 @@ namespace QuantLib::detail {
 GsrProcessCore::GsrProcessCore(Array times, Array vols,
                                Array reversions, const Real T)
     : times_(std::move(times)), vols_(std::move(vols)), reversions_(std::move(reversions)),
-      T_(T), revZero_(reversions.size(), false) {
+      T_(T), revZero_(reversions_.size(), false) {
     flushCache();
     checkTimesVolsReversions();
 }
