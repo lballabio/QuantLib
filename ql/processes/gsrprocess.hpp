@@ -70,9 +70,9 @@ namespace QuantLib {
         void flushCache() const;
         //! additional setters
         //@{
-        void setTimes(Array times) { core_.setTimes(times); }
-        void setVols(Array vols) { core_.setVols(vols); }
-        void setReversions(Array reversions) { core_.setReversions(reversions); }
+        void setTimes(Array times) { core_.setTimes(std::move(times)); }
+        void setVols(Array vols) { core_.setVols(std::move(vols)); }
+        void setReversions(Array reversions) { core_.setReversions(std::move(reversions)); }
         //@}
 
       private:
