@@ -110,14 +110,17 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                            << volsteptimes_[j] << "@" << j << ")");
     }
-    if (stateProcess_ != nullptr)
+    if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setTimes(volsteptimesArray_);
+    }
 }
 
 void Gsr::updateVolatility() {
     for (Size i = 0; i < sigma_.size(); i++) {
         sigma_.setParam(i, volatilities_[i]->value());
     }
+    ext::static_pointer_cast<GsrProcess>(stateProcess_)->setVols(sigma_.params());
     update();
 }
 
@@ -125,6 +128,7 @@ void Gsr::updateReversion() {
     for (Size i = 0; i < reversion_.size(); i++) {
         reversion_.setParam(i, reversions_[i]->value());
     }
+    ext::static_pointer_cast<GsrProcess>(stateProcess_)->setReversions(reversion_.params());
     update();
 }
 
