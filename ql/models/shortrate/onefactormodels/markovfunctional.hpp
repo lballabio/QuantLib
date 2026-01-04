@@ -378,11 +378,11 @@ namespace QuantLib {
         zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
         void generateArguments() override {
-            // if calculate triggers performCalculations, updateNumeraireTabulations
-            // is called twice. If we can not check the lazy object status this seem
-            // hard to avoid though.
-            calculate();
-            updateNumeraireTabulation();
+            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setVols(sigma_.params());
+            if(isCalculated())
+                updateNumeraireTabulation();
+            else
+                calculate();
             notifyObservers();
         }
 
