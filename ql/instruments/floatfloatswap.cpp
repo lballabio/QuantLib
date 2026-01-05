@@ -524,10 +524,39 @@ namespace QuantLib {
         }
     }
 
-    void FloatFloatSwap::setupExpired() const { Swap::setupExpired(); }
+    Spread FloatFloatSwap::fairSpread() const {
+        calculate();
+        QL_REQUIRE(fairSpread_ != Null<Spread>(), "result not available");
+        return fairSpread_;
+    }
+
+    void FloatFloatSwap::setupExpired() const { 
+        Swap::setupExpired();
+        fairSpread_ = Null<Spread>();
+    }
 
     void FloatFloatSwap::fetchResults(const PricingEngine::results *r) const {
+        static const Spread basisPoint = 1.0e-4;
+
         Swap::fetchResults(r);
+
+        const auto* results = dynamic_cast<const FloatFloatSwap::results*>(r);
+        if (results != nullptr) {
+            fairSpread_ = results->fairSpread;
+        } else {
+            fairSpread_ = Null<Spread>();
+        }
+
+        if (fairSpread_ == Null<Spread>()) {
+            // calculate it from other results
+            if (legBPS_.size() > 1 && legBPS_[1] != Null<Real>()) {
+                // Calculate fair spread for leg2 (similar to FixedVsFloatingSwap pattern)
+                // For a float-float swap, the fair spread is the adjustment needed on leg2
+                // to make the swap have zero value
+                Real currentSpread = spread2_.empty() ? 0.0 : spread2_[0];
+                fairSpread_ = currentSpread - NPV_/(legBPS_[1]/basisPoint);
+            }
+        }
     }
 
     void FloatFloatSwap::arguments::validate() const {
@@ -580,5 +609,8 @@ namespace QuantLib {
         QL_REQUIRE(index2 != nullptr, "index2 is null");
     }
 
-    void FloatFloatSwap::results::reset() { Swap::results::reset(); }
+    void FloatFloatSwap::results::reset() { 
+        Swap::results::reset();
+        fairSpread = Null<Spread>();
+    }
 }
