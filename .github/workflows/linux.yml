@@ -49,9 +49,9 @@ jobs:
             cc: clang
             cxx: clang++
             tests: true
-          - name: "Clang 20"
-            shortname: clang20
-            tag: plucky
+          - name: "Clang 21"
+            shortname: clang21
+            tag: resolute
             cc: clang
             cxx: clang++
             tests: true

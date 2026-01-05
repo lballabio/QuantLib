@@ -117,7 +117,12 @@ jobs:
             cxx: clang++
           - name: "Clang 20"
             shortname: clang20
-            tag: plucky
+            tag: questing
+            cc: clang
+            cxx: clang++
+          - name: "Clang 21"
+            shortname: clang21
+            tag: resolute
             cc: clang
             cxx: clang++
           - name: "C++17 mode"

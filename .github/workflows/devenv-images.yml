@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tag: [plucky, questing]
+        tag: [plucky, questing, resolute]
     steps:
     - uses: actions/checkout@v6
     - name: Build CI images
