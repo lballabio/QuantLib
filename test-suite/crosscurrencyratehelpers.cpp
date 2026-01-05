@@ -828,7 +828,7 @@ BOOST_AUTO_TEST_CASE(
 
     ext::shared_ptr<OvernightIndex> eonia = ext::make_shared<Eonia>(eoniaFwd);
 
-    Natural fixingDays = 2;
+    Natural fixingDays = 0;
     Calendar cal = TARGET();
     BusinessDayConvention bdc = Following;
     bool endOfMonth = true;
@@ -893,7 +893,7 @@ BOOST_AUTO_TEST_CASE(
 
     ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(usdCollat);
 
-    Natural fixingDays = 2;
+    Natural fixingDays = 0;
     Calendar cal = TARGET();
     BusinessDayConvention bdc = Following;
     bool endOfMonth = true;
