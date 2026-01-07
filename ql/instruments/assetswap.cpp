@@ -33,20 +33,6 @@ using std::vector;
 
 namespace QuantLib {
 
-    AssetSwap::AssetSwap(bool parSwap,
-                         ext::shared_ptr<Bond> bond,
-                         Real bondCleanPrice,
-                         Real nonParRepayment,
-                         Real gearing,
-                         const ext::shared_ptr<IborIndex>& iborIndex,
-                         Spread spread,
-                         const DayCounter& floatingDayCounter,
-                         Date dealMaturity,
-                         bool payBondCoupon)
-    : AssetSwap(payBondCoupon, std::move(bond), bondCleanPrice, iborIndex, spread,
-                Schedule(), floatingDayCounter, parSwap, gearing,
-                nonParRepayment, dealMaturity) {}
-
     AssetSwap::AssetSwap(bool payBondCoupon,
                          ext::shared_ptr<Bond> bond,
                          Real bondCleanPrice,

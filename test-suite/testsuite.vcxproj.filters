@@ -377,9 +377,6 @@
     <ClCompile Include="solvers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="spreadoption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="squarerootclvmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -414,9 +411,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tracing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="transformedgrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="twoassetbarrieroption.cpp">

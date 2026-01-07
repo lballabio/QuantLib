@@ -18,30 +18,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file bsmoperator.hpp
-    \brief differential operator for Black-Scholes-Merton equation
-*/
-
 #ifndef quantlib_bsm_operator_hpp
 #define quantlib_bsm_operator_hpp
 
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
-namespace QuantLib {
+/* Deprecated in version 1.42 */
 
-    /*! \deprecated Part of the old FD framework; copy this function
-                    in your codebase if needed.
-                    Deprecated in version 1.37.
-    */
-    class [[deprecated("Part of the old FD framework; copy this function in your codebase if needed")]] BSMOperator : public TridiagonalOperator {
-      public:
-        BSMOperator() = default;
-        BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
-        BSMOperator(const Array& grid, Rate r, Rate q, Volatility sigma);
-    };
-
-}
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

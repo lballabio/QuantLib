@@ -144,33 +144,6 @@ namespace QuantLib {
 
     };
 
-    /*! \deprecated Use OISRateHelper instead.
-                    Deprecated in version 1.37.
-    */
-    class [[deprecated("Use OISRateHelper instead")]] DatedOISRateHelper : public OISRateHelper {
-      public:
-        DatedOISRateHelper(const Date& startDate,
-                           const Date& endDate,
-                           const Handle<Quote>& fixedRate,
-                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                           // exogenous discounting curve
-                           Handle<YieldTermStructure> discountingCurve = {},
-                           bool telescopicValueDates = false,
-                           RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                           Integer paymentLag = 0,
-                           BusinessDayConvention paymentConvention = Following,
-                           Frequency paymentFrequency = Annual,
-                           const Calendar& paymentCalendar = Calendar(),
-                           Spread overnightSpread = {},
-                           ext::optional<bool> endOfMonth = ext::nullopt,
-                           ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                           const Calendar& fixedCalendar = Calendar(),
-                           Natural lookbackDays = Null<Natural>(),
-                           Natural lockoutDays = 0,
-                           bool applyObservationShift = false,
-                           const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
-    };
-
 }
 
 #endif

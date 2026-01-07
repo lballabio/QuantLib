@@ -68,64 +68,6 @@ namespace QuantLib {
         bool forwardCurveEmpty() const;
         //@}
 
-        /*! \deprecated Use fixingCalendar instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use fixingCalendar instead")]]
-        const Calendar& calendar() const {
-            return calendar_;
-        }
-
-        /*! \deprecated Use fixing instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use fixing instead")]]
-        Real price(const Date& date) {
-            return fixing(date);
-        }
-
-        /*! \deprecated Use addFixing instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use addFixing instead")]]
-        void addQuote(const Date& quoteDate, Real quote) {
-            addFixing(quoteDate, quote);
-        }
-
-        /*! \deprecated Use addFixings instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use addFixings instead")]]
-        void addQuotes(const std::map<Date, Real>& quotes) {
-            for (auto quote : quotes) {
-                addFixing(quote.first, quote.second);
-            }
-        }
-
-        /*! \deprecated Use clearFixings instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use clearFixings instead")]]
-        void clearQuotes() {
-            clearFixings();
-        }
-
-        /*! \deprecated Use isValidFixingDate instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use isValidFixingDate instead")]]
-        bool isValidQuoteDate(const Date& quoteDate) const {
-            return isValidFixingDate(quoteDate);
-        }
-
-        /*! \deprecated Use timeSeries instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use timeSeries instead")]]
-        const TimeSeries<Real>& quotes() const {
-            return timeSeries();
-        }
-
         friend std::ostream& operator<<(std::ostream&, const CommodityIndex&);
       protected:
         std::string name_;

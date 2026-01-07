@@ -48,44 +48,6 @@ namespace QuantLib {
         //! clears all stored fixings
         void clearHistories();
 
-        // deprecated in order to be moved into the private section
-
-        /*! \deprecated Use Index::hasHistoricalFixing instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use Index::hasHistoricalFixing instead")]]
-        bool hasHistory(const std::string& name) const;
-
-        /*! \deprecated Use Index::timeSeries instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use Index::timeSeries instead")]]
-        const TimeSeries<Real>& getHistory(const std::string& name) const;
-
-        /*! \deprecated Use Index::clearFixings instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use Index::clearFixings instead")]]
-        void clearHistory(const std::string& name);
-
-        /*! \deprecated Use Index::hasHistoricalFixing instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use Index::hasHistoricalFixing instead")]]
-        bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
-
-        /*! \deprecated Use Index::addFixings instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use Index::addFixings instead")]]
-        void setHistory(const std::string& name, TimeSeries<Real> history);
-
-        /*! \deprecated Register with the relevant index instead.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Register with the relevant index instead")]]
-        ext::shared_ptr<Observable> notifier(const std::string& name) const;
-
       private:
         struct CaseInsensitiveCompare {
           bool operator()(const std::string& s1, const std::string& s2) const {
@@ -149,6 +111,13 @@ namespace QuantLib {
                                                << " while " << h[duplicatedDate]
                                                << " value is already present");
         }
+
+        bool hasHistory(const std::string& name) const;
+        const TimeSeries<Real>& getHistory(const std::string& name) const;
+        void clearHistory(const std::string& name);
+        bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
+        void setHistory(const std::string& name, TimeSeries<Real> history);
+        ext::shared_ptr<Observable> notifier(const std::string& name) const;
     };
 
 }

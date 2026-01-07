@@ -790,7 +790,6 @@
     <ClCompile Include="sofrfutures.cpp" />
     <ClCompile Include="softbarrieroption.cpp" />
     <ClCompile Include="solvers.cpp" />
-    <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="svivolatility.cpp" />
@@ -805,7 +804,6 @@
     <ClCompile Include="timeseries.cpp" />
     <ClCompile Include="tqreigendecomposition.cpp" />
     <ClCompile Include="tracing.cpp" />
-    <ClCompile Include="transformedgrid.cpp" />
     <ClCompile Include="twoassetbarrieroption.cpp" />
     <ClCompile Include="twoassetcorrelationoption.cpp" />
     <ClCompile Include="ultimateforwardtermstructure.cpp" />

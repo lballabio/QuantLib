@@ -17,41 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file spreadoption.hpp
-    \brief Spread option on two assets
-*/
-
 #ifndef quantlib_spread_option_hpp
 #define quantlib_spread_option_hpp
 
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/instruments/payoffs.hpp>
 
-namespace QuantLib {
+/* Deprecated in version 1.42 */
 
-    /*! \deprecated Use BasketOption and KirkEngine instead.
-                        Deprecated in version 1.37.
-    */
-    class [[deprecated("Use BasketOption and KirkEngine instead")]] SpreadOption : public MultiAssetOption {
-      public:
-        class engine;
-        SpreadOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-                     const ext::shared_ptr<Exercise>& exercise)
-        : MultiAssetOption(payoff, exercise) {}
-    };
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    /*! \deprecated Use BasketOption and KirkEngine instead.
-                        Deprecated in version 1.37.
-    */
-    class [[deprecated("Use BasketOption and KirkEngine instead")]] SpreadOption::engine
-        : public GenericEngine<SpreadOption::arguments,
-                               SpreadOption::results> {};
-
-    QL_DEPRECATED_ENABLE_WARNING
-
-}
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

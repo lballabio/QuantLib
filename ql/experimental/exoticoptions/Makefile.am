@@ -30,7 +30,6 @@ cpp_files = \
     continuousarithmeticasianvecerengine.cpp \
     everestoption.cpp \
     himalayaoption.cpp \
-    kirkspreadoptionengine.cpp \
     mceverestengine.cpp \
     mchimalayaengine.cpp \
     mcpagodaengine.cpp \
@@ -71,7 +70,9 @@ all.hpp: Makefile.am
 	                      analyticwriterextensibleoptionengine.hpp \
 	                      continuousarithmeticasianlevyengine.hpp \
 	                      holderextensibleoption.hpp \
+	                      kirkspreadoptionengine.hpp \
 	                      partialtimebarrieroption.hpp \
+	                      spreadoption.hpp \
 	                      twoassetbarrieroption.hpp \
 	                      twoassetcorrelationoption.hpp \
 	                      writerextensibleoption.hpp, \

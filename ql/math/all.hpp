@@ -27,7 +27,6 @@
 #include <ql/math/rounding.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/solver1d.hpp>
-#include <ql/math/transformedgrid.hpp>
 
 #include <ql/math/copulas/all.hpp>
 #include <ql/math/distributions/all.hpp>
