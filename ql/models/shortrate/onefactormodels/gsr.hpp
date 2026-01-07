@@ -143,6 +143,8 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
     void generateArguments() override {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setVols(sigma_.params());
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->setReversions(reversion_.params());
         notifyObservers();
     }
 

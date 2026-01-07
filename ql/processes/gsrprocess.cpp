@@ -23,13 +23,13 @@
 
 namespace QuantLib {
 
-    GsrProcess::GsrProcess(const Array& times,
-                           const Array& vols,
-                           const Array& reversions,
+    GsrProcess::GsrProcess(Array times,
+                           Array vols,
+                           Array reversions,
                            const Real T,
                            const Date& referenceDate,
                            DayCounter dc)
-    : ForwardMeasureProcess1D(T), core_(times, vols, reversions, T), referenceDate_(referenceDate),
+    : ForwardMeasureProcess1D(T), core_(std::move(times), std::move(vols), std::move(reversions), T), referenceDate_(referenceDate),
       dc_(std::move(dc)) {
         flushCache();
     }

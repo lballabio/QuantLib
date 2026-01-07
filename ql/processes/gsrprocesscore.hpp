@@ -36,7 +36,7 @@ namespace QuantLib::detail {
 
 class GsrProcessCore {
   public:
-    GsrProcessCore(const Array& times, const Array& vols, const Array& reversions, Real T = 60.0);
+    GsrProcessCore(Array times, Array vols, Array reversions, Real T = 60.0);
 
     // conditional expectation, x0 dependent part
     Real expectation_x0dep_part(Time w, Real xw, Time dt) const;
@@ -67,10 +67,16 @@ class GsrProcessCore {
     // reset cache
     void flushCache() const;
 
+    // set times, vols, reversions
+    void setTimes(Array times);
+    void setVols(Array vols);
+    void setReversions(Array reversions);
+
   protected:
-    const Array &times_, &vols_, &reversions_;
+    Array times_, vols_, reversions_;
 
   private:
+    void checkTimesVolsReversions() const;
     int lowerIndex(Time t) const;
     int upperIndex(Time t) const;
     Real time2(Size index) const;
