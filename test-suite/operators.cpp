@@ -141,8 +141,10 @@ BOOST_AUTO_TEST_CASE(testConsistency) {
         yd[i] = normal.derivative(x[i]);
 
     // define the differential operators
+    QL_DEPRECATED_DISABLE_WARNING
     DZero D(N,h);
     DPlusDMinus D2(N,h);
+    QL_DEPRECATED_ENABLE_WARNING
 
     // check that the derivative of cum is Gaussian
     temp = D.applyTo(yi);
