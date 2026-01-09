@@ -77,6 +77,11 @@ namespace QuantLib {
         compoundSpreadDaily_(compoundSpreadDaily),
         rateComputationStartDate_(rateComputationStartDate),
         rateComputationEndDate_(rateComputationEndDate) {
+        
+        // ctor guard prevents construction of an object with illogically ordered dates. 
+        QL_REQUIRE(paymentDate >= endDate, 
+        "Payment date cannot be earlier than accrual end date");
+
         Date valueStart = rateComputationStartDate_ == Null<Date>() ? startDate : rateComputationStartDate_;
         Date valueEnd = rateComputationEndDate_ == Null<Date>() ? endDate : rateComputationEndDate_;
         if (lookbackDays != Null<Natural>()) {
