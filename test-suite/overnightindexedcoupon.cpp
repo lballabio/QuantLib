@@ -1100,6 +1100,27 @@ BOOST_AUTO_TEST_CASE(testOvernightLegErrorConditions) {
     BOOST_CHECK_THROW(vars.makeLeg(Null<Natural>(), 0, true, false, RateAveraging::Simple), Error);
 }
 
+BOOST_AUTO_TEST_CASE(testOvernightIndexedCouponPaymentBeforeAccrualEnd) {
+
+    Date accrualStart(18, September, 2025);
+    Settings::instance().evaluationDate() = accrualStart;
+
+    Handle<YieldTermStructure> h(
+        ext::make_shared<FlatForward>(accrualStart, 0.05, Actual365Fixed()));
+    ext::shared_ptr<OvernightIndex> estr =
+        ext::make_shared<Estr>(h);
+
+    Calendar cal = WeekendsOnly();
+    Date accrualEnd = cal.advance(accrualStart, Period(6, Months));
+    Date paymentDate = cal.advance(accrualEnd, Period(-1, Days));
+
+    BOOST_CHECK_THROW(
+        OvernightIndexedCoupon(paymentDate, 1.0,
+                               accrualStart, accrualEnd, estr),
+        Error
+    );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
