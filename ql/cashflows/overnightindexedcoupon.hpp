@@ -227,7 +227,6 @@ namespace QuantLib {
         OvernightLeg& withLockoutDays(Natural lockoutDays);
         OvernightLeg& withObservationShift(bool applyObservationShift = true);
         OvernightLeg& compoundingSpreadDaily(bool compoundSpreadDaily = true);
-        OvernightLeg& withLookback(const Period& lookback);
         OvernightLeg& withCaps(Rate cap);
         OvernightLeg& withCaps(const std::vector<Rate>& caps);
         OvernightLeg& withFloors(Rate floor);
