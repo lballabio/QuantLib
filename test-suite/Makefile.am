@@ -146,7 +146,6 @@ QL_TEST_SRCS = \
 	sofrfutures.cpp \
 	softbarrieroption.cpp \
 	solvers.cpp \
-	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
 	svivolatility.cpp \
@@ -159,7 +158,6 @@ QL_TEST_SRCS = \
 	termstructures.cpp \
 	timegrid.cpp \
 	timeseries.cpp \
-	transformedgrid.cpp \
 	tqreigendecomposition.cpp \
 	tracing.cpp \
 	twoassetbarrieroption.cpp \

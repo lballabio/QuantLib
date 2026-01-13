@@ -408,9 +408,6 @@
     <ClInclude Include="ql\methods\finitedifferences\bsmoperator.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\bsmtermoperator.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\cranknicolson.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
@@ -429,9 +426,6 @@
     <ClInclude Include="ql\methods\finitedifferences\expliciteuler.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\fdtypedefs.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\finitedifferencemodel.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
@@ -442,9 +436,6 @@
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operatortraits.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\parallelevolver.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\pde.hpp">
@@ -577,9 +568,6 @@
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\simplecashflow.hpp">
-      <Filter>cashflows</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\timebasket.hpp">
@@ -840,9 +828,6 @@
     <ClInclude Include="ql\instruments\europeanoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
-      <Filter>instruments</Filter>
-    </ClInclude>
     <ClInclude Include="ql\instruments\fixedvsfloatingswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -1060,9 +1045,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\rounding.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\math\sampledcurve.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\solver1d.hpp">
@@ -2605,12 +2587,6 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\hestonexpansionengine.hpp">
-      <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp">
-      <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fdvanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\integralengine.hpp">
@@ -4559,9 +4535,6 @@
     <ClCompile Include="ql\methods\finitedifferences\boundarycondition.cpp">
       <Filter>methods\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\bsmoperator.cpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\tridiagonaloperator.cpp">
       <Filter>methods\finitedifferences</Filter>
     </ClCompile>
@@ -6420,9 +6393,6 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\mceverestengine.cpp">

@@ -237,29 +237,4 @@ namespace QuantLib {
             RateHelper::accept(v);
     }
 
-    DatedOISRateHelper::DatedOISRateHelper(const Date& startDate,
-                                           const Date& endDate,
-                                           const Handle<Quote>& fixedRate,
-                                           const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                                           Handle<YieldTermStructure> discount,
-                                           bool telescopicValueDates,
-                                           RateAveraging::Type averagingMethod,
-                                           Integer paymentLag,
-                                           BusinessDayConvention paymentConvention,
-                                           Frequency paymentFrequency,
-                                           const Calendar& paymentCalendar,
-                                           Spread overnightSpread,
-                                           ext::optional<bool> endOfMonth,
-                                           ext::optional<Frequency> fixedPaymentFrequency,
-                                           const Calendar& fixedCalendar,
-                                           Natural lookbackDays,
-                                           Natural lockoutDays,
-                                           bool applyObservationShift,
-                                           const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
-    : OISRateHelper(startDate, endDate, fixedRate, overnightIndex, std::move(discount), telescopicValueDates,
-                    paymentLag, paymentConvention, paymentFrequency, paymentCalendar, 
-                    std::variant<Spread, Handle<Quote>>(overnightSpread),
-                    Pillar::LastRelevantDate, Date(), averagingMethod, endOfMonth, fixedPaymentFrequency,
-                    fixedCalendar, lookbackDays, lockoutDays, applyObservationShift, pricer) {}
-
 }

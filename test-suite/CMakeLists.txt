@@ -145,7 +145,6 @@ set(QL_TEST_SOURCES
     sofrfutures.cpp
     softbarrieroption.cpp
     solvers.cpp
-    spreadoption.cpp
     squarerootclvmodel.cpp
     stats.cpp
     svivolatility.cpp
@@ -160,7 +159,6 @@ set(QL_TEST_SOURCES
     timeseries.cpp
     tqreigendecomposition.cpp
     tracing.cpp
-    transformedgrid.cpp
     twoassetbarrieroption.cpp
     twoassetcorrelationoption.cpp
     ultimateforwardtermstructure.cpp

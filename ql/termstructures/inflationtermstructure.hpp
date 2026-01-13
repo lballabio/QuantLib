@@ -202,47 +202,7 @@ namespace QuantLib {
                                   Frequency frequency,
                                   const DayCounter& dayCounter,
                                   const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use an overload with an explicit base date and without indexIsInterpolated.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use an overload with an explicit base date and without indexIsInterpolated")]]
-        YoYInflationTermStructure(Date baseDate,
-                                  Rate baseYoYRate,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const DayCounter& dayCounter,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use an overload with an explicit base date and without indexIsInterpolated.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use an overload with an explicit base date and without indexIsInterpolated")]]
-        YoYInflationTermStructure(const Date& referenceDate,
-                                  Date baseDate,
-                                  Rate baseYoYRate,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const DayCounter& dayCounter,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {});
-
-        /*! \deprecated Use an overload with an explicit base date and without indexIsInterpolated.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("Use an overload with an explicit base date and without indexIsInterpolated")]]
-        YoYInflationTermStructure(Natural settlementDays,
-                                  const Calendar& calendar,
-                                  Date baseDate,
-                                  Rate baseYoYRate,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const DayCounter& dayCounter,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {});
         //@}
-
-        QL_DEPRECATED_DISABLE_WARNING
-        ~YoYInflationTermStructure() override = default;
-        QL_DEPRECATED_ENABLE_WARNING
 
         //! \name Inspectors
         //@{
@@ -272,20 +232,9 @@ namespace QuantLib {
                      bool extrapolate = false) const;
         //@}
 
-        /*! \deprecated This method will disappear. When it does, the curve will behave as if it returned false.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("This method will disappear. When it does, the curve will behave as if it returned false")]]
-        virtual bool indexIsInterpolated() const;
       protected:
         //! to be defined in derived classes
         virtual Rate yoyRateImpl(Time time) const = 0;
-
-        /*! \deprecated This data member will disappear. When it does, the curve will behave as if it was false.
-                        Deprecated in version 1.37.
-        */
-        [[deprecated("This data member will disappear. When it does, the curve will behave as if it was false")]]
-        bool indexIsInterpolated_ = false;
     };
 
 
@@ -324,12 +273,6 @@ namespace QuantLib {
 
     inline bool InflationTermStructure::hasSeasonality() const {
         return static_cast<bool>(seasonality_);
-    }
-
-    inline bool YoYInflationTermStructure::indexIsInterpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return indexIsInterpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }

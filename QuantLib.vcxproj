@@ -541,7 +541,6 @@
     <ClInclude Include="ql\cashflows\rateaveraging.hpp" />
     <ClInclude Include="ql\cashflows\replication.hpp" />
     <ClInclude Include="ql\cashflows\simplecashflow.hpp" />
-    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp" />
     <ClInclude Include="ql\cashflows\timebasket.hpp" />
     <ClInclude Include="ql\cashflows\yoyinflationcoupon.hpp" />
     <ClInclude Include="ql\cashflows\zeroinflationcashflow.hpp" />
@@ -919,7 +918,6 @@
     <ClInclude Include="ql\instruments\doublebarriertype.hpp" />
     <ClInclude Include="ql\instruments\equitytotalreturnswap.hpp" />
     <ClInclude Include="ql\instruments\europeanoption.hpp" />
-    <ClInclude Include="ql\instruments\fixedratebondforward.hpp" />
     <ClInclude Include="ql\instruments\fixedvsfloatingswap.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswap.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswaption.hpp" />
@@ -1140,7 +1138,6 @@
     <ClInclude Include="ql\math\randomnumbers\zigguratgaussianrng.hpp" />
     <ClInclude Include="ql\math\richardsonextrapolation.hpp" />
     <ClInclude Include="ql\math\rounding.hpp" />
-    <ClInclude Include="ql\math\sampledcurve.hpp" />
     <ClInclude Include="ql\math\solver1d.hpp" />
     <ClInclude Include="ql\math\solvers1d\all.hpp" />
     <ClInclude Include="ql\math\solvers1d\bisection.hpp" />
@@ -1167,14 +1164,12 @@
     <ClInclude Include="ql\methods\finitedifferences\all.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\boundarycondition.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\bsmoperator.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\bsmtermoperator.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\cranknicolson.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\dminus.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\dplus.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\dplusdminus.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\dzero.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\expliciteuler.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\fdtypedefs.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\finitedifferencemodel.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\impliciteuler.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\meshers\all.hpp" />
@@ -1222,7 +1217,6 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\secondordermixedderivativeop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operators\triplebandlinearop.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\operatortraits.hpp" />
-    <ClInclude Include="ql\methods\finitedifferences\parallelevolver.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\pde.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\pdebsm.hpp" />
     <ClInclude Include="ql\methods\finitedifferences\schemes\all.hpp" />
@@ -1632,10 +1626,8 @@
     <ClInclude Include="ql\pricingengines\vanilla\fdcirvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonhullwhitevanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdhestonvanillaengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdsabrvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\fdsimplebsswingengine.hpp" />
-    <ClInclude Include="ql\pricingengines\vanilla\fdvanillaengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\hestonexpansionengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\integralengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\jumpdiffusionengine.hpp" />
@@ -2055,7 +2047,6 @@
     <ClCompile Include="ql\experimental\exoticoptions\continuousarithmeticasianvecerengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\everestoption.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp" />
-    <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\mceverestengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\mchimalayaengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\mcpagodaengine.cpp" />
@@ -2356,7 +2347,6 @@
     <ClCompile Include="ql\math\statistics\histogram.cpp" />
     <ClCompile Include="ql\math\statistics\incrementalstatistics.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\boundarycondition.cpp" />
-    <ClCompile Include="ql\methods\finitedifferences\bsmoperator.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\meshers\concentrating1dmesher.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\meshers\exponentialjump1dmesher.cpp" />
     <ClCompile Include="ql\methods\finitedifferences\meshers\fdmblackscholesmesher.cpp" />
