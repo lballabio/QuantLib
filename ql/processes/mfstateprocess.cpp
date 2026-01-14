@@ -31,11 +31,13 @@ namespace QuantLib {
     void MfStateProcess::setTimes(Array times) {
         times_ = std::move(times);
         checkTimesVols();
+        notifyObservers();
     }
 
     void MfStateProcess::setVols(Array vols) {
         vols_ = std::move(vols);
         checkTimesVols();
+        notifyObservers();
     }
 
     void MfStateProcess::checkTimesVols() const {
