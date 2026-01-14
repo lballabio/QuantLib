@@ -41,6 +41,12 @@ jobs:
         echo "- [QuantLib-${VERSION_NUMBER}.zip](https://github.com/lballabio/QuantLib/releases/download/v${VERSION_NUMBER}/QuantLib-${VERSION_NUMBER}.zip)" >> tarballs/notes.txt
         echo "" >> tarballs/notes.txt
         awk '/Full list of pull requests/{ exit } { print }' News.md >> tarballs/notes.txt
+    - name: Remove prerelease
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release delete ${{ github.ref_name }}-rc --cleanup-tag --yes
     - name: Create draft release
       env:
         GH_TOKEN: ${{ github.token }}
