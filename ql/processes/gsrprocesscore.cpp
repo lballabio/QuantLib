@@ -25,26 +25,44 @@ using std::pow;
 
 namespace QuantLib::detail {
 
-GsrProcessCore::GsrProcessCore(const Array &times, const Array &vols,
-                               const Array &reversions, const Real T)
-    : times_(times), vols_(vols), reversions_(reversions),
-      T_(T), revZero_(reversions.size(), false) {
+GsrProcessCore::GsrProcessCore(Array times, Array vols,
+                               Array reversions, const Real T)
+    : times_(std::move(times)), vols_(std::move(vols)), reversions_(std::move(reversions)),
+      T_(T), revZero_(reversions_.size(), false) {
+    flushCache();
+    checkTimesVolsReversions();
+}
 
-    QL_REQUIRE(times.size() == vols.size() - 1,
+void GsrProcessCore::setTimes(Array times) {
+    times_ = std::move(times);
+    checkTimesVolsReversions();
+}
+
+void GsrProcessCore::setVols(Array vols) {
+    vols_ = std::move(vols);
+    checkTimesVolsReversions();
+}
+
+void GsrProcessCore::setReversions(Array reversions) {
+    reversions_ = std::move(reversions);
+    checkTimesVolsReversions();
+}
+
+void GsrProcessCore::checkTimesVolsReversions() const {
+    QL_REQUIRE(times_.size() == vols_.size() - 1,
                "number of volatilities ("
-                   << vols.size() << ") compared to number of times ("
+                   << vols_.size() << ") compared to number of times ("
                    << times_.size() << " must be bigger by one");
-    QL_REQUIRE(times.size() == reversions.size() - 1 || reversions.size() == 1,
+    QL_REQUIRE(times_.size() == reversions_.size() - 1 || reversions_.size() == 1,
                "number of reversions ("
-                   << vols.size() << ") compared to number of times ("
+                   << vols_.size() << ") compared to number of times ("
                    << times_.size() << " must be bigger by one, or exactly "
                                        "1 reversion must be given");
-    for (int i = 0; i < ((int)times.size()) - 1; i++)
-        QL_REQUIRE(times[i] < times[i + 1], "times must be increasing ("
-                                                << times[i] << "@" << i << " , "
-                                                << times[i + 1] << "@" << i + 1
+    for (int i = 0; i < ((int)times_.size()) - 1; i++)
+        QL_REQUIRE(times_[i] < times_[i + 1], "times must be increasing ("
+                                                << times_[i] << "@" << i << " , "
+                                                << times_[i + 1] << "@" << i + 1
                                                 << ")");
-    flushCache();
 }
 
 void GsrProcessCore::flushCache() const {

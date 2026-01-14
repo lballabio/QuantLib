@@ -107,6 +107,8 @@ namespace QuantLib {
                                << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                                << volsteptimes_[j] << "@" << j << ")");
         }
+        if (stateProcess_)
+            ext::static_pointer_cast<MfStateProcess>(stateProcess_)->setTimes(volsteptimesArray_);
     }
 
     void MarkovFunctional::updateTimes2() const {
