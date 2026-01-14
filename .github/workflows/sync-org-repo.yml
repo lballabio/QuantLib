@@ -1,9 +1,7 @@
 name: Sync quantlib organization repository
 on:
-  push:
-    tags:
-      - 'v1.[0-9]+'
-      - 'v1.[0-9]+.[0-9]+'
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -11,6 +9,7 @@ permissions:
 jobs:
   sync-org-repo:
     runs-on: ubuntu-latest
+    if: ${{ github.event.release.prerelease == false }}
     steps:
     - uses: actions/checkout@v6
       with:
