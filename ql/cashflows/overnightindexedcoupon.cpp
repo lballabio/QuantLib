@@ -217,9 +217,9 @@ namespace QuantLib {
     Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-        if (const auto compoundingPricer =
-                ext::dynamic_pointer_cast<CompoundingOvernightIndexedCouponPricer>(pricer_)) {
-            return compoundingPricer->averageRate(d);
+        if (const auto overnightIndexedPricer =
+            ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_)) {
+            return overnightIndexedPricer->averageRate(d);
         }
         return pricer_->swapletRate();
     }
