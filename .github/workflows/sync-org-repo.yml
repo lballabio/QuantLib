@@ -1,0 +1,34 @@
+name: Sync quantlib organization repository
+on:
+  push:
+    tags:
+      - 'v1.[0-9]+'
+      - 'v1.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-org-repo:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        repository: quantlib/QuantLib
+        token: ${{ secrets.ORG_PUSH_PAT }}
+        ref: master
+        path: quantlib
+    - name: Setup second remote
+      run: |
+        cd quantlib
+        git remote add src https://github.com/lballabio/QuantLib.git
+        git fetch src
+    - name: Push new commits
+      env:
+        GITHUB_TOKEN: ${{ secrets.ORG_PUSH_PAT }}
+      run: |
+        cd quantlib
+        git push origin ${{ github.ref_name }}
+        git merge --ff-only ${{ github.ref_name }}
+        git push origin master
+
