@@ -32,7 +32,11 @@
 #include <ql/math/comparison.hpp>
 #include <map>
 
-namespace QuantLib::detail {
+namespace QuantLib {
+
+class GsrProcess;
+
+namespace detail {
 
 class GsrProcessCore {
   public:
@@ -67,15 +71,14 @@ class GsrProcessCore {
     // reset cache
     void flushCache() const;
 
-    // set times, vols, reversions
-    void setTimes(Array times);
-    void setVols(Array vols);
-    void setReversions(Array reversions);
-
   protected:
     Array times_, vols_, reversions_;
 
   private:
+    friend class QuantLib::GsrProcess;
+    void setTimes(Array times);
+    void setVols(Array vols);
+    void setReversions(Array reversions);
     void checkTimesVolsReversions() const;
     int lowerIndex(Time t) const;
     int upperIndex(Time t) const;
@@ -103,6 +106,7 @@ inline Real GsrProcessCore::reversion(const Time t) const {
     return rev(lowerIndex(t));
 }
 
+} // namespace detail
 } // namespace QuantLib
 
 #endif

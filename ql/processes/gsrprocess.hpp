@@ -68,14 +68,12 @@ namespace QuantLib {
         //@}
         //! reset cache
         void flushCache() const;
-        //! additional setters
-        //@{
+
+      private:
+        friend class Gsr;
         void setTimes(Array times) { core_.setTimes(std::move(times)); }
         void setVols(Array vols) { core_.setVols(std::move(vols)); }
         void setReversions(Array reversions) { core_.setReversions(std::move(reversions)); }
-        //@}
-
-      private:
         void checkT(Time t) const;
         detail::GsrProcessCore core_;
         Date referenceDate_;
