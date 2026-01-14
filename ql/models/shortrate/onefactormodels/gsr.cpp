@@ -90,8 +90,10 @@ namespace QuantLib {
     }
 
 void Gsr::update() {
-    if (stateProcess_ != nullptr)
+    if (stateProcess_ != nullptr) {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->notifyObservers();
+    }
     LazyObject::update();
 }
 
