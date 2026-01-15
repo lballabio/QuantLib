@@ -31,6 +31,9 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/indexes/ibor/estr.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
