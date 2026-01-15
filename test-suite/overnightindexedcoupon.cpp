@@ -1104,6 +1104,7 @@ BOOST_AUTO_TEST_CASE(testOvernightLegErrorConditions) {
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightIndexedCouponPaymentBeforeAccrualEnd) {
+    BOOST_TEST_MESSAGE("Testing that an overnight coupon with inconsistent dates throws...");
 
     Date accrualStart(18, September, 2025);
     Settings::instance().evaluationDate() = accrualStart;
