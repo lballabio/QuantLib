@@ -90,6 +90,7 @@ namespace QuantLib {
 
         virtual Rate capletRate(Rate effectiveCap, bool dailyCapFloor) const = 0;
         virtual Rate floorletRate(Rate effectiveCap, bool dailyCapFloor) const = 0;
+        virtual Rate averageRate(const Date& date) const = 0;
 
       protected:
         const OvernightIndexedCoupon* coupon_ = nullptr;
@@ -121,7 +122,7 @@ namespace QuantLib {
         Rate floorletRate([[maybe_unused]] Rate effectiveCap, [[maybe_unused]] bool dailyCapFloor) const override {
           QL_FAIL("CompoundingOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
         }
-        Rate averageRate(const Date& date) const;
+        Rate averageRate(const Date& date) const override;
         Rate effectiveSpread() const;
         Rate effectiveIndexFixing() const;
 
@@ -163,6 +164,7 @@ namespace QuantLib {
         Rate floorletRate([[maybe_unused]] Rate effectiveCap, [[maybe_unused]] bool dailyCapFloor) const override {
           QL_FAIL("ArithmeticAveragedOvernightIndexedCouponPricer::floorletRate(Rate, bool) not implemented");
         }
+        Rate averageRate(const Date& date) const override;
       protected:
         Real convAdj1(Time ts, Time te) const;
         Real convAdj2(Time ts, Time te) const;
