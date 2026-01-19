@@ -126,6 +126,7 @@ namespace QuantLib {
 
         //! \name Results
         //@{
+        Spread fairSpread() const;
         //@}
         // other
         void setupArguments(PricingEngine::arguments* args) const override;
@@ -146,6 +147,8 @@ namespace QuantLib {
         std::vector<bool> isRedemptionFlow1_, isRedemptionFlow2_;
         BusinessDayConvention paymentConvention1_, paymentConvention2_;
         const bool intermediateCapitalExchange_, finalCapitalExchange_;
+        // results
+        mutable Spread fairSpread_;
     };
 
     //! %Arguments for float float swap calculation
@@ -175,6 +178,7 @@ namespace QuantLib {
     //! %Results from float float swap calculation
     class FloatFloatSwap::results : public Swap::results {
       public:
+        Spread fairSpread;
         void reset() override;
     };
 
