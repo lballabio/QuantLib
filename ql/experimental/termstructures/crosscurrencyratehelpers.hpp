@@ -199,14 +199,15 @@ namespace QuantLib {
             const Handle<Quote>& fixedRate,
             const Period& tenor,
             Natural fixingDays,
-            const Calendar& calendar,
+            Calendar calendar,
             BusinessDayConvention convention,
             bool endOfMonth,
             Frequency fixedFrequency,
             DayCounter  fixedDayCount,
             const ext::shared_ptr<IborIndex>& floatIndex,
-            const Handle<YieldTermStructure>& collateralCurve,
+            Handle<YieldTermStructure> collateralCurve,
             bool collateralOnFixedLeg,
+            Frequency floatingFrequency = NoFrequency,
             Integer paymentLag = 0);
 
         Real impliedQuote() const override;
@@ -218,6 +219,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& floatingLegDiscountHandle() const;
 
         Frequency fixedFrequency_;
+        Frequency floatingFrequency_;
         DayCounter fixedDayCount_;
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
@@ -226,6 +228,37 @@ namespace QuantLib {
         Leg floatLeg_;
     };
 
+    class NonDeliverableConstNotionalCrossCurrencySwapRateHelper
+    : public ConstNotionalCrossCurrencySwapRateHelper {
+      public:
+        NonDeliverableConstNotionalCrossCurrencySwapRateHelper(
+            const Handle<Quote>& fixedRate,
+            const Period& tenor,
+            Natural fixingDays,
+            Calendar calendar,
+            BusinessDayConvention convention,
+            bool endOfMonth,
+            Frequency fixedFrequency,
+            DayCounter fixedDayCount,
+            const ext::shared_ptr<IborIndex>& floatIndex,
+            Handle<YieldTermStructure> collateralCurve,
+            bool collateralOnFixedLeg,
+            Frequency floatingFrequency = NoFrequency,
+            Integer paymentLag = 0,
+            Integer fxFixingDelay = 2);
+
+        //! \name RateHelper interface
+        //@{
+        Real impliedQuote() const override;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&) override;
+        //@}
+
+    protected:
+        Integer fxFixingDelay_;
+    };
 }
 
 #endif
