@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024
+ Copyright (C) 2024 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,24 +50,24 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         /*! Constructor for FX Forward using nominal amounts.
-            \param nominal1         Amount to be exchanged (positive = pay, negative = receive)
-            \param currency1        Currency of nominal1
-            \param nominal2         Amount to be exchanged (positive = pay, negative = receive)
-            \param currency2        Currency of nominal2
+            \param nominal1         Notional amount in source currency
+            \param sourceCurrency   Currency of nominal1 (source currency)
+            \param nominal2         Notional amount in target currency
+            \param targetCurrency   Currency of nominal2 (target currency)
             \param maturityDate     Settlement date of the forward contract
             \param payCurrency1     If true, pay currency1 and receive currency2;
                                     if false, receive currency1 and pay currency2
         */
         FxForward(Real nominal1,
-                  const Currency& currency1,
+                  const Currency& sourceCurrency,
                   Real nominal2,
-                  const Currency& currency2,
+                  const Currency& targetCurrency,
                   const Date& maturityDate,
                   bool payCurrency1);
 
         /*! Constructor for FX Forward using exchange rate.
             \param nominal          Notional amount in source currency
-            \param sourceCurrency   Currency of the nominal amount
+            \param sourceCurrency   Currency of nominal amount
             \param targetCurrency   Currency to exchange into
             \param forwardRate      The forward exchange rate (target/source)
             \param maturityDate     Settlement date of the forward contract
@@ -96,6 +96,8 @@ namespace QuantLib {
         const Date& maturityDate() const { return maturityDate_; }
         //! True if paying currency1
         bool payCurrency1() const { return payCurrency1_; }
+        //! Contracted forward rate (currency2 per unit of currency1)
+        Real forwardRate() const { return fairForwardRate_; }
         //@}
 
         //! \name Instrument interface

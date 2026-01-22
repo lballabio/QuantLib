@@ -408,9 +408,6 @@
     <ClInclude Include="ql\methods\finitedifferences\bsmoperator.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\bsmtermoperator.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\cranknicolson.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
@@ -429,9 +426,6 @@
     <ClInclude Include="ql\methods\finitedifferences\expliciteuler.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\fdtypedefs.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\finitedifferencemodel.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
@@ -442,9 +436,6 @@
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operatortraits.hpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\parallelevolver.hpp">
       <Filter>methods\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\pde.hpp">
@@ -577,9 +568,6 @@
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\simplecashflow.hpp">
-      <Filter>cashflows</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\timebasket.hpp">
@@ -840,9 +828,6 @@
     <ClInclude Include="ql\instruments\europeanoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
-      <Filter>instruments</Filter>
-    </ClInclude>
     <ClInclude Include="ql\instruments\fixedvsfloatingswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -963,6 +948,9 @@
     <ClInclude Include="ql\instruments\zerocouponinflationswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+	    <ClInclude Include="ql\instruments\fxforward.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>	
     <ClInclude Include="ql\instruments\bonds\all.hpp">
       <Filter>instruments\bonds</Filter>
     </ClInclude>
@@ -1060,9 +1048,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\rounding.hpp">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\math\sampledcurve.hpp">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\solver1d.hpp">
@@ -2547,6 +2532,9 @@
     <ClInclude Include="ql\pricingengines\forward\replicatingvarianceswapengine.hpp">
       <Filter>pricingengines\forward</Filter>
     </ClInclude>
+	    <ClInclude Include="ql\pricingengines\forward\discountingfxforwardengine.hpp">
+      <Filter>pricingengines\forward</Filter>
+    </ClInclude>	
     <ClInclude Include="ql\pricingengines\quanto\all.hpp">
       <Filter>pricingengines\quanto</Filter>
     </ClInclude>
@@ -2605,12 +2593,6 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\hestonexpansionengine.hpp">
-      <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fdmultiperiodengine.hpp">
-      <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\pricingengines\vanilla\fdvanillaengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\integralengine.hpp">
@@ -4542,8 +4524,6 @@
     <ClInclude Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\fxforward.hpp" />
-    <ClInclude Include="ql\pricingengines\forward\discountingfxforwardengine.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -4559,9 +4539,6 @@
       <Filter>methods\montecarlo</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\boundarycondition.cpp">
-      <Filter>methods\finitedifferences</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\bsmoperator.cpp">
       <Filter>methods\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\tridiagonaloperator.cpp">
@@ -4918,6 +4895,9 @@
     <ClCompile Include="ql\instruments\zerocouponinflationswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+	    <ClCompile Include="ql\instruments\fxforward.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>	
     <ClCompile Include="ql\instruments\bonds\amortizingcmsratebond.cpp">
       <Filter>instruments\bonds</Filter>
     </ClCompile>
@@ -6067,6 +6047,9 @@
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp">
       <Filter>pricingengines\forward</Filter>
     </ClCompile>
+	    <ClCompile Include="ql\pricingengines\forward\discountingfxforwardengine.cpp">
+      <Filter>pricingengines\forward</Filter>
+    </ClCompile>	
     <ClCompile Include="ql\pricingengines\inflation\inflationcapfloorengines.cpp">
       <Filter>pricingengines\inflation</Filter>
     </ClCompile>
@@ -6422,9 +6405,6 @@
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\himalayaoption.cpp">
-      <Filter>experimental\exoticoptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\exoticoptions\kirkspreadoptionengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\mceverestengine.cpp">
@@ -7350,7 +7330,5 @@
     <ClCompile Include="ql\pricingengines\vanilla\cashdividendeuropeanengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\fxforward.cpp" />
-    <ClCompile Include="ql\pricingengines\forward\discountingfxforwardengine.cpp" />
   </ItemGroup>
 </Project>

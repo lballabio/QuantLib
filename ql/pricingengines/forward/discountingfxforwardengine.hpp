@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024
+ Copyright (C) 2024 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,10 +24,8 @@
 #ifndef quantlib_discounting_fx_forward_engine_hpp
 #define quantlib_discounting_fx_forward_engine_hpp
 
-#include <ql/currency.hpp>
 #include <ql/handle.hpp>
 #include <ql/instruments/fxforward.hpp>
-#include <ql/optional.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
@@ -38,20 +36,19 @@ namespace QuantLib {
 
         The NPV is computed as:
         \f[
-        \text{NPV} = \pm N_{\text{dom}} \times D_{\text{dom}}(T)
-                     \mp N_{\text{for}} \times D_{\text{for}}(T) \times X
+        \text{NPV} = \pm N_1 \times D_1(T) \mp N_2 \times D_2(T) / S
         \f]
         where:
-        - \f$ N_{\text{dom}} \f$ is the domestic currency nominal
-        - \f$ N_{\text{for}} \f$ is the foreign currency nominal
-        - \f$ D_{\text{dom}}(T) \f$ is the domestic discount factor to maturity
-        - \f$ D_{\text{for}}(T) \f$ is the foreign discount factor to maturity
-        - \f$ X \f$ is the spot FX rate (domestic/foreign)
+        - \f$ N_1 \f$ is the currency1 nominal
+        - \f$ N_2 \f$ is the currency2 nominal
+        - \f$ D_1(T) \f$ is the currency1 discount factor to maturity
+        - \f$ D_2(T) \f$ is the currency2 discount factor to maturity
+        - \f$ S \f$ is the spot FX rate (currency2/currency1)
         - \f$ T \f$ is the maturity date
 
         The fair forward rate is computed as:
         \f[
-        F = X \times \frac{D_{\text{for}}(T)}{D_{\text{dom}}(T)}
+        F = S \times \frac{D_2(T)}{D_1(T)}
         \f]
 
         \ingroup forwardengines
@@ -62,18 +59,13 @@ namespace QuantLib {
             \param currency2DiscountCurve   Discount curve for currency2
             \param spotFx                   Spot FX rate (currency2/currency1), i.e.,
                                             1 unit of currency1 = spotFx units of currency2
-            \param includeSettlementDateFlows Whether to include flows on settlement date
-            \param settlementDate           The settlement date for discounting
             \param npvDate                  The date to which NPV is discounted
+                                            (defaults to the discount curve reference date)
         */
         DiscountingFxForwardEngine(
-            const Currency& currency1,
             Handle<YieldTermStructure> currency1DiscountCurve,
-            const Currency& currency2,
             Handle<YieldTermStructure> currency2DiscountCurve,
             Handle<Quote> spotFx,
-            const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
-            const Date& settlementDate = Date(),
             const Date& npvDate = Date());
 
         void calculate() const override;
@@ -90,13 +82,9 @@ namespace QuantLib {
         //@}
 
       private:
-        Currency currency1_;
         Handle<YieldTermStructure> currency1DiscountCurve_;
-        Currency currency2_;
         Handle<YieldTermStructure> currency2DiscountCurve_;
         Handle<Quote> spotFx_;
-        ext::optional<bool> includeSettlementDateFlows_;
-        Date settlementDate_;
         Date npvDate_;
     };
 

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024
+ Copyright (C) 2024 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(testDiscountingFxForwardEngine) {
                   true); // pay USD, receive SGD
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     fwd.setPricingEngine(engine);
 
@@ -160,7 +160,7 @@ BOOST_AUTO_TEST_CASE(testFairForwardRate) {
     FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     fwd.setPricingEngine(engine);
 
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     fwd.setPricingEngine(engine);
 
@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(testPositionDirection) {
     FxForward shortUsd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     longUsd.setPricingEngine(engine);
     shortUsd.setPricingEngine(engine);
@@ -269,7 +269,7 @@ BOOST_AUTO_TEST_CASE(testIRCurveSensitivity) {
     FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     fwd.setPricingEngine(engine);
 
@@ -288,11 +288,11 @@ BOOST_AUTO_TEST_CASE(testIRCurveSensitivity) {
     BOOST_TEST_MESSAGE("NPV with USD +10bp: " << npvUsdUp);
     BOOST_TEST_MESSAGE("NPV with SGD +10bp: " << npvSgdUp);
 
-    // Higher USD rates should decrease the PV of paying USD and increase overall NPV
-    // Higher SGD rates should decrease the PV of receiving SGD and decrease overall NPV
-    // Verify sensitivities are non-zero
-    BOOST_CHECK(std::fabs(npvUsdUp - npvBase) > vars.tolerance);
-    BOOST_CHECK(std::fabs(npvSgdUp - npvBase) > vars.tolerance);
+    // When paying USD and receiving SGD:
+    // - Higher USD rates -> lower DF for USD leg -> less negative PV for paying USD -> NPV increases
+    // - Higher SGD rates -> lower DF for SGD leg -> less positive PV for receiving SGD -> NPV decreases
+    BOOST_CHECK(npvUsdUp > npvBase);
+    BOOST_CHECK(npvSgdUp < npvBase);
 }
 
 
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE(testSpotFxSensitivity) {
                   true); // pay USD, receive SGD
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     fwd.setPricingEngine(engine);
 
@@ -347,7 +347,7 @@ BOOST_AUTO_TEST_CASE(testAdditionalResults) {
     FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usd, vars.usdCurveHandle, vars.sgd, vars.sgdCurveHandle, vars.spotFxHandle);
+        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
 
     fwd.setPricingEngine(engine);
 

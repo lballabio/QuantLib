@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024
+ Copyright (C) 2024 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,24 +18,19 @@
 */
 
 #include <ql/pricingengines/forward/discountingfxforwardengine.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <utility>
 
 namespace QuantLib {
 
     DiscountingFxForwardEngine::DiscountingFxForwardEngine(
-        const Currency& currency1,
         Handle<YieldTermStructure> currency1DiscountCurve,
-        const Currency& currency2,
         Handle<YieldTermStructure> currency2DiscountCurve,
         Handle<Quote> spotFx,
-        const ext::optional<bool>& includeSettlementDateFlows,
-        const Date& settlementDate,
         const Date& npvDate)
-    : currency1_(currency1), currency1DiscountCurve_(std::move(currency1DiscountCurve)),
-      currency2_(currency2), currency2DiscountCurve_(std::move(currency2DiscountCurve)),
-      spotFx_(std::move(spotFx)), includeSettlementDateFlows_(includeSettlementDateFlows),
-      settlementDate_(settlementDate), npvDate_(npvDate) {
+    : currency1DiscountCurve_(std::move(currency1DiscountCurve)),
+      currency2DiscountCurve_(std::move(currency2DiscountCurve)),
+      spotFx_(std::move(spotFx)),
+      npvDate_(npvDate) {
         registerWith(currency1DiscountCurve_);
         registerWith(currency2DiscountCurve_);
         registerWith(spotFx_);
@@ -52,17 +47,6 @@ namespace QuantLib {
                                         "currency1 has "
                                             << refDate << " and currency2 has " << refDate2);
 
-        Date settlementDate = settlementDate_;
-        if (settlementDate_ == Date()) {
-            settlementDate = refDate;
-        } else {
-            QL_REQUIRE(settlementDate >= refDate, "settlement date ("
-                                                      << settlementDate
-                                                      << ") before "
-                                                         "discount curve reference date ("
-                                                      << refDate << ")");
-        }
-
         Date npvDate = npvDate_;
         if (npvDate_ == Date()) {
             npvDate = refDate;
@@ -73,19 +57,10 @@ namespace QuantLib {
                                                         << refDate << ")");
         }
 
-        results_.valuationDate = npvDate;
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
 
         const Date& maturityDate = arguments_.maturityDate;
-
-        // Check if the forward is expired (maturity date is before settlement)
-        if (maturityDate <= settlementDate) {
-            results_.fairForwardRate = Null<Real>();
-            results_.npvCurrency1 = 0.0;
-            results_.npvCurrency2 = 0.0;
-            return;
-        }
 
         // Get the spot FX rate (currency2/currency1)
         Real spotFxRate = spotFx_->value();
