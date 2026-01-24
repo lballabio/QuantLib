@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2026 Chirag Desai
+ Copyright (C) 2024 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -78,12 +78,12 @@ BOOST_AUTO_TEST_CASE(testFxForwardConstruction) {
     FxForward fwd1(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate,
                    true); // pay USD, receive SGD
 
-    BOOST_CHECK_EQUAL(fwd1.sourceNominal(), usdNominal);
-    BOOST_CHECK_EQUAL(fwd1.targetNominal(), sgdNominal);
-    BOOST_CHECK(fwd1.sourceCurrency() == vars.usd);
-    BOOST_CHECK(fwd1.targetCurrency() == vars.sgd);
+    BOOST_CHECK_EQUAL(fwd1.nominal1(), usdNominal);
+    BOOST_CHECK_EQUAL(fwd1.nominal2(), sgdNominal);
+    BOOST_CHECK(fwd1.currency1() == vars.usd);
+    BOOST_CHECK(fwd1.currency2() == vars.sgd);
     BOOST_CHECK_EQUAL(fwd1.maturityDate(), vars.maturityDate);
-    BOOST_CHECK_EQUAL(fwd1.paySourceCurrency(), true);
+    BOOST_CHECK_EQUAL(fwd1.payCurrency1(), true);
     BOOST_CHECK_EQUAL(fwd1.isExpired(), false);
 }
 
@@ -99,48 +99,10 @@ BOOST_AUTO_TEST_CASE(testFxForwardConstructionWithRate) {
     FxForward fwd(nominal, vars.usd, vars.sgd, forwardRate, vars.maturityDate,
                   true); // sell USD
 
-    BOOST_CHECK_EQUAL(fwd.sourceNominal(), nominal);
-    BOOST_CHECK_CLOSE(fwd.targetNominal(), nominal * forwardRate, 1.0e-4); // 0.0001% tolerance
-    BOOST_CHECK(fwd.sourceCurrency() == vars.usd);
-    BOOST_CHECK(fwd.targetCurrency() == vars.sgd);
-}
-
-
-BOOST_AUTO_TEST_CASE(testContractedForwardRate) {
-    BOOST_TEST_MESSAGE("Testing FX forward contracted rate...");
-
-    CommonVars vars;
-
-    // Test with explicit nominals
-    Real usdNominal = 1000000.0;
-    Real sgdNominal = 1350000.0;
-    Real expectedRate = sgdNominal / usdNominal; // 1.35
-
-    FxForward fwd1(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
-
-    BOOST_CHECK_CLOSE(fwd1.forwardRate(), expectedRate, 1.0e-10);
-    BOOST_TEST_MESSAGE("Contracted rate (from nominals): " << fwd1.forwardRate());
-
-    // Test with rate constructor
-    Real inputRate = 1.36;
-    FxForward fwd2(usdNominal, vars.usd, vars.sgd, inputRate, vars.maturityDate, true);
-
-    BOOST_CHECK_CLOSE(fwd2.forwardRate(), inputRate, 1.0e-10);
-    BOOST_TEST_MESSAGE("Contracted rate (from rate constructor): " << fwd2.forwardRate());
-
-    // Verify contracted rate differs from fair forward rate
-    auto engine = ext::make_shared<DiscountingFxForwardEngine>(
-        vars.usdCurveHandle, vars.sgdCurveHandle, vars.spotFxHandle);
-    fwd1.setPricingEngine(engine);
-
-    Real fairRate = fwd1.fairForwardRate();
-    Real contractedRate = fwd1.forwardRate();
-
-    BOOST_TEST_MESSAGE("Contracted rate: " << contractedRate);
-    BOOST_TEST_MESSAGE("Fair forward rate: " << fairRate);
-
-    // These should generally be different unless the contract is at fair value
-    BOOST_CHECK(contractedRate != fairRate);
+    BOOST_CHECK_EQUAL(fwd.nominal1(), nominal);
+    BOOST_CHECK_CLOSE(fwd.nominal2(), nominal * forwardRate, 1.0e-4); // 0.0001% tolerance
+    BOOST_CHECK(fwd.currency1() == vars.usd);
+    BOOST_CHECK(fwd.currency2() == vars.sgd);
 }
 
 
@@ -203,7 +165,7 @@ BOOST_AUTO_TEST_CASE(testFairForwardRate) {
     fwd.setPricingEngine(engine);
 
     // Fair forward rate = Spot * (DFforeign / DFdomestic)
-    // With USD as source currency (domestic) and SGD as target currency (foreign):
+    // With USD as currency1 (domestic) and SGD as currency2 (foreign):
     // F = S * (DF_SGD / DF_USD)
     Real spotFx = vars.spotFxHandle->value();
     Real dfUsd = vars.usdCurveHandle->discount(vars.maturityDate);
@@ -228,8 +190,8 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     CommonVars vars;
 
     // For an ATM forward, we need NPV = 0
-    // NPV = -sourceNominal * dfSource + targetNominal * dfTarget / spotFx = 0
-    // Solving: targetNominal = sourceNominal * dfSource * spotFx / dfTarget
+    // NPV = -nominal1 * df1 + nominal2 * df2 / spotFx = 0
+    // Solving: nominal2 = nominal1 * df1 * spotFx / df2
 
     Real spotFx = vars.spotFxHandle->value();
     Real dfUsd = vars.usdCurveHandle->discount(vars.maturityDate);
@@ -239,7 +201,7 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     Real fairForwardRate = spotFx * dfSgd / dfUsd;
 
     // Create a forward at the ATM strike
-    // ATM condition: targetNominal = sourceNominal * dfSource * spotFx / dfTarget
+    // ATM condition: nominal2 = nominal1 * df1 * spotFx / df2
     Real usdNominal = 1000000.0;
     Real sgdNominal = usdNominal * dfUsd * spotFx / dfSgd;
 
@@ -273,10 +235,10 @@ BOOST_AUTO_TEST_CASE(testPositionDirection) {
     Real usdNominal = 1000000.0;
     Real sgdNominal = 1350000.0;
 
-    // Long USD (pay SGD, receive USD) - paySourceCurrency = false
+    // Long USD (pay SGD, receive USD) - payCurrency1 = false
     FxForward longUsd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, false);
 
-    // Short USD (pay USD, receive SGD) - paySourceCurrency = true
+    // Short USD (pay USD, receive SGD) - payCurrency1 = true
     FxForward shortUsd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
 
     auto engine = ext::make_shared<DiscountingFxForwardEngine>(
@@ -326,7 +288,7 @@ BOOST_AUTO_TEST_CASE(testIRCurveSensitivity) {
     BOOST_TEST_MESSAGE("NPV with USD +10bp: " << npvUsdUp);
     BOOST_TEST_MESSAGE("NPV with SGD +10bp: " << npvSgdUp);
 
-    // When paying USD (source) and receiving SGD (target):
+    // When paying USD and receiving SGD:
     // - Higher USD rates -> lower DF for USD leg -> less negative PV for paying USD -> NPV increases
     // - Higher SGD rates -> lower DF for SGD leg -> less positive PV for receiving SGD -> NPV decreases
     BOOST_CHECK(npvUsdUp > npvBase);
@@ -365,8 +327,8 @@ BOOST_AUTO_TEST_CASE(testSpotFxSensitivity) {
     BOOST_TEST_MESSAGE("NPV with spot=1.30: " << npvSpotDown);
 
     // Spot FX convention: spotFx = SGD/USD (1 USD = spotFx SGD)
-    // When paying USD (source) and receiving SGD (target):
-    // - Target leg PV in source currency terms = SGD_PV / spotFx
+    // When paying USD and receiving SGD:
+    // - SGD leg PV in USD terms = SGD_PV / spotFx
     // - If spot goes UP (USD strengthens), SGD is worth LESS in USD terms, NPV DECREASES
     // - If spot goes DOWN (USD weakens), SGD is worth MORE in USD terms, NPV INCREASES
     BOOST_CHECK(npvSpotUp < npvBase);
@@ -396,21 +358,21 @@ BOOST_AUTO_TEST_CASE(testAdditionalResults) {
     auto additionalResults = fwd.additionalResults();
 
     BOOST_CHECK(additionalResults.find("spotFx") != additionalResults.end());
-    BOOST_CHECK(additionalResults.find("sourceCurrencyDiscountFactor") != additionalResults.end());
-    BOOST_CHECK(additionalResults.find("targetCurrencyDiscountFactor") != additionalResults.end());
+    BOOST_CHECK(additionalResults.find("currency1DiscountFactor") != additionalResults.end());
+    BOOST_CHECK(additionalResults.find("currency2DiscountFactor") != additionalResults.end());
 
     Real spotFx = ext::any_cast<Real>(additionalResults.at("spotFx"));
-    Real dfSource = ext::any_cast<Real>(additionalResults.at("sourceCurrencyDiscountFactor"));
-    Real dfTarget = ext::any_cast<Real>(additionalResults.at("targetCurrencyDiscountFactor"));
+    Real df1 = ext::any_cast<Real>(additionalResults.at("currency1DiscountFactor"));
+    Real df2 = ext::any_cast<Real>(additionalResults.at("currency2DiscountFactor"));
 
     BOOST_TEST_MESSAGE("Additional Results:");
     BOOST_TEST_MESSAGE("  Spot FX: " << spotFx);
-    BOOST_TEST_MESSAGE("  Source Currency DF: " << dfSource);
-    BOOST_TEST_MESSAGE("  Target Currency DF: " << dfTarget);
+    BOOST_TEST_MESSAGE("  Currency1 DF: " << df1);
+    BOOST_TEST_MESSAGE("  Currency2 DF: " << df2);
 
     BOOST_CHECK_CLOSE(spotFx, 1.35, 1.0e-4); // 0.0001% tolerance
-    BOOST_CHECK(dfSource > 0.0 && dfSource < 1.0);
-    BOOST_CHECK(dfTarget > 0.0 && dfTarget < 1.0);
+    BOOST_CHECK(df1 > 0.0 && df1 < 1.0);
+    BOOST_CHECK(df2 > 0.0 && df2 < 1.0);
 }
 
 

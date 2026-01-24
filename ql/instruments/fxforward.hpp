@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2026 Chirag Desai
+ Copyright (C) 2024 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,7 +37,7 @@ namespace QuantLib {
         predetermined exchange rate.
 
         The instrument can be valued using DiscountingFxForwardEngine,
-        which computes the NPV by discounting the source and target
+        which computes the NPV by discounting the domestic and foreign
         legs using their respective yield curves.
 
         \ingroup instruments
@@ -50,23 +50,23 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         /*! Constructor for FX Forward using nominal amounts.
-            \param sourceNominal    Notional amount in source(domestic) currency
-            \param sourceCurrency   Currency of sourceNominal (source currency)
-            \param targetNominal    Notional amount in target(foreign) currency
-            \param targetCurrency   Currency of targetNominal (target currency)
+            \param nominal1         Notional amount in source currency
+            \param sourceCurrency   Currency of nominal1 (source currency)
+            \param nominal2         Notional amount in target currency
+            \param targetCurrency   Currency of nominal2 (target currency)
             \param maturityDate     Settlement date of the forward contract
-            \param paySourceCurrency If true, pay source currency and receive target currency;
-                                    if false, receive source currency and pay target currency
+            \param payCurrency1     If true, pay currency1 and receive currency2;
+                                    if false, receive currency1 and pay currency2
         */
-        FxForward(Real sourceNominal,
+        FxForward(Real nominal1,
                   const Currency& sourceCurrency,
-                  Real targetNominal,
+                  Real nominal2,
                   const Currency& targetCurrency,
                   const Date& maturityDate,
-                  bool paySourceCurrency);
+                  bool payCurrency1);
 
         /*! Constructor for FX Forward using exchange rate.
-            \param sourceNominal    Notional amount in source currency
+            \param nominal          Notional amount in source currency
             \param sourceCurrency   Currency of nominal amount
             \param targetCurrency   Currency to exchange into
             \param forwardRate      The forward exchange rate (target/source)
@@ -74,7 +74,7 @@ namespace QuantLib {
             \param sellingSource    If true, sell source currency (pay source, receive target);
                                     if false, buy source currency (receive source, pay target)
         */
-        FxForward(Real sourceNominal,
+        FxForward(Real nominal,
                   const Currency& sourceCurrency,
                   const Currency& targetCurrency,
                   Real forwardRate,
@@ -84,20 +84,20 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        //! Source nominal amount
-        Real sourceNominal() const { return sourceNominal_; }
-        //! Source currency
-        const Currency& sourceCurrency() const { return sourceCurrency_; }
-        //! Target nominal amount
-        Real targetNominal() const { return targetNominal_; }
-        //! Target currency
-        const Currency& targetCurrency() const { return targetCurrency_; }
+        //! First nominal amount
+        Real nominal1() const { return nominal1_; }
+        //! First currency
+        const Currency& currency1() const { return currency1_; }
+        //! Second nominal amount
+        Real nominal2() const { return nominal2_; }
+        //! Second currency
+        const Currency& currency2() const { return currency2_; }
         //! Settlement date
         const Date& maturityDate() const { return maturityDate_; }
-        //! True if paying source currency
-        bool paySourceCurrency() const { return paySourceCurrency_; }
-        //! Contracted forward rate (target currency per unit of source currency)
-        Real forwardRate() const { return targetNominal_ / sourceNominal_; }
+        //! True if paying currency1
+        bool payCurrency1() const { return payCurrency1_; }
+        //! Contracted forward rate (currency2 per unit of currency1)
+        Real forwardRate() const { return fairForwardRate_; }
         //@}
 
         //! \name Instrument interface
@@ -109,36 +109,36 @@ namespace QuantLib {
 
         //! \name Additional results
         //@{
-        //! Fair forward rate (targetCurrency/sourceCurrency),  the market-implied fair rate computed by the engine
+        //! Fair forward rate (currency2/currency1)
         Real fairForwardRate() const;
-        //! NPV in source currency terms
-        Real npvSourceCurrency() const;
-        //! NPV in target currency terms
-        Real npvTargetCurrency() const;
+        //! NPV in currency1 terms
+        Real npvCurrency1() const;
+        //! NPV in currency2 terms
+        Real npvCurrency2() const;
         //@}
 
       private:
-        Real sourceNominal_;
-        Currency sourceCurrency_;
-        Real targetNominal_;
-        Currency targetCurrency_;
+        Real nominal1_;
+        Currency currency1_;
+        Real nominal2_;
+        Currency currency2_;
         Date maturityDate_;
-        bool paySourceCurrency_;
+        bool payCurrency1_;
 
         mutable Real fairForwardRate_;
-        mutable Real npvSourceCurrency_;
-        mutable Real npvTargetCurrency_;
+        mutable Real npvCurrency1_;
+        mutable Real npvCurrency2_;
     };
 
     //! Arguments for FX Forward pricing engine
     class FxForward::arguments : public virtual PricingEngine::arguments {
       public:
-        Real sourceNominal = Null<Real>();
-        Currency sourceCurrency;
-        Real targetNominal = Null<Real>();
-        Currency targetCurrency;
+        Real nominal1 = Null<Real>();
+        Currency currency1;
+        Real nominal2 = Null<Real>();
+        Currency currency2;
         Date maturityDate;
-        bool paySourceCurrency = true;
+        bool payCurrency1 = true;
         void validate() const override;
     };
 
@@ -146,8 +146,8 @@ namespace QuantLib {
     class FxForward::results : public Instrument::results {
       public:
         Real fairForwardRate = Null<Real>();
-        Real npvSourceCurrency = Null<Real>();
-        Real npvTargetCurrency = Null<Real>();
+        Real npvCurrency1 = Null<Real>();
+        Real npvCurrency2 = Null<Real>();
         void reset() override;
     };
 
