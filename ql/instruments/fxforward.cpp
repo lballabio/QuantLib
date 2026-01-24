@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024 Chirag Desai
+ Copyright (C) 2026 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,36 +22,40 @@
 
 namespace QuantLib {
 
-    FxForward::FxForward(Real nominal1,
-                         const Currency& currency1,
-                         Real nominal2,
-                         const Currency& currency2,
+    FxForward::FxForward(Real sourceNominal,
+                         const Currency& sourceCurrency,
+                         Real targetNominal,
+                         const Currency& targetCurrency,
                          const Date& maturityDate,
-                         bool payCurrency1)
-    : nominal1_(nominal1), currency1_(currency1), nominal2_(nominal2), currency2_(currency2),
-      maturityDate_(maturityDate), payCurrency1_(payCurrency1), fairForwardRate_(Null<Real>()),
-      npvCurrency1_(Null<Real>()), npvCurrency2_(Null<Real>()) {
-        QL_REQUIRE(!currency1.empty(), "currency1 must not be empty");
-        QL_REQUIRE(!currency2.empty(), "currency2 must not be empty");
-        QL_REQUIRE(currency1 != currency2, "currency1 and currency2 must be different");
-        QL_REQUIRE(nominal1 > 0.0, "nominal1 must be positive");
-        QL_REQUIRE(nominal2 > 0.0, "nominal2 must be positive");
+                         bool paySourceCurrency)
+    : sourceNominal_(sourceNominal), sourceCurrency_(sourceCurrency), targetNominal_(targetNominal),
+      targetCurrency_(targetCurrency), maturityDate_(maturityDate),
+      paySourceCurrency_(paySourceCurrency), fairForwardRate_(Null<Real>()),
+      npvSourceCurrency_(Null<Real>()), npvTargetCurrency_(Null<Real>()) {
+        QL_REQUIRE(!sourceCurrency.empty(), "source currency must not be empty");
+        QL_REQUIRE(!targetCurrency.empty(), "target currency must not be empty");
+        QL_REQUIRE(sourceCurrency != targetCurrency,
+                   "source and target currencies must be different");
+        QL_REQUIRE(sourceNominal > 0.0, "source nominal must be positive");
+        QL_REQUIRE(targetNominal > 0.0, "target nominal must be positive");
     }
 
-    FxForward::FxForward(Real nominal,
+    FxForward::FxForward(Real sourceNominal,
                          const Currency& sourceCurrency,
                          const Currency& targetCurrency,
                          Real forwardRate,
                          const Date& maturityDate,
                          bool sellingSource)
-    : nominal1_(nominal), currency1_(sourceCurrency), nominal2_(nominal * forwardRate),
-      currency2_(targetCurrency), maturityDate_(maturityDate), payCurrency1_(sellingSource),
-      fairForwardRate_(Null<Real>()), npvCurrency1_(Null<Real>()), npvCurrency2_(Null<Real>()) {
+    : sourceNominal_(sourceNominal), sourceCurrency_(sourceCurrency),
+      targetNominal_(sourceNominal * forwardRate), targetCurrency_(targetCurrency),
+      maturityDate_(maturityDate), paySourceCurrency_(sellingSource),
+      fairForwardRate_(Null<Real>()), npvSourceCurrency_(Null<Real>()),
+      npvTargetCurrency_(Null<Real>()) {
         QL_REQUIRE(!sourceCurrency.empty(), "source currency must not be empty");
         QL_REQUIRE(!targetCurrency.empty(), "target currency must not be empty");
         QL_REQUIRE(sourceCurrency != targetCurrency,
                    "source and target currencies must be different");
-        QL_REQUIRE(nominal > 0.0, "nominal must be positive");
+        QL_REQUIRE(sourceNominal > 0.0, "source nominal must be positive");
         QL_REQUIRE(forwardRate > 0.0, "forward rate must be positive");
     }
 
@@ -63,12 +67,12 @@ namespace QuantLib {
         auto* arguments = dynamic_cast<FxForward::arguments*>(args);
         QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
-        arguments->nominal1 = nominal1_;
-        arguments->currency1 = currency1_;
-        arguments->nominal2 = nominal2_;
-        arguments->currency2 = currency2_;
+        arguments->sourceNominal = sourceNominal_;
+        arguments->sourceCurrency = sourceCurrency_;
+        arguments->targetNominal = targetNominal_;
+        arguments->targetCurrency = targetCurrency_;
         arguments->maturityDate = maturityDate_;
-        arguments->payCurrency1 = payCurrency1_;
+        arguments->paySourceCurrency = paySourceCurrency_;
     }
 
     void FxForward::fetchResults(const PricingEngine::results* r) const {
@@ -78,8 +82,8 @@ namespace QuantLib {
         QL_REQUIRE(results != nullptr, "wrong result type");
 
         fairForwardRate_ = results->fairForwardRate;
-        npvCurrency1_ = results->npvCurrency1;
-        npvCurrency2_ = results->npvCurrency2;
+        npvSourceCurrency_ = results->npvSourceCurrency;
+        npvTargetCurrency_ = results->npvTargetCurrency;
     }
 
     Real FxForward::fairForwardRate() const {
@@ -88,31 +92,31 @@ namespace QuantLib {
         return fairForwardRate_;
     }
 
-    Real FxForward::npvCurrency1() const {
+    Real FxForward::npvSourceCurrency() const {
         calculate();
-        QL_REQUIRE(npvCurrency1_ != Null<Real>(), "NPV in currency1 not available");
-        return npvCurrency1_;
+        QL_REQUIRE(npvSourceCurrency_ != Null<Real>(), "NPV in source currency not available");
+        return npvSourceCurrency_;
     }
 
-    Real FxForward::npvCurrency2() const {
+    Real FxForward::npvTargetCurrency() const {
         calculate();
-        QL_REQUIRE(npvCurrency2_ != Null<Real>(), "NPV in currency2 not available");
-        return npvCurrency2_;
+        QL_REQUIRE(npvTargetCurrency_ != Null<Real>(), "NPV in target currency not available");
+        return npvTargetCurrency_;
     }
 
     void FxForward::arguments::validate() const {
-        QL_REQUIRE(nominal1 != Null<Real>(), "nominal1 not set");
-        QL_REQUIRE(nominal2 != Null<Real>(), "nominal2 not set");
-        QL_REQUIRE(!currency1.empty(), "currency1 not set");
-        QL_REQUIRE(!currency2.empty(), "currency2 not set");
+        QL_REQUIRE(sourceNominal != Null<Real>(), "source nominal not set");
+        QL_REQUIRE(targetNominal != Null<Real>(), "target nominal not set");
+        QL_REQUIRE(!sourceCurrency.empty(), "source currency not set");
+        QL_REQUIRE(!targetCurrency.empty(), "target currency not set");
         QL_REQUIRE(maturityDate != Date(), "maturity date not set");
     }
 
     void FxForward::results::reset() {
         Instrument::results::reset();
         fairForwardRate = Null<Real>();
-        npvCurrency1 = Null<Real>();
-        npvCurrency2 = Null<Real>();
+        npvSourceCurrency = Null<Real>();
+        npvTargetCurrency = Null<Real>();
     }
 
 }
