@@ -276,6 +276,7 @@ set(QL_SOURCES
     instruments/forwardrateagreement.cpp
     instruments/forwardvanillaoption.cpp
     instruments/futures.cpp
+    instruments/fxforward.cpp
     instruments/holderextensibleoption.cpp
     instruments/impliedvolatility.cpp
     instruments/inflationcapfloor.cpp
@@ -712,6 +713,7 @@ set(QL_SOURCES
     pricingengines/exotic/analyticsimplechooserengine.cpp
     pricingengines/exotic/analytictwoassetcorrelationengine.cpp
     pricingengines/exotic/analyticwriterextensibleoptionengine.cpp
+    pricingengines/forward/discountingfxforwardengine.cpp
     pricingengines/forward/mcforwardeuropeanbsengine.cpp
     pricingengines/forward/mcforwardeuropeanhestonengine.cpp
     pricingengines/futures/discountingperpetualfuturesengine.cpp
@@ -1352,6 +1354,7 @@ set(QL_HEADERS
     instruments/forwardrateagreement.hpp
     instruments/forwardvanillaoption.hpp
     instruments/futures.hpp
+    instruments/fxforward.hpp
     instruments/holderextensibleoption.hpp
     instruments/impliedvolatility.hpp
     instruments/inflationcapfloor.hpp
@@ -1938,6 +1941,7 @@ set(QL_HEADERS
     pricingengines/exotic/analyticsimplechooserengine.hpp
     pricingengines/exotic/analytictwoassetcorrelationengine.hpp
     pricingengines/exotic/analyticwriterextensibleoptionengine.hpp
+    pricingengines/forward/discountingfxforwardengine.hpp
     pricingengines/forward/forwardengine.hpp
     pricingengines/forward/forwardperformanceengine.hpp
     pricingengines/forward/mcforwardeuropeanbsengine.hpp
