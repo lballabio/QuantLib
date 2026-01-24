@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2024 Chirag Desai
+ Copyright (C) 2026 Chirag Desai
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,35 +36,35 @@ namespace QuantLib {
 
         The NPV is computed as:
         \f[
-        \text{NPV} = \pm N_1 \times D_1(T) \mp N_2 \times D_2(T) / S
+        \text{NPV} = \pm N_{source} \times D_{source}(T) \mp N_{target} \times D_{target}(T) / S
         \f]
         where:
-        - \f$ N_1 \f$ is the currency1 nominal
-        - \f$ N_2 \f$ is the currency2 nominal
-        - \f$ D_1(T) \f$ is the currency1 discount factor to maturity
-        - \f$ D_2(T) \f$ is the currency2 discount factor to maturity
-        - \f$ S \f$ is the spot FX rate (currency2/currency1)
+        - \f$ N_{source} \f$ is the source currency nominal
+        - \f$ N_{target} \f$ is the target currency nominal
+        - \f$ D_{source}(T) \f$ is the source currency discount factor to maturity
+        - \f$ D_{target}(T) \f$ is the target currency discount factor to maturity
+        - \f$ S \f$ is the spot FX rate (target/source)
         - \f$ T \f$ is the maturity date
 
         The fair forward rate is computed as:
         \f[
-        F = S \times \frac{D_2(T)}{D_1(T)}
+        F = S \times \frac{D_{target}(T)}{D_{source}(T)}
         \f]
 
         \ingroup forwardengines
     */
     class DiscountingFxForwardEngine : public FxForward::engine {
       public:
-        /*! \param currency1DiscountCurve   Discount curve for currency1
-            \param currency2DiscountCurve   Discount curve for currency2
-            \param spotFx                   Spot FX rate (currency2/currency1), i.e.,
-                                            1 unit of currency1 = spotFx units of currency2
-            \param npvDate                  The date to which NPV is discounted
-                                            (defaults to the discount curve reference date)
+        /*! \param sourceCurrencyDiscountCurve  Discount curve for source currency
+            \param targetCurrencyDiscountCurve  Discount curve for target currency
+            \param spotFx                       Spot FX rate (target/source), i.e.,
+                                                1 unit of source currency = spotFx units of target currency
+            \param npvDate                      The date to which NPV is discounted
+                                                (defaults to the discount curve reference date)
         */
         DiscountingFxForwardEngine(
-            Handle<YieldTermStructure> currency1DiscountCurve,
-            Handle<YieldTermStructure> currency2DiscountCurve,
+            Handle<YieldTermStructure> sourceCurrencyDiscountCurve,
+            Handle<YieldTermStructure> targetCurrencyDiscountCurve,
             Handle<Quote> spotFx,
             const Date& npvDate = Date());
 
@@ -72,18 +72,18 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        const Handle<YieldTermStructure>& currency1DiscountCurve() const {
-            return currency1DiscountCurve_;
+        const Handle<YieldTermStructure>& sourceCurrencyDiscountCurve() const {
+            return sourceCurrencyDiscountCurve_;
         }
-        const Handle<YieldTermStructure>& currency2DiscountCurve() const {
-            return currency2DiscountCurve_;
+        const Handle<YieldTermStructure>& targetCurrencyDiscountCurve() const {
+            return targetCurrencyDiscountCurve_;
         }
         const Handle<Quote>& spotFx() const { return spotFx_; }
         //@}
 
       private:
-        Handle<YieldTermStructure> currency1DiscountCurve_;
-        Handle<YieldTermStructure> currency2DiscountCurve_;
+        Handle<YieldTermStructure> sourceCurrencyDiscountCurve_;
+        Handle<YieldTermStructure> targetCurrencyDiscountCurve_;
         Handle<Quote> spotFx_;
         Date npvDate_;
     };
