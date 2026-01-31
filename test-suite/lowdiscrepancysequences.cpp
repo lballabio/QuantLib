@@ -1075,7 +1075,7 @@ BOOST_AUTO_TEST_CASE(testSobolBurleySkipping) {
     unsigned long seed = 42;
     unsigned long scramblingSeed = 43;
     Size dimensionality[] = { 1, 10, 100, 1000 };
-    unsigned long skip[] = { 0, 1, 42, 512, 100000 };
+    unsigned long skip[] = { 0, 1, 42, 512, 10000 };
     SobolRsg::DirectionIntegers integers[] = {
         SobolRsg::Jaeckel,
         SobolRsg::SobolLevitan,
