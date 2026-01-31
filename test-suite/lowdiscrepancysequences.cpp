@@ -1068,6 +1068,50 @@ BOOST_AUTO_TEST_CASE(testSobolSkipping) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSobolBurleySkipping) {
+
+    BOOST_TEST_MESSAGE("Testing Sobol Burley sequence skipping...");
+
+    unsigned long seed = 42;
+    unsigned long scramblingSeed = 43;
+    Size dimensionality[] = { 1, 10, 100, 1000 };
+    unsigned long skip[] = { 0, 1, 42, 512, 100000 };
+    SobolRsg::DirectionIntegers integers[] = {
+        SobolRsg::Jaeckel,
+        SobolRsg::SobolLevitan,
+        SobolRsg::SobolLevitanLemieux };
+
+        for (auto& integer : integers) {
+            for (Size& j : dimensionality) {
+                for (unsigned long& k : skip) {
+
+                    // extract n samples
+                    Burley2020SobolRsg rsg1(j, seed, integer, scramblingSeed);
+                    for (Size l = 0; l < k; l++)
+                        rsg1.nextInt32Sequence();
+
+                    // skip n samples at once
+                    Burley2020SobolRsg rsg2(j, seed, integer, scramblingSeed);
+                    rsg2.skipTo(k);
+
+                    // compare next 100 samples
+                    for (Size m = 0; m < 100; m++) {
+                        const std::vector<std::uint_least32_t>& s1 = rsg1.nextInt32Sequence();
+                        const std::vector<std::uint_least32_t>& s2 = rsg2.nextInt32Sequence();
+                        for (Size n = 0; n < s1.size(); n++) {
+                            if (s1[n] != s2[n]) {
+                                BOOST_ERROR("Mismatch after skipping:"
+                                << "\n  size:     " << j << "\n  integers: " << integer
+                                << "\n  skipped:  " << k << "\n  at index: " << n
+                                << "\n  expected: " << s1[n] << "\n  found:    " << s2[n]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+}
+
 BOOST_AUTO_TEST_CASE(testHighDimensionalIntegrals, *precondition(if_speed(Slow))) {
     BOOST_TEST_MESSAGE("Testing high-dimensional integrals...");
 
