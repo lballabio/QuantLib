@@ -58,15 +58,11 @@ namespace QuantLib {
         /*! \param sourceCurrencyDiscountCurve  Discount curve for source currency
             \param targetCurrencyDiscountCurve  Discount curve for target currency
             \param spotFx                       Spot FX rate (target/source), i.e.,
-                                                1 unit of source currency = spotFx units of target
-           currency
-            \param npvDate                      The date to which NPV is discounted
-                                                (defaults to the discount curve reference date)
+                                                1 unit of source currency = spotFx units of target currency
         */
         DiscountingFxForwardEngine(Handle<YieldTermStructure> sourceCurrencyDiscountCurve,
                                    Handle<YieldTermStructure> targetCurrencyDiscountCurve,
-                                   Handle<Quote> spotFx,
-                                   const Date& npvDate = Date());
+                                   Handle<Quote> spotFx);
 
         void calculate() const override;
 
@@ -85,7 +81,6 @@ namespace QuantLib {
         Handle<YieldTermStructure> sourceCurrencyDiscountCurve_;
         Handle<YieldTermStructure> targetCurrencyDiscountCurve_;
         Handle<Quote> spotFx_;
-        Date npvDate_;
     };
 
 }

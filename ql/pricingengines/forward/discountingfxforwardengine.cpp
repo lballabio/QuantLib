@@ -25,11 +25,10 @@ namespace QuantLib {
     DiscountingFxForwardEngine::DiscountingFxForwardEngine(
         Handle<YieldTermStructure> sourceCurrencyDiscountCurve,
         Handle<YieldTermStructure> targetCurrencyDiscountCurve,
-        Handle<Quote> spotFx,
-        const Date& npvDate)
+        Handle<Quote> spotFx)
     : sourceCurrencyDiscountCurve_(std::move(sourceCurrencyDiscountCurve)),
       targetCurrencyDiscountCurve_(std::move(targetCurrencyDiscountCurve)),
-      spotFx_(std::move(spotFx)), npvDate_(npvDate) {
+      spotFx_(std::move(spotFx)) {
         registerWith(sourceCurrencyDiscountCurve_);
         registerWith(targetCurrencyDiscountCurve_);
         registerWith(spotFx_);
@@ -48,16 +47,6 @@ namespace QuantLib {
                                         "source currency has "
                                             << refDate << " and target currency has " << refDate2);
 
-        Date npvDate = npvDate_;
-        if (npvDate_ == Date()) {
-            npvDate = refDate;
-        } else {
-            QL_REQUIRE(npvDate >= refDate, "npv date (" << npvDate
-                                                        << ") before "
-                                                           "discount curve reference date ("
-                                                        << refDate << ")");
-        }
-
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
 
@@ -70,9 +59,6 @@ namespace QuantLib {
         // Get discount factors to maturity
         DiscountFactor dfSource = sourceCurrencyDiscountCurve_->discount(maturityDate);
         DiscountFactor dfTarget = targetCurrencyDiscountCurve_->discount(maturityDate);
-
-        // Get discount factor to NPV date for normalization
-        DiscountFactor npvDateDiscount = sourceCurrencyDiscountCurve_->discount(npvDate);
 
         // Calculate fair forward rate: F = S * dfTarget / dfSource
         // This is the forward rate targetCurrency/sourceCurrency
@@ -100,12 +86,10 @@ namespace QuantLib {
             npvInSourceCurrency = pvSource - pvTargetInSourceCurrency;
         }
 
-        // Store results
+        // Store results - NPV is as of the curve reference date
+        results_.value = npvInSourceCurrency;
         results_.npvSourceCurrency = npvInSourceCurrency;
         results_.npvTargetCurrency = npvInSourceCurrency * spotFxRate;
-
-        // NPV normalized to npvDate
-        results_.value = npvInSourceCurrency / npvDateDiscount;
 
         // Store additional results for inspection
         results_.additionalResults["spotFx"] = spotFxRate;

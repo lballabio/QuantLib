@@ -24,6 +24,7 @@
 #include <ql/instruments/fxforward.hpp>
 #include <ql/pricingengines/forward/discountingfxforwardengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 
 using namespace QuantLib;
@@ -413,6 +414,70 @@ BOOST_AUTO_TEST_CASE(testAdditionalResults) {
     BOOST_CHECK_CLOSE(spotFx, 1.35, 1.0e-4); // 0.0001% tolerance
     BOOST_CHECK(dfSource > 0.0 && dfSource < 1.0);
     BOOST_CHECK(dfTarget > 0.0 && dfTarget < 1.0);
+}
+
+
+BOOST_AUTO_TEST_CASE(testSettlementDays) {
+    BOOST_TEST_MESSAGE("Testing FX forward settlement days...");
+
+    CommonVars vars;
+
+    Real usdNominal = 1000000.0;
+    Real sgdNominal = 1350000.0;
+
+    // Test different settlement conventions
+    // Overnight (O/N): 0 days
+    FxForward overnightFwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
+                           vars.maturityDate, true, 0);
+    BOOST_CHECK_EQUAL(overnightFwd.settlementDays(), 0);
+    BOOST_CHECK_EQUAL(overnightFwd.paymentDate(), vars.today);
+
+    // TomNext (T/N): 1 day
+    FxForward tomNextFwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
+                         vars.maturityDate, true, 1);
+    BOOST_CHECK_EQUAL(tomNextFwd.settlementDays(), 1);
+    BOOST_CHECK_EQUAL(tomNextFwd.paymentDate(), vars.today + 1);
+
+    // Spot (S/N): 2 days (default)
+    FxForward spotFwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
+                      vars.maturityDate, true);  // default is 2
+    BOOST_CHECK_EQUAL(spotFwd.settlementDays(), 2);
+    BOOST_CHECK_EQUAL(spotFwd.paymentDate(), vars.today + 2);
+
+    BOOST_TEST_MESSAGE("Overnight payment date: " << overnightFwd.paymentDate());
+    BOOST_TEST_MESSAGE("TomNext payment date: " << tomNextFwd.paymentDate());
+    BOOST_TEST_MESSAGE("Spot payment date: " << spotFwd.paymentDate());
+}
+
+
+BOOST_AUTO_TEST_CASE(testSettlementDaysWithCalendar) {
+    BOOST_TEST_MESSAGE("Testing FX forward settlement days with calendar...");
+
+    CommonVars vars;
+
+    Real usdNominal = 1000000.0;
+    Real sgdNominal = 1350000.0;
+
+    // Use a calendar that skips weekends
+    Calendar cal = TARGET();
+
+    // Find a Friday to test weekend skipping
+    Date friday(15, March, 2024);  // March 15, 2024 is a Friday
+    Settings::instance().evaluationDate() = friday;
+
+    // With 2 settlement days on a Friday, payment should be Tuesday (skipping weekend)
+    FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
+                  vars.maturityDate, true, 2, cal);
+
+    Date expectedPaymentDate = cal.advance(friday, 2, Days);
+    BOOST_CHECK_EQUAL(fwd.paymentDate(), expectedPaymentDate);
+
+    BOOST_TEST_MESSAGE("Evaluation date (Friday): " << friday);
+    BOOST_TEST_MESSAGE("Payment date (should skip weekend): " << fwd.paymentDate());
+    BOOST_TEST_MESSAGE("Expected payment date: " << expectedPaymentDate);
+
+    // Restore evaluation date
+    Settings::instance().evaluationDate() = vars.today;
 }
 
 

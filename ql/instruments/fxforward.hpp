@@ -26,6 +26,7 @@
 
 #include <ql/currency.hpp>
 #include <ql/instrument.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/time/date.hpp>
 
 namespace QuantLib {
@@ -35,6 +36,14 @@ namespace QuantLib {
         which is an agreement to exchange a specified amount of one
         currency for another currency at a future date at a
         predetermined exchange rate.
+
+        The instrument supports various settlement conventions:
+        - Overnight (O/N): settlementDays = 0
+        - TomNext (T/N): settlementDays = 1
+        - SpotNext (S/N): settlementDays = 2 (standard spot)
+
+        The payment date is computed as the evaluation date plus
+        settlementDays business days according to the specified calendar.
 
         The instrument can be valued using DiscountingFxForwardEngine,
         which computes the NPV by discounting the source and target
@@ -50,36 +59,48 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         /*! Constructor for FX Forward using nominal amounts.
-            \param sourceNominal    Notional amount in source(domestic) currency
-            \param sourceCurrency   Currency of sourceNominal (source currency)
-            \param targetNominal    Notional amount in target(foreign) currency
-            \param targetCurrency   Currency of targetNominal (target currency)
-            \param maturityDate     Settlement date of the forward contract
+            \param sourceNominal     Notional amount in source(domestic) currency
+            \param sourceCurrency    Currency of sourceNominal (source currency)
+            \param targetNominal     Notional amount in target(foreign) currency
+            \param targetCurrency    Currency of targetNominal (target currency)
+            \param maturityDate      Settlement date of the forward contract
             \param paySourceCurrency If true, pay source currency and receive target currency;
-                                    if false, receive source currency and pay target currency
+                                     if false, receive source currency and pay target currency
+            \param settlementDays    Number of business days for payment settlement
+                                     (0=O/N, 1=T/N, 2=Spot, default=2)
+            \param paymentCalendar   Calendar for computing payment date
+                                     (defaults to NullCalendar)
         */
         FxForward(Real sourceNominal,
                   const Currency& sourceCurrency,
                   Real targetNominal,
                   const Currency& targetCurrency,
                   const Date& maturityDate,
-                  bool paySourceCurrency);
+                  bool paySourceCurrency,
+                  Natural settlementDays = 2,
+                  const Calendar& paymentCalendar = Calendar());
 
         /*! Constructor for FX Forward using exchange rate.
-            \param sourceNominal    Notional amount in source currency
-            \param sourceCurrency   Currency of nominal amount
-            \param targetCurrency   Currency to exchange into
-            \param forwardRate      The forward exchange rate (target/source)
-            \param maturityDate     Settlement date of the forward contract
-            \param sellingSource    If true, sell source currency (pay source, receive target);
-                                    if false, buy source currency (receive source, pay target)
+            \param sourceNominal     Notional amount in source currency
+            \param sourceCurrency    Currency of nominal amount
+            \param targetCurrency    Currency to exchange into
+            \param forwardRate       The forward exchange rate (target/source)
+            \param maturityDate      Settlement date of the forward contract
+            \param sellingSource     If true, sell source currency (pay source, receive target);
+                                     if false, buy source currency (receive source, pay target)
+            \param settlementDays    Number of business days for payment settlement
+                                     (0=O/N, 1=T/N, 2=Spot, default=2)
+            \param paymentCalendar   Calendar for computing payment date
+                                     (defaults to NullCalendar)
         */
         FxForward(Real sourceNominal,
                   const Currency& sourceCurrency,
                   const Currency& targetCurrency,
                   Real forwardRate,
                   const Date& maturityDate,
-                  bool sellingSource);
+                  bool sellingSource,
+                  Natural settlementDays = 2,
+                  const Calendar& paymentCalendar = Calendar());
         //@}
 
         //! \name Inspectors
@@ -98,6 +119,12 @@ namespace QuantLib {
         bool paySourceCurrency() const { return paySourceCurrency_; }
         //! Contracted forward rate (target currency per unit of source currency)
         Real forwardRate() const { return targetNominal_ / sourceNominal_; }
+        //! Number of settlement days (0=O/N, 1=T/N, 2=Spot)
+        Natural settlementDays() const { return settlementDays_; }
+        //! Payment calendar
+        const Calendar& paymentCalendar() const { return paymentCalendar_; }
+        //! Payment date (computed from evaluation date + settlementDays)
+        Date paymentDate() const;
         //@}
 
         //! \name Instrument interface
@@ -109,7 +136,7 @@ namespace QuantLib {
 
         //! \name Additional results
         //@{
-        //! Fair forward rate (targetCurrency/sourceCurrency),  the market-implied fair rate
+        //! Fair forward rate (targetCurrency/sourceCurrency), the market-implied fair rate
         //! computed by the engine
         Real fairForwardRate() const;
         //! NPV in source currency terms
@@ -125,6 +152,8 @@ namespace QuantLib {
         Currency targetCurrency_;
         Date maturityDate_;
         bool paySourceCurrency_;
+        Natural settlementDays_;
+        Calendar paymentCalendar_;
 
         mutable Real fairForwardRate_;
         mutable Real npvSourceCurrency_;
@@ -140,6 +169,9 @@ namespace QuantLib {
         Currency targetCurrency;
         Date maturityDate;
         bool paySourceCurrency = true;
+        Natural settlementDays = 2;
+        Calendar paymentCalendar;
+        Date paymentDate;
         void validate() const override;
     };
 

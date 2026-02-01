@@ -19,6 +19,7 @@
 
 #include <ql/instruments/fxforward.hpp>
 #include <ql/settings.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 
@@ -27,10 +28,14 @@ namespace QuantLib {
                          Real targetNominal,
                          const Currency& targetCurrency,
                          const Date& maturityDate,
-                         bool paySourceCurrency)
+                         bool paySourceCurrency,
+                         Natural settlementDays,
+                         const Calendar& paymentCalendar)
     : sourceNominal_(sourceNominal), sourceCurrency_(sourceCurrency), targetNominal_(targetNominal),
       targetCurrency_(targetCurrency), maturityDate_(maturityDate),
-      paySourceCurrency_(paySourceCurrency), fairForwardRate_(Null<Real>()),
+      paySourceCurrency_(paySourceCurrency), settlementDays_(settlementDays),
+      paymentCalendar_(paymentCalendar.empty() ? NullCalendar() : paymentCalendar),
+      fairForwardRate_(Null<Real>()),
       npvSourceCurrency_(Null<Real>()), npvTargetCurrency_(Null<Real>()) {
         QL_REQUIRE(!sourceCurrency.empty(), "source currency must not be empty");
         QL_REQUIRE(!targetCurrency.empty(), "target currency must not be empty");
@@ -45,10 +50,14 @@ namespace QuantLib {
                          const Currency& targetCurrency,
                          Real forwardRate,
                          const Date& maturityDate,
-                         bool sellingSource)
+                         bool sellingSource,
+                         Natural settlementDays,
+                         const Calendar& paymentCalendar)
     : sourceNominal_(sourceNominal), sourceCurrency_(sourceCurrency),
       targetNominal_(sourceNominal * forwardRate), targetCurrency_(targetCurrency),
       maturityDate_(maturityDate), paySourceCurrency_(sellingSource),
+      settlementDays_(settlementDays),
+      paymentCalendar_(paymentCalendar.empty() ? NullCalendar() : paymentCalendar),
       fairForwardRate_(Null<Real>()), npvSourceCurrency_(Null<Real>()),
       npvTargetCurrency_(Null<Real>()) {
         QL_REQUIRE(!sourceCurrency.empty(), "source currency must not be empty");
@@ -63,6 +72,11 @@ namespace QuantLib {
         return maturityDate_ < Settings::instance().evaluationDate();
     }
 
+    Date FxForward::paymentDate() const {
+        return paymentCalendar_.advance(Settings::instance().evaluationDate(),
+                                        settlementDays_, Days);
+    }
+
     void FxForward::setupArguments(PricingEngine::arguments* args) const {
         auto* arguments = dynamic_cast<FxForward::arguments*>(args);
         QL_REQUIRE(arguments != nullptr, "wrong argument type");
@@ -73,6 +87,9 @@ namespace QuantLib {
         arguments->targetCurrency = targetCurrency_;
         arguments->maturityDate = maturityDate_;
         arguments->paySourceCurrency = paySourceCurrency_;
+        arguments->settlementDays = settlementDays_;
+        arguments->paymentCalendar = paymentCalendar_;
+        arguments->paymentDate = paymentDate();
     }
 
     void FxForward::fetchResults(const PricingEngine::results* r) const {
@@ -110,6 +127,7 @@ namespace QuantLib {
         QL_REQUIRE(!sourceCurrency.empty(), "source currency not set");
         QL_REQUIRE(!targetCurrency.empty(), "target currency not set");
         QL_REQUIRE(maturityDate != Date(), "maturity date not set");
+        QL_REQUIRE(paymentDate != Date(), "payment date not set");
     }
 
     void FxForward::results::reset() {
