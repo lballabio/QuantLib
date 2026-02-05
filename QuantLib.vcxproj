@@ -1768,6 +1768,7 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolmatrix.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolstructure.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\swaption\zabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\termstructures\volatility\volatilitytype.hpp" />
     <ClInclude Include="ql\termstructures\voltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\yield\all.hpp" />

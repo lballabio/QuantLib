@@ -14,7 +14,8 @@ this_include_HEADERS = \
     swaptionvolcube.hpp \
     swaptionvoldiscrete.hpp \
     swaptionvolmatrix.hpp \
-    swaptionvolstructure.hpp
+    swaptionvolstructure.hpp \
+    zabrswaptionvolatilitycube.hpp
 
 cpp_files = \
     cmsmarket.cpp \

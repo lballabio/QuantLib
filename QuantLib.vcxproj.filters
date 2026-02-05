@@ -2121,6 +2121,9 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolstructure.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\zabrswaptionvolatilitycube.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\inflation\all.hpp">
       <Filter>termstructures\volatility\inflation</Filter>
     </ClInclude>
