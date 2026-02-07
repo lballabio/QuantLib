@@ -20,6 +20,7 @@
 */
 
 #include <ql/instruments/crossccyfixfloatswap.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
@@ -72,17 +73,6 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
     for (Leg::const_iterator it = floatLeg.begin(); it < floatLeg.end(); ++it)
         registerWith(*it);
 
-    // Initial notional exchange
-    Date aDate = floatSchedule_.dates().front();
-    aDate = floatPaymentCalendar_.adjust(aDate, floatPaymentBdc_);
-    ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-floatNominal_, aDate);
-    floatLeg.insert(floatLeg.begin(), aCashflow);
-
-    // Final notional exchange
-    aDate = floatLeg.back()->date();
-    aCashflow = ext::make_shared<SimpleCashFlow>(floatNominal_, aDate);
-    floatLeg.push_back(aCashflow);
-
     // Build the fixed rate leg
     Leg fixedLeg = FixedRateLeg(fixedSchedule_)
                        .withNotionals(fixedNominal_)
@@ -91,14 +81,29 @@ CrossCcyFixFloatSwap::CrossCcyFixFloatSwap(
                        .withPaymentLag(fixedPaymentLag)
                        .withPaymentCalendar(fixedPaymentCalendar);
 
+    auto earliestDate = std::min(CashFlows::startDate(floatLeg),
+                                 CashFlows::startDate(fixedLeg));
+
+    auto maturityDate = std::max(CashFlows::maturityDate(floatLeg),
+                                 CashFlows::maturityDate(fixedLeg));
+
+    // Initial notional exchange on float Leg
+    Date aDate = floatPaymentCalendar_.advance(earliestDate, floatPaymentLag_, Days, floatPaymentBdc_);
+    ext::shared_ptr<CashFlow> aCashflow = ext::make_shared<SimpleCashFlow>(-floatNominal_, aDate);
+    floatLeg.insert(floatLeg.begin(), aCashflow);
+
+    // Final notional exchange on float Leg
+    aDate = floatPaymentCalendar_.advance(maturityDate, floatPaymentLag_, Days, floatPaymentBdc_);
+    aCashflow = ext::make_shared<SimpleCashFlow>(floatNominal_, aDate);
+    floatLeg.push_back(aCashflow);
+
     // Initial notional exchange
-    aDate = fixedSchedule_.dates().front();
-    aDate = fixedPaymentCalendar_.adjust(aDate, fixedPaymentBdc_);
+    aDate = fixedPaymentCalendar_.advance(earliestDate, fixedPaymentLag_, Days, fixedPaymentBdc_);
     aCashflow = ext::make_shared<SimpleCashFlow>(-fixedNominal_, aDate);
     fixedLeg.insert(fixedLeg.begin(), aCashflow);
 
     // Final notional exchange
-    aDate = fixedLeg.back()->date();
+    aDate = fixedPaymentCalendar_.advance(maturityDate, fixedPaymentLag_, Days, fixedPaymentBdc_);
     aCashflow = ext::make_shared<SimpleCashFlow>(fixedNominal_, aDate);
     fixedLeg.push_back(aCashflow);
 

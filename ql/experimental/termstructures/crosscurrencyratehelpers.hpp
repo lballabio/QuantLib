@@ -26,6 +26,7 @@
 #define quantlib_crosscurrencyratehelpers_hpp
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/instruments/crossccyfixfloatswap.hpp>
 
 namespace QuantLib {
 
@@ -224,6 +225,7 @@ namespace QuantLib {
 
         Leg fixedLeg_;
         Leg floatLeg_;
+        ext::shared_ptr<CrossCcyFixFloatSwap> xccySwap_;
     };
 
 }

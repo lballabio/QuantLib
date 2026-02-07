@@ -24,6 +24,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
+#include <ql/pricingengines/swap/crossccyswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
@@ -451,6 +452,46 @@ namespace QuantLib {
     }
 
     void ConstNotionalCrossCurrencySwapRateHelper::initializeDates() {
+        auto overnightIndex = ext::dynamic_pointer_cast<OvernightIndex>(floatIndex_);
+
+        Period floatFreqPeriod;
+        if (floatIndex_->tenor().frequency() == NoFrequency) {
+            QL_REQUIRE(!overnightIndex, "Require payment frequency for overnight indices.");
+            floatFreqPeriod = floatIndex_->tenor();
+        } else {
+            floatFreqPeriod = Period(floatIndex_->tenor().frequency());
+        }
+
+        Real nominal = 1.0;
+        Schedule fixedSch = legSchedule(evaluationDate_, tenor_, Period(fixedFrequency_), fixingDays_, calendar_,
+                                       convention_, endOfMonth_);
+        Schedule floatSch = legSchedule(evaluationDate_, tenor_, floatFreqPeriod, fixingDays_, floatIndex_->fixingCalendar(),
+                                    floatIndex_->businessDayConvention(), endOfMonth_);
+
+        xccySwap_ = ext::make_shared<CrossCcyFixFloatSwap>(
+            CrossCcyFixFloatSwap::Type::Payer,
+            nominal,
+            Currency(), 
+            fixedSch,
+            sample_fixed_rate,
+            fixedDayCount_,
+            convention_,
+            paymentLag_,
+            calendar_,
+            nominal,
+            floatIndex_->currency(),
+            floatSch,
+            floatIndex_,
+            Spread(0.0),
+            floatIndex_->businessDayConvention(),
+            paymentLag_,
+            calendar_
+        );
+        auto engine = ext::make_shared<CrossCcySwapEngine>(
+            floatIndex_->currency(), floatingLegDiscountHandle(),
+            Currency(), fixedLegDiscountHandle(),
+            makeQuoteHandle(1.0), true);
+        xccySwap_->setPricingEngine(engine);
         fixedLeg_ = buildFixedLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
                                   endOfMonth_, fixedFrequency_, fixedDayCount_, paymentLag_);
         floatLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, floatIndex_->fixingCalendar(),
@@ -458,6 +499,7 @@ namespace QuantLib {
                                      floatIndex_, floatIndex_->tenor().frequency(), paymentLag_);
 
         initializeDatesFromLegs(fixedLeg_, floatLeg_);
+        initializeDatesFromLegs(xccySwap_->leg(0), xccySwap_->leg(1));
     }
 
     const Handle<YieldTermStructure>&
@@ -473,16 +515,22 @@ namespace QuantLib {
     Real ConstNotionalCrossCurrencySwapRateHelper::impliedQuote() const {
         QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
-
-        auto [fixedNpv, fixedBps] = npvbpsConstNotionalLeg(
+        xccySwap_->deepUpdate();
+        
+        Real fixedNpv = xccySwap_->inCcyLegNPV(0);
+        Real fixedBps = xccySwap_->inCcyLegBPS(0);
+        Real floatNpv = xccySwap_->inCcyLegNPV(1);
+        auto [fixedNpv_, fixedBps_] = npvbpsConstNotionalLeg(
             fixedLeg_, initialNotionalExchangeDate_, finalNotionalExchangeDate_, fixedLegDiscountHandle());
 
-        auto [floatNpv, floatBps] = npvbpsConstNotionalLeg(
+        auto [floatNpv_, floatBps_] = npvbpsConstNotionalLeg(
             floatLeg_, initialNotionalExchangeDate_, finalNotionalExchangeDate_, floatingLegDiscountHandle());
 
         QL_REQUIRE(std::fabs(fixedBps) > 0.0, "null fixed-leg BPS");
+        auto impliedQuote = sample_fixed_rate + ((floatNpv + fixedNpv) / (-fixedBps * 1e4));
+        auto impliedQuote_ = sample_fixed_rate + ((floatNpv_ - fixedNpv_) / fixedBps_);
 
-        return sample_fixed_rate + (floatNpv - fixedNpv) / fixedBps;
+        return impliedQuote;
     }
 
     void ConstNotionalCrossCurrencySwapRateHelper::accept(AcyclicVisitor& v) {
