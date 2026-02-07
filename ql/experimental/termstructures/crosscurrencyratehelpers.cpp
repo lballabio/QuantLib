@@ -86,26 +86,6 @@ namespace QuantLib {
             return IborLeg(sch, idx).withNotionals(1.0).withPaymentLag(paymentLag);
         }
 
-        Leg buildFixedLeg(const Date& evaluationDate,
-                          const Period& tenor,
-                          Natural fixingDays,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          bool endOfMonth,
-                          Frequency paymentFrequency,
-                          const DayCounter& dayCount,
-                          Integer paymentLag) {
-
-            auto freqPeriod = Period(paymentFrequency);
-
-            Schedule sch = legSchedule(evaluationDate, tenor, freqPeriod, fixingDays, calendar,
-                                       convention, endOfMonth);
-            return FixedRateLeg(sch)
-                .withNotionals(1.0)
-                .withCouponRates(sample_fixed_rate, dayCount)
-                .withPaymentLag(paymentLag);
-        }
-
         std::pair<Real, Real>
         npvbpsConstNotionalLeg(const Leg& leg,
                                const Date& initialNotionalExchangeDate,
@@ -492,13 +472,7 @@ namespace QuantLib {
             Currency(), fixedLegDiscountHandle(),
             makeQuoteHandle(1.0), true);
         xccySwap_->setPricingEngine(engine);
-        fixedLeg_ = buildFixedLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
-                                  endOfMonth_, fixedFrequency_, fixedDayCount_, paymentLag_);
-        floatLeg_ = buildFloatingLeg(evaluationDate_, tenor_, fixingDays_, floatIndex_->fixingCalendar(),
-                                     floatIndex_->businessDayConvention(), endOfMonth_,
-                                     floatIndex_, floatIndex_->tenor().frequency(), paymentLag_);
 
-        initializeDatesFromLegs(fixedLeg_, floatLeg_);
         initializeDatesFromLegs(xccySwap_->leg(0), xccySwap_->leg(1));
     }
 
@@ -517,18 +491,13 @@ namespace QuantLib {
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
         xccySwap_->deepUpdate();
         
+        const Spread basisPoint = 1.0e-4;
         Real fixedNpv = xccySwap_->inCcyLegNPV(0);
         Real fixedBps = xccySwap_->inCcyLegBPS(0);
         Real floatNpv = xccySwap_->inCcyLegNPV(1);
-        auto [fixedNpv_, fixedBps_] = npvbpsConstNotionalLeg(
-            fixedLeg_, initialNotionalExchangeDate_, finalNotionalExchangeDate_, fixedLegDiscountHandle());
-
-        auto [floatNpv_, floatBps_] = npvbpsConstNotionalLeg(
-            floatLeg_, initialNotionalExchangeDate_, finalNotionalExchangeDate_, floatingLegDiscountHandle());
 
         QL_REQUIRE(std::fabs(fixedBps) > 0.0, "null fixed-leg BPS");
-        auto impliedQuote = sample_fixed_rate + ((floatNpv + fixedNpv) / (-fixedBps * 1e4));
-        auto impliedQuote_ = sample_fixed_rate + ((floatNpv_ - fixedNpv_) / fixedBps_);
+        auto impliedQuote = sample_fixed_rate + ((floatNpv + fixedNpv) / (-fixedBps / basisPoint));
 
         return impliedQuote;
     }

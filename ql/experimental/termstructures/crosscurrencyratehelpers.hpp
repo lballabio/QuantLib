@@ -223,8 +223,6 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> floatIndex_;
         bool collateralOnFixedLeg_;
 
-        Leg fixedLeg_;
-        Leg floatLeg_;
         ext::shared_ptr<CrossCcyFixFloatSwap> xccySwap_;
     };
 
