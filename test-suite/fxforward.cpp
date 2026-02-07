@@ -204,20 +204,25 @@ BOOST_AUTO_TEST_CASE(testFairForwardRate) {
     fwd.setPricingEngine(engine);
 
     // Fair forward rate = Spot * (DFforeign / DFdomestic)
+    // The engine calculates discount factors from settlement date to maturity
     // With USD as source currency (domestic) and SGD as target currency (foreign):
     // F = S * (DF_SGD / DF_USD)
+    Date settlementDate = fwd.settlementDate();
     Real spotFx = vars.spotFxHandle->value();
-    Real dfUsd = vars.usdCurveHandle->discount(vars.maturityDate);
-    Real dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate);
+    Real dfUsd = vars.usdCurveHandle->discount(vars.maturityDate) /
+                 vars.usdCurveHandle->discount(settlementDate);
+    Real dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate) /
+                 vars.sgdCurveHandle->discount(settlementDate);
     Real expectedFairRate = spotFx * dfSgd / dfUsd;
 
     Real calculatedFairRate = fwd.fairForwardRate();
 
     BOOST_CHECK_CLOSE(calculatedFairRate, expectedFairRate, 1.0e-4); // 0.0001% tolerance
 
+    BOOST_TEST_MESSAGE("Settlement Date: " << settlementDate);
     BOOST_TEST_MESSAGE("Spot FX: " << spotFx);
-    BOOST_TEST_MESSAGE("DF USD: " << dfUsd);
-    BOOST_TEST_MESSAGE("DF SGD: " << dfSgd);
+    BOOST_TEST_MESSAGE("DF USD (settlement to maturity): " << dfUsd);
+    BOOST_TEST_MESSAGE("DF SGD (settlement to maturity): " << dfSgd);
     BOOST_TEST_MESSAGE("Expected Fair Rate: " << expectedFairRate);
     BOOST_TEST_MESSAGE("Calculated Fair Rate: " << calculatedFairRate);
 }
@@ -229,19 +234,32 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     CommonVars vars;
 
     // For an ATM forward, we need NPV = 0
+    // The engine calculates discount factors from settlement date to maturity:
+    //   dfSource = DF(maturity) / DF(settlement)
+    //   dfTarget = DF(maturity) / DF(settlement)
     // NPV = -sourceNominal * dfSource + targetNominal * dfTarget / spotFx = 0
     // Solving: targetNominal = sourceNominal * dfSource * spotFx / dfTarget
 
     Real spotFx = vars.spotFxHandle->value();
-    Real dfUsd = vars.usdCurveHandle->discount(vars.maturityDate);
-    Real dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate);
+    
+    // We need to use a forward with default settlement (2 days) to compute the correct DFs
+    Real usdNominal = 1000000.0;
+    
+    // Create a temporary forward to get the settlement date
+    FxForward tempFwd(usdNominal, vars.usd, usdNominal, vars.sgd, vars.maturityDate, true);
+    Date settlementDate = tempFwd.settlementDate();
+    
+    // Calculate discount factors from settlement to maturity (as the engine does)
+    Real dfUsd = vars.usdCurveHandle->discount(vars.maturityDate) / 
+                 vars.usdCurveHandle->discount(settlementDate);
+    Real dfSgd = vars.sgdCurveHandle->discount(vars.maturityDate) / 
+                 vars.sgdCurveHandle->discount(settlementDate);
 
     // The fair forward rate (for reference)
     Real fairForwardRate = spotFx * dfSgd / dfUsd;
 
     // Create a forward at the ATM strike
     // ATM condition: targetNominal = sourceNominal * dfSource * spotFx / dfTarget
-    Real usdNominal = 1000000.0;
     Real sgdNominal = usdNominal * dfUsd * spotFx / dfSgd;
 
     FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, vars.maturityDate, true);
@@ -254,9 +272,10 @@ BOOST_AUTO_TEST_CASE(testAtTheMoney) {
     // At-the-money forward should have NPV close to zero
     Real npv = fwd.NPV();
 
+    BOOST_TEST_MESSAGE("Settlement Date: " << settlementDate);
     BOOST_TEST_MESSAGE("Spot FX: " << spotFx);
-    BOOST_TEST_MESSAGE("DF USD: " << dfUsd);
-    BOOST_TEST_MESSAGE("DF SGD: " << dfSgd);
+    BOOST_TEST_MESSAGE("DF USD (settlement to maturity): " << dfUsd);
+    BOOST_TEST_MESSAGE("DF SGD (settlement to maturity): " << dfSgd);
     BOOST_TEST_MESSAGE("Fair Forward Rate: " << fairForwardRate);
     BOOST_TEST_MESSAGE("USD Nominal: " << usdNominal);
     BOOST_TEST_MESSAGE("SGD Nominal (ATM): " << sgdNominal);
@@ -430,23 +449,23 @@ BOOST_AUTO_TEST_CASE(testSettlementDays) {
     FxForward overnightFwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
                            vars.maturityDate, true, 0);
     BOOST_CHECK_EQUAL(overnightFwd.settlementDays(), 0);
-    BOOST_CHECK_EQUAL(overnightFwd.paymentDate(), vars.today);
+    BOOST_CHECK_EQUAL(overnightFwd.settlementDate(), vars.today);
 
     // TomNext (T/N): 1 day
     FxForward tomNextFwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
                          vars.maturityDate, true, 1);
     BOOST_CHECK_EQUAL(tomNextFwd.settlementDays(), 1);
-    BOOST_CHECK_EQUAL(tomNextFwd.paymentDate(), vars.today + 1);
+    BOOST_CHECK_EQUAL(tomNextFwd.settlementDate(), vars.today + 1);
 
     // Spot (S/N): 2 days (default)
     FxForward spotFwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
                       vars.maturityDate, true);  // default is 2
     BOOST_CHECK_EQUAL(spotFwd.settlementDays(), 2);
-    BOOST_CHECK_EQUAL(spotFwd.paymentDate(), vars.today + 2);
+    BOOST_CHECK_EQUAL(spotFwd.settlementDate(), vars.today + 2);
 
-    BOOST_TEST_MESSAGE("Overnight payment date: " << overnightFwd.paymentDate());
-    BOOST_TEST_MESSAGE("TomNext payment date: " << tomNextFwd.paymentDate());
-    BOOST_TEST_MESSAGE("Spot payment date: " << spotFwd.paymentDate());
+    BOOST_TEST_MESSAGE("Overnight settlement date: " << overnightFwd.settlementDate());
+    BOOST_TEST_MESSAGE("TomNext settlement date: " << tomNextFwd.settlementDate());
+    BOOST_TEST_MESSAGE("Spot settlement date: " << spotFwd.settlementDate());
 }
 
 
@@ -465,16 +484,16 @@ BOOST_AUTO_TEST_CASE(testSettlementDaysWithCalendar) {
     Date friday(15, March, 2024);  // March 15, 2024 is a Friday
     Settings::instance().evaluationDate() = friday;
 
-    // With 2 settlement days on a Friday, payment should be Tuesday (skipping weekend)
+    // With 2 settlement days on a Friday, settlement should be Tuesday (skipping weekend)
     FxForward fwd(usdNominal, vars.usd, sgdNominal, vars.sgd, 
                   vars.maturityDate, true, 2, cal);
 
-    Date expectedPaymentDate = cal.advance(friday, 2, Days);
-    BOOST_CHECK_EQUAL(fwd.paymentDate(), expectedPaymentDate);
+    Date expectedSettlementDate = cal.advance(friday, 2, Days);
+    BOOST_CHECK_EQUAL(fwd.settlementDate(), expectedSettlementDate);
 
     BOOST_TEST_MESSAGE("Evaluation date (Friday): " << friday);
-    BOOST_TEST_MESSAGE("Payment date (should skip weekend): " << fwd.paymentDate());
-    BOOST_TEST_MESSAGE("Expected payment date: " << expectedPaymentDate);
+    BOOST_TEST_MESSAGE("Settlement date (should skip weekend): " << fwd.settlementDate());
+    BOOST_TEST_MESSAGE("Expected settlement date: " << expectedSettlementDate);
 
     // Restore evaluation date
     Settings::instance().evaluationDate() = vars.today;

@@ -41,24 +41,31 @@ namespace QuantLib {
                    "target currency discount curve handle is empty");
         QL_REQUIRE(!spotFx_.empty(), "spot FX quote handle is empty");
 
-        Date refDate = sourceCurrencyDiscountCurve_->referenceDate();
-        Date refDate2 = targetCurrencyDiscountCurve_->referenceDate();
-        QL_REQUIRE(refDate == refDate2, "discount curves must have the same reference date, "
-                                        "source currency has "
-                                            << refDate << " and target currency has " << refDate2);
-
         results_.value = 0.0;
         results_.errorEstimate = Null<Real>();
 
         const Date& maturityDate = arguments_.maturityDate;
+        const Date& settlementDate = arguments_.settlementDate;
+
+        // Validate that curve reference dates are on or before settlement date
+        Date sourceRefDate = sourceCurrencyDiscountCurve_->referenceDate();
+        Date targetRefDate = targetCurrencyDiscountCurve_->referenceDate();
+        QL_REQUIRE(sourceRefDate <= settlementDate,
+                   "source currency discount curve reference date (" << sourceRefDate
+                   << ") must be on or before settlement date (" << settlementDate << ")");
+        QL_REQUIRE(targetRefDate <= settlementDate,
+                   "target currency discount curve reference date (" << targetRefDate
+                   << ") must be on or before settlement date (" << settlementDate << ")");
 
         // Get the spot FX rate (targetCurrency/sourceCurrency)
         Real spotFxRate = spotFx_->value();
         QL_REQUIRE(spotFxRate > 0.0, "spot FX rate must be positive");
 
         // Get discount factors to maturity
-        DiscountFactor dfSource = sourceCurrencyDiscountCurve_->discount(maturityDate);
-        DiscountFactor dfTarget = targetCurrencyDiscountCurve_->discount(maturityDate);
+        DiscountFactor dfSource = sourceCurrencyDiscountCurve_->discount(maturityDate) /
+                                  sourceCurrencyDiscountCurve_->discount(settlementDate);
+        DiscountFactor dfTarget = targetCurrencyDiscountCurve_->discount(maturityDate) /
+                                  targetCurrencyDiscountCurve_->discount(settlementDate);
 
         // Calculate fair forward rate: F = S * dfTarget / dfSource
         // This is the forward rate targetCurrency/sourceCurrency

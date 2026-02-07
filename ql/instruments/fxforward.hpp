@@ -113,7 +113,7 @@ namespace QuantLib {
         Real targetNominal() const { return targetNominal_; }
         //! Target currency
         const Currency& targetCurrency() const { return targetCurrency_; }
-        //! Settlement date
+        //! Maturity date of the forward contract
         const Date& maturityDate() const { return maturityDate_; }
         //! True if paying source currency
         bool paySourceCurrency() const { return paySourceCurrency_; }
@@ -121,10 +121,10 @@ namespace QuantLib {
         Real forwardRate() const { return targetNominal_ / sourceNominal_; }
         //! Number of settlement days (0=O/N, 1=T/N, 2=Spot)
         Natural settlementDays() const { return settlementDays_; }
-        //! Payment calendar
-        const Calendar& paymentCalendar() const { return paymentCalendar_; }
-        //! Payment date (computed from evaluation date + settlementDays)
-        Date paymentDate() const;
+        //! Settlement calendar
+        const Calendar& settlementCalendar() const { return paymentCalendar_; }
+        //! Settlement date (computed from evaluation date + settlementDays)
+        Date settlementDate() const;
         //@}
 
         //! \name Instrument interface
@@ -169,9 +169,7 @@ namespace QuantLib {
         Currency targetCurrency;
         Date maturityDate;
         bool paySourceCurrency = true;
-        Natural settlementDays = 2;
-        Calendar paymentCalendar;
-        Date paymentDate;
+        Date settlementDate;
         void validate() const override;
     };
 

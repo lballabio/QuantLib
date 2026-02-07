@@ -68,11 +68,12 @@ namespace QuantLib {
         QL_REQUIRE(forwardRate > 0.0, "forward rate must be positive");
     }
 
+
     bool FxForward::isExpired() const {
         return maturityDate_ < Settings::instance().evaluationDate();
     }
 
-    Date FxForward::paymentDate() const {
+    Date FxForward::settlementDate() const {
         return paymentCalendar_.advance(Settings::instance().evaluationDate(),
                                         settlementDays_, Days);
     }
@@ -87,9 +88,7 @@ namespace QuantLib {
         arguments->targetCurrency = targetCurrency_;
         arguments->maturityDate = maturityDate_;
         arguments->paySourceCurrency = paySourceCurrency_;
-        arguments->settlementDays = settlementDays_;
-        arguments->paymentCalendar = paymentCalendar_;
-        arguments->paymentDate = paymentDate();
+        arguments->settlementDate = settlementDate();
     }
 
     void FxForward::fetchResults(const PricingEngine::results* r) const {
@@ -127,7 +126,7 @@ namespace QuantLib {
         QL_REQUIRE(!sourceCurrency.empty(), "source currency not set");
         QL_REQUIRE(!targetCurrency.empty(), "target currency not set");
         QL_REQUIRE(maturityDate != Date(), "maturity date not set");
-        QL_REQUIRE(paymentDate != Date(), "payment date not set");
+        QL_REQUIRE(settlementDate != Date(), "settlement date not set");
     }
 
     void FxForward::results::reset() {
