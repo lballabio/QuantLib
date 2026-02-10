@@ -44,15 +44,8 @@ namespace QuantLib {
                                                            Handle<Quote> futuresQuote,
                                                            Handle<Quote> volatility,
                                                            Handle<Quote> meanReversion)
-    : dc_(index->dayCounter()), futuresDate_(IMM::date(immCode)),
-      indexMaturityDate_(index->maturityDate(futuresDate_)), futuresQuote_(std::move(futuresQuote)),
-      volatility_(std::move(volatility)), meanReversion_(std::move(meanReversion)) {
-
-        registerWith(futuresQuote_);
-        registerWith(volatility_);
-        registerWith(meanReversion_);
-        registerWith(Settings::instance().evaluationDate());
-    }
+    : FuturesConvAdjustmentQuote(index, IMM::date(immCode), std::move(futuresQuote),
+                                 std::move(volatility), std::move(meanReversion)) {}
 
     Real FuturesConvAdjustmentQuote::value() const {
         if (rate_ == Null<Real>()) {
