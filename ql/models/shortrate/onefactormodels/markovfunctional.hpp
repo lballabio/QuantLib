@@ -262,12 +262,12 @@ namespace QuantLib {
             Period tenor_;
             std::vector<Date> paymentDates_;
             std::vector<Real> yearFractions_;
-            Real atm_;
-            Real annuity_;
+            Real atm_ = Null<Real>();
+            Real annuity_ = Null<Real>();
             ext::shared_ptr<SmileSection> smileSection_;
             ext::shared_ptr<SmileSection> rawSmileSection_;
-            Real minRateDigital_;
-            Real maxRateDigital_;
+            Real minRateDigital_ = Null<Real>();
+            Real maxRateDigital_ = Null<Real>();
         };
 
 // utility macro to write messages to the model outputs
