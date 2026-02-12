@@ -370,7 +370,7 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
                     BOOST_ERROR("Failed to reproduce swap NPV:"
                                 << std::fixed << std::setprecision(9)
                                 << "\n    calculated: " << calculated
-                                << "\n    expected:    " << expected
+                                << "\n    expected:   " << expected
                                 << std::scientific
                                 << "\n    rel. error: " << error);
                 }
