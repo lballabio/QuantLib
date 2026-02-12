@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
     ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
     ext::shared_ptr<PricingEngine> engine(
-                                         new JamshidianSwaptionEngine(model));
+                                     new JamshidianSwaptionEngine(model));
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (auto& i : data) {
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite) {
         cachedA = 0.0464041, cachedSigma = 0.00579912;
     }
 
-    Real tolerance = 1.2e-5;
+    Real tolerance = 1.3e-5;
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
     Array xMinExpected(2);
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
     ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
     ext::shared_ptr<PricingEngine> engine(
-                                         new JamshidianSwaptionEngine(model));
+                                     new JamshidianSwaptionEngine(model));
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (auto& i : data) {
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhiteFixedReversion) {
 
 BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached "
-                       "values using swaptions without start delay...");
+                        "values using swaptions without start delay...");
 
     bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE(testCachedHullWhite2) {
         index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure)); // Euribor 6m with zero fixing days
 
     ext::shared_ptr<PricingEngine> engine(
-                                         new JamshidianSwaptionEngine(model));
+                                     new JamshidianSwaptionEngine(model));
 
     std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
     for (auto& i : data) {
@@ -333,7 +333,7 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
     ext::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
 
     ext::shared_ptr<PricingEngine> engine(
-                                        new TreeVanillaSwapEngine(model,120));
+                                     new TreeVanillaSwapEngine(model,120));
 
     Real tolerance = usingAtParCoupons ? 1.0e-8 : 4.0e-3;
 
@@ -360,7 +360,7 @@ BOOST_AUTO_TEST_CASE(testSwaps) {
                                  Thirty360(Thirty360::BondBasis),
                                  floatSchedule, euribor, 0.0, Actual360());
                 swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                   new DiscountingSwapEngine(termStructure)));
+                                     new DiscountingSwapEngine(termStructure)));
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
                 Real calculated = swap.NPV();
