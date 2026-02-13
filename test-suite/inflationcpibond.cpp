@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE(testCleanPrice) {
     auto engine = ext::make_shared<DiscountingBondEngine>(common.yTS);
     bond.setPricingEngine(engine);
 
-    Real storedPrice = 396.45920973;
+    Real storedPrice = 396.47045891;
     Real calculated = bond.dirtyPrice();
     Real tolerance = 1.0e-8;
     if (std::fabs(calculated-storedPrice) > tolerance) {
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(testCleanPrice) {
                    << "\n  calculated: " << calculated);
     }
 
-    storedPrice = 394.78551761;
+    storedPrice = 394.79676679;
     calculated = bond.cleanPrice();
     if (std::fabs(calculated-storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE(testCPILegWithoutBaseCPI) {
                    << "\n clean npv of leg with explicit baseCPI: " << cleanPriceWithBaseCPI);
     }
     // Compare to expected price
-    Real storedPrice = 394.78551761;
+    Real storedPrice = 394.79676680;
     if (std::fabs(cleanPriceWithBaseDate - storedPrice) > tolerance) {
         BOOST_FAIL("failed to reproduce expected CPI-bond clean price"
                    << std::fixed << std::setprecision(12) << "\n  expected:   " << storedPrice

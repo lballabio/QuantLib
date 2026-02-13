@@ -89,10 +89,7 @@ namespace QuantLib {
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
         // term structure before allowing users to create instruments.
-        Real T =
-            inflationYearFraction(infIndex_->frequency(),
-                                  detail::CPI::isInterpolated(observationInterpolation_),
-                                  dayCounter_, baseDate_, obsDate_);
+        Real T = dayCounter_.yearFraction(startDate_, maturityDate_);
         // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
         Real fixedAmount = nominal * (std::pow(1.0 + fixedRate, T) - 1.0);
 
@@ -130,10 +127,7 @@ namespace QuantLib {
 
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;
-        Real T =
-            inflationYearFraction(infIndex_->frequency(),
-                                  detail::CPI::isInterpolated(observationInterpolation_),
-                                  dayCounter_, baseDate_, obsDate_);
+        Real T = dayCounter_.yearFraction(startDate_, maturityDate_);
 
         return std::pow(growth,1.0/T) - 1.0;
 
@@ -155,10 +149,7 @@ namespace QuantLib {
 
         const Spread basisPoint = 1.0e-4;
         DiscountFactor df = payer_[0] * endDiscounts_[0];
-        Real T =
-            inflationYearFraction(infIndex_->frequency(),
-                                  detail::CPI::isInterpolated(observationInterpolation_),
-                                  dayCounter_, baseDate_, obsDate_);
+        Real T = dayCounter_.yearFraction(startDate_, maturityDate_);
 
         return df * nominal_ * (pow(1.0 + fixedRate_ + basisPoint, T) - pow(1.0 + fixedRate_, T));
     }
