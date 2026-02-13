@@ -445,12 +445,29 @@ namespace QuantLib {
                 arguments->callabilityPrices.push_back(i->price().amount());
 
                 if (i->price().type() == Bond::Price::Clean) {
-                    /* calling accrued() forces accrued interest to be zero
-                       if future option date is also coupon date, so that dirty
-                       price = clean price. Use here because callability is
-                       always applied before coupon in the tree engine.
-                    */
-                    arguments->callabilityPrices.back() += this->accrued(i->date());
+                    /* Convert clean call price to dirty using accrued interest
+                       at the call date. We ignore ex-coupon conventions here
+                       because the call is an issuer action governed by the
+                       indenture: the holder receives the call price plus accrued
+                       from the last payment date. Using market (ex-coupon) accrued
+                       would create an inconsistency with the tree's continuation
+                       value, which includes future coupons filtered at the
+                       settlement date (see GitHub issue #2236). */
+                    Date callDate = i->date();
+                    Real callAccrued = 0.0;
+                    for (const auto& cf : cashflows_) {
+                        if (!cf->hasOccurred(callDate, false)) {
+                            auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
+                            if (coupon != nullptr) {
+                                Real acc = coupon->accruedAmount(callDate);
+                                if (coupon->tradingExCoupon(callDate))
+                                    acc = coupon->amount() + acc;
+                                callAccrued = acc / notional(callDate) * 100.0;
+                            }
+                            break;
+                        }
+                    }
+                    arguments->callabilityPrices.back() += callAccrued;
                 }
             }
         }
