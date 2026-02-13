@@ -86,8 +86,8 @@ namespace QuantLib {
             \param targetCurrency    Currency to exchange into
             \param forwardRate       The forward exchange rate (target/source)
             \param maturityDate      Settlement date of the forward contract
-            \param sellingSource     If true, sell source currency (pay source, receive target);
-                                     if false, buy source currency (receive source, pay target)
+            \param paySourceCurrency If true, pay source currency and receive target currency;
+                                     if false, receive source currency and pay target currency
             \param settlementDays    Number of business days for payment settlement
                                      (0=O/N, 1=T/N, 2=Spot, default=2)
             \param paymentCalendar   Calendar for computing payment date
@@ -98,7 +98,7 @@ namespace QuantLib {
                   const Currency& targetCurrency,
                   Real forwardRate,
                   const Date& maturityDate,
-                  bool sellingSource,
+                  bool paySourceCurrency,
                   Natural settlementDays = 2,
                   const Calendar& paymentCalendar = Calendar());
         //@}
