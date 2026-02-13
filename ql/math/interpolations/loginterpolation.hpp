@@ -350,7 +350,7 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2>
-        class LogInterpolationImpl
+        class LogInterpolationImpl final
             : public Interpolation::templateImpl<I1, I2> {
           public:
             template <class Interpolator>
