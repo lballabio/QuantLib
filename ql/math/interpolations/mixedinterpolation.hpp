@@ -205,7 +205,7 @@ namespace QuantLib {
     namespace detail {
 
         template <class I1, class I2>
-        class MixedInterpolationImpl
+        class MixedInterpolationImpl final
             : public Interpolation::templateImpl<I1, I2> {
           public:
             template <class Interpolator1, class Interpolator2>

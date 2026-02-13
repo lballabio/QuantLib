@@ -41,7 +41,7 @@ namespace QuantLib {
         };
 
         template <class I1, class I2>
-        class LagrangeInterpolationImpl
+        class LagrangeInterpolationImpl final
             : public Interpolation::templateImpl<I1,I2>,
               public UpdatedYInterpolation {
 
