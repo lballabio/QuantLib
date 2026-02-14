@@ -29,6 +29,7 @@
 #include <ql/termstructures/volatility/swaption/zabrswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
+#include <ql/experimental/volatility/zabrsmilesection.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -839,6 +840,67 @@ BOOST_AUTO_TEST_CASE(testZabrWithNonUnitGamma) {
     BOOST_CHECK(atmVol > 0.0);
     BOOST_CHECK(otmVol > 0.0);
     BOOST_CHECK(itmVol > 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testZabrWithFreeGamma) {
+
+    BOOST_TEST_MESSAGE("Testing ZABR cube with free gamma calibration...");
+
+    CommonVars vars;
+
+    std::vector<std::vector<Handle<Quote> > >
+        parametersGuess(vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size());
+    for (Size i=0; i<vars.cube.tenors.options.size()*vars.cube.tenors.swaps.size(); i++) {
+        parametersGuess[i] = std::vector<Handle<Quote> >(5);
+        parametersGuess[i][0] =
+            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+        parametersGuess[i][1] =
+            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+        parametersGuess[i][2] =
+            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+        parametersGuess[i][3] =
+            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+        parametersGuess[i][4] =
+            Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0)));  // initial gamma guess
+    }
+    // gamma (index 4) is NOT fixed — optimizer should calibrate it
+    std::vector<bool> isParameterFixed(5, false);
+    isParameterFixed[1] = true;   // fix beta
+
+    ZabrSwaptionVolatilityCube cube(vars.atmVolMatrix,
+                             vars.cube.tenors.options,
+                             vars.cube.tenors.swaps,
+                             vars.cube.strikeSpreads,
+                             vars.cube.volSpreadsHandle,
+                             vars.swapIndexBase,
+                             vars.shortSwapIndexBase,
+                             vars.vegaWeighedSmileFit,
+                             parametersGuess,
+                             isParameterFixed,
+                             true);
+
+    // Get a smile section and verify gamma was actually calibrated
+    Period optionTenor = vars.cube.tenors.options[0];
+    Period swapTenor = vars.cube.tenors.swaps[0];
+    ext::shared_ptr<SmileSection> section =
+        cube.smileSection(optionTenor, swapTenor);
+    BOOST_CHECK(section != nullptr);
+
+    // Downcast to ZabrSmileSection to access calibrated gamma
+    auto zabrSection =
+        ext::dynamic_pointer_cast<ZabrSmileSection<ZabrShortMaturityLognormal> >(section);
+    BOOST_REQUIRE(zabrSection != nullptr);
+
+    Real calibratedGamma = zabrSection->model()->gamma();
+
+    // Gamma should be within reasonable bounds
+    BOOST_CHECK(calibratedGamma > 0.1);
+    BOOST_CHECK(calibratedGamma < 5.0);
+
+    // Verify ATM vol is positive
+    Rate atmStrike = section->atmLevel();
+    Volatility atmVol = section->volatility(atmStrike);
+    BOOST_CHECK(atmVol > 0.0);
 }
 
 BOOST_AUTO_TEST_CASE(testZabrVsSabrComparison) {

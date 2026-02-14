@@ -80,7 +80,7 @@ template <typename Evaluation> struct ZabrSpecs {
         x[0] = y[0] < 25.0 + eps1() ? std::sqrt(y[0] - eps1())
                                     : Real((y[0] - eps1() + 25.0) / 10.0);
         x[1] = std::sqrt(-std::log(y[1]));
-        x[2] = std::tan(M_PI*(y[4]/5.0-0.5));
+        x[2] = std::tan(M_PI*(y[2]/5.0-0.5));
         x[3] = std::asin(y[3] / eps2());
         x[4] = std::tan(M_PI*(y[4]/1.9-0.5));
         return x;

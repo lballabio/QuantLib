@@ -115,6 +115,7 @@ namespace QuantLib {
             mutable std::vector< ext::shared_ptr<Interpolation2D> > interpolators_;
          };
       public:
+        using SwaptionVolatilityStructure::smileSection;
         XabrSwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
@@ -451,7 +452,7 @@ namespace QuantLib {
         sabrParametersCube.setLayer(2, nus);
         sabrParametersCube.setLayer(3, rhos);
         // For models with 5+ params (e.g., ZABR), store gamma in layer 4
-        if (Model::nParams >= 5)
+        if constexpr (Model::nParams >= 5)
             sabrParametersCube.setLayer(4, gammas);
         // Metadata layers start at Model::nParams
         sabrParametersCube.setLayer(Model::nParams, forwards);
@@ -520,7 +521,7 @@ namespace QuantLib {
             calibrationResult[1]=sabrInterpolation->beta();
             calibrationResult[2]=sabrInterpolation->nu();
             calibrationResult[3]=sabrInterpolation->rho();
-            if (Model::nParams >= 5)
+            if constexpr (Model::nParams >= 5)
                 calibrationResult[4] = Model::extractGamma(sabrInterpolation);
             // Metadata stored after model parameters
             calibrationResult[Model::nParams]=atmForward;
