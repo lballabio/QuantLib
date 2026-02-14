@@ -141,7 +141,7 @@ namespace QuantLib {
         static ext::shared_ptr<SmileSection> createSmileSection(
             Time optionTime, Real forward,
             const std::vector<Real>& params,
-            Real /* shift */, VolatilityType /* volatilityType */) {
+            Real shift, VolatilityType volatilityType) {
             return ext::make_shared<SmileSection>(
                 optionTime, forward, params);
         }
