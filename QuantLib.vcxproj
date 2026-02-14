@@ -925,6 +925,7 @@
     <ClInclude Include="ql\instruments\forwardrateagreement.hpp" />
     <ClInclude Include="ql\instruments\forwardvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\futures.hpp" />
+    <ClInclude Include="ql\instruments\fxforward.hpp" />
     <ClInclude Include="ql\instruments\holderextensibleoption.hpp" />
     <ClInclude Include="ql\instruments\impliedvolatility.hpp" />
     <ClInclude Include="ql\instruments\inflationcapfloor.hpp" />
@@ -1556,6 +1557,7 @@
     <ClInclude Include="ql\pricingengines\exotic\analytictwoassetcorrelationengine.hpp" />
     <ClInclude Include="ql\pricingengines\exotic\analyticwriterextensibleoptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\all.hpp" />
+    <ClInclude Include="ql\pricingengines\forward\discountingfxforwardengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardperformanceengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.hpp" />
@@ -2198,6 +2200,7 @@
     <ClCompile Include="ql\instruments\forwardrateagreement.cpp" />
     <ClCompile Include="ql\instruments\forwardvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\futures.cpp" />
+    <ClCompile Include="ql\instruments\fxforward.cpp" />
     <ClCompile Include="ql\instruments\holderextensibleoption.cpp" />
     <ClCompile Include="ql\instruments\impliedvolatility.cpp" />
     <ClCompile Include="ql\instruments\inflationcapfloor.cpp" />
@@ -2630,6 +2633,7 @@
     <ClCompile Include="ql\pricingengines\exotic\analyticsimplechooserengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analytictwoassetcorrelationengine.cpp" />
     <ClCompile Include="ql\pricingengines\exotic\analyticwriterextensibleoptionengine.cpp" />
+    <ClCompile Include="ql\pricingengines\forward\discountingfxforwardengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\futures\discountingperpetualfuturesengine.cpp" />

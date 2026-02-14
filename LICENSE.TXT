@@ -180,6 +180,7 @@ Copyright (C) 2025 Uzair Beg
 Copyright (C) 2025 William Day
 
 Copyright (C) 2026 Aaditya Panikath
+Copyright (C) 2026 Chirag Desai
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".
