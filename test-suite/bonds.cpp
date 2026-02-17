@@ -36,6 +36,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/business252.hpp>
+#include <ql/indexes/ibor/audlibor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -1822,6 +1823,73 @@ BOOST_AUTO_TEST_CASE(testBasisPointValue) {
         ASSERT_CLOSE("yieldValueBasisPoint from InterestRate", i.settlement, yvbp2, i.yvbp, tolerance);
 
     }
+}
+
+BOOST_AUTO_TEST_CASE(testFixingConvention) {
+
+    BOOST_TEST_MESSAGE("Testing floating-rate bond fixing convention...");
+
+    // June 22, 2024 is a Saturday. With an unadjusted quarterly schedule
+    // and fixingDays=0, the fixing date depends on the convention:
+    //   Preceding  → Friday June 21, 2024
+    //   Following  → Monday June 24, 2024
+
+    Date today(1, January, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    Calendar calendar = Australia();
+    Natural settlementDays = 0;
+    Real faceAmount = 100.0;
+
+    Schedule schedule(Date(22, March, 2024),
+                      Date(22, December, 2024),
+                      Period(Quarterly),
+                      calendar,
+                      Unadjusted, Unadjusted,
+                      DateGeneration::Forward, false);
+
+    Handle<YieldTermStructure> curve(flatRate(today, 0.05, Actual365Fixed()));
+    auto index = ext::make_shared<AUDLibor>(3*Months, curve);
+
+    // Default (Preceding) convention
+    FloatingRateBond bondPreceding(settlementDays, faceAmount, schedule,
+                                   index, Actual365Fixed(),
+                                   Following, 0);
+
+    // Following convention
+    FloatingRateBond bondFollowing(settlementDays, faceAmount, schedule,
+                                   index, Actual365Fixed(),
+                                   Following, 0,
+                                   std::vector<Real>{1.0},
+                                   std::vector<Spread>{0.0},
+                                   std::vector<Rate>(),
+                                   std::vector<Rate>(),
+                                   false, 100.0, Date(),
+                                   Period(), Calendar(), Unadjusted, false,
+                                   Following);
+
+    // Extract the coupon whose accrual start date is June 22, 2024
+    auto findCouponStarting = [](const FloatingRateBond& bond, const Date& d) {
+        for (const auto& cf : bond.cashflows()) {
+            auto coupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(cf);
+            if (coupon && coupon->accrualStartDate() == d)
+                return coupon;
+        }
+        return ext::shared_ptr<FloatingRateCoupon>();
+    };
+
+    Date june22(22, June, 2024);  // Saturday
+    auto couponP = findCouponStarting(bondPreceding, june22);
+    auto couponF = findCouponStarting(bondFollowing, june22);
+
+    BOOST_REQUIRE(couponP != nullptr);
+    BOOST_REQUIRE(couponF != nullptr);
+
+    Date expectedPreceding(21, June, 2024);  // Friday
+    Date expectedFollowing(24, June, 2024);  // Monday
+
+    BOOST_CHECK_EQUAL(couponP->fixingDate(), expectedPreceding);
+    BOOST_CHECK_EQUAL(couponF->fixingDate(), expectedFollowing);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -32,6 +32,7 @@
 #include <ql/cashflows/coupon.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/time/businessdayconvention.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/handle.hpp>
 
@@ -56,7 +57,8 @@ namespace QuantLib {
                            const Date& refPeriodEnd = Date(),
                            DayCounter dayCounter = DayCounter(),
                            bool isInArrears = false,
-                           const Date& exCouponDate = Date());
+                           const Date& exCouponDate = Date(),
+                           BusinessDayConvention fixingConvention = Preceding);
 
         //! \name LazyObject interface
         //@{
@@ -95,6 +97,8 @@ namespace QuantLib {
         virtual Rate adjustedFixing() const;
         //! whether or not the coupon fixes in arrears
         bool isInArrears() const { return isInArrears_; }
+        //! business day convention used for fixing date calculation
+        BusinessDayConvention fixingConvention() const { return fixingConvention_; }
         //@}
 
         //! \name Visitability
@@ -113,6 +117,7 @@ namespace QuantLib {
         Real gearing_;
         Spread spread_;
         bool isInArrears_;
+        BusinessDayConvention fixingConvention_;
         ext::shared_ptr<FloatingRateCouponPricer> pricer_;
         mutable Real rate_;
     };
