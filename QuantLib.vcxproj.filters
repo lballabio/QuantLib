@@ -2040,6 +2040,9 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancesurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\equityfx\blackvariancesurfacefromsmilesections.hpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\blackvoltermstructure.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClInclude>
@@ -5595,6 +5598,9 @@
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvariancesurface.cpp">
+      <Filter>termstructures\volatility\equityfx</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\equityfx\blackvariancesurfacefromsmilesections.cpp">
       <Filter>termstructures\volatility\equityfx</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\blackvoltermstructure.cpp">

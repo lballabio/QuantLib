@@ -7,6 +7,7 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvariancesurfacefromsmilesections.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/gridmodellocalvolsurface.hpp>

@@ -18,6 +18,7 @@ QL_TEST_SRCS = \
 	blackcalculator.cpp \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
+	blackvariancesurfacefromsmilesections.cpp \
 	bondforward.cpp \
 	bonds.cpp \
 	brownianbridge.cpp \
