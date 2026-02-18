@@ -1734,6 +1734,7 @@
     <ClInclude Include="ql\termstructures\volatility\equityfx\localvolsurface.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\localvoltermstructure.hpp" />
     <ClInclude Include="ql\termstructures\volatility\equityfx\noexceptlocalvolsurface.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\equityfx\piecewiseblackvariancesurface.hpp" />
     <ClInclude Include="ql\termstructures\volatility\flatsmilesection.hpp" />
     <ClInclude Include="ql\termstructures\volatility\gaussian1dsmilesection.hpp" />
     <ClInclude Include="ql\termstructures\volatility\inflation\all.hpp" />
@@ -2758,6 +2759,7 @@
     <ClCompile Include="ql\termstructures\volatility\equityfx\hestonblackvolsurface.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\localvolsurface.cpp" />
     <ClCompile Include="ql\termstructures\volatility\equityfx\localvoltermstructure.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\equityfx\piecewiseblackvariancesurface.cpp" />
     <ClCompile Include="ql\termstructures\volatility\flatsmilesection.cpp" />
     <ClCompile Include="ql\termstructures\volatility\gaussian1dsmilesection.cpp" />
     <ClCompile Include="ql\termstructures\volatility\inflation\constantcpivolatility.cpp" />

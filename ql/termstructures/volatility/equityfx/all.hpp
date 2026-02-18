@@ -17,4 +17,5 @@
 #include <ql/termstructures/volatility/equityfx/localvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
+#include <ql/termstructures/volatility/equityfx/piecewiseblackvariancesurface.hpp>
 
